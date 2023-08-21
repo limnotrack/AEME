@@ -14,3 +14,21 @@
 #' }
 #' @source Package development.
 "era5_ref_table"
+
+#' Model variable naming
+#'
+#' A reference table for variable names between the models in AEME.
+#'
+#' @format ## `key_naming`
+#' A data frame with 79 rows and 7 columns:
+#' \describe{
+#'   \item{name}{AEME variable name}
+#'   \item{dy_cd}{DYRESM variable name}
+#'   \item{glm_aed}{GLM variable name}
+#'   \item{gotm_wet}{GOTM variable name}
+#'   \item{name_full}{String variable name}
+#'   \item{name_parse}{Variable name for parsing}
+#'   \item{conversion_aed}{Unit conversion for GLM-AED}
+#' }
+#' @source Package development.
+"key_naming"
