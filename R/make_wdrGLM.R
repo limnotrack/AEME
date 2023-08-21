@@ -1,0 +1,98 @@
+#' Make GLM outflow
+#'
+#' @param df_wdr
+#' @param heights_wdr
+#' @param bathy
+#' @param dims_lake
+#' @param path_glm
+#' @param wdr_factor
+#' @param update_nml
+#' @param glm_nml
+#'
+#' @return
+#' @noRd
+#'
+#' @examples
+make_wdrGLM <- function(df_wdr, heights_wdr, bathy, dims_lake, wdr_factor = 1,
+                        update_nml = TRUE, glm_nml, path_glm) {
+
+
+  if (!is.null(df_wdr)) {
+    df_wdr <- df_wdr |>
+      # convert discharge values to cumecs
+      dplyr::mutate(dplyr::across(2:ncol(df_wdr), \(x) (x * wdr_factor)
+                                  / 86400))
+
+    if (update_nml) {
+      crest <- max(bathy$elev)
+
+      # get the inflow attributes
+      names_wdr <- names(df_wdr)[2:ncol(df_wdr)]
+      n_wdr <- length(names_wdr)
+
+      # default to outflow = 3 m below crest if not supplied
+      if (missing(heights_wdr)) {
+        heights_wdr <- rep(crest - 3, length(names_wdr))
+      }
+
+      # get the glm outlet elevations (neg depths)
+      heights_wdr.glm <- heights_wdr# - crest
+
+      dims_outf <- lapply(heights_wdr, FUN = elipse_dims, bathy = bathy)  |>
+        dplyr::bind_rows()
+
+      lengths <- dims_outf$length
+      widths  <- dims_outf$width
+
+      outflow <- list(
+        num_outlet = n_wdr,
+        outlet_type = rep(2, n_wdr),
+        flt_off_sw = rep(TRUE, n_wdr),
+        outl_elvs = round(0, 2),
+        bsn_len_outl = round(lengths, 2),
+        bsn_wid_outl = round(widths, 2),
+        outflow_fl = paste0("bcs/outflow_", names_wdr,
+                            ".csv", collapse = ", "),
+        outflow_factor = rep(1, n_wdr)
+      )
+      glm_nml[["outflow"]] <- outflow
+    }
+
+    # write the outflow files
+    for (i in 2:ncol(df_wdr)) {
+
+      this.out <- df_wdr[,c(1, i)] |>
+        `colnames<-`(c("time", "flow"))
+
+      this.name <- paste0("outflow_", colnames(df_wdr)[i], ".csv")
+
+      write.csv(this.out, file.path(path_glm, "bcs", this.name),
+                row.names = FALSE, quote = FALSE)
+
+    }
+
+  } else {
+    if (update_nml) {
+      glm_nml[["outflow"]] <- NULL
+    }
+  }
+  if (update_nml) {
+    return(glm_nml)
+  }
+}
+
+# get the characteristics of all the outlet heights
+elipse_dims <- function(bathy, height) {
+
+  # planar area of the lake at outflow elevation
+  a.wdr <- approx(bathy[,1], bathy[,2], xout = height)[2] |>
+    as.numeric() |>
+    round()
+
+  # length at outflow (per GLM manual)
+  L.outf <- sqrt(a.wdr * (4/pi) * (dims_lake[1] / dims_lake[2]))
+  W.outf <- L.outf * (dims_lake[2] / dims_lake[1])
+
+  return(data.frame(length = L.outf, width = W.outf))
+
+}
