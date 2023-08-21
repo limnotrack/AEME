@@ -7,11 +7,9 @@
 build_ensemble(
   config,
   model = c("dy_cd", "glm_aed", "gotm_pclake"),
-  spinups = c(glm_aed = 0, dy_cd = 0, gotm_pclake = 365, gotm_wet = 365),
-  key.cfg = data.frame(readxl::read_excel("data/config_files/key_ensemble_Default.xlsx")),
-  key_naming,
-  inf.factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
-  wdr.factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
+  mod_ctrls,
+  inf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
+  outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   ext_elev = 0,
   config_dir = "data/config_files/",
   use_bgc = TRUE,
@@ -24,18 +22,13 @@ build_ensemble(
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
-\item{spinups}{vector; containing the number of days in the simulation to be
-allocated to a spin-up period. Needs to be named using the models.}
-
-\item{key.cfg}{dataframe; of configuration loaded from
+\item{mod_ctrls}{dataframe; of configuration loaded from
 "key_ensemble_Default.xlsx".}
 
-\item{key_naming}{dataframe; of corresponding names for the different models.}
-
-\item{inf.factor}{vector; containing factor to multiple the inflows. Needs to
+\item{inf_factor}{vector; containing factor to multiple the inflows. Needs to
 be named according to the model.}
 
-\item{wdr.factor}{vector; containing factor to multiple the outflows. Needs to
+\item{outf_factor}{vector; containing factor to multiple the outflows. Needs to
 be named according to the model.}
 
 \item{ext_elev}{numeric; extension in elevation for the hypsogrph in (m).}
@@ -49,7 +42,7 @@ configuration files.}
 
 \item{lake}{sf polygon of the lake shoreline.}
 
-\item{date.range}{vector; of start and end dates}
+\item{date_range}{vector; of start and end dates}
 
 \item{hyps}{dataframe; of the hypsograph. Required columns are `elev` and
 `area`.}
@@ -62,8 +55,13 @@ water level (masl).}
 \item{inf}{list; of dataframe containing inflows. Each inflow should be named
 in the list.}
 
-\item{wdr}{dataframe; containing outflow for the lake. Date plus a col for
+\item{outf}{dataframe; containing outflow for the lake. Date plus a col for
 each outflow.}
+
+\item{spinups}{vector; containing the number of days in the simulation to be
+allocated to a spin-up period. Needs to be named using the models.}
+
+\item{key_naming}{dataframe; of corresponding names for the different models.}
 }
 \value{
 builds the model ensemble configuration.

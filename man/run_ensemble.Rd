@@ -4,7 +4,15 @@
 \alias{run_ensemble}
 \title{Run ensemble}
 \usage{
-run_ensemble(model, lake_dir, bin_path, verbose = FALSE, parallel = FALSE)
+run_ensemble(
+  config,
+  model,
+  verbose = FALSE,
+  debug = FALSE,
+  timeout = 0,
+  parallel = FALSE,
+  dir = "."
+)
 }
 \arguments{
 \item{parallel}{}

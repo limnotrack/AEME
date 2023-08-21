@@ -1,7 +1,7 @@
 #' Run ensemble
 #'
 #' @param model
-#' @param lake_dir
+#' @param sim_folder
 #' @param bin_path
 #' @param verbose
 #' @param parallel
@@ -10,14 +10,19 @@
 #' @export
 #'
 #' @examples
-run_ensemble <- function(model, lake_dir, bin_path, verbose = FALSE, parallel = FALSE) {
+run_ensemble <- function(config, model, verbose = FALSE, debug = FALSE,
+                         timeout = 0, parallel = FALSE, dir = ".") {
 
-  run_model_args <- list(lake_dir = lake_dir, bin_path = bin_path, verbose = verbose)
+  sim_folder <- file.path(dir, paste0(config$location$lake_id,"_",
+                                      tolower(config$location$name)))
+  run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
+                         debug = debug, timeout = timeout)
 
   if (parallel) {
-    ncores <- parallel::detectCores() - 1
+    ncores <- min(c(parallel::detectCores() - 1, length(model)))
     cl <- parallel::makeCluster(ncores)
-    parallel::clusterExport(cl, varlist = list("run_model_args", "run_dy_cd", "run_glm_aed", "run_gotm_pclake"),
+    parallel::clusterExport(cl, varlist = list("run_model_args", "run_dy_cd",
+                                               "run_glm_aed", "run_gotm_wet"),
                             envir = environment())
     # parallel::clusterEvalQ(cl, expr = {library(LakeEnsemblR); library(gotmtools);
     # })
@@ -46,7 +51,7 @@ run_ensemble <- function(model, lake_dir, bin_path, verbose = FALSE, parallel = 
 
 #' Run DYRESM-CAEDYM
 #'
-#' @param lake_dir
+#' @param sim_folder
 #' @param bin_path
 #' @param verbose
 #' @param debug
@@ -56,20 +61,21 @@ run_ensemble <- function(model, lake_dir, bin_path, verbose = FALSE, parallel = 
 #' @noRd
 #'
 #' @examples
-run_dy_cd <- function(lake_dir, bin_path, verbose = FALSE, debug = FALSE,
+run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
                       timeout = 0) {
 
   oldwd <- getwd()
   on.exit({
     setwd(oldwd)
   })
+  bin_path <- system.file('extbin/', package = "AEME")
 
   arg <- ifelse(debug, "> dycd.log", "")
 
-  dy.prefix <- gsub(".stg", "", list.files(file.path(lake_dir, "dy_cd"),
+  dy.prefix <- gsub(".stg", "", list.files(file.path(sim_folder, "dy_cd"),
                                            pattern = "stg"))
 
-  setwd(file.path(lake_dir, "dy_cd"))
+  setwd(file.path(sim_folder, "dy_cd"))
   ref_fils <- c(paste0(dy.prefix, c(".stg", ".met", ".inf", ".wdr")), "DYref.nc")
   sim_fils <- c(paste0(dy.prefix, c(".pro")),  "dyresm3p1.par", paste0(dy.prefix, c(".con")), "DYsim.nc")
   info_fils <- c("DYref.nc", "DYsim.nc", paste0(dy.prefix, c( ".cfg")))
@@ -97,7 +103,7 @@ run_dy_cd <- function(lake_dir, bin_path, verbose = FALSE, debug = FALSE,
           wait = TRUE, stdout = stdout,
           stderr = stderr,
           args = info_fils)
-  if(verbose) {
+  if (verbose) {
     system2(file.path(bin_path, "dy_cd", "dycd.exe"),
             wait = TRUE, stdout = stdout,
             stderr = "", args = arg, timeout = timeout)
@@ -117,7 +123,7 @@ run_dy_cd <- function(lake_dir, bin_path, verbose = FALSE, debug = FALSE,
 
 #' Run GLM-AED
 #'
-#' @param lake_dir
+#' @param sim_folder
 #' @param bin_path
 #' @param verbose
 #' @param timeout
@@ -126,16 +132,18 @@ run_dy_cd <- function(lake_dir, bin_path, verbose = FALSE, debug = FALSE,
 #' @noRd
 #'
 #' @examples
-run_glm_aed <- function(lake_dir, bin_path, verbose = FALSE, timeout = 0) {
+run_glm_aed <- function(sim_folder, bin_path, verbose = FALSE, debug = FALSE,
+                        timeout = 0) {
 
   oldwd <- getwd()
   on.exit({
     setwd(oldwd)
   })
-  setwd(file.path(lake_dir, "glm_aed"))
+  bin_path <- system.file('extbin/', package = "AEME")
+  setwd(file.path(sim_folder, "glm_aed"))
   unlink("output/output.nc")
 
-  if(verbose) {
+  if (verbose) {
     system2(file.path(bin_path, "glm_aed", "glm.exe"),
             wait = TRUE, stdout = "",
             stderr = "", timeout = timeout)
@@ -155,7 +163,7 @@ run_glm_aed <- function(lake_dir, bin_path, verbose = FALSE, timeout = 0) {
 
 #' Run GOTM-WET
 #'
-#' @param lake_dir
+#' @param sim_folder
 #' @param bin_path
 #' @param verbose
 #' @param timeout
@@ -164,13 +172,14 @@ run_glm_aed <- function(lake_dir, bin_path, verbose = FALSE, timeout = 0) {
 #' @noRd
 #'
 #' @examples
-run_gotm_wet <- function(lake_dir, bin_path, verbose = FALSE, timeout = 0) {
+run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
+                         timeout = 0) {
 
   oldwd <- getwd()
   on.exit({
     setwd(oldwd)
   })
-  setwd(file.path(lake_dir, "gotm_wet"))
+  setwd(file.path(sim_folder, "gotm_wet"))
   unlink("output/output.nc")
   dir.create("output", showWarnings = FALSE)
   if(verbose) {
