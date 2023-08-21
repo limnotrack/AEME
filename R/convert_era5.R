@@ -34,6 +34,9 @@ convert_era5 <- function(lat,
                          path = ".",
                          format = "AEME") {
 
+  # Load Rdata
+  data("era5_ref_table", package = "AEME", envir = environment())
+
   coords <- data.frame(lat = lat, lon = lon)
   coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
   timestep <- "hourly"
