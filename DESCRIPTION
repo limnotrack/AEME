@@ -22,5 +22,6 @@ Enhances:
     ecmwfr,
     stars
 Imports: 
+    dplyr,
     magrittr,
     plyr
