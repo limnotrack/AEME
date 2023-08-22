@@ -8,9 +8,9 @@
 #' @param inf_factor
 #'
 #' @return
-#' @export
+#' @noRd
 #'
-#' @examples
+#' @importFrom glmtools set_nml
 make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                         inf_factor = 1) {
 

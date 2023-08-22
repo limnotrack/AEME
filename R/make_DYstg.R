@@ -48,8 +48,8 @@ make_DYstg <-  function(lakename = "!unknown",
 
   # inflows table
   if(!is.null(infNames)) {
-    infTable <- data.frame(infNames) %>%
-      `names<-`("infName") %>%
+    infTable <- data.frame(infNames) |>
+      `names<-`("infName") |>
       dplyr::mutate(infName   = as.character(infName),
                     height    = "SURF",
                     hlfAngle  = 85,
@@ -91,8 +91,8 @@ make_DYstg <-  function(lakename = "!unknown",
        paste0("DYRESM morphometry file for ",lakename),
        txtComment(round(latitude,4), 40, "# latitude of lake centre"),
        txtComment(round(surfElev,2), 40, "# lake surface elevation (m above sea level)"),
-       txtComment(length(infNames),40, "# number of inflows")) %>%
-    lapply(., writeLines, con = f)
+       txtComment(length(infNames),40, "# number of inflows")) |>
+    lapply(writeLines, con = f)
 
   # if(!is.null(infNames)) {
   write.table(infTable[,c(2:5,1)], f, sep="\t", quote=FALSE, col.names = F, row.names=FALSE)
@@ -102,8 +102,8 @@ make_DYstg <-  function(lakename = "!unknown",
        txtComment(round(crest, 2), 40, "# crest/full supply elevation (m above sea level)"),
        txtComment(as.numeric(length(outNames)),40, "# number of outlets"),
        txtComment(round(outHeights, 2), 40, "# outlet heights (m above sea level)"),
-       txtComment(nrow(bathy), 40, "# number of bathymetry records")) %>%
-    lapply(., writeLines, con = f)
+       txtComment(nrow(bathy), 40, "# number of bathymetry records")) |>
+    lapply(writeLines, con = f)
 
   writeLines("Elevation_[m]     Area_[m^2]",f)
 

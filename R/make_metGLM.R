@@ -6,7 +6,8 @@
 #' @param use_lw
 #'
 #' @noRd
-#' @export
+#' @importFrom stringr str_pad
+#' @importFrom dplyr select mutate across
 #'
 make_metGLM <-  function(obs_met, path_glm = "", infRain = FALSE,
                          use_lw = FALSE) {

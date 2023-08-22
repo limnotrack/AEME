@@ -9,10 +9,10 @@
 #' @param update_sediment
 #'
 #' @return
-#' @export
+#' @noRd
 #'
-#' @examples
-make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake,
+#' @importFrom glmtools set_nml
+make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake, crest,
                         update_sediment = TRUE) {
 
   bathy_glm <- bathy
@@ -30,6 +30,7 @@ make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake,
   arg_list <- list(max_layers = 500, min_layer_vol = 0.025,
                    min_layer_thick = 0.1,
                    max_layer_thick = max_layer_thick,
+                   crest_elev = crest,
                    density_model = 1, non_avg = TRUE,
                    lake_name = lakename, latitude = round(gps[1], 3),
                    longitude = round(gps[2], 3), base_elev = min(bathy_glm$elev),

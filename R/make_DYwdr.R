@@ -18,14 +18,14 @@
 make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
                         outf_factor = 1.0) {
 
-  wdrData <- wdrData %>%
-    dplyr::filter(complete.cases(.)) %>%
+  wdrData <- wdrData[complete.cases(wdrData), ] |>
     # round discharge data
-    dplyr::mutate(dplyr::across(2:ncol(.), \(x) x * outf_factor),
-                  dplyr::across(2:ncol(.), \(x) round(x, digits = 3)),
-                  dplyr::across(2:ncol(.), \(x) format(x, nsmall = 3)),
+    dplyr::mutate(dplyr::across(2:ncol(wdrData), \(x) x * outf_factor),
+                  dplyr::across(2:ncol(wdrData), \(x) round(x, digits = 3)),
+                  dplyr::across(2:ncol(wdrData), \(x) format(x, nsmall = 3)),
            # dyresm date format
-           Date = paste0(lubridate::year(Date), strftime(Date, format = "%j"))) %>%
+           Date = paste0(lubridate::year(Date), strftime(Date,
+                                                         format = "%j"))) |>
     dplyr::arrange(Date)
 
 
@@ -36,8 +36,10 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
   f <- file(paste0(filePath, "/", lakename,".wdr"),"w")
 
   # make a header to print to file
-  writeLines(paste0("DYRESM-CAEDYM outflow file (m^3/d) for ",lakename,". ", info), f)
-  writeLines(paste0(ncol(wdrData)-1,"                                  # Number of outflows"),f)
+  writeLines(paste0("DYRESM-CAEDYM outflow file (m^3/d) for ",lakename,". ",
+                    info), f)
+  writeLines(paste0(ncol(wdrData) - 1,
+                    "                                  # Number of outflows"),f)
 
   #add data
   write.table(wdrData, f, sep = "\t", quote = FALSE, row.names = FALSE)
@@ -45,4 +47,3 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
   # close and write file
   close(f)
 }
-

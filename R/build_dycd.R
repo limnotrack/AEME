@@ -20,10 +20,9 @@
 #'
 #' @importFrom dplyr filter pull slice
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return directory with DY-CD configuration.
+#' @noRd
+
 build_dycd <- function(lakename, mod_ctrls, date_range, gps,
                        inf, outf, met, hyps, lvl, lake_dir,
                        inf_factor = 1.0, outf_factor = 1.0,
@@ -70,9 +69,9 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
 
   #----- CONFIGURATION ------
   print("DY-CD cfg")
-  vars.dy <- mod_ctrls %>%
-    dplyr::filter(simulate == 1) %>%
-    dplyr::pull(name) %>%
+  vars.dy <- mod_ctrls |>
+    dplyr::filter(simulate == 1) |>
+    dplyr::pull(name) |>
     rename_modelvars(type_output = "dy_cd")
 
   # make the .cfg file
@@ -98,7 +97,7 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
   #----- STORAGE -----
   if (nrow(hyps) > 20) {
     message("Downsampling bathymetry")
-    hyps <- hyps %>%
+    hyps <- hyps |>
       dplyr::slice(c(seq(1, (nrow(hyps)-1), round(nrow(hyps) / 20)),
                      nrow(hyps)))
   }
@@ -106,11 +105,11 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
   # extend the bathymetry above crest for temporary storage as required by DYRESM (sometime)
   max_d <- max(hyps$elev)
   if (ext_elev != 0) {
-    bathy_fmt <- hyps %>%
-      `names<-`(c("elev","area")) %>%
-      dplyr::arrange(elev) %>%
+    bathy_fmt <- hyps |>
+      `names<-`(c("elev","area")) |>
+      dplyr::arrange(elev) |>
       # use slope to extend hyps by 5 m
-      bathy_extrap(., 0.75, new.max = max_d + ext_elev) %>%
+      bathy_extrap(0.75, new.max = max_d + ext_elev) |>
       dplyr::mutate(elev = round(elev, 2))
   } else {
     bathy_fmt <- hyps
@@ -138,7 +137,7 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
     surfElev <- mean(lvl[,2], na.rm = TRUE)
     z_max <- mean(lvl[, 2]) - min(hyps$elev)
     # get starting depth
-    z.start <- round((dplyr::filter(lvl, Date == date_range[1]) %>%
+    z.start <- round((dplyr::filter(lvl, Date == date_range[1]) |>
                         dplyr::pull(lvlwtr)) - min(hyps$elev), 2)
   } else {
     surfElev <- max(hyps$elev)
@@ -164,9 +163,8 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
   if (!is.null(inf)) {
     for (i in 1:length(inf)) {
       # format the tables
-      inf[[i]] <- inf[[i]] %>%
-        # rename
-        `colnames<-`(rename_modelvars(colnames(.), type_output = "dy_cd") )
+      colnames(inf[[i]]) <- rename_modelvars(input = names(inf[[i]]),
+                                             type_output = "dy_cd")
     }
   } else {
     inf <- list("EMPTY" = data.frame(
@@ -212,12 +210,12 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
              tmpStart = 10, filePath = path.dy)
 
   # set the variables to output from dycd
-  initials <- mod_ctrls %>%
+  initials <- mod_ctrls |>
     dplyr::filter(!is.na(initial_wc),
            simulate == 1 | name == "NCS_ss2", # must initialise both SSOL groups!?!
            !name %in% c("Date", "HYD_flow", "HYD_temp", "HYD_dens",
                         "CHM_salt", "RAD_par", "RAD_extc", "RAD_secchi",
-                        "PHS_tp","NIT_tn","PHY_tchla")) %>%
+                        "PHS_tp","NIT_tn","PHY_tchla")) |>
     dplyr::select(c("name", "initial_wc", "initial_sed"))
 
   # write the .int file

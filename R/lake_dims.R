@@ -10,11 +10,12 @@
 #' @examples
 lake_dims <- function(lake_shape) {
 
-  shp <- lake_shape|>
+  shp <- lake_shape |>
     sf::st_transform(2193)
 
   # find the vertical length
-  centre <- sf::st_centroid(shp)|>
+  centre <- sf::st_geometry(shp) |>
+    sf::st_centroid() |>
     sf::st_coordinates()
 
   # draw a vertical line

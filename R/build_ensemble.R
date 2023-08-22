@@ -1,51 +1,56 @@
-#' Configure an ensemble of lake model simulations from basic set of inputs
+#' Build model configuration directories
 #'
-#' @param lid character; of ID number used for the lake
-#' @param lake sf polygon of the lake shoreline.
-#' @param date_range vector; of start and end dates
-#' @param hyps dataframe; of the hypsograph. Required columns are `elev` and
-#' `area`.
-#' @param lvl dataframe; of average surface water level or time-series of daily
-#'  water level (masl).
-#' @param met dataframe of meteorological data.
-#' @param inf list; of dataframe containing inflows. Each inflow should be named
-#' in the list.
-#' @param outf dataframe; containing outflow for the lake. Date plus a col for
-#' each outflow.
+#' Configure an ensemble of lake model simulations from basic set of inputs.
+#'
+#' @param config list; loaded via `config <- configr::read.config("aeme.yaml")`
 #' @param model vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 #'  `gotm_wet`.
-#' @param spinups vector; containing the number of days in the simulation to be
-#'  allocated to a spin-up period. Needs to be named using the models.
 #' @param mod_ctrls dataframe; of configuration loaded from
-#'  "key_ensemble_Default.xlsx".
-#' @param key_naming dataframe; of corresponding names for the different models.
-#' @param inf_factor vector; containing factor to multiple the inflows. Needs to
-#' be named according to the model.
-#' @param outf_factor vector; containing factor to multiple the outflows. Needs to
-#' be named according to the model.
-#' @param ext_elev numeric; extension in elevation for the hypsogrph in (m).
-#' @param config_dir filepath; to directory which contains the model
-#' configuration files.
+#'  "mod_ctrls.csv".
+#' @param inf_factor vector; containing numeric factor to multiple the inflows.
+#'  Needs to be named according to the model.
+#' @param outf_factor vector; containing numeric factor to multiple the
+#'  outflows. Needs to be named according to the model.
+#' @param ext_elev numeric; extension in elevation for the hypsogrph in metres.
 #' @param use_bgc boolean; switch to use the biogeochemical model.
+#' @param use_lw boolean; use incoming longwave radiation. Only applies to
+#' GLM-AED.
+#' @param hum_type numeric; GOTM humidity metric [1=relative humidity (%),
+#' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
+#' Default = 3.
+#' @param dir filepath; where input files are located relative to `config`.
 #'
 #' @return builds the model ensemble configuration.
 #'
-#' @importFrom magrittr %>% %T>%
 #' @importFrom sf sf_use_s2 st_transform st_centroid st_coordinates st_buffer
 #' @importFrom dplyr select filter
 #'
 #' @export
 #'
 #' @examples
+#' tmpdir <- tempdir()
+#' aeme_dir <- system.file("extdata/lake/", package = "AEME")
+#' # Copy files from package into tempdir
+#' file.copy(aeme_dir, tmpdir, recursive = TRUE)
+#' list.files(tmpdir, full.names = TRUE, recursive = TRUE)
+#' dir <- file.path(tmpdir, "lake")
+#' config <- configr::read.config(file.path(dir, "aeme.yaml"))
+#' mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
+#' inf_factor = c("glm_aed" = 1)
+#' outf_factor = c("glm_aed" = 1)
+#' model <- c("glm_aed")
+#' build_ensemble(dir = dir, config = config, model = model,
+#'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+#'                use_bgc = FALSE, use_lw = TRUE)
+
 build_ensemble <- function(config,
-                           model = c("dy_cd", "glm_aed", "gotm_pclake"),
-                           # spinups = c("glm_aed" = 0, "dy_cd" = 0, "gotm_pclake" = 365, "gotm_wet" = 365),
+                           model = c("dy_cd", "glm_aed", "gotm_wet"),
                            mod_ctrls,
-                           # key_naming,
-                           inf_factor = c("glm_aed" = 1, "dy_cd" = 1,"gotm_wet" = 1),
-                           outf_factor = c("glm_aed" = 1, "dy_cd" = 1,"gotm_wet" = 1),
+                           inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
+                                          "gotm_wet" = 1),
+                           outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
+                                           "gotm_wet" = 1),
                            ext_elev = 0,
-                           config_dir = "data/config_files/",
                            use_bgc = TRUE,
                            use_lw = FALSE,
                            hum_type = 3,
@@ -70,7 +75,8 @@ build_ensemble <- function(config,
 
 
   if (!is.null(config[["location"]][["shape_file"]])) {
-    lake_shape <- sf::st_read(config[["location"]][["shape_file"]])
+    lake_shape <- sf::st_read(file.path(dir,
+                                        config[["location"]][["shape_file"]]))
   } else {
     coords <- data.frame(lat = config[["location"]][["latitude"]],
                          lon = config[["location"]][["longitude"]])
@@ -80,18 +86,20 @@ build_ensemble <- function(config,
   }
 
   sf::sf_use_s2(FALSE)
-  coords.xyz = c(lake_shape %>%
-                   sf::st_transform(4326) %>%
-                   sf::st_centroid() %>%
-                   sf::st_coordinates() %>%
-                   as.numeric(), config[["location"]][["elevation"]])
+  coords.xyz <- c(lake_shape |>
+                    sf::st_transform(3857) |>
+                    sf::st_geometry() |>
+                    sf::st_centroid() |>
+                    sf::st_transform(4326) |>
+                    sf::st_coordinates() |>
+                    as.numeric(), config[["location"]][["elevation"]])
   sf::sf_use_s2(TRUE)
 
   # these variables will be simulated
   if (use_bgc) {
-    inf_vars <- mod_ctrls %>%
+    inf_vars <- mod_ctrls |>
       dplyr::filter(simulate == 1,
-             !name %in% c("RAD_extc", "PHS_tp", "NIT_pin", "NIT_tn", "PHY_tchla")) %>%
+             !name %in% c("RAD_extc", "PHS_tp", "NIT_pin", "NIT_tn", "PHY_tchla")) |>
       dplyr::pull(name)
   } else {
     inf_vars <- c("HYD_temp", "CHM_salt")
@@ -103,13 +111,13 @@ build_ensemble <- function(config,
   }
   # hyps <- readr::read_csv(config[["input"]][["hypsograph"]],
   #                         show_col_types = FALSE)
-  hyps <- read.csv(config[["input"]][["hypsograph"]])
+  hyps <- read.csv(file.path(dir, config[["input"]][["hypsograph"]]))
   # Water level ----
   lvl <- NULL
   if (file.exists(file.path(dir, config[["observations"]][["level"]]))) {
     # lvl <- readr::read_csv(config[["observations"]][["level"]],
     #                        show_col_types = FALSE)
-    lvl <- read.csv(config[["observations"]][["level"]])
+    lvl <- read.csv(file.path(dir, config[["observations"]][["level"]]))
   }
 
   # Initial profile ----
@@ -123,15 +131,16 @@ build_ensemble <- function(config,
 
   # Inflow ----
   inf <- list()
-  if(config[["inflows"]][["use"]]) {
+  if (config[["inflows"]][["use"]]) {
     for(i in 1:length(config[["inflows"]][["file"]])) {
 
-      inf[[names(config[["inflows"]][["file"]])[i]]] <- read.csv(config[["inflows"]][["file"]][[i]])
+      inf[[names(config[["inflows"]][["file"]])[i]]] <-
+        read.csv(file.path(dir, config[["inflows"]][["file"]][[i]]))
       if(any(!inf_vars %in% names(inf[[i]]))) {
         stop("missing state variables in inflow tables")
       }
 
-      inf[[i]] <- inf[[i]] %>%
+      inf[[i]] <- inf[[i]] |>
         dplyr::select(all_of(c("Date","HYD_flow",inf_vars)))
     }
   }
@@ -142,13 +151,13 @@ build_ensemble <- function(config,
     stop(config[["input"]][["meteo"]], " does not exist. Check file path.")
   }
   # met <- readr::read_csv(config[["input"]][["meteo"]], show_col_types = FALSE)
-  met <- read.csv(config[["input"]][["meteo"]])
-  met <- met %>%
+  met <- read.csv(file.path(dir, config[["input"]][["meteo"]]))
+  met <- met |>
     dplyr::filter(Date >= (date_range[1]),
            Date <= date_range[2])
-  met <- met %>%
-    dplyr::mutate(Date = as.Date(Date)) %>%
-    dplyr::mutate(MET_pprain = MET_pprain / 1000, MET_ppsnow = MET_ppsnow / 1000) %>%
+  met <- met |>
+    dplyr::mutate(Date = as.Date(Date)) |>
+    dplyr::mutate(MET_pprain = MET_pprain / 1000, MET_ppsnow = MET_ppsnow / 1000) |>
     expand_met(coords.xyz = coords.xyz, print.plot = FALSE)
   summary(met)
 
@@ -161,18 +170,17 @@ build_ensemble <- function(config,
   Kw <- config[["input"]][["Kw"]]
 
   if(config[["outflows"]][["use"]]) {
-    outf <- readr::read_csv(config[["outflows"]][["file"]], show_col_types = FALSE)
+    outf <- read.csv(file.path(dir, config[["outflows"]][["file"]]))
     if(ncol(outf) > 2) {
-      dy_cd_outf <- outf %>%
-        select(Date, outflow_dy_cd) %>%
-        rename(outflow = outflow_dy_cd)
-      glm_aed_outf <- outf %>%
-        select(Date, outflow_glm_aed) %>%
-        rename(outflow = outflow_glm_aed)
-
-      gotm_wet_outf <- outf %>%
-        select(Date, outflow_gotm_wet) %>%
-        rename(outflow = outflow_gotm_wet)
+      dy_cd_outf <- outf |>
+        dplyr::select(Date, outflow_dy_cd) |>
+        dplyr::rename(outflow = outflow_dy_cd)
+      glm_aed_outf <- outf |>
+        dplyr::select(Date, outflow_glm_aed) |>
+        dplyr::rename(outflow = outflow_glm_aed)
+      gotm_wet_outf <- outf |>
+        dplyr::select(Date, outflow_gotm_wet) |>
+        dplyr::rename(outflow = outflow_gotm_wet)
     } else {
       dy_cd_outf <- outf
       glm_aed_outf <- outf
@@ -191,7 +199,7 @@ build_ensemble <- function(config,
 
   if ("dy_cd" %in% model) {
     #--- configure DYRESM-CAEDYM
-    dates.dy <- c(date_range[1] - spin_up[["dy_cd"]], date_range[2]) %>%
+    dates.dy <- c(date_range[1] - spin_up[["dy_cd"]], date_range[2]) |>
       `names<-`(NULL)
     build_dycd(lakename, mod_ctrls = mod_ctrls, date_range = dates.dy,
                gps = coords.xyz[1:2], hyps = hyps, lvl = lvl,
@@ -204,7 +212,7 @@ build_ensemble <- function(config,
     # run_dy_cd(lake_dir = lake_dir, bin_path = here::here("data", "bin"))
   }
   if ("glm_aed" %in% model) {
-    dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) %>%
+    dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
       `names<-`(NULL)
     build_glm(lakename, mod_ctrls = mod_ctrls, date_range = dates.glm,
               lake_shape = lake_shape, gps = coords.xyz[1:2],
@@ -219,7 +227,7 @@ build_ensemble <- function(config,
     #             verbose = TRUE)
   }
   if("gotm_wet" %in% model) {
-    dates.gotm = c(date_range[1] - spinups["gotm_wet"], date_range[2]) %>%
+    dates.gotm = c(date_range[1] - spinups["gotm_wet"], date_range[2]) |>
       `names<-`(NULL)
     depth <- max(hyps$elev) - min(hyps$elev)
     if (depth < 3) {
@@ -242,4 +250,3 @@ build_ensemble <- function(config,
 
   }
 }
-

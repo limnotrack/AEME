@@ -18,14 +18,14 @@ make_DYCDint <-  function(lakename = "unknown",
   CNratio  <- (106 * 12) / (16 * 14)
 
   ppnVars <- c("DINOF", "CYANO", "NODUL", "CHLOR", "CRYPT", "MDIAT",
-               "FDIAT") %>%
+               "FDIAT") |>
     dplyr::intersect(intVars)
 
 
   # compile inputs into a dataframe for use
-  intVars <- data.frame(VAR =intVars) %>%
+  intVars <- data.frame(VAR =intVars) |>
     dplyr::mutate(wc =  round(as.numeric(wcVals),4),
-                  sed <- round(as.numeric(sedVals),4) )
+                  sed = round(as.numeric(sedVals),4))
 
   # check pH vs PH
   if (verCD < 3) { intVars[intVars$VAR == "pH", "VAR"] <- "PH" }
@@ -35,37 +35,39 @@ make_DYCDint <-  function(lakename = "unknown",
 
     var.short = substr(ppnVars[i],1,3)
 
-    intVars <- intVars %>%
-      rbind(c(paste0("IC_",var.short),-50,0),
-            c(paste0("IN_",var.short), round(-50 / CNratio, 3),0),
-            c(paste0("IP_",var.short), round(-50 / CNratio / 7.2, 3),0) )
+    intVars <- intVars |>
+      rbind(c(paste0("IC_", var.short), -50,0),
+            c(paste0("IN_", var.short), round(-50 / CNratio, 3),0),
+            c(paste0("IP_", var.short), round(-50 / CNratio / 7.2, 3),0) )
   }
 
   # force PIN to avoid error
-  intVars <- intVars %>%
+  intVars <- intVars |>
     rbind(c("PIN",0,0))
 
 
 
   #-------- make the file! ---------
 
-  f <- file(paste0(filePath,"/",lakename,".int"),"w")
+  f <- file(paste0(filePath, "/", lakename, ".int"), "w")
+  on.exit({
+    # close and write file
+    close(f)
+  })
 
   writeLines("3D DATA", f)
 
-  for ( i in 1:nrow(intVars) ) {
+  for (i in 1:nrow(intVars) ) {
 
     list(intVars[i,1],
          paste0("  CO_I"),
          # find water column value
          paste0("  ",intVars[i,2]),
-         paste0("  ",intVars[i,3]) ) %>%
-      lapply(., writeLines, f)
+         paste0("  ",intVars[i,3]) ) |>
+      lapply(writeLines, f)
   }
 
   writeLines("2D DATA", f)
   writeLines("EOF", f)
 
-  # close and write file
-  close(f)
 }

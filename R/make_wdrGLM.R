@@ -38,7 +38,8 @@ make_wdrGLM <- function(df_wdr, heights_wdr, bathy, dims_lake, wdr_factor = 1,
       # get the glm outlet elevations (neg depths)
       heights_wdr.glm <- heights_wdr# - crest
 
-      dims_outf <- lapply(heights_wdr, FUN = elipse_dims, bathy = bathy)  |>
+      dims_outf <- lapply(heights_wdr, FUN = elipse_dims, bathy = bathy,
+                          dims_lake = dims_lake)  |>
         dplyr::bind_rows()
 
       lengths <- dims_outf$length
@@ -82,7 +83,7 @@ make_wdrGLM <- function(df_wdr, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 }
 
 # get the characteristics of all the outlet heights
-elipse_dims <- function(bathy, height) {
+elipse_dims <- function(bathy, height, dims_lake) {
 
   # planar area of the lake at outflow elevation
   a.wdr <- approx(bathy[,1], bathy[,2], xout = height)[2] |>

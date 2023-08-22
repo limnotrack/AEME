@@ -2,16 +2,15 @@
 % Please edit documentation in R/build_ensemble.R
 \name{build_ensemble}
 \alias{build_ensemble}
-\title{Configure an ensemble of lake model simulations from basic set of inputs}
+\title{Build model configuration directories}
 \usage{
 build_ensemble(
   config,
-  model = c("dy_cd", "glm_aed", "gotm_pclake"),
+  model = c("dy_cd", "glm_aed", "gotm_wet"),
   mod_ctrls,
   inf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   ext_elev = 0,
-  config_dir = "data/config_files/",
   use_bgc = TRUE,
   use_lw = FALSE,
   hum_type = 3,
@@ -19,53 +18,52 @@ build_ensemble(
 )
 }
 \arguments{
+\item{config}{list; loaded via `config <- configr::read.config("aeme.yaml")`}
+
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
 \item{mod_ctrls}{dataframe; of configuration loaded from
-"key_ensemble_Default.xlsx".}
+"mod_ctrls.csv".}
 
-\item{inf_factor}{vector; containing factor to multiple the inflows. Needs to
-be named according to the model.}
+\item{inf_factor}{vector; containing numeric factor to multiple the inflows.
+Needs to be named according to the model.}
 
-\item{outf_factor}{vector; containing factor to multiple the outflows. Needs to
-be named according to the model.}
+\item{outf_factor}{vector; containing numeric factor to multiple the
+outflows. Needs to be named according to the model.}
 
-\item{ext_elev}{numeric; extension in elevation for the hypsogrph in (m).}
-
-\item{config_dir}{filepath; to directory which contains the model
-configuration files.}
+\item{ext_elev}{numeric; extension in elevation for the hypsogrph in metres.}
 
 \item{use_bgc}{boolean; switch to use the biogeochemical model.}
 
-\item{lid}{character; of ID number used for the lake}
+\item{use_lw}{boolean; use incoming longwave radiation. Only applies to
+GLM-AED.}
 
-\item{lake}{sf polygon of the lake shoreline.}
+\item{hum_type}{numeric; GOTM humidity metric [1=relative humidity (%),
+2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
+Default = 3.}
 
-\item{date_range}{vector; of start and end dates}
-
-\item{hyps}{dataframe; of the hypsograph. Required columns are `elev` and
-`area`.}
-
-\item{lvl}{dataframe; of average surface water level or time-series of daily
-water level (masl).}
-
-\item{met}{dataframe of meteorological data.}
-
-\item{inf}{list; of dataframe containing inflows. Each inflow should be named
-in the list.}
-
-\item{outf}{dataframe; containing outflow for the lake. Date plus a col for
-each outflow.}
-
-\item{spinups}{vector; containing the number of days in the simulation to be
-allocated to a spin-up period. Needs to be named using the models.}
-
-\item{key_naming}{dataframe; of corresponding names for the different models.}
+\item{dir}{filepath; where input files are located relative to `config`.}
 }
 \value{
 builds the model ensemble configuration.
 }
 \description{
-Configure an ensemble of lake model simulations from basic set of inputs
+Configure an ensemble of lake model simulations from basic set of inputs.
+}
+\examples{
+tmpdir <- tempdir()
+aeme_dir <- system.file("extdata/lake/", package = "AEME")
+# Copy files from package into tempdir
+file.copy(aeme_dir, tmpdir, recursive = TRUE)
+list.files(tmpdir, full.names = TRUE, recursive = TRUE)
+dir <- file.path(tmpdir, "lake")
+config <- configr::read.config(file.path(dir, "aeme.yaml"))
+mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
+inf_factor = c("glm_aed" = 1)
+outf_factor = c("glm_aed" = 1)
+model <- c("glm_aed")
+build_ensemble(dir = dir, config = config, model = model,
+               mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+               use_bgc = FALSE, use_lw = TRUE)
 }

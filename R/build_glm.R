@@ -4,13 +4,13 @@
 #' @param lake_shape shapefile
 #' @param use_lw
 #'
-#' @return
-#' @export
+#' @return Directory with GLM-AED configuration
+#' @noRd
 #'
 #' @importFrom glmtools read_nml set_nml
 #' @importFrom dplyr slice
 #'
-#' @examples
+
 build_glm <- function(lakename, mod_ctrls, date_range,
                       lake_shape, gps, hyps,
                       lvl, inf, outf, met,
@@ -59,7 +59,6 @@ build_glm <- function(lakename, mod_ctrls, date_range,
   # elipse dimensions at surface for nml
   dims_lake <- lake_dims(lake_shape)
 
-
   if (nrow(hyps) > 20) {
     hyps <- hyps |>
       dplyr::slice(c(seq(1, (nrow(hyps) - 1), round(nrow(hyps) / 20)),
@@ -72,9 +71,10 @@ build_glm <- function(lakename, mod_ctrls, date_range,
     dplyr::arrange(elev) |>
     # use slope to extend hyps by 2 m
     bathy_extrap(z.range = 0.75, new.max = new_depth)
+  crest <- max(bathy_ext[, 1])
 
   glm_nml <- make_stgGLM(glm_nml, lakename, bathy = bathy_ext, gps = gps,
-                         dims_lake = dims_lake)
+                         crest = crest, dims_lake = dims_lake)
 
   # Make meteorology file
   make_metGLM(obs_met = met, path_glm = path_glm, use_lw = use_lw)
@@ -90,12 +90,11 @@ build_glm <- function(lakename, mod_ctrls, date_range,
                          mass = TRUE, inf_factor = inf_factor)
 
   #--- make ouflows table and modify nml
-  heights_wdr <- mean(lvl[, 2]) - 1 #outf %>% select(-1) %>% colnames(.) %>% gsub("^.*_","",.) %>% as.numeric()
+  heights_wdr <- mean(lvl[, 2]) - 1 #outf |> select(-1) |> colnames(.) |> gsub("^.*_","",.) |> as.numeric()
   if(heights_wdr < min(hyps$elev)) {
     message("Withdrawal depth is too low!")
     heights_wdr <- min(hyps$elev) + 0.75 * (max(hyps$elev) - min(hyps$elev))
   }
-
   glm_nml <- make_wdrGLM(df_wdr = outf,
                          heights_wdr = heights_wdr,
                          bathy = bathy_ext,
@@ -104,8 +103,8 @@ build_glm <- function(lakename, mod_ctrls, date_range,
                          glm_nml = glm_nml, path_glm = path_glm)
 
   # starting water level
-  lvl_start <- lvl %>%
-    dplyr::filter(Date == date_range[1]) %>%
+  lvl_start <- lvl |>
+    dplyr::filter(Date == date_range[1]) |>
     dplyr::pull(lvlwtr)
   lvl_start <- round(lvl_start - min(hyps$elev), 2)
   lvl_start <- round(mean(lvl$lvlwtr, na.rm = TRUE) - min(hyps$elev), 2)
