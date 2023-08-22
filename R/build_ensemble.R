@@ -29,7 +29,7 @@
 #' @export
 #'
 #' @examples
-#' install.packages("configr")
+#' install.packages("configr", repos = "http://cran.us.r-project.org")
 #' tmpdir <- tempdir()
 #' aeme_dir <- system.file("extdata/lake/", package = "AEME")
 #' # Copy files from package into tempdir
@@ -43,6 +43,7 @@
 #' build_ensemble(dir = dir, config = config, model = model,
 #'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = FALSE, use_lw = TRUE)
+inst
 
 build_ensemble <- function(config,
                            model = c("dy_cd", "glm_aed", "gotm_wet"),
@@ -238,8 +239,8 @@ build_ensemble <- function(config,
     }
     nlev <- ceiling((depth) / div)
     build_gotm(lakename, mod_ctrls = mod_ctrls, date_range = dates.gotm,
-               lake, gps = coords.xyz[1:2],
-               hyps = hyps, lvl = lvl,
+               lake_shape = lake_shape, gps = coords.xyz[1:2],
+               hyps = hyps, lvl = lvl, init_prof = init_prof,
                inf = inf, outf = gotm_wet_outf, met = met,
                lake_dir = lake_dir, config_dir = config_dir, version = "wet",
                inf_factor = inf_factor[["gotm_wet"]],
