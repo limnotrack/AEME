@@ -21,23 +21,23 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install dependencies
-        run: |
-          install.packages("remotes")
-          install.packages("rcmdcheck")
-          install.packages("configr")
-          install.packages("yaml")
-          install.packages("covr")
-          remotes::install_github("aemon-j/gotmtools", ref = "yaml")
-          remotes::install_github("aemon-j/GLM3r")
-          remotes::install_github("USGS-R/glmtools", ref = "ggplot_overhaul")
-          remotes::install_deps(dependencies = TRUE)
-        shell: Rscript {0}
+      # - name: Install dependencies
+      #   run: |
+      #     install.packages("remotes")
+      #     install.packages("rcmdcheck")
+      #     install.packages("configr")
+      #     install.packages("yaml")
+      #     install.packages("covr")
+      #     remotes::install_github("aemon-j/gotmtools", ref = "yaml")
+      #     remotes::install_github("aemon-j/GLM3r")
+      #     remotes::install_github("USGS-R/glmtools", ref = "ggplot_overhaul")
+      #     remotes::install_deps(dependencies = TRUE)
+      #   shell: Rscript {0}
 
-      # - uses: r-lib/actions/setup-r-dependencies@v2
-      #   with:
-      #     extra-packages: any::covr
-      #     needs: coverage
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::covr
+          needs: coverage
 
       - name: Test coverage
         run: |
