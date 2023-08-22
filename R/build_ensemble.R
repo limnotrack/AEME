@@ -196,6 +196,8 @@ build_ensemble <- function(config,
 
   lakename <- tolower(config[["location"]][["name"]])
 
+  gps <- coords.xyz[1:2]
+
   # use_bgc <- config[["bgc_model"]][["use"]]
 
   if ("dy_cd" %in% model) {
@@ -203,7 +205,7 @@ build_ensemble <- function(config,
     dates.dy <- c(date_range[1] - spin_up[["dy_cd"]], date_range[2]) |>
       `names<-`(NULL)
     build_dycd(lakename, mod_ctrls = mod_ctrls, date_range = dates.dy,
-               gps = coords.xyz[1:2], hyps = hyps, lvl = lvl,
+               gps = gps, hyps = hyps, lvl = lvl,
                inf = inf, outf = dy_cd_outf, met = met,
                lake_dir = lake_dir, init_prof = init_prof,
                inf_factor = inf_factor[["dy_cd"]],
@@ -216,7 +218,7 @@ build_ensemble <- function(config,
     dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
       `names<-`(NULL)
     build_glm(lakename, mod_ctrls = mod_ctrls, date_range = dates.glm,
-              lake_shape = lake_shape, gps = coords.xyz[1:2],
+              lake_shape = lake_shape, gps = gps,
               hyps = hyps, lvl = lvl, init_prof = init_prof,
               inf = inf, outf = glm_aed_outf, met = met,
               lake_dir = lake_dir, config_dir = config_dir,
@@ -228,7 +230,7 @@ build_ensemble <- function(config,
     #             verbose = TRUE)
   }
   if("gotm_wet" %in% model) {
-    dates.gotm = c(date_range[1] - spinups["gotm_wet"], date_range[2]) |>
+    dates.gotm = c(date_range[1] - spin_up[["gotm_wet"]], date_range[2]) |>
       `names<-`(NULL)
     depth <- max(hyps$elev) - min(hyps$elev)
     if (depth < 3) {
@@ -238,10 +240,9 @@ build_ensemble <- function(config,
     }
     nlev <- ceiling((depth) / div)
     build_gotm(lakename, mod_ctrls = mod_ctrls, date_range = dates.gotm,
-               lake_shape = lake_shape, gps = coords.xyz[1:2],
+               lake_shape = lake_shape, gps = gps, lake_dir = lake_dir,
                hyps = hyps, lvl = lvl, init_prof = init_prof,
                inf = inf, outf = gotm_wet_outf, met = met,
-               lake_dir = lake_dir, config_dir = config_dir,
                inf_factor = inf_factor[["gotm_wet"]],
                outf_factor = outf_factor[["gotm_wet"]],
                Kw = Kw, nlev = nlev,
