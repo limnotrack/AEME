@@ -3,7 +3,6 @@
 export(build_ensemble)
 export(convert_era5)
 export(download_era5)
-export(make_DYmet)
 export(run_aeme)
 importFrom(dplyr,across)
 importFrom(dplyr,all_of)

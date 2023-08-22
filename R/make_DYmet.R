@@ -1,6 +1,5 @@
 #' Make a .met (meteorology) file for DY(CD) simulation
 #'
-#' @export
 #' @param lakename name of lake being simulated
 #' @param info extra text to be printed in file header (base = 'DYRESM meterological inputs file for lake <lake>')
 #' @param obsMet data frame of meteorological data in DY order with standard dates (YYYY-MM-DD)
@@ -15,6 +14,8 @@
 #' @importFrom dplyr select mutate across
 #' @importFrom lubridate year
 #' @importFrom utils write.table
+#'
+#' @noRd
 #'
 
 
