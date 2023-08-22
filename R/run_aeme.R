@@ -129,7 +129,6 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' Run GLM-AED
 #'
 #' @param sim_folder
-#' @param bin_path
 #' @param verbose
 #' @param timeout
 #'
@@ -138,7 +137,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @noRd
 #'
 #' @examples
-run_glm_aed <- function(sim_folder, bin_path, verbose = FALSE, debug = FALSE,
+run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
                         timeout = 0) {
 
   oldwd <- getwd()
@@ -187,15 +186,17 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
   on.exit({
     setwd(oldwd)
   })
+  bin_path <- system.file('extbin/', package = "AEME")
   setwd(file.path(sim_folder, "gotm_wet"))
   unlink("output/output.nc")
   dir.create("output", showWarnings = FALSE)
-  if(verbose) {
-    system2(file.path(bin_path, "gotm_wet", "gotm_release.exe"), # "gotm_release.exe"
+
+  if (verbose) {
+    system2(file.path(bin_path, "gotm_wet", "gotm.exe"),
             wait = TRUE, stdout = "",
             stderr = "", timeout = timeout)
   } else {
-    out <- system2(file.path(bin_path, "gotm_wet", "gotm_release.exe"),
+    out <- system2(file.path(bin_path, "gotm_wet", "gotm.exe"),
                    wait = TRUE, stdout = TRUE,
                    stderr = TRUE, timeout = timeout)
     success <- sum(grepl("GOTM finished on", out)) == 1
