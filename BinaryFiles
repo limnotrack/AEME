@@ -1,0 +1,11 @@
+inst/extbin/dy_cd/createDYref.exe
+inst/extbin/dy_cd/createDYsim.exe
+inst/extbin/dy_cd/dycd.exe
+inst/extbin/dy_cd/extractDYinfo.exe
+inst/extbin/glm_aed/glm.exe
+inst/extbin/glm_aed/libgcc_s_seh-1.dll
+inst/extbin/glm_aed/libgfortran-5.dll
+inst/extbin/glm_aed/libnetcdf.dll
+inst/extbin/glm_aed/libquadmath-0.dll
+inst/extbin/glm_aed/libwinpthread-1.dll
+inst/extbin/gotm_wet/gotm.exe
