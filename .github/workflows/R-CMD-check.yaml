@@ -42,6 +42,7 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages("remotes")
+          install.packages("rcmdcheck")
           remotes::install_github("aemon-j/gotmtools", ref = "yaml")
           remotes::install_github("aemon-j/GLM3r")
           remotes::install_github("USGS-R/glmtools", ref = "ggplot_overhaul")
