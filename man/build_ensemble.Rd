@@ -52,11 +52,11 @@ builds the model ensemble configuration.
 Configure an ensemble of lake model simulations from basic set of inputs.
 }
 \examples{
+install.packages("configr")
 tmpdir <- tempdir()
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
 # Copy files from package into tempdir
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
-list.files(tmpdir, full.names = TRUE, recursive = TRUE)
 dir <- file.path(tmpdir, "lake")
 config <- configr::read.config(file.path(dir, "aeme.yaml"))
 mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
