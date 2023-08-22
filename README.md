@@ -62,9 +62,9 @@ model <- c("glm_aed")
 build_ensemble(dir = dir, config = config, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE, use_lw = TRUE)
-#> Building simulation for Wainamu [2023-08-22 11:49:41]
+#> Building simulation for Wainamu [2023-08-22 13:52:16]
 #> Reading layer `lake' from data source 
-#>   `C:\Users\tadhg\AppData\Local\Temp\RtmpILsnqj\lake\data\lake.shp' 
+#>   `C:\Users\tadhg\AppData\Local\Temp\RtmpiiU6Yv\lake\data\lake.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 1 feature and 14 fields
 #> Geometry type: POLYGON
@@ -75,7 +75,7 @@ build_ensemble(dir = dir, config = config, model = model,
 #> Spherical geometry (s2) switched on
 #> Building GLM3-AED2 model for lake wainamu
 #> Copied in GLM nml file
-run_ensemble(dir = dir, config = config, model = model, verbose = TRUE)
-#> Running models... (Have you tried parallelizing?) [2023-08-22 11:49:41]
-#> Model run complete![2023-08-22 11:49:42]
+run_aeme(dir = dir, config = config, model = model, verbose = TRUE)
+#> Running models... (Have you tried parallelizing?) [2023-08-22 13:52:17]
+#> Model run complete![2023-08-22 13:52:17]
 ```

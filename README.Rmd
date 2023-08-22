@@ -55,7 +55,7 @@ model <- c("glm_aed")
 build_ensemble(dir = dir, config = config, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE, use_lw = TRUE)
-run_ensemble(dir = dir, config = config, model = model, verbose = TRUE)
+run_aeme(dir = dir, config = config, model = model, verbose = TRUE)
 ```
 
 
