@@ -38,5 +38,5 @@ Imports:
 URL: https://expert-guide-29ve1vw.pages.github.io/
 Remotes:  
     USGS-R/glmtools,
-    aemon-j/gotmtools,
+    aemon-j/gotmtools@yaml,
     aemon-j/GLM3r
