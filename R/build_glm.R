@@ -65,12 +65,17 @@ build_glm <- function(lakename, mod_ctrls, date_range,
               nrow(hyps)))
   }
 
-  new_depth <- max(hyps[, 1]) + ext_elev
-  bathy_ext <- hyps[,1:2] |>
-    `names<-`(c("elev","area")) |>
-    dplyr::arrange(elev) |>
-    # use slope to extend hyps by 2 m
-    bathy_extrap(z.range = 0.75, new.max = new_depth)
+  if (ext_elev != 0) {
+    new_depth <- max(hyps[, 1]) + ext_elev
+    bathy_ext <- hyps[,1:2] |>
+      `names<-`(c("elev","area")) |>
+      dplyr::arrange(elev) |>
+      # use slope to extend hyps by 2 m
+      bathy_extrap(z.range = 0.75, new.max = new_depth)
+  } else {
+    bathy_ext <- hyps
+  }
+
   crest <- max(bathy_ext[, 1])
 
   glm_nml <- make_stgGLM(glm_nml, lakename, bathy = bathy_ext, gps = gps,
