@@ -7,6 +7,7 @@
 #'
 #' @return dataframe with extrapolated bathymetry
 #' @noRd
+#' @importFrom stats approx
 
 bathy_extrap <- function(bathy, z.range = 0.2, new.max) {
 
@@ -16,7 +17,8 @@ bathy_extrap <- function(bathy, z.range = 0.2, new.max) {
   z.slope <- (max(bathy[, 1]) - min(bathy[, 1])) * z.range
 
   # area at target depth
-  a.low <- approx(bathy[, 1], bathy[, 2], xout = max(bathy[, 1]) - z.slope)$y
+  a.low <- stats::approx(bathy[, 1], bathy[, 2],
+                         xout = max(bathy[, 1]) - z.slope)$y
 
   # m^2 per m depth
   slope <- (max(bathy[, 2]) - a.low) / z.slope

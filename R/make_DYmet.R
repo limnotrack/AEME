@@ -11,10 +11,10 @@
 #' @param wndType 0 = fixed height, 1 = floating
 #' @param filePath path to write the complete .met file
 #' @keywords inputs
-#' @examples make_DYmet(lakename, obsMet, infRain, verDY, depth, elevMet, info, wndType)
 #'
 #' @importFrom dplyr select mutate across
 #' @importFrom lubridate year
+#' @importFrom utils write.table
 #'
 
 
@@ -82,7 +82,7 @@ make_DYmet <-  function(lakename = "unknown",
                paste0(wndType,"  ", metHeight,"   # sensor type (FLOATING, FIXED_HT), height in metres (above water surface, above lake bottom)"),
                paste0(col.names, collapse = "\t")), f)
 
-  write.table(metVals, f, sep = "\t", quote = FALSE, row.names = FALSE,
+  utils::write.table(metVals, f, sep = "\t", quote = FALSE, row.names = FALSE,
               col.names = FALSE)
 
   close(f)

@@ -12,13 +12,15 @@
 #'
 #' @importFrom dplyr filter mutate across arrange
 #' @importFrom lubridate year
+#' @importFrom stats complete.cases
+#' @importFrom utils write.table
 #'
 
 
 make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
                         outf_factor = 1.0) {
 
-  wdrData <- wdrData[complete.cases(wdrData), ] |>
+  wdrData <- wdrData[stats::complete.cases(wdrData), ] |>
     # round discharge data
     dplyr::mutate(dplyr::across(2:ncol(wdrData), \(x) x * outf_factor),
                   dplyr::across(2:ncol(wdrData), \(x) round(x, digits = 3)),
@@ -42,7 +44,7 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
                     "                                  # Number of outflows"),f)
 
   #add data
-  write.table(wdrData, f, sep = "\t", quote = FALSE, row.names = FALSE)
+  utils::write.table(wdrData, f, sep = "\t", quote = FALSE, row.names = FALSE)
 
   # close and write file
   close(f)

@@ -6,7 +6,8 @@
 #' @param verbose boolean; print changes to console
 #'
 #' @return vector of changed names
-#' @export
+#' @noRd
+#' @importFrom utils data
 #'
 #' @examples
 rename_modelvars <- function(input,
@@ -15,7 +16,7 @@ rename_modelvars <- function(input,
                              verbose = F) {
 
   # Load Rdata
-  data("key_naming", package = "AEME", envir = environment())
+  utils::data("key_naming", package = "AEME", envir = environment())
 
   this.key <- data.frame(key_naming[key_naming[, type_input] %in% input,])
 

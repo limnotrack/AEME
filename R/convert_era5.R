@@ -15,6 +15,8 @@
 #'
 #' @importFrom stars read_ncdf st_extract
 #' @importFrom sf st_as_sf
+#' @importFrom stats aggregate
+#' @importFrom utils data
 #'
 #' @export
 #'
@@ -35,7 +37,7 @@ convert_era5 <- function(lat,
                          format = "AEME") {
 
   # Load Rdata
-  data("era5_ref_table", package = "AEME", envir = environment())
+  utils::data("era5_ref_table", package = "AEME", envir = environment())
 
   coords <- data.frame(lat = lat, lon = lon)
   coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
@@ -51,11 +53,11 @@ convert_era5 <- function(lat,
       var <- era5_ref_table$nc[era5_ref_table$era5 == v]
       dat <- stars::read_ncdf(file, var = var)
       if(var %in% c("sf", "tp")) {
-        met <- aggregate(dat, by = "day", FUN = max)
+        met <- stats::aggregate(dat, by = "day", FUN = max)
       } else if(var %in% c("ssrd", "strd")) {
-        met <- aggregate(dat, by = "day", FUN = function(x) {max(x) / (24 * 60 * 60)})
+        met <- stats::aggregate(dat, by = "day", FUN = function(x) {max(x) / (24 * 60 * 60)})
       } else {
-        met <- aggregate(dat, by = "day", FUN = mean)
+        met <- stats::aggregate(dat, by = "day", FUN = mean)
       }
 
       df <- met |>

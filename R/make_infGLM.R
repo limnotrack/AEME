@@ -11,6 +11,8 @@
 #' @noRd
 #'
 #' @importFrom glmtools set_nml
+#' @importFrom utils write.csv
+
 make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                         inf_factor = 1) {
 
@@ -53,7 +55,7 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
       }
     }
     # write the files
-    mapply(list_inf, FUN = write.csv, file = file.path(path_glm,
+    mapply(list_inf, FUN = utils::write.csv, file = file.path(path_glm,
                                                        paste0("bcs/inflow_",
                                                        names_inf, ".csv")),
            row.names = FALSE, quote = FALSE)

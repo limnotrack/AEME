@@ -12,6 +12,9 @@
 #' @return
 #' @noRd
 #'
+#' @importFrom utils write.csv
+#' @importFrom dplyr mutate bind_rows
+#'
 #' @examples
 make_wdrGLM <- function(df_wdr, heights_wdr, bathy, dims_lake, wdr_factor = 1,
                         update_nml = TRUE, glm_nml, path_glm) {
@@ -67,7 +70,7 @@ make_wdrGLM <- function(df_wdr, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 
       this.name <- paste0("outflow_", colnames(df_wdr)[i], ".csv")
 
-      write.csv(this.out, file.path(path_glm, "bcs", this.name),
+      utils::write.csv(this.out, file.path(path_glm, "bcs", this.name),
                 row.names = FALSE, quote = FALSE)
 
     }
@@ -82,11 +85,20 @@ make_wdrGLM <- function(df_wdr, heights_wdr, bathy, dims_lake, wdr_factor = 1,
   }
 }
 
-# get the characteristics of all the outlet heights
+#' Get the characteristics of all the outlet heights
+#'
+#' @param bathy
+#' @param height
+#' @param dims_lake
+#'
+#' @return
+#' @noRd
+#'
+#' @importFrom stats approx
 elipse_dims <- function(bathy, height, dims_lake) {
 
   # planar area of the lake at outflow elevation
-  a.wdr <- approx(bathy[,1], bathy[,2], xout = height)[2] |>
+  a.wdr <- stats::approx(bathy[,1], bathy[,2], xout = height)[2] |>
     as.numeric() |>
     round()
 

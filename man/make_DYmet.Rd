@@ -38,8 +38,4 @@ make_DYmet(
 \description{
 Make a .met (meteorology) file for DY(CD) simulation
 }
-\examples{
-make_DYmet(lakename, obsMet, infRain, verDY, depth, elevMet, info, wndType)
-
-}
 \keyword{inputs}

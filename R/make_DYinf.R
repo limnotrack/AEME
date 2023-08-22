@@ -8,8 +8,8 @@
 #' @keywords inputs
 #'
 #' @importFrom dplyr bind_rows select mutate across arrange
+#' @importFrom utils write.table
 #'
-
 
 make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
                         inf_factor = 1) {
@@ -56,7 +56,7 @@ make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
   }
 
   #add data
-  write.table(inf, f, sep = "\t", quote = FALSE, row.names = FALSE)
+  utils::write.table(inf, f, sep = "\t", quote = FALSE, row.names = FALSE)
 
   # close and write file
   close(f)

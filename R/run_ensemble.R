@@ -9,6 +9,10 @@
 #' @return Runs the model
 #' @export
 #'
+#' @importFrom parallel parLapply makeCluster detectCores clusterExport
+#' stopCluster
+#' @importFrom stats setNames
+#'
 #' @examples
 run_ensemble <- function(config, model, verbose = FALSE, debug = FALSE,
                          timeout = 0, parallel = FALSE, dir = ".") {
@@ -27,7 +31,7 @@ run_ensemble <- function(config, model, verbose = FALSE, debug = FALSE,
     # parallel::clusterEvalQ(cl, expr = {library(LakeEnsemblR); library(gotmtools);
     # })
     message("Running models in parallel... ", paste0("[", Sys.time(), "]"))
-    model_out <- setNames(
+    model_out <- stats::setNames(
       parallel::parLapply(cl, model, function(mod_name) do.call(paste0("run_", mod_name),
                                                                    run_model_args)),
       model

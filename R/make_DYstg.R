@@ -14,6 +14,7 @@
 #' @keywords inputs
 #'
 #' @importFrom dplyr mutate
+#' @importFrom utils write.table
 #'
 
 make_DYstg <-  function(lakename = "!unknown",
@@ -95,7 +96,7 @@ make_DYstg <-  function(lakename = "!unknown",
     lapply(writeLines, con = f)
 
   # if(!is.null(infNames)) {
-  write.table(infTable[,c(2:5,1)], f, sep="\t", quote=FALSE, col.names = F, row.names=FALSE)
+  utils::write.table(infTable[,c(2:5,1)], f, sep="\t", quote=FALSE, col.names = F, row.names=FALSE)
   # }
 
   list(txtComment(round(min(bathy[,1]), 2), 40,"# base elevation (m above sea level)"),
@@ -107,7 +108,7 @@ make_DYstg <-  function(lakename = "!unknown",
 
   writeLines("Elevation_[m]     Area_[m^2]",f)
 
-  write.table(bathy, f, sep = "\t", quote = FALSE, col.names = F,
+  utils::write.table(bathy, f, sep = "\t", quote = FALSE, col.names = F,
               row.names = FALSE)
 
   close(f)

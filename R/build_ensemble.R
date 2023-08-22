@@ -24,6 +24,7 @@
 #'
 #' @importFrom sf sf_use_s2 st_transform st_centroid st_coordinates st_buffer
 #' @importFrom dplyr select filter
+#' @importFrom utils data read.csv
 #'
 #' @export
 #'
@@ -61,7 +62,7 @@ build_ensemble <- function(config,
   message("Building simulation for ", config$location$name, " [", Sys.time(), "]")
 
   # Load Rdata
-  data("key_naming", package = "AEME", envir = environment())
+  utils::data("key_naming", package = "AEME", envir = environment())
 
   #--------------------------
   lake_dir <- file.path(dir, paste0(config$location$lake_id,"_",
@@ -111,13 +112,13 @@ build_ensemble <- function(config,
   }
   # hyps <- readr::read_csv(config[["input"]][["hypsograph"]],
   #                         show_col_types = FALSE)
-  hyps <- read.csv(file.path(dir, config[["input"]][["hypsograph"]]))
+  hyps <- utils::read.csv(file.path(dir, config[["input"]][["hypsograph"]]))
   # Water level ----
   lvl <- NULL
   if (file.exists(file.path(dir, config[["observations"]][["level"]]))) {
     # lvl <- readr::read_csv(config[["observations"]][["level"]],
     #                        show_col_types = FALSE)
-    lvl <- read.csv(file.path(dir, config[["observations"]][["level"]]))
+    lvl <- utils::read.csv(file.path(dir, config[["observations"]][["level"]]))
   }
 
   # Initial profile ----
@@ -135,7 +136,7 @@ build_ensemble <- function(config,
     for(i in 1:length(config[["inflows"]][["file"]])) {
 
       inf[[names(config[["inflows"]][["file"]])[i]]] <-
-        read.csv(file.path(dir, config[["inflows"]][["file"]][[i]]))
+        utils::read.csv(file.path(dir, config[["inflows"]][["file"]][[i]]))
       if(any(!inf_vars %in% names(inf[[i]]))) {
         stop("missing state variables in inflow tables")
       }
@@ -151,7 +152,7 @@ build_ensemble <- function(config,
     stop(config[["input"]][["meteo"]], " does not exist. Check file path.")
   }
   # met <- readr::read_csv(config[["input"]][["meteo"]], show_col_types = FALSE)
-  met <- read.csv(file.path(dir, config[["input"]][["meteo"]]))
+  met <- utils::read.csv(file.path(dir, config[["input"]][["meteo"]]))
   met <- met |>
     dplyr::filter(Date >= (date_range[1]),
            Date <= date_range[2])
@@ -170,7 +171,7 @@ build_ensemble <- function(config,
   Kw <- config[["input"]][["Kw"]]
 
   if(config[["outflows"]][["use"]]) {
-    outf <- read.csv(file.path(dir, config[["outflows"]][["file"]]))
+    outf <- utils::read.csv(file.path(dir, config[["outflows"]][["file"]]))
     if(ncol(outf) > 2) {
       dy_cd_outf <- outf |>
         dplyr::select(Date, outflow_dy_cd) |>
