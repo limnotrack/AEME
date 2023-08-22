@@ -25,6 +25,7 @@ Imports:
     gotmtools (>= 0.1.1),
     job,
     lubridate,
+    parallel,
     plyr,
     psychrolib,
     rWind,
