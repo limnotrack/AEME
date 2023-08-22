@@ -223,7 +223,7 @@ build_ensemble <- function(config,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
               Kw = Kw, ext_elev = ext_elev,
-              key_naming = key_naming, use_bgc = use_bgc, use_lw = use_lw)
+              use_bgc = use_bgc, use_lw = use_lw)
     # run_glm_aed(lake_dir = lake_dir, bin_path = here::here("data", "bin"),
     #             verbose = TRUE)
   }
@@ -241,11 +241,11 @@ build_ensemble <- function(config,
                lake_shape = lake_shape, gps = coords.xyz[1:2],
                hyps = hyps, lvl = lvl, init_prof = init_prof,
                inf = inf, outf = gotm_wet_outf, met = met,
-               lake_dir = lake_dir, config_dir = config_dir, version = "wet",
+               lake_dir = lake_dir, config_dir = config_dir,
                inf_factor = inf_factor[["gotm_wet"]],
                outf_factor = outf_factor[["gotm_wet"]],
                Kw = Kw, nlev = nlev,
-               key_naming = key_naming, use_bgc = use_bgc, hum_type = hum_type)
+               use_bgc = use_bgc, hum_type = hum_type)
     # run_gotm_wet(lake_dir = lake_dir, bin_path = here::here("data", "bin"),
     #              verbose = TRUE)
 

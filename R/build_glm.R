@@ -16,7 +16,7 @@ build_glm <- function(lakename, mod_ctrls, date_range,
                       lvl, inf, outf, met,
                       lake_dir, config_dir, init_prof,
                       inf_factor = 1, outf_factor = 1,
-                      Kw, ext_elev, key_naming, use_bgc, use_lw) {
+                      Kw, ext_elev, use_bgc, use_lw) {
 
   message(paste0("Building GLM3-AED2 model for lake ", lakename))
 
