@@ -79,7 +79,7 @@ test_that("building GLM-AED works", {
   model <- c("glm_aed")
   build_ensemble(dir = dir, config = config, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = FALSE, use_lw = TRUE)
+                 use_bgc = TRUE, use_lw = TRUE)
   file_chk <- file.exists(file.path(dir, paste0(config$location$lake_id,"_",
                                                 tolower(config$location$name)),
                                     model, "aed2", "aed2.nml"))
