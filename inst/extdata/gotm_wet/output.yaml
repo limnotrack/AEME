@@ -1,4 +1,4 @@
-output\daily_profiles:
+output\output:
    format: netcdf                    # format [text, netcdf; default=netcdf]
    time_unit: day                    # time unit [second, hour, day, month, year, dt=model time step; default=day]
    time_step: 1                      # number of time units between output [min=1; default=1]
