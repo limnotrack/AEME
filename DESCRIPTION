@@ -18,6 +18,7 @@ Depends:
     R (>= 2.10)
 Suggests: 
     configr,
+    GLM3r,
     testthat (>= 3.0.0),
     yaml
 Imports: 
@@ -35,6 +36,7 @@ Imports:
     stars,
     stringr
 URL: https://expert-guide-29ve1vw.pages.github.io/
-Remotes: 
+Remotes:  
     USGS-R/glmtools,
-    aemon-j/gotmtools
+    aemon-j/gotmtools,
+    aemon-j/GLM3r
