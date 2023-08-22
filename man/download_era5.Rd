@@ -27,6 +27,10 @@ download_era5(
 
 \item{variable}{string with ERA5 variable names e.g. "2m_temperature", "total_precipitation"}
 
+\item{year}{numeric; year or vector of years.}
+
+\item{month}{numeric; month or vector of months. Defaults to 1:12.}
+
 \item{site}{string of site name which will be appended to the file}
 
 \item{user}{user ID linked with Copernicus account}
@@ -35,15 +39,11 @@ download_era5(
 
 \item{path}{filepath to store downloaded file}
 
-\item{job}{logical; send the request to a background job in RStudio. Only 
+\item{job}{logical; send the request to a background job in RStudio. Only
 works in RStudio. Default = TRUE.}
-
-\item{start}{year}
-
-\item{end}{year}
 }
 \description{
 Download ERA5 meteorological data from the Copernicus Data Store (CDS).
-Create a ECMWF account by self registering (https://accounts.ecmwf.int/auth/realms/ecmwf/login-actions/registration?client_id=cms-www&tab_id=kZuwr5qOsFM) and retrieving your key at https://api.ecmwf.int/v1/key/ after 
+Create a ECMWF account by self registering (https://accounts.ecmwf.int/auth/realms/ecmwf/login-actions/registration?client_id=cms-www&tab_id=kZuwr5qOsFM) and retrieving your key at https://api.ecmwf.int/v1/key/ after
 you log in.
 }

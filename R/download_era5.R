@@ -1,37 +1,37 @@
 #' Download ERA5
-#' 
+#'
 #' @description
 #' Download ERA5 meteorological data from the Copernicus Data Store (CDS).
-#' Create a ECMWF account by self registering (https://accounts.ecmwf.int/auth/realms/ecmwf/login-actions/registration?client_id=cms-www&tab_id=kZuwr5qOsFM) and retrieving your key at https://api.ecmwf.int/v1/key/ after 
+#' Create a ECMWF account by self registering (https://accounts.ecmwf.int/auth/realms/ecmwf/login-actions/registration?client_id=cms-www&tab_id=kZuwr5qOsFM) and retrieving your key at https://api.ecmwf.int/v1/key/ after
 #' you log in.
-#' 
-#' 
+#'
+#'
 #' @param lat numeric; latitude
 #' @param lon numeric; longitude
 #' @param variable string with ERA5 variable names e.g. "2m_temperature", "total_precipitation"
-#' @param start year 
-#' @param end year
+#' @param year numeric; year or vector of years.
+#' @param month numeric; month or vector of months. Defaults to 1:12.
 #' @param site string of site name which will be appended to the file
 #' @param user user ID linked with Copernicus account
 #' @param era5_dataset string of which ERA5 dataset to use. Can be 'reanalysis-era5-single-levels' or 'reanalysis-era5-land'
 #' @param path filepath to store downloaded file
-#' @param job logical; send the request to a background job in RStudio. Only 
+#' @param job logical; send the request to a background job in RStudio. Only
 #' works in RStudio. Default = TRUE.
-#' 
+#'
 #' @importFrom plyr round_any
 #' @importFrom ecmwfr wf_request_batch
 #' @importFrom job job
-#' 
+#'
 #' @export
-#' 
+#'
 
 download_era5 <- function(lat,
                           lon,
-                          variable = c("10m_u_component_of_wind", 
+                          variable = c("10m_u_component_of_wind",
                                        "10m_v_component_of_wind",
                                        "2m_dewpoint_temperature",
                                        "2m_temperature", "snowfall",
-                                       "surface_pressure", 
+                                       "surface_pressure",
                                        "surface_solar_radiation_downwards",
                                        "surface_thermal_radiation_downwards",
                                        "total_precipitation"),
@@ -42,7 +42,7 @@ download_era5 <- function(lat,
                           era5_dataset = "reanalysis-era5-land",
                           path = ".",
                           job = TRUE) {
-  
+
   time <- c('00:00', '01:00', '02:00',
              '03:00', '04:00', '05:00',
              '06:00', '07:00', '08:00',
@@ -53,15 +53,15 @@ download_era5 <- function(lat,
              '21:00', '22:00', '23:00')
   timestep <- "hourly"
   area <- paste0(plyr::round_any(lat - 0.1, accuracy = 0.1, f = floor), "/",
-                 plyr::round_any(lon - 0.1, accuracy = 0.1, f = floor), "/", 
-                 plyr::round_any(lat + 0.1, accuracy = 0.1, f = ceiling), "/", 
+                 plyr::round_any(lon - 0.1, accuracy = 0.1, f = floor), "/",
+                 plyr::round_any(lat + 0.1, accuracy = 0.1, f = ceiling), "/",
                  plyr::round_any(lon + 0.1, accuracy = 0.1, f = ceiling))
-  
+
   if (length(variable) >= length(year)) {
     for (v in variable) {
       request_list <- lapply(year, \(y) {
         list(
-          dataset_short_name = era5_dataset, # "reanalysis-era5-single-levels", # 
+          dataset_short_name = era5_dataset, # "reanalysis-era5-single-levels", #
           product_type   = "reanalysis",
           format = "netcdf",
           variable = v,
@@ -75,14 +75,14 @@ download_era5 <- function(lat,
           target = paste0("era5", "_", v, "_", timestep, "_", y, "_", site, ".nc")
         )
       })
-      
+
       if (job) {
         job::job({
-          ecmwfr::wf_request_batch(request_list = request_list, 
+          ecmwfr::wf_request_batch(request_list = request_list,
                                    path = path, user = user)
         }, title = paste0("Downloading data for ", v, " for ", paste0(year, collapse = ", ")))
       } else {
-        ecmwfr::wf_request_batch(request_list = request_list, 
+        ecmwfr::wf_request_batch(request_list = request_list,
                                  path = path, user = user)
       }
     }
@@ -90,7 +90,7 @@ download_era5 <- function(lat,
     for (y in year) {
       request_list <- lapply(variable, \(v) {
         list(
-          dataset_short_name = era5_dataset, # "reanalysis-era5-single-levels", # 
+          dataset_short_name = era5_dataset, # "reanalysis-era5-single-levels", #
           product_type   = "reanalysis",
           format = "netcdf",
           variable = v,
@@ -104,14 +104,14 @@ download_era5 <- function(lat,
           target = paste0("era5", "_", v, "_", timestep, "_", y, "_", site, ".nc")
         )
       })
-      
+
       if (job) {
         job::job({
-          ecmwfr::wf_request_batch(request_list = request_list, 
+          ecmwfr::wf_request_batch(request_list = request_list,
                                    path = path, user = user)
         }, title = paste0("Downloading data for ", v, " for ", paste0(year, collapse = ", ")))
       } else {
-        ecmwfr::wf_request_batch(request_list = request_list, 
+        ecmwfr::wf_request_batch(request_list = request_list,
                                  path = path, user = user)
       }
     }

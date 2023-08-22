@@ -31,10 +31,6 @@ convert_era5(
 \item{path}{filepath to where the downloaded ERA5 ncdf files are stored.}
 
 \item{format}{string; Either "AEME" or "LER". Default is "AEME".}
-
-\item{user}{user ID linked with Copernicus account}
-
-\item{era5_dataset}{string of which ERA5 dataset to use. Can be 'reanalysis-era5-single-levels' or 'reanalysis-era5-land'}
 }
 \description{
 Convert ERA5 netCDF to AEME or LakeEnsemblR formats.

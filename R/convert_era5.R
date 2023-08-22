@@ -8,8 +8,6 @@
 #' @param variable string with ERA5 variable names e.g. "2m_temperature", "total_precipitation"
 #' @param year numeric; vector with years
 #' @param site string of site name which was used when downloading the data.
-#' @param user user ID linked with Copernicus account
-#' @param era5_dataset string of which ERA5 dataset to use. Can be 'reanalysis-era5-single-levels' or 'reanalysis-era5-land'
 #' @param path filepath to where the downloaded ERA5 ncdf files are stored.
 #' @param format string; Either "AEME" or "LER". Default is "AEME".
 #'
