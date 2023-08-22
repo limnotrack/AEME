@@ -6,25 +6,30 @@ location:
    elevation: 23.64                             # elevation of lake surface above sea level [m]
    depth: 13.07                                 # maximum water depth [m]
    area: 152343                                 # surface area at maximum depth [m2]
-   hypsograph: hypsograph.csv                   # hypsograph [csv file]
    shape_file: data/lake.shp                    # lake shape file [shp file]
    init_depth: 13.07                            # initial height of lake surface relative to the bottom [m]
 time:
-   start: 2015-01-01 00:00:00                   # start date and time [yyyy-mm-dd HH:MM:SS]
-   stop: 2016-01-01 00:00:00                    # stop date and time [yyyy-mm-dd HH:MM:SS]
+   start: 2022-01-01 00:00:00                   # start date and time [yyyy-mm-dd HH:MM:SS]
+   stop: 2022-12-31 00:00:00                    # stop date and time [yyyy-mm-dd HH:MM:SS]
    time_step: 3600.0                            # time step for integration [s; min=0.0]
+   spin_up:
+      dy_cd: 0
+      glm_aed: 0
+      gotm_wet: 0
 observations:
    lake: data/lake_obs.csv
    level: data/water_level.csv
 input:
    init_temp_profile: null                      # initial temperature profile [csv file; if none use null or leave empty; if empty/null, the observations file will be used]
+   hypsograph: data/hypsograph.csv                   # hypsograph [csv file]
    meteo: data/meteo.csv                        # file with meteorological forcing data, with column headers according to LakeEnsemblR vocabulary [csv file]
    use_lw: true
    Kw: 0.98                                     # light extinction coefficient [m-1, or csv file]
 inflows:
    use: true                                    # use inflows? [true/false]
    file:                                        # file with inflow data, with column headers according to LakeEnsemblR vocabulary [csv file; must be provided if inflows -> use is true]
-      - data/inflow_FWMT.csv
+      FWMT:
+         - data/inflow_FWMT.csv
    factor:
       dy_cd: 1
       glm_aed: 1
@@ -38,8 +43,6 @@ outflows:
       dy_cd: 1
       glm_aed: 1
       gotm_wet: 1
-bgc_model:
-   use: false
 output:
    file: ensemble_output                        # name of output file, excluding extension
    format: netcdf                               # format [text/netcdf]
