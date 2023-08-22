@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
 
 The Aquatic Ecosystem Model Ensemble (AEME) package allows you to setup and run
@@ -35,25 +36,26 @@ devtools::install_github("limnotrack/AEME")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you how to build and run one of the models 
+in the ensemble:
 
 ```{r example}
 library(AEME)
 ## basic example code
+tmpdir <- tempdir()
+aeme_dir <- system.file("extdata/lake/", package = "AEME")
+# Copy files from package into tempdir
+file.copy(aeme_dir, tmpdir, recursive = TRUE)
+dir <- file.path(tmpdir, "lake")
+config <- configr::read.config(file.path(dir, "aeme.yaml"))
+mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
+inf_factor = c("glm_aed" = 1)
+outf_factor = c("glm_aed" = 1)
+model <- c("glm_aed")
+build_ensemble(dir = dir, config = config, model = model,
+               mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+               use_bgc = FALSE, use_lw = TRUE)
+run_ensemble(dir = dir, config = config, model = model, verbose = TRUE)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.

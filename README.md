@@ -8,6 +8,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
 
 The Aquatic Ecosystem Model Ensemble (AEME) package allows you to setup
@@ -26,7 +27,8 @@ devtools::install_github("limnotrack/AEME")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you how to build and run one of the
+models in the ensemble:
 
 ``` r
 library(AEME)
@@ -46,28 +48,34 @@ library(AEME)
 #> for guidance);some functionality will be moved to 'sp'.
 #>  Checking rgeos availability: TRUE
 ## basic example code
+tmpdir <- tempdir()
+aeme_dir <- system.file("extdata/lake/", package = "AEME")
+# Copy files from package into tempdir
+file.copy(aeme_dir, tmpdir, recursive = TRUE)
+#> [1] TRUE
+dir <- file.path(tmpdir, "lake")
+config <- configr::read.config(file.path(dir, "aeme.yaml"))
+mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
+inf_factor = c("glm_aed" = 1)
+outf_factor = c("glm_aed" = 1)
+model <- c("glm_aed")
+build_ensemble(dir = dir, config = config, model = model,
+               mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+               use_bgc = FALSE, use_lw = TRUE)
+#> Building simulation for Wainamu [2023-08-22 11:49:41]
+#> Reading layer `lake' from data source 
+#>   `C:\Users\tadhg\AppData\Local\Temp\RtmpILsnqj\lake\data\lake.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 1 feature and 14 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: 174.4645 ymin: -36.89195 xmax: 174.4757 ymax: -36.88648
+#> Geodetic CRS:  WGS 84
+#> Spherical geometry (s2) switched off
+#> Spherical geometry (s2) switched on
+#> Building GLM3-AED2 model for lake wainamu
+#> Copied in GLM nml file
+run_ensemble(dir = dir, config = config, model = model, verbose = TRUE)
+#> Running models... (Have you tried parallelizing?) [2023-08-22 11:49:41]
+#> Model run complete![2023-08-22 11:49:42]
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
