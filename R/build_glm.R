@@ -34,14 +34,14 @@ build_glm <- function(lakename, mod_ctrls, date_range,
                             package = "AEME")
     file.copy(glm_file, file.path(path_glm, "glm3.nml"))
     message("Copied in GLM nml file")
-    if (use_bgc) {
-      aed_files <- list.files(system.file("extdata/glm_aed/",
-                                          package = "AEME"), full.names = TRUE, pattern = c("aed2"))
-      aed_path <- file.path(path_glm, "aed2")
-      dir.create(aed_path, showWarnings = FALSE)
-      file.copy(aed_files, aed_path)
-      message("Copied in AED nml file")
-    }
+  }
+  if (use_bgc) {
+    aed_files <- list.files(system.file("extdata/glm_aed/", package = "AEME"),
+                            full.names = TRUE, pattern = c("aed2"))
+    aed_path <- file.path(path_glm, "aed2")
+    dir.create(aed_path, showWarnings = FALSE)
+    file.copy(aed_files, aed_path)
+    message("Copied in AED nml file")
   }
 
   # Remove output files
