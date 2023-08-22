@@ -1,6 +1,6 @@
 #' Build a glm-aed model from generic inputs
 #'
-#' @inheritParams source
+#' @inheritParams build_ensemble
 #' @param lake_shape shapefile
 #' @param use_lw
 #'
