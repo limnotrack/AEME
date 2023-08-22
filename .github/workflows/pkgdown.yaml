@@ -43,8 +43,8 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
-        - if: runner.os == 'windows'
-          uses: r-windows/install-rtools@master
+      - if: runner.os == 'windows'
+        uses: r-windows/install-rtools@master
 
       # - uses: r-lib/actions/setup-r-dependencies@v2
       #   with:
