@@ -27,7 +27,8 @@ rename_modelvars <- function(input,
   }
 
   if (verbose) {
-    cat(paste(input,"          matched to        ",names.new, collapse = "\n"))
+    cat(paste(input, "          matched to        ", names.new,
+              collapse = "\n"))
   }
 
   return(names.new)
