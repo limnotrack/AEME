@@ -17,10 +17,21 @@ Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
 Suggests: 
-    ecmwfr,
-    testthat (>= 3.0.0),
-    stars
+    testthat (>= 3.0.0)
 Imports: 
     dplyr,
-    plyr
+    ecmwfr,
+    glmtools (>= 0.16.0),
+    gotmtools (>= 0.1.1),
+    job,
+    lubridate,
+    plyr,
+    psychrolib,
+    rWind,
+    sf,
+    stars,
+    stringr
 URL: https://expert-guide-29ve1vw.pages.github.io/
+Remotes: 
+    USGS-R/glmtools,
+    aemon-j/gotmtools
