@@ -43,7 +43,6 @@
 #' build_ensemble(dir = dir, config = config, model = model,
 #'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = FALSE, use_lw = TRUE)
-inst
 
 build_ensemble <- function(config,
                            model = c("dy_cd", "glm_aed", "gotm_wet"),
