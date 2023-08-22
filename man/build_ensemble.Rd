@@ -52,7 +52,7 @@ builds the model ensemble configuration.
 Configure an ensemble of lake model simulations from basic set of inputs.
 }
 \examples{
-install.packages("configr")
+install.packages("configr", repos = "http://cran.us.r-project.org")
 tmpdir <- tempdir()
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
 # Copy files from package into tempdir
