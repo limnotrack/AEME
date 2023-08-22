@@ -9,6 +9,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/limnotrack/AEME/branch/main/graph/badge.svg)](https://app.codecov.io/gh/limnotrack/AEME?branch=main)
 <!-- badges: end -->
 
 The Aquatic Ecosystem Model Ensemble (AEME) package allows you to setup
@@ -62,9 +64,9 @@ model <- c("glm_aed")
 build_ensemble(dir = dir, config = config, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE, use_lw = TRUE)
-#> Building simulation for Wainamu [2023-08-22 13:52:16]
+#> Building simulation for Wainamu [2023-08-22 15:11:46]
 #> Reading layer `lake' from data source 
-#>   `C:\Users\tadhg\AppData\Local\Temp\RtmpiiU6Yv\lake\data\lake.shp' 
+#>   `C:\Users\tadhg\AppData\Local\Temp\RtmpakEbO5\lake\data\lake.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 1 feature and 14 fields
 #> Geometry type: POLYGON
@@ -76,6 +78,6 @@ build_ensemble(dir = dir, config = config, model = model,
 #> Building GLM3-AED2 model for lake wainamu
 #> Copied in GLM nml file
 run_aeme(dir = dir, config = config, model = model, verbose = TRUE)
-#> Running models... (Have you tried parallelizing?) [2023-08-22 13:52:17]
-#> Model run complete![2023-08-22 13:52:17]
+#> Running models... (Have you tried parallelizing?) [2023-08-22 15:11:47]
+#> Model run complete![2023-08-22 15:11:48]
 ```
