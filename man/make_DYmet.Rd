@@ -31,9 +31,9 @@ make_DYmet(
 
 \item{metHeight}{height of met station above lake surface}
 
-\item{filePath}{path to write the complete .met file}
+\item{z_max}{long-term average max depth of lake}
 
-\item{Z_max}{long-term average max depth of lake}
+\item{filePath}{path to write the complete .met file}
 }
 \description{
 Make a .met (meteorology) file for DY(CD) simulation

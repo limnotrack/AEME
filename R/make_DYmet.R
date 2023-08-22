@@ -6,7 +6,7 @@
 #' @param obsMet data frame of meteorological data in DY order with standard dates (YYYY-MM-DD)
 #' @param infRain TRUE = set .met rain to zero (to be put in as inflow instead)
 #' @param verDY DYRESM version
-#' @param Z_max long-term average max depth of lake
+#' @param z_max long-term average max depth of lake
 #' @param metHeight height of met station above lake surface
 #' @param wndType 0 = fixed height, 1 = floating
 #' @param filePath path to write the complete .met file
