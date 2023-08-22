@@ -1,10 +1,10 @@
-#' Run ensemble
+#' Run aquatic model ensemble
 #'
-#' @param model
-#' @param sim_folder
-#' @param bin_path
-#' @param verbose
-#' @param parallel
+#' @inheritParams build_ensemble
+#' @inheritParams base::system2
+#' @param verbose boolean; print model output to console. Defaults to FALSE.
+#' @param debug boolean; write debug log (Only DYRESM). Defaults to FALSE.
+#' @param parallel boolean; run models in parallel. Defaults to FALSE.
 #'
 #' @return Runs the model
 #' @export
@@ -14,8 +14,8 @@
 #' @importFrom stats setNames
 #'
 #' @examples
-run_ensemble <- function(config, model, verbose = FALSE, debug = FALSE,
-                         timeout = 0, parallel = FALSE, dir = ".") {
+run_aeme <- function(config, model, verbose = FALSE, debug = FALSE,
+                     timeout = 0, parallel = FALSE, dir = ".") {
 
   sim_folder <- file.path(dir, paste0(config$location$lake_id,"_",
                                       tolower(config$location$name)))
