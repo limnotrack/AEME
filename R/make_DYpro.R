@@ -1,6 +1,5 @@
 #' Make a .pro (initial profile) file for DY(CD) simulation
 #'
-#' @export
 #' @param lakename name of lake being simulated
 #' @param verDY DYRESM version
 #' @param startSim date of pro file (first day of simulation)
@@ -13,10 +12,10 @@
 #' @examples make_DYpro(lakename, verDY, startSim, obsData, filePath)
 #'
 #' @importFrom utils write.table
+#' @export
 #'
 #' @noRd
 #'
-
 
 make_DYpro <-  function(lakename = "!unknown",
                         verDY = 3.1,
