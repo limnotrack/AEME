@@ -1,21 +1,21 @@
-#' Make a .pro (initial profile) file for DY(CD) simulation
+#' Make an initial profile file for DY-CD simulation
 #'
 #' @param lakename name of lake being simulated
 #' @param verDY DYRESM version
 #' @param startSim date of pro file (first day of simulation)
-#' @param lvlStart starting water level
-#' @param tmpStart set a constant (isothermal) water temperature (salinity will = 0)
-#' @param obsTable data frame of format Depth, Temperature, Salinity (for non-isothermal start and/or SAL > 0)
-#' @param iceVals a vector of three values representing initial thicknesses (m) of blue ice, white ice, and snow respectively
-#' @param filePath path to write the complete .inf file
-#' @keywords inputs
-#' @examples make_DYpro(lakename, verDY, startSim, obsData, filePath)
+#' @param lvlBottom Depth of bottom temperature for profile
+#' @param lvlStart Depth of top temperature for profile.
+#' @param tmpStart Initial temperature
+#' @param obsTable dataframe; containing depth, temperature and salinity to be
+#' used for inital profile.
+#' @param iceVals ice values
+#' @param filePath filepath
 #'
 #' @importFrom utils write.table
-#' @export
-#'
+#' @return
 #' @noRd
 #'
+#' @examples
 
 make_DYpro <-  function(lakename = "!unknown",
                         verDY = 3.1,
