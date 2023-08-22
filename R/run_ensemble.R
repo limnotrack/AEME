@@ -61,6 +61,7 @@ run_ensemble <- function(config, model, verbose = FALSE, debug = FALSE,
 #' @param debug
 #' @param timeout
 #'
+#' @importFrom utils tail
 #' @return
 #' @noRd
 #'
@@ -121,7 +122,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   if (success) {
     message("DYRESM-CAEDYM run successful! [", Sys.time(), "]")
   } else {
-    print(tail(out, 20))
+    print(utils::tail(out, 20))
   }
 }
 
@@ -132,6 +133,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @param verbose
 #' @param timeout
 #'
+#' @importFrom utils tail
 #' @return
 #' @noRd
 #'
@@ -160,7 +162,7 @@ run_glm_aed <- function(sim_folder, bin_path, verbose = FALSE, debug = FALSE,
       message("GLM-AED run successful! [", Sys.time(), "]")
     } else {
       print("FAILED")
-      print(tail(out, 10))
+      print(utils::tail(out, 10))
     }
   }
 }
@@ -174,6 +176,8 @@ run_glm_aed <- function(sim_folder, bin_path, verbose = FALSE, debug = FALSE,
 #'
 #' @return
 #' @noRd
+#'
+#' @importFrom utils tail
 #'
 #' @examples
 run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
@@ -198,7 +202,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
     if (success) {
       message("GOTM-WET run successful! [", Sys.time(), "]")
     } else {
-      print(tail(out, 10))
+      print(utils::tail(out, 10))
     }
   }
 }
