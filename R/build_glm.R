@@ -119,8 +119,7 @@ build_glm <- function(lakename, mod_ctrls, date_range,
                            Kw = Kw)
 
   if (use_bgc) {
-    initialiseAED(mod_ctrls = mod_ctrls, path_aed = file.path(path_glm, "aed2"),
-                  config_dir = config_dir)
+    initialiseAED(mod_ctrls = mod_ctrls, path_aed = file.path(path_glm, "aed2"))
   }
 
   if (use_bgc) {

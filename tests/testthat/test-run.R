@@ -5,18 +5,18 @@ test_that("running DYRESM works", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   dir <- file.path(tmpdir, "lake")
-  config <- configr::read.config(file.path(dir, "aeme.yaml"))
+  aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  build_ensemble(dir = dir, config = config, model = model,
+  build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE, use_lw = TRUE)
-  run_aeme(config = config, model = model, verbose = TRUE, dir = dir)
+  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, dir = dir)
 
-  file_chk <- file.exists(file.path(dir, paste0(config$location$lake_id,"_",
-                                                tolower(config$location$name)),
+  file_chk <- file.exists(file.path(dir, paste0(aeme_data@lake$id,"_",
+                                                tolower(aeme_data@lake$name)),
                                     model, "DYsim.nc"))
   testthat::expect_true(file_chk)
 })
@@ -28,18 +28,18 @@ test_that("running GLM works", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   dir <- file.path(tmpdir, "lake")
-  config <- configr::read.config(file.path(dir, "aeme.yaml"))
+  aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
-  build_ensemble(dir = dir, config = config, model = model,
+  build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE, use_lw = TRUE)
-  run_aeme(config = config, model = model, verbose = TRUE, dir = dir)
+  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, dir = dir)
 
-  file_chk <- file.exists(file.path(dir, paste0(config$location$lake_id,"_",
-                                                tolower(config$location$name)),
+  file_chk <- file.exists(file.path(dir, paste0(aeme_data@lake$id,"_",
+                                                tolower(aeme_data@lake$name)),
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 })
@@ -51,18 +51,18 @@ test_that("running GOTM works", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   dir <- file.path(tmpdir, "lake")
-  config <- configr::read.config(file.path(dir, "aeme.yaml"))
+  aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
-  build_ensemble(dir = dir, config = config, model = model,
+  build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE, use_lw = TRUE)
-  run_aeme(config = config, model = model, verbose = TRUE, dir = dir)
+  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, dir = dir)
 
-  file_chk <- file.exists(file.path(dir, paste0(config$location$lake_id,"_",
-                                                tolower(config$location$name)),
+  file_chk <- file.exists(file.path(dir, paste0(aeme_data@lake$id,"_",
+                                                tolower(aeme_data@lake$name)),
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 })
@@ -74,18 +74,18 @@ test_that("running DYRESM-CAEDYM works", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   dir <- file.path(tmpdir, "lake")
-  config <- configr::read.config(file.path(dir, "aeme.yaml"))
+  aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  build_ensemble(dir = dir, config = config, model = model,
+  build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE, use_lw = TRUE)
-  run_aeme(config = config, model = model, verbose = TRUE, dir = dir)
+  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, dir = dir)
 
-  file_chk <- file.exists(file.path(dir, paste0(config$location$lake_id,"_",
-                                                tolower(config$location$name)),
+  file_chk <- file.exists(file.path(dir, paste0(aeme_data@lake$id,"_",
+                                                tolower(aeme_data@lake$name)),
                                     model, "DYsim.nc"))
   testthat::expect_true(file_chk)
 })
@@ -97,18 +97,18 @@ test_that("running GLM-AED works", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   dir <- file.path(tmpdir, "lake")
-  config <- configr::read.config(file.path(dir, "aeme.yaml"))
+  aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
-  build_ensemble(dir = dir, config = config, model = model,
+  build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE, use_lw = TRUE)
-  run_aeme(config = config, model = model, verbose = TRUE, dir = dir)
+  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, dir = dir)
 
-  file_chk <- file.exists(file.path(dir, paste0(config$location$lake_id,"_",
-                                                tolower(config$location$name)),
+  file_chk <- file.exists(file.path(dir, paste0(aeme_data@lake$id,"_",
+                                                tolower(aeme_data@lake$name)),
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 })
@@ -120,18 +120,18 @@ test_that("running GOTM-WET works", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   dir <- file.path(tmpdir, "lake")
-  config <- configr::read.config(file.path(dir, "aeme.yaml"))
+  aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
-  build_ensemble(dir = dir, config = config, model = model,
+  build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE, use_lw = TRUE)
-  run_aeme(config = config, model = model, verbose = TRUE, dir = dir)
+  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, dir = dir)
 
-  file_chk <- file.exists(file.path(dir, paste0(config$location$lake_id,"_",
-                                                tolower(config$location$name)),
+  file_chk <- file.exists(file.path(dir, paste0(aeme_data@lake$id,"_",
+                                                tolower(aeme_data@lake$name)),
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 })

@@ -48,7 +48,7 @@ library(AEME)
 #> plan transition at your earliest convenience (see
 #> https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs
 #> for guidance);some functionality will be moved to 'sp'.
-#>  Checking rgeos availability: TRUE
+#>  Checking rgeos availability: FALSE
 ## basic example code
 tmpdir <- tempdir()
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
@@ -56,28 +56,20 @@ aeme_dir <- system.file("extdata/lake/", package = "AEME")
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #> [1] TRUE
 dir <- file.path(tmpdir, "lake")
-config <- configr::read.config(file.path(dir, "aeme.yaml"))
+aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
 mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
 inf_factor = c("glm_aed" = 1)
 outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
-build_ensemble(dir = dir, config = config, model = model,
+build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE, use_lw = TRUE)
-#> Building simulation for Wainamu [2023-08-22 15:11:46]
-#> Reading layer `lake' from data source 
-#>   `C:\Users\tadhg\AppData\Local\Temp\RtmpakEbO5\lake\data\lake.shp' 
-#>   using driver `ESRI Shapefile'
-#> Simple feature collection with 1 feature and 14 fields
-#> Geometry type: POLYGON
-#> Dimension:     XY
-#> Bounding box:  xmin: 174.4645 ymin: -36.89195 xmax: 174.4757 ymax: -36.88648
-#> Geodetic CRS:  WGS 84
+#> Building simulation for Wainamu [2023-08-23 17:31:59.261167]
 #> Spherical geometry (s2) switched off
 #> Spherical geometry (s2) switched on
 #> Building GLM3-AED2 model for lake wainamu
 #> Copied in GLM nml file
-run_aeme(dir = dir, config = config, model = model, verbose = TRUE)
-#> Running models... (Have you tried parallelizing?) [2023-08-22 15:11:47]
-#> Model run complete![2023-08-22 15:11:48]
+run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, dir = dir)
+#> Running models... (Have you tried parallelizing?) [2023-08-23 17:31:59.697156]
+#> Model run complete![2023-08-23 17:32:00.240165]
 ```

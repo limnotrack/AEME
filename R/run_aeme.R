@@ -14,11 +14,11 @@
 #' @importFrom stats setNames
 #'
 #' @examples
-run_aeme <- function(config, model, verbose = FALSE, debug = FALSE,
+run_aeme <- function(aeme_data, model, verbose = FALSE, debug = FALSE,
                      timeout = 0, parallel = FALSE, dir = ".") {
 
-  sim_folder <- file.path(dir, paste0(config$location$lake_id,"_",
-                                      tolower(config$location$name)))
+  sim_folder <- file.path(dir, paste0(aeme_data@lake$id,"_",
+                                      tolower(aeme_data@lake$name)))
   run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
                          debug = debug, timeout = timeout)
 

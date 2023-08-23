@@ -2,7 +2,8 @@
 #'
 #' Configure an ensemble of lake model simulations from basic set of inputs.
 #'
-#' @param config list; loaded via `config <- configr::read.config("aeme.yaml")`
+#' @param aeme_data aeme; data object.
+#' @param config list; loaded via `config <- yaml::read_yaml("aeme.yaml")`
 #' @param model vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 #'  `gotm_wet`.
 #' @param mod_ctrls dataframe; of configuration loaded from
@@ -35,7 +36,7 @@
 #' # Copy files from package into tempdir
 #' file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #' dir <- file.path(tmpdir, "lake")
-#' config <- configr::read.config(file.path(dir, "aeme.yaml"))
+#' config <- yaml::read_yaml(file.path(dir, "aeme.yaml"))
 #' mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
 #' inf_factor = c("glm_aed" = 1)
 #' outf_factor = c("glm_aed" = 1)
@@ -44,7 +45,8 @@
 #'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = FALSE, use_lw = TRUE)
 
-build_ensemble <- function(config,
+build_ensemble <- function(aeme_data = NULL,
+                           config = NULL,
                            model = c("dy_cd", "glm_aed", "gotm_wet"),
                            mod_ctrls,
                            inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
@@ -58,33 +60,180 @@ build_ensemble <- function(config,
                            dir = "."
                            ) {
 
-  #--- metadata
-  message("Building simulation for ", config$location$name, " [", Sys.time(), "]")
+  if (is.null(aeme_data) & is.null(config)) {
+    stop("Either 'aeme_data' or 'config' must be supplied.")
+  }
 
-  # Load Rdata
-  utils::data("key_naming", package = "AEME", envir = environment())
+  #--- metadata
+  lvl <- NULL
+  inf <- list()
+  outf <- list()
+  # these variables will be simulated
+  if (use_bgc) {
+    inf_vars <- mod_ctrls |>
+      dplyr::filter(simulate == 1,
+                    !name %in% c("RAD_extc", "PHS_tp", "NIT_pin", "NIT_tn",
+                                 "PHY_tchla")) |>
+      dplyr::pull(name)
+  } else {
+    inf_vars <- c("HYD_temp", "CHM_salt")
+  }
+
+
+  if (!is.null(aeme_data)) {
+    message("Building simulation for ", aeme_data@lake$name, " [", Sys.time(),
+            "]")
+    lake_dir <- file.path(dir, paste0(aeme_data@lake$id, "_",
+                                      tolower(aeme_data@lake$name)))
+    date_range <- as.Date(c(aeme_data@time[["start"]],
+                            aeme_data@time[["stop"]]))
+    spin_up <- aeme_data@time[["spin_up"]]
+
+    if (!is.null(aeme_data@lake[["shape"]])) {
+      lake_shape <- aeme_data@lake[["shape"]]
+    } else {
+      coords <- data.frame(lat = aeme_data@lake[["latitude"]],
+                           lon = aeme_data@lake[["longitude"]])
+      coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
+      r <- sqrt(aeme_data@lake[["area"]] / pi)
+      lake_shape <- sf::st_buffer(coords_sf, r)
+    }
+    elevation <- aeme_data@lake[["elevation"]]
+    # Hypsograph ----
+    if (is.null(aeme_data@input[["hypsograph"]])) {
+      stop("Hypsograph is not present. This is required to build the models.")
+    }
+    hyps <- aeme_data@input[["hypsograph"]]
+
+    if (is.null(aeme_data@observations[["level"]])) {
+      stop("Lake level is not present. This is required to build the models.")
+    }
+    lvl <- aeme_data@observations[["level"]]
+
+    # Initial profile ----
+    if (!is.null(aeme_data@input[["init_profile"]])) {
+
+    } else {
+      init_prof <- data.frame(depth = c(0,
+                                        floor(max(hyps$elev) - min(hyps$elev))),
+                              temperature = c(10, 10),
+                              salt = c(0, 0))
+    }
+
+    # Inflow ----
+    if (!is.null(aeme_data@inflows[["data"]])) {
+      for (i in 1:length(aeme_data@inflows[["data"]])) {
+        inf[[names(aeme_data@inflows[["data"]])[i]]] <- aeme_data@inflows[["data"]][[i]]
+        if (any(!inf_vars %in% names(inf[[i]]))) {
+          stop("missing state variables in inflow tables")
+        }
+
+        inf[[i]] <- inf[[i]] |>
+          dplyr::select(all_of(c("Date","HYD_flow", inf_vars)))
+      }
+    }
+    inf_factor <- aeme_data@inflows[["factor"]]
+
+    #--- meteorology
+    if (is.null(file.path(dir, aeme_data@input[["meteo"]]))) {
+      stop(aeme_data@input[["meteo"]], " does not exist. Check file path.")
+    }
+    met <- aeme_data@input[["meteo"]]
+
+    Kw <- aeme_data@input[["Kw"]]
+
+    # Outflow ----
+    if (!is.null(aeme_data@outflows[["data"]])) {
+      for(i in 1:length(aeme_data@outflows[["data"]])) {
+        outf[[names(aeme_data@outflows[["data"]])[i]]] <-
+          aeme_data@outflows[["data"]][[i]]
+      }
+    }
+
+    outf_factor <- aeme_data@outflows[["factor"]]
+    lakename <- tolower(aeme_data@lake[["name"]])
+
+  } else if (!is.null(config)) {
+    lake_dir <- file.path(dir, paste0(config$lake$lake_id, "_",
+                                      tolower(config$lake$name)))
+    date_range <- as.Date(c(config[["time"]][["start"]],
+                           config[["time"]][["stop"]]))
+    spin_up <- config[["time"]][["spin_up"]]
+
+    if (!is.null(config[["lake"]][["shape_file"]])) {
+      lake_shape <- sf::st_read(file.path(dir,
+                                          config[["lake"]][["shape"]]))
+    } else {
+      coords <- data.frame(lat = config[["lake"]][["latitude"]],
+                           lon = config[["lake"]][["longitude"]])
+      coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
+      r <- sqrt(config[["lake"]][["area"]] / pi)
+      lake_shape <- sf::st_buffer(coords_sf, r)
+    }
+    elevation <- config[["lake"]][["elevation"]]
+    # Hypsograph ----
+    if (!file.exists(file.path(dir, config[["input"]][["hypsograph"]]))) {
+      stop(config[["input"]][["hypsograph"]],
+           " does not exist. Check file path.")
+    }
+    hyps <- utils::read.csv(file.path(dir, config[["input"]][["hypsograph"]]))
+
+    # Water level ----
+    if (file.exists(file.path(dir, config[["observations"]][["level"]]))) {
+      # lvl <- readr::read_csv(config[["observations"]][["level"]],
+      #                        show_col_types = FALSE)
+      lvl <- utils::read.csv(file.path(dir,
+                                       config[["observations"]][["level"]]))
+    }
+
+    # Initial profile ----
+    if (!is.null(config[["input"]][["init_profile"]])) {
+
+    } else {
+      init_prof <- data.frame(depth = c(0,
+                                        floor(max(hyps$elev) - min(hyps$elev))),
+                              temperature = c(10, 10),
+                              salt = c(0, 0))
+    }
+
+    # Inflow ----
+    if (!is.null(config[["inflows"]][["data"]])) {
+      for(i in 1:length(config[["inflows"]][["data"]])) {
+        inf[[names(config[["inflows"]][["data"]])[i]]] <-
+          utils::read.csv(file.path(dir, config[["inflows"]][["data"]][[i]]))
+        if(any(!inf_vars %in% names(inf[[i]]))) {
+          stop("missing state variables in inflow tables")
+        }
+
+        inf[[i]] <- inf[[i]] |>
+          dplyr::select(all_of(c("Date","HYD_flow", inf_vars)))
+      }
+    }
+    inf_factor <- config[["inflows"]][["factor"]]
+
+    #--- meteorology
+    if (!file.exists(file.path(dir, config[["input"]][["meteo"]]))) {
+      stop(config[["input"]][["meteo"]], " does not exist. Check file path.")
+    }
+    met <- utils::read.csv(file.path(dir, config[["input"]][["meteo"]]))
+
+    Kw <- config[["input"]][["Kw"]]
+
+    # Outflow ----
+    if (!is.null(config[["outflows"]][["data"]])) {
+      for(i in 1:length(config[["outflows"]][["data"]])) {
+        outf[[names(config[["outflows"]][["data"]])[i]]] <-
+          utils::read.csv(file.path(dir, config[["outflows"]][["data"]][[i]]))
+      }
+    }
+
+    outf_factor <- config[["outflows"]][["factor"]]
+    lakename <- tolower(config[["lake"]][["name"]])
+
+  }
 
   #--------------------------
-  lake_dir <- file.path(dir, paste0(config$location$lake_id,"_",
-                               tolower(config$location$name)))
   dir.create(lake_dir, showWarnings = FALSE)
-
-  # ensure date range are Dates
-  date_range = as.Date(c(config[["time"]][["start"]],
-                         config[["time"]][["stop"]]))
-  spin_up <- config[["time"]][["spin_up"]]
-
-
-  if (!is.null(config[["location"]][["shape_file"]])) {
-    lake_shape <- sf::st_read(file.path(dir,
-                                        config[["location"]][["shape_file"]]))
-  } else {
-    coords <- data.frame(lat = config[["location"]][["latitude"]],
-                         lon = config[["location"]][["longitude"]])
-    coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
-    r <- sqrt(config[["location"]][["area"]] / pi)
-    lake_shape <- sf::st_buffer(coords_sf, r)
-  }
 
   sf::sf_use_s2(FALSE)
   coords.xyz <- c(lake_shape |>
@@ -93,74 +242,17 @@ build_ensemble <- function(config,
                     sf::st_centroid() |>
                     sf::st_transform(4326) |>
                     sf::st_coordinates() |>
-                    as.numeric(), config[["location"]][["elevation"]])
+                    as.numeric(), elevation)
   sf::sf_use_s2(TRUE)
 
-  # these variables will be simulated
-  if (use_bgc) {
-    inf_vars <- mod_ctrls |>
-      dplyr::filter(simulate == 1,
-             !name %in% c("RAD_extc", "PHS_tp", "NIT_pin", "NIT_tn", "PHY_tchla")) |>
-      dplyr::pull(name)
-  } else {
-    inf_vars <- c("HYD_temp", "CHM_salt")
-  }
-
-  # Hypsograph ----
-  if (!file.exists(file.path(dir, config[["input"]][["hypsograph"]]))) {
-    stop(config[["input"]][["hypsograph"]], " does not exist. Check file path.")
-  }
-  # hyps <- readr::read_csv(config[["input"]][["hypsograph"]],
-  #                         show_col_types = FALSE)
-  hyps <- utils::read.csv(file.path(dir, config[["input"]][["hypsograph"]]))
-  # Water level ----
-  lvl <- NULL
-  if (file.exists(file.path(dir, config[["observations"]][["level"]]))) {
-    # lvl <- readr::read_csv(config[["observations"]][["level"]],
-    #                        show_col_types = FALSE)
-    lvl <- utils::read.csv(file.path(dir, config[["observations"]][["level"]]))
-  }
-
-  # Initial profile ----
-  if (!is.null(config[["input"]][["init_temp_profile"]])) {
-
-  } else {
-    init_prof <- data.frame(depth = c(0, floor(max(hyps$elev) - min(hyps$elev))),
-                       temperature = c(10, 10),
-                       salt = c(0, 0))
-  }
-
-  # Inflow ----
-  inf <- list()
-  if (config[["inflows"]][["use"]]) {
-    for(i in 1:length(config[["inflows"]][["file"]])) {
-
-      inf[[names(config[["inflows"]][["file"]])[i]]] <-
-        utils::read.csv(file.path(dir, config[["inflows"]][["file"]][[i]]))
-      if(any(!inf_vars %in% names(inf[[i]]))) {
-        stop("missing state variables in inflow tables")
-      }
-
-      inf[[i]] <- inf[[i]] |>
-        dplyr::select(all_of(c("Date","HYD_flow",inf_vars)))
-    }
-  }
-  inf_factor <- config[["inflows"]][["factor"]]
-
-  #--- meteorology
-  if (!file.exists(file.path(dir, config[["input"]][["meteo"]]))) {
-    stop(config[["input"]][["meteo"]], " does not exist. Check file path.")
-  }
-  # met <- readr::read_csv(config[["input"]][["meteo"]], show_col_types = FALSE)
-  met <- utils::read.csv(file.path(dir, config[["input"]][["meteo"]]))
   met <- met |>
     dplyr::filter(Date >= (date_range[1]),
            Date <= date_range[2])
   met <- met |>
     dplyr::mutate(Date = as.Date(Date)) |>
-    dplyr::mutate(MET_pprain = MET_pprain / 1000, MET_ppsnow = MET_ppsnow / 1000) |>
+    dplyr::mutate(MET_pprain = MET_pprain / 1000,
+                  MET_ppsnow = MET_ppsnow / 1000) |>
     expand_met(coords.xyz = coords.xyz, print.plot = FALSE)
-  summary(met)
 
   # add snow if needs be
   if (!any(grepl("snow", colnames(met)))) {
@@ -168,10 +260,8 @@ build_ensemble <- function(config,
   }
 
   #--- outflows
-  Kw <- config[["input"]][["Kw"]]
-
-  if(config[["outflows"]][["use"]]) {
-    outf <- utils::read.csv(file.path(dir, config[["outflows"]][["file"]]))
+  if (length(outf) == 1) {
+    outf <- outf[[1]]
     if(ncol(outf) > 2) {
       dy_cd_outf <- outf |>
         dplyr::select(Date, outflow_dy_cd) |>
@@ -192,9 +282,7 @@ build_ensemble <- function(config,
     glm_aed_outf <- NULL
     gotm_wet_outf <- NULL
   }
-  outf_factor <- config[["outflows"]][["factor"]]
 
-  lakename <- tolower(config[["location"]][["name"]])
 
   gps <- coords.xyz[1:2]
 
@@ -221,7 +309,7 @@ build_ensemble <- function(config,
               lake_shape = lake_shape, gps = gps,
               hyps = hyps, lvl = lvl, init_prof = init_prof,
               inf = inf, outf = glm_aed_outf, met = met,
-              lake_dir = lake_dir, config_dir = config_dir,
+              lake_dir = lake_dir,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
               Kw = Kw, ext_elev = ext_elev,

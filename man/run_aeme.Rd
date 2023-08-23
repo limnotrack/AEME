@@ -5,7 +5,7 @@
 \title{Run aquatic model ensemble}
 \usage{
 run_aeme(
-  config,
+  aeme_data,
   model,
   verbose = FALSE,
   debug = FALSE,
@@ -15,7 +15,7 @@ run_aeme(
 )
 }
 \arguments{
-\item{config}{list; loaded via `config <- configr::read.config("aeme.yaml")`}
+\item{aeme_data}{aeme; data object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}

@@ -34,7 +34,6 @@ jobs:
       #   run: |
       #     install.packages("remotes")
       #     install.packages("rcmdcheck")
-      #     install.packages("configr")
       #     install.packages("yaml")
       #     install.packages("pkgdown")
       #     remotes::install_github("aemon-j/gotmtools", ref = "yaml")

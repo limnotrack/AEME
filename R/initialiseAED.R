@@ -2,14 +2,13 @@
 #'
 #' @param mod_ctrls dataframe of loaded model controls
 #' @param path_aed filepath; to AED files
-#' @param config_dir filepath; to configuration directory
 #'
 #' @return Written aed2.nml files
 #' @noRd
 #'
 #' @importFrom dplyr filter pull
 
-initialiseAED <- function(mod_ctrls, path_aed, config_dir) {
+initialiseAED <- function(mod_ctrls, path_aed) {
 
   this_ctrls <-  mod_ctrls |>
     dplyr::filter(simulate == 1,
