@@ -86,7 +86,7 @@
 <span><span class="co">#&gt; plan transition at your earliest convenience (see</span></span>
 <span><span class="co">#&gt; https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs</span></span>
 <span><span class="co">#&gt; for guidance);some functionality will be moved to 'sp'.</span></span>
-<span><span class="co">#&gt;  Checking rgeos availability: TRUE</span></span>
+<span><span class="co">#&gt;  Checking rgeos availability: FALSE</span></span>
 <span><span class="co">## basic example code</span></span>
 <span><span class="va">tmpdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">aeme_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/lake/"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span>
@@ -94,30 +94,22 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="va">aeme_dir</span>, <span class="va">tmpdir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmpdir</span>, <span class="st">"lake"</span><span class="op">)</span></span>
-<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">configr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/configr/man/read.config.html" class="external-link">read.config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/yaml_to_aeme.html">yaml_to_aeme</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="va">dir</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
 <span><span class="va">mod_ctrls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"model_controls.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">inf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="va">dir</span>, config <span class="op">=</span> <span class="va">config</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
+<span><span class="fu"><a href="reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="va">dir</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>               mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>               use_bgc <span class="op">=</span> <span class="cn">FALSE</span>, use_lw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2023-08-22 15:11:46]</span></span>
-<span><span class="co">#&gt; Reading layer `lake' from data source </span></span>
-<span><span class="co">#&gt;   `C:\Users\tadhg\AppData\Local\Temp\RtmpakEbO5\lake\data\lake.shp' </span></span>
-<span><span class="co">#&gt;   using driver `ESRI Shapefile'</span></span>
-<span><span class="co">#&gt; Simple feature collection with 1 feature and 14 fields</span></span>
-<span><span class="co">#&gt; Geometry type: POLYGON</span></span>
-<span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: 174.4645 ymin: -36.89195 xmax: 174.4757 ymax: -36.88648</span></span>
-<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2023-08-23 17:31:59.261167]</span></span>
 <span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
 <span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
 <span><span class="co">#&gt; Building GLM3-AED2 model for lake wainamu</span></span>
 <span><span class="co">#&gt; Copied in GLM nml file</span></span>
-<span><span class="fu"><a href="reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="va">dir</span>, config <span class="op">=</span> <span class="va">config</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-08-22 15:11:47]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-08-22 15:11:48]</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, dir <span class="op">=</span> <span class="va">dir</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-08-23 17:31:59.697156]</span></span>
+<span><span class="co">#&gt; Model run complete![2023-08-23 17:32:00.240165]</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
