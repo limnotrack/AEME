@@ -18,8 +18,7 @@ Depends:
     R (>= 2.10)
 Suggests: 
     GLM3r,
-    testthat (>= 3.0.0),
-    yaml
+    testthat (>= 3.0.0)
 Imports: 
     dplyr,
     ecmwfr,
@@ -27,15 +26,17 @@ Imports:
     gotmtools,
     job,
     lubridate,
+    methods,
     parallel,
     plyr,
     psychrolib,
     rWind,
     sf,
     stars,
-    stringr
+    stringr,
+    yaml
 URL: https://expert-guide-29ve1vw.pages.github.io/
-Remotes:  
+Remotes: 
     USGS-R/glmtools,
     aemon-j/gotmtools@yaml,
     aemon-j/GLM3r
