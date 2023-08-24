@@ -61,7 +61,7 @@ yaml_to_aeme <- function(path, file) {
   yaml$time$stop <- as.POSIXct(yaml$time$stop, format = "%Y-%m-%d %H:%M:%S",
                                tz = "UTC")
 
-  aeme_data <- aeme(
+  aeme_data <- aeme_constructor(
     lake = yaml$lake,
     catchment = yaml$catchment,
     time = yaml$time,
