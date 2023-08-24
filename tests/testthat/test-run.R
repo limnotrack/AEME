@@ -178,7 +178,7 @@ test_that("getting model output works", {
   run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
            parallel = TRUE)
 
-  aeme_data <- get_output(model = model, aeme_data = aeme_data, path = path,
+  aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
                           mod_ctrls = mod_ctrls, parallel = FALSE)
 
   output_chk <- !all(is.null(unlist(aeme_data@output)))
@@ -203,7 +203,7 @@ test_that("getting model output in parallel works", {
   run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
            parallel = TRUE)
 
-  aeme_data <- get_output(model = model, aeme_data = aeme_data, path = path,
+  aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
                           mod_ctrls = mod_ctrls, parallel = TRUE)
 
   output_chk <- !all(is.null(unlist(aeme_data@output)))
