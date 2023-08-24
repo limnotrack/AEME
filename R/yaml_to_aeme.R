@@ -1,7 +1,7 @@
 #' Convert aeme.yaml file to list
 #'
 #' @inheritParams build_ensemble
-#' @param yaml_file filepath; to aeme.yaml file
+#' @param file filepath; to aeme.yaml file
 #'
 #' @return aeme object
 #' @export
@@ -10,48 +10,48 @@
 #' @importFrom sf st_read
 #'
 
-yaml_to_aeme <- function(dir, yaml_file) {
-  yaml <- yaml::read_yaml(file.path(dir, yaml_file))
+yaml_to_aeme <- function(path, file) {
+  yaml <- yaml::read_yaml(file.path(path, file))
   if (!is.null(yaml$lake$shape)) {
     invisible(capture.output({
-      yaml$lake$shape <- sf::st_read(file.path(dir, yaml$lake$shape))
+      yaml$lake$shape <- sf::st_read(file.path(path, yaml$lake$shape))
     }))
   }
   if (!is.null(yaml$catchment$shape)) {
     invisible(capture.output({
-      yaml$catchment$shape <- sf::st_read(file.path(dir, yaml$catchment$shape))
+      yaml$catchment$shape <- sf::st_read(file.path(path, yaml$catchment$shape))
     }))
   }
   if (!is.null(yaml$observations$lake)) {
-    yaml$observations$lake <- read.csv(file.path(dir,
+    yaml$observations$lake <- read.csv(file.path(path,
                                                  yaml$observations$lake)) |>
       dplyr::mutate(Date = as.Date(Date))
   }
   if (!is.null(yaml$observations$level)) {
-    yaml$observations$level <- read.csv(file.path(dir,
+    yaml$observations$level <- read.csv(file.path(path,
                                                   yaml$observations$level)) |>
       dplyr::mutate(Date = as.Date(Date))
   }
   if (!is.null(yaml$input$init_temp_profile)) {
     yaml$input$init_temp_profile <-
-      read.csv(file.path(dir, yaml$input$init_temp_profile))
+      read.csv(file.path(path, yaml$input$init_temp_profile))
   }
   if (!is.null(yaml$input$hypsograph)) {
-    yaml$input$hypsograph <- read.csv(file.path(dir, yaml$input$hypsograph))
+    yaml$input$hypsograph <- read.csv(file.path(path, yaml$input$hypsograph))
   }
   if (!is.null(yaml$input$meteo)) {
-    yaml$input$meteo <- read.csv(file.path(dir, yaml$input$meteo)) |>
+    yaml$input$meteo <- read.csv(file.path(path, yaml$input$meteo)) |>
       dplyr::mutate(Date = as.Date(Date))
   }
   if (length(yaml$inflows$data) > 0) {
     yaml$inflows$data <- lapply(yaml$inflows$data, \(i) {
-      read.csv(file.path(dir, i)) |>
+      read.csv(file.path(path, i)) |>
         dplyr::mutate(Date = as.Date(Date))
     })
   }
   if (length(yaml$outflows$data) > 0) {
     yaml$outflows$data <- lapply(yaml$outflows$data, \(i) {
-      read.csv(file.path(dir, i)) |>
+      read.csv(file.path(path, i)) |>
         dplyr::mutate(Date = as.Date(Date))
     })
   }

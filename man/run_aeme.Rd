@@ -11,7 +11,7 @@ run_aeme(
   debug = FALSE,
   timeout = 0,
   parallel = FALSE,
-  dir = "."
+  path = "."
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ run_aeme(
 
 \item{parallel}{boolean; run models in parallel. Defaults to FALSE.}
 
-\item{dir}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to `config`.}
 }
 \value{
 Runs the model

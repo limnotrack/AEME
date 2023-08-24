@@ -19,7 +19,7 @@
 #' @param hum_type numeric; GOTM humidity metric [1=relative humidity (%),
 #' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
 #' Default = 3.
-#' @param dir filepath; where input files are located relative to `config`.
+#' @param path filepath; where input files are located relative to `config`.
 #'
 #' @return builds the model ensemble configuration.
 #'
@@ -35,13 +35,13 @@
 #' aeme_dir <- system.file("extdata/lake/", package = "AEME")
 #' # Copy files from package into tempdir
 #' file.copy(aeme_dir, tmpdir, recursive = TRUE)
-#' dir <- file.path(tmpdir, "lake")
-#' aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
-#' mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
+#' path <- file.path(tmpdir, "lake")
+#' aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+#' mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
 #' inf_factor = c("glm_aed" = 1)
 #' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
-#' build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
+#' build_ensemble(path = path, aeme_data = aeme_data, model = model,
 #'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = FALSE, use_lw = TRUE)
 
@@ -57,7 +57,7 @@ build_ensemble <- function(aeme_data = NULL,
                            use_bgc = TRUE,
                            use_lw = FALSE,
                            hum_type = 3,
-                           dir = "."
+                           path = "."
                            ) {
 
   if (is.null(aeme_data) & is.null(config)) {
@@ -83,7 +83,7 @@ build_ensemble <- function(aeme_data = NULL,
   if (!is.null(aeme_data)) {
     message("Building simulation for ", aeme_data@lake$name, " [", Sys.time(),
             "]")
-    lake_dir <- file.path(dir, paste0(aeme_data@lake$id, "_",
+    lake_dir <- file.path(path, paste0(aeme_data@lake$id, "_",
                                       tolower(aeme_data@lake$name)))
     date_range <- as.Date(c(aeme_data@time[["start"]],
                             aeme_data@time[["stop"]]))
@@ -135,7 +135,7 @@ build_ensemble <- function(aeme_data = NULL,
     inf_factor <- aeme_data@inflows[["factor"]]
 
     #--- meteorology
-    if (is.null(file.path(dir, aeme_data@input[["meteo"]]))) {
+    if (is.null(file.path(path, aeme_data@input[["meteo"]]))) {
       stop(aeme_data@input[["meteo"]], " does not exist. Check file path.")
     }
     met <- aeme_data@input[["meteo"]]
@@ -154,14 +154,14 @@ build_ensemble <- function(aeme_data = NULL,
     lakename <- tolower(aeme_data@lake[["name"]])
 
   } else if (!is.null(config)) {
-    lake_dir <- file.path(dir, paste0(config$lake$lake_id, "_",
+    lake_dir <- file.path(path, paste0(config$lake$lake_id, "_",
                                       tolower(config$lake$name)))
     date_range <- as.Date(c(config[["time"]][["start"]],
                            config[["time"]][["stop"]]))
     spin_up <- config[["time"]][["spin_up"]]
 
     if (!is.null(config[["lake"]][["shape_file"]])) {
-      lake_shape <- sf::st_read(file.path(dir,
+      lake_shape <- sf::st_read(file.path(path,
                                           config[["lake"]][["shape"]]))
     } else {
       coords <- data.frame(lat = config[["lake"]][["latitude"]],
@@ -172,17 +172,17 @@ build_ensemble <- function(aeme_data = NULL,
     }
     elevation <- config[["lake"]][["elevation"]]
     # Hypsograph ----
-    if (!file.exists(file.path(dir, config[["input"]][["hypsograph"]]))) {
+    if (!file.exists(file.path(path, config[["input"]][["hypsograph"]]))) {
       stop(config[["input"]][["hypsograph"]],
            " does not exist. Check file path.")
     }
-    hyps <- utils::read.csv(file.path(dir, config[["input"]][["hypsograph"]]))
+    hyps <- utils::read.csv(file.path(path, config[["input"]][["hypsograph"]]))
 
     # Water level ----
-    if (file.exists(file.path(dir, config[["observations"]][["level"]]))) {
+    if (file.exists(file.path(path, config[["observations"]][["level"]]))) {
       # lvl <- readr::read_csv(config[["observations"]][["level"]],
       #                        show_col_types = FALSE)
-      lvl <- utils::read.csv(file.path(dir,
+      lvl <- utils::read.csv(file.path(path,
                                        config[["observations"]][["level"]]))
     }
 
@@ -200,7 +200,7 @@ build_ensemble <- function(aeme_data = NULL,
     if (!is.null(config[["inflows"]][["data"]])) {
       for(i in 1:length(config[["inflows"]][["data"]])) {
         inf[[names(config[["inflows"]][["data"]])[i]]] <-
-          utils::read.csv(file.path(dir, config[["inflows"]][["data"]][[i]]))
+          utils::read.csv(file.path(path, config[["inflows"]][["data"]][[i]]))
         if(any(!inf_vars %in% names(inf[[i]]))) {
           stop("missing state variables in inflow tables")
         }
@@ -212,10 +212,10 @@ build_ensemble <- function(aeme_data = NULL,
     inf_factor <- config[["inflows"]][["factor"]]
 
     #--- meteorology
-    if (!file.exists(file.path(dir, config[["input"]][["meteo"]]))) {
+    if (!file.exists(file.path(path, config[["input"]][["meteo"]]))) {
       stop(config[["input"]][["meteo"]], " does not exist. Check file path.")
     }
-    met <- utils::read.csv(file.path(dir, config[["input"]][["meteo"]]))
+    met <- utils::read.csv(file.path(path, config[["input"]][["meteo"]]))
 
     Kw <- config[["input"]][["Kw"]]
 
@@ -223,7 +223,7 @@ build_ensemble <- function(aeme_data = NULL,
     if (!is.null(config[["outflows"]][["data"]])) {
       for(i in 1:length(config[["outflows"]][["data"]])) {
         outf[[names(config[["outflows"]][["data"]])[i]]] <-
-          utils::read.csv(file.path(dir, config[["outflows"]][["data"]][[i]]))
+          utils::read.csv(file.path(path, config[["outflows"]][["data"]][[i]]))
       }
     }
 

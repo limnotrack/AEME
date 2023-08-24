@@ -55,21 +55,21 @@ aeme_dir <- system.file("extdata/lake/", package = "AEME")
 # Copy files from package into tempdir
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #> [1] TRUE
-dir <- file.path(tmpdir, "lake")
-aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
-mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
+path <- file.path(tmpdir, "lake")
+aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
 inf_factor = c("glm_aed" = 1)
 outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
-build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
+build_ensemble(path = path, aeme_data = aeme_data, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE, use_lw = TRUE)
-#> Building simulation for Wainamu [2023-08-23 17:31:59.261167]
+#> Building simulation for Wainamu [2023-08-24 12:42:16.165168]
 #> Spherical geometry (s2) switched off
 #> Spherical geometry (s2) switched on
 #> Building GLM3-AED2 model for lake wainamu
 #> Copied in GLM nml file
-run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, dir = dir)
-#> Running models... (Have you tried parallelizing?) [2023-08-23 17:31:59.697156]
-#> Model run complete![2023-08-23 17:32:00.240165]
+run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+#> Running models... (Have you tried parallelizing?) [2023-08-24 12:42:16.613091]
+#> Model run complete![2023-08-24 12:42:17.134358]
 ```

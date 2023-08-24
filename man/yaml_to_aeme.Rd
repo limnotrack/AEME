@@ -4,12 +4,12 @@
 \alias{yaml_to_aeme}
 \title{Convert aeme.yaml file to list}
 \usage{
-yaml_to_aeme(dir, yaml_file)
+yaml_to_aeme(path, file)
 }
 \arguments{
-\item{dir}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to `config`.}
 
-\item{yaml_file}{filepath; to aeme.yaml file}
+\item{file}{filepath; to aeme.yaml file}
 }
 \value{
 aeme object

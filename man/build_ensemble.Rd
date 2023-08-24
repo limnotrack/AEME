@@ -15,7 +15,7 @@ build_ensemble(
   use_bgc = TRUE,
   use_lw = FALSE,
   hum_type = 3,
-  dir = "."
+  path = "."
 )
 }
 \arguments{
@@ -46,7 +46,7 @@ GLM-AED.}
 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
 Default = 3.}
 
-\item{dir}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to `config`.}
 }
 \value{
 builds the model ensemble configuration.
@@ -60,13 +60,13 @@ tmpdir <- tempdir()
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
 # Copy files from package into tempdir
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
-dir <- file.path(tmpdir, "lake")
-aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
-mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
+path <- file.path(tmpdir, "lake")
+aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
 inf_factor = c("glm_aed" = 1)
 outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
-build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
+build_ensemble(path = path, aeme_data = aeme_data, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE, use_lw = TRUE)
 }
