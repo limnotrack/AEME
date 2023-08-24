@@ -96,7 +96,7 @@ test_that("building GOTM works", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_data <- yaml_to_aeme(path = path, file = "aeme.yaml")
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
