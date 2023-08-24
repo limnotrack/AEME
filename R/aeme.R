@@ -186,6 +186,33 @@ aeme <- function(
   )
 }
 
+#' Update the output slot of an aeme object
+#'
+#' @title Update Output
+#' @param aeme_data A aeme object.
+#' @param new_output New output data to be assigned.
+#' @return A modified aeme object with updated output slot.
+#' @export
+setGeneric("update_output", function(aeme_data, new_output) {
+  standardGeneric("update_output")
+})
+
+#' Update the output slot of an aeme object
+#'
+#' This method updates the "output" slot of a aeme object with new data.
+#'
+#' @title Update Output Method
+#' @param aeme_data A aeme object.
+#' @param new_output New output data to be assigned.
+#' @return A modified aeme object with updated output slot.
+#' @export
+setMethod("update_output", "aeme",
+  function(aeme_data, new_output) {
+    aeme_data@output <- new_output
+    return(aeme_data)
+  }
+)
+
 # Convert the parsed YAML content to an instance of the aeme class
 # aeme_data <- aeme(
 #   lake = yaml$lake,
