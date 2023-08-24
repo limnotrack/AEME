@@ -27,6 +27,7 @@ Imports:
     job,
     lubridate,
     methods,
+    ncdf4,
     parallel,
     plyr,
     psychrolib,
