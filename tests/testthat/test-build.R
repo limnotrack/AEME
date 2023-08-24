@@ -6,7 +6,7 @@ test_that("building DYRESM works", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_data <- yaml_to_aeme(path = path, file = "aeme.yaml")
   # aeme_data <- yaml_to_aeme(path = "inst/extdata/lake", "aeme.yaml")
   # config <- yaml::read_yaml("inst/extdata/lake/aeme.yaml")
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
