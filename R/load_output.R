@@ -112,7 +112,7 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
   new_output <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
                      gotm_wet = mods[["gotm_wet"]])
   
-  aeme_data <- update_output(aeme_data = aeme_data, new_output = new_output)
-  
+  output(aeme_data) <- new_output
+
   return(aeme_data)
 }
