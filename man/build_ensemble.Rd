@@ -61,12 +61,12 @@ aeme_dir <- system.file("extdata/lake/", package = "AEME")
 # Copy files from package into tempdir
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
 dir <- file.path(tmpdir, "lake")
-config <- yaml::read_yaml(file.path(dir, "aeme.yaml"))
+aeme_data <- yaml_to_aeme(dir = dir, "aeme.yaml")
 mod_ctrls <- read.csv(file.path(dir, "model_controls.csv"))
 inf_factor = c("glm_aed" = 1)
 outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
-build_ensemble(dir = dir, config = config, model = model,
+build_ensemble(dir = dir, aeme_data = aeme_data, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE, use_lw = TRUE)
 }
