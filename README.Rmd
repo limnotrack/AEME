@@ -1,5 +1,8 @@
 ---
 output: github_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -16,19 +19,24 @@ knitr::opts_chunk$set(
 # AEME
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml)
-[![Codecov test coverage](https://codecov.io/gh/limnotrack/AEME/branch/main/graph/badge.svg)](https://app.codecov.io/gh/limnotrack/AEME?branch=main)
+[![Codecov test
+coverage](https://codecov.io/gh/limnotrack/AEME/branch/main/graph/badge.svg)](https://app.codecov.io/gh/limnotrack/AEME?branch=main)
+
 <!-- badges: end -->
 
-The Aquatic Ecosystem Model Ensemble (AEME) package allows you to setup and run
-an ensemble of aquatic ecosystem models. The models are [DYRESM-CAEDYM](), 
-[GLM-AED]() and [GOTM-WET]().
+The Aquatic Ecosystem Model Ensemble (AEME) package allows you to setup
+and run an ensemble of aquatic ecosystem models. The models are
+[DYRESM-CAEDYM](), [GLM-AED]() and [GOTM-WET]().
 
 ## Installation
 
-You can install the development version of AEME from [GitHub](https://github.com/) with:
+You can install the development version of AEME from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -37,8 +45,8 @@ devtools::install_github("limnotrack/AEME")
 
 ## Example
 
-This is a basic example which shows you how to build and run one of the models 
-in the ensemble:
+This is a basic example which shows you how to build and run one of the
+models in the ensemble:
 
 ```{r example}
 library(AEME)
@@ -59,4 +67,34 @@ build_ensemble(path = path, aeme_data = aeme_data, model = model,
 run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
 ```
 
+The model input and output (I/O) is handled as it's own S4 object of
+class `aeme`. This allows for the standardisation and generalisation of
+functions for this class alongside ensuring integrity and validity to
+it's structure.
+
+```{r}
+class(aeme_data)
+```
+
+This allows for easier handling of the model output data within our
+structure and allows for loading of the model output into the `aeme`
+object.
+
+```{r}
+aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
+                          mod_ctrls = mod_ctrls, parallel = FALSE)
+
+```
+This object can be be printed to the console:
+```{r}
+aeme_data
+```
+Summarised easily:
+```{r}
+summary(aeme_data)
+```
+Alongside some basic inspection plots.
+```{r}
+plot(aeme_data)
+```
 
