@@ -5,34 +5,11 @@
 \alias{aeme}
 \alias{aeme-class}
 \title{aeme Class}
-\usage{
-aeme(lake, catchment, time, observations, input, inflows, outflows, output)
-}
-\arguments{
-\item{lake}{List representing lake information.}
-
-\item{catchment}{List representing catchment information.}
-
-\item{time}{List representing time information.}
-
-\item{observations}{List representing observation information.}
-
-\item{input}{List representing input information.}
-
-\item{inflows}{List representing inflows information.}
-
-\item{outflows}{List representing outflows information.}
-
-\item{output}{List representing output information.}
-}
-\value{
-An instance of the aeme class.
-}
 \description{
 S4 Class representing AEME data
 }
 \details{
-This class represents data related to a lake.
+This class represents data related to a lake for running AEME.
 }
 \section{Slots}{
 
