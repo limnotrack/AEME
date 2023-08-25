@@ -17,12 +17,10 @@ Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
 Suggests: 
-    GLM3r,
     testthat (>= 3.0.0)
 Imports: 
     dplyr,
     ecmwfr,
-    glmtools,
     gotmtools,
     job,
     lubridate,
@@ -35,9 +33,8 @@ Imports:
     sf,
     stars,
     stringr,
+    units,
     yaml
 URL: https://expert-guide-29ve1vw.pages.github.io/
 Remotes: 
-    USGS-R/glmtools,
-    aemon-j/gotmtools@yaml,
-    aemon-j/GLM3r
+    aemon-j/gotmtools@yaml
