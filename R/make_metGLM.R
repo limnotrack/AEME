@@ -1,9 +1,9 @@
 #' Make a met file for GLM
 #'
-#' @param obs_met
-#' @param path_glm
-#' @param infRain
-#' @param use_lw
+#' @param obs_met data.frame containing met data.
+#' @param path_glm filepath to GLM directory
+#' @param infRain Logical; Set rainfall = 0
+#' @param use_lw Logical; use incoming longwave radiation?
 #'
 #' @noRd
 #' @importFrom stringr str_pad

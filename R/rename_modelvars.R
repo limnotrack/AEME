@@ -8,8 +8,7 @@
 #' @return vector of changed names
 #' @noRd
 #' @importFrom utils data
-#'
-#' @examples
+
 rename_modelvars <- function(input,
                              type_output = "name_parse",
                              type_input = "name",

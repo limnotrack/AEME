@@ -12,10 +12,8 @@
 #' @param filePath filepath
 #'
 #' @importFrom utils write.table
-#' @return
+#' @return writes DYRESM inital profile file.
 #' @noRd
-#'
-#' @examples
 
 make_DYpro <-  function(lakename = "!unknown",
                         verDY = 3.1,

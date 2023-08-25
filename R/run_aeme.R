@@ -14,11 +14,29 @@
 #' @importFrom stats setNames
 #'
 #' @examples
+#' \dontrun{
+#' tmpdir <- tempdir()
+#' aeme_dir <- system.file("extdata/lake/", package = "AEME")
+#' # Copy files from package into tempdir
+#' file.copy(aeme_dir, tmpdir, recursive = TRUE)
+#' path <- file.path(tmpdir, "lake")
+#' aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+#' mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+#' inf_factor = c("glm_aed" = 1)
+#' outf_factor = c("glm_aed" = 1)
+#' model <- c("glm_aed")
+#' build_ensemble(path = path, aeme_data = aeme_data, model = model,
+#'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+#'                use_bgc = TRUE, use_lw = TRUE)
+#' run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+#' }
+
 run_aeme <- function(aeme_data, model, verbose = FALSE, debug = FALSE,
                      timeout = 0, parallel = FALSE, path = ".") {
 
-  sim_folder <- file.path(path, paste0(aeme_data@lake$id,"_",
-                                      tolower(aeme_data@lake$name)))
+  lke <- lake(aeme_data)
+  sim_folder <- file.path(path, paste0(lke$id,"_",
+                                      tolower(lke$name)))
   run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
                          debug = debug, timeout = timeout)
 
@@ -55,17 +73,15 @@ run_aeme <- function(aeme_data, model, verbose = FALSE, debug = FALSE,
 
 #' Run DYRESM-CAEDYM
 #'
-#' @param sim_folder
-#' @param bin_path
-#' @param verbose
-#' @param debug
-#' @param timeout
+#' @param sim_folder the directory where simulation files are contained
+#' @param verbose Logical: Should output of model be shown
+#' @param debug Logical; save debug file. DYRESM only.
+#' @inheritParams base::system2
 #'
 #' @importFrom utils tail
-#' @return
+#' @return runs DYRESM-CAEDYM
 #' @noRd
-#'
-#' @examples
+
 run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
                       timeout = 0) {
 
@@ -128,15 +144,12 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
 
 #' Run GLM-AED
 #'
-#' @param sim_folder
-#' @param verbose
-#' @param timeout
+#' @inheritParams run_dy_cd
 #'
 #' @importFrom utils tail
-#' @return
+#' @return runs GLM-AED
 #' @noRd
-#'
-#' @examples
+
 run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
                         timeout = 0) {
 
@@ -168,17 +181,13 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
 
 #' Run GOTM-WET
 #'
-#' @param sim_folder
-#' @param bin_path
-#' @param verbose
-#' @param timeout
+#' @inheritParams run_dy_cd
 #'
-#' @return
+#' @return runs GOTM-WET
 #' @noRd
 #'
 #' @importFrom utils tail
-#'
-#' @examples
+
 run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
                          timeout = 0) {
 

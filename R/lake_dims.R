@@ -1,13 +1,12 @@
 #' Calculate the length, width and area at a give height based on a  bathy table
 #'
-#' @param lake_shape
+#' @param lake_shape sf; of lake polygon.
 #'
-#' @return
+#' @return numeric vector of length 2 with basin length and width.
 #' @noRd
 #'
 #' @importFrom sf st_transform st_centroid st_coordinates
-#'
-#' @examples
+
 lake_dims <- function(lake_shape) {
 
   shp <- lake_shape |>
@@ -41,14 +40,13 @@ lake_dims <- function(lake_shape) {
 
 #' Function to rotate line
 #'
-#' @param theta
+#' @param theta angle in radians to measure across the lake.
 #'
-#' @return
+#' @return numeric distance in metres.
 #' @noRd
 #'
 #' @importFrom sf st_linestring st_sfc st_intersection st_length st_buffer
-#'
-#' @examples
+
 rotate <- function(theta, vert, centre, shp) {
 
   theta.rad <- theta * pi / 180 ## in radians
@@ -64,6 +62,6 @@ rotate <- function(theta, vert, centre, shp) {
   line2 <- sf::st_intersection(line, sf::st_buffer(shp, 0))
 
 
-  sf::st_length(line2)|> as.numeric()
+  sf::st_length(line2) |> as.numeric()
 
 }
