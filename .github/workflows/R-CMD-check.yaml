@@ -45,8 +45,6 @@ jobs:
           install.packages("rcmdcheck")
           install.packages("yaml")
           remotes::install_github("aemon-j/gotmtools", ref = "yaml")
-          remotes::install_github("aemon-j/GLM3r")
-          remotes::install_github("USGS-R/glmtools", ref = "ggplot_overhaul")
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
