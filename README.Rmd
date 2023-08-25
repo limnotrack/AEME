@@ -63,8 +63,8 @@ outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
 build_ensemble(path = path, aeme_data = aeme_data, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-               use_bgc = FALSE, use_lw = TRUE)
-run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+               use_bgc = TRUE, use_lw = TRUE)
+run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, path = path)
 ```
 
 The model input and output (I/O) is handled as it's own S4 object of
@@ -85,16 +85,22 @@ aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
                           mod_ctrls = mod_ctrls, parallel = FALSE)
 
 ```
+
 This object can be be printed to the console:
+
 ```{r}
 aeme_data
 ```
+
 Summarised easily:
+
 ```{r}
 summary(aeme_data)
 ```
-Alongside some basic inspection plots.
-```{r}
-plot(aeme_data)
-```
 
+Model data can be visualised easily using the `plot_output()` function
+
+```{r, label="plot_output",echo=FALSE,results="hide",fig.keep="all"}
+plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp", 
+            level = TRUE, label = TRUE, var_lims = c(7, 30), print_plots = FALSE)
+```
