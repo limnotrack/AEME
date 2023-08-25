@@ -1,16 +1,14 @@
 #' write and configure inflows for a GLM simulation
 #'
-#' @param glm_nml
-#' @param path_glm
-#' @param list_inf
-#' @param mass
-#' @param key_naming
-#' @param inf_factor
+#' @inheritParams set_nml
+#' @param path_glm filepath; to GLM directory
+#' @param list_inf list of inflows
+#' @param mass boolean; do mass conversion for GLM-AED units.
+#' @param inf_factor numeric; scaling factor to apply to inflows
 #'
-#' @return
+#' @return nml object with updated inflow section
 #' @noRd
 #'
-#' @importFrom glmtools set_nml
 #' @importFrom utils write.csv
 
 make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
@@ -72,7 +70,7 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                      coef_inf_entrain = 0
                      )
 
-    glm_nml <- glmtools::set_nml(glm_nml = glm_nml, arg_list = arg_list)
+    glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
   } else {
     glm_nml[["inflow"]] <- NULL
   }

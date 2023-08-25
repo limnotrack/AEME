@@ -7,7 +7,6 @@
 #' @return Directory with GLM-AED configuration
 #' @noRd
 #'
-#' @importFrom glmtools read_nml set_nml
 #' @importFrom dplyr slice
 #'
 
@@ -50,7 +49,7 @@ build_glm <- function(lakename, mod_ctrls, date_range,
     unlink()
 
   # Read in GLM nml file
-  glm_nml <- glmtools::read_nml(file.path(path_glm, "glm3.nml"))
+  glm_nml <- read_nml(file.path(path_glm, "glm3.nml"))
 
   # set the simulation date range
   glm_nml <- daterange_GLM(date_range, glm_nml = glm_nml)
@@ -138,5 +137,5 @@ build_glm <- function(lakename, mod_ctrls, date_range,
   }
 
   # Write the GLM nml file
-  glmtools::write_nml(glm_nml, file.path(path_glm, "glm3.nml"))
+  write_nml(glm_nml, file.path(path_glm, "glm3.nml"))
 }

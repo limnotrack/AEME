@@ -1,17 +1,17 @@
 #' Write a lake bathymetry to a GLM simulation
 #'
-#' @param glm_nml
-#' @param lakename
-#' @param bathy
-#' @param gps
-#' @param crest
-#' @param dims_lake
-#' @param update_sediment
+#' @inheritParams set_nml
+#' @param lakename string; name of lake
+#' @param bathy data.frame; containing hypsograph
+#' @param gps vector of length 2; containing latitude and longitude
+#' @param crest numeric; height of crest of lake
+#' @param dims_lake numeric vector of length 2; containing basin length and
+#' width.
+#' @param update_sediment Logical; update the sediment block in the nml object?
 #'
-#' @return
+#' @return updated nml object
 #' @noRd
-#'
-#' @importFrom glmtools set_nml
+
 make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake, crest,
                         update_sediment = TRUE) {
 
@@ -37,7 +37,7 @@ make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake, crest,
                    bsn_len = len, bsn_wid = wid, bsn_vals = nrow(bathy_glm),
                    H = round(bathy_glm$elev, 2), A = round(bathy_glm$area, 0))
 
-  glm_nml <- glmtools::set_nml(glm_nml = glm_nml, arg_list = arg_list)
+  glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
 
   if (update_sediment) {
     depth <- bathy$elev[(nrow(bathy)-1)] - min(bathy$elev)

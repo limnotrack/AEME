@@ -1,16 +1,15 @@
 #' Write initial temperature and salinity profiles to the GLM nml file
 #'
-#' @param glm_nml
-#' @param lvl_bottom
-#' @param lvl_start
-#' @param tmpwtr
-#' @param tbl_obs
-#' @param Kw
+#' @inheritParams set_nml
+#' @param lvl_bottom numeric; depth of bottom of profile
+#' @param lvl_start numeric; depth of top of profile
+#' @param tmpwtr numeric; water temperature
+#' @param tbl_obs data.frame; with profile
+#' @param Kw numeric; value of Kw
 #'
 #' @return GLM nml list object
 #' @noRd
 #'
-#' @importFrom glmtools set_nml
 
 initialiseGLM <-  function(glm_nml, lvl_bottom, lvl_start,
                            tmpwtr = 10, tbl_obs = NULL, Kw) {
@@ -35,6 +34,6 @@ initialiseGLM <-  function(glm_nml, lvl_bottom, lvl_start,
     the_sals = tbl_obs[, 3]
   )
 
-  glm_nml <- glmtools::set_nml(glm_nml = glm_nml, arg_list = arg_list)
+  glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
   return(glm_nml)
 }
