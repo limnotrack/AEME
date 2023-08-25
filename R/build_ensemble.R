@@ -81,37 +81,41 @@ build_ensemble <- function(aeme_data = NULL,
 
 
   if (!is.null(aeme_data)) {
-    message("Building simulation for ", aeme_data@lake$name, " [", Sys.time(),
+    lke <- lake(aeme_data)
+    message("Building simulation for ", lke$name, " [", Sys.time(),
             "]")
-    lake_dir <- file.path(path, paste0(aeme_data@lake$id, "_",
-                                      tolower(aeme_data@lake$name)))
-    date_range <- as.Date(c(aeme_data@time[["start"]],
-                            aeme_data@time[["stop"]]))
-    spin_up <- aeme_data@time[["spin_up"]]
+    aeme_time <- time(aeme_data)
+    lake_dir <- file.path(path, paste0(lke$id, "_",
+                                      tolower(lke$name)))
+    date_range <- as.Date(c(aeme_time[["start"]],
+                            aeme_time[["stop"]]))
+    spin_up <- aeme_time[["spin_up"]]
 
-    if (!is.null(aeme_data@lake[["shape"]])) {
-      lake_shape <- aeme_data@lake[["shape"]]
+    if (!is.null(lke[["shape"]])) {
+      lake_shape <- lke[["shape"]]
     } else {
-      coords <- data.frame(lat = aeme_data@lake[["latitude"]],
-                           lon = aeme_data@lake[["longitude"]])
+      coords <- data.frame(lat = lke[["latitude"]],
+                           lon = lke[["longitude"]])
       coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
-      r <- sqrt(aeme_data@lake[["area"]] / pi)
+      r <- sqrt(lke[["area"]] / pi)
       lake_shape <- sf::st_buffer(coords_sf, r)
     }
-    elevation <- aeme_data@lake[["elevation"]]
+    elevation <- lke[["elevation"]]
     # Hypsograph ----
-    if (is.null(aeme_data@input[["hypsograph"]])) {
+    inp <- input(aeme_data)
+    if (is.null(inp[["hypsograph"]])) {
       stop("Hypsograph is not present. This is required to build the models.")
     }
-    hyps <- aeme_data@input[["hypsograph"]]
+    hyps <- inp[["hypsograph"]]
+    aeme_obs <- observations(aeme_data)
 
-    if (is.null(aeme_data@observations[["level"]])) {
+    if (is.null(aeme_obs[["level"]])) {
       stop("Lake level is not present. This is required to build the models.")
     }
-    lvl <- aeme_data@observations[["level"]]
+    lvl <- aeme_obs[["level"]]
 
     # Initial profile ----
-    if (!is.null(aeme_data@input[["init_profile"]])) {
+    if (!is.null(inp[["init_profile"]])) {
 
     } else {
       init_prof <- data.frame(depth = c(0,
@@ -121,9 +125,10 @@ build_ensemble <- function(aeme_data = NULL,
     }
 
     # Inflow ----
-    if (!is.null(aeme_data@inflows[["data"]])) {
-      for (i in 1:length(aeme_data@inflows[["data"]])) {
-        inf[[names(aeme_data@inflows[["data"]])[i]]] <- aeme_data@inflows[["data"]][[i]]
+    aeme_inf <- inflows(aeme_data)
+    if (!is.null(aeme_inf[["data"]])) {
+      for (i in 1:length(aeme_inf[["data"]])) {
+        inf[[names(aeme_inf[["data"]])[i]]] <- aeme_inf[["data"]][[i]]
         if (any(!inf_vars %in% names(inf[[i]]))) {
           stop("missing state variables in inflow tables")
         }
@@ -132,26 +137,27 @@ build_ensemble <- function(aeme_data = NULL,
           dplyr::select(all_of(c("Date","HYD_flow", inf_vars)))
       }
     }
-    inf_factor <- aeme_data@inflows[["factor"]]
+    inf_factor <- aeme_inf[["factor"]]
 
     #--- meteorology
-    if (is.null(file.path(path, aeme_data@input[["meteo"]]))) {
-      stop(aeme_data@input[["meteo"]], " does not exist. Check file path.")
+    if (is.null(file.path(path, inp[["meteo"]]))) {
+      stop(inp[["meteo"]], " does not exist. Check file path.")
     }
-    met <- aeme_data@input[["meteo"]]
+    met <- inp[["meteo"]]
 
-    Kw <- aeme_data@input[["Kw"]]
+    Kw <- inp[["Kw"]]
 
     # Outflow ----
-    if (!is.null(aeme_data@outflows[["data"]])) {
-      for(i in 1:length(aeme_data@outflows[["data"]])) {
-        outf[[names(aeme_data@outflows[["data"]])[i]]] <-
-          aeme_data@outflows[["data"]][[i]]
+    aeme_outf <- outflows(aeme_data)
+    if (!is.null(aeme_outf[["data"]])) {
+      for(i in 1:length(aeme_outf[["data"]])) {
+        outf[[names(aeme_outf[["data"]])[i]]] <-
+          aeme_outf[["data"]][[i]]
       }
     }
 
-    outf_factor <- aeme_data@outflows[["factor"]]
-    lakename <- tolower(aeme_data@lake[["name"]])
+    outf_factor <- aeme_outf[["factor"]]
+    lakename <- tolower(lke[["name"]])
 
   } else if (!is.null(config)) {
     lake_dir <- file.path(path, paste0(config$lake$lake_id, "_",
