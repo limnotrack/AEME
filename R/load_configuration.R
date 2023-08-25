@@ -79,26 +79,26 @@ get_config_glm_aed <- function(lake, path, use_bgc) {
   if (!file.exists(nml_file)) {
     stop("No GLM nml file present at\n", nml_file)
   }
-  out$physical <- glmtools::read_nml(nml_file = nml_file)
+  out$physical <- read_nml(nml_file = nml_file)
 
   if (use_bgc) {
     aed_file <- file.path(lake_dir, "glm_aed", "aed2", "aed2.nml")
     if (!file.exists(aed_file)) {
       stop("No GLM-AED nml file present at\n", aed_file)
     }
-    aed <- glmtools::read_nml(aed_file)
+    aed <- read_nml(aed_file)
     phyto_file <- file.path(lake_dir, "glm_aed", "aed2", "aed2_phyto_pars.nml")
     if (!file.exists(phyto_file)) {
       stop("No GLM-AED nml file present at\n", phyto_file)
     }
-    phyto <- glmtools::read_nml(phyto_file)
+    phyto <- read_nml(phyto_file)
 
     # Zooplankton
     zoop_file <- file.path(lake_dir, "glm_aed", "aed2", "aed2_zoop_pars.nml")
     if (!file.exists(zoop_file)) {
       stop("No GLM-AED nml file present at\n", zoop_file)
     }
-    zoop <- glmtools::read_nml(zoop_file)
+    zoop <- read_nml(zoop_file)
 
     out$bgc <- list(aed = aed, phyto = phyto, zoop = zoop)
   }
