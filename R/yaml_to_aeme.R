@@ -65,6 +65,7 @@ yaml_to_aeme <- function(path, file) {
     lake = yaml$lake,
     catchment = yaml$catchment,
     time = yaml$time,
+    configuration = yaml$configuration,
     observations = yaml$observations,
     input = yaml$input,
     inflows = yaml$inflows,
