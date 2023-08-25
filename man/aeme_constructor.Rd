@@ -8,6 +8,7 @@ aeme_constructor(
   lake,
   catchment,
   time,
+  configuration,
   observations,
   input,
   inflows,
@@ -21,6 +22,8 @@ aeme_constructor(
 \item{catchment}{List representing catchment information.}
 
 \item{time}{List representing time information.}
+
+\item{configuration}{List representing configuration information.}
 
 \item{observations}{List representing observation information.}
 
