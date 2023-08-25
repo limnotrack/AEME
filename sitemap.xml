@@ -28,6 +28,18 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment.html</loc>
   </url>
   <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/configuration-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/configuration-set-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/configuration-set.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/configuration.html</loc>
+  </url>
+  <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/convert_era5.html</loc>
   </url>
   <url>
@@ -35,6 +47,9 @@
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/era5_ref_table.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_nml_value.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/index.html</loc>
@@ -59,6 +74,9 @@
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/lake.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/load_configuration.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/load_output.html</loc>
@@ -91,7 +109,16 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot-aeme-ANY-method.html</loc>
   </url>
   <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_output.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/read_nml.html</loc>
+  </url>
+  <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/run_aeme.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/set_nml.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/show-aeme-method.html</loc>
@@ -104,6 +131,9 @@
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/time.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/write_nml.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/yaml_to_aeme.html</loc>
