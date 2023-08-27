@@ -10,10 +10,12 @@
 #' Jordan S. Read
 #' @seealso \link{get_nml_value}, \link{read_nml}
 #' @examples
+#' \dontrun{
 #' glm_nml <- read_nml()
 #' write_path <- paste0(tempdir(),'glm2.nml')
 #' write_nml(glm_nml, file = write_path)
 #' print(read_nml(write_path))
+#' }
 #' @source glmtools package: https://github.com/GLEON/glmtools
 #' @export
 write_nml  <-	function(glm_nml, file){

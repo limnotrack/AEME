@@ -9,7 +9,7 @@
 #' @author
 #' Jordan S. Read
 #' @seealso \link{get_nml_value}
-#'  @source glmtools package: https://github.com/GLEON/glmtools
+#' @source glmtools package: https://github.com/GLEON/glmtools
 #' @export
 
 read_nml  <-	function(nml_file){

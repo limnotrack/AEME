@@ -3,6 +3,9 @@
 \name{read_nml}
 \alias{read_nml}
 \title{read in a GLM simulation *.nml file}
+\source{
+glmtools package: https://github.com/GLEON/glmtools
+}
 \usage{
 read_nml(nml_file)
 }
@@ -17,7 +20,6 @@ read in a GLM simulation *.nml file and create a list.  \cr
 }
 \seealso{
 \link{get_nml_value}
- @source glmtools package: https://github.com/GLEON/glmtools
 }
 \author{
 Jordan S. Read
