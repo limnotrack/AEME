@@ -20,6 +20,8 @@ This class represents data related to a lake for running AEME.
 
 \item{\code{time}}{A list representing time information.}
 
+\item{\code{configuration}}{A list representing each model's configuration.}
+
 \item{\code{observations}}{A list representing observation information.}
 
 \item{\code{input}}{A list representing input information.}

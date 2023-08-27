@@ -7,6 +7,7 @@
 #' @slot lake A list representing lake information.
 #' @slot catchment A list representing catchment information.
 #' @slot time A list representing time information.
+#' @slot configuration A list representing each model's configuration.
 #' @slot observations A list representing observation information.
 #' @slot input A list representing input information.
 #' @slot inflows A list representing inflows information.
