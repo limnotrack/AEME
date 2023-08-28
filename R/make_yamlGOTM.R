@@ -19,7 +19,7 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
                                 "MET_tmpair", "MET_tmpdew", "MET_humrel",
                                 "MET_cldcvr", "MET_radswd", "precip"))
 
-  gotm <- gotmtools::read_yaml(file.path(path.gotm, "gotm.yaml"))
+  gotm <- yaml::read_yaml(file.path(path.gotm, "gotm.yaml"))
 
   gotm$location$name <- lakename
   gotm$location$latitude <- round(gps[2], 5)
@@ -224,5 +224,5 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   gotm$water_balance_method <- 3
   gotm$mimic_3d$zeta$method <- 3
 
-  gotmtools::write_yaml(gotm, file.path(path.gotm, "gotm.yaml"))
+  write_yaml(gotm, file.path(path.gotm, "gotm.yaml"))
 }

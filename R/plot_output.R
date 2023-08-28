@@ -17,6 +17,9 @@
 #' variables.
 #' @export
 #'
+#' @importFrom RColorBrewer brewer.pal
+#' @importFrom ggplot2 ggplot geom_col aes scale_fill_gradientn coord_cartesian
+#' xlab ylab labs ggtitle theme_bw
 #' @examples
 #' \dontrun{
 #'   tmpdir <- tempdir()

@@ -8,9 +8,9 @@
 #' @return dataframe with expanded met variables
 #' @noRd
 #'
-#' @importFrom gotmtools calc_cc calc_in_lwr
 #' @importFrom psychrolib SetUnitSystem GetStationPressure GetSeaLevelPressure
-#' @importFrom rWind uv2ds
+#' @importFrom tidyr pivot_longer
+#' @importFrom ggplot2 ggplot geom_line aes facet_wrap labs theme_bw
 #'
 
 expand_met <- function(met, coords.xyz, print.plot = FALSE) {
@@ -86,9 +86,9 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
 
   # if no cloud cover is supplied
   if(!is.cldcvr) {
-    cldcvr <- gotmtools::calc_cc(date = as.POSIXct(Date), airt = tmpair, relh = humrel,
-                                 swr = radswd, lat = coords.xyz[2],
-                                 lon = coords.xyz[1], elev = coords.xyz[3])
+    cldcvr <- calc_cc(date = as.POSIXct(Date), airt = tmpair, relh = humrel,
+                      swr = radswd, lat = coords.xyz[2], lon = coords.xyz[1],
+                      elev = coords.xyz[3])
 
   } else {
     cldcvr = met[, which(grepl("cldcvr", colnames(met)))]
@@ -144,7 +144,7 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
     wnduvv <- met[,which(grepl("wnduvv",colnames(met)))]
 
     # get wind speed from vector components
-    wndspd <- rWind::uv2ds(wnduvu, wnduvv)[, 2]
+    wndspd <- uv2ds(wnduvu, wnduvv)[, 2]
 
   }
 
@@ -155,7 +155,7 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
     wnduvv <- met[, which(grepl("wnduvv",colnames(met)))]
 
     if(!is.wnddir) {
-      wnddir <- rWind::uv2ds(u = wnduvu, v = wnduvv)[, 1]
+      wnddir <- uv2ds(u = wnduvu, v = wnduvv)[, 1]
     } else {
       # adjust wind direction to represent direction to (not from)
       wnddir <- met[,which(grepl("wnddir", colnames(met)))]
@@ -178,11 +178,11 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
                           but not present")}
 
     # get wind speed from vector components
-    wndspd <- rWind::uv2ds(wnduvu, wnduvv)[, 2]
+    wndspd <- uv2ds(wnduvu, wnduvv)[, 2]
   }
 
   if(!is.radlwd) {
-    radlwd <- gotmtools::calc_in_lwr(cc = cldcvr, airt = tmpair, relh = humrel)
+    radlwd <- calc_in_lwr(cc = cldcvr, airt = tmpair, relh = humrel)
   } else {
     radlwd <- met[, which(grepl("radlwd",colnames(met)))]
   }
@@ -206,8 +206,9 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
   if (print.plot) {
     # plot to check final frame
     p <- out |>
-      tidyr::gather(var,value, 2:ncol(.)) |>
-      ggplot2::ggplot(.) +
+      tidyr::pivot_longer(cols = !dplyr::contains(Date), names_to = "var",
+                          values_to = "value") |>
+      ggplot2::ggplot() +
       ggplot2::geom_line(ggplot2::aes(Date, value)) +
       ggplot2::facet_wrap(~var, ncol = 2, scales= "free") +
       ggplot2::labs(x = NULL, y = "Value") +

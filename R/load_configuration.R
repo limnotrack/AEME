@@ -121,14 +121,14 @@ get_config_gotm_wet <- function(lake, path, use_bgc) {
   if (!file.exists(yaml_file)) {
     stop("No GOTM yaml file present at\n", yaml_file)
   }
-  out$physical <- gotmtools::read_yaml(file = yaml_file)
+  out$physical <- yaml::read_yaml(file = yaml_file)
 
   if (use_bgc) {
     fabm_file <- file.path(lake_dir, "gotm_wet", "fabm.yaml")
     if (!file.exists(fabm_file)) {
       stop("No GOTM-FABM yaml file present at\n", fabm_file)
     }
-    out$bgc <- gotmtools::read_yaml(file = fabm_file)
+    out$bgc <- yaml::read_yaml(file = fabm_file)
   }
   return(out)
 }

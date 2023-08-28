@@ -39,7 +39,7 @@ initialiseGOTM <-  function(lvl_bottom, lvl_surf,
 
   #-------- make the file! ---------
   path.yaml <- file.path(path.gotm, "gotm.yaml")
-  gotm.yaml <- gotmtools::read_yaml(path.yaml)
+  gotm.yaml <- yaml::read_yaml(path.yaml)
 
   gotm.yaml$temperature$method <- 2
   gotm.yaml$temperature$file <- "inputs/t_prof_file.dat"
@@ -49,5 +49,5 @@ initialiseGOTM <-  function(lvl_bottom, lvl_surf,
   gotm.yaml$salinity$file <- "inputs/s_prof_file.dat"
   gotm.yaml$salinity$column <- 1
 
-  gotmtools::write_yaml(gotm.yaml, path.yaml)
+  write_yaml(gotm.yaml, path.yaml)
 }

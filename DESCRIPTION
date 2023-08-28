@@ -21,7 +21,6 @@ Suggests:
 Imports: 
     dplyr,
     ecmwfr,
-    gotmtools,
     job,
     lubridate,
     methods,
@@ -29,12 +28,14 @@ Imports:
     parallel,
     plyr,
     psychrolib,
-    rWind,
     sf,
     stars,
+    stats,
     stringr,
+    tidyr,
+    tools,
     units,
-    yaml
+    utils,
+    yaml,
+    zoo
 URL: https://expert-guide-29ve1vw.pages.github.io/
-Remotes: 
-    aemon-j/gotmtools@yaml
