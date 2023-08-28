@@ -21,6 +21,7 @@ Suggests:
 Imports: 
     dplyr,
     ecmwfr,
+    ggplot2,
     job,
     lubridate,
     methods,
@@ -28,6 +29,7 @@ Imports:
     parallel,
     plyr,
     psychrolib,
+    RColorBrewer,
     sf,
     stars,
     stats,
