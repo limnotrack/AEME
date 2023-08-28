@@ -2,18 +2,22 @@
 #'
 #' @description
 #' Download ERA5 meteorological data from the Copernicus Data Store (CDS).
-#' Create a ECMWF account by self registering (https://accounts.ecmwf.int/auth/realms/ecmwf/login-actions/registration?client_id=cms-www&tab_id=kZuwr5qOsFM) and retrieving your key at https://api.ecmwf.int/v1/key/ after
-#' you log in.
+#' Create a free CDS user account by \href{https://cds.climate.copernicus.eu/user/register}{self
+#'  registering}.
+#' Once your user account has been verified you can get your personal user ID
+#' and key by visiting the \href{https://cds.climate.copernicus.eu/user}{user
+#' profile}.
 #'
 #'
 #' @param lat numeric; latitude
 #' @param lon numeric; longitude
-#' @param variable string with ERA5 variable names e.g. "2m_temperature", "total_precipitation"
+#' @param variable vecto;r with string with ERA5 variable names e.g.
+#' "2m_temperature", "total_precipitation"
 #' @param year numeric; year or vector of years.
 #' @param month numeric; month or vector of months. Defaults to 1:12.
 #' @param site string of site name which will be appended to the file
 #' @param user user ID linked with Copernicus account
-#' @param era5_dataset string of which ERA5 dataset to use. Can be 'reanalysis-era5-single-levels' or 'reanalysis-era5-land'
+#' @param era5_dataset string; of which ERA5 dataset to use. Can be 'reanalysis-era5-single-levels' or 'reanalysis-era5-land'
 #' @param path filepath to store downloaded file
 #' @param job logical; send the request to a background job in RStudio. Only
 #' works in RStudio. Default = TRUE.
@@ -21,6 +25,21 @@
 #' @importFrom plyr round_any
 #' @importFrom ecmwfr wf_request_batch
 #' @importFrom job job
+#'
+#' @examples
+#' \dontrun{
+#' path <- 'era5_folder'
+#' site <- 'lake'
+#' ecmwfr::wf_set_key(user = '123456',
+#'                    key = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+#'                    service = 'cds')
+#'
+#' download_era5(lat = lat, lon = lon, year = 2022,
+#'               user = user, path = path)
+#' met <- convert_era5(lat = lat, lon = lon, year = 2022,
+#'                     site = site, path = path)
+#' }
+#'
 #'
 #' @export
 #'
