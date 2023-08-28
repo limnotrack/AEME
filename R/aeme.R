@@ -159,7 +159,7 @@ aeme_constructor <- function(
   if (!is.character(catchment$name)) {
     stop("Catchment name must be a character.")
   }
-  if (!is(catchment$shape, "sf") | is.null(catchment$shape)) {
+  if (!is(catchment$shape, "sf") & !is.null(catchment$shape)) {
     stop("Catchment shape must be an 'sf' object or NULL.")
   }
   if (!is.numeric(catchment$area) & !is.null(catchment$area)) {
@@ -173,6 +173,9 @@ aeme_constructor <- function(
       units::drop_units()
     message(paste0("   ", round(catchment$area, 2), " m2"))
     suppressMessages(sf::sf_use_s2(TRUE))
+  }
+  if (!is(catchment$shape, "sf") & is.null(catchment$area)) {
+    stop("Catchment area must be provided if no catchment shape is present.")
   }
 
   # Time type checking for specific elements
@@ -492,12 +495,13 @@ setMethod("show", "aeme", function(object) {
                                                        2),
       "; Elev: ", round(lke$elevation, 2), "m; Depth: ",
       round(lke$depth, 2), "m;\nArea: ", round(lke$area, 2),
-      "m2; Shape file: ", ifelse(is(lke$shape, "sf"), "Present",
+      " m2; Shape file: ", ifelse(is(lke$shape, "sf"), "Present",
                                  "Absent"),
       "\n-------------------------------------------------------------------\n",
       "  Catchment \n",
       "Name: ", ifelse(is.null(catchm$name), NA, catchm$name),
-      "; Area: ", ifelse(is.null(catchm$area), NA, catchm$area),
+      "; Area: ", ifelse(is.null(catchm$area), NA, catchm$area), " m2;
+      Shape file: ", ifelse(is(catchm$shape, "sf"), "Present", "Absent"),
       "\n-------------------------------------------------------------------\n",
       "  Time\n",
       "Start: ", as.character(aeme_time$start),
