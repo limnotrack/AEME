@@ -6,7 +6,7 @@
 #' @param yaml list; loaded using `read_yaml()`
 #' @param file filepath; to yaml file which you wish to edit
 #'   Note boolean values must be input as "true"/"false" as per the json format
-#' @noRd
+#' @export
 #' @importFrom yaml write_yaml
 #' @author
 #' Jeremy Stephens <jeremy.f.stephens@vumc.org>, Tadhg Moore
