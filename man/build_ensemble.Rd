@@ -14,6 +14,7 @@ build_ensemble(
   ext_elev = 0,
   use_bgc = TRUE,
   use_lw = FALSE,
+  coeffs = NULL,
   hum_type = 3,
   path = "."
 )
@@ -41,6 +42,14 @@ outflows. Needs to be named according to the model.}
 
 \item{use_lw}{boolean; use incoming longwave radiation. Only applies to
 GLM-AED.}
+
+\item{coeffs}{numeric vector of length two; to be used to estimate surface
+water temperature for estimating evaporation. Defaults to NULL. If water
+temperature observations are included in `aeme` object, then it will use
+those to build a linear relationship between air temperature and water
+temperature. Otherwise. it uses the simple estimation
+ \eqn{temp_water = 5 + 0.75 * temp_air} from Stefan & Preud'homme, 2007:
+ www.doi.org/10.1111/j.1752-1688.1993.tb01502.x}
 
 \item{hum_type}{numeric; GOTM humidity metric [1=relative humidity (%),
 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]

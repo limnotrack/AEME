@@ -16,6 +16,13 @@
 #' @param use_bgc boolean; switch to use the biogeochemical model.
 #' @param use_lw boolean; use incoming longwave radiation. Only applies to
 #' GLM-AED.
+#' @param coeffs numeric vector of length two; to be used to estimate surface
+#' water temperature for estimating evaporation. Defaults to NULL. If water
+#' temperature observations are included in `aeme` object, then it will use
+#' those to build a linear relationship between air temperature and water
+#' temperature. Otherwise. it uses the simple estimation
+#'  \eqn{temp_water = 5 + 0.75 * temp_air} from Stefan & Preud'homme, 2007:
+#'  www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
 #' @param hum_type numeric; GOTM humidity metric [1=relative humidity (%),
 #' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
 #' Default = 3.
@@ -56,6 +63,7 @@ build_ensemble <- function(aeme_data = NULL,
                            ext_elev = 0,
                            use_bgc = TRUE,
                            use_lw = FALSE,
+                           coeffs = NULL,
                            hum_type = 3,
                            path = "."
                            ) {
@@ -79,8 +87,9 @@ build_ensemble <- function(aeme_data = NULL,
     inf_vars <- c("HYD_temp", "CHM_salt")
   }
 
-
+  # AEME input ----
   if (!is.null(aeme_data)) {
+
     lke <- lake(aeme_data)
     message("Building simulation for ", lke$name, " [", Sys.time(),
             "]")
@@ -101,18 +110,24 @@ build_ensemble <- function(aeme_data = NULL,
       lake_shape <- sf::st_buffer(coords_sf, r)
     }
     elevation <- lke[["elevation"]]
+    coords.xyz <- c(lke[["longitude"]], lke[["latitude"]], lke[["elevation"]])
     # Hypsograph ----
     inp <- input(aeme_data)
     if (is.null(inp[["hypsograph"]])) {
-      stop("Hypsograph is not present. This is required to build the models.")
+      warning(paste(strwrap("Hypsograph is not present. This function will
+                            generate a simple hypsograph using lake depth and
+                            area."),
+                    collapse = "\n"))
+      if (any(c(is.null(lke$elevation), is.null(lke$depth), is.null(lke$area)))) {
+        stop(paste(strwrap("Lake elevation, depth and area are not present.
+                           These are required to build the models"),
+                   sep = "\n"))
+      }
+      hyps <- data.frame(elev = c(lke$elevation - lke$depth, lke$elevation),
+                         area = c(0, lke$area))
+    } else {
+      hyps <- inp[["hypsograph"]]
     }
-    hyps <- inp[["hypsograph"]]
-    aeme_obs <- observations(aeme_data)
-
-    if (is.null(aeme_obs[["level"]])) {
-      stop("Lake level is not present. This is required to build the models.")
-    }
-    lvl <- aeme_obs[["level"]]
 
     # Initial profile ----
     if (!is.null(inp[["init_profile"]])) {
@@ -140,17 +155,38 @@ build_ensemble <- function(aeme_data = NULL,
     inf_factor <- aeme_inf[["factor"]]
 
     #--- meteorology
-    if (is.null(file.path(path, inp[["meteo"]]))) {
-      stop(inp[["meteo"]], " does not exist. Check file path.")
+    if (is.null(inp[["meteo"]])) {
+      stop("Meteorology data is not provided. You can download ERA5 data
+using the following code:\n
+
+path <- 'era5_folder'
+site <- 'lake'
+ecmwfr::wf_set_key(user = '123456',
+                   key = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+                   service = 'cds')
+
+download_era5(lat = lat, lon = lon, year = 2022,
+              user = user, path = path)
+met <- convert_era5(lat = lat, lon = lon, year = 2022,
+                    site = site, path = path)")
     }
     met <- inp[["meteo"]]
+
+    # met <- met |>
+    #   dplyr::filter(Date >= (date_range[1]),
+    #                 Date <= date_range[2])
+    met <- met |>
+      dplyr::mutate(Date = as.Date(Date)) |>
+      dplyr::mutate(MET_pprain = MET_pprain / 1000,
+                    MET_ppsnow = MET_ppsnow / 1000) |>
+      expand_met(coords.xyz = coords.xyz, print.plot = FALSE)
 
     Kw <- inp[["Kw"]]
 
     # Outflow ----
     aeme_outf <- outflows(aeme_data)
     if (!is.null(aeme_outf[["data"]])) {
-      for(i in 1:length(aeme_outf[["data"]])) {
+      for (i in 1:length(aeme_outf[["data"]])) {
         outf[[names(aeme_outf[["data"]])[i]]] <-
           aeme_outf[["data"]][[i]]
       }
@@ -159,6 +195,49 @@ build_ensemble <- function(aeme_data = NULL,
     outf_factor <- aeme_outf[["factor"]]
     lakename <- tolower(lke[["name"]])
 
+    # Lake level ----
+    aeme_obs <- observations(aeme_data)
+    # Calculate water balance ----
+    wbal <- water_balance(hyps = hyps, inf = inf, outf = outf,
+                          obs_lvl = aeme_obs[["level"]],
+                          obs_lake = aeme_obs[["level"]], obs_met = met,
+                          ext_elev = ext_elev,
+                          elevation = elevation, print_plots = FALSE,
+                          coeffs = coeffs)
+    calc_out <- wbal |>
+      dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
+
+
+    if (is.null(aeme_outf[["data"]])) {
+      warning(paste(strwrap("Outflow data are not present. This function will
+                            generate an estimated outflow with a calculated
+                            water balance using lake level, inflow data (if
+                            present) and estimated evaporation rates."),
+                    collapse = "\n"))
+      outf[["outflow"]] <- calc_out
+    } else {
+      outf[["outflow"]] <- outf[["outflow"]] |>
+        merge(calc_out, by = "Date") |>
+        dplyr::mutate(
+          outflow_dy_cd = outflow_dy_cd + outflow,
+          outflow_glm_aed = outflow_glm_aed + outflow,
+          outflow_gotm_wet = outflow_gotm_wet + outflow
+        )
+
+    }
+
+    if (is.null(aeme_obs[["level"]])) {
+      warning(paste(strwrap("Lake level is not present. This function will
+                            generate an estimated lake level using lake depth
+                            and a sinisoidal function."),
+                    collapse = "\n"))
+      lvl <- wbal |>
+        dplyr::select(Date, lvlwtr)
+    } else {
+      lvl <- aeme_obs[["level"]]
+    }
+
+    # Yaml config ----
   } else if (!is.null(config)) {
     lake_dir <- file.path(path, paste0(config$lake$lake_id, "_",
                                       tolower(config$lake$name)))
@@ -241,24 +320,17 @@ build_ensemble <- function(aeme_data = NULL,
   #--------------------------
   dir.create(lake_dir, showWarnings = FALSE)
 
-  sf::sf_use_s2(FALSE)
-  coords.xyz <- c(lake_shape |>
-                    sf::st_transform(3857) |>
-                    sf::st_geometry() |>
-                    sf::st_centroid() |>
-                    sf::st_transform(4326) |>
-                    sf::st_coordinates() |>
-                    as.numeric(), elevation)
-  sf::sf_use_s2(TRUE)
+  # sf::sf_use_s2(FALSE)
+  # coords.xyz <- c(lake_shape |>
+  #                   sf::st_transform(3857) |>
+  #                   sf::st_geometry() |>
+  #                   sf::st_centroid() |>
+  #                   sf::st_transform(4326) |>
+  #                   sf::st_coordinates() |>
+  #                   as.numeric(), elevation)
+  # sf::sf_use_s2(TRUE)
 
-  met <- met |>
-    dplyr::filter(Date >= (date_range[1]),
-           Date <= date_range[2])
-  met <- met |>
-    dplyr::mutate(Date = as.Date(Date)) |>
-    dplyr::mutate(MET_pprain = MET_pprain / 1000,
-                  MET_ppsnow = MET_ppsnow / 1000) |>
-    expand_met(coords.xyz = coords.xyz, print.plot = FALSE)
+
 
   # add snow if needs be
   if (!any(grepl("snow", colnames(met)))) {
@@ -288,11 +360,11 @@ build_ensemble <- function(aeme_data = NULL,
     glm_aed_outf <- NULL
     gotm_wet_outf <- NULL
   }
-
-
   gps <- coords.xyz[1:2]
 
-  # use_bgc <- config[["bgc_model"]][["use"]]
+  if (length(inf) == 0) {
+    inf <- NULL
+  }
 
   if ("dy_cd" %in% model) {
     #--- configure DYRESM-CAEDYM
@@ -306,7 +378,7 @@ build_ensemble <- function(aeme_data = NULL,
                outf_factor = outf_factor[["dy_cd"]],
                Kw = Kw, ext_elev = ext_elev,
                use_bgc = use_bgc)
-    # run_dy_cd(lake_dir = lake_dir, bin_path = here::here("data", "bin"))
+    # run_dy_cd(sim_folder = lake_dir, verbose = TRUE)
   }
   if ("glm_aed" %in% model) {
     dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
@@ -320,11 +392,10 @@ build_ensemble <- function(aeme_data = NULL,
               outf_factor = outf_factor[["glm_aed"]],
               Kw = Kw, ext_elev = ext_elev,
               use_bgc = use_bgc, use_lw = use_lw)
-    # run_glm_aed(lake_dir = lake_dir, bin_path = here::here("data", "bin"),
-    #             verbose = TRUE)
+    # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
   if("gotm_wet" %in% model) {
-    dates.gotm = c(date_range[1] - spin_up[["gotm_wet"]], date_range[2]) |>
+    dates.gotm <- c(date_range[1] - spin_up[["gotm_wet"]], date_range[2]) |>
       `names<-`(NULL)
     depth <- max(hyps$elev) - min(hyps$elev)
     if (depth < 3) {
@@ -341,8 +412,8 @@ build_ensemble <- function(aeme_data = NULL,
                outf_factor = outf_factor[["gotm_wet"]],
                Kw = Kw, nlev = nlev,
                use_bgc = use_bgc, hum_type = hum_type)
-    # run_gotm_wet(lake_dir = lake_dir, bin_path = here::here("data", "bin"),
-    #              verbose = TRUE)
+    # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
 
   }
+  return(aeme)
 }
