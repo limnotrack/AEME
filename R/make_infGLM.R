@@ -72,7 +72,18 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
 
     glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
   } else {
-    glm_nml[["inflow"]] <- NULL
+    arg_list <- list(num_inflows = 0, names_of_strms = "none",
+                     strm_hf_angle = rep(80, 1),
+                     strmbd_slope = rep(0.5, 1),
+                     strmbd_drag = rep(0.016, 1),
+                     inflow_factor = rep(1, 1),
+                     inflow_fl = paste0("bcs/inflow_", "none",
+                                        ".csv", collapse = ", "),
+                     inflow_varnum = 3,
+                     inflow_vars = c("flow", "temp", "salt"),
+                     coef_inf_entrain = 0
+    )
+    glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
   }
 
   return(glm_nml)
