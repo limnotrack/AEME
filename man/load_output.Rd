@@ -19,7 +19,10 @@ load_output(model, aeme_data, path, mod_ctrls, parallel = FALSE, nlev = NULL)
 
 \item{parallel}{boolean; run models in parallel. Defaults to FALSE.}
 
-\item{nlev}{}
+\item{nlev}{numeric; number of levels to return in model output. If NULL,
+calculates number of levels based on lake depth as provided within the
+hypsograph. If the lake is less thatn 3m deep, it outputs every 0.1m, else
+if it is greater than 3m, it outputs every 0.33m. Defaults to NULL.}
 }
 \value{
 Updated aeme object with model output
