@@ -7,6 +7,8 @@
 run_aeme(
   aeme_data,
   model,
+  return = TRUE,
+  nlev = NULL,
   verbose = FALSE,
   debug = FALSE,
   timeout = 0,
@@ -19,6 +21,14 @@ run_aeme(
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
+
+\item{return}{boolean; return model output within an `aeme` object? Defaults
+to TRUE.}
+
+\item{nlev}{numeric; number of levels to return in model output. If NULL,
+calculates number of levels based on lake depth as provided within the
+hypsograph. If the lake is less thatn 3m deep, it outputs every 0.1m, else
+if it is greater than 3m, it outputs every 0.33m. Defaults to NULL.}
 
 \item{verbose}{boolean; print model output to console. Defaults to FALSE.}
 

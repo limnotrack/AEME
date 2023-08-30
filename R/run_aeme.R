@@ -2,6 +2,9 @@
 #'
 #' @inheritParams build_ensemble
 #' @inheritParams base::system2
+#' @param return boolean; return model output within an `aeme` object? Defaults
+#' to TRUE.
+#' @inheritParams load_output
 #' @param verbose boolean; print model output to console. Defaults to FALSE.
 #' @param debug boolean; write debug log (Only DYRESM). Defaults to FALSE.
 #' @param parallel boolean; run models in parallel. Defaults to FALSE.
@@ -31,8 +34,9 @@
 #' run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
 #' }
 
-run_aeme <- function(aeme_data, model, verbose = FALSE, debug = FALSE,
-                     timeout = 0, parallel = FALSE, path = ".") {
+run_aeme <- function(aeme_data, model, return = TRUE, nlev = NULL,
+                     verbose = FALSE, debug = FALSE, timeout = 0,
+                     parallel = FALSE, path = ".") {
 
   lke <- lake(aeme_data)
   sim_folder <- file.path(path, paste0(lke$id,"_",
@@ -66,6 +70,12 @@ run_aeme <- function(aeme_data, model, verbose = FALSE, debug = FALSE,
       model
     )
     message("Model run complete!", paste0("[", Sys.time(), "]"))
+  }
+
+  if (return) {
+    aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
+                             mod_ctrls = mod_ctrls, parallel = parallel)
+    return(aeme_data)
   }
 
 }
