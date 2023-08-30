@@ -34,6 +34,8 @@
 #' @importFrom dplyr select filter
 #' @importFrom utils data read.csv
 #'
+#' @return aeme object
+#'
 #' @export
 #'
 #' @examples
@@ -125,6 +127,9 @@ build_ensemble <- function(aeme_data = NULL,
       }
       hyps <- data.frame(elev = c(lke$elevation - lke$depth, lke$elevation),
                          area = c(0, lke$area))
+      input(aeme_data) <- list(init_profile = inp$init_profile,
+                               hypsograph = hyps, meteo = inp$meteo,
+                               use_lw = inp$use_lw, Kw = inp$Kw)
     } else {
       hyps <- inp[["hypsograph"]]
     }
@@ -137,6 +142,9 @@ build_ensemble <- function(aeme_data = NULL,
                                         floor(max(hyps$elev) - min(hyps$elev))),
                               temperature = c(10, 10),
                               salt = c(0, 0))
+      input(aeme_data) <- list(init_profile = init_prof,
+                               hypsograph = hyps, meteo = inp$meteo,
+                               use_lw = inp$use_lw, Kw = inp$Kw)
     }
 
     # Inflow ----
@@ -200,7 +208,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # Calculate water balance ----
     wbal <- water_balance(hyps = hyps, inf = inf, outf = outf,
                           obs_lvl = aeme_obs[["level"]],
-                          obs_lake = aeme_obs[["level"]], obs_met = met,
+                          obs_lake = aeme_obs[["lake"]], obs_met = met,
                           ext_elev = ext_elev,
                           elevation = elevation, print_plots = FALSE,
                           coeffs = coeffs)
@@ -214,17 +222,22 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                             water balance using lake level, inflow data (if
                             present) and estimated evaporation rates."),
                     collapse = "\n"))
-      outf[["outflow"]] <- calc_out
+      tot_outflow <- calc_out
     } else {
-      outf[["outflow"]] <- outf[["outflow"]] |>
+      tot_outflow <- outf[["outflow"]] |>
         merge(calc_out, by = "Date") |>
         dplyr::mutate(
           outflow_dy_cd = outflow_dy_cd + outflow,
           outflow_glm_aed = outflow_glm_aed + outflow,
           outflow_gotm_wet = outflow_gotm_wet + outflow
         )
-
     }
+
+    outf[["outflow"]] <- tot_outflow
+
+    outflows(aeme_data) <- list(data = tot_outflow,
+                                outflow_lvl = aeme_outf[["outflow_lvl"]],
+                                factor = aeme_outf[["factor"]])
 
     if (is.null(aeme_obs[["level"]])) {
       warning(paste(strwrap("Lake level is not present. This function will
@@ -236,6 +249,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     } else {
       lvl <- aeme_obs[["level"]]
     }
+    observations(aeme_data) <- list(lake = aeme_obs[["lake"]],
+                                    level = lvl)
 
     # Yaml config ----
   } else if (!is.null(config)) {
@@ -415,5 +430,5 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
 
   }
-  return(aeme)
+  return(aeme_data)
 }

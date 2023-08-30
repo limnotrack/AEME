@@ -59,6 +59,8 @@ Default = 3.}
 }
 \value{
 builds the model ensemble configuration.
+
+aeme object
 }
 \description{
 Configure an ensemble of lake model simulations from basic set of inputs.
