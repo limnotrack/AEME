@@ -62,6 +62,8 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
   if (!is.null(obs$lake)) {
     obs_lake <- obs$lake |>
       dplyr::filter(var == var_sim)
+  } else {
+    obs_lake <- NULL
   }
   if (!is.null(obs$level)) {
     obs_level <- obs$level
