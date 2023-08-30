@@ -8,6 +8,7 @@
 #'
 #' @importFrom yaml read_yaml
 #' @importFrom sf st_read
+#' @importFrom dplyr mutate
 #'
 
 yaml_to_aeme <- function(path, file) {
