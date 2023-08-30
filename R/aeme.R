@@ -409,10 +409,76 @@ setGeneric("output", function(aeme) standardGeneric("output"))
 #' @export
 setMethod("output", "aeme", function(aeme) aeme@output)
 
-# Setter functions
+# Setter functions ----
+
+#' Update the lake slot of an aeme object
+#'
+#' @title Set lake in aeme object
+#' @param aeme A aeme object.
+#' @param value New lake data to be assigned.
+#' @return A modified aeme object with updated lake slot.
+#' @export
 setGeneric("lake<-", function(aeme, value) standardGeneric("lake<-"))
+
+#' Update the lake slot of an aeme object
+#'
+#' This method updates the "lake" slot of a aeme object with new data.
+#'
+#' @title Set lake in aeme object
+#' @param aeme An aeme object.
+#' @param value New lake data to be assigned.
+#' @return A modified aeme object with updated lake slot.
+#' @export
 setMethod("lake<-", "aeme", function(aeme, value) {
   aeme@lake <- value
+  validObject(aeme)
+  aeme
+})
+
+#' Update the catchment slot of an aeme object
+#'
+#' @title Set catchment in aeme object
+#' @param aeme A aeme object.
+#' @param value New catchment data to be assigned.
+#' @return A modified aeme object with updated catchment slot.
+#' @export
+setGeneric("catchment<-", function(aeme, value) standardGeneric("catchment<-"))
+
+#' Update the catchment slot of an aeme object
+#'
+#' This method updates the "catchment" slot of a aeme object with new data.
+#'
+#' @title Set catchment in aeme object
+#' @param aeme An aeme object.
+#' @param value New catchment data to be assigned.
+#' @return A modified aeme object with updated catchment slot.
+#' @export
+setMethod("catchment<-", "aeme", function(aeme, value) {
+  aeme@catchment <- value
+  validObject(aeme)
+  aeme
+})
+
+#' Update the time slot of an aeme object
+#'
+#' @title Set time in aeme object
+#' @param aeme A aeme object.
+#' @param value New time data to be assigned.
+#' @return A modified aeme object with updated time slot.
+#' @export
+setGeneric("time<-", function(aeme, value) standardGeneric("time<-"))
+
+#' Update the time slot of an aeme object
+#'
+#' This method updates the "time" slot of a aeme object with new data.
+#'
+#' @title Set time in aeme object
+#' @param aeme An aeme object.
+#' @param value New time data to be assigned.
+#' @return A modified aeme object with updated time slot.
+#' @export
+setMethod("time<-", "aeme", function(aeme, value) {
+  aeme@time <- value
   validObject(aeme)
   aeme
 })
@@ -438,6 +504,103 @@ setGeneric("configuration<-", function(aeme, value)
 #' @export
 setMethod("configuration<-", "aeme", function(aeme, value) {
   aeme@configuration <- value
+  validObject(aeme)
+  aeme
+})
+
+#' Update the observations slot of an aeme object
+#'
+#' @title Set observations in aeme object
+#' @param aeme A aeme object.
+#' @param value New observations data to be assigned.
+#' @return A modified aeme object with updated observations slot.
+#' @export
+setGeneric("observations<-", function(aeme, value)
+  standardGeneric("observations<-"))
+
+#' Update the observations slot of an aeme object
+#'
+#' This method updates the "observations" slot of a aeme object with new data.
+#'
+#' @title Set observations in aeme object
+#' @param aeme An aeme object.
+#' @param value New observations data to be assigned.
+#' @return A modified aeme object with updated observations slot.
+#' @export
+setMethod("observations<-", "aeme", function(aeme, value) {
+  aeme@observations <- value
+  validObject(aeme)
+  aeme
+})
+
+#' Update the input slot of an aeme object
+#'
+#' @title Set input in aeme object
+#' @param aeme A aeme object.
+#' @param value New input data to be assigned.
+#' @return A modified aeme object with updated input slot.
+#' @export
+setGeneric("input<-", function(aeme, value) standardGeneric("input<-"))
+
+#' Update the input slot of an aeme object
+#'
+#' This method updates the "input" slot of a aeme object with new data.
+#'
+#' @title Set input in aeme object
+#' @param aeme An aeme object.
+#' @param value New input data to be assigned.
+#' @return A modified aeme object with updated input slot.
+#' @export
+setMethod("input<-", "aeme", function(aeme, value) {
+  aeme@input <- value
+  validObject(aeme)
+  aeme
+})
+
+#' Update the inflows slot of an aeme object
+#'
+#' @title Set inflows in aeme object
+#' @param aeme A aeme object.
+#' @param value New inflows data to be assigned.
+#' @return A modified aeme object with updated inflows slot.
+#' @export
+setGeneric("inflows<-", function(aeme, value) standardGeneric("inflows<-"))
+
+#' Update the inflows slot of an aeme object
+#'
+#' This method updates the "inflows" slot of a aeme object with new data.
+#'
+#' @title Set inflows in aeme object
+#' @param aeme An aeme object.
+#' @param value New inflows data to be assigned.
+#' @return A modified aeme object with updated inflows slot.
+#' @export
+setMethod("inflows<-", "aeme", function(aeme, value) {
+  aeme@inflows <- value
+  validObject(aeme)
+  aeme
+})
+
+#' Update the outflows slot of an aeme object
+#'
+#' @title Set outflows in aeme object
+#' @param aeme A aeme object.
+#' @param value New outflows data to be assigned.
+#' @return A modified aeme object with updated outflows slot.
+#' @export
+setGeneric("outflows<-", function(aeme, value) standardGeneric("outflows<-"))
+
+#' Update the outflows slot of an aeme object
+#'
+#' This method updates the "outflows" slot of a aeme object with new data.
+#'
+#' @title Set outflows in aeme object
+#' @param aeme An aeme object.
+#' @param value New outflows data to be assigned.
+#' @return A modified aeme object with updated outflows slot.
+#' @export
+setMethod("outflows<-", "aeme", function(aeme, value) {
+  aeme@outflows <- value
   validObject(aeme)
   aeme
 })
@@ -507,6 +670,21 @@ setMethod("show", "aeme", function(object) {
       "Start: ", as.character(aeme_time$start),
       " Stop: ", as.character(aeme_time$stop),
       " Time step: ", as.character(aeme_time$time_step),
+      "\n-------------------------------------------------------------------\n",
+      "  Configuration\n",
+      "          Physical  |   Biogeochemical",
+      "\nDY-CD    : ", ifelse(is.null(config[["physical"]][["dy_cd"]]), "Absent",
+                        "Present"), "    |   ",
+      ifelse(is.null(config[["bgc"]][["dy_cd"]]), "Absent",
+             "Present"),
+      "\nGLM-AED  : ", ifelse(is.null(config[["physical"]][["glm_aed"]]), "Absent",
+                            "Present"), "    |   ",
+      ifelse(is.null(config[["bgc"]][["glm_aed"]]), "Absent",
+             "Present"),
+      "\nGOTM-WET : ", ifelse(is.null(config[["physical"]][["gotm_wet"]]),
+                             "Absent", "Present"), "    |   ",
+      ifelse(is.null(config[["bgc"]][["gotm_wet"]]),
+             "Absent", "Present"),
       "\n-------------------------------------------------------------------\n",
       "  Observations\n",
       "Lake: ", ifelse(is.data.frame(obs$lake), "Present",
