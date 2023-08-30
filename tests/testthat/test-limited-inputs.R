@@ -57,6 +57,10 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   write_yaml(yaml, file.path(path, "aeme_simple.yaml"))
 
   aeme_data <- yaml_to_aeme(path = path, "aeme_simple.yaml")
+  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed", "gotm_wet")
 
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
@@ -66,7 +70,7 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   testthat::expect_true(is.data.frame(inp$hypsograph))
 
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        path = path)
+                        mod_ctrls = mod_ctrls, path = path)
 
   lke <- lake(aeme_data)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",

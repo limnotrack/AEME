@@ -13,7 +13,8 @@ test_that("running DYRESM works", {
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE, use_lw = TRUE)
-  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -36,7 +37,8 @@ test_that("running GLM works", {
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE, use_lw = TRUE)
-  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                 tolower(lke$name)),
@@ -59,7 +61,8 @@ test_that("running GOTM works", {
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE, use_lw = TRUE)
-  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -82,7 +85,8 @@ test_that("running DYRESM-CAEDYM works", {
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE, use_lw = TRUE)
-  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -105,7 +109,8 @@ test_that("running GLM-AED works", {
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE, use_lw = TRUE)
-  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -128,7 +133,8 @@ test_that("running GOTM-WET works", {
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE, use_lw = TRUE)
-  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -151,8 +157,8 @@ test_that("running models in parallel works", {
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE, use_lw = TRUE)
-  run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
-           parallel = TRUE)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
   lke <- lake(aeme_data)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -176,7 +182,7 @@ test_that("getting model output works", {
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE, use_lw = TRUE)
   run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
-           parallel = TRUE)
+           parallel = TRUE, return = FALSE)
 
   aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
                           mod_ctrls = mod_ctrls, parallel = FALSE)
@@ -201,11 +207,8 @@ test_that("getting model output in parallel works", {
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE, use_lw = TRUE)
-  run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, path = path,
-           parallel = TRUE)
-
-  aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
-                          mod_ctrls = mod_ctrls, parallel = TRUE)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
 
   outp <- output(aeme_data)
   output_chk <- !all(is.null(unlist(outp)))
@@ -227,11 +230,8 @@ test_that("plotting model output works", {
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE, use_lw = TRUE)
-  run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, path = path,
-           parallel = TRUE)
-
-  aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
-                           mod_ctrls = mod_ctrls, parallel = TRUE)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
+                        path = path, mod_ctrls = mod_ctrls, parallel = TRUE)
 
   p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
                    level = TRUE, label = TRUE, print_plots = FALSE,
