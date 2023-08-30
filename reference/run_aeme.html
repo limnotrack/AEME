@@ -45,6 +45,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_aeme</span><span class="op">(</span></span>
 <span>  <span class="va">aeme_data</span>,</span>
 <span>  <span class="va">model</span>,</span>
+<span>  return <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nlev <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -62,6 +64,18 @@
 <dt>model</dt>
 <dd><p>vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.</p></dd>
+
+
+<dt>return</dt>
+<dd><p>boolean; return model output within an `aeme` object? Defaults
+to TRUE.</p></dd>
+
+
+<dt>nlev</dt>
+<dd><p>numeric; number of levels to return in model output. If NULL,
+calculates number of levels based on lake depth as provided within the
+hypsograph. If the lake is less thatn 3m deep, it outputs every 0.1m, else
+if it is greater than 3m, it outputs every 0.33m. Defaults to NULL.</p></dd>
 
 
 <dt>verbose</dt>

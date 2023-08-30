@@ -25,6 +25,12 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment-aeme-method.html</loc>
   </url>
   <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment-set-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment-set.html</loc>
+  </url>
+  <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment.html</loc>
   </url>
   <url>
@@ -58,10 +64,22 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/inflows-aeme-method.html</loc>
   </url>
   <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/inflows-set-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/inflows-set.html</loc>
+  </url>
+  <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/inflows.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/input-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/input-set-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/input-set.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/input.html</loc>
@@ -71,6 +89,12 @@
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/lake-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/lake-set-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/lake-set.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/lake.html</loc>
@@ -85,10 +109,22 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/observations-aeme-method.html</loc>
   </url>
   <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/observations-set-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/observations-set.html</loc>
+  </url>
+  <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/observations.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/outflows-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/outflows-set-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/outflows-set.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/outflows.html</loc>
@@ -106,7 +142,7 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/output.html</loc>
   </url>
   <url>
-    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot-aeme-ANY-method.html</loc>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot-aeme-method.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_output.html</loc>
@@ -128,6 +164,12 @@
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/time-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/time-set-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/time-set.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/time.html</loc>
