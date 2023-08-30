@@ -43,17 +43,25 @@ convert_era5 <- function(lat,
 
   out <- lapply(variable, \(v) {
     out2 <- lapply(year, \(y) {
-      file <- file.path(path, paste0("era5", "_", v, "_", timestep, "_", y, "_", site, ".nc"))
+      file <- file.path(path, paste0("era5", "_", v, "_", timestep, "_", y,
+                                     "_", site, ".nc"))
 
       if (!file.exists(file)) {
         stop("Missing the file: ", file)
       }
       var <- era5_ref_table$nc[era5_ref_table$era5 == v]
       dat <- stars::read_ncdf(file, var = var)
-      if(var %in% c("sf", "tp")) {
+      if (var %in% c("t2m", "d2m")) {
+        met_max <- stats::aggregate(dat, by = "day", FUN = max)
+        met_min <- stats::aggregate(dat, by = "day", FUN = min)
+        met <- stats::aggregate(dat, by = "day", FUN = mean)
+      } else if(var %in% c("sf", "tp")) {
         met <- stats::aggregate(dat, by = "day", FUN = max)
       } else if(var %in% c("ssrd", "strd")) {
-        met <- stats::aggregate(dat, by = "day", FUN = function(x) {max(x) / (24 * 60 * 60)})
+        met <- stats::aggregate(dat, by = "day", FUN = function(x) {
+          max(x) / (24 * 60 * 60)
+          }
+          )
       } else {
         met <- stats::aggregate(dat, by = "day", FUN = mean)
       }
@@ -62,6 +70,19 @@ convert_era5 <- function(lat,
         stars::st_extract(coords_sf) |>
         as.data.frame()
       df <- df[, c("time", var)]
+      if (var %in% c("t2m", "d2m")) {
+        df_max <- met_max |>
+          stars::st_extract(coords_sf) |>
+          as.data.frame()
+        df_max <- df_max[, var]
+        df_min <- met_min |>
+          stars::st_extract(coords_sf) |>
+          as.data.frame()
+        df_min <- df_min[, var]
+        df[[paste0(var, "_max")]] <- df_max
+        df[[paste0(var, "_min")]] <- df_min
+      }
+      return(df)
     })
     out2 <- do.call(rbind, out2)
   })
@@ -70,6 +91,7 @@ convert_era5 <- function(lat,
 
   if ("t2m" %in% colnames(met) | "d2m" %in% colnames(met)) {
     sel_cols <- which(colnames(met) %in% c("t2m", "d2m"))
+    sel_cols <- grepl("t2m|d2m", names(met))
     met[, sel_cols] <- met[, sel_cols] - 273.15
   }
   if ("tp" %in% colnames(met) | "sf" %in% colnames(met)) {
@@ -78,7 +100,14 @@ convert_era5 <- function(lat,
   }
 
   if (format == "AEME") {
-    names(met) <- era5_ref_table$aeme[match(names(met), era5_ref_table$nc)]
+    names(met)[!grepl("min|max", names(met))] <- era5_ref_table$aeme[match(
+      names(met[!grepl("min|max", names(met))]), era5_ref_table$nc)]
+
+    names(met)[names(met) == "d2m_max"] <- "MET_dewmax"
+    names(met)[names(met) == "d2m_min"] <- "MET_dewmin"
+    names(met)[names(met) == "t2m_max"] <- "MET_airmax"
+    names(met)[names(met) == "t2m_min"] <- "MET_airmin"
+
   } else if (format == "LER") {
     names(met) <- era5_ref_table$ler[match(names(met), era5_ref_table$nc)]
   }
