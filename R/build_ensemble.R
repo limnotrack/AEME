@@ -430,5 +430,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
 
   }
+
+  aeme_data <- load_configuration(model = model, aeme_data = aeme_data,
+                                  path = path, use_bgc = use_bgc)
+
   return(aeme_data)
 }
