@@ -8,6 +8,7 @@ run_aeme(
   aeme_data,
   model,
   return = TRUE,
+  mod_ctrls = NULL,
   nlev = NULL,
   verbose = FALSE,
   debug = FALSE,
@@ -24,6 +25,9 @@ run_aeme(
 
 \item{return}{boolean; return model output within an `aeme` object? Defaults
 to TRUE.}
+
+\item{mod_ctrls}{dataframe; of configuration loaded from
+"mod_ctrls.csv".}
 
 \item{nlev}{numeric; number of levels to return in model output. If NULL,
 calculates number of levels based on lake depth as provided within the
@@ -63,6 +67,7 @@ model <- c("glm_aed")
 build_ensemble(path = path, aeme_data = aeme_data, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = TRUE, use_lw = TRUE)
-run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
+          return = FALSE)
 }
 }

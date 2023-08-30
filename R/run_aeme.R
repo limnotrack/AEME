@@ -31,11 +31,12 @@
 #' build_ensemble(path = path, aeme_data = aeme_data, model = model,
 #'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = TRUE, use_lw = TRUE)
-#' run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path)
+#' run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
+#'           return = FALSE)
 #' }
 
-run_aeme <- function(aeme_data, model, return = TRUE, nlev = NULL,
-                     verbose = FALSE, debug = FALSE, timeout = 0,
+run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
+                     nlev = NULL, verbose = FALSE, debug = FALSE, timeout = 0,
                      parallel = FALSE, path = ".") {
 
   lke <- lake(aeme_data)
@@ -73,6 +74,9 @@ run_aeme <- function(aeme_data, model, return = TRUE, nlev = NULL,
   }
 
   if (return) {
+    if (is.null(mod_ctrls)) {
+      stop("`mod_ctrls` need to be provided to load model output.")
+    }
     aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
                              mod_ctrls = mod_ctrls, parallel = parallel)
     return(aeme_data)
