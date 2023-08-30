@@ -46,6 +46,7 @@
 <span>  <span class="va">aeme_data</span>,</span>
 <span>  <span class="va">model</span>,</span>
 <span>  return <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  mod_ctrls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nlev <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -69,6 +70,11 @@
 <dt>return</dt>
 <dd><p>boolean; return model output within an `aeme` object? Defaults
 to TRUE.</p></dd>
+
+
+<dt>mod_ctrls</dt>
+<dd><p>dataframe; of configuration loaded from
+"mod_ctrls.csv".</p></dd>
 
 
 <dt>nlev</dt>
@@ -123,7 +129,8 @@ if it is greater than 3m, it outputs every 0.33m. Defaults to NULL.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="build_ensemble.html">build_ensemble</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>               mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>               use_bgc <span class="op">=</span> <span class="cn">TRUE</span>, use_lw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">run_aeme</span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">run_aeme</span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">path</span>,</span></span>
+<span class="r-in"><span>          return <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
