@@ -21,6 +21,7 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
   # check which have been supplied
   vars.all =  c("Date",
                 "radswd", "radlwd", "cldcvr", "tmpair",
+                "airmax", "airmin", "dewmax", "dewmin",
                 "humrel", "tmpdew", "prvapr",
                 "prsttn", "prmslp",
                 "wndspd", "wnduvu", "wnduvv", "wnddir",
@@ -194,8 +195,31 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
     ppsnow <- met[,which(grepl("ppsnow",colnames(met)))]
   }
 
+  # max/min
+  if(!is.airmax) {
+    airmax <- 0
+  } else {
+    airmax <- met[,which(grepl("airmax",colnames(met)))]
+  }
+  if(!is.airmin) {
+    airmin <- 0
+  } else {
+    airmin <- met[,which(grepl("airmin",colnames(met)))]
+  }
+  if(!is.dewmax) {
+    dewmax <- 0
+  } else {
+    dewmax <- met[,which(grepl("dewmax",colnames(met)))]
+  }
+  if(!is.dewmin) {
+    dewmin <- 0
+  } else {
+    dewmin <- met[,which(grepl("dewmin",colnames(met)))]
+  }
+
   out <- data.frame(Date = Date,
                     radswd, radlwd, cldcvr, tmpair,
+                    airmax, airmin, dewmax, dewmin,
                     humrel, tmpdew, prvapr,
                     prsttn, prmslp,
                     wndspd, wnduvu, wnduvv,
