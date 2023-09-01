@@ -134,20 +134,6 @@ build_ensemble <- function(aeme_data = NULL,
       hyps <- inp[["hypsograph"]]
     }
 
-    # Initial profile ----
-    if (!is.null(inp[["init_profile"]])) {
-      init_prof <- inp[["init_profile"]]
-    } else {
-      init_prof <- data.frame(depth = c(0,
-                                        floor(max(hyps$elev) - min(hyps$elev))),
-                              temperature = c(10, 10),
-                              salt = c(0, 0))
-      input(aeme_data) <- list(init_profile = init_prof,
-                               init_depth = inp$init_depth,
-                               hypsograph = hyps, meteo = inp$meteo,
-                               use_lw = inp$use_lw, Kw = inp$Kw)
-    }
-
     # Inital depth
     if (!is.null(inp[["init_depth"]])) {
       init_depth <- inp[["init_depth"]]
@@ -155,6 +141,18 @@ build_ensemble <- function(aeme_data = NULL,
       init_depth <- max(hyps$elev) - min(hyps$elev)
       input(aeme_data) <- list(init_profile = inp$init_profile,
                                init_depth = init_depth,
+                               hypsograph = hyps, meteo = inp$meteo,
+                               use_lw = inp$use_lw, Kw = inp$Kw)
+    }
+    # Initial profile ----
+    if (!is.null(inp[["init_profile"]])) {
+      init_prof <- inp[["init_profile"]]
+    } else {
+      init_prof <- data.frame(depth = c(0, init_depth),
+                              temperature = c(10, 10),
+                              salt = c(0, 0))
+      input(aeme_data) <- list(init_profile = init_prof,
+                               init_depth = inp$init_depth,
                                hypsograph = hyps, meteo = inp$meteo,
                                use_lw = inp$use_lw, Kw = inp$Kw)
     }

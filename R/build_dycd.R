@@ -208,7 +208,8 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
   # DYRESM
   # write the initial profile (auto-retrieves correct starting depth)
   make_DYpro(lakename = lakename, startSim = date_range[1], lvlBottom = 0,
-             lvlStart = z.start, verDY = verDY, obsTable = init_prof,
+             lvlStart = init_depth, verDY = verDY,
+             obsTable = init_prof,
              tmpStart = 10, filePath = path.dy)
 
   # set the variables to output from dycd
