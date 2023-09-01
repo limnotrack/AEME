@@ -77,8 +77,6 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
     })
     vect <- unlist(this.list)
     var_lims <- range(c(vect, obs_lake[["value"]]), na.rm = TRUE)
-  } else {
-    var_lims <- c(2, 32)
   }
 
   mod_labels <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
