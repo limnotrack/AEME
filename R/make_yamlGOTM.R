@@ -10,7 +10,7 @@
 #' @noRd
 
 make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
-                          outf, lvl_start, path.gotm, ext_elev,
+                          outf, init_depth, path.gotm, ext_elev,
                           outf_factor, inf_factor, Kw, use_bgc, hum_type = 1) {
 
   met_ref <- data.frame(gotm = c("u10", "v10", "airp", "airt", "hum", "hum",
@@ -55,8 +55,9 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
     bathy.gotm <- data.frame(bathy)
   }
 
-  z_diff <- min(bathy.gotm$elev) + lvl_start - min(hyps$elev)
-  a0 <- round(approx(bathy.gotm$elev, bathy.gotm$area, z_diff)$y, 2)
+
+  z_diff <- round((min(bathy.gotm$elev) + init_depth))
+  a0 <- round(approx(bathy.gotm$elev, bathy.gotm$area, z_diff)$y)
   if (!(z_diff %in% bathy.gotm$elev)) {
     bathy.gotm <- rbind(bathy.gotm, c(z_diff, a0))
   }
@@ -66,7 +67,8 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
     dplyr::mutate(elev = round(elev - z_diff, 2)) |>
     dplyr::arrange(-elev)
 
-  bathy.gotm <- rbind(c(round(nrow(bathy.gotm),0), round(ncol(bathy.gotm),0)),
+  bathy.gotm <- rbind(c(round(nrow(bathy.gotm), 0),
+                        round(ncol(bathy.gotm), 0)),
                       bathy.gotm) |>
     dplyr::mutate_all(as.character)
 
@@ -188,18 +190,26 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   }
 
   # Withdrawal ----
-  if (!is.null(outf)) {
-    outf <- outf[stats::complete.cases(outf), ]
+  if (length(outf) > 0) {
 
-    outf <- outf |>
-      dplyr::mutate(outflow = (outflow / 86400 * -1 * outf_factor),
-                    time = "12:00:00")
 
-    names.outf <- "outflow" # colnames(outf[3:ncol(outf)])
+    names.outf <- names(outf) # colnames(outf[3:ncol(outf)])
 
     for(w in 1:length(names.outf)) {
+
+      outf_df <- outf[[w]]
+      if (ncol(outf_df) > 2) {
+        outf_df <- outf_df |>
+          dplyr::select(c(Date, outflow_gotm_wet)) |>
+          dplyr::rename(outflow = outflow_gotm_wet)
+      }
+      outf_df <- outf_df[stats::complete.cases(outf_df), ]
+
+      outf_df <- outf_df |>
+        dplyr::mutate(outflow = (outflow / 86400 * -1 * outf_factor),
+                      time = "12:00:00")
       ## Write the discharge file
-      utils::write.table(outf[, c("Date", "time", names.outf[w])],
+      utils::write.table(outf_df[, c("Date", "time", "outflow")],
                          file.path(path.gotm, "inputs",
                                    paste0("outf_", names.outf[w],".dat")),
                          row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",

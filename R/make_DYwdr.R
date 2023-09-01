@@ -20,6 +20,13 @@
 make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
                         outf_factor = 1.0) {
 
+  if (length(wdrData) > 1) {
+    wdrData <- Reduce(merge, wdrData) |>
+      dplyr::select(c(Date, outflow, outflow_dy_cd)) |>
+      dplyr::rename(wbal = outflow_dy_cd)
+  } else {
+    wdrData <- wdrData[[1]]
+  }
   wdrData <- wdrData[stats::complete.cases(wdrData), ] |>
     # round discharge data
     dplyr::mutate(dplyr::across(2:ncol(wdrData), \(x) x * outf_factor),

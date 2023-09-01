@@ -5,7 +5,7 @@
 #' @param date_range vector; of dates
 #' @param gps vector; of latitude and longitude
 #' @param inf list of inflows
-#' @param outf dataframe; of outflow
+#' @param outf list; of outflows
 #' @param met dataframe; of meteorological data
 #' @param hyps dataframe; with hypsography data
 #' @param lvl dataframe; with lake level data
@@ -16,6 +16,7 @@
 #' @param Kw numeric; light extinction coefficient
 #' @param init_prof dataframe; of initial profile with depth, temperature and
 #'  salinity.
+#' @param init_depth numeric; depth at which to start the simulation.
 #' @param use_bgc boolean; switch for biogrochemistry model.
 #'
 #' @importFrom dplyr filter pull slice
@@ -26,7 +27,7 @@
 build_dycd <- function(lakename, mod_ctrls, date_range, gps,
                        inf, outf, met, hyps, lvl, lake_dir,
                        inf_factor = 1.0, outf_factor = 1.0,
-                       ext_elev = 0, Kw, init_prof, use_bgc) {
+                       ext_elev = 0, Kw, init_prof, init_depth, use_bgc) {
 
   message(paste0("Building DYRESM-CAEDYM for lake ", lakename))
 
@@ -68,7 +69,6 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
 
 
   #----- CONFIGURATION ------
-  print("DY-CD cfg")
   vars.dy <- mod_ctrls |>
     dplyr::filter(simulate == 1) |>
     dplyr::pull(name) |>
@@ -125,22 +125,23 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
   # outHeights <- round(min(outHeights[outHeights > min(bathy_fmt[, 1])]), 2)
 
   if (!is.null(outf)) {
-    outNames <- colnames(outf)[2:ncol(outf)]
-    outHeights <- rep(outHeights, length(colnames(outf)[2:ncol(outf)]))
+    outNames <- names(outf)
+    outHeights <- rep(outHeights, length(names(outf)))
   } else {
     outNames <- "EMPTY"
   }
 
   # write
   z.start <- c()
+  surfElev <- init_depth
   if (!is.null(lvl)) {
-    surfElev <- mean(lvl[,2], na.rm = TRUE)
+    # surfElev <- mean(lvl[,2], na.rm = TRUE)
     z_max <- mean(lvl[, 2]) - min(hyps$elev)
     # get starting depth
     z.start <- round((dplyr::filter(lvl, Date == date_range[1]) |>
                         dplyr::pull(lvlwtr)) - min(hyps$elev), 2)
   } else {
-    surfElev <- max(hyps$elev)
+    # surfElev <- max(hyps$elev)
     z_max <- max(hyps$elev) - min(hyps$elev)
   }
   if (length(z.start) == 0) {
@@ -186,8 +187,9 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
 
   #----- OUTFLOWS -----
   if (is.null(outf)) {
-    outf <- data.frame(Date = seq.Date(date_range[1], date_range[2], by = 1),
-                      outflow = 0)
+    outf <- list(outflow = data.frame(Date = seq.Date(date_range[1],
+                                                      date_range[2], by = 1),
+                                      outflow = 0))
   }
 
   make_DYwdr(lakename, info = "built for ensemble", wdrData = outf,

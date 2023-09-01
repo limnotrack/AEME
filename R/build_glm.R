@@ -1,5 +1,6 @@
 #' Build a glm-aed model from generic inputs
 #'
+#' @inheritParams build_dycd
 #' @inheritParams build_ensemble
 #' @param lake_shape shapefile
 #' @param use_lw
@@ -13,7 +14,7 @@
 build_glm <- function(lakename, mod_ctrls, date_range,
                       lake_shape, gps, hyps,
                       lvl, inf, outf, met,
-                      lake_dir, config_dir, init_prof,
+                      lake_dir, config_dir, init_prof, init_depth,
                       inf_factor = 1, outf_factor = 1,
                       Kw, ext_elev, use_bgc, use_lw) {
 
@@ -94,12 +95,13 @@ build_glm <- function(lakename, mod_ctrls, date_range,
                          mass = TRUE, inf_factor = inf_factor)
 
   #--- make ouflows table and modify nml
-  heights_wdr <- mean(lvl[, 2]) - 1 #outf |> select(-1) |> colnames(.) |> gsub("^.*_","",.) |> as.numeric()
-  if(heights_wdr < min(hyps$elev)) {
+  heights_wdr <- max(hyps$elev) - min(hyps$elev) - 1 #outf |> select(-1) |> colnames(.) |> gsub("^.*_","",.) |> as.numeric()
+  if (heights_wdr < min(hyps$elev) |
+      heights_wdr > (max(hyps$elev) - min(hyps$elev))) {
     message("Withdrawal depth is too low!")
     heights_wdr <- min(hyps$elev) + 0.75 * (max(hyps$elev) - min(hyps$elev))
   }
-  glm_nml <- make_wdrGLM(df_wdr = outf,
+  glm_nml <- make_wdrGLM(outf = outf,
                          heights_wdr = heights_wdr,
                          bathy = bathy_ext,
                          dims_lake = dims_lake,
@@ -107,14 +109,8 @@ build_glm <- function(lakename, mod_ctrls, date_range,
                          glm_nml = glm_nml, path_glm = path_glm)
 
   # starting water level
-  lvl_start <- lvl |>
-    dplyr::filter(Date == date_range[1]) |>
-    dplyr::pull(lvlwtr)
-  lvl_start <- round(lvl_start - min(hyps$elev), 2)
-  lvl_start <- round(mean(lvl$lvlwtr, na.rm = TRUE) - min(hyps$elev), 2)
-
   glm_nml <- initialiseGLM(glm_nml = glm_nml, lvl_bottom = 0.1,
-                           lvl_start = lvl_start, tbl_obs = init_prof,
+                           init_depth = init_depth, tbl_obs = init_prof,
                            Kw = Kw)
 
   if (use_bgc) {

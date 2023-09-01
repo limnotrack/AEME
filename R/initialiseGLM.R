@@ -2,7 +2,7 @@
 #'
 #' @inheritParams set_nml
 #' @param lvl_bottom numeric; depth of bottom of profile
-#' @param lvl_start numeric; depth of top of profile
+#' @param init_depth numeric; depth of top of profile
 #' @param tmpwtr numeric; water temperature
 #' @param tbl_obs data.frame; with profile
 #' @param Kw numeric; value of Kw
@@ -11,12 +11,12 @@
 #' @noRd
 #'
 
-initialiseGLM <-  function(glm_nml, lvl_bottom, lvl_start,
+initialiseGLM <-  function(glm_nml, lvl_bottom, init_depth,
                            tmpwtr = 10, tbl_obs = NULL, Kw) {
 
   # define the proTable (intial profiles for T and SAL)
   if (is.null(tbl_obs)) {
-    tbl_obs <- data.frame(c(lvl_bottom, lvl_start),
+    tbl_obs <- data.frame(c(lvl_bottom, init_depth),
                           c(tmpwtr, tmpwtr),
                           c(0, 0))
   }
@@ -27,7 +27,7 @@ initialiseGLM <-  function(glm_nml, lvl_bottom, lvl_start,
     light_extc = c(1.0, 0.5, 2.0, 4.0),
     Benthic_Imin = 10,
     Kw = Kw,
-    lake_depth = round(lvl_start, 2),
+    lake_depth = round(init_depth, 2),
     num_depths = nrow(tbl_obs),
     the_depths = round(tbl_obs[, 1], 2),
     the_temps = tbl_obs[, 2],

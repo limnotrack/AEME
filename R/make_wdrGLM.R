@@ -1,6 +1,6 @@
 #' Make GLM outflow
 #'
-#' @param df_wdr data.frame of outflow
+#' @param outf list of outflow
 #' @param heights_wdr numeric vector; height of outflow
 #' @inheritParams make_stgGLM
 #' @inheritParams make_metGLM
@@ -14,8 +14,17 @@
 #' @importFrom utils write.csv
 #' @importFrom dplyr mutate bind_rows
 
-make_wdrGLM <- function(df_wdr, heights_wdr, bathy, dims_lake, wdr_factor = 1,
+make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
                         update_nml = TRUE, glm_nml, path_glm) {
+
+
+  if (length(outf) > 1) {
+    df_wdr <- Reduce(merge, outf) |>
+      dplyr::select(c(Date, outflow, outflow_glm_aed)) |>
+      dplyr::rename(wbal = outflow_glm_aed)
+  } else {
+    df_wdr <- outf[["outflow"]]
+  }
 
 
   if (!is.null(df_wdr)) {
@@ -39,7 +48,7 @@ make_wdrGLM <- function(df_wdr, heights_wdr, bathy, dims_lake, wdr_factor = 1,
       # get the glm outlet elevations (neg depths)
       heights_wdr.glm <- heights_wdr# - crest
 
-      dims_outf <- lapply(heights_wdr, FUN = elipse_dims, bathy = bathy,
+      dims_outf <- lapply((heights_wdr + min(bathy$elev)), FUN = elipse_dims, bathy = bathy,
                           dims_lake = dims_lake)  |>
         dplyr::bind_rows()
 
@@ -50,11 +59,11 @@ make_wdrGLM <- function(df_wdr, heights_wdr, bathy, dims_lake, wdr_factor = 1,
         num_outlet = n_wdr,
         outlet_type = rep(2, n_wdr),
         flt_off_sw = rep(TRUE, n_wdr),
-        outl_elvs = round(0, 2),
+        outl_elvs = rep(round(heights_wdr, 2), n_wdr),
         bsn_len_outl = round(lengths, 2),
         bsn_wid_outl = round(widths, 2),
-        outflow_fl = paste0("bcs/outflow_", names_wdr,
-                            ".csv", collapse = ", "),
+        outflow_fl = paste0("'bcs/outflow_", names_wdr,
+                            ".csv'"),
         outflow_factor = rep(1, n_wdr)
       )
       glm_nml[["outflow"]] <- outflow

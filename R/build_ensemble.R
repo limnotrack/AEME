@@ -136,13 +136,25 @@ build_ensemble <- function(aeme_data = NULL,
 
     # Initial profile ----
     if (!is.null(inp[["init_profile"]])) {
-
+      init_prof <- inp[["init_profile"]]
     } else {
       init_prof <- data.frame(depth = c(0,
                                         floor(max(hyps$elev) - min(hyps$elev))),
                               temperature = c(10, 10),
                               salt = c(0, 0))
       input(aeme_data) <- list(init_profile = init_prof,
+                               init_depth = inp$init_depth,
+                               hypsograph = hyps, meteo = inp$meteo,
+                               use_lw = inp$use_lw, Kw = inp$Kw)
+    }
+
+    # Inital depth
+    if (!is.null(inp[["init_depth"]])) {
+      init_depth <- inp[["init_depth"]]
+    } else {
+      init_depth <- max(hyps$elev) - min(hyps$elev)
+      input(aeme_data) <- list(init_profile = inp$init_profile,
+                               init_depth = init_depth,
                                hypsograph = hyps, meteo = inp$meteo,
                                use_lw = inp$use_lw, Kw = inp$Kw)
     }
@@ -206,13 +218,13 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # Lake level ----
     aeme_obs <- observations(aeme_data)
     # Calculate water balance ----
-    wbal <- water_balance(hyps = hyps, inf = inf, outf = outf,
+    wbal <- water_balance(hyps = hyps, inf = inf, outf = outf[["outflow"]],
                           obs_lvl = aeme_obs[["level"]],
                           obs_lake = aeme_obs[["lake"]], obs_met = met,
                           ext_elev = ext_elev,
                           elevation = elevation, print_plots = FALSE,
                           coeffs = coeffs)
-    calc_out <- wbal |>
+    outf[["wbal"]] <- wbal |>
       dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
 
 
@@ -222,20 +234,20 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                             water balance using lake level, inflow data (if
                             present) and estimated evaporation rates."),
                     collapse = "\n"))
-      tot_outflow <- calc_out
-    } else {
-      tot_outflow <- outf[["outflow"]] |>
-        merge(calc_out, by = "Date") |>
-        dplyr::mutate(
-          outflow_dy_cd = outflow_dy_cd + outflow,
-          outflow_glm_aed = outflow_glm_aed + outflow,
-          outflow_gotm_wet = outflow_gotm_wet + outflow
-        )
-    }
+      # outf[["wbal"]] <- calc_out
+    } #else {
+    #   tot_outflow <- outf[["outflow"]] |>
+    #     merge(calc_out, by = "Date") |>
+    #     dplyr::mutate(
+    #       outflow_dy_cd = outflow_dy_cd + outflow,
+    #       outflow_glm_aed = outflow_glm_aed + outflow,
+    #       outflow_gotm_wet = outflow_gotm_wet + outflow
+    #     )
+    # }
 
-    outf[["outflow"]] <- tot_outflow
+    # outf[["outflow"]] <- tot_outflow
 
-    outflows(aeme_data) <- list(data = tot_outflow,
+    outflows(aeme_data) <- list(data = outf,
                                 outflow_lvl = aeme_outf[["outflow_lvl"]],
                                 factor = aeme_outf[["factor"]])
 
@@ -353,28 +365,28 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
 
   #--- outflows
-  if (length(outf) == 1) {
-    outf <- outf[[1]]
-    if(ncol(outf) > 2) {
-      dy_cd_outf <- outf |>
-        dplyr::select(Date, outflow_dy_cd) |>
-        dplyr::rename(outflow = outflow_dy_cd)
-      glm_aed_outf <- outf |>
-        dplyr::select(Date, outflow_glm_aed) |>
-        dplyr::rename(outflow = outflow_glm_aed)
-      gotm_wet_outf <- outf |>
-        dplyr::select(Date, outflow_gotm_wet) |>
-        dplyr::rename(outflow = outflow_gotm_wet)
-    } else {
-      dy_cd_outf <- outf
-      glm_aed_outf <- outf
-      gotm_wet_outf <- outf
-    }
-  } else {
-    dy_cd_outf <- NULL
-    glm_aed_outf <- NULL
-    gotm_wet_outf <- NULL
-  }
+  # if (length(outf) == 1) {
+  #   outf <- outf[["outflow"]]
+  #   if (ncol(outf) > 2) {
+  #     dy_cd_outf <- outf |>
+  #       dplyr::select(Date, outflow_dy_cd) |>
+  #       dplyr::rename(outflow = outflow_dy_cd)
+  #     glm_aed_outf <- outf |>
+  #       dplyr::select(Date, outflow_glm_aed) |>
+  #       dplyr::rename(outflow = outflow_glm_aed)
+  #     gotm_wet_outf <- outf |>
+  #       dplyr::select(Date, outflow_gotm_wet) |>
+  #       dplyr::rename(outflow = outflow_gotm_wet)
+  #   } else {
+  #     dy_cd_outf <- outf
+  #     glm_aed_outf <- outf
+  #     gotm_wet_outf <- outf
+  #   }
+  # } else {
+  #   dy_cd_outf <- NULL
+  #   glm_aed_outf <- NULL
+  #   gotm_wet_outf <- NULL
+  # }
   gps <- coords.xyz[1:2]
 
   if (length(inf) == 0) {
@@ -387,8 +399,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       `names<-`(NULL)
     build_dycd(lakename, mod_ctrls = mod_ctrls, date_range = dates.dy,
                gps = gps, hyps = hyps, lvl = lvl,
-               inf = inf, outf = dy_cd_outf, met = met,
+               inf = inf, outf = outf, met = met,
                lake_dir = lake_dir, init_prof = init_prof,
+               init_depth = init_depth,
                inf_factor = inf_factor[["dy_cd"]],
                outf_factor = outf_factor[["dy_cd"]],
                Kw = Kw, ext_elev = ext_elev,
@@ -401,12 +414,11 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     build_glm(lakename, mod_ctrls = mod_ctrls, date_range = dates.glm,
               lake_shape = lake_shape, gps = gps,
               hyps = hyps, lvl = lvl, init_prof = init_prof,
-              inf = inf, outf = glm_aed_outf, met = met,
-              lake_dir = lake_dir,
+              init_depth = init_depth, inf = inf, outf = outf,
+              met = met, lake_dir = lake_dir,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
-              Kw = Kw, ext_elev = ext_elev,
-              use_bgc = use_bgc, use_lw = use_lw)
+              Kw = Kw, ext_elev = ext_elev, use_bgc = use_bgc, use_lw = use_lw)
     # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
   if("gotm_wet" %in% model) {
@@ -422,11 +434,11 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     build_gotm(lakename, mod_ctrls = mod_ctrls, date_range = dates.gotm,
                lake_shape = lake_shape, gps = gps, lake_dir = lake_dir,
                hyps = hyps, lvl = lvl, init_prof = init_prof,
-               inf = inf, outf = gotm_wet_outf, met = met,
-               inf_factor = inf_factor[["gotm_wet"]],
-               outf_factor = outf_factor[["gotm_wet"]],
-               Kw = Kw, nlev = nlev,
-               use_bgc = use_bgc, hum_type = hum_type)
+               init_depth = init_depth, inf = inf, outf = outf,
+               met = met, inf_factor = inf_factor[["gotm_wet"]],
+               outf_factor = outf_factor[["gotm_wet"]], Kw = Kw,
+               ext_elev = ext_elev, nlev = nlev, use_bgc = use_bgc,
+               hum_type = hum_type)
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
 
   }

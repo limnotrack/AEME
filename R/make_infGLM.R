@@ -32,7 +32,8 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
 
       # format the tables
       df <- list_inf[[i]]
-      colnames(df) <- rename_modelvars(colnames(df), type_output = "glm_aed")
+      colnames(df) <- rename_modelvars(input = colnames(df),
+                                       type_output = "glm_aed")
       df <- df |>
         dplyr::mutate(flow = (flow * inf_factor) / 86400)
 
