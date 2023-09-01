@@ -58,9 +58,10 @@ test_that("running GOTM works", {
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
-  build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = FALSE, use_lw = TRUE)
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data,
+                              model = model, mod_ctrls = mod_ctrls,
+                              inf_factor = inf_factor, ext_elev = 5,
+                              use_bgc = FALSE, use_lw = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -151,8 +152,8 @@ test_that("running models in parallel works", {
   path <- file.path(tmpdir, "lake")
   aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
-  inf_factor = c("gotm_wet" = 1)
-  outf_factor = c("gotm_wet" = 1)
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
@@ -226,10 +227,10 @@ test_that("plotting model output works", {
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed", "gotm_wet")
-  build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE, use_lw = TRUE)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
                         path = path, mod_ctrls = mod_ctrls, parallel = TRUE)
 
