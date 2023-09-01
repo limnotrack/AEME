@@ -151,9 +151,6 @@ aeme_constructor <- function(
     stop(paste(strwrap("Lake area must be numeric or NULL. If NULL,
                        lake shape needs to be provided."), collpse = "\n"))
   }
-  if (!is.numeric(lake$init_depth)) {
-    stop("Lake inital depth must be numeric.")
-  }
 
   # Catchment type checking for specific elements
   if (!is.character(catchment$name)) {
@@ -236,6 +233,9 @@ aeme_constructor <- function(
     if (!is.data.frame(input$init_profile)) {
       stop("Input inital temperature profile must be a dataframe or NULL.")
     }
+  }
+  if (!is.numeric(input$init_depth)) {
+    stop("Lake inital depth must be numeric.")
   }
   if (!is.null(input$hypsograph)) {
     if (!is.data.frame(input$hypsograph)) {
@@ -649,7 +649,7 @@ setMethod("show", "aeme", function(object) {
   outp <- output(object)
 
   cat(
-      "\t\tAEME ",
+      "\t\t\t   AEME ",
       paste0(
         "\n-------------------------------------------------------------------\n",
         "  Lake\n",
@@ -672,7 +672,7 @@ setMethod("show", "aeme", function(object) {
       " Time step: ", as.character(aeme_time$time_step),
       "\n-------------------------------------------------------------------\n",
       "  Configuration\n",
-      "          Physical  |   Biogeochemical",
+      "          Physical   |   Biogeochemical",
       "\nDY-CD    : ", ifelse(is.null(config[["physical"]][["dy_cd"]]),
                               "Absent ", "Present"), "    |   ",
       ifelse(is.null(config[["bgc"]][["dy_cd"]]), "Absent ",
@@ -695,11 +695,14 @@ setMethod("show", "aeme", function(object) {
       "  Input\n",
       "Inital profile: ", ifelse(is.data.frame(inp$init_profile),
                                  "Present", "Absent"),
+      "; Inital depth: ", paste0(inp$init_depth, "m"),
       "; Hypsograph: ", ifelse(is.data.frame(inp$hypsograph),
                                  "Present", "Absent"),
-      "; Meteo: ", ifelse(is.data.frame(inp$meteo),
+      ifelse(is.data.frame(inp$hypsograph),
+             paste0(" (n=", nrow(inp$hypsograph), ")"), ""),
+      ";\nMeteo: ", ifelse(is.data.frame(inp$meteo),
                                "Present", "Absent"),
-      ";\nUse longwave: ", inp$use_lw,
+      "; Use longwave: ", inp$use_lw,
       "; Kw: ", inp$Kw,
       "\n-------------------------------------------------------------------\n",
       "  Inflows\n",
@@ -786,7 +789,6 @@ setMethod("summary", "aeme", function(object, ...) {
   }
   cat("-------------------------------------------------------------------\n")
 })
-# summary(aeme)
 
 #' Plot an aeme object
 #'
@@ -794,81 +796,232 @@ setMethod("summary", "aeme", function(object, ...) {
 #'
 #' @title Update summary Method
 #' @param x An aeme object.
-#' @param y An aeme slot (optional).
+#' @param y An aeme slot (optional). Defaults to "output".
 #' @param ... additional arguments affecting the plot produced.
+#' @param add logical; add to current plot?
+#'
+#' @importFrom sf st_transform st_geometry
+#'
 #' @return prints the aeme object to the console.
 #' @export
-setMethod("plot", "aeme", function(x, y, ...) {
-  inp <- input(x)
-  outp <- output(x)
-  obs <- observations(x)
+setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
 
-  # z <- t(as.matrix(outp[[m]][["HYD_temp"]]))
-  # Date = outp[[m]][["Date"]]
-  # filled.contour(x = Date, z = z, color.palette = hcl.colors,
-  #                key.title = title(main = "Temp\n(\u00B0C)"))
+  if (missing(y)) {
+    y <- "output"
+  }
 
-  mod <- lapply(names(outp), \(m) {
-    if (!is.null(outp[[m]])) {
-      depth <- outp[[m]][["DEPTH"]]
-      # lyr <- outp[[m]][["LAYERS"]]
-      temp <- outp[[m]][["HYD_temp"]]
-      df <- data.frame(Date = outp[[m]][["Date"]],
-                       # depth = unlist(lyr),
-                       Ts = unlist(temp[nrow(temp), ]),
-                       Tb = unlist(temp[1, ]),
-                       lvl = depth,
-                       model = m)
-      df
+  if (!(y %in% slotNames(x))) {
+    stop("'", y, "' is not a named slot in x. Options are:\n'",
+         paste(slotNames(x), collapse = "', '"), "'.")
+  }
+
+  obj <- eval(parse(text = paste0(y, '(x)')))
+
+  if (all(sapply(obj, is.null))) {
+    stop("No data in '", y, "' slot in x.")
+  }
+
+  if (y == "lake") {
+    if (is(obj$shape, "sf")) {
+      obj$shape |>
+        sf::st_transform(4326) |>
+        sf::st_geometry() |>
+        base::plot(axes = TRUE, col = "cyan", add = add)
+      add <- TRUE
     }
-  }) |>
-    do.call(rbind, args = _)
-
-  if (!is.null(obs$lake)) {
-    obs_temp <- obs$lake |>
-      dplyr::filter(var == "HYD_temp" & Date %in% mod$Date) |>
-      dplyr::group_by(Date) |>
-      dplyr::summarise(Ts = value[which.min(depth_from)],
-                       Tb = value[which.max(depth_from)])
-  }
-  if (!is.null(obs$level)) {
-    obs_lvl <- obs$level |>
-      dplyr::filter(Date %in% mod$Date) |>
-      dplyr::mutate(lvl_adj = lvlwtr - min(inp$hypsograph$elev))
+    data.frame(lat = obj$latitude, lon = obj$longitude) |>
+      sf::st_as_sf(coords = c("lon", "lat")) |>
+      base::plot(pch = 16, add = add, axes = TRUE)
+    title(main = paste0(obj$name, "_", obj$id),
+          sub = paste0("Elevation: ", obj$elevation, "m; Depth: ",
+                       obj$depth, "m"))
   }
 
-  #
-  par(mfrow = c(2, 1))
-  ylim <- range(mod$Ts, mod$Tb)
-  plot(mod$Date, mod$Ts, type = "n", ylab = "Temperature (\u00B0C)",
-       xlab = "Time", main = "Water temperature", ylim = ylim)
-  for (i in seq_along(outp)) {
-    sub <- mod[mod$model == names(outp)[i], ]
-    lines(sub$Date, sub$Ts, col = i)
-    lines(sub$Date, sub$Tb, col = i, lty = 2)
+  if (y == "catchment") {
+    if (is(obj$shape, "sf")) {
+      obj$shape |>
+        sf::st_transform(4326) |>
+        sf::st_geometry() |>
+        base::plot(axes = TRUE, col = "#F2F2F2", add = add)
+      add <- TRUE
+    }
+    if (is(obj$stream, "sf")) {
+      obj$stream |>
+        sf::st_geometry() |>
+        base::plot(axes = TRUE, col = "blue", add = add)
+      add <- TRUE
+    }
   }
-  if (!is.null(obs$lake)) {
-    points(obs_temp$Date, obs_temp$Ts, pch = 1, cex = 0.75)
-    points(obs_temp$Date, obs_temp$Tb, pch = 4, cex = 0.75)
-  }
-  legend("topright", legend = c("Surface", "Bottom", "Obs (surf)",
-                                "Obs (bott)"), lty = c(1:2, NA, NA),
-         pch = c(NA, NA, 1, 4), col = "black", bg = "transparent")
-  legend("bottomright", legend = c(), pch = c(1, 4),
-         col = "black", bg = "transparent")
 
-  # Water level
-  plot(mod$Date, mod$lvl, type = "n", ylab = "Water level (m)",
-       xlab = "Time", main = "Water level")
-  for (i in seq_along(outp)) {
-    sub <- mod[mod$model == names(outp)[i], ]
-    lines(sub$Date, sub$lvl, col = i)
+  if (y == "observations") {
+
+    if (!is.null(obj$lake)) {
+      vars <- unique(obj$lake$var)
+      if (length(vars) > 5) {
+        nc <- 2
+        nr <- ceiling(length(vars) / nc)
+      } else {
+        nc <- 1
+        nr <- length(vars)
+      }
+
+      par(mfrow = c(nr, nc),
+          oma = c(5,4,0,0) + 0.1,
+          mar = c(0,0,1,1) + 0.1)
+      x <- obj$lake$Date
+      xlim <- range(obj$lake$Date)
+
+      for (i in seq_along(vars)) {
+        sub <- obj$lake[obj$lake$var == vars[i], ]
+        # x <- sub$Date
+        base::plot(sub$Date, sub$value, axes = FALSE, xlim = xlim, type = "n")
+        deps <- unique(sub$depth_from)
+        for (d in seq_along(deps)) {
+          sub2 <- sub[sub$depth_from == deps[d], ]
+          points(sub2$Date, sub2$value, pch = d)
+        }
+
+        title(main = parse(text = rename_modelvars(vars[i])))
+        axis(side = 2, labels = TRUE)
+        box(which = "plot", bty = "l")
+        if ((nc == 1 & i == nr) |
+            (nc == 2 & i %in% c(length(vars), length(vars)-1))) {
+          labels <- TRUE
+        } else {
+          labels <- FALSE
+        }
+        axis.Date(side = 1, at = seq(min(x), max(x), by = "6 months"),
+                  x = x, labels = labels, format = "%m/%Y")
+      }
+    }
+
+    if (!is.null(obj$level)) {
+      par(mfrow = c(1, 1))
+      base::plot(obj$level$Date, obj$level$lvlwtr, ylab = "Elevation (m)",
+           xlab = "Date")
+    }
   }
-  if (!is.null(obs$level)) {
-    points(obs_lvl$Date, obs_lvl$lvl_adj, pch = 20, cex = 0.5)
+
+  if (y == "inflows" | y == "outflows") {
+    if (!is.null(obj$data)) {
+      par(mfrow = c(length(obj$data), 1))
+      for (i in seq_along(obj$data)) {
+        vars <- names(obj$data[[1]])[-1]
+        if (length(vars) > 5) {
+          nc <- 2
+          nr <- ceiling(length(vars) / nc)
+        } else {
+          nc <- 1
+          nr <- length(vars)
+        }
+        par(mfrow = c(nr, nc),
+            oma = c(5,4,0,0) + 0.1,
+            mar = c(0,0,1,1) + 0.1)
+        x <- obj$data[[i]]$Date
+        for (v in seq_along(vars)) {
+          sub <- obj$data[[i]][, c("Date", vars[v])]
+          # x <- sub$Date
+          base::plot(sub$Date, sub[[vars[v]]], axes = FALSE, type = "l")
+          title(main = parse(text = rename_modelvars(vars[v])))
+          axis(side = 2, labels = TRUE)
+          box(which = "plot", bty = "l")
+          if ((nc == 1 & v == nr) |
+              (nc == 2 & v %in% c(length(vars), length(vars)-1))) {
+            labels <- TRUE
+          } else {
+            labels <- FALSE
+          }
+          axis.Date(side = 1, at = seq(min(x), max(x), by = "6 months"),
+                    x = x, labels = labels, format = "%m/%Y")
+        }
+      }
+    }
   }
-  legend("bottomright", legend = c("DY-CD", "GLM-AED", "GOTM-WET", "Obs"),
-         lty = c(rep(1, 3), NA), pch = c(rep(NA, 3), 20),
-         col = c(1:3, 1), bg = "transparent")
+
+  if (y == "output") {
+    inp <- input(x)
+    outp <- output(x)
+    obs <- observations(x)
+
+    # z <- t(as.matrix(outp[[m]][["HYD_temp"]]))
+    # Date = outp[[m]][["Date"]]
+    # filled.contour(x = Date, z = z, color.palette = hcl.colors,
+    #                key.title = title(main = "Temp\n(\u00B0C)"))
+
+    mod <- lapply(names(outp), \(m) {
+      if (!is.null(outp[[m]])) {
+        depth <- outp[[m]][["DEPTH"]]
+        # lyr <- outp[[m]][["LAYERS"]]
+        temp <- outp[[m]][["HYD_temp"]]
+        df <- data.frame(Date = outp[[m]][["Date"]],
+                         # depth = unlist(lyr),
+                         Ts = unlist(temp[nrow(temp), ]),
+                         Tb = unlist(temp[1, ]),
+                         lvl = depth,
+                         model = m)
+        df
+      }
+    }) |>
+      do.call(rbind, args = _)
+
+    if (!is.null(obs$lake)) {
+      obs_temp <- obs$lake |>
+        dplyr::filter(var == "HYD_temp" & Date %in% mod$Date) |>
+        dplyr::group_by(Date) |>
+        dplyr::summarise(Ts = value[which.min(depth_from)],
+                         Tb = value[which.max(depth_from)])
+    }
+    if (!is.null(obs$level)) {
+      obs_lvl <- obs$level |>
+        dplyr::filter(Date %in% mod$Date) |>
+        dplyr::mutate(lvl_adj = lvlwtr - min(inp$hypsograph$elev))
+    }
+
+    #
+    par(mfrow = c(2, 1))
+    ylim <- range(mod$Ts, mod$Tb)
+    base::plot(mod$Date, mod$Ts, type = "n", ylab = "Temperature (\u00B0C)",
+               xlab = "Time", main = "Water temperature", ylim = ylim)
+    for (i in seq_along(outp)) {
+      sub <- mod[mod$model == names(outp)[i], ]
+      lines(sub$Date, sub$Ts, col = i)
+      lines(sub$Date, sub$Tb, col = i, lty = 2)
+    }
+    if (!is.null(obs$lake)) {
+      points(obs_temp$Date, obs_temp$Ts, pch = 1, cex = 0.75)
+      points(obs_temp$Date, obs_temp$Tb, pch = 4, cex = 0.75)
+    }
+    legend("topright", legend = c("Surface", "Bottom", "Obs (surf)",
+                                  "Obs (bott)"), lty = c(1:2, NA, NA),
+           pch = c(NA, NA, 1, 4), col = "black", bg = "transparent")
+    # legend("bottomright", legend = c(), pch = c(1, 4),
+    #        col = "black", bg = "transparent")
+
+    # Water level
+    base::plot(mod$Date, mod$lvl, type = "n", ylab = "Water level (m)",
+               xlab = "Time", main = "Water level")
+    for (i in seq_along(outp)) {
+      sub <- mod[mod$model == names(outp)[i], ]
+      lines(sub$Date, sub$lvl, col = i)
+    }
+    if (!is.null(obs$level)) {
+      points(obs_lvl$Date, obs_lvl$lvl_adj, pch = 20, cex = 0.5)
+    }
+    legend("bottomright", legend = c("DY-CD", "GLM-AED", "GOTM-WET", "Obs"),
+           lty = c(rep(1, 3), NA), pch = c(rep(NA, 3), 20),
+           col = c(1:3, 1), bg = "transparent")
+  }
+
 })
 
+#' Plot an aeme object
+#'
+#' This method prints the names of the slots in the aeme object.
+#'
+#' @title Update names Method
+#' @param x An aeme object.
+#' @return vector of names of the slots in the aeme object to the console.
+#' @export
+setMethod("names", "aeme", function(x) {
+  slotNames(x)
+})

@@ -7,7 +7,6 @@ lake:
    shape: data/lake.shp                    # lake shape file [shp file]
    depth: 13.07                                 # maximum water depth [m]
    area: 152343                                 # surface area at maximum depth [m2]
-   init_depth: 13.07                            # initial height of lake surface relative to the bottom [m]
 catchment:
    name: Wainamu
    id: null
@@ -38,6 +37,7 @@ observations:
    level: data/water_level.csv
 input:
    init_profile: null                      # initial temperature profile [csv file; if none use null or leave empty; if empty/null, the observations file will be used]
+   init_depth: 13.07                            # initial height of lake surface relative to the bottom [m]
    hypsograph: data/hypsograph.csv                   # hypsograph [csv file]
    meteo: data/meteo.csv                        # file with meteorological forcing data, with column headers according to LakeEnsemblR vocabulary [csv file]
    use_lw: true
