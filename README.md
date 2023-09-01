@@ -35,21 +35,6 @@ models in the ensemble:
 
 ``` r
 library(AEME)
-#> The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
-#> which was just loaded, will retire in October 2023.
-#> Please refer to R-spatial evolution reports for details, especially
-#> https://r-spatial.org/r/2023/05/15/evolution4.html.
-#> It may be desirable to make the sf package available;
-#> package maintainers should consider adding sf to Suggests:.
-#> The sp package is now running under evolution status 2
-#>      (status 2 uses the sf package in place of rgdal)
-#> Warning: replacing previous import 'stats::filter' by 'dplyr::filter' when
-#> loading 'gotmtools'
-#> Please note that 'maptools' will be retired during October 2023,
-#> plan transition at your earliest convenience (see
-#> https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs
-#> for guidance);some functionality will be moved to 'sp'.
-#>  Checking rgeos availability: FALSE
 #> 
 #> Attaching package: 'AEME'
 #> The following object is masked from 'package:stats':
@@ -66,40 +51,26 @@ aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
 #> Linking to GEOS 3.11.2, GDAL 3.6.2, PROJ 9.2.0; sf_use_s2() is FALSE
 #> Warning in aeme_constructor(lake = yaml$lake, catchment = yaml$catchment, : Lake area [152343 m2] is different to the area calculated from the lake
 #> shape [152433.09 m2].
-#> Calculating catchment area from catchment shape:
-#>    4989125.27 m2
 mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
-inf_factor = c("glm_aed" = 1)
-outf_factor = c("glm_aed" = 1)
-model <- c("glm_aed")
-build_ensemble(path = path, aeme_data = aeme_data, model = model,
-               mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-               use_bgc = TRUE, use_lw = TRUE)
-#> Building simulation for Wainamu [2023-08-25 17:28:54.24887]
-#> Spherical geometry (s2) switched off
-#> Spherical geometry (s2) switched on
+inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+model <- c("dy_cd", "glm_aed", "gotm_wet")
+aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model, mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
+#> Building simulation for Wainamu [2023-09-01 09:43:07.199963]
+#> Using observed water level
+#> Estimating temperature using Stefan & Preud'homme (2007)...
+#> Building DYRESM-CAEDYM for lake wainamu
+#> Copied in DYRESM par file
+#> Downsampling bathymetry
 #> Building GLM3-AED2 model for lake wainamu
 #> Copied in GLM nml file
-#> Copied in AED nml file
-#>    oxy_initial   = 625 replaced with 312.5
-#>    frp_initial = 0.3229 replaced with 0.3229
-#>      dop_initial  = 0.3229 replaced with 0.3229
-#>      pop_initial  = 0.3229 replaced with 0.3229
-#>    amm_initial = 1.4279 replaced with 1.4279
-#>    nit_initial = 1.0709 replaced with 1.0709
-#>      don_initial  = 21.4183 replaced with 21.4183
-#>      pon_initial  = 7.1394 replaced with 7.1394
-#>      doc_initial  = 41.6285 replaced with 41.6285
-#>      poc_initial  = 16.6514 replaced with 16.6514
-#>    rsi_initial = 1 replaced with 1
-#> PHY_cyano 0.24022 replaced with 0.24022
-#> PHY_green 0.300275 replaced with 0.300275
-#> PHY_diatom 0.300275 replaced with 0.300275
-#>     ss_initial   = 3,3 replaced with 3,
-run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, path = path)
-#> Running models... (Have you tried parallelizing?) [2023-08-25 17:28:54.827439]
-#> GLM-AED run successful! [2023-08-25 17:28:59.933883]
-#> Model run complete![2023-08-25 17:28:59.934885]
+#> Building GOTM-WET for lake wainamu
+#> Copied all GOTM configuration files
+aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, path = path, parallel = TRUE, mod_ctrls = mod_ctrls)
+#> Running models in parallel... [2023-09-01 09:43:09.813653]
+#> Model run complete![2023-09-01 09:43:23.50275]
+#> Reading models in parallel... [2023-09-01 09:43:24.869591]
+#> Model reading complete![2023-09-01 09:43:25.916121]
 ```
 
 The model input and output (I/O) is handled as it’s own S4 object of
@@ -115,57 +86,35 @@ class(aeme_data)
 ```
 
 This allows for easier handling of the model output data within our
-structure and allows for loading of the model output into the `aeme`
-object.
-
-``` r
-aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
-                          mod_ctrls = mod_ctrls, parallel = FALSE)
-#> Retrieving and formatting temp for model glm_aed
-#> Retrieving and formatting salt for model glm_aed
-#> Retrieving and formatting OXY_oxy for model glm_aed
-#> Retrieving and formatting PHS_frp for model glm_aed
-#> Retrieving and formatting OGM_dop for model glm_aed
-#> Retrieving and formatting OGM_pop for model glm_aed
-#> Retrieving and formatting PHS_frp_ads for model glm_aed
-#> Retrieving and formatting TOT_tp for model glm_aed
-#> Retrieving and formatting NIT_amm for model glm_aed
-#> Retrieving and formatting NIT_nit for model glm_aed
-#> Retrieving and formatting OGM_don for model glm_aed
-#> Retrieving and formatting OGM_pon for model glm_aed
-#> Retrieving and formatting TOT_tn for model glm_aed
-#> Retrieving and formatting OGM_doc for model glm_aed
-#> Retrieving and formatting OGM_poc for model glm_aed
-#> Retrieving and formatting SIL_rsi for model glm_aed
-#> Retrieving and formatting PHY_cyano for model glm_aed
-#> Retrieving and formatting PHY_green for model glm_aed
-#> Retrieving and formatting PHY_diatom for model glm_aed
-#> Retrieving and formatting PHY_TCHLA for model glm_aed
-#> Retrieving and formatting NCS_ss1 for model glm_aed
-```
-
-This object can be be printed to the console:
+structure and allows for condensed output to be printed to the console:
 
 ``` r
 aeme_data
-#>      AEME 
+#>             AEME 
 #> -------------------------------------------------------------------
 #>   Lake
 #> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;
-#> Area: 152343m2; Shape file: Present
+#> Area: 152343 m2; Shape file: Present
 #> -------------------------------------------------------------------
 #>   Catchment 
-#> Name: Wainamu; Area: 4989125
+#> Name: Wainamu; Area: 4989125 m2;
+#>       Shape file: Present
 #> -------------------------------------------------------------------
 #>   Time
-#> Start: 2022-01-01 Stop: 2022-12-31 Time step: 3600
+#> Start: 2022-01-09 Stop: 2022-12-31 Time step: 3600
+#> -------------------------------------------------------------------
+#>   Configuration
+#>           Physical   |   Biogeochemical
+#> DY-CD    : Present    |   Absent 
+#> GLM-AED  : Present    |   Absent 
+#> GOTM-WET : Present    |   Absent 
 #> -------------------------------------------------------------------
 #>   Observations
 #> Lake: Present; Level: Present
 #> -------------------------------------------------------------------
 #>   Input
-#> Inital profile: Absent; Hypsograph: Present; Meteo: Present;
-#> Use longwave: TRUE; Kw: 0.98
+#> Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=132);
+#> Meteo: Present; Use longwave: TRUE; Kw: 0.98
 #> -------------------------------------------------------------------
 #>   Inflows
 #> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
@@ -174,9 +123,9 @@ aeme_data
 #> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
 #> -------------------------------------------------------------------
 #>   Output: 
-#> DY-CD: Absent
+#> DY-CD: Present
 #> GLM-AED: Present
-#> GOTM-WET: Absent
+#> GOTM-WET: Present
 ```
 
 Summarised easily:
@@ -293,83 +242,183 @@ summary(aeme_data)
 #>  3rd Qu.:2022-09-29   3rd Qu.: 13446.05  
 #>  Max.   :2023-12-30   Max.   :106553.81  
 #>                       NA's   :4          
+#>    wbal 
+#>       Date            outflow_dy_cd     outflow_glm_aed   outflow_gotm_wet 
+#>  Min.   :2022-01-05   Min.   :    0.0   Min.   :    0.0   Min.   :    0.0  
+#>  1st Qu.:2022-04-05   1st Qu.:    0.0   1st Qu.:    0.0   1st Qu.:    0.0  
+#>  Median :2022-07-04   Median :    0.0   Median :    0.0   Median :    0.0  
+#>  Mean   :2022-07-04   Mean   :  603.1   Mean   :  603.1   Mean   :  648.1  
+#>  3rd Qu.:2022-10-02   3rd Qu.:  553.6   3rd Qu.:  553.6   3rd Qu.:  689.3  
+#>  Max.   :2022-12-31   Max.   :10396.4   Max.   :10396.4   Max.   :10380.3  
+#>                       NA's   :4         NA's   :4         NA's   :4        
 #> -------------------------------------------------------------------
 #> Outputs:
 #>    DY-CD 
-#> Length  Class   Mode 
-#>      0   NULL   NULL 
+#>     HYD_evap        HYD_evap_flux           HYD_Qe        HYD_evap_vol   
+#>  Min.   :0.000000   Min.   :0.000e+00   Min.   :-33.23   Min.   :   0.0  
+#>  1st Qu.:0.001269   1st Qu.:1.469e-08   1st Qu.: 31.47   1st Qu.: 198.2  
+#>  Median :0.002349   Median :2.719e-08   Median : 61.28   Median : 363.5  
+#>  Mean   :0.002793   Mean   :3.233e-08   Mean   : 74.51   Mean   : 429.9  
+#>  3rd Qu.:0.004000   3rd Qu.:4.629e-08   3rd Qu.:105.91   3rd Qu.: 616.0  
+#>  Max.   :0.009261   Max.   :1.072e-07   Max.   :272.96   Max.   :1433.0  
+#>    HYD_precip         HYD_inflow        HYD_outflow           LAYERS       
+#>  Min.   :0.000000   Min.   :0.002711   Min.   :0.000000   Min.   : 0.3225  
+#>  1st Qu.:0.000250   1st Qu.:0.009102   1st Qu.:0.001501   1st Qu.: 3.5330  
+#>  Median :0.001600   Median :0.029027   Median :0.028470   Median : 6.8130  
+#>  Mean   :0.006457   Mean   :0.058462   Mean   :0.056175   Mean   : 6.7765  
+#>  3rd Qu.:0.008320   3rd Qu.:0.070330   3rd Qu.:0.074294   3rd Qu.:10.0965  
+#>  Max.   :0.061450   Max.   :0.773778   Max.   :0.359408   Max.   :13.9545  
+#>      DEPTHS          HYD_temp        CHM_salt    CHM_oxy       PHS_frp   
+#>  Min.   : 0.000   Min.   :10.00   Min.   :0   Min.   :-99   Min.   :-99  
+#>  1st Qu.: 3.204   1st Qu.:11.28   1st Qu.:0   1st Qu.:-99   1st Qu.:-99  
+#>  Median : 6.485   Median :13.00   Median :0   Median :-99   Median :-99  
+#>  Mean   : 6.446   Mean   :14.12   Mean   :0   Mean   :-99   Mean   :-99  
+#>  3rd Qu.: 9.766   3rd Qu.:15.99   3rd Qu.:0   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :13.606   Max.   :27.70   Max.   :0   Max.   :-99   Max.   :-99  
+#>     PHS_dop       PHS_pop       PHS_pip        PHS_tp       NIT_amm   
+#>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99   Median :-99   Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99  
+#>     NIT_nit       NIT_don       NIT_pon        NIT_tn       CAR_doc   
+#>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99   Median :-99   Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99  
+#>     CAR_poc       SIL_rsi      PHY_cyano     PHY_green     PHY_diatom 
+#>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99   Median :-99   Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99  
+#>    PHY_tchla      NCS_ss1   
+#>  Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99  
 #>    GLM-AED 
 #>       Date           DEPTH           HYD_V             HYD_A0      
-#>  Min.   :18994   Min.   :13.06   Min.   :1102776   Min.   :152207  
-#>  1st Qu.:19085   1st Qu.:13.67   1st Qu.:1197753   1st Qu.:158849  
-#>  Median :19176   Median :14.39   Median :1316385   Median :166691  
-#>  Mean   :19176   Mean   :14.24   Mean   :1293358   Mean   :165040  
-#>  3rd Qu.:19266   3rd Qu.:14.81   3rd Qu.:1387598   3rd Qu.:171232  
-#>  Max.   :19357   Max.   :15.38   Max.   :1486969   Max.   :177382  
+#>  Min.   :19002   Min.   :13.00   Min.   :1092548   Min.   :151319  
+#>  1st Qu.:19091   1st Qu.:13.19   1st Qu.:1122736   1st Qu.:153694  
+#>  Median :19180   Median :13.29   Median :1137280   Median :154706  
+#>  Mean   :19180   Mean   :13.33   Mean   :1144381   Mean   :155170  
+#>  3rd Qu.:19268   3rd Qu.:13.45   3rd Qu.:1163147   3rd Qu.:156491  
+#>  Max.   :19357   Max.   :14.05   Max.   :1260341   Max.   :163031  
 #>     HYD_evap        HYD_evap_flux           HYD_Qe        HYD_evap_vol   
 #>  Min.   :0.000000   Min.   :0.000e+00   Min.   :  0.00   Min.   :   0.0  
-#>  1st Qu.:0.001185   1st Qu.:1.381e-08   1st Qu.: 33.59   1st Qu.: 193.0  
-#>  Median :0.002211   Median :2.557e-08   Median : 62.84   Median : 366.8  
-#>  Mean   :0.002610   Mean   :2.914e-08   Mean   : 74.01   Mean   : 428.1  
-#>  3rd Qu.:0.003779   3rd Qu.:4.195e-08   3rd Qu.:107.42   3rd Qu.: 609.5  
-#>  Max.   :0.008851   Max.   :9.443e-08   Max.   :251.93   Max.   :1471.5  
-#>    HYD_precip         HYD_inflow        HYD_outflow           LAYERS       
-#>  Min.   :0.000000   Min.   :0.000000   Min.   :0.000000   Min.   : 0.3266  
-#>  1st Qu.:0.000240   1st Qu.:0.009021   1st Qu.:0.001728   1st Qu.: 3.7163  
-#>  Median :0.001415   Median :0.026401   Median :0.025025   Median : 7.2800  
-#>  Mean   :0.006342   Mean   :0.052899   Mean   :0.050734   Mean   : 7.2966  
-#>  3rd Qu.:0.008172   3rd Qu.:0.064470   3rd Qu.:0.067903   3rd Qu.:10.8214  
-#>  Max.   :0.061450   Max.   :0.683583   Max.   :0.331986   Max.   :15.3753  
-#>      DEPTHS          HYD_temp        CHM_salt            CHM_oxy      
-#>  Min.   : 0.000   Min.   :10.00   Min.   :0.000e+00   Min.   : 0.000  
-#>  1st Qu.: 3.359   1st Qu.:12.08   1st Qu.:2.557e-05   1st Qu.: 5.098  
-#>  Median : 6.926   Median :13.96   Median :5.924e-05   Median : 9.019  
-#>  Mean   : 6.941   Mean   :14.63   Mean   :4.965e-05   Mean   : 7.255  
-#>  3rd Qu.:10.473   3rd Qu.:16.54   3rd Qu.:6.736e-05   3rd Qu.: 9.865  
-#>  Max.   :14.991   Max.   :28.00   Max.   :1.273e-04   Max.   :10.972  
-#>     PHS_frp             PHS_dop            PHS_pop             PHS_pip         
-#>  Min.   :0.0009848   Min.   :0.001112   Min.   :8.311e-06   Min.   :9.882e-05  
-#>  1st Qu.:0.0013815   1st Qu.:0.002553   1st Qu.:9.251e-05   1st Qu.:2.580e-04  
-#>  Median :0.0017797   Median :0.008237   Median :3.679e-04   Median :4.074e-04  
-#>  Mean   :0.0043995   Mean   :0.007482   Mean   :6.702e-04   Mean   :1.096e-03  
-#>  3rd Qu.:0.0060061   3rd Qu.:0.011931   3rd Qu.:7.880e-04   3rd Qu.:1.562e-03  
-#>  Max.   :0.0501294   Max.   :0.014269   Max.   :9.849e-03   Max.   :1.486e-02  
-#>      PHS_tp            NIT_amm            NIT_nit           NIT_don       
-#>  Min.   :0.002722   Min.   :0.002226   Min.   :0.00000   Min.   :0.00000  
-#>  1st Qu.:0.005722   1st Qu.:0.009472   1st Qu.:0.01026   1st Qu.:0.02405  
-#>  Median :0.012347   Median :0.011443   Median :0.01853   Median :0.06958  
-#>  Mean   :0.013644   Mean   :0.040024   Mean   :0.01947   Mean   :0.09610  
-#>  3rd Qu.:0.016816   3rd Qu.:0.023349   3rd Qu.:0.02571   3rd Qu.:0.14167  
-#>  Max.   :0.079939   Max.   :1.081944   Max.   :0.07259   Max.   :0.29977  
-#>     NIT_pon              NIT_tn           CAR_doc            CAR_poc        
-#>  Min.   :0.0001508   Min.   :0.02463   Min.   :0.004459   Min.   :0.001248  
-#>  1st Qu.:0.0016809   1st Qu.:0.06911   1st Qu.:0.215843   1st Qu.:0.012062  
-#>  Median :0.0054826   Median :0.12805   Median :0.479070   Median :0.034816  
-#>  Mean   :0.0077978   Mean   :0.16350   Mean   :0.472392   Mean   :0.035828  
-#>  3rd Qu.:0.0093873   3rd Qu.:0.20027   3rd Qu.:0.690628   3rd Qu.:0.049389  
-#>  Max.   :0.0984666   Max.   :1.34540   Max.   :0.933909   Max.   :0.196599  
-#>     SIL_rsi         PHY_cyano           PHY_green          PHY_diatom      
-#>  Min.   : 1.013   Min.   :  0.06027   Min.   : 0.03000   Min.   : 0.03000  
-#>  1st Qu.: 5.865   1st Qu.:  1.65211   1st Qu.: 0.04183   1st Qu.: 0.03000  
-#>  Median : 9.770   Median :  5.66111   Median : 0.04881   Median : 0.03012  
-#>  Mean   : 9.452   Mean   : 13.69257   Mean   : 1.32462   Mean   : 0.36634  
-#>  3rd Qu.:10.959   3rd Qu.: 22.31242   3rd Qu.: 0.09753   3rd Qu.: 0.03243  
-#>  Max.   :56.457   Max.   :105.24556   Max.   :61.60633   Max.   :19.57097  
-#>    PHY_tchla           NCS_ss1      
-#>  Min.   : 0.03249   Min.   :0.9353  
-#>  1st Qu.: 0.46961   1st Qu.:1.7326  
-#>  Median : 1.84746   Median :2.0732  
-#>  Mean   : 3.77928   Mean   :2.2355  
-#>  3rd Qu.: 6.01750   3rd Qu.:2.8077  
-#>  Max.   :25.07452   Max.   :5.3546  
+#>  1st Qu.:0.001186   1st Qu.:1.395e-08   1st Qu.: 33.76   1st Qu.: 184.2  
+#>  Median :0.002226   Median :2.573e-08   Median : 63.54   Median : 345.5  
+#>  Mean   :0.002609   Mean   :2.925e-08   Mean   : 74.01   Mean   : 404.7  
+#>  3rd Qu.:0.003734   3rd Qu.:4.091e-08   3rd Qu.:105.74   3rd Qu.: 571.8  
+#>  Max.   :0.009085   Max.   :9.936e-08   Max.   :258.70   Max.   :1427.4  
+#>    HYD_precip         HYD_inflow       HYD_outflow           LAYERS       
+#>  Min.   :0.000000   Min.   :0.00000   Min.   :0.000000   Min.   : 0.3249  
+#>  1st Qu.:0.000250   1st Qu.:0.00907   1st Qu.:0.005649   1st Qu.: 3.5589  
+#>  Median :0.001555   Median :0.02883   Median :0.031296   Median : 6.8596  
+#>  Mean   :0.006469   Mean   :0.05800   Mean   :0.059817   Mean   : 6.8317  
+#>  3rd Qu.:0.008320   3rd Qu.:0.07012   3rd Qu.:0.076903   3rd Qu.:10.1708  
+#>  Max.   :0.061450   Max.   :0.74376   Max.   :0.363142   Max.   :14.0512  
+#>      DEPTHS          HYD_temp        CHM_salt            CHM_oxy   
+#>  Min.   : 0.000   Min.   :10.00   Min.   :0.000e+00   Min.   :-99  
+#>  1st Qu.: 3.227   1st Qu.:12.45   1st Qu.:4.353e-05   1st Qu.:-99  
+#>  Median : 6.533   Median :14.79   Median :5.873e-05   Median :-99  
+#>  Mean   : 6.498   Mean   :15.36   Mean   :5.527e-05   Mean   :-99  
+#>  3rd Qu.: 9.837   3rd Qu.:18.06   3rd Qu.:7.629e-05   3rd Qu.:-99  
+#>  Max.   :13.700   Max.   :27.75   Max.   :1.259e-04   Max.   :-99  
+#>     PHS_frp       PHS_dop       PHS_pop       PHS_pip        PHS_tp   
+#>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99   Median :-99   Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99  
+#>     NIT_amm       NIT_nit       NIT_don       NIT_pon        NIT_tn   
+#>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99   Median :-99   Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99  
+#>     CAR_doc       CAR_poc       SIL_rsi      PHY_cyano     PHY_green  
+#>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99   Median :-99   Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99  
+#>    PHY_diatom    PHY_tchla      NCS_ss1   
+#>  Min.   :-99   Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99   Max.   :-99  
 #>    GOTM-WET 
-#> Length  Class   Mode 
-#>      0   NULL   NULL 
+#>      HYD_V           HYD_evap         HYD_evap_flux           HYD_Qe      
+#>  Min.   :-10101   Min.   :1.242e-05   Min.   :1.438e-10   Min.   :-34.91  
+#>  1st Qu.: 16859   1st Qu.:1.135e-03   1st Qu.:1.314e-08   1st Qu.: 34.55  
+#>  Median : 26863   Median :2.019e-03   Median :2.337e-08   Median : 60.34  
+#>  Mean   : 36019   Mean   :2.383e-03   Mean   :2.758e-08   Mean   : 69.13  
+#>  3rd Qu.: 52516   3rd Qu.:3.278e-03   3rd Qu.:3.794e-08   3rd Qu.: 96.18  
+#>  Max.   :137818   Max.   :8.742e-03   Max.   :1.012e-07   Max.   :258.72  
+#>   HYD_evap_vol        HYD_precip         HYD_outflow           LAYERS       
+#>  Min.   :   1.909   Min.   :9.800e-07   Min.   :0.000000   Min.   : 0.3251  
+#>  1st Qu.: 174.169   1st Qu.:4.261e-04   1st Qu.:0.001927   1st Qu.: 3.5538  
+#>  Median : 313.812   Median :2.569e-03   Median :0.028264   Median : 6.8599  
+#>  Mean   : 368.882   Mean   :6.455e-03   Mean   :0.056056   Mean   : 6.8179  
+#>  3rd Qu.: 502.877   3rd Qu.:8.860e-03   3rd Qu.:0.075321   3rd Qu.:10.1664  
+#>  Max.   :1345.520   Max.   :6.127e-02   Max.   :0.354859   Max.   :13.9490  
+#>      DEPTHS          HYD_temp        CHM_salt    CHM_oxy       PHS_frp   
+#>  Min.   : 0.000   Min.   :10.00   Min.   :0   Min.   :-99   Min.   :-99  
+#>  1st Qu.: 3.223   1st Qu.:13.18   1st Qu.:0   1st Qu.:-99   1st Qu.:-99  
+#>  Median : 6.532   Median :16.00   Median :0   Median :-99   Median :-99  
+#>  Mean   : 6.485   Mean   :16.34   Mean   :0   Mean   :-99   Mean   :-99  
+#>  3rd Qu.: 9.835   3rd Qu.:19.22   3rd Qu.:0   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :13.600   Max.   :27.43   Max.   :0   Max.   :-99   Max.   :-99  
+#>     PHS_dop       PHS_pop       PHS_pip        PHS_tp       NIT_amm   
+#>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99   Median :-99   Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99  
+#>     NIT_nit       NIT_don       NIT_pon        NIT_tn       CAR_doc   
+#>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99   Median :-99   Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99  
+#>     CAR_poc       SIL_rsi      PHY_cyano     PHY_green     PHY_diatom 
+#>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99   Median :-99   Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99   Max.   :-99  
+#>    PHY_tchla      NCS_ss1   
+#>  Min.   :-99   Min.   :-99  
+#>  1st Qu.:-99   1st Qu.:-99  
+#>  Median :-99   Median :-99  
+#>  Mean   :-99   Mean   :-99  
+#>  3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :-99   Max.   :-99  
 #> -------------------------------------------------------------------
 ```
 
 Model data can be visualised easily using the `plot_output()` function
 
+    #> Loading required package: ggplot2
     #> Warning: Using size for a discrete variable is not advised.
+    #> Using size for a discrete variable is not advised.
+    #> Using size for a discrete variable is not advised.
+    #> Using size for a discrete variable is not advised.
 
 <img src="man/figures/README-plot_output-1.png" width="100%" />
