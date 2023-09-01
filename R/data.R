@@ -32,3 +32,20 @@
 #' }
 #' @source Package development.
 "key_naming"
+
+#' Catchment yields
+#'
+#' A reference table for catchment nutrient and sediment yields for calculating
+#' inflow nutrients in AEME.
+#'
+#' @format ## `catchment_yields`
+#' A data frame with 4 rows and 4 columns:
+#' \describe{
+#'   \item{Type}{Type of catchment}
+#'   \item{TN_kg/ha/y}{Total nitrogen yield per hectare per year.}
+#'   \item{TP_kg/ha/y}{Total phosphorus yield per hectare per year.}
+#'   \item{TSS_kg/ha/y}{Total suspended sediment yield per hectare per year.}
+#' }
+#' @author Chris McBride
+#' @source Package development.
+"catchment_yields"
