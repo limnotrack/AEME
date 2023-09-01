@@ -8,7 +8,7 @@ Author: Authors@R: c(person("Tadhg", "Moore", role = c("aut","cre"),
     email = "chris@limnotrack.com"))
 Maintainer: Tadhg Moore <tadhg.moore6@gmail.com>
 Description: Run an ensemble of aquatic ecosystem models on lakes and reservoir
-    using the latest versions of the models.
+    using varying levels of inputs.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
@@ -17,6 +17,8 @@ Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Imports: 
     dplyr,
@@ -41,3 +43,4 @@ Imports:
     yaml,
     zoo
 URL: https://expert-guide-29ve1vw.pages.github.io/
+VignetteBuilder: knitr
