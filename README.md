@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# AEME
+# AEME <a href="https://expert-guide-29ve1vw.pages.github.io/"><img src="man/figures/logo.png" align="right" height="120" alt="AEME website" /></a>
 
 <!-- badges: start -->
 
@@ -56,7 +56,7 @@ inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("dy_cd", "glm_aed", "gotm_wet")
 aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model, mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
-#> Building simulation for Wainamu [2023-09-01 09:43:07.199963]
+#> Building simulation for Wainamu [2023-09-01 15:33:29.049674]
 #> Using observed water level
 #> Estimating temperature using Stefan & Preud'homme (2007)...
 #> Building DYRESM-CAEDYM for lake wainamu
@@ -67,10 +67,10 @@ aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model, m
 #> Building GOTM-WET for lake wainamu
 #> Copied all GOTM configuration files
 aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, path = path, parallel = TRUE, mod_ctrls = mod_ctrls)
-#> Running models in parallel... [2023-09-01 09:43:09.813653]
-#> Model run complete![2023-09-01 09:43:23.50275]
-#> Reading models in parallel... [2023-09-01 09:43:24.869591]
-#> Model reading complete![2023-09-01 09:43:25.916121]
+#> Running models in parallel... [2023-09-01 15:33:31.757677]
+#> Model run complete![2023-09-01 15:33:45.152485]
+#> Reading models in parallel... [2023-09-01 15:33:46.633558]
+#> Model reading complete![2023-09-01 15:33:47.298898]
 ```
 
 The model input and output (I/O) is handled as it’s own S4 object of
@@ -255,26 +255,26 @@ summary(aeme_data)
 #> Outputs:
 #>    DY-CD 
 #>     HYD_evap        HYD_evap_flux           HYD_Qe        HYD_evap_vol   
-#>  Min.   :0.000000   Min.   :0.000e+00   Min.   :-33.23   Min.   :   0.0  
-#>  1st Qu.:0.001269   1st Qu.:1.469e-08   1st Qu.: 31.47   1st Qu.: 198.2  
-#>  Median :0.002349   Median :2.719e-08   Median : 61.28   Median : 363.5  
-#>  Mean   :0.002793   Mean   :3.233e-08   Mean   : 74.51   Mean   : 429.9  
-#>  3rd Qu.:0.004000   3rd Qu.:4.629e-08   3rd Qu.:105.91   3rd Qu.: 616.0  
-#>  Max.   :0.009261   Max.   :1.072e-07   Max.   :272.96   Max.   :1433.0  
+#>  Min.   :0.000000   Min.   :0.000e+00   Min.   :-32.94   Min.   :   0.0  
+#>  1st Qu.:0.001270   1st Qu.:1.470e-08   1st Qu.: 31.53   1st Qu.: 198.9  
+#>  Median :0.002341   Median :2.710e-08   Median : 61.18   Median : 364.6  
+#>  Mean   :0.002795   Mean   :3.235e-08   Mean   : 74.50   Mean   : 432.5  
+#>  3rd Qu.:0.004018   3rd Qu.:4.651e-08   3rd Qu.:105.51   3rd Qu.: 619.6  
+#>  Max.   :0.009261   Max.   :1.072e-07   Max.   :272.76   Max.   :1436.3  
 #>    HYD_precip         HYD_inflow        HYD_outflow           LAYERS       
-#>  Min.   :0.000000   Min.   :0.002711   Min.   :0.000000   Min.   : 0.3225  
-#>  1st Qu.:0.000250   1st Qu.:0.009102   1st Qu.:0.001501   1st Qu.: 3.5330  
-#>  Median :0.001600   Median :0.029027   Median :0.028470   Median : 6.8130  
-#>  Mean   :0.006457   Mean   :0.058462   Mean   :0.056175   Mean   : 6.7765  
-#>  3rd Qu.:0.008320   3rd Qu.:0.070330   3rd Qu.:0.074294   3rd Qu.:10.0965  
-#>  Max.   :0.061450   Max.   :0.773778   Max.   :0.359408   Max.   :13.9545  
+#>  Min.   :0.000000   Min.   :0.002698   Min.   :0.000000   Min.   : 0.3243  
+#>  1st Qu.:0.000250   1st Qu.:0.009058   1st Qu.:0.001491   1st Qu.: 3.5517  
+#>  Median :0.001600   Median :0.028886   Median :0.028332   Median : 6.8499  
+#>  Mean   :0.006457   Mean   :0.058170   Mean   :0.055896   Mean   : 6.8127  
+#>  3rd Qu.:0.008320   3rd Qu.:0.069992   3rd Qu.:0.073921   3rd Qu.:10.1503  
+#>  Max.   :0.061450   Max.   :0.770015   Max.   :0.357712   Max.   :14.0232  
 #>      DEPTHS          HYD_temp        CHM_salt    CHM_oxy       PHS_frp   
 #>  Min.   : 0.000   Min.   :10.00   Min.   :0   Min.   :-99   Min.   :-99  
-#>  1st Qu.: 3.204   1st Qu.:11.28   1st Qu.:0   1st Qu.:-99   1st Qu.:-99  
-#>  Median : 6.485   Median :13.00   Median :0   Median :-99   Median :-99  
-#>  Mean   : 6.446   Mean   :14.12   Mean   :0   Mean   :-99   Mean   :-99  
-#>  3rd Qu.: 9.766   3rd Qu.:15.99   3rd Qu.:0   3rd Qu.:-99   3rd Qu.:-99  
-#>  Max.   :13.606   Max.   :27.70   Max.   :0   Max.   :-99   Max.   :-99  
+#>  1st Qu.: 3.221   1st Qu.:11.28   1st Qu.:0   1st Qu.:-99   1st Qu.:-99  
+#>  Median : 6.519   Median :12.97   Median :0   Median :-99   Median :-99  
+#>  Mean   : 6.480   Mean   :14.11   Mean   :0   Mean   :-99   Mean   :-99  
+#>  3rd Qu.: 9.817   3rd Qu.:15.92   3rd Qu.:0   3rd Qu.:-99   3rd Qu.:-99  
+#>  Max.   :13.673   Max.   :27.73   Max.   :0   Max.   :-99   Max.   :-99  
 #>     PHS_dop       PHS_pop       PHS_pip        PHS_tp       NIT_amm   
 #>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
 #>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
@@ -305,33 +305,33 @@ summary(aeme_data)
 #>  Max.   :-99   Max.   :-99  
 #>    GLM-AED 
 #>       Date           DEPTH           HYD_V             HYD_A0      
-#>  Min.   :19002   Min.   :13.00   Min.   :1092548   Min.   :151319  
-#>  1st Qu.:19091   1st Qu.:13.19   1st Qu.:1122736   1st Qu.:153694  
-#>  Median :19180   Median :13.29   Median :1137280   Median :154706  
-#>  Mean   :19180   Mean   :13.33   Mean   :1144381   Mean   :155170  
-#>  3rd Qu.:19268   3rd Qu.:13.45   3rd Qu.:1163147   3rd Qu.:156491  
-#>  Max.   :19357   Max.   :14.05   Max.   :1260341   Max.   :163031  
+#>  Min.   :19002   Min.   :13.00   Min.   :1092561   Min.   :151320  
+#>  1st Qu.:19091   1st Qu.:13.19   1st Qu.:1122745   1st Qu.:153695  
+#>  Median :19180   Median :13.29   Median :1137284   Median :154706  
+#>  Mean   :19180   Mean   :13.33   Mean   :1144386   Mean   :155170  
+#>  3rd Qu.:19268   3rd Qu.:13.45   3rd Qu.:1163153   3rd Qu.:156491  
+#>  Max.   :19357   Max.   :14.05   Max.   :1260347   Max.   :163032  
 #>     HYD_evap        HYD_evap_flux           HYD_Qe        HYD_evap_vol   
 #>  Min.   :0.000000   Min.   :0.000e+00   Min.   :  0.00   Min.   :   0.0  
-#>  1st Qu.:0.001186   1st Qu.:1.395e-08   1st Qu.: 33.76   1st Qu.: 184.2  
-#>  Median :0.002226   Median :2.573e-08   Median : 63.54   Median : 345.5  
-#>  Mean   :0.002609   Mean   :2.925e-08   Mean   : 74.01   Mean   : 404.7  
-#>  3rd Qu.:0.003734   3rd Qu.:4.091e-08   3rd Qu.:105.74   3rd Qu.: 571.8  
-#>  Max.   :0.009085   Max.   :9.936e-08   Max.   :258.70   Max.   :1427.4  
+#>  1st Qu.:0.001188   1st Qu.:1.392e-08   1st Qu.: 33.83   1st Qu.: 184.4  
+#>  Median :0.002227   Median :2.568e-08   Median : 63.47   Median : 345.3  
+#>  Mean   :0.002609   Mean   :2.924e-08   Mean   : 74.01   Mean   : 404.7  
+#>  3rd Qu.:0.003711   3rd Qu.:4.125e-08   3rd Qu.:105.01   3rd Qu.: 572.1  
+#>  Max.   :0.009087   Max.   :9.965e-08   Max.   :258.76   Max.   :1430.5  
 #>    HYD_precip         HYD_inflow       HYD_outflow           LAYERS       
 #>  Min.   :0.000000   Min.   :0.00000   Min.   :0.000000   Min.   : 0.3249  
-#>  1st Qu.:0.000250   1st Qu.:0.00907   1st Qu.:0.005649   1st Qu.: 3.5589  
+#>  1st Qu.:0.000250   1st Qu.:0.00907   1st Qu.:0.005649   1st Qu.: 3.5590  
 #>  Median :0.001555   Median :0.02883   Median :0.031296   Median : 6.8596  
 #>  Mean   :0.006469   Mean   :0.05800   Mean   :0.059817   Mean   : 6.8317  
-#>  3rd Qu.:0.008320   3rd Qu.:0.07012   3rd Qu.:0.076903   3rd Qu.:10.1708  
-#>  Max.   :0.061450   Max.   :0.74376   Max.   :0.363142   Max.   :14.0512  
+#>  3rd Qu.:0.008320   3rd Qu.:0.07011   3rd Qu.:0.076902   3rd Qu.:10.1709  
+#>  Max.   :0.061450   Max.   :0.74375   Max.   :0.363141   Max.   :14.0512  
 #>      DEPTHS          HYD_temp        CHM_salt            CHM_oxy   
 #>  Min.   : 0.000   Min.   :10.00   Min.   :0.000e+00   Min.   :-99  
-#>  1st Qu.: 3.227   1st Qu.:12.45   1st Qu.:4.353e-05   1st Qu.:-99  
-#>  Median : 6.533   Median :14.79   Median :5.873e-05   Median :-99  
-#>  Mean   : 6.498   Mean   :15.36   Mean   :5.527e-05   Mean   :-99  
-#>  3rd Qu.: 9.837   3rd Qu.:18.06   3rd Qu.:7.629e-05   3rd Qu.:-99  
-#>  Max.   :13.700   Max.   :27.75   Max.   :1.259e-04   Max.   :-99  
+#>  1st Qu.: 3.227   1st Qu.:12.44   1st Qu.:4.334e-05   1st Qu.:-99  
+#>  Median : 6.533   Median :14.79   Median :5.846e-05   Median :-99  
+#>  Mean   : 6.498   Mean   :15.36   Mean   :5.521e-05   Mean   :-99  
+#>  3rd Qu.: 9.837   3rd Qu.:18.07   3rd Qu.:7.619e-05   3rd Qu.:-99  
+#>  Max.   :13.700   Max.   :27.75   Max.   :1.256e-04   Max.   :-99  
 #>     PHS_frp       PHS_dop       PHS_pop       PHS_pip        PHS_tp   
 #>  Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99   Min.   :-99  
 #>  1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99   1st Qu.:-99  
@@ -415,10 +415,27 @@ summary(aeme_data)
 
 Model data can be visualised easily using the `plot_output()` function
 
-    #> Loading required package: ggplot2
-    #> Warning: Using size for a discrete variable is not advised.
-    #> Using size for a discrete variable is not advised.
-    #> Using size for a discrete variable is not advised.
-    #> Using size for a discrete variable is not advised.
+``` r
+plot_list <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp", 
+            level = TRUE, label = TRUE, var_lims = c(9, 30), print_plots = FALSE)
 
-<img src="man/figures/README-plot_output-1.png" width="100%" />
+library(ggpubr)
+#> Loading required package: ggplot2
+
+ggarrange(plotlist = plot_list, ncol = 1, common.legend = TRUE, legend = "right")
+#> Warning: Using size for a discrete variable is not advised.
+#> Using size for a discrete variable is not advised.
+#> Using size for a discrete variable is not advised.
+#> Using size for a discrete variable is not advised.
+```
+
+<img src="man/figures/README-plot_output-1.png" width="100%" /> Also,
+visualising lake level plots.
+
+``` r
+plot_list <- plot_output(aeme_data = aeme_data, model = model, var_sim = "DEPTH", 
+            level = TRUE, label = TRUE, var_lims = c(9, 30), print_plots = FALSE)
+plot_list
+```
+
+<img src="man/figures/README-plot-output-DEPTH-1.png" width="100%" />

@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# AEME
+# AEME <a href="https://expert-guide-29ve1vw.pages.github.io/"><img src="man/figures/logo.png" align="right" height="120" alt="AEME website" /></a>
 
 <!-- badges: start -->
 
@@ -89,12 +89,21 @@ summary(aeme_data)
 
 Model data can be visualised easily using the `plot_output()` function
 
-```{r, label="plot_output",echo=FALSE,results="hide",fig.keep="all",fig.height=7}
+```{r, label="plot_output",echo=TRUE,results="hide",fig.keep="all",fig.height=7}
 plot_list <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp", 
             level = TRUE, label = TRUE, var_lims = c(9, 30), print_plots = FALSE)
 
 library(ggpubr)
 
 ggarrange(plotlist = plot_list, ncol = 1, common.legend = TRUE, legend = "right")
+
+```
+Also, visualising lake level plots.
+
+```{r, label="plot-output-DEPTH",echo=TRUE,results="hide",fig.keep="all",fig.height=5}
+plot_list <- plot_output(aeme_data = aeme_data, model = model, var_sim = "DEPTH", 
+            level = TRUE, label = TRUE, var_lims = c(9, 30), print_plots = FALSE)
+plot_list
+
 
 ```
