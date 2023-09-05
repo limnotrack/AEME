@@ -178,13 +178,13 @@ aeme_constructor <- function(
   # Time type checking for specific elements
   is.POSIXct <- function(x) inherits(x, "POSIXct")
   if (is.character(time$start)) {
-    time$start <- as.POSIXct(yaml$time$start, format = "%Y-%m-%d %H:%M:%S",
+    time$start <- as.POSIXct(time$start, format = "%Y-%m-%d %H:%M:%S",
                              tz = "UTC")
   } else if(!is.POSIXct(time$start)) {
     stop("Time start must be POSIXct.")
   }
   if (is.character(time$stop)) {
-    time$stop <- as.POSIXct(yaml$time$stop, format = "%Y-%m-%d %H:%M:%S",
+    time$stop <- as.POSIXct(time$stop, format = "%Y-%m-%d %H:%M:%S",
                              tz = "UTC")
   } else if(!is.POSIXct(time$stop)) {
     stop("Time stop must be POSIXct.")
