@@ -86,7 +86,7 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
 
     variable <- outp[[m]][[var_sim]]
 
-    if (length(dim(variable)) == 1) {
+    if (length(dim(variable)) == 1 | is.numeric(variable)) {
       df <- data.frame(Date = outp[[m]][["Date"]],
                        value = variable,
                        Model = m)
