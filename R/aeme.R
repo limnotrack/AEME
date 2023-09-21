@@ -979,7 +979,7 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
 
     #
     par(mfrow = c(2, 1))
-    ylim <- range(mod$Ts, mod$Tb)
+    ylim <- range(mod$Ts, mod$Tb, na.rm = TRUE)
     base::plot(mod$Date, mod$Ts, type = "n", ylab = "Temperature (\u00B0C)",
                xlab = "Time", main = "Water temperature", ylim = ylim)
     for (i in seq_along(outp)) {
