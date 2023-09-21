@@ -13,7 +13,7 @@ build_ensemble(
   outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   ext_elev = 0,
   use_bgc = TRUE,
-  use_lw = FALSE,
+  use_lw = TRUE,
   coeffs = NULL,
   hum_type = 3,
   path = "."

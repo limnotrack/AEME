@@ -64,7 +64,7 @@ build_ensemble <- function(aeme_data = NULL,
                                            "gotm_wet" = 1),
                            ext_elev = 0,
                            use_bgc = TRUE,
-                           use_lw = FALSE,
+                           use_lw = TRUE,
                            coeffs = NULL,
                            hum_type = 3,
                            path = "."
@@ -144,6 +144,7 @@ build_ensemble <- function(aeme_data = NULL,
                                hypsograph = hyps, meteo = inp$meteo,
                                use_lw = inp$use_lw, Kw = inp$Kw)
     }
+
     # Initial profile ----
     if (!is.null(inp[["init_profile"]])) {
       init_prof <- inp[["init_profile"]]
