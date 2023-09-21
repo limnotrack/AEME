@@ -26,6 +26,7 @@ Imports:
     ggplot2,
     job,
     lubridate,
+    lwgeom,
     methods,
     ncdf4,
     parallel,
