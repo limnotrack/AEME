@@ -1,4 +1,4 @@
-# 
+#
 # wind_speed <- sub$met$MET_wndspd
 # usquared = 1.612e-6 * wind_speed * wind_speed
 # # XMoment1 = calc_xmoment(NLayers, iheight, density)
@@ -8,17 +8,17 @@
 # U10 = wind_speed * (log(10.0/c_z0)/log(WIND_HEIGHT/c_z0))
 # head(U10)
 # head(wind_speed)
-# 
+#
 # CDN10 = 1.92E-7 * U10*U10*U10 + 0.00096
 # CDN10[CDN10>0.0025] <- 0.0025
-# 
+#
 # Ux = sqrt(CDN10  * U_sensM * U_sensM)
 # z0 = (0.012*Ux*Ux/g) + 0.11*visc_k_air/Ux
 # CDN10 = pow(vonK/log(10./z0),2.0)
 
 calc_evap <- function(met, altitude,
                       model = "gotm_wet", method = "fairall", gusty = FALSE) {
-  
+
   if (model == "gotm_wet") {
     evap <- sapply(seq_len(nrow(met)), \(n) {
       if(method == "fairall") {
@@ -28,17 +28,17 @@ calc_evap <- function(met, altitude,
       } else if(method == "kondo") {
         calc_kondo(u10 = met[["u10"]][n], v10 = met[["v10"]][n],
                    sst = met[["sst"]][n], airt = met[["airt"]][n],
-                   hum = met[["hum"]][n], airp = met[["airp"]][n], 
+                   hum = met[["hum"]][n], airp = met[["airp"]][n],
                    precip = met[["precip"]][n])
       }
     })
   } else if(model == "glm_aed") {
-    
+
     # Source: https://github.com/AquaticEcoDynamics/GLM/blob/d18630994ef935fac8d9405ff0018b26c83ce271/src/glm_surface.c
     # Constants
     mwrw2a <- 18.016 / 28.966
     CE <- 0.0013
-    
+
     # GLM variable names
     AirTemp <- met[["airt"]]
     LakeTemp <- met[["sst"]]
@@ -53,13 +53,13 @@ calc_evap <- function(met, altitude,
 
     rho_air <- atm_density(p_atm*100.0, SatVapDef*100.0, AirTemp) # kg/m3
     # rho_o <- atm_density(p_atm*100.0, SatVap_surface*100.0, LakeTemp) # kg/m3
-    
+
     Q_latentheat <- -CE * rho_air * latent_heat_vap * (mwrw2a/p_atm) * WindSp * (SatVap_surface - SatVapDef)
     Q_latentheat[Q_latentheat > 0] <- 0 # no condensation
     # evap <- Q_latentheat / (latent_heat_vap)
-    
+
     evap <- Q_latentheat / (latent_heat_vap * Density)
-    
+
   } else {
     Ts <- wtemp
     #saturation vapor pressure
