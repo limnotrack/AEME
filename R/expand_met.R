@@ -76,17 +76,21 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
     # see https://www.omnicalculator.com/physics/dew-point (Lawrence2005) with an uncertainty of 0.35 °C
     alpha_t_rh <- log(humrel/100) + (17.625*tmpair)/(243.04+tmpair)
     tmpdew <- (243.04 * alpha_t_rh) / (17.625 - alpha_t_rh)
+  } else {
+    tmpdew <- met[, which(grepl("tmpdew", colnames(met)))]
   }
 
   # if no vapour pressure is supplied
-  if(!is.prvapr) {
+  if (!is.prvapr) {
     # get vapour pressure per (Eqn. C2, TVA,1972) via DYRESM manual
-    prvapr = (humrel/100) * exp(2.303*((7.5*tmpair/(tmpair+237.3))+0.7858))
+    prvapr <- (humrel/100) * exp(2.303*((7.5*tmpair/(tmpair+237.3))+0.7858))
+  } else {
+    prvapr <- met[, which(grepl("prvapr", colnames(met)))]
   }
 
 
   # if no cloud cover is supplied
-  if(!is.cldcvr) {
+  if (!is.cldcvr) {
     cldcvr <- calc_cc(date = as.POSIXct(Date), airt = tmpair, relh = humrel,
                       swr = radswd, lat = coords.xyz[2], lon = coords.xyz[1],
                       elev = coords.xyz[3])
@@ -111,28 +115,29 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
     prsttn <- psychrolib::GetStationPressure(prmslp * 100, coords.xyz[3],
                                              tmpair)/100
 
+  } else {
+    prsttn <- met[, which(grepl("prsttn",colnames(met)))]
   }
 
   # if no msl pressure
   if (!is.prmslp) {
 
     # check that msl pressure is supplied
-    if (!is.prsttn) { stop("prmslp (mean sea level pressure hPa) is not
-                           supplied, therefore, prsttn (station level
-                           pressure hPa) is required, but not present")}
-
-    prsttn <- met[,which(grepl("prsttn",colnames(met)))]
+    if (!is.prsttn) {
+      stop("prmslp (mean sea level pressure hPa) is not supplied, therefore, prsttn (station level pressure hPa) is required, but not present")
+    }
 
     # estimate station pressure from sea level pressure
     prmslp <- psychrolib::GetSeaLevelPressure(prsttn * 100, coords.xyz[3],
                                               tmpair)/100
-
+  } else {
+    prmslp <- met[, which(grepl("prmslp",colnames(met)))]
   }
 
 
   # if wind speed
   if (is.wndspd) {
-    wndspd = met[,which(grepl("wndspd",colnames(met)))]
+    wndspd <- met[,which(grepl("wndspd",colnames(met)))]
   } else {
 
     # check that wind U and V are supplied
@@ -141,8 +146,8 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
            (wind vector U & V components m/s) are required, but not present")
     }
 
-    wnduvu <- met[,which(grepl("wnduvu",colnames(met)))]
-    wnduvv <- met[,which(grepl("wnduvv",colnames(met)))]
+    wnduvu <- met[, which(grepl("wnduvu", colnames(met)))]
+    wnduvv <- met[, which(grepl("wnduvv", colnames(met)))]
 
     # get wind speed from vector components
     wndspd <- uv2ds(wnduvu, wnduvv)[, 2]
@@ -182,7 +187,7 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
     wndspd <- uv2ds(wnduvu, wnduvv)[, 2]
   }
 
-  if(!is.radlwd) {
+  if (!is.radlwd) {
     radlwd <- calc_in_lwr(cc = cldcvr, airt = tmpair, relh = humrel)
   } else {
     radlwd <- met[, which(grepl("radlwd",colnames(met)))]
@@ -196,22 +201,22 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
   }
 
   # max/min
-  if(!is.airmax) {
+  if (!is.airmax) {
     airmax <- 0
   } else {
     airmax <- met[,which(grepl("airmax",colnames(met)))]
   }
-  if(!is.airmin) {
+  if (!is.airmin) {
     airmin <- 0
   } else {
     airmin <- met[,which(grepl("airmin",colnames(met)))]
   }
-  if(!is.dewmax) {
+  if (!is.dewmax) {
     dewmax <- 0
   } else {
     dewmax <- met[,which(grepl("dewmax",colnames(met)))]
   }
-  if(!is.dewmin) {
+  if (!is.dewmin) {
     dewmin <- 0
   } else {
     dewmin <- met[,which(grepl("dewmin",colnames(met)))]
