@@ -135,6 +135,9 @@ water_balance <- function(hyps, inf, outf = NULL,
     message("Estimating temperature using Stefan & Preud'homme (2007)...")
     coeffs <- c(5, 0.75)
     evap$value <- coeffs[1] + coeffs[2] * evap$T5avg # (Stefan & Preud'homme, 2007) www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
+  } else {
+    fit <- stats::lm(value ~ T5avg, data = evap)
+    coeffs <- coefficients(fit)
   }
 
   if (print_plots) {
