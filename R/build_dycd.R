@@ -106,7 +106,7 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
   max_d <- max(hyps$elev)
   if (ext_elev != 0) {
     bathy_fmt <- hyps |>
-      `names<-`(c("elev","area")) |>
+      `names<-`(c("elev", "area")) |>
       dplyr::arrange(elev) |>
       # use slope to extend hyps by 5 m
       bathy_extrap(0.75, new.max = max_d + ext_elev) |>
@@ -175,8 +175,9 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
       POPL = 0, PIP = 0,	NH4 = 0, NO3 = 0, DONL = 0, PONL = 0, DOCL = 0,
       POCL = 0, SiO2 = 0, CYANO = 0, CHLOR = 0, FDIAT = 0, SSOL1 = 0
       )
-      )
+    )
   }
+
   # write the model input file
   make_DYinf(lakename, info = "test", infList = inf, filePath = path.dy,
              inf_factor = inf_factor)
