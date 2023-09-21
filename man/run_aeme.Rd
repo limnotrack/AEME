@@ -14,6 +14,7 @@ run_aeme(
   debug = FALSE,
   timeout = 0,
   parallel = FALSE,
+  check_output = FALSE,
   path = "."
 )
 }
@@ -23,7 +24,7 @@ run_aeme(
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
-\item{return}{boolean; return model output within an `aeme` object? Defaults
+\item{return}{logical; return model output within an `aeme` object? Defaults
 to TRUE.}
 
 \item{mod_ctrls}{dataframe; of configuration loaded from
@@ -34,15 +35,18 @@ calculates number of levels based on lake depth as provided within the
 hypsograph. If the lake is less thatn 3m deep, it outputs every 0.1m, else
 if it is greater than 3m, it outputs every 0.33m. Defaults to NULL.}
 
-\item{verbose}{boolean; print model output to console. Defaults to FALSE.}
+\item{verbose}{logical; print model output to console. Defaults to FALSE.}
 
-\item{debug}{boolean; write debug log (Only DYRESM). Defaults to FALSE.}
+\item{debug}{logical; write debug log (Only DYRESM). Defaults to FALSE.}
 
 \item{timeout}{timeout in seconds, ignored if 0.  This is a limit for the
     elapsed time running \code{command} in a separate process.   Fractions
     of seconds are ignored.}
 
-\item{parallel}{boolean; run models in parallel. Defaults to FALSE.}
+\item{parallel}{logical; run models in parallel. Defaults to FALSE.}
+
+\item{check_output}{logical; check model output after running? Defaults to
+FALSE.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 }

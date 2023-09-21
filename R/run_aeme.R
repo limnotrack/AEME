@@ -2,12 +2,14 @@
 #'
 #' @inheritParams build_ensemble
 #' @inheritParams base::system2
-#' @param return boolean; return model output within an `aeme` object? Defaults
+#' @param return logical; return model output within an `aeme` object? Defaults
 #' to TRUE.
 #' @inheritParams load_output
-#' @param verbose boolean; print model output to console. Defaults to FALSE.
-#' @param debug boolean; write debug log (Only DYRESM). Defaults to FALSE.
-#' @param parallel boolean; run models in parallel. Defaults to FALSE.
+#' @param verbose logical; print model output to console. Defaults to FALSE.
+#' @param debug logical; write debug log (Only DYRESM). Defaults to FALSE.
+#' @param parallel logical; run models in parallel. Defaults to FALSE.
+#' @param check_output logical; check model output after running? Defaults to
+#' FALSE.
 #'
 #' @return Runs the model
 #' @export
@@ -37,7 +39,11 @@
 
 run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
                      nlev = NULL, verbose = FALSE, debug = FALSE, timeout = 0,
-                     parallel = FALSE, path = ".") {
+                     parallel = FALSE, check_output = FALSE, path = ".") {
+
+  if (return & is.null(mod_ctrls)) {
+    stop("`mod_ctrls` need to be provided to load model output.")
+  }
 
   lke <- lake(aeme_data)
   sim_folder <- file.path(path, paste0(lke$id,"_",
@@ -73,10 +79,21 @@ run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
     message("Model run complete!", paste0("[", Sys.time(), "]"))
   }
 
-  if (return) {
-    if (is.null(mod_ctrls)) {
-      stop("`mod_ctrls` need to be provided to load model output.")
+  if (check_output) {
+    message("Checking model output...")
+    chk <- sapply(model, \(m) {
+      check_model_output(path = path, aeme_data = aeme_data, model = m)
+    })
+    if (any(chk)) {
+      message("Models ", paste0(model[chk], collapse = ", "), " passed checks.")
     }
+    if (any(!chk)) {
+      message("Warning: Models ", paste0(model[chk], collapse = ", "),
+              " failed checks.")
+    }
+  }
+
+  if (return) {
     aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
                              mod_ctrls = mod_ctrls, parallel = parallel)
     return(aeme_data)
@@ -124,20 +141,53 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   stderr <- ifelse(verbose, "", TRUE)
 
   # Create reference netcdf
-  system2(file.path(bin_path, "dy_cd", "createDYref.exe"),
-          wait = TRUE, stdout = stdout,
-          stderr = stderr,
-          args = ref_fils)
+  if (verbose) {
+    system2(file.path(bin_path, "dy_cd", "createDYref.exe"),
+            wait = TRUE, stdout = stdout,
+            stderr = stderr,
+            args = ref_fils)
+    } else {
+    out <- system2(file.path(bin_path, "dy_cd", "createDYref.exe"),
+                   wait = TRUE, stdout = stdout,
+                   stderr = stderr,
+                   args = ref_fils, timeout = timeout)
+    if (any(grepl("ERROR|Error", out))) {
+      stop("Could not create DYRESM reference file:\n", paste0(out, collapse = "\n"))
+    }
+  }
 
   # Create simulation file ----
-  system2(file.path(bin_path, "dy_cd", "createDYsim.exe"),
-          wait = TRUE, stdout = stdout,
-          stderr = stderr,
-          args = sim_fils)
-  system2(file.path(bin_path, "dy_cd", "extractDYinfo.exe"),
-          wait = TRUE, stdout = stdout,
-          stderr = stderr,
-          args = info_fils)
+  if (verbose) {
+    system2(file.path(bin_path, "dy_cd", "createDYsim.exe"),
+            wait = TRUE, stdout = stdout,
+            stderr = stderr,
+            args = sim_fils)
+  } else {
+    out <- system2(file.path(bin_path, "dy_cd", "createDYsim.exe"),
+                   wait = TRUE, stdout = stdout, stderr = stderr,
+                   args = sim_fils)
+
+    if (any(grepl("ERROR|Error", out))) {
+      stop("Could not create DYRESM simulation file:\n", paste0(out, collapse = "\n"))
+    }
+  }
+
+  # Ext4act DYRESM info file ----
+  if (verbose) {
+    system2(file.path(bin_path, "dy_cd", "extractDYinfo.exe"),
+            wait = TRUE, stdout = stdout,
+            stderr = stderr,
+            args = info_fils)
+  } else {
+    out <- system2(file.path(bin_path, "dy_cd", "extractDYinfo.exe"),
+                   wait = TRUE, stdout = stdout, stderr = stderr,
+                   args = info_fils)
+
+    if (any(grepl("ERROR|Error", out))) {
+      stop("Could not extract DYRESM information:\n", paste0(out, collapse = "\n"))
+    }
+  }
+
   if (verbose) {
     system2(file.path(bin_path, "dy_cd", "dycd.exe"),
             wait = TRUE, stdout = stdout,
@@ -152,7 +202,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   if (success) {
     message("DYRESM-CAEDYM run successful! [", Sys.time(), "]")
   } else {
-    print(utils::tail(out, 20))
+    stop("Could not run DYRESM :\n", paste0(out, collapse = "\n"))
   }
 }
 
