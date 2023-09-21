@@ -17,7 +17,7 @@ load_output(model, aeme_data, path, mod_ctrls, parallel = FALSE, nlev = NULL)
 \item{mod_ctrls}{dataframe; of configuration loaded from
 "mod_ctrls.csv".}
 
-\item{parallel}{boolean; run models in parallel. Defaults to FALSE.}
+\item{parallel}{logical; run models in parallel. Defaults to FALSE.}
 
 \item{nlev}{numeric; number of levels to return in model output. If NULL,
 calculates number of levels based on lake depth as provided within the
