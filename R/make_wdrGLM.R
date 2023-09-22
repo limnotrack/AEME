@@ -67,8 +67,8 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
         outl_elvs = rep(round(heights_wdr, 2), n_wdr),
         bsn_len_outl = round(lengths, 2),
         bsn_wid_outl = round(widths, 2),
-        outflow_fl = paste0("'bcs/outflow_", names_wdr,
-                            ".csv'"),
+        outflow_fl = paste0("bcs/outflow_", names_wdr,
+                            ".csv"),
         outflow_factor = rep(1, n_wdr)
       )
       glm_nml[["outflow"]] <- outflow
