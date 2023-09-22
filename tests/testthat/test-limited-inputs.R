@@ -1,4 +1,4 @@
-test_that("it errors when met data is nor present", {
+test_that("it errors when met data is not present", {
   library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
