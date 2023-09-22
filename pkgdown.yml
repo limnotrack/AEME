@@ -2,7 +2,7 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles: {}
-last_built: 2023-09-22T02:12Z
+last_built: 2023-09-22T02:42Z
 urls:
   reference: https://expert-guide-29ve1vw.pages.github.io/reference
   article: https://expert-guide-29ve1vw.pages.github.io/articles
