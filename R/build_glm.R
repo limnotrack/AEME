@@ -96,10 +96,9 @@ build_glm <- function(lakename, mod_ctrls, date_range,
 
   #--- make ouflows table and modify nml
   heights_wdr <- max(hyps$elev) - min(hyps$elev) - 1 #outf |> select(-1) |> colnames(.) |> gsub("^.*_","",.) |> as.numeric()
-  if (heights_wdr < min(hyps$elev) |
-      heights_wdr > (max(hyps$elev) - min(hyps$elev))) {
+  if (heights_wdr > (max(hyps$elev) - min(hyps$elev))) {
     message("Withdrawal depth is too low!")
-    heights_wdr <- min(hyps$elev) + 0.75 * (max(hyps$elev) - min(hyps$elev))
+    heights_wdr <- 0.75 * (max(hyps$elev) - min(hyps$elev))
   }
   glm_nml <- make_wdrGLM(outf = outf,
                          heights_wdr = heights_wdr,
