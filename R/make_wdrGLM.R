@@ -53,8 +53,8 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
       # get the glm outlet elevations (neg depths)
       heights_wdr.glm <- heights_wdr# - crest
 
-      dims_outf <- lapply((heights_wdr + min(bathy$elev)), FUN = elipse_dims, bathy = bathy,
-                          dims_lake = dims_lake)  |>
+      dims_outf <- lapply((heights_wdr + min(bathy$elev)), FUN = elipse_dims,
+                          bathy = bathy, dims_lake = dims_lake)  |>
         dplyr::bind_rows()
 
       lengths <- dims_outf$length
