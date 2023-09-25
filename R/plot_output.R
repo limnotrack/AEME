@@ -87,10 +87,8 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
     variable <- outp[[m]][[var_sim]]
 
     if (is.null(variable)) {
-      return(NULL)
-    }
-
-    if (length(dim(variable)) == 1 | is.numeric(variable)) {
+      df <- data.frame(Date = NA, value = NA, Model = NA, lyr_thk = NA)
+    } else if (length(dim(variable)) == 1 | is.numeric(variable)) {
       df <- data.frame(Date = outp[[m]][["Date"]],
                        value = variable,
                        Model = m)
@@ -111,7 +109,11 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
 
 
     if (all(is.na(df$value))) {
-      return(NULL)
+      p <- ggplot2::ggplot() +
+        ggplot2::ggtitle(mod_labels$name[mod_labels$model == m]) +
+        #  facet_wrap(~contourDF$hydroyr) +
+        ggplot2::theme_bw()
+      return(p)
     }
 
     my_cols <- RColorBrewer::brewer.pal(11, "Spectral")
