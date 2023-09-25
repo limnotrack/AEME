@@ -78,7 +78,7 @@ check_model_output <- function(path, aeme_data, model) {
                         model."))
         return(FALSE)
       }
-      return(TRUE)
     }
   }
+  TRUE
 }
