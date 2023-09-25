@@ -268,8 +268,14 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       init_depth <- lvl |>
         dplyr::filter(Date == aeme_time[["start"]]) |>
         dplyr::pull(lvlwtr)
-      init_depth <- init_depth - min(hyps$elev)
+      init_depth <- round(init_depth - min(hyps$elev), 2)
       inp <- input(aeme_data)
+
+      # Update initial profile to match initial depth
+      if (max(init_prof$depth) > init_depth) {
+        init_prof$depth[which.max(init_prof$depth)] <- init_depth
+      }
+
       input(aeme_data) <- list(init_profile = inp$init_profile,
                                init_depth = init_depth,
                                hypsograph = inp$hypsograph, meteo = inp$meteo,
