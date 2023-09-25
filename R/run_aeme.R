@@ -202,7 +202,8 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   if (success) {
     message("DYRESM-CAEDYM run successful! [", Sys.time(), "]")
   } else {
-    stop("Could not run DYRESM :\n", paste0(out, collapse = "\n"))
+    message("DYRESM-CAEDYM run FAILED! [", Sys.time(), "]\n",
+            paste0(tail(out, 10), collapse = "\n"))
   }
 }
 
