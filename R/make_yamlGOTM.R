@@ -38,7 +38,7 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   gotm$grid$nlev <- nlev
 
   # keep the hyps table a manageable size
-  if(nrow(hyps) > 20) {
+  if (nrow(hyps) > 20) {
     bathy <- hyps[, 1:2] |>
       dplyr::slice(c(seq(1,(nrow(hyps)-1), round(nrow(hyps) / 20)),
                      nrow(hyps)) )
@@ -56,7 +56,7 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   }
 
 
-  z_diff <- round((min(bathy.gotm$elev) + init_depth))
+  z_diff <- signif((min(bathy.gotm$elev) + init_depth), 2)
   a0 <- round(approx(bathy.gotm$elev, bathy.gotm$area, z_diff)$y)
   if (!(z_diff %in% bathy.gotm$elev)) {
     bathy.gotm <- rbind(bathy.gotm, c(z_diff, a0))
