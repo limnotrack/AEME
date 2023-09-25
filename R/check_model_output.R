@@ -71,8 +71,11 @@ check_model_output <- function(path, aeme_data, model) {
       # Check elevation
       zi <- ncdf4::ncvar_get(nc, "zi")
       init_z <- min(zi[, 1])- max(zi[, 1])
-      if (any(zi < init_hyps)) {
-        message("GOTM-WET output file: Model depth goes below it's initial depth. Possible source of error is the in/outflows.\nAdjust scaling factors and re-run the model.")
+      if (any(zi < init_z)) {
+        message(strwrap("GOTM-WET output file: Model depth goes below it's
+                        initial depth. Possible source of error is the
+                        in/outflows.\nAdjust scaling factors and re-run the
+                        model."))
         return(FALSE)
       }
       return(TRUE)
