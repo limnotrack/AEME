@@ -88,7 +88,7 @@ run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
       message("Models ", paste0(model[chk], collapse = ", "), " passed checks.")
     }
     if (any(!chk)) {
-      message("Warning: Models ", paste0(model[chk], collapse = ", "),
+      message("Warning: Models ", paste0(model[!chk], collapse = ", "),
               " failed checks.")
     }
   }
