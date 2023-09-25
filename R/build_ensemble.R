@@ -265,13 +265,13 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (aeme_time[["start"]] %in% lvl[["Date"]]) {
       message(strwrap("Observed lake level is present.\nUpdating initial lake
                         model depth..."))
-      upd_init_depth <- lvl |>
+      init_depth <- lvl |>
         dplyr::filter(Date == aeme_time[["start"]]) |>
         dplyr::pull(lvlwtr)
-      upd_init_depth <- upd_init_depth - min(hyps$elev)
+      init_depth <- init_depth - min(hyps$elev)
       inp <- input(aeme_data)
       input(aeme_data) <- list(init_profile = inp$init_profile,
-                               init_depth = upd_init_depth,
+                               init_depth = init_depth,
                                hypsograph = inp$hypsograph, meteo = inp$meteo,
                                use_lw = inp$use_lw, Kw = inp$Kw)
     }
