@@ -28,6 +28,7 @@ make_DYpro <-  function(lakename = "!unknown",
   if (!is.null(obsTable)) {
 
     proTable <- obsTable
+    proTable$depth[which.max(proTable$depth)] <- lvlStart
 
   } else {
 

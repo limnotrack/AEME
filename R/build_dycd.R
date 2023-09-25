@@ -133,7 +133,7 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
 
   # write
   z.start <- c()
-  surfElev <- init_depth
+  surfElev <- init_depth + min(hyps$elev)
   if (!is.null(lvl)) {
     # surfElev <- mean(lvl[,2], na.rm = TRUE)
     z_max <- mean(lvl[, 2]) - min(hyps$elev)
