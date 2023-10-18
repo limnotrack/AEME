@@ -1,5 +1,4 @@
 test_that("running DYRESM works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -10,9 +9,9 @@ test_that("running DYRESM works", {
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = FALSE, use_lw = TRUE)
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -23,7 +22,6 @@ test_that("running DYRESM works", {
 })
 
 test_that("running GLM works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -31,23 +29,22 @@ test_that("running GLM works", {
   path <- file.path(tmpdir, "lake")
   aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
-  inf_factor = c("glm_aed" = 1)
-  outf_factor = c("glm_aed" = 1)
+  inf_factor <- c("glm_aed" = 1)
+  outf_factor <- c("glm_aed" = 1)
   model <- c("glm_aed")
-  build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = FALSE, use_lw = TRUE)
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                tolower(lke$name)),
+                                                 tolower(lke$name)),
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 })
 
 test_that("running GOTM works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -72,7 +69,6 @@ test_that("running GOTM works", {
 })
 
 test_that("running DYRESM-CAEDYM works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -83,9 +79,9 @@ test_that("running DYRESM-CAEDYM works", {
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE, use_lw = TRUE)
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = TRUE, use_lw = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -96,7 +92,6 @@ test_that("running DYRESM-CAEDYM works", {
 })
 
 test_that("running GLM-AED works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -107,9 +102,9 @@ test_that("running GLM-AED works", {
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
-  build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE, use_lw = TRUE)
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = TRUE, use_lw = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -120,7 +115,6 @@ test_that("running GLM-AED works", {
 })
 
 test_that("running GOTM-WET works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -131,9 +125,9 @@ test_that("running GOTM-WET works", {
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
-  build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = FALSE, use_lw = TRUE)
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -144,7 +138,6 @@ test_that("running GOTM-WET works", {
 })
 
 test_that("running models in parallel works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -162,13 +155,12 @@ test_that("running models in parallel works", {
                         mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
   lke <- lake(aeme_data)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
+                                                     tolower(lke$name)),
                                         model, "output", "output.nc")))
   testthat::expect_true(file_chk)
 })
 
 test_that("getting model output works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -186,7 +178,7 @@ test_that("getting model output works", {
            parallel = TRUE, return = FALSE)
 
   aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
-                          mod_ctrls = mod_ctrls, parallel = FALSE)
+                           mod_ctrls = mod_ctrls, parallel = FALSE)
 
   outp <- output(aeme_data)
   output_chk <- !all(is.null(unlist(outp)))
@@ -194,7 +186,6 @@ test_that("getting model output works", {
 })
 
 test_that("getting model output in parallel works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -217,7 +208,6 @@ test_that("getting model output in parallel works", {
 })
 
 test_that("plotting model output works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -235,8 +225,8 @@ test_that("plotting model output works", {
                         path = path, mod_ctrls = mod_ctrls, parallel = TRUE)
 
   p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
-                   level = TRUE, label = TRUE, print_plots = FALSE,
-                   var_lims = c(0, 30), ylim = c(0, 16))
+                    level = TRUE, label = TRUE, print_plots = FALSE,
+                    var_lims = c(0, 30), ylim = c(0, 16))
   testthat::expect_true(all(ggplot2::is.ggplot(p1[[1]]),
                             ggplot2::is.ggplot(p1[[2]])))
 
