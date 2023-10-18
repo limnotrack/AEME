@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 
-
+Running the Aquatic Ecosystem Model Ensemble is relatively straighforward.
 
 ```{r setup}
 library(AEME)
