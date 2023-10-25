@@ -127,7 +127,7 @@ test_that("running GOTM-WET works", {
   model <- c("gotm_wet")
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
+                              ext_elev = 5, use_bgc = TRUE, use_lw = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
