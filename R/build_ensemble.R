@@ -113,7 +113,9 @@ build_ensemble <- function(aeme_data = NULL,
     }
     elevation <- lke[["elevation"]]
     coords.xyz <- c(lke[["longitude"]], lke[["latitude"]], lke[["elevation"]])
-    # Hypsograph ----
+
+    # Inputs ----
+    #* Hypsograph ----
     inp <- input(aeme_data)
     if (is.null(inp[["hypsograph"]])) {
       warning(paste(strwrap("Hypsograph is not present. This function will
@@ -134,7 +136,7 @@ build_ensemble <- function(aeme_data = NULL,
       hyps <- inp[["hypsograph"]]
     }
 
-    # Inital depth
+    #* Inital depth
     if (!is.null(inp[["init_depth"]])) {
       init_depth <- inp[["init_depth"]]
     } else {
@@ -145,7 +147,7 @@ build_ensemble <- function(aeme_data = NULL,
                                use_lw = inp$use_lw, Kw = inp$Kw)
     }
 
-    # Initial profile ----
+    #* Initial profile ----
     if (!is.null(inp[["init_profile"]])) {
       init_prof <- inp[["init_profile"]]
     } else {
@@ -153,27 +155,12 @@ build_ensemble <- function(aeme_data = NULL,
                               temperature = c(10, 10),
                               salt = c(0, 0))
       input(aeme_data) <- list(init_profile = init_prof,
-                               init_depth = inp$init_depth,
+                               init_depth = init_depth,
                                hypsograph = hyps, meteo = inp$meteo,
                                use_lw = inp$use_lw, Kw = inp$Kw)
     }
 
-    # Inflow ----
-    aeme_inf <- inflows(aeme_data)
-    if (!is.null(aeme_inf[["data"]])) {
-      for (i in 1:length(aeme_inf[["data"]])) {
-        inf[[names(aeme_inf[["data"]])[i]]] <- aeme_inf[["data"]][[i]]
-        if (any(!inf_vars %in% names(inf[[i]]))) {
-          stop("missing state variables in inflow tables")
-        }
-
-        inf[[i]] <- inf[[i]] |>
-          dplyr::select(all_of(c("Date","HYD_flow", inf_vars)))
-      }
-    }
-    inf_factor <- aeme_inf[["factor"]]
-
-    #--- meteorology
+    #* Meteorology ----
     if (is.null(inp[["meteo"]])) {
       stop("Meteorology data is not provided. You can download ERA5 data
 using the following code:\n
@@ -190,15 +177,33 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                     site = site, path = path)")
     }
     met <- inp[["meteo"]]
-
-    # met <- met |>
-    #   dplyr::filter(Date >= (date_range[1]),
-    #                 Date <= date_range[2])
     met <- met |>
       dplyr::mutate(Date = as.Date(Date)) |>
       dplyr::mutate(MET_pprain = MET_pprain / 1000,
                     MET_ppsnow = MET_ppsnow / 1000) |>
       expand_met(coords.xyz = coords.xyz, print.plot = FALSE)
+
+    input(aeme_data) <- list(init_profile = init_prof,
+                             init_depth = init_depth,
+                             hypsograph = hyps, meteo = met,
+                             use_lw = inp$use_lw, Kw = inp$Kw)
+
+    # Inflow ----
+    aeme_inf <- inflows(aeme_data)
+    if (!is.null(aeme_inf[["data"]])) {
+      for (i in 1:length(aeme_inf[["data"]])) {
+        inf[[names(aeme_inf[["data"]])[i]]] <- aeme_inf[["data"]][[i]]
+        if (any(!inf_vars %in% names(inf[[i]]))) {
+          stop("missing state variables in inflow tables")
+        }
+
+        inf[[i]] <- inf[[i]] |>
+          dplyr::select(all_of(c("Date","HYD_flow", inf_vars)))
+      }
+    }
+    inf_factor <- aeme_inf[["factor"]]
+
+
 
     Kw <- inp[["Kw"]]
 
@@ -365,46 +370,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   #--------------------------
   dir.create(lake_dir, showWarnings = FALSE)
 
-  # sf::sf_use_s2(FALSE)
-  # coords.xyz <- c(lake_shape |>
-  #                   sf::st_transform(3857) |>
-  #                   sf::st_geometry() |>
-  #                   sf::st_centroid() |>
-  #                   sf::st_transform(4326) |>
-  #                   sf::st_coordinates() |>
-  #                   as.numeric(), elevation)
-  # sf::sf_use_s2(TRUE)
-
-
-
-  # add snow if needs be
-  if (!any(grepl("snow", colnames(met)))) {
-    met$MET_ppsnow <- 0
-  }
-
-  #--- outflows
-  # if (length(outf) == 1) {
-  #   outf <- outf[["outflow"]]
-  #   if (ncol(outf) > 2) {
-  #     dy_cd_outf <- outf |>
-  #       dplyr::select(Date, outflow_dy_cd) |>
-  #       dplyr::rename(outflow = outflow_dy_cd)
-  #     glm_aed_outf <- outf |>
-  #       dplyr::select(Date, outflow_glm_aed) |>
-  #       dplyr::rename(outflow = outflow_glm_aed)
-  #     gotm_wet_outf <- outf |>
-  #       dplyr::select(Date, outflow_gotm_wet) |>
-  #       dplyr::rename(outflow = outflow_gotm_wet)
-  #   } else {
-  #     dy_cd_outf <- outf
-  #     glm_aed_outf <- outf
-  #     gotm_wet_outf <- outf
-  #   }
-  # } else {
-  #   dy_cd_outf <- NULL
-  #   glm_aed_outf <- NULL
-  #   gotm_wet_outf <- NULL
-  # }
   gps <- coords.xyz[1:2]
 
   if (length(inf) == 0) {
