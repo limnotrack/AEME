@@ -7,10 +7,10 @@
 #' @return GOTM yaml configuration as a list object
 #' @noRd
 
-make_wdrGOTM <- function(outf, gotm, outf_factor, path_gotm) {
+make_wdrGOTM <- function(outf, path_gotm, outf_factor = 1) {
   names.outf <- names(outf)
 
-  for(w in 1:length(names.outf)) {
+  for (w in 1:length(names.outf)) {
 
     outf_df <- outf[[w]]
     if (ncol(outf_df) > 2) {
@@ -29,19 +29,5 @@ make_wdrGOTM <- function(outf, gotm, outf_factor, path_gotm) {
                                  paste0("outf_", names.outf[w],".dat")),
                        row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",
                        sep = "\t")
-
-
-
-    gotm[["streams"]][[names.outf[w]]] <- list(method = 1, zu = 0, zl = -1,
-                                               flow = list(method = 2,
-                                                           constant_value = 0,
-                                                           file = paste0("inputs/outf_",
-                                                                         names.outf[w],
-                                                                         ".dat"),
-                                                           column = 1,
-                                                           scale_factor = 1,
-                                                           offset = 0)
-    )
   }
-  gotm
 }

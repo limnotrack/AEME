@@ -192,7 +192,22 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   # Withdrawal ----
   if (length(outf) > 0) {
 
-    gotm <- make_wdrGOTM(outf, gotm, outf_factor, path_gotm)
+    gotm <- make_wdrGOTM(outf, outf_factor, path_gotm)
+
+    # Update GOTM yaml file
+    names.outf <- names(outf)
+    for (w in 1:length(names.outf)) {
+      gotm[["streams"]][[names.outf[w]]] <- list(method = 1, zu = 0, zl = -1,
+                                                 flow = list(method = 2,
+                                                             constant_value = 0,
+                                                             file = paste0("inputs/outf_",
+                                                                           names.outf[w],
+                                                                           ".dat"),
+                                                             column = 1,
+                                                             scale_factor = 1,
+                                                             offset = 0)
+      )
+    }
 
   }
 
