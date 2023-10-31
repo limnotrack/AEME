@@ -10,7 +10,7 @@
 #' @noRd
 
 make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
-                          outf, init_depth, path.gotm, ext_elev,
+                          outf, init_depth, path_gotm, ext_elev,
                           outf_factor, inf_factor, Kw, use_bgc, hum_type = 1) {
 
   met_ref <- data.frame(gotm = c("u10", "v10", "airp", "airt", "hum", "hum",
@@ -19,7 +19,7 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
                                 "MET_tmpair", "MET_tmpdew", "MET_humrel",
                                 "MET_cldcvr", "MET_radswd", "precip"))
 
-  gotm <- yaml::read_yaml(file.path(path.gotm, "gotm.yaml"))
+  gotm <- yaml::read_yaml(file.path(path_gotm, "gotm.yaml"))
 
   gotm$location$name <- lakename
   gotm$location$latitude <- round(gps[2], 5)
@@ -38,7 +38,7 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   gotm$grid$nlev <- nlev
 
   # keep the hyps table a manageable size
-  if (nrow(hyps) > 20) {
+  if(nrow(hyps) > 20) {
     bathy <- hyps[, 1:2] |>
       dplyr::slice(c(seq(1,(nrow(hyps)-1), round(nrow(hyps) / 20)),
                      nrow(hyps)) )
@@ -56,7 +56,7 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   }
 
 
-  z_diff <- signif((min(bathy.gotm$elev) + init_depth), 2)
+  z_diff <- round((min(bathy.gotm$elev) + init_depth))
   a0 <- round(approx(bathy.gotm$elev, bathy.gotm$area, z_diff)$y)
   if (!(z_diff %in% bathy.gotm$elev)) {
     bathy.gotm <- rbind(bathy.gotm, c(z_diff, a0))
@@ -74,14 +74,14 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
 
 
   # write the hypso file
-  utils::write.table(bathy.gotm, file.path(path.gotm, "inputs/hypsograph.dat"),
+  utils::write.table(bathy.gotm, file.path(path_gotm, "inputs/hypsograph.dat"),
                      sep = "\t", row.names = FALSE, quote = FALSE,
                      col.names = FALSE)
 
   gotm$location$hypsograph <- "inputs/hypsograph.dat"
 
   # Met ----
-  gotm_met <- make_metGOTM(df_met = met, path.gotm, hum_type = hum_type)
+  gotm_met <- make_metGOTM(df_met = met, path_gotm, hum_type = hum_type)
   gotm_met_names <- names(gotm_met)[-c(1, 2)]
 
   for (m in 1:length(gotm_met_names)) {
@@ -118,20 +118,20 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
         dplyr::select(c("date", "time", everything()))
 
       utils::write.table(df[, c("date", "time", "flow")],
-                         file.path(path.gotm, "inputs",
+                         file.path(path_gotm, "inputs",
                                    paste0("inf_flow_", names.inf[f],".dat")),
                   row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",
                   sep = "\t")
 
       ## write the temperature file
       utils::write.table(df[, c("date", "time", "temp")],
-                         file.path(path.gotm, "inputs",
+                         file.path(path_gotm, "inputs",
                                    paste0("inf_temp_", names.inf[f],".dat")),
                   row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",
                   sep = "\t")
       ## write the salinity file
       utils::write.table(df[, c("date", "time", "salt")],
-                         file.path(path.gotm, "inputs",
+                         file.path(path_gotm, "inputs",
                                    paste0("inf_salt_", names.inf[f],".dat")),
                   row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",
                   sep = "\t")
@@ -160,7 +160,7 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
           dplyr::mutate(dplyr::across(3:ncol(df.chem), \(x) round(x, 4)))
 
         utils::write.table(df.chem,
-                           file.path(path.gotm, "inputs",
+                           file.path(path_gotm, "inputs",
                                      paste0("inf_chem_", names.inf[f],".dat")),
                            row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",
                            sep = "\t")
@@ -192,47 +192,13 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   # Withdrawal ----
   if (length(outf) > 0) {
 
+    gotm <- make_wdrGOTM(outf, gotm, outf_factor, path_gotm)
 
-    names.outf <- names(outf) # colnames(outf[3:ncol(outf)])
-
-    for(w in 1:length(names.outf)) {
-
-      outf_df <- outf[[w]]
-      if (ncol(outf_df) > 2) {
-        outf_df <- outf_df |>
-          dplyr::select(c(Date, outflow_gotm_wet)) |>
-          dplyr::rename(outflow = outflow_gotm_wet)
-      }
-      outf_df <- outf_df[stats::complete.cases(outf_df), ]
-
-      outf_df <- outf_df |>
-        dplyr::mutate(outflow = (outflow / 86400 * -1 * outf_factor),
-                      time = "12:00:00")
-      ## Write the discharge file
-      utils::write.table(outf_df[, c("Date", "time", "outflow")],
-                         file.path(path.gotm, "inputs",
-                                   paste0("outf_", names.outf[w],".dat")),
-                         row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",
-                         sep = "\t")
-
-
-
-      gotm[["streams"]][[names.outf[w]]] <- list(method = 1, zu = 0, zl = -1,
-                                                 flow = list(method = 2,
-                                                       constant_value = 0,
-                                                       file = paste0("inputs/outf_",
-                                                                     names.outf[w],
-                                                                     ".dat"),
-                                                       column = 1,
-                                                       scale_factor = 1,
-                                                       offset = 0)
-      )
-    }
   }
 
   # Water balance settings
   gotm$water_balance_method <- 3
   gotm$mimic_3d$zeta$method <- 3
 
-  write_yaml(gotm, file.path(path.gotm, "gotm.yaml"))
+  write_yaml(gotm, file.path(path_gotm, "gotm.yaml"))
 }
