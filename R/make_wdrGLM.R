@@ -19,7 +19,8 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 
 
   if (length(outf) > 1) {
-    df_wdr <- Reduce(merge, outf) |>
+    df_wdr <- Reduce(function(x, y) dplyr::full_join(x, y, by = "Date"),
+                     outf) |>
       dplyr::select(c(Date, outflow, outflow_glm_aed)) |>
       dplyr::rename(wbal = outflow_glm_aed)
   } else {
