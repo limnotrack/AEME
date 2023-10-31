@@ -4,7 +4,7 @@
 #'
 #' @inheritParams initialiseGLM
 #' @param start_date Date; of start of simulation
-#' @param path.gotm filepath; to GOTM directory
+#' @param path_gotm filepath; to GOTM directory
 #'
 #' @return updated initial profile files are written to the model directory.
 #' @noRd
@@ -13,7 +13,7 @@
 initialiseGOTM <-  function(lvl_bottom, lvl_surf,
                             tmpwtr = 10, start_date,
                             tbl_obs = NULL,
-                            path.gotm = "") {
+                            path_gotm = "") {
 
   # define the proTable (intial profiles for T and SAL)
   if (is.null(tbl_obs)) {
@@ -28,17 +28,17 @@ initialiseGOTM <-  function(lvl_bottom, lvl_surf,
   df[1, 2] <- paste(nrow(tbl_obs), " ", 2)
   df[(2):(1 + ndeps), 1] <- as.numeric(-tbl_obs[["depth"]])
   df[(2):(1 + ndeps), 2] <- as.numeric(tbl_obs[["temperature"]])
-  write.table(df, file.path(path.gotm, "inputs", "t_prof_file.dat"),
+  write.table(df, file.path(path_gotm, "inputs", "t_prof_file.dat"),
               quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
 
   # salinity initial
   df[(2):(1 + ndeps), 2] <- tbl_obs[["salt"]]
-  write.table(df, file.path(path.gotm, "inputs", "s_prof_file.dat"),
+  write.table(df, file.path(path_gotm, "inputs", "s_prof_file.dat"),
               quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
 
 
   #-------- make the file! ---------
-  path.yaml <- file.path(path.gotm, "gotm.yaml")
+  path.yaml <- file.path(path_gotm, "gotm.yaml")
   gotm.yaml <- yaml::read_yaml(path.yaml)
 
   gotm.yaml$temperature$method <- 2
