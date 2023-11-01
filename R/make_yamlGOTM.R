@@ -192,7 +192,7 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   # Withdrawal ----
   if (length(outf) > 0) {
 
-    gotm <- make_wdrGOTM(outf, outf_factor, path_gotm)
+    make_wdrGOTM(outf = outf, path_gotm = path_gotm, outf_factor = outf_factor)
 
     # Update GOTM yaml file
     names.outf <- names(outf)
