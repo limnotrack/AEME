@@ -13,7 +13,7 @@ make_wdrGOTM <- function(outf, path_gotm, outf_factor = 1) {
   for (w in 1:length(names.outf)) {
 
     outf_df <- outf[[w]]
-    if (ncol(outf_df) > 2) {
+    if ("outflow_gotm_wet" %in% colnames(outf_df)) {
       outf_df <- outf_df |>
         dplyr::select(c(Date, outflow_gotm_wet)) |>
         dplyr::rename(outflow = outflow_gotm_wet)
