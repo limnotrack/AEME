@@ -898,7 +898,7 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
     if (!is.null(obj$level)) {
       par(mfrow = c(1, 1))
       base::plot(obj$level$Date, obj$level$lvlwtr, ylab = "Elevation (m)",
-           xlab = "Date")
+           xlab = "Date", main = "Lake level")
     }
   }
 
