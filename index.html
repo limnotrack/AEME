@@ -110,7 +110,7 @@
 <span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span>
 <span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span>, use_lw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2023-11-03 10:42:52.787189]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2023-11-03 11:15:37.474138]</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
 <span><span class="co">#&gt; Observed lake level is present. Updating initial lake model depth...</span></span>
@@ -139,10 +139,10 @@
 <span><span class="co">#&gt; Building GOTM-WET for lake wainamu</span></span>
 <span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
 <span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models in parallel... [2023-11-03 10:42:55.070476]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-03 10:45:06.615515]</span></span>
-<span><span class="co">#&gt; Reading models in parallel... [2023-11-03 10:45:07.808749]</span></span>
-<span><span class="co">#&gt; Model reading complete![2023-11-03 10:45:09.800455]</span></span></code></pre></div>
+<span><span class="co">#&gt; Running models in parallel... [2023-11-03 11:15:39.759251]</span></span>
+<span><span class="co">#&gt; Model run complete![2023-11-03 11:17:52.037806]</span></span>
+<span><span class="co">#&gt; Reading models in parallel... [2023-11-03 11:17:53.301781]</span></span>
+<span><span class="co">#&gt; Model reading complete![2023-11-03 11:17:55.169438]</span></span></code></pre></div>
 <p>The model input and output (I/O) is handled as it’s own S4 object of class <code>aeme</code>. This allows for the standardisation and generalisation of functions for this class alongside ensuring integrity and validity to it’s structure.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">aeme_data</span><span class="op">)</span></span>
@@ -518,13 +518,13 @@
 <span><span class="co">#&gt; Using size for a discrete variable is not advised.</span></span>
 <span><span class="co">#&gt; Using size for a discrete variable is not advised.</span></span>
 <span><span class="co">#&gt; Using size for a discrete variable is not advised.</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot_output-1.png" width="100%"> Also, visualising lake level plots.</p>
+<p><img src="reference/figures/README-plot_output-HYD_temp-1.png" width="100%"> Also, visualising lake level plots.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plot_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, </span>
 <span>                         var_sim <span class="op">=</span> <span class="st">"HYD_wlev"</span>, level <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         var_lims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">30</span><span class="op">)</span>, print_plots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">plot_list</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot-output-DEPTH-1.png" width="100%"></p>
+<p><img src="reference/figures/README-plot-output-HYD_wlev-1.png" width="100%"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
