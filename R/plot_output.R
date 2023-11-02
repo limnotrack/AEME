@@ -120,9 +120,9 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
 
     p <- ggplot2::ggplot() +
       ggplot2::geom_col(data = df, ggplot2::aes(x = Date, y = lyr_thk, fill = value),
-               position = 'stack', width = 1) +
+                        position = 'stack', width = 1) +
       ggplot2::scale_fill_gradientn(colors = rev(my_cols), name = var_sim,
-                           limits = var_lims) +
+                                    limits = var_lims) +
       {if(!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim)} +
       ggplot2::ylab("Elevation (m)") +
       ggplot2::xlab(NULL) +
@@ -179,12 +179,26 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
         Model == "gotm_wet" ~ "GOTM-WET"
         )
       )
+
     p <- ggplot2::ggplot() +
       ggplot2::geom_line(data = df2, ggplot2::aes(Date, value,
                                                   colour = Model)) +
       {if(!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim)} +
       ggplot2::ggtitle(var_sim) +
       ggplot2::theme_bw()
+
+    if (var_sim == "HYD_wlev" & !is.null(obs$level)) {
+
+      obs_lvl <- obs$level |>
+        dplyr::filter(Date %in% df2$Date) |>
+        dplyr::mutate(lvl_adj = lvlwtr - min(inp$hypsograph$elev))
+
+      p <- p +
+        ggplot2::geom_point(data = obs_lvl,
+                            ggplot2::aes(Date, lvl_adj, fill = "Obs")) +
+        # ggplot2::scale_colour_manual(values = c("Obs" = "black")) +
+        ggplot2::labs(fill = "")
+    }
 
     if (print_plots) {
       print(p)
