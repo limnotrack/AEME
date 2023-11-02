@@ -56,7 +56,7 @@ inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("dy_cd", "glm_aed", "gotm_wet")
 aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model, mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5, use_bgc = TRUE, use_lw = TRUE)
-#> Building simulation for Wainamu [2023-11-03 10:42:52.787189]
+#> Building simulation for Wainamu [2023-11-03 11:15:37.474138]
 #> Using observed water level
 #> Estimating temperature using Stefan & Preud'homme (2007)...
 #> Observed lake level is present. Updating initial lake model depth...
@@ -85,10 +85,10 @@ aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model, m
 #> Building GOTM-WET for lake wainamu
 #> Copied all GOTM configuration files
 aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, path = path, parallel = TRUE, mod_ctrls = mod_ctrls)
-#> Running models in parallel... [2023-11-03 10:42:55.070476]
-#> Model run complete![2023-11-03 10:45:06.615515]
-#> Reading models in parallel... [2023-11-03 10:45:07.808749]
-#> Model reading complete![2023-11-03 10:45:09.800455]
+#> Running models in parallel... [2023-11-03 11:15:39.759251]
+#> Model run complete![2023-11-03 11:17:52.037806]
+#> Reading models in parallel... [2023-11-03 11:17:53.301781]
+#> Model reading complete![2023-11-03 11:17:55.169438]
 ```
 
 The model input and output (I/O) is handled as it’s own S4 object of
@@ -482,8 +482,8 @@ ggarrange(plotlist = plot_list, ncol = 1, common.legend = TRUE, legend = "right"
 #> Using size for a discrete variable is not advised.
 ```
 
-<img src="man/figures/README-plot_output-1.png" width="100%" /> Also,
-visualising lake level plots.
+<img src="man/figures/README-plot_output-HYD_temp-1.png" width="100%" />
+Also, visualising lake level plots.
 
 ``` r
 plot_list <- plot_output(aeme_data = aeme_data, model = model, 
@@ -492,4 +492,4 @@ plot_list <- plot_output(aeme_data = aeme_data, model = model,
 plot_list
 ```
 
-<img src="man/figures/README-plot-output-DEPTH-1.png" width="100%" />
+<img src="man/figures/README-plot-output-HYD_wlev-1.png" width="100%" />
