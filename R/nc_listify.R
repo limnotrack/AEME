@@ -186,10 +186,11 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up) {
   # plot(cumsum(net))
 
 
-  nc_list <- list(Date = dates, DEPTH = DEPTH, HYD_V = V, HYD_dV = dV, HYD_A0 = A0,
-                  HYD_evap = EVAP, HYD_evap_flux = evap_flux, HYD_Qe = Qe,
-                  HYD_evap_vol = evap_vol, HYD_precip = precip, HYD_inflow = inflow,
-                  HYD_outflow = outflow, LAYERS = LAYERS, DEPTHS = DEPTHS)
+  nc_list <- list(Date = dates, HYD_wlev = DEPTH, HYD_V = V, HYD_dV = dV,
+                  HYD_A0 = A0, HYD_evap = EVAP, HYD_evap_flux = evap_flux,
+                  HYD_Qe = Qe, HYD_evap_vol = evap_vol, HYD_precip = precip,
+                  HYD_inflow = inflow, HYD_outflow = outflow, LAYERS = LAYERS,
+                  DEPTHS = DEPTHS)
 
   ### peel through the netcdf and make a list of the outputs
   vars_chk <- data.frame(vars = vars_sim.model, present = NA)
@@ -271,7 +272,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up) {
 
   nc_list <- c(nc_list, vars_list)
 
-  # names(nc_list) <- c("Date", "DEPTH", "HYD_evap", "HYD_precip", "HYD_inflow", "HYD_outflow","LAYERS", "DEPTHS",  vars_sim)
+  # names(nc_list) <- c("Date", "HYD_wlev", "HYD_evap", "HYD_precip", "HYD_inflow", "HYD_outflow","LAYERS", "DEPTHS",  vars_sim)
 
   # make derived variables if these are not already present
 

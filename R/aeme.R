@@ -950,7 +950,7 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
 
     mod <- lapply(names(outp), \(m) {
       if (!is.null(outp[[m]])) {
-        depth <- outp[[m]][["DEPTH"]]
+        depth <- outp[[m]][["HYD_wlev"]]
         # lyr <- outp[[m]][["LAYERS"]]
         temp <- outp[[m]][["HYD_temp"]]
         df <- data.frame(Date = outp[[m]][["Date"]],

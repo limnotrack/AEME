@@ -95,7 +95,7 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
       return(df)
     } else {
       depth <- data.frame(Date = outp[[m]][["Date"]],
-                          depth = outp[[m]][["DEPTH"]])
+                          depth = outp[[m]][["HYD_wlev"]])
       lyr <- outp[[m]][["LAYERS"]]
       df <- data.frame(Date = rep(outp[[m]][["Date"]], each = nrow(variable)),
                        lyr_top = unlist(lyr),
