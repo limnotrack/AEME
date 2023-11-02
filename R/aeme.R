@@ -905,34 +905,58 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
   if (y == "inflows" | y == "outflows") {
     if (!is.null(obj$data)) {
       par(mfrow = c(length(obj$data), 1))
+      xlims <- range(do.call(c, lapply(obj$data, "[", "Date")), na.rm = TRUE) |>
+        as.Date()
       for (i in seq_along(obj$data)) {
-        vars <- names(obj$data[[1]])[-1]
-        if (length(vars) > 5) {
-          nc <- 2
-          nr <- ceiling(length(vars) / nc)
-        } else {
-          nc <- 1
-          nr <- length(vars)
-        }
-        par(mfrow = c(nr, nc),
-            oma = c(5,4,0,0) + 0.1,
-            mar = c(0,0,1,1) + 0.1)
-        x <- obj$data[[i]]$Date
-        for (v in seq_along(vars)) {
-          sub <- obj$data[[i]][, c("Date", vars[v])]
-          # x <- sub$Date
-          base::plot(sub$Date, sub[[vars[v]]], axes = FALSE, type = "l")
-          title(main = parse(text = rename_modelvars(vars[v])))
-          axis(side = 2, labels = TRUE)
-          box(which = "plot", bty = "l")
-          if ((nc == 1 & v == nr) |
-              (nc == 2 & v %in% c(length(vars), length(vars)-1))) {
-            labels <- TRUE
+        if (y == "inflows") {
+          vars <- names(obj$data[[i]])[-1]
+          if (length(vars) > 5) {
+            nc <- 2
+            nr <- ceiling(length(vars) / nc)
           } else {
-            labels <- FALSE
+            nc <- 1
+            nr <- length(vars)
           }
-          axis.Date(side = 1, at = seq(min(x), max(x), by = "6 months"),
-                    x = x, labels = labels, format = "%m/%Y")
+          par(mfrow = c(nr, nc),
+              oma = c(5,4,0,0) + 0.1,
+              mar = c(0,0,1,1) + 0.1)
+          x <- obj$data[[i]]$Date
+          for (v in seq_along(vars)) {
+            sub <- obj$data[[i]][, c("Date", vars[v])]
+            # x <- sub$Date
+            base::plot(sub$Date, sub[[vars[v]]], axes = FALSE, type = "l")
+            title(main = parse(text = rename_modelvars(vars[v])))
+            axis(side = 2, labels = TRUE)
+            box(which = "plot", bty = "l")
+            if ((nc == 1 & v == nr) |
+                (nc == 2 & v %in% c(length(vars), length(vars)-1))) {
+              labels <- TRUE
+            } else {
+              labels <- FALSE
+            }
+            axis.Date(side = 1, at = seq(min(x), max(x), by = "6 months"),
+                      x = x, labels = labels, format = "%m/%Y")
+          }
+
+        } else if (y == "outflows") {
+          vars <- names(obj$data[[i]])[-1]
+          x <- obj$data[[i]]$Date
+          for (v in seq_along(vars)) {
+            sub <- obj$data[[i]][, c("Date", vars[v])]
+            # x <- sub$Date
+            if (v == 1) {
+              base::plot(sub$Date, sub[[vars[v]]], axes = FALSE, type = "l",
+                         xlim = xlims)
+              title(main = names(obj$data)[i])
+              axis(side = 2, labels = TRUE)
+              box(which = "plot", bty = "l")
+              labels <- ifelse(i == length(obj$data), TRUE, FALSE)
+              axis.Date(side = 1, at = seq(min(x), max(x), by = "6 months"),
+                        x = x, labels = labels, format = "%m/%Y")
+            } else {
+              graphics::lines(sub$Date, sub[[vars[v]]], col = v)
+            }
+          }
         }
       }
     }
