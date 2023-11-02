@@ -233,4 +233,8 @@ test_that("plotting model output works", {
   p2 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_evap",
                     print_plots = TRUE, ylim = c(0, 0.02))
   testthat::expect_true(ggplot2::is.ggplot(p2))
+
+  p3 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
+                    print_plots = TRUE)
+  testthat::expect_true(ggplot2::is.ggplot(p2))
 })
