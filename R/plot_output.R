@@ -12,6 +12,7 @@
 #' Defaults to NULL and will generate common limits for all variables.
 #' @param ylim numeric vector of length 2; limits for the y-axis. Defaults to
 #' NULL and calculates this based on the data to be plotted.
+#' @param add_obs boolean; add observations to plot
 #'
 #' @return list of plots for z-dimensional variables or a ggplot2 object for 1-d
 #' variables.
@@ -53,7 +54,7 @@
 #' }
 #'
 
-plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
+plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
                         level = FALSE, label = FALSE, print_plots = TRUE,
                         var_lims = NULL, ylim = NULL) {
 
@@ -70,6 +71,15 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
   }
 
   outp <- output(aeme_data)
+
+  # Check if var_sim is in output
+  chk <- sapply(model, \(m){
+    var_sim %in% names(outp[[m]])
+  })
+  if (!all(chk)) {
+    stop(paste0("Variable '", var_sim, "' not in output."))
+  }
+
   # colour lims
   if (is.null(var_lims)) {
     this.list <- sapply(model, \(m){
@@ -136,7 +146,7 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
         ggplot2::labs(subtitle = var_sim)
     }
 
-    if (!is.null(obs$lake)) {
+    if (!is.null(obs$lake) & add_obs) {
 
       obs_df <- obs_lake |>
         dplyr::filter(Date %in% df$Date) |>
@@ -193,11 +203,13 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp",
         dplyr::filter(Date %in% df2$Date) |>
         dplyr::mutate(lvl_adj = lvlwtr - min(inp$hypsograph$elev))
 
-      p <- p +
-        ggplot2::geom_point(data = obs_lvl,
-                            ggplot2::aes(Date, lvl_adj, fill = "Obs")) +
-        # ggplot2::scale_colour_manual(values = c("Obs" = "black")) +
-        ggplot2::labs(fill = "")
+      if (add_obs) {
+        p <- p +
+          ggplot2::geom_point(data = obs_lvl,
+                              ggplot2::aes(Date, lvl_adj, fill = "Obs")) +
+          # ggplot2::scale_colour_manual(values = c("Obs" = "black")) +
+          ggplot2::labs(fill = "")
+      }
     }
 
     if (print_plots) {
