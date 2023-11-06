@@ -1,0 +1,109 @@
+---
+title: "Introduction to AEME"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to AEME}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 80
+---
+
+![](images/logo.png){width="120"}
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(AEME)
+## basic example code
+tmpdir <- tempdir()
+aeme_dir <- system.file("extdata/lake/", package = "AEME")
+# Copy files from package into tempdir
+file.copy(aeme_dir, tmpdir, recursive = TRUE)
+path <- file.path(tmpdir, "lake")
+yaml <- yaml::read_yaml(file.path(path, "aeme.yaml"))
+str(yaml)
+# aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+# slotNames(aeme_data)
+
+# convert list into a tree structure
+lake_names <- paste0(names(yaml$lake), collapse = ", ")
+catchment_names <- paste0(names(yaml$catchment), collapse = ", ")
+time_names <- paste0(names(yaml$time), collapse = ", ")
+config_names <- paste0(names(yaml$configuration), collapse = ", ")
+obs_names <- paste0(names(yaml$observations), collapse = ", ")
+input_names <- paste0(names(yaml$inputs), collapse = ", ")
+inflow_names <- paste0(names(yaml$inflows), collapse = ", ")
+outflow_names <- paste0(names(yaml$outflows), collapse = ", ")
+output_names <- paste0(names(yaml$outputs), collapse = ", ")
+
+
+```
+
+## Summary
+
+The AEME package hosts three one-dimensional hydrodynamic models: the DYnamic
+REservoir Simulation Model (DYRESM), the General Lake Model (GLM), and the
+General Ocean Turbulence Model (GOTM, which has been adapted for closed basins
+for application to lakes and reservoirs). The models can be coupled to their
+corresponding water quality models, the DYRESM-CAEDYM (Computational Aquatic
+Ecosystem Dynamics Model), GLM-AED2 (Aquatic Ecosystem Dynamics Model 2), and
+GOTM-WET (Water Ecosystem Tool).
+
+Key aspects of the AEME package include:
+
+-   Defined S4 class for `aeme` objects
+
+-   Configuration of models from common and standardised inputs
+
+-   Standardised calibration, manipulation and visualisation
+
+## `aeme` object
+
+The `aeme` object is the main object in the AEME package. It is an S4 class that
+contains all the information required to run a model. The `aeme` object contains
+the following slots:
+
+-   **lake** - a list object containing information about the lake
+    (`r lake_names`)
+-   **catchment** - a list object containing information about the catchment
+    (`r catchment_names`)
+-   **time** - a list object containing information about the time
+    (`r time_names`)
+-   **configuration** - a list object containing information about the
+    configuration (`r config_names`)
+-   **observations** - a list object containing information about the
+    observations (`r obs_names`)
+-   **inputs** - a list object containing information about the inputs
+    (`r input_names`)
+-   **inflows** - a list object containing information about the inflows
+    (`r inflow_names`)
+-   **outflows** - a list object containing information about the outflows
+    (`r outflow_names`)
+-   **outputs** - a list object containing information about the outputs
+    (`r output_names`)
+-   Calibration?
+
+```{r echo=FALSE, class.source = 'fold-hide'}
+str(yaml)
+```
+
+
+
+## `aeme` object creation
+
+The `aeme` object can be created from a YAML file using the `yaml_to_aeme`
+function. The YAML file contains all the information required to run the model.
+The YAML file can be created manually or using the `aeme_create` function.
+
+```{r warning=FALSE, message=FALSE}
+aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+slotNames(aeme_data)
+```
+
+## `aeme` object manipulation
+
+
