@@ -17,7 +17,7 @@ catchment:
    sediment: null
 time:
    start: 2022-01-09 00:00:00                   # start date and time [yyyy-mm-dd HH:MM:SS]
-   stop: 2022-12-31 00:00:00                    # stop date and time [yyyy-mm-dd HH:MM:SS]
+   stop: 2022-12-30 00:00:00                    # stop date and time [yyyy-mm-dd HH:MM:SS]
    time_step: 3600.0                            # time step for integration [s; min=0.0]
    spin_up:
       dy_cd: 0
