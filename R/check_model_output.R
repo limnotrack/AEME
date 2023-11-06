@@ -70,6 +70,9 @@ check_model_output <- function(path, aeme_data, model) {
       }
       # Check elevation
       zi <- ncdf4::ncvar_get(nc, "zi")
+      if(is.null(dim(zi))) {
+        return(FALSE)
+      }
       init_z <- min(zi[, 1])- max(zi[, 1])
       if (any(zi < init_z)) {
         message(strwrap("GOTM-WET output file: Model depth goes below it's
