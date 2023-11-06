@@ -24,7 +24,7 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   gotm$location$name <- lakename
   gotm$location$latitude <- round(gps[2], 5)
   gotm$location$longitude <- round(gps[1], 5)
-  gotm$location$depth <- max(hyps$elev) - min(hyps$elev)
+  gotm$location$depth <- init_depth
 
   gotm$time$method <- 2
   gotm$time$start <- paste(date_range[1], "12:00:00")
@@ -49,7 +49,7 @@ make_yamlGOTM <- function(lakename, date_range, hyps, gps, nlev, met, inf,
   if (ext_elev != 0){
     bathy.gotm <- data.frame(bathy) |>
       `names<-`(c("elev","area")) |>
-      dplyr::mutate(elev = round(elev - max(elev),2)) |>
+      dplyr::mutate(elev = round(elev - (min(elev) + init_depth),2)) |>
       bathy_extrap(0.75, ext_elev)
   } else {
     bathy.gotm <- data.frame(bathy)
