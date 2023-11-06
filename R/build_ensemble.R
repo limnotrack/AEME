@@ -177,6 +177,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                     site = site, path = path)")
     }
     met <- inp[["meteo"]]
+    check_time(df = met, model = model, aeme_time = aeme_time, name = "meteo")
     met <- met |>
       dplyr::mutate(Date = as.Date(Date)) |>
       dplyr::mutate(MET_pprain = MET_pprain / 1000,
@@ -196,6 +197,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
         if (any(!inf_vars %in% names(inf[[i]]))) {
           stop("missing state variables in inflow tables")
         }
+        check_time(df = inf[[names(aeme_inf[["data"]])[i]]], model = model,
+                   aeme_time = aeme_time,
+                   name = paste0("inflow-", names(aeme_inf[["data"]])[i]))
 
         inf[[i]] <- inf[[i]] |>
           dplyr::select(all_of(c("Date","HYD_flow", inf_vars)))
@@ -211,8 +215,10 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     aeme_outf <- outflows(aeme_data)
     if (!is.null(aeme_outf[["data"]])) {
       for (i in 1:length(aeme_outf[["data"]])) {
-        outf[[names(aeme_outf[["data"]])[i]]] <-
-          aeme_outf[["data"]][[i]]
+        outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
+        check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
+                   aeme_time = aeme_time,
+                   name = paste0("outflow-", names(aeme_outf[["data"]])[i]))
       }
     }
 
