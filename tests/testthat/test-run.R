@@ -153,6 +153,8 @@ test_that("running models in parallel works", {
                  use_bgc = TRUE, use_lw = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
+  # plot_output(aeme_data = aeme_data, model = model, var_sim = "CHM_oxy", add_obs = F)
+
   lke <- lake(aeme_data)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
                                                      tolower(lke$name)),
@@ -205,6 +207,93 @@ test_that("getting model output in parallel works", {
   outp <- output(aeme_data)
   output_chk <- !all(is.null(unlist(outp)))
   testthat::expect_true(output_chk)
+})
+
+test_that("running DYRESM with a spinup works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  inf_factor <- c("dy_cd" = 1)
+  outf_factor <- c("dy_cd" = 1)
+  model <- c("dy_cd")
+
+  # Add spin up time
+  tim <- time(aeme_data)
+  tim[["spin_up"]][[model]] <- 100
+  time(aeme_data) <- tim
+
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path)
+  lke <- lake(aeme_data)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "DYsim.nc"))
+  testthat::expect_true(file_chk)
+})
+
+test_that("running GLM with a spinup works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  inf_factor <- c("glm_aed" = 1)
+  outf_factor <- c("glm_aed" = 1)
+  model <- c("glm_aed")
+
+  # Add spin up time
+  tim <- time(aeme_data)
+  tim[["spin_up"]][[model]] <- 100
+  time(aeme_data) <- tim
+
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path)
+  lke <- lake(aeme_data)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
+})
+
+test_that("running GOTM with a spinup works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  inf_factor <- c("gotm_wet" = 1)
+  outf_factor <- c("gotm_wet" = 1)
+  model <- c("gotm_wet")
+
+
+  tim <- time(aeme_data)
+  tim[["spin_up"]][[model]] <- 100
+  time(aeme_data) <- tim
+
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path)
+  lke <- lake(aeme_data)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
 })
 
 
