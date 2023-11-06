@@ -8,6 +8,7 @@ plot_output(
   aeme_data,
   model,
   var_sim = "HYD_temp",
+  add_obs = TRUE,
   level = FALSE,
   label = FALSE,
   print_plots = TRUE,
@@ -22,6 +23,8 @@ plot_output(
 `gotm_wet`.}
 
 \item{var_sim}{string; of variable to plot}
+
+\item{add_obs}{boolean; add observations to plot}
 
 \item{level}{boolean; include lake level. Only applies for contour plots.}
 
