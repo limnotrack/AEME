@@ -77,7 +77,9 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
     var_sim %in% names(outp[[m]])
   })
   if (!all(chk)) {
-    stop(paste0("Variable '", var_sim, "' not in output."))
+    warning(paste0("Variable '", var_sim, "' not in output for model(s) ",
+                   paste0(model[!chk], collapse = ", ")))
+    model <- model[chk]
   }
 
   # colour lims
