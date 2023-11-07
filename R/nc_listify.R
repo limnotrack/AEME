@@ -49,7 +49,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up,
     if (sum(sst == 0) > 1 | sum(is.na(sst)) > 0) {
       # Run-length encoding of the vector
       sst[is.na(sst)] <- -999
-      rle_result <- stats::rle(as.vector(sst))
+      rle_result <- rle(as.vector(sst))
       start_index <- which(rle_result$lengths > 1)[1]
       # vals <- rle_result$values[start_index]
       z[, start_index:ncol(z)] <- NA
@@ -75,15 +75,21 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up,
     evap_vol <- EVAP * A0
 
     flow_vars <- names(nc$var)[grepl("Q_", names(nc$var))]
-    inflow_vars <- flow_vars[!grepl("outflow", flow_vars)]
-    outflow_vars <- flow_vars[grepl("outflow", flow_vars)]
-    if (length(inflow_vars) == 1) {
-      inflow <- (ncdf4::ncvar_get(nc, inflow_vars[1]) * 86400) / A0
+    inflow_vars <- flow_vars[!grepl("outflow|wbal", flow_vars)]
+    outflow_vars <- flow_vars[grepl("outflow|wbal", flow_vars)]
+    if (length(inflow_vars) >= 1) {
+      inflow <- sapply(seq_along(inflow_vars), \(x) {
+        (ncdf4::ncvar_get(nc, inflow_vars[x]) * 86400) / A0
+      }) |>
+        apply(1, sum)
     } else {
       inflow <- A0 * 0
     }
-    if (length(outflow_vars) == 1) {
-      outflow <- abs(ncdf4::ncvar_get(nc, "Q_outflow") * 86400) / A0
+    if (length(outflow_vars) >= 1) {
+      outflow <- sapply(seq_along(outflow_vars), \(x) {
+        (ncdf4::ncvar_get(nc, outflow_vars[x]) * 86400) / A0
+      }) |>
+        apply(1, sum)
     } else {
       outflow <- A0 * 0
     }
