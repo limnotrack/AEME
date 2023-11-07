@@ -1,19 +1,31 @@
-# function to automatically calculate a lake water balance based on a minimal set of inputs
+#' Estimate lake water balance based on a minimal set of inputs
+#'
+#' @param aeme_time list; time object from aeme_object using `time()`
+#' @param hyps data frame of hypsographic curve, elevation (masl) and planar
+#' area (m^2)
+#' @param inf list of inflow data frames
+#' @param outf list of outflow data frames. Default = NULL
+#' @param obs_lvl data frame of lake water level observations.. cols = Date,
+#'  value
+#' @param obs_lake data frame of lake observations in ensemble standard format
+#' @param obs_met data frame of meteorology, must include MET_tmpair, MET_wndspd
+#'  & MET_prvapr, continuous Date, extent defines output extent
+#' @param ext_elev numeric; elevation to extend bathymetry
+#' @param elevation numeric; elevation of lake
+#' @param print_plots logical; print plots of water balance components
+#' @param coeffs numeric vector; coefficients for estimating lake surface
+#' temperature. Default = NULL
+#'
+#' @return data frame of water balance components which are:
+#' - Date
+#' - lvlwtr
+#' - HYD_flow
+#' -...
+#'
+#' @export
+#'
 
-# hyps:     data frame of hypsographic curve, elevation (masl) and planar area (m^2)
-# inf:      list of inflow tables
-# outf:      data frame of outlfow volumes (default = NULL)
-# obs_met:  data frame of meteorology, must include MET_tmpair, MET_wndspd & MET_prvapr, continuous Date, extent defines output extent
-# obs_lvl:  data frame of lake water level observations.. cols = Date, value
-# obs_lake: data frame of lake observations in ensemble standard format
-
-# inf      = read.csv("data/ensemble/rototoa/inflow.csv") |> list()
-# obs_lvl  = read.csv("data/obs_water_level.csv", colClasses = c("Date" = "Date"))
-# obs_met  = read.csv("data/ensemble/rototoa/met.csv")
-# obs_lake = read.csv("data/obs_aclakes_clean_ensemble.csv")
-# hyps     = read.csv("data/hypsographies/50270_Rototoa_hyps.csv")
-
-water_balance <- function(hyps, inf, outf = NULL,
+water_balance <- function(aeme_time, hyps, inf, outf = NULL,
                           obs_lvl = NULL, obs_lake = NULL, obs_met, ext_elev,
                           elevation, print_plots = FALSE, coeffs = NULL) {
 
@@ -180,10 +192,19 @@ water_balance <- function(hyps, inf, outf = NULL,
   # glm_evap <- calc_evap(met = gotm_met, elevation = elevation,
   #                       model = "glm_aed")
 
+  # Get dates to use for calculating the water balance
+  max_spin <- max(unlist(aeme_time[["spin_up"]])[model])
+  spin_start <- aeme_time[["start"]] - lubridate::ddays(max_spin + 6)
+  date_stop <- aeme_time[["stop"]] + lubridate::ddays(1)
+
+  gotm_met <- gotm_met |>
+    dplyr::filter(Date >= spin_start & Date <= date_stop) # filter dates
+
   rho0 <- 1e3
   Latent_Heat_Evap = 2.453E+6
   evap <- obs_met |>
     dplyr::left_join(mod.lvl, by = "Date") |>
+    dplyr::filter(Date >= spin_start & Date <= date_stop) |> # filter dates
     # calculate the fluctuating surface area
     dplyr::mutate(lvlwtr2 = mod_lvl(Date, surf = max(hyps[,1]), ampl = ampl,
                             offset = offset)) |>
