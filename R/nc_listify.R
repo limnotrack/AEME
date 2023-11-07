@@ -1,10 +1,25 @@
-### funtion to process nc files from dyresm, glm, and gotm
-### results in a list of data frames with a common, regular structure
-### interpolates results for glm and dyresm to make a regular layer structure (per glm tools)
+#' Convert netCDF output to a standardised list
+#'
+#' @param nc file connection; to a netCDF file
+#' @inheritParams delangrangify
+#' @param model character; model name
+#' @param vars_sim vector; of variables to extract
+#' @param nlev numeric; number of vertical levels
+#' @param spin_up list; of spin-up times for each model
+#' @param remove_spin_up logical; whether to remove spin-up period. Default is
+#'  \code{TRUE}
+#'
+#' @return list of data.frames for each model containing the variables
+#' specified in \code{vars_sim}
+#' @noRd
+#'
+#' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
+#' @importFrom utils data
+#' @importFrom dplyr filter mutate
+#'
 
-
-
-nc_listify <- function(nc, model, vars_sim, nlev, spin_up) {
+nc_listify <- function(nc, model, vars_sim, nlev, spin_up,
+                       remove_spin_up = TRUE) {
 
   # Load Rdata
   utils::data("key_naming", package = "AEME", envir = environment())
@@ -34,7 +49,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up) {
     if (sum(sst == 0) > 1 | sum(is.na(sst)) > 0) {
       # Run-length encoding of the vector
       sst[is.na(sst)] <- -999
-      rle_result <- rle(as.vector(sst))
+      rle_result <- stats::rle(as.vector(sst))
       start_index <- which(rle_result$lengths > 1)[1]
       # vals <- rle_result$values[start_index]
       z[, start_index:ncol(z)] <- NA
@@ -192,7 +207,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up) {
                   HYD_inflow = inflow, HYD_outflow = outflow, LAYERS = LAYERS,
                   DEPTHS = DEPTHS)
 
-  ### peel through the netcdf and make a list of the outputs
+  ### Loop through the netcdf and make a list of the outputs
   vars_chk <- data.frame(vars = vars_sim.model, present = NA)
   for(v in seq_len(nrow(vars_chk))) {
     vars_chk[["present"]][v] <- vars_sim.model[v] %in% names(nc$var)
@@ -224,15 +239,8 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up) {
 
 
       } else if (model == 'glm_aed') {
-
-        # this.var %<>%  # layer
-        #   map_df(., rev) |> data.frame()
         this.var <- apply(this.var, 2, rev)
         this.df <- delagrangify(elevs = lyrs, values = this.var, nlev = nlev)
-
-        # this.df <- data.frame(mapply(elevs = lyrs, values = this.var,
-        #                              FUN = delagrangify, nlev = nlev)) #|>
-        # map_df(rev)
         ## unit conversions
 
         conv.fact <- key_naming[key_naming$name == vars_sim[i], "conversion_aed"]
@@ -244,7 +252,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up) {
       } else if (model == 'gotm_pclake' | model == "gotm_wet") {
 
         this.df <- sapply(1:ncol(this.var), \(c) {
-          if(is.na(zeta[c])) {
+          if (is.na(zeta[c])) {
             as.data.frame(rep(NA, nlev))
           } else {
             if(all(is.na(this.var[, c])) | length(unique(z[, c])) <= 1) {
@@ -277,16 +285,16 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up) {
   # make derived variables if these are not already present
 
 
-  # trim off the warmup period
-  for (l in seq_along(nc_list)) {
-    if (length(dim(nc_list[[l]])) == 1) {
-      nc_list[[l]] <- nc_list[[l]][(spin_up + 1):length(nc_list[[l]])]
-    } else if (length(dim(nc_list[[l]])) == 2) {
-      nc_list[[l]] <- nc_list[[l]][(spin_up + 1):ncol(nc_list[[l]])]
+  # trim off the spin up period
+  if (remove_spin_up) {
+    for (l in seq_along(nc_list)) {
+      if (length(dim(nc_list[[l]])) == 1 | is.null(dim(nc_list[[l]]))) {
+        nc_list[[l]] <- nc_list[[l]][(spin_up + 1):length(nc_list[[l]])]
+      } else if (length(dim(nc_list[[l]])) == 2) {
+        nc_list[[l]] <- nc_list[[l]][(spin_up + 1):ncol(nc_list[[l]])]
+      }
     }
   }
-
-
 
   return(nc_list)
 }
