@@ -5,7 +5,7 @@
 #' @param hum_type numeric; humidity metric [1=relative humidity (%),
 #' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg);
 #'  default=3]
-#' @param return_df Logical; return meteorological dataframe?
+#' @param return_df Logical; return meteorological dataframe
 #'
 #' @importFrom dplyr mutate select all_of across
 #' @importFrom utils write.table
