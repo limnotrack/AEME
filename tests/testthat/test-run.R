@@ -162,6 +162,75 @@ test_that("running models in parallel works", {
   testthat::expect_true(file_chk)
 })
 
+test_that("running models in parallel with no wbal calculated", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed", "gotm_wet")
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = TRUE, calc_wbal = FALSE)
+  outf <- outflows(aeme_data)
+  names(outf$data)
+
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
+              add_obs = F)
+
+  lke <- lake(aeme_data)
+  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        model[1], "DYsim.nc")),
+                  file.exists(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        model[2:3], "output", "output.nc")))
+  testthat::expect_true(file_chk)
+})
+
+test_that("running models in parallel with no wbal & no wlev calculated", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  inp <- input(aeme_data)
+  summary(inp$meteo)
+
+  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE, calc_wbal = TRUE,
+                              calc_wlev = FALSE)
+
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
+
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
+              add_obs = F)
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_outflow",
+              add_obs = F)
+
+  lke <- lake(aeme_data)
+  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        model[1], "DYsim.nc")),
+                  file.exists(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        model[2:3], "output", "output.nc")))
+  testthat::expect_true(file_chk)
+})
+
 test_that("getting model output works", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
@@ -293,6 +362,10 @@ test_that("running GOTM with a spinup works", {
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
+
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_outflow",
+              level = TRUE, label = TRUE, print_plots = FALSE,
+              var_lims = c(0, 30))
 
   p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
                     level = TRUE, label = TRUE, print_plots = FALSE,
