@@ -281,7 +281,7 @@ test_that("running GOTM with a spinup works", {
 
 
   tim <- time(aeme_data)
-  tim[["spin_up"]][[model]] <- 100
+  tim[["spin_up"]][[model]] <- 200
   time(aeme_data) <- tim
 
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
@@ -293,6 +293,12 @@ test_that("running GOTM with a spinup works", {
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
+
+  p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
+                    level = TRUE, label = TRUE, print_plots = FALSE,
+                    var_lims = c(0, 30), ylim = c(0, 16))
+  testthat::expect_true(all(ggplot2::is.ggplot(p1[[1]])))
+
   testthat::expect_true(file_chk)
 })
 
