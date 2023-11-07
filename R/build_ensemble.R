@@ -233,7 +233,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     aeme_obs <- observations(aeme_data)
     # Calculate water balance ----
     if (calc_wbal | calc_wlev) {
-      wbal <- water_balance(hyps = hyps, inf = inf, outf = outf[["outflow"]],
+      wbal <- water_balance(aeme_time = aeme_time, hyps = hyps, inf = inf,
+                            outf = outf[["outflow"]],
                             obs_lvl = aeme_obs[["level"]],
                             obs_lake = aeme_obs[["lake"]], obs_met = met,
                             ext_elev = ext_elev,
