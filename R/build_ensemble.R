@@ -14,6 +14,8 @@
 #'  outflows. Needs to be named according to the model.
 #' @param ext_elev numeric; extension in elevation for the hypsogrph in metres.
 #' @param use_bgc boolean; switch to use the biogeochemical model.
+#' @param calc_wbal boolean; calculate water balance.
+#' @param calc_wlev boolean; calculate water level.
 #' @param use_lw boolean; use incoming longwave radiation. Only applies to
 #' GLM-AED.
 #' @param coeffs numeric vector of length two; to be used to estimate surface
@@ -64,6 +66,8 @@ build_ensemble <- function(aeme_data = NULL,
                                            "gotm_wet" = 1),
                            ext_elev = 0,
                            use_bgc = TRUE,
+                           calc_wbal = TRUE,
+                           calc_wlev = TRUE,
                            use_lw = TRUE,
                            coeffs = NULL,
                            hum_type = 3,
@@ -180,8 +184,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     check_time(df = met, model = model, aeme_time = aeme_time, name = "meteo")
     met <- met |>
       dplyr::mutate(Date = as.Date(Date)) |>
-      dplyr::mutate(MET_pprain = MET_pprain / 1000,
-                    MET_ppsnow = MET_ppsnow / 1000) |>
+      # dplyr::mutate(MET_pprain = MET_pprain / 1000,
+      #               MET_ppsnow = MET_ppsnow / 1000) |>
       expand_met(coords.xyz = coords.xyz, print.plot = FALSE)
 
     input(aeme_data) <- list(init_profile = init_prof,
@@ -228,42 +232,50 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # Lake level ----
     aeme_obs <- observations(aeme_data)
     # Calculate water balance ----
-    wbal <- water_balance(hyps = hyps, inf = inf, outf = outf[["outflow"]],
-                          obs_lvl = aeme_obs[["level"]],
-                          obs_lake = aeme_obs[["lake"]], obs_met = met,
-                          ext_elev = ext_elev,
-                          elevation = elevation, print_plots = FALSE,
-                          coeffs = coeffs)
-    outf[["wbal"]] <- wbal |>
-      dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
+    if (calc_wbal | calc_wlev) {
+      wbal <- water_balance(hyps = hyps, inf = inf, outf = outf[["outflow"]],
+                            obs_lvl = aeme_obs[["level"]],
+                            obs_lake = aeme_obs[["lake"]], obs_met = met,
+                            ext_elev = ext_elev,
+                            elevation = elevation, print_plots = FALSE,
+                            coeffs = coeffs)
+    }
 
-
-    if (is.null(aeme_outf[["data"]])) {
-      warning(paste(strwrap("Outflow data are not present. This function will
-                            generate an estimated outflow with a calculated
+    if (calc_wbal) {
+      message(paste(strwrap("Calculating outflow with an estimated
                             water balance using lake level, inflow data (if
                             present) and estimated evaporation rates."),
                     collapse = "\n"))
-      # outf[["wbal"]] <- calc_out
-    } #else {
-    #   tot_outflow <- outf[["outflow"]] |>
-    #     merge(calc_out, by = "Date") |>
-    #     dplyr::mutate(
-    #       outflow_dy_cd = outflow_dy_cd + outflow,
-    #       outflow_glm_aed = outflow_glm_aed + outflow,
-    #       outflow_gotm_wet = outflow_gotm_wet + outflow
-    #     )
-    # }
+      outf[["wbal"]] <- wbal |>
+        dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
 
-    # outf[["outflow"]] <- tot_outflow
+
+      # if (is.null(aeme_outf[["data"]])) {
+      #   warning(paste(strwrap("Outflow data are not present. This function will
+      #                       generate an estimated outflow with a calculated
+      #                       water balance using lake level, inflow data (if
+      #                       present) and estimated evaporation rates."),
+      #                 collapse = "\n"))
+      #   # outf[["wbal"]] <- calc_out
+      # } #else {
+      #   tot_outflow <- outf[["outflow"]] |>
+      #     merge(calc_out, by = "Date") |>
+      #     dplyr::mutate(
+      #       outflow_dy_cd = outflow_dy_cd + outflow,
+      #       outflow_glm_aed = outflow_glm_aed + outflow,
+      #       outflow_gotm_wet = outflow_gotm_wet + outflow
+      #     )
+      # }
+
+      # outf[["outflow"]] <- tot_outflow
+    }
 
     outflows(aeme_data) <- list(data = outf,
                                 outflow_lvl = aeme_outf[["outflow_lvl"]],
                                 factor = aeme_outf[["factor"]])
 
-    if (is.null(aeme_obs[["level"]])) {
-      warning(paste(strwrap("Lake level is not present. This function will
-                            generate an estimated lake level using lake depth
+    if (calc_wlev) {
+      message(paste(strwrap("Calculating lake level using lake depth
                             and a sinisoidal function."),
                     collapse = "\n"))
       lvl <- wbal |>

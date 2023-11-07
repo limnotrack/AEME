@@ -13,6 +13,8 @@ build_ensemble(
   outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   ext_elev = 0,
   use_bgc = TRUE,
+  calc_wbal = TRUE,
+  calc_wlev = TRUE,
   use_lw = TRUE,
   coeffs = NULL,
   hum_type = 3,
@@ -39,6 +41,10 @@ outflows. Needs to be named according to the model.}
 \item{ext_elev}{numeric; extension in elevation for the hypsogrph in metres.}
 
 \item{use_bgc}{boolean; switch to use the biogeochemical model.}
+
+\item{calc_wbal}{boolean; calculate water balance.}
+
+\item{calc_wlev}{boolean; calculate water level.}
 
 \item{use_lw}{boolean; use incoming longwave radiation. Only applies to
 GLM-AED.}
