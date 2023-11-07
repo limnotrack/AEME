@@ -93,12 +93,14 @@ water_balance <- function(hyps, inf, outf = NULL,
   }
 
   obs_met <- obs_met |>
+    dplyr::mutate(MET_pprain = MET_pprain / 1000,
+                  MET_ppsnow = MET_ppsnow / 1000) |> # convert to m
     dplyr::mutate(T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE,
                                         align = c("right")))
 
   # Evaporation ----
   evap <- obs_met |>
-    dplyr::select(c("Date","MET_tmpair","MET_prvapr","MET_wndspd")) |>
+    dplyr::select(c("Date","MET_tmpair", "MET_prvapr","MET_wndspd")) |>
     dplyr::mutate(T14avg = zoo::rollmean(MET_tmpair, 14, na.pad = TRUE,
                                          align = c("right")),
                   T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE,

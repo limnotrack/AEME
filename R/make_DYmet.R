@@ -37,6 +37,8 @@ make_DYmet <-  function(lakename = "unknown",
 
   # process the obsMet into DY format
   metVals <- obsMet |>
+    dplyr::mutate(MET_pprain = MET_pprain / 1000,
+                  MET_ppsnow = MET_ppsnow / 1000) |> # convert to m
     dplyr::select(dplyr::all_of(col.order))
   metVals <- metVals |>
     dplyr::mutate(Date = paste0(lubridate::year(Date), strftime(Date, format = "%j")),

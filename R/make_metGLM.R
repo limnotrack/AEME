@@ -32,8 +32,10 @@ make_metGLM <-  function(obs_met, path_glm = "", infRain = FALSE,
   }
 
 
-  # process the obsMet into DY format
+  # process the obsMet into GLM format
   metVals <- obs_met |>
+    dplyr::mutate(MET_pprain = MET_pprain / 1000,
+                  MET_ppsnow = MET_ppsnow / 1000) |> # convert to m
     dplyr::select(all_of(col.order)) |>
     dplyr::mutate(MET_prsttn = MET_prsttn / 100)
   metVals <- metVals |>
