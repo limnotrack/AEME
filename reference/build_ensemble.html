@@ -59,7 +59,6 @@
 <span>  use_bgc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  calc_wbal <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  calc_wlev <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  use_lw <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  coeffs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hum_type <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"."</span></span>
@@ -112,11 +111,6 @@ outflows. Needs to be named according to the model.</p></dd>
 <dd><p>boolean; calculate water level.</p></dd>
 
 
-<dt>use_lw</dt>
-<dd><p>boolean; use incoming longwave radiation. Only applies to
-GLM-AED.</p></dd>
-
-
 <dt>coeffs</dt>
 <dd><p>numeric vector of length two; to be used to estimate surface
 water temperature for estimating evaporation. Defaults to NULL. If water
@@ -150,7 +144,7 @@ Default = 3.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"configr"</span>, repos <span class="op">=</span> <span class="st">"http://cran.us.r-project.org"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package into ‘/tmp/RtmpBNEadW/temp_libpath1be56419720c’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package into ‘/tmp/RtmpQN43w5/temp_libpath1cb75b45a01’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> (as ‘lib’ is unspecified)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> also installing the dependencies ‘ini’, ‘RcppTOML’</span>
 <span class="r-in"><span><span class="va">tmpdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -169,10 +163,51 @@ Default = 3.</p></dd>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">build_ensemble</span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>               mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>               use_bgc <span class="op">=</span> <span class="cn">FALSE</span>, use_lw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2023-11-07 22:54:27.303815]</span>
+<span class="r-in"><span>               use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2023-11-08 01:44:59.917976]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in water_balance(aeme_time = aeme_time, hyps = hyps, inf = inf,     outf = outf[["outflow"]], obs_lvl = aeme_obs[["level"]],     obs_lake = aeme_obs[["lake"]], obs_met = met, ext_elev = ext_elev,     elevation = elevation, print_plots = FALSE, coeffs = coeffs):</span> object 'model' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating outflow with an estimated water balance using lake level,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> inflow data (if present) and estimated evaporation rates.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating lake level using lake depth and a sinisoidal function.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Observed lake level is present. Updating initial lake model depth...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building GLM3-AED2 model for lake wainamu</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Copied in GLM nml file</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 			   AEME </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Lake</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Area: 152343 m2; Shape file: Present</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Catchment </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Name: Wainamu; Area: 4989125 m2;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Shape file: Present</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Start: 2022-01-09 Stop: 2022-12-30 Time step: 3600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Configuration</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Physical   |   Biogeochemical</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DY-CD    : Absent     |   Absent </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GLM-AED  : Present    |   Absent </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GOTM-WET : Absent     |   Absent </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Observations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Lake: Present; Level: Present</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Input</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Inital profile: Present; Inital depth: 13.02m; Hypsograph: Present (n=132);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Meteo: Present; Use longwave: TRUE; Kw: 0.98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Inflows</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Outflows</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Output: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DY-CD: Absent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GLM-AED: Absent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GOTM-WET: Absent</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
