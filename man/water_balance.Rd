@@ -6,6 +6,7 @@
 \usage{
 water_balance(
   aeme_time,
+  model,
   hyps,
   inf,
   outf = NULL,
@@ -20,6 +21,9 @@ water_balance(
 }
 \arguments{
 \item{aeme_time}{list; time object from aeme_object using `time()`}
+
+\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
+`gotm_wet`.}
 
 \item{hyps}{data frame of hypsographic curve, elevation (masl) and planar
 area (m^2)}

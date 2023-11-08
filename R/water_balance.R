@@ -1,6 +1,7 @@
 #' Estimate lake water balance based on a minimal set of inputs
 #'
 #' @param aeme_time list; time object from aeme_object using `time()`
+#' @inheritParams build_ensemble
 #' @param hyps data frame of hypsographic curve, elevation (masl) and planar
 #' area (m^2)
 #' @param inf list of inflow data frames
@@ -25,7 +26,7 @@
 #' @export
 #'
 
-water_balance <- function(aeme_time, hyps, inf, outf = NULL,
+water_balance <- function(aeme_time, model, hyps, inf, outf = NULL,
                           obs_lvl = NULL, obs_lake = NULL, obs_met, ext_elev,
                           elevation, print_plots = FALSE, coeffs = NULL) {
 

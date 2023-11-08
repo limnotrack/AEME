@@ -32,7 +32,7 @@
 #' model <- c("glm_aed")
 #' build_ensemble(path = path, aeme_data = aeme_data, model = model,
 #'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-#'                use_bgc = TRUE, use_lw = TRUE)
+#'                use_bgc = TRUE)
 #' run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
 #'           return = FALSE)
 #' }
