@@ -54,11 +54,11 @@ outflows:
    data:                                        # file with outflow data, with column headers according to LakeEnsemblR vocabulary [csv file; must be provided if outflows -> use is true]
       outflow:
          - data/outflow.csv
-   outflow_lvl: -1                              # height of the outflow above the ground. If the outflow is a surface outflow use "-1". If there are more than one outflow in the outflow file, this must be a list with one value per outflow
    factor:
       dy_cd: 1
       glm_aed: 1
       gotm_wet: 1
+   lvl: -1                              # height of the outflow above the ground. If the outflow is a surface outflow use "-1". If there are more than one outflow in the outflow file, this must be a list with one value per outflow
 output:
    dy_cd: null
    glm_aed: null
