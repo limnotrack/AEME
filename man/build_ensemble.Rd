@@ -15,7 +15,6 @@ build_ensemble(
   use_bgc = TRUE,
   calc_wbal = TRUE,
   calc_wlev = TRUE,
-  use_lw = TRUE,
   coeffs = NULL,
   hum_type = 3,
   path = "."
@@ -45,9 +44,6 @@ outflows. Needs to be named according to the model.}
 \item{calc_wbal}{boolean; calculate water balance.}
 
 \item{calc_wlev}{boolean; calculate water level.}
-
-\item{use_lw}{boolean; use incoming longwave radiation. Only applies to
-GLM-AED.}
 
 \item{coeffs}{numeric vector of length two; to be used to estimate surface
 water temperature for estimating evaporation. Defaults to NULL. If water
@@ -85,5 +81,5 @@ outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
 build_ensemble(path = path, aeme_data = aeme_data, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-               use_bgc = FALSE, use_lw = TRUE)
+               use_bgc = FALSE)
 }

@@ -16,8 +16,6 @@
 #' @param use_bgc boolean; switch to use the biogeochemical model.
 #' @param calc_wbal boolean; calculate water balance.
 #' @param calc_wlev boolean; calculate water level.
-#' @param use_lw boolean; use incoming longwave radiation. Only applies to
-#' GLM-AED.
 #' @param coeffs numeric vector of length two; to be used to estimate surface
 #' water temperature for estimating evaporation. Defaults to NULL. If water
 #' temperature observations are included in `aeme` object, then it will use
@@ -54,7 +52,7 @@
 #' model <- c("glm_aed")
 #' build_ensemble(path = path, aeme_data = aeme_data, model = model,
 #'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-#'                use_bgc = FALSE, use_lw = TRUE)
+#'                use_bgc = FALSE)
 
 build_ensemble <- function(aeme_data = NULL,
                            config = NULL,
@@ -68,7 +66,6 @@ build_ensemble <- function(aeme_data = NULL,
                            use_bgc = TRUE,
                            calc_wbal = TRUE,
                            calc_wlev = TRUE,
-                           use_lw = TRUE,
                            coeffs = NULL,
                            hum_type = 3,
                            path = "."
@@ -211,13 +208,12 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     }
     inf_factor <- aeme_inf[["factor"]]
 
-
-
+    #* Light extinction Kw ----
     Kw <- inp[["Kw"]]
 
     # Outflow ----
     aeme_outf <- outflows(aeme_data)
-    if (!is.null(aeme_outf[["data"]])) {
+    if (!is.null(aeme_outf[["data"]]) & length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
         check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
@@ -233,8 +229,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     aeme_obs <- observations(aeme_data)
     # Calculate water balance ----
     if (calc_wbal | calc_wlev) {
-      wbal <- water_balance(aeme_time = aeme_time, hyps = hyps, inf = inf,
-                            outf = outf[["outflow"]],
+      wbal <- water_balance(aeme_time = aeme_time, model = model, hyps = hyps,
+                            inf = inf, outf = outf[["outflow"]],
                             obs_lvl = aeme_obs[["level"]],
                             obs_lake = aeme_obs[["lake"]], obs_met = met,
                             ext_elev = ext_elev,
@@ -269,10 +265,12 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       # }
 
       # outf[["outflow"]] <- tot_outflow
+    } else {
+      outf[["wbal"]] <- NULL
     }
 
     outflows(aeme_data) <- list(data = outf,
-                                outflow_lvl = aeme_outf[["outflow_lvl"]],
+                                outflow_lvl = aeme_outf[["lvl"]],
                                 factor = aeme_outf[["factor"]])
 
     if (calc_wlev) {
@@ -420,7 +418,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               met = met, lake_dir = lake_dir,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
-              Kw = Kw, ext_elev = ext_elev, use_bgc = use_bgc, use_lw = use_lw)
+              Kw = Kw, ext_elev = ext_elev, use_bgc = use_bgc,
+              use_lw = inp$use_lw)
     # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
   if("gotm_wet" %in% model) {
