@@ -161,7 +161,7 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
 
 
   #------ INFLOWS -------
-  if (!is.null(inf)) {
+  if (length(inf) > 0) {
     for (i in 1:length(inf)) {
       # format the tables
       colnames(inf[[i]]) <- rename_modelvars(input = names(inf[[i]]),
@@ -187,7 +187,7 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
 
 
   #----- OUTFLOWS -----
-  if (is.null(outf)) {
+  if (length(outf) == 0) {
     outf <- list(outflow = data.frame(Date = seq.Date(date_range[1],
                                                       date_range[2], by = 1),
                                       outflow = 0))

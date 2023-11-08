@@ -18,22 +18,25 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
                         update_nml = TRUE, glm_nml, path_glm) {
 
 
-  if (length(outf) > 1) {
-    df_wdr <- Reduce(function(x, y) dplyr::full_join(x, y, by = "Date"),
-                     outf) |>
-      dplyr::select(c(Date, outflow, outflow_glm_aed)) |>
-      dplyr::rename(wbal = outflow_glm_aed)
-  } else {
-    df_wdr <- outf[[1]]
-    if (ncol(df_wdr) > 2) {
-      df_wdr <- df_wdr |>
-        dplyr::select(c(Date, outflow_glm_aed)) |>
-        dplyr::rename(outflow = outflow_glm_aed)
+
+
+
+  if (length(outf) > 0) {
+
+    if (length(outf) > 1) {
+      df_wdr <- Reduce(function(x, y) dplyr::full_join(x, y, by = "Date"),
+                       outf) |>
+        dplyr::select(c(Date, outflow, outflow_glm_aed)) |>
+        dplyr::rename(wbal = outflow_glm_aed)
+    } else if (length(outf) == 1){
+      df_wdr <- outf[[1]]
+      if (ncol(df_wdr) > 2) {
+        df_wdr <- df_wdr |>
+          dplyr::select(c(Date, outflow_glm_aed)) |>
+          dplyr::rename(outflow = outflow_glm_aed)
+      }
     }
-  }
 
-
-  if (!is.null(df_wdr)) {
     df_wdr <- df_wdr |>
       # convert discharge values to cumecs
       dplyr::mutate(dplyr::across(2:ncol(df_wdr), \(x) (x * wdr_factor)
