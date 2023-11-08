@@ -7,15 +7,22 @@
 write_yaml(x, file, fileEncoding = "UTF-8", ...)
 }
 \arguments{
-\item{file}{filepath; to yaml file which you wish to edit
-Note boolean values must be input as "true"/"false" as per the json format}
+\item{x}{the object to be converted}
 
-\item{yaml}{list; loaded using `read_yaml()`}
+\item{file}{either a character string naming a file or a \link{connection}
+    open for writing}
+
+\item{fileEncoding}{character string: if non-empty declares the
+    encoding to be used on a file (not a connection) so the character data can
+    be re-encoded as they are written.  See \code{\link{file}}.}
+
+\item{...}{arguments to \code{\link[yaml]{as.yaml}}}
 }
 \description{
 Write the YAML representation of an R object (list) to a file.
  Taken from the `yaml` package but added catch to replace 'yes' with 'true'
-  and 'no' with 'false'
+  and 'no' with 'false' and '~' with 'null' to make it compatible with
+  running the GOTM model.
 }
 \examples{
 

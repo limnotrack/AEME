@@ -2,10 +2,9 @@
 #'
 #' Write the YAML representation of an R object (list) to a file.
 #'  Taken from the `yaml` package but added catch to replace 'yes' with 'true'
-#'   and 'no' with 'false'
-#' @param yaml list; loaded using `read_yaml()`
-#' @param file filepath; to yaml file which you wish to edit
-#'   Note boolean values must be input as "true"/"false" as per the json format
+#'   and 'no' with 'false' and '~' with 'null' to make it compatible with
+#'   running the GOTM model.
+#' @inheritParams yaml::write_yaml
 #' @export
 #' @importFrom yaml write_yaml
 #' @author
