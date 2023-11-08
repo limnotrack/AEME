@@ -15,7 +15,7 @@ test_that("building DYRESM works", {
   model <- c("dy_cd")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = FALSE, use_lw = TRUE)
+                 use_bgc = FALSE)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -38,7 +38,7 @@ test_that("building DYRESM-CAEDYM works", {
   model <- c("dy_cd")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE, use_lw = TRUE)
+                 use_bgc = TRUE)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -61,7 +61,7 @@ test_that("building GLM works", {
   model <- c("glm_aed")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = FALSE, use_lw = TRUE)
+                 use_bgc = FALSE)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -70,7 +70,6 @@ test_that("building GLM works", {
 })
 
 test_that("building GLM-AED works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -84,7 +83,7 @@ test_that("building GLM-AED works", {
   model <- c("glm_aed")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE, use_lw = TRUE)
+                 use_bgc = TRUE)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -107,7 +106,7 @@ test_that("building GOTM works", {
   model <- c("gotm_wet")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = FALSE, use_lw = TRUE)
+                 use_bgc = FALSE)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -130,7 +129,7 @@ test_that("building GOTM-WET works", {
   model <- c("gotm_wet")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE, use_lw = TRUE)
+                 use_bgc = TRUE)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -152,7 +151,7 @@ test_that("building all models and loading to aeme works", {
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE, use_lw = TRUE)
+                 use_bgc = TRUE)
   aeme_data <- load_configuration(model = model, aeme_data = aeme_data,
                                   path = path, use_bgc = TRUE)
   cfg <- configuration(aeme_data)

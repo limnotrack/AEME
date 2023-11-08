@@ -11,7 +11,7 @@ test_that("running DYRESM works", {
   model <- c("dy_cd")
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
+                              ext_elev = 5, use_bgc = FALSE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -34,7 +34,7 @@ test_that("running GLM works", {
   model <- c("glm_aed")
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
+                              ext_elev = 5, use_bgc = FALSE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -58,7 +58,7 @@ test_that("running GOTM works", {
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data,
                               model = model, mod_ctrls = mod_ctrls,
                               inf_factor = inf_factor, ext_elev = 5,
-                              use_bgc = FALSE, use_lw = TRUE)
+                              use_bgc = FALSE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -81,7 +81,7 @@ test_that("running DYRESM-CAEDYM works", {
   model <- c("dy_cd")
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = TRUE, use_lw = TRUE)
+                              ext_elev = 5, use_bgc = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -104,7 +104,7 @@ test_that("running GLM-AED works", {
   model <- c("glm_aed")
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = TRUE, use_lw = TRUE)
+                              ext_elev = 5, use_bgc = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -127,7 +127,7 @@ test_that("running GOTM-WET works", {
   model <- c("gotm_wet")
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = TRUE, use_lw = TRUE)
+                              ext_elev = 5, use_bgc = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -150,7 +150,7 @@ test_that("running models in parallel works", {
   model <- c("glm_aed", "gotm_wet")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE, use_lw = TRUE)
+                 use_bgc = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
   # plot_output(aeme_data = aeme_data, model = model, var_sim = "CHM_oxy", add_obs = F)
@@ -172,10 +172,48 @@ test_that("running models in parallel with no wbal calculated", {
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed", "gotm_wet")
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
                               ext_elev = 5, use_bgc = TRUE, calc_wbal = FALSE)
+  outf <- outflows(aeme_data)
+  names(outf$data)
+
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
+              add_obs = F)
+
+  lke <- lake(aeme_data)
+  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        model[1], "DYsim.nc")),
+                  file.exists(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        model[2:3], "output", "output.nc")))
+  testthat::expect_true(file_chk)
+})
+
+
+test_that("running models with no wbal/outflows calculated", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+
+  outf <- outflows(aeme_data)
+  outf$data <- NULL
+  outflows(aeme_data) <- outf
+
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE, calc_wbal = F)
   outf <- outflows(aeme_data)
   names(outf$data)
 
@@ -244,7 +282,7 @@ test_that("getting model output works", {
   model <- c("glm_aed", "gotm_wet")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE, use_lw = TRUE)
+                 use_bgc = TRUE)
   run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
            parallel = TRUE, return = FALSE)
 
@@ -269,7 +307,7 @@ test_that("getting model output in parallel works", {
   model <- c("glm_aed", "gotm_wet")
   build_ensemble(path = path, aeme_data = aeme_data, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE, use_lw = TRUE)
+                 use_bgc = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
                         mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
 
@@ -297,7 +335,7 @@ test_that("running DYRESM with a spinup works", {
 
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
+                              ext_elev = 5, use_bgc = FALSE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -326,7 +364,7 @@ test_that("running GLM with a spinup works", {
 
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
+                              ext_elev = 5, use_bgc = FALSE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
@@ -355,7 +393,7 @@ test_that("running GOTM with a spinup works", {
 
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE, use_lw = TRUE)
+                              ext_elev = 5, use_bgc = FALSE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
   lke <- lake(aeme_data)
