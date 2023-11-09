@@ -144,7 +144,7 @@ Default = 3.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"configr"</span>, repos <span class="op">=</span> <span class="st">"http://cran.us.r-project.org"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package into ‘/tmp/RtmpZsxMHJ/temp_libpath1cd5469475e4’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package into ‘/tmp/RtmpGhsRJM/temp_libpath1c952d814783’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> (as ‘lib’ is unspecified)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> also installing the dependencies ‘ini’, ‘RcppTOML’</span>
 <span class="r-in"><span><span class="va">tmpdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -164,8 +164,10 @@ Default = 3.</p></dd>
 <span class="r-in"><span><span class="fu">build_ensemble</span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>               mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>               use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2023-11-08 02:17:58.844125]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2023-11-09 03:38:34.477311]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Missing values in observed water level</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using optimisation function</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating outflow with an estimated water balance using lake level,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> inflow data (if present) and estimated evaporation rates.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating lake level using lake depth and a sinisoidal function.</span>
@@ -178,24 +180,20 @@ Default = 3.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Area: 152343 m2; Shape file: Present</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Catchment </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Name: Wainamu; Area: 4989125 m2;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Shape file: Present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Time</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Start: 2022-01-09 Stop: 2022-12-30 Time step: 3600</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Configuration</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Physical   |   Biogeochemical</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DY-CD    : Absent     |   Absent </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GLM-AED  : Present    |   Absent </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GLM-AED  : Absent     |   Absent </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GOTM-WET : Absent     |   Absent </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Observations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lake: Present; Level: Present</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Input</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Inital profile: Present; Inital depth: 13.02m; Hypsograph: Present (n=132);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Inital profile: Present; Inital depth: 13.05m; Hypsograph: Present (n=132);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Meteo: Present; Use longwave: TRUE; Kw: 0.98</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Inflows</span>
@@ -203,6 +201,12 @@ Default = 3.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Outflows</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Outflows</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Water balance</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Use: obs; Modelled: Absent; Water balance: Present</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Output: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DY-CD: Absent</span>

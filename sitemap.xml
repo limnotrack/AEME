@@ -28,16 +28,7 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/build_ensemble.html</loc>
   </url>
   <url>
-    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment-aeme-method.html</loc>
-  </url>
-  <url>
-    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment-set-aeme-method.html</loc>
-  </url>
-  <url>
-    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment-set.html</loc>
-  </url>
-  <url>
-    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment.html</loc>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/calc_wbal.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment_yields.html</loc>
@@ -184,7 +175,19 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/time.html</loc>
   </url>
   <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/water_balance-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/water_balance-set-aeme-method.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/water_balance-set.html</loc>
+  </url>
+  <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/water_balance.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/write_configuration.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/write_nml.html</loc>
