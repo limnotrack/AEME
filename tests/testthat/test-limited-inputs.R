@@ -35,7 +35,6 @@ test_that("it errors when met data is not present", {
 
 testthat::test_that("can run AEME with simple set of inputs works", {
 
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -60,7 +59,7 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed", "gotm_wet")
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
 
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
@@ -74,7 +73,10 @@ testthat::test_that("can run AEME with simple set of inputs works", {
 
   lke <- lake(aeme_data)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc")))
+                                                     tolower(lke$name)),
+                                        model[1], "DYsim.nc")),
+                  file.exists(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        model[2:3], "output", "output.nc")))
   testthat::expect_true(file_chk)
 })
