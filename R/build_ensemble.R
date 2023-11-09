@@ -26,6 +26,7 @@
 #' @param hum_type numeric; GOTM humidity metric [1=relative humidity (%),
 #' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
 #' Default = 3.
+#' @param overwrite boolean; overwrite config files. Default is FALSE.
 #' @param path filepath; where input files are located relative to `config`.
 #'
 #' @return builds the model ensemble configuration.
@@ -68,6 +69,7 @@ build_ensemble <- function(aeme_data = NULL,
                            calc_wlev = TRUE,
                            coeffs = NULL,
                            hum_type = 3,
+                           overwrite = FALSE,
                            path = "."
 ) {
 
@@ -103,9 +105,12 @@ build_ensemble <- function(aeme_data = NULL,
     spin_up <- aeme_time[["spin_up"]]
 
     model_config <- configuration(aeme_data)
-    if (all(sapply(model, \(x) !is.null(model_config[[x]])))) {
+    if (all(sapply(model, \(x) !is.null(model_config[[x]][["hydrodynamic"]])))) {
+      message("Building existing configuration for ", lke$name, " [",
+              Sys.time(), "]")
       write_configuration(model = model, aeme_data = aeme_data,
-                          path = path, use_bgc = use_bgc)
+                          path = path)
+      # Potentially add in option to switch off bgc and/or use default bgc setup
       return(aeme_data)
     }
 
@@ -433,7 +438,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                inf_factor = inf_factor[["dy_cd"]],
                outf_factor = outf_factor[["dy_cd"]],
                Kw = Kw, ext_elev = ext_elev,
-               use_bgc = use_bgc)
+               use_bgc = use_bgc, overwrite_cfg = overwrite)
     # run_dy_cd(sim_folder = lake_dir, verbose = TRUE)
   }
   if ("glm_aed" %in% model) {
@@ -447,7 +452,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
               Kw = Kw, ext_elev = ext_elev, use_bgc = use_bgc,
-              use_lw = inp$use_lw)
+              use_lw = inp$use_lw, overwrite_nml = overwrite)
     # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
   if("gotm_wet" %in% model) {
@@ -467,7 +472,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                met = met, inf_factor = inf_factor[["gotm_wet"]],
                outf_factor = outf_factor[["gotm_wet"]], Kw = Kw,
                ext_elev = ext_elev, nlev = nlev, use_bgc = use_bgc,
-               hum_type = hum_type)
+               hum_type = hum_type, overwrite_yaml = overwrite)
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
 
   }

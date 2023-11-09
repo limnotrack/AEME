@@ -17,6 +17,7 @@ build_ensemble(
   calc_wlev = TRUE,
   coeffs = NULL,
   hum_type = 3,
+  overwrite = FALSE,
   path = "."
 )
 }
@@ -56,6 +57,8 @@ temperature. Otherwise. it uses the simple estimation
 \item{hum_type}{numeric; GOTM humidity metric [1=relative humidity (%),
 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
 Default = 3.}
+
+\item{overwrite}{boolean; overwrite config files. Default is FALSE.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 }
