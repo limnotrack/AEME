@@ -155,8 +155,64 @@ test_that("building all models and loading to aeme works", {
   aeme_data <- load_configuration(model = model, aeme_data = aeme_data,
                                   path = path, use_bgc = TRUE)
   cfg <- configuration(aeme_data)
-  chk <- all(sapply(cfg$physical, is.list)) & (is.vector(cfg$bgc$dy_cd)) &
-    all(sapply(cfg$bgc[2:3], is.list))
+  chk <- all(sapply(cfg, is.list)) & (is.vector(cfg$dy_cd$ecosystem)) &
+    all(sapply(cfg[2:3],\(x) is.list(x[["ecosystem"]])))
 
   testthat::expect_true(chk)
 })
+
+test_that("can build all models and write to new directory", {
+  library(AEME)
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+                 use_bgc = TRUE)
+  aeme_data <- load_configuration(model = model, aeme_data = aeme_data,
+                                  path = path, use_bgc = TRUE)
+
+  path2 <- file.path(tmpdir, "lake-rewrite")
+  aeme_data <- write_configuration(model = model, aeme_data = aeme_data,
+                                   path = path2)
+
+  # Check DYRESM files
+  lke <- lake(aeme_data)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    "dy_cd", "dyresm3p1.par"))
+  testthat::expect_true(file_chk)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    "dy_cd", paste0(tolower(lke$name), ".con")))
+  testthat::expect_true(file_chk)
+
+  # Check GLM files
+  file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
+                                                  tolower(lke$name)),
+                                    "glm_aed", "glm3.nml"))
+  testthat::expect_true(file_chk)
+  file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    "glm_aed", "aed2", "aed2.nml"))
+  testthat::expect_true(file_chk)
+
+
+  # Check GOTM files
+  file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
+                                                  tolower(lke$name)),
+                                    "gotm_wet", "gotm.yaml"))
+  testthat::expect_true(file_chk)
+  file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
+                                                  tolower(lke$name)),
+                                    "gotm_wet", "fabm.yaml"))
+  testthat::expect_true(file_chk)
+})
+
