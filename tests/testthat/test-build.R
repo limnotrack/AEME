@@ -92,7 +92,6 @@ test_that("building GLM-AED works", {
 })
 
 test_that("building GOTM works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -162,7 +161,6 @@ test_that("building all models and loading to aeme works", {
 })
 
 test_that("can build all models and write to new directory", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -215,4 +213,3 @@ test_that("can build all models and write to new directory", {
                                     "gotm_wet", "fabm.yaml"))
   testthat::expect_true(file_chk)
 })
-
