@@ -11,7 +11,7 @@
 #' @importFrom utils write.table
 #'
 make_metGLM <-  function(obs_met, path_glm = "", infRain = FALSE,
-                         use_lw = FALSE) {
+                         use_lw = TRUE) {
 
   if (use_lw) {
     col.order <- c("Date", "MET_radswd", "MET_radlwd", "MET_tmpair",
