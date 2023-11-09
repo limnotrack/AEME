@@ -110,8 +110,11 @@ build_ensemble <- function(aeme_data = NULL,
               Sys.time(), "]")
       write_configuration(model = model, aeme_data = aeme_data,
                           path = path)
+      overwrite <- FALSE
       # Potentially add in option to switch off bgc and/or use default bgc setup
-      return(aeme_data)
+      # return(aeme_data)
+    } else {
+      overwrite <- TRUE
     }
 
     if (!is.null(lke[["shape"]])) {
