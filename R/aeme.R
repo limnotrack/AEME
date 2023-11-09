@@ -1005,7 +1005,7 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
 
   if (y == "water_balance") {
     obs <- observations(x)
-    if (!is.null(w_bal$data$wbal)) {
+    if (!is.null(obj$data$wbal)) {
       wbal <- obj$data$wbal
       par(mfrow = c(3, 1))
       ylim <- range(c(wbal$lvlwtr, obs[["level"]][["lvlwtr"]]), na.rm = TRUE)
