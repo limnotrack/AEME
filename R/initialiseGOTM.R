@@ -10,7 +10,7 @@
 #' @noRd
 #'
 
-initialiseGOTM <-  function(lvl_bottom, lvl_surf,
+initialiseGOTM <-  function(gotm, lvl_bottom, lvl_surf,
                             tmpwtr = 10, start_date,
                             tbl_obs = NULL,
                             path_gotm = "") {
@@ -37,17 +37,15 @@ initialiseGOTM <-  function(lvl_bottom, lvl_surf,
               quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
 
 
-  #-------- make the file! ---------
-  path.yaml <- file.path(path_gotm, "gotm.yaml")
-  gotm.yaml <- yaml::read_yaml(path.yaml)
+  #-------- Update the yaml file! ---------
 
-  gotm.yaml$temperature$method <- 2
-  gotm.yaml$temperature$file <- "inputs/t_prof_file.dat"
-  gotm.yaml$temperature$column <- 1
+  gotm$temperature$method <- 2
+  gotm$temperature$file <- "inputs/t_prof_file.dat"
+  gotm$temperature$column <- 1
 
-  gotm.yaml$salinity$method <- 2
-  gotm.yaml$salinity$file <- "inputs/s_prof_file.dat"
-  gotm.yaml$salinity$column <- 1
+  gotm$salinity$method <- 2
+  gotm$salinity$file <- "inputs/s_prof_file.dat"
+  gotm$salinity$column <- 1
 
-  write_yaml(gotm.yaml, path.yaml)
+  gotm
 }

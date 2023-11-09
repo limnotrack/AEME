@@ -12,7 +12,7 @@ build_gotm <- function(lakename, mod_ctrls, date_range,
                        lvl, inf, outf, met, init_prof, init_depth,
                        nlev = 40, ext_elev = 0,
                        outf_factor = 1.0, inf_factor = 1, Kw,
-                       use_bgc, hum_type = 1) {
+                       use_bgc, hum_type = 1, overwrite_yaml = TRUE) {
 
   message(paste0("Building GOTM-WET for lake ", lakename))
 
@@ -30,12 +30,13 @@ build_gotm <- function(lakename, mod_ctrls, date_range,
                               package = "AEME")
 
 
-  if(!file.exists(gotm_file)) {
-    if(!file.exists(gotm_cfg_file)) {
+  if (!file.exists(gotm_file)) {
+    if (!file.exists(gotm_cfg_file)) {
       stop("No '", basename(gotm_cfg_file), "' file in ", gotm_cfg_dir, "/\n")
     }
     fils <- list.files(gotm_cfg_dir, full.names = TRUE)
     file.copy(fils, file.path(path_gotm, basename(fils)))
+    overwrite_yaml <- TRUE
     message("Copied all GOTM configuration files")
   }
 
@@ -44,15 +45,17 @@ build_gotm <- function(lakename, mod_ctrls, date_range,
     list.files(full.names = T) |>
     unlink()
 
-  # lvl_start <- round((dplyr::filter(lvl, Date == date_range[1]) |>
-  #                       dplyr::pull(lvlwtr)), 2)
+  gotm <- yaml::read_yaml(file.path(path_gotm, "gotm.yaml"))
 
-  make_yamlGOTM(lakename = lakename, date_range = date_range, hyps = hyps,
-                gps = gps, nlev = nlev, met = met, inf = inf, outf = outf,
-                init_depth = init_depth, path_gotm = path_gotm, ext_elev = ext_elev,
-                outf_factor = outf_factor, inf_factor = inf_factor, Kw = Kw,
-                use_bgc = use_bgc, hum_type = hum_type)
+  gotm <- make_yamlGOTM(gotm = gotm, lakename = lakename, date_range = date_range,
+                        hyps = hyps, gps = gps, nlev = nlev, met = met, inf = inf,
+                        outf = outf, init_depth = init_depth, path_gotm = path_gotm,
+                        ext_elev = ext_elev, outf_factor = outf_factor,
+                        inf_factor = inf_factor, Kw = Kw, use_bgc = use_bgc,
+                        hum_type = hum_type)
 
-  initialiseGOTM(lvl_bottom = 0.1, lvl_surf = lvl_start, tbl_obs = init_prof,
+  gotm <- initialiseGOTM(gotm = gotm, lvl_bottom = 0.1, lvl_surf = lvl_start, tbl_obs = init_prof,
                  tmpwtr = 10, start_date = date_range[1], path_gotm = path_gotm)
+
+  if (overwrite_yaml) write_yaml(gotm, gotm_file)
 }

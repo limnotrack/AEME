@@ -27,7 +27,8 @@
 build_dycd <- function(lakename, mod_ctrls, date_range, gps,
                        inf, outf, met, hyps, lvl, lake_dir,
                        inf_factor = 1.0, outf_factor = 1.0,
-                       ext_elev = 0, Kw, init_prof, init_depth, use_bgc) {
+                       ext_elev = 0, Kw, init_prof, init_depth, use_bgc,
+                       overwrite_cfg = TRUE) {
 
   message(paste0("Building DYRESM-CAEDYM for lake ", lakename))
 
@@ -36,6 +37,11 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
   verCD <- 3.1
 
   path.dy <- file.path(lake_dir, "dy_cd")
+
+  par_file <- file.path(lake_dir, "dy_cd", "dyresm3p1.par")
+  cfg_file <- file.path(lake_dir, "dy_cd", paste0(lakename, ".cfg"))
+  con_file <- file.path(lake_dir, "dy_cd", paste0(lakename, ".con"))
+
   # print(path.dy)
   # if running caedym, setup the dummy folders
   if ( !is.null(verCD) ) {
@@ -44,14 +50,15 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
     dir.create(file.path(path.dy,'files/sediment'), showWarnings = FALSE)
   }
 
-  dy_file <- file.path(path.dy, "dyresm3p1.par")
+  par_file <- file.path(path.dy, "dyresm3p1.par")
 
-  if (!file.exists(dy_file)) {
-    dy_file <- system.file("extdata/dy_cd/dyresm3p1.par",
+  if (!file.exists(par_file)) {
+    par_file <- system.file("extdata/dy_cd/dyresm3p1.par",
                            package = "AEME")
-    config_dir <- dirname(dy_file)
+    config_dir <- dirname(par_file)
     fils <- list.files(config_dir, full.names = TRUE)
     file.copy(fils, file.path(path.dy, basename(fils)))
+    overwrite_cfg <- TRUE
     message("Copied in DYRESM par file")
   }
 
@@ -74,22 +81,30 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
     dplyr::pull(name) |>
     rename_modelvars(type_output = "dy_cd")
 
-  # make the .cfg file
-  make_DYCDcfg(lakename = lakename,
-               date_range = date_range,
-               verDY = verDY, runCD = use_bgc,
-               EXTC = Kw,
-               minLyrThk = minLyrThk,
-               maxLyrThk = maxLyrThk,
-               simVars = vars.dy,
-               filePath = path.dy)
+  if (overwrite_cfg | !file.exists(cfg_file)) {
+    message("Writing DYRESM configuration")
+    # make the .cfg file
+    make_DYCDcfg(lakename = lakename,
+                 date_range = date_range,
+                 verDY = verDY, runCD = use_bgc,
+                 EXTC = Kw,
+                 minLyrThk = minLyrThk,
+                 maxLyrThk = maxLyrThk,
+                 simVars = vars.dy,
+                 filePath = path.dy)
 
-  # make the .con file
-  make_DYCDcon(lakename = lakename,
-               verCD = verCD,
-               simVars = vars.dy,
-               nFix = FALSE,
-               filePath = path.dy)
+  }
+
+  if (overwrite_cfg | !file.exists(con_file)) {
+    message("Writing DYRESM control file")
+    # make the .con file
+    make_DYCDcon(lakename = lakename,
+                 verCD = verCD,
+                 simVars = vars.dy,
+                 nFix = FALSE,
+                 filePath = path.dy)
+  }
+
 
 
   #---------- MODEL SETUP ------------
