@@ -37,58 +37,73 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
   spin_start <- aeme_time[["start"]] - lubridate::ddays(max_spin + 6)
   date_stop <- aeme_time[["stop"]] + lubridate::ddays(1)
   date_vector <- seq.Date(from = as.Date(spin_start), to = as.Date(date_stop), by = 1)
+  surf <- max(hyps$elev)
 
   # If observations of level..
   if (use == "obs") {
-    if (is.null(level)) {
-      stop("No observations of lake level provided")
-    }
-    message("Using observed water level")
-    # placeholder.. add optimised sin model here..!
-    ampl <- ((quantile(level$lvlwtr,0.9) -
-                quantile(level$lvlwtr,0.1)) / 2) |>
-      as.numeric()
-    offset <- 0
-    surf <- median(level$lvlwtr)
-    mod.lvl <- data.frame(Date = obs_met$Date) |>
-      dplyr::left_join(level, by = "Date") |>
-      dplyr::filter(Date >= spin_start & Date <= date_stop)
+    # if (is.null(level)) {
+    #   stop("No observations of lake level provided")
+    # }
+    if (!is.null(level)) {
+      message("Using observed water level")
+      # placeholder.. add optimised sin model here..!
+      ampl <- ((quantile(level$lvlwtr,0.9) -
+                  quantile(level$lvlwtr,0.1)) / 2) |>
+        as.numeric()
+      offset <- 0
+      mod.lvl <- data.frame(Date = obs_met$Date) |>
+        dplyr::left_join(level, by = "Date") |>
+        dplyr::filter(Date >= spin_start & Date <= date_stop)
 
-    if (all(!is.na(mod.lvl$lvlwtr))) {
-      message(strwrap("No missing values in observed water level.
+      if (all(!is.na(mod.lvl$lvlwtr))) {
+        message(strwrap("No missing values in observed water level.
                       Using observed water level"))
-    } else {
-      message("Missing values in observed water level")
-      # Number of observations
-      n_lvl <- sum(!is.na(mod.lvl$lvlwtr))
-
-      # If there are greater than or equal to 9 observations, use the
-      # optimisation function
-      if (n_lvl >= 9) {
-        message("Using optimisation function")
-        # Initial parameter values
-        initial_parameters <- c(ampl = ampl, offset = offset)
-        # optim_lvl_params(initial_parameters, mod.lvl = mod.lvl)
-
-        # Optimize the parameters
-        optimized_parameters <- optim(par = initial_parameters, fn = optim_lvl_params,
-                                      mod.lvl = mod.lvl, surf = surf,
-                                      method = "L-BFGS-B")
-        ampl <- optimized_parameters$par["ampl"]
-        offset <- optimized_parameters$par["offset"]
       } else {
-        # Use constant water level
-        message("Using constant water level")
-        ampl <- 0
-        offset <- 0
-      }
+        message("Missing values in observed water level")
+        # Number of observations
+        n_lvl <- sum(!is.na(mod.lvl$lvlwtr))
 
+        # If there are greater than or equal to 9 observations, use the
+        # optimisation function
+        if (n_lvl >= 9) {
+          message("Using optimisation function")
+          # Initial parameter values
+          initial_parameters <- c(ampl = ampl, offset = offset)
+          # optim_lvl_params(initial_parameters, mod.lvl = mod.lvl)
+
+          # Optimize the parameters
+          optimized_parameters <- optim(par = initial_parameters, fn = optim_lvl_params,
+                                        mod.lvl = mod.lvl, surf = surf,
+                                        method = "L-BFGS-B")
+          ampl <- optimized_parameters$par["ampl"]
+          offset <- optimized_parameters$par["offset"]
+        } else {
+          # Use constant water level
+          message("Using constant water level")
+          ampl <- 0
+          offset <- 0
+        }
+
+        # Calculate the modelled water level
+        mod.lvl <- mod.lvl |>
+          dplyr::mutate(
+            lvlwtr = mod_lvl(Date, surf = surf,
+                             ampl = ampl,
+                             offset = offset)
+          )
+      }
+    } else {
+      # Use constant water level
+      message("No water level present. Using constant water level.")
+      ampl <- 0
+      offset <- 0
       # Calculate the modelled water level
+      mod.lvl <- data.frame(Date = date_vector)
       mod.lvl <- mod.lvl |>
         dplyr::mutate(
           lvlwtr = mod_lvl(Date, surf = surf,
-                            ampl = ampl,
-                            offset = offset)
+                           ampl = ampl,
+                           offset = offset)
         )
     }
   } else if (use == "mod") {
