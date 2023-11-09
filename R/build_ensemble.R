@@ -99,8 +99,7 @@ build_ensemble <- function(aeme_data = NULL,
     aeme_time <- time(aeme_data)
     lake_dir <- file.path(path, paste0(lke$id, "_",
                                        tolower(lke$name)))
-    date_range <- as.Date(c(aeme_time[["start"]],
-                            aeme_time[["stop"]]))
+    date_range <- as.Date(c(aeme_time[["start"]], aeme_time[["stop"]]))
     spin_up <- aeme_time[["spin_up"]]
 
     model_config <- configuration(aeme_data)
