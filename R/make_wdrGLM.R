@@ -36,6 +36,7 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
           dplyr::rename(outflow = outflow_glm_aed)
       }
     }
+    df_wdr <- df_wdr[stats::complete.cases(df_wdr), ]
 
     df_wdr <- df_wdr |>
       # convert discharge values to cumecs
