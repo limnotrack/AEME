@@ -13,7 +13,7 @@
 vector of names of the slots in the aeme object to the console.
 }
 \description{
-Plot an aeme object
+Get names of an aeme object
 }
 \details{
 This method prints the names of the slots in the aeme object.

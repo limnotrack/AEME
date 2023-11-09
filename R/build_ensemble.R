@@ -69,7 +69,7 @@ build_ensemble <- function(aeme_data = NULL,
                            coeffs = NULL,
                            hum_type = 3,
                            path = "."
-                           ) {
+) {
 
   if (is.null(aeme_data) & is.null(config)) {
     stop("Either 'aeme_data' or 'config' must be supplied.")
@@ -98,10 +98,17 @@ build_ensemble <- function(aeme_data = NULL,
             "]")
     aeme_time <- time(aeme_data)
     lake_dir <- file.path(path, paste0(lke$id, "_",
-                                      tolower(lke$name)))
+                                       tolower(lke$name)))
     date_range <- as.Date(c(aeme_time[["start"]],
                             aeme_time[["stop"]]))
     spin_up <- aeme_time[["spin_up"]]
+
+    model_config <- configuration(aeme_data)
+    if (all(sapply(model, \(x) !is.null(model_config[[x]])))) {
+      write_configuration(model = model, aeme_data = aeme_data,
+                          path = path, use_bgc = use_bgc)
+      return(aeme_data)
+    }
 
     if (!is.null(lke[["shape"]])) {
       lake_shape <- lke[["shape"]]
@@ -227,25 +234,43 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
     # Lake level ----
     aeme_obs <- observations(aeme_data)
-    # Calculate water balance ----
-    if (calc_wbal | calc_wlev) {
-      wbal <- water_balance(aeme_time = aeme_time, model = model, hyps = hyps,
-                            inf = inf, outf = outf[["outflow"]],
-                            obs_lvl = aeme_obs[["level"]],
-                            obs_lake = aeme_obs[["lake"]], obs_met = met,
-                            ext_elev = ext_elev,
-                            elevation = elevation, print_plots = FALSE,
-                            coeffs = coeffs)
+    w_bal <- water_balance(aeme_data)
+    if (w_bal$use == "obs") {
+      level <- aeme_obs[["level"]]
+    } else if(w_bal$use == "model") {
+      if (is.null(w_bal[["data"]][["model"]])) {
+        stop("No modelled lake level is provided. Please provide a
+        water balance table with a modelled lake level.")
+      }
+      level <- w_bal[["data"]][["model"]]
     }
 
+    # Calculate water balance ----
+    if (calc_wbal | calc_wlev) {
+      wbal <- calc_wbal(aeme_time = aeme_time,
+                        model = model,
+                        use = w_bal$use,
+                        hyps = hyps,
+                        inf = inf,
+                        outf = outf[["outflow"]],
+                        level = level,
+                        obs_lake = aeme_obs[["lake"]],
+                        obs_met = met,
+                        ext_elev = ext_elev,
+                        elevation = elevation,
+                        print_plots = FALSE,
+                        coeffs = coeffs)
+    }
+
+    # Calculate water balance ----
     if (calc_wbal) {
       message(paste(strwrap("Calculating outflow with an estimated
                             water balance using lake level, inflow data (if
                             present) and estimated evaporation rates."),
                     collapse = "\n"))
+      w_bal[["data"]][["wbal"]] <- wbal
       outf[["wbal"]] <- wbal |>
         dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
-
 
       # if (is.null(aeme_outf[["data"]])) {
       #   warning(paste(strwrap("Outflow data are not present. This function will
@@ -266,8 +291,12 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
       # outf[["outflow"]] <- tot_outflow
     } else {
-      outf[["wbal"]] <- NULL
+      w_bal[["data"]][["wbal"]] <- NULL
+      # outf[["wbal"]] <- NULL
     }
+
+    #* Update water balance slot in aeme object ----
+    water_balance(aeme_data) <- w_bal
 
     outflows(aeme_data) <- list(data = outf,
                                 outflow_lvl = aeme_outf[["lvl"]],
@@ -282,8 +311,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     } else {
       lvl <- aeme_obs[["level"]]
     }
-    observations(aeme_data) <- list(lake = aeme_obs[["lake"]],
-                                    level = lvl)
+    # observations(aeme_data) <- list(lake = aeme_obs[["lake"]],
+    #                                 level = lvl)
     if (aeme_time[["start"]] %in% lvl[["Date"]]) {
       message(strwrap("Observed lake level is present.\nUpdating initial lake
                         model depth..."))
@@ -307,9 +336,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # Yaml config ----
   } else if (!is.null(config)) {
     lake_dir <- file.path(path, paste0(config$lake$lake_id, "_",
-                                      tolower(config$lake$name)))
+                                       tolower(config$lake$name)))
     date_range <- as.Date(c(config[["time"]][["start"]],
-                           config[["time"]][["stop"]]))
+                            config[["time"]][["stop"]]))
     spin_up <- config[["time"]][["spin_up"]]
 
     if (!is.null(config[["lake"]][["shape_file"]])) {

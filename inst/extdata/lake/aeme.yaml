@@ -7,14 +7,6 @@ lake:
    shape: data/lake.shp                    # lake shape file [shp file]
    depth: 13.07                                 # maximum water depth [m]
    area: 152343                                 # surface area at maximum depth [m2]
-catchment:
-   name: Wainamu
-   id: null
-   area: 4989125
-   shape: data/catchment.shp
-   stream: null
-   nutrients: null
-   sediment: null
 time:
    start: 2022-01-09 00:00:00                   # start date and time [yyyy-mm-dd HH:MM:SS]
    stop: 2022-12-30 00:00:00                    # stop date and time [yyyy-mm-dd HH:MM:SS]
@@ -24,14 +16,9 @@ time:
       glm_aed: 0
       gotm_wet: 0
 configuration:
-   physical:
-      dy_cd: null
-      glm_aed: null
-      gotm_wet: null
-   bgc:
-      dy_cd: null
-      glm_aed: null
-      gotm_wet: null
+  dy_cd: null
+  glm_aed: null
+  gotm_wet: null
 observations:
    lake: data/lake_obs.csv
    level: data/water_level.csv
@@ -59,6 +46,11 @@ outflows:
       glm_aed: 1
       gotm_wet: 1
    lvl: -1                              # height of the outflow above the ground. If the outflow is a surface outflow use "-1". If there are more than one outflow in the outflow file, this must be a list with one value per outflow
+water_balance:
+   use: obs                             # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
+   data:
+      model: null
+      wbal: null
 output:
    dy_cd: null
    glm_aed: null

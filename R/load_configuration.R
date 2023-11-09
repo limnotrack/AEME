@@ -13,20 +13,29 @@ load_configuration <- function(model, aeme_data, path, use_bgc = FALSE) {
   get_config_args <- list(lake = lke, path = path, use_bgc = use_bgc)
   model_config <- setNames(
     lapply(model, function(m) do.call(paste0("get_config_", m),
-                                             get_config_args)),
+                                      get_config_args)),
     model
   )
-  out <- list(physical = list(dy_cd = model_config[["dy_cd"]][["physical"]],
-                              glm_aed = model_config[["glm_aed"]][["physical"]],
-                              gotm_wet =
-                                model_config[["gotm_wet"]][["physical"]]),
-              bgc = list(dy_cd = model_config[["dy_cd"]][["bgc"]],
-                         glm_aed = model_config[["glm_aed"]][["bgc"]],
-                         gotm_wet = model_config[["gotm_wet"]][["bgc"]]))
+  # Old structure
+  # out <- list(physical = list(dy_cd = model_config[["dy_cd"]][["physical"]],
+  #                             glm_aed = model_config[["glm_aed"]][["physical"]],
+  #                             gotm_wet =
+  #                               model_config[["gotm_wet"]][["physical"]]),
+  #             bgc = list(dy_cd = model_config[["dy_cd"]][["bgc"]],
+  #                        glm_aed = model_config[["glm_aed"]][["bgc"]],
+  #                        gotm_wet = model_config[["gotm_wet"]][["bgc"]]))
+  out <- list(dy_cd = list(hydrodynamic = model_config[["dy_cd"]][["physical"]],
+                           ecosystem = model_config[["dy_cd"]][["bgc"]]),
+              glm_aed = list(hydrodynamic =
+                               model_config[["glm_aed"]][["physical"]],
+                             ecosystem = model_config[["glm_aed"]][["bgc"]]),
+              gotm_wet = list(hydrodynamic =
+                                model_config[["gotm_wet"]][["physical"]],
+                              ecosystem = model_config[["gotm_wet"]][["bgc"]])
+  )
 
   configuration(aeme_data) <- out
-  return(aeme_data)
-
+  aeme_data
 }
 
 

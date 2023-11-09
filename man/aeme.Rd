@@ -16,8 +16,6 @@ This class represents data related to a lake for running AEME.
 \describe{
 \item{\code{lake}}{A list representing lake information.}
 
-\item{\code{catchment}}{A list representing catchment information.}
-
 \item{\code{time}}{A list representing time information.}
 
 \item{\code{configuration}}{A list representing each model's configuration.}
@@ -29,6 +27,8 @@ This class represents data related to a lake for running AEME.
 \item{\code{inflows}}{A list representing inflows information.}
 
 \item{\code{outflows}}{A list representing outflows information.}
+
+\item{\code{water_balance}}{A list representing water balance information.}
 
 \item{\code{output}}{A list representing output information.}
 }}

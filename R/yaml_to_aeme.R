@@ -18,11 +18,11 @@ yaml_to_aeme <- function(path, file) {
       yaml$lake$shape <- sf::st_read(file.path(path, yaml$lake$shape))
     }))
   }
-  if (!is.null(yaml$catchment$shape)) {
-    invisible(capture.output({
-      yaml$catchment$shape <- sf::st_read(file.path(path, yaml$catchment$shape))
-    }))
-  }
+  # if (!is.null(yaml$catchment$shape)) {
+  #   invisible(capture.output({
+  #     yaml$catchment$shape <- sf::st_read(file.path(path, yaml$catchment$shape))
+  #   }))
+  # }
   if (!is.null(yaml$observations$lake)) {
     yaml$observations$lake <- read.csv(file.path(path,
                                                  yaml$observations$lake)) |>
@@ -64,13 +64,14 @@ yaml_to_aeme <- function(path, file) {
 
   aeme_data <- aeme_constructor(
     lake = yaml$lake,
-    catchment = yaml$catchment,
+    # catchment = yaml$catchment,
     time = yaml$time,
     configuration = yaml$configuration,
     observations = yaml$observations,
     input = yaml$input,
     inflows = yaml$inflows,
     outflows = yaml$outflows,
+    water_balance = yaml$water_balance,
     output = yaml$output
   )
 

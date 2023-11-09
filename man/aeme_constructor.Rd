@@ -6,20 +6,18 @@
 \usage{
 aeme_constructor(
   lake,
-  catchment,
   time,
   configuration,
   observations,
   input,
   inflows,
   outflows,
+  water_balance,
   output
 )
 }
 \arguments{
 \item{lake}{List representing lake information.}
-
-\item{catchment}{List representing catchment information.}
 
 \item{time}{List representing time information.}
 
@@ -32,6 +30,8 @@ aeme_constructor(
 \item{inflows}{List representing inflows information.}
 
 \item{outflows}{List representing outflows information.}
+
+\item{water_balance}{List representing water balance information.}
 
 \item{output}{List representing output information.}
 }

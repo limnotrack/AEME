@@ -5,13 +5,13 @@
 #' @name aeme
 #' @aliases aeme-class
 #' @slot lake A list representing lake information.
-#' @slot catchment A list representing catchment information.
 #' @slot time A list representing time information.
 #' @slot configuration A list representing each model's configuration.
 #' @slot observations A list representing observation information.
 #' @slot input A list representing input information.
 #' @slot inflows A list representing inflows information.
 #' @slot outflows A list representing outflows information.
+#' @slot water_balance A list representing water balance information.
 #' @slot output A list representing output information.
 #' @importFrom methods new
 #' @export
@@ -19,13 +19,14 @@
 setClass("aeme",
          representation(
            lake = "list",
-           catchment = "list",
+           # catchment = "list",
            time = "list",
            configuration = "list",
            observations = "list",
            input = "list",
            inflows = "list",
            outflows = "list",
+           water_balance = "list",
            output = "list"
          )
 )
@@ -76,13 +77,13 @@ setClass("aeme",
 #' Constructor function for aeme class
 #'
 #' @param lake List representing lake information.
-#' @param catchment List representing catchment information.
 #' @param time List representing time information.
 #' @param configuration List representing configuration information.
 #' @param observations List representing observation information.
 #' @param input List representing input information.
 #' @param inflows List representing inflows information.
 #' @param outflows List representing outflows information.
+#' @param water_balance List representing water balance information.
 #' @param output List representing output information.
 #' @return An instance of the aeme class.
 #'
@@ -92,13 +93,14 @@ setClass("aeme",
 #' @export
 
 aeme_constructor <- function(
-    lake, catchment, time, configuration, observations,
-    input, inflows, outflows, output
+    lake, time, configuration, observations,
+    input, inflows, outflows, water_balance, output
 ) {
   # Validate the types before creating the object
-  if (!is.list(lake) || !is.list(catchment) || !is.list(time) ||
+  if (!is.list(lake) || !is.list(time) ||
       !is.list(configuration) || !is.list(observations) || !is.list(input) ||
-      !is.list(inflows) || !is.list(outflows) || !is.list(output)) {
+      !is.list(inflows) || !is.list(outflows) || !is.list(water_balance) ||
+      !is.list(output)) {
     stop("All inputs must be lists.")
   }
 
@@ -153,27 +155,27 @@ aeme_constructor <- function(
   }
 
   # Catchment type checking for specific elements
-  if (!is.character(catchment$name)) {
-    stop("Catchment name must be a character.")
-  }
-  if (!is(catchment$shape, "sf") & !is.null(catchment$shape)) {
-    stop("Catchment shape must be an 'sf' object or NULL.")
-  }
-  if (!is.numeric(catchment$area) & !is.null(catchment$area)) {
-    stop(paste(strwrap("Catchment area must be numeric or NULL. If NULL,
-                       catchment shape needs to be provided."), collpse = "\n"))
-  }
-  if (is(catchment$shape, "sf") & is.null(catchment$area)) {
-    message("Calculating catchment area from catchment shape:")
-    suppressMessages(sf::sf_use_s2(FALSE))
-    catchment$area <- sf::st_area(catchment$shape) |>
-      units::drop_units()
-    message(paste0("   ", round(catchment$area, 2), " m2"))
-    suppressMessages(sf::sf_use_s2(TRUE))
-  }
-  if (!is(catchment$shape, "sf") & is.null(catchment$area)) {
-    stop("Catchment area must be provided if no catchment shape is present.")
-  }
+  # if (!is.character(catchment$name)) {
+  #   stop("Catchment name must be a character.")
+  # }
+  # if (!is(catchment$shape, "sf") & !is.null(catchment$shape)) {
+  #   stop("Catchment shape must be an 'sf' object or NULL.")
+  # }
+  # if (!is.numeric(catchment$area) & !is.null(catchment$area)) {
+  #   stop(paste(strwrap("Catchment area must be numeric or NULL. If NULL,
+  #                      catchment shape needs to be provided."), collpse = "\n"))
+  # }
+  # if (is(catchment$shape, "sf") & is.null(catchment$area)) {
+  #   message("Calculating catchment area from catchment shape:")
+  #   suppressMessages(sf::sf_use_s2(FALSE))
+  #   catchment$area <- sf::st_area(catchment$shape) |>
+  #     units::drop_units()
+  #   message(paste0("   ", round(catchment$area, 2), " m2"))
+  #   suppressMessages(sf::sf_use_s2(TRUE))
+  # }
+  # if (!is(catchment$shape, "sf") & is.null(catchment$area)) {
+  #   stop("Catchment area must be provided if no catchment shape is present.")
+  # }
 
   # Time type checking for specific elements
   is.POSIXct <- function(x) inherits(x, "POSIXct")
@@ -203,17 +205,20 @@ aeme_constructor <- function(
   }
 
   # Configuration type checking for specific elements
-  if (!is.list(configuration$physical)) {
-    stop("Configuration physical must be a list.")
-  } else if (!all(sapply(configuration$physical, \(x) is.list(x) |
-                        is.null(x)))) {
-    stop("Configuration physical for models must be either a list or NULL.")
+  if (!is.null(configuration$dy_cd)) {
+    if (!is.list(configuration$dy_cd)) {
+      stop("Configuration dy_cd must be a list or NULL.")
+    }
   }
-  if (!is.list(configuration$bgc)) {
-    stop("Configuration bgc must be a list.")
-  } else if (!all(sapply(configuration$bgc, \(x) is.list(x) |
-                         is.null(x)))) {
-    stop("Configuration bgc for models must be either a list or NULL.")
+  if (!is.null(configuration$glm_aed)) {
+    if (!is.list(configuration$glm_aed)) {
+      stop("Configuration glm_aed must be a list or NULL.")
+    }
+  }
+  if (!is.null(configuration$gotm_wet)) {
+    if (!is.list(configuration$gotm_wet)) {
+      stop("Configuration gotm_wet must be a list or NULL.")
+    }
   }
 
   # Observations type checking for specific elements
@@ -282,6 +287,25 @@ aeme_constructor <- function(
     stop("Outflows factor for models must be numeric.")
   }
 
+  # Water balance type checking for specific elements
+  if (!is.list(water_balance)) {
+    stop("Water balance must be a list of lists or NULL.")
+  }
+  if (!is.null(water_balance[["data"]][["model"]])) {
+    if (!is.data.frame(water_balance[["data"]][["model"]])) {
+      stop("Modelled water level must be a dataframe or NULL.")
+    }
+  }
+  if (!is.null(water_balance$use)) {
+    if (!is.character(water_balance$use)) {
+      stop("Water balance use must be a character of 'obs' or 'mod'.")
+    }
+    if (!water_balance$use %in% c("obs", "mod")) {
+      stop(strwrap("Water balance use must be one of 'obs',
+                   'mod'."))
+    }
+  }
+
   # Output type checking for specific elements
   if (!is.list(output)) {
     stop("Output must be a list of lists or NULL.")
@@ -290,12 +314,14 @@ aeme_constructor <- function(
 
   new("aeme",
       lake = lake,
-      catchment = catchment,
+      # catchment = catchment,
       time = time,
+      configuration = configuration,
       observations = observations,
       input = input,
       inflows = inflows,
       outflows = outflows,
+      water_balance = water_balance,
       output = output
   )
 }
@@ -313,18 +339,6 @@ setGeneric("lake", function(aeme) standardGeneric("lake"))
 #' @return list of lake characteristics
 #' @export
 setMethod("lake", "aeme", function(aeme) aeme@lake)
-
-#' @title Access catchment slot
-#' @param aeme A aeme object.
-#' @return list of catchment characteristics
-#' @export
-setGeneric("catchment", function(aeme) standardGeneric("catchment"))
-
-#' @title Access catchment slot
-#' @param aeme A aeme object.
-#' @return list of catchment characteristics
-#' @export
-setMethod("catchment", "aeme", function(aeme) aeme@catchment)
 
 #' @title Access time slot
 #' @param aeme A aeme object.
@@ -398,6 +412,19 @@ setGeneric("outflows", function(aeme) standardGeneric("outflows"))
 #' @export
 setMethod("outflows", "aeme", function(aeme) aeme@outflows)
 
+#' @title Access water_balance slot
+#' @param aeme A aeme object.
+#' @return list of water_balance characteristics
+#' @export
+setGeneric("water_balance", function(aeme) standardGeneric("water_balance"))
+
+#' @title Access water_balance slot
+#' @param aeme A aeme object.
+#' @return list of water_balance characteristics
+#' @export
+setMethod("water_balance", "aeme", function(aeme) aeme@water_balance)
+
+
 #' @title Access output slot
 #' @param aeme A aeme object.
 #' @return list of output characteristics
@@ -431,30 +458,6 @@ setGeneric("lake<-", function(aeme, value) standardGeneric("lake<-"))
 #' @export
 setMethod("lake<-", "aeme", function(aeme, value) {
   aeme@lake <- value
-  validObject(aeme)
-  aeme
-})
-
-#' Update the catchment slot of an aeme object
-#'
-#' @title Set catchment in aeme object
-#' @param aeme A aeme object.
-#' @param value New catchment data to be assigned.
-#' @return A modified aeme object with updated catchment slot.
-#' @export
-setGeneric("catchment<-", function(aeme, value) standardGeneric("catchment<-"))
-
-#' Update the catchment slot of an aeme object
-#'
-#' This method updates the "catchment" slot of a aeme object with new data.
-#'
-#' @title Set catchment in aeme object
-#' @param aeme An aeme object.
-#' @param value New catchment data to be assigned.
-#' @return A modified aeme object with updated catchment slot.
-#' @export
-setMethod("catchment<-", "aeme", function(aeme, value) {
-  aeme@catchment <- value
   validObject(aeme)
   aeme
 })
@@ -605,6 +608,30 @@ setMethod("outflows<-", "aeme", function(aeme, value) {
   aeme
 })
 
+#' Update the water_balance slot of an aeme object
+#'
+#' @title Set water_balance in aeme object
+#' @param aeme A aeme object.
+#' @param value New water_balance data to be assigned.
+#' @return A modified aeme object with updated water_balance slot.
+#' @export
+setGeneric("water_balance<-", function(aeme, value) standardGeneric("water_balance<-"))
+
+#' Update the water_balance slot of an aeme object
+#'
+#' This method updates the "water_balance" slot of a aeme object with new data.
+#'
+#' @title Set water_balance in aeme object
+#' @param aeme An aeme object.
+#' @param value New water_balance data to be assigned.
+#' @return A modified aeme object with updated water_balance slot.
+#' @export
+setMethod("water_balance<-", "aeme", function(aeme, value) {
+  aeme@water_balance <- value
+  validObject(aeme)
+  aeme
+})
+
 #' Update the output slot of an aeme object
 #'
 #' @title Set output in aeme object
@@ -639,13 +666,14 @@ setMethod("output<-", "aeme", function(aeme, value) {
 #' @export
 setMethod("show", "aeme", function(object) {
   lke <- lake(object)
-  catchm <- catchment(object)
+  # catchm <- catchment(object)
   aeme_time <- time(object)
   config <- configuration(object)
   obs <- observations(object)
   inp <- input(object)
   inf <- inflows(object)
   outf <- outflows(object)
+  wbal <- water_balance(object)
   outp <- output(object)
 
   cat(
@@ -661,11 +689,11 @@ setMethod("show", "aeme", function(object) {
       " m2; Shape file: ", ifelse(is(lke$shape, "sf"), "Present",
                                  "Absent"),
       "\n-------------------------------------------------------------------\n",
-      "  Catchment \n",
-      "Name: ", ifelse(is.null(catchm$name), NA, catchm$name),
-      "; Area: ", ifelse(is.null(catchm$area), NA, catchm$area), " m2;
-      Shape file: ", ifelse(is(catchm$shape, "sf"), "Present", "Absent"),
-      "\n-------------------------------------------------------------------\n",
+      # "  Catchment \n",
+      # "Name: ", ifelse(is.null(catchm$name), NA, catchm$name),
+      # "; Area: ", ifelse(is.null(catchm$area), NA, catchm$area), " m2;
+      # Shape file: ", ifelse(is(catchm$shape, "sf"), "Present", "Absent"),
+      # "\n-------------------------------------------------------------------\n",
       "  Time\n",
       "Start: ", as.character(aeme_time$start),
       " Stop: ", as.character(aeme_time$stop),
@@ -718,6 +746,19 @@ setMethod("show", "aeme", function(object) {
       "; Scaling factors: DY-CD: ", round(outf$factor$dy_cd, 2),
       "; GLM-AED: ", round(outf$factor$glm_aed, 2),
       "; GOTM-WET: ", round(outf$factor$gotm_wet, 2),
+      "\n-------------------------------------------------------------------\n",
+      "  Outflows\n",
+      "Data: ", ifelse(is.list(outf$data),
+                       "Present", "Absent"),
+      "; Scaling factors: DY-CD: ", round(outf$factor$dy_cd, 2),
+      "; GLM-AED: ", round(outf$factor$glm_aed, 2),
+      "; GOTM-WET: ", round(outf$factor$gotm_wet, 2),
+      "\n-------------------------------------------------------------------\n",
+      "  Water balance\n",
+      "Use: ", wbal$use,"; Modelled: ", ifelse(!is.null(wbal[["data"]][["model"]]),
+                       "Present", "Absent"), "; Water balance: ",
+      ifelse(is.data.frame(wbal[["data"]][["wbal"]]),
+                       "Present", "Absent"),
       "\n-------------------------------------------------------------------\n",
       "  Output: ", "\n",
       "DY-CD: ", ifelse(is.null(outp$dy_cd), "Absent", "Present"),
@@ -837,21 +878,21 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
                        obj$depth, "m"))
   }
 
-  if (y == "catchment") {
-    if (is(obj$shape, "sf")) {
-      obj$shape |>
-        sf::st_transform(4326) |>
-        sf::st_geometry() |>
-        base::plot(axes = TRUE, col = "#F2F2F2", add = add)
-      add <- TRUE
-    }
-    if (is(obj$stream, "sf")) {
-      obj$stream |>
-        sf::st_geometry() |>
-        base::plot(axes = TRUE, col = "blue", add = add)
-      add <- TRUE
-    }
-  }
+  # if (y == "catchment") {
+  #   if (is(obj$shape, "sf")) {
+  #     obj$shape |>
+  #       sf::st_transform(4326) |>
+  #       sf::st_geometry() |>
+  #       base::plot(axes = TRUE, col = "#F2F2F2", add = add)
+  #     add <- TRUE
+  #   }
+  #   if (is(obj$stream, "sf")) {
+  #     obj$stream |>
+  #       sf::st_geometry() |>
+  #       base::plot(axes = TRUE, col = "blue", add = add)
+  #     add <- TRUE
+  #   }
+  # }
 
   if (y == "observations") {
 
@@ -962,6 +1003,49 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
     }
   }
 
+  if (y == "water_balance") {
+    obs <- observations(x)
+    if (!is.null(w_bal$data$wbal)) {
+      wbal <- obj$data$wbal
+      par(mfrow = c(3, 1))
+      ylim <- range(c(wbal$lvlwtr, obs[["level"]][["lvlwtr"]]), na.rm = TRUE)
+      plot(wbal$Date, wbal$lvlwtr, type = "l", axes = FALSE,
+                 ylab = "Water level (m)", ylim = ylim,
+                 xlab = "", main = "Water Level")
+      axis(side = 2, labels = TRUE)
+      axis.Date(side = 1, at = seq(min(wbal$Date), max(wbal$Date),
+                                   by = "6 months"),
+                x = wbal$Date, labels = FALSE, format = "%m/%Y")
+      if (!is.null(obs$level)) {
+        points(obs$level$Date, obs$level$lvlwtr, pch = 16, col = "red")
+      }
+
+      ylim <- range(wbal[, c("outflow_gotm_wet", "outflow_glm_aed")],
+                    na.rm = TRUE)
+      plot(wbal$Date, wbal$outflow_gotm_wet, type = "l",
+           ylab = "Discharge (m3)", ylim = ylim, axes = FALSE,
+           xlab = "", main = "Estimated outflow")
+      lines(wbal$Date, wbal$outflow_glm_aed, col = "red")
+      axis(side = 2, labels = TRUE)
+      axis.Date(side = 1, at = seq(min(wbal$Date), max(wbal$Date),
+                                   by = "6 months"),
+                x = wbal$Date, labels = FALSE, format = "%m/%Y")
+
+
+      ylim <- range(wbal[, c("gotm_wet_evap_m3", "glm_aed_evap_m3")],
+                    na.rm = TRUE)
+      plot(wbal$Date, wbal$gotm_wet_evap_m3, type = "l",
+           ylab = "Discharge (m3)", ylim = ylim, axes = FALSE,
+           xlab = "Date", main = "Estimated evaporation")
+      abline(h = 0)
+      lines(wbal$Date, wbal$glm_aed_evap_m3, col = "red")
+      axis(side = 2, labels = TRUE)
+      axis.Date(side = 1, at = seq(min(wbal$Date), max(wbal$Date),
+                                   by = "6 months"),
+                x = wbal$Date, labels = TRUE, format = "%m/%Y")
+    }
+  }
+
   if (y == "output") {
     inp <- input(x)
     outp <- output(x)
@@ -1038,7 +1122,7 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
 
 })
 
-#' Plot an aeme object
+#' Get names of an aeme object
 #'
 #' This method prints the names of the slots in the aeme object.
 #'
@@ -1049,3 +1133,4 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
 setMethod("names", "aeme", function(x) {
   slotNames(x)
 })
+
