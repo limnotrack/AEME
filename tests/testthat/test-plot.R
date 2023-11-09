@@ -22,9 +22,13 @@ test_that("plotting model output works", {
   pinf <- function() plot(aeme_data, "inflows")
   vdiffr::expect_doppelganger("inflow line plot", pinf)
 
+  pwbal <- function() plot(aeme_data, "water_balance")
+  vdiffr::expect_doppelganger("water_balance line plot", pwbal)
 
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
                         path = path, mod_ctrls = mod_ctrls, parallel = TRUE)
+  poutp <- function() plot(aeme_data, "output")
+  vdiffr::expect_doppelganger("output line plot", poutp)
 
   p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
                     level = TRUE, label = TRUE, print_plots = FALSE,
@@ -38,5 +42,5 @@ test_that("plotting model output works", {
 
   p3 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
                     print_plots = TRUE)
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is.ggplot(p3))
 })
