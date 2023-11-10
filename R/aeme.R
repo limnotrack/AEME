@@ -96,6 +96,62 @@ aeme_constructor <- function(
     lake, time, configuration, observations,
     input, inflows, outflows, water_balance, output
 ) {
+
+  # If missing arguments, create default list objects
+  if (missing(lake) & missing(time) & missing(input)) {
+    stop("Objects lake, time, and input must be provided.")
+  }
+  if (missing(configuration)) {
+    configuration <- list(
+      dy_cd = NULL,
+      glm_aed = NULL,
+      gotm_wet = NULL
+    )
+  }
+  if (missing(observations)) {
+    observations <- list(
+      lake = NULL,
+      level = NULL
+    )
+  }
+  if (missing(inflows)) {
+    inflows <- list(
+      data = NULL,
+      factor = list(
+        dy_cd = 1,
+        glm_aed = 1,
+        gotm_wet = 1
+      )
+    )
+  }
+  if (missing(outflows)) {
+    outflows <- list(
+      data = NULL,
+      lvl = -1,
+      factor = list(
+        dy_cd = 1,
+        glm_aed = 1,
+        gotm_wet = 1
+      )
+    )
+  }
+  if (missing(water_balance)) {
+    water_balance <- list(
+      use = "obs",
+      data = list(
+        model = NULL,
+        wbal = NULL
+      )
+    )
+  }
+  if (missing(output)) {
+    output <- list(
+      dy_cd = NULL,
+      glm_aed = NULL,
+      gotm_wet = NULL
+    )
+  }
+
   # Validate the types before creating the object
   if (!is.list(lake) || !is.list(time) ||
       !is.list(configuration) || !is.list(observations) || !is.list(input) ||
@@ -199,7 +255,17 @@ aeme_constructor <- function(
     stop("Time step must be numeric.")
   }
   if (!is.list(time$spin_up)) {
-    stop("Time spin-up must be a list.")
+    if (is.null(time$spin_up)) {
+      message(strwrap("Spin up for models missing.\nSetting spin up to 0 for
+                      all models."))
+      time$spin_up <- list(
+        dy_cd = 0,
+        glm_aed = 0,
+        gotm_wet = 0
+      )
+    } else {
+      stop("Time spin-up must be a list.")
+    }
   } else if (all(!is.numeric(unlist(time$spin_up)))) {
     stop("Time spin-up for models must be numeric.")
   }
@@ -250,10 +316,26 @@ aeme_constructor <- function(
   if (!is.null(input$meteo)) {
     if (!is.data.frame(input$meteo)) {
       stop("Input meteo must be a dataframe or NULL.")
+    } else {
+      if (!is.POSIXct(input$meteo$Date) &
+          !lubridate::is.Date(input$meteo$Date)) {
+        message(strwrap("Input meteo datetime is not in POSIXct/Date format.
+                        Converting to 'Date' format."))
+        input$meteo$Date <- as.Date(input$meteo$Date)
+        if (any(is.na(input$meteo$Date))) {
+          stop(strwrap("NA's introduced when coercing to Date object. Input
+                       meteo datetime is preferred in POSIXct/Date format."))
+        }
+      }
     }
   }
   if (!is.logical(input$use_lw)) {
-    stop("Input use longwave must be boolean.")
+    if (is.null(input$use_lw)) {
+      message(strwrap("Use longwave missing.\nSetting use longwave to TRUE."))
+      input$use_lw <- TRUE
+    } else {
+      stop("Input use longwave must be boolean.")
+    }
   }
   if (!is.numeric(input$Kw)) {
     stop("Input Kw must be numeric.")
