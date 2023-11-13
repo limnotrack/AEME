@@ -51,10 +51,16 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up,
       sst[is.na(sst)] <- -999
       rle_result <- rle(as.vector(sst))
       start_index <- which(rle_result$lengths > 1)[1]
-      # vals <- rle_result$values[start_index]
-      z[, start_index:ncol(z)] <- NA
-      zi[, start_index:ncol(zi)] <- NA
-      lyr_h[, start_index:ncol(lyr_h)] <- NA
+      if (is.na(start_index)) {
+        warning(strwrap(paste0("There are ", sum(sst == 0),
+                                " SST values of 0 in the GOTM output. Not
+                               removing any output.")))
+      } else {
+        # vals <- rle_result$values[start_index]
+        z[, start_index:ncol(z)] <- NA
+        zi[, start_index:ncol(zi)] <- NA
+        lyr_h[, start_index:ncol(lyr_h)] <- NA
+      }
     }
     DEPTH <- zi[nrow(zi), ] - zi[1, ]
     DEPTH[DEPTH <= 0] <- 0
