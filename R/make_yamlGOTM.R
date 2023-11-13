@@ -171,11 +171,11 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
         })
         names(chem_lst) <- names(df.chem)[-c(1, 2)]
 
-        gotm[["streams"]][[names.inf[f]]] <- c(list(method = 4, zu = 0, zl = -1),
+        gotm[["streams"]][[names.inf[f]]] <- c(list(method = 1, zu = 0, zl = -1),
                                           inf_lst, chem_lst)
 
       } else {
-        gotm[["streams"]][[names.inf[f]]] <- c(list(method = 4, zu = 0, zl = -1),
+        gotm[["streams"]][[names.inf[f]]] <- c(list(method = 1, zu = 0, zl = -1),
                                           inf_lst)
 
       }
