@@ -91,6 +91,13 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
     var_lims <- range(c(vect, obs_lake[["value"]]), na.rm = TRUE)
   }
 
+  # Date lims
+  # Find date range and have output in Date format
+  this.list <- sapply(model, \(m){
+      "[["(outp[[m]], "Date")
+    })
+  xlim <- as.Date(range(this.list, na.rm = TRUE))
+
   mod_labels <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
                            name = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
 
@@ -136,6 +143,7 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
       ggplot2::scale_fill_gradientn(colors = rev(my_cols), name = var_sim,
                                     limits = var_lims) +
       {if(!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim)} +
+      ggplot2::xlim(xlim) +
       ggplot2::ylab("Elevation (m)") +
       ggplot2::xlab(NULL) +
       ggplot2::labs(fill="xyz") +
@@ -196,6 +204,7 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
       ggplot2::geom_line(data = df2, ggplot2::aes(Date, value,
                                                   colour = Model)) +
       {if(!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim)} +
+      ggplot2::xlim(xlim) +
       ggplot2::ggtitle(var_sim) +
       ggplot2::theme_bw()
 
