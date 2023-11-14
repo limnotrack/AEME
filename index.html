@@ -103,20 +103,28 @@
 <span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmpdir</span>, <span class="st">"lake"</span><span class="op">)</span></span>
 <span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/yaml_to_aeme.html">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Linking to GEOS 3.11.2, GDAL 3.6.2, PROJ 9.2.0; sf_use_s2() is FALSE</span></span>
-<span><span class="co">#&gt; Warning in aeme_constructor(lake = yaml$lake, catchment = yaml$catchment, : Lake area [152343 m2] is different to the area calculated from the lake</span></span>
+<span><span class="co">#&gt; Warning in aeme_constructor(lake = yaml$lake, time = yaml$time, configuration = yaml$configuration, : Lake area [152343 m2] is different to the area calculated from the lake</span></span>
 <span><span class="co">#&gt; shape [152433.09 m2].</span></span>
 <span><span class="va">mod_ctrls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"model_controls.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">inf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span>
-<span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span>, use_lw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2023-11-03 11:15:37.474138]</span></span>
+<span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
+<span>                            mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, </span>
+<span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2023-11-15 12:29:07.677313]</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
-<span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
+<span><span class="co">#&gt; Missing values in observed water level</span></span>
+<span><span class="co">#&gt; Using optimisation function</span></span>
+<span><span class="co">#&gt; Calculating outflow with an estimated water balance using lake level,</span></span>
+<span><span class="co">#&gt; inflow data (if present) and estimated evaporation rates.</span></span>
+<span><span class="co">#&gt; Calculating lake level using lake depth and a sinisoidal function.</span></span>
 <span><span class="co">#&gt; Observed lake level is present. Updating initial lake model depth...</span></span>
 <span><span class="co">#&gt; Building DYRESM-CAEDYM for lake wainamu</span></span>
 <span><span class="co">#&gt; Copied in DYRESM par file</span></span>
+<span><span class="co">#&gt; Writing DYRESM configuration</span></span>
 <span><span class="co">#&gt; [1] "TEMPTURE SALINITY DO PO4 DOPL POPL PIP TP NH4 NO3 DONL PONL TN DOCL POCL SiO2 CYANO CHLOR FDIAT TCHLA SSOL1"</span></span>
+<span><span class="co">#&gt; Writing DYRESM control file</span></span>
 <span><span class="co">#&gt; Downsampling bathymetry</span></span>
 <span><span class="co">#&gt; Building GLM3-AED2 model for lake wainamu</span></span>
 <span><span class="co">#&gt; Copied in GLM nml file</span></span>
@@ -138,11 +146,12 @@
 <span><span class="co">#&gt;     ss_initial   = 3,3 replaced with 3,</span></span>
 <span><span class="co">#&gt; Building GOTM-WET for lake wainamu</span></span>
 <span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
-<span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models in parallel... [2023-11-03 11:15:39.759251]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-03 11:17:52.037806]</span></span>
-<span><span class="co">#&gt; Reading models in parallel... [2023-11-03 11:17:53.301781]</span></span>
-<span><span class="co">#&gt; Model reading complete![2023-11-03 11:17:55.169438]</span></span></code></pre></div>
+<span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                      path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running models in parallel... [2023-11-15 12:29:10.415701]</span></span>
+<span><span class="co">#&gt; Model run complete![2023-11-15 12:31:25.462804]</span></span>
+<span><span class="co">#&gt; Reading models in parallel... [2023-11-15 12:31:26.667304]</span></span>
+<span><span class="co">#&gt; Model reading complete![2023-11-15 12:31:28.732729]</span></span></code></pre></div>
 <p>The model input and output (I/O) is handled as it’s own S4 object of class <code>aeme</code>. This allows for the standardisation and generalisation of functions for this class alongside ensuring integrity and validity to it’s structure.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">aeme_data</span><span class="op">)</span></span>
@@ -158,12 +167,8 @@
 <span><span class="co">#&gt; Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;</span></span>
 <span><span class="co">#&gt; Area: 152343 m2; Shape file: Present</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Catchment </span></span>
-<span><span class="co">#&gt; Name: Wainamu; Area: 4989125 m2;</span></span>
-<span><span class="co">#&gt;       Shape file: Present</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Time</span></span>
-<span><span class="co">#&gt; Start: 2022-01-09 Stop: 2022-12-31 Time step: 3600</span></span>
+<span><span class="co">#&gt; Start: 2022-01-09 Stop: 2022-12-30 Time step: 3600</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Configuration</span></span>
 <span><span class="co">#&gt;           Physical   |   Biogeochemical</span></span>
@@ -175,7 +180,7 @@
 <span><span class="co">#&gt; Lake: Present; Level: Present</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Input</span></span>
-<span><span class="co">#&gt; Inital profile: Present; Inital depth: 13.02m; Hypsograph: Present (n=132);</span></span>
+<span><span class="co">#&gt; Inital profile: Present; Inital depth: 13.14m; Hypsograph: Present (n=132);</span></span>
 <span><span class="co">#&gt; Meteo: Present; Use longwave: TRUE; Kw: 0.98</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Inflows</span></span>
@@ -184,346 +189,31 @@
 <span><span class="co">#&gt;   Outflows</span></span>
 <span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt;   Outflows</span></span>
+<span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt;   Water balance</span></span>
+<span><span class="co">#&gt; Use: obs; Modelled: Absent; Water balance: Present</span></span>
+<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Output: </span></span>
 <span><span class="co">#&gt; DY-CD: Present</span></span>
 <span><span class="co">#&gt; GLM-AED: Present</span></span>
 <span><span class="co">#&gt; GOTM-WET: Present</span></span></code></pre></div>
-<p>Summarised easily:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">aeme_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Lake observations:</span></span>
-<span><span class="co">#&gt;       LID            lake             id_station      station         </span></span>
-<span><span class="co">#&gt;  Min.   :45819   Length:5531        Min.   :44616   Length:5531       </span></span>
-<span><span class="co">#&gt;  1st Qu.:45819   Class :character   1st Qu.:44616   Class :character  </span></span>
-<span><span class="co">#&gt;  Median :45819   Mode  :character   Median :44616   Mode  :character  </span></span>
-<span><span class="co">#&gt;  Mean   :45819                      Mean   :44616                     </span></span>
-<span><span class="co">#&gt;  3rd Qu.:45819                      3rd Qu.:44616                     </span></span>
-<span><span class="co">#&gt;  Max.   :45819                      Max.   :44648                     </span></span>
-<span><span class="co">#&gt;       Date              depth_from        depth_to          var           </span></span>
-<span><span class="co">#&gt;  Min.   :1991-05-25   Min.   : 0.000   Min.   : 0.000   Length:5531       </span></span>
-<span><span class="co">#&gt;  1st Qu.:2006-03-05   1st Qu.: 2.000   1st Qu.: 2.000   Class :character  </span></span>
-<span><span class="co">#&gt;  Median :2012-04-14   Median : 5.000   Median : 5.000   Mode  :character  </span></span>
-<span><span class="co">#&gt;  Mean   :2011-11-26   Mean   : 5.008   Mean   : 5.008                     </span></span>
-<span><span class="co">#&gt;  3rd Qu.:2019-04-20   3rd Qu.: 8.000   3rd Qu.: 8.000                     </span></span>
-<span><span class="co">#&gt;  Max.   :2024-06-09   Max.   :15.000   Max.   :15.000                     </span></span>
-<span><span class="co">#&gt;      value            units           flag_detection</span></span>
-<span><span class="co">#&gt;  Min.   :  0.000   Length:5531        Mode:logical  </span></span>
-<span><span class="co">#&gt;  1st Qu.:  0.070   Class :character   NA's:5531     </span></span>
-<span><span class="co">#&gt;  Median :  5.500   Mode  :character                 </span></span>
-<span><span class="co">#&gt;  Mean   :  7.047                                    </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 13.085                                    </span></span>
-<span><span class="co">#&gt;  Max.   :101.000                                    </span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt; Lake level:</span></span>
-<span><span class="co">#&gt;       Date                lvlwtr     </span></span>
-<span><span class="co">#&gt;  Min.   :2018-12-31   Min.   :23.57  </span></span>
-<span><span class="co">#&gt;  1st Qu.:2020-03-31   1st Qu.:23.59  </span></span>
-<span><span class="co">#&gt;  Median :2021-06-30   Median :23.64  </span></span>
-<span><span class="co">#&gt;  Mean   :2021-06-30   Mean   :23.64  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:2022-09-29   3rd Qu.:23.69  </span></span>
-<span><span class="co">#&gt;  Max.   :2023-12-30   Max.   :23.71  </span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt; Meteorology:</span></span>
-<span><span class="co">#&gt;       Date              MET_radswd       MET_radlwd      MET_cldcvr    </span></span>
-<span><span class="co">#&gt;  Min.   :2022-01-01   Min.   : 37.76   Min.   :280.2   Min.   :0.1966  </span></span>
-<span><span class="co">#&gt;  1st Qu.:2022-04-02   1st Qu.:114.64   1st Qu.:326.3   1st Qu.:0.5482  </span></span>
-<span><span class="co">#&gt;  Median :2022-07-02   Median :180.01   Median :343.1   Median :0.6453  </span></span>
-<span><span class="co">#&gt;  Mean   :2022-07-02   Mean   :187.23   Mean   :343.8   Mean   :0.6488  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:2022-10-01   3rd Qu.:255.27   3rd Qu.:360.2   3rd Qu.:0.7558  </span></span>
-<span><span class="co">#&gt;  Max.   :2022-12-31   Max.   :376.33   Max.   :426.2   Max.   :1.0000  </span></span>
-<span><span class="co">#&gt;    MET_tmpair       MET_airmax   MET_airmin   MET_dewmax   MET_dewmin</span></span>
-<span><span class="co">#&gt;  Min.   : 8.992   Min.   :0    Min.   :0    Min.   :0    Min.   :0   </span></span>
-<span><span class="co">#&gt;  1st Qu.:13.974   1st Qu.:0    1st Qu.:0    1st Qu.:0    1st Qu.:0   </span></span>
-<span><span class="co">#&gt;  Median :16.234   Median :0    Median :0    Median :0    Median :0   </span></span>
-<span><span class="co">#&gt;  Mean   :16.433   Mean   :0    Mean   :0    Mean   :0    Mean   :0   </span></span>
-<span><span class="co">#&gt;  3rd Qu.:19.273   3rd Qu.:0    3rd Qu.:0    3rd Qu.:0    3rd Qu.:0   </span></span>
-<span><span class="co">#&gt;  Max.   :24.478   Max.   :0    Max.   :0    Max.   :0    Max.   :0   </span></span>
-<span><span class="co">#&gt;    MET_humrel      MET_tmpdew       MET_prvapr       MET_prsttn    </span></span>
-<span><span class="co">#&gt;  Min.   :54.57   Min.   : 1.718   Min.   : 6.927   Min.   : 98829  </span></span>
-<span><span class="co">#&gt;  1st Qu.:71.74   1st Qu.:10.036   1st Qu.:12.317   1st Qu.:100492  </span></span>
-<span><span class="co">#&gt;  Median :78.10   Median :12.635   Median :14.630   Median :101065  </span></span>
-<span><span class="co">#&gt;  Mean   :78.10   Mean   :12.528   Mean   :14.873   Mean   :100999  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:85.07   3rd Qu.:15.097   3rd Qu.:17.166   3rd Qu.:101472  </span></span>
-<span><span class="co">#&gt;  Max.   :95.24   Max.   :22.409   Max.   :27.112   Max.   :103178  </span></span>
-<span><span class="co">#&gt;    MET_prmslp       MET_wndspd        MET_wnduvu          MET_wnduvv      </span></span>
-<span><span class="co">#&gt;  Min.   : 99109   Min.   : 0.6844   Min.   :-11.16345   Min.   :-10.2845  </span></span>
-<span><span class="co">#&gt;  1st Qu.:100772   1st Qu.: 3.1896   1st Qu.: -2.98211   1st Qu.: -3.0025  </span></span>
-<span><span class="co">#&gt;  Median :101344   Median : 4.6980   Median : -0.30557   Median : -0.1780  </span></span>
-<span><span class="co">#&gt;  Mean   :101281   Mean   : 5.1491   Mean   :  0.01658   Mean   : -0.1501  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:101760   3rd Qu.: 6.6224   3rd Qu.:  2.90679   3rd Qu.:  2.7472  </span></span>
-<span><span class="co">#&gt;  Max.   :103469   Max.   :12.8150   Max.   : 12.76652   Max.   : 10.1251  </span></span>
-<span><span class="co">#&gt;    MET_pprain          MET_ppsnow</span></span>
-<span><span class="co">#&gt;  Min.   :0.0000000   Min.   :0   </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.0002425   1st Qu.:0   </span></span>
-<span><span class="co">#&gt;  Median :0.0014569   Median :0   </span></span>
-<span><span class="co">#&gt;  Mean   :0.0063316   Mean   :0   </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.0081555   3rd Qu.:0   </span></span>
-<span><span class="co">#&gt;  Max.   :0.0614505   Max.   :0   </span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt; Inflows:</span></span>
-<span><span class="co">#&gt;    FWMT </span></span>
-<span><span class="co">#&gt;       Date               HYD_flow           HYD_temp        CHM_salt</span></span>
-<span><span class="co">#&gt;  Min.   :2018-12-31   Min.   :   111.7   Min.   :10.00   Min.   :0  </span></span>
-<span><span class="co">#&gt;  1st Qu.:2020-03-31   1st Qu.:  1430.2   1st Qu.:11.47   1st Qu.:0  </span></span>
-<span><span class="co">#&gt;  Median :2021-06-30   Median :  4677.8   Median :15.00   Median :0  </span></span>
-<span><span class="co">#&gt;  Mean   :2021-06-30   Mean   :  9748.9   Mean   :15.00   Mean   :0  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:2022-09-29   3rd Qu.: 11403.0   3rd Qu.:18.52   3rd Qu.:0  </span></span>
-<span><span class="co">#&gt;  Max.   :2023-12-30   Max.   :247783.4   Max.   :20.00   Max.   :0  </span></span>
-<span><span class="co">#&gt;     CHM_oxy          PHS_frp             PHS_dop             PHS_pop         </span></span>
-<span><span class="co">#&gt;  Min.   : 9.234   Min.   :3.235e-05   Min.   :1.532e-06   Min.   :6.127e-06  </span></span>
-<span><span class="co">#&gt;  1st Qu.: 9.513   1st Qu.:4.099e-04   1st Qu.:1.514e-05   1st Qu.:6.056e-05  </span></span>
-<span><span class="co">#&gt;  Median :10.240   Median :1.024e-03   Median :4.051e-05   Median :1.621e-04  </span></span>
-<span><span class="co">#&gt;  Mean   :10.292   Mean   :3.732e-03   Mean   :1.441e-04   Mean   :5.766e-04  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:11.073   3rd Qu.:4.334e-03   3rd Qu.:1.693e-04   3rd Qu.:6.772e-04  </span></span>
-<span><span class="co">#&gt;  Max.   :11.455   Max.   :4.642e-02   Max.   :1.746e-03   Max.   :6.983e-03  </span></span>
-<span><span class="co">#&gt;     PHS_pip             NIT_amm             NIT_nit         </span></span>
-<span><span class="co">#&gt;  Min.   :2.298e-05   Min.   :0.0002219   Min.   :2.014e-05  </span></span>
-<span><span class="co">#&gt;  1st Qu.:2.271e-04   1st Qu.:0.0019064   1st Qu.:1.774e-04  </span></span>
-<span><span class="co">#&gt;  Median :6.077e-04   Median :0.0040237   Median :4.139e-04  </span></span>
-<span><span class="co">#&gt;  Mean   :2.162e-03   Mean   :0.0138761   Mean   :1.184e-03  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:2.539e-03   3rd Qu.:0.0129178   3rd Qu.:1.312e-03  </span></span>
-<span><span class="co">#&gt;  Max.   :2.619e-02   Max.   :0.2016053   Max.   :4.289e-02  </span></span>
-<span><span class="co">#&gt;     NIT_don             NIT_pon             CAR_doc         </span></span>
-<span><span class="co">#&gt;  Min.   :0.0000785   Min.   :0.0001177   Min.   :0.0004457  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.0006400   1st Qu.:0.0009599   1st Qu.:0.0036341  </span></span>
-<span><span class="co">#&gt;  Median :0.0015013   Median :0.0022520   Median :0.0085254  </span></span>
-<span><span class="co">#&gt;  Mean   :0.0043520   Mean   :0.0065279   Mean   :0.0247128  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.0052643   3rd Qu.:0.0078964   3rd Qu.:0.0298936  </span></span>
-<span><span class="co">#&gt;  Max.   :0.0523152   Max.   :0.0784728   Max.   :0.2970757  </span></span>
-<span><span class="co">#&gt;     CAR_poc             SIL_rsi      NCS_ss1            NCS_ss2    PHY_cyano  </span></span>
-<span><span class="co">#&gt;  Min.   :0.0006686   Min.   :10   Min.   : 0.01773   Min.   :0   Min.   :0.1  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.0054512   1st Qu.:10   1st Qu.: 0.16310   1st Qu.:0   1st Qu.:0.1  </span></span>
-<span><span class="co">#&gt;  Median :0.0127881   Median :10   Median : 0.43163   Median :0   Median :0.1  </span></span>
-<span><span class="co">#&gt;  Mean   :0.0370693   Mean   :10   Mean   : 1.38127   Mean   :0   Mean   :0.1  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.0448404   3rd Qu.:10   3rd Qu.: 1.11036   3rd Qu.:0   3rd Qu.:0.1  </span></span>
-<span><span class="co">#&gt;  Max.   :0.4456136   Max.   :10   Max.   :48.38967   Max.   :0   Max.   :0.1  </span></span>
-<span><span class="co">#&gt;    PHY_green     PHY_diatom </span></span>
-<span><span class="co">#&gt;  Min.   :0.1   Min.   :0.1  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.1   1st Qu.:0.1  </span></span>
-<span><span class="co">#&gt;  Median :0.1   Median :0.1  </span></span>
-<span><span class="co">#&gt;  Mean   :0.1   Mean   :0.1  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.1   3rd Qu.:0.1  </span></span>
-<span><span class="co">#&gt;  Max.   :0.1   Max.   :0.1  </span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt; Outflows:</span></span>
-<span><span class="co">#&gt;    outflow </span></span>
-<span><span class="co">#&gt;       Date               outflow         </span></span>
-<span><span class="co">#&gt;  Min.   :2018-12-31   Min.   :     0.00  </span></span>
-<span><span class="co">#&gt;  1st Qu.:2020-03-31   1st Qu.:    74.76  </span></span>
-<span><span class="co">#&gt;  Median :2021-06-30   Median :  4509.66  </span></span>
-<span><span class="co">#&gt;  Mean   :2021-06-30   Mean   :  9520.33  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:2022-09-29   3rd Qu.: 13446.05  </span></span>
-<span><span class="co">#&gt;  Max.   :2023-12-30   Max.   :106553.81  </span></span>
-<span><span class="co">#&gt;                       NA's   :4          </span></span>
-<span><span class="co">#&gt;    wbal </span></span>
-<span><span class="co">#&gt;       Date            outflow_dy_cd     outflow_glm_aed   outflow_gotm_wet </span></span>
-<span><span class="co">#&gt;  Min.   :2022-01-05   Min.   :    0.0   Min.   :    0.0   Min.   :    0.0  </span></span>
-<span><span class="co">#&gt;  1st Qu.:2022-04-05   1st Qu.:    0.0   1st Qu.:    0.0   1st Qu.:    0.0  </span></span>
-<span><span class="co">#&gt;  Median :2022-07-04   Median :    0.0   Median :    0.0   Median :    0.0  </span></span>
-<span><span class="co">#&gt;  Mean   :2022-07-04   Mean   :  603.1   Mean   :  603.1   Mean   :  648.1  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:2022-10-02   3rd Qu.:  553.6   3rd Qu.:  553.6   3rd Qu.:  689.3  </span></span>
-<span><span class="co">#&gt;  Max.   :2022-12-31   Max.   :10396.4   Max.   :10396.4   Max.   :10380.3  </span></span>
-<span><span class="co">#&gt;                       NA's   :4         NA's   :4         NA's   :4        </span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt; Outputs:</span></span>
-<span><span class="co">#&gt;    DY-CD </span></span>
-<span><span class="co">#&gt;     HYD_evap        HYD_evap_flux           HYD_Qe        HYD_evap_vol   </span></span>
-<span><span class="co">#&gt;  Min.   :0.000000   Min.   :0.000e+00   Min.   :-33.50   Min.   :   0.0  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.001296   1st Qu.:1.500e-08   1st Qu.: 31.18   1st Qu.: 198.2  </span></span>
-<span><span class="co">#&gt;  Median :0.002367   Median :2.740e-08   Median : 60.20   Median : 368.2  </span></span>
-<span><span class="co">#&gt;  Mean   :0.002810   Mean   :3.252e-08   Mean   : 74.06   Mean   : 432.9  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.004049   3rd Qu.:4.687e-08   3rd Qu.:106.58   3rd Qu.: 628.0  </span></span>
-<span><span class="co">#&gt;  Max.   :0.009219   Max.   :1.067e-07   Max.   :273.14   Max.   :1425.9  </span></span>
-<span><span class="co">#&gt;    HYD_precip         HYD_inflow        HYD_outflow           LAYERS       </span></span>
-<span><span class="co">#&gt;  Min.   :0.000000   Min.   :0.002708   Min.   :0.000000   Min.   : 0.3228  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.000250   1st Qu.:0.009094   1st Qu.:0.001499   1st Qu.: 3.5365  </span></span>
-<span><span class="co">#&gt;  Median :0.001600   Median :0.028993   Median :0.028437   Median : 6.8208  </span></span>
-<span><span class="co">#&gt;  Mean   :0.006457   Mean   :0.058393   Mean   :0.056108   Mean   : 6.7844  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.008320   3rd Qu.:0.070249   3rd Qu.:0.074205   3rd Qu.:10.1075  </span></span>
-<span><span class="co">#&gt;  Max.   :0.061450   Max.   :0.772858   Max.   :0.358995   Max.   :13.9712  </span></span>
-<span><span class="co">#&gt;      DEPTHS          HYD_temp        CHM_salt    CHM_oxy      </span></span>
-<span><span class="co">#&gt;  Min.   : 0.000   Min.   :10.00   Min.   :0   Min.   : 0.000  </span></span>
-<span><span class="co">#&gt;  1st Qu.: 3.207   1st Qu.:10.80   1st Qu.:0   1st Qu.: 7.200  </span></span>
-<span><span class="co">#&gt;  Median : 6.491   Median :12.57   Median :0   Median : 8.965  </span></span>
-<span><span class="co">#&gt;  Mean   : 6.453   Mean   :13.82   Mean   :0   Mean   : 8.179  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 9.776   3rd Qu.:15.63   3rd Qu.:0   3rd Qu.: 9.813  </span></span>
-<span><span class="co">#&gt;  Max.   :13.622   Max.   :27.76   Max.   :0   Max.   :10.951  </span></span>
-<span><span class="co">#&gt;     PHS_frp             PHS_dop             PHS_pop         </span></span>
-<span><span class="co">#&gt;  Min.   :7.439e-05   Min.   :8.212e-05   Min.   :3.384e-06  </span></span>
-<span><span class="co">#&gt;  1st Qu.:4.908e-04   1st Qu.:4.876e-04   1st Qu.:8.724e-05  </span></span>
-<span><span class="co">#&gt;  Median :1.567e-03   Median :2.840e-03   Median :1.434e-04  </span></span>
-<span><span class="co">#&gt;  Mean   :5.956e-03   Mean   :4.654e-03   Mean   :4.180e-04  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:8.300e-03   3rd Qu.:9.212e-03   3rd Qu.:2.460e-04  </span></span>
-<span><span class="co">#&gt;  Max.   :2.096e-01   Max.   :1.235e-02   Max.   :9.974e-03  </span></span>
-<span><span class="co">#&gt;     PHS_pip              PHS_tp             NIT_amm         </span></span>
-<span><span class="co">#&gt;  Min.   :3.361e-06   Min.   :0.0004011   Min.   :0.0002178  </span></span>
-<span><span class="co">#&gt;  1st Qu.:1.234e-04   1st Qu.:0.0027610   1st Qu.:0.0020717  </span></span>
-<span><span class="co">#&gt;  Median :2.415e-04   Median :0.0062572   Median :0.0051767  </span></span>
-<span><span class="co">#&gt;  Mean   :4.565e-04   Mean   :0.0123159   Mean   :0.0119785  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:7.332e-04   3rd Qu.:0.0203953   3rd Qu.:0.0186881  </span></span>
-<span><span class="co">#&gt;  Max.   :6.211e-03   Max.   :0.2195489   Max.   :0.4055163  </span></span>
-<span><span class="co">#&gt;     NIT_nit             NIT_don           NIT_pon              NIT_tn        </span></span>
-<span><span class="co">#&gt;  Min.   :0.0002077   Min.   :0.00492   Min.   :4.351e-05   Min.   :0.009674  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.0067628   1st Qu.:0.01319   1st Qu.:1.015e-03   1st Qu.:0.057295  </span></span>
-<span><span class="co">#&gt;  Median :0.0208872   Median :0.10695   Median :1.471e-03   Median :0.144004  </span></span>
-<span><span class="co">#&gt;  Mean   :0.0344917   Mean   :0.14203   Mean   :3.604e-03   Mean   :0.197892  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.0469014   3rd Qu.:0.28321   3rd Qu.:2.431e-03   3rd Qu.:0.359934  </span></span>
-<span><span class="co">#&gt;  Max.   :0.1604743   Max.   :0.32187   Max.   :9.951e-02   Max.   :0.802358  </span></span>
-<span><span class="co">#&gt;     CAR_doc           CAR_poc             SIL_rsi         PHY_cyano     </span></span>
-<span><span class="co">#&gt;  Min.   :0.01354   Min.   :0.0002552   Min.   :0.9991   Min.   :0.1000  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.06063   1st Qu.:0.0054809   1st Qu.:1.0000   1st Qu.:0.1000  </span></span>
-<span><span class="co">#&gt;  Median :0.17260   Median :0.0079419   Median :6.0177   Median :0.1000  </span></span>
-<span><span class="co">#&gt;  Mean   :0.25438   Mean   :0.0148298   Mean   :5.2966   Mean   :0.5542  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.44455   3rd Qu.:0.0132791   3rd Qu.:9.0787   3rd Qu.:0.3525  </span></span>
-<span><span class="co">#&gt;  Max.   :3.87674   Max.   :0.1994971   Max.   :9.7235   Max.   :8.1637  </span></span>
-<span><span class="co">#&gt;    PHY_green        PHY_diatom       PHY_tchla          NCS_ss1       </span></span>
-<span><span class="co">#&gt;  Min.   :0.1000   Min.   :0.1000   Min.   : 0.3000   Min.   : 0.1860  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.1000   1st Qu.:0.1000   1st Qu.: 0.3276   1st Qu.: 0.5013  </span></span>
-<span><span class="co">#&gt;  Median :0.2183   Median :0.1003   Median : 0.6628   Median : 0.9906  </span></span>
-<span><span class="co">#&gt;  Mean   :0.3916   Mean   :0.3140   Mean   : 1.2601   Mean   : 1.4939  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.5189   3rd Qu.:0.2193   3rd Qu.: 1.5074   3rd Qu.: 2.3073  </span></span>
-<span><span class="co">#&gt;  Max.   :4.3107   Max.   :7.5654   Max.   :12.5737   Max.   :15.6163  </span></span>
-<span><span class="co">#&gt;    GLM-AED </span></span>
-<span><span class="co">#&gt;       Date          HYD_wlev         HYD_V             HYD_A0      </span></span>
-<span><span class="co">#&gt;  Min.   :19001   Min.   :12.94   Min.   :1084481   Min.   :150559  </span></span>
-<span><span class="co">#&gt;  1st Qu.:19090   1st Qu.:13.14   1st Qu.:1114605   1st Qu.:153124  </span></span>
-<span><span class="co">#&gt;  Median :19179   Median :13.23   Median :1128974   Median :154128  </span></span>
-<span><span class="co">#&gt;  Mean   :19179   Mean   :13.28   Mean   :1136071   Mean   :154570  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:19267   3rd Qu.:13.40   3rd Qu.:1154603   3rd Qu.:155904  </span></span>
-<span><span class="co">#&gt;  Max.   :19356   Max.   :14.00   Max.   :1251970   Max.   :162479  </span></span>
-<span><span class="co">#&gt;     HYD_evap        HYD_evap_flux           HYD_Qe        HYD_evap_vol   </span></span>
-<span><span class="co">#&gt;  Min.   :0.000000   Min.   :0.000e+00   Min.   :  0.00   Min.   :   0.0  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.001197   1st Qu.:1.400e-08   1st Qu.: 33.97   1st Qu.: 184.8  </span></span>
-<span><span class="co">#&gt;  Median :0.002228   Median :2.571e-08   Median : 63.60   Median : 344.8  </span></span>
-<span><span class="co">#&gt;  Mean   :0.002625   Mean   :2.943e-08   Mean   : 74.46   Mean   : 405.7  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.003792   3rd Qu.:4.167e-08   3rd Qu.:107.31   3rd Qu.: 581.7  </span></span>
-<span><span class="co">#&gt;  Max.   :0.009035   Max.   :9.904e-08   Max.   :257.24   Max.   :1417.0  </span></span>
-<span><span class="co">#&gt;    HYD_precip         HYD_inflow        HYD_outflow           LAYERS       </span></span>
-<span><span class="co">#&gt;  Min.   :0.000000   Min.   :0.000000   Min.   :0.000000   Min.   : 0.3236  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.000250   1st Qu.:0.009111   1st Qu.:0.005674   1st Qu.: 3.5447  </span></span>
-<span><span class="co">#&gt;  Median :0.001555   Median :0.028950   Median :0.031413   Median : 6.8329  </span></span>
-<span><span class="co">#&gt;  Mean   :0.006469   Mean   :0.058220   Mean   :0.060040   Mean   : 6.8046  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.008320   3rd Qu.:0.070370   3rd Qu.:0.077185   3rd Qu.:10.1306  </span></span>
-<span><span class="co">#&gt;  Max.   :0.061450   Max.   :0.746285   Max.   :0.364465   Max.   :14.0003  </span></span>
-<span><span class="co">#&gt;      DEPTHS          HYD_temp        CHM_salt            CHM_oxy      </span></span>
-<span><span class="co">#&gt;  Min.   : 0.000   Min.   :10.00   Min.   :0.000e+00   Min.   : 0.000  </span></span>
-<span><span class="co">#&gt;  1st Qu.: 3.214   1st Qu.:12.37   1st Qu.:4.438e-05   1st Qu.: 7.470  </span></span>
-<span><span class="co">#&gt;  Median : 6.507   Median :14.66   Median :5.819e-05   Median : 9.134  </span></span>
-<span><span class="co">#&gt;  Mean   : 6.473   Mean   :15.25   Mean   :5.513e-05   Mean   : 8.016  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 9.798   3rd Qu.:17.86   3rd Qu.:7.627e-05   3rd Qu.: 9.916  </span></span>
-<span><span class="co">#&gt;  Max.   :13.650   Max.   :28.12   Max.   :1.263e-04   Max.   :10.672  </span></span>
-<span><span class="co">#&gt;     PHS_frp             PHS_dop             PHS_pop         </span></span>
-<span><span class="co">#&gt;  Min.   :0.0009908   Min.   :0.0007836   Min.   :7.694e-06  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.0013282   1st Qu.:0.0014107   1st Qu.:6.405e-05  </span></span>
-<span><span class="co">#&gt;  Median :0.0015600   Median :0.0074557   Median :2.955e-04  </span></span>
-<span><span class="co">#&gt;  Mean   :0.0032111   Mean   :0.0069890   Mean   :6.099e-04  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.0029704   3rd Qu.:0.0117017   3rd Qu.:6.347e-04  </span></span>
-<span><span class="co">#&gt;  Max.   :0.0380955   Max.   :0.0147418   Max.   :9.849e-03  </span></span>
-<span><span class="co">#&gt;     PHS_pip              PHS_tp            NIT_amm            NIT_nit       </span></span>
-<span><span class="co">#&gt;  Min.   :0.0000886   Min.   :0.002196   Min.   :0.002343   Min.   :0.00000  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.0002299   1st Qu.:0.004083   1st Qu.:0.009457   1st Qu.:0.01011  </span></span>
-<span><span class="co">#&gt;  Median :0.0002957   Median :0.009736   Median :0.010758   Median :0.01419  </span></span>
-<span><span class="co">#&gt;  Mean   :0.0007614   Mean   :0.011568   Mean   :0.022363   Mean   :0.01802  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.0005551   3rd Qu.:0.014312   3rd Qu.:0.014165   3rd Qu.:0.02573  </span></span>
-<span><span class="co">#&gt;  Max.   :0.0108703   Max.   :0.065108   Max.   :0.675724   Max.   :0.04776  </span></span>
-<span><span class="co">#&gt;     NIT_don           NIT_pon              NIT_tn           CAR_doc       </span></span>
-<span><span class="co">#&gt;  Min.   :0.00000   Min.   :0.0001581   Min.   :0.02808   Min.   :0.01837  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.01454   1st Qu.:0.0012580   1st Qu.:0.06377   1st Qu.:0.12523  </span></span>
-<span><span class="co">#&gt;  Median :0.06372   Median :0.0047521   Median :0.09501   Median :0.47008  </span></span>
-<span><span class="co">#&gt;  Mean   :0.08756   Mean   :0.0071689   Mean   :0.13528   Mean   :0.44483  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.12509   3rd Qu.:0.0081512   3rd Qu.:0.16517   3rd Qu.:0.68868  </span></span>
-<span><span class="co">#&gt;  Max.   :0.29977   Max.   :0.0984656   Max.   :0.88841   Max.   :1.01801  </span></span>
-<span><span class="co">#&gt;     CAR_poc            SIL_rsi         PHY_cyano          PHY_green       </span></span>
-<span><span class="co">#&gt;  Min.   :0.001228   Min.   : 1.012   Min.   :  0.1589   Min.   : 0.03000  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.009432   1st Qu.: 5.783   1st Qu.:  2.3442   1st Qu.: 0.04455  </span></span>
-<span><span class="co">#&gt;  Median :0.029093   Median : 9.159   Median :  5.5915   Median : 0.04951  </span></span>
-<span><span class="co">#&gt;  Mean   :0.033941   Mean   : 8.284   Mean   : 13.7868   Mean   : 1.71498  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.048924   3rd Qu.:10.271   3rd Qu.: 22.3170   3rd Qu.: 0.21345  </span></span>
-<span><span class="co">#&gt;  Max.   :0.196597   Max.   :40.155   Max.   :111.3975   Max.   :67.91385  </span></span>
-<span><span class="co">#&gt;    PHY_diatom         PHY_tchla           NCS_ss1      </span></span>
-<span><span class="co">#&gt;  Min.   : 0.03000   Min.   : 0.05621   Min.   :0.8279  </span></span>
-<span><span class="co">#&gt;  1st Qu.: 0.03000   1st Qu.: 0.66407   1st Qu.:1.5762  </span></span>
-<span><span class="co">#&gt;  Median : 0.03012   Median : 2.27953   Median :1.8712  </span></span>
-<span><span class="co">#&gt;  Mean   : 0.39282   Mean   : 3.92751   Mean   :2.0655  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 0.03093   3rd Qu.: 6.08331   3rd Qu.:2.6320  </span></span>
-<span><span class="co">#&gt;  Max.   :18.38271   Max.   :26.61421   Max.   :5.9170  </span></span>
-<span><span class="co">#&gt;    GOTM-WET </span></span>
-<span><span class="co">#&gt;      HYD_V           HYD_evap         HYD_evap_flux           HYD_Qe      </span></span>
-<span><span class="co">#&gt;  Min.   :-10101   Min.   :1.242e-05   Min.   :1.438e-10   Min.   :-34.91  </span></span>
-<span><span class="co">#&gt;  1st Qu.: 16859   1st Qu.:1.135e-03   1st Qu.:1.314e-08   1st Qu.: 34.55  </span></span>
-<span><span class="co">#&gt;  Median : 26863   Median :2.019e-03   Median :2.337e-08   Median : 60.34  </span></span>
-<span><span class="co">#&gt;  Mean   : 36019   Mean   :2.383e-03   Mean   :2.758e-08   Mean   : 69.13  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 52516   3rd Qu.:3.278e-03   3rd Qu.:3.794e-08   3rd Qu.: 96.18  </span></span>
-<span><span class="co">#&gt;  Max.   :137818   Max.   :8.742e-03   Max.   :1.012e-07   Max.   :258.72  </span></span>
-<span><span class="co">#&gt;   HYD_evap_vol        HYD_precip         HYD_outflow           LAYERS       </span></span>
-<span><span class="co">#&gt;  Min.   :   1.909   Min.   :9.800e-07   Min.   :0.000000   Min.   : 0.3251  </span></span>
-<span><span class="co">#&gt;  1st Qu.: 174.169   1st Qu.:4.261e-04   1st Qu.:0.001927   1st Qu.: 3.5538  </span></span>
-<span><span class="co">#&gt;  Median : 313.812   Median :2.569e-03   Median :0.028264   Median : 6.8599  </span></span>
-<span><span class="co">#&gt;  Mean   : 368.882   Mean   :6.455e-03   Mean   :0.056056   Mean   : 6.8179  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 502.877   3rd Qu.:8.860e-03   3rd Qu.:0.075321   3rd Qu.:10.1664  </span></span>
-<span><span class="co">#&gt;  Max.   :1345.520   Max.   :6.127e-02   Max.   :0.354859   Max.   :13.9490  </span></span>
-<span><span class="co">#&gt;      DEPTHS          HYD_temp        CHM_salt    CHM_oxy      </span></span>
-<span><span class="co">#&gt;  Min.   : 0.000   Min.   :10.00   Min.   :0   Min.   : 1.310  </span></span>
-<span><span class="co">#&gt;  1st Qu.: 3.223   1st Qu.:13.18   1st Qu.:0   1st Qu.: 8.880  </span></span>
-<span><span class="co">#&gt;  Median : 6.532   Median :16.00   Median :0   Median : 9.669  </span></span>
-<span><span class="co">#&gt;  Mean   : 6.485   Mean   :16.34   Mean   :0   Mean   : 9.343  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 9.835   3rd Qu.:19.22   3rd Qu.:0   3rd Qu.:10.258  </span></span>
-<span><span class="co">#&gt;  Max.   :13.600   Max.   :27.43   Max.   :0   Max.   :14.650  </span></span>
-<span><span class="co">#&gt;     PHS_frp             PHS_dop             PHS_pop         </span></span>
-<span><span class="co">#&gt;  Min.   :0.0001450   Min.   :0.0004013   Min.   :4.893e-05  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.0003066   1st Qu.:0.0066156   1st Qu.:5.600e-04  </span></span>
-<span><span class="co">#&gt;  Median :0.0005590   Median :0.0090545   Median :1.628e-03  </span></span>
-<span><span class="co">#&gt;  Mean   :0.0141043   Mean   :0.0115162   Mean   :2.750e-03  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.0008304   3rd Qu.:0.0166958   3rd Qu.:5.147e-03  </span></span>
-<span><span class="co">#&gt;  Max.   :0.1170789   Max.   :0.0243769   Max.   :9.111e-03  </span></span>
-<span><span class="co">#&gt;     PHS_pip              PHS_tp            NIT_amm            NIT_nit        </span></span>
-<span><span class="co">#&gt;  Min.   :0.000e+00   Min.   :0.006419   Min.   :0.002079   Min.   :0.001587  </span></span>
-<span><span class="co">#&gt;  1st Qu.:2.775e-05   1st Qu.:0.012846   1st Qu.:0.003830   1st Qu.:0.007506  </span></span>
-<span><span class="co">#&gt;  Median :5.538e-05   Median :0.024923   Median :0.007478   Median :0.011595  </span></span>
-<span><span class="co">#&gt;  Mean   :1.052e-04   Mean   :0.043556   Mean   :0.013903   Mean   :0.097442  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:1.220e-04   3rd Qu.:0.067469   3rd Qu.:0.010570   3rd Qu.:0.018294  </span></span>
-<span><span class="co">#&gt;  Max.   :2.459e-03   Max.   :0.145438   Max.   :0.111849   Max.   :0.861838  </span></span>
-<span><span class="co">#&gt;     NIT_don            NIT_pon             NIT_tn           CAR_doc       </span></span>
-<span><span class="co">#&gt;  Min.   :0.004152   Min.   :0.001640   Min.   :0.04999   Min.   :0.09899  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.055127   1st Qu.:0.004676   1st Qu.:0.12377   1st Qu.:1.05619  </span></span>
-<span><span class="co">#&gt;  Median :0.074247   Median :0.013074   Median :0.20858   Median :1.82464  </span></span>
-<span><span class="co">#&gt;  Mean   :0.086478   Mean   :0.018668   Mean   :0.31950   Mean   :1.81158  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.119411   3rd Qu.:0.032778   3rd Qu.:0.44266   3rd Qu.:2.16200  </span></span>
-<span><span class="co">#&gt;  Max.   :0.170476   Max.   :0.054416   Max.   :1.20272   Max.   :7.51174  </span></span>
-<span><span class="co">#&gt;     CAR_poc           SIL_rsi         PHY_cyano          PHY_green       </span></span>
-<span><span class="co">#&gt;  Min.   :0.01338   Min.   : 3.079   Min.   :  0.2714   Min.   :0.001001  </span></span>
-<span><span class="co">#&gt;  1st Qu.:0.11792   1st Qu.: 6.113   1st Qu.:  7.0923   1st Qu.:0.001997  </span></span>
-<span><span class="co">#&gt;  Median :0.21599   Median : 7.835   Median : 10.5351   Median :0.002019  </span></span>
-<span><span class="co">#&gt;  Mean   :0.40934   Mean   : 7.406   Mean   : 17.1220   Mean   :0.231376  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:0.75500   3rd Qu.: 9.212   3rd Qu.: 18.0694   3rd Qu.:0.020403  </span></span>
-<span><span class="co">#&gt;  Max.   :1.06514   Max.   :10.005   Max.   :103.2571   Max.   :3.111422  </span></span>
-<span><span class="co">#&gt;    PHY_diatom         PHY_tchla          NCS_ss1        </span></span>
-<span><span class="co">#&gt;  Min.   : 0.00040   Min.   :  1.972   Min.   : 0.01069  </span></span>
-<span><span class="co">#&gt;  1st Qu.: 0.00120   1st Qu.:  7.901   1st Qu.: 0.32394  </span></span>
-<span><span class="co">#&gt;  Median : 0.00233   Median : 11.645   Median : 0.86382  </span></span>
-<span><span class="co">#&gt;  Mean   : 3.15508   Mean   : 20.508   Mean   : 1.33901  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 0.96366   3rd Qu.: 24.610   3rd Qu.: 1.85697  </span></span>
-<span><span class="co">#&gt;  Max.   :42.18958   Max.   :111.423   Max.   :10.34756  </span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span></code></pre></div>
 <p>Model data can be visualised easily using the <code><a href="reference/plot_output.html">plot_output()</a></code> function</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">plot_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>, </span>
-<span>                         level <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, var_lims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">30</span><span class="op">)</span>, print_plots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/" class="external-link">ggpubr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required package: ggplot2</span></span>
-<span></span>
-<span><span class="fu">ggarrange</span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">plot_list</span>, ncol <span class="op">=</span> <span class="fl">1</span>, common.legend <span class="op">=</span> <span class="cn">TRUE</span>, legend <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>, </span>
+<span>                  level <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, var_lims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">30</span><span class="op">)</span>, </span>
+<span>                  print_plots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">p1</span></span>
 <span><span class="co">#&gt; Warning: Using size for a discrete variable is not advised.</span></span>
-<span><span class="co">#&gt; Using size for a discrete variable is not advised.</span></span>
-<span><span class="co">#&gt; Using size for a discrete variable is not advised.</span></span>
-<span><span class="co">#&gt; Using size for a discrete variable is not advised.</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 80 rows containing missing values (`geom_col()`).</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_output-HYD_temp-1.png" width="100%"> Also, visualising lake level plots.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">plot_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, </span>
-<span>                         var_sim <span class="op">=</span> <span class="st">"HYD_wlev"</span>, level <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                         var_lims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">30</span><span class="op">)</span>, print_plots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">plot_list</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,  </span>
+<span>                         var_sim <span class="op">=</span> <span class="st">"LKE_lvlwtr"</span>, level <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                         var_lims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">30</span><span class="op">)</span>, print_plots <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                         facet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">p2</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot-output-HYD_wlev-1.png" width="100%"></p>
 </div>
 </div>
