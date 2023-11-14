@@ -25,6 +25,9 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/aeme_constructor.html</loc>
   </url>
   <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/align_depth_data.html</loc>
+  </url>
+  <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/build_ensemble.html</loc>
   </url>
   <url>
@@ -53,6 +56,9 @@
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_nml_value.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_var.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/index.html</loc>
@@ -146,6 +152,9 @@
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_output.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_var.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/read_nml.html</loc>
