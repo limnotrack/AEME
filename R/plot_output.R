@@ -57,7 +57,7 @@
 plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
                         level = FALSE, label = FALSE, print_plots = TRUE,
                         var_lims = NULL, ylim = NULL, cumulative = FALSE,
-                        facet = FALSE) {
+                        facet = TRUE) {
 
   # Check if aeme_data is a aeme class
   if (!inherits(aeme_data, "aeme")) stop("aeme_data must be an aeme class")
