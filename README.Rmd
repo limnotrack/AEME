@@ -61,8 +61,11 @@ mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
 inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("dy_cd", "glm_aed", "gotm_wet")
-aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model, mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5, use_bgc = TRUE, use_lw = TRUE)
-aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, path = path, parallel = TRUE, mod_ctrls = mod_ctrls)
+aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                            mod_ctrls = mod_ctrls, inf_factor = inf_factor, 
+                            ext_elev = 5, use_bgc = TRUE)
+aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, 
+                      path = path, parallel = TRUE, mod_ctrls = mod_ctrls)
 ```
 
 The model input and output (I/O) is handled as it's own S4 object of
@@ -81,30 +84,23 @@ structure and allows for condensed output to be printed to the console:
 aeme_data
 ```
 
-Summarised easily:
-
-```{r}
-summary(aeme_data)
-```
-
 Model data can be visualised easily using the `plot_output()` function
 
 ```{r, label="plot_output-HYD_temp",echo=TRUE,results="hide",fig.keep="all",fig.height=7}
-plot_list <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp", 
-                         level = TRUE, label = TRUE, var_lims = c(9, 30), print_plots = FALSE)
+p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp", 
+                  level = TRUE, label = TRUE, var_lims = c(9, 30), 
+                  print_plots = FALSE)
+p1
 
-library(ggpubr)
-
-ggarrange(plotlist = plot_list, ncol = 1, common.legend = TRUE, legend = "right")
 
 ```
 Also, visualising lake level plots.
 
 ```{r, label="plot-output-HYD_wlev",echo=TRUE,results="hide",fig.keep="all",fig.height=5}
-plot_list <- plot_output(aeme_data = aeme_data, model = model, 
-                         var_sim = "HYD_wlev", level = TRUE, label = TRUE,
-                         var_lims = c(9, 30), print_plots = FALSE)
-plot_list
-
+p2 <- plot_output(aeme_data = aeme_data, model = model,  
+                         var_sim = "LKE_lvlwtr", level = TRUE, label = TRUE,
+                         var_lims = c(9, 30), print_plots = FALSE, 
+                         facet = FALSE)
+p2
 
 ```
