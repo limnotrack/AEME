@@ -65,8 +65,8 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
   # Check if model is a character vector
   if (!is.character(model)) stop("model must be a character vector")
 
-  # Check if model length is greater than 1
-  if (length(model) > 1) stop("model must be a character vector of length 1")
+  # Check if model length is 0
+  if (length(model) == 0) stop("model must be a character vector of length >0")
 
   # Check if var_sim is a character vector
   if (!is.character(var_sim)) stop("var_sim must be a character vector")
