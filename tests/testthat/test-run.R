@@ -181,7 +181,7 @@ test_that("running models in parallel with no wbal calculated", {
 
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
-  plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
 
   lke <- lake(aeme_data)
@@ -219,7 +219,7 @@ test_that("running models with no wbal/outflows calculated", {
 
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
-  plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
 
   lke <- lake(aeme_data)
@@ -254,7 +254,7 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
 
-  plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
   plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_outflow",
               add_obs = F)
