@@ -49,15 +49,29 @@
 #'   p1[[1]]
 #'
 #'   p2 <- plot_output(aeme_data = aeme_data, model = model,
-#'                     var_sim = "HYD_evap", print_plots = TRUE,
+#'                     var_sim = "LKE_evpvol", print_plots = TRUE,
 #'                     ylim = c(0, 0.02))
 #' }
 #'
 
 plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
                         level = FALSE, label = FALSE, print_plots = TRUE,
-                        var_lims = NULL, ylim = NULL) {
+                        var_lims = NULL, ylim = NULL, cumulative = FALSE,
+                        facet = FALSE) {
 
+  # Check if aeme_data is a aeme class
+  if (!inherits(aeme_data, "aeme")) stop("aeme_data must be an aeme class")
+
+  # Check if model is a character vector
+  if (!is.character(model)) stop("model must be a character vector")
+
+  # Check if model length is greater than 1
+  if (length(model) > 1) stop("model must be a character vector of length 1")
+
+  # Check if var_sim is a character vector
+  if (!is.character(var_sim)) stop("var_sim must be a character vector")
+
+  # Load data from aeme_data
   obs <- observations(aeme_data)
   inp <- input(aeme_data)
   if (!is.null(obs$lake)) {
@@ -76,7 +90,11 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
   chk <- sapply(model, \(m){
     var_sim %in% names(outp[[m]])
   })
-  if (!all(chk)) {
+  if (any(!chk)) {
+    if (all(!chk)) {
+      stop(paste0("Variable '", var_sim, "' not in output for model(s) ",
+                  paste0(model, collapse = ", ")))
+    }
     warning(paste0("Variable '", var_sim, "' not in output for model(s) ",
                    paste0(model[!chk], collapse = ", ")))
     model <- model[chk]
@@ -94,140 +112,23 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
   # Date lims
   # Find date range and have output in Date format
   this.list <- sapply(model, \(m){
-      "[["(outp[[m]], "Date")
-    })
+    "[["(outp[[m]], "Date")
+  })
   xlim <- as.Date(range(this.list, na.rm = TRUE))
 
-  mod_labels <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
-                           name = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
+  # mod_labels <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
+  #                          name = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
 
-  lst <- lapply(model, \(m) {
+  df <- get_var(aeme_data = aeme_data, model = model, var_sim = var_sim,
+                return_df = TRUE, cumulative = cumulative)
 
-    variable <- outp[[m]][[var_sim]]
-
-    if (is.null(variable)) {
-      df <- data.frame(Date = NA, value = NA, Model = NA, lyr_thk = NA)
-    } else if (length(dim(variable)) == 1 | is.numeric(variable)) {
-      df <- data.frame(Date = outp[[m]][["Date"]],
-                       value = variable,
-                       Model = m)
-      return(df)
-    } else {
-      depth <- data.frame(Date = outp[[m]][["Date"]],
-                          depth = outp[[m]][["HYD_wlev"]])
-      lyr <- outp[[m]][["LAYERS"]]
-      df <- data.frame(Date = rep(outp[[m]][["Date"]], each = nrow(variable)),
-                       lyr_top = unlist(lyr),
-                       value = unlist(variable),
-                       Model = m) |>
-        dplyr::mutate(lyr_thk = ifelse(c(-999, diff(lyr_top)) < 0, # | is.na(-c(NA,diff(lyr_top))),
-                                       c(diff(lyr_top),NA),
-                                       c(NA,diff(lyr_top))))
-    }
+  # Align observations to modelled depths because observations are relative to
+  # the lake surface while modelled depths are relative to the lake bottom
+  obs <- align_depth_data(aeme_data = aeme_data, model = model,
+                          var_sim = var_sim)
 
 
-
-    if (all(is.na(df$value))) {
-      p <- ggplot2::ggplot() +
-        ggplot2::ggtitle(mod_labels$name[mod_labels$model == m]) +
-        #  facet_wrap(~contourDF$hydroyr) +
-        ggplot2::theme_bw()
-      return(p)
-    }
-
-    my_cols <- RColorBrewer::brewer.pal(11, "Spectral")
-
-    p <- ggplot2::ggplot() +
-      ggplot2::geom_col(data = df, ggplot2::aes(x = Date, y = lyr_thk, fill = value),
-                        position = 'stack', width = 1) +
-      ggplot2::scale_fill_gradientn(colors = rev(my_cols), name = var_sim,
-                                    limits = var_lims) +
-      {if(!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim)} +
-      ggplot2::xlim(xlim) +
-      ggplot2::ylab("Elevation (m)") +
-      ggplot2::xlab(NULL) +
-      ggplot2::labs(fill="xyz") +
-      ggplot2::ggtitle(mod_labels$name[mod_labels$model == m]) +
-      #  facet_wrap(~contourDF$hydroyr) +
-      ggplot2::theme_bw()
-
-    if (label) {
-      p <- p +
-        ggplot2::labs(subtitle = var_sim)
-    }
-
-    if (!is.null(obs$lake) & add_obs) {
-
-      obs_df <- obs_lake |>
-        dplyr::filter(Date %in% df$Date) |>
-        merge(x = _, depth, by = "Date") |>
-        dplyr::mutate(elev = depth - depth_from) |>
-        dplyr::filter(elev >= 0)
-
-      p <- p +
-        ggplot2::geom_point(data = obs_df,
-                            ggplot2::aes(Date, elev, fill = value,
-                                         size = "Obs"), shape = 21,
-                            colour = "black") +
-        ggplot2::labs(size = "")
-    }
-
-    if (!is.null(obs$level)) {
-      obs_lvl <- obs$level |>
-        dplyr::filter(Date %in% df$Date) |>
-        dplyr::mutate(lvl_adj = lvlwtr - min(inp$hypsograph$elev))
-      # obs_level <- obs_level |>
-      #   dplyr::filter(Date %in% df$Date)
-      p <- p +
-        ggplot2::geom_line(data = obs_lvl, ggplot2::aes(Date, lvl_adj),
-                           linewidth = 0.7, colour = "grey")
-    }
-
-    if (print_plots) {
-      print(p)
-    }
-
-    return(p)
-  })
-  names(lst) <- model
-
-  if (is.data.frame(lst[[1]])) {
-    df2 <- do.call(rbind, lst) |>
-      dplyr::mutate(Model = dplyr::case_when(
-        Model == "dy_cd" ~ "DYRESM-CAEDYM",
-        Model == "glm_aed" ~ "GLM-AED",
-        Model == "gotm_wet" ~ "GOTM-WET"
-        )
-      )
-
-    p <- ggplot2::ggplot() +
-      ggplot2::geom_line(data = df2, ggplot2::aes(Date, value,
-                                                  colour = Model)) +
-      {if(!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim)} +
-      ggplot2::xlim(xlim) +
-      ggplot2::ggtitle(var_sim) +
-      ggplot2::theme_bw()
-
-    if (var_sim == "HYD_wlev" & !is.null(obs$level)) {
-
-      obs_lvl <- obs$level |>
-        dplyr::filter(Date %in% df2$Date) |>
-        dplyr::mutate(lvl_adj = lvlwtr - min(inp$hypsograph$elev))
-
-      if (add_obs) {
-        p <- p +
-          ggplot2::geom_point(data = obs_lvl,
-                              ggplot2::aes(Date, lvl_adj, fill = "Obs")) +
-          # ggplot2::scale_colour_manual(values = c("Obs" = "black")) +
-          ggplot2::labs(fill = "")
-      }
-    }
-
-    if (print_plots) {
-      print(p)
-    }
-    lst <- p
-  }
-
-  return(lst)
+  plot_var(df = df, ylim = ylim, xlim = xlim, var_lims = var_lims, obs = obs,
+           add_obs = add_obs, level = level, facet = facet,
+           print_plots = print_plots)
 }

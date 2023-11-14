@@ -13,7 +13,9 @@ plot_output(
   label = FALSE,
   print_plots = TRUE,
   var_lims = NULL,
-  ylim = NULL
+  ylim = NULL,
+  cumulative = FALSE,
+  facet = FALSE
 )
 }
 \arguments{
@@ -74,7 +76,7 @@ variables.
   p1[[1]]
 
   p2 <- plot_output(aeme_data = aeme_data, model = model,
-                    var_sim = "HYD_evap", print_plots = TRUE,
+                    var_sim = "LKE_evpvol", print_plots = TRUE,
                     ylim = c(0, 0.02))
 }
 
