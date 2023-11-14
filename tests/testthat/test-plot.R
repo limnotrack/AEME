@@ -13,6 +13,12 @@ test_that("plotting model output works", {
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
                               ext_elev = 5, use_bgc = FALSE)
 
+  testthat::expect_error({
+    p1 <- plot_output(aeme_data = aeme_data, model = model,
+                      var_sim = "HYD_temp", level = TRUE, label = TRUE,
+                      print_plots = FALSE, var_lims = c(0, 30), ylim = c(0, 16))
+  })
+
   plake <- function() plot(aeme_data, "lake")
   vdiffr::expect_doppelganger("lake plot", plake)
 
@@ -25,22 +31,27 @@ test_that("plotting model output works", {
   pwbal <- function() plot(aeme_data, "water_balance")
   vdiffr::expect_doppelganger("water_balance line plot", pwbal)
 
+  # Run models
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
                         path = path, mod_ctrls = mod_ctrls, parallel = TRUE)
+
+
   poutp <- function() plot(aeme_data, "output")
   vdiffr::expect_doppelganger("output line plot", poutp)
 
   p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
-                    level = TRUE, label = TRUE, print_plots = FALSE,
-                    var_lims = c(0, 30), ylim = c(0, 16))
-  testthat::expect_true(all(ggplot2::is.ggplot(p1[[1]]),
-                            ggplot2::is.ggplot(p1[[2]])))
+                    level = TRUE, print_plots = FALSE,
+                    var_lims = c(0, 30), ylim = c(0, 16), facet = FALSE)
+  testthat::expect_true(is.list(p1))
+  testthat::expect_true(all(c(ggplot2::is.ggplot(p1[[1]]),
+                             ggplot2::is.ggplot(p1[[2]]),
+                             ggplot2::is.ggplot(p1[[3]]))))
 
-  p2 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_evap",
-                    print_plots = TRUE, ylim = c(0, 0.02))
+  p2 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_evpflx",
+                    print_plots = TRUE, cumulative = TRUE, facet = FALSE)
   testthat::expect_true(ggplot2::is.ggplot(p2))
 
-  p3 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
-                    print_plots = TRUE)
+  p3 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
+                    print_plots = F)
   testthat::expect_true(ggplot2::is.ggplot(p3))
 })
