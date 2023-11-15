@@ -210,6 +210,10 @@ test_that("can build all models and write to new directory", {
   testthat::expect_true(file_chk)
   file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
                                                   tolower(lke$name)),
+                                    "gotm_wet", "output.yaml"))
+  testthat::expect_true(file_chk)
+  file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
+                                                  tolower(lke$name)),
                                     "gotm_wet", "fabm.yaml"))
   testthat::expect_true(file_chk)
 })
