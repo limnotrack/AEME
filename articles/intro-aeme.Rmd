@@ -153,6 +153,22 @@ components as well as the aquatic ecosystem model components:
 
 #### Observations {#sec-observations}
 
+The `observations` slot is a list that contains observations of in-lake (`lake`)
+variables (e.g. water temperature, chlorophyll-a, dissolved oxygen etc.) and
+water level (`level`). The observations are used to assess model performance and
+also calibrate the model using the
+[aemetools](https://github.com/limnotrack/aemetools) package. The `lake`
+observations are stored in a data frame with the following columns:
+
+-   **Date** - Date of the observation (character). The date must be in the
+    format `YYYY-MM-DD HH:MM:SS`.
+
+-   **Depth** - Depth of the observation (m) (numeric). The depth must be in
+    metres.
+
+-   **var** - Variable name of the observation (character). The variable names
+    an input preparation are designed in the [AEME inputs article](aeme-inputs.html).
+
 ### Creation
 
 The `aeme` object can be created from a YAML file using the `yaml_to_aeme`
