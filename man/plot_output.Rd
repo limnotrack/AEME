@@ -10,8 +10,7 @@ plot_output(
   var_sim = "HYD_temp",
   add_obs = TRUE,
   level = FALSE,
-  label = FALSE,
-  print_plots = TRUE,
+  print_plots = FALSE,
   var_lims = NULL,
   ylim = NULL,
   cumulative = FALSE,
@@ -29,8 +28,6 @@ plot_output(
 \item{add_obs}{boolean; add observations to plot}
 
 \item{level}{boolean; include lake level. Only applies for contour plots.}
-
-\item{label}{boolean; include variable label as subtitle for contour plots.}
 
 \item{print_plots}{boolean; print plots}
 
@@ -70,7 +67,7 @@ variables.
                            mod_ctrls = mod_ctrls, parallel = TRUE)
 
   p1 <- plot_output(aeme_data = aeme_data, model = model,
-                    var_sim = "HYD_temp", level = TRUE, label = TRUE,
+                    var_sim = "HYD_temp", level = TRUE,
                     print_plots = FALSE, var_lims = c(0, 30),
                     ylim = c(0, 16))
   p1[[1]]
