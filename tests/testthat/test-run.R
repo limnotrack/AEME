@@ -256,7 +256,7 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
 
   plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
-  plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_outflow",
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_outflow",
               add_obs = F)
 
   lke <- lake(aeme_data)
@@ -401,14 +401,14 @@ test_that("running GOTM with a spinup works", {
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
 
-  plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_outflow",
-              level = TRUE, label = TRUE, print_plots = FALSE,
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_outflow",
+              level = TRUE, print_plots = FALSE,
               var_lims = c(0, 30))
 
   p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
-                    level = TRUE, label = TRUE, print_plots = FALSE,
+                    level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16))
-  testthat::expect_true(all(ggplot2::is.ggplot(p1[[1]])))
+  testthat::expect_true(all(ggplot2::is.ggplot(p1)))
 
   testthat::expect_true(file_chk)
 })
