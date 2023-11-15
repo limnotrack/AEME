@@ -423,12 +423,10 @@ test_that("can build all models, run and write to new directory & re-run", {
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed", "gotm_wet")
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                               use_bgc = TRUE)
-
-  load_configuration(model = model, aeme_data = aeme_data, path = path, use_bgc = T)
 
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path)
@@ -437,13 +435,6 @@ test_that("can build all models, run and write to new directory & re-run", {
   path2 <- file.path(tmpdir, "lake-rewrite")
   aeme_data <- write_configuration(model = model, aeme_data = aeme_data,
                                    path = path2)
-
-  aeme_data <- build_ensemble(path = path2, aeme_data = aeme_data,
-                              model = model, mod_ctrls = mod_ctrls,
-                              inf_factor = inf_factor, ext_elev = 5,
-                              use_bgc = TRUE)
-  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path2)
 
   # Check DYRESM files
   lke <- lake(aeme_data)
@@ -455,6 +446,15 @@ test_that("can build all models, run and write to new directory & re-run", {
                                                  tolower(lke$name)),
                                     "dy_cd", paste0(tolower(lke$name), ".con")))
   testthat::expect_true(file_chk)
+
+
+  caedym_fils <- c("bio", "chm", "sed")
+  sapply(caedym_fils, \(f) {
+    file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                   tolower(lke$name)),
+                                      "dy_cd", paste0("caedym3p1.", f)))
+    testthat::expect_true(file_chk)
+  })
 
   # Check GLM files
   file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
@@ -476,4 +476,24 @@ test_that("can build all models, run and write to new directory & re-run", {
                                                   tolower(lke$name)),
                                     "gotm_wet", "fabm.yaml"))
   testthat::expect_true(file_chk)
+
+
+  #
+  aeme_data <- build_ensemble(path = path2, aeme_data = aeme_data,
+                              model = model, mod_ctrls = mod_ctrls,
+                              inf_factor = inf_factor, ext_elev = 5,
+                              use_bgc = TRUE)
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
+                        mod_ctrls = mod_ctrls, path = path2)
+
+  file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "DYsim.nc"))
+  testthat::expect_true(file_chk)
+
+  file_chk <- all(file.exists(file.path(path2, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        model[-1], "output", "output.nc")))
+  testthat::expect_true(file_chk)
+
 })
