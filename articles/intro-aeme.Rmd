@@ -61,13 +61,15 @@ Key aspects of the AEME package include:
 
 -   Standardised calibration, manipulation and visualisation
 
-## `aeme` object
+## AEME object {#sec-aeme-object}
+
+### Description {#sec-description}
 
 The `aeme` object is the main object in the AEME package. It is an S4 class that
 contains all the information required to run a model. The `aeme` object contains
 the following slots:
 
--   **lake** - a list object containing information about the lake
+-   [**lake**](#sec-lake) - a list object containing information about the lake
     (`r lake_names`)
 -   **time** - a list object containing information about the time
     (`r time_names`)
@@ -81,13 +83,77 @@ the following slots:
     (`r inflow_names`)
 -   **outflows** - a list object containing information about the outflows
     (`r outflow_names`)
--   **water_balance** - a list object containing information about the water balance configuration
-    (`r water_balance_names`)
+-   **water_balance** - a list object containing information about the water
+    balance configuration (`r water_balance_names`)
 -   **outputs** - a list object containing information about the outputs
     (`r output_names`)
 
+#### Lake {#sec-lake}
 
-## `aeme` object creation
+The `lake` slot contains information about the lake. The `lake` slot is a list
+object that contains the following objects:
+
+-   name - Name of the lake (character).
+
+-   id - Lake ID (character or numeric).
+
+-   **latitude** - Latitude of the lake (numeric). If not provided, the latitude
+    will be calculated from the centroid of the shape.
+
+-   **longitude** - Longitude of the lake (numeric). If not provided, the
+    longitude will be calculated from the centroid of the shape.
+
+-   **elevation** - Elevation of the lake (numeric).
+
+-   shape - Shape of the lake (sf object). The shape of the lake can be
+    represented as a polygon. The centroid of the polygon will be used to
+    calculate the latitude and longitude of the lake.
+
+-   **depth** - Max depth of the lake (m) (numeric). Depth and area are used to
+    generate a simple hypsographic curve if none is provided in the `inputs`
+    slot.
+
+-   **area** - Surface area of the lake (m2) (numeric)
+
+Objects in **bold** are required for building and running the model.
+
+#### Time {#sec-time}
+
+The `time` slot contains information about the time. The `time` slot is a list
+object that contains the following objects:
+
+-   **start** - Start date of the simulation (character). The start date must be
+    in the format `YYYY-MM-DD HH:MM:SS`.
+
+-   **end** - End date of the simulation (character). The end date must be in
+    the format `YYYY-MM-DD HH:MM:SS`.
+
+-   **timestep** - Timestep of the simulation (numeric). The timestep must be in
+    seconds.
+
+-   **spin_up** - List of spin up periods of the simulation for each model
+    (numeric). The spin up period must be in days. The spin up period is the
+    period of time that the model is run before the simulation period. The spin
+    up period is used to initialise the model which is then discarded when
+    examining the simulation period.
+
+#### Configuration {#sec-configuration}
+
+The `configuration` slot is a list that contains each of the model
+configurations. This includes the configurations files for the hydrodynamic
+components as well as the aquatic ecosystem model components:
+
+| Model         | Hyrodynamic                         | Ecosystem                                                        |
+|--------------------|---------------------------|---------------------------------|
+| DYRESM-CAEDYM | *.cfg* file and *.par* file         | *.con*, *caedym3p1.bio, caedym3p1.chm* and *caedym3p1.sed* files |
+| GLM-AED       | *glm3.nml* file                     | *aed2.nml*, *phytos.nml*, *zoops.nml* files                      |
+| GOTM-WET      | *gotm.yaml* and *output.yaml* files | *fabm.yaml* file                                                 |
+
+: Files for hydrodynamic and ecosystem models.
+
+#### Observations {#sec-observations}
+
+### Creation
 
 The `aeme` object can be created from a YAML file using the `yaml_to_aeme`
 function. The YAML file contains all the information required to run the model.
@@ -97,9 +163,9 @@ aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
 slotNames(aeme_data)
 ```
 
-## `aeme` object manipulation
+## Manipulation
 
-The `aeme` object can be manipulated using the `AEME` package functions. The 
+The `aeme` object can be manipulated using the `AEME` package functions. The
 functions are defined by the slot names of the `aeme` object. For example, the
 `lake` slot can be manipulated using the `lake` function.
 
@@ -119,10 +185,10 @@ aeme_data
 
 ```
 
-## `aeme` object visualisation
+### Visualisation
 
-The `aeme` object can be visualised simply using the `plot` function. The
-`plot` function can be applied to the different slots of the `aeme` object. For 
+The `aeme` object can be visualised simply using the `plot` function. The `plot`
+function can be applied to the different slots of the `aeme` object. For
 example, the `lake` slot can be visualised using the `plot` function.
 
 ```{r aeme-visualisation-lake}
@@ -135,6 +201,19 @@ plot(aeme_data, "input")
 
 ```
 
+## Build Model Ensemble
 
+```{r}
+mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+model <- c("dy_cd", "glm_aed", "gotm_wet")
+aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                            mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                            ext_elev = 5, use_bgc = TRUE)
+aeme_data
+```
 
-
+```{r}
+cfg <- configuration(aeme_data)
+```
