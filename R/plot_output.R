@@ -6,7 +6,6 @@
 #' @inheritParams build_ensemble
 #' @param var_sim string; of variable to plot
 #' @param level boolean; include lake level. Only applies for contour plots.
-#' @param label boolean; include variable label as subtitle for contour plots.
 #' @param print_plots boolean; print plots
 #' @param var_lims numeric vector of length 2; limits for the variable.
 #' Defaults to NULL and will generate common limits for all variables.
@@ -43,7 +42,7 @@
 #'                            mod_ctrls = mod_ctrls, parallel = TRUE)
 #'
 #'   p1 <- plot_output(aeme_data = aeme_data, model = model,
-#'                     var_sim = "HYD_temp", level = TRUE, label = TRUE,
+#'                     var_sim = "HYD_temp", level = TRUE,
 #'                     print_plots = FALSE, var_lims = c(0, 30),
 #'                     ylim = c(0, 16))
 #'   p1[[1]]
@@ -55,7 +54,7 @@
 #'
 
 plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
-                        level = FALSE, label = FALSE, print_plots = TRUE,
+                        level = FALSE, print_plots = FALSE,
                         var_lims = NULL, ylim = NULL, cumulative = FALSE,
                         facet = TRUE) {
 
