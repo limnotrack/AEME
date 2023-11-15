@@ -55,3 +55,69 @@ test_that("plotting model output works", {
                     print_plots = F)
   testthat::expect_true(ggplot2::is.ggplot(p3))
 })
+
+
+test_that("plotting model output works with no lake observations", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed", "gotm_wet")
+
+  # Remove observations
+  obs <- observations(aeme_data)
+  obs$lake <- NULL
+  observations(aeme_data) <- obs
+
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE)
+
+
+  # Run models
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
+                        path = path, mod_ctrls = mod_ctrls, parallel = TRUE)
+
+  p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
+                    level = TRUE, print_plots = FALSE,
+                    var_lims = c(0, 30), ylim = c(0, 16))
+  testthat::expect_true(ggplot2::is.ggplot(p1))
+})
+
+test_that("plotting model output works with no lake & level observations", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed", "gotm_wet")
+
+  # Remove observations
+  obs <- observations(aeme_data)
+  obs$lake <- NULL
+  obs$level <- NULL
+  observations(aeme_data) <- obs
+
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE)
+
+
+  # Run models
+  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
+                        path = path, mod_ctrls = mod_ctrls, parallel = TRUE)
+
+  p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
+                    level = TRUE, print_plots = FALSE,
+                    var_lims = c(0, 30), ylim = c(0, 16))
+  testthat::expect_true(ggplot2::is.ggplot(p1))
+})
