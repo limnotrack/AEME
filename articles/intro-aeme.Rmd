@@ -31,13 +31,13 @@ str(yaml)
 
 # convert list into a tree structure
 lake_names <- paste0(names(yaml$lake), collapse = ", ")
-catchment_names <- paste0(names(yaml$catchment), collapse = ", ")
 time_names <- paste0(names(yaml$time), collapse = ", ")
 config_names <- paste0(names(yaml$configuration), collapse = ", ")
 obs_names <- paste0(names(yaml$observations), collapse = ", ")
 input_names <- paste0(names(yaml$inputs), collapse = ", ")
 inflow_names <- paste0(names(yaml$inflows), collapse = ", ")
 outflow_names <- paste0(names(yaml$outflows), collapse = ", ")
+water_balance_names <- paste0(names(yaml$water_balance), collapse = ", ")
 output_names <- paste0(names(yaml$outputs), collapse = ", ")
 
 
@@ -69,8 +69,6 @@ the following slots:
 
 -   **lake** - a list object containing information about the lake
     (`r lake_names`)
--   **catchment** - a list object containing information about the catchment
-    (`r catchment_names`)
 -   **time** - a list object containing information about the time
     (`r time_names`)
 -   **configuration** - a list object containing information about the
@@ -83,21 +81,16 @@ the following slots:
     (`r inflow_names`)
 -   **outflows** - a list object containing information about the outflows
     (`r outflow_names`)
+-   **water_balance** - a list object containing information about the water balance configuration
+    (`r water_balance_names`)
 -   **outputs** - a list object containing information about the outputs
     (`r output_names`)
--   Calibration?
-
-```{r echo=FALSE, class.source = 'fold-hide'}
-str(yaml)
-```
-
 
 
 ## `aeme` object creation
 
 The `aeme` object can be created from a YAML file using the `yaml_to_aeme`
 function. The YAML file contains all the information required to run the model.
-The YAML file can be created manually or using the `aeme_create` function.
 
 ```{r warning=FALSE, message=FALSE}
 aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
@@ -105,5 +98,43 @@ slotNames(aeme_data)
 ```
 
 ## `aeme` object manipulation
+
+The `aeme` object can be manipulated using the `AEME` package functions. The 
+functions are defined by the slot names of the `aeme` object. For example, the
+`lake` slot can be manipulated using the `lake` function.
+
+```{r aeme-manipulation}
+# Load lake data
+lke <- lake(aeme_data)
+# Print lake data to console
+print(lke)
+
+# Change lake name
+lke[["name"]] <- "Lake AEME"
+
+# reassign lake data to aeme object
+lake(aeme_data) <- lke
+
+aeme_data
+
+```
+
+## `aeme` object visualisation
+
+The `aeme` object can be visualised simply using the `plot` function. The
+`plot` function can be applied to the different slots of the `aeme` object. For 
+example, the `lake` slot can be visualised using the `plot` function.
+
+```{r aeme-visualisation-lake}
+plot(aeme_data, "lake")
+
+```
+
+```{r aeme-visualisation-input}
+plot(aeme_data, "input")
+
+```
+
+
 
 
