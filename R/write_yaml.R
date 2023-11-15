@@ -29,6 +29,6 @@ write_yaml <- function(x, file, fileEncoding = "UTF-8", ...) {
   lins <- readLines(file)
   lins <- gsub("\\byes", "true", lins)
   lins <- gsub("\\bno", "false", lins)
-  lins <- gsub("~", "null", lins)
+  lins <- gsub("~", "", lins)
   writeLines(lins, file)
 }
