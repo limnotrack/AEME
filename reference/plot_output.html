@@ -57,8 +57,7 @@ variables.</p>
 <span>  var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>,</span>
 <span>  add_obs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  level <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  label <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  print_plots <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  print_plots <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  var_lims <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ylim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cumulative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -87,10 +86,6 @@ variables.</p>
 
 <dt>level</dt>
 <dd><p>boolean; include lake level. Only applies for contour plots.</p></dd>
-
-
-<dt>label</dt>
-<dd><p>boolean; include variable label as subtitle for contour plots.</p></dd>
 
 
 <dt>print_plots</dt>
@@ -138,7 +133,7 @@ variables.</p>
 <span class="r-in"><span>                           mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">plot_output</span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
-<span class="r-in"><span>                    var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>, level <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                    var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>, level <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                    print_plots <span class="op">=</span> <span class="cn">FALSE</span>, var_lims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                    ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">p1</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
