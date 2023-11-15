@@ -15,7 +15,7 @@ plot_output(
   var_lims = NULL,
   ylim = NULL,
   cumulative = FALSE,
-  facet = FALSE
+  facet = TRUE
 )
 }
 \arguments{
