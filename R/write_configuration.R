@@ -39,7 +39,20 @@ write_config_dy_cd <- function(aeme_data, path) {
 
   if (!is.null(model_config[["dy_cd"]][["ecosystem"]])) {
     con_file <- file.path(model_dir, paste0(name, ".con"))
-    writeLines(model_config$dy_cd$ecosystem, con_file)
+    writeLines(model_config$dy_cd$ecosystem$con, con_file)
+
+    # Write CAEDYM bio file
+    bio_file <- file.path(model_dir, "caedym3p1.bio")
+    writeLines(model_config$dy_cd$ecosystem$bio, bio_file)
+
+    # Write CAEDYM chm file
+    chm_file <- file.path(model_dir, "caedym3p1.chm")
+    writeLines(model_config$dy_cd$ecosystem$chm, chm_file)
+
+    # Write CAEDYM sed file
+    sed_file <- file.path(model_dir, "caedym3p1.sed")
+    writeLines(model_config$dy_cd$ecosystem$sed, sed_file)
+
   }
   invisible()
 }
@@ -105,8 +118,10 @@ write_config_gotm_wet <- function(aeme_data, path) {
   model_config <- configuration(aeme_data)
   if (is.null(model_config[["gotm_wet"]][["hydrodynamic"]]))
     stop("No GOTM hydrodynamic configuration present")
-  write_yaml(model_config[["gotm_wet"]][["hydrodynamic"]],
+  write_yaml(model_config[["gotm_wet"]][["hydrodynamic"]][["gotm"]],
              file.path(model_dir, "gotm.yaml"))
+  write_yaml(model_config[["gotm_wet"]][["hydrodynamic"]][["output"]],
+             file.path(model_dir, "output.yaml"))
 
   if (!is.null(model_config[["gotm_wet"]][["ecosystem"]])) {
     fabm_file <- file.path(model_dir, "fabm.yaml")

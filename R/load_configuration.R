@@ -64,11 +64,34 @@ get_config_dy_cd <- function(lake, path, use_bgc) {
   out$physical = list(par = par, cfg = cfg)
 
   if (use_bgc) {
+
+    # Con file
     con_file <- file.path(lake_dir, "dy_cd", paste0(name, ".con"))
     if (!file.exists(con_file)) {
       stop("No DYRESM con file present at\n", con_file)
     }
-    out$bgc <- readLines(con_file)
+    out$bgc$con <- readLines(con_file)
+
+    # Bio file
+    bio_file <- file.path(lake_dir, "dy_cd", "caedym3p1.bio")
+    if (!file.exists(bio_file)) {
+      stop("No DYRESM bio file present at\n", bio_file)
+    }
+    out$bgc$bio <- readLines(bio_file)
+
+    # Chm file
+    chm_file <- file.path(lake_dir, "dy_cd", "caedym3p1.chm")
+    if (!file.exists(chm_file)) {
+      stop("No DYRESM chm file present at\n", chm_file)
+    }
+    out$bgc$chm <- readLines(chm_file)
+
+    # Sed file
+    sed_file <- file.path(lake_dir, "dy_cd", "caedym3p1.sed")
+    if (!file.exists(sed_file)) {
+      stop("No DYRESM sed file present at\n", sed_file)
+    }
+    out$bgc$sed <- readLines(sed_file)
   }
   return(out)
 }
@@ -130,7 +153,16 @@ get_config_gotm_wet <- function(lake, path, use_bgc) {
   if (!file.exists(yaml_file)) {
     stop("No GOTM yaml file present at\n", yaml_file)
   }
-  out$physical <- yaml::read_yaml(file = yaml_file)
+  out[["physical"]][["gotm"]] <- yaml::read_yaml(file = yaml_file)
+
+  yaml_file <- file.path(lake_dir, "gotm_wet", "output.yaml")
+  if (!file.exists(yaml_file)) {
+    stop("No GOTM output yaml file present at\n", yaml_file)
+  }
+  suppressWarnings({
+    out[["physical"]][["output"]] <- yaml::read_yaml(file = yaml_file)
+  })
+
 
   if (use_bgc) {
     fabm_file <- file.path(lake_dir, "gotm_wet", "fabm.yaml")
