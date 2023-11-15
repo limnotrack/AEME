@@ -53,8 +53,10 @@ plot_var <- function(df = NULL, aeme_data, model, var_sim, ylim, xlim, var_lims,
         df2 <- df |>
           dplyr::filter(Model == m)
         obs2 <- obs
-        obs2$lake_adj <- obs2$lake_adj |>
-          dplyr::filter(Model == m)
+        if (!is.null(obs2$lake_adj)) {
+          obs2$lake_adj <- obs2$lake_adj |>
+            dplyr::filter(Model == m)
+        }
         plot_var_depth(df = df2, obs = obs2, ylim = ylim, xlim = xlim,
                        var_lims = var_lims, add_obs = add_obs,
                        print_plots = print_plots)
