@@ -93,7 +93,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, spin_up,
     }
     if (length(outflow_vars) >= 1) {
       outflow <- sapply(seq_along(outflow_vars), \(x) {
-        (ncdf4::ncvar_get(nc, outflow_vars[x]) * 86400) / A0
+        -1 * (ncdf4::ncvar_get(nc, outflow_vars[x]) * 86400) / A0
       }) |>
         apply(1, sum)
     } else {
