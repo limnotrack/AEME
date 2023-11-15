@@ -924,6 +924,11 @@ setMethod("summary", "aeme", function(object, ...) {
 #' @param add logical; add to current plot?
 #'
 #' @importFrom sf st_transform st_geometry
+#' @importFrom ggplot2 ggplot aes geom_sf geom_point geom_line labs ggtitle
+#' theme_bw facet_wrap
+#' @importFrom patchwork wrap_plots
+#' @importFrom tidyr pivot_longer
+#' @importFrom dplyr left_join
 #'
 #' @return prints the aeme object to the console.
 #' @export
@@ -959,6 +964,32 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
           sub = paste0("Elevation: ", obj$elevation, "m; Depth: ",
                        obj$depth, "m"))
   }
+
+  if (y == "input") {
+
+    # Load Rdata
+    utils::data("key_naming", package = "AEME", envir = environment())
+
+    inp <- input(x)
+    p1 <- ggplot2::ggplot() +
+      ggplot2::geom_line(data = inp$hypsograph, ggplot2::aes(x = area, y = elev)) +
+      ggplot2::geom_point(data = inp$hypsograph, ggplot2::aes(x = area, y = elev)) +
+      ggplot2::labs(x = "Area (m2)", y = "Elevation (m)") +
+      ggplot2::ggtitle("Hypsograph") +
+      ggplot2::theme_bw()
+
+    p2 <- inp$meteo |>
+      tidyr::pivot_longer(cols = !dplyr::contains("Date")) |>
+      dplyr::left_join(key_naming[, c("name", "name_parse")], by = c("name" = "name")) |>
+      ggplot2::ggplot() +
+      ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
+      ggplot2::facet_wrap(~name_parse, scales = "free_y", labeller = ggplot2::label_parsed) +
+      ggplot2::theme_bw()
+
+    g <- p1 + p2 + patchwork::plot_layout(nrow = 1, widths = c(1, 4))
+    print(g)
+  }
+
 
   # if (y == "catchment") {
   #   if (is(obj$shape, "sf")) {
