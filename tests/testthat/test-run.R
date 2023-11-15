@@ -488,7 +488,7 @@ test_that("can build all models, run and write to new directory & re-run", {
 
   file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
                                                  tolower(lke$name)),
-                                    model, "DYsim.nc"))
+                                    model[1], "DYsim.nc"))
   testthat::expect_true(file_chk)
 
   file_chk <- all(file.exists(file.path(path2, paste0(lke$id, "_",
