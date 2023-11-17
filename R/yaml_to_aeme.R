@@ -9,9 +9,15 @@
 #' @importFrom yaml read_yaml
 #' @importFrom sf st_read
 #' @importFrom dplyr mutate
+#' @importFrom withr local_locale local_timezone
 #'
 
 yaml_to_aeme <- function(path, file) {
+
+  # Set timezone temporarily to UTC
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+
   yaml <- yaml::read_yaml(file.path(path, file))
   if (!is.null(yaml$lake$shape)) {
     invisible(capture.output({
