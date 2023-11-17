@@ -14,20 +14,37 @@
 #' variables.
 #' @noRd
 
-make_metGOTM <- function(df_met, path.gotm, hum_type = 3, return_df = TRUE) {
+make_metGOTM <- function(df_met, path.gotm, hum_type = 3, lat, lon,
+                         return_colname = TRUE) {
 
   df_met <- df_met |>
     dplyr::mutate(time = "12:00:00") |>
     dplyr::mutate(MET_pprain = MET_pprain / 1000,
                   MET_ppsnow = MET_ppsnow / 1000) # convert to m
   if (hum_type == 1) {
-    col_sel <- c("Date","time","MET_wnduvu", "MET_wnduvv","MET_prsttn","MET_tmpair",
-                 "MET_humrel","MET_cldcvr", "MET_radswd", "MET_pprain")
+    col_sel <- c("Date", "time", "MET_wnduvu", "MET_wnduvv", "MET_prsttn",
+                 "MET_tmpair", "MET_humrel", "MET_cldcvr", "MET_pprain")
   } else if(hum_type == 3) {
-    col_sel <- c("Date","time","MET_wnduvu", "MET_wnduvv","MET_prsttn","MET_tmpair",
-                 "MET_tmpdew","MET_cldcvr", "MET_radswd", "MET_pprain")
+    col_sel <- c("Date", "time", "MET_wnduvu", "MET_wnduvv","MET_prsttn",
+                 "MET_tmpair", "MET_tmpdew", "MET_cldcvr", "MET_pprain")
   }
 
+  # SWR met file
+  met_swr <- df_met |>
+    dplyr::select(Date, MET_radswd)
+
+  met_swr <- estimate_hourly_swr(met = met_swr, lat = lat, lon = lon)
+
+  met_swr <- met_swr |>
+    dplyr::mutate(dplyr::across(2:ncol(met_swr), \(x) signif(x, 6)),
+                  dplyr::across(2:ncol(met_swr), \(x) format(x, nsmall = 4,
+                                                              width = 12)))
+
+  utils::write.table(met_swr, file.path(path.gotm, "inputs", "meteo_swr.dat"),
+                     row.names = FALSE, col.names = FALSE, quote = FALSE,
+                     na = "", sep = "\t")
+
+  # Main met file
   met_main <- df_met |>
     dplyr::select(dplyr::all_of(col_sel)) |>
     dplyr::mutate(precip = MET_pprain / (86400)) |>
@@ -42,7 +59,7 @@ make_metGOTM <- function(df_met, path.gotm, hum_type = 3, return_df = TRUE) {
                      row.names = FALSE, col.names = FALSE, quote = FALSE,
                      na = "", sep = "\t")
 
-  if (return_df) {
-    return(met_main)
+  if (return_colname) {
+    return(names(met_main))
   }
 }
