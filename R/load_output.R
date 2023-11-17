@@ -29,15 +29,17 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
     nlev <- ceiling((depth) / div)
   }
   aeme_time <- time(aeme_data)
+  outp <- output(aeme_data)
+  output_hour <- 0
   spin_up <- aeme_time$spin_up
+  # start_date <- as.Date(aeme_time$start)
   vars_sim <- mod_ctrls |>
     dplyr::filter(simulate == 1) |>
     dplyr::pull(name)
   lke <- lake(aeme_data)
-  lake_dir <- file.path(path, paste0(lke$id, "_",
-                                    tolower(lke$name)))
+  lake_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)))
 
-
+  # Extract model output fron netCDF files and return as a list
   if (parallel) {
 
     ncores <- min(c(parallel::detectCores() - 1, length(model)))
@@ -45,9 +47,8 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
     on.exit({
       parallel::stopCluster(cl)
     })
-    parallel::clusterExport(cl, varlist = list("lake_dir", "nc_listify",
-                                               "vars_sim", "spin_up", "nlev",
-                                               "delagrangify"),
+    parallel::clusterExport(cl, varlist = list("lake_dir", "vars_sim",
+                                               "spin_up", "nlev"),
                             envir = environment())
     # parallel::clusterEvalQ(cl, expr = {library(LakeEnsemblR); library(gotmtools);
     # })
@@ -109,11 +110,17 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
       })
       nc_listify(nc = nc, model = m,
                  vars_sim = vars_sim,
-                 spin_up = spin_up[[m]],
-                 nlev = nlev)
+                 aeme_time = aeme_time,
+                 # spin_up = spin_up[[m]],
+                 nlev = nlev, output_hour = output_hour)
     })
   }
   names(mods) <- model
+  # lapply(mods, \(x) head(x$Date))
+  # lapply(mods, \(x) tail(x$Date))
+  # lapply(mods, \(x) x$HYD_temp[, 10])
+  # lapply(mods, \(x) x$LKE_layers[, 10])
+
   new_output <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
                      gotm_wet = mods[["gotm_wet"]])
 
