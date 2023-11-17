@@ -12,6 +12,7 @@
 #' @keywords inputs
 #'
 #' @importFrom lubridate year
+#' @importFrom withr local_locale local_timezone
 #' @noRd
 #'
 
@@ -22,6 +23,10 @@ make_DYCDcfg <-  function(lakename = "unknown",
                           minLyrThk = 0.2,
                           maxLyrThk = 0.3,
                           simVars, filePath) {
+
+  # Set timezone temporarily to UTC
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
 
   ######## set defaults ########
 
