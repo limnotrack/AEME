@@ -23,7 +23,7 @@ get_var <- function(aeme_data, model, var_sim, return_df = TRUE,
       message(strwrap(paste0(var_sim, " is not in output for model ", m,
                              ". Returning a dataframe with NA's.")))
       df <- data.frame(Date = NA, value = NA, Model = NA, lyr_thk = NA)
-    } else if (length(dim(variable)) == 1 | is.numeric(variable)) {
+    } else if (is.null(dim(variable))) {
       df <- data.frame(Date = outp[[m]][["Date"]],
                        lyr_top = NA,
                        value = variable,
@@ -36,10 +36,10 @@ get_var <- function(aeme_data, model, var_sim, return_df = TRUE,
     } else {
       depth <- data.frame(Date = outp[[m]][["Date"]],
                           depth = outp[[m]][["LKE_lvlwtr"]])
-      lyr <- outp[[m]][["LAYERS"]]
+      lyr <- outp[[m]][["LKE_layers"]]
       df <- data.frame(Date = rep(outp[[m]][["Date"]], each = nrow(variable)),
-                       lyr_top = unlist(lyr),
-                       value = unlist(variable),
+                       lyr_top = as.vector(lyr),
+                       value = as.vector(variable),
                        Model = m) |>
         dplyr::mutate(lyr_thk = ifelse(c(-999, diff(lyr_top)) < 0, # | is.na(-c(NA,diff(lyr_top))),
                                        c(diff(lyr_top),NA),
