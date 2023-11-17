@@ -26,8 +26,8 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
   gotm$location$depth <- init_depth
 
   gotm$time$method <- 2
-  gotm$time$start <- paste(date_range[1], "12:00:00")
-  gotm$time$stop <- paste(date_range[2], "12:00:00")
+  gotm$time$start <- paste(date_range[1], "00:00:00")
+  gotm$time$stop <- paste(date_range[2], "00:00:00")
   gotm$time$dt <- 3600
 
   gotm$light_extinction$method <- 7
@@ -80,18 +80,29 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
   gotm$location$hypsograph <- "inputs/hypsograph.dat"
 
   # Met ----
-  gotm_met <- make_metGOTM(df_met = met, path_gotm, hum_type = hum_type)
-  gotm_met_names <- names(gotm_met)[-c(1, 2)]
+  met_cols <- make_metGOTM(df_met = met, path_gotm, hum_type = hum_type,
+                           lat = round(gps[2], 5), lon = round(gps[1], 5))
+  gotm_met_names <- met_cols[-c(1, 2)]
 
-  for (m in 1:length(gotm_met_names)) {
-    idx <- which(met_ref$std == gotm_met_names[m])
-    gotm$surface$meteo[[met_ref$gotm[idx]]]$method <- 2
-    gotm$surface$meteo[[met_ref$gotm[idx]]]$file <- "inputs/meteo.dat"
-    gotm$surface$meteo[[met_ref$gotm[idx]]]$column <- which(gotm_met_names == met_ref$std[idx])
-    gotm$surface$meteo[[met_ref$gotm[idx]]]$scale_factor <- 1 # ifelse(gotm_met_names[m] == "stn_press", 100, 1)
-    gotm$surface$meteo[[met_ref$gotm[idx]]]$offset <- 0
-    if (met_ref$gotm[idx] == "hum") {
-      gotm$surface$meteo[[met_ref$gotm[idx]]]$type <- hum_type
+  for (m in 1:nrow(met_ref)) {
+
+    if (met_ref$gotm[m] == "swr" | met_ref$std[m] %in% gotm_met_names) {
+      # idx <- which(met_ref$std == gotm_met_names[m])
+      if (met_ref$gotm[m] == "swr") {
+        file <- "inputs/meteo_swr.dat"
+        column <- 1
+      } else {
+        file <- "inputs/meteo.dat"
+        column <- which(gotm_met_names == met_ref$std[m])
+      }
+      gotm$surface$meteo[[met_ref$gotm[m]]]$method <- 2
+      gotm$surface$meteo[[met_ref$gotm[m]]]$file <- file
+      gotm$surface$meteo[[met_ref$gotm[m]]]$column <- column
+      gotm$surface$meteo[[met_ref$gotm[m]]]$scale_factor <- 1
+      gotm$surface$meteo[[met_ref$gotm[m]]]$offset <- 0
+      if (met_ref$gotm[m] == "hum") {
+        gotm$surface$meteo[[met_ref$gotm[m]]]$type <- hum_type
+      }
     }
   }
 
