@@ -56,7 +56,7 @@ are "use_obs", "sinusoidal", "constant".}
 \value{
 data frame of water balance components which are:
 - Date
-- lvlwtr
+- value
 - HYD_flow
 -...
 }

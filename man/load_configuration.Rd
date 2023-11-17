@@ -14,7 +14,7 @@ load_configuration(model, aeme_data, path, use_bgc = FALSE)
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
-\item{use_bgc}{boolean; switch to use the biogeochemical model.}
+\item{use_bgc}{logical; switch to use the biogeochemical model.}
 }
 \value{
 Updated aeme object with model configuration
