@@ -155,7 +155,7 @@ test_that("running models in parallel works", {
   inp <- input(aeme_data)
   met <- inp$meteo
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path, parallel = F)
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
   # plot_output(aeme_data = aeme_data, model = model)
   # plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
   #             facet = F)
