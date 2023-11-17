@@ -147,13 +147,21 @@ test_that("running models in parallel works", {
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed", "gotm_wet")
-  build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
+                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                              ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
+                              calc_wlev = F)
+  inp <- input(aeme_data)
+  met <- inp$meteo
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
-  # plot_output(aeme_data = aeme_data, model = model, var_sim = "CHM_oxy", add_obs = F)
+                        mod_ctrls = mod_ctrls, path = path, parallel = F)
+  # plot_output(aeme_data = aeme_data, model = model)
+  # plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
+  #             facet = F)
+  # lvl <- get_var(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr", return_df = F)
+  #
+  # lapply(lvl, head)
 
   lke <- lake(aeme_data)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
@@ -175,14 +183,14 @@ test_that("running models in parallel with no wbal calculated", {
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = TRUE, calc_wbal = FALSE)
+                              ext_elev = 5, use_bgc = FALSE, calc_wbal = FALSE)
   outf <- outflows(aeme_data)
   names(outf$data)
 
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
                         mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
   plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
-              add_obs = F)
+              add_obs = FALSE, facet = FALSE)
 
   lke <- lake(aeme_data)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
@@ -487,12 +495,12 @@ test_that("can build all models, run and write to new directory & re-run", {
                         mod_ctrls = mod_ctrls, path = path2)
 
   file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
+                                                  tolower(lke$name)),
                                     model[1], "DYsim.nc"))
   testthat::expect_true(file_chk)
 
   file_chk <- all(file.exists(file.path(path2, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
+                                                      tolower(lke$name)),
                                         model[-1], "output", "output.nc")))
   testthat::expect_true(file_chk)
 
