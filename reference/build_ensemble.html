@@ -56,12 +56,12 @@
 <span>  inf_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>glm_aed <span class="op">=</span> <span class="fl">1</span>, dy_cd <span class="op">=</span> <span class="fl">1</span>, gotm_wet <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  outf_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>glm_aed <span class="op">=</span> <span class="fl">1</span>, dy_cd <span class="op">=</span> <span class="fl">1</span>, gotm_wet <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  ext_elev <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  use_bgc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  use_bgc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  calc_wbal <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  calc_wlev <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  use_aeme <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  coeffs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hum_type <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -101,15 +101,20 @@ outflows. Needs to be named according to the model.</p></dd>
 
 
 <dt>use_bgc</dt>
-<dd><p>boolean; switch to use the biogeochemical model.</p></dd>
+<dd><p>logical; switch to use the biogeochemical model.</p></dd>
 
 
 <dt>calc_wbal</dt>
-<dd><p>boolean; calculate water balance.</p></dd>
+<dd><p>logical; calculate water balance.</p></dd>
 
 
 <dt>calc_wlev</dt>
-<dd><p>boolean; calculate water level.</p></dd>
+<dd><p>logical; calculate water level.</p></dd>
+
+
+<dt>use_aeme</dt>
+<dd><p>logical; use AEME object to generate model confiuration
+files.</p></dd>
 
 
 <dt>coeffs</dt>
@@ -126,10 +131,6 @@ temperature. Otherwise. it uses the simple estimation
 <dd><p>numeric; GOTM humidity metric [1=relative humidity (<!-- %), -->
 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
 Default = 3.</p></dd>
-
-
-<dt>overwrite</dt>
-<dd><p>boolean; overwrite config files. Default is FALSE.</p></dd>
 
 
 <dt>path</dt>
@@ -149,7 +150,7 @@ Default = 3.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"configr"</span>, repos <span class="op">=</span> <span class="st">"http://cran.us.r-project.org"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package into ‘/tmp/Rtmp4PvDXx/temp_libpath1ca2679151df’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package into ‘/tmp/RtmpTv4rBQ/temp_libpath1caf4ee3309c’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> (as ‘lib’ is unspecified)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> also installing the dependencies ‘ini’, ‘RcppTOML’</span>
 <span class="r-in"><span><span class="va">tmpdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -169,7 +170,7 @@ Default = 3.</p></dd>
 <span class="r-in"><span><span class="fu">build_ensemble</span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>               mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>               use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2023-11-15 21:13:45.862083]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2023-11-17 04:09:01.697668]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using optimisation function</span>
@@ -186,7 +187,8 @@ Default = 3.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Area: 152343 m2; Shape file: Present</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Start: 2022-01-09 Stop: 2022-12-30 Time step: 3600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Start: 2022-01-09; Stop: 2022-12-30; Time step: 3600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Configuration</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Physical   |   Biogeochemical</span>
