@@ -3,7 +3,7 @@
 #' @param input string; vector of names
 #' @param type_input string; type of input
 #' @param type_output string; type of output
-#' @param verbose boolean; print changes to console
+#' @param verbose logical; print changes to console
 #'
 #' @return vector of changed names
 #' @noRd
