@@ -24,7 +24,7 @@ initialiseGOTM <-  function(gotm, lvl_bottom, lvl_surf,
 
   ndeps <- nrow(tbl_obs)
   df <- matrix(NA, nrow = 1 + nrow(tbl_obs), ncol = 2)
-  df[1, 1] <- paste(start_date, "09:00:00")
+  df[1, 1] <- paste(start_date, "00:00:00")
   df[1, 2] <- paste(nrow(tbl_obs), " ", 2)
   df[(2):(1 + ndeps), 1] <- as.numeric(-tbl_obs[["depth"]])
   df[(2):(1 + ndeps), 2] <- as.numeric(tbl_obs[["temperature"]])
