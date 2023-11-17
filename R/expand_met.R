@@ -3,7 +3,7 @@
 #'
 #' @param met data frame of source meteorology variables
 #' @param coords.xyz vector of longitude, latitude and elevation of met station
-#' @param print.plot boolean; print the plot
+#' @param print.plot logical; print the plot
 #'
 #' @return dataframe with expanded met variables
 #' @noRd
@@ -11,9 +11,14 @@
 #' @importFrom psychrolib SetUnitSystem GetStationPressure GetSeaLevelPressure
 #' @importFrom tidyr pivot_longer
 #' @importFrom ggplot2 ggplot geom_line aes facet_wrap labs theme_bw
+#' @importFrom withr local_locale local_timezone
 #'
 
 expand_met <- function(met, coords.xyz, print.plot = FALSE) {
+
+  # Set timezone temporarily to UTC
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
 
   # station vs sea level pressures
   psychrolib::SetUnitSystem("SI")
