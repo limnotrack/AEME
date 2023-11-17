@@ -3,7 +3,7 @@
 #' @inheritParams set_nml
 #' @param path_glm filepath; to GLM directory
 #' @param list_inf list of inflows
-#' @param mass boolean; do mass conversion for GLM-AED units.
+#' @param mass logical; do mass conversion for GLM-AED units.
 #' @param inf_factor numeric; scaling factor to apply to inflows
 #'
 #' @return nml object with updated inflow section
