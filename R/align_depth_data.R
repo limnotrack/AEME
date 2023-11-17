@@ -41,8 +41,11 @@ align_depth_data <- function(aeme_data, model, var_sim, return_df = TRUE) {
   # Adjust water level observations
   if (!is.null(obs$level)) {
     obs$level_adj <- obs$level |>
-      dplyr::filter(Date %in% outp[[model[1]]][["Date"]]) |>
-      dplyr::mutate(lvl_adj = lvlwtr - min(inp$hypsograph$elev))
+      dplyr::filter(Date %in% outp[[model[1]]][["Date"]] & var == "LKE_lvlwtr")
+    if (nrow(obs$level_adj) > 0) {
+      obs$level_adj <- obs$level_adj |>
+        dplyr::mutate(lvl_adj = value - min(inp$hypsograph$elev))
+    }
   }
 
   if (return_df) {
