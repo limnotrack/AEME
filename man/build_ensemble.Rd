@@ -12,12 +12,12 @@ build_ensemble(
   inf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   ext_elev = 0,
-  use_bgc = TRUE,
+  use_bgc = FALSE,
   calc_wbal = TRUE,
   calc_wlev = TRUE,
+  use_aeme = FALSE,
   coeffs = NULL,
   hum_type = 3,
-  overwrite = FALSE,
   path = "."
 )
 }
@@ -40,11 +40,14 @@ outflows. Needs to be named according to the model.}
 
 \item{ext_elev}{numeric; extension in elevation for the hypsogrph in metres.}
 
-\item{use_bgc}{boolean; switch to use the biogeochemical model.}
+\item{use_bgc}{logical; switch to use the biogeochemical model.}
 
-\item{calc_wbal}{boolean; calculate water balance.}
+\item{calc_wbal}{logical; calculate water balance.}
 
-\item{calc_wlev}{boolean; calculate water level.}
+\item{calc_wlev}{logical; calculate water level.}
+
+\item{use_aeme}{logical; use AEME object to generate model confiuration
+files.}
 
 \item{coeffs}{numeric vector of length two; to be used to estimate surface
 water temperature for estimating evaporation. Defaults to NULL. If water
@@ -57,8 +60,6 @@ temperature. Otherwise. it uses the simple estimation
 \item{hum_type}{numeric; GOTM humidity metric [1=relative humidity (%),
 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
 Default = 3.}
-
-\item{overwrite}{boolean; overwrite config files. Default is FALSE.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 }
