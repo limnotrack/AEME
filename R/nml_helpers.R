@@ -20,8 +20,8 @@ buildVal	<-	function(textLine, lineNum, blckName){
   parNm	  <-	params[[1]][1]
   parVl	  <-	params[[1]][2]
   # figure out what parval is...if string, remove quotes and keep as string
-  # ***for boolean text, use "indentical" so that 0!= FALSE
-  # can be: string, number, comma-sep-numbers, or boolean
+  # ***for logical text, use "indentical" so that 0!= FALSE
+  # can be: string, number, comma-sep-numbers, or logical
 
   # special case for date:
   if (is.na(parVl)){
@@ -186,7 +186,7 @@ ascii_only <- function(file){
 #'
 #' @inheritParams read_nml
 #' @param arg_name string; argument name
-#' @param warn boolean; print warning
+#' @param warn logical; print warning
 #'
 #' @return string of argument name
 #' @noRd
