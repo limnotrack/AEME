@@ -28,9 +28,15 @@
 #' @importFrom stats aggregate
 #' @importFrom zoo na.approx
 #' @importFrom lubridate hours hour yday
+#' @importFrom withr local_locale local_timezone
 #' @noRd
 
 calc_cc <- function(date, airt, relh = NULL, dewt = NULL, swr, lat, lon, elev, daily = FALSE){
+
+  # Set timezone temporarily to UTC
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+
   orig_date <- date
   timestep <- difftime(orig_date[2], orig_date[1], units = "secs")
 

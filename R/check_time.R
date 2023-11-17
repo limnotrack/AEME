@@ -5,7 +5,9 @@
 #' @param aeme_time list; a list of start, stop and spin-up period for each
 #' model from aeme_data object
 #'
-#' @return vector; of boolean values for if model spin-up period is included in
+#' @importFrom lubridate ddays
+#'
+#' @return vector; of logical values for if model spin-up period is included in
 #' the data
 #' @noRd
 #'
@@ -13,11 +15,12 @@
 check_time <- function(df, model, aeme_time, name = "") {
   names(model) <- model
   spin_chk <- sapply(model, \(m) {
-    spin_start <- aeme_time[["start"]] - lubridate::ddays(aeme_time[["spin_up"]][[m]])
+    spin_start <- as.Date(aeme_time[["start"]]) -
+      lubridate::ddays(aeme_time[["spin_up"]][[m]])
     spin_start %in% df[["Date"]]
   })
-  start_chk <- aeme_time[["start"]] %in% df[["Date"]]
-  stop_chk <- aeme_time[["stop"]] %in% df[["Date"]]
+  start_chk <- as.Date(aeme_time[["start"]])  %in% df[["Date"]]
+  stop_chk <- as.Date(aeme_time[["stop"]])  %in% df[["Date"]]
 
   if (any(!c(spin_chk, start_chk, stop_chk))) {
     chk <- list("spin up" = spin_chk, "start" = start_chk, "stop" = stop_chk)
