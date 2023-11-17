@@ -39,9 +39,9 @@ Defaults to NULL and will generate common limits for all variables.}
 
 \item{obs}{list; output from \code{\link{observations}}}
 
-\item{add_obs}{boolean; add observations to plot}
+\item{add_obs}{logical; add observations to plot}
 
-\item{level}{boolean; include lake level. Only applies for contour plots.}
+\item{level}{logical; include lake level. Only applies for contour plots.}
 
 \item{facet}{logical; if \code{TRUE}, for variables with depth, plot each
 model in a separate facet. If \code{FALSE}, plot each model in a separate
@@ -50,7 +50,7 @@ plot each model in a separate facet. If \code{FALSE}, plot each model as a
 separate line and return a plot.
 This only applies to variables without a depth component.}
 
-\item{print_plots}{boolean; print plots}
+\item{print_plots}{logical; print plots}
 }
 \value{
 ggplot2 object or list of ggplot2 objects

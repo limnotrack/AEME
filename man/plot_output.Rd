@@ -25,11 +25,11 @@ plot_output(
 
 \item{var_sim}{string; of variable to plot}
 
-\item{add_obs}{boolean; add observations to plot}
+\item{add_obs}{logical; add observations to plot}
 
-\item{level}{boolean; include lake level. Only applies for contour plots.}
+\item{level}{logical; include lake level. Only applies for contour plots.}
 
-\item{print_plots}{boolean; print plots}
+\item{print_plots}{logical; print plots}
 
 \item{var_lims}{numeric vector of length 2; limits for the variable.
 Defaults to NULL and will generate common limits for all variables.}
