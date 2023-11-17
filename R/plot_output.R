@@ -5,13 +5,13 @@
 #'
 #' @inheritParams build_ensemble
 #' @param var_sim string; of variable to plot
-#' @param level boolean; include lake level. Only applies for contour plots.
-#' @param print_plots boolean; print plots
+#' @param level logical; include lake level. Only applies for contour plots.
+#' @param print_plots logical; print plots
 #' @param var_lims numeric vector of length 2; limits for the variable.
 #' Defaults to NULL and will generate common limits for all variables.
 #' @param ylim numeric vector of length 2; limits for the y-axis. Defaults to
 #' NULL and calculates this based on the data to be plotted.
-#' @param add_obs boolean; add observations to plot
+#' @param add_obs logical; add observations to plot
 #'
 #' @return list of plots for z-dimensional variables or a ggplot2 object for 1-d
 #' variables.
@@ -20,6 +20,8 @@
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom ggplot2 ggplot geom_col aes scale_fill_gradientn coord_cartesian
 #' xlab ylab labs ggtitle theme_bw
+#' @importFrom withr local_locale local_timezone
+#'
 #' @examples
 #' \dontrun{
 #'   tmpdir <- tempdir()
@@ -57,6 +59,10 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
                         level = FALSE, print_plots = FALSE,
                         var_lims = NULL, ylim = NULL, cumulative = FALSE,
                         facet = TRUE) {
+
+  # Set timezone temporarily to UTC
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
 
   # Check if aeme_data is a aeme class
   if (!inherits(aeme_data, "aeme")) stop("aeme_data must be an aeme class")
