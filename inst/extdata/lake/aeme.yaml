@@ -12,9 +12,9 @@ time:
    stop: 2022-12-30 00:00:00                    # stop date and time [yyyy-mm-dd HH:MM:SS]
    time_step: 3600.0                            # time step for integration [s; min=0.0]
    spin_up:
-      dy_cd: 0
-      glm_aed: 0
-      gotm_wet: 0
+      dy_cd: 1
+      glm_aed: 2
+      gotm_wet: 1
 configuration:
   dy_cd: null
   glm_aed: null
