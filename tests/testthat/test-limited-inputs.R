@@ -84,18 +84,6 @@ testthat::test_that("can build AEME with simple set of inputs", {
   inp <- input(aeme_data)
 
   testthat::expect_true(is.data.frame(inp$hypsograph))
-
-  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path)
-
-  lke <- lake(aeme_data)
-  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[1], "DYsim.nc")),
-                  file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[2:3], "output", "output.nc")))
-  testthat::expect_true(file_chk)
 })
 
 testthat::test_that("can run AEME with simple set of inputs works", {
