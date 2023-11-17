@@ -17,7 +17,7 @@
 #' @param init_prof dataframe; of initial profile with depth, temperature and
 #'  salinity.
 #' @param init_depth numeric; depth at which to start the simulation.
-#' @param use_bgc boolean; switch for biogrochemistry model.
+#' @param use_bgc logical; switch for biogrochemistry model.
 #'
 #' @importFrom dplyr filter pull slice
 #'
@@ -151,10 +151,11 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
   surfElev <- init_depth + min(hyps$elev)
   if (!is.null(lvl)) {
     # surfElev <- mean(lvl[,2], na.rm = TRUE)
-    z_max <- mean(lvl[, 2]) - min(hyps$elev)
+    z_max <- mean(lvl[["value"]]) - min(hyps$elev)
     # get starting depth
-    z.start <- round((dplyr::filter(lvl, Date == date_range[1]) |>
-                        dplyr::pull(lvlwtr)) - min(hyps$elev), 2)
+    z.start <- round((dplyr::filter(lvl, Date == date_range[1] &
+                                      var == "LKE_lvlwtr") |>
+                        dplyr::pull(value)) - min(hyps$elev), 2)
   } else {
     # surfElev <- max(hyps$elev)
     z_max <- max(hyps$elev) - min(hyps$elev)
