@@ -89,6 +89,8 @@ setClass("aeme",
 #'
 #' @importFrom sf st_area sf_use_s2
 #' @importFrom units drop_units
+#' @importFrom lubridate is.Date
+#' @importFrom withr local_locale local_timezone
 #'
 #' @export
 
@@ -96,6 +98,10 @@ aeme_constructor <- function(
     lake, time, configuration, observations,
     input, inflows, outflows, water_balance, output
 ) {
+
+  # Set timezone temporarily to UTC
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
 
   # If missing arguments, create default list objects
   if (missing(lake) & missing(time) & missing(input)) {
@@ -201,7 +207,7 @@ aeme_constructor <- function(
     suppressMessages(sf::sf_use_s2(TRUE))
     if (abs(shape_area - lake$area) > 10) {
       warning(paste(strwrap(paste0("Lake area [", lake$area,
-                     " m2] is different to the area calculated from the lake
+                                   " m2] is different to the area calculated from the lake
                      shape [", shape_area, " m2].")), collapse = "\n"))
     }
   }
@@ -243,7 +249,7 @@ aeme_constructor <- function(
   }
   if (is.character(time$stop)) {
     time$stop <- as.POSIXct(time$stop, format = "%Y-%m-%d %H:%M:%S",
-                             tz = "UTC")
+                            tz = "UTC")
   } else if(!is.POSIXct(time$stop)) {
     stop("Time stop must be POSIXct.")
   }
@@ -334,7 +340,7 @@ aeme_constructor <- function(
       message(strwrap("Use longwave missing.\nSetting use longwave to TRUE."))
       input$use_lw <- TRUE
     } else {
-      stop("Input use longwave must be boolean.")
+      stop("Input use longwave must be logical.")
     }
   }
   if (!is.numeric(input$Kw)) {
@@ -759,96 +765,99 @@ setMethod("show", "aeme", function(object) {
   outp <- output(object)
 
   cat(
-      "\t\t\t   AEME ",
-      paste0(
-        "\n-------------------------------------------------------------------\n",
-        "  Lake\n",
-        lke$name, " (ID: ", lke$id), "); Lat: ",
-      round(lke$latitude, 2), "; Lon: ", round(lke$longitude,
-                                                       2),
-      "; Elev: ", round(lke$elevation, 2), "m; Depth: ",
-      round(lke$depth, 2), "m;\nArea: ", round(lke$area, 2),
-      " m2; Shape file: ", ifelse(is(lke$shape, "sf"), "Present",
-                                 "Absent"),
+    "\t\t\t   AEME ",
+    paste0(
       "\n-------------------------------------------------------------------\n",
-      # "  Catchment \n",
-      # "Name: ", ifelse(is.null(catchm$name), NA, catchm$name),
-      # "; Area: ", ifelse(is.null(catchm$area), NA, catchm$area), " m2;
-      # Shape file: ", ifelse(is(catchm$shape, "sf"), "Present", "Absent"),
-      # "\n-------------------------------------------------------------------\n",
-      "  Time\n",
-      "Start: ", as.character(aeme_time$start),
-      " Stop: ", as.character(aeme_time$stop),
-      " Time step: ", as.character(aeme_time$time_step),
-      "\n-------------------------------------------------------------------\n",
-      "  Configuration\n",
-      "          Physical   |   Biogeochemical",
-      "\nDY-CD    : ", ifelse(is.null(config[["dy_cd"]][["hydrodynamic"]]),
-                              "Absent ", "Present"), "    |   ",
-      ifelse(is.null(config[["dy_cd"]][["ecosystem"]]), "Absent ",
-             "Present"),
-      "\nGLM-AED  : ", ifelse(is.null(config[["glm_aed"]][["hydrodynamic"]]),
-                              "Absent ", "Present"), "    |   ",
-      ifelse(is.null(config[["glm_aed"]][["ecosystem"]]), "Absent ",
-             "Present"),
-      "\nGOTM-WET : ", ifelse(is.null(config[["gotm_wet"]][["hydrodynamic"]]),
-                             "Absent ", "Present"), "    |   ",
-      ifelse(is.null(config[["gotm_wet"]][["ecosystem"]]),
-             "Absent ", "Present"),
-      "\n-------------------------------------------------------------------\n",
-      "  Observations\n",
-      "Lake: ", ifelse(is.data.frame(obs$lake), "Present",
-                       "Absent"),
-      "; Level: ", ifelse(is.data.frame(obs$level), "Present",
-                          "Absent"),
-      "\n-------------------------------------------------------------------\n",
-      "  Input\n",
-      "Inital profile: ", ifelse(is.data.frame(inp$init_profile),
-                                 "Present", "Absent"),
-      "; Inital depth: ", paste0(inp$init_depth, "m"),
-      "; Hypsograph: ", ifelse(is.data.frame(inp$hypsograph),
-                                 "Present", "Absent"),
-      ifelse(is.data.frame(inp$hypsograph),
-             paste0(" (n=", nrow(inp$hypsograph), ")"), ""),
-      ";\nMeteo: ", ifelse(is.data.frame(inp$meteo),
+      "  Lake\n",
+      lke$name, " (ID: ", lke$id), "); Lat: ",
+    round(lke$latitude, 2), "; Lon: ", round(lke$longitude,
+                                             2),
+    "; Elev: ", round(lke$elevation, 2), "m; Depth: ",
+    round(lke$depth, 2), "m;\nArea: ", round(lke$area, 2),
+    " m2; Shape file: ", ifelse(is(lke$shape, "sf"), "Present",
+                                "Absent"),
+    "\n-------------------------------------------------------------------\n",
+    # "  Catchment \n",
+    # "Name: ", ifelse(is.null(catchm$name), NA, catchm$name),
+    # "; Area: ", ifelse(is.null(catchm$area), NA, catchm$area), " m2;
+    # Shape file: ", ifelse(is(catchm$shape, "sf"), "Present", "Absent"),
+    # "\n-------------------------------------------------------------------\n",
+    "  Time\n",
+    "Start: ", as.character(aeme_time$start),
+    "; Stop: ", as.character(aeme_time$stop),
+    "; Time step: ", as.character(aeme_time$time_step),
+    "\n\tSpin up (days): GLM: ", aeme_time$spin_up$glm_aed, "; GOTM: ",
+    aeme_time$spin_up$gotm_wet, "; DYRESM: ",
+    aeme_time$spin_up$dy_cd,
+    "\n-------------------------------------------------------------------\n",
+    "  Configuration\n",
+    "          Physical   |   Biogeochemical",
+    "\nDY-CD    : ", ifelse(is.null(config[["dy_cd"]][["hydrodynamic"]]),
+                            "Absent ", "Present"), "    |   ",
+    ifelse(is.null(config[["dy_cd"]][["ecosystem"]]), "Absent ",
+           "Present"),
+    "\nGLM-AED  : ", ifelse(is.null(config[["glm_aed"]][["hydrodynamic"]]),
+                            "Absent ", "Present"), "    |   ",
+    ifelse(is.null(config[["glm_aed"]][["ecosystem"]]), "Absent ",
+           "Present"),
+    "\nGOTM-WET : ", ifelse(is.null(config[["gotm_wet"]][["hydrodynamic"]]),
+                            "Absent ", "Present"), "    |   ",
+    ifelse(is.null(config[["gotm_wet"]][["ecosystem"]]),
+           "Absent ", "Present"),
+    "\n-------------------------------------------------------------------\n",
+    "  Observations\n",
+    "Lake: ", ifelse(is.data.frame(obs$lake), "Present",
+                     "Absent"),
+    "; Level: ", ifelse(is.data.frame(obs$level), "Present",
+                        "Absent"),
+    "\n-------------------------------------------------------------------\n",
+    "  Input\n",
+    "Inital profile: ", ifelse(is.data.frame(inp$init_profile),
                                "Present", "Absent"),
-      "; Use longwave: ", inp$use_lw,
-      "; Kw: ", inp$Kw,
-      "\n-------------------------------------------------------------------\n",
-      "  Inflows\n",
-      "Data: ", ifelse(is.list(inf$data),
-                                 "Present", "Absent"),
-      "; Scaling factors: DY-CD: ", round(inf$factor$dy_cd, 2),
-      "; GLM-AED: ", round(inf$factor$glm_aed, 2),
-      "; GOTM-WET: ", round(inf$factor$gotm_wet, 2),
-      "\n-------------------------------------------------------------------\n",
-      "  Outflows\n",
-      "Data: ", ifelse(is.list(outf$data),
-                       "Present", "Absent"),
-      "; Scaling factors: DY-CD: ", round(outf$factor$dy_cd, 2),
-      "; GLM-AED: ", round(outf$factor$glm_aed, 2),
-      "; GOTM-WET: ", round(outf$factor$gotm_wet, 2),
-      "\n-------------------------------------------------------------------\n",
-      "  Outflows\n",
-      "Data: ", ifelse(is.list(outf$data),
-                       "Present", "Absent"),
-      "; Scaling factors: DY-CD: ", round(outf$factor$dy_cd, 2),
-      "; GLM-AED: ", round(outf$factor$glm_aed, 2),
-      "; GOTM-WET: ", round(outf$factor$gotm_wet, 2),
-      "\n-------------------------------------------------------------------\n",
-      "  Water balance\n",
-      "Use: ", wbal$use,"; Modelled: ", ifelse(!is.null(wbal[["data"]][["model"]]),
-                       "Present", "Absent"), "; Water balance: ",
-      ifelse(is.data.frame(wbal[["data"]][["wbal"]]),
-                       "Present", "Absent"),
-      "\n-------------------------------------------------------------------\n",
-      "  Output: ", "\n",
-      "DY-CD: ", ifelse(is.null(outp$dy_cd), "Absent", "Present"),
-      "\nGLM-AED: ", ifelse(is.null(outp$glm_aed), "Absent",
-                            "Present"),
-      "\nGOTM-WET: ", ifelse(is.null(outp$gotm_wet), "Absent",
-                             "Present"),
-      sep = ""
+    "; Inital depth: ", paste0(inp$init_depth, "m"),
+    "; Hypsograph: ", ifelse(is.data.frame(inp$hypsograph),
+                             "Present", "Absent"),
+    ifelse(is.data.frame(inp$hypsograph),
+           paste0(" (n=", nrow(inp$hypsograph), ")"), ""),
+    ";\nMeteo: ", ifelse(is.data.frame(inp$meteo),
+                         "Present", "Absent"),
+    "; Use longwave: ", inp$use_lw,
+    "; Kw: ", inp$Kw,
+    "\n-------------------------------------------------------------------\n",
+    "  Inflows\n",
+    "Data: ", ifelse(is.list(inf$data),
+                     "Present", "Absent"),
+    "; Scaling factors: DY-CD: ", round(inf$factor$dy_cd, 2),
+    "; GLM-AED: ", round(inf$factor$glm_aed, 2),
+    "; GOTM-WET: ", round(inf$factor$gotm_wet, 2),
+    "\n-------------------------------------------------------------------\n",
+    "  Outflows\n",
+    "Data: ", ifelse(is.list(outf$data),
+                     "Present", "Absent"),
+    "; Scaling factors: DY-CD: ", round(outf$factor$dy_cd, 2),
+    "; GLM-AED: ", round(outf$factor$glm_aed, 2),
+    "; GOTM-WET: ", round(outf$factor$gotm_wet, 2),
+    "\n-------------------------------------------------------------------\n",
+    "  Outflows\n",
+    "Data: ", ifelse(is.list(outf$data),
+                     "Present", "Absent"),
+    "; Scaling factors: DY-CD: ", round(outf$factor$dy_cd, 2),
+    "; GLM-AED: ", round(outf$factor$glm_aed, 2),
+    "; GOTM-WET: ", round(outf$factor$gotm_wet, 2),
+    "\n-------------------------------------------------------------------\n",
+    "  Water balance\n",
+    "Use: ", wbal$use,"; Modelled: ", ifelse(!is.null(wbal[["data"]][["model"]]),
+                                             "Present", "Absent"), "; Water balance: ",
+    ifelse(is.data.frame(wbal[["data"]][["wbal"]]),
+           "Present", "Absent"),
+    "\n-------------------------------------------------------------------\n",
+    "  Output: ", "\n",
+    "DY-CD: ", ifelse(is.null(outp$dy_cd), "Absent", "Present"),
+    "\nGLM-AED: ", ifelse(is.null(outp$glm_aed), "Absent",
+                          "Present"),
+    "\nGOTM-WET: ", ifelse(is.null(outp$gotm_wet), "Absent",
+                           "Present"),
+    sep = ""
   )
 })
 
@@ -1051,7 +1060,9 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
 
     if (!is.null(obj$level)) {
       par(mfrow = c(1, 1))
-      base::plot(obj$level$Date, obj$level$lvlwtr, ylab = "Elevation (m)",
+      level <- obj$level |>
+        dplyr::filter(var == "LKE_lvlwtr")
+      plot(level$Date, level$value, ylab = "Elevation (m)",
            xlab = "Date", main = "Lake level")
     }
   }
@@ -1120,17 +1131,19 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
     obs <- observations(x)
     if (!is.null(obj$data$wbal)) {
       wbal <- obj$data$wbal
+      level <- obs$level |>
+        dplyr::filter(var == "LKE_lvlwtr")
       par(mfrow = c(3, 1))
-      ylim <- range(c(wbal$lvlwtr, obs[["level"]][["lvlwtr"]]), na.rm = TRUE)
+      ylim <- range(c(wbal$lvlwtr, level$value), na.rm = TRUE)
       plot(wbal$Date, wbal$lvlwtr, type = "l", axes = FALSE,
-                 ylab = "Water level (m)", ylim = ylim,
-                 xlab = "", main = "Water Level")
+           ylab = "Water level (m)", ylim = ylim,
+           xlab = "", main = "Water Level")
       axis(side = 2, labels = TRUE)
       axis.Date(side = 1, at = seq(min(wbal$Date), max(wbal$Date),
                                    by = "6 months"),
                 x = wbal$Date, labels = FALSE, format = "%m/%Y")
-      if (!is.null(obs$level)) {
-        points(obs$level$Date, obs$level$lvlwtr, pch = 16, col = "red")
+      if (nrow(level)) {
+        points(level$Date, level$value, pch = 16, col = "red")
       }
 
       ylim <- range(wbal[, c("outflow_gotm_wet", "outflow_glm_aed")],
@@ -1194,8 +1207,8 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
     }
     if (!is.null(obs$level)) {
       obs_lvl <- obs$level |>
-        dplyr::filter(Date %in% mod$Date) |>
-        dplyr::mutate(lvl_adj = lvlwtr - min(inp$hypsograph$elev))
+        dplyr::filter(Date %in% mod$Date & var == "LKE_lvlwtr") |>
+        dplyr::mutate(lvl_adj = value - min(inp$hypsograph$elev))
     }
 
     #
