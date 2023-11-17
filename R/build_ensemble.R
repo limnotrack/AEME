@@ -13,9 +13,11 @@
 #' @param outf_factor vector; containing numeric factor to multiple the
 #'  outflows. Needs to be named according to the model.
 #' @param ext_elev numeric; extension in elevation for the hypsogrph in metres.
-#' @param use_bgc boolean; switch to use the biogeochemical model.
-#' @param calc_wbal boolean; calculate water balance.
-#' @param calc_wlev boolean; calculate water level.
+  #' @param use_bgc logical; switch to use the biogeochemical model.
+#' @param calc_wbal logical; calculate water balance.
+#' @param calc_wlev logical; calculate water level.
+#' @param use_aeme logical; use AEME object to generate model confiuration
+#' files.
 #' @param coeffs numeric vector of length two; to be used to estimate surface
 #' water temperature for estimating evaporation. Defaults to NULL. If water
 #' temperature observations are included in `aeme` object, then it will use
@@ -26,7 +28,6 @@
 #' @param hum_type numeric; GOTM humidity metric [1=relative humidity (%),
 #' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
 #' Default = 3.
-#' @param overwrite boolean; overwrite config files. Default is FALSE.
 #' @param path filepath; where input files are located relative to `config`.
 #'
 #' @return builds the model ensemble configuration.
@@ -34,6 +35,7 @@
 #' @importFrom sf sf_use_s2 st_transform st_centroid st_coordinates st_buffer
 #' @importFrom dplyr select filter
 #' @importFrom utils data read.csv
+#' @importFrom withr local_locale local_timezone
 #'
 #' @return aeme object
 #'
@@ -64,14 +66,31 @@ build_ensemble <- function(aeme_data = NULL,
                            outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
                                            "gotm_wet" = 1),
                            ext_elev = 0,
-                           use_bgc = TRUE,
+                           use_bgc = FALSE,
                            calc_wbal = TRUE,
                            calc_wlev = TRUE,
+                           use_aeme = FALSE,
                            coeffs = NULL,
                            hum_type = 3,
-                           overwrite = FALSE,
                            path = "."
 ) {
+
+  # Load arguments
+  # inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
+  #                "gotm_wet" = 1)
+  # outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
+  #                 "gotm_wet" = 1)
+  # ext_elev = 5
+  # use_bgc = FALSE
+  # calc_wbal = TRUE
+  # calc_wlev = TRUE
+  # use_aeme = FALSE
+  # coeffs = NULL
+  # hum_type = 3
+
+  # Set timezone temporarily to UTC
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
 
   if (is.null(aeme_data) & is.null(config)) {
     stop("Either 'aeme_data' or 'config' must be supplied.")
@@ -104,18 +123,24 @@ build_ensemble <- function(aeme_data = NULL,
     date_range <- as.Date(c(aeme_time[["start"]], aeme_time[["stop"]]))
     spin_up <- aeme_time[["spin_up"]]
 
-    model_config <- configuration(aeme_data)
-    if (all(sapply(model, \(x) !is.null(model_config[[x]][["hydrodynamic"]])))) {
-      message("Building existing configuration for ", lke$name, " [",
-              Sys.time(), "]")
-      write_configuration(model = model, aeme_data = aeme_data,
-                          path = path)
-      overwrite <- FALSE
-      # Potentially add in option to switch off bgc and/or use default bgc setup
-      # return(aeme_data)
+    # Use cache of models within AEME object ----
+    if (use_aeme) {
+      model_config <- configuration(aeme_data)
+      if (all(sapply(model, \(x) !is.null(model_config[[x]][["hydrodynamic"]])))) {
+        message("Building existing configuration for ", lke$name, " [",
+                Sys.time(), "]")
+        write_configuration(model = model, aeme_data = aeme_data,
+                            path = path)
+        overwrite <- FALSE
+        # Potentially add in option to switch off bgc and/or use default bgc setup
+        # return(aeme_data)
+      } else {
+        overwrite <- TRUE
+      }
     } else {
       overwrite <- TRUE
     }
+
 
     if (!is.null(lke[["shape"]])) {
       lake_shape <- lke[["shape"]]
@@ -278,28 +303,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       w_bal[["data"]][["wbal"]] <- wbal
       outf[["wbal"]] <- wbal |>
         dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
-
-      # if (is.null(aeme_outf[["data"]])) {
-      #   warning(paste(strwrap("Outflow data are not present. This function will
-      #                       generate an estimated outflow with a calculated
-      #                       water balance using lake level, inflow data (if
-      #                       present) and estimated evaporation rates."),
-      #                 collapse = "\n"))
-      #   # outf[["wbal"]] <- calc_out
-      # } #else {
-      #   tot_outflow <- outf[["outflow"]] |>
-      #     merge(calc_out, by = "Date") |>
-      #     dplyr::mutate(
-      #       outflow_dy_cd = outflow_dy_cd + outflow,
-      #       outflow_glm_aed = outflow_glm_aed + outflow,
-      #       outflow_gotm_wet = outflow_gotm_wet + outflow
-      #     )
-      # }
-
-      # outf[["outflow"]] <- tot_outflow
     } else {
       w_bal[["data"]][["wbal"]] <- NULL
-      # outf[["wbal"]] <- NULL
+      outf[["wbal"]] <- NULL
     }
 
     #* Update water balance slot in aeme object ----
@@ -314,7 +320,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                             and a sinisoidal function."),
                     collapse = "\n"))
       lvl <- wbal |>
-        dplyr::select(Date, lvlwtr)
+        dplyr::select(Date, value) |>
+        dplyr::mutate(var = "LKE_lvlwtr")
     } else {
       lvl <- aeme_obs[["level"]]
     }
@@ -324,8 +331,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       message(strwrap("Observed lake level is present.\nUpdating initial lake
                         model depth..."))
       init_depth <- lvl |>
-        dplyr::filter(Date == aeme_time[["start"]]) |>
-        dplyr::pull(lvlwtr)
+        dplyr::filter(Date == aeme_time[["start"]] & var == "LKE_lvlwtr") |>
+        dplyr::pull(value)
       init_depth <- round(init_depth - min(hyps$elev), 2)
       inp <- input(aeme_data)
 

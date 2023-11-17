@@ -19,9 +19,12 @@
 #' @param coeffs numeric vector; coefficients for estimating lake surface
 #' temperature. Default = NULL
 #'
+#' @importFrom lubridate ddays
+#' @importFrom withr local_locale local_timezone
+#'
 #' @return data frame of water balance components which are:
 #' - Date
-#' - lvlwtr
+#' - value
 #' - HYD_flow
 #' -...
 #'
@@ -32,11 +35,16 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
                       level = NULL, obs_lake = NULL, obs_met, ext_elev,
                       elevation, print_plots = FALSE, coeffs = NULL) {
 
+  # Set timezone temporarily to UTC
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+
   # Get dates to use for calculating the water balance
   max_spin <- max(unlist(aeme_time[["spin_up"]])[model])
   spin_start <- aeme_time[["start"]] - lubridate::ddays(max_spin + 6)
   date_stop <- aeme_time[["stop"]] + lubridate::ddays(1)
-  date_vector <- seq.Date(from = as.Date(spin_start), to = as.Date(date_stop), by = 1)
+  date_vector <- seq.Date(from = as.Date(spin_start), to = as.Date(date_stop),
+                          by = 1)
   surf <- max(hyps$elev)
 
   # If observations of level..
@@ -47,21 +55,22 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
     if (!is.null(level)) {
       message("Using observed water level")
       # placeholder.. add optimised sin model here..!
-      ampl <- ((quantile(level$lvlwtr,0.9) -
-                  quantile(level$lvlwtr,0.1)) / 2) |>
+      ampl <- ((quantile(level$value, 0.9) -
+                  quantile(level$value, 0.1)) / 2) |>
         as.numeric()
       offset <- 0
       mod.lvl <- data.frame(Date = obs_met$Date) |>
         dplyr::left_join(level, by = "Date") |>
-        dplyr::filter(Date >= spin_start & Date <= date_stop)
+        dplyr::filter(Date >= spin_start & Date <= date_stop) |>
+        dplyr::mutate(var = "LKE_lvlwtr")
 
-      if (all(!is.na(mod.lvl$lvlwtr))) {
+      if (all(!is.na(mod.lvl$value))) {
         message(strwrap("No missing values in observed water level.
                       Using observed water level"))
       } else {
         message("Missing values in observed water level")
         # Number of observations
-        n_lvl <- sum(!is.na(mod.lvl$lvlwtr))
+        n_lvl <- sum(!is.na(mod.lvl$value))
 
         # If there are greater than or equal to 9 observations, use the
         # optimisation function
@@ -69,7 +78,7 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
           message("Using optimisation function")
           # Initial parameter values
           initial_parameters <- c(ampl = ampl, offset = offset)
-          # optim_lvl_params(initial_parameters, mod.lvl = mod.lvl)
+          optim_lvl_params(initial_parameters, mod.lvl = mod.lvl, surf = surf)
 
           # Optimize the parameters
           optimized_parameters <- optim(par = initial_parameters, fn = optim_lvl_params,
@@ -87,7 +96,7 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
         # Calculate the modelled water level
         mod.lvl <- mod.lvl |>
           dplyr::mutate(
-            lvlwtr = mod_lvl(Date, surf = surf,
+            value = mod_lvl(Date, surf = surf,
                              ampl = ampl,
                              offset = offset)
           )
@@ -101,7 +110,7 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
       mod.lvl <- data.frame(Date = date_vector)
       mod.lvl <- mod.lvl |>
         dplyr::mutate(
-          lvlwtr = mod_lvl(Date, surf = surf,
+          value = mod_lvl(Date, surf = surf,
                            ampl = ampl,
                            offset = offset)
         )
@@ -210,14 +219,14 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
   Latent_Heat_Evap = 2.453E+6 # J/kg
 
   # Calculate the fluctuating surface area
-  evap <- obs_met |>
+  wbal <- obs_met |>
     dplyr::left_join(mod.lvl, by = "Date") |>
     dplyr::filter(Date >= spin_start & Date <= date_stop) |> # filter dates
     # calculate the fluctuating surface area
-    dplyr::mutate(lvlwtr2 = mod_lvl(Date, surf = max(hyps[,1]), ampl = ampl,
-                                    offset = offset)) |>
+    # dplyr::mutate(lvlwtr2 = mod_lvl(Date, surf = max(hyps[,1]), ampl = ampl,
+    #                                 offset = offset)) |>
     dplyr::mutate(
-      area = get_hyps_val(depth = lvlwtr, hyps = hyps.ext),
+      area = get_hyps_val(depth = value, hyps = hyps.ext),
       # Calculate 5-day average water temperature
       T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE, align = c("right")),
       # apply the model to predict surface temperature
@@ -245,7 +254,7 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
       dy_cd_evap_m3 = -dy_cd_evap_flux * area * 86400,
       gotm_wet_evap_m3 = -gotm_wet_evap_flux * area * 86400,
       glm_aed_evap_m3 = -glm_aed_evap_flux * area * 86400,
-      V = calc_V(depth = lvlwtr, hyps = hyps.ext, h = 0.01),
+      V = calc_V(depth = value, hyps = hyps.ext, h = 0.01),
       evap_rate2 = Qlh / Latent_Heat_Evap / rho0,
       evap_rate3 = Qlh / Latent_Heat_Evap / wtr_density(Ts)
     ) |>
@@ -255,9 +264,9 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
     ))
   # apply the functions
 
-  # V = calc_V(depth = evap$lvlwtr, hyps = hyps)
+  # V = calc_V(depth = evap$value, hyps = hyps)
 
-  if (any(is.na(evap$area))) {
+  if (any(is.na(wbal$area))) {
     stop("NA's in area. Most likely due to 'ext_elev' being too small.")
   }
 
@@ -292,15 +301,15 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
     merge(vol.outflow, by = "Date") |>
 
     # add evaporation estimation above
-    merge(dplyr::select(evap, c("Date", "dy_cd_evap_m3", "gotm_wet_evap_m3",
+    merge(dplyr::select(wbal, c("Date", "dy_cd_evap_m3", "gotm_wet_evap_m3",
                                 "glm_aed_evap_m3", "dy_cd_evap_flux",
                                 "gotm_wet_evap_flux", "glm_aed_evap_flux", "Ts",
-                                "area", "lvlwtr", "V")), by = "Date") |>
+                                "area", "value", "V")), by = "Date") |>
     merge(dplyr::select(obs_met, c("Date","MET_pprain"))) |>
     # rainfall direct to surface of lake
     dplyr::mutate(rain = MET_pprain * area,
                   # calculate outflow by difference
-                  deltaV = c(0, diff(lvlwtr)) * area,
+                  deltaV = c(0, diff(value)) * area,
                   ToT_inflow = HYD_flow + rain,
                   outflow_dy_cd = ((HYD_flow + rain) -
                                      (HYD_outflow + dy_cd_evap_m3 + deltaV)),
@@ -373,7 +382,7 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
   }
 
   wb |>
-    dplyr::select(c("Date", "lvlwtr", "HYD_flow", "rain", "dy_cd_evap_m3",
+    dplyr::select(c("Date", "value", "HYD_flow", "rain", "dy_cd_evap_m3",
                     "gotm_wet_evap_m3", "glm_aed_evap_m3", "deltaV", "V",
                     "dy_cd_evap_flux", "gotm_wet_evap_flux",
                     "glm_aed_evap_flux", "Ts", "area", "outflow_dy_cd",
@@ -436,7 +445,7 @@ wtr_density <- function(wtr) {
 
 #' Optimise mod_lvl function
 #' @param parameters numeric vector of two parameters to optimise; ampl and offset
-#' @param mod.lvl data.frame; data.frame with Date and lvlwtr columns
+#' @param mod.lvl data.frame; data.frame with Date and value columns
 #' @noRd
 optim_lvl_params <- function(parameters, mod.lvl, surf) {
   ampl <- parameters[1]
@@ -445,7 +454,7 @@ optim_lvl_params <- function(parameters, mod.lvl, surf) {
   # Call mod_lvl with the current ampl and offset values
   # Calculate the goodness of fit with your data
   predicted_values <- mod_lvl(mod.lvl$Date, surf = surf, ampl = ampl, offset = offset)
-  residuals <- predicted_values - mod.lvl$lvlwtr
+  residuals <- predicted_values - mod.lvl$value
   sum_of_squares <- sum(residuals^2, na.rm = TRUE)  # You can use a different error metric
 
   return(sum_of_squares)
