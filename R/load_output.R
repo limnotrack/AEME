@@ -48,7 +48,7 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
       parallel::stopCluster(cl)
     })
     parallel::clusterExport(cl, varlist = list("lake_dir", "vars_sim",
-                                               "spin_up", "nlev"),
+                                               "aeme_time", "nlev"),
                             envir = environment())
     # parallel::clusterEvalQ(cl, expr = {library(LakeEnsemblR); library(gotmtools);
     # })
@@ -78,8 +78,9 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
       })
       nc_listify(nc = nc, model = m,
                  vars_sim = vars_sim,
-                 spin_up = spin_up[[m]],
-                 nlev = nlev)
+                 aeme_time = aeme_time,
+                 nlev = nlev,
+                 output_hour = output_hour)
     })
 
     message("Model reading complete!", paste0("[", Sys.time(), "]"))
@@ -111,8 +112,8 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
       nc_listify(nc = nc, model = m,
                  vars_sim = vars_sim,
                  aeme_time = aeme_time,
-                 # spin_up = spin_up[[m]],
-                 nlev = nlev, output_hour = output_hour)
+                 nlev = nlev,
+                 output_hour = output_hour)
     })
   }
   names(mods) <- model
