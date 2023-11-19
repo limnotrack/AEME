@@ -164,11 +164,17 @@ test_that("running models in parallel works", {
   # lapply(lvl, head)
 
   lke <- lake(aeme_data)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                  tolower(lke$name)),
+                                    model[1], "DYsim.nc"))
+  testthat::expect_true(file_chk)
+
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model, "output", "output.nc")))
+                                                      tolower(lke$name)),
+                                        model[-1], "output", "output.nc")))
   testthat::expect_true(file_chk)
 })
+
 
 test_that("running models in parallel with no wbal calculated", {
   tmpdir <- tempdir()
