@@ -363,11 +363,13 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
 regularise_model_output <- function(depth, mod_layers, var, nlev) {
 
   # Loop through each column and interpolate to output depths
-  sapply(1:ncol(var), \(c) {
+  vapply(1:ncol(var), \(c) {
     if (is.na(depth[c])) {
       return(rep(NA, nlev))
     } else {
-      if(all(is.na(var[, c])) | length(unique(mod_layers[, c])) <= 1) {
+      if (length(unique(mod_layers[!is.na(mod_layers[, c]), c])) == 1) {
+        rep(var[!is.na(mod_layers[, c]), c], nlev)
+      } else if(all(is.na(var[, c])) | length(unique(mod_layers[!is.na(mod_layers[, c]), c])) <= 1) {
         rep(NA, nlev)
       } else {
         deps <- seq(0, depth[c], len = nlev)
@@ -377,6 +379,25 @@ regularise_model_output <- function(depth, mod_layers, var, nlev) {
                rule = 2)$y
       }
     }
-  })
+  }, numeric(nlev)) #|>
+    # matrix(ncol = nlev, byrow = TRUE)
+
+  # sapply(1:ncol(var), \(c) {
+  #   if (is.na(depth[c])) {
+  #     return(rep(NA, nlev))
+  #   } else {
+  #     if (length(unique(mod_layers[!is.na(mod_layers[, c]), c])) == 1) {
+  #       rep(var[!is.na(mod_layers[, c])], nlev)
+  #     } else if(all(is.na(var[, c])) | length(unique(mod_layers[!is.na(mod_layers[, c]), c])) <= 1) {
+  #       rep(NA, nlev)
+  #     } else {
+  #       deps <- seq(0, depth[c], len = nlev)
+  #       non_na <- !is.na(var[, c])
+  #       if (sum(non_na) <= 0) return(rep(NA, nlev))
+  #       approx(y = var[non_na, c], x = mod_layers[non_na, c], xout = deps,
+  #              rule = 2)$y
+  #     }
+  #   }
+  # })
 }
 
