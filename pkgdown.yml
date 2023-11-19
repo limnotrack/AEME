@@ -2,8 +2,10 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
+  aeme-inputs: aeme-inputs.html
   getting-started: getting-started.html
-last_built: 2023-11-19T21:18Z
+  intro-aeme: intro-aeme.html
+last_built: 2023-11-19T22:22Z
 urls:
   reference: https://expert-guide-29ve1vw.pages.github.io/reference
   article: https://expert-guide-29ve1vw.pages.github.io/articles
