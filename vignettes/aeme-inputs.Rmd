@@ -1,10 +1,6 @@
 ---
 title: "AEME Inputs"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{AEME Inputs}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   markdown: 
     wrap: 80
