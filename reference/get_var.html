@@ -50,7 +50,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_var</span><span class="op">(</span><span class="va">aeme_data</span>, <span class="va">model</span>, <span class="va">var_sim</span>, return_df <span class="op">=</span> <span class="cn">TRUE</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_var</span><span class="op">(</span></span>
+<span>  <span class="va">aeme_data</span>,</span>
+<span>  <span class="va">model</span>,</span>
+<span>  <span class="va">var_sim</span>,</span>
+<span>  return_df <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  use_obs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cumulative <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -71,6 +78,12 @@
 <dt>return_df</dt>
 <dd><p>logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.</p></dd>
+
+
+<dt>use_obs</dt>
+<dd><p>logical; if TRUE, use observations to extract the variable at
+time and depth of observations. Default is FALSE. Use this option if you
+want to compare model output to observations.</p></dd>
 
 
 <dt>cumulative</dt>
