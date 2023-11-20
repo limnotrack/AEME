@@ -23,11 +23,13 @@ get_var <- function(aeme_data, model, var_sim, return_df = TRUE,
   if (use_obs) {
     obs <- observations(aeme_data)
     if (var_sim == "LKE_lvlwtr") {
+      if (is.null(obs$level)) stop("No observations of lake level found.")
       obs_sub <- obs$level |>
         dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
                         var %in% var_sim) |>
         dplyr::arrange(Date)
     } else {
+      if (is.null(obs$lake)) stop("No lake observations found.")
       obs_sub <- obs$lake |>
         dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
                         var %in% var_sim) |>
@@ -68,9 +70,17 @@ get_var <- function(aeme_data, model, var_sim, return_df = TRUE,
       } else {
 
         mod <- lapply(date_ind, \(d) {
+          depth <- outp[[m]][["LKE_depths"]][, d]
+          v <- outp[[m]][[var_sim]][, d]
           obs_deps <- unique(obs_sub$depth_mid[obs_sub$Date == outp[[m]][["Date"]][d]])
-          p <- approx(outp[[m]][["LKE_depths"]][, d], outp[[m]][[var_sim]][, d], obs_deps,
-                 rule = 2)$y
+
+          if (all(is.na(v)) | all(is.na(depth))) {
+            return(data.frame(Date = outp[[m]][["Date"]][d],
+                              depth_mid = obs_deps,
+                              sim = NA,
+                              Model = m))
+          }
+          p <- approx(depth, v, obs_deps, rule = 2)$y
           data.frame(Date = outp[[m]][["Date"]][d],
                      depth_mid = obs_deps,
                      sim = p,
