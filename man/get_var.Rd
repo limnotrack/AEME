@@ -4,7 +4,14 @@
 \alias{get_var}
 \title{Get variable from aeme_data}
 \usage{
-get_var(aeme_data, model, var_sim, return_df = TRUE, cumulative = FALSE)
+get_var(
+  aeme_data,
+  model,
+  var_sim,
+  return_df = TRUE,
+  use_obs = FALSE,
+  cumulative = FALSE
+)
 }
 \arguments{
 \item{aeme_data}{aeme; data object.}
@@ -16,6 +23,10 @@ get_var(aeme_data, model, var_sim, return_df = TRUE, cumulative = FALSE)
 
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.}
+
+\item{use_obs}{logical; if TRUE, use observations to extract the variable at
+time and depth of observations. Default is FALSE. Use this option if you
+want to compare model output to observations.}
 
 \item{cumulative}{logical; if TRUE, return cumulative sum of variable}
 }

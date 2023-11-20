@@ -1,6 +1,9 @@
 #' Get variable from aeme_data
 #'
 #' @inheritParams plot_output
+#' @param use_obs logical; if TRUE, use observations to extract the variable at
+#' time and depth of observations. Default is FALSE. Use this option if you
+#' want to compare model output to observations.
 #' @param return_df logical; if TRUE, return a dataframe; if FALSE, return a
 #' list. Default is TRUE.
 #' @param cumulative logical; if TRUE, return cumulative sum of variable
@@ -9,11 +12,35 @@
 #' @export
 
 get_var <- function(aeme_data, model, var_sim, return_df = TRUE,
-                    cumulative = FALSE) {
+                    use_obs = FALSE, cumulative = FALSE) {
 
   # Extract output from aeme_data ----
+  inp <- input(aeme_data)
   outp <- output(aeme_data)
+  aeme_time <- time(aeme_data)
   names(model) <- model
+
+  if (use_obs) {
+    obs <- observations(aeme_data)
+    if (var_sim == "LKE_lvlwtr") {
+      obs_sub <- obs$level |>
+        dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
+                        var %in% var_sim) |>
+        dplyr::arrange(Date)
+    } else {
+      obs_sub <- obs$lake |>
+        dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
+                        var %in% var_sim) |>
+        dplyr::mutate(depth_mid = (depth_from + depth_to) / 2) |>
+        dplyr::arrange(Date, depth_mid) |>
+        dplyr::select(Date, var, depth_mid, value)
+    }
+    if (nrow(obs_sub) == 0) {
+      stop("No observations found for the model simulation period.")
+    }
+    obs_sub <- obs_sub |>
+      dplyr::rename(obs = value)
+  }
 
   # Loop through the models and extract the variable of interest ----
   lst <- lapply(model, \(m) {
@@ -23,6 +50,38 @@ get_var <- function(aeme_data, model, var_sim, return_df = TRUE,
       message(strwrap(paste0(var_sim, " is not in output for model ", m,
                              ". Returning a dataframe with NA's.")))
       df <- data.frame(Date = NA, value = NA, Model = NA, lyr_thk = NA)
+      return(df)
+    }
+
+    if (use_obs) {
+
+      obs_dates <- unique(obs_sub$Date)
+      date_ind <- which(outp[[m]][["Date"]] %in% obs_dates)
+
+      if (var_sim == "LKE_lvlwtr") {
+
+        df <- data.frame(Date = outp[[m]][["Date"]][date_ind],
+                         sim = outp[[m]][["LKE_lvlwtr"]][date_ind] +
+                           min(inp$hypsograph$elev),
+                         Model = m) |>
+          dplyr::left_join(obs_sub, by = c("Date" = "Date"))
+      } else {
+
+        mod <- lapply(date_ind, \(d) {
+          obs_deps <- unique(obs_sub$depth_mid[obs_sub$Date == outp[[m]][["Date"]][d]])
+          p <- approx(outp[[m]][["LKE_depths"]][, d], outp[[m]][[var_sim]][, d], obs_deps,
+                 rule = 2)$y
+          data.frame(Date = outp[[m]][["Date"]][d],
+                     depth_mid = obs_deps,
+                     sim = p,
+                     Model = m)
+        }) |>
+          do.call(rbind, args = _)
+
+        df <- dplyr::left_join(obs_sub, mod, by = c("Date" = "Date",
+                                                    "depth_mid" = "depth_mid"))
+
+      }
     } else if (is.null(dim(variable))) {
       df <- data.frame(Date = outp[[m]][["Date"]],
                        lyr_top = NA,
