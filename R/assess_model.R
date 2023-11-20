@@ -4,7 +4,7 @@
 #' @return data frame with model performance statistics for each model and
 #' variable
 #'
-#' @importFrom dplyr group_by summarise mutate n case_when where
+#' @importFrom dplyr group_by summarise mutate n case_when where across relocate
 #' @importFrom stats cor cor.test lm
 #'
 #' @export
@@ -28,9 +28,15 @@ assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
 
     # Fit linear model for each model
     fit <- lapply(model, \(m) {
-      fit <- stats::lm(obs ~ sim,
-                       data = df[df$Model == model_names$Model[model_names$model == m], ])
-      data.frame(model = m, r2 = summary(fit)$r.squared)
+      r2 <- NA
+      sub_df <- df |>
+        dplyr::filter(Model == model_names$Model[model_names$model == m])
+      if (!all(is.na(sub_df$sim))) {
+        fit <- stats::lm(obs ~ sim,
+                         data = sub_df)
+        r2 <- summary(fit)$r.squared
+      }
+      data.frame(model = m, r2 = r2)
     }) |>
       do.call(rbind, args = _)
     fit$Model <- model_names$Model[match(fit$model, model_names$model)]
@@ -49,10 +55,10 @@ assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
                        d2 = mae^2 / mean((abs(mean(sim -
                                                      mean(obs, na.rm = TRUE))) +
                                             abs(obs - mean(obs, na.rm = TRUE)))^2),
-                       r = stats::cor(sim, obs, use = "complete.obs"),
-                       rs = suppressWarnings({
-                         stats::cor.test(sim, obs, method = "spearman")$estimate
-                       }),
+                       r = ifelse(all(is.na(sim)), NA, tryCatch(stats::cor(sim, obs, use = "complete.obs"), error = function(e) NA)),
+                       rs = ifelse(all(is.na(sim)), NA, suppressWarnings({
+                         tryCatch(stats::cor.test(sim, obs, method = "spearman")$estimate, error = function(e) NA)
+                       })),
                        n = dplyr::n(),
                        .groups = "drop") |>
       as.data.frame()
@@ -68,8 +74,11 @@ assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
       ) |>
       # Round all columns with with numeric values to 3 decimal places
       dplyr::mutate(
-        dplyr::across(dplyr::where(is.numeric), \(x) round(x, 3))
-      )
+        # dplyr::across(dplyr::where(is.numeric), \(x) round(x, 3)),
+        dplyr::across(bias:B, \(x) ifelse(is.na(x), NA, round(x, 3))),
+      ) |>
+      dplyr::relocate(n, .after = last_col())
+
   }) |>
     do.call(rbind, args = _) # Bind list of data frames into one data frame and return
 
