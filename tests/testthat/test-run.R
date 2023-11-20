@@ -165,14 +165,18 @@ test_that("running models in parallel works", {
 
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                  tolower(lke$name)),
+                                                 tolower(lke$name)),
                                     model[1], "DYsim.nc"))
   testthat::expect_true(file_chk)
 
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                      tolower(lke$name)),
+                                                     tolower(lke$name)),
                                         model[-1], "output", "output.nc")))
   testthat::expect_true(file_chk)
+
+  model_performance <- assess_model(aeme_data = aeme_data, model = model,
+                                    var_sim = c("LKE_lvlwtr", "HYD_temp"))
+  testthat::expect_true(is.data.frame(model_performance))
 })
 
 
