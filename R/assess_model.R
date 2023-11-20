@@ -1,0 +1,78 @@
+#' Assess model performance
+#'
+#' @inheritParams build_ensemble
+#' @return data frame with model performance statistics for each model and
+#' variable
+#'
+#' @importFrom dplyr group_by summarise mutate n case_when where
+#' @importFrom stats cor cor.test lm
+#'
+#' @export
+#'
+
+assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
+
+  # Extract observations
+  obs <- observations(aeme_data)
+
+  # Loop through variables, extract model statistics, bind to dataframe and
+  # return
+  lst <- lapply(var_sim, \(v) {
+
+    # Extract variable from aeme_data
+    df <- get_var(aeme_data = aeme_data, model = model, var_sim = v,
+                  use_obs = TRUE)
+
+    model_names <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
+                              Model = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
+
+    # Fit linear model for each model
+    fit <- lapply(model, \(m) {
+      fit <- stats::lm(obs ~ sim,
+                       data = df[df$Model == model_names$Model[model_names$model == m], ])
+      data.frame(model = m, r2 = summary(fit)$r.squared)
+    }) |>
+      do.call(rbind, args = _)
+    fit$Model <- model_names$Model[match(fit$model, model_names$model)]
+
+    # Calculate statistics for each model
+    res <- df |>
+      dplyr::mutate(Residual = sim - obs) |>
+      dplyr::group_by(Model, var_sim) |>
+      dplyr::summarise(bias = mean(Residual, na.rm = TRUE),
+                       mae = mean(abs(Residual), na.rm = TRUE),
+                       rmse = sqrt(mean(Residual^2, na.rm = TRUE)),
+                       nmae = mae/mean(obs, na.rm = TRUE),
+                       nse = 1 - sum(Residual^2) /
+                         sum((obs - mean(obs, na.rm = TRUE))^2),
+                       # Index of Agreement Model Skill Score Willmott index
+                       d2 = mae^2 / mean((abs(mean(sim -
+                                                     mean(obs, na.rm = TRUE))) +
+                                            abs(obs - mean(obs, na.rm = TRUE)))^2),
+                       r = stats::cor(sim, obs, use = "complete.obs"),
+                       rs = suppressWarnings({
+                         stats::cor.test(sim, obs, method = "spearman")$estimate
+                       }),
+                       n = dplyr::n(),
+                       .groups = "drop") |>
+      as.data.frame()
+
+    # Add linear model statistics to results and calculate Bardsley coefficient
+    res |>
+      dplyr::mutate(r2 = dplyr::case_when(
+        Model == "DYRESM-CAEDYM" ~ fit$r2[fit$model == "dy_cd"],
+        Model == "GLM-AED" ~ fit$r2[fit$model == "glm_aed"],
+        Model == "GOTM-WET" ~ fit$r2[fit$model == "gotm_wet"]
+      ),
+      B = r2 / (2 - nse), # Bardsley coefficient
+      ) |>
+      # Round all columns with with numeric values to 3 decimal places
+      dplyr::mutate(
+        dplyr::across(dplyr::where(is.numeric), \(x) round(x, 3))
+      )
+  }) |>
+    do.call(rbind, args = _) # Bind list of data frames into one data frame and return
+
+  lst
+}
+
