@@ -87,6 +87,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
     V <- ncdf4::ncvar_get(nc, "int_water_balance")[idx]
 
     Qe <- -1 * ncdf4::ncvar_get(nc, "qe")[idx]
+    Qh <- -1 * ncdf4::ncvar_get(nc, "qh")[idx]
+    Qlw <- -1 * ncdf4::ncvar_get(nc, "ql")[idx]
+    Qsw <- ncdf4::ncvar_get(nc, "I_0")[idx]
     evap_flux <- abs(ncdf4::ncvar_get(nc, "evap")[idx])
     EVAP <- evap_flux * 86400 # m/day
     A0 <- ncdf4::ncvar_get(nc, "Af")[, idx] |>
@@ -134,6 +137,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
     mod_layers[mod_layers > 1000000] <- NA
 
     Qe <- -1 * ncdf4::ncvar_get(nc, "daily_qe")[idx]
+    Qh <- ncdf4::ncvar_get(nc, "daily_qh")[idx]
+    Qlw <- -1 * ncdf4::ncvar_get(nc, "daily_qlw")[idx]
+    Qsw <- -1 * ncdf4::ncvar_get(nc, "daily_qsw")[idx]
     V <- ncdf4::ncvar_get(nc, "lake_volume")[idx]
     depth <- ncdf4::ncvar_get(nc, "lake_level")[idx]
     evap_vol <- -ncdf4::ncvar_get(nc, "evaporation")[idx]
@@ -182,6 +188,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
                   MET_wndspd *           #wind speed in m/s
                   (MET_prvapr - es))
 
+    Qh <- NA
+    Qlw <- NA
+    Qsw <- ncdf4::ncvar_get(nc, "met_SW")[idx]
     EVAP <- ncdf4::ncvar_get(nc, "dyresmEVAP_DAILY_Var")[idx]
     inflow <- ncdf4::ncvar_get(nc, "stream_1_VOL")[idx]
     outflow <- (ncdf4::ncvar_get(nc, "withdrawal_outflow")[idx] +
@@ -230,10 +239,17 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
   # plot(cumsum(net))
 
 
-  nc_list <- list(Date = dates, LKE_lvlwtr = as.vector(depth),
-                  LKE_V = as.vector(V), LKE_dV = as.vector(dV),
-                  LKE_A0 = as.vector(A0), LKE_evprte = as.vector(EVAP),
-                  LKE_evpflx = as.vector(evap_flux), LKE_Qe = as.vector(Qe),
+  nc_list <- list(Date = dates,
+                  LKE_lvlwtr = as.vector(depth),
+                  LKE_V = as.vector(V),
+                  LKE_dV = as.vector(dV),
+                  LKE_A0 = as.vector(A0),
+                  LKE_evprte = as.vector(EVAP),
+                  LKE_evpflx = as.vector(evap_flux),
+                  LKE_Qe = as.vector(Qe),
+                  LKE_Qh = as.vector(Qh),
+                  LKE_Qlw = as.vector(Qlw),
+                  LKE_Qsw = as.vector(Qsw),
                   LKE_evpvol = as.vector(evap_vol),
                   LKE_precip = as.vector(precip),
                   LKE_inflow = as.vector(inflow),
