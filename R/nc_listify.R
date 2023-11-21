@@ -56,7 +56,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
     zi <- ncdf4::ncvar_get(nc, "zi")[, idx]
     z <- ncdf4::ncvar_get(nc, "z")[, idx]
 
-    mod_layers <- z |> abs()
+    # mod_layers <- z |> abs()
 
     sst <- ncdf4::ncvar_get(nc, "sst")[idx]
     if (sum(sst == 0) > 1 | sum(is.na(sst)) > 0) {
@@ -201,7 +201,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
   depths <- apply(layers, 2, function(x) x - max(x, na.rm = TRUE)) |>
     abs()
 
-  if (model == 'dy_cd') {
+  if (model == "dy_cd") {
     A0 <- sapply(1:length(depth), function(d) approx((H - min(H)), A,
                                                      xout = depth[d])$y)
     dz <- 0.01
@@ -216,6 +216,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
     dates <- seq.Date(from = dates[1], by = 1, length.out = length(dates))
     evap_flux <- EVAP / 86400
     evap_vol <- EVAP * A0
+
   }
 
   dV <- c(0, diff(V))
@@ -239,6 +240,15 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
                   LKE_outflow = as.vector(outflow),
                   LKE_layers = as.matrix(layers),
                   LKE_depths = as.matrix(depths))
+
+  if (model %in% c("dy_cd", "glm_aed")) {
+    depths <- mod_layers
+  }
+  if (model == "gotm_wet") {
+    depths <- vapply(seq_len(ncol(z)), \(i) {
+      max(zi[, i]) - z[, i]
+    }, FUN.VALUE = numeric(nlev))
+  }
 
   ### Loop through the netcdf and make a list of the outputs
   vars_chk <- data.frame(vars = vars_sim.model, present = NA)
@@ -271,19 +281,19 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
         out[, 1:ncol(out)] <- -99
       } else {
         # regularise the grid (interpolate)
-        out <- regularise_model_output(depth = depth, mod_layers = mod_layers,
+        out <- regularise_model_output(depth = depth, depths = depths,
                                        var = this.var, nlev = nlev)
       }
 
 
       # process the table formats if necessary
-      if (model == 'dy_cd') {
+      if (model == "dy_cd") {
 
         # regularise the grid (interpolate)
         # out <- delagrangify(depth = depth, elevs = lyrs, values = this.var,
         #                         nlev = nlev)
 
-      } else if (model == 'glm_aed') {
+      } else if (model == "glm_aed") {
         # this.var <- apply(this.var, 2, rev)
         # out <- delagrangify(elevs = lyrs, values = this.var, nlev = nlev)
         ## unit conversions
@@ -351,7 +361,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
 #' Regularise model output
 #'
 #' @param depth vector; of lake depths
-#' @param mod_layers matrix; of model layer depths
+#' @param depths matrix; of model layer depths
 #' @param var matrix; of model output
 #' @param nlev integer; number of layers to interpolate to
 #'
@@ -360,22 +370,23 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
 #'
 #' @keywords internal
 
-regularise_model_output <- function(depth, mod_layers, var, nlev) {
+regularise_model_output <- function(depth, depths, var, nlev) {
 
   # Loop through each column and interpolate to output depths
   vapply(1:ncol(var), \(c) {
+    # print(c)
     if (is.na(depth[c])) {
       return(rep(NA, nlev))
     } else {
-      if (length(unique(mod_layers[!is.na(mod_layers[, c]), c])) == 1) {
-        rep(var[!is.na(mod_layers[, c]), c], nlev)
-      } else if(all(is.na(var[, c])) | length(unique(mod_layers[!is.na(mod_layers[, c]), c])) <= 1) {
+      if (length(unique(depths[!is.na(depths[, c]), c])) == 1) {
+        rep(var[!is.na(depths[, c]), c], nlev)
+      } else if(all(is.na(var[, c])) | length(unique(depths[!is.na(depths[, c]), c])) <= 1) {
         rep(NA, nlev)
       } else {
         deps <- seq(0, depth[c], len = nlev)
         non_na <- !is.na(var[, c])
         if (sum(non_na) <= 0) return(rep(NA, nlev))
-        approx(y = var[non_na, c], x = mod_layers[non_na, c], xout = deps,
+        approx(y = var[non_na, c], x = depths[non_na, c], xout = deps,
                rule = 2)$y
       }
     }
