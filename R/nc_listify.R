@@ -103,9 +103,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     if (nc_daily$error) stop("Could not open netCDF file: ", out_file)
 
     V <- ncdf4::ncvar_get(nc_daily, "int_water_balance")
-    Qe <- -1 * ncdf4::ncvar_get(nc_daily, "qe")
+    Qe <- ncdf4::ncvar_get(nc_daily, "qe")
     Qh <- ncdf4::ncvar_get(nc_daily, "qh")
-    Qlw <- -1 * ncdf4::ncvar_get(nc_daily, "ql")
+    Qlw <- ncdf4::ncvar_get(nc_daily, "ql")
     Qsw <- ncdf4::ncvar_get(nc_daily, "I_0")
     evap_flux <- abs(ncdf4::ncvar_get(nc_daily, "evap"))
     EVAP <- evap_flux * 86400 # m/s -> m/day
@@ -153,9 +153,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     mod_layers <- ncdf4::ncvar_get(nc, "z")[, idx]
     mod_layers[mod_layers > 1000000] <- NA
 
-    Qe <- -1 * ncdf4::ncvar_get(nc, "daily_qe")[idx]
+    Qe <- ncdf4::ncvar_get(nc, "daily_qe")[idx]
     Qh <- ncdf4::ncvar_get(nc, "daily_qh")[idx]
-    Qlw <- -1 * ncdf4::ncvar_get(nc, "daily_qlw")[idx]
+    Qlw <- ncdf4::ncvar_get(nc, "daily_qlw")[idx]
     Qsw <- ncdf4::ncvar_get(nc, "daily_qsw")[idx]
     V <- ncdf4::ncvar_get(nc, "lake_volume")[idx]
     depth <- ncdf4::ncvar_get(nc, "lake_level")[idx]
@@ -199,7 +199,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
       })
     es <- exp(2.3026 * (((7.5 * Ts) / (Ts + 237.3) + 0.7858)))
     #evaporative heat flux
-    Qe <- -1 * ((0.622 / 981.9) *         #constant/mean station pressure
+    Qe <- ((0.622 / 981.9) *         #constant/mean station pressure
                   0.0013 *               #latent heat transfer coefficient
                   1.168 *                #density of air
                   2453000 *              #latent heat of evaporation of water
@@ -209,12 +209,18 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     # Conductive/sensible heat gain only affects the top layer.
     # Q_sensibleheat = -CH * rho_air * cp_air * WindSp * (Lake[surfLayer].Temp - MetData.AirTemp);
     # rho_air <- atm_density(MET_tmpair, 101325)
+    Q_lw_in <- ncdf4::ncvar_get(nc, "met_LW_related")[idx]
     Qh <- -0.0013 * # CH
       1.168 * # density of air
       1005.0 *    # cp_air Specific heat of air
       MET_wndspd *
       (Ts - MET_tmpair)
-    Qlw <- NA
+    Q_lw_out <- -5.678e-8  * # Stefan_Boltzman constant
+      0.985 * # emissivity of water
+      (273.15 + Ts)^4.0 # water surface temperature in Kelvin
+    Qlw <- Q_lw_out + Q_lw_in
+
+    # Qlw <- NA
     Qsw <- ncdf4::ncvar_get(nc, "met_SW")[idx]
     EVAP <- ncdf4::ncvar_get(nc, "dyresmEVAP_DAILY_Var")[idx]
     inflow <- ncdf4::ncvar_get(nc, "stream_1_VOL")[idx]
@@ -263,6 +269,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
   #
   # plot(cumsum(net))
 
+  # Net fluxes ----
+  Qnet <- Qe + Qh + Qlw + Qsw
+
 
   nc_list <- list(Date = dates,
                   LKE_lvlwtr = as.vector(depth),
@@ -275,6 +284,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
                   LKE_Qh = as.vector(Qh),
                   LKE_Qlw = as.vector(Qlw),
                   LKE_Qsw = as.vector(Qsw),
+                  LKE_Qnet = as.vector(Qnet),
                   LKE_evpvol = as.vector(evap_vol),
                   LKE_precip = as.vector(precip),
                   LKE_inflow = as.vector(inflow),
