@@ -58,7 +58,7 @@ estimate_hourly_swr <- function(met, lat, lon, cloud = 0) {
   # Adjust the SWR in df_hr to match the daily mean
   df_hr <- data.frame(DateTime = time, SWR_hr = swr2, Date = as.Date(time)) |>
     dplyr::left_join(df_day, by = "Date") |>
-    # dplyr::mutate(SWR_hr = SWR_hr * SWR_diff) |>
+    dplyr::mutate(SWR_hr = SWR_hr * SWR_diff) |>
     dplyr::select(DateTime, SWR_hr) |>
     dplyr::mutate(DateTime = format(DateTime, format = "%Y-%m-%d %H:%M:%S"))
 
