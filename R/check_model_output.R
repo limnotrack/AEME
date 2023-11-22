@@ -8,6 +8,7 @@
 check_model_output <- function(path, aeme_data, model) {
 
   lke <- lake(aeme_data)
+  aeme_time <- time(aeme_data)
   lake_dir <- file.path(path, paste0(lke$id, "_",
                                      tolower(lke$name)))
   out_file <- dplyr::case_when(model == "dy_cd" ~ file.path(lake_dir, model,
@@ -32,6 +33,20 @@ check_model_output <- function(path, aeme_data, model) {
       })
       if (nc$error) {
         message("DYRESM-CAEDYM output file: ", out_file, " does not exist!")
+        return(FALSE)
+      }
+      dates <- ncdf4::ncvar_get(nc, "dyresmTime")
+      dates[dates > 9e36] <- NA
+      if (any(is.na(dates))) {
+        last_date <- dates[which.max(is.na(dates)) - 1]
+        last_date <- as.POSIXct((last_date - 2415018.5) * 86400,
+                                origin = "1899-12-30")
+        if (last_date < aeme_time$start) {
+          message(strwrap("DYRESM-CAEDYM crashed during the spin-up period! No
+                          output available for the simulation period."))
+          return(FALSE)
+        }
+        message("DYRESM-CAEDYM output file: ", out_file, " has NA dates!")
         return(FALSE)
       }
     }
