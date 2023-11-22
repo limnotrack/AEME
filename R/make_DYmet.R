@@ -28,12 +28,23 @@ make_DYmet <-  function(lakename = "unknown",
                         wndType = 0,
                         metHeight = 10,
                         z_max,
-                        filePath = "") {
+                        filePath = "",
+                        use_lw) {
 
-  col.order <- c("Date", "MET_radswd", "MET_cldcvr", "MET_tmpair", "MET_prvapr", "MET_wndspd", "MET_pprain")
-  col.names <- c("Date   ",
-                c("solar_Wm^2", "cloud_0to1", "tempture_C", "vapour_hPa", "wind_ms^-1", "rain_m") |>
-                  stringr::str_pad(width = 12, side=c('left'), pad=' ') )
+  if (use_lw) {
+    col.order <- c("Date", "MET_radswd", "MET_radlwd", "MET_tmpair", "MET_prvapr", "MET_wndspd", "MET_pprain")
+    col.names <- c("Date   ",
+                   c("solar_Wm^2", "lwave_Wm^2", "tempture_C", "vapour_hPa", "wind_ms^-1", "rain_m") |>
+                     stringr::str_pad(width = 12, side=c('left'), pad=' ') )
+    lw_type <- "INCIDENT_LW"
+  } else {
+    col.order <- c("Date", "MET_radswd", "MET_cldcvr", "MET_tmpair", "MET_prvapr", "MET_wndspd", "MET_pprain")
+    col.names <- c("Date   ",
+                   c("solar_Wm^2", "cloud_0to1", "tempture_C", "vapour_hPa", "wind_ms^-1", "rain_m") |>
+                     stringr::str_pad(width = 12, side=c('left'), pad=' ') )
+    lw_type <- "CLOUD_COVER"
+  }
+
 
   # process the obsMet into DY format
   metVals <- obsMet |>
@@ -81,7 +92,7 @@ make_DYmet <-  function(lakename = "unknown",
   writeLines(c(paste0("<#3>"),
                paste0("DYRESM meterological inputs file for lake ",lakename,". ",info),
                paste0("86400		   # met data input time step (seconds)"),
-               paste0("CLOUD_COVER	   # longwave radiation type (NETT_LW, INCIDENT_LW, CLOUD_COVER)"),
+               paste0(lw_type, "	   # longwave radiation type (NETT_LW, INCIDENT_LW, CLOUD_COVER)"),
                paste0(wndType,"  ", metHeight,"   # sensor type (FLOATING, FIXED_HT), height in metres (above water surface, above lake bottom)"),
                paste0(col.names, collapse = "\t")), f)
 

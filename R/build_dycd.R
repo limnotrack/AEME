@@ -27,7 +27,7 @@
 build_dycd <- function(lakename, mod_ctrls, date_range, gps,
                        inf, outf, met, hyps, lvl, lake_dir,
                        inf_factor = 1.0, outf_factor = 1.0,
-                       ext_elev = 0, Kw, init_prof, init_depth, use_bgc,
+                       ext_elev = 0, Kw, init_prof, init_depth, use_bgc, use_lw,
                        overwrite_cfg = TRUE) {
 
   message(paste0("Building DYRESM-CAEDYM for lake ", lakename))
@@ -218,7 +218,8 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
              obsMet = met, infRain = FALSE, wndType = 0,
              metHeight = 15,
              z_max = z_max,
-             filePath = path.dy)
+             filePath = path.dy,
+             use_lw = use_lw)
 
 
   #----- INITIALISATION -----

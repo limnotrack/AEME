@@ -448,7 +448,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                inf_factor = inf_factor[["dy_cd"]],
                outf_factor = outf_factor[["dy_cd"]],
                Kw = Kw, ext_elev = ext_elev,
-               use_bgc = use_bgc, overwrite_cfg = overwrite)
+               use_bgc = use_bgc, use_lw = inp$use_lw,
+               overwrite_cfg = overwrite)
     # run_dy_cd(sim_folder = lake_dir, verbose = TRUE)
   }
   if ("glm_aed" %in% model) {
