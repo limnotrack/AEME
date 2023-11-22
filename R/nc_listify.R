@@ -2,10 +2,10 @@
 #'
 #' @param nc file connection; to a netCDF file
 #' @inheritParams delangrangify
+#' @inheritParams build_ensemble
 #' @param model character; model name
 #' @param vars_sim vector; of variables to extract
 #' @param nlev numeric; number of vertical levels
-#' @param aeme_time time list; retrieved from AEME object using `time`
 #' @param remove_spin_up logical; whether to remove spin-up period. Default is
 #'  \code{TRUE}
 #'
@@ -19,8 +19,8 @@
 #' @importFrom withr local_locale local_timezone
 #'
 
-nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
-                       remove_spin_up = TRUE, output_hour) {
+nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
+                       remove_spin_up = TRUE, output_hour, path) {
 
   # Load Rdata
   utils::data("key_naming", package = "AEME", envir = environment())
@@ -33,6 +33,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
   key_naming <- key_naming |>
     dplyr::filter(name %in% vars_sim) |>
     dplyr::mutate(conversion_aed = as.numeric(conversion_aed))
+
+  aeme_time <- time(aeme_data)
+
 
   # find the simvars for this model
   if (model == "gotm_wet") {
@@ -84,24 +87,38 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
     lyrs[nrow(lyrs), ] <- lyrs[nrow(lyrs), ] + (lyr_h[nrow(lyr_h), ] / 2)
     lyrs <- apply(lyrs, 2, \(x) x + abs(min(x)))
     vars_sim.model <- key_naming[[model]]
-    V <- ncdf4::ncvar_get(nc, "int_water_balance")[idx]
 
-    Qe <- -1 * ncdf4::ncvar_get(nc, "qe")[idx]
-    Qh <- -1 * ncdf4::ncvar_get(nc, "qh")[idx]
-    Qlw <- -1 * ncdf4::ncvar_get(nc, "ql")[idx]
-    Qsw <- ncdf4::ncvar_get(nc, "I_0")[idx]
-    evap_flux <- abs(ncdf4::ncvar_get(nc, "evap")[idx])
-    EVAP <- evap_flux * 86400 # m/day
-    A0 <- ncdf4::ncvar_get(nc, "Af")[, idx] |>
+    # GOTM - Daily averaged variables ----
+    lke <- lake(aeme_data)
+    lake_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)))
+    out_file <- file.path(lake_dir, model, "output", "output_daily.nc")
+
+    if (!file.exists(out_file)) {
+      message("No ", out_file, " present.")
+      return(NULL)
+    }
+
+    nc_daily <- ncdf4::nc_open(out_file, return_on_error = TRUE)
+    on.exit(ncdf4::nc_close(nc_daily))
+    if (nc_daily$error) stop("Could not open netCDF file: ", out_file)
+
+    V <- ncdf4::ncvar_get(nc_daily, "int_water_balance")
+    Qe <- -1 * ncdf4::ncvar_get(nc_daily, "qe")
+    Qh <- ncdf4::ncvar_get(nc_daily, "qh")
+    Qlw <- -1 * ncdf4::ncvar_get(nc_daily, "ql")
+    Qsw <- ncdf4::ncvar_get(nc_daily, "I_0")
+    evap_flux <- abs(ncdf4::ncvar_get(nc_daily, "evap"))
+    EVAP <- evap_flux * 86400 # m/s -> m/day
+    A0 <- ncdf4::ncvar_get(nc_daily, "Af") |>
       apply(2, max)
     evap_vol <- EVAP * A0
 
-    flow_vars <- names(nc$var)[grepl("Q_", names(nc$var))]
+    flow_vars <- names(nc_daily$var)[grepl("Q_", names(nc_daily$var))]
     inflow_vars <- flow_vars[!grepl("outflow|wbal", flow_vars)]
     outflow_vars <- flow_vars[grepl("outflow|wbal", flow_vars)]
     if (length(inflow_vars) >= 1) {
       inflow <- sapply(seq_along(inflow_vars), \(x) {
-        (ncdf4::ncvar_get(nc, inflow_vars[x])[idx] * 86400) / A0
+        (ncdf4::ncvar_get(nc_daily, inflow_vars[x]) * 86400) / A0
       }) |>
         apply(1, sum)
     } else {
@@ -109,13 +126,13 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
     }
     if (length(outflow_vars) >= 1) {
       outflow <- sapply(seq_along(outflow_vars), \(x) {
-        -1 * (ncdf4::ncvar_get(nc, outflow_vars[x])[idx] * 86400) / A0
+        -1 * (ncdf4::ncvar_get(nc_daily, outflow_vars[x]) * 86400) / A0
       }) |>
         apply(1, sum)
     } else {
       outflow <- A0 * 0
     }
-    precip <- ncdf4::ncvar_get(nc, "precip")[idx] * 86400
+    precip <- ncdf4::ncvar_get(nc_daily, "precip") * 86400
 
   } else if (model == 'glm_aed') {
 
@@ -139,7 +156,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
     Qe <- -1 * ncdf4::ncvar_get(nc, "daily_qe")[idx]
     Qh <- ncdf4::ncvar_get(nc, "daily_qh")[idx]
     Qlw <- -1 * ncdf4::ncvar_get(nc, "daily_qlw")[idx]
-    Qsw <- -1 * ncdf4::ncvar_get(nc, "daily_qsw")[idx]
+    Qsw <- ncdf4::ncvar_get(nc, "daily_qsw")[idx]
     V <- ncdf4::ncvar_get(nc, "lake_volume")[idx]
     depth <- ncdf4::ncvar_get(nc, "lake_level")[idx]
     evap_vol <- -ncdf4::ncvar_get(nc, "evaporation")[idx]
@@ -175,6 +192,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
 
     MET_wndspd <- ncdf4::ncvar_get(nc, "met_Uwind")[idx]
     MET_prvapr <- ncdf4::ncvar_get(nc, "met_Pvapour")[idx]
+    MET_tmpair <- ncdf4::ncvar_get(nc, "met_Tair")[idx]
     Ts <- ncdf4::ncvar_get(nc, "dyresmTEMPTURE_Var")[, idx] |>
       apply(2, \(x) {
         x[!is.na(x)][1]
@@ -188,7 +206,14 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_time,
                   MET_wndspd *           #wind speed in m/s
                   (MET_prvapr - es))
 
-    Qh <- NA
+    # Conductive/sensible heat gain only affects the top layer.
+    # Q_sensibleheat = -CH * rho_air * cp_air * WindSp * (Lake[surfLayer].Temp - MetData.AirTemp);
+    # rho_air <- atm_density(MET_tmpair, 101325)
+    Qh <- -0.0013 * # CH
+      1.168 * # density of air
+      1005.0 *    # cp_air Specific heat of air
+      MET_wndspd *
+      (Ts - MET_tmpair)
     Qlw <- NA
     Qsw <- ncdf4::ncvar_get(nc, "met_SW")[idx]
     EVAP <- ncdf4::ncvar_get(nc, "dyresmEVAP_DAILY_Var")[idx]

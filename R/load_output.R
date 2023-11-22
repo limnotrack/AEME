@@ -28,8 +28,8 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
     }
     nlev <- ceiling((depth) / div)
   }
-  aeme_time <- time(aeme_data)
   outp <- output(aeme_data)
+  aeme_time <- time(aeme_data)
   output_hour <- 0
   spin_up <- aeme_time$spin_up
   # start_date <- as.Date(aeme_time$start)
@@ -48,7 +48,7 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
       parallel::stopCluster(cl)
     })
     parallel::clusterExport(cl, varlist = list("lake_dir", "vars_sim",
-                                               "aeme_time", "nlev"),
+                                               "aeme_data", "nlev"),
                             envir = environment())
     # parallel::clusterEvalQ(cl, expr = {library(LakeEnsemblR); library(gotmtools);
     # })
@@ -78,9 +78,10 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
       })
       nc_listify(nc = nc, model = m,
                  vars_sim = vars_sim,
-                 aeme_time = aeme_time,
+                 aeme_data = aeme_data,
                  nlev = nlev,
-                 output_hour = output_hour)
+                 output_hour = output_hour,
+                 path = path)
     })
 
     message("Model reading complete!", paste0("[", Sys.time(), "]"))
@@ -111,15 +112,16 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
       })
       nc_listify(nc = nc, model = m,
                  vars_sim = vars_sim,
-                 aeme_time = aeme_time,
+                 aeme_data = aeme_data,
                  nlev = nlev,
-                 output_hour = output_hour)
+                 output_hour = output_hour,
+                 path = path)
     })
   }
   names(mods) <- model
   # lapply(mods, \(x) head(x$Date))
   # lapply(mods, \(x) tail(x$Date))
-  # lapply(mods, \(x) x$HYD_temp[, 10])
+  # lapply(mods, \(x) x$HYD_temp[, 500])
   # lapply(mods, \(x) x$LKE_layers[, 10])
 
   new_output <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
