@@ -93,7 +93,7 @@ make_DYmet <-  function(lakename = "unknown",
                paste0("DYRESM meterological inputs file for lake ",lakename,". ",info),
                paste0("86400		   # met data input time step (seconds)"),
                paste0(lw_type, "	   # longwave radiation type (NETT_LW, INCIDENT_LW, CLOUD_COVER)"),
-               paste0(wndType,"  ", metHeight,"   # sensor type (FLOATING, FIXED_HT), height in metres (above water surface, above lake bottom)"),
+               paste0(wndType,"  ", round(metHeight, 2),"   # sensor type (FLOATING, FIXED_HT), height in metres (above water surface, above lake bottom)"),
                paste0(col.names, collapse = "\t")), f)
 
   utils::write.table(metVals, f, sep = "\t", quote = FALSE, row.names = FALSE,
