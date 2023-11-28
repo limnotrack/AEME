@@ -37,7 +37,7 @@ make_metGLM <-  function(obs_met, path_glm = "", infRain = FALSE,
     dplyr::mutate(MET_pprain = MET_pprain / 1000,
                   MET_ppsnow = MET_ppsnow / 1000) |> # convert to m
     dplyr::select(all_of(col.order)) |>
-    dplyr::mutate(MET_prsttn = MET_prsttn / 100)
+    dplyr::mutate(MET_prsttn = MET_prsttn)
   metVals <- metVals |>
     # standardise formats
     dplyr::mutate(dplyr::across(2:6, \(x) round(x, digits = 3)),
