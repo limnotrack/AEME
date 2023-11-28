@@ -321,7 +321,11 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
                   LKE_inflow = as.vector(inflow),
                   LKE_outflow = as.vector(outflow),
                   LKE_layers = as.matrix(layers),
-                  LKE_depths = as.matrix(depths))
+                  LKE_depths = as.matrix(depths),
+                  HYD_Ts = as.vector(Ts),
+                  MET_tmpair = as.vector(MET_tmpair),
+                  LKE_Tdiff = as.vector(Ts - MET_tmpair)
+  )
 
   if (model %in% c("dy_cd", "glm_aed")) {
     depths <- mod_layers
