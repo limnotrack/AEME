@@ -88,7 +88,7 @@ check_model_output <- function(path, aeme_data, model) {
       if(is.null(dim(zi))) {
         return(FALSE)
       }
-      init_z <- min(zi[, 1])- max(zi[, 1])
+      init_z <- round(min(zi[, 1]) - max(zi[, 1]), 2)
       if (any(zi < init_z)) {
         message(strwrap("GOTM-WET output file: Model depth goes below it's
                         initial depth. Possible source of error is the
