@@ -39,6 +39,8 @@ initialiseGOTM <-  function(gotm, lvl_bottom, lvl_surf,
 
   #-------- Update the yaml file! ---------
 
+  gotm$surface$sst$constant_value <- tmpwtr
+
   gotm$temperature$method <- 2
   gotm$temperature$file <- "inputs/t_prof_file.dat"
   gotm$temperature$column <- 1
