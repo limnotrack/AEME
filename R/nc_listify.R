@@ -210,6 +210,8 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
       apply(2, \(x) {
         x[!is.na(x)][1]
       })
+
+    # Saturated vapour pressure - Magnus-Tetens formula (TVA 1972, eqn 4.1)
     es <- exp(2.3026 * (((7.5 * Ts) / (Ts + 237.3) + 0.7858)))
     #evaporative heat flux
     Qe <- ((0.622 / 981.9) *         #constant/mean station pressure
@@ -218,16 +220,32 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
                   2453000 *              #latent heat of evaporation of water
                   MET_wndspd *           #wind speed in m/s
                   (MET_prvapr - es))
+    Qe[Qe > 0] <- 0 # evaporation can't be negative
 
     # Conductive/sensible heat gain only affects the top layer.
     # Q_sensibleheat = -CH * rho_air * cp_air * WindSp * (Lake[surfLayer].Temp - MetData.AirTemp);
     # rho_air <- atm_density(MET_tmpair, 101325)
     Q_lw_in <- ncdf4::ncvar_get(nc, "met_LW_related")[idx]
-    Qh <- -0.0013 * # CH
+    if (all(Q_lw_in <= 1)) {
+      CloudCover <- Q_lw_in
+      # eps_star <- (1.0 + 0.275 * CloudCover) * (1.0 - 0.261 * exp(-0.000777 * MET_tmpair^2.0))
+      # Q_lw_in <- (1 - 0.03) * eps_star *
+      #   5.678e-8  * # Stefan_Boltzman constant
+      #   (273.15 + Ts)^4.0 # water surface temperature in Kelvin
+
+      # DYRESM Science Manual
+      Q_lw_in <- (1 - 0.03) * # albedo for long wave radiation, constant = 0.03 (Henderson-Sellers 1986).
+        (1 + 0.17 * CloudCover^2) *
+        (9.37e-6 * (MET_tmpair + 273.15)^2) * # Swinbank (1963)
+        5.6697e-8 * # Stefan-Boltzmann constant
+        (MET_tmpair + 273.15)^4
+
+    }
+    Qh <- 1.3e-3 * # sensible heat transfer coefficient for wind speed at 10 m reference height above the water surface
       1.168 * # density of air
-      1005.0 *    # cp_air Specific heat of air
+      1003.0 *    # cp_air Specific heat of air
       MET_wndspd *
-      (Ts - MET_tmpair)
+      (MET_tmpair - Ts)
     Q_lw_out <- -5.678e-8  * # Stefan_Boltzman constant
       0.985 * # emissivity of water
       (273.15 + Ts)^4.0 # water surface temperature in Kelvin
