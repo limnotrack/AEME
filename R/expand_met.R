@@ -88,7 +88,8 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
   # if no vapour pressure is supplied
   if (!is.prvapr) {
     # get vapour pressure per (Eqn. C2, TVA,1972) via DYRESM manual
-    prvapr <- (humrel/100) * exp(2.303*((7.5*tmpair/(tmpair+237.3))+0.7858))
+    prvapr <- (humrel / 100) *
+      exp(2.303 * ((7.5 * tmpair / (tmpair + 237.3)) + 0.7858))
   } else {
     prvapr <- met[, which(grepl("prvapr", colnames(met)))]
   }
