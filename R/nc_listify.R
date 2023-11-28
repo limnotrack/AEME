@@ -133,6 +133,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
       outflow <- A0 * 0
     }
     precip <- ncdf4::ncvar_get(nc_daily, "precip") * 86400
+    Ts <- ncdf4::ncvar_get(nc_daily, "temp")
+    Ts <- Ts[nrow(Ts), ]
+    MET_tmpair <- ncdf4::ncvar_get(nc_daily, "airt")
 
   } else if (model == 'glm_aed') {
 
@@ -148,6 +151,15 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     idx <- which(lubridate::hour(dates) == output_hour)
     if (length(idx) == 0) stop("No output for GLM at ", output_hour, " hour")
     dates <- dates[idx] |> as.Date()
+
+    # Get air temperature for GLM
+    inp <- input(aeme_data)
+    MET_tmpair <- inp$meteo |>
+      dplyr::mutate(Date = Date + 1) |> # GLM is 1 day behind
+      dplyr::filter(Date %in% dates) |>
+      dplyr::select(Date, MET_tmpair) |>
+      dplyr::pull(MET_tmpair)
+
     vars_sim.model <- key_naming[["glm_aed"]]
 
     mod_layers <- ncdf4::ncvar_get(nc, "z")[, idx]
@@ -167,6 +179,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     outflow <- (ncdf4::ncvar_get(nc, "tot_outflow_vol")[idx] +
                   ncdf4::ncvar_get(nc, "overflow_vol")[idx]) / A0
     precip <- ncdf4::ncvar_get(nc, "precipitation")[idx]
+    Ts <- ncdf4::ncvar_get(nc, "surface_temp")[idx]
 
   } else if (model == 'dy_cd') {
     # dyresm outputs initial profiles as first col
