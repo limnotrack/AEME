@@ -201,21 +201,21 @@ light_extinction:
    method: 7                             # water type [1=Jerlov type I, 2=Jerlov type 1 (upper 50 m), 3=Jerlov type IA, 4=Jerlov type IB, 5=Jerlov type II, 6=Jerlov type III, 7=custom; default=1]
    A:                                    # non-visible fraction of shortwave radiation
       method: 0                          # method [0=constant, 2=from file; default=0]
-      constant_value: 0.7                # value to use throughout the simulation [fraction; min=0.0; max=1.0; default=0.7]
+      constant_value: 0.58               # value to use throughout the simulation [fraction; min=0.0; max=1.0; default=0.7]
       file:                              # path to file with time series [default=]
       column: 1                          # index of column to read from [default=1]
       scale_factor: 1.0                  # scale factor to be applied to values read from file [default=1.0]
       offset: 0.0                        # offset to be added to values read from file [fraction; default=0.0]
    g1:                                   # e-folding depth of non-visible shortwave radiation
       method: 0                          # method [0=constant, 2=from file; default=0]
-      constant_value: 0.4                # value to use throughout the simulation [m; min=0.0; default=0.4]
+      constant_value: 0.35                # value to use throughout the simulation [m; min=0.0; default=0.4]
       file:                              # path to file with time series [default=]
       column: 1                          # index of column to read from [default=1]
       scale_factor: 1.0                  # scale factor to be applied to values read from file [default=1.0]
       offset: 0.0                        # offset to be added to values read from file [m; default=0.0]
    g2:                                   # e-folding depth of visible shortwave radiation
       method: 0                          # method [0=constant, 2=from file; default=0]
-      constant_value: 8.0                # value to use throughout the simulation [m; min=0.0; default=8.0]
+      constant_value: 23.0               # value to use throughout the simulation [m; min=0.0; default=8.0]
       file:                              # path to file with time series [default=]
       column: 1                          # index of column to read from [default=1]
       scale_factor: 1.0                  # scale factor to be applied to values read from file [default=1.0]
@@ -524,7 +524,7 @@ fabm:                                     # Framework for Aquatic Biogeochemical
    configuration_method: -1              # configuration file [-1=auto-detect (prefer fabm.yaml), 0=fabm.nml, 1=fabm.yaml; default=-1]
 physical_constants:
    gravity: 9.81                         # gravitational acceleration [m/s^2; min=0.0; default=9.81]
-   rho_0: 998.57                         # reference density [kg/m^3; min=0.0; default=1027.0]
+   rho_0: 1000.0                         # reference density [kg/m^3; min=0.0; default=1027.0]
    cp: 3985.0                            # specific heat of sea water [J/kg/K; min=0.0; default=3985.0]
    avmolu: 1.30000000E-06                # molecular viscosity for momentum [m^2/s; min=0.0; default=1.30000000E-06]
    avmolt: 1.40000000E-07                # molecular viscosity for temperature [m^2/s; min=0.0; default=1.40000000E-07]
