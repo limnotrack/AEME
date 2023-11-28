@@ -275,8 +275,8 @@
    atm_stab   = 0
    !catchrain   = .true.
    !rad_mode    = 1
-   !albedo_mode = 1
-   cloud_mode  = 4
+   albedo_mode = 1
+   cloud_mode  = 2
    fetch_mode = 0
    !-- BC file details
    subdaily   = .false.
