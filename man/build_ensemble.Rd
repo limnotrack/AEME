@@ -18,6 +18,7 @@ build_ensemble(
   use_aeme = FALSE,
   coeffs = NULL,
   hum_type = 3,
+  est_swr_hr = TRUE,
   path = "."
 )
 }
@@ -60,6 +61,9 @@ temperature. Otherwise. it uses the simple estimation
 \item{hum_type}{numeric; GOTM humidity metric [1=relative humidity (%),
 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
 Default = 3.}
+
+\item{est_swr_hr}{logical; estimate hourly shortwave radiation from daily
+values. Default = TRUE.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 }
