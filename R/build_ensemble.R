@@ -28,6 +28,8 @@
 #' @param hum_type numeric; GOTM humidity metric [1=relative humidity (%),
 #' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
 #' Default = 3.
+#' @param est_swr_hr logical; estimate hourly shortwave radiation from daily
+#' values. Default = TRUE.
 #' @param path filepath; where input files are located relative to `config`.
 #'
 #' @return builds the model ensemble configuration.
@@ -72,6 +74,7 @@ build_ensemble <- function(aeme_data = NULL,
                            use_aeme = FALSE,
                            coeffs = NULL,
                            hum_type = 3,
+                           est_swr_hr = TRUE,
                            path = "."
 ) {
 
@@ -263,6 +266,14 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
     outf_factor <- aeme_outf[["factor"]]
     lakename <- tolower(lke[["name"]])
+
+    # Check if any non-alphanumeric characters are in lakename
+    # Causes DYRESM to crash
+    if (any(grepl("[^[:alnum:]]", lakename))) {
+      stop(strwrap(paste0("Lake name '", lakename, "' contains non-alphanumeric
+                          characters. Please remove these characters from the
+                          lake name.")))
+    }
 
     # Lake level ----
     aeme_obs <- observations(aeme_data)
@@ -483,7 +494,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                met = met, inf_factor = inf_factor[["gotm_wet"]],
                outf_factor = outf_factor[["gotm_wet"]], Kw = Kw,
                ext_elev = ext_elev, nlev = nlev, use_bgc = use_bgc,
-               hum_type = hum_type, overwrite_yaml = overwrite)
+               hum_type = hum_type, overwrite_yaml = overwrite,
+               est_swr_hr = est_swr_hr)
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
 
   }

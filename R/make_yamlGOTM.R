@@ -11,7 +11,8 @@
 
 make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
                           outf, init_depth, path_gotm, ext_elev,
-                          outf_factor, inf_factor, Kw, use_bgc, hum_type = 1) {
+                          outf_factor, inf_factor, Kw, use_bgc, hum_type = 1,
+                          est_swr_hr = TRUE) {
 
   met_ref <- data.frame(gotm = c("u10", "v10", "airp", "airt", "hum", "hum",
                                  "cloud", "swr", "precip"),
@@ -81,7 +82,8 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
 
   # Met ----
   met_cols <- make_metGOTM(df_met = met, path_gotm, hum_type = hum_type,
-                           lat = round(gps[2], 5), lon = round(gps[1], 5))
+                           lat = round(gps[2], 5), lon = round(gps[1], 5),
+                           est_swr_hr = est_swr_hr)
   gotm_met_names <- met_cols[-c(1, 2)]
 
   for (m in 1:nrow(met_ref)) {
