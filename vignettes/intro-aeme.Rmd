@@ -203,7 +203,7 @@ lke <- lake(aeme_data)
 print(lke)
 
 # Change lake name
-lke[["name"]] <- "Lake AEME"
+lke[["name"]] <- "AEME"
 
 # reassign lake data to aeme object
 lake(aeme_data) <- lke
