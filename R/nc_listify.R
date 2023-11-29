@@ -133,6 +133,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
       outflow <- A0 * 0
     }
     precip <- ncdf4::ncvar_get(nc_daily, "precip") * 86400
+    precip_vol <- precip * A0
     Ts <- ncdf4::ncvar_get(nc_daily, "temp")
     Ts <- Ts[nrow(Ts), ]
     MET_tmpair <- ncdf4::ncvar_get(nc_daily, "airt")
@@ -179,6 +180,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     outflow <- (ncdf4::ncvar_get(nc, "tot_outflow_vol")[idx] +
                   ncdf4::ncvar_get(nc, "overflow_vol")[idx]) / A0
     precip <- ncdf4::ncvar_get(nc, "precipitation")[idx]
+    precip_vol <- precip * A0
     Ts <- ncdf4::ncvar_get(nc, "surface_temp")[idx]
 
   } else if (model == 'dy_cd') {
@@ -287,6 +289,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     dates <- seq.Date(from = dates[1], by = 1, length.out = length(dates))
     evap_flux <- EVAP / 86400
     evap_vol <- EVAP * A0
+    precip_vol <- precip * A0
 
   }
 
@@ -318,6 +321,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
                   LKE_Qnet = as.vector(Qnet),
                   LKE_evpvol = as.vector(evap_vol),
                   LKE_precip = as.vector(precip),
+                  LKE_pcpvol = as.vector(precip_vol),
                   LKE_inflow = as.vector(inflow),
                   LKE_outflow = as.vector(outflow),
                   LKE_layers = as.matrix(layers),
