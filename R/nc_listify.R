@@ -118,7 +118,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     outflow_vars <- flow_vars[grepl("outflow|wbal", flow_vars)]
     if (length(inflow_vars) >= 1) {
       inflow <- sapply(seq_along(inflow_vars), \(x) {
-        (ncdf4::ncvar_get(nc_daily, inflow_vars[x]) * 86400) / A0
+        (ncdf4::ncvar_get(nc_daily, inflow_vars[x]) * 86400) # / A0
       }) |>
         apply(1, sum)
     } else {
@@ -126,7 +126,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     }
     if (length(outflow_vars) >= 1) {
       outflow <- sapply(seq_along(outflow_vars), \(x) {
-        -1 * (ncdf4::ncvar_get(nc_daily, outflow_vars[x]) * 86400) / A0
+        -1 * (ncdf4::ncvar_get(nc_daily, outflow_vars[x]) * 86400) # / A0
       }) |>
         apply(1, sum)
     } else {
@@ -176,9 +176,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     evap_flux <- -ncdf4::ncvar_get(nc, "evap_mass_flux")[idx]
     A0 <- ncdf4::ncvar_get(nc, "surface_area")[idx]
     EVAP <- abs(evap_vol / A0)
-    inflow <- ncdf4::ncvar_get(nc, "tot_inflow_vol")[idx] / A0
+    inflow <- ncdf4::ncvar_get(nc, "tot_inflow_vol")[idx] # / A0
     outflow <- (ncdf4::ncvar_get(nc, "tot_outflow_vol")[idx] +
-                  ncdf4::ncvar_get(nc, "overflow_vol")[idx]) / A0
+                  ncdf4::ncvar_get(nc, "overflow_vol")[idx]) # / A0
     precip <- ncdf4::ncvar_get(nc, "precipitation")[idx]
     precip_vol <- precip * A0
     Ts <- ncdf4::ncvar_get(nc, "surface_temp")[idx]
@@ -284,8 +284,8 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
       layerA <- stats::approx(H, A, layerD)$y
       sum((layerA) * dz)
     })
-    inflow <- inflow / A0
-    outflow <- outflow / A0
+    inflow <- inflow #/ A0
+    outflow <- outflow # / A0
     dates <- seq.Date(from = dates[1], by = 1, length.out = length(dates))
     evap_flux <- EVAP / 86400
     evap_vol <- EVAP * A0
@@ -306,6 +306,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
   # Net fluxes ----
   Qnet <- Qe + Qh + Qlw + Qsw
 
+  # Net water balance ----
+  net_wb <- inflow + precip_vol - outflow - evap_vol
+
 
   nc_list <- list(Date = dates,
                   LKE_lvlwtr = as.vector(depth),
@@ -324,6 +327,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
                   LKE_pcpvol = as.vector(precip_vol),
                   LKE_inflow = as.vector(inflow),
                   LKE_outflow = as.vector(outflow),
+                  LKE_netwbl = as.vector(net_wb),
                   LKE_layers = as.matrix(layers),
                   LKE_depths = as.matrix(depths),
                   HYD_Ts = as.vector(Ts),
