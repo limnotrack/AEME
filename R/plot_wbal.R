@@ -51,7 +51,8 @@ plot_wbal <- function(aeme_data, cumulative = FALSE) {
   ggplot2::ggplot(df, ggplot2::aes(x = Date, y = value, colour = Model)) +
     ggplot2::geom_hline(yintercept = 0) +
     ggplot2::geom_line() +
-    ggplot2::facet_wrap(~name_text, scales = "free_y", ncol = 1) +
+    ggplot2::facet_wrap(~name_text, scales = "free_y", ncol = 1,
+                        strip.position = "right") +
     ggplot2::theme_bw() +
     ggplot2::labs(x = "Date", y = y_lab)
 
