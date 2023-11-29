@@ -16,6 +16,7 @@ plot_var(
   add_obs = TRUE,
   level = FALSE,
   facet = FALSE,
+  cumulative = FALSE,
   print_plots = FALSE
 )
 }

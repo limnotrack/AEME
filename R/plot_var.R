@@ -17,7 +17,7 @@
 
 plot_var <- function(df = NULL, aeme_data, model, var_sim, ylim, xlim, var_lims,
                      obs = NULL, add_obs = TRUE, level = FALSE, facet = FALSE,
-                     print_plots = FALSE) {
+                     cumulative = FALSE, print_plots = FALSE) {
 
   utils::data("key_naming", package = "AEME", envir = environment())
 
