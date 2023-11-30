@@ -58,7 +58,7 @@ salinity:                                # salinity profile used for initializat
       tau_b: 1.00000000E+15              # time scale for bottom layer [s; min=0.0; default=1.00000000E+15]
 surface:
    fluxes:                               # heat and momentum fluxes
-      method: 1                          # method to calculate fluxes from meteorology [0=use prescribed fluxes, 1=Kondo (1975), 2=Fairall et al. (1996); default=0]
+      method: 2                          # method to calculate fluxes from meteorology [0=use prescribed fluxes, 1=Kondo (1975), 2=Fairall et al. (1996); default=0]
       heat:                              # prescribed total heat flux (sensible, latent and net back-radiation)
          method: 0                       # method [0=constant, 2=from file; default=0]
          constant_value: 0.0           # value to use throughout the simulation [W/m^2; default=0.0]
