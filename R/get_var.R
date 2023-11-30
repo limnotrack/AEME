@@ -47,11 +47,28 @@ get_var <- function(aeme_data, model, var_sim, return_df = TRUE,
   # Loop through the models and extract the variable of interest ----
   lst <- lapply(model, \(m) {
     variable <- outp[[m]][[var_sim]]
+    # Empty dataframe to return if variable is not in output
+    df <- data.frame(Date = as.Date(NA),
+                     lyr_top = NA,
+                     value = NA,
+                     Model = m,
+                     lyr_thk = NA)
 
     if (is.null(variable)) {
       message(strwrap(paste0(var_sim, " is not in output for model ", m,
                              ". Returning a dataframe with NA's.")))
-      df <- data.frame(Date = NA, value = NA, Model = NA, lyr_thk = NA)
+      return(df)
+    }
+    if (is.matrix(variable)) {
+      if (ncol(variable) == 0) {
+        message(strwrap(paste0(var_sim, " is not in output for model ", m,
+                               ". Returning a dataframe with NA's.")))
+        return(df)
+      }
+    }
+    if (length(variable) == 0) {
+      message(strwrap(paste0(var_sim, " is not in output for model ", m,
+                             ". Returning a dataframe with NA's.")))
       return(df)
     }
 
