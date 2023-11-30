@@ -133,7 +133,8 @@ about the inflows (data, factor)</li>
 about the outflows (data, factor, lvl)</li>
 <li>
 <strong>water_balance</strong> - a list object containing
-information about the water balance configuration (use, data)</li>
+information about the water balance configuration (method, use,
+data)</li>
 <li>
 <strong>outputs</strong> - a list object containing information
 about the outputs ()</li>
@@ -365,7 +366,7 @@ function.</p>
 <span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Water balance</span></span>
-<span><span class="co">#&gt; Use: obs; Modelled: Absent; Water balance: Absent</span></span>
+<span><span class="co">#&gt; Method: 2; Use: obs; Modelled: Absent; Water balance: Absent</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Output: </span></span>
 <span><span class="co">#&gt; DY-CD: Absent</span></span>
@@ -398,12 +399,11 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for AEME [2023-11-29 05:21:03.557646]</span></span>
+<span><span class="co">#&gt; Building simulation for AEME [2023-11-30 23:14:16.008361]</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
 <span><span class="co">#&gt; Missing values in observed water level</span></span>
 <span><span class="co">#&gt; Using optimisation function</span></span>
-<span><span class="co">#&gt; Calculating outflow with an estimated water balance using lake level,</span></span>
-<span><span class="co">#&gt; inflow data (if present) and estimated evaporation rates.</span></span>
+<span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
 <span><span class="co">#&gt; Calculating lake level using lake depth and a sinisoidal function.</span></span>
 <span><span class="co">#&gt; Observed lake level is present. Updating initial lake model depth...</span></span>
 <span><span class="co">#&gt; Building DYRESM-CAEDYM for lake aeme</span></span>
@@ -415,6 +415,16 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; Building GLM3-AED2 model for lake aeme</span></span>
 <span><span class="co">#&gt; Copied in GLM nml file</span></span>
 <span><span class="co">#&gt; Copied in AED nml file</span></span>
+<span><span class="co">#&gt; Warning in make_infGLM(glm_nml = glm_nml, path_glm = path_glm, list_inf = inf,</span></span>
+<span><span class="co">#&gt; : headers for all inflows are not identical</span></span>
+<span><span class="co">#&gt; $FWMT</span></span>
+<span><span class="co">#&gt;  [1] "Date"       "HYD_flow"   "HYD_temp"   "CHM_salt"   "CHM_oxy"   </span></span>
+<span><span class="co">#&gt;  [6] "PHS_frp"    "PHS_dop"    "PHS_pop"    "PHS_pip"    "NIT_amm"   </span></span>
+<span><span class="co">#&gt; [11] "NIT_nit"    "NIT_don"    "NIT_pon"    "CAR_doc"    "CAR_poc"   </span></span>
+<span><span class="co">#&gt; [16] "SIL_rsi"    "PHY_cyano"  "PHY_green"  "PHY_diatom" "NCS_ss1"   </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $wbal</span></span>
+<span><span class="co">#&gt; [1] "Date"     "HYD_flow" "HYD_temp" "CHM_salt"</span></span>
 <span><span class="co">#&gt;    oxy_initial   = 625 replaced with 312.5</span></span>
 <span><span class="co">#&gt;    frp_initial = 0.3229 replaced with 0.3229</span></span>
 <span><span class="co">#&gt;      dop_initial  = 0.3229 replaced with 0.3229</span></span>
@@ -466,7 +476,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Water balance</span></span>
-<span><span class="co">#&gt; Use: obs; Modelled: Absent; Water balance: Present</span></span>
+<span><span class="co">#&gt; Method: 2; Use: obs; Modelled: Absent; Water balance: Present</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Output: </span></span>
 <span><span class="co">#&gt; DY-CD: Absent</span></span>
