@@ -21,6 +21,13 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
   names_inf <- names(list_inf)
   n_inf <- length(names_inf)
 
+  # Check if wbal is in the inflows
+  if ("wbal" %in% names_inf) {
+    list_inf[["wbal"]] <-  list_inf[["wbal"]] |>
+      dplyr::select(Date, inflow_glm_aed, HYD_temp, CHM_salt) |>
+      dplyr::rename(HYD_flow = inflow_glm_aed)
+  }
+
   # check all the names are identical
   heads_inf <- lapply(list_inf, colnames)
   if (isFALSE(all(sapply(heads_inf, FUN = identical, heads_inf[[1]])))) {
@@ -68,7 +75,7 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                      strmbd_drag = rep(0.016, n_inf),
                      inflow_factor = rep(1, n_inf),
                      inflow_fl = paste0("bcs/inflow_", names_inf,
-                                        ".csv", collapse = ", "),
+                                        ".csv"),
                      inflow_varnum = length(names(df)[2:ncol(df)]),
                      inflow_vars = names(df)[2:ncol(df)],
                      coef_inf_entrain = 0
