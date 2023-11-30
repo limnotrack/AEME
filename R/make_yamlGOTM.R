@@ -163,7 +163,15 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
       })
       names(inf_lst) <- c("flow", "temp", "salt")
 
-      if (use_bgc) {
+      bgc_vars <- c("abiotic_water_sO2W",
+                    "abiotic_water_sPO4W", "abiotic_water_sPDOMW",
+                    "abiotic_water_sPPOMW", "abiotic_water_sPAIMW",
+                    "abiotic_water_sNH4W", "abiotic_water_sNO3W",
+                    "abiotic_water_sNDOMW", "abiotic_water_sNPOMW",
+                    "abiotic_water_sDIMW","abiotic_water_sDDOMW",
+                    "abiotic_water_sDPOMW", "abiotic_water_sSiO2W")
+
+      if (use_bgc & all(bgc_vars %in% colnames(df))) {
         # write the chemistry file (pclake can't have phytoplnkton in inflows?!?!)
         all.inf.vars = c("date","time", "abiotic_water_sO2W",
                          "abiotic_water_sPO4W", "abiotic_water_sPDOMW",
