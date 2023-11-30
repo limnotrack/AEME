@@ -2,8 +2,9 @@
 #'
 #' @param aeme_time list; time object from aeme_object using `time()`
 #' @inheritParams build_ensemble
-#' @param method character; method for estimating lake water level. Options
-#'  are "use_obs", "sinusoidal", "constant".
+#' @param method numeric; method to use for calculating water balance. Must be
+#' 1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
+#' outflows calculated). Default = 1
 #' @param hyps data frame of hypsographic curve, elevation (masl) and planar
 #' area (m^2)
 #' @param inf list of inflow data frames
@@ -31,9 +32,10 @@
 #' @export
 #'
 
-calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
-                      level = NULL, obs_lake = NULL, obs_met, ext_elev,
-                      elevation, print_plots = FALSE, coeffs = NULL) {
+calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
+                               outf = NULL, level = NULL, obs_lake = NULL,
+                               obs_met, ext_elev, elevation,
+                               print_plots = FALSE, coeffs = NULL) {
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
@@ -97,8 +99,8 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
         mod.lvl <- mod.lvl |>
           dplyr::mutate(
             value = mod_lvl(Date, surf = surf,
-                             ampl = ampl,
-                             offset = offset)
+                            ampl = ampl,
+                            offset = offset)
           )
       }
     } else {
@@ -111,8 +113,8 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
       mod.lvl <- mod.lvl |>
         dplyr::mutate(
           value = mod_lvl(Date, surf = surf,
-                           ampl = ampl,
-                           offset = offset)
+                          ampl = ampl,
+                          offset = offset)
         )
     }
   } else if (use == "mod") {
@@ -197,7 +199,7 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
     dplyr::select(all_of(col_select)) |>
     dplyr::rename(u10 = MET_wnduvu, v10 = MET_wnduvv, airt = MET_tmpair,
                   hum = MET_humrel, airp = MET_prsttn, precip = MET_pprain) |>
-    dplyr::mutate(precip = precip / 86400) #|>
+    dplyr::mutate(precip = precip / 86400, airp = airp * 100) #|>
 
   # Estimate lake surface temperature (use sea surface temperature abbrev 'sst')
   if (!("sst" %in% names(obs_met))) {
@@ -247,7 +249,7 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
       # Evaporation rate
       dy_cd_evap_flux = -(evap / area) / 86400,
       gotm_wet_evap_flux = calc_evap(met = gotm_met, model = "gotm_wet",
-                                     method = "kondo"),
+                                     method = "fairall"),
       glm_aed_evap_flux = dy_cd_evap_flux,
       # glm_aed_evap_flux = calc_evap(met = gotm_met, elevation = elevation,
       #                               model = "glm_aed"),
@@ -303,8 +305,9 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
     # add evaporation estimation above
     merge(dplyr::select(wbal, c("Date", "dy_cd_evap_m3", "gotm_wet_evap_m3",
                                 "glm_aed_evap_m3", "dy_cd_evap_flux",
-                                "gotm_wet_evap_flux", "glm_aed_evap_flux", "Ts",
-                                "area", "value", "V")), by = "Date") |>
+                                "gotm_wet_evap_flux", "glm_aed_evap_flux",
+                                "T5avg", "Ts", "area", "value", "V")),
+          by = "Date") |>
     merge(dplyr::select(obs_met, c("Date","MET_pprain"))) |>
     # rainfall direct to surface of lake
     dplyr::mutate(rain = MET_pprain * area,
@@ -327,44 +330,97 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
   #   geom_hline(yintercept = 0) +
   #   geom_point(aes(Date, outflow_gotm_wet))
 
-  # pass negative outflows onto subsequent days
-  for (j in 2:nrow(wb)) {
-    wb[j,"outflow_dy_cd"] <- ifelse(wb[j-1, "outflow_dy_cd"] < 0,
-                                    wb[j,"outflow_dy_cd"] +
-                                      wb[j-1,"outflow_dy_cd"],
-                                    wb[j,"outflow_dy_cd"])
-    wb[j,"outflow_glm_aed"] <- ifelse(wb[j-1, "outflow_glm_aed"] < 0,
-                                      wb[j,"outflow_glm_aed"] +
-                                        wb[j-1,"outflow_glm_aed"],
-                                      wb[j,"outflow_glm_aed"])
-    wb[j,"outflow_gotm_wet"] <- ifelse(wb[j-1, "outflow_gotm_wet"] < 0,
-                                       wb[j,"outflow_gotm_wet"] +
-                                         wb[j-1,"outflow_gotm_wet"],
-                                       wb[j,"outflow_gotm_wet"])
-  }
+  # Method 1 - No inflows or outflows
+  if (method == 1) {
+    wb <- wb |>
+      dplyr::mutate(outflow_dy_cd = 0,
+                    outflow_glm_aed = 0,
+                    outflow_gotm_wet = 0,
+                    inflow_dy_cd = 0,
+                    inflow_glm_aed = 0,
+                    inflow_gotm_wet = 0)
+    # Method 2 - Outflows
+  } else if (method == 2) {
+    # pass negative outflows onto subsequent days
+    for (j in 2:nrow(wb)) {
+      wb[j,"outflow_dy_cd"] <- ifelse(wb[j-1, "outflow_dy_cd"] < 0,
+                                      wb[j,"outflow_dy_cd"] +
+                                        wb[j-1,"outflow_dy_cd"],
+                                      wb[j,"outflow_dy_cd"])
+      wb[j,"outflow_glm_aed"] <- ifelse(wb[j-1, "outflow_glm_aed"] < 0,
+                                        wb[j,"outflow_glm_aed"] +
+                                          wb[j-1,"outflow_glm_aed"],
+                                        wb[j,"outflow_glm_aed"])
+      wb[j,"outflow_gotm_wet"] <- ifelse(wb[j-1, "outflow_gotm_wet"] < 0,
+                                         wb[j,"outflow_gotm_wet"] +
+                                           wb[j-1,"outflow_gotm_wet"],
+                                         wb[j,"outflow_gotm_wet"])
+    }
 
-  # Smooth outflow by 5 days ----
-  wb <- wb |>
-    dplyr::mutate(
-      outflow_dy_cd = zoo::rollmean(wb$outflow_dy_cd, 5, na.pad = TRUE,
-                                    align = c("right")),
-      outflow_glm_aed = zoo::rollmean(wb$outflow_glm_aed, 5, na.pad = TRUE,
+    # Smooth outflow by 5 days ----
+    wb <- wb |>
+      dplyr::mutate(
+        outflow_dy_cd = zoo::rollmean(wb$outflow_dy_cd, 5, na.pad = TRUE,
                                       align = c("right")),
-      outflow_gotm_wet = zoo::rollmean(wb$outflow_gotm_wet, 5, na.pad = TRUE,
-                                       align = c("right"))
-    ) |>
-    # remove the negatives that have been added to other days
-    dplyr::mutate(
-      outflow_dy_cd = dplyr::case_when(
-        outflow_dy_cd < 0 ~ 0, .default = outflow_dy_cd
-      ),
-      outflow_glm_aed = dplyr::case_when(
-        outflow_glm_aed < 0 ~ 0, .default = outflow_glm_aed
-      ),
-      outflow_gotm_wet = dplyr::case_when(
-        outflow_gotm_wet < 0 ~ 0, .default = outflow_gotm_wet
+        outflow_glm_aed = zoo::rollmean(wb$outflow_glm_aed, 5, na.pad = TRUE,
+                                        align = c("right")),
+        outflow_gotm_wet = zoo::rollmean(wb$outflow_gotm_wet, 5, na.pad = TRUE,
+                                         align = c("right"))
+      ) |>
+      # remove the negatives that have been added to other days
+      dplyr::mutate(
+        outflow_dy_cd = dplyr::case_when(
+          outflow_dy_cd < 0 ~ 0, .default = outflow_dy_cd
+        ),
+        outflow_glm_aed = dplyr::case_when(
+          outflow_glm_aed < 0 ~ 0, .default = outflow_glm_aed
+        ),
+        outflow_gotm_wet = dplyr::case_when(
+          outflow_gotm_wet < 0 ~ 0, .default = outflow_gotm_wet
+        ),
+        inflow_dy_cd = 0,
+        inflow_glm_aed = 0,
+        inflow_gotm_wet = 0
       )
-    )
+    # Method 3 - Inflows and outflows
+  } else  if (method == 3) {
+    # Separate negative into inflows and positive into outflows
+    wb <- wb |>
+      # Smooth outflow by 5 days ----
+      dplyr::mutate(
+        outflow_dy_cd = zoo::rollmean(wb$outflow_dy_cd, 5, na.pad = TRUE,
+                                      align = c("right")),
+        outflow_glm_aed = zoo::rollmean(wb$outflow_glm_aed, 5, na.pad = TRUE,
+                                        align = c("right")),
+        outflow_gotm_wet = zoo::rollmean(wb$outflow_gotm_wet, 5, na.pad = TRUE,
+                                         align = c("right"))
+      ) |>
+      dplyr::mutate(
+        inflow_dy_cd = dplyr::case_when(
+          outflow_dy_cd < 0 ~ abs(outflow_dy_cd),
+          .default = 0
+        ),
+        inflow_glm_aed = dplyr::case_when(
+          outflow_glm_aed < 0 ~ abs(outflow_glm_aed),
+          .default = 0
+        ),
+        inflow_gotm_wet = dplyr::case_when(
+          outflow_gotm_wet < 0 ~ abs(outflow_gotm_wet),
+          .default = 0
+        ),
+      ) |>
+      dplyr::mutate(
+        outflow_dy_cd = dplyr::case_when(
+          outflow_dy_cd < 0 ~ 0, .default = outflow_dy_cd
+        ),
+        outflow_glm_aed = dplyr::case_when(
+          outflow_glm_aed < 0 ~ 0, .default = outflow_glm_aed
+        ),
+        outflow_gotm_wet = dplyr::case_when(
+          outflow_gotm_wet < 0 ~ 0, .default = outflow_gotm_wet
+        )
+      )
+  }
 
 
   if (print_plots) {
@@ -382,11 +438,13 @@ calc_wbal <- function(aeme_time, model, use, hyps, inf, outf = NULL,
   }
 
   wb |>
+    dplyr::mutate(HYD_temp = Ts, CHM_salt = 0) |>
     dplyr::select(c("Date", "value", "HYD_flow", "rain", "dy_cd_evap_m3",
                     "gotm_wet_evap_m3", "glm_aed_evap_m3", "deltaV", "V",
                     "dy_cd_evap_flux", "gotm_wet_evap_flux",
-                    "glm_aed_evap_flux", "Ts", "area", "outflow_dy_cd",
-                    "outflow_glm_aed", "outflow_gotm_wet"))
+                    "glm_aed_evap_flux", "Ts", "area", "CHM_salt", "HYD_temp",
+                    "inflow_dy_cd", "inflow_glm_aed", "inflow_gotm_wet",
+                    "outflow_dy_cd", "outflow_glm_aed", "outflow_gotm_wet"))
 }
 
 #' Calculate actual surface area at a specific depth
