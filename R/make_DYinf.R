@@ -22,7 +22,10 @@ make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
   inf <- infList |>
     # `names<-`(1:length(.))|>
     dplyr::bind_rows(.id = "column_label") |>
-    data.frame()
+    data.frame() |>
+    dplyr::mutate(
+      dplyr::across(!dplyr::contains("Date"), \(x) ifelse(is.na(x), 0, x))
+    )
   inf <- inf |>
     # re-arrange and re-name for DYRESM format
     dplyr::select(c(2, 1, 3:ncol(inf))) |>
@@ -33,7 +36,8 @@ make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
                                                                 format = "%j")),
                   # tidy rounding
                   dplyr::across(3:ncol(inf), \(x) round(x, digits = 3)),
-                  dplyr::across(3:ncol(inf), \(x) format(x, nsmall = 3)))|>
+                  dplyr::across(3:ncol(inf), \(x) format(x, nsmall = 3)),
+                  dplyr::across(3:ncol(inf), \(x) ifelse(is.na(x), 0, x)))|>
     # sort by date
     dplyr::arrange(Date)
 
