@@ -24,7 +24,8 @@ calc_evap <- function(met, altitude,
       if(method == "fairall") {
         calc_fairall(u10 = met[["u10"]][n], v10 = met[["v10"]][n],
                      sst = met[["sst"]][n], airt = met[["airt"]][n],
-                     hum = met[["hum"]][n], airp = met[["airp"]][n])
+                     hum = met[["hum"]][n], airp = met[["airp"]][n],
+                     precip = met[["precip"]][n])$evap
       } else if(method == "kondo") {
         calc_kondo(u10 = met[["u10"]][n], v10 = met[["v10"]][n],
                    sst = met[["sst"]][n], airt = met[["airt"]][n],
