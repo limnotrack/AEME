@@ -37,13 +37,11 @@ calc_fairall(
 }
 \value{
 List with the following elements:
-\itemize{
- \item{tau_x}{Eastward wind stress [N/m^2]}
- \item{tau_y}{Northward wind stress [N/m^2]}
- \item{h}{Sensible heat flux [W/m^2]}
- \item{e}{Latent heat flux [W/m^2]}
- \item{evap}{Evaporation rate [m/s]}
- }
+- tau_x - Eastward wind stress [N/m^2]
+- tau_y - Northward wind stress [N/m^2]
+- h - Sensible heat flux [W/m^2]
+- e - Latent heat flux [W/m^2]
+- evap - Evaporation rate [m/s]
 
  @noRd
 }
