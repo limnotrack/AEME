@@ -47,6 +47,7 @@ outflows:
       gotm_wet: 1
    lvl: -1                              # height of the outflow above the ground. If the outflow is a surface outflow use "-1". If there are more than one outflow in the outflow file, this must be a list with one value per outflow
 water_balance:
+   method: 2                            # Method for calculating water balance. 1 = none, 2 = outflows, 3 = inflows and outflows
    use: obs                             # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
    data:
       model: null

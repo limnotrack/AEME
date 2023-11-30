@@ -144,6 +144,7 @@ aeme_constructor <- function(
   if (missing(water_balance)) {
     water_balance <- list(
       use = "obs",
+      method = 2,
       data = list(
         model = NULL,
         wbal = NULL
@@ -388,6 +389,12 @@ aeme_constructor <- function(
     if (!is.data.frame(water_balance[["data"]][["model"]])) {
       stop("Modelled water level must be a dataframe or NULL.")
     }
+  }
+  if (!is.numeric(water_balance$method)) {
+    stop("Water balance method must be numeric. Accepted values are 1-3")
+  } else if (water_balance$method < 1 | water_balance$method > 3) {
+    stop(strwrap("Water balance method selected not available. Accepted values
+                 are 1 (none), 2 (outflows) or 3 (inflows & outflows"))
   }
   if (!is.null(water_balance$use)) {
     if (!is.character(water_balance$use)) {
@@ -851,7 +858,8 @@ setMethod("show", "aeme", function(object) {
     "; GOTM-WET: ", round(outf$factor$gotm_wet, 2),
     "\n-------------------------------------------------------------------\n",
     "  Water balance\n",
-    "Use: ", wbal$use,"; Modelled: ", ifelse(!is.null(wbal[["data"]][["model"]]),
+    "Method: ", wbal$method, "; Use: ", wbal$use,"; Modelled: ",
+    ifelse(!is.null(wbal[["data"]][["model"]]),
                                              "Present", "Absent"), "; Water balance: ",
     ifelse(is.data.frame(wbal[["data"]][["wbal"]]),
            "Present", "Absent"),

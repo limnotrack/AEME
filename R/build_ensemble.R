@@ -13,7 +13,7 @@
 #' @param outf_factor vector; containing numeric factor to multiple the
 #'  outflows. Needs to be named according to the model.
 #' @param ext_elev numeric; extension in elevation for the hypsogrph in metres.
-  #' @param use_bgc logical; switch to use the biogeochemical model.
+#' @param use_bgc logical; switch to use the biogeochemical model.
 #' @param calc_wbal logical; calculate water balance.
 #' @param calc_wlev logical; calculate water level.
 #' @param use_aeme logical; use AEME object to generate model confiuration
@@ -290,30 +290,46 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
     # Calculate water balance ----
     if (calc_wbal | calc_wlev) {
-      wbal <- calc_wbal(aeme_time = aeme_time,
-                        model = model,
-                        use = w_bal$use,
-                        hyps = hyps,
-                        inf = inf,
-                        outf = outf[["outflow"]],
-                        level = level,
-                        obs_lake = aeme_obs[["lake"]],
-                        obs_met = met,
-                        ext_elev = ext_elev,
-                        elevation = elevation,
-                        print_plots = FALSE,
-                        coeffs = coeffs)
+      wbal <- calc_water_balance(aeme_time = aeme_time,
+                                 model = model,
+                                 method = w_bal$method,
+                                 use = w_bal$use,
+                                 hyps = hyps,
+                                 inf = inf,
+                                 outf = outf[["outflow"]],
+                                 level = level,
+                                 obs_lake = aeme_obs[["lake"]],
+                                 obs_met = met,
+                                 ext_elev = ext_elev,
+                                 elevation = elevation,
+                                 print_plots = FALSE,
+                                 coeffs = coeffs)
     }
 
     # Calculate water balance ----
     if (calc_wbal) {
-      message(paste(strwrap("Calculating outflow with an estimated
-                            water balance using lake level, inflow data (if
-                            present) and estimated evaporation rates."),
-                    collapse = "\n"))
+
+      if (w_bal$method == 1) {
+        msg <- paste(strwrap("No water balance correction applied
+                             (method = 1)."),
+                     collapse = "\n")
+      } else if (w_bal$method == 2) {
+        msg <- paste(strwrap("Correcting water balance using estimated
+                             outflows (method = 2)."),
+                     collapse = "\n")
+      } else if (w_bal$method == 3) {
+        msg <- paste(strwrap("Correcting water balance using estimated
+                             inflows and outflows (method = 3)."),
+                     collapse = "\n")
+      }
+
+      message(msg)
       w_bal[["data"]][["wbal"]] <- wbal
       outf[["wbal"]] <- wbal |>
         dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
+      inf[["wbal"]] <- wbal |>
+        dplyr::select(Date, inflow_dy_cd, inflow_glm_aed, inflow_gotm_wet,
+                      HYD_temp, CHM_salt)
     } else {
       w_bal[["data"]][["wbal"]] <- NULL
       outf[["wbal"]] <- NULL
