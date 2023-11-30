@@ -256,10 +256,48 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     # Qlw <- NA
     Qsw <- ncdf4::ncvar_get(nc, "met_SW")[idx]
     EVAP <- ncdf4::ncvar_get(nc, "dyresmEVAP_DAILY_Var")[idx]
-    inflow <- ncdf4::ncvar_get(nc, "stream_1_VOL")[idx]
-    outflow <- (ncdf4::ncvar_get(nc, "withdrawal_outflow")[idx] +
-                  ncdf4::ncvar_get(nc, "overflow_VOL_Var")[idx])
+
+    inflow_vars <- names(nc$var)[grepl("stream", names(nc$var)) &
+                                   grepl("VOL", names(nc$var)) ]
+    if (length(inflow_vars) >= 1) {
+      inflow <- sapply(seq_along(inflow_vars), \(x) {
+        ncdf4::ncvar_get(nc, inflow_vars[x])[idx]
+      }) |>
+        apply(1, sum)
+    } else {
+      inflow <- Ts * 0
+    }
+    outflow_vars <- names(nc$var)[grepl("withdrawal", names(nc$var)) &
+                                   grepl("VOL", names(nc$var))]
+    if (length(outflow_vars) >= 1) {
+      outflow <- sapply(seq_along(outflow_vars), \(x) {
+        ncdf4::ncvar_get(nc, outflow_vars[x])[idx]
+      }) |>
+        apply(1, sum)
+    } else {
+      outflow <- Ts * 0
+    }
+
+    outflow <- outflow +
+                  ncdf4::ncvar_get(nc, "overflow_VOL_Var")[idx]
     precip <- ncdf4::ncvar_get(nc, "met_RAIN")[idx]
+
+    A0 <- sapply(1:length(depth), function(d) approx((H - min(H)), A,
+                                                     xout = depth[d])$y)
+    dz <- 0.01
+    V <- sapply(1:length(depth), function(d) {
+      if(is.na(depth[d]) | is.infinite(depth[d])) return(NA)
+      layerD <- seq(dz, (depth[d] - dz), dz)
+      layerA <- stats::approx(H, A, layerD)$y
+      sum((layerA) * dz)
+    })
+    # inflow <- inflow #/ A0
+    # outflow <- outflow # / A0
+    dates <- seq.Date(from = dates[1], by = 1, length.out = length(dates))
+    evap_flux <- EVAP / 86400
+    evap_vol <- EVAP * A0
+    precip_vol <- precip * A0
+
   }
 
   # format the mod_layers and add as first list item (common to all three models)
@@ -273,25 +311,6 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
 
   depths <- apply(layers, 2, function(x) x - max(x, na.rm = TRUE)) |>
     abs()
-
-  if (model == "dy_cd") {
-    A0 <- sapply(1:length(depth), function(d) approx((H - min(H)), A,
-                                                     xout = depth[d])$y)
-    dz <- 0.01
-    V <- sapply(1:length(depth), function(d) {
-      if(is.na(depth[d]) | is.infinite(depth[d])) return(NA)
-      layerD <- seq(dz, (depth[d] - dz), dz)
-      layerA <- stats::approx(H, A, layerD)$y
-      sum((layerA) * dz)
-    })
-    inflow <- inflow #/ A0
-    outflow <- outflow # / A0
-    dates <- seq.Date(from = dates[1], by = 1, length.out = length(dates))
-    evap_flux <- EVAP / 86400
-    evap_vol <- EVAP * A0
-    precip_vol <- precip * A0
-
-  }
 
   dV <- c(0, diff(V))
   # net <- inflow + precip - outflow - EVAP
