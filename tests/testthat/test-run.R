@@ -89,6 +89,9 @@ test_that("running DYRESM-CAEDYM works", {
                                                  tolower(lke$name)),
                                     model, "DYsim.nc"))
   testthat::expect_true(file_chk)
+
+  outp <- output(aeme_data)
+  testthat::expect_true(!is.null(outp$dy_cd))
 })
 
 test_that("running GLM-AED works", {
