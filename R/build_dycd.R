@@ -179,6 +179,13 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
   #------ INFLOWS -------
   if (length(inf) > 0) {
     for (i in 1:length(inf)) {
+
+      if (names(inf)[i] == "wbal") {
+        inf[[i]] <-  inf[[i]] |>
+          dplyr::select(Date, inflow_dy_cd, HYD_temp, CHM_salt) |>
+          dplyr::rename(HYD_flow = inflow_dy_cd)
+      }
+
       # format the tables
       colnames(inf[[i]]) <- rename_modelvars(input = names(inf[[i]]),
                                              type_output = "dy_cd")
