@@ -84,12 +84,13 @@ build_ensemble <- function(aeme_data = NULL,
   # outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
   #                 "gotm_wet" = 1)
   # ext_elev = 5
-  # use_bgc = FALSE
+  # use_bgc = T
   # calc_wbal = TRUE
   # calc_wlev = TRUE
   # use_aeme = FALSE
   # coeffs = NULL
   # hum_type = 3
+  # est_swr_hr = TRUE
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
