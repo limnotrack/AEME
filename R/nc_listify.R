@@ -59,7 +59,16 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     zi <- ncdf4::ncvar_get(nc, "zi")[, idx]
     z <- ncdf4::ncvar_get(nc, "z")[, idx]
 
-    # mod_layers <- z |> abs()
+    # Light
+    rad <- ncdf4::ncvar_get(nc, "rad")[, idx]
+    efold <- sapply(seq_len(ncol(rad)), \(t) {
+      if (t == 1) return(0) # Day 1 is always 0
+      zeta[t] - approx(rad[, t], zi[, t], xout = (1/exp(1) * rad[nrow(rad), t]))$y
+    })
+    euphotic <- sapply(seq_len(ncol(rad)), \(t) {
+      if (t == 1) return(0) # Day 1 is always 0
+      zeta[t] - approx(rad[, t], zi[, t], xout = (0.01 * rad[nrow(rad), t]))$y
+    })
 
     sst <- ncdf4::ncvar_get(nc, "sst")[idx]
     if (sum(sst == 0) > 1 | sum(is.na(sst)) > 0) {
@@ -217,11 +226,11 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     es <- exp(2.3026 * (((7.5 * Ts) / (Ts + 237.3) + 0.7858)))
     #evaporative heat flux
     Qe <- ((0.622 / 981.9) *         #constant/mean station pressure
-                  0.0013 *               #latent heat transfer coefficient
-                  1.168 *                #density of air
-                  2453000 *              #latent heat of evaporation of water
-                  MET_wndspd *           #wind speed in m/s
-                  (MET_prvapr - es))
+             0.0013 *               #latent heat transfer coefficient
+             1.168 *                #density of air
+             2453000 *              #latent heat of evaporation of water
+             MET_wndspd *           #wind speed in m/s
+             (MET_prvapr - es))
     Qe[Qe > 0] <- 0 # evaporation can't be negative
 
     # Conductive/sensible heat gain only affects the top layer.
@@ -268,7 +277,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
       inflow <- Ts * 0
     }
     outflow_vars <- names(nc$var)[grepl("withdrawal", names(nc$var)) &
-                                   grepl("VOL", names(nc$var))]
+                                    grepl("VOL", names(nc$var))]
     if (length(outflow_vars) >= 1) {
       outflow <- sapply(seq_along(outflow_vars), \(x) {
         ncdf4::ncvar_get(nc, outflow_vars[x])[idx]
@@ -279,7 +288,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     }
 
     outflow <- outflow +
-                  ncdf4::ncvar_get(nc, "overflow_VOL_Var")[idx]
+      ncdf4::ncvar_get(nc, "overflow_VOL_Var")[idx]
     precip <- ncdf4::ncvar_get(nc, "met_RAIN")[idx]
 
     A0 <- sapply(1:length(depth), function(d) approx((H - min(H)), A,
@@ -298,6 +307,10 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     evap_vol <- EVAP * A0
     precip_vol <- precip * A0
 
+    # Light
+    efold <- rep(NA, length(idx))
+    euphotic <- rep(NA, length(idx))
+
   }
 
   # format the mod_layers and add as first list item (common to all three models)
@@ -311,6 +324,19 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
 
   depths <- apply(layers, 2, function(x) x - max(x, na.rm = TRUE)) |>
     abs()
+
+  if (model == "glm_aed") {
+    # Light
+    rad <- ncdf4::ncvar_get(nc, "radn")[, idx]
+    rad <- regularise_model_output(depth = depth, depths = mod_layers,
+                                       var = rad, nlev = nlev)
+    efold <- sapply(seq_len(ncol(rad)), \(t) {
+      approx(rad[, t], depths[, t], xout = (1/exp(1) * rad[nrow(rad), t]))$y
+    })
+    euphotic <- sapply(seq_len(ncol(rad)), \(t) {
+      approx(rad[, t], depths[, t], xout = (0.01 * rad[nrow(rad), t]))$y
+    })
+  }
 
   dV <- c(0, diff(V))
   # net <- inflow + precip - outflow - EVAP
@@ -327,6 +353,10 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
 
   # Net water balance ----
   net_wb <- inflow + precip_vol - outflow - evap_vol
+
+  # Correct light for plotting over contour plots
+  efold_h <- depth - abs(efold)
+  euphotic_h <- depth - abs(euphotic)
 
 
   nc_list <- list(Date = dates,
@@ -349,6 +379,10 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
                   LKE_netwbl = as.vector(net_wb),
                   LKE_layers = as.matrix(layers),
                   LKE_depths = as.matrix(depths),
+                  LKE_efold = as.vector(abs(efold)),
+                  LKE_efoldh = as.vector(abs(efold_h)),
+                  LKE_photic = as.vector(abs(euphotic)),
+                  LKE_photich = as.vector(abs(euphotic_h)),
                   HYD_Ts = as.vector(Ts),
                   MET_tmpair = as.vector(MET_tmpair),
                   LKE_Tdiff = as.vector(Ts - MET_tmpair)
@@ -504,7 +538,7 @@ regularise_model_output <- function(depth, depths, var, nlev) {
       }
     }
   }, numeric(nlev)) #|>
-    # matrix(ncol = nlev, byrow = TRUE)
+  # matrix(ncol = nlev, byrow = TRUE)
 
   # sapply(1:ncol(var), \(c) {
   #   if (is.na(depth[c])) {
