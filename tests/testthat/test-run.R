@@ -153,18 +153,14 @@ test_that("running models in parallel works", {
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
+                              ext_elev = 5, use_bgc = F, calc_wbal = T,
                               calc_wlev = F)
   inp <- input(aeme_data)
   met <- inp$meteo
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE,
+                        ncores = 2L)
   # plot_output(aeme_data = aeme_data, model = model)
-  # plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
-  #             facet = F)
-  # lvl <- get_var(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr", return_df = F)
-  #
-  # lapply(lvl, head)
 
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -205,7 +201,8 @@ test_that("running models with wbal method = 1", {
   inp <- input(aeme_data)
   met <- inp$meteo
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE,
+                        ncores = 2L)
   lke <- lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -237,20 +234,27 @@ test_that("running models with wbal method = 3", {
   w_bal <- water_balance(aeme_data)
   w_bal$method <- 3
   water_balance(aeme_data) <- w_bal
+  infl <- inflows(aeme_data)
+  infl$data <- NULL
+  inflows(aeme_data) <- infl
+  outf <- outflows(aeme_data)
+  outf$data <- NULL
+  outflows(aeme_data) <- outf
 
   aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
                               mod_ctrls = mod_ctrls, inf_factor = inf_factor,
                               ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
                               calc_wlev = F, hum_type = 1)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
-#
-#   plot_output(aeme_data, model)
-#   plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
-#               facet = F)
-#   plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_netwbl",
-#               facet = F, cumulative = F)
-#   plot_wbal(aeme_data = aeme_data)
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE,
+                        ncores = 2L)
+
+  plot_output(aeme_data, model)
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
+              facet = F) /
+  plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_netwbl",
+              facet = F, cumulative = T)
+  plot_wbal(aeme_data = aeme_data)
 #
 #   tst <- get_var(aeme_data = aeme_data, model = model, var = "LKE_netwbl")
 
@@ -304,7 +308,8 @@ test_that("running models in parallel with no wbal calculated", {
   names(outf$data)
 
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE,
+                        ncores = 2L)
   plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
               add_obs = FALSE, facet = FALSE)
 
@@ -342,7 +347,8 @@ test_that("running models with no wbal/outflows calculated", {
   names(outf$data)
 
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE,
+                        ncores = 2L)
   plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
 
@@ -376,7 +382,8 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
                               calc_wlev = FALSE)
 
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE,
+                        ncores = 2L)
 
   plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
@@ -408,7 +415,7 @@ test_that("getting model output works", {
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
-           parallel = TRUE, return = FALSE)
+           parallel = TRUE, ncores = 2L, return = FALSE)
 
   aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
                            mod_ctrls = mod_ctrls, parallel = FALSE)
@@ -433,7 +440,8 @@ test_that("getting model output in parallel works", {
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
-                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE)
+                        mod_ctrls = mod_ctrls, path = path, parallel = TRUE,
+                        ncores = 2L)
 
   outp <- output(aeme_data)
   output_chk <- !all(is.null(unlist(outp)))

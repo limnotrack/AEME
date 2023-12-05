@@ -33,7 +33,8 @@ test_that("plotting model output works", {
 
   # Run models
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
-                        path = path, mod_ctrls = mod_ctrls, parallel = TRUE)
+                        path = path, mod_ctrls = mod_ctrls, parallel = TRUE,
+                        ncores = 2L)
 
 
   poutp <- function() plot(aeme_data, "output")
@@ -81,7 +82,8 @@ test_that("plotting model output works with no lake observations", {
 
   # Run models
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
-                        path = path, mod_ctrls = mod_ctrls, parallel = TRUE)
+                        path = path, mod_ctrls = mod_ctrls, parallel = TRUE,
+                        ncores = 2L)
 
   p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
@@ -114,7 +116,8 @@ test_that("plotting model output works with no lake & level observations", {
 
   # Run models
   aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
-                        path = path, mod_ctrls = mod_ctrls, parallel = TRUE)
+                        path = path, mod_ctrls = mod_ctrls, parallel = TRUE,
+                        ncores = 2L)
 
   p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
