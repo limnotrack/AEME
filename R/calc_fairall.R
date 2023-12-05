@@ -130,6 +130,7 @@ calc_fairall <- function(sst, airt, u10, v10, airp, hum, precip,
 
     if (ri <= 0.25) {
       for (iter in 1:itermax) {
+        # print(iter)
         if (ier >= 0) {
           oL <- g * kappa * TVstar / (ta_k * (1.0 + 0.61 * qa) * Wstar^2)
           ZWoL <- zw * oL
@@ -144,6 +145,7 @@ calc_fairall <- function(sst, airt, u10, v10, airp, hum, precip,
           Wstar <- delw * kappa / (log(zw / ZoW) - wpsi)
 
           rr <- ZoW * Wstar / vis_air
+          # print(rr)
           if (rr >= 0.0 & rr < 1000.0) {
             for (k in 1:8) {
               if (Liu_Rr[k] <= rr && rr < Liu_Rr[k + 1]) {
@@ -212,32 +214,68 @@ calc_fairall <- function(sst, airt, u10, v10, airp, hum, precip,
   return(list(taux = taux, tauy = tauy, qe = qe, qh = qh, evap = evap))
 }
 
+# Function to compute stability function psi
 psi <- function(iflag, ZoL) {
   r3 <- 1.0/3.0
   sqr3 <- sqrt(3)
   pi <- pi
-  Fw <- 0.0
 
-  psik <- function(chik) {
+  # Initialize for the zero "ZoL" case.
+  psi <- 0.0
+
+  # Unstable conditions.
+  if (ZoL < 0.0) {
+    chik <- (1.0 - 16.0 * ZoL) ^ 0.25
     if (iflag == 1) {
-      return(2.0 * log(0.5 * (1.0 + chik)) + log(0.5 * (1.0 + chik^2)) - 2.0 * atan(chik) + 0.5 * pi)
+      psik <- 2.0 * log(0.5 * (1.0 + chik)) + log(0.5 * (1.0 + chik^2)) -
+        2.0 * atan(chik) + 0.5 * pi
     } else if (iflag == 2) {
-      return(2.0 * log(0.5 * (1.0 + chik^2)))
+      psik <- 2.0 * log(0.5 * (1.0 + chik^2))
     }
+
+    # For very unstable conditions, use free-convection (Fairall).
+    chic <- (1.0 - 12.87 * ZoL) ^ r3
+    psic <- 1.5 * log(r3 * (1.0 + chic + chic^2)) - sqr3 * atan((1.0 + 2.0 * chic) / sqr3) + pi / sqr3
+
+    # Match Kansas and free-convection forms with weighting Fw.
+    Fw <- 1.0 / (1.0 + ZoL^2)
+    psi <- Fw * psik + (1.0 - Fw) * psic
+
+  } else if (ZoL > 0.0) {
+    # Stable conditions.
+    psi <- -4.7 * ZoL
   }
-
-  chic <- function(ZoL) {
-    return((1.0 - 12.87 * ZoL)^(1.0/3.0))
-  }
-
-  chik <- chic(ZoL)
-  psic <- 1.5 * log(r3 * (1.0 + chik + chik^2)) - sqr3 * atan((1.0 + 2.0 * chik) / sqr3) + pi / sqr3
-
-  Fw <- 1.0 / (1.0 + ZoL^2)
-  psi <- Fw * psik(chik) + (1.0 - Fw) * psic
 
   return(psi)
 }
+
+
+# psi <- function(iflag, ZoL) {
+#   r3 <- 1.0/3.0
+#   sqr3 <- sqrt(3)
+#   pi <- pi
+#   Fw <- 0.0
+#
+#   psik <- function(chik) {
+#     if (iflag == 1) {
+#       return(2.0 * log(0.5 * (1.0 + chik)) + log(0.5 * (1.0 + chik^2)) - 2.0 * atan(chik) + 0.5 * pi)
+#     } else if (iflag == 2) {
+#       return(2.0 * log(0.5 * (1.0 + chik^2)))
+#     }
+#   }
+#
+#   chic <- function(ZoL) {
+#     return((1.0 - 12.87 * ZoL)^(1.0/3.0))
+#   }
+#
+#   chik <- chic(ZoL)
+#   psic <- 1.5 * log(r3 * (1.0 + chik + chik^2)) - sqr3 * atan((1.0 + 2.0 * chik) / sqr3) + pi / sqr3
+#
+#   Fw <- 1.0 / (1.0 + ZoL^2)
+#   psi <- Fw * psik(chik) + (1.0 - Fw) * psic
+#
+#   return(psi)
+# }
 
 # nc_file <- list.files(path, recursive = T, pattern = "output.nc",
 #                       full.names = T)
