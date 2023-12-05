@@ -14,6 +14,7 @@ run_aeme(
   debug = FALSE,
   timeout = 0,
   parallel = FALSE,
+  ncores,
   check_output = FALSE,
   path = "."
 )
@@ -44,6 +45,9 @@ if it is greater than 3m, it outputs every 0.33m. Defaults to NULL.}
     of seconds are ignored.}
 
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
+
+\item{ncores}{integer; number of cores to use for parallelization. Defaults
+to `min(c(detectCores() - 1, length(model)))`.}
 
 \item{check_output}{logical; check model output after running? Defaults to
 FALSE.}

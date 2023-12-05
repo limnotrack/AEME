@@ -8,6 +8,8 @@
 #' @param verbose logical; print model output to console. Defaults to FALSE.
 #' @param debug logical; write debug log (Only DYRESM). Defaults to FALSE.
 #' @param parallel logical; run models in parallel. Defaults to FALSE.
+#' @param ncores integer; number of cores to use for parallelization. Defaults
+#' to `min(c(detectCores() - 1, length(model)))`.
 #' @param check_output logical; check model output after running? Defaults to
 #' FALSE.
 #'
@@ -39,7 +41,7 @@
 
 run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
                      nlev = NULL, verbose = FALSE, debug = FALSE, timeout = 0,
-                     parallel = FALSE, check_output = FALSE, path = ".") {
+                     parallel = FALSE, ncores, check_output = FALSE, path = ".") {
 
   if (return & is.null(mod_ctrls)) {
     stop("`mod_ctrls` need to be provided to load model output.")
@@ -52,7 +54,9 @@ run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
                          debug = debug, timeout = timeout)
 
   if (parallel) {
-    ncores <- min(c(parallel::detectCores() - 1, length(model)))
+    if (missing(ncores)) {
+      ncores <- min(c(parallel::detectCores() - 1, length(model)))
+    }
     cl <- parallel::makeCluster(ncores)
     parallel::clusterExport(cl, varlist = list("run_model_args", "run_dy_cd",
                                                "run_glm_aed", "run_gotm_wet"),
