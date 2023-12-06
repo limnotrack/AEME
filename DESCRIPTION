@@ -25,6 +25,7 @@ Imports:
     dplyr,
     ggplot2,
     lubridate,
+    lwgeom,
     methods,
     ncdf4,
     parallel,
