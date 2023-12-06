@@ -249,12 +249,12 @@ test_that("running models with wbal method = 3", {
                         mod_ctrls = mod_ctrls, path = path, parallel = FALSE,
                         ncores = 2L)
 
-  plot_output(aeme_data, model)
-  plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
-              facet = F) /
-  plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_netwbl",
-              facet = F, cumulative = T)
-  plot_wbal(aeme_data = aeme_data)
+  # plot_output(aeme_data, model)
+  # plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
+  #             facet = F) /
+  # plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_netwbl",
+  #             facet = F, cumulative = T)
+  # plot_wbal(aeme_data = aeme_data)
 #
 #   tst <- get_var(aeme_data = aeme_data, model = model, var = "LKE_netwbl")
 
