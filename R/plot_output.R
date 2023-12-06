@@ -12,6 +12,13 @@
 #' @param ylim numeric vector of length 2; limits for the y-axis. Defaults to
 #' NULL and calculates this based on the data to be plotted.
 #' @param add_obs logical; add observations to plot
+#' @param cumulative logical; plot cumulative sum of variable
+#' @param facet logical; if \code{TRUE}, for variables with depth, plot each
+#' model in a separate facet. If \code{FALSE}, plot each model in a separate
+#' plot and return a list of plots. If \code{TRUE}, for variables without depth,
+#' plot each model in a separate facet. If \code{FALSE}, plot each model as a
+#' separate line and return a plot.
+#' This only applies to variables without a depth component.
 #'
 #' @return list of plots for z-dimensional variables or a ggplot2 object for 1-d
 #' variables.

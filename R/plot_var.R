@@ -5,12 +5,6 @@
 #' extract the variable of interest from \code{aeme_data} for each model.
 #' @inheritParams plot_output
 #' @param obs list; output from \code{\link{observations}}
-#' @param facet logical; if \code{TRUE}, for variables with depth, plot each
-#' model in a separate facet. If \code{FALSE}, plot each model in a separate
-#' plot and return a list of plots. If \code{TRUE}, for variables without depth,
-#' plot each model in a separate facet. If \code{FALSE}, plot each model as a
-#' separate line and return a plot.
-#' This only applies to variables without a depth component.
 #'
 #' @return ggplot2 object or list of ggplot2 objects
 #' @export

@@ -12,16 +12,18 @@
 #' @examples
 #'
 #' \dontrun{
-#' config_file <- system.file("extdata/feeagh/LakeEnsemblR.yaml", package = "LakeEnsemblR")
+#' tmpdir <- tempdir()
+#' aeme_dir <- system.file("extdata/lake/", package = "AEME")
+#' # Copy files from package into tempdir
+#' file.copy(aeme_dir, tmpdir, recursive = TRUE)
+#' path <- file.path(tmpdir, "lake")
+#' yaml <- yaml::read_yaml(file.path(path, "aeme.yaml"))
 #'
-#' yaml <- read_yaml(config_file)
-#' yaml <- set_yaml(yaml, value = 23, key1 = "location", key2 = "latitude")
-#' yaml <- set_yaml(yaml, value = "2010-06-01 00:00:00", key1 = "time", key2 = "start")
-#' yaml <- set_yaml(yaml, value = "meteo.csv", key1 = "input", key2 = "meteo", key3 = "file")
-#' yaml <- set_yaml(yaml, value = TRUE, key1 = "calibration", key2 = "GOTM", key3 = "turb_param/k_min", key4 = "log")
-#' yaml <- set_yaml(yaml, value = c("temp", "salt"), key1 = "output", key2 = "variables")
+#' # Set inflows and outflows to NULL
+#' yaml$inflows$data <- NULL
+#' yaml$outflows$data <- NULL
 #'
-#' write_yaml(yaml, "LakeEnsemblR.yaml")
+#' write_yaml(yaml, file.path(path, "aeme_simple.yaml"))
 #' }
 
 write_yaml <- function(x, file, fileEncoding = "UTF-8", ...) {
