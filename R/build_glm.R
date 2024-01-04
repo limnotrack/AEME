@@ -25,8 +25,10 @@ build_glm <- function(lakename, mod_ctrls, date_range,
 
   # Create directories
   dir.create(path_glm, recursive = TRUE, showWarnings = FALSE)
-  dir.create(file.path(path_glm, "bcs"), showWarnings = FALSE, recursive = TRUE)
-  dir.create(file.path(path_glm, "aed2"), showWarnings = FALSE, recursive = TRUE)
+  dir.create(file.path(path_glm, "bcs"), showWarnings = FALSE,
+             recursive = TRUE)
+  dir.create(file.path(path_glm, "aed2"), showWarnings = FALSE,
+             recursive = TRUE)
 
 
   glm_file <- file.path(path_glm, "glm3.nml")
@@ -96,7 +98,7 @@ build_glm <- function(lakename, mod_ctrls, date_range,
   glm_nml <- make_infGLM(glm_nml = glm_nml, path_glm = path_glm, list_inf = inf,
                          mass = TRUE, inf_factor = inf_factor)
 
-  #--- make ouflows table and modify nml
+  #--- make outflows table and modify nml
   heights_wdr <- max(hyps$elev) - min(hyps$elev) - 1 #outf |> select(-1) |> colnames(.) |> gsub("^.*_","",.) |> as.numeric()
   if (heights_wdr > (max(hyps$elev) - min(hyps$elev))) {
     message("Withdrawal depth is too low!")
