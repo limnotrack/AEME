@@ -11,6 +11,8 @@ assess_model(aeme_data, model, var_sim = "HYD_temp")
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
+
+\item{var_sim}{string; of variable to plot}
 }
 \value{
 data frame with model performance statistics for each model and
