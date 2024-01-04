@@ -103,6 +103,19 @@ Defaults to NULL and will generate common limits for all variables.</p></dd>
 <dd><p>numeric vector of length 2; limits for the y-axis. Defaults to
 NULL and calculates this based on the data to be plotted.</p></dd>
 
+
+<dt>cumulative</dt>
+<dd><p>logical; plot cumulative sum of variable</p></dd>
+
+
+<dt>facet</dt>
+<dd><p>logical; if <code>TRUE</code>, for variables with depth, plot each
+model in a separate facet. If <code>FALSE</code>, plot each model in a separate
+plot and return a list of plots. If <code>TRUE</code>, for variables without depth,
+plot each model in a separate facet. If <code>FALSE</code>, plot each model as a
+separate line and return a plot.
+This only applies to variables without a depth component.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
