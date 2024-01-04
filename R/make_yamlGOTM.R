@@ -115,7 +115,7 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
   # Check if wbal is in the inflows
   if ("wbal" %in% names.inf) {
     inf[["wbal_in"]] <-  inf[["wbal"]] |>
-      dplyr::select(Date, inflow_gotm_wet, HYD_temp, CHM_salt) |>
+      dplyr::select(-c(inflow_glm_aed, inflow_dy_cd)) |>
       dplyr::rename(HYD_flow = inflow_gotm_wet)
     inf[["wbal"]] <- NULL
     names.inf <- gsub("wbal", "wbal_in", names.inf)
@@ -131,6 +131,8 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
       }
 
       colnames(df) <- rename_modelvars(colnames(df), type_output = "gotm_wet")
+      # Remove columns with no name - not necessary for GLM
+      df <- df[, colnames(df) != ""]
 
       df <- df |>
         dplyr::mutate(time = "12:00:00",

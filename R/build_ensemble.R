@@ -239,7 +239,13 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       for (i in 1:length(aeme_inf[["data"]])) {
         inf[[names(aeme_inf[["data"]])[i]]] <- aeme_inf[["data"]][[i]]
         if (any(!inf_vars %in% names(inf[[i]]))) {
-          stop("missing state variables in inflow tables")
+          message(paste0("Missing state variables in inflows: ",
+                  paste0(setdiff(inf_vars, names(inf[[i]])), collapse = ", ")))
+          add_vars <- setdiff(inf_vars, names(inf[[i]]))
+          for (v in add_vars) {
+            inf[[i]][[v]] <- mod_ctrls$inf_default[match(v, mod_ctrls$name)]
+          }
+          message("Added default values for missing variables.")
         }
         check_time(df = inf[[names(aeme_inf[["data"]])[i]]], model = model,
                    aeme_time = aeme_time,
@@ -331,6 +337,16 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       inf[["wbal"]] <- wbal |>
         dplyr::select(Date, inflow_dy_cd, inflow_glm_aed, inflow_gotm_wet,
                       HYD_temp, CHM_salt)
+
+      # Add missing variables to water balance e.g. if use_bgc = TRUE
+      if (any(!inf_vars %in% names(inf[["wbal"]]))) {
+        add_vars <- setdiff(inf_vars, names(inf[["wbal"]]))
+        for (v in add_vars) {
+          inf[["wbal"]][[v]] <- mod_ctrls$inf_default[match(v, mod_ctrls$name)]
+        }
+      }
+
+
     } else {
       w_bal[["data"]][["wbal"]] <- NULL
       outf[["wbal"]] <- NULL
@@ -503,7 +519,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     } else {
       div <- 0.33
     }
-    nlev <- ceiling((depth) / div)
+    nlev <- ceiling(depth / div)
     build_gotm(lakename, mod_ctrls = mod_ctrls, date_range = dates.gotm,
                lake_shape = lake_shape, gps = gps, lake_dir = lake_dir,
                hyps = hyps, lvl = lvl, init_prof = init_prof,

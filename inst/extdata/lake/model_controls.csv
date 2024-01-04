@@ -36,7 +36,7 @@ Dinoflagellates_mgchla/m3,mg chl/m3,PHY_dinof,0,0.1,1,0,1
 Cyanophytes_mgchla/m3,mg chl/m3,PHY_cyano,1,0.1,1,0,1
 Nodularia_mgchla/m3,mg chl/m3,PHY_nodul,0,0.1,1,0,1
 Chlorophyes_mgchla/m3,mg chl/m3,PHY_green,1,0.1,1,0,1
-Cryptophytes_mgchla/m3,mg chl/m3,PHY_crypt,0,0.1,1,0,1
+Cryptophytes_mgchla/m3,mg chl/m3,PHY_crypt,1,0.1,1,0,1
 Diatoms_marine_mgchla/m3,mg chl/m3,PHY_mdiat,0,0.1,1,0,1
 Diatoms_freshwater_mgchla/m3,mg chl/m3,PHY_diatom,1,0.1,1,0,1
 Total_chlorophyll_a_mg/m3,mg chl/m3,PHY_tchla,1,,,,1
@@ -48,12 +48,12 @@ Suspended_solids_5,g/m3,NCS_ss5,0,5,,,1
 Suspended_solids_6,g/m3,NCS_ss6,0,5,,,1
 Total_suspended_inorganic_solids_g/m3,g/m3,NCS_iss,0,,,,1
 Total_suspended_solids_g/m3,g/m3,NCS_tss,0,,,,1
-Zooplankton_1,,ZOO_zoo1,0,0.1,,,1
+Zooplankton_1,,ZOO_zoo1,1,0.1,1,,1
 Zooplankton_2,,ZOO_zoo2,0,0.1,,,1
 Zooplankton_3,,ZOO_zoo3,0,0.1,,,1
 Zooplankton_4,,ZOO_zoo4,0,0.1,,,1
 Zooplankton_5,,ZOO_zoo5,0,0.1,,,1
-Fish_1,,FSH_fish1,0,0,,,1
+Fish_1,,FSH_fish1,1,0,1,,1
 Fish_2,,FSH_fish2,0,0,,,1
 Fish_3,,FSH_fish3,0,0,,,1
 Jellyfish,,FSH_jelly,0,0,,,1

@@ -24,7 +24,7 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
   # Check if wbal is in the inflows
   if ("wbal" %in% names_inf) {
     list_inf[["wbal"]] <-  list_inf[["wbal"]] |>
-      dplyr::select(Date, inflow_glm_aed, HYD_temp, CHM_salt) |>
+      dplyr::select(-c(inflow_dy_cd, inflow_gotm_wet)) |>
       dplyr::rename(HYD_flow = inflow_glm_aed)
   }
 
@@ -32,7 +32,7 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
   heads_inf <- lapply(list_inf, colnames)
   if (isFALSE(all(sapply(heads_inf, FUN = identical, heads_inf[[1]])))) {
 
-    warning("headers for all inflows are not identical")
+    warning("Headers for all inflows are not identical")
     print(heads_inf)
   }
 
@@ -44,6 +44,9 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
       df <- list_inf[[i]]
       colnames(df) <- rename_modelvars(input = colnames(df),
                                        type_output = "glm_aed")
+      # Remove columns with no name - not necessary for GLM
+      df <- df[, colnames(df) != ""]
+
       df <- df |>
         dplyr::mutate(flow = (flow * inf_factor) / 86400)
 

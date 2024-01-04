@@ -18,6 +18,10 @@ initialiseAED <- function(mod_ctrls, path_aed) {
                                "PHS_pip", "NIT_pin",
                                "PHS_tp","NIT_tn","PHY_tchla")
                   )
+  nme_chk <- rename_modelvars(input = this_ctrls$name,
+                                   type_output = "glm_aed")
+  # Remove columns with no name - not necessary for GLM
+  this_ctrls <- this_ctrls[nme_chk != "", ]
 
   if (sum(is.na(this_ctrls$initial_wc)) > 0) {
     stop("incomplete initialisation, please check your key file")
@@ -32,8 +36,12 @@ initialiseAED <- function(mod_ctrls, path_aed) {
   # open the pyto pars file
   phy_nml <-  readLines(file.path(path_aed, "aed2_phyto_pars.nml"))
 
+  # open the zoop pars file
+  zoo_nml <-  readLines(file.path(path_aed, "aed2_zoop_pars.nml"))
+
   # group names
   phy.groups <- get_line(phy_nml = phy_nml, "pd%p_name")
+  zoo.groups <- get_line(phy_nml = zoo_nml, "zoop_param%zoop_name")
 
   # carbon to chlorophyll ratios (mg C/mg chla)
   phy.cc <- get_line(phy_nml = phy_nml, "pd%Xcc") |>
@@ -66,7 +74,30 @@ initialiseAED <- function(mod_ctrls, path_aed) {
 
       message(paste0(this.name, " ", paste0(vals.init[this.col],
                                             " replaced with ", init.new)))
+      # Zooplankton initialisation
+    } else if (grepl("ZOO_", this.name)) {
 
+      message("Using default zooplankton initialisation")
+
+      # this.zoo <- gsub("^.*_", "", this_ctrls$name[i])
+      # this.col <- which(zoo.groups == gsub("ZOO_","", this.name))
+      #
+      # vals.init <- get_line(phy_nml = zoo_nml, "pd%p_initial") |>
+      #   as.numeric()
+      #
+      # # mols to grams then div by carbon:chl
+      # init.new <- this_ctrls$initial_wc[i] * 12.011 / phy.cc[this.col]
+      # vals.init[this.col] <- init.new
+      #
+      # # write the new initial values
+      # this.row <- which(grepl("pd%p_initial", phy_nml))
+      # phy_nml[this.row] <- paste0(strsplit(phy_nml[this.row],"=")[[1]][1],
+      #                             "=", paste0(sprintf("%13s",
+      #                                                 vals.init), collapse=","))
+      #
+      #
+      # message(paste0(this.name, " ", paste0(vals.init[this.col],
+      #                                       " replaced with ", init.new)))
       # other initialisation
     } else {
 
@@ -77,6 +108,12 @@ initialiseAED <- function(mod_ctrls, path_aed) {
 
        # find the line
       this.line <- which(grepl(nm.init, aed_nml))
+
+      # skip if not found
+      if (length(this.line) == 0) {
+        message(paste0(nm.init, " not found"))
+        next
+      }
 
       og <- aed_nml[this.line]
 
