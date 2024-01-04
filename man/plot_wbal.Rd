@@ -8,6 +8,8 @@ plot_wbal(aeme_data, cumulative = FALSE)
 }
 \arguments{
 \item{aeme_data}{aeme; data object.}
+
+\item{cumulative}{logical; plot cumulative sum of variable}
 }
 \value{
 ggplot2 object

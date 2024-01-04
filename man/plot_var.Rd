@@ -51,6 +51,8 @@ plot each model in a separate facet. If \code{FALSE}, plot each model as a
 separate line and return a plot.
 This only applies to variables without a depth component.}
 
+\item{cumulative}{logical; plot cumulative sum of variable}
+
 \item{print_plots}{logical; print plots}
 }
 \value{
