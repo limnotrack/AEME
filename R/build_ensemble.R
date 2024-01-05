@@ -119,7 +119,7 @@ build_ensemble <- function(aeme_data = NULL,
   if (!is.null(aeme_data)) {
 
     lke <- lake(aeme_data)
-    message("Building simulation for ", lke$name, " [", Sys.time(),
+    message("Building simulation for ", lke$name, " [", format(Sys.time()),
             "]")
     aeme_time <- time(aeme_data)
     lake_dir <- file.path(path, paste0(lke$id, "_",
@@ -132,7 +132,7 @@ build_ensemble <- function(aeme_data = NULL,
       model_config <- configuration(aeme_data)
       if (all(sapply(model, \(x) !is.null(model_config[[x]][["hydrodynamic"]])))) {
         message("Building existing configuration for ", lke$name, " [",
-                Sys.time(), "]")
+                format(Sys.time()), "]")
         write_configuration(model = model, aeme_data = aeme_data,
                             path = path)
         overwrite <- FALSE

@@ -63,24 +63,24 @@ run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
                             envir = environment())
     # parallel::clusterEvalQ(cl, expr = {library(LakeEnsemblR); library(gotmtools);
     # })
-    message("Running models in parallel... ", paste0("[", Sys.time(), "]"))
+    message("Running models in parallel... ", paste0("[", format(Sys.time()), "]"))
     model_out <- stats::setNames(
       parallel::parLapply(cl, model, function(mod_name) do.call(paste0("run_", mod_name),
                                                                    run_model_args)),
       model
     )
     parallel::stopCluster(cl)
-    message("Model run complete!", paste0("[", Sys.time(), "]"))
+    message("Model run complete!", paste0("[", format(Sys.time()), "]"))
 
   } else {
     message("Running models... (Have you tried parallelizing?) ",
-            paste0("[", Sys.time(), "]"))
+            paste0("[", format(Sys.time()), "]"))
     model_out <- setNames(
       lapply(model, function(mod_name) do.call(paste0("run_", mod_name),
                                                run_model_args)),
       model
     )
-    message("Model run complete!", paste0("[", Sys.time(), "]"))
+    message("Model run complete!", paste0("[", format(Sys.time()), "]"))
   }
 
   if (check_output) {
@@ -204,9 +204,9 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   out <- readLines("dy.log")
   success <- sum(grepl("END DYRESM-CAEDYM", out)) == 1
   if (success) {
-    message("DYRESM-CAEDYM run successful! [", Sys.time(), "]")
+    message("DYRESM-CAEDYM run successful! [", format(Sys.time()), "]")
   } else {
-    message("DYRESM-CAEDYM run FAILED! [", Sys.time(), "]\n",
+    message("DYRESM-CAEDYM run FAILED! [", format(Sys.time()), "]\n",
             paste0(tail(out, 10), collapse = "\n"))
   }
 }
@@ -240,7 +240,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
                    stderr = TRUE, timeout = timeout)
     success <- sum(grepl("Model Run Complete", out)) == 1
     if (success) {
-      message("GLM-AED run successful! [", Sys.time(), "]")
+      message("GLM-AED run successful! [", format(Sys.time()), "]")
     } else {
       print("FAILED")
       print(utils::tail(out, 10))
@@ -279,7 +279,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
                    stderr = TRUE, timeout = timeout)
     success <- sum(grepl("GOTM finished on", out)) == 1
     if (success) {
-      message("GOTM-WET run successful! [", Sys.time(), "]")
+      message("GOTM-WET run successful! [", format(Sys.time()), "]")
     } else {
       print(utils::tail(out, 10))
     }

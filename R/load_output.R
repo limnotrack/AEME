@@ -52,7 +52,7 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
                             envir = environment())
     # parallel::clusterEvalQ(cl, expr = {library(LakeEnsemblR); library(gotmtools);
     # })
-    message("Reading models in parallel... ", paste0("[", Sys.time(), "]"))
+    message("Reading models in parallel... ", paste0("[", format(Sys.time()), "]"))
     mods <- parallel::parLapply(cl = cl, model, \(m) {
       out_file <- dplyr::case_when(m == "dy_cd" ~ file.path(lake_dir, m,
                                                             "DYsim.nc"),
@@ -84,7 +84,7 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
                  path = path)
     })
 
-    message("Model reading complete!", paste0("[", Sys.time(), "]"))
+    message("Model reading complete!", paste0("[", format(Sys.time()), "]"))
 
   } else {
     mods <- lapply(model, \(m) {
