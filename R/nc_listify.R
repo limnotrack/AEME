@@ -330,11 +330,13 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     rad <- ncdf4::ncvar_get(nc, "radn")[, idx]
     rad <- regularise_model_output(depth = depth, depths = mod_layers,
                                        var = rad, nlev = nlev)
-    efold <- sapply(seq_len(ncol(rad)), \(t) {
-      approx(rad[, t], depths[, t], xout = (1/exp(1) * rad[nrow(rad), t]))$y
-    })
-    euphotic <- sapply(seq_len(ncol(rad)), \(t) {
-      approx(rad[, t], depths[, t], xout = (0.01 * rad[nrow(rad), t]))$y
+    suppressWarnings({
+      efold <- sapply(seq_len(ncol(rad)), \(t) {
+        approx(rad[, t], depths[, t], xout = (1/exp(1) * rad[nrow(rad), t]))$y
+      })
+      euphotic <- sapply(seq_len(ncol(rad)), \(t) {
+        approx(rad[, t], depths[, t], xout = (0.01 * rad[nrow(rad), t]))$y
+      })
     })
   }
 
