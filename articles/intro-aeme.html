@@ -399,8 +399,8 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for AEME [2024-01-05 03:01:25]</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: PHY_crypt, ZOO_zoo1, FSH_fish1</span></span>
+<span><span class="co">#&gt; Building simulation for AEME [2024-01-05 03:28:56]</span></span>
+<span><span class="co">#&gt; Missing state variables in inflows: PHY_crypt</span></span>
 <span><span class="co">#&gt; Added default values for missing variables.</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
 <span><span class="co">#&gt; Missing values in observed water level</span></span>
@@ -411,7 +411,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; Building DYRESM-CAEDYM for lake aeme</span></span>
 <span><span class="co">#&gt; Copied in DYRESM par file</span></span>
 <span><span class="co">#&gt; Writing DYRESM configuration</span></span>
-<span><span class="co">#&gt; [1] "TEMPTURE SALINITY DO PO4 DOPL POPL PIP TP NH4 NO3 DONL PONL TN DOCL POCL SiO2 CYANO CHLOR CRYPT FDIAT TCHLA SSOL1 ZOOP1 FISH1"</span></span>
+<span><span class="co">#&gt; [1] "TEMPTURE SALINITY DO PO4 DOPL POPL PIP TP NH4 NO3 DONL PONL TN DOCL POCL SiO2 CYANO CHLOR CRYPT FDIAT TCHLA SSOL1"</span></span>
 <span><span class="co">#&gt; Writing DYRESM control file</span></span>
 <span><span class="co">#&gt; Downsampling bathymetry</span></span>
 <span><span class="co">#&gt; Building GLM3-AED2 model for lake aeme</span></span>
@@ -433,7 +433,6 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; PHY_crypt  replaced with</span></span>
 <span><span class="co">#&gt; PHY_diatom 0.300275 replaced with 0.300275</span></span>
 <span><span class="co">#&gt;     ss_initial   = 3,3 replaced with 3,</span></span>
-<span><span class="co">#&gt; Using default zooplankton initialisation</span></span>
 <span><span class="co">#&gt; Building GOTM-WET for lake aeme</span></span>
 <span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
 <span><span class="va">aeme_data</span></span>
