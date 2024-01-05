@@ -99,7 +99,8 @@ run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
 
   if (return) {
     aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
-                             mod_ctrls = mod_ctrls, parallel = parallel)
+                             mod_ctrls = mod_ctrls, parallel = parallel,
+                             nlev = nlev)
     return(aeme_data)
   }
 
