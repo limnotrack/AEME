@@ -538,3 +538,4 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
   return(aeme_data)
 }
+
