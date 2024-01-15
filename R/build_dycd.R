@@ -182,7 +182,7 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
 
       if (names(inf)[i] == "wbal") {
         inf[[i]] <-  inf[[i]] |>
-          dplyr::select(Date, inflow_dy_cd, HYD_temp, CHM_salt) |>
+          dplyr::select(-c(inflow_glm_aed, inflow_gotm_wet)) |>
           dplyr::rename(HYD_flow = inflow_dy_cd)
       }
 
