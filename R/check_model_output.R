@@ -41,6 +41,11 @@ check_model_output <- function(path, aeme_data, model) {
         last_date <- dates[which.max(is.na(dates)) - 1]
         last_date <- as.POSIXct((last_date - 2415018.5) * 86400,
                                 origin = "1899-12-30")
+        if (length(last_date) == 0) {
+          message(strwrap("DYRESM-CAEDYM crashed when initialising. No
+                          output available for the simulation period."))
+          return(FALSE)
+        }
         if (last_date < aeme_time$start) {
           message(strwrap("DYRESM-CAEDYM crashed during the spin-up period! No
                           output available for the simulation period."))
