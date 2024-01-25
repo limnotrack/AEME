@@ -18,8 +18,7 @@ initialiseAED <- function(mod_ctrls, path_aed) {
                                "PHS_pip", "NIT_pin",
                                "PHS_tp","NIT_tn","PHY_tchla")
                   )
-  nme_chk <- rename_modelvars(input = this_ctrls$name,
-                                   type_output = "glm_aed")
+  nme_chk <- rename_modelvars(input = this_ctrls$name, type_output = "glm_aed")
   # Remove columns with no name - not necessary for GLM
   this_ctrls <- this_ctrls[nme_chk != "", ]
 
