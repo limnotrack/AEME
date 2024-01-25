@@ -13,7 +13,7 @@
 initialiseGOTM <-  function(gotm, lvl_bottom, lvl_surf,
                             tmpwtr = 10, start_date,
                             tbl_obs = NULL,
-                            path_gotm = "") {
+                            path_gotm = "", use_bgc = FALSE, mod_ctrls) {
 
   # define the proTable (intial profiles for T and SAL)
   if (is.null(tbl_obs)) {
@@ -35,6 +35,10 @@ initialiseGOTM <-  function(gotm, lvl_bottom, lvl_surf,
   df[(2):(1 + ndeps), 2] <- tbl_obs[["salt"]]
   write.table(df, file.path(path_gotm, "inputs", "s_prof_file.dat"),
               quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
+
+  if (use_bgc) {
+    initialise_FABM(path_gotm = path_gotm, mod_ctrls = mod_ctrls)
+  }
 
 
   #-------- Update the yaml file! ---------
