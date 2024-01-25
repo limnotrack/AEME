@@ -12,7 +12,7 @@ Description: Run an ensemble of aquatic ecosystem models on lakes and reservoir
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
