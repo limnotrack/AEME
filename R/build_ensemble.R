@@ -431,7 +431,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     } else {
       init_prof <- data.frame(depth = c(0,
                                         floor(max(hyps$elev) - min(hyps$elev))),
-                              temperature = c(10, 10),
+                              temperature = rep(mod_ctrls$initial_wc[mod_ctrls$name == "HYD_temp"], 2),
                               salt = c(0, 0))
     }
 
