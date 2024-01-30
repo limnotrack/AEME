@@ -39,8 +39,6 @@ initialise_FABM <- function(path_gotm, mod_ctrls) {
     if (length(key) == 4) {
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][[key[4]]]
       new_val <- this_ctrls$initial_wc[i]
-      message(paste0(params[i], " ", paste0(old_val,
-                                            " replaced with ", new_val)))
       fabm[[key[1]]][[key[2]]][[key[3]]][[key[4]]] <- this_ctrls$initial_wc[i]
     }
 
@@ -52,17 +50,31 @@ initialise_FABM <- function(path_gotm, mod_ctrls) {
       mgPerg <- 1000
       # oChla = mgPerg * rChD * sDW
       # C:N:P ~ 106:16:1
-      sDw <- oChla / (mgPerg * rChD)
-      sNW <- sDw * (16 / 106)
-      sPW <- sDw * (1 / 106)
+      sDW <- signif(this_ctrls$initial_wc[i] / (mgPerg * rChD), 2)
+      sNW <- signif(sDW * (16 / 106), 2)
+      sPW <- signif(sDW * (1 / 106), 2)
 
+      old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sDW"]]
+      message(paste0(paste0(key[1:3], collapse = "/"), "/sDW ",
+                     paste0(old_val, " replaced with ", sDW)))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sDW"]] <- sDW
+
+      old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sNW"]]
+      message(paste0(paste0(key[1:3], collapse = "/"), "/sNW ",
+                     paste0(old_val, " replaced with ", sNW)))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sNW"]] <- sNW
+
+      old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sPW"]]
+      message(paste0(paste0(key[1:3], collapse = "/"), "/sPW ",
+                     paste0(old_val, " replaced with ", sPW)))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sPW"]] <- sPW
+
+    } else {
+      message(paste0(params[i], " ", paste0(old_val,
+                                            " replaced with ", new_val)))
     }
   }
 
   # write the file
   write_yaml(fabm, file.path(path_gotm, "fabm.yaml"))
 }
-
