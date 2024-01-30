@@ -36,11 +36,6 @@ initialise_FABM <- function(path_gotm, mod_ctrls) {
   # iterate through the state variables
   for (i in 1:length(params)) {
     key <- strsplit(params[i], "/")[[1]]
-    if (length(key) == 4) {
-      old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][[key[4]]]
-      new_val <- this_ctrls$initial_wc[i]
-      fabm[[key[1]]][[key[2]]][[key[3]]][[key[4]]] <- this_ctrls$initial_wc[i]
-    }
 
     # Update N & P for phytos - Redfield ratio
     if (key[2] %in% c("cyanobacteria", "greens", "diatoms")) {
@@ -69,7 +64,33 @@ initialise_FABM <- function(path_gotm, mod_ctrls) {
                      paste0(old_val, " replaced with ", sPW)))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sPW"]] <- sPW
 
+    } else if (key[2] %in% c("cladocerans")) {
+      cNDZooRef <- fabm[[key[1]]][[key[2]]][["parameters"]][["cNDZooRef"]]
+      cPDZooRef <- fabm[[key[1]]][[key[2]]][["parameters"]][["cPDZooRef"]]
+      sD <- this_ctrls$initial_wc[i]
+      sN <- cNDZooRef * sD
+      sP <- cPDZooRef * sD
+
+      old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sD"]]
+      message(paste0(paste0(key[1:3], collapse = "/"), "/sD ",
+                     paste0(old_val, " replaced with ", sD)))
+      fabm[[key[1]]][[key[2]]][[key[3]]][["sD"]] <- sD
+
+      old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sN"]]
+      message(paste0(paste0(key[1:3], collapse = "/"), "/sN ",
+                     paste0(old_val, " replaced with ", sN)))
+      fabm[[key[1]]][[key[2]]][[key[3]]][["sN"]] <- sN
+
+      old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sP"]]
+      message(paste0(paste0(key[1:3], collapse = "/"), "/sP ",
+                     paste0(old_val, " replaced with ", sP)))
+      fabm[[key[1]]][[key[2]]][[key[3]]][["sP"]] <- sP
     } else {
+      if (length(key) == 4) {
+        old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][[key[4]]]
+        new_val <- this_ctrls$initial_wc[i]
+        fabm[[key[1]]][[key[2]]][[key[3]]][[key[4]]] <- this_ctrls$initial_wc[i]
+      }
       message(paste0(params[i], " ", paste0(old_val,
                                             " replaced with ", new_val)))
     }
