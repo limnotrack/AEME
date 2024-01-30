@@ -49,7 +49,7 @@ make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake, crest,
 
     sediment <- list(
       sed_heat_Ksoil = rep(1.2, length(sed_zones)),
-      sed_temp_depth = rep(0.5, length(sed_zones)),
+      sed_temp_depth = rep(0.2, length(sed_zones)),
       sed_temp_mean = rep(10, length(sed_zones)),
       sed_temp_amplitude = rep(4, length(sed_zones)),
       sed_temp_peak_doy = rep(10, length(sed_zones)),
