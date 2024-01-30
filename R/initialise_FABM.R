@@ -46,10 +46,19 @@ initialise_FABM <- function(path_gotm, mod_ctrls) {
 
     # Update N & P for phytos - Redfield ratio
     if (key[2] %in% c("cyanobacteria", "greens", "diatoms")) {
-      fabm[[key[1]]][[key[2]]][[key[3]]][["sNW"]] <- this_ctrls$initial_wc[i] /
-                                           16
-      fabm[[key[1]]][[key[2]]][[key[3]]][["sPW"]] <- this_ctrls$initial_wc[i] /
-        0.1
+      cChDMin <- fabm[[key[1]]][[key[2]]][["parameters"]][["cChDMin"]]
+      cChDMax <- fabm[[key[1]]][[key[2]]][["parameters"]][["cChDMax"]]
+      rChD <- cChDMax - (cChDMax - cChDMin) # * aLLim
+      mgPerg <- 1000
+      # oChla = mgPerg * rChD * sDW
+      # C:N:P ~ 106:16:1
+      sDw <- oChla / (mgPerg * rChD)
+      sNW <- sDw * (16 / 106)
+      sPW <- sDw * (1 / 106)
+
+      fabm[[key[1]]][[key[2]]][[key[3]]][["sDW"]] <- sDW
+      fabm[[key[1]]][[key[2]]][[key[3]]][["sNW"]] <- sNW
+      fabm[[key[1]]][[key[2]]][[key[3]]][["sPW"]] <- sPW
     }
   }
 
