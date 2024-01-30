@@ -57,10 +57,10 @@ CAR_ch4,,CAR_ch4,,,Carbon CH4,,,1,
 SIL_rsi,SiO2,SIL_rsi,abiotic_water_sSiO2W,instances/abiotic_water/initialization/sSiO2W,,Silica,Silica,1,10
 BAC_bac,BAC,,,,,Bacteria,Bacteria,1,
 PHY_dinof,DINOF,PHY_dinof,,,,Dinoflagellates_mgchla/m3,Dinoflagellates~(mg~chla~m^-3),1,
-PHY_cyano,CYANO,PHY_cyano,cyanobacteria_oChla,instances/cyanobacteria/initialization/sDW,,Cyanophytes_mgchla/m3,Cyanophytes~(mg~chla~m^-3),1,0.1
+PHY_cyano,CYANO,PHY_cyano,cyanobacteria_oChla,instances/cyanobacteria/initialization/sDW,Cyanobacteria,Cyanophytes_mgchla/m3,Cyanophytes~(mg~chla~m^-3),1,0.1
 PHY_nodul,NODUL,PHY_nodul,,,,Nodularia_mgchla/m3,Nodularia~(mg~chla~m^-3),1,
-PHY_green,CHLOR,PHY_green,greens_oChla,instances/greens/initialization/sDW,,Chlorophyes_mgchla/m3,Chlorophyes~(mg~chla~m^-3),1,0.1
-PHY_crypt,CRYPT,PHY_crypt,,,,Cryptophytes_mgchla/m3,Cryptophytes~(mg~chla~m^-3),1,
+PHY_green,CHLOR,PHY_green,greens_oChla,instances/greens/initialization/sDW,Green algae,Chlorophytes_mgchla/m3,Chlorophytes~(mg~chla~m^-3),1,0.1
+PHY_crypt,CRYPT,PHY_crypt,,,Cryptophytes,Cryptophytes_mgchla/m3,Cryptophytes~(mg~chla~m^-3),1,
 PHY_mdiat,MDIAT,PHY_mdiat,,,Diatoms marine,Diatoms_marine_mgchla/m3,Diatoms~marine~(mg~chla~m^-3),1,
 PHY_diatom,FDIAT,PHY_diatom,diatoms_oChla,instances/diatoms/initialization/sDW,Diatoms freshwater,Diatoms_freshwater_mgchla/m3,Diatoms~freshwater~(mg~chla~m^-3),1,0.1
 PHY_tchla,TCHLA,PHY_TCHLA,wet_chla_calculator_result,,Total chlorophyll a,Total_chlorophyll_a_mg/m3,Total~chlorophyll~a~(mg~m^-3),1,
@@ -72,7 +72,7 @@ NCS_ss5,SSOL5,,,,Suspended solids,Suspended_solids_5,Suspended~solids~5,1,
 NCS_ss6,SSOL6,,,,Suspended solids,Suspended_solids_6,Suspended~solids~6,1,
 NCS_iss,,,,,Total suspended inorganic solids,Total_suspended_inorganic_solids_g/m3,Total~suspended~inorganic~solids~g~m3,1,
 NCS_tss,,,,,Total suspended solids,Total_suspended_solids_g/m3,Total~suspended~solids~g~m3,1,
-ZOO_zoo1,ZOOP1,ZOO_zoo01,cladocerans_sD,instances/cladocerans/initialization/sD,Zooplankton,Zooplankton_1,Zooplankton~1,1,
+ZOO_zoo1,ZOOP1,ZOO_zoo01,cladocerans_sD,instances/cladocerans/initialization/sD,Zooplankton,Zooplankton_1,Zooplankton~1,0.012011,
 ZOO_zoo2,ZOOP2,,copepods_sD,instances/copepods/initialization/sD,Zooplankton,Zooplankton_2,Zooplankton~2,1,
 ZOO_zoo3,ZOOP3,,zoobenthos_sD,instances/zoobenthos/initialization/sD,Zooplankton,Zooplankton_3,Zooplankton~3,1,
 ZOO_zoo4,ZOOP4,,,,Zooplankton,Zooplankton_4,Zooplankton~4,1,
