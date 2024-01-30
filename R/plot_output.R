@@ -86,12 +86,7 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
   # Load data from aeme_data
   obs <- observations(aeme_data)
   inp <- input(aeme_data)
-  if (!is.null(obs$lake)) {
-    obs_lake <- obs$lake |>
-      dplyr::filter(var == var_sim)
-  } else {
-    obs_lake <- NULL
-  }
+
   if (!is.null(obs$level)) {
     obs_level <- obs$level
   }
@@ -112,21 +107,33 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
     model <- model[chk]
   }
 
-  # colour lims
-  if (is.null(var_lims)) {
-    this.list <- sapply(model, \(m){
-      "[["(outp[[m]], var_sim)
-    })
-    vect <- unlist(this.list)
-    var_lims <- range(c(vect, obs_lake[["value"]]), na.rm = TRUE)
-  }
-
   # Date lims
   # Find date range and have output in Date format
   this.list <- sapply(model, \(m){
     "[["(outp[[m]], "Date")
   })
   xlim <- as.Date(range(this.list, na.rm = TRUE))
+
+  # Filter observations by variable and Date
+  if (!is.null(obs$lake)) {
+    obs_lake <- obs$lake |>
+      dplyr::filter(var == var_sim & Date >= xlim[1] & Date <= xlim[2])
+  } else {
+    obs_lake <- NULL
+  }
+
+  # colour lims
+  if (is.null(var_lims)) {
+    this.list <- sapply(model, \(m){
+      "[["(outp[[m]], var_sim)
+    })
+    vect <- unlist(this.list)
+    if (add_obs) {
+      var_lims <- range(c(vect, obs_lake[["value"]]), na.rm = TRUE)
+    } else {
+      var_lims <- range(vect, na.rm = TRUE)
+    }
+  }
 
   # mod_labels <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
   #                          name = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
