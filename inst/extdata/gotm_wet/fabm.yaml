@@ -185,7 +185,7 @@ instances:
     long_name: cyanobacteria
     model: wet/phytoplankton
     parameters:
-      qLightMethod: 2                                            # lightmethod 1=no photoinhibition; 2=photoinhibition (-), default = 2
+      qLightMethod: 1                                            # lightmethod 1=no photoinhibition; 2=photoinhibition (-), default = 2
       hLRef: 34.0                                                # qLightMethod=1; half-sat. PAR at 20*C; Lehmann function (W/m2), default = 17.0
       cLOptRef: 23.0                                             # qLightMethod=2; optimum PAR at 20*C; Steele function (W/m2), default = 25.0
       lSi: false                                                 # toggle Si usage (-), default = false
@@ -272,7 +272,7 @@ instances:
     long_name: diatom phytoplankton
     model: wet/phytoplankton
     parameters:
-      qLightMethod: 2                                            # lightmethod 1=no photoinhibition; 2=photoinhibition (-), default = 2
+      qLightMethod: 1                                            # lightmethod 1=no photoinhibition; 2=photoinhibition (-), default = 2
       hLRef: 6.5                                                 # qLightMethod=1; half-sat. PAR at 20*C; Lehmann function (W/m2), default = 17.0
       cLOptRef: 35.0                                             # qLightMethod=2; optimum PAR at 20*C; Steele function (W/m2), default = 25.0
       lSi: true                                                  # toggle Si usage (-), default = false
@@ -359,7 +359,7 @@ instances:
     long_name: green phytoplankton
     model: wet/phytoplankton
     parameters:
-      qLightMethod: 2                                            # lightmethod 1=no photoinhibition; 2=photoinhibition (-), default = 2
+      qLightMethod: 1                                            # lightmethod 1=no photoinhibition; 2=photoinhibition (-), default = 2
       hLRef: 17.0                                                # qLightMethod=1; half-sat. PAR at 20*C; Lehmann function (W/m2), default = 17.0
       cLOptRef: 30.0                                             # qLightMethod=2; optimum PAR at 20*C; Steele function (W/m2), default = 25.0
       lSi: false                                                 # toggle Si usage (-), default = false
@@ -499,4 +499,3 @@ instances:
       DOM_P_pool_water: abiotic_water/sPDOMW                     # DOM P in water (g/m3)
       SiO2_pool_water: abiotic_water/sSiO2W                      # SiO2 in water (g/m3)
       oxygen_pool_water: abiotic_water/sO2W                      # Oxygen pool water (g/m3)
-  
