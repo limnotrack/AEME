@@ -48,7 +48,7 @@ Suspended_solids_5,g/m3,NCS_ss5,0,5,,,1
 Suspended_solids_6,g/m3,NCS_ss6,0,5,,,1
 Total_suspended_inorganic_solids_g/m3,g/m3,NCS_iss,0,,,,1
 Total_suspended_solids_g/m3,g/m3,NCS_tss,0,,,,1
-Zooplankton_1,,ZOO_zoo1,0,0.1,1,,1
+Zooplankton_1,,ZOO_zoo1,0,0.1,1,0,1
 Zooplankton_2,,ZOO_zoo2,0,0.1,,,1
 Zooplankton_3,,ZOO_zoo3,0,0.1,,,1
 Zooplankton_4,,ZOO_zoo4,0,0.1,,,1
