@@ -138,9 +138,11 @@ initialiseAED <- function(mod_ctrls, path_aed) {
 
   f <- file(file.path(path_aed, "aed2_phyto_pars.nml"), "w")
   writeLines(phy_nml, f)
+  close(f)
 
   f <- file(file.path(path_aed, "aed2_zoop_pars.nml"), "w")
   writeLines(zoo_nml, f)
+  close(f)
 
   f <- file(file.path(path_aed, "aed2.nml"), "w")
   writeLines(aed_nml, f)
