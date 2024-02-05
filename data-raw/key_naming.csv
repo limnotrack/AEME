@@ -9,7 +9,7 @@ LKE_evpvol,dyresmEVAP_DAILY,evaporation,evap,,Evaporation,Evaporation_m3,Evapora
 LKE_evpflx,dyresmEVAP_DAILY,evap_mass_flux,evap,,Evaporation,Evaporation_flux_m/s,Evaporation~flux~(m^-1),1,
 LKE_lvlwtr,,,,,Water level,Water_level_m,Water~level~(m),1,
 LKE_V,,,,,Volume,Volume_m3,Volume~(m^3),1,
-LKE_dV,,,,,Change in volume,Chang_in_volume_m3,Change~in~volume~(m^3),1,
+LKE_dV,,,,,Change in volume,Change_in_volume_m3,Change~in~volume~(m^3),1,
 LKE_A0,,,,,Surface area,Surface_area_m2,Surface~area~(m^2),1,
 LKE_Ts,,,,,Surface temperature,Surface_temperature_degC,Surface~temperature~(degree~C),1,
 LKE_Tdiff,,,,,Water-air temperature difference,Water-air_temperature_difference_degC,Water-air~temperature~difference~(degree~C),1,
