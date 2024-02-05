@@ -373,8 +373,8 @@ coef_inf_entrain = 0.
    bsn_wid_outl = 188.52
    outflow_fl      = 'bcs/outflow_outflow_23.csv'
    outflow_factor = 1
-   !seepage  = .true.
-   !seepage_rate   = 0.01
+   seepage  = .true.
+   seepage_rate   = 0.0
 /
 !-------------------------------------------------------------------------------
 &sediment

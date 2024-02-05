@@ -78,7 +78,9 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
         bsn_len_outl = round(lengths, 2),
         bsn_wid_outl = round(widths, 2),
         outflow_fl = outflow_fl,
-        outflow_factor = rep(1, n_wdr)
+        outflow_factor = rep(1, n_wdr),
+        seepage = TRUE,
+        seepage_rate = 0.0
       )
       glm_nml[["outflow"]] <- outflow
     }
