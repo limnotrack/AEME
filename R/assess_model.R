@@ -20,7 +20,7 @@
 #' }
 #'
 #' @importFrom dplyr group_by summarise mutate n case_when where across
-#' relocate filter left_join select
+#' relocate filter left_join select last_col
 #' @importFrom stats cor cor.test lm
 #'
 #' @export
@@ -98,7 +98,7 @@ assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
         # dplyr::across(dplyr::where(is.numeric), \(x) round(x, 3)),
         dplyr::across(bias:B, \(x) ifelse(is.na(x), NA, round(x, 3))),
       ) |>
-      dplyr::relocate(n, .after = last_col())
+      dplyr::relocate(n, .after = dplyr::last_col())
 
   }) |>
     do.call(rbind, args = _) # Bind list of data frames into one data frame and return

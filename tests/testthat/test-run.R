@@ -125,6 +125,11 @@ test_that("running GOTM-WET works", {
   path <- file.path(tmpdir, "lake")
   aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  mod_ctrls <- mod_ctrls |>
+    dplyr::mutate(simulate = dplyr::case_when(
+      name == "ZOO_zoo1" ~ 1,
+      .default = simulate
+    ))
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
@@ -173,9 +178,15 @@ test_that("running models in parallel works", {
                                         model[-1], "output", "output.nc")))
   testthat::expect_true(file_chk)
 
+  var_sim <- c("LKE_lvlwtr", "HYD_temp")
+
   model_performance <- assess_model(aeme_data = aeme_data, model = model,
-                                    var_sim = c("LKE_lvlwtr", "HYD_temp"))
+                                    var_sim = var_sim)
   testthat::expect_true(is.data.frame(model_performance))
+
+  pl <- plot_resid(aeme_data = aeme_data, model = model, var_sim = var_sim)
+  testthat::expect_true(is.list(pl))
+  testthat::expect_true(all(sapply(pl, ggplot2::is.ggplot)))
 })
 
 test_that("running models with wbal method = 1", {
