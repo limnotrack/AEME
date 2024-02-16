@@ -15,8 +15,21 @@ assess_model(aeme_data, model, var_sim = "HYD_temp")
 \item{var_sim}{string; of variable to plot}
 }
 \value{
-data frame with model performance statistics for each model and
-variable
+Data frame with model performance statistics for each model and
+variable. These include:
+\itemize{
+\item{bias}{ - Bias}
+\item{mae}{ - Mean absolute error}
+\item{rmse}{ - Root mean square error}
+\item{nmae}{ - Normalised mean absolute error}
+\item{nse}{ - Nash-Sutcliffe efficiency}
+\item{d2}{ - Index of agreement model skill score Willmott index}
+\item{r}{ - Pearson correlation coefficient}
+\item{rs}{ - Spearman correlation coefficient}
+\item{r2}{ - R-squared value from linear model}
+\item{B}{ - Bardsley coefficient}
+\item{n}{ - number of observations}
+}
 }
 \description{
 Assess model performance

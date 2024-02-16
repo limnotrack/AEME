@@ -55,7 +55,7 @@ FALSE.}
 \item{path}{filepath; where input files are located relative to `config`.}
 }
 \value{
-Runs the model
+an `aeme` object with model output loaded.
 }
 \description{
 Run aquatic model ensemble
