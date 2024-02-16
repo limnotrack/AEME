@@ -90,7 +90,7 @@ the following slots:
 
 #### Lake {#sec-lake}
 
-The `lake` slot contains information about the lake. The `lake` slot is a list
+The `lake` slot contains information about the lake. It is a list
 object that contains the following objects:
 
 -   name - Name of the lake (character).
@@ -119,7 +119,7 @@ Objects in **bold** are required for building and running the model.
 
 #### Time {#sec-time}
 
-The `time` slot contains information about the time. The `time` slot is a list
+The `time` slot contains information about the time. It is a list
 object that contains the following objects:
 
 -   **start** - Start date of the simulation (character). The start date must be
