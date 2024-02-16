@@ -3,10 +3,24 @@
 #' @inheritParams build_ensemble
 #' @inheritParams plot_output
 #'
-#' @return data frame with model performance statistics for each model and
-#' variable
+#' @return Data frame with model performance statistics for each model and
+#' variable. These include:
+#' \itemize{
+#' \item{bias}{ - Bias}
+#' \item{mae}{ - Mean absolute error}
+#' \item{rmse}{ - Root mean square error}
+#' \item{nmae}{ - Normalised mean absolute error}
+#' \item{nse}{ - Nash-Sutcliffe efficiency}
+#' \item{d2}{ - Index of agreement model skill score Willmott index}
+#' \item{r}{ - Pearson correlation coefficient}
+#' \item{rs}{ - Spearman correlation coefficient}
+#' \item{r2}{ - R-squared value from linear model}
+#' \item{B}{ - Bardsley coefficient}
+#' \item{n}{ - number of observations}
+#' }
 #'
-#' @importFrom dplyr group_by summarise mutate n case_when where across relocate
+#' @importFrom dplyr group_by summarise mutate n case_when where across
+#' relocate filter left_join select
 #' @importFrom stats cor cor.test lm
 #'
 #' @export
@@ -42,6 +56,8 @@ assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
     }) |>
       do.call(rbind, args = _)
     fit$Model <- model_names$Model[match(fit$model, model_names$model)]
+    fit <- fit |>
+      dplyr::select(Model, r2)
 
     # Calculate statistics for each model
     res <- df |>
@@ -67,12 +83,15 @@ assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
 
     # Add linear model statistics to results and calculate Bardsley coefficient
     res |>
-      dplyr::mutate(r2 = dplyr::case_when(
-        Model == "DYRESM-CAEDYM" ~ fit$r2[fit$model == "dy_cd"],
-        Model == "GLM-AED" ~ fit$r2[fit$model == "glm_aed"],
-        Model == "GOTM-WET" ~ fit$r2[fit$model == "gotm_wet"]
-      ),
-      B = r2 / (2 - nse), # Bardsley coefficient
+      dplyr::left_join(fit, by = "Model") |>
+      dplyr::mutate(
+        # r2 = dplyr::case_when(
+        #   Model == "DYRESM-CAEDYM" ~ fit$r2[fit$model == "dy_cd"],
+        #   Model == "GLM-AED" ~ fit$r2[fit$model == "glm_aed"],
+        #   Model == "GOTM-WET" ~ fit$r2[fit$model == "gotm_wet"],
+        #   .default = NA
+        # ),
+        B = r2 / (2 - nse), # Bardsley coefficient
       ) |>
       # Round all columns with with numeric values to 3 decimal places
       dplyr::mutate(
@@ -86,4 +105,3 @@ assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
 
   lst
 }
-
