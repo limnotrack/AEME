@@ -13,7 +13,7 @@
 #' @param check_output logical; check model output after running? Defaults to
 #' FALSE.
 #'
-#' @return Runs the model
+#' @return an `aeme` object with model output loaded.
 #' @export
 #'
 #' @importFrom parallel parLapply makeCluster detectCores clusterExport
