@@ -51,46 +51,86 @@
 
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This class represents data related to a lake for running AEME.</p>
+    <p>This class represents data related to a lake for running AEME. Items in bold
+are required to run the models.</p>
     </div>
     <div class="section level2">
     <h2 id="slots">Slots<a class="anchor" aria-label="anchor" href="#slots"></a></h2>
     
 
 <dl><dt><code>lake</code></dt>
-<dd><p>A list representing lake information.</p></dd>
+<dd><p>A list representing lake information.</p><ul><li><p><code><b>name</b></code>: character; lake name.</p></li>
+<li><p><code><b>id</b></code>: character; lake identifier.</p></li>
+<li><p><code><b>latitude</b></code>: numeric; lake latitude.</p></li>
+<li><p><code><b>longitude</b></code>: numeric; lake longitude.</p></li>
+<li><p><code><b>elevation</b></code>: numeric; lake elevation.</p></li>
+<li><p><code>shape</code>: sf; lake shape.</p></li>
+<li><p><code><b>depth</b></code>: numeric; lake depth.</p></li>
+<li><p><code><b>area</b></code>: numeric; lake area. Calculated from shape if not
+provided.</p></li>
+</ul></dd>
 
 
 <dt><code>time</code></dt>
-<dd><p>A list representing time information.</p></dd>
+<dd><p>A list representing time information.</p><ul><li><p><code><b>start</b></code>: character; start date.</p></li>
+<li><p><code><b>stop</b></code>: character; end date.</p></li>
+<li><p><code><b>timestep</b></code>: numeric; time step.</p></li>
+<li><p><code><b>spin_up</b></code>: list; spin up information for each model</p></li>
+</ul></dd>
 
 
 <dt><code>configuration</code></dt>
-<dd><p>A list representing each model's configuration.</p></dd>
+<dd><p>A list representing each model's configuration.</p><ul><li><p><code>dy_cd</code>: list; DYRESM-CAEDYM configuration.</p></li>
+<li><p><code>glm_aed</code>: list; GLM-AED configuration.</p></li>
+<li><p><code>gotm_wet</code>: list; GOTM-WET configuration.</p></li>
+</ul></dd>
 
 
 <dt><code>observations</code></dt>
-<dd><p>A list representing observation information.</p></dd>
+<dd><p>A list representing observation information.</p><ul><li><p><code>lake</code>: dataframe; lake observations.</p></li>
+<li><p><code>level</code>: dataframe; lake level observations.</p></li>
+</ul></dd>
 
 
 <dt><code>input</code></dt>
-<dd><p>A list representing input information.</p></dd>
+<dd><p>A list representing input information.</p><ul><li><p><code>init_profile</code>: dataframe; initial temperature profile (if none
+use NULL or leave empty; if empty/NULL, the observations file will be used).</p></li>
+<li><p><code><b>init_depth</b></code>: numeric; initial height of lake surface relative to
+the bottom (m).</p></li>
+<li><p><code><b>hypsograph</b></code>: dataframe; hypsograph.</p></li>
+<li><p><code><b>meteo</b></code>: dataframe; meteorological data.</p></li>
+<li><p><code><b>use_lw</b></code>: logical; use longwave radiation.</p></li>
+<li><p><code><b>Kw</b></code>: numeric; light extinction coefficient (m-1).</p></li>
+</ul></dd>
 
 
 <dt><code>inflows</code></dt>
-<dd><p>A list representing inflows information.</p></dd>
+<dd><p>A list representing inflows information.</p><ul><li><p><code>data</code>: named list of inflow dataframes.</p></li>
+<li><p><code>factor</code>: named list; inflow factors for each model.</p></li>
+</ul></dd>
 
 
 <dt><code>outflows</code></dt>
-<dd><p>A list representing outflows information.</p></dd>
+<dd><p>A list representing outflows information.</p><ul><li><p><code>data</code>: named list of outflow dataframes.</p></li>
+<li><p><code>factor</code>: named list; outflow factors for each model.</p></li>
+<li><p><code>lvl</code>: numeric; height of lake level outflow.</p></li>
+</ul></dd>
 
 
 <dt><code>water_balance</code></dt>
-<dd><p>A list representing water balance information.</p></dd>
+<dd><p>A list representing water balance information.</p><ul><li><p><code><b>method</b></code>: integer; Method for calculating water balance.
+1 = none, 2 = outflows, 3 = inflows and outflows.</p></li>
+<li><p><code><b>use</b></code>: character; Can be 'obs' or 'mod'. Use observations
+ or modelled data for water balance.</p></li>
+<li><p><code>data</code>: list of dataframe for water balance.</p></li>
+</ul></dd>
 
 
 <dt><code>output</code></dt>
-<dd><p>A list representing output information.</p></dd>
+<dd><p>A list representing output information.</p><ul><li><p><code>dy_cd</code>: list; DYRESM-CAEDYM output.</p></li>
+<li><p><code>glm_aed</code>: list; GLM-AED output.</p></li>
+<li><p><code>gotm_wet</code>: list; GOTM-WET output.</p></li>
+</ul></dd>
 
 
 </dl></div>
