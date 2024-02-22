@@ -17,10 +17,13 @@
 #' @importFrom utils data
 #' @importFrom dplyr filter mutate
 #' @importFrom withr local_locale local_timezone
+#' @importFrom lubridate hour
+#' @importFrom rLakeAnalyzer thermo.depth center.buoyancy meta.depths
 #'
 
 nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
-                       remove_spin_up = TRUE, output_hour, path) {
+                       remove_spin_up = TRUE, output_hour, path,
+                       lake_analyzer = TRUE) {
 
   # Load Rdata
   utils::data("key_naming", package = "AEME", envir = environment())
@@ -192,126 +195,126 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     precip_vol <- precip * A0
     Ts <- ncdf4::ncvar_get(nc, "surface_temp")[idx]
 
-  } else if (model == 'dy_cd') {
-    # dyresm outputs initial profiles as first col
-    if (!("dyresmTime" %in% names(nc$var))) {
-      return(NULL)
-    }
-    dates <- as.POSIXct((ncdf4::ncvar_get(nc, "dyresmTime") - 2415018.5) *
-                          86400,
-                        origin = "1899-12-30")
-    idx <- which(lubridate::hour(dates) == output_hour)
-    if (length(idx) == 0) stop("No output for DYRESM at ", output_hour, " hour")
-    dates <- dates[idx] |> as.Date()
+} else if (model == 'dy_cd') {
+  # dyresm outputs initial profiles as first col
+  if (!("dyresmTime" %in% names(nc$var))) {
+    return(NULL)
+  }
+  dates <- as.POSIXct((ncdf4::ncvar_get(nc, "dyresmTime") - 2415018.5) *
+                        86400,
+                      origin = "1899-12-30")
+  idx <- which(lubridate::hour(dates) == output_hour)
+  if (length(idx) == 0) stop("No output for DYRESM at ", output_hour, " hour")
+  dates <- dates[idx] |> as.Date()
 
-    # mod_layers are elevation from bottom, last row is bottom
-    mod_layers <- ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")[, idx]
-    depth <- apply(mod_layers, 2, \(x) max(x, na.rm = TRUE))
-    vars_sim.model <- paste0('dyresm', key_naming[["dy_cd"]],'_Var')
+  # mod_layers are elevation from bottom, last row is bottom
+  mod_layers <- ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")[, idx]
+  depth <- apply(mod_layers, 2, \(x) max(x, na.rm = TRUE))
+  vars_sim.model <- paste0('dyresm', key_naming[["dy_cd"]],'_Var')
 
-    H <- ncdf4::ncvar_get(nc, "morph_HEIGHT")
-    A <- ncdf4::ncvar_get(nc, "morph_AREA")
-    elev <- ncdf4::ncvar_get(nc, "morph_ELEV")
-    init_H <- ncdf4::ncvar_get(nc, "initprofHeight")[2] + min(H)
+  H <- ncdf4::ncvar_get(nc, "morph_HEIGHT")
+  A <- ncdf4::ncvar_get(nc, "morph_AREA")
+  elev <- ncdf4::ncvar_get(nc, "morph_ELEV")
+  init_H <- ncdf4::ncvar_get(nc, "initprofHeight")[2] + min(H)
 
-    MET_wndspd <- ncdf4::ncvar_get(nc, "met_Uwind")[idx]
-    MET_prvapr <- ncdf4::ncvar_get(nc, "met_Pvapour")[idx]
-    MET_tmpair <- ncdf4::ncvar_get(nc, "met_Tair")[idx]
-    Ts <- ncdf4::ncvar_get(nc, "dyresmTEMPTURE_Var")[, idx] |>
-      apply(2, \(x) {
-        x[!is.na(x)][1]
-      })
-
-    # Saturated vapour pressure - Magnus-Tetens formula (TVA 1972, eqn 4.1)
-    es <- exp(2.3026 * (((7.5 * Ts) / (Ts + 237.3) + 0.7858)))
-    #evaporative heat flux
-    Qe <- ((0.622 / 981.9) *         #constant/mean station pressure
-             0.0013 *               #latent heat transfer coefficient
-             1.168 *                #density of air
-             2453000 *              #latent heat of evaporation of water
-             MET_wndspd *           #wind speed in m/s
-             (MET_prvapr - es))
-    Qe[Qe > 0] <- 0 # evaporation can't be negative
-
-    # Conductive/sensible heat gain only affects the top layer.
-    # Q_sensibleheat = -CH * rho_air * cp_air * WindSp * (Lake[surfLayer].Temp - MetData.AirTemp);
-    # rho_air <- atm_density(MET_tmpair, 101325)
-    Q_lw_in <- ncdf4::ncvar_get(nc, "met_LW_related")[idx]
-    if (all(Q_lw_in <= 1)) {
-      CloudCover <- Q_lw_in
-      # eps_star <- (1.0 + 0.275 * CloudCover) * (1.0 - 0.261 * exp(-0.000777 * MET_tmpair^2.0))
-      # Q_lw_in <- (1 - 0.03) * eps_star *
-      #   5.678e-8  * # Stefan_Boltzman constant
-      #   (273.15 + Ts)^4.0 # water surface temperature in Kelvin
-
-      # DYRESM Science Manual
-      Q_lw_in <- (1 - 0.03) * # albedo for long wave radiation, constant = 0.03 (Henderson-Sellers 1986).
-        (1 + 0.17 * CloudCover^2) *
-        (9.37e-6 * (MET_tmpair + 273.15)^2) * # Swinbank (1963)
-        5.6697e-8 * # Stefan-Boltzmann constant
-        (MET_tmpair + 273.15)^4
-
-    }
-    Qh <- 1.3e-3 * # sensible heat transfer coefficient for wind speed at 10 m reference height above the water surface
-      1.168 * # density of air
-      1003.0 *    # cp_air Specific heat of air
-      MET_wndspd *
-      (MET_tmpair - Ts)
-    Q_lw_out <- -5.678e-8  * # Stefan_Boltzman constant
-      0.985 * # emissivity of water
-      (273.15 + Ts)^4.0 # water surface temperature in Kelvin
-    Qlw <- Q_lw_out + Q_lw_in
-
-    # Qlw <- NA
-    Qsw <- ncdf4::ncvar_get(nc, "met_SW")[idx]
-    EVAP <- ncdf4::ncvar_get(nc, "dyresmEVAP_DAILY_Var")[idx]
-
-    inflow_vars <- names(nc$var)[grepl("stream", names(nc$var)) &
-                                   grepl("VOL", names(nc$var)) ]
-    if (length(inflow_vars) >= 1) {
-      inflow <- sapply(seq_along(inflow_vars), \(x) {
-        ncdf4::ncvar_get(nc, inflow_vars[x])[idx]
-      }) |>
-        apply(1, sum)
-    } else {
-      inflow <- Ts * 0
-    }
-    outflow_vars <- names(nc$var)[grepl("withdrawal", names(nc$var)) &
-                                    grepl("VOL", names(nc$var))]
-    if (length(outflow_vars) >= 1) {
-      outflow <- sapply(seq_along(outflow_vars), \(x) {
-        ncdf4::ncvar_get(nc, outflow_vars[x])[idx]
-      }) |>
-        apply(1, sum)
-    } else {
-      outflow <- Ts * 0
-    }
-
-    outflow <- outflow +
-      ncdf4::ncvar_get(nc, "overflow_VOL_Var")[idx]
-    precip <- ncdf4::ncvar_get(nc, "met_RAIN")[idx]
-
-    A0 <- sapply(1:length(depth), function(d) approx((H - min(H)), A,
-                                                     xout = depth[d])$y)
-    dz <- 0.01
-    V <- sapply(1:length(depth), function(d) {
-      if(is.na(depth[d]) | is.infinite(depth[d])) return(NA)
-      layerD <- seq(dz, (depth[d] - dz), dz)
-      layerA <- stats::approx(H, A, layerD)$y
-      sum((layerA) * dz)
+  MET_wndspd <- ncdf4::ncvar_get(nc, "met_Uwind")[idx]
+  MET_prvapr <- ncdf4::ncvar_get(nc, "met_Pvapour")[idx]
+  MET_tmpair <- ncdf4::ncvar_get(nc, "met_Tair")[idx]
+  Ts <- ncdf4::ncvar_get(nc, "dyresmTEMPTURE_Var")[, idx] |>
+    apply(2, \(x) {
+      x[!is.na(x)][1]
     })
-    # inflow <- inflow #/ A0
-    # outflow <- outflow # / A0
-    dates <- seq.Date(from = dates[1], by = 1, length.out = length(dates))
-    evap_flux <- EVAP / 86400
-    evap_vol <- EVAP * A0
-    precip_vol <- precip * A0
 
-    # Light
-    efold <- rep(NA, length(idx))
-    euphotic <- rep(NA, length(idx))
+  # Saturated vapour pressure - Magnus-Tetens formula (TVA 1972, eqn 4.1)
+  es <- exp(2.3026 * (((7.5 * Ts) / (Ts + 237.3) + 0.7858)))
+  #evaporative heat flux
+  Qe <- ((0.622 / 981.9) *         #constant/mean station pressure
+           0.0013 *               #latent heat transfer coefficient
+           1.168 *                #density of air
+           2453000 *              #latent heat of evaporation of water
+           MET_wndspd *           #wind speed in m/s
+           (MET_prvapr - es))
+  Qe[Qe > 0] <- 0 # evaporation can't be negative
+
+  # Conductive/sensible heat gain only affects the top layer.
+  # Q_sensibleheat = -CH * rho_air * cp_air * WindSp * (Lake[surfLayer].Temp - MetData.AirTemp);
+  # rho_air <- atm_density(MET_tmpair, 101325)
+  Q_lw_in <- ncdf4::ncvar_get(nc, "met_LW_related")[idx]
+  if (all(Q_lw_in <= 1)) {
+    CloudCover <- Q_lw_in
+    # eps_star <- (1.0 + 0.275 * CloudCover) * (1.0 - 0.261 * exp(-0.000777 * MET_tmpair^2.0))
+    # Q_lw_in <- (1 - 0.03) * eps_star *
+    #   5.678e-8  * # Stefan_Boltzman constant
+    #   (273.15 + Ts)^4.0 # water surface temperature in Kelvin
+
+    # DYRESM Science Manual
+    Q_lw_in <- (1 - 0.03) * # albedo for long wave radiation, constant = 0.03 (Henderson-Sellers 1986).
+      (1 + 0.17 * CloudCover^2) *
+      (9.37e-6 * (MET_tmpair + 273.15)^2) * # Swinbank (1963)
+      5.6697e-8 * # Stefan-Boltzmann constant
+      (MET_tmpair + 273.15)^4
 
   }
+  Qh <- 1.3e-3 * # sensible heat transfer coefficient for wind speed at 10 m reference height above the water surface
+    1.168 * # density of air
+    1003.0 *    # cp_air Specific heat of air
+    MET_wndspd *
+    (MET_tmpair - Ts)
+  Q_lw_out <- -5.678e-8  * # Stefan_Boltzman constant
+    0.985 * # emissivity of water
+    (273.15 + Ts)^4.0 # water surface temperature in Kelvin
+  Qlw <- Q_lw_out + Q_lw_in
+
+  # Qlw <- NA
+  Qsw <- ncdf4::ncvar_get(nc, "met_SW")[idx]
+  EVAP <- ncdf4::ncvar_get(nc, "dyresmEVAP_DAILY_Var")[idx]
+
+  inflow_vars <- names(nc$var)[grepl("stream", names(nc$var)) &
+                                 grepl("VOL", names(nc$var)) ]
+  if (length(inflow_vars) >= 1) {
+    inflow <- sapply(seq_along(inflow_vars), \(x) {
+      ncdf4::ncvar_get(nc, inflow_vars[x])[idx]
+    }) |>
+      apply(1, sum)
+  } else {
+    inflow <- Ts * 0
+  }
+  outflow_vars <- names(nc$var)[grepl("withdrawal", names(nc$var)) &
+                                  grepl("VOL", names(nc$var))]
+  if (length(outflow_vars) >= 1) {
+    outflow <- sapply(seq_along(outflow_vars), \(x) {
+      ncdf4::ncvar_get(nc, outflow_vars[x])[idx]
+    }) |>
+      apply(1, sum)
+  } else {
+    outflow <- Ts * 0
+  }
+
+  outflow <- outflow +
+    ncdf4::ncvar_get(nc, "overflow_VOL_Var")[idx]
+  precip <- ncdf4::ncvar_get(nc, "met_RAIN")[idx]
+
+  A0 <- sapply(1:length(depth), function(d) approx((H - min(H)), A,
+                                                   xout = depth[d])$y)
+  dz <- 0.01
+  V <- sapply(1:length(depth), function(d) {
+    if(is.na(depth[d]) | is.infinite(depth[d])) return(NA)
+    layerD <- seq(dz, (depth[d] - dz), dz)
+    layerA <- stats::approx(H, A, layerD)$y
+    sum((layerA) * dz)
+  })
+  # inflow <- inflow #/ A0
+  # outflow <- outflow # / A0
+  dates <- seq.Date(from = dates[1], by = 1, length.out = length(dates))
+  evap_flux <- EVAP / 86400
+  evap_vol <- EVAP * A0
+  precip_vol <- precip * A0
+
+  # Light
+  efold <- rep(NA, length(idx))
+  euphotic <- rep(NA, length(idx))
+
+}
 
   # format the mod_layers and add as first list item (common to all three models)
   # h.surf <- map_df(mod_layers, max, na.rm = T) |> as.numeric()
@@ -329,7 +332,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     # Light
     rad <- ncdf4::ncvar_get(nc, "radn")[, idx]
     rad <- regularise_model_output(depth = depth, depths = mod_layers,
-                                       var = rad, nlev = nlev)
+                                   var = rad, nlev = nlev)
     suppressWarnings({
       efold <- sapply(seq_len(ncol(rad)), \(t) {
         approx(rad[, t], depths[, t], xout = (1/exp(1) * rad[nrow(rad), t]))$y
@@ -487,6 +490,98 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
   names(vars_list) <- key_naming$name[key_naming[[model]] %in% var_names]
   nc_list <- c(nc_list, vars_list)
 
+  # Calculate lakeAnalyzer values
+  if (lake_analyzer) {
+
+
+    if (mean(depth, na.rm = TRUE) < 10) {
+      z_step <- 0.2
+    } else {
+      z_step <- 0.5
+    }
+
+    inp <- input(aeme_data)
+    bathy <- inp$hypsograph
+    bathy$depth <- max(bathy$elev) - bathy$elev
+    wtr <- nc_list[["HYD_temp"]]
+    wtr <- wtr[nrow(wtr):1, ]
+    depths <- nc_list[["LKE_layers"]]
+
+    fun_list <- list(HYD_thmcln = rLakeAnalyzer::thermo.depth,
+                     HYD_ctrbuy = rLakeAnalyzer::center.buoyancy,
+                     HYD_epidep = rLakeAnalyzer::meta.depths,
+                     HYD_hypdep = rLakeAnalyzer::meta.depths)
+
+    laz_list <- lapply(names(fun_list), \(f) {
+      idx <- ifelse(f == "HYD_hypdep", 2, 1)
+      vapply(1:ncol(wtr), \(c) {
+        v <- fun_list[[f]](wtr = wtr[, c], depths = depths[, c])
+        v[is.nan(v)] <- NA
+        v[idx]
+      }, numeric(1))
+    })
+    names(laz_list) <- names(fun_list)
+
+    laz_list[["HYD_schstb"]] <- vapply(1:ncol(wtr), \(c) {
+      bthD <- c(0, depths[, c])
+      bthA <- approx(x = bathy$depth, y = bathy$area, xout = bthD, rule = 2)$y
+      # plot(bthA, bthD, type = "l")
+      v <- rLakeAnalyzer::schmidt.stability(wtr = wtr[, c],
+                                            depths = depths[, c],
+                                            bthA = bthA, bthD = bthD)
+      v[is.nan(v)] <- NA
+      v
+    }, numeric(1))
+
+
+    for (n in names(laz_list)) {
+      nc_list[[n]] <- laz_list[[n]]
+    }
+
+    # Derived oxygen values
+    oxy <- nc_list[["CHM_oxy"]]
+    oxy <- oxy[nrow(oxy):1, ]
+
+    oxy_cline <- vapply(1:ncol(oxy), \(c) {
+      v <- cline_depth(wtr = oxy[, c], depths = depths[, c], water = FALSE)
+      v[is.nan(v)] <- NA
+      v
+    }, numeric(1))
+
+
+    epi_oxy <- vapply(1:ncol(wtr), \(c) {
+      idx <- which(depths[, c] <= laz_list$HYD_epidep[c])
+      mean(oxy[idx, c])
+    }, numeric(1))
+    hyp_oxy <- vapply(1:ncol(wtr), \(c) {
+      idx <- which(depths[, c] >= laz_list$HYD_hypdep[c])
+      mean(oxy[idx, c])
+    }, numeric(1))
+    meta_oxy <- vapply(1:ncol(wtr), \(c) {
+      idx <- which(depths[, c] >= laz_list$HYD_epidep[c] &
+                     depths[, c] < laz_list$HYD_hypdep[c])
+      mean(oxy[idx, c])
+    }, numeric(1))
+    exp_oxy <- (epi_oxy + hyp_oxy) / 2
+    # plot(epi_oxy, type = "l", ylim = c(0, 12))
+    # lines(hyp_oxy, col = "red")
+    # lines(meta_oxy, col = "blue")
+    # lines(exp_oxy, col = "green")
+
+    nc_list$CHM_oxycln <- oxy_cline
+    nc_list$CHM_oxyepi <- epi_oxy
+    nc_list$CHM_oxyhyp <- hyp_oxy
+    nc_list$CHM_oxymet <- meta_oxy
+    nc_list$CHM_oxymom <- meta_oxy - exp_oxy
+    nc_list$CHM_oxynal <- vapply(1:ncol(wtr), \(c) {
+      oxy_layers <- approx(y = oxy[, c], x = depths[, c],
+                           xout = seq(0, depth[c], by = z_step), rule = 2)$y
+      sum(oxy_layers < 1)
+    }, numeric(1))
+
+
+  }
+
 
   # Trim off the spin up period ----
   if (remove_spin_up) {
@@ -504,7 +599,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
   }
 
   return(nc_list)
-}
+  }
 
 
 #' Regularise model output
@@ -539,25 +634,6 @@ regularise_model_output <- function(depth, depths, var, nlev) {
                rule = 2)$y
       }
     }
-  }, numeric(nlev)) #|>
-  # matrix(ncol = nlev, byrow = TRUE)
-
-  # sapply(1:ncol(var), \(c) {
-  #   if (is.na(depth[c])) {
-  #     return(rep(NA, nlev))
-  #   } else {
-  #     if (length(unique(mod_layers[!is.na(mod_layers[, c]), c])) == 1) {
-  #       rep(var[!is.na(mod_layers[, c])], nlev)
-  #     } else if(all(is.na(var[, c])) | length(unique(mod_layers[!is.na(mod_layers[, c]), c])) <= 1) {
-  #       rep(NA, nlev)
-  #     } else {
-  #       deps <- seq(0, depth[c], len = nlev)
-  #       non_na <- !is.na(var[, c])
-  #       if (sum(non_na) <= 0) return(rep(NA, nlev))
-  #       approx(y = var[non_na, c], x = mod_layers[non_na, c], xout = deps,
-  #              rule = 2)$y
-  #     }
-  #   }
-  # })
+  }, numeric(nlev))
 }
 
