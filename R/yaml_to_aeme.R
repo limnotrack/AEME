@@ -32,7 +32,7 @@ yaml_to_aeme <- function(path, file) {
   if (!is.null(yaml$observations$lake)) {
     yaml$observations$lake <- read.csv(file.path(path,
                                                  yaml$observations$lake)) |>
-      dplyr::mutate(Date = as.Date(Date))
+      dplyr::mutate(Date = as.Date(datetime))
   }
   if (!is.null(yaml$observations$level)) {
     yaml$observations$level <- read.csv(file.path(path,
