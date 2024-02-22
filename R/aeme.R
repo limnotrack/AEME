@@ -62,7 +62,6 @@
 #' \item \code{glm_aed}: list; GLM-AED output.
 #' \item \code{gotm_wet}: list; GOTM-WET output.
 #' }
-#' @importFrom methods new
 #' @export
 
 setClass("aeme",
