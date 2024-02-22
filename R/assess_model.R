@@ -78,6 +78,8 @@ assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
                          tryCatch(stats::cor.test(sim, obs, method = "spearman")$estimate, error = function(e) NA)
                        })),
                        n = dplyr::n(),
+                       obs_na = sum(is.na(obs)),
+                       sim_na = sum(is.na(sim)),
                        .groups = "drop") |>
       as.data.frame()
 
@@ -98,7 +100,7 @@ assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
         # dplyr::across(dplyr::where(is.numeric), \(x) round(x, 3)),
         dplyr::across(bias:B, \(x) ifelse(is.na(x), NA, round(x, 3))),
       ) |>
-      dplyr::relocate(n, .after = dplyr::last_col())
+      dplyr::relocate(c(n, obs_na, sim_na), .after = dplyr::last_col())
 
   }) |>
     do.call(rbind, args = _) # Bind list of data frames into one data frame and return
