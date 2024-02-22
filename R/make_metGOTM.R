@@ -20,8 +20,8 @@ make_metGOTM <- function(df_met, path.gotm, hum_type = 3, lat, lon,
   df_met <- df_met |>
     dplyr::mutate(time = "12:00:00") |>
     dplyr::mutate(MET_pprain = MET_pprain / 1000, # convert to m
-                  MET_ppsnow = MET_ppsnow / 1000, # convert to m
-                  MET_prsttn = MET_prsttn * 100) # convert to Pa
+                  MET_ppsnow = MET_ppsnow / 1000) #, # convert to m
+                  # MET_prsttn = MET_prsttn * 100) # convert to Pa
   if (hum_type == 1) {
     col_sel <- c("Date", "time", "MET_wnduvu", "MET_wnduvv", "MET_prsttn",
                  "MET_tmpair", "MET_humrel", "MET_cldcvr", "MET_pprain")
