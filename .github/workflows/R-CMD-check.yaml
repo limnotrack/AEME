@@ -26,6 +26,7 @@ jobs:
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      LINZ_KEY: ${{ secrets.LINZ_KEY }}
       R_KEEP_PKG_SOURCE: yes
 
     steps:
