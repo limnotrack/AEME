@@ -284,6 +284,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
     # Lake level ----
     aeme_obs <- observations(aeme_data)
+    aeme_data <- calc_lake_obs_deriv(aeme_data)
     w_bal <- water_balance(aeme_data)
     if (w_bal$use == "obs") {
       level <- aeme_obs[["level"]]
@@ -365,7 +366,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                     collapse = "\n"))
       lvl <- wbal |>
         dplyr::select(Date, value) |>
-        dplyr::mutate(var = "LKE_lvlwtr")
+        dplyr::mutate(var_aeme = "LKE_lvlwtr")
     } else {
       lvl <- aeme_obs[["level"]]
     }
@@ -375,7 +376,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       message(strwrap("Observed lake level is present.\nUpdating initial lake
                         model depth..."))
       init_depth <- lvl |>
-        dplyr::filter(Date == aeme_time[["start"]] & var == "LKE_lvlwtr") |>
+        dplyr::filter(Date == aeme_time[["start"]] &
+                        var_aeme == "LKE_lvlwtr") |>
         dplyr::pull(value)
       init_depth <- round(init_depth - min(hyps$elev), 2)
       inp <- input(aeme_data)
