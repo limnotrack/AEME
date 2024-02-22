@@ -17,6 +17,7 @@ Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
 Suggests: 
+    aemetools (>= 0.0.0.9000),
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
@@ -25,13 +26,12 @@ Imports:
     dplyr,
     ggplot2,
     lubridate,
-    lwgeom,
-    methods,
     ncdf4,
     parallel,
     patchwork,
     psychrolib,
     RColorBrewer,
+    rLakeAnalyzer,
     sf,
     stats,
     stringr,
@@ -44,3 +44,5 @@ Imports:
     zoo
 URL: https://expert-guide-29ve1vw.pages.github.io/
 VignetteBuilder: knitr
+Remotes:  
+    github::limnotrack/aemetools
