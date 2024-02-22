@@ -4,6 +4,11 @@ outflow,,,,,Outflow,Outflow_m3,Outflow~(m^3),1,
 HYD_flow,VOL,flow,flow,,Discharge,Discharge_m3,Discharge~(m^3),1,
 HYD_temp,TEMPTURE,temp,temp,,Water temperature,Water_temperature_degC,Temperature~(degree~C),1,10
 HYD_dens,DENSITY,rho,rho,,,Density_g/cm3,Density~(g~cm^-3),1,
+HYD_thmcln,,,,,Thermocline depth,Thermocline_depth_m,Thermocline~depth~(m),1,
+HYD_schstb,,,,,Schmidt stability,Schmidt_stability_J/m2,Schmidt~stability~(J~m^2),1,
+HYD_ctrbuy,,,,,Centre of buoyancy,Centre_of_buoyancy_m,Centre~of~buoyancy~(m),1,
+HYD_epidep,,,,,Epilimnion depth,Epilimnion_depth_m,Epilimnion~depth~(m),1,
+HYD_hypdep,,,,,Hypolimnion depth,Hypolimnion_depth_m,Hypolimnion~depth~(m),1,
 LKE_evprte,,,,,Evaporation,Evaporation_m/day,Evaporation~(m~day^-1),1,
 LKE_evpvol,dyresmEVAP_DAILY,evaporation,evap,,Evaporation,Evaporation_m3,Evaporation~(m^3),1,
 LKE_evpflx,dyresmEVAP_DAILY,evap_mass_flux,evap,,Evaporation,Evaporation_flux_m/s,Evaporation~flux~(m^-1),1,
@@ -32,6 +37,11 @@ RAD_extc,EXTC,extc_coef,,,Light extinction coefficient,Light_extinction_coeffici
 RAD_secchi,,,,,Secchi disk depth,Secchi_disk_depth_m,Secchi~disk~depth~m,1,
 CHM_salt,SALINITY,salt,salt,,Salinity,Salinity_PSU,Salinity~(PSU),1,0
 CHM_oxy,DO,OXY_oxy,abiotic_water_sO2W,instances/abiotic_water/initialization/sO2W,Dissolved oxygen,Dissolved_oxygen_mg/L,Dissolved~oxygen~(mg~L^-1),0.032,10.3
+CHM_oxycln,,,,,Oxycline depth,Oxycline_depth_m,Oxycline~depth~(m),1,
+CHM_oxyepi,,,,,Epilimnetic oxygen,Epilimnetic_oxygen_mg/L,Epilimnetic~oxygen~(mg~L^-1),1,
+CHM_oxyhyp,,,,,Hypolimnetic oxygen,Hypolimnetic_oxygen_mg/L,Hypolimnetic~oxygen~(mg~L^-1),1,
+CHM_oxymom,,,,,Metalimnetic oxygen minima,Metalimnetic_oxygen_minima_mg/L,Metalimnetic~oxygen~minima~(mg~L^-1),1,
+CHM_oxynal,,,,,Number of anoxic layers,Number_of_anoxic_layers,Number~of~anoxic~layers,1,
 PHS_frp,PO4,PHS_frp,abiotic_water_sPO4W,instances/abiotic_water/initialization/sPO4W,,Phosphate-P_g/m3,Phosphate-P~(g~m^-3),0.03097376,1.00E-03
 PHS_dop,DOPL,OGM_dop,abiotic_water_sPDOMW,instances/abiotic_water/initialization/sPDOMW,Dissolved organic P,Dissolved_organic_P_g/m3,Dissolved~organic~(g~m^-3),0.03097376,4.00E-05
 PHS_dopr,DOPR,,,,,,,0.03097376,
