@@ -31,7 +31,7 @@ align_depth_data <- function(aeme_data, model, var_sim, return_df = TRUE) {
 
     if (!is.null(obs$lake)) {
       obs$lake |>
-        dplyr::filter(Date %in% df$Date & var == var_sim) |>
+        dplyr::filter(Date %in% df$Date & var_aeme == var_sim) |>
         merge(x = _, depth, by = "Date") |>
         dplyr::mutate(elev = depth - depth_from, Model = m) |>
         dplyr::filter(elev >= 0)
@@ -41,7 +41,8 @@ align_depth_data <- function(aeme_data, model, var_sim, return_df = TRUE) {
   # Adjust water level observations
   if (!is.null(obs$level)) {
     obs$level_adj <- obs$level |>
-      dplyr::filter(Date %in% outp[[model[1]]][["Date"]] & var == "LKE_lvlwtr")
+      dplyr::filter(Date %in% outp[[model[1]]][["Date"]] &
+                      var_aeme == "LKE_lvlwtr")
     if (nrow(obs$level_adj) > 0) {
       obs$level_adj <- obs$level_adj |>
         dplyr::mutate(lvl_adj = value - min(inp$hypsograph$elev))

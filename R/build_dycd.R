@@ -154,7 +154,7 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
     z_max <- mean(lvl[["value"]]) - min(hyps$elev)
     # get starting depth
     z.start <- round((dplyr::filter(lvl, Date == date_range[1] &
-                                      var == "LKE_lvlwtr") |>
+                                      var_aeme == "LKE_lvlwtr") |>
                         dplyr::pull(value)) - min(hyps$elev), 2)
   } else {
     # surfElev <- max(hyps$elev)

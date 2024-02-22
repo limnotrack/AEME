@@ -26,16 +26,16 @@ get_var <- function(aeme_data, model, var_sim, return_df = TRUE,
       if (is.null(obs$level)) stop("No observations of lake level found.")
       obs_sub <- obs$level |>
         dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
-                        var %in% var_sim) |>
+                        var_aeme %in% var_sim) |>
         dplyr::arrange(Date)
     } else {
       if (is.null(obs$lake)) stop("No lake observations found.")
       obs_sub <- obs$lake |>
         dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
-                        var %in% var_sim) |>
+                        var_aeme %in% var_sim) |>
         dplyr::mutate(depth_mid = (depth_from + depth_to) / 2) |>
         dplyr::arrange(Date, depth_mid) |>
-        dplyr::select(Date, var, depth_mid, value)
+        dplyr::select(Date, var_aeme, depth_mid, value)
     }
     if (nrow(obs_sub) == 0) {
       stop("No observations found for the model simulation period.")
@@ -82,6 +82,11 @@ get_var <- function(aeme_data, model, var_sim, return_df = TRUE,
         df <- data.frame(Date = outp[[m]][["Date"]][date_ind],
                          sim = outp[[m]][["LKE_lvlwtr"]][date_ind] +
                            min(inp$hypsograph$elev),
+                         Model = m) |>
+          dplyr::left_join(obs_sub, by = c("Date" = "Date"))
+      } else if(is.vector(variable)) {
+        df <- data.frame(Date = outp[[m]][["Date"]][date_ind],
+                         sim = outp[[m]][[var_sim]][date_ind],
                          Model = m) |>
           dplyr::left_join(obs_sub, by = c("Date" = "Date"))
       } else {

@@ -64,7 +64,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       mod.lvl <- data.frame(Date = obs_met$Date) |>
         dplyr::left_join(level, by = "Date") |>
         dplyr::filter(Date >= spin_start & Date <= date_stop) |>
-        dplyr::mutate(var = "LKE_lvlwtr")
+        dplyr::mutate(var_aeme = "LKE_lvlwtr")
 
       if (all(!is.na(mod.lvl$value))) {
         message(strwrap("No missing values in observed water level.
@@ -145,7 +145,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   if (!is.null(obs_lake)) {
     sub <- obs_lake |>
       dplyr::filter(
-        var == "HYD_temp",
+        var_aeme == "HYD_temp",
         depth_from < 1,
         Date %in% evap$Date) |>
       dplyr::filter(!duplicated(Date)) |>

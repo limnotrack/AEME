@@ -117,7 +117,7 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
   # Filter observations by variable and Date
   if (!is.null(obs$lake)) {
     obs_lake <- obs$lake |>
-      dplyr::filter(var == var_sim & Date >= xlim[1] & Date <= xlim[2])
+      dplyr::filter(var_aeme == var_sim & Date >= xlim[1] & Date <= xlim[2])
   } else {
     obs_lake <- NULL
   }
