@@ -80,6 +80,19 @@ plot_var <- function(df = NULL, aeme_data, model, var_sim, ylim, xlim, var_lims,
           ggplot2::labs(fill = "")
       }
     }
+
+    obs_sub <- obs$lake |>
+      dplyr::filter(var_aeme == var_sim & Date >= min(df$Date) &
+                      Date <= max(df$Date))
+
+    if (nrow(obs_sub) > 0 & add_obs) {
+      p <- p +
+        ggplot2::geom_point(data = obs_sub,
+                            ggplot2::aes(Date, value, fill = "Obs"),
+                            colour = "black") +
+        ggplot2::labs(fill = "")
+    }
+
   }
   if (print_plots) print(p)
   return(p)
