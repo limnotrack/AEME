@@ -310,18 +310,21 @@ aeme_constructor <- function(
   if (time$stop <= time$start) {
     stop("Time stop must be greater than time start.")
   }
-
+  if (is.null(time$time_step)) {
+    message(strwrap("Time step missing.\nSetting time step to 3600 seconds."))
+    time$time_step <- 3600
+  }
   if (!is.numeric(time$time_step)) {
     stop("Time step must be numeric.")
   }
   if (!is.list(time$spin_up)) {
     if (is.null(time$spin_up)) {
-      message(strwrap("Spin up for models missing.\nSetting spin up to 0 for
+      message(strwrap("Spin up for models missing.\nSetting spin up to 2 for
                       all models."))
       time$spin_up <- list(
-        dy_cd = 0,
-        glm_aed = 0,
-        gotm_wet = 0
+        dy_cd = 2,
+        glm_aed = 2,
+        gotm_wet = 2
       )
     } else {
       stop("Time spin-up must be a list.")
@@ -1020,19 +1023,22 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
   }
 
   if (y == "lake") {
+    p <- ggplot2::ggplot()
     if (is(obj$shape, "sf")) {
-      obj$shape |>
+      lake_shp <- obj$shape |>
         sf::st_transform(4326) |>
-        sf::st_geometry() |>
-        base::plot(axes = TRUE, col = "cyan", add = add)
-      add <- TRUE
+        sf::st_geometry()
+      p <- p + ggplot2::geom_sf(data = lake_shp, fill = "lightblue")
     }
-    data.frame(lat = obj$latitude, lon = obj$longitude) |>
-      sf::st_as_sf(coords = c("lon", "lat")) |>
-      base::plot(pch = 16, add = add, axes = TRUE)
-    title(main = paste0(obj$name, "_", obj$id),
-          sub = paste0("Elevation: ", obj$elevation, "m; Depth: ",
-                       obj$depth, "m"))
+    pnt <- data.frame(lat = obj$latitude, lon = obj$longitude) |>
+      sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
+
+    p <- p + ggplot2::geom_sf(data = pnt) +
+      ggplot2::labs(x = "Longitude", y = "Latitude",
+                    title = paste0(obj$name, " (", obj$id,")"),
+                    subtitle = paste0("Elevation: ", obj$elevation,
+                                      "m; Depth: ", obj$depth, "m"))
+    return(p)
   }
 
   if (y == "input") {
@@ -1051,84 +1057,69 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
     p2 <- inp$meteo |>
       tidyr::pivot_longer(cols = !dplyr::contains("Date")) |>
       dplyr::left_join(key_naming[, c("name", "name_parse")], by = c("name" = "name")) |>
+      dplyr::filter(!is.na(name_parse)) |>
       ggplot2::ggplot() +
       ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
       ggplot2::facet_wrap(~name_parse, scales = "free_y", labeller = ggplot2::label_parsed) +
       ggplot2::theme_bw()
 
     g <- p1 + p2 + patchwork::plot_layout(nrow = 1, widths = c(1, 4))
-    print(g)
+    return(g)
   }
-
-
-  # if (y == "catchment") {
-  #   if (is(obj$shape, "sf")) {
-  #     obj$shape |>
-  #       sf::st_transform(4326) |>
-  #       sf::st_geometry() |>
-  #       base::plot(axes = TRUE, col = "#F2F2F2", add = add)
-  #     add <- TRUE
-  #   }
-  #   if (is(obj$stream, "sf")) {
-  #     obj$stream |>
-  #       sf::st_geometry() |>
-  #       base::plot(axes = TRUE, col = "blue", add = add)
-  #     add <- TRUE
-  #   }
-  # }
 
   if (y == "observations") {
 
-    if (!is.null(obj$lake)) {
-      vars <- unique(obj$lake$var)
-      if (length(vars) > 5) {
-        nc <- 2
-        nr <- ceiling(length(vars) / nc)
-      } else {
-        nc <- 1
-        nr <- length(vars)
-      }
-
-      par(mfrow = c(nr, nc),
-          oma = c(5,4,0,0) + 0.1,
-          mar = c(0,0,1,1) + 0.1)
-      x <- obj$lake$Date
-      xlim <- range(obj$lake$Date)
-
-      for (i in seq_along(vars)) {
-        sub <- obj$lake[obj$lake$var == vars[i], ]
-        # x <- sub$Date
-        base::plot(sub$Date, sub$value, axes = FALSE, xlim = xlim, type = "n")
-        deps <- unique(sub$depth_from)
-        for (d in seq_along(deps)) {
-          sub2 <- sub[sub$depth_from == deps[d], ]
-          points(sub2$Date, sub2$value, pch = d)
-        }
-
-        title(main = parse(text = rename_modelvars(vars[i])))
-        axis(side = 2, labels = TRUE)
-        box(which = "plot", bty = "l")
-        if ((nc == 1 & i == nr) |
-            (nc == 2 & i %in% c(length(vars), length(vars)-1))) {
-          labels <- TRUE
-        } else {
-          labels <- FALSE
-        }
-        axis.Date(side = 1, at = seq(min(x), max(x), by = "6 months"),
-                  x = x, labels = labels, format = "%m/%Y")
-      }
+    if (!is.null(obj$lake) & !!is.null(obj$level)) {
+      p1 <- obj$lake |>
+        dplyr::bind_rows(obj$level) |>
+        dplyr::left_join(key_naming[, c("name", "name_parse")],
+                         by = c("var_aeme" = "name")) |>
+        ggplot2::ggplot() +
+        ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
+        ggplot2::labs(x = "Date", y = "Value") +
+        ggplot2::facet_wrap(~name_parse, scales = "free_y",
+                            labeller = ggplot2::label_parsed) +
+        ggplot2::theme_bw()
+    } else if (!is.null(obj$lake) ) {
+      p1 <- obj$lake |>
+        dplyr::left_join(key_naming[, c("name", "name_parse")],
+                         by = c("var_aeme" = "name")) |>
+        ggplot2::ggplot() +
+        ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
+        ggplot2::labs(x = "Date", y = "Value") +
+        ggplot2::facet_wrap(~name_parse, scales = "free_y",
+                            labeller = ggplot2::label_parsed) +
+        ggplot2::theme_bw()
+    } else if (!is.null(obj$level)) {
+      p1 <- obj$level |>
+        dplyr::filter(var_aeme == "LKE_lvlwtr") |>
+        ggplot2::ggplot() +
+        ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
+        ggplot2::labs(x = "Date", y = "Elevation (m)") +
+        ggplot2::ggtitle("Lake level") +
+        ggplot2::theme_bw()
     }
-
-    if (!is.null(obj$level)) {
-      par(mfrow = c(1, 1))
-      level <- obj$level |>
-        dplyr::filter(var == "LKE_lvlwtr")
-      plot(level$Date, level$value, ylab = "Elevation (m)",
-           xlab = "Date", main = "Lake level")
-    }
+    return(p1)
   }
 
   if (y == "inflows" | y == "outflows") {
+
+    df <- lapply(seq_along(obj$data), function(i) {
+      cbind(obj$data[[i]], flow_name = names(obj$data)[i])
+    }) |>
+      dplyr::bind_rows()
+    p1 <- df |>
+      tidyr::pivot_longer(cols = -c("Date", "flow_name"), names_to = "var_aeme", values_to = "value") |>
+      dplyr::left_join(key_naming[, c("name", "name_parse")], by = c("var_aeme" = "name")) |>
+      ggplot2::ggplot() +
+      ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
+      ggplot2::facet_wrap(~name_parse, scales = "free_y",
+                          labeller = ggplot2::label_parsed) +
+      ggplot2::labs(x = "Date", y = "Value") +
+      ggplot2::theme_bw()
+    return(p1)
+
+
     if (!is.null(obj$data)) {
       par(mfrow = c(length(obj$data), 1))
       xlims <- range(do.call(c, lapply(obj$data, "[", "Date")), na.rm = TRUE) |>
@@ -1193,7 +1184,39 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
     if (!is.null(obj$data$wbal)) {
       wbal <- obj$data$wbal
       level <- obs$level |>
-        dplyr::filter(var == "LKE_lvlwtr")
+        dplyr::filter(var_aeme == "LKE_lvlwtr" & Date %in% wbal$Date)
+      p1 <- ggplot2::ggplot() +
+        ggplot2::geom_line(data = wbal, ggplot2::aes(x = Date, y = value)) +
+        ggplot2::labs(x = "Date", y = "Elevation (m)")
+      if (nrow(level)) {
+        p1 <- p1 +
+          ggplot2::geom_point(data = level, ggplot2::aes(x = Date, y = value,
+                                                         colour = "Obs"))
+      }
+
+      p2 <- wbal |>
+        dplyr::select(Date, dplyr::contains("outflow")) |>
+        tidyr::pivot_longer(cols = dplyr::contains("outflow"),
+                            names_to = "Model", values_to = "value",
+                            names_transform = list(Model = \(x)
+                                                   gsub("outflow_", "", x))) |>
+        ggplot2::ggplot() +
+        ggplot2::geom_line(ggplot2::aes(x = Date, y = value, col = Model)) +
+        ggplot2::labs(x = "Date", y = "Outflow (m3/day)")
+
+      p3 <- wbal |>
+        dplyr::select(Date, dplyr::contains("evap_m3")) |>
+        tidyr::pivot_longer(cols = dplyr::contains("evap_m3"),
+                            names_to = "Model", values_to = "value",
+                            names_transform = list(Model = \(x)
+                                                   gsub("_evap_m3", "", x))) |>
+        ggplot2::ggplot() +
+        ggplot2::geom_line(ggplot2::aes(x = Date, y = value, col = Model)) +
+        ggplot2::labs(x = "Date", y = "Evaporation (m3/day)")
+
+      g <- patchwork::wrap_plots(p1, p2, p3, ncol = 1, guides = "collect")
+      return(g)
+
       par(mfrow = c(3, 1))
       ylim <- range(c(wbal$lvlwtr, level$value), na.rm = TRUE)
       plot(wbal$Date, wbal$lvlwtr, type = "l", axes = FALSE,
@@ -1234,8 +1257,12 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
   }
 
   if (y == "output") {
-    inp <- input(x)
+    # inp <- input(x)
     outp <- output(x)
+    model <- names(outp)
+    p1 <- plot_output(aeme = x, model = model)
+    return(p1)
+
     obs <- observations(x)
 
     # z <- t(as.matrix(outp[[m]][["HYD_temp"]]))
@@ -1306,7 +1333,6 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
            lty = c(rep(1, 3), NA), pch = c(rep(NA, 3), 20),
            col = c(1:3, 1), bg = "transparent")
   }
-
 })
 
 #' Get names of an aeme object
