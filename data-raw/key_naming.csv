@@ -39,6 +39,7 @@ CHM_salt,SALINITY,salt,salt,,Salinity,Salinity_PSU,Salinity~(PSU),1,0
 CHM_oxy,DO,OXY_oxy,abiotic_water_sO2W,instances/abiotic_water/initialization/sO2W,Dissolved oxygen,Dissolved_oxygen_mg/L,Dissolved~oxygen~(mg~L^-1),0.032,10.3
 CHM_oxycln,,,,,Oxycline depth,Oxycline_depth_m,Oxycline~depth~(m),1,
 CHM_oxyepi,,,,,Epilimnetic oxygen,Epilimnetic_oxygen_mg/L,Epilimnetic~oxygen~(mg~L^-1),1,
+CHM_oxymet,,,,,Metalimnetic oygen,Metalimnetic_oxygen_mg/L,Metalimnetic~oxygen~(mg~L^-1),,
 CHM_oxyhyp,,,,,Hypolimnetic oxygen,Hypolimnetic_oxygen_mg/L,Hypolimnetic~oxygen~(mg~L^-1),1,
 CHM_oxymom,,,,,Metalimnetic oxygen minima,Metalimnetic_oxygen_minima_mg/L,Metalimnetic~oxygen~minima~(mg~L^-1),1,
 CHM_oxynal,,,,,Number of anoxic layers,Number_of_anoxic_layers,Number~of~anoxic~layers,1,
