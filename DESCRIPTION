@@ -26,6 +26,7 @@ Imports:
     dplyr,
     ggplot2,
     lubridate,
+    lwgeom,
     ncdf4,
     parallel,
     patchwork,
@@ -44,5 +45,5 @@ Imports:
     zoo
 URL: https://expert-guide-29ve1vw.pages.github.io/
 VignetteBuilder: knitr
-Remotes:  
+Remotes: 
     github::limnotrack/aemetools
