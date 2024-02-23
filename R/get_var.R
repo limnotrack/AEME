@@ -1,4 +1,4 @@
-#' Get variable from aeme_data
+#' Get variable from aeme
 #'
 #' @inheritParams plot_output
 #' @param use_obs logical; if TRUE, use observations to extract the variable at
@@ -11,17 +11,17 @@
 #' @return dataframe or list
 #' @export
 
-get_var <- function(aeme_data, model, var_sim, return_df = TRUE,
+get_var <- function(aeme, model, var_sim, return_df = TRUE,
                     use_obs = FALSE, cumulative = FALSE) {
 
-  # Extract output from aeme_data ----
-  inp <- input(aeme_data)
-  outp <- output(aeme_data)
-  aeme_time <- time(aeme_data)
+  # Extract output from aeme ----
+  inp <- input(aeme)
+  outp <- output(aeme)
+  aeme_time <- time(aeme)
   names(model) <- model
 
   if (use_obs) {
-    obs <- observations(aeme_data)
+    obs <- observations(aeme)
     if (var_sim == "LKE_lvlwtr") {
       if (is.null(obs$level)) stop("No observations of lake level found.")
       obs_sub <- obs$level |>

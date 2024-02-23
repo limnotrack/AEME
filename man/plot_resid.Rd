@@ -4,10 +4,10 @@
 \alias{plot_resid}
 \title{Plot model residuals}
 \usage{
-plot_resid(aeme_data, model, var_sim = "HYD_temp")
+plot_resid(aeme, model, var_sim = "HYD_temp")
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}

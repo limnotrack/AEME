@@ -5,7 +5,7 @@
 \title{Plot AEME output}
 \usage{
 plot_output(
-  aeme_data,
+  aeme,
   model,
   var_sim = "HYD_temp",
   add_obs = TRUE,
@@ -18,7 +18,7 @@ plot_output(
 )
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
@@ -61,27 +61,27 @@ variables.
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   #'   model <- c("glm_aed", "gotm_wet")
-  build_ensemble(path = path, aeme_data = aeme_data, model = model,
+  build_ensemble(path = path, aeme = aeme, model = model,
                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
-  run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, path = path,
+  run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,
            parallel = TRUE)
 
-  aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
+  aeme <- load_output(model = model, aeme = aeme, path = path,
                            mod_ctrls = mod_ctrls, parallel = TRUE)
 
-  p1 <- plot_output(aeme_data = aeme_data, model = model,
+  p1 <- plot_output(aeme = aeme, model = model,
                     var_sim = "HYD_temp", level = TRUE,
                     print_plots = FALSE, var_lims = c(0, 30),
                     ylim = c(0, 16))
   p1[[1]]
 
-  p2 <- plot_output(aeme_data = aeme_data, model = model,
+  p2 <- plot_output(aeme = aeme, model = model,
                     var_sim = "LKE_evpvol", print_plots = TRUE,
                     ylim = c(0, 0.02))
 }

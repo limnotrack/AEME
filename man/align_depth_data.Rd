@@ -4,10 +4,10 @@
 \alias{align_depth_data}
 \title{Align observation depth data with model data}
 \usage{
-align_depth_data(aeme_data, model, var_sim, return_df = TRUE)
+align_depth_data(aeme, model, var_sim, return_df = TRUE)
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}

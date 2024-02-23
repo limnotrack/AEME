@@ -5,15 +5,15 @@
 #' @return aeme object which was passed to the function,
 #' @export
 
-write_configuration <- function(model, aeme_data, path) {
+write_configuration <- function(model, aeme, path) {
 
   if (!dir.exists(path)) dir.create(path)
 
-  lke <- lake(aeme_data)
-  get_config_args <- list(aeme_data = aeme_data, path = path)
+  lke <- lake(aeme)
+  get_config_args <- list(aeme = aeme, path = path)
   lapply(model, \(m) do.call(paste0("write_config_", m),
                                       get_config_args))
-  aeme_data
+  aeme
 }
 
 #' Write DYRESM-CAEDYM configuration
@@ -22,13 +22,13 @@ write_configuration <- function(model, aeme_data, path) {
 #'
 #' @return write DYRESM config files to disk
 #' @noRd
-write_config_dy_cd <- function(aeme_data, path) {
+write_config_dy_cd <- function(aeme, path) {
 
-  lke <- lake(aeme_data)
+  lke <- lake(aeme)
   name <- tolower(lke$name)
   model_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)), "dy_cd")
   if (!dir.exists(model_dir)) dir.create(model_dir, recursive = TRUE)
-  model_config <- configuration(aeme_data)
+  model_config <- configuration(aeme)
   if (is.null(model_config[["dy_cd"]][["hydrodynamic"]]))
     stop("No DYRESM hydrodynamic configuration present")
   par_file <- file.path(model_dir, "dyresm3p1.par")
@@ -63,14 +63,14 @@ write_config_dy_cd <- function(aeme_data, path) {
 #'
 #' @return write GLM config files to disk
 #' @noRd
-write_config_glm_aed <- function(aeme_data, path) {
+write_config_glm_aed <- function(aeme, path) {
 
-  lke <- lake(aeme_data)
+  lke <- lake(aeme)
   model_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)),
                          "glm_aed")
 
   if (!dir.exists(model_dir)) dir.create(model_dir, recursive = TRUE)
-  model_config <- configuration(aeme_data)
+  model_config <- configuration(aeme)
   if (is.null(model_config[["glm_aed"]][["hydrodynamic"]]))
     stop("No GLM hydrodynamic configuration present")
   nml_file <- file.path(model_dir, "glm3.nml")
@@ -108,14 +108,14 @@ write_config_glm_aed <- function(aeme_data, path) {
 #' @return write GOTM config files to disk
 #' @noRd
 
-write_config_gotm_wet <- function(aeme_data, path) {
+write_config_gotm_wet <- function(aeme, path) {
 
-  lke <- lake(aeme_data)
+  lke <- lake(aeme)
   model_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)),
                          "gotm_wet")
 
   if (!dir.exists(model_dir)) dir.create(model_dir, recursive = TRUE)
-  model_config <- configuration(aeme_data)
+  model_config <- configuration(aeme)
   if (is.null(model_config[["gotm_wet"]][["hydrodynamic"]]))
     stop("No GOTM hydrodynamic configuration present")
   write_yaml(model_config[["gotm_wet"]][["hydrodynamic"]][["gotm"]],

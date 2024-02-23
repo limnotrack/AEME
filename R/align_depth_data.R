@@ -16,17 +16,17 @@
 #'  }
 #' @export
 
-align_depth_data <- function(aeme_data, model, var_sim, return_df = TRUE) {
-  outp <- output(aeme_data)
-  obs <- observations(aeme_data)
-  inp <- input(aeme_data)
+align_depth_data <- function(aeme, model, var_sim, return_df = TRUE) {
+  outp <- output(aeme)
+  obs <- observations(aeme)
+  inp <- input(aeme)
 
   # Align the observed data with the model data ----
   lst <- lapply(model, \(m) {
     depth <- data.frame(Date = outp[[m]][["Date"]],
                         depth = outp[[m]][["LKE_lvlwtr"]])
 
-    df <- get_var(aeme_data = aeme_data, model = m, var_sim = var_sim,
+    df <- get_var(aeme = aeme, model = m, var_sim = var_sim,
                   return_df = TRUE)
 
     if (!is.null(obs$lake)) {

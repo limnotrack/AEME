@@ -14,11 +14,11 @@
 #' @importFrom ncdf4 nc_open nc_close
 #'
 
-load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
+load_output <- function(model, aeme, path, mod_ctrls, parallel = FALSE,
                         nlev = NULL) {
 
   if (is.null(nlev)) {
-    inp <- input(aeme_data)
+    inp <- input(aeme)
     hyps <- inp$hypsograph
     depth <- max(hyps$elev) - min(hyps$elev)
     if (depth < 3) {
@@ -28,15 +28,15 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
     }
     nlev <- ceiling((depth) / div)
   }
-  outp <- output(aeme_data)
-  aeme_time <- time(aeme_data)
+  outp <- output(aeme)
+  aeme_time <- time(aeme)
   output_hour <- 0
   spin_up <- aeme_time$spin_up
   # start_date <- as.Date(aeme_time$start)
   vars_sim <- mod_ctrls |>
     dplyr::filter(simulate == 1) |>
     dplyr::pull(name)
-  lke <- lake(aeme_data)
+  lke <- lake(aeme)
   lake_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)))
 
   # Extract model output fron netCDF files and return as a list
@@ -48,7 +48,7 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
       parallel::stopCluster(cl)
     })
     parallel::clusterExport(cl, varlist = list("lake_dir", "vars_sim",
-                                               "aeme_data", "nlev"),
+                                               "aeme", "nlev"),
                             envir = environment())
     # parallel::clusterEvalQ(cl, expr = {library(LakeEnsemblR); library(gotmtools);
     # })
@@ -78,7 +78,7 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
       })
       nc_listify(nc = nc, model = m,
                  vars_sim = vars_sim,
-                 aeme_data = aeme_data,
+                 aeme = aeme,
                  nlev = nlev,
                  output_hour = output_hour,
                  path = path)
@@ -112,7 +112,7 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
       })
       nc_listify(nc = nc, model = m,
                  vars_sim = vars_sim,
-                 aeme_data = aeme_data,
+                 aeme = aeme,
                  nlev = nlev,
                  output_hour = output_hour,
                  path = path)
@@ -127,7 +127,7 @@ load_output <- function(model, aeme_data, path, mod_ctrls, parallel = FALSE,
   new_output <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
                      gotm_wet = mods[["gotm_wet"]])
 
-  output(aeme_data) <- new_output
+  output(aeme) <- new_output
 
-  return(aeme_data)
+  return(aeme)
 }

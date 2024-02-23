@@ -3,7 +3,7 @@
 #' @param df dataframe; to check if the time period is included
 #' @param model character; model name
 #' @param aeme_time list; a list of start, stop and spin-up period for each
-#' model from aeme_data object
+#' model from aeme object
 #'
 #' @importFrom lubridate ddays
 #'

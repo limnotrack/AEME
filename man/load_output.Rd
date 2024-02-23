@@ -4,13 +4,13 @@
 \alias{load_output}
 \title{Load AEME output to the aeme object}
 \usage{
-load_output(model, aeme_data, path, mod_ctrls, parallel = FALSE, nlev = NULL)
+load_output(model, aeme, path, mod_ctrls, parallel = FALSE, nlev = NULL)
 }
 \arguments{
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 

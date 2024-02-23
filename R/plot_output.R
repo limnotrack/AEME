@@ -36,33 +36,33 @@
 #'   # Copy files from package into tempdir
 #'   file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #'   path <- file.path(tmpdir, "lake")
-#'   aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+#'   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 #'   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
 #'   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 #'   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 #'   #'   model <- c("glm_aed", "gotm_wet")
-#'   build_ensemble(path = path, aeme_data = aeme_data, model = model,
+#'   build_ensemble(path = path, aeme = aeme, model = model,
 #'                  mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
 #'                  use_bgc = TRUE)
-#'   run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, path = path,
+#'   run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,
 #'            parallel = TRUE)
 #'
-#'   aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
+#'   aeme <- load_output(model = model, aeme = aeme, path = path,
 #'                            mod_ctrls = mod_ctrls, parallel = TRUE)
 #'
-#'   p1 <- plot_output(aeme_data = aeme_data, model = model,
+#'   p1 <- plot_output(aeme = aeme, model = model,
 #'                     var_sim = "HYD_temp", level = TRUE,
 #'                     print_plots = FALSE, var_lims = c(0, 30),
 #'                     ylim = c(0, 16))
 #'   p1[[1]]
 #'
-#'   p2 <- plot_output(aeme_data = aeme_data, model = model,
+#'   p2 <- plot_output(aeme = aeme, model = model,
 #'                     var_sim = "LKE_evpvol", print_plots = TRUE,
 #'                     ylim = c(0, 0.02))
 #' }
 #'
 
-plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
+plot_output <- function(aeme, model, var_sim = "HYD_temp", add_obs = TRUE,
                         level = FALSE, print_plots = FALSE,
                         var_lims = NULL, ylim = NULL, cumulative = FALSE,
                         facet = TRUE) {
@@ -71,8 +71,8 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
 
-  # Check if aeme_data is a aeme class
-  if (!inherits(aeme_data, "aeme")) stop("aeme_data must be an aeme class")
+  # Check if aeme is a aeme class
+  if (!inherits(aeme, "aeme")) stop("aeme must be an aeme class")
 
   # Check if model is a character vector
   if (!is.character(model)) stop("model must be a character vector")
@@ -83,15 +83,15 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
   # Check if var_sim is a character vector
   if (!is.character(var_sim)) stop("var_sim must be a character vector")
 
-  # Load data from aeme_data
-  obs <- observations(aeme_data)
-  inp <- input(aeme_data)
+  # Load data from aeme
+  obs <- observations(aeme)
+  inp <- input(aeme)
 
   if (!is.null(obs$level)) {
     obs_level <- obs$level
   }
 
-  outp <- output(aeme_data)
+  outp <- output(aeme)
 
   # Check if var_sim is in output
   chk <- sapply(model, \(m){
@@ -138,12 +138,12 @@ plot_output <- function(aeme_data, model, var_sim = "HYD_temp", add_obs = TRUE,
   # mod_labels <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
   #                          name = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
 
-  df <- get_var(aeme_data = aeme_data, model = model, var_sim = var_sim,
+  df <- get_var(aeme = aeme, model = model, var_sim = var_sim,
                 return_df = TRUE, cumulative = cumulative)
 
   # Align observations to modelled depths because observations are relative to
   # the lake surface while modelled depths are relative to the lake bottom
-  obs <- align_depth_data(aeme_data = aeme_data, model = model,
+  obs <- align_depth_data(aeme = aeme, model = model,
                           var_sim = var_sim)
 
 

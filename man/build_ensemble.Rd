@@ -5,7 +5,7 @@
 \title{Build model configuration directories}
 \usage{
 build_ensemble(
-  aeme_data = NULL,
+  aeme = NULL,
   config = NULL,
   model = c("dy_cd", "glm_aed", "gotm_wet"),
   mod_ctrls,
@@ -23,7 +23,7 @@ build_ensemble(
 )
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{config}{list; loaded via `config <- yaml::read_yaml("aeme.yaml")`}
 
@@ -82,12 +82,12 @@ aeme_dir <- system.file("extdata/lake/", package = "AEME")
 # Copy files from package into tempdir
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
 path <- file.path(tmpdir, "lake")
-aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
 inf_factor = c("glm_aed" = 1)
 outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
-build_ensemble(path = path, aeme_data = aeme_data, model = model,
+build_ensemble(path = path, aeme = aeme, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE)
 }

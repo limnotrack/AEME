@@ -2,10 +2,10 @@
 % Please edit documentation in R/get_var.R
 \name{get_var}
 \alias{get_var}
-\title{Get variable from aeme_data}
+\title{Get variable from aeme}
 \usage{
 get_var(
-  aeme_data,
+  aeme,
   model,
   var_sim,
   return_df = TRUE,
@@ -14,7 +14,7 @@ get_var(
 )
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
@@ -34,5 +34,5 @@ want to compare model output to observations.}
 dataframe or list
 }
 \description{
-Get variable from aeme_data
+Get variable from aeme
 }

@@ -27,19 +27,19 @@
 #' # Copy files from package into tempdir
 #' file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #' path <- file.path(tmpdir, "lake")
-#' aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+#' aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 #' mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
 #' inf_factor = c("glm_aed" = 1)
 #' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
-#' build_ensemble(path = path, aeme_data = aeme_data, model = model,
+#' build_ensemble(path = path, aeme = aeme, model = model,
 #'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = TRUE)
-#' run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
+#' run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
 #'           return = FALSE)
 #' }
 
-run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
+run_aeme <- function(aeme, model, return = TRUE, mod_ctrls = NULL,
                      nlev = NULL, verbose = FALSE, debug = FALSE, timeout = 0,
                      parallel = FALSE, ncores, check_output = FALSE, path = ".") {
 
@@ -47,7 +47,7 @@ run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
     stop("`mod_ctrls` need to be provided to load model output.")
   }
 
-  lke <- lake(aeme_data)
+  lke <- lake(aeme)
   sim_folder <- file.path(path, paste0(lke$id,"_",
                                       tolower(lke$name)))
   run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
@@ -86,7 +86,7 @@ run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
   if (check_output) {
     message("Checking model output...")
     chk <- sapply(model, \(m) {
-      check_model_output(path = path, aeme_data = aeme_data, model = m)
+      check_model_output(path = path, aeme = aeme, model = m)
     })
     if (any(chk)) {
       message("Models ", paste0(model[chk], collapse = ", "), " passed checks.")
@@ -98,10 +98,10 @@ run_aeme <- function(aeme_data, model, return = TRUE, mod_ctrls = NULL,
   }
 
   if (return) {
-    aeme_data <- load_output(model = model, aeme_data = aeme_data, path = path,
+    aeme <- load_output(model = model, aeme = aeme, path = path,
                              mod_ctrls = mod_ctrls, parallel = parallel,
                              nlev = nlev)
-    return(aeme_data)
+    return(aeme)
   }
 
 }

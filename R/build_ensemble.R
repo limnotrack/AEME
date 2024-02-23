@@ -2,7 +2,7 @@
 #'
 #' Configure an ensemble of lake model simulations from basic set of inputs.
 #'
-#' @param aeme_data aeme; data object.
+#' @param aeme aeme; data object.
 #' @param config list; loaded via `config <- yaml::read_yaml("aeme.yaml")`
 #' @param model vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 #'  `gotm_wet`.
@@ -50,16 +50,16 @@
 #' # Copy files from package into tempdir
 #' file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #' path <- file.path(tmpdir, "lake")
-#' aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+#' aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 #' mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
 #' inf_factor = c("glm_aed" = 1)
 #' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
-#' build_ensemble(path = path, aeme_data = aeme_data, model = model,
+#' build_ensemble(path = path, aeme = aeme, model = model,
 #'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = FALSE)
 
-build_ensemble <- function(aeme_data = NULL,
+build_ensemble <- function(aeme = NULL,
                            config = NULL,
                            model = c("dy_cd", "glm_aed", "gotm_wet"),
                            mod_ctrls,
@@ -96,8 +96,8 @@ build_ensemble <- function(aeme_data = NULL,
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
 
-  if (is.null(aeme_data) & is.null(config)) {
-    stop("Either 'aeme_data' or 'config' must be supplied.")
+  if (is.null(aeme) & is.null(config)) {
+    stop("Either 'aeme' or 'config' must be supplied.")
   }
 
   #--- metadata
@@ -116,12 +116,12 @@ build_ensemble <- function(aeme_data = NULL,
   }
 
   # AEME input ----
-  if (!is.null(aeme_data)) {
+  if (!is.null(aeme)) {
 
-    lke <- lake(aeme_data)
+    lke <- lake(aeme)
     message("Building simulation for ", lke$name, " [", format(Sys.time()),
             "]")
-    aeme_time <- time(aeme_data)
+    aeme_time <- time(aeme)
     lake_dir <- file.path(path, paste0(lke$id, "_",
                                        tolower(lke$name)))
     date_range <- as.Date(c(aeme_time[["start"]], aeme_time[["stop"]]))
@@ -129,15 +129,15 @@ build_ensemble <- function(aeme_data = NULL,
 
     # Use cache of models within AEME object ----
     if (use_aeme) {
-      model_config <- configuration(aeme_data)
+      model_config <- configuration(aeme)
       if (all(sapply(model, \(x) !is.null(model_config[[x]][["hydrodynamic"]])))) {
         message("Building existing configuration for ", lke$name, " [",
                 format(Sys.time()), "]")
-        write_configuration(model = model, aeme_data = aeme_data,
+        write_configuration(model = model, aeme = aeme,
                             path = path)
         overwrite <- FALSE
         # Potentially add in option to switch off bgc and/or use default bgc setup
-        # return(aeme_data)
+        # return(aeme)
       } else {
         overwrite <- TRUE
       }
@@ -160,7 +160,7 @@ build_ensemble <- function(aeme_data = NULL,
 
     # Inputs ----
     #* Hypsograph ----
-    inp <- input(aeme_data)
+    inp <- input(aeme)
     if (is.null(inp[["hypsograph"]])) {
       warning(paste(strwrap("Hypsograph is not present. This function will
                             generate a simple hypsograph using lake depth and
@@ -173,7 +173,7 @@ build_ensemble <- function(aeme_data = NULL,
       }
       hyps <- data.frame(elev = c(lke$elevation - lke$depth, lke$elevation),
                          area = c(0, lke$area))
-      input(aeme_data) <- list(init_profile = inp$init_profile,
+      input(aeme) <- list(init_profile = inp$init_profile,
                                hypsograph = hyps, meteo = inp$meteo,
                                use_lw = inp$use_lw, Kw = inp$Kw)
     } else {
@@ -185,7 +185,7 @@ build_ensemble <- function(aeme_data = NULL,
       init_depth <- inp[["init_depth"]]
     } else {
       init_depth <- max(hyps$elev) - min(hyps$elev)
-      input(aeme_data) <- list(init_profile = inp$init_profile,
+      input(aeme) <- list(init_profile = inp$init_profile,
                                init_depth = init_depth,
                                hypsograph = hyps, meteo = inp$meteo,
                                use_lw = inp$use_lw, Kw = inp$Kw)
@@ -198,7 +198,7 @@ build_ensemble <- function(aeme_data = NULL,
       init_prof <- data.frame(depth = c(0, init_depth),
                               temperature = c(10, 10),
                               salt = c(0, 0))
-      input(aeme_data) <- list(init_profile = init_prof,
+      input(aeme) <- list(init_profile = init_prof,
                                init_depth = init_depth,
                                hypsograph = hyps, meteo = inp$meteo,
                                use_lw = inp$use_lw, Kw = inp$Kw)
@@ -228,13 +228,13 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       #               MET_ppsnow = MET_ppsnow / 1000) |>
       expand_met(coords.xyz = coords.xyz, print.plot = FALSE)
 
-    input(aeme_data) <- list(init_profile = init_prof,
+    input(aeme) <- list(init_profile = init_prof,
                              init_depth = init_depth,
                              hypsograph = hyps, meteo = met,
                              use_lw = inp$use_lw, Kw = inp$Kw)
 
     # Inflow ----
-    aeme_inf <- inflows(aeme_data)
+    aeme_inf <- inflows(aeme)
     if (!is.null(aeme_inf[["data"]])) {
       for (i in 1:length(aeme_inf[["data"]])) {
         inf[[names(aeme_inf[["data"]])[i]]] <- aeme_inf[["data"]][[i]]
@@ -261,7 +261,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     Kw <- inp[["Kw"]]
 
     # Outflow ----
-    aeme_outf <- outflows(aeme_data)
+    aeme_outf <- outflows(aeme)
     if (!is.null(aeme_outf[["data"]]) & length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
@@ -283,9 +283,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     }
 
     # Lake level ----
-    aeme_obs <- observations(aeme_data)
-    aeme_data <- calc_lake_obs_deriv(aeme_data)
-    w_bal <- water_balance(aeme_data)
+    aeme_obs <- observations(aeme)
+    aeme <- calc_lake_obs_deriv(aeme)
+    w_bal <- water_balance(aeme)
     if (w_bal$use == "obs") {
       level <- aeme_obs[["level"]]
     } else if(w_bal$use == "model") {
@@ -354,9 +354,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     }
 
     #* Update water balance slot in aeme object ----
-    water_balance(aeme_data) <- w_bal
+    water_balance(aeme) <- w_bal
 
-    outflows(aeme_data) <- list(data = outf,
+    outflows(aeme) <- list(data = outf,
                                 outflow_lvl = aeme_outf[["lvl"]],
                                 factor = aeme_outf[["factor"]])
 
@@ -370,7 +370,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     } else {
       lvl <- aeme_obs[["level"]]
     }
-    # observations(aeme_data) <- list(lake = aeme_obs[["lake"]],
+    # observations(aeme) <- list(lake = aeme_obs[["lake"]],
     #                                 level = lvl)
     if (aeme_time[["start"]] %in% lvl[["Date"]]) {
       message(strwrap("Observed lake level is present.\nUpdating initial lake
@@ -380,14 +380,14 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                         var_aeme == "LKE_lvlwtr") |>
         dplyr::pull(value)
       init_depth <- round(init_depth - min(hyps$elev), 2)
-      inp <- input(aeme_data)
+      inp <- input(aeme)
 
       # Update initial profile to match initial depth
       if (max(init_prof$depth) > init_depth) {
         init_prof$depth[which.max(init_prof$depth)] <- init_depth
       }
 
-      input(aeme_data) <- list(init_profile = inp$init_profile,
+      input(aeme) <- list(init_profile = inp$init_profile,
                                init_depth = init_depth,
                                hypsograph = inp$hypsograph, meteo = inp$meteo,
                                use_lw = inp$use_lw, Kw = inp$Kw)
@@ -535,9 +535,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
   }
 
-  aeme_data <- load_configuration(model = model, aeme_data = aeme_data,
+  aeme <- load_configuration(model = model, aeme = aeme,
                                   path = path, use_bgc = use_bgc)
 
-  return(aeme_data)
+  return(aeme)
 }
 

@@ -21,7 +21,7 @@
 #' @importFrom rLakeAnalyzer thermo.depth center.buoyancy meta.depths
 #'
 
-nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
+nc_listify <- function(nc, model, vars_sim, nlev, aeme,
                        remove_spin_up = TRUE, output_hour, path,
                        lake_analyzer = TRUE) {
 
@@ -37,7 +37,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     dplyr::filter(name %in% vars_sim) |>
     dplyr::mutate(conversion_aed = as.numeric(conversion_aed))
 
-  aeme_time <- time(aeme_data)
+  aeme_time <- time(aeme)
 
 
   # find the simvars for this model
@@ -101,7 +101,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     vars_sim.model <- key_naming[[model]]
 
     # GOTM - Daily averaged variables ----
-    lke <- lake(aeme_data)
+    lke <- lake(aeme)
     lake_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)))
     out_file <- file.path(lake_dir, model, "output", "output_daily.nc")
 
@@ -166,7 +166,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
     dates <- dates[idx] |> as.Date()
 
     # Get air temperature for GLM
-    inp <- input(aeme_data)
+    inp <- input(aeme)
     MET_tmpair <- inp$meteo |>
       dplyr::mutate(Date = Date + 1) |> # GLM is 1 day behind
       dplyr::filter(Date %in% dates) |>
@@ -500,7 +500,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme_data,
       z_step <- 0.5
     }
 
-    inp <- input(aeme_data)
+    inp <- input(aeme)
     bathy <- inp$hypsograph
     bathy$depth <- max(bathy$elev) - bathy$elev
     wtr <- nc_list[["HYD_temp"]]

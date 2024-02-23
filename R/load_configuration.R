@@ -7,9 +7,9 @@
 #'
 #'
 
-load_configuration <- function(model, aeme_data, path, use_bgc = FALSE) {
+load_configuration <- function(model, aeme, path, use_bgc = FALSE) {
 
-  lke <- lake(aeme_data)
+  lke <- lake(aeme)
   get_config_args <- list(lake = lke, path = path, use_bgc = use_bgc)
   model_config <- setNames(
     lapply(model, function(m) do.call(paste0("get_config_", m),
@@ -34,14 +34,14 @@ load_configuration <- function(model, aeme_data, path, use_bgc = FALSE) {
                               ecosystem = model_config[["gotm_wet"]][["bgc"]])
   )
 
-  configuration(aeme_data) <- out
-  aeme_data
+  configuration(aeme) <- out
+  aeme
 }
 
 
 #' Get DYRESM-CAEDYM configuration
 #'
-#' @param lake list obtained from `lake(aeme_data)`
+#' @param lake list obtained from `lake(aeme)`
 #' @inheritParams build_ensemble
 #'
 #' @return list of physical and bgc model configurations
@@ -98,7 +98,7 @@ get_config_dy_cd <- function(lake, path, use_bgc) {
 
 #' Get GLM-AED configuration
 #'
-#' @param lake list obtained from `lake(aeme_data)`
+#' @param lake list obtained from `lake(aeme)`
 #' @inheritParams build_ensemble
 #'
 #' @return list of physical and bgc model configurations
@@ -140,7 +140,7 @@ get_config_glm_aed <- function(lake, path, use_bgc) {
 
 #' Get GOTM-WET configuration
 #'
-#' @param lake list obtained from `lake(aeme_data)`
+#' @param lake list obtained from `lake(aeme)`
 #' @inheritParams build_ensemble
 #'
 #' @return list of physical and bgc model configurations

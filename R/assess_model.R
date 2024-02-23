@@ -26,17 +26,17 @@
 #' @export
 #'
 
-assess_model <- function(aeme_data, model, var_sim = "HYD_temp") {
+assess_model <- function(aeme, model, var_sim = "HYD_temp") {
 
   # Extract observations
-  obs <- observations(aeme_data)
+  obs <- observations(aeme)
 
   # Loop through variables, extract model statistics, bind to dataframe and
   # return
   lst <- lapply(var_sim, \(v) {
 
-    # Extract variable from aeme_data
-    df <- get_var(aeme_data = aeme_data, model = model, var_sim = v,
+    # Extract variable from aeme
+    df <- get_var(aeme = aeme, model = model, var_sim = v,
                   use_obs = TRUE)
 
     model_names <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),

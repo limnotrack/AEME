@@ -14,13 +14,13 @@
 #' @importFrom utils data
 #'
 
-plot_wbal <- function(aeme_data, cumulative = FALSE) {
+plot_wbal <- function(aeme, cumulative = FALSE) {
 
   utils::data("key_naming", package = "AEME", envir = environment())
 
   vars <- c("LKE_evpvol", "LKE_pcpvol", "LKE_inflow", "LKE_outflow")
   df <- lapply(vars, \(v) {
-    get_var(aeme_data, model = model, var_sim = v, return_df = TRUE,
+    get_var(aeme, model = model, var_sim = v, return_df = TRUE,
             cumulative = cumulative)
   }) |>
     do.call(what = rbind, args = _)

@@ -12,13 +12,13 @@
 #' @noRd
 #'
 
-calc_lake_obs_deriv <- function(aeme_data) {
+calc_lake_obs_deriv <- function(aeme) {
   vars <- c("HYD_temp", "CHM_oxy")
 
   out_list <- list()
 
-  lke <- lake(aeme_data)
-  inp <- input(aeme_data)
+  lke <- lake(aeme)
+  inp <- input(aeme)
   bathy <- inp$hypsograph
   bathy$depth <- max(bathy$elev) - bathy$elev
 
@@ -28,7 +28,7 @@ calc_lake_obs_deriv <- function(aeme_data) {
     z_step <- 0.5
   }
 
-  obs <- observations(aeme_data)
+  obs <- observations(aeme)
 
   # Temperature derivatives
   if ("HYD_temp" %in% obs$lake$var_aeme) {
@@ -171,13 +171,16 @@ calc_lake_obs_deriv <- function(aeme_data) {
     }
   }
 
-  out_df <- out_list |>
-    dplyr::bind_rows() |>
-    dplyr::mutate(lake = obs$lake$lake[1], lake_id = obs$lake$lake_id[1])
+  if ("CHM_oxy" %in% obs$lake$var_aeme | "HYD_temp" %in% obs$lake$var_aeme) {
+    out_df <- out_list |>
+      dplyr::bind_rows() |>
+      dplyr::mutate(lake = obs$lake$lake[1], lake_id = obs$lake$lake_id[1])
 
-  obs$lake <- obs$lake |>
-    dplyr::bind_rows(out_df)
+    obs$lake <- obs$lake |>
+      dplyr::bind_rows(out_df)
 
-  observations(aeme_data) <- obs
-  return(aeme_data)
+    observations(aeme) <- obs
+  }
+
+  return(aeme)
 }

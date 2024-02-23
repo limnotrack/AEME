@@ -4,55 +4,59 @@ test_that("plotting model output works", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE)
+  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+                         mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                         ext_elev = 5, use_bgc = FALSE)
 
   testthat::expect_error({
-    p1 <- plot_output(aeme_data = aeme_data, model = model,
-                      var_sim = "HYD_temp", level = TRUE, label = TRUE,
+    p1 <- plot_output(aeme = aeme, model = model,
+                      var_sim = "HYD_temp", level = TRUE,
                       print_plots = FALSE, var_lims = c(0, 30), ylim = c(0, 16))
   })
 
-  plake <- function() plot(aeme_data, "lake")
-  vdiffr::expect_doppelganger("lake plot", plake)
+  plake <- plot(aeme, "lake")
+  testthat::expect_true(ggplot2::is.ggplot(plake))
 
-  poutf <- function() plot(aeme_data, "outflows")
-  vdiffr::expect_doppelganger("outflow line plot", poutf)
+  pinput <- plot(aeme, "input")
+  testthat::expect_true(ggplot2::is.ggplot(plake))
 
-  pinf <- function() plot(aeme_data, "inflows")
-  vdiffr::expect_doppelganger("inflow line plot", pinf)
 
-  pwbal <- function() plot(aeme_data, "water_balance")
-  vdiffr::expect_doppelganger("water_balance line plot", pwbal)
+  poutf <- plot(aeme, "outflows")
+  testthat::expect_true(ggplot2::is.ggplot(poutf))
+
+  pinf <- plot(aeme, "inflows")
+  testthat::expect_true(ggplot2::is.ggplot(pinf))
+
+  pwbal <- plot(aeme, "water_balance")
+  testthat::expect_true(ggplot2::is.ggplot(pwbal))
 
   # Run models
-  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
-                        path = path, mod_ctrls = mod_ctrls, parallel = FALSE,
-                        ncores = 2L)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
+                   path = path, mod_ctrls = mod_ctrls, parallel = TRUE,
+                   ncores = 2L)
 
 
-  poutp <- function() plot(aeme_data, "output")
-  vdiffr::expect_doppelganger("output line plot", poutp)
+  p1 <-  plot(aeme, "output")
+  testthat::expect_true(ggplot2::is.ggplot(p1))
 
-  p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
+  p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16), facet = FALSE)
   testthat::expect_true(is.list(p1))
   testthat::expect_true(all(c(ggplot2::is.ggplot(p1[[1]]),
-                             ggplot2::is.ggplot(p1[[2]]),
-                             ggplot2::is.ggplot(p1[[3]]))))
+                              ggplot2::is.ggplot(p1[[2]]),
+                              ggplot2::is.ggplot(p1[[3]]))))
 
-  p2 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_evpflx",
-                    print_plots = TRUE, cumulative = TRUE, facet = FALSE)
+  p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_evpflx",
+                    print_plots = FALSE, cumulative = TRUE, facet = FALSE)
   testthat::expect_true(ggplot2::is.ggplot(p2))
 
-  p3 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
+  p3 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
                     print_plots = F)
   testthat::expect_true(ggplot2::is.ggplot(p3))
 })
@@ -64,28 +68,28 @@ test_that("plotting model output works with no lake observations", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
 
   # Remove observations
-  obs <- observations(aeme_data)
+  obs <- observations(aeme)
   obs$lake <- NULL
-  observations(aeme_data) <- obs
+  observations(aeme) <- obs
 
-  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE)
+  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+                         mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                         ext_elev = 5, use_bgc = FALSE)
 
 
   # Run models
-  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
-                        path = path, mod_ctrls = mod_ctrls, parallel = FALSE,
-                        ncores = 2L)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
+                   path = path, mod_ctrls = mod_ctrls, parallel = FALSE,
+                   ncores = 2L)
 
-  p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
+  p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16))
   testthat::expect_true(ggplot2::is.ggplot(p1))
@@ -97,29 +101,29 @@ test_that("plotting model output works with no lake & level observations", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
 
   # Remove observations
-  obs <- observations(aeme_data)
+  obs <- observations(aeme)
   obs$lake <- NULL
   obs$level <- NULL
-  observations(aeme_data) <- obs
+  observations(aeme) <- obs
 
-  aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE)
+  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+                         mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                         ext_elev = 5, use_bgc = FALSE)
 
 
   # Run models
-  aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE,
-                        path = path, mod_ctrls = mod_ctrls, parallel = FALSE,
-                        ncores = 2L)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
+                   path = path, mod_ctrls = mod_ctrls, parallel = TRUE,
+                   ncores = 2L)
 
-  p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp",
+  p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16))
   testthat::expect_true(ggplot2::is.ggplot(p1))

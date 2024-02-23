@@ -6,7 +6,7 @@
 \usage{
 plot_var(
   df = NULL,
-  aeme_data,
+  aeme,
   model,
   var_sim,
   ylim,
@@ -23,9 +23,9 @@ plot_var(
 \arguments{
 \item{df}{dataframe; output from \code{\link{get_var}}. If \code{NULL},
 \code{\link{get_var}} will be called and \code{var_sim} will be used to
-extract the variable of interest from \code{aeme_data} for each model.}
+extract the variable of interest from \code{aeme} for each model.}
 
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}

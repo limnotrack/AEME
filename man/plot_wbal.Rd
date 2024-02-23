@@ -4,10 +4,10 @@
 \alias{plot_wbal}
 \title{Plot water balance components}
 \usage{
-plot_wbal(aeme_data, cumulative = FALSE)
+plot_wbal(aeme, cumulative = FALSE)
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{cumulative}{logical; plot cumulative sum of variable}
 }

@@ -4,7 +4,7 @@
 #' shortwave radiation, net longwave radiation, evaporative heat flux, and
 #' sensible heat flux.
 #'
-#' @param aeme_data AEME data object
+#' @param aeme AEME data object
 #' @param cumulative logical; if \code{TRUE}, plot cumulative fluxes. If
 #' \code{FALSE}, plot instantaneous fluxes.
 #'
@@ -17,13 +17,13 @@
 #' @importFrom utils data
 #'
 
-plot_fluxes <- function(aeme_data, cumulative = FALSE) {
+plot_fluxes <- function(aeme, cumulative = FALSE) {
 
   utils::data("key_naming", package = "AEME", envir = environment())
 
   vars <- c("LKE_Qsw", "LKE_Qlw", "LKE_Qe", "LKE_Qh")
   df <- lapply(vars, \(v) {
-    get_var(aeme_data, model = model, var_sim = v, return_df = TRUE,
+    get_var(aeme, model = model, var_sim = v, return_df = TRUE,
             cumulative = cumulative)
   }) |>
     do.call(what = rbind, args = _)

@@ -5,7 +5,7 @@
 \title{Run aquatic model ensemble}
 \usage{
 run_aeme(
-  aeme_data,
+  aeme,
   model,
   return = TRUE,
   mod_ctrls = NULL,
@@ -20,7 +20,7 @@ run_aeme(
 )
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
@@ -67,15 +67,15 @@ aeme_dir <- system.file("extdata/lake/", package = "AEME")
 # Copy files from package into tempdir
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
 path <- file.path(tmpdir, "lake")
-aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
 inf_factor = c("glm_aed" = 1)
 outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
-build_ensemble(path = path, aeme_data = aeme_data, model = model,
+build_ensemble(path = path, aeme = aeme, model = model,
                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = TRUE)
-run_aeme(aeme_data = aeme_data, model = model, verbose = TRUE, path = path,
+run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
           return = FALSE)
 }
 }

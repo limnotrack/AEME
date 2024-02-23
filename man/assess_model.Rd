@@ -4,10 +4,10 @@
 \alias{assess_model}
 \title{Assess model performance}
 \usage{
-assess_model(aeme_data, model, var_sim = "HYD_temp")
+assess_model(aeme, model, var_sim = "HYD_temp")
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}

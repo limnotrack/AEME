@@ -2,21 +2,21 @@
 #'
 #' @param df dataframe; output from \code{\link{get_var}}. If \code{NULL},
 #' \code{\link{get_var}} will be called and \code{var_sim} will be used to
-#' extract the variable of interest from \code{aeme_data} for each model.
+#' extract the variable of interest from \code{aeme} for each model.
 #' @inheritParams plot_output
 #' @param obs list; output from \code{\link{observations}}
 #'
 #' @return ggplot2 object or list of ggplot2 objects
 #' @export
 
-plot_var <- function(df = NULL, aeme_data, model, var_sim, ylim, xlim, var_lims,
+plot_var <- function(df = NULL, aeme, model, var_sim, ylim, xlim, var_lims,
                      obs = NULL, add_obs = TRUE, level = FALSE, facet = FALSE,
                      cumulative = FALSE, print_plots = FALSE) {
 
   utils::data("key_naming", package = "AEME", envir = environment())
 
   if (is.null(df)) {
-    df <- get_var(aeme_data = aeme_data, model = model, var_sim = var_sim,
+    df <- get_var(aeme = aeme, model = model, var_sim = var_sim,
                   return_df = TRUE, cumulative = cumulative)
   } else {
     var_sim <- unique(df$var_sim)
