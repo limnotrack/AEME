@@ -1,7 +1,7 @@
 #' Build DYRESM-CAEDYM configuration
 #'
 #' @param lakename string; for lake name
-#' @param mod_ctrls dataframe; with model controls
+#' @param model_controls dataframe; with model controls
 #' @param date_range vector; of dates
 #' @param gps vector; of latitude and longitude
 #' @param inf list of inflows
@@ -24,7 +24,7 @@
 #' @return directory with DY-CD configuration.
 #' @noRd
 
-build_dycd <- function(lakename, mod_ctrls, date_range, gps,
+build_dycd <- function(lakename, model_controls, date_range, gps,
                        inf, outf, met, hyps, lvl, lake_dir,
                        inf_factor = 1.0, outf_factor = 1.0,
                        ext_elev = 0, Kw, init_prof, init_depth, use_bgc, use_lw,
@@ -76,9 +76,9 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
 
 
   #----- CONFIGURATION ------
-  vars.dy <- mod_ctrls |>
-    dplyr::filter(simulate == 1) |>
-    dplyr::pull(name) |>
+  vars.dy <- model_controls |>
+    dplyr::filter(simulate) |>
+    dplyr::pull(var_aeme) |>
     rename_modelvars(type_output = "dy_cd")
 
   if (overwrite_cfg | !file.exists(cfg_file)) {
@@ -121,7 +121,6 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
   max_d <- max(hyps$elev)
   if (ext_elev != 0) {
     bathy_fmt <- hyps |>
-      `names<-`(c("elev", "area")) |>
       dplyr::arrange(elev) |>
       # use slope to extend hyps by 5 m
       bathy_extrap(0.75, new.max = max_d + ext_elev) |>
@@ -135,7 +134,7 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
 
   # outHeights <- c(mean(lvl[,2]) - 2,
                   # (0.75 * (mean(lvl[,2]) - min(bathy_fmt[, 1])) + min(bathy_fmt[, 1])))
-  outHeights <- min(bathy_fmt[, 1]) + 0.5
+  outHeights <- min(bathy_fmt[["elev"]]) + 0.5
   # print(outHeights)
   # outHeights <- round(min(outHeights[outHeights > min(bathy_fmt[, 1])]), 2)
 
@@ -238,17 +237,17 @@ build_dycd <- function(lakename, mod_ctrls, date_range, gps,
              tmpStart = 10, filePath = path.dy)
 
   # set the variables to output from dycd
-  initials <- mod_ctrls |>
+  initials <- model_controls |>
     dplyr::filter(!is.na(initial_wc),
-           simulate == 1 | name == "NCS_ss2", # must initialise both SSOL groups!?!
-           !name %in% c("Date", "HYD_flow", "HYD_temp", "HYD_dens",
+           simulate | var_aeme == "NCS_ss2", # must initialise both SSOL groups!?!
+           !var_aeme %in% c("Date", "HYD_flow", "HYD_temp", "HYD_dens",
                         "CHM_salt", "RAD_par", "RAD_extc", "RAD_secchi",
                         "PHS_tp","NIT_tn","PHY_tchla")) |>
-    dplyr::select(c("name", "initial_wc", "initial_sed"))
+    dplyr::select(c("var_aeme", "initial_wc", "initial_sed"))
 
   # write the .int file
   make_DYCDint(lakename,
-               intVars = rename_modelvars(initials$name, type_output = "dy_cd"),
+               intVars = rename_modelvars(initials$var_aeme, type_output = "dy_cd"),
                wcVals = initials$initial_wc,
                sedVals = initials$initial_sed,
                verCD,

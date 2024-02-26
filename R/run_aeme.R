@@ -28,23 +28,23 @@
 #' file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #' path <- file.path(tmpdir, "lake")
 #' aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-#' mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+#' model_controls <- get_model_controls()
 #' inf_factor = c("glm_aed" = 1)
 #' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
 #' build_ensemble(path = path, aeme = aeme, model = model,
-#'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+#'                model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = TRUE)
 #' run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
 #'           return = FALSE)
 #' }
 
-run_aeme <- function(aeme, model, return = TRUE, mod_ctrls = NULL,
+run_aeme <- function(aeme, model, return = TRUE, model_controls = NULL,
                      nlev = NULL, verbose = FALSE, debug = FALSE, timeout = 0,
                      parallel = FALSE, ncores, check_output = FALSE, path = ".") {
 
-  if (return & is.null(mod_ctrls)) {
-    stop("`mod_ctrls` need to be provided to load model output.")
+  if (return & is.null(model_controls)) {
+    stop("`model_controls` need to be provided to load model output.")
   }
 
   lke <- lake(aeme)
@@ -99,7 +99,7 @@ run_aeme <- function(aeme, model, return = TRUE, mod_ctrls = NULL,
 
   if (return) {
     aeme <- load_output(model = model, aeme = aeme, path = path,
-                             mod_ctrls = mod_ctrls, parallel = parallel,
+                             model_controls = model_controls, parallel = parallel,
                              nlev = nlev)
     return(aeme)
   }

@@ -6,13 +6,14 @@
 #' @param config list; loaded via `config <- yaml::read_yaml("aeme.yaml")`
 #' @param model vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 #'  `gotm_wet`.
-#' @param mod_ctrls dataframe; of configuration loaded from
-#'  "mod_ctrls.csv".
+#' @param model_controls dataframe; of configuration loaded from
+#'  "model_controls.csv".
 #' @param inf_factor vector; containing numeric factor to multiple the inflows.
 #'  Needs to be named according to the model.
 #' @param outf_factor vector; containing numeric factor to multiple the
 #'  outflows. Needs to be named according to the model.
 #' @param ext_elev numeric; extension in elevation for the hypsogrph in metres.
+#' Defaults to 1.
 #' @param use_bgc logical; switch to use the biogeochemical model.
 #' @param calc_wbal logical; calculate water balance.
 #' @param calc_wlev logical; calculate water level.
@@ -51,23 +52,23 @@
 #' file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #' path <- file.path(tmpdir, "lake")
 #' aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-#' mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+#' model_controls <- get_model_controls()
 #' inf_factor = c("glm_aed" = 1)
 #' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
 #' build_ensemble(path = path, aeme = aeme, model = model,
-#'                mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+#'                model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = FALSE)
 
 build_ensemble <- function(aeme = NULL,
                            config = NULL,
                            model = c("dy_cd", "glm_aed", "gotm_wet"),
-                           mod_ctrls,
+                           model_controls,
                            inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
                                           "gotm_wet" = 1),
                            outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
                                            "gotm_wet" = 1),
-                           ext_elev = 0,
+                           ext_elev = 1,
                            use_bgc = FALSE,
                            calc_wbal = TRUE,
                            calc_wlev = TRUE,
@@ -106,11 +107,11 @@ build_ensemble <- function(aeme = NULL,
   outf <- list()
   # these variables will be simulated
   if (use_bgc) {
-    inf_vars <- mod_ctrls |>
-      dplyr::filter(simulate == 1,
-                    !name %in% c("RAD_extc", "PHS_tp", "NIT_pin", "NIT_tn",
-                                 "PHY_tchla")) |>
-      dplyr::pull(name)
+    inf_vars <- model_controls |>
+      dplyr::filter(simulate,
+                    !var_aeme %in% c("RAD_extc", "PHS_tp", "NIT_pin", "NIT_tn",
+                                     "PHY_tchla")) |>
+      dplyr::pull(var_aeme)
   } else {
     inf_vars <- c("HYD_temp", "CHM_salt")
   }
@@ -174,8 +175,8 @@ build_ensemble <- function(aeme = NULL,
       hyps <- data.frame(elev = c(lke$elevation - lke$depth, lke$elevation),
                          area = c(0, lke$area))
       input(aeme) <- list(init_profile = inp$init_profile,
-                               hypsograph = hyps, meteo = inp$meteo,
-                               use_lw = inp$use_lw, Kw = inp$Kw)
+                          hypsograph = hyps, meteo = inp$meteo,
+                          use_lw = inp$use_lw, Kw = inp$Kw)
     } else {
       hyps <- inp[["hypsograph"]]
     }
@@ -186,9 +187,9 @@ build_ensemble <- function(aeme = NULL,
     } else {
       init_depth <- max(hyps$elev) - min(hyps$elev)
       input(aeme) <- list(init_profile = inp$init_profile,
-                               init_depth = init_depth,
-                               hypsograph = hyps, meteo = inp$meteo,
-                               use_lw = inp$use_lw, Kw = inp$Kw)
+                          init_depth = init_depth,
+                          hypsograph = hyps, meteo = inp$meteo,
+                          use_lw = inp$use_lw, Kw = inp$Kw)
     }
 
     #* Initial profile ----
@@ -199,9 +200,9 @@ build_ensemble <- function(aeme = NULL,
                               temperature = c(10, 10),
                               salt = c(0, 0))
       input(aeme) <- list(init_profile = init_prof,
-                               init_depth = init_depth,
-                               hypsograph = hyps, meteo = inp$meteo,
-                               use_lw = inp$use_lw, Kw = inp$Kw)
+                          init_depth = init_depth,
+                          hypsograph = hyps, meteo = inp$meteo,
+                          use_lw = inp$use_lw, Kw = inp$Kw)
     }
 
     #* Meteorology ----
@@ -229,9 +230,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       expand_met(coords.xyz = coords.xyz, print.plot = FALSE)
 
     input(aeme) <- list(init_profile = init_prof,
-                             init_depth = init_depth,
-                             hypsograph = hyps, meteo = met,
-                             use_lw = inp$use_lw, Kw = inp$Kw)
+                        init_depth = init_depth,
+                        hypsograph = hyps, meteo = met,
+                        use_lw = inp$use_lw, Kw = inp$Kw)
 
     # Inflow ----
     aeme_inf <- inflows(aeme)
@@ -240,10 +241,10 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
         inf[[names(aeme_inf[["data"]])[i]]] <- aeme_inf[["data"]][[i]]
         if (any(!inf_vars %in% names(inf[[i]]))) {
           message(paste0("Missing state variables in inflows: ",
-                  paste0(setdiff(inf_vars, names(inf[[i]])), collapse = ", ")))
+                         paste0(setdiff(inf_vars, names(inf[[i]])), collapse = ", ")))
           add_vars <- setdiff(inf_vars, names(inf[[i]]))
           for (v in add_vars) {
-            inf[[i]][[v]] <- mod_ctrls$inf_default[match(v, mod_ctrls$name)]
+            inf[[i]][[v]] <- model_controls$inf_default[match(v, model_controls$var_aeme)]
           }
           message("Added default values for missing variables.")
         }
@@ -343,7 +344,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       if (any(!inf_vars %in% names(inf[["wbal"]]))) {
         add_vars <- setdiff(inf_vars, names(inf[["wbal"]]))
         for (v in add_vars) {
-          inf[["wbal"]][[v]] <- mod_ctrls$inf_default[match(v, mod_ctrls$name)]
+          inf[["wbal"]][[v]] <- model_controls$inf_default[match(v, model_controls$var_aeme)]
         }
       }
 
@@ -357,8 +358,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     water_balance(aeme) <- w_bal
 
     outflows(aeme) <- list(data = outf,
-                                outflow_lvl = aeme_outf[["lvl"]],
-                                factor = aeme_outf[["factor"]])
+                           outflow_lvl = aeme_outf[["lvl"]],
+                           factor = aeme_outf[["factor"]])
 
     if (calc_wlev) {
       message(paste(strwrap("Calculating lake level using lake depth
@@ -388,9 +389,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       }
 
       input(aeme) <- list(init_profile = inp$init_profile,
-                               init_depth = init_depth,
-                               hypsograph = inp$hypsograph, meteo = inp$meteo,
-                               use_lw = inp$use_lw, Kw = inp$Kw)
+                          init_depth = init_depth,
+                          hypsograph = inp$hypsograph, meteo = inp$meteo,
+                          use_lw = inp$use_lw, Kw = inp$Kw)
     }
 
     # Yaml config ----
@@ -433,7 +434,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     } else {
       init_prof <- data.frame(depth = c(0,
                                         floor(max(hyps$elev) - min(hyps$elev))),
-                              temperature = rep(mod_ctrls$initial_wc[mod_ctrls$name == "HYD_temp"], 2),
+                              temperature = rep(model_controls$initial_wc[model_controls$var_aeme == "HYD_temp"], 2),
                               salt = c(0, 0))
     }
 
@@ -473,10 +474,14 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
   }
 
-  #--------------------------
-  dir.create(lake_dir, showWarnings = FALSE)
+  # Create directory for lake ----
+  dir.create(lake_dir, showWarnings = TRUE)
 
   gps <- coords.xyz[1:2]
+
+  # Arrange hypsograph
+  hyps <- hyps |>
+    dplyr::arrange(elev)
 
   if (length(inf) == 0) {
     inf <- NULL
@@ -486,7 +491,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     #--- configure DYRESM-CAEDYM
     dates.dy <- c(date_range[1] - spin_up[["dy_cd"]], date_range[2]) |>
       `names<-`(NULL)
-    build_dycd(lakename, mod_ctrls = mod_ctrls, date_range = dates.dy,
+    build_dycd(lakename, model_controls = model_controls, date_range = dates.dy,
                gps = gps, hyps = hyps, lvl = lvl,
                inf = inf, outf = outf, met = met,
                lake_dir = lake_dir, init_prof = init_prof,
@@ -501,7 +506,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   if ("glm_aed" %in% model) {
     dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
       `names<-`(NULL)
-    build_glm(lakename, mod_ctrls = mod_ctrls, date_range = dates.glm,
+    build_glm(lakename, model_controls = model_controls, date_range = dates.glm,
               lake_shape = lake_shape, gps = gps,
               hyps = hyps, lvl = lvl, init_prof = init_prof,
               init_depth = init_depth, inf = inf, outf = outf,
@@ -522,7 +527,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       div <- 0.33
     }
     nlev <- ceiling(depth / div)
-    build_gotm(lakename, mod_ctrls = mod_ctrls, date_range = dates.gotm,
+    build_gotm(lakename, model_controls = model_controls, date_range = dates.gotm,
                lake_shape = lake_shape, gps = gps, lake_dir = lake_dir,
                hyps = hyps, lvl = lvl, init_prof = init_prof,
                init_depth = init_depth, inf = inf, outf = outf,
@@ -536,7 +541,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
 
   aeme <- load_configuration(model = model, aeme = aeme,
-                                  path = path, use_bgc = use_bgc)
+                             path = path, use_bgc = use_bgc)
 
   return(aeme)
 }

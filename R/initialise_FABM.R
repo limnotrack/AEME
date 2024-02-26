@@ -10,24 +10,25 @@
 #' @noRd
 #'
 
-initialise_FABM <- function(path_gotm, mod_ctrls) {
+initialise_FABM <- function(path_gotm, model_controls) {
 
   fabm <- yaml::read_yaml(file.path(path_gotm, "fabm.yaml"))
 
-  this_ctrls <- mod_ctrls |>
-    dplyr::filter(simulate == 1,
-                  !name %in% c("DateTime","HYD_flow","HYD_temp","HYD_dens",
+  this_ctrls <- model_controls |>
+    dplyr::filter(simulate,
+                  !var_aeme %in% c("DateTime","HYD_flow","HYD_temp","HYD_dens",
                                "RAD_par","RAD_extc","RAD_secchi",
                                "CHM_salt",
                                "PHS_pip", "NIT_pin",
                                "PHS_tp","NIT_tn","PHY_tchla")
     )
 
-  nme_chk <- rename_modelvars(input = this_ctrls$name,
+  nme_chk <- rename_modelvars(input = this_ctrls$var_aeme,
                               type_output = "gotm_fabm")
   # Remove columns with no name - not necessary for GLM
   this_ctrls <- this_ctrls[nme_chk != "", ]
-  params <- rename_modelvars(input = this_ctrls$name, type_output = "gotm_fabm")
+  params <- rename_modelvars(input = this_ctrls$var_aeme,
+                             type_output = "gotm_fabm")
 
   if (sum(is.na(this_ctrls$initial_wc)) > 0) {
     stop("incomplete initialisation, please check your key file")

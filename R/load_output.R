@@ -14,7 +14,7 @@
 #' @importFrom ncdf4 nc_open nc_close
 #'
 
-load_output <- function(model, aeme, path, mod_ctrls, parallel = FALSE,
+load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
                         nlev = NULL) {
 
   if (is.null(nlev)) {
@@ -33,9 +33,9 @@ load_output <- function(model, aeme, path, mod_ctrls, parallel = FALSE,
   output_hour <- 0
   spin_up <- aeme_time$spin_up
   # start_date <- as.Date(aeme_time$start)
-  vars_sim <- mod_ctrls |>
-    dplyr::filter(simulate == 1) |>
-    dplyr::pull(name)
+  vars_sim <- model_controls |>
+    dplyr::filter(simulate) |>
+    dplyr::pull(var_aeme)
   lke <- lake(aeme)
   lake_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)))
 

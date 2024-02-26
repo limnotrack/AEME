@@ -8,10 +8,10 @@ build_ensemble(
   aeme = NULL,
   config = NULL,
   model = c("dy_cd", "glm_aed", "gotm_wet"),
-  mod_ctrls,
+  model_controls,
   inf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
-  ext_elev = 0,
+  ext_elev = 1,
   use_bgc = FALSE,
   calc_wbal = TRUE,
   calc_wlev = TRUE,
@@ -30,8 +30,8 @@ build_ensemble(
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
-\item{mod_ctrls}{dataframe; of configuration loaded from
-"mod_ctrls.csv".}
+\item{model_controls}{dataframe; of configuration loaded from
+"model_controls.csv".}
 
 \item{inf_factor}{vector; containing numeric factor to multiple the inflows.
 Needs to be named according to the model.}
@@ -39,7 +39,8 @@ Needs to be named according to the model.}
 \item{outf_factor}{vector; containing numeric factor to multiple the
 outflows. Needs to be named according to the model.}
 
-\item{ext_elev}{numeric; extension in elevation for the hypsogrph in metres.}
+\item{ext_elev}{numeric; extension in elevation for the hypsogrph in metres.
+Defaults to 1.}
 
 \item{use_bgc}{logical; switch to use the biogeochemical model.}
 
@@ -83,11 +84,11 @@ aeme_dir <- system.file("extdata/lake/", package = "AEME")
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
 path <- file.path(tmpdir, "lake")
 aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+model_controls <- get_model_controls()
 inf_factor = c("glm_aed" = 1)
 outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
 build_ensemble(path = path, aeme = aeme, model = model,
-               mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+               model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE)
 }

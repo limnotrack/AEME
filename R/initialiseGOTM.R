@@ -13,7 +13,7 @@
 initialiseGOTM <-  function(gotm, lvl_bottom, lvl_surf,
                             tmpwtr = 10, start_date,
                             tbl_obs = NULL,
-                            path_gotm = "", use_bgc = FALSE, mod_ctrls) {
+                            path_gotm = "", use_bgc = FALSE, model_controls) {
 
   # define the proTable (intial profiles for T and SAL)
   if (is.null(tbl_obs)) {
@@ -37,7 +37,7 @@ initialiseGOTM <-  function(gotm, lvl_bottom, lvl_surf,
               quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
 
   if (use_bgc) {
-    initialise_FABM(path_gotm = path_gotm, mod_ctrls = mod_ctrls)
+    initialise_FABM(path_gotm = path_gotm, model_controls = model_controls)
   }
 
 

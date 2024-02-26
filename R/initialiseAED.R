@@ -1,6 +1,6 @@
 #' write initial concentrations to a GLM-AED simulation, using key file
 #'
-#' @param mod_ctrls dataframe of loaded model controls
+#' @param model_controls dataframe of loaded model controls
 #' @param path_aed filepath; to AED files
 #'
 #' @return Written aed2.nml files
@@ -8,17 +8,17 @@
 #'
 #' @importFrom dplyr filter pull
 
-initialiseAED <- function(mod_ctrls, path_aed) {
+initialiseAED <- function(model_controls, path_aed) {
 
-  this_ctrls <-  mod_ctrls |>
-    dplyr::filter(simulate == 1,
-                  !name %in% c("DateTime","HYD_flow","HYD_temp","HYD_dens",
+  this_ctrls <-  model_controls |>
+    dplyr::filter(simulate,
+                  !var_aeme %in% c("DateTime","HYD_flow","HYD_temp","HYD_dens",
                                "RAD_par","RAD_extc","RAD_secchi",
                                "CHM_salt",
                                "PHS_pip", "NIT_pin",
                                "PHS_tp","NIT_tn","PHY_tchla")
                   )
-  nme_chk <- rename_modelvars(input = this_ctrls$name, type_output = "glm_aed")
+  nme_chk <- rename_modelvars(input = this_ctrls$var_aeme, type_output = "glm_aed")
   # Remove columns with no name - not necessary for GLM
   this_ctrls <- this_ctrls[nme_chk != "", ]
 
@@ -49,12 +49,12 @@ initialiseAED <- function(mod_ctrls, path_aed) {
   # iterate through the state variables
   for (i in 1:nrow(this_ctrls)) {
 
-    this.name <- this_ctrls$name[i]
+    this.name <- this_ctrls$var_aeme[i]
 
     # phytoplankton intialisation
     if (grepl("PHY_", this.name)) {
 
-      this.phy <- gsub("^.*_","",this_ctrls$name[i])
+      this.phy <- gsub("^.*_","",this_ctrls$var_aeme[i])
       this.col <- which(phy.groups == gsub("PHY_","", this.name))
 
       vals.init <- get_line(phy_nml = phy_nml, "pd%p_initial") |>
@@ -78,7 +78,7 @@ initialiseAED <- function(mod_ctrls, path_aed) {
 
       message("Using default zooplankton initialisation")
 
-      # this.zoo <- gsub("^.*_", "", this_ctrls$name[i])
+      # this.zoo <- gsub("^.*_", "", this_ctrls$var_aeme[i])
       # this.col <- which(zoo.groups == gsub("ZOO_","", this.name))
       #
       # vals.init <- get_line(phy_nml = zoo_nml, "pd%p_initial") |>
@@ -122,10 +122,10 @@ initialiseAED <- function(mod_ctrls, path_aed) {
 
       # catch for ss special case
       if(grepl("ss_initial", nm.init)) {
-        val.new <- paste0(this_ctrls |> dplyr::filter(name == "NCS_ss1") |>
+        val.new <- paste0(this_ctrls |> dplyr::filter(var_aeme == "NCS_ss1") |>
                             dplyr::pull(initial_wc),
                           ",",
-                          this_ctrls |> dplyr::filter(name == "NCS_ss2") |>
+                          this_ctrls |> dplyr::filter(var_aeme == "NCS_ss2") |>
                             dplyr::pull(initial_wc))}
 
       aed_nml[this.line] <- paste0(strsplit(aed_nml[this.line],

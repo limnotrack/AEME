@@ -4,7 +4,7 @@
 \alias{load_output}
 \title{Load AEME output to the aeme object}
 \usage{
-load_output(model, aeme, path, mod_ctrls, parallel = FALSE, nlev = NULL)
+load_output(model, aeme, path, model_controls, parallel = FALSE, nlev = NULL)
 }
 \arguments{
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
@@ -14,8 +14,8 @@ load_output(model, aeme, path, mod_ctrls, parallel = FALSE, nlev = NULL)
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
-\item{mod_ctrls}{dataframe; of configuration loaded from
-"mod_ctrls.csv".}
+\item{model_controls}{dataframe; of configuration loaded from
+"model_controls.csv".}
 
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
 

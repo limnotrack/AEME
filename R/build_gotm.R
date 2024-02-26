@@ -7,7 +7,7 @@
 #' @noRd
 #'
 
-build_gotm <- function(lakename, mod_ctrls, date_range,
+build_gotm <- function(lakename, model_controls, date_range,
                        lake_shape, gps, hyps, lake_dir,
                        lvl, inf, outf, met, init_prof, init_depth,
                        nlev = 40, ext_elev = 0,
@@ -57,9 +57,9 @@ build_gotm <- function(lakename, mod_ctrls, date_range,
 
   gotm <- initialiseGOTM(gotm = gotm, lvl_bottom = 0.1, lvl_surf = lvl_start,
                          tbl_obs = init_prof,
-                         tmpwtr = mod_ctrls$initial_wc[mod_ctrls$name == "HYD_temp"],
+                         tmpwtr = model_controls$initial_wc[model_controls$var_aeme == "HYD_temp"],
                          start_date = date_range[1], path_gotm = path_gotm,
-                         use_bgc = use_bgc, mod_ctrls = mod_ctrls)
+                         use_bgc = use_bgc, model_controls = model_controls)
 
   if (overwrite_yaml) write_yaml(gotm, gotm_file)
 }
