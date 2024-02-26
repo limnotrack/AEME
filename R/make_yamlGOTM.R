@@ -39,16 +39,15 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
 
   # keep the hyps table a manageable size
   if(nrow(hyps) > 20) {
-    bathy <- hyps[, 1:2] |>
+    bathy <- hyps |>
       dplyr::slice(c(seq(1,(nrow(hyps)-1), round(nrow(hyps) / 20)),
                      nrow(hyps)) )
   } else {
-    bathy <- hyps[, 1:2]
+    bathy <- hyps
   }
 
   if (ext_elev != 0){
     bathy.gotm <- data.frame(bathy) |>
-      `names<-`(c("elev","area")) |>
       dplyr::mutate(elev = round(elev - (min(elev) + init_depth),2)) |>
       bathy_extrap(0.75, ext_elev)
   } else {
@@ -65,7 +64,8 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
 
   bathy.gotm <- bathy.gotm |>
     dplyr::mutate(elev = round(elev - z_diff, 2)) |>
-    dplyr::arrange(-elev)
+    dplyr::arrange(-elev)  |>
+    dplyr::select(elev, area)
 
   bathy.gotm <- rbind(c(round(nrow(bathy.gotm), 0),
                         round(ncol(bathy.gotm), 0)),

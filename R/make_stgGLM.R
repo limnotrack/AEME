@@ -15,7 +15,8 @@
 make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake, crest,
                         update_sediment = TRUE) {
 
-  bathy_glm <- bathy
+  bathy_glm <- bathy |>
+    dplyr::arrange(elev)
 
   # find the area at the surface height
   len <- dims_lake[1]

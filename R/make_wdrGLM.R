@@ -121,7 +121,7 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 elipse_dims <- function(bathy, height, dims_lake) {
 
   # planar area of the lake at outflow elevation
-  a.wdr <- stats::approx(bathy[,1], bathy[,2], xout = height)[2] |>
+  a.wdr <- stats::approx(bathy[["elev"]], bathy[["area"]], xout = height)[2] |>
     as.numeric() |>
     round()
 

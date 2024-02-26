@@ -11,21 +11,21 @@
 
 bathy_extrap <- function(bathy, z.range = 0.2, new.max) {
 
-  if(missing(new.max)) {new.max = max(bathy[, 1]) + 5}
+  if(missing(new.max)) {new.max = max(bathy[["elev"]]) + 5}
 
   # depth over which to calculate slope (proportion of water column)
-  z.slope <- (max(bathy[, 1]) - min(bathy[, 1])) * z.range
+  z.slope <- (max(bathy[["elev"]]) - min(bathy[["elev"]])) * z.range
 
   # area at target depth
-  a.low <- stats::approx(bathy[, 1], bathy[, 2],
-                         xout = max(bathy[, 1]) - z.slope)$y
+  a.low <- stats::approx(bathy[["elev"]], bathy[["area"]],
+                         xout = max(bathy[["elev"]]) - z.slope)$y
 
   # m^2 per m depth
-  slope <- (max(bathy[, 2]) - a.low) / z.slope
+  slope <- (max(bathy[["area"]]) - a.low) / z.slope
 
-  new.area <- round(max(bathy[, 2]) + (new.max - max(bathy[, 1])) * slope)
+  new.area <- round(max(bathy[["area"]]) + (new.max - max(bathy[["elev"]])) * slope)
 
-  return(data.frame(elev = c(bathy[,1], new.max),
-                    area = c(bathy[,2], new.area)))
+  return(data.frame(elev = c(bathy[["elev"]], new.max),
+                    area = c(bathy[["area"]], new.area)))
 
 }

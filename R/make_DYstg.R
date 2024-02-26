@@ -28,18 +28,20 @@ make_DYstg <-  function(lakename = "!unknown",
   #------ set defaults ------
 
   if (missing(surfElev)){
-    surfElev = max(bathy[,1]) - 0.5
+    surfElev = max(bathy[["elev"]]) - 0.5
   }
 
   if (missing(crest)){
-    crest = max(bathy[,1])
+    crest = max(bathy[["elev"]])
   }
 
   if (missing(outHeights)){
     outHeights = rep(surfElev - 1, length(outNames))
   }
 
-  bathy[, 1] <- round(bathy[, 1], 2)
+  bathy[["elev"]] <- round(bathy[["elev"]], 2)
+  bathy <- bathy |>
+    dplyr::select(elev, area)
 
 
   #----- check for outflow heights

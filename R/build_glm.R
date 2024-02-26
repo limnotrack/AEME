@@ -12,7 +12,7 @@
 #' @importFrom dplyr slice
 #'
 
-build_glm <- function(lakename, mod_ctrls, date_range,
+build_glm <- function(lakename, model_controls, date_range,
                       lake_shape, gps, hyps,
                       lvl, inf, outf, met,
                       lake_dir, config_dir, init_prof, init_depth,
@@ -70,9 +70,8 @@ build_glm <- function(lakename, mod_ctrls, date_range,
   }
 
   if (ext_elev != 0) {
-    new_depth <- max(hyps[, 1]) + ext_elev
-    bathy_ext <- hyps[,1:2] |>
-      `names<-`(c("elev","area")) |>
+    new_depth <- max(hyps[["elev"]]) + ext_elev
+    bathy_ext <- hyps |>
       dplyr::arrange(elev) |>
       # use slope to extend hyps by 2 m
       bathy_extrap(z.range = 0.75, new.max = new_depth)
@@ -80,7 +79,7 @@ build_glm <- function(lakename, mod_ctrls, date_range,
     bathy_ext <- hyps
   }
 
-  crest <- max(bathy_ext[, 1])
+  crest <- max(bathy_ext[["elev"]])
 
   glm_nml <- make_stgGLM(glm_nml, lakename, bathy = bathy_ext, gps = gps,
                          crest = crest, dims_lake = dims_lake)
@@ -117,7 +116,7 @@ build_glm <- function(lakename, mod_ctrls, date_range,
                            Kw = Kw)
 
   if (use_bgc) {
-    initialiseAED(mod_ctrls = mod_ctrls, path_aed = file.path(path_glm, "aed2"))
+    initialiseAED(model_controls = model_controls, path_aed = file.path(path_glm, "aed2"))
   }
 
   if (use_bgc) {
