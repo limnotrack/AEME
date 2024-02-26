@@ -1,5 +1,4 @@
 test_that("it errors when met data is not present", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -20,7 +19,7 @@ test_that("it errors when met data is not present", {
   write_yaml(yaml, file.path(path, "aeme_simple.yaml"))
 
   aeme <- yaml_to_aeme(path = path, "aeme_simple.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
@@ -28,9 +27,9 @@ test_that("it errors when met data is not present", {
   # Without any met data
   testthat::expect_error({
     build_ensemble(path = path, aeme = aeme, model = model,
-                   mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+                   model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                    use_bgc = TRUE)
-    })
+  })
 })
 
 testthat::test_that("can build AEME with simple set of inputs", {
@@ -56,8 +55,8 @@ testthat::test_that("can build AEME with simple set of inputs", {
       area = 152343
     ),
     time = list(
-      start = "2022-01-09 00:00:00",
-      stop = "2022-12-30 00:00:00",
+      start = "2020-08-01 00:00:00",
+      stop = "2021-06-30 00:00:00",
       time_step = 3600
     ),
     input = list(
@@ -69,17 +68,17 @@ testthat::test_that("can build AEME with simple set of inputs", {
   )
 
   aeme <- aeme_constructor(lake = aeme_input$lake, time = aeme_input$time,
-                                input = aeme_input$input)
+                           input = aeme_input$input)
 
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
 
 
   aeme <- build_ensemble(path = path, aeme = aeme, model = model,
-                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE)
+                         model_controls = model_controls, inf_factor = inf_factor,
+                         ext_elev = 5, use_bgc = FALSE)
   inp <- input(aeme)
 
   testthat::expect_true(is.data.frame(inp$hypsograph))
@@ -108,20 +107,20 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   write_yaml(yaml, file.path(path, "aeme_simple.yaml"))
 
   aeme <- yaml_to_aeme(path = path, "aeme_simple.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
 
   aeme <- build_ensemble(path = path, aeme = aeme, model = model,
-                              mod_ctrls = mod_ctrls, inf_factor = inf_factor,
-                              ext_elev = 5, use_bgc = FALSE)
+                         model_controls = model_controls, inf_factor = inf_factor,
+                         ext_elev = 5, use_bgc = FALSE)
   inp <- input(aeme)
 
   testthat::expect_true(is.data.frame(inp$hypsograph))
 
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
-                        mod_ctrls = mod_ctrls, path = path)
+                   model_controls = model_controls, path = path)
 
   lke <- lake(aeme)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",

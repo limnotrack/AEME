@@ -9,12 +9,12 @@ test_that("building DYRESM works", {
   aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
   # aeme <- yaml_to_aeme(path = "inst/extdata/lake", "aeme.yaml")
   # config <- yaml::read_yaml("inst/extdata/lake/aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
   build_ensemble(path = path, aeme = aeme, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+                 model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -32,12 +32,12 @@ test_that("building DYRESM-CAEDYM works", {
   list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
   build_ensemble(path = path, aeme = aeme, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+                 model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -55,12 +55,12 @@ test_that("building GLM works", {
   list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls()
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
   build_ensemble(path = path, aeme = aeme, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+                 model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -77,12 +77,12 @@ test_that("building GLM-AED works", {
   list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
   build_ensemble(path = path, aeme = aeme, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+                 model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -99,12 +99,12 @@ test_that("building GOTM works", {
   list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls()
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
   build_ensemble(path = path, aeme = aeme, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+                 model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -122,12 +122,12 @@ test_that("building GOTM-WET works", {
   list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
   build_ensemble(path = path, aeme = aeme, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+                 model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -144,12 +144,12 @@ test_that("building all models and loading to aeme works", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   build_ensemble(path = path, aeme = aeme, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+                 model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   aeme <- load_configuration(model = model, aeme = aeme,
                                   path = path, use_bgc = TRUE)
@@ -167,12 +167,12 @@ test_that("can build all models and write to new directory", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   build_ensemble(path = path, aeme = aeme, model = model,
-                 mod_ctrls = mod_ctrls, inf_factor = inf_factor, ext_elev = 5,
+                 model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   aeme <- load_configuration(model = model, aeme = aeme,
                                   path = path, use_bgc = TRUE)

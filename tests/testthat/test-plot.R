@@ -5,12 +5,12 @@ test_that("plotting model output works", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme <- build_ensemble(path = path, aeme = aeme, model = model,
-                         mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                         model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
 
   testthat::expect_error({
@@ -37,7 +37,7 @@ test_that("plotting model output works", {
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, mod_ctrls = mod_ctrls, parallel = TRUE,
+                   path = path, model_controls = model_controls, parallel = TRUE,
                    ncores = 2L)
 
 
@@ -69,7 +69,7 @@ test_that("plotting model output works with no lake observations", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
@@ -80,13 +80,13 @@ test_that("plotting model output works with no lake observations", {
   observations(aeme) <- obs
 
   aeme <- build_ensemble(path = path, aeme = aeme, model = model,
-                         mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                         model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
 
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, mod_ctrls = mod_ctrls, parallel = FALSE,
+                   path = path, model_controls = model_controls, parallel = FALSE,
                    ncores = 2L)
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
@@ -102,7 +102,7 @@ test_that("plotting model output works with no lake & level observations", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
@@ -114,13 +114,13 @@ test_that("plotting model output works with no lake & level observations", {
   observations(aeme) <- obs
 
   aeme <- build_ensemble(path = path, aeme = aeme, model = model,
-                         mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+                         model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
 
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, mod_ctrls = mod_ctrls, parallel = TRUE,
+                   path = path, model_controls = model_controls, parallel = TRUE,
                    ncores = 2L)
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
