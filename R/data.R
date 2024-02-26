@@ -33,3 +33,22 @@
 #' @author Chris McBride
 #' @source Package development.
 "catchment_yields"
+
+#' Model controls
+#'
+#' A reference table for catchment nutrient and sediment yields for calculating
+#' inflow nutrients in AEME.
+#'
+#' @format ## `model_controls`
+#' A data frame with 65 rows and 6 columns:
+#' \describe{
+#'   \item{var_aeme}{AEME variable}
+#'   \item{simulate}{Logical value to simulate the variable}
+#'   \item{inf_default}{Default value in inflows.}
+#'   \item{initial_wc}{Default value for initialising in the water column.}
+#'   \item{initial_sed}{Default value for initialising in the sediments.}
+#'   \item{conversion_aed}{Unit conversion for GLM-AED.}
+#' }
+#' @author Tadhg Moore, Chris McBride
+#' @source Package development.
+"model_controls"
