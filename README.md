@@ -47,29 +47,28 @@ aeme_dir <- system.file("extdata/lake/", package = "AEME")
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #> [1] TRUE
 path <- file.path(tmpdir, "lake")
-aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
-#> Linking to GEOS 3.11.2, GDAL 3.6.2, PROJ 9.2.0; sf_use_s2() is FALSE
+aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+#> Linking to GEOS 3.11.2, GDAL 3.7.2, PROJ 9.3.0; sf_use_s2() is FALSE
 #> Warning in aeme_constructor(lake = yaml$lake, time = yaml$time, configuration = yaml$configuration, : Lake area [152343 m2] is different to the area calculated from the lake
 #> shape [152433.09 m2].
-mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
-inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+model_controls <- get_model_controls(use_bgc = TRUE)
 model <- c("dy_cd", "glm_aed", "gotm_wet")
-aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                            mod_ctrls = mod_ctrls, inf_factor = inf_factor, 
+aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+                            model_controls = model_controls,
                             ext_elev = 5, use_bgc = TRUE)
-#> Building simulation for Wainamu [2023-11-15 12:29:07.677313]
+#> Building simulation for Wainamu [2024-02-27 00:02:10]
+#> Missing state variables in inflows: PHY_crypt
+#> Added default values for missing variables.
 #> Using observed water level
 #> Missing values in observed water level
-#> Using optimisation function
-#> Calculating outflow with an estimated water balance using lake level,
-#> inflow data (if present) and estimated evaporation rates.
+#> Using constant water level
+#> Correcting water balance using estimated outflows (method = 2).
 #> Calculating lake level using lake depth and a sinisoidal function.
 #> Observed lake level is present. Updating initial lake model depth...
 #> Building DYRESM-CAEDYM for lake wainamu
 #> Copied in DYRESM par file
 #> Writing DYRESM configuration
-#> [1] "TEMPTURE SALINITY DO PO4 DOPL POPL PIP TP NH4 NO3 DONL PONL TN DOCL POCL SiO2 CYANO CHLOR FDIAT TCHLA SSOL1"
+#> [1] "TEMPTURE SALINITY DO PO4 DOPL POPL PIP TP NH4 NO3 DONL PONL TN DOCL POCL SiO2 CYANO CHLOR CRYPT FDIAT TCHLA SSOL1"
 #> Writing DYRESM control file
 #> Downsampling bathymetry
 #> Building GLM3-AED2 model for lake wainamu
@@ -88,16 +87,38 @@ aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
 #>    rsi_initial = 1 replaced with 1
 #> PHY_cyano 0.24022 replaced with 0.24022
 #> PHY_green 0.300275 replaced with 0.300275
+#> PHY_crypt  replaced with
 #> PHY_diatom 0.300275 replaced with 0.300275
 #>     ss_initial   = 3,3 replaced with 3,
 #> Building GOTM-WET for lake wainamu
 #> Copied all GOTM configuration files
-aeme_data <- run_aeme(aeme_data = aeme_data, model = model, verbose = FALSE, 
-                      path = path, parallel = TRUE, mod_ctrls = mod_ctrls)
-#> Running models in parallel... [2023-11-15 12:29:10.415701]
-#> Model run complete![2023-11-15 12:31:25.462804]
-#> Reading models in parallel... [2023-11-15 12:31:26.667304]
-#> Model reading complete![2023-11-15 12:31:28.732729]
+#> instances/abiotic_water/initialization/sO2W 13 replaced with 10
+#> instances/abiotic_water/initialization/sPO4W 0.1 replaced with 0.01
+#> instances/abiotic_water/initialization/sPDOMW 0.001 replaced with 0.01
+#> instances/abiotic_water/initialization/sPPOMW 0.001 replaced with 0.01
+#> instances/abiotic_water/initialization/sNH4W 0.05 replaced with 0.02
+#> instances/abiotic_water/initialization/sNO3W 0.5 replaced with 0.015
+#> instances/abiotic_water/initialization/sNDOMW 0.01 replaced with 0.3
+#> instances/abiotic_water/initialization/sNPOMW 0.01 replaced with 0.1
+#> instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5
+#> instances/abiotic_water/initialization/sDPOMW 0.1 replaced with 0.2
+#> instances/abiotic_water/initialization/sSiO2W 3.5 replaced with 1
+#> instances/cyanobacteria/initialization/sDW 0.1 replaced with 0.2
+#> instances/cyanobacteria/initialization/sNW 0.03 replaced with 0.03
+#> instances/cyanobacteria/initialization/sPW 0.003 replaced with 0.0019
+#> instances/greens/initialization/sDW 0.1 replaced with 0.1
+#> instances/greens/initialization/sNW 0.05 replaced with 0.015
+#> instances/greens/initialization/sPW 0.001 replaced with 0.00094
+#> instances/diatoms/initialization/sDW 0.2 replaced with 0.25
+#> instances/diatoms/initialization/sNW 0.05 replaced with 0.038
+#> instances/diatoms/initialization/sPW 0.005 replaced with 0.0024
+#> instances/abiotic_water/initialization/sDIMW 4 replaced with 3
+aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
+                      path = path, parallel = TRUE, model_controls = model_controls)
+#> Running models in parallel... [2024-02-27 13:02:13]
+#> Model run complete![2024-02-27 13:04:35]
+#> Reading models in parallel... [2024-02-27 13:04:36]
+#> Model reading complete![2024-02-27 13:04:38]
 ```
 
 The model input and output (I/O) is handled as it’s own S4 object of
@@ -106,7 +127,7 @@ functions for this class alongside ensuring integrity and validity to
 it’s structure.
 
 ``` r
-class(aeme_data)
+class(aeme)
 #> [1] "aeme"
 #> attr(,"package")
 #> [1] "AEME"
@@ -116,7 +137,7 @@ This allows for easier handling of the model output data within our
 structure and allows for condensed output to be printed to the console:
 
 ``` r
-aeme_data
+aeme
 #>             AEME 
 #> -------------------------------------------------------------------
 #>   Lake
@@ -124,7 +145,8 @@ aeme_data
 #> Area: 152343 m2; Shape file: Present
 #> -------------------------------------------------------------------
 #>   Time
-#> Start: 2022-01-09 Stop: 2022-12-30 Time step: 3600
+#> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
+#>  Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1
 #> -------------------------------------------------------------------
 #>   Configuration
 #>           Physical   |   Biogeochemical
@@ -136,8 +158,8 @@ aeme_data
 #> Lake: Present; Level: Present
 #> -------------------------------------------------------------------
 #>   Input
-#> Inital profile: Present; Inital depth: 13.14m; Hypsograph: Present (n=132);
-#> Meteo: Present; Use longwave: TRUE; Kw: 0.98
+#> Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=132);
+#> Meteo: Present; Use longwave: FALSE; Kw: 1.31
 #> -------------------------------------------------------------------
 #>   Inflows
 #> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
@@ -149,7 +171,7 @@ aeme_data
 #> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
 #> -------------------------------------------------------------------
 #>   Water balance
-#> Use: obs; Modelled: Absent; Water balance: Present
+#> Method: 2; Use: obs; Modelled: Absent; Water balance: Present
 #> -------------------------------------------------------------------
 #>   Output: 
 #> DY-CD: Present
@@ -160,22 +182,19 @@ aeme_data
 Model data can be visualised easily using the `plot_output()` function
 
 ``` r
-p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_temp", 
-                  level = TRUE, label = TRUE, var_lims = c(9, 30), 
-                  print_plots = FALSE)
+p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp", 
+                  level = TRUE, var_lims = c(9, 30))
 p1
 #> Warning: Using size for a discrete variable is not advised.
-#> Warning: Removed 80 rows containing missing values (`geom_col()`).
+#> Warning: Removed 240 rows containing missing values (`geom_col()`).
 ```
 
 <img src="man/figures/README-plot_output-HYD_temp-1.png" width="100%" />
 Also, visualising lake level plots.
 
 ``` r
-p2 <- plot_output(aeme_data = aeme_data, model = model,  
-                         var_sim = "LKE_lvlwtr", level = TRUE, label = TRUE,
-                         var_lims = c(9, 30), print_plots = FALSE, 
-                         facet = FALSE)
+p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
+                  facet = FALSE)
 p2
 ```
 
