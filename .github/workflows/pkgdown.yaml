@@ -1,29 +1,15 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
-  release:
-    types: [published]
-  workflow_dispatch:
-
-name: pkgdown
-
+name: Build and Deploy
+on: [push]
+permissions:
+  contents: write
 jobs:
-  pkgdown:
-    runs-on: ubuntu-latest
-    # Only restrict concurrency for non-PR jobs
-    concurrency:
-      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
+  build:
+    runs-on: windows-latest # The first job utilizes windows-latest
     env:
       GITHUB_PAT: ${{ secrets.GH_ACTIONS }}
-      LINZ_KEY: ${{ secrets.LINZ_KEY }}
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -31,23 +17,37 @@ jobs:
         with:
           use-public-rspm: true
 
-      # - if: runner.os == 'windows'
-      #   uses: r-windows/install-rtools@master
-
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::pkgdown, local::.
           needs: website
-          cache: false
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
         shell: Rscript {0}
 
-      - name: Deploy to GitHub pages 🚀
-        if: github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+      - name: Upload Artifacts 🔺 # The project is then uploaded as an artifact named 'site'.
+        uses: actions/upload-artifact@v1
         with:
+          name: site
+          path: docs
+
+  deploy:
+    concurrency: ci-${{ github.ref }}
+    needs: [build] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Download Artifacts 🔻 # The built project is downloaded into the 'site' folder.
+        uses: actions/download-artifact@v1
+        with:
+          name: site
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: 'site' # The deployment folder should match the name of the artifact. Even though our project builds into the 'build' folder the artifact name of 'site' must be placed here.
           clean: false
           branch: gh-pages
-          folder: docs
