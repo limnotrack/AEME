@@ -5,6 +5,7 @@
 #' @param method numeric; method to use for calculating water balance. Must be
 #' 1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
 #' outflows calculated). Default = 1
+#' @param use character; use observed or modelled lake level. Default = "obs".
 #' @param hyps data frame of hypsographic curve, elevation (masl) and planar
 #' area (m^2)
 #' @param inf list of inflow data frames
@@ -29,7 +30,7 @@
 #' - HYD_flow
 #' -...
 #'
-#' @export
+#' @noRd
 #'
 
 calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
