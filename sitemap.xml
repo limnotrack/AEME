@@ -4,9 +4,6 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/404.html</loc>
   </url>
   <url>
-    <loc>https://expert-guide-29ve1vw.pages.github.io/LICENSE.html</loc>
-  </url>
-  <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/articles/aeme-inputs.html</loc>
   </url>
   <url>
@@ -25,6 +22,9 @@
     <loc>https://expert-guide-29ve1vw.pages.github.io/index.html</loc>
   </url>
   <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/aeme.html</loc>
   </url>
   <url>
@@ -38,9 +38,6 @@
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/build_ensemble.html</loc>
-  </url>
-  <url>
-    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/calc_water_balance.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment_yields.html</loc>
@@ -59,6 +56,9 @@
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/configuration.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_model_controls.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_nml_value.html</loc>
@@ -113,6 +113,9 @@
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/load_output.html</loc>
+  </url>
+  <url>
+    <loc>https://expert-guide-29ve1vw.pages.github.io/reference/model_controls.html</loc>
   </url>
   <url>
     <loc>https://expert-guide-29ve1vw.pages.github.io/reference/names-aeme-method.html</loc>

@@ -79,7 +79,7 @@
 
     
     
-<p><img src="images/logo.png" width="120"></p>
+<p><img src="articles/images/logo.png" width="120"></p>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
@@ -274,8 +274,8 @@ date must be in the format <code>YYYY-MM-DD HH:MM:SS</code>.</p></li>
 the <code>yaml_to_aeme</code> function. The YAML file contains all the
 information required to run the model.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yaml_to_aeme.html">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
-<span><span class="fu">slotNames</span><span class="op">(</span><span class="va">aeme_data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yaml_to_aeme.html">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
+<span><span class="fu">slotNames</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "lake"          "time"          "configuration" "observations" </span></span>
 <span><span class="co">#&gt; [5] "input"         "inflows"       "outflows"      "water_balance"</span></span>
 <span><span class="co">#&gt; [9] "output"</span></span></code></pre></div>
@@ -291,7 +291,7 @@ slot names of the <code>aeme</code> object. For example, the
 function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load lake data</span></span>
-<span><span class="va">lke</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lake.html">lake</a></span><span class="op">(</span><span class="va">aeme_data</span><span class="op">)</span></span>
+<span><span class="va">lke</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lake.html">lake</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co"># Print lake data to console</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lke</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $name</span></span>
@@ -328,9 +328,9 @@ function.</p>
 <span><span class="va">lke</span><span class="op">[[</span><span class="st">"name"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"AEME"</span></span>
 <span></span>
 <span><span class="co"># reassign lake data to aeme object</span></span>
-<span><span class="fu"><a href="../reference/lake.html">lake</a></span><span class="op">(</span><span class="va">aeme_data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">lke</span></span>
+<span><span class="fu"><a href="../reference/lake.html">lake</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">lke</span></span>
 <span></span>
-<span><span class="va">aeme_data</span></span>
+<span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Lake</span></span>
@@ -379,27 +379,25 @@ applied to the different slots of the <code>aeme</code> object. For
 example, the <code>lake</code> slot can be visualised using the
 <code>plot</code> function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme_data</span>, <span class="st">"lake"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="intro-aeme_files/figure-html/aeme-visualisation-lake-1.png" width="700"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"lake"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="intro-aeme_files/figure-html/aeme-visualisation-lake-1.png" width="672"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme_data</span>, <span class="st">"input"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="intro-aeme_files/figure-html/aeme-visualisation-input-1.png" width="700"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"input"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="intro-aeme_files/figure-html/aeme-visualisation-input-1.png" width="672"></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="build-model-ensemble">Build Model Ensemble<a class="anchor" aria-label="anchor" href="#build-model-ensemble"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mod_ctrls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"model_controls.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">inf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span>
-<span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
-<span>                            mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
+<span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for AEME [2024-02-23 00:19:02]</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: PHY_crypt</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; Building simulation for AEME [2024-02-27 03:17:44]</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
 <span><span class="co">#&gt; Missing values in observed water level</span></span>
 <span><span class="co">#&gt; Using constant water level</span></span>
@@ -409,52 +407,17 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; Building DYRESM-CAEDYM for lake aeme</span></span>
 <span><span class="co">#&gt; Copied in DYRESM par file</span></span>
 <span><span class="co">#&gt; Writing DYRESM configuration</span></span>
-<span><span class="co">#&gt; [1] "TEMPTURE SALINITY DO PO4 DOPL POPL PIP TP NH4 NO3 DONL PONL TN DOCL POCL SiO2 CYANO CHLOR CRYPT FDIAT TCHLA SSOL1"</span></span>
+<span><span class="co">#&gt; [1] "TEMPTURE SALINITY DO"</span></span>
 <span><span class="co">#&gt; Writing DYRESM control file</span></span>
 <span><span class="co">#&gt; Downsampling bathymetry</span></span>
 <span><span class="co">#&gt; Building GLM3-AED2 model for lake aeme</span></span>
 <span><span class="co">#&gt; Copied in GLM nml file</span></span>
 <span><span class="co">#&gt; Copied in AED nml file</span></span>
 <span><span class="co">#&gt;    oxy_initial   = 625 replaced with 312.5</span></span>
-<span><span class="co">#&gt;    frp_initial = 0.3229 replaced with 0.3229</span></span>
-<span><span class="co">#&gt;      dop_initial  = 0.3229 replaced with 0.3229</span></span>
-<span><span class="co">#&gt;      pop_initial  = 0.3229 replaced with 0.3229</span></span>
-<span><span class="co">#&gt;    amm_initial = 1.4279 replaced with 1.4279</span></span>
-<span><span class="co">#&gt;    nit_initial = 1.0709 replaced with 1.0709</span></span>
-<span><span class="co">#&gt;      don_initial  = 21.4183 replaced with 21.4183</span></span>
-<span><span class="co">#&gt;      pon_initial  = 7.1394 replaced with 7.1394</span></span>
-<span><span class="co">#&gt;      doc_initial  = 41.6285 replaced with 41.6285</span></span>
-<span><span class="co">#&gt;      poc_initial  = 16.6514 replaced with 16.6514</span></span>
-<span><span class="co">#&gt;    rsi_initial = 1 replaced with 1</span></span>
-<span><span class="co">#&gt; PHY_cyano 0.24022 replaced with 0.24022</span></span>
-<span><span class="co">#&gt; PHY_green 0.300275 replaced with 0.300275</span></span>
-<span><span class="co">#&gt; PHY_crypt  replaced with</span></span>
-<span><span class="co">#&gt; PHY_diatom 0.300275 replaced with 0.300275</span></span>
-<span><span class="co">#&gt;     ss_initial   = 3,3 replaced with 3,</span></span>
 <span><span class="co">#&gt; Building GOTM-WET for lake aeme</span></span>
 <span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
 <span><span class="co">#&gt; instances/abiotic_water/initialization/sO2W 13 replaced with 10</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sPO4W 0.1 replaced with 0.01</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sPDOMW 0.001 replaced with 0.01</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sPPOMW 0.001 replaced with 0.01</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sNH4W 0.05 replaced with 0.02</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sNO3W 0.5 replaced with 0.015</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sNDOMW 0.01 replaced with 0.3</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sNPOMW 0.01 replaced with 0.1</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sDPOMW 0.1 replaced with 0.2</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sSiO2W 3.5 replaced with 1</span></span>
-<span><span class="co">#&gt; instances/cyanobacteria/initialization/sDW 0.1 replaced with 0.2</span></span>
-<span><span class="co">#&gt; instances/cyanobacteria/initialization/sNW 0.03 replaced with 0.03</span></span>
-<span><span class="co">#&gt; instances/cyanobacteria/initialization/sPW 0.003 replaced with 0.0019</span></span>
-<span><span class="co">#&gt; instances/greens/initialization/sDW 0.1 replaced with 0.1</span></span>
-<span><span class="co">#&gt; instances/greens/initialization/sNW 0.05 replaced with 0.015</span></span>
-<span><span class="co">#&gt; instances/greens/initialization/sPW 0.001 replaced with 0.00094</span></span>
-<span><span class="co">#&gt; instances/diatoms/initialization/sDW 0.2 replaced with 0.25</span></span>
-<span><span class="co">#&gt; instances/diatoms/initialization/sNW 0.05 replaced with 0.038</span></span>
-<span><span class="co">#&gt; instances/diatoms/initialization/sPW 0.005 replaced with 0.0024</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sDIMW 4 replaced with 3</span></span>
-<span><span class="va">aeme_data</span></span>
+<span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Lake</span></span>
@@ -495,7 +458,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; GLM-AED: Absent</span></span>
 <span><span class="co">#&gt; GOTM-WET: Absent</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme_data</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

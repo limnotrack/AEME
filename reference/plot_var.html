@@ -52,7 +52,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_var</span><span class="op">(</span></span>
 <span>  df <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">aeme_data</span>,</span>
+<span>  <span class="va">aeme</span>,</span>
 <span>  <span class="va">model</span>,</span>
 <span>  <span class="va">var_sim</span>,</span>
 <span>  <span class="va">ylim</span>,</span>
@@ -72,10 +72,10 @@
     <dl><dt>df</dt>
 <dd><p>dataframe; output from <code><a href="get_var.html">get_var</a></code>. If <code>NULL</code>,
 <code><a href="get_var.html">get_var</a></code> will be called and <code>var_sim</code> will be used to
-extract the variable of interest from <code>aeme_data</code> for each model.</p></dd>
+extract the variable of interest from <code>aeme</code> for each model.</p></dd>
 
 
-<dt>aeme_data</dt>
+<dt>aeme</dt>
 <dd><p>aeme; data object.</p></dd>
 
 
@@ -91,6 +91,10 @@ extract the variable of interest from <code>aeme_data</code> for each model.</p>
 <dt>ylim</dt>
 <dd><p>numeric vector of length 2; limits for the y-axis. Defaults to
 NULL and calculates this based on the data to be plotted.</p></dd>
+
+
+<dt>xlim</dt>
+<dd><p>numeric; x-axis limits</p></dd>
 
 
 <dt>var_lims</dt>
