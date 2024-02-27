@@ -10,7 +10,7 @@ editor_options:
     wrap: 80
 ---
 
-![](images/logo.png){width="120"}
+![](vignettes/images/logo.png){width="120"}
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -26,8 +26,8 @@ file.copy(aeme_dir, tmpdir, recursive = TRUE)
 path <- file.path(tmpdir, "lake")
 yaml <- yaml::read_yaml(file.path(path, "aeme.yaml"))
 str(yaml)
-# aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
-# slotNames(aeme_data)
+# aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+# slotNames(aeme)
 
 # convert list into a tree structure
 lake_names <- paste0(names(yaml$lake), collapse = ", ")
@@ -186,8 +186,8 @@ The `aeme` object can be created from a YAML file using the `yaml_to_aeme`
 function. The YAML file contains all the information required to run the model.
 
 ```{r warning=FALSE, message=FALSE}
-aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
-slotNames(aeme_data)
+aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+slotNames(aeme)
 ```
 
 ## Manipulation
@@ -198,7 +198,7 @@ functions are defined by the slot names of the `aeme` object. For example, the
 
 ```{r aeme-manipulation}
 # Load lake data
-lke <- lake(aeme_data)
+lke <- lake(aeme)
 # Print lake data to console
 print(lke)
 
@@ -206,9 +206,9 @@ print(lke)
 lke[["name"]] <- "AEME"
 
 # reassign lake data to aeme object
-lake(aeme_data) <- lke
+lake(aeme) <- lke
 
-aeme_data
+aeme
 
 ```
 
@@ -218,29 +218,29 @@ The `aeme` object can be visualised simply using the `plot` function. The `plot`
 function can be applied to the different slots of the `aeme` object. For
 example, the `lake` slot can be visualised using the `plot` function.
 
-```{r aeme-visualisation-lake}
-plot(aeme_data, "lake")
+```{r aeme-visualisation-lake, fig.width=7, fig.height=5}
+plot(aeme, "lake")
 
 ```
 
-```{r aeme-visualisation-input}
-plot(aeme_data, "input")
+```{r aeme-visualisation-input, fig.width=7, fig.height=5}
+plot(aeme, "input")
 
 ```
 
 ## Build Model Ensemble
 
 ```{r}
-mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+model_controls <- get_model_controls()
 inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("dy_cd", "glm_aed", "gotm_wet")
-aeme_data <- build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                            mod_ctrls = mod_ctrls, inf_factor = inf_factor,
+aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+                            model_controls = model_controls, inf_factor = inf_factor,
                             ext_elev = 5, use_bgc = TRUE)
-aeme_data
+aeme
 ```
 
 ```{r}
-cfg <- configuration(aeme_data)
+cfg <- configuration(aeme)
 ```
