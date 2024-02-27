@@ -13,7 +13,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     # Only restrict concurrency for non-PR jobs
     concurrency:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
@@ -31,8 +31,8 @@ jobs:
         with:
           use-public-rspm: true
 
-      - if: runner.os == 'windows'
-        uses: r-windows/install-rtools@master
+      # - if: runner.os == 'windows'
+      #   uses: r-windows/install-rtools@master
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
