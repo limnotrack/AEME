@@ -2,7 +2,7 @@
 title: "Getting started"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{getting-started}
+  %\VignetteIndexEntry{Getting started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -27,7 +27,8 @@ library(AEME)
 
 # Lake data
 
-The first step is to
+The first step is to define the lake data. This includes the location of the
+lake, the depth and area of the lake, and the elevation of the lake.
 
 
 ```{r lake-location}
@@ -127,7 +128,7 @@ time <- list(
 We will use the `aemetools` package to download the ERA5 meteorological data for
 the location of our lake. This only works for locations in New Zealand.
 
-```{r get-era5-met, cache=TRUE}
+```{r get-era5-met}
 met <- aemetools::get_era5_point(lat = lat, lon = lon, years = 2020:2021,
                                  parallel = TRUE)
 
