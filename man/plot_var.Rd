@@ -35,6 +35,8 @@ extract the variable of interest from \code{aeme} for each model.}
 \item{ylim}{numeric vector of length 2; limits for the y-axis. Defaults to
 NULL and calculates this based on the data to be plotted.}
 
+\item{xlim}{numeric; x-axis limits}
+
 \item{var_lims}{numeric vector of length 2; limits for the variable.
 Defaults to NULL and will generate common limits for all variables.}
 

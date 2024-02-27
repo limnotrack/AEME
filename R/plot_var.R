@@ -5,6 +5,7 @@
 #' extract the variable of interest from \code{aeme} for each model.
 #' @inheritParams plot_output
 #' @param obs list; output from \code{\link{observations}}
+#' @param xlim numeric; x-axis limits
 #'
 #' @return ggplot2 object or list of ggplot2 objects
 #' @export
