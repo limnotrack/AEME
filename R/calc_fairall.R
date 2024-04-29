@@ -132,6 +132,8 @@ calc_fairall <- function(sst, airt, u10, v10, airp, hum, precip,
       for (iter in 1:itermax) {
         # print(iter)
         if (ier >= 0) {
+          if (Wstar < 1e-200) break
+          # Wstar <- ifelse(Wstar < 1e-200, 1e-100, Wstar)
           oL <- g * kappa * TVstar / (ta_k * (1.0 + 0.61 * qa) * Wstar^2)
           ZWoL <- zw * oL
           ZToL <- zt * oL
@@ -145,7 +147,7 @@ calc_fairall <- function(sst, airt, u10, v10, airp, hum, precip,
           Wstar <- delw * kappa / (log(zw / ZoW) - wpsi)
 
           rr <- ZoW * Wstar / vis_air
-          # print(rr)
+          # cat("rr: ", rr, "\n", "ZoW: ", ZoW, "\n", "Wstar: ", Wstar, "\n", "vis_air: ", vis_air, "\n", "iter: ", iter, "\n")
           if (rr >= 0.0 & rr < 1000.0) {
             for (k in 1:8) {
               if (Liu_Rr[k] <= rr && rr < Liu_Rr[k + 1]) {
