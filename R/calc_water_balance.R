@@ -186,7 +186,11 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   }
 
   # extended hypsography
-  hyps.ext <- bathy_extrap(hyps, 0.75, (max(hyps$elev) + ext_elev))
+  if (ext_elev != 0) {
+    hyps.ext <- bathy_extrap(hyps, 0.75, (max(hyps$elev) + ext_elev))
+  } else {
+    hyps.ext <- hyps
+  }
 
   if ("sst" %in% names(obs_met)) {
     col_select <- c("Date", "MET_wnduvu", "MET_wnduvv", "MET_tmpair",
