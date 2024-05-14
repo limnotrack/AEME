@@ -23,6 +23,7 @@
 #' \item \code{\bold{spin_up}}: list; spin up information for each model
 #' }
 #' @slot configuration A list representing each model's configuration. \itemize{
+#' \item \code{model_controls}: dataframe; Model controls for simulation.
 #' \item \code{dy_cd}: list; DYRESM-CAEDYM configuration.
 #' \item \code{glm_aed}: list; GLM-AED configuration.
 #' \item \code{gotm_wet}: list; GOTM-WET configuration.
@@ -157,6 +158,7 @@ aeme_constructor <- function(
   }
   if (missing(configuration)) {
     configuration <- list(
+      model_controls = NULL,
       dy_cd = NULL,
       glm_aed = NULL,
       gotm_wet = NULL
@@ -334,6 +336,11 @@ aeme_constructor <- function(
   }
 
   # Configuration type checking for specific elements
+  if (!is.null(configuration$model_controls)) {
+    if (!is.data.frame(configuration$model_controls)) {
+      stop("Configuration model_controls must be a dataframe or NULL.")
+    }
+  }
   if (!is.null(configuration$dy_cd)) {
     if (!is.list(configuration$dy_cd)) {
       stop("Configuration dy_cd must be a list or NULL.")
@@ -854,6 +861,8 @@ setMethod("show", "aeme", function(object) {
     aeme_time$spin_up$dy_cd,
     "\n-------------------------------------------------------------------\n",
     "  Configuration\n",
+    "    Model controls: ", ifelse(is.null(config[["model_controls"]]),
+                                   "Absent ", "Present"), "\n",
     "          Physical   |   Biogeochemical",
     "\nDY-CD    : ", ifelse(is.null(config[["dy_cd"]][["hydrodynamic"]]),
                             "Absent ", "Present"), "    |   ",
