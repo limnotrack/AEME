@@ -288,7 +288,7 @@ reconstruct the object.
 
 ```{r run-ensemble}
 # Run the ensemble
-aeme <- run_aeme(aeme = aeme, model = model, model_controls = model_controls)
+aeme <- run_aeme(aeme = aeme, model = model)
 ```
 
 ## View the output

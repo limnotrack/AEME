@@ -56,7 +56,7 @@ model <- c("dy_cd", "glm_aed", "gotm_wet")
 aeme <- build_ensemble(path = path, aeme = aeme, model = model,
                             model_controls = model_controls,
                             ext_elev = 5, use_bgc = TRUE)
-#> Building simulation for Wainamu [2024-02-27 00:02:10]
+#> Building simulation for Wainamu [2024-05-14 16:18:57]
 #> Missing state variables in inflows: PHY_crypt
 #> Added default values for missing variables.
 #> Using observed water level
@@ -64,7 +64,6 @@ aeme <- build_ensemble(path = path, aeme = aeme, model = model,
 #> Using constant water level
 #> Correcting water balance using estimated outflows (method = 2).
 #> Calculating lake level using lake depth and a sinisoidal function.
-#> Observed lake level is present. Updating initial lake model depth...
 #> Building DYRESM-CAEDYM for lake wainamu
 #> Copied in DYRESM par file
 #> Writing DYRESM configuration
@@ -114,11 +113,11 @@ aeme <- build_ensemble(path = path, aeme = aeme, model = model,
 #> instances/diatoms/initialization/sPW 0.005 replaced with 0.0024
 #> instances/abiotic_water/initialization/sDIMW 4 replaced with 3
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
-                      path = path, parallel = TRUE, model_controls = model_controls)
-#> Running models in parallel... [2024-02-27 13:02:13]
-#> Model run complete![2024-02-27 13:04:35]
-#> Reading models in parallel... [2024-02-27 13:04:36]
-#> Model reading complete![2024-02-27 13:04:38]
+                      path = path, parallel = TRUE)
+#> Running models in parallel... [2024-05-14 12:19:00]
+#> Model run complete![2024-05-14 12:21:26]
+#> Reading models in parallel... [2024-05-14 12:21:26]
+#> Model reading complete![2024-05-14 12:21:29]
 ```
 
 The model input and output (I/O) is handled as it’s own S4 object of
@@ -149,6 +148,7 @@ aeme
 #>  Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1
 #> -------------------------------------------------------------------
 #>   Configuration
+#>     Model controls: Present
 #>           Physical   |   Biogeochemical
 #> DY-CD    : Present    |   Present
 #> GLM-AED  : Present    |   Present
@@ -186,7 +186,8 @@ p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                   level = TRUE, var_lims = c(9, 30))
 p1
 #> Warning: Using size for a discrete variable is not advised.
-#> Warning: Removed 240 rows containing missing values (`geom_col()`).
+#> Warning: Removed 240 rows containing missing values or values outside the scale range
+#> (`geom_col()`).
 ```
 
 <img src="man/figures/README-plot_output-HYD_temp-1.png" width="100%" />
