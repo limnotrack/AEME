@@ -517,6 +517,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     laz_list <- lapply(names(fun_list), \(f) {
       idx <- ifelse(f == "HYD_hypdep", 2, 1)
       vapply(1:ncol(wtr), \(c) {
+        if (all(is.na(wtr[, c]))) {
+          return(NA)
+        }
         v <- fun_list[[f]](wtr = wtr[, c], depths = depths[, c])
         v[is.nan(v)] <- NA
         v[idx]
@@ -527,6 +530,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     laz_list[["HYD_schstb"]] <- vapply(1:ncol(wtr), \(c) {
       bthD <- c(0, depths[, c])
       bthA <- approx(x = bathy$depth, y = bathy$area, xout = bthD, rule = 2)$y
+      if (any(is.na(bthA)) | length(unique(bthA)) <= 1) {
+        return(NA)
+      }
       # plot(bthA, bthD, type = "l")
       v <- rLakeAnalyzer::schmidt.stability(wtr = wtr[, c],
                                             depths = depths[, c],
@@ -576,6 +582,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     nc_list$CHM_oxymet <- meta_oxy
     nc_list$CHM_oxymom <- meta_oxy - exp_oxy
     nc_list$CHM_oxynal <- vapply(1:ncol(wtr), \(c) {
+      if (all(is.na(oxy[, c])) | length(unique(depths[, c])) <= 1) {
+        return(NA)
+      }
       oxy_layers <- approx(y = oxy[, c], x = depths[, c],
                            xout = seq(0, depth[c], by = z_step), rule = 2)$y
       sum(oxy_layers < 1)
@@ -625,7 +634,7 @@ regularise_model_output <- function(depth, depths, var, nlev) {
       return(rep(NA, nlev))
     } else {
       if (length(unique(depths[!is.na(depths[, c]), c])) == 1) {
-        rep(var[!is.na(depths[, c]), c], nlev)
+        rep((var[!is.na(depths[, c]), c][1]), nlev)
       } else if(all(is.na(var[, c])) | length(unique(depths[!is.na(depths[, c]), c])) <= 1) {
         rep(NA, nlev)
       } else {
