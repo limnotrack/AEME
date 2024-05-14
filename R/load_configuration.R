@@ -7,7 +7,7 @@
 #'
 #'
 
-load_configuration <- function(model, aeme, model_controls, path,
+load_configuration <- function(model, aeme, model_controls = NULL, path,
                                use_bgc = FALSE) {
 
   lke <- lake(aeme)
