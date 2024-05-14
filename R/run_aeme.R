@@ -43,6 +43,10 @@ run_aeme <- function(aeme, model, return = TRUE, model_controls = NULL,
                      nlev = NULL, verbose = FALSE, debug = FALSE, timeout = 0,
                      parallel = FALSE, ncores, check_output = FALSE, path = ".") {
 
+  if (is.null(model_controls)) {
+    model_controls <- get_model_controls(aeme = aeme)
+  }
+
   if (return & is.null(model_controls)) {
     stop("`model_controls` need to be provided to load model output.")
   }
