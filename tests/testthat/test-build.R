@@ -24,7 +24,6 @@ test_that("building DYRESM works", {
 })
 
 test_that("building DYRESM-CAEDYM works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -36,7 +35,7 @@ test_that("building DYRESM-CAEDYM works", {
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   lke <- lake(aeme)
@@ -44,6 +43,12 @@ test_that("building DYRESM-CAEDYM works", {
                                                  tolower(lke$name)),
                                     model, "dyresm3p1.par"))
   testthat::expect_true(file_chk)
+
+  model_controls2 <- get_model_controls(aeme = aeme)
+
+  # test that model controls are equal
+  testthat::expect_equal(model_controls, model_controls2)
+
 })
 
 test_that("building GLM works", {
@@ -137,7 +142,6 @@ test_that("building GOTM-WET works", {
 })
 
 test_that("building all models and loading to aeme works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -152,7 +156,8 @@ test_that("building all models and loading to aeme works", {
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   aeme <- load_configuration(model = model, aeme = aeme,
-                                  path = path, use_bgc = TRUE)
+                             model_controls = model_controls, path = path,
+                             use_bgc = TRUE)
   cfg <- configuration(aeme)
   chk <- all(sapply(cfg, is.list)) & (is.vector(cfg$dy_cd$ecosystem)) &
     all(sapply(cfg[2:3],\(x) is.list(x[["ecosystem"]])))
@@ -183,11 +188,11 @@ test_that("can build all models and write to new directory", {
 
   # Check DYRESM files
   lke <- lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+  file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     "dy_cd", "dyresm3p1.par"))
   testthat::expect_true(file_chk)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+  file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     "dy_cd", paste0(tolower(lke$name), ".con")))
   testthat::expect_true(file_chk)
