@@ -4,9 +4,11 @@
 \alias{get_model_controls}
 \title{Get model controls}
 \usage{
-get_model_controls(use_bgc = FALSE)
+get_model_controls(aeme = NULL, use_bgc = FALSE)
 }
 \arguments{
+\item{aeme}{aeme; data object.}
+
 \item{use_bgc}{logical; switch to use the biogeochemical model.}
 }
 \value{

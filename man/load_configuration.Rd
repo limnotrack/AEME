@@ -4,13 +4,16 @@
 \alias{load_configuration}
 \title{Load model configuration to the aeme object}
 \usage{
-load_configuration(model, aeme, path, use_bgc = FALSE)
+load_configuration(model, aeme, model_controls, path, use_bgc = FALSE)
 }
 \arguments{
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
 \item{aeme}{aeme; data object.}
+
+\item{model_controls}{dataframe; of configuration loaded from
+"model_controls.csv".}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
