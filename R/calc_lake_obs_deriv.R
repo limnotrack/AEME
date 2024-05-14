@@ -19,7 +19,8 @@ calc_lake_obs_deriv <- function(aeme) {
 
   lke <- lake(aeme)
   inp <- input(aeme)
-  bathy <- inp$hypsograph
+  bathy <- inp$hypsograph |>
+    dplyr::filter(depth <= 0)
   bathy$depth <- max(bathy$elev) - bathy$elev
 
   if (lke$depth < 10) {
@@ -61,6 +62,7 @@ calc_lake_obs_deriv <- function(aeme) {
       idx <- ifelse(f == "HYD_hypdep", 2, 1)
       vec <- vapply(1:nrow(wtr), \(c) {
         idx2 <- which(!is.na(wtr[c, ]))
+        if (length(idx2) <= 1) return(NA)
         v <- fun_list[[f]](wtr = wtr[c, idx2], depths = depths[idx2])
         v[is.nan(v)] <- NA
         v[idx]
@@ -69,10 +71,11 @@ calc_lake_obs_deriv <- function(aeme) {
     })
     names(wtr_list) <- names(fun_list)
     bthD <- rev(bathy$depth)
-    bthA <- rev(bathy$area)
+    bthA <- (bathy$area)
 
     schstb <- vapply(1:nrow(wtr), \(c) {
       idx2 <- which(!is.na(wtr[c, ]))
+      if (length(idx2) <= 1) return(NA)
       v <- rLakeAnalyzer::schmidt.stability(wtr = wtr[c, idx2],
                                             depths = depths[idx2],
                                             bthA = bthA, bthD = bthD)
@@ -146,6 +149,9 @@ calc_lake_obs_deriv <- function(aeme) {
     oxymom <- meta_oxy - exp_oxy
 
     oxynal <- vapply(1:nrow(oxy), \(c) {
+      idx2 <- which(!is.na(oxy[c, ]))
+      if (length(idx2) <= 1) return(NA)
+
       oxy_layers <- approx(y = oxy[c, ], x = depths,
                            xout = seq(0, lke$depth, by = z_step), rule = 2)$y
       sum(oxy_layers < 1)
@@ -174,7 +180,7 @@ calc_lake_obs_deriv <- function(aeme) {
   if ("CHM_oxy" %in% obs$lake$var_aeme | "HYD_temp" %in% obs$lake$var_aeme) {
     out_df <- out_list |>
       dplyr::bind_rows() |>
-      dplyr::mutate(lake = obs$lake$lake[1], lake_id = obs$lake$lake_id[1])
+      dplyr::mutate(lake = lke$name, lake_id = lke$name_id)
 
     obs$lake <- obs$lake |>
       dplyr::bind_rows(out_df)
