@@ -173,7 +173,8 @@ build_ensemble <- function(aeme = NULL,
                    sep = "\n"))
       }
       hyps <- data.frame(elev = c(lke$elevation - lke$depth, lke$elevation),
-                         area = c(0, lke$area))
+                         area = c(0, lke$area),
+                         depth = c(lke$depth, 0))
       input(aeme) <- list(init_profile = inp$init_profile,
                           hypsograph = hyps, meteo = inp$meteo,
                           use_lw = inp$use_lw, Kw = inp$Kw)
@@ -541,7 +542,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
 
   aeme <- load_configuration(model = model, aeme = aeme,
-                             path = path, use_bgc = use_bgc)
+                             model_controls = model_controls, path = path,
+                             use_bgc = use_bgc)
 
   return(aeme)
 }
