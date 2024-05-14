@@ -8,6 +8,10 @@
 #' list. Default is TRUE.
 #' @param cumulative logical; if TRUE, return cumulative sum of variable
 #'
+#' @importFrom dplyr arrange filter left_join mutate select bind_rows case_when
+#' rename
+#' @importFrom stats approx
+#'
 #' @return dataframe or list
 #' @export
 
@@ -102,7 +106,7 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE,
                               sim = NA,
                               Model = m))
           }
-          p <- approx(depth, v, obs_deps, rule = 2)$y
+          p <- stats::approx(depth, v, obs_deps, rule = 2)$y
           data.frame(Date = outp[[m]][["Date"]][d],
                      depth_mid = obs_deps,
                      sim = p,
@@ -145,7 +149,8 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE,
   })
 
   if (return_df) {
-    do.call(rbind, lst) |>
+    dplyr::bind_rows(lst) |>
+    # do.call(rbind, lst) |>
       dplyr::mutate(Model = dplyr::case_when(
         Model == "dy_cd" ~ "DYRESM-CAEDYM",
         Model == "glm_aed" ~ "GLM-AED",
