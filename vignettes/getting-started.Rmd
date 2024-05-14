@@ -263,7 +263,7 @@ model <- c("dy_cd", "glm_aed", "gotm_wet")
 ```{r build-ensemble}
 # Build ensemble
 aeme <- build_ensemble(aeme = aeme, model = model,  
-                       model_controls = model_controls)
+                       model_controls = model_controls, use_bgc = TRUE)
 
 print(aeme)
 ```
