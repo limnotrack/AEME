@@ -1,0 +1,5 @@
+Name: Insert default aeme list
+Description: Inserts default aeme list at the cursor position
+Binding: insert_aeme
+Interactive: false
+Keybinding: ctrl+shift+a
