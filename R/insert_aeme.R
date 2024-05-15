@@ -7,7 +7,7 @@
 
 insert_aeme <- function() {
   txt <-
-  "aeme <- list(
+  "aeme_list <- list(
     # Define lake list
     lake = list(
       name = character(), # name of the lake
@@ -20,8 +20,8 @@ insert_aeme <- function() {
     ),
     # Define time list
     time = list(
-      start = as.Date(\"2020-01-01\"), # start date
-      stop = as.Date(\"2020-12-31\"), # stop date
+      start = as.POSIXct(\"2020-01-01 00:00:00\"), # start date
+      stop = as.POSIXct(\"2020-12-31 00:00:00\"), # stop date
       time_step = 3600, # time step in seconds
       spin_up = list( # spin-up period for each model
         \"dy_cd\" = 365,
@@ -66,8 +66,8 @@ insert_aeme <- function() {
       ),
     # Define water balance list
     water_balance = list(
-      method = integer(), # Method for calculating water balance. 1 = none, 2 = outflows, 3 = inflows and outflows
-      use = character(), # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
+      method = 2, # Method for calculating water balance. 1 = none, 2 = outflows, 3 = inflows and outflows
+      use = \"mod\", # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
       data = list(
         model = data.frame(), # dataframe with modelled water balance data
         wbal = data.frame() # Calculated water balance with build_ensemble()
