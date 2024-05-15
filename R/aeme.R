@@ -156,19 +156,33 @@ aeme_constructor <- function(
   if (missing(lake) & missing(time) & missing(input)) {
     stop("Objects lake, time, and input must be provided.")
   }
+  cfg_dflt <- list(
+    model_controls = NULL,
+    dy_cd = NULL,
+    glm_aed = NULL,
+    gotm_wet = NULL
+  )
   if (missing(configuration)) {
-    configuration <- list(
-      model_controls = NULL,
-      dy_cd = NULL,
-      glm_aed = NULL,
-      gotm_wet = NULL
-    )
+    configuration <- cfg_dflt
+  } else {
+    for (i in names(cfg_dflt)) {
+      if (!i %in% names(configuration)) {
+        configuration[[i]] <- cfg_dflt[[i]]
+      }
+    }
   }
+  obs_dflt <- list(
+    lake = NULL,
+    level = NULL
+  )
   if (missing(observations)) {
-    observations <- list(
-      lake = NULL,
-      level = NULL
-    )
+    observations <- obs_dflt
+  } else {
+    for (i in names(obs_dflt)) {
+      if (!i %in% names(observations)) {
+        observations[[i]] <- obs_dflt[[i]]
+      }
+    }
   }
   if (missing(inflows)) {
     inflows <- list(
@@ -191,15 +205,22 @@ aeme_constructor <- function(
       )
     )
   }
-  if (missing(water_balance)) {
-    water_balance <- list(
-      use = "obs",
-      method = 2,
-      data = list(
-        model = NULL,
-        wbal = NULL
-      )
+  wbal_dflt <- list(
+    use = "obs",
+    method = 2,
+    data = list(
+      model = NULL,
+      wbal = NULL
     )
+  )
+  if (missing(water_balance)) {
+    water_balance <- wbal_dflt
+  } else {
+    for (i in names(wbal_dflt)) {
+      if (!i %in% names(water_balance)) {
+        water_balance[[i]] <- wbal_dflt[[i]]
+      }
+    }
   }
   if (missing(output)) {
     output <- list(
