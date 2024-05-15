@@ -50,8 +50,8 @@ water_balance:
    method: 2                            # Method for calculating water balance. 1 = none, 2 = outflows, 3 = inflows and outflows
    use: obs                             # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
    data:
-      model: null
-      wbal: null
+      model: null                       # file with modelled water balance data [csv file]
+      wbal: null                        # Calculated water balance with build_ensemble()
 output:
    dy_cd: null
    glm_aed: null
