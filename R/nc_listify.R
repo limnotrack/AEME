@@ -337,9 +337,17 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
                                    var = rad, nlev = nlev)
     suppressWarnings({
       efold <- sapply(seq_len(ncol(rad)), \(t) {
+        if (sum(!is.na(rad[, t])) < 2 | length(unique(depths[, t])) <= 1 |
+            length(unique(rad[, t])) <= 1) {
+          return(NA)
+        }
         approx(rad[, t], depths[, t], xout = (1/exp(1) * rad[nrow(rad), t]))$y
       })
       euphotic <- sapply(seq_len(ncol(rad)), \(t) {
+        if (sum(!is.na(rad[, t])) < 2 | length(unique(depths[, t])) <= 1 |
+            length(unique(rad[, t])) <= 1) {
+          return(NA)
+        }
         approx(rad[, t], depths[, t], xout = (0.01 * rad[nrow(rad), t]))$y
       })
     })
@@ -530,7 +538,8 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     laz_list[["HYD_schstb"]] <- vapply(1:ncol(wtr), \(c) {
       bthD <- c(0, depths[, c])
       bthA <- approx(x = bathy$depth, y = bathy$area, xout = bthD, rule = 2)$y
-      if (any(is.na(bthA)) | length(unique(bthA)) <= 1) {
+      if (any(is.na(bthA)) | length(unique(bthA)) <= 1 |
+          sum(!is.na(wtr[, c])) <= 1) {
         return(NA)
       }
       # plot(bthA, bthD, type = "l")
