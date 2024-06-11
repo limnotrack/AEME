@@ -1,6 +1,6 @@
 #' Convert aeme.yaml file to list
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #' @param file filepath; to aeme.yaml file
 #'
 #' @return aeme object

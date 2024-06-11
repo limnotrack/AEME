@@ -1,6 +1,6 @@
 #' Check model output
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return logical; if model output passes checks or not.
 #' @export

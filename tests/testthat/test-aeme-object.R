@@ -76,7 +76,7 @@ test_that("aeme object can be constructed from add-in", {
       use = "mod", # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
       data = list(
         model = data.frame(), # dataframe with modelled water balance data
-        wbal = data.frame() # Calculated water balance with build_ensemble()
+        wbal = data.frame() # Calculated water balance with build_aeme()
         )
       )
     )

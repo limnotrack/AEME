@@ -1,6 +1,6 @@
 #' Assess model performance
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #' @inheritParams plot_output
 #'
 #' @return Data frame with model performance statistics for each model and

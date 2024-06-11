@@ -56,11 +56,11 @@
 #' inf_factor = c("glm_aed" = 1)
 #' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
-#' build_ensemble(path = path, aeme = aeme, model = model,
+#' build_aeme(path = path, aeme = aeme, model = model,
 #'                model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = FALSE)
 
-build_ensemble <- function(aeme = NULL,
+build_aeme <- function(aeme = NULL,
                            config = NULL,
                            model = c("dy_cd", "glm_aed", "gotm_wet"),
                            model_controls,

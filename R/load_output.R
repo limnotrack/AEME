@@ -1,6 +1,6 @@
 #' Load AEME output to the aeme object
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #' @inheritParams run_aeme
 #' @param nlev numeric; number of levels to return in model output. If NULL,
 #' calculates number of levels based on lake depth as provided within the

@@ -1,6 +1,6 @@
 #' Load model configuration to the aeme object
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return Updated aeme object with model configuration
 #' @export
@@ -44,7 +44,7 @@ load_configuration <- function(model, aeme, model_controls = NULL, path,
 #' Get DYRESM-CAEDYM configuration
 #'
 #' @param lake list obtained from `lake(aeme)`
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return list of physical and bgc model configurations
 #' @noRd
@@ -101,7 +101,7 @@ get_config_dy_cd <- function(lake, path, use_bgc) {
 #' Get GLM-AED configuration
 #'
 #' @param lake list obtained from `lake(aeme)`
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return list of physical and bgc model configurations
 #' @noRd
@@ -143,7 +143,7 @@ get_config_glm_aed <- function(lake, path, use_bgc) {
 #' Get GOTM-WET configuration
 #'
 #' @param lake list obtained from `lake(aeme)`
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return list of physical and bgc model configurations
 #' @noRd

@@ -40,23 +40,32 @@ library(AEME)
 #> The following object is masked from 'package:stats':
 #> 
 #>     time
+```
+
+``` r
 ## basic example code
 tmpdir <- tempdir()
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
 # Copy files from package into tempdir
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #> [1] TRUE
+```
+
+``` r
 path <- file.path(tmpdir, "lake")
 aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-#> Linking to GEOS 3.11.2, GDAL 3.7.2, PROJ 9.3.0; sf_use_s2() is FALSE
+#> Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.3.1; sf_use_s2() is FALSE
 #> Warning in aeme_constructor(lake = yaml$lake, time = yaml$time, configuration = yaml$configuration, : Lake area [152343 m2] is different to the area calculated from the lake
 #> shape [152433.09 m2].
+```
+
+``` r
 model_controls <- get_model_controls(use_bgc = TRUE)
 model <- c("dy_cd", "glm_aed", "gotm_wet")
-aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+aeme <- build_aeme(path = path, aeme = aeme, model = model,
                             model_controls = model_controls,
                             ext_elev = 5, use_bgc = TRUE)
-#> Building simulation for Wainamu [2024-05-14 16:18:57]
+#> Building simulation for Wainamu [2024-06-11 22:08:20]
 #> Missing state variables in inflows: PHY_crypt
 #> Added default values for missing variables.
 #> Using observed water level
@@ -112,12 +121,15 @@ aeme <- build_ensemble(path = path, aeme = aeme, model = model,
 #> instances/diatoms/initialization/sNW 0.05 replaced with 0.038
 #> instances/diatoms/initialization/sPW 0.005 replaced with 0.0024
 #> instances/abiotic_water/initialization/sDIMW 4 replaced with 3
+```
+
+``` r
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
                       path = path, parallel = TRUE)
-#> Running models in parallel... [2024-05-14 12:19:00]
-#> Model run complete![2024-05-14 12:21:26]
-#> Reading models in parallel... [2024-05-14 12:21:26]
-#> Model reading complete![2024-05-14 12:21:29]
+#> Running models in parallel... [2024-06-12 10:08:33]
+#> Model run complete![2024-06-12 10:11:17]
+#> Reading models in parallel... [2024-06-12 10:11:18]
+#> Model reading complete![2024-06-12 10:11:21]
 ```
 
 The model input and output (I/O) is handled as it’s own S4 object of

@@ -1,6 +1,6 @@
 #' Write model configuration from the aeme object
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return aeme object which was passed to the function,
 #' @export
@@ -18,7 +18,7 @@ write_configuration <- function(model, aeme, path) {
 
 #' Write DYRESM-CAEDYM configuration
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return write DYRESM config files to disk
 #' @noRd
@@ -59,7 +59,7 @@ write_config_dy_cd <- function(aeme, path) {
 
 #' Write GLM-AED configuration
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return write GLM config files to disk
 #' @noRd
@@ -103,7 +103,7 @@ write_config_glm_aed <- function(aeme, path) {
 
 #' Write GOTM-WET configuration
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return write GOTM config files to disk
 #' @noRd

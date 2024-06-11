@@ -13,7 +13,7 @@ test_that("building DYRESM works", {
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  build_ensemble(path = path, aeme = aeme, model = model,
+  build_aeme(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE)
   lke <- lake(aeme)
@@ -35,7 +35,7 @@ test_that("building DYRESM-CAEDYM works", {
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   lke <- lake(aeme)
@@ -64,7 +64,7 @@ test_that("building GLM works", {
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
-  build_ensemble(path = path, aeme = aeme, model = model,
+  build_aeme(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE)
   lke <- lake(aeme)
@@ -86,7 +86,7 @@ test_that("building GLM-AED works", {
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
-  build_ensemble(path = path, aeme = aeme, model = model,
+  build_aeme(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   lke <- lake(aeme)
@@ -108,7 +108,7 @@ test_that("building GOTM works", {
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
-  build_ensemble(path = path, aeme = aeme, model = model,
+  build_aeme(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = FALSE)
   lke <- lake(aeme)
@@ -129,7 +129,7 @@ test_that("building GOTM-WET works", {
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
-  build_ensemble(path = path, aeme = aeme, model = model,
+  build_aeme(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   lke <- lake(aeme)
@@ -169,7 +169,7 @@ test_that("building all models and loading to aeme works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  build_ensemble(path = path, aeme = aeme, model = model,
+  build_aeme(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   aeme <- load_configuration(model = model, aeme = aeme,
@@ -193,7 +193,7 @@ test_that("can build all models and write to new directory", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  build_ensemble(path = path, aeme = aeme, model = model,
+  build_aeme(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   aeme <- load_configuration(model = model, aeme = aeme,

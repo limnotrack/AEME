@@ -1,7 +1,7 @@
 #' Initialise FABM
 #'
 #' @param path_gotm filepath; to GOTM model setup
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @importFrom dplyr filter
 #' @importFrom yaml read_yaml

@@ -3,7 +3,7 @@
 #' Generates a contour plot for z-dimension variables and line plot for 1-d
 #' variables.
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #' @param var_sim string; of variable to plot
 #' @param level logical; include lake level. Only applies for contour plots.
 #' @param print_plots logical; print plots
@@ -41,7 +41,7 @@
 #'   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 #'   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 #'   #'   model <- c("glm_aed", "gotm_wet")
-#'   build_ensemble(path = path, aeme = aeme, model = model,
+#'   build_aeme(path = path, aeme = aeme, model = model,
 #'                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
 #'                  use_bgc = TRUE)
 #'   run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,

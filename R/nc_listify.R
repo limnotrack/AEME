@@ -2,7 +2,7 @@
 #'
 #' @param nc file connection; to a netCDF file
 #' @inheritParams delangrangify
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #' @param model character; model name
 #' @param vars_sim vector; of variables to extract
 #' @param nlev numeric; number of vertical levels

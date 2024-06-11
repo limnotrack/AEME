@@ -51,7 +51,7 @@ water_balance:
    use: obs                             # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
    data:
       model: null                       # file with modelled water balance data [csv file]
-      wbal: null                        # Calculated water balance with build_ensemble()
+      wbal: null                        # Calculated water balance with build_aeme()
 output:
    dy_cd: null
    glm_aed: null

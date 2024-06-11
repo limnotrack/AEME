@@ -1,6 +1,6 @@
 #' Run aquatic model ensemble
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #' @inheritParams base::system2
 #' @param return logical; return model output within an `aeme` object? Defaults
 #' to TRUE.
@@ -32,7 +32,7 @@
 #' inf_factor = c("glm_aed" = 1)
 #' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
-#' build_ensemble(path = path, aeme = aeme, model = model,
+#' build_aeme(path = path, aeme = aeme, model = model,
 #'                model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
 #'                use_bgc = TRUE)
 #' run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,

@@ -250,7 +250,7 @@ model_controls
 
 ## Build the ensemble
 
-The `build_ensemble` function will take the AEME object and the model controls
+The `build_aeme` function will take the AEME object and the model controls
 and build the ensemble. The `model` argument is a character vector of the models
 to include in the ensemble. The models available are `dy_cd`, `glm_aed`, and
 `gotm_wet`.
@@ -262,13 +262,13 @@ model <- c("dy_cd", "glm_aed", "gotm_wet")
 
 ```{r build-ensemble}
 # Build ensemble
-aeme <- build_ensemble(aeme = aeme, model = model,  
+aeme <- build_aeme(aeme = aeme, model = model,  
                        model_controls = model_controls, use_bgc = TRUE)
 
 print(aeme)
 ```
 
-By default, the `build_ensemble` function will build the
+By default, the `build_aeme` function will build the
 file configuration for each model. This will create the necessary files for
 each model to run. The files are also stored in the `aeme` object in the
 `configuration` slot with a list for hydrodynamic and ecosystem model 

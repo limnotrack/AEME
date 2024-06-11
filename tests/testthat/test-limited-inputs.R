@@ -26,7 +26,7 @@ test_that("it errors when met data is not present", {
 
   # Without any met data
   testthat::expect_error({
-    build_ensemble(path = path, aeme = aeme, model = model,
+    build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                    use_bgc = TRUE)
   })
@@ -76,7 +76,7 @@ testthat::test_that("can build AEME with simple set of inputs", {
   model <- c("dy_cd", "glm_aed", "gotm_wet")
 
 
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
   inp <- input(aeme)
@@ -112,7 +112,7 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
 
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
   inp <- input(aeme)

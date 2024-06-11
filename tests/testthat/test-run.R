@@ -9,7 +9,7 @@ test_that("running DYRESM works", {
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = F,
@@ -34,7 +34,7 @@ test_that("running GLM works", {
   inf_factor <- c("glm_aed" = 1)
   outf_factor <- c("glm_aed" = 1)
   model <- c("glm_aed")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
   # cfg <- configuration(aeme)
@@ -59,7 +59,7 @@ test_that("running GOTM works", {
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme <- build_ensemble(path = path, aeme = aeme,
+  aeme <- build_aeme(path = path, aeme = aeme,
                          model = model, model_controls = model_controls,
                          inf_factor = inf_factor, ext_elev = 5,
                          use_bgc = FALSE)
@@ -83,7 +83,7 @@ test_that("running DYRESM-CAEDYM works", {
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
@@ -109,7 +109,7 @@ test_that("running GLM-AED works", {
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
@@ -150,7 +150,7 @@ test_that("running GOTM-WET works", {
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
@@ -173,7 +173,7 @@ test_that("running models in parallel works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
                          calc_wlev = FALSE)
@@ -222,7 +222,7 @@ test_that("running models with wbal method = 1", {
   w_bal$method <- 1
   water_balance(aeme) <- w_bal
 
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
                          calc_wlev = F)
@@ -269,7 +269,7 @@ test_that("running models with wbal method = 3", {
   outf$data <- NULL
   outflows(aeme) <- outf
 
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
                          calc_wlev = F, hum_type = 1)
@@ -329,7 +329,7 @@ test_that("running models in parallel with no wbal calculated", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE, calc_wbal = FALSE)
   outf <- outflows(aeme)
@@ -368,7 +368,7 @@ test_that("running models with no wbal/outflows calculated", {
   outf$data <- NULL
   outflows(aeme) <- outf
 
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE, calc_wbal = F)
   outf <- outflows(aeme)
@@ -404,7 +404,7 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE, calc_wbal = TRUE,
                          calc_wlev = FALSE)
@@ -439,7 +439,7 @@ test_that("getting model output works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, use_bgc = TRUE)
   run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
            parallel = TRUE, return = FALSE)
@@ -463,7 +463,7 @@ test_that("getting model output in parallel works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
-  build_ensemble(path = path, aeme = aeme, model = model,
+  build_aeme(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
@@ -492,7 +492,7 @@ test_that("running DYRESM with a spinup works", {
   tim[["spin_up"]][[model]] <- 100
   time(aeme) <- tim
 
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model,
@@ -521,7 +521,7 @@ test_that("running GLM with a spinup works", {
   tim[["spin_up"]][[model]] <- 100
   time(aeme) <- tim
 
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model,
@@ -550,7 +550,7 @@ test_that("running GOTM with a spinup works", {
   tim[["spin_up"]][[model]] <- 200
   time(aeme) <- tim
 
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
@@ -583,7 +583,7 @@ test_that("can build all models, run and write to new directory & re-run", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = TRUE)
 
@@ -637,7 +637,7 @@ test_that("can build all models, run and write to new directory & re-run", {
 
 
   #
-  aeme <- build_ensemble(path = path2, aeme = aeme,
+  aeme <- build_aeme(path = path2, aeme = aeme,
                          model = model, model_controls = model_controls,
                          inf_factor = inf_factor, ext_elev = 5,
                          use_bgc = TRUE)

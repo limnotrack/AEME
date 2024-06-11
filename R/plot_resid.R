@@ -1,6 +1,6 @@
 #' Plot model residuals
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #' @inheritParams plot_output
 #'
 #' @return list of ggplot2 objects

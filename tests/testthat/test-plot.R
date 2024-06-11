@@ -9,7 +9,7 @@ test_that("plotting model output works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
 
@@ -79,7 +79,7 @@ test_that("plotting model output works with no lake observations", {
   obs$lake <- NULL
   observations(aeme) <- obs
 
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
 
@@ -113,7 +113,7 @@ test_that("plotting model output works with no lake & level observations", {
   obs$level <- NULL
   observations(aeme) <- obs
 
-  aeme <- build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                          model_controls = model_controls, inf_factor = inf_factor,
                          ext_elev = 5, use_bgc = FALSE)
 

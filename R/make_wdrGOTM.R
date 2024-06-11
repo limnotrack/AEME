@@ -2,7 +2,7 @@
 #'
 #' @inheritParams initialiseGOTM
 #' @inheritParams build_dycd
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return GOTM yaml configuration as a list object
 #' @noRd

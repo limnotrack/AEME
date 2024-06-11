@@ -1,7 +1,7 @@
 #' Estimate lake water balance based on a minimal set of inputs
 #'
 #' @param aeme_time list; time object from aeme_object using `time()`
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #' @param method numeric; method to use for calculating water balance. Must be
 #' 1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
 #' outflows calculated). Default = 1

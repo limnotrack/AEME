@@ -1,7 +1,7 @@
 #' Build a glm-aed model from generic inputs
 #'
 #' @inheritParams build_dycd
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #' @param lake_shape shapefile
 #' @param use_lw logical, use incoming longwave radiation
 #' @param overwrite_nml logical, overwrite nml file. Default is TRUE

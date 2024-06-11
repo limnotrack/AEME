@@ -4,7 +4,7 @@
 #' @inheritParams initialiseGLM
 #' @inheritParams initialiseGOTM
 #' @inheritParams build_dycd
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return write updated GOTM yaml file in GOTM directory.
 #' @noRd

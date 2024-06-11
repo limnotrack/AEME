@@ -66,7 +66,7 @@ variables.
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   #'   model <- c("glm_aed", "gotm_wet")
-  build_ensemble(path = path, aeme = aeme, model = model,
+  build_aeme(path = path, aeme = aeme, model = model,
                  model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                  use_bgc = TRUE)
   run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,

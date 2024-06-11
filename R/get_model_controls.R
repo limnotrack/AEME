@@ -1,6 +1,6 @@
 #' Get model controls
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #'
 #' @return A data frame of model controls
 #' @export

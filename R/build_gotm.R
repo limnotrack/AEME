@@ -1,6 +1,6 @@
 #' Build a GOTM-WET model from generic inputs
 #'
-#' @inheritParams build_ensemble
+#' @inheritParams build_aeme
 #' @param nlev
 #'
 #' @return directory with GOTM configuration.
