@@ -9,8 +9,8 @@
 #'
 #' @return write updated GOTM yaml file in GOTM directory.
 #' @noRd
-make_infGOTM <- function(inf_list, path_gotm, gotm = NULL, update_gotm = TRUE,
-                         use_bgc) {
+make_infGOTM <- function(inf_list, inf_factor = 1, path_gotm, gotm = NULL,
+                         update_gotm = TRUE, use_bgc) {
 
   names_inf <- names(inf_list)
   # Check if wbal is in the inflows

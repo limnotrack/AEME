@@ -111,7 +111,8 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
   # Inflows ----
   gotm[["streams"]] <- NULL
   gotm <- make_infGOTM(inf_list = inf, path_gotm = path_gotm, gotm = gotm,
-                       update_gotm = TRUE, use_bgc = use_bgc)
+                       inf_factor = inf_factor, update_gotm = TRUE,
+                       use_bgc = use_bgc)
 
   if (use_bgc) {
     gotm[["fabm"]][["use"]] <- TRUE
