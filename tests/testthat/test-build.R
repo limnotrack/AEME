@@ -119,12 +119,10 @@ test_that("building GOTM works", {
 })
 
 test_that("building GOTM-WET works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
@@ -139,6 +137,25 @@ test_that("building GOTM-WET works", {
                                                  tolower(lke$name)),
                                     model, "fabm.yaml"))
   testthat::expect_true(file_chk)
+
+  # Check inflow files are generated
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "inputs", "inf_flow_wbal_in.dat"))
+  testthat::expect_true(file_chk)
+
+  # Check outflow files are generated
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "inputs", "outf_outflow.dat"))
+  testthat::expect_true(file_chk)
+
+  # Check met file is generated
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "inputs", "meteo.dat"))
+  testthat::expect_true(file_chk)
+
 })
 
 test_that("building all models and loading to aeme works", {
