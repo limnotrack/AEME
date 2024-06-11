@@ -322,8 +322,9 @@ function.</p>
 <span><span class="co">#&gt; [1] 13.07</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $area</span></span>
-<span><span class="co">#&gt; [1] 152343</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] 152343</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># Change lake name</span></span>
 <span><span class="va">lke</span><span class="op">[[</span><span class="st">"name"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"AEME"</span></span>
 <span></span>
@@ -379,10 +380,10 @@ function.</p>
 applied to the different slots of the <code>aeme</code> object. For
 example, the <code>lake</code> slot can be visualised using the
 <code>plot</code> function.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"lake"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro-aeme_files/figure-html/aeme-visualisation-lake-1.png" width="672"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"input"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro-aeme_files/figure-html/aeme-visualisation-input-1.png" width="672"></p>
 </div>
@@ -390,7 +391,7 @@ example, the <code>lake</code> slot can be visualised using the
 <div class="section level2">
 <h2 id="build-model-ensemble">Build Model Ensemble<a class="anchor" aria-label="anchor" href="#build-model-ensemble"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">inf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -398,7 +399,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for AEME [2024-05-15 16:16:07]</span></span>
+<span><span class="co">#&gt; Building simulation for AEME [2024-06-11 21:53:27]</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
 <span><span class="co">#&gt; Missing values in observed water level</span></span>
 <span><span class="co">#&gt; Using constant water level</span></span>
@@ -416,8 +417,9 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt;    oxy_initial   = 625 replaced with 312.5</span></span>
 <span><span class="co">#&gt; Building GOTM-WET for lake aeme</span></span>
 <span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sO2W 13 replaced with 10</span></span>
-<span><span class="va">aeme</span></span>
+<span><span class="co">#&gt; instances/abiotic_water/initialization/sO2W 13 replaced with 10</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Lake</span></span>
@@ -458,7 +460,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; DY-CD: Absent</span></span>
 <span><span class="co">#&gt; GLM-AED: Absent</span></span>
 <span><span class="co">#&gt; GOTM-WET: Absent</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

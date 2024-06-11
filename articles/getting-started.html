@@ -190,8 +190,8 @@ locations in New Zealand.</p>
 <span>                                 parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Checking if lat/lon point is in the grid...</span></span>
 <span><span class="co">#&gt; Point is in the grid.</span></span>
-<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2024-05-15 16:14:55]</span></span>
-<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-05-15 16:15:42]</span></span></code></pre></div>
+<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2024-06-11 21:52:07]</span></span>
+<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-06-11 21:53:02]</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -439,7 +439,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <code class="sourceCode R"><span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,  </span>
 <span>                       model_controls <span class="op">=</span> <span class="va">model_controls</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2024-05-15 16:15:45]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2024-06-11 21:53:06]</span></span>
 <span><span class="co">#&gt; Warning in max(bathy$elev): no non-missing arguments to max; returning -Inf</span></span>
 <span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
@@ -456,8 +456,9 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt;    oxy_initial   = 625 replaced with 312.5</span></span>
 <span><span class="co">#&gt; Building GOTM-WET for lake wainamu</span></span>
 <span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sO2W 13 replaced with 10</span></span>
-<span></span>
+<span><span class="co">#&gt; instances/abiotic_water/initialization/sO2W 13 replaced with 10</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
@@ -504,7 +505,7 @@ file configuration for each model. This will create the necessary files
 for each model to run. The files are also stored in the
 <code>aeme</code> object in the <code>configuration</code> slot with a
 list for hydrodynamic and ecosystem model configurations.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># View the files</span></span>
 <span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cfg</span><span class="op">[[</span><span class="st">"glm_aed"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
@@ -515,11 +516,11 @@ easy storage of all the data and also for easy sharing of the data with
 others. Sharing the <code>aeme</code> object with others allows them to
 run the ensemble of models without needing to reconstruct the
 object.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-15 16:15:47]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM run FAILED! [2024-05-15 16:15:48]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-06-11 21:53:08]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM run FAILED! [2024-06-11 21:53:08]</span></span>
 <span><span class="co">#&gt;      1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01</span></span>
 <span><span class="co">#&gt;      1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01</span></span>
 <span><span class="co">#&gt;      1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01</span></span>
@@ -530,9 +531,9 @@ object.</p>
 <span><span class="co">#&gt;      1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01</span></span>
 <span><span class="co">#&gt;      1.000000E-01     1.000000E-01</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-05-15 16:15:51]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-15 16:15:54]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-15 16:15:54]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-06-11 21:53:11]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-06-11 21:53:14]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-06-11 21:53:14]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting OXY_oxy for model glm_aed</span></span>
@@ -546,7 +547,7 @@ object.</p>
 <p>The output from the model run is stored in the <code>output</code>
 slot of the <code>aeme</code> object. This is a list with a list for
 each model. The list contains the output data from the model run.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># View the output</span></span>
 <span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in plot_output(aeme = aeme, model = model): Variable 'HYD_temp' not in</span></span>
@@ -561,7 +562,7 @@ each model. The list contains the output data from the model run.</p>
 <p>Saving the <code>aeme</code> object to a file can be done using the
 <code>saveRDS</code> function. This will save the object to a file with
 the <code>.rds</code>.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save the AEME object</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"aeme.rds"</span><span class="op">)</span></span></code></pre></div>
 </div>
