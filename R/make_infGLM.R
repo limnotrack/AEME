@@ -1,6 +1,7 @@
 #' write and configure inflows for a GLM simulation
 #'
 #' @inheritParams set_nml
+#' @inheritParams make_wdrGLM
 #' @param path_glm filepath; to GLM directory
 #' @param list_inf list of inflows
 #' @param mass logical; do mass conversion for GLM-AED units.
@@ -12,7 +13,7 @@
 #' @importFrom utils write.csv
 
 make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
-                        inf_factor = 1) {
+                        inf_factor = 1, update_nml = TRUE) {
 
   # Load Rdata
   utils::data("key_naming", package = "AEME", envir = environment())
@@ -83,8 +84,6 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                      inflow_vars = names(df)[2:ncol(df)],
                      coef_inf_entrain = 0
                      )
-
-    glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
   } else {
     arg_list <- list(num_inflows = 0, names_of_strms = "none",
                      strm_hf_angle = rep(80, 1),
@@ -97,8 +96,10 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                      inflow_vars = c("flow", "temp", "salt"),
                      coef_inf_entrain = 0
     )
-    glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
   }
 
-  return(glm_nml)
+  if (update_nml) {
+    glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
+    return(glm_nml)
+  }
 }
