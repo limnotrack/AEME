@@ -93,24 +93,27 @@
 <span><span class="co">#&gt; Attaching package: 'AEME'</span></span>
 <span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     time</span></span>
-<span><span class="co">## basic example code</span></span>
+<span><span class="co">#&gt;     time</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## basic example code</span></span>
 <span><span class="va">tmpdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">aeme_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/lake/"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span>
 <span><span class="co"># Copy files from package into tempdir</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="va">aeme_dir</span>, <span class="va">tmpdir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span>
-<span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmpdir</span>, <span class="st">"lake"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmpdir</span>, <span class="st">"lake"</span><span class="op">)</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/yaml_to_aeme.html">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Linking to GEOS 3.11.2, GDAL 3.7.2, PROJ 9.3.0; sf_use_s2() is FALSE</span></span>
+<span><span class="co">#&gt; Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.3.1; sf_use_s2() is FALSE</span></span>
 <span><span class="co">#&gt; Warning in aeme_constructor(lake = yaml$lake, time = yaml$time, configuration = yaml$configuration, : Lake area [152343 m2] is different to the area calculated from the lake</span></span>
-<span><span class="co">#&gt; shape [152433.09 m2].</span></span>
-<span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span>use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; shape [152433.09 m2].</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span>use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/build_ensemble.html">build_ensemble</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2024-05-14 16:18:57]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2024-06-11 22:08:20]</span></span>
 <span><span class="co">#&gt; Missing state variables in inflows: PHY_crypt</span></span>
 <span><span class="co">#&gt; Added default values for missing variables.</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
@@ -165,21 +168,22 @@
 <span><span class="co">#&gt; instances/diatoms/initialization/sDW 0.2 replaced with 0.25</span></span>
 <span><span class="co">#&gt; instances/diatoms/initialization/sNW 0.05 replaced with 0.038</span></span>
 <span><span class="co">#&gt; instances/diatoms/initialization/sPW 0.005 replaced with 0.0024</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sDIMW 4 replaced with 3</span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span><span class="co">#&gt; instances/abiotic_water/initialization/sDIMW 4 replaced with 3</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                      path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models in parallel... [2024-05-14 12:19:00]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 12:21:26]</span></span>
-<span><span class="co">#&gt; Reading models in parallel... [2024-05-14 12:21:26]</span></span>
-<span><span class="co">#&gt; Model reading complete![2024-05-14 12:21:29]</span></span></code></pre></div>
+<span><span class="co">#&gt; Running models in parallel... [2024-06-12 10:08:33]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-06-12 10:11:17]</span></span>
+<span><span class="co">#&gt; Reading models in parallel... [2024-06-12 10:11:18]</span></span>
+<span><span class="co">#&gt; Model reading complete![2024-06-12 10:11:21]</span></span></code></pre></div>
 <p>The model input and output (I/O) is handled as it’s own S4 object of class <code>aeme</code>. This allows for the standardisation and generalisation of functions for this class alongside ensuring integrity and validity to it’s structure.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "aeme"</span></span>
 <span><span class="co">#&gt; attr(,"package")</span></span>
 <span><span class="co">#&gt; [1] "AEME"</span></span></code></pre></div>
 <p>This allows for easier handling of the model output data within our structure and allows for condensed output to be printed to the console:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
@@ -222,7 +226,7 @@
 <span><span class="co">#&gt; GLM-AED: Present</span></span>
 <span><span class="co">#&gt; GOTM-WET: Present</span></span></code></pre></div>
 <p>Model data can be visualised easily using the <code><a href="reference/plot_output.html">plot_output()</a></code> function</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>, </span>
 <span>                  level <span class="op">=</span> <span class="cn">TRUE</span>, var_lims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">p1</span></span>
@@ -230,7 +234,7 @@
 <span><span class="co">#&gt; Warning: Removed 240 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_output-HYD_temp-1.png" width="100%"> Also, visualising lake level plots.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"LKE_lvlwtr"</span>,</span>
 <span>                  facet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">p2</span></span></code></pre></div>
