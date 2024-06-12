@@ -10,8 +10,8 @@ test_that("running DYRESM works", {
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = F,
                    model_controls = model_controls, path = path)
   lke <- lake(aeme)
@@ -35,8 +35,8 @@ test_that("running GLM works", {
   outf_factor <- c("glm_aed" = 1)
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
   # cfg <- configuration(aeme)
   # cfg$model_controls <- NULL
   # configuration(aeme) <- cfg
@@ -60,9 +60,9 @@ test_that("running GOTM works", {
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme,
-                         model = model, model_controls = model_controls,
-                         inf_factor = inf_factor, ext_elev = 5,
-                         use_bgc = FALSE)
+                     model = model, model_controls = model_controls,
+                     inf_factor = inf_factor, ext_elev = 5,
+                     use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
   lke <- lake(aeme)
@@ -84,8 +84,8 @@ test_that("running DYRESM-CAEDYM works", {
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = TRUE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path)
   lke <- lake(aeme)
@@ -110,8 +110,8 @@ test_that("running GLM-AED works", {
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = TRUE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path)
   plot_output(aeme, model = model, "HYD_temp", facet = TRUE) /
@@ -151,8 +151,8 @@ test_that("running GOTM-WET works", {
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = TRUE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path)
   lke <- lake(aeme)
@@ -174,9 +174,9 @@ test_that("running models in parallel works", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
-                         calc_wlev = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
+                     calc_wlev = FALSE)
   inp <- input(aeme)
   met <- inp$meteo
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
@@ -223,9 +223,9 @@ test_that("running models with wbal method = 1", {
   water_balance(aeme) <- w_bal
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
-                         calc_wlev = F)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
+                     calc_wlev = F)
   inp <- input(aeme)
   met <- inp$meteo
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
@@ -245,6 +245,41 @@ test_that("running models with wbal method = 1", {
   model_performance <- assess_model(aeme = aeme, model = model,
                                     var_sim = c("LKE_lvlwtr", "HYD_temp"))
   testthat::expect_true(is.data.frame(model_performance))
+
+  # DYRESM - Check for number of inflow and outflow files
+  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                    tolower(lke$name)),
+                                       "dy_cd"), pattern = "inf", full.names = TRUE)
+  n_inf <- as.numeric(strsplit(readLines(inflow_files)[2], "#")[[1]][1])
+  inf <- read.delim(inflow_files, skip = 3, sep = "\t")
+  testthat::expect_equal(n_inf, max(inf$InfNum))
+
+  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        "dy_cd"), pattern = "wdr", full.names = TRUE)
+  n_wdr <- as.numeric(strsplit(readLines(outflow_files)[2], "#")[[1]][1])
+  wdr <- read.delim(outflow_files, skip = 2, sep = "\t")
+  testthat::expect_equal(n_wdr, ncol(wdr) - 1)
+
+  # GLM - Check for number of inflow and outflow files
+  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                    tolower(lke$name)),
+                                       "glm_aed", "bcs"), pattern = "inf")
+  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        "glm_aed", "bcs"), pattern = "outf")
+  testthat::expect_equal(length(inflow_files), 1)
+  testthat::expect_equal(length(outflow_files), 1)
+
+  # GOTM - Check for number of inflow and outflow files
+  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                    tolower(lke$name)),
+                                       "gotm_wet", "inputs"), pattern = "inf")
+  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        "gotm_wet", "inputs"), pattern = "outf")
+  testthat::expect_equal(length(inflow_files), 3)
+  testthat::expect_equal(length(outflow_files), 1)
 })
 
 test_that("running models with wbal method = 3", {
@@ -253,6 +288,7 @@ test_that("running models with wbal method = 3", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
+  # unlink(path, recursive = TRUE)
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -270,9 +306,9 @@ test_that("running models with wbal method = 3", {
   outflows(aeme) <- outf
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
-                         calc_wlev = F, hum_type = 1)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
+                     calc_wlev = F, hum_type = 1)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
                    parallel = TRUE)
@@ -315,6 +351,41 @@ test_that("running models with wbal method = 3", {
                                                      tolower(lke$name)),
                                         model[-1], "output", "output.nc")))
   testthat::expect_true(file_chk)
+
+  # DYRESM - Check for number of inflow and outflow files
+  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                    tolower(lke$name)),
+                                       "dy_cd"), pattern = "inf", full.names = TRUE)
+  n_inf <- as.numeric(strsplit(readLines(inflow_files)[2], "#")[[1]][1])
+  inf <- read.delim(inflow_files, skip = 3, sep = "\t")
+  testthat::expect_equal(n_inf, max(inf$InfNum))
+
+  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        "dy_cd"), pattern = "wdr", full.names = TRUE)
+  n_wdr <- as.numeric(strsplit(readLines(outflow_files)[2], "#")[[1]][1])
+  wdr <- read.delim(outflow_files, skip = 2, sep = "\t")
+  testthat::expect_equal(n_wdr, ncol(wdr) - 1)
+
+  # GLM - Check for number of inflow and outflow files
+  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                    tolower(lke$name)),
+                                       "glm_aed", "bcs"), pattern = "inf")
+  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        "glm_aed", "bcs"), pattern = "outf")
+  testthat::expect_equal(length(inflow_files), 1)
+  testthat::expect_equal(length(outflow_files), 1)
+
+  # GOTM - Check for number of inflow and outflow files
+  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                    tolower(lke$name)),
+                                       "gotm_wet", "inputs"), pattern = "inf")
+  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
+                                                     tolower(lke$name)),
+                                        "gotm_wet", "inputs"), pattern = "outf")
+  testthat::expect_equal(length(inflow_files), 3)
+  testthat::expect_equal(length(outflow_files), 1)
 })
 
 
@@ -330,8 +401,8 @@ test_that("running models in parallel with no wbal calculated", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE, calc_wbal = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE, calc_wbal = FALSE)
   outf <- outflows(aeme)
   names(outf$data)
 
@@ -369,8 +440,8 @@ test_that("running models with no wbal/outflows calculated", {
   outflows(aeme) <- outf
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE, calc_wbal = F)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE, calc_wbal = F)
   outf <- outflows(aeme)
   names(outf$data)
 
@@ -405,9 +476,9 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE, calc_wbal = TRUE,
-                         calc_wlev = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE, calc_wbal = TRUE,
+                     calc_wlev = FALSE)
 
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
@@ -440,7 +511,7 @@ test_that("getting model output works", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, use_bgc = TRUE)
+                     model_controls = model_controls, use_bgc = TRUE)
   run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
            parallel = TRUE, return = FALSE)
 
@@ -464,8 +535,8 @@ test_that("getting model output in parallel works", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
   build_aeme(path = path, aeme = aeme, model = model,
-                 model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-                 use_bgc = TRUE)
+             model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
+             use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
                    parallel = TRUE)
@@ -493,8 +564,8 @@ test_that("running DYRESM with a spinup works", {
   time(aeme) <- tim
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model,
                    model_controls = model_controls, path = path)
   lke <- lake(aeme)
@@ -522,8 +593,8 @@ test_that("running GLM with a spinup works", {
   time(aeme) <- tim
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model,
                    model_controls = model_controls, path = path)
   lke <- lake(aeme)
@@ -551,8 +622,8 @@ test_that("running GOTM with a spinup works", {
   time(aeme) <- tim
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path)
   lke <- lake(aeme)
@@ -584,8 +655,8 @@ test_that("can build all models, run and write to new directory & re-run", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = TRUE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = TRUE)
 
   aeme <- run_aeme(aeme = aeme, model = model, parallel = TRUE,
                    model_controls = model_controls, path = path)
@@ -638,9 +709,9 @@ test_that("can build all models, run and write to new directory & re-run", {
 
   #
   aeme <- build_aeme(path = path2, aeme = aeme,
-                         model = model, model_controls = model_controls,
-                         inf_factor = inf_factor, ext_elev = 5,
-                         use_bgc = TRUE)
+                     model = model, model_controls = model_controls,
+                     inf_factor = inf_factor, ext_elev = 5,
+                     use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path2)
 
