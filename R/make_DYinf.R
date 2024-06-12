@@ -14,6 +14,30 @@
 make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
                         inf_factor = 1) {
 
+  if (length(infList) > 0) {
+    for (i in 1:length(infList)) {
+
+      if (names(infList)[i] == "wbal") {
+        infList[[i]] <-  infList[[i]] |>
+          dplyr::select(-c(inflow_glm_aed, inflow_gotm_wet)) |>
+          dplyr::rename(HYD_flow = inflow_dy_cd)
+      }
+
+      # format the tables
+      colnames(infList[[i]]) <- rename_modelvars(input = names(infList[[i]]),
+                                             type_output = "dy_cd")
+    }
+  } else {
+    infList <- list("EMPTY" = data.frame(
+      # InfNum = 1,
+      Date = seq.Date(date_range[1], date_range[2], by = 1),
+      VOL = 0, TEMPTURE = 10, SALINITY = 0, DO = 0, PO4 = 0, DOPL = 0,
+      POPL = 0, PIP = 0,	NH4 = 0, NO3 = 0, DONL = 0, PONL = 0, DOCL = 0,
+      POCL = 0, SiO2 = 0, CYANO = 0, CHLOR = 0, FDIAT = 0, SSOL1 = 0
+    )
+    )
+  }
+
   # get names for inflows
   infNames <- names(infList)
 
