@@ -1,10 +1,8 @@
 test_that("building DYRESM works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
   # aeme <- yaml_to_aeme(path = "inst/extdata/lake", "aeme.yaml")
@@ -21,6 +19,22 @@ test_that("building DYRESM works", {
                                                  tolower(lke$name)),
                                     model, "dyresm3p1.par"))
   testthat::expect_true(file_chk)
+
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "wainamu.wdr"))
+  testthat::expect_true(file_chk)
+
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "wainamu.met"))
+  testthat::expect_true(file_chk)
+
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "wainamu.inf"))
+  testthat::expect_true(file_chk)
+
 })
 
 test_that("building DYRESM-CAEDYM works", {
