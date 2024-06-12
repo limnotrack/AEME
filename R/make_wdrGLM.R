@@ -33,7 +33,7 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
       if (ncol(df_wdr) > 2) {
         df_wdr <- df_wdr |>
           dplyr::select(c(Date, outflow_glm_aed)) |>
-          dplyr::rename(outflow = outflow_glm_aed)
+          dplyr::rename(wbal = outflow_glm_aed)
       }
     }
     df_wdr <- df_wdr[stats::complete.cases(df_wdr), ]

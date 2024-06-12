@@ -61,22 +61,21 @@
 #'                use_bgc = FALSE)
 
 build_aeme <- function(aeme = NULL,
-                           config = NULL,
-                           model = c("dy_cd", "glm_aed", "gotm_wet"),
-                           model_controls,
-                           inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
-                                          "gotm_wet" = 1),
-                           outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
-                                           "gotm_wet" = 1),
-                           ext_elev = 0,
-                           use_bgc = FALSE,
-                           calc_wbal = TRUE,
-                           calc_wlev = TRUE,
-                           use_aeme = FALSE,
-                           coeffs = NULL,
-                           hum_type = 3,
-                           est_swr_hr = TRUE,
-                           path = "."
+                       config = NULL,
+                       model = c("dy_cd", "glm_aed", "gotm_wet"),
+                       model_controls,
+                       inf_factor = c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1),
+                       outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
+                                       "gotm_wet" = 1),
+                       ext_elev = 0,
+                       use_bgc = FALSE,
+                       calc_wbal = TRUE,
+                       calc_wlev = TRUE,
+                       use_aeme = FALSE,
+                       coeffs = NULL,
+                       hum_type = 3,
+                       est_swr_hr = TRUE,
+                       path = "."
 ) {
 
   # Load arguments
@@ -331,23 +330,27 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
         msg <- paste(strwrap("Correcting water balance using estimated
                              inflows and outflows (method = 3)."),
                      collapse = "\n")
+        inf[["wbal"]] <- wbal |>
+          dplyr::select(Date, inflow_dy_cd, inflow_glm_aed, inflow_gotm_wet,
+                        HYD_temp, CHM_salt)
+        # Add missing variables to water balance e.g. if use_bgc = TRUE
+        if (any(!inf_vars %in% names(inf[["wbal"]]))) {
+          add_vars <- setdiff(inf_vars, names(inf[["wbal"]]))
+          for (v in add_vars) {
+            inf[["wbal"]][[v]] <- model_controls$inf_default[match(v, model_controls$var_aeme)]
+          }
+        }
+      }
+
+      # Add water balance to outflow if method is 2 or 3
+      if (w_bal$method %in% c(2, 3)) {
+        outf[["wbal"]] <- wbal |>
+          dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
       }
 
       message(msg)
       w_bal[["data"]][["wbal"]] <- wbal
-      outf[["wbal"]] <- wbal |>
-        dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
-      inf[["wbal"]] <- wbal |>
-        dplyr::select(Date, inflow_dy_cd, inflow_glm_aed, inflow_gotm_wet,
-                      HYD_temp, CHM_salt)
 
-      # Add missing variables to water balance e.g. if use_bgc = TRUE
-      if (any(!inf_vars %in% names(inf[["wbal"]]))) {
-        add_vars <- setdiff(inf_vars, names(inf[["wbal"]]))
-        for (v in add_vars) {
-          inf[["wbal"]][[v]] <- model_controls$inf_default[match(v, model_controls$var_aeme)]
-        }
-      }
 
 
     } else {
