@@ -114,6 +114,11 @@ test_that("running GLM-AED works", {
                      ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path)
+  v1 <- get_var(aeme = aeme, model = model, var = "HYD_temp")
+  v2 <- get_var(aeme = aeme, model = model, var = "HYD_temp",
+                remove_spin_up = FALSE)
+  testthat::expect_true(v1$Date[1] > v2$Date[1])
+
   plot_output(aeme, model = model, "HYD_temp", facet = TRUE) /
     plot_output(aeme, model = model, "CHM_oxy", facet = TRUE)
   plot_output(aeme, model = model, "HYD_schstb", facet = FALSE) /

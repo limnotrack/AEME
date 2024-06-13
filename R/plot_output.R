@@ -6,6 +6,8 @@
 #' @inheritParams build_aeme
 #' @param var_sim string; of variable to plot
 #' @param level logical; include lake level. Only applies for contour plots.
+#' @param remove_spin_up logical; remove spin-up period from plot. Default is
+#' TRUE.
 #' @param print_plots logical; print plots
 #' @param var_lims numeric vector of length 2; limits for the variable.
 #' Defaults to NULL and will generate common limits for all variables.
@@ -63,9 +65,9 @@
 #'
 
 plot_output <- function(aeme, model, var_sim = "HYD_temp", add_obs = TRUE,
-                        level = FALSE, print_plots = FALSE,
-                        var_lims = NULL, ylim = NULL, cumulative = FALSE,
-                        facet = TRUE) {
+                        level = FALSE, remove_spin_up = TRUE,
+                        print_plots = FALSE, var_lims = NULL, ylim = NULL,
+                        cumulative = FALSE, facet = TRUE) {
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
@@ -139,7 +141,8 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", add_obs = TRUE,
   #                          name = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
 
   df <- get_var(aeme = aeme, model = model, var_sim = var_sim,
-                return_df = TRUE, cumulative = cumulative)
+                return_df = TRUE, remove_spin_up = remove_spin_up,
+                cumulative = cumulative)
 
   # Align observations to modelled depths because observations are relative to
   # the lake surface while modelled depths are relative to the lake bottom

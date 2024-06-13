@@ -16,7 +16,7 @@
 #' @export
 
 get_var <- function(aeme, model, var_sim, return_df = TRUE,
-                    use_obs = FALSE, cumulative = FALSE) {
+                    use_obs = FALSE, remove_spin_up = TRUE, cumulative = FALSE) {
 
   # Extract output from aeme ----
   inp <- input(aeme)
@@ -139,6 +139,15 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE,
         dplyr::mutate(lyr_thk = ifelse(c(-999, diff(lyr_top)) < 0, # | is.na(-c(NA,diff(lyr_top))),
                                        c(diff(lyr_top),NA),
                                        c(NA,diff(lyr_top))))
+
+      # Trim off the spin up period ----
+      if (remove_spin_up) {
+
+        idx2 <- which(df$Date >= aeme_time$start &
+                        df$Date <= aeme_time$stop)
+        df <- df[idx2, ]
+      }
+
       if (cumulative) {
         warning("Applying cumulative to a value with a depth component.")
         df <- df |>

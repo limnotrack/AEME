@@ -604,19 +604,19 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
 
 
   # Trim off the spin up period ----
-  if (remove_spin_up) {
-
-    idx2 <- which(nc_list$Date >= aeme_time$start &
-                    nc_list$Date <= aeme_time$stop)
-
-    for (l in seq_along(nc_list)) {
-      if (length(dim(nc_list[[l]])) == 1 | is.null(dim(nc_list[[l]]))) {
-        nc_list[[l]] <- nc_list[[l]][idx2]
-      } else if (length(dim(nc_list[[l]])) == 2) {
-        nc_list[[l]] <- nc_list[[l]][, idx2]
-      }
-    }
-  }
+  # if (remove_spin_up) {
+  #
+  #   idx2 <- which(nc_list$Date >= aeme_time$start &
+  #                   nc_list$Date <= aeme_time$stop)
+  #
+  #   for (l in seq_along(nc_list)) {
+  #     if (length(dim(nc_list[[l]])) == 1 | is.null(dim(nc_list[[l]]))) {
+  #       nc_list[[l]] <- nc_list[[l]][idx2]
+  #     } else if (length(dim(nc_list[[l]])) == 2) {
+  #       nc_list[[l]] <- nc_list[[l]][, idx2]
+  #     }
+  #   }
+  # }
 
   return(nc_list)
   }

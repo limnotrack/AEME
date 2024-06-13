@@ -10,6 +10,7 @@ get_var(
   var_sim,
   return_df = TRUE,
   use_obs = FALSE,
+  remove_spin_up = TRUE,
   cumulative = FALSE
 )
 }
@@ -27,6 +28,9 @@ list. Default is TRUE.}
 \item{use_obs}{logical; if TRUE, use observations to extract the variable at
 time and depth of observations. Default is FALSE. Use this option if you
 want to compare model output to observations.}
+
+\item{remove_spin_up}{logical; remove spin-up period from plot. Default is
+TRUE.}
 
 \item{cumulative}{logical; if TRUE, return cumulative sum of variable}
 }

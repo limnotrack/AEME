@@ -10,6 +10,7 @@ plot_output(
   var_sim = "HYD_temp",
   add_obs = TRUE,
   level = FALSE,
+  remove_spin_up = TRUE,
   print_plots = FALSE,
   var_lims = NULL,
   ylim = NULL,
@@ -28,6 +29,9 @@ plot_output(
 \item{add_obs}{logical; add observations to plot}
 
 \item{level}{logical; include lake level. Only applies for contour plots.}
+
+\item{remove_spin_up}{logical; remove spin-up period from plot. Default is
+TRUE.}
 
 \item{print_plots}{logical; print plots}
 
