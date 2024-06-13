@@ -116,14 +116,29 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     on.exit(ncdf4::nc_close(nc_daily))
     if (nc_daily$error) stop("Could not open netCDF file: ", out_file)
 
-    V <- ncdf4::ncvar_get(nc_daily, "int_water_balance")
+    lyr_h2 <- ncdf4::ncvar_get(nc_daily, "h")
+    Af <- ncdf4::ncvar_get(nc_daily, "Af")
+    # Ql <- ncdf4::ncvar_get(nc_daily, "Qlayer") * 86400
+    V <- sapply(seq_len(ncol(Af)), \(i) {
+      sum(lyr_h2[, i] * Af[, i])
+      # (ncdf4::ncvar_get(nc_daily, inflow_vars[x]) * 86400) # / A0
+    })
+    # dV <- diff(c(V[1], V))
+    # dV_sum <- cumsum(dV)
+    # int_wb <- ncdf4::ncvar_get(nc_daily, "int_water_balance")
+    # dif <- dV - int_wb
+    # dwb <- diff(c(0, int_wb))
+    # plot(dwb, type = "l", xlim = c(0, 31), ylim = c(0, 10000))
+    # points(dV, col = 2)
+    # points(Ql[31,], col = 3)
+
     Qe <- ncdf4::ncvar_get(nc_daily, "qe")
     Qh <- ncdf4::ncvar_get(nc_daily, "qh")
     Qlw <- ncdf4::ncvar_get(nc_daily, "ql")
     Qsw <- ncdf4::ncvar_get(nc_daily, "I_0")
     evap_flux <- abs(ncdf4::ncvar_get(nc_daily, "evap"))
     EVAP <- evap_flux * 86400 # m/s -> m/day
-    A0 <- ncdf4::ncvar_get(nc_daily, "Af") |>
+    A0 <- Af |>
       apply(2, max)
     evap_vol <- EVAP * A0
 
