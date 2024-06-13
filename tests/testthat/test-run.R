@@ -121,7 +121,6 @@ test_that("running GLM-AED works", {
     plot_output(aeme, model = model, "HYD_thmcln", facet = FALSE)
 
   var_sim <- c("LKE_lvlwtr", "HYD_temp", "HYD_thmcln", "HYD_schstb")
-
   model_performance <- assess_model(aeme = aeme, model = model,
                                     var_sim = var_sim)
 
