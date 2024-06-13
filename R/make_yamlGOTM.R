@@ -53,12 +53,14 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
   } else {
     bathy.gotm <- data.frame(bathy)
   }
+  bathy.gotm <- bathy.gotm |>
+    dplyr::mutate(elev = round(elev, 2))
 
 
-  z_diff <- round((min(bathy.gotm$elev) + init_depth))
+  z_diff <- round((min(bathy.gotm$elev) + init_depth), 2)
   a0 <- round(approx(bathy.gotm$elev, bathy.gotm$area, z_diff)$y)
   if (!(z_diff %in% bathy.gotm$elev)) {
-    bathy.gotm <- rbind(bathy.gotm, c(z_diff, a0))
+    bathy.gotm <- rbind(bathy.gotm, c(z_diff, a0, 0))
   }
 
 
