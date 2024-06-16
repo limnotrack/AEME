@@ -191,6 +191,8 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   } else {
     hyps.ext <- hyps
   }
+  hyps.ext <- hyps.ext |>
+    dplyr::mutate(elev = round(elev, 2))
 
   if ("sst" %in% names(obs_met)) {
     col_select <- c("Date", "MET_wnduvu", "MET_wnduvv", "MET_tmpair",
@@ -469,14 +471,19 @@ get_hyps_val <- function(depth, hyps) {
 calc_V <- function(depth, hyps, h = 0.1) {
   sapply(depth, \(d) {
     depths <- seq(min(hyps$elev), d, h)
-    if (tail(depths, 1) != d ) {
+    if (tail(depths, 1) != d) {
       depths <- c(depths, d)
     }
-    # areas <- approx()
     areas <- approx(hyps[["elev"]], hyps[["area"]], depths)$y
     r <- sqrt((c(areas[-length(areas)]) / pi))
     R <- sqrt((areas[-1] / pi))
     V <- ((pi * h) / 3) * (R*R + R*r + r*r)
+    # V <- numeric(length(areas) - 1)
+    # for (i in 1:(length(areas) - 1)) {
+    #   depth_diff <- depths[i + 1] - depths[i]
+    #   area_avg <- (areas[i + 1] + areas[i]) / 2
+    #   V[i] <- depth_diff * area_avg
+    # }
     sum(V)
   })
 }
