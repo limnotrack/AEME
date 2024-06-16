@@ -10,7 +10,7 @@
 make_wdrGOTM <- function(outf, path_gotm, outf_factor = 1) {
   names.outf <- names(outf)
 
-  for (w in 1:length(names.outf)) {
+  for (w in seq_len(length(names.outf))) {
 
     outf_df <- outf[[w]]
     if ("outflow_gotm_wet" %in% colnames(outf_df)) {
