@@ -66,7 +66,7 @@ Elevation data can be acquired for New Zealand from the digital elevation model
 hosted on the LINZ Data Service. There is a wrapper function for this in the
 `aemetools` package. This requires an API key from LINZ.
 
-You can easily create on the LINZ website: https://data.linz.govt.nz/ or use the
+You can easily create a key on the LINZ website: https://data.linz.govt.nz/ or use the
 function within the `aemetools` package to create one.
 
 ```{r get-linz-api-key, eval = FALSE}
@@ -262,8 +262,8 @@ model <- c("dy_cd", "glm_aed", "gotm_wet")
 
 ```{r build-ensemble}
 # Build ensemble
-aeme <- build_aeme(aeme = aeme, model = model,  
-                       model_controls = model_controls, use_bgc = TRUE)
+aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
+                   use_bgc = TRUE)
 
 print(aeme)
 ```
