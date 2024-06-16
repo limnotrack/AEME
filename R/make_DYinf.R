@@ -4,6 +4,7 @@
 #' @param lakename name of lake being simulated
 #' @param info extra text to be printed in file header (base = 'DYRESM inflows file')
 #' @param infList a list containing all inflow data frames to be written to the file (including groundwater and rainfall if applicable)
+#' @param date_range vector of dates for the simulation
 #' @param filePath path to write the complete .inf file
 #' @keywords inputs
 #'
@@ -12,7 +13,7 @@
 #'
 
 make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
-                        inf_factor = 1) {
+                        date_range, inf_factor = 1) {
 
   if (length(infList) > 0) {
     for (i in 1:length(infList)) {
