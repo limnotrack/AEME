@@ -351,9 +351,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
       message(msg)
       w_bal[["data"]][["wbal"]] <- wbal
-
-
-
     } else {
       w_bal[["data"]][["wbal"]] <- NULL
       outf[["wbal"]] <- NULL
