@@ -178,7 +178,7 @@ build_dycd <- function(lakename, model_controls, date_range, gps,
   #------ INFLOWS -------
   # write the model input file
   make_DYinf(lakename, info = "test", infList = inf, filePath = path.dy,
-             inf_factor = inf_factor)
+             date_range = date_range, inf_factor = inf_factor)
 
 
 
