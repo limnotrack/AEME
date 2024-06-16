@@ -124,6 +124,11 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE,
                        value = variable,
                        Model = m,
                        lyr_thk = NA)
+      # Trim off the spin up period ----
+      if (remove_spin_up) {
+        idx2 <- which(df$Date >= aeme_time$start & df$Date <= aeme_time$stop)
+        df <- df[idx2, ]
+      }
       if (cumulative) {
         df <- df |>
           dplyr::mutate(value = cumsum(value))
@@ -142,9 +147,7 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE,
 
       # Trim off the spin up period ----
       if (remove_spin_up) {
-
-        idx2 <- which(df$Date >= aeme_time$start &
-                        df$Date <= aeme_time$stop)
+        idx2 <- which(df$Date >= aeme_time$start & df$Date <= aeme_time$stop)
         df <- df[idx2, ]
       }
 
