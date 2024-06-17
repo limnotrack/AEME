@@ -86,8 +86,8 @@ build_aeme <- function(aeme = NULL,
   #                 "gotm_wet" = 1)
   # ext_elev = 0
   # use_bgc = T
-  # calc_wbal = TRUE
-  # calc_wlev = TRUE
+  # calc_wbal = T
+  # calc_wlev = F
   # use_aeme = FALSE
   # coeffs = NULL
   # hum_type = 3
@@ -358,6 +358,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
     #* Update water balance slot in aeme object ----
     water_balance(aeme) <- w_bal
+    if (length(outf) == 0) {
+      outf <- NULL
+    }
 
     outflows(aeme) <- list(data = outf,
                            outflow_lvl = aeme_outf[["lvl"]],
