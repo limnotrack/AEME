@@ -143,9 +143,12 @@ test_that("building GOTM-WET works", {
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
-  build_aeme(path = path, aeme = aeme, model = model,
-             model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-             use_bgc = TRUE)
+  wb <- water_balance(aeme)
+  wb$method <- 3
+  water_balance(aeme) <- wb
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = TRUE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
