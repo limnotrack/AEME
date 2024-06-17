@@ -65,6 +65,17 @@ test_that("running GOTM works", {
                      use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
+  inp <- input(aeme)
+  outp <- output(aeme)
+  wb <- water_balance(aeme)
+  head(outp[[model]]$Date)
+  head(outp[[model]]$LKE_V)
+  head(outp[[model]]$HYD_Ts)
+  head(outp[[model]]$LKE_lvlwtr) + min(inp$hypsograph$elev)
+  head(wb$data$wbal)
+  AEME:::calc_V(wb$data$wbal$value[1], hyps = inp$hypsograph, h = 0.01)
+
+
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -109,6 +120,10 @@ test_that("running GLM-AED works", {
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
+  tim <- time(aeme)
+  tim$start <- tim$start + (100 * 86400)
+  tim$spin_up$glm_aed <- 100
+  time(aeme) <- tim
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
@@ -119,8 +134,8 @@ test_that("running GLM-AED works", {
                 remove_spin_up = FALSE)
   testthat::expect_true(v1$Date[1] > v2$Date[1])
 
-  plot_output(aeme, model = model, "HYD_temp", facet = TRUE) /
-    plot_output(aeme, model = model, "CHM_oxy", facet = TRUE)
+  plot_output(aeme, model = model, "HYD_temp", facet = TRUE, remove_spin_up = TRUE, level = FALSE) /
+    plot_output(aeme, model = model, "CHM_oxy", facet = TRUE, remove_spin_up = FALSE)
   plot_output(aeme, model = model, "HYD_schstb", facet = FALSE) /
     plot_output(aeme, model = model, "CHM_oxycln", facet = FALSE) /
     plot_output(aeme, model = model, "HYD_thmcln", facet = FALSE)
@@ -217,6 +232,9 @@ test_that("running models with wbal method = 1", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  lke <- lake(aeme)
+  unlink(file.path(path, paste0(lke$id, "_", tolower(lke$name))),
+         recursive = TRUE)
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -235,7 +253,6 @@ test_that("running models with wbal method = 1", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
                    parallel = TRUE)
-  lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model[1], "DYsim.nc"))
@@ -294,6 +311,9 @@ test_that("running models with wbal method = 3", {
   path <- file.path(tmpdir, "lake")
   # unlink(path, recursive = TRUE)
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  lke <- lake(aeme)
+  unlink(file.path(path, paste0(lke$id, "_", tolower(lke$name))),
+         recursive = TRUE)
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -345,7 +365,6 @@ test_that("running models with wbal method = 3", {
   #                                         colour = "Est")) +
   #   geom_line(data = gotm_ts, aes(x = Date, y = value))
 
-  lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model[1], "DYsim.nc"))
