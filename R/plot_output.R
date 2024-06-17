@@ -88,6 +88,7 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", add_obs = TRUE,
   # Load data from aeme
   obs <- observations(aeme)
   inp <- input(aeme)
+  tme <- time(aeme)
 
   if (!is.null(obs$level)) {
     obs_level <- obs$level
@@ -115,6 +116,9 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", add_obs = TRUE,
     "[["(outp[[m]], "Date")
   })
   xlim <- as.Date(range(this.list, na.rm = TRUE))
+  if (remove_spin_up) {
+    xlim <- c(as.Date(tme$start), as.Date(tme$stop))
+  }
 
   # Filter observations by variable and Date
   if (!is.null(obs$lake)) {
