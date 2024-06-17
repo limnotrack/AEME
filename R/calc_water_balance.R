@@ -48,7 +48,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   date_stop <- aeme_time[["stop"]] + lubridate::ddays(1)
   date_vector <- seq.Date(from = as.Date(spin_start), to = as.Date(date_stop),
                           by = 1)
-  surf <- max(hyps$elev)
+  surf <- elevation
 
   # If observations of level..
   if (use == "obs") {
