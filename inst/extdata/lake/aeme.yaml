@@ -53,6 +53,4 @@ water_balance:
       model: null                       # file with modelled water balance data [csv file]
       wbal: null                        # Calculated water balance with build_aeme()
 output:
-   dy_cd: null
-   glm_aed: null
-   gotm_wet: null
+   n_members: 0                         # Number of ensemble members in output [integer]
