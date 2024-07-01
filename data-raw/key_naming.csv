@@ -51,7 +51,7 @@ PHS_popr,POPR,,,,,,,0.03097376,,FALSE,NA
 PHS_pip,PIP,PHS_frp_ads,abiotic_water_sPAIMW,instances/abiotic_water/initialization/sPAIMW,Particulate inorganic phosphorus,Particulate_inorganic_phosphorus_g/m3,Particulate~inorganic~phosphorus~(g~m^-3),0.03097376,6.00E-04,FALSE,NA
 PHS_tp,TP,TOT_tp,wet_totP_calculator_result,,Total phosphorus,Total_phosphorus_g/m3,Total~phosphorus~(g~m^-3),0.03097376,,FALSE,NA
 NIT_amm,NH4,NIT_amm,abiotic_water_sNH4W,instances/abiotic_water/initialization/sNH4W,Ammoniacal nitrogen,Ammoniacal_nitrogen_g/m3,Ammoniacal~nitrogen~(g~m^-3),0.0140067,0.004,FALSE,NA
-NIT_nit,NO3,NIT_nit,abiotic_water_sNO3W,instances/abiotic_water/initialization/sNO3W,,Nitrate-N_g/m3,Nitrate-N~(g~m^-3),0.0140067,4.10E-04,FALSE,NA
+NIT_nit,NO3,NIT_nit,abiotic_water_sNO3W,instances/abiotic_water/initialization/sNO3W,Nitrate,Nitrate-N_g/m3,Nitrate-N~(g~m^-3),0.0140067,4.10E-04,FALSE,NA
 NIT_don,DONL,OGM_don,abiotic_water_sNDOMW,instances/abiotic_water/initialization/sNDOMW,Dissolved organic N,Dissolved_organic_N_g/m3,Dissolved~organic~N~(g~m^-3),0.0140067,4.10E-04,FALSE,NA
 NIT_donr,DONR,,,,,,,0.0140067,,FALSE,NA
 NIT_pon,PONL,OGM_pon,abiotic_water_sNPOMW,instances/abiotic_water/initialization/sNPOMW,Particulate organic N,Particulate_organic_N_g/m3,Particulate~organic~N~(g~m^-3),0.0140067,0.002,FALSE,NA
