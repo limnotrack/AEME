@@ -15,7 +15,7 @@
 #'
 
 load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
-                        nlev = NULL) {
+                        nlev = NULL, ens_n = 1) {
 
   if (is.null(nlev)) {
     inp <- input(aeme)
@@ -124,10 +124,13 @@ load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
   # lapply(mods, \(x) x$HYD_temp[, 500])
   # lapply(mods, \(x) x$LKE_layers[, 10])
 
-  new_output <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
-                     gotm_wet = mods[["gotm_wet"]])
+  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
 
-  output(aeme) <- new_output
+  outp[[ens_lab]] <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
+                          gotm_wet = mods[["gotm_wet"]])
+  outp$n_members <- sum(grepl("ens", names(outp)))
+
+  output(aeme) <- outp
 
   return(aeme)
 }
