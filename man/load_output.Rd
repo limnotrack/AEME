@@ -4,7 +4,15 @@
 \alias{load_output}
 \title{Load AEME output to the aeme object}
 \usage{
-load_output(model, aeme, path, model_controls, parallel = FALSE, nlev = NULL)
+load_output(
+  model,
+  aeme,
+  path,
+  model_controls,
+  parallel = FALSE,
+  nlev = NULL,
+  ens_n = 1
+)
 }
 \arguments{
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
@@ -23,6 +31,9 @@ load_output(model, aeme, path, model_controls, parallel = FALSE, nlev = NULL)
 calculates number of levels based on lake depth as provided within the
 hypsograph. If the lake is less thatn 3m deep, it outputs every 0.1m, else
 if it is greater than 3m, it outputs every 0.33m. Defaults to NULL.}
+
+\item{ens_n}{numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.}
 }
 \value{
 Updated aeme object with model output

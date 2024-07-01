@@ -9,6 +9,7 @@ get_var(
   model,
   var_sim,
   return_df = TRUE,
+  ens_n = 1,
   use_obs = FALSE,
   remove_spin_up = TRUE,
   cumulative = FALSE
@@ -24,6 +25,9 @@ get_var(
 
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.}
+
+\item{ens_n}{numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.}
 
 \item{use_obs}{logical; if TRUE, use observations to extract the variable at
 time and depth of observations. Default is FALSE. Use this option if you

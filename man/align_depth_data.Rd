@@ -4,7 +4,7 @@
 \alias{align_depth_data}
 \title{Align observation depth data with model data}
 \usage{
-align_depth_data(aeme, model, var_sim, return_df = TRUE)
+align_depth_data(aeme, model, var_sim, ens_n = 1, return_df = TRUE)
 }
 \arguments{
 \item{aeme}{aeme; data object.}
@@ -13,6 +13,9 @@ align_depth_data(aeme, model, var_sim, return_df = TRUE)
 `gotm_wet`.}
 
 \item{var_sim}{string; of variable to plot}
+
+\item{ens_n}{numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.}
 
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.}

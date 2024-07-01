@@ -8,6 +8,7 @@ plot_output(
   aeme,
   model,
   var_sim = "HYD_temp",
+  ens_n = 1,
   add_obs = TRUE,
   level = FALSE,
   remove_spin_up = TRUE,
@@ -25,6 +26,9 @@ plot_output(
 `gotm_wet`.}
 
 \item{var_sim}{string; of variable to plot}
+
+\item{ens_n}{numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.}
 
 \item{add_obs}{logical; add observations to plot}
 

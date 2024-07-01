@@ -8,6 +8,7 @@ run_aeme(
   aeme,
   model,
   return = TRUE,
+  ens_n = 1,
   model_controls = NULL,
   nlev = NULL,
   verbose = FALSE,
@@ -27,6 +28,9 @@ run_aeme(
 
 \item{return}{logical; return model output within an `aeme` object? Defaults
 to TRUE.}
+
+\item{ens_n}{numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.}
 
 \item{model_controls}{dataframe; of configuration loaded from
 "model_controls.csv".}
@@ -73,8 +77,8 @@ inf_factor = c("glm_aed" = 1)
 outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
 build_aeme(path = path, aeme = aeme, model = model,
-               model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-               use_bgc = TRUE)
+           model_controls = model_controls, inf_factor = inf_factor,
+           use_bgc = TRUE)
 run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
           return = FALSE)
 }
