@@ -27,8 +27,13 @@ make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake, crest,
   } else {
     max_layer_thick <- 0.8
   }
+  if (max(bathy_glm[, 1]) < 50) {
+    max_layers <- 500
+  } else {
+    max_layers <- 1000
+  }
 
-  arg_list <- list(max_layers = 500, min_layer_vol = 0.025,
+  arg_list <- list(max_layers = max_layers, min_layer_vol = 0.025,
                    min_layer_thick = 0.1,
                    max_layer_thick = max_layer_thick,
                    crest_elev = crest,
