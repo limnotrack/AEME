@@ -63,7 +63,7 @@
 build_aeme <- function(aeme = NULL,
                        config = NULL,
                        model = c("dy_cd", "glm_aed", "gotm_wet"),
-                       model_controls,
+                       model_controls = NULL,
                        inf_factor = c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1),
                        outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
                                        "gotm_wet" = 1),
@@ -99,6 +99,14 @@ build_aeme <- function(aeme = NULL,
 
   if (is.null(aeme) & is.null(config)) {
     stop("Either 'aeme' or 'config' must be supplied.")
+  }
+  if (is.null(model_controls) & !is.null(aeme)) {
+    cfg <- configuration(aeme)
+    model_controls <- cfg$model_controls
+  } else if (is.null(model_controls) & !is.null(aeme)) {
+    stop("model_controls must be supplied.")
+  } else if (is.null(model_controls) & is.null(aeme)) {
+    stop("Either 'aeme' or 'model_controls' must be supplied.")
   }
 
   #--- metadata
