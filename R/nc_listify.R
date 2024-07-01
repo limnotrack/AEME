@@ -76,7 +76,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     })
 
     sst <- ncdf4::ncvar_get(nc, "sst")[idx]
-    if (sum(sst == 0) > 1 | sum(is.na(sst)) > 0) {
+    if (sum(is.na(sst)) > 0) { # sum(sst == 0) > 1
       # Run-length encoding of the vector
       sst[is.na(sst)] <- -999
       rle_result <- rle(as.vector(sst))
