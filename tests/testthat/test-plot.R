@@ -41,7 +41,7 @@ test_that("plotting model output works", {
                    ncores = 2L)
 
 
-  p1 <-  plot(aeme, "output")
+  p1 <- plot(aeme, "output")
   testthat::expect_true(ggplot2::is.ggplot(p1))
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
