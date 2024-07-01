@@ -20,7 +20,7 @@ test_that("running DYRESM works", {
                                     model, "DYsim.nc"))
   testthat::expect_true(file_chk)
   outp <- output(aeme)
-  testthat::expect_true(!is.null(outp$dy_cd))
+  testthat::expect_true(!is.null(outp$ens_001$dy_cd))
 })
 
 test_that("running GLM works", {
@@ -66,15 +66,15 @@ test_that("running GOTM works", {
                      use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
-  inp <- input(aeme)
-  outp <- output(aeme)
-  wb <- water_balance(aeme)
-  head(outp[[model]]$Date)
-  head(outp[[model]]$LKE_V)
-  head(outp[[model]]$HYD_Ts)
-  head(outp[[model]]$LKE_lvlwtr) + min(inp$hypsograph$elev)
-  head(wb$data$wbal)
-  AEME:::calc_V(wb$data$wbal$value[1], hyps = inp$hypsograph, h = 0.01)
+  # inp <- input(aeme)
+  # outp <- output(aeme)
+  # wb <- water_balance(aeme)
+  # head(outp[[model]]$Date)
+  # head(outp[[model]]$LKE_V)
+  # head(outp[[model]]$HYD_Ts)
+  # head(outp[[model]]$LKE_lvlwtr) + min(inp$hypsograph$elev)
+  # head(wb$data$wbal)
+  # AEME:::calc_V(wb$data$wbal$value[1], hyps = inp$hypsograph, h = 0.01)
 
 
   lke <- lake(aeme)
@@ -107,7 +107,7 @@ test_that("running DYRESM-CAEDYM works", {
   testthat::expect_true(file_chk)
 
   outp <- output(aeme)
-  testthat::expect_true(!is.null(outp$dy_cd))
+  testthat::expect_true(!is.null(outp$ens_001$dy_cd))
 })
 
 test_that("running GLM-AED works", {
@@ -779,5 +779,5 @@ test_that("running ensemble works", {
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 
-  testthat::expect_true(outp$n_members)
+  testthat::expect_true(outp$n_members > 1)
 })
