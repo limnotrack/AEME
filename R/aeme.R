@@ -224,6 +224,7 @@ aeme_constructor <- function(
   }
   if (missing(output)) {
     output <- list(
+      n_members = 0,
       dy_cd = NULL,
       glm_aed = NULL,
       gotm_wet = NULL
@@ -855,6 +856,18 @@ setMethod("show", "aeme", function(object) {
   wbal <- water_balance(object)
   outp <- output(object)
 
+  n_dyresm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
+  n_glm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
+  n_gotm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
+  if (outp$n_members > 0) {
+    ens_names <- names(outp)[grepl("ens", names(outp))]
+    for (i in 1:length(ens_names)) {
+      n_dyresm[i] <- ifelse(!is.null(outp[[ens_names[i]]][["dy_cd"]]), 1, 0)
+      n_glm[i] <- ifelse(!is.null(outp[[ens_names[i]]][["glm_aed"]]), 1, 0)
+      n_gotm[i] <- ifelse(!is.null(outp[[ens_names[i]]][["gotm_wet"]]), 1, 0)
+    }
+  }
+
   cat(
     "\t\t\t   AEME ",
     paste0(
@@ -939,11 +952,10 @@ setMethod("show", "aeme", function(object) {
            "Present", "Absent"),
     "\n-------------------------------------------------------------------\n",
     "  Output: ", "\n",
-    "DY-CD: ", ifelse(is.null(outp$dy_cd), "Absent", "Present"),
-    "\nGLM-AED: ", ifelse(is.null(outp$glm_aed), "Absent",
-                          "Present"),
-    "\nGOTM-WET: ", ifelse(is.null(outp$gotm_wet), "Absent",
-                           "Present"),
+    "Number of ensembles: ", outp$n_members,
+    "\nDY-CD:    ", paste(n_dyresm, collapse = " "),
+    "\nGLM-AED:  ", paste(n_glm, collapse = " "),
+    "\nGOTM-WET: ", paste(n_gotm, collapse = " "),
     sep = ""
   )
 })
