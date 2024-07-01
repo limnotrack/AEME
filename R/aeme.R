@@ -1045,6 +1045,10 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
   if (missing(y)) {
     y <- "output"
   }
+  if (missing(ens_n)) {
+    ens_n <- 1
+    ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+  }
 
   if (!(y %in% slotNames(x))) {
     stop("'", y, "' is not a named slot in x. Options are:\n'",
@@ -1294,8 +1298,8 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
   if (y == "output") {
     # inp <- input(x)
     outp <- output(x)
-    model <- names(outp)
-    p1 <- plot_output(aeme = x, model = model)
+    model <- names(outp[[ens_lab]])
+    p1 <- plot_output(aeme = x, model = model, ens_n = ens_n)
     return(p1)
 
     obs <- observations(x)
