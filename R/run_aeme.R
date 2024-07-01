@@ -12,6 +12,8 @@
 #' to `min(c(detectCores() - 1, length(model)))`.
 #' @param check_output logical; check model output after running? Defaults to
 #' FALSE.
+#' @param ens_n numeric; ensemble number to allocate to model output which is
+#' loaded. Defaults to 1.
 #'
 #' @return an `aeme` object with model output loaded.
 #' @export
@@ -33,15 +35,16 @@
 #' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
 #' build_aeme(path = path, aeme = aeme, model = model,
-#'                model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-#'                use_bgc = TRUE)
+#'            model_controls = model_controls, inf_factor = inf_factor,
+#'            use_bgc = TRUE)
 #' run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
 #'           return = FALSE)
 #' }
 
-run_aeme <- function(aeme, model, return = TRUE, model_controls = NULL,
-                     nlev = NULL, verbose = FALSE, debug = FALSE, timeout = 0,
-                     parallel = FALSE, ncores, check_output = FALSE, path = ".") {
+run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
+                     model_controls = NULL, nlev = NULL, verbose = FALSE,
+                     debug = FALSE, timeout = 0, parallel = FALSE, ncores,
+                     check_output = FALSE, path = ".") {
 
   if (is.null(model_controls)) {
     model_controls <- get_model_controls(aeme = aeme)
@@ -51,9 +54,22 @@ run_aeme <- function(aeme, model, return = TRUE, model_controls = NULL,
     stop("`model_controls` need to be provided to load model output.")
   }
 
+
+
   lke <- lake(aeme)
   sim_folder <- file.path(path, paste0(lke$id,"_",
-                                      tolower(lke$name)))
+                                       tolower(lke$name)))
+  if (!dir.exists(sim_folder)) {
+    stop("Simulation folder does not exist.")
+  }
+
+  # Check if model directories exist
+  model_dir_chk <- !any(dir.exists(file.path(sim_folder, model)))
+  if (model_dir_chk) {
+    stop("Model folder does not exist.\n",
+         file.path(sim_folder, model)[dir.exists(file.path(sim_folder, model))])
+  }
+
   run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
                          debug = debug, timeout = timeout)
 
@@ -65,12 +81,12 @@ run_aeme <- function(aeme, model, return = TRUE, model_controls = NULL,
     parallel::clusterExport(cl, varlist = list("run_model_args", "run_dy_cd",
                                                "run_glm_aed", "run_gotm_wet"),
                             envir = environment())
-    # parallel::clusterEvalQ(cl, expr = {library(LakeEnsemblR); library(gotmtools);
-    # })
-    message("Running models in parallel... ", paste0("[", format(Sys.time()), "]"))
+    message("Running models in parallel... ", paste0("[", format(Sys.time()),
+                                                     "]"))
     model_out <- stats::setNames(
-      parallel::parLapply(cl, model, function(mod_name) do.call(paste0("run_", mod_name),
-                                                                   run_model_args)),
+      parallel::parLapply(cl, model, function(mod_name) {
+        do.call(paste0("run_", mod_name), run_model_args)
+      }),
       model
     )
     parallel::stopCluster(cl)
@@ -103,8 +119,8 @@ run_aeme <- function(aeme, model, return = TRUE, model_controls = NULL,
 
   if (return) {
     aeme <- load_output(model = model, aeme = aeme, path = path,
-                             model_controls = model_controls, parallel = parallel,
-                             nlev = nlev)
+                        model_controls = model_controls, parallel = parallel,
+                        nlev = nlev, ens_n = ens_n)
     return(aeme)
   }
 
@@ -137,8 +153,10 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
                                            pattern = "stg"))
 
   setwd(file.path(sim_folder, "dy_cd"))
-  ref_fils <- c(paste0(dy.prefix, c(".stg", ".met", ".inf", ".wdr")), "DYref.nc")
-  sim_fils <- c(paste0(dy.prefix, c(".pro")),  "dyresm3p1.par", paste0(dy.prefix, c(".con")), "DYsim.nc")
+  ref_fils <- c(paste0(dy.prefix, c(".stg", ".met", ".inf", ".wdr")),
+                "DYref.nc")
+  sim_fils <- c(paste0(dy.prefix, c(".pro")),  "dyresm3p1.par",
+                paste0(dy.prefix, c(".con")), "DYsim.nc")
   info_fils <- c("DYref.nc", "DYsim.nc", paste0(dy.prefix, c( ".cfg")))
   # Delete historic files
   unlink("DYsim.nc")
@@ -155,13 +173,14 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
             wait = TRUE, stdout = stdout,
             stderr = stderr,
             args = ref_fils)
-    } else {
+  } else {
     out <- system2(file.path(bin_path, "dy_cd", "createDYref.exe"),
                    wait = TRUE, stdout = stdout,
                    stderr = stderr,
                    args = ref_fils, timeout = timeout)
     if (any(grepl("ERROR|Error", out))) {
-      stop("Could not create DYRESM reference file:\n", paste0(out, collapse = "\n"))
+      stop("Could not create DYRESM reference file:\n", paste0(out,
+                                                               collapse = "\n"))
     }
   }
 
@@ -177,7 +196,8 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
                    args = sim_fils)
 
     if (any(grepl("ERROR|Error", out))) {
-      stop("Could not create DYRESM simulation file:\n", paste0(out, collapse = "\n"))
+      stop("Could not create DYRESM simulation file:\n",
+           paste0(out, collapse = "\n"))
     }
   }
 
@@ -193,7 +213,8 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
                    args = info_fils)
 
     if (any(grepl("ERROR|Error", out))) {
-      stop("Could not extract DYRESM information:\n", paste0(out, collapse = "\n"))
+      stop("Could not extract DYRESM information:\n", paste0(out,
+                                                             collapse = "\n"))
     }
   }
 
