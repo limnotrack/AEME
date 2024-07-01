@@ -4,6 +4,7 @@
 #' variables.
 #'
 #' @inheritParams build_aeme
+#' @inheritParams run_aeme
 #' @param var_sim string; of variable to plot
 #' @param level logical; include lake level. Only applies for contour plots.
 #' @param remove_spin_up logical; remove spin-up period from plot. Default is
@@ -64,8 +65,8 @@
 #' }
 #'
 
-plot_output <- function(aeme, model, var_sim = "HYD_temp", add_obs = TRUE,
-                        level = FALSE, remove_spin_up = TRUE,
+plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
+                        add_obs = TRUE, level = FALSE, remove_spin_up = TRUE,
                         print_plots = FALSE, var_lims = NULL, ylim = NULL,
                         cumulative = FALSE, facet = TRUE) {
 
@@ -96,9 +97,11 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", add_obs = TRUE,
 
   outp <- output(aeme)
 
+  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+
   # Check if var_sim is in output
   chk <- sapply(model, \(m){
-    var_sim %in% names(outp[[m]])
+    var_sim %in% names(outp[[ens_lab]][[m]])
   })
   if (any(!chk)) {
     if (all(!chk)) {
@@ -113,7 +116,7 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", add_obs = TRUE,
   # Date lims
   # Find date range and have output in Date format
   this.list <- sapply(model, \(m){
-    "[["(outp[[m]], "Date")
+    "[["(outp[[ens_lab]][[m]], "Date")
   })
   xlim <- as.Date(range(this.list, na.rm = TRUE))
   if (remove_spin_up) {
@@ -131,7 +134,7 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", add_obs = TRUE,
   # colour lims
   if (is.null(var_lims)) {
     this.list <- sapply(model, \(m){
-      "[["(outp[[m]], var_sim)
+      "[["(outp[[ens_lab]][[m]], var_sim)
     })
     vect <- unlist(this.list)
     if (add_obs) {
@@ -144,13 +147,13 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", add_obs = TRUE,
   # mod_labels <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
   #                          name = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
 
-  df <- get_var(aeme = aeme, model = model, var_sim = var_sim,
+  df <- get_var(aeme = aeme, model = model, var_sim = var_sim, ens_n = ens_n,
                 return_df = TRUE, remove_spin_up = remove_spin_up,
                 cumulative = cumulative)
 
   # Align observations to modelled depths because observations are relative to
   # the lake surface while modelled depths are relative to the lake bottom
-  obs <- align_depth_data(aeme = aeme, model = model,
+  obs <- align_depth_data(aeme = aeme, model = model, ens_n = ens_n,
                           var_sim = var_sim)
 
 

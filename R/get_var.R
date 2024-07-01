@@ -15,7 +15,7 @@
 #' @return dataframe or list
 #' @export
 
-get_var <- function(aeme, model, var_sim, return_df = TRUE,
+get_var <- function(aeme, model, var_sim, return_df = TRUE, ens_n = 1,
                     use_obs = FALSE, remove_spin_up = TRUE, cumulative = FALSE) {
 
   # Extract output from aeme ----
@@ -23,6 +23,7 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE,
   outp <- output(aeme)
   aeme_time <- time(aeme)
   names(model) <- model
+  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
 
   if (use_obs) {
     obs <- observations(aeme)
@@ -50,7 +51,7 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE,
 
   # Loop through the models and extract the variable of interest ----
   lst <- lapply(model, \(m) {
-    variable <- outp[[m]][[var_sim]]
+    variable <- outp[[ens_lab]][[m]][[var_sim]]
     # Empty dataframe to return if variable is not in output
     df <- data.frame(Date = as.Date(NA),
                      lyr_top = NA,
@@ -79,35 +80,35 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE,
     if (use_obs) {
 
       obs_dates <- unique(obs_sub$Date)
-      date_ind <- which(outp[[m]][["Date"]] %in% obs_dates)
+      date_ind <- which(outp[[ens_lab]][[m]][["Date"]] %in% obs_dates)
 
       if (var_sim == "LKE_lvlwtr") {
 
-        df <- data.frame(Date = outp[[m]][["Date"]][date_ind],
-                         sim = outp[[m]][["LKE_lvlwtr"]][date_ind] +
+        df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]][date_ind],
+                         sim = outp[[ens_lab]][[m]][["LKE_lvlwtr"]][date_ind] +
                            min(inp$hypsograph$elev),
                          Model = m) |>
           dplyr::left_join(obs_sub, by = c("Date" = "Date"))
       } else if(is.vector(variable)) {
-        df <- data.frame(Date = outp[[m]][["Date"]][date_ind],
-                         sim = outp[[m]][[var_sim]][date_ind],
+        df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]][date_ind],
+                         sim = outp[[ens_lab]][[m]][[var_sim]][date_ind],
                          Model = m) |>
           dplyr::left_join(obs_sub, by = c("Date" = "Date"))
       } else {
 
         mod <- lapply(date_ind, \(d) {
-          depth <- outp[[m]][["LKE_depths"]][, d]
-          v <- outp[[m]][[var_sim]][, d]
-          obs_deps <- unique(obs_sub$depth_mid[obs_sub$Date == outp[[m]][["Date"]][d]])
+          depth <- outp[[ens_lab]][[m]][["LKE_depths"]][, d]
+          v <- outp[[ens_lab]][[m]][[var_sim]][, d]
+          obs_deps <- unique(obs_sub$depth_mid[obs_sub$Date == outp[[ens_lab]][[m]][["Date"]][d]])
 
           if (all(is.na(v)) | all(is.na(depth))) {
-            return(data.frame(Date = outp[[m]][["Date"]][d],
+            return(data.frame(Date = outp[[ens_lab]][[m]][["Date"]][d],
                               depth_mid = obs_deps,
                               sim = NA,
                               Model = m))
           }
           p <- stats::approx(depth, v, obs_deps, rule = 2)$y
-          data.frame(Date = outp[[m]][["Date"]][d],
+          data.frame(Date = outp[[ens_lab]][[m]][["Date"]][d],
                      depth_mid = obs_deps,
                      sim = p,
                      Model = m)
@@ -119,7 +120,7 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE,
 
       }
     } else if (is.null(dim(variable))) {
-      df <- data.frame(Date = outp[[m]][["Date"]],
+      df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
                        lyr_top = NA,
                        value = variable,
                        Model = m,
@@ -134,10 +135,10 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE,
           dplyr::mutate(value = cumsum(value))
       }
     } else {
-      depth <- data.frame(Date = outp[[m]][["Date"]],
-                          depth = outp[[m]][["LKE_lvlwtr"]])
-      lyr <- outp[[m]][["LKE_layers"]]
-      df <- data.frame(Date = rep(outp[[m]][["Date"]], each = nrow(variable)),
+      depth <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
+                          depth = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
+      lyr <- outp[[ens_lab]][[m]][["LKE_layers"]]
+      df <- data.frame(Date = rep(outp[[ens_lab]][[m]][["Date"]], each = nrow(variable)),
                        lyr_top = as.vector(lyr),
                        value = as.vector(variable),
                        Model = m) |>

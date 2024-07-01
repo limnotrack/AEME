@@ -16,15 +16,18 @@
 #'  }
 #' @export
 
-align_depth_data <- function(aeme, model, var_sim, return_df = TRUE) {
+align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
+                             return_df = TRUE) {
   outp <- output(aeme)
   obs <- observations(aeme)
   inp <- input(aeme)
+  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+
 
   # Align the observed data with the model data ----
   lst <- lapply(model, \(m) {
-    depth <- data.frame(Date = outp[[m]][["Date"]],
-                        depth = outp[[m]][["LKE_lvlwtr"]])
+    depth <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
+                        depth = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
 
     df <- get_var(aeme = aeme, model = m, var_sim = var_sim,
                   return_df = TRUE)
@@ -41,7 +44,7 @@ align_depth_data <- function(aeme, model, var_sim, return_df = TRUE) {
   # Adjust water level observations
   if (!is.null(obs$level)) {
     obs$level_adj <- obs$level |>
-      dplyr::filter(Date %in% outp[[model[1]]][["Date"]] &
+      dplyr::filter(Date %in% outp[[ens_lab]][[model[1]]][["Date"]] &
                       var_aeme == "LKE_lvlwtr")
     if (nrow(obs$level_adj) > 0) {
       obs$level_adj <- obs$level_adj |>
