@@ -41,6 +41,7 @@ test_that("running GLM works", {
   # cfg$model_controls <- NULL
   # configuration(aeme) <- cfg
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
+  outp <- output(aeme)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -748,4 +749,35 @@ test_that("can build all models, run and write to new directory & re-run", {
                                         model[-1], "output", "output.nc")))
   testthat::expect_true(file_chk)
 
+})
+
+test_that("running ensemble works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls()
+  inf_factor <- c("glm_aed" = 1)
+  outf_factor <- c("glm_aed" = 1)
+  model <- c("glm_aed", "gotm_wet")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
+
+  model <- c("gotm_wet")
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
+                   ens_n = 2)
+
+
+  outp <- output(aeme)
+  lke <- lake(aeme)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
+
+  testthat::expect_true(outp$n_members)
 })
