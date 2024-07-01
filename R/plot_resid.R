@@ -35,6 +35,17 @@ plot_resid <- function(aeme, model, var_sim = "HYD_temp") {
       df <- df |>
         dplyr::mutate(fdepth = factor(depth_mid))
     }
+    n_depths <- unique(df$depth_mid) |> length()
+    if (n_depths > 15) {
+      # Group depths into 10 categories
+      df <- df |>
+        dplyr::mutate(fdepth = cut(depth_mid, breaks = 15))
+      levs <- levels(df$fdepth)
+      levs <- gsub(",", "-", levs)
+      levs <- gsub("\\(|]", "", levs)
+      df <- df |>
+        dplyr::mutate(fdepth = factor(fdepth, labels = levs))
+    }
     col_label <- ifelse(dep_chk, "Depth (m)", "")
 
     lims <- range(df$sim, df$obs)
@@ -45,7 +56,7 @@ plot_resid <- function(aeme, model, var_sim = "HYD_temp") {
       {if (!dep_chk) ggplot2::geom_point(data = df, ggplot2::aes(x = obs,
                                                                  y = sim))} +
       ggplot2::geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
-      ggplot2::labs(x = "Day of year", y = "Residuals",
+      ggplot2::labs(x = "Observations", y = "Modelled",
                     colour = col_label) +
       ggplot2::scale_colour_viridis_d(direction = -1, option = "C") +
       ggplot2::facet_grid(var_sim ~ Model) +
