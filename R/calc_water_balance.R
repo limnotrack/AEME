@@ -61,11 +61,20 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       ampl <- ((quantile(level$value, 0.9) -
                   quantile(level$value, 0.1)) / 2) |>
         as.numeric()
+      level <- level |>
+        dplyr::select(Date, value)
       offset <- 0
       mod.lvl <- data.frame(Date = obs_met$Date) |>
-        dplyr::left_join(level, by = "Date") |>
+        dplyr::left_join(level, by = "Date", keep = FALSE) |>
         dplyr::filter(Date >= spin_start & Date <= date_stop) |>
         dplyr::mutate(var_aeme = "LKE_lvlwtr")
+
+      if (any(duplicated(mod.lvl$Date))) {
+        warning(strwrap("Duplicate dates in observed water level data.\n
+                        Only the first occurrence will be used."))
+        mod.lvl <- mod.lvl |>
+          dplyr::distinct(Date, .keep_all = TRUE)
+      }
 
       if (all(!is.na(mod.lvl$value))) {
         message(strwrap("No missing values in observed water level.
@@ -222,6 +231,8 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
 
   gotm_met <- gotm_met |>
     dplyr::filter(Date >= spin_start & Date <= date_stop) # filter dates
+  dates <- seq.Date(gotm_met$Date[1], gotm_met$Date[nrow(gotm_met)], by = 1)
+  length(dates) == nrow(gotm_met)
 
   # Set constants ----
   rho0 <- 1e3 # kg/m3
@@ -229,8 +240,14 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
 
   # Calculate the fluctuating surface area
   wbal <- obs_met |>
-    dplyr::left_join(mod.lvl, by = "Date") |>
-    dplyr::filter(Date >= spin_start & Date <= date_stop) |> # filter dates
+    dplyr::left_join(mod.lvl, by = "Date", keep = FALSE) |>
+    dplyr::filter(Date >= spin_start & Date <= date_stop)
+  # nrow(wbal) == length(dates)
+  if (any(duplicated(wbal$Date))) {
+    stop("Duplicated dates in the water balance data")
+  }
+
+  wbal <- wbal |> # filter dates
     # calculate the fluctuating surface area
     # dplyr::mutate(lvlwtr2 = mod_lvl(Date, surf = max(hyps[,1]), ampl = ampl,
     #                                 offset = offset)) |>
