@@ -55,6 +55,7 @@
 <span>  <span class="va">model</span>,</span>
 <span>  <span class="va">var_sim</span>,</span>
 <span>  return_df <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ens_n <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  use_obs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  remove_spin_up <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  cumulative <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -79,6 +80,11 @@
 <dt>return_df</dt>
 <dd><p>logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.</p></dd>
+
+
+<dt>ens_n</dt>
+<dd><p>numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.</p></dd>
 
 
 <dt>use_obs</dt>

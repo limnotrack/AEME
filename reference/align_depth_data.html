@@ -50,7 +50,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">align_depth_data</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span>, <span class="va">var_sim</span>, return_df <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">align_depth_data</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span>, <span class="va">var_sim</span>, ens_n <span class="op">=</span> <span class="fl">1</span>, return_df <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,6 +66,11 @@
 
 <dt>var_sim</dt>
 <dd><p>string; of variable to plot</p></dd>
+
+
+<dt>ens_n</dt>
+<dd><p>numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.</p></dd>
 
 
 <dt>return_df</dt>

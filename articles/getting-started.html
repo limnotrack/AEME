@@ -190,8 +190,8 @@ locations in New Zealand.</p>
 <span>                                 parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Checking if lat/lon point is in the grid...</span></span>
 <span><span class="co">#&gt; Point is in the grid.</span></span>
-<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2024-06-18 00:41:03]</span></span>
-<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-06-18 00:42:04]</span></span></code></pre></div>
+<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2024-07-04 00:37:22]</span></span>
+<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-07-04 00:38:19]</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -315,9 +315,10 @@ with default values for inputs not provided.</p>
 <span><span class="co">#&gt; Method: 2; Use: obs; Modelled: Absent; Water balance: Absent</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Output: </span></span>
-<span><span class="co">#&gt; DY-CD: Absent</span></span>
-<span><span class="co">#&gt; GLM-AED: Absent</span></span>
-<span><span class="co">#&gt; GOTM-WET: Absent</span></span></code></pre></div>
+<span><span class="co">#&gt; Number of ensembles: 0</span></span>
+<span><span class="co">#&gt; DY-CD:    </span></span>
+<span><span class="co">#&gt; GLM-AED:  </span></span>
+<span><span class="co">#&gt; GOTM-WET:</span></span></code></pre></div>
 <p>In the configuration section of the output, under “Physical” and
 “Biogeochemical” for each model are labelle “Absent”. This is because
 the model configurations have not been built. This is done in the next
@@ -436,7 +437,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <code class="sourceCode R"><span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2024-06-18 00:42:14]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2024-07-04 00:38:33]</span></span>
 <span><span class="co">#&gt; Warning in max(bathy$elev): no non-missing arguments to max; returning -Inf</span></span>
 <span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
@@ -491,9 +492,10 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt; Method: 2; Use: obs; Modelled: Absent; Water balance: Present</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Output: </span></span>
-<span><span class="co">#&gt; DY-CD: Absent</span></span>
-<span><span class="co">#&gt; GLM-AED: Absent</span></span>
-<span><span class="co">#&gt; GOTM-WET: Absent</span></span></code></pre></div>
+<span><span class="co">#&gt; Number of ensembles: 0</span></span>
+<span><span class="co">#&gt; DY-CD:    </span></span>
+<span><span class="co">#&gt; GLM-AED:  </span></span>
+<span><span class="co">#&gt; GOTM-WET:</span></span></code></pre></div>
 <p>By default, the <code>build_aeme</code> function will build the file
 configuration for each model. This will create the necessary files for
 each model to run. The files are also stored in the <code>aeme</code>
@@ -513,8 +515,8 @@ object.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-06-18 00:42:15]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM run FAILED! [2024-06-18 00:42:16]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-07-04 00:38:35]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM run FAILED! [2024-07-04 00:38:35]</span></span>
 <span><span class="co">#&gt;      1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01</span></span>
 <span><span class="co">#&gt;      1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01</span></span>
 <span><span class="co">#&gt;      1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01</span></span>
@@ -525,9 +527,9 @@ object.</p>
 <span><span class="co">#&gt;      1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01     1.000000E-01</span></span>
 <span><span class="co">#&gt;      1.000000E-01     1.000000E-01</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-06-18 00:42:19]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-06-18 00:42:22]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-06-18 00:42:22]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-07-04 00:38:39]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-07-04 00:38:42]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-07-04 00:38:42]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting OXY_oxy for model glm_aed</span></span>
