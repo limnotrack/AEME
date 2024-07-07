@@ -155,8 +155,9 @@ components as well as the aquatic ecosystem model components:
 
 The `observations` slot is a list that contains observations of in-lake (`lake`)
 variables (e.g. water temperature, chlorophyll-a, dissolved oxygen etc.) and
-water level (`level`). The observations are used to assess model performance and
-also calibrate the model using the
+water level (`level`). The observations are used to assess model performance 
+using the function \code{assess_model()} and
+also to calibrate the model using the
 [aemetools](https://github.com/limnotrack/aemetools) package. 
 
 The `lake` observations are stored in a data frame with the following columns:
