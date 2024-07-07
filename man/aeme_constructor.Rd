@@ -13,7 +13,8 @@ aeme_constructor(
   inflows,
   outflows,
   water_balance,
-  output
+  output,
+  parameters
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ aeme_constructor(
 \item{water_balance}{List representing water balance information.}
 
 \item{output}{List representing output information.}
+
+\item{parameters}{Dataframe containing model parameters.}
 }
 \value{
 An instance of the aeme class.

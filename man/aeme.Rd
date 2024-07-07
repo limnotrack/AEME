@@ -81,5 +81,7 @@ the bottom (m).
 \item \code{glm_aed}: list; GLM-AED output.
 \item \code{gotm_wet}: list; GOTM-WET output.
 }}
+
+\item{\code{parameters}}{A dataframe representing model parameters.}
 }}
 

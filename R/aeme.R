@@ -63,6 +63,7 @@
 #' \item \code{glm_aed}: list; GLM-AED output.
 #' \item \code{gotm_wet}: list; GOTM-WET output.
 #' }
+#' @slot parameters A dataframe representing model parameters.
 #' @export
 
 setClass("aeme",
@@ -76,7 +77,8 @@ setClass("aeme",
            inflows = "list",
            outflows = "list",
            water_balance = "list",
-           output = "list"
+           output = "list",
+           parameters = "data.frame"
          )
 )
 
@@ -134,6 +136,7 @@ setClass("aeme",
 #' @param outflows List representing outflows information.
 #' @param water_balance List representing water balance information.
 #' @param output List representing output information.
+#' @param parameters Dataframe containing model parameters.
 #' @return An instance of the aeme class.
 #'
 #' @importFrom sf st_area sf_use_s2
@@ -145,7 +148,7 @@ setClass("aeme",
 
 aeme_constructor <- function(
     lake, time, configuration, observations,
-    input, inflows, outflows, water_balance, output
+    input, inflows, outflows, water_balance, output, parameters
 ) {
 
   # Set timezone temporarily to UTC
@@ -230,13 +233,18 @@ aeme_constructor <- function(
       gotm_wet = NULL
     )
   }
+  param_names <- get_param_names()
+  if (missing(parameters)) {
+    parameters <- data.frame(matrix(nrow = 0, ncol = length(param_names)))
+    colnames(parameters) <- param_names
+  }
 
   # Validate the types before creating the object
   if (!is.list(lake) || !is.list(time) ||
       !is.list(configuration) || !is.list(observations) || !is.list(input) ||
       !is.list(inflows) || !is.list(outflows) || !is.list(water_balance) ||
-      !is.list(output)) {
-    stop("All inputs must be lists.")
+      !is.list(output) || !is.data.frame(parameters)) {
+    stop("All inputs must be lists or data frames.")
   }
 
   # Lake type checking for specific elements
@@ -491,6 +499,15 @@ aeme_constructor <- function(
     stop("Output must be a list of lists or NULL.")
   }
 
+  # Parameters type checking for specific elements
+  if (!is.data.frame(parameters)) {
+    stop("Parameters must be a dataframe.")
+  }
+  if (!all(param_names %in% names(parameters))) {
+    stop(strwrap("Parameters must have the following columns: model, file,
+                 name, value, min, max, module, group."))
+  }
+
 
   new("aeme",
       lake = lake,
@@ -502,7 +519,8 @@ aeme_constructor <- function(
       inflows = inflows,
       outflows = outflows,
       water_balance = water_balance,
-      output = output
+      output = output,
+      parameters = parameters
   )
 }
 
@@ -615,6 +633,18 @@ setGeneric("output", function(aeme) standardGeneric("output"))
 #' @return list of output characteristics
 #' @export
 setMethod("output", "aeme", function(aeme) aeme@output)
+
+#' @title Access parameters slot
+#' @param aeme A aeme object.
+#' @return dataframe of parameters
+#' @export
+setGeneric("parameters", function(aeme) standardGeneric("parameters"))
+#' @title Access parameters slot
+#' @param aeme A aeme object.
+#' @return dataframe of parameters
+#' @export
+setMethod("parameters", "aeme", function(aeme) aeme@parameters)
+
 
 # Setter functions ----
 
@@ -836,6 +866,30 @@ setMethod("output<-", "aeme", function(aeme, value) {
   aeme
 })
 
+#' Update the parameters slot of an aeme object
+#'
+#' @title Set parameters in aeme object
+#' @param aeme A aeme object.
+#' @param value New parameters data to be assigned.
+#' @return A modified aeme object with updated parameters slot.
+#' @export
+setGeneric("parameters<-", function(aeme, value) standardGeneric("parameters<-"))
+
+#' Update the parameters slot of an aeme object
+#'
+#' This method updates the "parameters" slot of a aeme object with new data.
+#'
+#' @title Set parameters in aeme object
+#' @param aeme An aeme object.
+#' @param value New parameters data to be assigned.
+#' @return A modified aeme object with updated parameters slot.
+#' @export
+setMethod("parameters<-", "aeme", function(aeme, value) {
+  aeme@parameters <- value
+  validObject(aeme)
+  aeme
+})
+
 #' Show an aeme object in the console
 #'
 #' This method prints the aeme output in a readable format to the console.
@@ -855,6 +909,7 @@ setMethod("show", "aeme", function(object) {
   outf <- outflows(object)
   wbal <- water_balance(object)
   outp <- output(object)
+  params <- parameters(object)
 
   n_dyresm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
   n_glm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
@@ -950,6 +1005,9 @@ setMethod("show", "aeme", function(object) {
            "Present", "Absent"), "; Water balance: ",
     ifelse(is.data.frame(wbal[["data"]][["wbal"]]),
            "Present", "Absent"),
+    "\n-------------------------------------------------------------------\n",
+    "  Parameters: ", "\n",
+    "Number of parameters: ", nrow(params),
     "\n-------------------------------------------------------------------\n",
     "  Output: ", "\n",
     "Number of ensembles: ", outp$n_members,
@@ -1384,3 +1442,11 @@ setMethod("names", "aeme", function(x) {
   slotNames(x)
 })
 
+#' Get parameters data frame column names
+#' @noRd
+
+get_param_names <- function() {
+  param_names <- c("model", "file", "name", "value", "min", "max", "module",
+                   "group")
+  return(param_names)
+}

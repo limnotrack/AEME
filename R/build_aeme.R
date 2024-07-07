@@ -2,7 +2,7 @@
 #'
 #' Configure an ensemble of lake model simulations from basic set of inputs.
 #'
-#' @param aeme aeme; data object.
+#' @param aeme aeme; object.
 #' @param config list; loaded via `config <- yaml::read_yaml("aeme.yaml")`
 #' @param model vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 #'  `gotm_wet`.
@@ -131,8 +131,7 @@ build_aeme <- function(aeme = NULL,
     message("Building simulation for ", lke$name, " [", format(Sys.time()),
             "]")
     aeme_time <- time(aeme)
-    lake_dir <- file.path(path, paste0(lke$id, "_",
-                                       tolower(lke$name)))
+    lake_dir <- get_lake_dir(aeme = aeme, path = path)
     date_range <- as.Date(c(aeme_time[["start"]], aeme_time[["stop"]]))
     spin_up <- aeme_time[["spin_up"]]
 
@@ -553,10 +552,17 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
   }
 
+  # Model parameters ----
+  param <- parameters(aeme = aeme)
+  if (nrow(param) > 1) {
+    input_model_parameters(aeme = aeme, model = model, param = param,
+                           path = path)
+  }
+
+  # Load model configuration ----
   aeme <- load_configuration(model = model, aeme = aeme,
                              model_controls = model_controls, path = path,
                              use_bgc = use_bgc)
 
   return(aeme)
 }
-
