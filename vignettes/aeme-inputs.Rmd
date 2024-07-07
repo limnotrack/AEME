@@ -12,8 +12,50 @@ editor_options:
 
 ![](images/logo.png){width="120"}
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(AEME)
+
+tmpdir <- tempdir()
+aeme_dir <- system.file("extdata/lake/", package = "AEME")
+# Copy files from package into tempdir
+file.copy(aeme_dir, tmpdir, recursive = TRUE)
+path <- file.path(tmpdir, "lake")
+aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
+
+```
+
 ## Summary
 
 Inputs for AEME are designed to similar to most standard data inputs used in
 lake ecosystem modelling. 
+
+## Parameters
+
+Being able to specify the parameters of the model is crucial for the
+simulation. Parameters can be stored in a data frame within the `aeme` object.
+The parameters in this data frame are used to update the model configuration
+files and/or update the meteorological data (e.g. scaling wind factor) and/or
+update the inflow/outflow data (e.g. scaling inflow factor). 
+
+```{r}
+utils::data("aeme_parameters")
+aeme_parameters
+```
+
+```{r}
+parameters(aeme) <- aeme_parameters
+```
+
+```{r}
+model_controls <- get_model_controls()
+model <- c("dy_cd", "glm_aed", "gotm_wet")
+aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                   model_controls = model_controls, ext_elev = 5)
+
+aeme <- run_aeme(aeme = aeme, model = model, parallel = TRUE, path = path)
+```
 
