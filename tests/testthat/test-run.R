@@ -42,6 +42,7 @@ test_that("running GLM works", {
   # configuration(aeme) <- cfg
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
   outp <- output(aeme)
+  lake_dir <- get_lake_dir(aeme)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -781,3 +782,48 @@ test_that("running ensemble works", {
 
   testthat::expect_true(outp$n_members > 1)
 })
+
+test_that("running all models with new parameters works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+
+  utils::data("aeme_parameters")
+  aeme_parameters <- aeme_parameters |>
+    dplyr::mutate(
+      value = dplyr::case_when(
+        model == "dy_cd" & name == "light_extinction_coefficient/7" ~ 1,
+        model == "glm_aed" & name == "light/Kw" ~ 5,
+        model == "gotm_wet" & name == "light_extinction/g2/constant_value" ~ 5,
+        # name == "MET_radswd" ~ 0,
+        .default = value
+      )
+    )
+
+  parameters(aeme) <- aeme_parameters
+  # parameters(aeme) <- aeme_parameters |>
+  #   dplyr::filter( model == "glm")
+
+  model_controls <- get_model_controls()
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     use_bgc = FALSE, ext_elev = 5)
+
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
+
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+
+  file_chk <- file.exists(file.path(lake_dir, model[1], "DYsim.nc"))
+  testthat::expect_true(file_chk)
+
+  file_chk <- all(file.exists(file.path(lake_dir, model[-1], "output",
+                                        "output.nc")))
+  testthat::expect_true(file_chk)
+})
+

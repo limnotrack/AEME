@@ -315,3 +315,70 @@ test_that("can build all models and write to new directory", {
                                     "gotm_wet", "fabm.yaml"))
   testthat::expect_true(file_chk)
 })
+
+test_that("building all models with new parameters works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+
+  utils::data("aeme_parameters")
+  aeme_parameters <- aeme_parameters |>
+    dplyr::mutate(
+      value = dplyr::case_when(
+        model == "dy_cd" & name == "light_extinction_coefficient/7" ~ 1,
+        model == "glm_aed" & name == "light/Kw" ~ 5,
+        model == "gotm_wet" & name == "light_extinction/g2/constant_value" ~ 5,
+        # name == "MET_radswd" ~ 0,
+        .default = value
+      )
+    )
+
+  parameters(aeme) <- aeme_parameters
+  # parameters(aeme) <- aeme_parameters |>
+  #   dplyr::filter( model == "glm")
+
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     use_bgc = FALSE)
+
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  dy_cfg <- readLines(file.path(lake_dir, "dy_cd", "wainamu.cfg"))
+  testthat::expect_true(as.numeric(substr(dy_cfg[7], 1, 2)) == 1)
+
+  glm_cfg <- read_nml(file.path(lake_dir, "glm_aed", "glm3.nml"))
+  testthat::expect_true(glm_cfg$light$Kw == 5)
+
+  gotm_cfg <- yaml::read_yaml(file.path(lake_dir, "gotm_wet", "gotm.yaml"))
+  testthat::expect_true(gotm_cfg$light_extinction$g2$constant_value == 5)
+
+  aeme_parameters <- aeme_parameters |>
+    dplyr::mutate(
+      value = dplyr::case_when(
+        name == "MET_radswd" ~ 0,
+        .default = value
+      )
+    )
+
+  parameters(aeme) <- aeme_parameters
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     use_bgc = FALSE)
+
+  glm_met <- read.csv(file.path(lake_dir, "glm_aed", "bcs", "meteo_glm.csv"))
+  testthat::expect_true(all(glm_met$ShortWave == 0))
+
+  gotm_swr <- read.delim(file.path(lake_dir, "gotm_wet", "inputs",
+                                 "meteo_swr.dat"), header = FALSE)
+  testthat::expect_true(all(gotm_swr[, 2] == 0))
+
+  dy_met <- read.delim(file.path(lake_dir, "dy_cd", "wainamu.met"),
+                       header = FALSE, skip = 6)
+  testthat::expect_true(all(dy_met[, 2] == 0))
+})
