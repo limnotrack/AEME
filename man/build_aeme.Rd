@@ -23,7 +23,7 @@ build_aeme(
 )
 }
 \arguments{
-\item{aeme}{aeme; data object.}
+\item{aeme}{aeme; object.}
 
 \item{config}{list; loaded via `config <- yaml::read_yaml("aeme.yaml")`}
 

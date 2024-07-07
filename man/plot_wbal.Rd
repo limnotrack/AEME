@@ -7,7 +7,7 @@
 plot_wbal(aeme, cumulative = FALSE)
 }
 \arguments{
-\item{aeme}{aeme; data object.}
+\item{aeme}{aeme; object.}
 
 \item{cumulative}{logical; plot cumulative sum of variable}
 }

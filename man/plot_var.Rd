@@ -25,7 +25,7 @@ plot_var(
 \code{\link{get_var}} will be called and \code{var_sim} will be used to
 extract the variable of interest from \code{aeme} for each model.}
 
-\item{aeme}{aeme; data object.}
+\item{aeme}{aeme; object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}

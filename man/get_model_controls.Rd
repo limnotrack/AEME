@@ -7,7 +7,7 @@
 get_model_controls(aeme = NULL, use_bgc = FALSE)
 }
 \arguments{
-\item{aeme}{aeme; data object.}
+\item{aeme}{aeme; object.}
 
 \item{use_bgc}{logical; switch to use the biogeochemical model.}
 }

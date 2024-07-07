@@ -18,7 +18,7 @@ load_output(
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
-\item{aeme}{aeme; data object.}
+\item{aeme}{aeme; object.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 

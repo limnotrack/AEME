@@ -7,7 +7,7 @@
 align_depth_data(aeme, model, var_sim, ens_n = 1, return_df = TRUE)
 }
 \arguments{
-\item{aeme}{aeme; data object.}
+\item{aeme}{aeme; object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
