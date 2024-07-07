@@ -7,10 +7,8 @@
 
 check_model_output <- function(path, aeme, model) {
 
-  lke <- lake(aeme)
   aeme_time <- time(aeme)
-  lake_dir <- file.path(path, paste0(lke$id, "_",
-                                     tolower(lke$name)))
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
   out_file <- dplyr::case_when(model == "dy_cd" ~ file.path(lake_dir, model,
                                                             "DYsim.nc"),
                                model == "glm_aed" ~ file.path(lake_dir, model,

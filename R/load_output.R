@@ -36,8 +36,7 @@ load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
   vars_sim <- model_controls |>
     dplyr::filter(simulate) |>
     dplyr::pull(var_aeme)
-  lke <- lake(aeme)
-  lake_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)))
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
 
   # Extract model output fron netCDF files and return as a list
   if (parallel) {

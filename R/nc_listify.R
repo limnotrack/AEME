@@ -103,8 +103,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     vars_sim.model <- key_naming[[model]]
 
     # GOTM - Daily averaged variables ----
-    lke <- lake(aeme)
-    lake_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)))
+    lake_dir <- get_lake_dir(aeme = aeme, path = path)
     out_file <- file.path(lake_dir, model, "output", "output_daily.nc")
 
     if (!file.exists(out_file)) {
@@ -226,6 +225,12 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
 
   # mod_layers are elevation from bottom, last row is bottom
   mod_layers <- ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")[, idx]
+  if (!is.matrix(mod_layers)) {
+   message(strwrap("Error reading DYRESM layers, potentially due to water level
+                   fluctuations.\nReturning NULL...", width = 70))
+   return(NULL)
+  }
+
   depth <- apply(mod_layers, 2, \(x) max(x, na.rm = TRUE))
   vars_sim.model <- paste0('dyresm', key_naming[["dy_cd"]],'_Var')
 
