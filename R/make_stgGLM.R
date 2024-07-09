@@ -22,24 +22,21 @@ make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake, crest,
   len <- dims_lake[1]
   wid <- dims_lake[2]
 
-  if (max(bathy_glm[, 1]) < 3) {
-    max_layer_thick <- 0.3
-  } else {
-    max_layer_thick <- 0.8
-  }
-  if (max(bathy_glm[, 1]) < 50) {
-    max_layers <- 500
-  } else {
-    max_layers <- 1000
-  }
+  max_depth <- max(bathy_glm$elev) - min(bathy_glm$elev)
+  sub_layers <- get_model_layers(depth = max_depth)
+  min_layer_thick <- min(sub_layers$h)
+  max_layer_thick <- max(sub_layers$h)
+  max_layers <- ceiling(max_depth / min_layer_thick) + 10
 
-  arg_list <- list(max_layers = max_layers, min_layer_vol = 0.025,
-                   min_layer_thick = 0.1,
+  arg_list <- list(max_layers = max_layers,
+                   min_layer_vol = 0.025,
+                   min_layer_thick = min_layer_thick,
                    max_layer_thick = max_layer_thick,
                    crest_elev = crest,
                    density_model = 1, non_avg = TRUE,
                    lake_name = lakename, latitude = round(gps[1], 3),
-                   longitude = round(gps[2], 3), base_elev = min(bathy_glm$elev),
+                   longitude = round(gps[2], 3),
+                   base_elev = min(bathy_glm$elev),
                    bsn_len = len, bsn_wid = wid, bsn_vals = nrow(bathy_glm),
                    H = round(bathy_glm$elev, 2), A = round(bathy_glm$area, 0))
 

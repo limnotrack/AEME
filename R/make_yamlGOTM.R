@@ -35,7 +35,7 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
   gotm$light_extinction$g2$method <- 0
   gotm$light_extinction$g2$constant_value <- round(1 / Kw, 2)
 
-  gotm$grid$nlev <- nlev
+  # gotm$grid$nlev <- nlev
 
   # keep the hyps table a manageable size
   if(nrow(hyps) > 20) {

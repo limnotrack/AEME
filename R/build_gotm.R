@@ -55,6 +55,10 @@ build_gotm <- function(lakename, model_controls, date_range,
                         inf_factor = inf_factor, Kw = Kw, use_bgc = use_bgc,
                         hum_type = hum_type, est_swr_hr = est_swr_hr)
 
+  # Set grid
+  gotm <- set_gotm_grid(gotm = gotm, depth = init_depth, path_gotm = path_gotm,
+                        method = 1)
+
   gotm <- initialiseGOTM(gotm = gotm, lvl_bottom = 0.1, lvl_surf = lvl_start,
                          tbl_obs = init_prof,
                          tmpwtr = model_controls$initial_wc[model_controls$var_aeme == "HYD_temp"],

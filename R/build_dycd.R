@@ -66,14 +66,9 @@ build_dycd <- function(lakename, model_controls, date_range, gps,
   # make_DYbat(lakename, runCD = T, filePath = path.dy, pause = T)
 
   depth <- max(hyps$elev) - min(hyps$elev)
-  if (depth < 5) {
-    minLyrThk <- 0.1
-    maxLyrThk <- 0.3
-  } else {
-    minLyrThk <- 0.1
-    maxLyrThk <- 0.8
-  }
-
+  sub_layers <- get_model_layers(depth = depth)
+  minLyrThk <- min(sub_layers$h)
+  maxLyrThk <- max(sub_layers$h)
 
   #----- CONFIGURATION ------
   vars.dy <- model_controls |>
