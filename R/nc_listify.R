@@ -429,7 +429,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
   if (model == "gotm_wet") {
     n_gotm_layers <- nrow(z)
     depths <- vapply(seq_len(ncol(z)), \(i) {
-      max(zi[, i]) - z[, i]
+      rev(max(zi[, i]) - z[, i])
     }, FUN.VALUE = numeric(n_gotm_layers))
   }
 
@@ -466,6 +466,10 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
         # regularise the grid (interpolate)
         out <- regularise_model_output(depth = depth, depths = depths,
                                        var = this.var, nlev = nlev)
+        if (model == "gotm_wet") {
+          out <- out |>
+            apply(2, rev)
+        }
       }
 
 
