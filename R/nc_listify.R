@@ -427,9 +427,10 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     depths <- mod_layers
   }
   if (model == "gotm_wet") {
+    n_gotm_layers <- nrow(z)
     depths <- vapply(seq_len(ncol(z)), \(i) {
       max(zi[, i]) - z[, i]
-    }, FUN.VALUE = numeric(nlev))
+    }, FUN.VALUE = numeric(n_gotm_layers))
   }
 
   ### Loop through the netcdf and make a list of the outputs
