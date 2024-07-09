@@ -18,15 +18,14 @@ load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
                         nlev = NULL, ens_n = 1) {
 
   if (is.null(nlev)) {
-    inp <- input(aeme)
-    hyps <- inp$hypsograph
-    depth <- max(hyps$elev) - min(hyps$elev)
-    if (depth < 3) {
-      div <- 0.1
-    } else {
-      div <- 0.33
-    }
-    nlev <- ceiling((depth) / div)
+    # inp <- input(aeme)
+    # hyps <- inp$hypsograph
+    # depth <- max(hyps$elev) - min(hyps$elev)
+    # lake_dir <- get_lake_dir(aeme = aeme, path = path)
+    lke <- lake(aeme)
+    depth <- lke$depth
+    sub_layers <- get_model_layers(depth = depth)
+    nlev <- nrow(sub_layers)
   }
   outp <- output(aeme)
   aeme_time <- time(aeme)
