@@ -3,6 +3,42 @@ ler_wq <- read.csv("https://raw.githubusercontent.com/aemon-j/LakeEnsemblR.WQ/ma
 
 glm_dir <- system.file("extdata/glm_aed/", package = "AEME")
 
+# GLM nml file
+glm_file <- file.path(glm_dir, "glm3.nml")
+glm_pars <- AEME::read_nml(glm_file)
+glm_text <- readLines(glm_file)
+glm_text <- glm_text[grepl("!", glm_text)]
+glm_p <- lapply(names(glm_pars), \(n) {
+  lapply(names(glm_pars[[n]]), \(p) {
+    df <- data.frame(
+      model = "glm_aed",
+      file = "glm3.nml",
+      name = paste0(n, "/", p)
+    )
+    logical <- is.logical(glm_pars[[n]][[p]])
+    logical_val <- ifelse(logical, as.logical(glm_pars[[n]][[p]]), NA)
+    value <- ifelse(is.numeric(as.numeric(glm_pars[[n]][[p]])), as.numeric(glm_pars[[n]][[p]]), NA)
+    char <- is.character(glm_pars[[n]][[p]]) & is.na(value)
+    char_val <- ifelse(char, glm_pars[[n]][[p]], NA)
+
+    desc <- glm_text[grepl(p, glm_text)][1]
+    desc <- strsplit(desc, "      ")[[1]][2]
+
+    data.frame(model = "glm_aed", file = "glm3.nml",
+               module = n, par = p, #description = desc,
+               name = paste0(n , "/", p), value = value,
+               default = value, logical, logical_val, char,
+               char_val) |>
+      dplyr::mutate(
+        model = "glm_aed",
+        min = default - (0.5 * abs(default)),
+        max = default + (0.5 * abs(default))
+      )
+  }) |>
+    dplyr::bind_rows()
+ }) |>
+    dplyr::bind_rows()
+
 aed_file <- file.path(glm_dir, "aed2.nml")
 aed2_pars <- AEME::read_nml(aed_file)
 aed2_phy_idx <- AEME::get_nml_value(aed2_pars, "the_phytos")
@@ -160,14 +196,17 @@ glm_aed_parameters <- glm_aed_parameters |>
       parameter == "Ksed_oxy" ~ 100,
       parameter == "Fsed_frp" ~ 0.05,
       .default = value
-    )
+    )#,
+    # logical = !is.na(logical_val),
+    # char = !is.na(char_val)
   ) |>
   dplyr::rename(
     name = path,
     par = parameter,
     description = note
   ) |>
-  dplyr::select(model, file, name, value, min, max, dplyr::everything())
+  dplyr::select(model, file, name, value, min, max, dplyr::everything()) |>
+  dplyr::bind_rows(glm_p)
 dim(glm_aed_parameters)
 head(glm_aed_parameters)
 tail(glm_aed_parameters)

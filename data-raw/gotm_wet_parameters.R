@@ -1,5 +1,107 @@
 gotm_dir <- system.file("extdata/gotm_wet/", package = "AEME")
 
+gotm_file <- file.path(gotm_dir, "gotm.yaml")
+
+gotm <- yaml::read_yaml(gotm_file)
+gotm_text <- readLines(gotm_file)
+
+# GOTM yaml file ----
+gotm_pars <- lapply(names(gotm), \(n) {
+  pars <- gotm[[n]]
+  if (length(pars) == 1) {
+    return(NULL)
+  }
+  print(n)
+  df <- lapply(names(pars), \(p) {
+    if (is.list(pars[[p]])) {
+      df2 <- lapply(names(pars[[p]]), \(m) {
+        print(m)
+        if (is.list(pars[[p]][[m]])) {
+          df3 <- lapply(names(pars[[p]][[m]]), \(o) {
+            txt1 <- which(grepl(p, gotm_text))[1]
+            txt2_ind <- which(grepl(m, gotm_text))
+            txt2 <- txt2_ind[txt2_ind > txt1][1]
+            txt3_ind <- which(grepl(o, gotm_text))
+            txt <- gotm_text[txt3_ind[txt3_ind > txt2][1]]
+            desc <- strsplit(txt, "#")[[1]][2]
+            def <- strsplit(desc, "default = |default=")[[1]][2] |>
+              gsub("]", "", x = _) |>
+              as.numeric()
+
+            fraction <- grepl("fraction", desc)
+            logical <- is.logical(pars[[p]][[m]][[o]])
+            logical_val <- ifelse(logical, as.logical(pars[[p]][[m]][[o]]), NA)
+            value <- ifelse(is.numeric(as.numeric(pars[[p]][[m]][[o]])), as.numeric(pars[[p]][[m]][[o]]), NA)
+            char <- is.character(pars[[p]][[m]][[o]]) & is.na(value)
+            char_val <- ifelse(char, pars[[p]][[m]][[o]], NA)
+            data.frame(module = n, par = m, subpar = o,
+                       name = paste0(n, "/", m, "/", o),
+                       description = desc, default = def, value = value, fraction,
+                       logical, logical_val, char, char_val)
+          }) |>
+            do.call(rbind, args = _)
+          return(df3)
+        } else {
+          txt1 <- which(grepl(n, gotm_text))[1]
+          txt2_ind <- which(grepl(p, gotm_text))
+          txt <- gotm_text[txt2_ind[txt2_ind > txt1][1]]
+          desc <- strsplit(txt, "#")[[1]][2]
+          def <- strsplit(desc, "default = |default=")[[1]][2] |>
+            gsub("]", "", x = _) |>
+            as.numeric()
+
+          fraction <- grepl("fraction", desc)
+          logical <- is.logical(pars[[p]][[m]])
+          logical_val <- ifelse(logical, as.logical(pars[[p]][[m]]), NA)
+          value <- ifelse(is.numeric(as.numeric(pars[[p]][[m]])), as.numeric(pars[[p]][[m]]), NA)
+          char <- is.character(pars[[p]][[m]]) & is.na(value)
+          char_val <- ifelse(char, pars[[p]][[m]], NA)
+          data.frame(module = n, par = m,
+                     name = paste0(n, "/", p, "/", m),
+                     description = desc, default = def, value = value, fraction,
+                     logical, logical_val, char, char_val)
+        }
+      }) |>
+        dplyr::bind_rows()
+    } else {
+      txt1 <- which(grepl(n, gotm_text))[1]
+      txt2_ind <- which(grepl(p, gotm_text))
+      txt <- gotm_text[txt2_ind[txt2_ind > txt1][1]]
+      desc <- strsplit(txt, "#")[[1]][2]
+      def <- strsplit(desc, "default = |default=")[[1]][2] |>
+        gsub("]", "", x = _) |>
+        as.numeric()
+
+      fraction <- grepl("fraction", desc)
+      logical <- is.logical(pars[[p]])
+      logical_val <- ifelse(logical, as.logical(pars[[p]]), NA)
+      value <- ifelse(is.numeric(as.numeric(pars[[p]])), as.numeric(pars[[p]]), NA)
+      char <- is.character(pars[[p]]) & is.na(value)
+      char_val <- ifelse(char, pars[[p]], NA)
+      data.frame(module = n, par = p,
+                 name = paste0(n, "/", p),
+                 description = desc, default = def, value = value, fraction,
+                 logical, logical_val, char, char_val)
+    }
+  }) |>
+    dplyr::bind_rows()
+  df |>
+    dplyr::mutate(
+      default = dplyr::case_when(
+        !is.na(value) ~ value,
+        .default = default
+      ),
+      min = default - (0.25 * abs(default)),
+      max = default + (0.25 * abs(default))
+    )
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(model = "gotm_wet", file = "gotm.yaml")
+
+gotm_pars |>
+  dplyr::filter(par == "k_min")
+
+# FABM yaml file ----
 fabm_file <- file.path(gotm_dir, "fabm.yaml")
 
 fabm <- yaml::read_yaml(fabm_file)
@@ -595,11 +697,18 @@ gotm_wet_parameters <- wet |>
       .default = max
     )
   )
+gotm_wet_parameters <- dplyr::bind_rows(gotm_pars, gotm_wet_parameters)
+
 summary(gotm_wet_parameters)
 # View(gotm_wet_parameters)
 
 param_names <- AEME:::get_param_names()
 gotm_wet_parameters <- gotm_wet_parameters |>
   dplyr::select(dplyr::all_of(param_names))
+head(gotm_wet_parameters)
+dim(gotm_wet_parameters)
+tail(gotm_wet_parameters)
+gotm_wet_parameters |>
+  dplyr::filter(module == "light_extinction")
 
 usethis::use_data(gotm_wet_parameters, overwrite = TRUE)
