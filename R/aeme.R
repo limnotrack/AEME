@@ -1447,6 +1447,6 @@ setMethod("names", "aeme", function(x) {
 
 get_param_names <- function() {
   param_names <- c("model", "file", "name", "value", "min", "max", "module",
-                   "group")
+                   "group", "par", "logical", "logical_val", "char", "char_val")
   return(param_names)
 }
