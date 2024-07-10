@@ -48,8 +48,8 @@ set_gotm_grid <- function(gotm, path_gotm = NULL, depth, method = 1,
     # larger deeper
     frac <- sub_layers$h / sum(sub_layers$h)
     # f1 <- 0.2 / depth
-    sum(frac)
-    plot(frac)
+    # sum(frac)
+    # plot(frac)
 
     lyrs <- data.frame(lyr = c(nlev, frac))
     write.table(lyrs, file.path(path_gotm, "inputs", "lyrs.dat"),
