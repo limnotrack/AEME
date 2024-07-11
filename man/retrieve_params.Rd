@@ -4,7 +4,7 @@
 \alias{retrieve_params}
 \title{Retrieve parameters for each model}
 \usage{
-retrieve_params(model, module, par)
+retrieve_params(model, module, name, par)
 }
 \arguments{
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
