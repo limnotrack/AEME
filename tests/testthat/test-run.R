@@ -41,6 +41,7 @@ test_that("running GLM works", {
   # cfg$model_controls <- NULL
   # configuration(aeme) <- cfg
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
+  # plot_output(aeme, model = model)
   outp <- output(aeme)
   lake_dir <- get_lake_dir(aeme)
   lke <- lake(aeme)
@@ -48,6 +49,11 @@ test_that("running GLM works", {
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
+
+  v <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp", depth = 0)
+  testthat::expect_true(is.data.frame(v))
+  testthat::expect_error(get_var(aeme = aeme, model = model, var_sim = "HYD_temp",
+                                 depth = 15))
 })
 
 test_that("running GOTM works", {
@@ -65,10 +71,14 @@ test_that("running GOTM works", {
                      model = model, model_controls = model_controls,
                      inf_factor = inf_factor, ext_elev = 5,
                      use_bgc = FALSE)
+  # set_gotm_grid(aeme = aeme, thickness_factor = 5, path = path, method = 0,
+  #               ddl = 0, ddu = 1)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
-  # inp <- input(aeme)
+  plot_output(aeme, model = model)
+    # inp <- input(aeme)
   # outp <- output(aeme)
+  # filled.contour(t(outp$ens_001$gotm_wet$HYD_temp))
   # wb <- water_balance(aeme)
   # head(outp[[model]]$Date)
   # head(outp[[model]]$LKE_V)
@@ -176,6 +186,8 @@ test_that("running GOTM-WET works", {
                      ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path)
+  # plot_output(aeme = aeme, model = model)
+  # plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -203,7 +215,7 @@ test_that("running models in parallel works", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
                    parallel = TRUE)
-  plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
+  plot_output(aeme = aeme, model = model)
 
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",

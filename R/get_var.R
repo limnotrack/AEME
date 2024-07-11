@@ -6,6 +6,8 @@
 #' want to compare model output to observations.
 #' @param return_df logical; if TRUE, return a dataframe; if FALSE, return a
 #' list. Default is TRUE.
+#' @param depth numeric; depth of the variable to extract. Default is NULL. If
+#' NULL, the variable profiles are extracted.
 #' @param cumulative logical; if TRUE, return cumulative sum of variable
 #'
 #' @importFrom dplyr arrange filter left_join mutate select bind_rows case_when
@@ -15,8 +17,9 @@
 #' @return dataframe or list
 #' @export
 
-get_var <- function(aeme, model, var_sim, return_df = TRUE, ens_n = 1,
-                    use_obs = FALSE, remove_spin_up = TRUE, cumulative = FALSE) {
+get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
+                    ens_n = 1, use_obs = FALSE, remove_spin_up = TRUE,
+                    cumulative = FALSE) {
 
   # Extract output from aeme ----
   inp <- input(aeme)
@@ -135,16 +138,40 @@ get_var <- function(aeme, model, var_sim, return_df = TRUE, ens_n = 1,
           dplyr::mutate(value = cumsum(value))
       }
     } else {
-      depth <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
+      dep <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
                           depth = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
       lyr <- outp[[ens_lab]][[m]][["LKE_layers"]]
-      df <- data.frame(Date = rep(outp[[ens_lab]][[m]][["Date"]], each = nrow(variable)),
-                       lyr_top = as.vector(lyr),
-                       value = as.vector(variable),
-                       Model = m) |>
-        dplyr::mutate(lyr_thk = ifelse(c(-999, diff(lyr_top)) < 0, # | is.na(-c(NA,diff(lyr_top))),
-                                       c(diff(lyr_top),NA),
-                                       c(NA,diff(lyr_top))))
+      if (!is.null(depth)) {
+        min_depth <- 0
+        max_depth <- round(max(dep$depth), 2)
+        if (depth > max_depth | depth < min_depth) {
+          stop(strwrap(paste0("Depth is outside the range of the modelled lake
+                              levels [", min_depth, ", ", max_depth, "m]")))
+        }
+        value <- sapply(1:ncol(variable), \(i) {
+          if (all(is.na(variable[, i]))) {
+            return(NA)
+          }
+          p <- stats::approx((dep$depth[i] - lyr[, i]), variable[, i], depth,
+                             rule = 2)$y
+          return(p)
+        })
+        df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
+                         lyr_top = depth,
+                         value = value,
+                         Model = m,
+                         lyr_thk = NA)
+      } else {
+        df <- data.frame(Date = rep(outp[[ens_lab]][[m]][["Date"]],
+                                    each = nrow(variable)),
+                         lyr_top = as.vector(lyr),
+                         value = as.vector(variable),
+                         Model = m) |>
+          dplyr::mutate(lyr_thk = ifelse(c(-999, diff(lyr_top)) < 0, # | is.na(-c(NA,diff(lyr_top))),
+                                         c(diff(lyr_top),NA),
+                                         c(NA,diff(lyr_top))))
+      }
+
 
       # Trim off the spin up period ----
       if (remove_spin_up) {

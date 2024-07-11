@@ -8,6 +8,7 @@ get_var(
   aeme,
   model,
   var_sim,
+  depth = NULL,
   return_df = TRUE,
   ens_n = 1,
   use_obs = FALSE,
@@ -22,6 +23,9 @@ get_var(
 `gotm_wet`.}
 
 \item{var_sim}{string; of variable to plot}
+
+\item{depth}{numeric; depth of the variable to extract. Default is NULL. If
+NULL, the variable profiles are extracted.}
 
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.}
