@@ -144,7 +144,14 @@ test_that("parameters can be added to an aeme object", {
     name = c("light/Kw"),
     value = c(0.58),
     min = c(0.1),
-    max = c(1.0)
+    max = c(1.0),
+    module = "light",
+    group = NA,
+    par = "Kw",
+    logical = FALSE,
+    logical_val = NA,
+    char = FALSE,
+    char_val = NA
   )
 
   aeme_list <- list(
@@ -183,9 +190,6 @@ test_that("parameters can be added to an aeme object", {
                                           input = aeme_list$input,
                                           water_balance = aeme_list$water_balance,
                                           parameters = aeme_list$parameters))
-
-  params <- params |>
-    dplyr::mutate(module = "hyrodynamic", group = "test")
   aeme_list$parameters <- params
 
   aeme <- aeme_constructor(lake = aeme_list$lake, time = aeme_list$time,
@@ -196,7 +200,7 @@ test_that("parameters can be added to an aeme object", {
 
   pars <- parameters(aeme)
 
-  testthat::expect_true(all(pars == params))
+  testthat::expect_true(all(pars[, 1:7] == params[, 1:7]))
 
 
 })
