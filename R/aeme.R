@@ -504,8 +504,8 @@ aeme_constructor <- function(
     stop("Parameters must be a dataframe.")
   }
   if (!all(param_names %in% names(parameters))) {
-    stop(strwrap("Parameters must have the following columns: model, file,
-                 name, value, min, max, module, group."))
+    stop(strwrap(paste0("Parameters must have the following columns: ",
+                        paste(param_names, collapse = ", "), ".")))
   }
 
 
