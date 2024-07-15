@@ -85,7 +85,8 @@ above sea level.
 
 ```{r get-elevation}
 # Get the elevation of the lake
-elevation <- aemetools::get_dem_value(lat = lat, lon = lon)
+key <- Sys.getenv("LINZ_KEY")
+elevation <- aemetools::get_dem_value(lat = lat, lon = lon, key = key)
 elevation # in metres above sea level
 
 ```
