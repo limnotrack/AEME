@@ -62,6 +62,10 @@ input_model_parameters <- function(aeme, model, param, path) {
           met[["MET_wnduvv"]] <- met[["MET_wnduvv"]] * param[["value"]][v]
         }
         met[[param$name[v]]] <- met[[param$name[v]]] * param[["value"]][v]
+        if (param$name[v] == "MET_cldcvr") {
+          met[[param$name[v]]][met[[param$name[v]]] < 0] <- 0
+          met[[param$name[v]]][met[[param$name[v]]] > 1] <- 1
+        }
       }
 
       if(m == "glm_aed") {
