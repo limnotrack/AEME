@@ -78,14 +78,19 @@ test_that("building GLM works", {
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
-  build_aeme(path = path, aeme = aeme, model = model,
-             model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-             use_bgc = FALSE)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "glm3.nml"))
   testthat::expect_true(file_chk)
+
+  obs <- observations(aeme)
+  thmcln <- obs$lake |>
+    dplyr::filter(var_aeme == "HYD_thmcln")
+  testthat::expect_true(all(!is.na(thmcln$value)))
 })
 
 test_that("building GLM-AED works", {
