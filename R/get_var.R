@@ -23,6 +23,10 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
 
   # Extract output from aeme ----
   inp <- input(aeme)
+  bathy <- inp$hypsograph |>
+    dplyr::filter(depth <= 0)
+  bathy$depth <- max(bathy$elev) - bathy$elev
+  max_dep <- max(bathy$depth)
   outp <- output(aeme)
   aeme_time <- time(aeme)
   names(model) <- model
@@ -92,11 +96,17 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
                            min(inp$hypsograph$elev),
                          Model = m) |>
           dplyr::left_join(obs_sub, by = c("Date" = "Date"))
-      } else if(is.vector(variable)) {
+      } else if (is.vector(variable)) {
         df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]][date_ind],
                          sim = outp[[ens_lab]][[m]][[var_sim]][date_ind],
                          Model = m) |>
-          dplyr::left_join(obs_sub, by = c("Date" = "Date"))
+          dplyr::left_join(obs_sub, by = c("Date" = "Date")) |>
+          dplyr::mutate(
+            sim = dplyr::case_when(
+              var_sim == "HYD_thmcln" & is.na(sim) ~ max_dep,
+              .default = sim
+            )
+          )
       } else {
 
         mod <- lapply(date_ind, \(d) {

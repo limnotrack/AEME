@@ -22,6 +22,7 @@ calc_lake_obs_deriv <- function(aeme) {
   bathy <- inp$hypsograph |>
     dplyr::filter(depth <= 0)
   bathy$depth <- max(bathy$elev) - bathy$elev
+  max_dep <- max(bathy$depth)
 
   if (lke$depth < 10) {
     z_step <- 0.2
@@ -65,6 +66,7 @@ calc_lake_obs_deriv <- function(aeme) {
         if (length(idx2) <= 1) return(NA)
         v <- fun_list[[f]](wtr = wtr[c, idx2], depths = depths[idx2])
         v[is.nan(v)] <- NA
+        v <- ifelse(f == "HYD_thmcln" & is.na(v), max_dep, v)
         v[idx]
       }, numeric(1))
       data.frame(Date = Date, var_aeme = f, value = vec)
