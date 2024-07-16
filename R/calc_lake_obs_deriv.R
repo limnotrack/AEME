@@ -182,6 +182,7 @@ calc_lake_obs_deriv <- function(aeme) {
   if ("CHM_oxy" %in% obs$lake$var_aeme | "HYD_temp" %in% obs$lake$var_aeme) {
     out_df <- out_list |>
       dplyr::bind_rows() |>
+      dplyr::filter(!is.na(value)) |>
       dplyr::mutate(lake = lke$name, lake_id = lke$name_id)
 
     obs$lake <- obs$lake |>
