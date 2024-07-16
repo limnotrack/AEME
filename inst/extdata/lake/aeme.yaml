@@ -27,7 +27,7 @@ input:
    init_depth: 13.07                            # initial height of lake surface relative to the bottom [m]
    hypsograph: data/hypsograph.csv                   # hypsograph [csv file]
    meteo: data/meteo.csv                        # file with meteorological forcing data, with column headers according to LakeEnsemblR vocabulary [csv file]
-   use_lw: false                                # use longwave radiation [logical]
+   use_lw: true                                # use longwave radiation [logical]
    Kw: 1.31                                     # light extinction coefficient [m-1, or csv file]
 inflows:
    data:                                        # file with inflow data, with column headers according to LakeEnsemblR vocabulary [csv file; must be provided if inflows -> use is true]
