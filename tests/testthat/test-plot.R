@@ -128,3 +128,31 @@ test_that("plotting model output works with no lake & level observations", {
                     var_lims = c(0, 30), ylim = c(0, 16))
   testthat::expect_true(ggplot2::is.ggplot(p1))
 })
+
+test_that("plotting model residuals for 2d and 1d variables", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls()
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed", "gotm_wet")
+
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
+  # Run models
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
+                   path = path, model_controls = model_controls, parallel = TRUE,
+                   ncores = 2L)
+
+  var_sim <- c("HYD_temp", "HYD_thmcln")
+  p1 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_temp")
+  testthat::expect_true(ggplot2::is.ggplot(p1$HYD_temp))
+
+  p2 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_thmcln")
+  testthat::expect_true(ggplot2::is.ggplot(p2$HYD_thmcln))
+})

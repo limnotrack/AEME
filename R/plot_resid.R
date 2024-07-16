@@ -30,8 +30,11 @@ plot_resid <- function(aeme, model, var_sim = "HYD_temp") {
                   use_obs = TRUE) |>
       dplyr::mutate(resid = sim - obs, yday = lubridate::yday(Date))
     dep_chk <- "depth_mid" %in% names(df)
+    if (all(is.na(df$depth_mid))) {
+      dep_chk <- FALSE
+    }
 
-    if ("depth_mid" %in% names(df)) {
+    if ("depth_mid" %in% names(df) & all(!is.na(df$depth_mid))) {
       df <- df |>
         dplyr::mutate(fdepth = factor(depth_mid))
     }
