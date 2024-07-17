@@ -32,6 +32,8 @@ LKE_efold,,,,,e-folding depth,e-folding_depth_m,e-folding~depth~(m),1,,FALSE,NA
 LKE_efoldh,,,,,e-folding depth,e-folding_depth_m,e-folding~depth~(m),1,,FALSE,NA
 LKE_photic,,,,,Euphotic depth,Euphotic_depth_m,Euphotic~depth~(m),1,,FALSE,NA
 LKE_photich,,,,,Euphotic depth,Euphotic_depth_m,Euphotic~depth~(m),1,,FALSE,NA
+LKE_tli3,,,,,Trophic Level Index 3,Trophic_Level_Index_3,Trophic~Level~Index~3,1,,TRUE,PHS_tp;NIT_tn;PHY_tchla;HYD_epidep
+LKE_tli4,,,,,Trophic Level Index 4,Trophic_Level_Index_4,Trophic~Level~Index~4,1,,TRUE,PHS_tp;NIT_tn;PHY_tchla;HYD_epidep;LKE_photic
 RAD_par,PAR,rad,rad,,Photosynthetically active radiation,Photosynthetically_active_radiation_umol/m2/s,Photosynthetically~active~radiation~(umol~m^2~s^-1),1,,FALSE,NA
 RAD_extc,EXTC,extc_coef,,,Light extinction coefficient,Light_extinction_coefficient_/m,Light~extinction~coefficient~(m^-1),1,,FALSE,NA
 RAD_secchi,,,,,Secchi disk depth,Secchi_disk_depth_m,Secchi~disk~depth~m,1,,FALSE,NA

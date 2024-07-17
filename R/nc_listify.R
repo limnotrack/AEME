@@ -39,6 +39,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
 
   aeme_time <- time(aeme)
 
+  # Switch for calculating TLI
+  calc_tli <- all(c("PHS_tp", "NIT_tn", "PHY_tchla") %in% vars_sim)
+
 
   # find the simvars for this model
   if (model == "gotm_wet") {
@@ -352,6 +355,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
 
   if (model == "glm_aed") {
     # Light
+    # extc_coef <- ncdf4::ncvar_get(nc, "extc")[, idx]
     rad <- ncdf4::ncvar_get(nc, "radn")[, idx]
     rad <- regularise_model_output(depth = depth, depths = mod_layers,
                                    var = rad, nlev = nlev)
@@ -623,6 +627,42 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
                            xout = seq(0, depth[c], by = z_step), rule = 2)$y
       sum(oxy_layers < 1)
     }, numeric(1))
+
+
+  }
+
+  # Calculate TLI
+  if (calc_tli) {
+    depths <- nc_list[["LKE_layers"]]
+    tlc <- lapply(1:ncol(wtr), \(c) {
+      idx <- which(depths[, c] <= laz_list$HYD_epidep[c])
+      idx <- ifelse(is.na(laz_list$HYD_epidep[c]), nrow(depths), idx)
+      chl <- mean(nc_list[["PHY_tchla"]][idx, c])
+      TN <- mean(nc_list[["NIT_tn"]][idx, c]) * 1000
+      TP <- mean(nc_list[["PHS_tp"]][idx, c]) * 1000
+      secchi <- nc_list[["LKE_photic"]][c]
+
+      tli_c <- 2.22 + 2.54 * log10(chl)
+      tli_n <-  -3.61 + 3.01 * log10(TN)
+      tli_p <-  0.218 + 2.92 * log10(TP)
+      tli_secchi <-  5.56 + 2.6 * log10(1/secchi - 1/40)
+
+      tli_3 <- (tli_c + tli_n + tli_p) / 3
+      tli_4 <- (tli_c + tli_n + tli_p + tli_secchi) / 4
+
+      data.frame(tli_c = tli_c, tli_n = tli_n, tli_p = tli_p,
+                 tli_secchi = tli_secchi, tli_3 = tli_3, tli_4 = tli_4)
+
+    }) |>
+      dplyr::bind_rows()
+
+    nc_list[["LKE_tlic"]] <- as.vector(tlc$tli_c)
+    nc_list[["LKE_tlin"]] <- as.vector(tlc$tli_n)
+    nc_list[["LKE_tlip"]] <- as.vector(tlc$tli_p)
+    nc_list[["LKE_tlise"]] <- as.vector(tlc$tli_secchi)
+
+    nc_list[["LKE_tli3"]] <- as.vector(tlc$tli_3)
+    nc_list[["LKE_tli4"]] <- as.vector(tlc$tli_4)
 
 
   }

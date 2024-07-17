@@ -179,6 +179,49 @@ calc_lake_obs_deriv <- function(aeme) {
     }
   }
 
+  # TLI calculation
+  if (all(c("PHS_tp", "NIT_tn", "PHY_tchla", "RAD_secchi") %in% obs$lake$var_aeme)) {
+
+    # GEt epi depths
+    epi_dep <- obs$lake |>
+      dplyr::filter(var_aeme == "HYD_epidep") |>
+      dplyr::select(Date, value) |>
+      dplyr::rename(epi_dep = value)
+
+    # Subset obs to where all variables are present on the same Date
+    tli <- obs$lake |>
+      # dplyr::filter(!var_aeme %in% c("RAD_secchi")) |>
+      dplyr::filter(var_aeme %in% c("PHS_tp", "NIT_tn", "PHY_tchla", "RAD_secchi")) |>
+      dplyr::left_join(epi_dep, by = "Date") |>
+      dplyr::group_by(Date, var_aeme) |>
+      dplyr::summarise(value = mean(value), .groups = "drop") |>
+      tidyr::pivot_wider(names_from = var_aeme, values_from = value,
+                         id_cols = Date)
+
+    if (all(c("PHS_tp", "NIT_tn", "PHY_tchla") %in% colnames(tli))) {
+      tli <- tli |>
+        dplyr::filter(!is.na(PHS_tp) & !is.na(NIT_tn) & !is.na(PHY_tchla)) |>
+        dplyr::mutate(TN = NIT_tn * 1000, TP = PHS_tp * 1000,
+                      LKE_tlchla = 2.22 + 2.54 * log10(PHY_tchla),
+                      LKE_tln =  -3.61 + 3.01 * log10(TN),
+                      LKE_tlp =  0.218 + 2.92 * log10(TP),
+                      LKE_tlsec =  5.56 + 2.6 * log10(1/RAD_secchi - 1/40),
+                      LKE_tli3 = (LKE_tlchla + LKE_tln + LKE_tlp) / 3,
+                      LKE_tli4 = (LKE_tlchla + LKE_tln + LKE_tlp + LKE_tlsec) / 4
+        ) |>
+        tidyr::pivot_longer(cols = c(#LKE_tlchla, LKE_tln, LKE_tlp, LKE_tlsec,
+                                     LKE_tli3, LKE_tli4), names_to = "var_aeme",
+                            values_to = "value") |>
+        dplyr::filter(!is.na(value)) |>
+        dplyr::mutate(lake = obs$lake$lake[1],
+                      lake_id = obs$lake$lake_id[1]) |>
+        dplyr::select(lake, lake_id, Date, var_aeme, value)
+    }
+    obs$lake <- obs$lake |>
+      dplyr::bind_rows(tli)
+  }
+
+
   if ("CHM_oxy" %in% obs$lake$var_aeme | "HYD_temp" %in% obs$lake$var_aeme) {
     out_df <- out_list |>
       dplyr::bind_rows() |>
@@ -188,8 +231,10 @@ calc_lake_obs_deriv <- function(aeme) {
     obs$lake <- obs$lake |>
       dplyr::bind_rows(out_df)
 
-    observations(aeme) <- obs
   }
+
+  observations(aeme) <- obs
+
 
   return(aeme)
 }
