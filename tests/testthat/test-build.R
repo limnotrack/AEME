@@ -417,5 +417,4 @@ test_that("derived variables are in aeme object", {
   thmcln2 <- obs$lake |>
     dplyr::filter(var_aeme == "HYD_thmcln")
   testthat::expect_true(nrow(thmcln2) == nrow(thmcln1))
-
 })
