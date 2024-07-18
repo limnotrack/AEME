@@ -13,6 +13,13 @@
 #'
 
 calc_lake_obs_deriv <- function(aeme) {
+
+  # Load Rdata
+  utils::data("key_naming", package = "AEME", envir = environment())
+  deriv_vars <- key_naming |>
+    dplyr::filter(derived) |>
+    dplyr::pull(name)
+
   vars <- c("HYD_temp", "CHM_oxy")
 
   out_list <- list()
@@ -31,6 +38,9 @@ calc_lake_obs_deriv <- function(aeme) {
   }
 
   obs <- observations(aeme)
+  deriv_chk <- data.frame(aeme_var = deriv_vars,
+                          present = deriv_vars %in% obs$lake$var_aeme,
+                          group = sapply(deriv_vars, \(x) strsplit(x, "_")[[1]][1]))
 
   # Temperature derivatives
   if ("HYD_temp" %in% obs$lake$var_aeme) {
@@ -60,6 +70,9 @@ calc_lake_obs_deriv <- function(aeme) {
                      HYD_hypdep = rLakeAnalyzer::meta.depths)
 
     wtr_list <- lapply(names(fun_list), \(f) {
+
+      if (deriv_chk$present[deriv_chk$aeme_var == f]) return()
+
       idx <- ifelse(f == "HYD_hypdep", 2, 1)
       vec <- vapply(1:nrow(wtr), \(c) {
         idx2 <- which(!is.na(wtr[c, ]))
@@ -75,17 +88,20 @@ calc_lake_obs_deriv <- function(aeme) {
     bthD <- rev(bathy$depth)
     bthA <- (bathy$area)
 
-    schstb <- vapply(1:nrow(wtr), \(c) {
-      idx2 <- which(!is.na(wtr[c, ]))
-      if (length(idx2) <= 1) return(NA)
-      v <- rLakeAnalyzer::schmidt.stability(wtr = wtr[c, idx2],
-                                            depths = depths[idx2],
-                                            bthA = bthA, bthD = bthD)
-      v[is.nan(v)] <- NA
-      v
-    }, numeric(1))
-    wtr_list[["HYD_schstb"]] <- data.frame(Date = Date, var_aeme = "HYD_schstb",
-                                           value = schstb)
+    if (!deriv_chk$present[deriv_chk$aeme_var == "HYD_schstb"]) {
+      schstb <- vapply(1:nrow(wtr), \(c) {
+        idx2 <- which(!is.na(wtr[c, ]))
+        if (length(idx2) <= 1) return(NA)
+        v <- rLakeAnalyzer::schmidt.stability(wtr = wtr[c, idx2],
+                                              depths = depths[idx2],
+                                              bthA = bthA, bthD = bthD)
+        v[is.nan(v)] <- NA
+        v
+      }, numeric(1))
+      wtr_list[["HYD_schstb"]] <- data.frame(Date = Date,
+                                             var_aeme = "HYD_schstb",
+                                             value = schstb)
+    }
 
     for (n in names(wtr_list)) {
       out_list[[n]] <- wtr_list[[n]]
@@ -93,7 +109,8 @@ calc_lake_obs_deriv <- function(aeme) {
   }
 
   # Oxygen derivatives
-  if ("CHM_oxy" %in% obs$lake$var_aeme & "HYD_temp" %in% obs$lake$var_aeme) {
+  if ("CHM_oxy" %in% obs$lake$var_aeme & "HYD_temp" %in% obs$lake$var_aeme &
+      any(!deriv_chk$present[deriv_chk$group == "CHM"])) {
     oxy <- obs$lake |>
       dplyr::filter(var_aeme == "CHM_oxy") |>
       dplyr::mutate(depth_mid = paste0("wtr_",
@@ -180,7 +197,9 @@ calc_lake_obs_deriv <- function(aeme) {
   }
 
   # TLI calculation
-  if (all(c("PHS_tp", "NIT_tn", "PHY_tchla", "RAD_secchi") %in% obs$lake$var_aeme)) {
+  tli_vars <- c("PHS_tp", "NIT_tn", "PHY_tchla", "RAD_secchi")
+  if (all(tli_vars %in% obs$lake$var_aeme) &
+      !any(deriv_chk$present[deriv_chk$group == "LKE"])) {
 
     # GEt epi depths
     epi_dep <- obs$lake |>
@@ -191,8 +210,8 @@ calc_lake_obs_deriv <- function(aeme) {
     # Subset obs to where all variables are present on the same Date
     tli <- obs$lake |>
       # dplyr::filter(!var_aeme %in% c("RAD_secchi")) |>
-      dplyr::filter(var_aeme %in% c("PHS_tp", "NIT_tn", "PHY_tchla", "RAD_secchi")) |>
-      dplyr::left_join(epi_dep, by = "Date") |>
+      dplyr::filter(var_aeme %in% tli_vars) |>
+      dplyr::left_join(epi_dep, by = "Date", relationship = "many-to-many") |>
       dplyr::group_by(Date, var_aeme) |>
       dplyr::summarise(value = mean(value), .groups = "drop") |>
       tidyr::pivot_wider(names_from = var_aeme, values_from = value,
@@ -207,7 +226,8 @@ calc_lake_obs_deriv <- function(aeme) {
                       LKE_tlp =  0.218 + 2.92 * log10(TP),
                       LKE_tlsec =  5.56 + 2.6 * log10(1/RAD_secchi - 1/40),
                       LKE_tli3 = (LKE_tlchla + LKE_tln + LKE_tlp) / 3,
-                      LKE_tli4 = (LKE_tlchla + LKE_tln + LKE_tlp + LKE_tlsec) / 4
+                      LKE_tli4 = (LKE_tlchla + LKE_tln +
+                                    LKE_tlp + LKE_tlsec) / 4
         ) |>
         tidyr::pivot_longer(cols = c(#LKE_tlchla, LKE_tln, LKE_tlp, LKE_tlsec,
                                      LKE_tli3, LKE_tli4), names_to = "var_aeme",
@@ -215,14 +235,18 @@ calc_lake_obs_deriv <- function(aeme) {
         dplyr::filter(!is.na(value)) |>
         dplyr::mutate(lake = obs$lake$lake[1],
                       lake_id = obs$lake$lake_id[1]) |>
-        dplyr::select(lake, lake_id, Date, var_aeme, value)
+        dplyr::select(lake, lake_id, Date, var_aeme, value) |>
+        as.data.frame()
     }
-    obs$lake <- obs$lake |>
-      dplyr::bind_rows(tli)
+    tli_list <- list(tli_vars = tli)
+
+    for (n in names(tli_list)) {
+      out_list[[n]] <- tli_list[[n]]
+    }
   }
 
 
-  if ("CHM_oxy" %in% obs$lake$var_aeme | "HYD_temp" %in% obs$lake$var_aeme) {
+  if (length(out_list) > 0) {
     out_df <- out_list |>
       dplyr::bind_rows() |>
       dplyr::filter(!is.na(value)) |>

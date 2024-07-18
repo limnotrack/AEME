@@ -387,3 +387,35 @@ test_that("building all models with new parameters works", {
                        header = FALSE, skip = 6)
   testthat::expect_true(all(dy_met[, 2] == 0))
 })
+
+test_that("derived variables are in aeme object", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  list.files(tmpdir, full.names = TRUE, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls()
+  inf_factor = c("glm_aed" = 1)
+  outf_factor = c("glm_aed" = 1)
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
+
+  obs <- observations(aeme)
+  thmcln1 <- obs$lake |>
+    dplyr::filter(var_aeme == "HYD_thmcln")
+  testthat::expect_true(all(!is.na(thmcln1$value)))
+
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
+
+  obs <- observations(aeme)
+  thmcln2 <- obs$lake |>
+    dplyr::filter(var_aeme == "HYD_thmcln")
+  testthat::expect_true(nrow(thmcln2) == nrow(thmcln1))
+
+})
