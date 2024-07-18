@@ -166,12 +166,16 @@ This is a critical input for the model, as it defines the relationship between
 the lake area and the lake elevation.
 
 However, if you do not have hypsograph data, the model will use a simple
-cone-shaped hypsograph based on the lake depth and area.
+cone-shaped hypsograph based on the lake depth and area. This is not ideal, but
+it will work for this example.
+
+Required column names for the hypsograph data are `area`, `elev`, and `depth`.
 
 ```{r generate-hypsorgaph}
 # Generate a simple hypsograph
-hypsograph <- data.frame(area = c(0, 152343), 
-                         elev = c(elevation - depth, elevation))
+hypsograph <- data.frame(area = c(152343, 0), 
+                         elev = c(elevation, elevation - depth),
+                         depth = c(0, -depth))
 hypsograph
 ```
 
