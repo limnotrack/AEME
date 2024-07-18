@@ -90,6 +90,16 @@ elevation <- aemetools::get_dem_value(lat = lat, lon = lon, key = key)
 elevation # in metres above sea level
 
 ```
+```{r, set-elevation-if-na, include=FALSE}
+elevation <- ifelse(is.na(elevation), 29, elevation)
+```
+
+```{r}
+elevation
+```
+
+
+
 
 We will now create a list of the lake data. This will be used to construct the
 AEME object.
