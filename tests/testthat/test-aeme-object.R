@@ -183,7 +183,7 @@ test_that("parameters can be added to an aeme object", {
       use = "mod" # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
     ),
     # Define parameters list
-    parameters = params
+    parameters = params[, 1:5]
   )
 
   testthat::expect_error(aeme_constructor(lake = aeme_list$lake, time = aeme_list$time,
