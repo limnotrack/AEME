@@ -140,7 +140,9 @@ test_that("running GLM-AED works", {
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
-                   model_controls = model_controls, path = path)
+                   path = path)
+  # plot_output(aeme, model = model, c("LKE_tli3"), facet = FALSE)
+
   v1 <- get_var(aeme = aeme, model = model, var = "HYD_temp")
   v2 <- get_var(aeme = aeme, model = model, var = "HYD_temp",
                 remove_spin_up = FALSE)
