@@ -27,6 +27,7 @@ Imports:
     dplyr,
     ggplot2,
     lubridate,
+    lwgeom,
     ncdf4,
     parallel,
     patchwork,
