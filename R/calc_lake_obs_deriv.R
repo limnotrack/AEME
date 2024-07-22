@@ -233,9 +233,9 @@ calc_lake_obs_deriv <- function(aeme) {
                                      LKE_tli3, LKE_tli4), names_to = "var_aeme",
                             values_to = "value") |>
         dplyr::filter(!is.na(value)) |>
-        dplyr::mutate(lake = obs$lake$lake[1],
-                      lake_id = obs$lake$lake_id[1]) |>
-        dplyr::select(lake, lake_id, Date, var_aeme, value) |>
+        # dplyr::mutate(lake = obs$lake$lake[1],
+        #               lake_id = obs$lake$lake_id[1]) |>
+        dplyr::select(Date, var_aeme, value) |>
         as.data.frame()
     }
     tli_list <- list(tli_vars = tli)
