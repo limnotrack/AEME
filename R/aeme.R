@@ -397,6 +397,11 @@ aeme_constructor <- function(
     if (!is.data.frame(observations$lake)) {
       stop("Observations lake must be a dataframe or NULL.")
     }
+    obs_col_names <- get_obs_column_names()
+    if (!all(obs_col_names %in% colnames(observations$lake))) {
+      stop(paste("Observations lake must contain the following columns:",
+                 paste(obs_col_names, collapse = ", ")))
+    }
   }
 
   # Input type checking for specific elements
@@ -1449,4 +1454,15 @@ get_param_names <- function() {
   param_names <- c("model", "file", "name", "value", "min", "max", "module",
                    "group", "par", "logical", "logical_val", "char", "char_val")
   return(param_names)
+}
+
+#' Get column names for the observational data frame
+#' @export
+#'
+#' @return vector of column names for the observational data frame
+#'
+
+get_obs_column_names <- function() {
+  obs_column_names <- c("Date", "var_aeme", "depth_from", "depth_to", "value")
+  return(obs_column_names)
 }
