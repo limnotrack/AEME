@@ -48,7 +48,7 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim, xlim, var_lims,
         df2 <- df |>
           dplyr::filter(Model == m)
         obs2 <- obs
-        if (!is.null(obs2$lake_adj)) {
+        if (!is.null(obs2[["lake_adj"]])) {
           obs2$lake_adj <- obs2$lake_adj |>
             dplyr::filter(Model == m)
         }
@@ -71,7 +71,7 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim, xlim, var_lims,
       ggplot2::xlim(xlim) +
       ggplot2::theme_bw()
     # Add water level observations
-    if ("LKE_lvlwtr" %in% var_sim & !is.null(obs$level)) {
+    if ("LKE_lvlwtr" %in% var_sim & !is.null(obs[["level_adj"]])) {
 
       obs_lvl <- obs$level_adj
       if (add_obs & nrow(obs_lvl) > 0) {
@@ -122,7 +122,7 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, add_obs,
     ggplot2::xlab(NULL) +
     ggplot2::theme_bw()
 
-  if (!is.null(obs$lake_adj) & add_obs) {
+  if (!is.null(obs[["lake_adj"]]) & add_obs) {
 
     p <- p +
       ggplot2::geom_point(data = obs$lake_adj,
@@ -132,8 +132,8 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, add_obs,
       ggplot2::labs(size = "")
   }
 
-  if (!is.null(obs$level)) {
-    obs_lvl <- obs$level_adj
+  if (!is.null(obs[["level_adj"]])) {
+    obs_lvl <- obs[["level_adj"]]
 
     p <- p +
       ggplot2::geom_line(data = obs_lvl, ggplot2::aes(Date, lvl_adj),

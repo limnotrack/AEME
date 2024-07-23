@@ -55,7 +55,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     # if (is.null(level)) {
     #   stop("No observations of lake level provided")
     # }
-    if (nrow(level) > 0) {
+    if (!is.null(level)) {
       message("Using observed water level")
       # placeholder.. add optimised sin model here..!
       ampl <- ((quantile(level$value, 0.9) -

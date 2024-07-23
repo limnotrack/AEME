@@ -402,13 +402,13 @@ aeme_constructor <- function(
     }
   }
   obs_col_names <- get_obs_column_names()
-  if (is.null(observations$level)) {
-    df <- matrix(NA, nrow = 1, ncol = length(obs_col_names)) |>
-      as.data.frame()
-    names(df) <- obs_col_names
-    observations$level <- df |>
-      dplyr::filter(!is.na(value))
-  }
+  # if (is.null(observations$level)) {
+  #   df <- matrix(NA, nrow = 1, ncol = length(obs_col_names)) |>
+  #     as.data.frame()
+  #   names(df) <- obs_col_names
+  #   observations$level <- df |>
+  #     dplyr::filter(!is.na(value))
+  # }
   if (!is.null(observations$lake)) {
     if (!is.data.frame(observations$lake)) {
       stop("Observations lake must be a dataframe or NULL.")
@@ -419,13 +419,13 @@ aeme_constructor <- function(
                  paste(obs_col_names, collapse = ", ")))
     }
   }
-  if (is.null(observations$lake)) {
-    df <- matrix(NA, nrow = 1, ncol = length(obs_col_names)) |>
-      as.data.frame()
-    names(df) <- obs_col_names
-    observations$lake <- df |>
-      dplyr::filter(!is.na(value))
-  }
+  # if (is.null(observations$lake)) {
+  #   df <- matrix(NA, nrow = 1, ncol = length(obs_col_names)) |>
+  #     as.data.frame()
+  #   names(df) <- obs_col_names
+  #   observations$lake <- df |>
+  #     dplyr::filter(!is.na(value))
+  # }
 
   # Input type checking for specific elements
   if (!is.null(input$init_profile)) {
