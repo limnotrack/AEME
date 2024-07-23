@@ -74,7 +74,7 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim, xlim, var_lims,
     if ("LKE_lvlwtr" %in% var_sim & !is.null(obs$level)) {
 
       obs_lvl <- obs$level_adj
-      if (add_obs) {
+      if (add_obs & nrow(obs_lvl) > 0) {
         p <- p +
           ggplot2::geom_point(data = obs_lvl,
                               ggplot2::aes(Date, lvl_adj, fill = "Obs")) +
