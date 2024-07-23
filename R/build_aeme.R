@@ -293,9 +293,25 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                           lake name.")))
     }
 
-    # Lake level ----
-    aeme_obs <- observations(aeme)
+    # Calculate derived variables ----
     aeme <- calc_lake_obs_deriv(aeme)
+
+    # Check for null observations and insert empty dataframes
+    obs_col_names <- get_obs_column_names()
+    empty_df <- matrix(NA, nrow = 1, ncol = length(obs_col_names)) |>
+      as.data.frame()
+    names(empty_df) <- obs_col_names
+    empty_df <- empty_df |>
+      dplyr::filter(!is.na(value))
+    aeme_obs <- observations(aeme)
+    if (is.null(aeme_obs$lake)) {
+      aeme_obs$lake <- empty_df
+    }
+    if (is.null(aeme_obs$level)) {
+      aeme_obs$level <- empty_df
+    }
+
+    # Lake level ----
     w_bal <- water_balance(aeme)
     if (w_bal$use == "obs") {
       level <- aeme_obs[["level"]]
