@@ -136,6 +136,44 @@ test_that("aeme object can be built with partial information", {
 
 })
 
+
+test_that("aeme object errors when non alpha numeric chars present", {
+  aeme_list <- list(
+    # Define lake list
+    lake = list(
+      name = character(), # name of the lake
+      id = "LID 123", # id number for the lake
+      latitude = numeric(), # latitude
+      longitude = numeric(), # longitude
+      elevation = numeric(), # elevation of lake surface above sea level [m]
+      depth = numeric(), # depth of the lake [m]
+      area = numeric() # surface area of the lake [m2]
+    ),
+    # Define time list
+    time = list(
+      start = as.POSIXct("2020-01-01 00:00:00"), # start date
+      stop = as.POSIXct("2020-12-31 00:00:00") # stop date
+    ),
+    # Define input list
+    input = list(
+      init_depth = numeric(), # initial depth of the lake [m]
+      hypsograph = data.frame(), # dataframe of hypsograph data in the AEME format
+      meteo = data.frame(), # dataframe of meteorological data in the AEME format
+      use_lw = TRUE, # Logical use incoming longwave radiation
+      Kw = numeric() # Light attenuation coefficient [m-1]
+    ),
+    # Define water balance list
+    water_balance = list(
+      use = "mod" # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
+    )
+  )
+
+  testthat::expect_error({
+    aeme_constructor(lake = aeme_list$lake, time = aeme_list$time,
+                     input = aeme_list$input, water_balance = aeme_list$water_balance)
+  })
+})
+
 test_that("parameters can be added to an aeme object", {
 
   params <- data.frame(

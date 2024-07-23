@@ -262,6 +262,11 @@ aeme_constructor <- function(
       stop("Lake id must be a character.")
     }
   }
+  if (any(grepl("[^[:alnum:]]", lake$id))) {
+    stop(strwrap(paste0("Lake id '", lake$id, "' contains non-alphanumeric
+                          characters. Please remove these characters from the
+                          lake name.")))
+  }
   if (!is.numeric(lake$latitude)) {
     stop("Lake latitude must be numeric.")
   }
