@@ -256,8 +256,11 @@ aeme_constructor <- function(
                           characters. Please remove these characters from the
                           lake name.")))
   }
-  if (!is.numeric(lake$id)) {
-    stop("Lake id must be numeric.")
+  if (!is.character(lake$id)) {
+    lake$id <- as.character(lake$id)
+    if (is.na(lake$id)) {
+      stop("Lake id must be a character.")
+    }
   }
   if (!is.numeric(lake$latitude)) {
     stop("Lake latitude must be numeric.")

@@ -82,6 +82,7 @@ test_that("building GLM works", {
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
   lke <- lake(aeme)
+  testthat::expect_true(is.character(lke$id))
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "glm3.nml"))
