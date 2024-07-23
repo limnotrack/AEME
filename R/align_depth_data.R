@@ -35,7 +35,8 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
     if (!is.null(obs$lake)) {
       obs$lake |>
         dplyr::filter(Date %in% df$Date & var_aeme == var_sim) |>
-        merge(x = _, depth, by = "Date") |>
+        # merge(x = _, depth, by = "Date") |>
+        dplyr::left_join(depth, by = "Date") |>
         dplyr::mutate(elev = depth - depth_from, Model = m) |>
         dplyr::filter(elev >= 0)
     }
@@ -49,6 +50,8 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
     if (nrow(obs$level_adj) > 0) {
       obs$level_adj <- obs$level_adj |>
         dplyr::mutate(lvl_adj = value - min(inp$hypsograph$elev))
+    } else {
+      obs$level_adj <- NULL
     }
   }
 
