@@ -11,7 +11,7 @@ insert_aeme <- function() {
     # Define lake list
     lake = list(
       name = character(), # name of the lake
-      id = numeric(), # id number for the lake
+      id = character(), # id number for the lake
       latitude = numeric(), # latitude
       longitude = numeric(), # longitude
       elevation = numeric(), # elevation of lake surface above sea level [m]
