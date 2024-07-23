@@ -17,7 +17,7 @@ test_that("aeme object can be constructed from add-in", {
     # Define lake list
     lake = list(
       name = character(), # name of the lake
-      id = numeric(), # id number for the lake
+      id = character(), # id number for the lake
       latitude = numeric(), # latitude
       longitude = numeric(), # longitude
       elevation = numeric(), # elevation of lake surface above sea level [m]
@@ -37,8 +37,8 @@ test_that("aeme object can be constructed from add-in", {
       ),
     # Define observations list
     observations = list(
-      lake = data.frame(), # dataframe of lake observations in the AEME format
-      level = data.frame() # dataframe of lake level observations in the AEME format
+      lake = NULL, # dataframe of lake observations in the AEME format
+      level = NULL # dataframe of lake level observations in the AEME format
     ),
     # Define input list
     input = list(
@@ -97,7 +97,7 @@ test_that("aeme object can be built with partial information", {
     # Define lake list
     lake = list(
       name = character(), # name of the lake
-      id = numeric(), # id number for the lake
+      id = character(), # id number for the lake
       latitude = numeric(), # latitude
       longitude = numeric(), # longitude
       elevation = numeric(), # elevation of lake surface above sea level [m]
@@ -196,7 +196,7 @@ test_that("parameters can be added to an aeme object", {
     # Define lake list
     lake = list(
       name = character(), # name of the lake
-      id = numeric(), # id number for the lake
+      id = character(), # id number for the lake
       latitude = numeric(), # latitude
       longitude = numeric(), # longitude
       elevation = numeric(), # elevation of lake surface above sea level [m]
