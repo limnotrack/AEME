@@ -122,7 +122,7 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, add_obs,
     ggplot2::xlab(NULL) +
     ggplot2::theme_bw()
 
-  if (!is.null(obs$lake_adj) & add_obs) {
+  if (!is.null(obs$lake_adj) & add_obs & nrow(obs$lake_adj) > 0) {
 
     p <- p +
       ggplot2::geom_point(data = obs$lake_adj,
@@ -132,7 +132,7 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, add_obs,
       ggplot2::labs(size = "")
   }
 
-  if (!is.null(obs$level)) {
+  if (!is.null(obs$level) & nrow(obs$level_adj) > 0) {
     obs_lvl <- obs$level_adj
 
     p <- p +
