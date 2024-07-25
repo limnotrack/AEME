@@ -393,6 +393,44 @@ test_that("building all models with new parameters works", {
   testthat::expect_true(all(dy_met[, 2] == 0))
 })
 
+test_that("building models with parameters for only one model", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+
+  utils::data("aeme_parameters")
+  aeme_parameters <- aeme_parameters |>
+    dplyr::mutate(
+      value = dplyr::case_when(
+        model == "dy_cd" & name == "light_extinction_coefficient/7" ~ 1,
+        model == "glm_aed" & name == "light/Kw" ~ 5,
+        model == "gotm_wet" & name == "light_extinction/g2/constant_value" ~ 5,
+        # name == "MET_radswd" ~ 0,
+        .default = value
+      )
+    ) |>
+    dplyr::filter(model == "glm_aed")
+
+  parameters(aeme) <- aeme_parameters
+  # parameters(aeme) <- aeme_parameters |>
+  #   dplyr::filter( model == "glm")
+
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     use_bgc = FALSE)
+
+  glm_cfg <- read_nml(file.path(lake_dir, "glm_aed", "glm3.nml"))
+  testthat::expect_true(glm_cfg$light$Kw == 5)
+
+})
+
 test_that("derived variables are in aeme object", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")

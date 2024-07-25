@@ -34,7 +34,7 @@ input_model_parameters <- function(aeme, model, param, path) {
   # Check model parameters in supplied parameters
   for (m in model) {
     if (!m %in% param[["model"]]) {
-      stop("No parameters in 'param' for ", m, ".")
+      warning("No parameters in 'param' for ", m, ".")
     }
   }
 
@@ -44,6 +44,7 @@ input_model_parameters <- function(aeme, model, param, path) {
     model_path <- file.path(lake_dir, m)
 
     all_p <- param[param$model == m, ] # Subset parameters to model specific
+    if (nrow(all_p) == 0) return(NULL)
 
     # Scale met data ----
     if ("met" %in% all_p[["file"]]) {
