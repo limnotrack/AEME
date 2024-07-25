@@ -181,8 +181,8 @@ locations in New Zealand.</p>
 <span>                                 parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Checking if lat/lon point is in the grid...</span></span>
 <span><span class="co">#&gt; Point is in the grid.</span></span>
-<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2024-07-18 02:43:03]</span></span>
-<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-07-18 02:44:03]</span></span></code></pre></div>
+<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2024-07-25 22:59:29]</span></span>
+<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-07-25 23:00:15]</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -435,7 +435,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <code class="sourceCode R"><span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2024-07-18 02:44:21]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2024-07-25 23:00:18]</span></span>
 <span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
 <span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
@@ -514,8 +514,8 @@ object.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-07-18 02:44:23]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM run FAILED! [2024-07-18 02:44:24]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-07-25 23:00:19]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM run FAILED! [2024-07-25 23:00:20]</span></span>
 <span><span class="co">#&gt;      2.000000E-01     2.000000E-01     2.000000E-01     2.000000E-01     2.000000E-01</span></span>
 <span><span class="co">#&gt;      2.000000E-01     2.000000E-01     2.000000E-01     2.000000E-01     2.000000E-01</span></span>
 <span><span class="co">#&gt;      2.000000E-01     2.000000E-01     2.000000E-01     2.000000E-01     2.000000E-01</span></span>
@@ -526,9 +526,9 @@ object.</p>
 <span><span class="co">#&gt;      2.000000E-01     2.000000E-01     2.000000E-01     2.000000E-01     2.000000E-01</span></span>
 <span><span class="co">#&gt;      2.000000E-01     2.000000E-01</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-07-18 02:44:28]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-07-18 02:44:31]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-07-18 02:44:31]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-07-25 23:00:24]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-07-25 23:00:26]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-07-25 23:00:26]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting OXY_oxy for model glm_aed</span></span>
