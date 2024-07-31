@@ -426,6 +426,7 @@ test_that("building models with parameters for only one model", {
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
 
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
   glm_cfg <- read_nml(file.path(lake_dir, "glm_aed", "glm3.nml"))
   testthat::expect_true(glm_cfg$light$Kw == 5)
 
