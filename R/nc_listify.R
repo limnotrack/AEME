@@ -422,9 +422,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
                   LKE_efoldh = as.vector(abs(efold_h)),
                   LKE_photic = as.vector(abs(euphotic)),
                   LKE_photich = as.vector(abs(euphotic_h)),
-                  HYD_Ts = as.vector(Ts),
+                  HYD_surft = as.vector(Ts),
                   MET_tmpair = as.vector(MET_tmpair),
-                  LKE_Tdiff = as.vector(Ts - MET_tmpair)
+                  HYD_atdiff = as.vector(Ts - MET_tmpair)
   )
 
   if (model %in% c("dy_cd", "glm_aed")) {
