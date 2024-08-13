@@ -864,3 +864,34 @@ test_that("can get variable indices after running the model", {
   testthat::expect_true(length(var_indices$HYD_temp$time) == 10)
 
 })
+
+test_that("assess model with no lake level data", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+
+  obs <- observations(aeme)
+  obs$level <- NULL
+  observations(aeme) <- obs
+
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE, calc_wbal = TRUE,
+                     calc_wlev = FALSE)
+  inp <- input(aeme)
+  met <- inp$meteo
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+                   model_controls = model_controls, path = path,
+                   parallel = FALSE)
+  model_performance <- assess_model(aeme = aeme, model = model,
+                                    var_sim = c("LKE_lvlwtr", "HYD_temp"))
+  testthat::expect_true(is.data.frame(model_performance))
+
+})

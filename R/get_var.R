@@ -35,11 +35,21 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
   if (use_obs) {
     obs <- observations(aeme)
     if (var_sim == "LKE_lvlwtr") {
-      if (is.null(obs$level)) stop("No observations of lake level found.")
-      obs_sub <- obs$level |>
-        dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
-                        var_aeme %in% var_sim) |>
-        dplyr::arrange(Date)
+      if (is.null(obs$level)) {
+        message(strwrap("No lake level observations found. Using bathymetry
+                        [depth = 0 m] as lake level.", width = 80))
+        obs_sub <- data.frame(Date = seq.Date(as.Date(aeme_time$start),
+                                              as.Date(aeme_time$stop),
+                                              by = 1),
+                              var_aeme = v,
+                              value = max(bathy$elev))
+        # stop("No observations of lake level found.")
+      } else {
+        obs_sub <- obs$level |>
+          dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
+                          var_aeme %in% var_sim) |>
+          dplyr::arrange(Date)
+      }
     } else {
       if (is.null(obs$lake)) stop("No lake observations found.")
       obs_sub <- obs$lake |>
