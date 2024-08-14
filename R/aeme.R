@@ -2,9 +2,9 @@
 #'
 #' This class represents data related to a lake for running AEME. Items in bold
 #' are required to run the models.
-#' @title aeme Class
-#' @name aeme
-#' @aliases aeme-class
+#' @title Aeme Class
+#' @name Aeme
+#' @aliases Aeme-class
 #' @slot lake A list representing lake information. \itemize{
 #'  \item \code{\bold{name}}: character; lake name.
 #'  \item \code{\bold{id}}: character; lake identifier.
@@ -66,7 +66,7 @@
 #' @slot parameters A dataframe representing model parameters.
 #' @export
 
-setClass("aeme",
+setClass("Aeme",
          representation(
            lake = "list",
            # catchment = "list",
@@ -82,7 +82,7 @@ setClass("aeme",
          )
 )
 
-# setValidity("aeme", function(object) {
+# setValidity("Aeme", function(object) {
 #   if (!is.list(lake)) {
 #     "@lake must be a list"
 #   } else {
@@ -125,7 +125,7 @@ setClass("aeme",
 #   }
 # })
 
-#' Constructor function for aeme class
+#' Constructor function for Aeme class
 #'
 #' @param lake List representing lake information.
 #' @param time List representing time information.
@@ -137,7 +137,7 @@ setClass("aeme",
 #' @param water_balance List representing water balance information.
 #' @param output List representing output information.
 #' @param parameters Dataframe containing model parameters.
-#' @return An instance of the aeme class.
+#' @return An instance of the Aeme class.
 #'
 #' @importFrom sf st_area sf_use_s2
 #' @importFrom units drop_units
@@ -537,7 +537,7 @@ aeme_constructor <- function(
   }
 
 
-  new("aeme",
+  new("Aeme",
       lake = lake,
       # catchment = catchment,
       time = time,
@@ -555,378 +555,378 @@ aeme_constructor <- function(
 # Accessor functions ----
 
 #' @title Access lake slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of lake characteristics
 #' @export
 setGeneric("lake", function(aeme) standardGeneric("lake"))
 
 #' @title Access lake slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of lake characteristics
 #' @export
-setMethod("lake", "aeme", function(aeme) aeme@lake)
+setMethod("lake", "Aeme", function(aeme) aeme@lake)
 
 #' @title Access time slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of time characteristics
 #' @export
 setGeneric("time", function(aeme) standardGeneric("time"))
 
 #' @title Access time slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of time characteristics
 #' @export
-setMethod("time", "aeme", function(aeme) aeme@time)
+setMethod("time", "Aeme", function(aeme) aeme@time)
 
 #' @title Access configuration slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of configuration characteristics
 #' @export
 setGeneric("configuration", function(aeme) standardGeneric("configuration"))
 
 #' @title Access configuration slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of configuration characteristics
 #' @export
-setMethod("configuration", "aeme", function(aeme) aeme@configuration)
+setMethod("configuration", "Aeme", function(aeme) aeme@configuration)
 
 #' @title Access observations slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of observations characteristics
 #' @export
 setGeneric("observations", function(aeme) standardGeneric("observations"))
 
 #' @title Access observations slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of observations characteristics
 #' @export
-setMethod("observations", "aeme", function(aeme) aeme@observations)
+setMethod("observations", "Aeme", function(aeme) aeme@observations)
 
 #' @title Access input slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of input characteristics
 #' @export
 setGeneric("input", function(aeme) standardGeneric("input"))
 
 #' @title Access input slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of input characteristics
 #' @export
-setMethod("input", "aeme", function(aeme) aeme@input)
+setMethod("input", "Aeme", function(aeme) aeme@input)
 
 #' @title Access inflows slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of inflows characteristics
 #' @export
 setGeneric("inflows", function(aeme) standardGeneric("inflows"))
 
 #' @title Access inflows slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of inflows characteristics
 #' @export
-setMethod("inflows", "aeme", function(aeme) aeme@inflows)
+setMethod("inflows", "Aeme", function(aeme) aeme@inflows)
 
 #' @title Access outflows slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of outflows characteristics
 #' @export
 setGeneric("outflows", function(aeme) standardGeneric("outflows"))
 
 #' @title Access outflows slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of outflows characteristics
 #' @export
-setMethod("outflows", "aeme", function(aeme) aeme@outflows)
+setMethod("outflows", "Aeme", function(aeme) aeme@outflows)
 
 #' @title Access water_balance slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of water_balance characteristics
 #' @export
 setGeneric("water_balance", function(aeme) standardGeneric("water_balance"))
 
 #' @title Access water_balance slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of water_balance characteristics
 #' @export
-setMethod("water_balance", "aeme", function(aeme) aeme@water_balance)
+setMethod("water_balance", "Aeme", function(aeme) aeme@water_balance)
 
 
 #' @title Access output slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of output characteristics
 #' @export
 setGeneric("output", function(aeme) standardGeneric("output"))
 #' @title Access output slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return list of output characteristics
 #' @export
-setMethod("output", "aeme", function(aeme) aeme@output)
+setMethod("output", "Aeme", function(aeme) aeme@output)
 
 #' @title Access parameters slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return dataframe of parameters
 #' @export
 setGeneric("parameters", function(aeme) standardGeneric("parameters"))
 #' @title Access parameters slot
-#' @param aeme A aeme object.
+#' @param aeme A Aeme object.
 #' @return dataframe of parameters
 #' @export
-setMethod("parameters", "aeme", function(aeme) aeme@parameters)
+setMethod("parameters", "Aeme", function(aeme) aeme@parameters)
 
 
 # Setter functions ----
 
-#' Update the lake slot of an aeme object
+#' Update the lake slot of an Aeme object
 #'
-#' @title Set lake in aeme object
-#' @param aeme A aeme object.
+#' @title Set lake in Aeme object
+#' @param aeme A Aeme object.
 #' @param value New lake data to be assigned.
-#' @return A modified aeme object with updated lake slot.
+#' @return A modified Aeme object with updated lake slot.
 #' @export
 setGeneric("lake<-", function(aeme, value) standardGeneric("lake<-"))
 
-#' Update the lake slot of an aeme object
+#' Update the lake slot of an Aeme object
 #'
-#' This method updates the "lake" slot of a aeme object with new data.
+#' This method updates the "lake" slot of a Aeme object with new data.
 #'
-#' @title Set lake in aeme object
-#' @param aeme An aeme object.
+#' @title Set lake in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New lake data to be assigned.
-#' @return A modified aeme object with updated lake slot.
+#' @return A modified Aeme object with updated lake slot.
 #' @export
-setMethod("lake<-", "aeme", function(aeme, value) {
+setMethod("lake<-", "Aeme", function(aeme, value) {
   aeme@lake <- value
   validObject(aeme)
   aeme
 })
 
-#' Update the time slot of an aeme object
+#' Update the time slot of an Aeme object
 #'
-#' @title Set time in aeme object
-#' @param aeme A aeme object.
+#' @title Set time in Aeme object
+#' @param aeme A Aeme object.
 #' @param value New time data to be assigned.
-#' @return A modified aeme object with updated time slot.
+#' @return A modified Aeme object with updated time slot.
 #' @export
 setGeneric("time<-", function(aeme, value) standardGeneric("time<-"))
 
-#' Update the time slot of an aeme object
+#' Update the time slot of an Aeme object
 #'
-#' This method updates the "time" slot of a aeme object with new data.
+#' This method updates the "time" slot of a Aeme object with new data.
 #'
-#' @title Set time in aeme object
-#' @param aeme An aeme object.
+#' @title Set time in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New time data to be assigned.
-#' @return A modified aeme object with updated time slot.
+#' @return A modified Aeme object with updated time slot.
 #' @export
-setMethod("time<-", "aeme", function(aeme, value) {
+setMethod("time<-", "Aeme", function(aeme, value) {
   aeme@time <- value
   validObject(aeme)
   aeme
 })
 
-#' Update the configuration slot of an aeme object
+#' Update the configuration slot of an Aeme object
 #'
-#' @title Set configuration in aeme object
-#' @param aeme A aeme object.
+#' @title Set configuration in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New configuration data to be assigned.
-#' @return A modified aeme object with updated configuration slot.
+#' @return A modified Aeme object with updated configuration slot.
 #' @export
 setGeneric("configuration<-", function(aeme, value)
   standardGeneric("configuration<-"))
 
 #' Update the configuration slot of an aeme object
 #'
-#' This method updates the "configuration" slot of a aeme object with new data.
+#' This method updates the "configuration" slot of a Aeme object with new data.
 #'
-#' @title Set configuration in aeme object
-#' @param aeme An aeme object.
+#' @title Set configuration in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New configuration data to be assigned.
-#' @return A modified aeme object with updated configuration slot.
+#' @return A modified Aeme object with updated configuration slot.
 #' @export
-setMethod("configuration<-", "aeme", function(aeme, value) {
+setMethod("configuration<-", "Aeme", function(aeme, value) {
   aeme@configuration <- value
   validObject(aeme)
   aeme
 })
 
-#' Update the observations slot of an aeme object
+#' Update the observations slot of an Aeme object
 #'
-#' @title Set observations in aeme object
-#' @param aeme A aeme object.
+#' @title Set observations in Aeme object
+#' @param aeme A Aeme object.
 #' @param value New observations data to be assigned.
-#' @return A modified aeme object with updated observations slot.
+#' @return A modified Aeme object with updated observations slot.
 #' @export
 setGeneric("observations<-", function(aeme, value)
   standardGeneric("observations<-"))
 
-#' Update the observations slot of an aeme object
+#' Update the observations slot of an Aeme object
 #'
-#' This method updates the "observations" slot of a aeme object with new data.
+#' This method updates the "observations" slot of a Aeme object with new data.
 #'
-#' @title Set observations in aeme object
-#' @param aeme An aeme object.
+#' @title Set observations in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New observations data to be assigned.
-#' @return A modified aeme object with updated observations slot.
+#' @return A modified Aeme object with updated observations slot.
 #' @export
-setMethod("observations<-", "aeme", function(aeme, value) {
+setMethod("observations<-", "Aeme", function(aeme, value) {
   aeme@observations <- value
   validObject(aeme)
   aeme
 })
 
-#' Update the input slot of an aeme object
+#' Update the input slot of an Aeme object
 #'
-#' @title Set input in aeme object
-#' @param aeme A aeme object.
+#' @title Set input in Aeme object
+#' @param aeme A Aeme object.
 #' @param value New input data to be assigned.
-#' @return A modified aeme object with updated input slot.
+#' @return A modified Aeme object with updated input slot.
 #' @export
 setGeneric("input<-", function(aeme, value) standardGeneric("input<-"))
 
-#' Update the input slot of an aeme object
+#' Update the input slot of an Aeme object
 #'
-#' This method updates the "input" slot of a aeme object with new data.
+#' This method updates the "input" slot of a Aeme object with new data.
 #'
-#' @title Set input in aeme object
-#' @param aeme An aeme object.
+#' @title Set input in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New input data to be assigned.
-#' @return A modified aeme object with updated input slot.
+#' @return A modified Aeme object with updated input slot.
 #' @export
-setMethod("input<-", "aeme", function(aeme, value) {
+setMethod("input<-", "Aeme", function(aeme, value) {
   aeme@input <- value
   validObject(aeme)
   aeme
 })
 
-#' Update the inflows slot of an aeme object
+#' Update the inflows slot of an Aeme object
 #'
-#' @title Set inflows in aeme object
-#' @param aeme A aeme object.
+#' @title Set inflows in Aeme object
+#' @param aeme A Aeme object.
 #' @param value New inflows data to be assigned.
-#' @return A modified aeme object with updated inflows slot.
+#' @return A modified Aeme object with updated inflows slot.
 #' @export
 setGeneric("inflows<-", function(aeme, value) standardGeneric("inflows<-"))
 
-#' Update the inflows slot of an aeme object
+#' Update the inflows slot of an Aeme object
 #'
-#' This method updates the "inflows" slot of a aeme object with new data.
+#' This method updates the "inflows" slot of a Aeme object with new data.
 #'
-#' @title Set inflows in aeme object
-#' @param aeme An aeme object.
+#' @title Set inflows in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New inflows data to be assigned.
-#' @return A modified aeme object with updated inflows slot.
+#' @return A modified Aeme object with updated inflows slot.
 #' @export
-setMethod("inflows<-", "aeme", function(aeme, value) {
+setMethod("inflows<-", "Aeme", function(aeme, value) {
   aeme@inflows <- value
   validObject(aeme)
   aeme
 })
 
-#' Update the outflows slot of an aeme object
+#' Update the outflows slot of an Aeme object
 #'
-#' @title Set outflows in aeme object
-#' @param aeme A aeme object.
+#' @title Set outflows in Aeme object
+#' @param aeme A Aeme object.
 #' @param value New outflows data to be assigned.
-#' @return A modified aeme object with updated outflows slot.
+#' @return A modified Aeme object with updated outflows slot.
 #' @export
 setGeneric("outflows<-", function(aeme, value) standardGeneric("outflows<-"))
 
-#' Update the outflows slot of an aeme object
+#' Update the outflows slot of an Aeme object
 #'
-#' This method updates the "outflows" slot of a aeme object with new data.
+#' This method updates the "outflows" slot of a Aeme object with new data.
 #'
-#' @title Set outflows in aeme object
-#' @param aeme An aeme object.
+#' @title Set outflows in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New outflows data to be assigned.
-#' @return A modified aeme object with updated outflows slot.
+#' @return A modified Aeme object with updated outflows slot.
 #' @export
-setMethod("outflows<-", "aeme", function(aeme, value) {
+setMethod("outflows<-", "Aeme", function(aeme, value) {
   aeme@outflows <- value
   validObject(aeme)
   aeme
 })
 
-#' Update the water_balance slot of an aeme object
+#' Update the water_balance slot of an Aeme object
 #'
-#' @title Set water_balance in aeme object
-#' @param aeme A aeme object.
+#' @title Set water_balance in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New water_balance data to be assigned.
-#' @return A modified aeme object with updated water_balance slot.
+#' @return A modified Aeme object with updated water_balance slot.
 #' @export
 setGeneric("water_balance<-", function(aeme, value) standardGeneric("water_balance<-"))
 
-#' Update the water_balance slot of an aeme object
+#' Update the water_balance slot of an Aeme object
 #'
-#' This method updates the "water_balance" slot of a aeme object with new data.
+#' This method updates the "water_balance" slot of a Aeme object with new data.
 #'
-#' @title Set water_balance in aeme object
-#' @param aeme An aeme object.
+#' @title Set water_balance in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New water_balance data to be assigned.
-#' @return A modified aeme object with updated water_balance slot.
+#' @return A modified Aeme object with updated water_balance slot.
 #' @export
-setMethod("water_balance<-", "aeme", function(aeme, value) {
+setMethod("water_balance<-", "Aeme", function(aeme, value) {
   aeme@water_balance <- value
   validObject(aeme)
   aeme
 })
 
-#' Update the output slot of an aeme object
+#' Update the output slot of an Aeme object
 #'
-#' @title Set output in aeme object
-#' @param aeme A aeme object.
+#' @title Set output in Aeme object
+#' @param aeme A Aeme object.
 #' @param value New output data to be assigned.
-#' @return A modified aeme object with updated output slot.
+#' @return A modified Aeme object with updated output slot.
 #' @export
 setGeneric("output<-", function(aeme, value) standardGeneric("output<-"))
 
-#' Update the output slot of an aeme object
+#' Update the output slot of an Aeme object
 #'
-#' This method updates the "output" slot of a aeme object with new data.
+#' This method updates the "output" slot of an Aeme object with new data.
 #'
-#' @title Set output in aeme object
-#' @param aeme An aeme object.
+#' @title Set output in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New output data to be assigned.
-#' @return A modified aeme object with updated output slot.
+#' @return A modified Aeme object with updated output slot.
 #' @export
-setMethod("output<-", "aeme", function(aeme, value) {
+setMethod("output<-", "Aeme", function(aeme, value) {
   aeme@output <- value
   validObject(aeme)
   aeme
 })
 
-#' Update the parameters slot of an aeme object
+#' Update the parameters slot of an Aeme object
 #'
-#' @title Set parameters in aeme object
-#' @param aeme A aeme object.
+#' @title Set parameters in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New parameters data to be assigned.
-#' @return A modified aeme object with updated parameters slot.
+#' @return A modified Aeme object with updated parameters slot.
 #' @export
 setGeneric("parameters<-", function(aeme, value) standardGeneric("parameters<-"))
 
-#' Update the parameters slot of an aeme object
+#' Update the parameters slot of an Aeme object
 #'
-#' This method updates the "parameters" slot of a aeme object with new data.
+#' This method updates the "parameters" slot of a Aeme object with new data.
 #'
-#' @title Set parameters in aeme object
-#' @param aeme An aeme object.
+#' @title Set parameters in Aeme object
+#' @param aeme An Aeme object.
 #' @param value New parameters data to be assigned.
-#' @return A modified aeme object with updated parameters slot.
+#' @return A modified Aeme object with updated parameters slot.
 #' @export
-setMethod("parameters<-", "aeme", function(aeme, value) {
+setMethod("parameters<-", "Aeme", function(aeme, value) {
   aeme@parameters <- value
   validObject(aeme)
   aeme
 })
 
-#' Show an aeme object in the console
+#' Show an Aeme object in the console
 #'
-#' This method prints the aeme output in a readable format to the console.
+#' This method prints the Aeme output in a readable format to the console.
 #'
-#' @title Print aeme object to the console
-#' @param object An aeme object.
-#' @return prints the aeme object to the console.
+#' @title Print Aeme object to the console
+#' @param object An Aeme object.
+#' @return prints the Aeme object to the console.
 #' @export
-setMethod("show", "aeme", function(object) {
+setMethod("show", "Aeme", function(object) {
   lke <- lake(object)
   # catchm <- catchment(object)
   aeme_time <- time(object)
@@ -1046,16 +1046,16 @@ setMethod("show", "aeme", function(object) {
   )
 })
 
-#' Summarise an aeme object
+#' Summarise an Aeme object
 #'
-#' This method summarises the aeme output.
+#' This method summarises the Aeme output.
 #'
-#' @title Summarise an aeme object
-#' @param object An aeme object.
+#' @title Summarise an Aeme object
+#' @param object An Aeme object.
 #' @param ... additional arguments affecting the summary produced.
-#' @return prints the aeme object to the console.
+#' @return prints the Aeme object to the console.
 #' @export
-setMethod("summary", "aeme", function(object, ...) {
+setMethod("summary", "Aeme", function(object, ...) {
 
   obs <- observations(object)
   inp <- input(object)
@@ -1107,13 +1107,13 @@ setMethod("summary", "aeme", function(object, ...) {
   cat("-------------------------------------------------------------------\n")
 })
 
-#' Plot an aeme object
+#' Plot an Aeme object
 #'
-#' This method plots the aeme object.
+#' This method plots the Aeme object.
 #'
 #' @title Update summary Method
-#' @param x An aeme object.
-#' @param y An aeme slot (optional). Defaults to "output".
+#' @param x An Aeme object.
+#' @param y An Aeme slot (optional). Defaults to "output".
 #' @param ... additional arguments affecting the plot produced.
 #' @param add logical; add to current plot?
 #'
@@ -1124,9 +1124,9 @@ setMethod("summary", "aeme", function(object, ...) {
 #' @importFrom tidyr pivot_longer
 #' @importFrom dplyr left_join
 #'
-#' @return prints the aeme object to the console.
+#' @return prints the Aeme object to the console.
 #' @export
-setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
+setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
 
   if (missing(y)) {
     y <- "output"
@@ -1458,15 +1458,15 @@ setMethod("plot", "aeme", function(x, y, ..., add = FALSE) {
   }
 })
 
-#' Get names of an aeme object
+#' Get names of an Aeme object
 #'
-#' This method prints the names of the slots in the aeme object.
+#' This method prints the names of the slots in the Aeme object.
 #'
 #' @title Update names Method
-#' @param x An aeme object.
-#' @return vector of names of the slots in the aeme object to the console.
+#' @param x An Aeme object.
+#' @return vector of names of the slots in the Aeme object to the console.
 #' @export
-setMethod("names", "aeme", function(x) {
+setMethod("names", "Aeme", function(x) {
   slotNames(x)
 })
 
