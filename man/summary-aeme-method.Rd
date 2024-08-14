@@ -4,15 +4,13 @@
 \alias{summary,Aeme-method}
 \title{Summarise an Aeme object}
 \usage{
-\S4method{summary}{Aeme}(object, ...)
+\S4method{summary}{Aeme}(object)
 }
 \arguments{
 \item{object}{An Aeme object.}
-
-\item{...}{additional arguments affecting the summary produced.}
 }
 \value{
-prints the Aeme object to the console.
+AemeSummary object.
 }
 \description{
 Summarise an Aeme object

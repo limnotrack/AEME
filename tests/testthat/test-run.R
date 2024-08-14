@@ -919,8 +919,8 @@ test_that("summarise multi-year output", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
                    parallel = FALSE)
-  model_performance <- assess_model(aeme = aeme, model = model,
-                                    var_sim = c("LKE_lvlwtr", "HYD_temp"))
-  testthat::expect_true(is.data.frame(model_performance))
+
+  aeme_summ <- summary(aeme)
+  testthat::expect_true(is(aeme_summ, "AemeSummary"))
 
 })

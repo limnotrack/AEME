@@ -1052,59 +1052,30 @@ setMethod("show", "Aeme", function(object) {
 #'
 #' @title Summarise an Aeme object
 #' @param object An Aeme object.
-#' @param ... additional arguments affecting the summary produced.
-#' @return prints the Aeme object to the console.
+#' @return AemeSummary object.
 #' @export
-setMethod("summary", "Aeme", function(object, ...) {
+setMethod("summary", "Aeme", function(object) {
 
-  obs <- observations(object)
-  inp <- input(object)
-  inf <- inflows(object)
-  outf <- outflows(object)
-  outp <- output(object)
+  aeme_summ <- summarise_aeme(object)
 
-  cat("Lake observations:\n")
-  print(summary(obs$lake))
-  cat("-------------------------------------------------------------------\n")
-  cat("Lake level:\n")
-  print(summary(obs$level))
-  cat("-------------------------------------------------------------------\n")
-  cat("Meteorology:\n")
-  print(summary(inp$meteo))
-  cat("-------------------------------------------------------------------\n")
-  cat("Inflows:\n")
-  for (i in seq_along(inf$data)) {
-    cat("  ", names(inf$data)[i], "\n")
-    print(summary(inf$data[[i]]))
-  }
-  cat("-------------------------------------------------------------------\n")
-  cat("Outflows:\n")
-  for (i in seq_along(outf$data)) {
-    cat("  ", names(outf$data)[i], "\n")
-    print(summary(outf$data[[i]]))
-  }
-  cat("-------------------------------------------------------------------\n")
-  cat("Outputs:\n")
-  for (m in seq_along(outp)) {
-    cat("  ", toupper(gsub("_", "-", names(outp)[m])), "\n")
-    if (!is.null(outp[[m]])) {
+  # lke <- lake(aeme_summ)
+  # aeme_time <- time(aeme_summ)
+  # cfg <- configuration(aeme_summ)
+  # obs <- observations(aeme_summ)
+  # inp <- input(aeme_summ)
+  # inf <- inflows(aeme_summ)
+  # outf <- outflows(aeme_summ)
+  # wb <- water_balance(aeme_summ)
+  # outp <- output(aeme_summ)
+  # param <- parameters(aeme_summ)
 
-      temp <- outp[[m]][["HYD_temp"]]
-      lst <- lapply(names(outp[[m]]), \(v) {
-        if (length(dim(outp[[m]][[v]])) == 1) {
-          rep(outp[[m]][[v]], each = nrow(temp))
-        } else if (length(dim(outp[[m]][[v]])) == 2) {
-          unlist(outp[[m]][[v]])
-        }
-      })
-      names(lst) <- names(outp[[m]])
-      df <- do.call(cbind, lst)
-      print(summary(df))
-    } else {
-      print(summary(outp[[m]]))
-    }
-  }
-  cat("-------------------------------------------------------------------\n")
+  # Create an instance of the aemeSummary class
+  summary_object <- new("AemeSummary",
+                        aeme = aeme_summ
+                        )
+
+  return(summary_object)
+
 })
 
 #' Plot an Aeme object
