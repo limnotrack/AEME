@@ -66,7 +66,6 @@ test_that("building DYRESM-CAEDYM works", {
 })
 
 test_that("building GLM works", {
-  library(AEME)
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir

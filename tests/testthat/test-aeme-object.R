@@ -5,7 +5,7 @@ test_that("aeme object can be read from yaml file", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
-  testthat::expect_s4_class(aeme, "aeme")
+  testthat::expect_s4_class(aeme, "Aeme")
   testthat::expect_output(print(aeme))
 })
 
@@ -88,7 +88,7 @@ test_that("aeme object can be constructed from add-in", {
                            outflows = aeme_list$outflows,
                            water_balance = aeme_list$water_balance)
 
-  testthat::expect_s4_class(aeme, "aeme")
+  testthat::expect_s4_class(aeme, "Aeme")
 
 })
 
@@ -126,7 +126,7 @@ test_that("aeme object can be built with partial information", {
   aeme <- aeme_constructor(lake = aeme_list$lake, time = aeme_list$time,
                            input = aeme_list$input,
                            water_balance = aeme_list$water_balance)
-  testthat::expect_s4_class(aeme, "aeme")
+  testthat::expect_s4_class(aeme, "Aeme")
 
   wbal <- water_balance(aeme)
 
@@ -234,7 +234,7 @@ test_that("parameters can be added to an aeme object", {
                            input = aeme_list$input,
                            water_balance = aeme_list$water_balance,
                            parameters = aeme_list$parameters)
-  testthat::expect_s4_class(aeme, "aeme")
+  testthat::expect_s4_class(aeme, "Aeme")
 
   pars <- parameters(aeme)
 

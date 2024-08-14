@@ -57,7 +57,7 @@ test_that("plotting model output works", {
   testthat::expect_true(ggplot2::is.ggplot(p2))
 
   p3 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
-                    print_plots = F)
+                    facet = FALSE)
   testthat::expect_true(ggplot2::is.ggplot(p3))
 })
 
