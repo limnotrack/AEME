@@ -41,7 +41,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
         obs_sub <- data.frame(Date = seq.Date(as.Date(aeme_time$start),
                                               as.Date(aeme_time$stop),
                                               by = 1),
-                              var_aeme = v,
+                              var_aeme = var_sim,
                               value = max(bathy$elev))
         # stop("No observations of lake level found.")
       } else {
