@@ -915,7 +915,7 @@ test_that("summarise multi-year output", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
-                     calc_wlev = FALSE)
+                     calc_wlev = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
                    parallel = FALSE)

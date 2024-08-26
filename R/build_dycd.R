@@ -3,7 +3,8 @@
 #' @param lakename string; for lake name
 #' @param model_controls dataframe; with model controls
 #' @param date_range vector; of dates
-#' @param gps vector; of latitude and longitude
+#' @param lat numeric; latitude
+#' @param lon numeric; longitude
 #' @param inf list of inflows
 #' @param outf list; of outflows
 #' @param met dataframe; of meteorological data
@@ -24,7 +25,7 @@
 #' @return directory with DY-CD configuration.
 #' @noRd
 
-build_dycd <- function(lakename, model_controls, date_range, gps,
+build_dycd <- function(lakename, model_controls, date_range, lat, lon,
                        inf, outf, met, hyps, lvl, lake_dir,
                        inf_factor = 1.0, outf_factor = 1.0,
                        ext_elev = 0, Kw, init_prof, init_depth, use_bgc, use_lw,
@@ -159,7 +160,7 @@ build_dycd <- function(lakename, model_controls, date_range, gps,
   }
 
   make_DYstg(lakename = lakename,
-             latitude = gps[2],
+             latitude = lat,
              bathy = bathy_fmt,
              surfElev = surfElev,
              infNames = names(inf),

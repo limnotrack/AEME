@@ -2,19 +2,23 @@
 #' suitable for all models
 #'
 #' @param met data frame of source meteorology variables
-#' @param coords.xyz vector of longitude, latitude and elevation of met station
+#' @param lat numeric; latitude
+#' @param lon numeric; longitude
+#' @param elev numeric; elevation
 #' @param print.plot logical; print the plot
 #'
-#' @return dataframe with expanded met variables
-#' @noRd
 #'
 #' @importFrom psychrolib SetUnitSystem GetStationPressure GetSeaLevelPressure
 #' @importFrom tidyr pivot_longer
 #' @importFrom ggplot2 ggplot geom_line aes facet_wrap labs theme_bw
 #' @importFrom withr local_locale local_timezone
 #'
+#' @export
+#'
+#' @return dataframe with expanded met variables
+#'
 
-expand_met <- function(met, coords.xyz, print.plot = FALSE) {
+expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
@@ -98,8 +102,8 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
   # if no cloud cover is supplied
   if (!is.cldcvr) {
     cldcvr <- calc_cc(date = as.POSIXct(Date), airt = tmpair, relh = humrel,
-                      swr = radswd, lat = coords.xyz[2], lon = coords.xyz[1],
-                      elev = coords.xyz[3])
+                      swr = radswd, lat = lat, lon = lon,
+                      elev = elev)
 
   } else {
     cldcvr = met[, which(grepl("cldcvr", colnames(met)))]
@@ -118,7 +122,7 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
     prmslp <- met[, which(grepl("prmslp",colnames(met)))]
 
     # estimate station pressure from sea level pressure
-    prsttn <- psychrolib::GetStationPressure(prmslp * 100, coords.xyz[3],
+    prsttn <- psychrolib::GetStationPressure(prmslp * 100, Altitude = elev,
                                              tmpair)/100
 
   } else {
@@ -134,7 +138,7 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
     }
 
     # estimate station pressure from sea level pressure
-    prmslp <- psychrolib::GetSeaLevelPressure(prsttn * 100, coords.xyz[3],
+    prmslp <- psychrolib::GetSeaLevelPressure(prsttn * 100, Altitude = elev,
                                               tmpair)/100
   } else {
     prmslp <- met[, which(grepl("prmslp",colnames(met)))]
@@ -233,7 +237,7 @@ expand_met <- function(met, coords.xyz, print.plot = FALSE) {
                     airmax, airmin, dewmax, dewmin,
                     humrel, tmpdew, prvapr,
                     prsttn, prmslp,
-                    wndspd, wnduvu, wnduvv,
+                    wndspd, wnddir, wnduvu, wnduvv,
                     pprain, ppsnow)
   colnames(out) <- (c("Date", paste0("MET_", colnames(out)[2:ncol(out)])))
 

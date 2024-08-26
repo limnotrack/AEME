@@ -92,7 +92,7 @@ make_DYstg <-  function(lakename = "!unknown",
 
   list("<#3>",
        paste0("DYRESM morphometry file for ",lakename),
-       txtComment(round(latitude,4), 40, "# latitude of lake centre"),
+       txtComment(latitude, 40, "# latitude of lake centre"),
        txtComment(round(surfElev,2), 40, "# lake surface elevation (m above sea level)"),
        txtComment(length(infNames),40, "# number of inflows")) |>
     lapply(writeLines, con = f)

@@ -3,7 +3,8 @@
 #' @inheritParams set_nml
 #' @param lakename string; name of lake
 #' @param bathy data.frame; containing hypsograph
-#' @param gps vector of length 2; containing latitude and longitude
+#' @param lat numeric; latitude of lake
+#' @param lon numeric; longitude of lake
 #' @param crest numeric; height of crest of lake
 #' @param dims_lake numeric vector of length 2; containing basin length and
 #' width.
@@ -12,7 +13,7 @@
 #' @return updated nml object
 #' @noRd
 
-make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake, crest,
+make_stgGLM <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
                         update_sediment = TRUE) {
 
   bathy_glm <- bathy |>
@@ -34,8 +35,8 @@ make_stgGLM <- function(glm_nml, lakename, bathy, gps, dims_lake, crest,
                    max_layer_thick = max_layer_thick,
                    crest_elev = crest,
                    density_model = 1, non_avg = TRUE,
-                   lake_name = lakename, latitude = round(gps[1], 3),
-                   longitude = round(gps[2], 3),
+                   lake_name = lakename, latitude = lat,
+                   longitude = lon,
                    base_elev = min(bathy_glm$elev),
                    bsn_len = len, bsn_wid = wid, bsn_vals = nrow(bathy_glm),
                    H = round(bathy_glm$elev, 2), A = round(bathy_glm$area, 0))

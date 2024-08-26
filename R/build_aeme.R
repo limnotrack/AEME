@@ -165,8 +165,10 @@ build_aeme <- function(aeme = NULL,
       r <- sqrt(lke[["area"]] / pi)
       lake_shape <- sf::st_buffer(coords_sf, r)
     }
-    elevation <- lke[["elevation"]]
-    coords.xyz <- c(lke[["longitude"]], lke[["latitude"]], lke[["elevation"]])
+    lat <- round(lke[["latitude"]], 5)
+    lon <- round(lke[["longitude"]], 5)
+    elev <- round(lke[["elevation"]], 2)
+    # coords.xyz <- c(lke[["longitude"]], lke[["latitude"]], lke[["elevation"]])
 
     # Inputs ----
     #* Hypsograph ----
@@ -235,9 +237,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     check_time(df = met, model = model, aeme_time = aeme_time, name = "meteo")
     met <- met |>
       dplyr::mutate(Date = as.Date(Date)) |>
-      # dplyr::mutate(MET_pprain = MET_pprain / 1000,
-      #               MET_ppsnow = MET_ppsnow / 1000) |>
-      expand_met(coords.xyz = coords.xyz, print.plot = FALSE)
+      expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE)
 
     input(aeme) <- list(init_profile = init_prof,
                         init_depth = init_depth,
@@ -336,7 +336,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                                  obs_lake = aeme_obs[["lake"]],
                                  obs_met = met,
                                  ext_elev = ext_elev,
-                                 elevation = elevation,
+                                 elevation = elev,
                                  print_plots = FALSE,
                                  coeffs = coeffs)
     }
@@ -442,7 +442,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       r <- sqrt(config[["lake"]][["area"]] / pi)
       lake_shape <- sf::st_buffer(coords_sf, r)
     }
-    elevation <- config[["lake"]][["elevation"]]
+    elev <- config[["lake"]][["elevation"]]
     # Hypsograph ----
     if (!file.exists(file.path(path, config[["input"]][["hypsograph"]]))) {
       stop(config[["input"]][["hypsograph"]],
@@ -507,7 +507,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   # Create directory for lake ----
   dir.create(lake_dir, showWarnings = TRUE)
 
-  gps <- coords.xyz[1:2]
+  # gps <- coords.xyz[1:2]
 
   # Arrange hypsograph
   hyps <- hyps |>
@@ -522,7 +522,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     dates.dy <- c(date_range[1] - spin_up[["dy_cd"]], date_range[2]) |>
       `names<-`(NULL)
     build_dycd(lakename, model_controls = model_controls, date_range = dates.dy,
-               gps = gps, hyps = hyps, lvl = lvl,
+               lat = lat, lon = lon, hyps = hyps, lvl = lvl,
                inf = inf, outf = outf, met = met,
                lake_dir = lake_dir, init_prof = init_prof,
                init_depth = init_depth,
@@ -537,7 +537,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
       `names<-`(NULL)
     build_glm(lakename, model_controls = model_controls, date_range = dates.glm,
-              lake_shape = lake_shape, gps = gps,
+              lake_shape = lake_shape, lat = lat, lon = lon,
               hyps = hyps, lvl = lvl, init_prof = init_prof,
               init_depth = init_depth, inf = inf, outf = outf,
               met = met, lake_dir = lake_dir,
@@ -558,10 +558,10 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     }
     nlev <- ceiling(depth / div)
     build_gotm(lakename, model_controls = model_controls, date_range = dates.gotm,
-               lake_shape = lake_shape, gps = gps, lake_dir = lake_dir,
-               hyps = hyps, lvl = lvl, init_prof = init_prof,
-               init_depth = init_depth, inf = inf, outf = outf,
-               met = met, inf_factor = inf_factor[["gotm_wet"]],
+               lake_shape = lake_shape, lat = lat, lon = lon,
+               lake_dir = lake_dir, hyps = hyps, lvl = lvl,
+               init_prof = init_prof, init_depth = init_depth, inf = inf,
+               outf = outf, met = met, inf_factor = inf_factor[["gotm_wet"]],
                outf_factor = outf_factor[["gotm_wet"]], Kw = Kw,
                ext_elev = ext_elev, nlev = nlev, use_bgc = use_bgc,
                hum_type = hum_type, overwrite_yaml = overwrite,

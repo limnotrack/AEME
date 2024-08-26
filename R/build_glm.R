@@ -13,7 +13,7 @@
 #'
 
 build_glm <- function(lakename, model_controls, date_range,
-                      lake_shape, gps, hyps,
+                      lake_shape, lat, lon, hyps,
                       lvl, inf, outf, met,
                       lake_dir, config_dir, init_prof, init_depth,
                       inf_factor = 1, outf_factor = 1,
@@ -81,8 +81,8 @@ build_glm <- function(lakename, model_controls, date_range,
 
   crest <- max(bathy_ext[["elev"]])
 
-  glm_nml <- make_stgGLM(glm_nml, lakename, bathy = bathy_ext, gps = gps,
-                         crest = crest, dims_lake = dims_lake)
+  glm_nml <- make_stgGLM(glm_nml, lakename, bathy = bathy_ext, lat = lat,
+                         lon = lon, crest = crest, dims_lake = dims_lake)
 
   # Make meteorology file
   make_metGLM(obs_met = met, path_glm = path_glm, use_lw = use_lw)

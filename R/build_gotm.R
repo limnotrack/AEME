@@ -8,7 +8,7 @@
 #'
 
 build_gotm <- function(lakename, model_controls, date_range,
-                       lake_shape, gps, hyps, lake_dir,
+                       lake_shape, lat, lon, hyps, lake_dir,
                        lvl, inf, outf, met, init_prof, init_depth,
                        nlev = 40, ext_elev = 0,
                        outf_factor = 1.0, inf_factor = 1, Kw,
@@ -49,8 +49,9 @@ build_gotm <- function(lakename, model_controls, date_range,
   gotm <- yaml::read_yaml(file.path(path_gotm, "gotm.yaml"))
 
   gotm <- make_yamlGOTM(gotm = gotm, lakename = lakename, date_range = date_range,
-                        hyps = hyps, gps = gps, nlev = nlev, met = met, inf = inf,
-                        outf = outf, init_depth = init_depth, path_gotm = path_gotm,
+                        hyps = hyps, lat = lat, lon = lon, nlev = nlev,
+                        met = met, inf = inf, outf = outf,
+                        init_depth = init_depth, path_gotm = path_gotm,
                         ext_elev = ext_elev, outf_factor = outf_factor,
                         inf_factor = inf_factor, Kw = Kw, use_bgc = use_bgc,
                         hum_type = hum_type, est_swr_hr = est_swr_hr)

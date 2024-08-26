@@ -9,8 +9,8 @@
 #' @return write updated GOTM yaml file in GOTM directory.
 #' @noRd
 
-make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
-                          outf, init_depth, path_gotm, ext_elev,
+make_yamlGOTM <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
+                          inf, outf, init_depth, path_gotm, ext_elev,
                           outf_factor, inf_factor, Kw, use_bgc, hum_type = 1,
                           est_swr_hr = TRUE) {
 
@@ -22,8 +22,8 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
 
 
   gotm$location$name <- lakename
-  gotm$location$latitude <- round(gps[2], 5)
-  gotm$location$longitude <- round(gps[1], 5)
+  gotm$location$latitude <- lat
+  gotm$location$longitude <- lon
   gotm$location$depth <- init_depth
 
   gotm$time$method <- 2
@@ -84,7 +84,7 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, gps, nlev, met, inf,
 
   # Met ----
   met_cols <- make_metGOTM(df_met = met, path_gotm, hum_type = hum_type,
-                           lat = round(gps[2], 5), lon = round(gps[1], 5),
+                           lat = lat, lon = lon,
                            est_swr_hr = est_swr_hr)
   gotm_met_names <- met_cols[-c(1, 2)]
 
