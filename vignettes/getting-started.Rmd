@@ -211,7 +211,8 @@ the `generate_hypsograph` function.
 
 # Generate a hypsograph
 hypsograph <- generate_hypsograph(max_depth = depth, surface_area = area,
-                                  volume_development = 1.4, elev = elevation)
+                                  volume_development = 1.4, elev = elevation,
+                                  ext_elev = 1)
 
 ggplot(hypsograph, aes(x = area, y = elev)) +
   geom_line() +
@@ -299,13 +300,17 @@ to include in the ensemble. The models available are `dy_cd`, `glm_aed`, and
 
 ```{r select-models}
 # Select models
-model <- c("dy_cd", "glm_aed", "gotm_wet")
+model <- c("glm_aed", "gotm_wet")
 ```
 
 ```{r build-ensemble}
+
+# Path for model directory
+path <- "aeme"
+
 # Build ensemble
 aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
-                   use_bgc = TRUE)
+                   use_bgc = F, path = path)
 
 print(aeme)
 ```
@@ -330,7 +335,7 @@ reconstruct the object.
 
 ```{r run-ensemble}
 # Run the ensemble
-aeme <- run_aeme(aeme = aeme, model = model)
+aeme <- run_aeme(aeme = aeme, model = model, path = path)
 ```
 
 ## View the output
