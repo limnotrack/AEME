@@ -21,8 +21,7 @@ Suggests:
     knitr,
     leaflet,
     rmarkdown,
-    testthat (>= 3.0.0),
-    vdiffr
+    testthat (>= 3.0.0)
 Imports: 
     dplyr,
     ggplot2,
