@@ -43,6 +43,7 @@ Imports:
     withr,
     yaml,
     zoo
+URL: https://limnotrack.github.io/AEME/
 VignetteBuilder: knitr
 Remotes: 
     github::limnotrack/aemetools
