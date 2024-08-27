@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# AEME <a href="https://expert-guide-29ve1vw.pages.github.io/"><img src="man/figures/logo.png" align="right" height="120" alt="AEME website" /></a>
+# AEME <a href="https://limnotrack.github.io/AEME/"><img src="man/figures/logo.png" align="right" height="120" alt="AEME website" /></a>
 
 <!-- badges: start -->
 
@@ -31,7 +31,12 @@ coverage](https://codecov.io/gh/limnotrack/AEME/branch/main/graph/badge.svg)](ht
 
 The Aquatic Ecosystem Model Ensemble (AEME) package allows you to setup
 and run an ensemble of aquatic ecosystem models. The models are
-[DYRESM-CAEDYM](), [GLM-AED]() and [GOTM-WET]().
+[DYRESM-CAEDYM](https://github.com/AquaticEcoDynamics/dy-cd), [GLM-AED](https://aquatic.science.uwa.edu.au/research/models/GLM/) and [GOTM-WET](https://gitlab.com/wateritech-public/waterecosystemstool/wet).
+
+## Development
+
+This package was developed by [LimnoTrack](http://limnotrack.com/) as part of the Lake Ecosystem Restoration New Zealand Modelling Platform (LERNZmp) project. <a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"/></a>
+
 
 ## Installation
 
@@ -66,7 +71,7 @@ aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                       path = path, parallel = TRUE)
 ```
 
-The model input and output (I/O) is handled as it's own S4 object of
+The model input and output is handled as it's own S4 object of
 class `aeme`. This allows for the standardisation and generalisation of
 functions for this class alongside ensuring integrity and validity to
 it's structure.
@@ -85,12 +90,11 @@ aeme
 Model data can be visualised easily using the `plot_output()` function
 
 ```{r, label="plot_output-HYD_temp",echo=TRUE,results="hide",fig.keep="all",fig.height=7}
-p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp", 
-                  level = TRUE, var_lims = c(9, 30))
+p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 p1
 
-
 ```
+
 Also, visualising lake level plots.
 
 ```{r, label="plot-output-HYD_wlev",echo=TRUE,results="hide",fig.keep="all",fig.height=5}
