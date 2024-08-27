@@ -3,7 +3,7 @@
 #' A reference table for variable names between the models in AEME.
 #'
 #' @format ## `key_naming`
-#' A data frame with 115 rows and 12 columns:
+#' A data frame with 117 rows and 13 columns:
 #' \describe{
 #'   \item{name}{AEME variable name}
 #'   \item{dy_cd}{DYRESM variable name}
@@ -13,6 +13,7 @@
 #'   \item{name_text}{Regular text string variable name}
 #'   \item{name_full}{String variable name}
 #'   \item{name_parse}{Variable name for parsing}
+#'   \item{units}{Units of the variable}
 #'   \item{conversion_aed}{Unit conversion for GLM-AED}
 #'   \item{default}{Default value for the variable}
 #'   \item{derived}{Logical value if the variable is derived}
