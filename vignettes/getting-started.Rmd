@@ -99,8 +99,6 @@ elevation
 ```
 
 
-
-
 We will now create a list of the lake data. This will be used to construct the
 AEME object.
 
@@ -183,21 +181,50 @@ Required column names for the hypsograph data are `area`, `elev`, and `depth`.
 
 ```{r generate-hypsorgaph}
 # Generate a simple hypsograph
-hypsograph <- data.frame(area = c(152343, 0), 
+hypsograph_simple <- data.frame(area = c(area, 0), 
                          elev = c(elevation, elevation - depth),
                          depth = c(0, -depth))
-hypsograph
+hypsograph_simple
 ```
 
 ```{r plot-hypsograph}
 # Plot the hypsograph
-plot(hypsograph$area, hypsograph$elev, type = "l", xlab = "Area (m2)", 
-     ylab = "Elevation (m)")
+library(ggplot2)
+
+ggplot(hypsograph_simple, aes(x = area, y = elev)) +
+  geom_line() +
+  geom_point() +
+  xlab("Area (m2)") +
+  ylab("Elevation (m)") +
+  theme_bw()
+
 ```
 
 As you can see, the hypsograph is a simple cone shape. Ideally, you would have
-more detailed hypsograph data for your lake, but this will work for this 
-example.
+more detailed hypsograph data for your lake.
+
+If you have information regarding the maximum depth of the lake, the surface
+area and an estimate of volume development, you can generate a hypsograph using
+the `generate_hypsograph` function.
+
+```{r generate-hypsograph}
+
+# Generate a hypsograph
+hypsograph <- generate_hypsograph(max_depth = depth, surface_area = area,
+                                  volume_development = 1.4, elev = elevation)
+
+ggplot(hypsograph, aes(x = area, y = elev)) +
+  geom_line() +
+  geom_point() +
+  geom_line(data = hypsograph_simple, aes(x = area, y = elev), linetype = "dashed") +
+  xlab("Area (m2)") +
+  ylab("Elevation (m)") +
+  theme_bw()
+
+```
+
+
+
 
 ```{r make-aeme-list}
 # Define input list
