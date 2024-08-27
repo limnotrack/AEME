@@ -10,8 +10,6 @@ editor_options:
     wrap: 80
 ---
 
-![](images/logo.png){width="120"}
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -26,12 +24,41 @@ file.copy(aeme_dir, tmpdir, recursive = TRUE)
 path <- file.path(tmpdir, "lake")
 aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
 
+utils::data("key_naming", package = "AEME")
+
+met_vars <- key_naming |> 
+  dplyr::filter(grepl("MET", name)) |> 
+  dplyr::select(name_text, name, units) |> 
+  dplyr::rename(Name = name_text, Variable = name, Units = units) |> 
+  dplyr::mutate(
+    Required = dplyr::case_when(
+      Variable %in% c("MET_radswd", "MET_tmpair", "MET_wndspd", "MET_pprain") ~ "Yes",
+      Variable %in% c("MET_tmpdew", "MET_humrel", "MET_prvapr") ~ "One of the three",
+      .default = "Can be derived" 
+    )
+  ) |> 
+  dplyr::arrange(dplyr::desc(Required))
+
 ```
 
 ## Summary
 
 Inputs for AEME are designed to similar to most standard data inputs used in
 lake ecosystem modelling. 
+
+## Lake
+
+Lake inputs include:
+
+## Meteorological Data
+
+Meteorological data inputs include:
+
+```{r}
+DT::datatable(met_vars, rownames = FALSE)
+```
+
+
 
 ## Parameters
 
@@ -50,12 +77,5 @@ aeme_parameters
 parameters(aeme) <- aeme_parameters
 ```
 
-```{r}
-model_controls <- get_model_controls()
-model <- c("dy_cd", "glm_aed", "gotm_wet")
-aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                   model_controls = model_controls, ext_elev = 5)
 
-aeme <- run_aeme(aeme = aeme, model = model, parallel = TRUE, path = path)
-```
 
