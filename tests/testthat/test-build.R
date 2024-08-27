@@ -184,6 +184,48 @@ test_that("building GOTM-WET works", {
 
 })
 
+test_that("building all models with the same hypsograph", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     use_bgc = FALSE)
+
+  inp <- input(aeme)
+  lke <- lake(aeme)
+  inp$init_depth
+  dy_hyps <- read.delim(file.path(path, paste0(lke$id, "_", lke$name), "dy_cd",
+                                 "wainamu.stg"), skip = 12, sep = "\t",
+                        header = FALSE, col.names = c("elev", "area")) |>
+    dplyr::mutate(depth = round(max(elev) - elev, 2))
+  glm_nml <- read_nml(file.path(path, paste0(lke$id, "_", lke$name), "glm_aed",
+                                 "glm3.nml"))
+  glm_hyps <- data.frame(elev = glm_nml$morphometry$H,
+                         area = glm_nml$morphometry$A) |>
+    dplyr::mutate(depth = round(max(elev) - elev, 2))
+  gotm_hyps <- read.delim(file.path(path, paste0(lke$id, "_", lke$name),
+                                    "gotm_wet", "inputs", "hypsograph.dat"),
+                          header = FALSE, skip = 1,
+                          col.names = c("depth", "area")) |>
+    dplyr::mutate(depth = abs(depth))
+
+  testthat::expect_true(all(gotm_hyps$area %in% glm_hyps$area))
+  testthat::expect_true(all(gotm_hyps$area %in% dy_hyps$area))
+  testthat::expect_true(all(glm_hyps$area %in% dy_hyps$area))
+
+  testthat::expect_true(all(glm_hyps$depth %in% dy_hyps$depth))
+  testthat::expect_true(all(gotm_hyps$depth %in% dy_hyps$depth))
+  testthat::expect_true(all(round(glm_hyps$depth, 1) %in% round(gotm_hyps$depth, 1)))
+})
+
 test_that("building all models with same initial depth", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
