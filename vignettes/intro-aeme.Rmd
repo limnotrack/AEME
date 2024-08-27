@@ -71,11 +71,11 @@ the following slots:
 
 -   [**lake**](#sec-lake) - a list object containing information about the lake
     (`r lake_names`)
--   **time** - a list object containing information about the time
+-   [**time**](#sec-time) - a list object containing information about the time
     (`r time_names`)
--   **configuration** - a list object containing information about the
+-   [**configuration**](#sec-configuration) - a list object containing information about the
     configuration (`r config_names`)
--   **observations** - a list object containing information about the
+-   [**observations**](#sec-observations) - a list object containing information about the
     observations (`r obs_names`)
 -   **inputs** - a list object containing information about the inputs
     (`r input_names`)
