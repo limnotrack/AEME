@@ -20,6 +20,10 @@ extrap_hyps <- function(hyps, z_range = 0.2, ext_elev) {
 
   hyps_sub <- hyps |>
     dplyr::filter(depth <= z_slope)
+  if (nrow(hyps_sub) < 2) {
+    hyps_sub <- hyps
+  }
+
   # plot(hyps_sub$elev, hyps_sub$area, type = "l")
 
   # Fit a linear model to the top z_slope of the hypsograph
