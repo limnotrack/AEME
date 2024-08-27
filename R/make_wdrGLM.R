@@ -110,7 +110,7 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 
 #' Get the characteristics of all the outlet heights
 #'
-#' @inheritParams bathy_extrap
+#' @inheritParams extrap_hyps
 #' @param height numeric; height of outflow from lake bottom.
 #' @inheritParams make_stgGLM
 #'

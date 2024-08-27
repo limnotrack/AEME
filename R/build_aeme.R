@@ -80,15 +80,14 @@ build_aeme <- function(aeme = NULL,
 
   # Load arguments
   # config = NULL
-  # model_controls = NULL
   # inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
   #                "gotm_wet" = 1)
   # outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
   #                 "gotm_wet" = 1)
-  # ext_elev = 0
+  # ext_elev = 5
   # use_bgc = T
   # calc_wbal = T
-  # calc_wlev = F
+  # calc_wlev = T
   # use_aeme = FALSE
   # coeffs = NULL
   # hum_type = 3
@@ -192,6 +191,32 @@ build_aeme <- function(aeme = NULL,
     } else {
       hyps <- inp[["hypsograph"]]
     }
+    # Extend & arrange hypsograph
+    utils::data("model_layer_structure", package = "AEME", envir = environment())
+    # Generate a sequence of depths from 0 to the maximum depth
+    surf_elev <- hyps |>
+      dplyr::filter(depth == 0) |>
+      dplyr::pull(elev)
+    depths <- model_layer_structure |>
+      dplyr::filter(zi <= abs(min(hyps$depth))) |>
+      dplyr::pull(zi)
+    depths <- -depths
+    if (!min(hyps$depth) %in% depths) {
+      depths <- c(depths, min(hyps$depth))
+    }
+    areas <- approx(x = hyps$depth, y = hyps$area, xout = depths)$y
+    hyps <- data.frame(elev = surf_elev + depths,
+                       area = areas,
+                       depth = depths)
+
+    if (ext_elev > 0) {
+      hyps <- extrap_hyps(hyps = hyps, ext_elev = ext_elev)
+    }
+    hyps <- hyps |>
+      dplyr::arrange(dplyr::desc(elev)) |>
+      dplyr::mutate(elev = round(elev, 2),
+                    depth = round(depth, 2),
+                    area = round(area, 2))
 
     #* Inital depth
     if (!is.null(inp[["init_depth"]])) {
@@ -449,6 +474,15 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
            " does not exist. Check file path.")
     }
     hyps <- utils::read.csv(file.path(path, config[["input"]][["hypsograph"]]))
+    # Extend & arrange hypsograph
+    if (ext_elev > 0) {
+      hyps <- bathy_extrap(hyps, ext_elev)
+    }
+    hyps <- hyps |>
+      dplyr::arrange(elev) |>
+      dplyr::mutate(elev = round(elev, 2),
+                    depth = round(depth, 2),
+                    area = round(area, 2))
 
     # Water level ----
     if (file.exists(file.path(path, config[["observations"]][["level"]]))) {
@@ -506,12 +540,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
   # Create directory for lake ----
   dir.create(lake_dir, showWarnings = TRUE)
-
-  # gps <- coords.xyz[1:2]
-
-  # Arrange hypsograph
-  hyps <- hyps |>
-    dplyr::arrange(elev)
 
   if (length(inf) == 0) {
     inf <- NULL

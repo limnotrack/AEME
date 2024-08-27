@@ -195,13 +195,13 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   }
 
   # extended hypsography
-  if (ext_elev != 0) {
-    hyps.ext <- bathy_extrap(hyps, 0.75, (max(hyps$elev) + ext_elev))
-  } else {
-    hyps.ext <- hyps
-  }
-  hyps.ext <- hyps.ext |>
-    dplyr::mutate(elev = round(elev, 2))
+  # if (ext_elev != 0) {
+  #   hyps.ext <- bathy_extrap(hyps, 0.75, (max(hyps$elev) + ext_elev))
+  # } else {
+  #   hyps.ext <- hyps
+  # }
+  # hyps.ext <- hyps.ext |>
+  #   dplyr::mutate(elev = round(elev, 2))
 
   if ("sst" %in% names(obs_met)) {
     col_select <- c("Date", "MET_wnduvu", "MET_wnduvv", "MET_tmpair",
@@ -252,7 +252,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     # dplyr::mutate(lvlwtr2 = mod_lvl(Date, surf = max(hyps[,1]), ampl = ampl,
     #                                 offset = offset)) |>
     dplyr::mutate(
-      area = get_hyps_val(depth = value, hyps = hyps.ext),
+      area = get_hyps_val(depth = value, hyps = hyps),
       # Calculate 5-day average water temperature
       T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE, align = c("right")),
       # apply the model to predict surface temperature
@@ -280,7 +280,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       dy_cd_evap_m3 = -dy_cd_evap_flux * area * 86400,
       gotm_wet_evap_m3 = -gotm_wet_evap_flux * area * 86400,
       glm_aed_evap_m3 = -glm_aed_evap_flux * area * 86400,
-      V = calc_V(depth = value, hyps = hyps.ext, h = 0.01),
+      V = calc_V(depth = value, hyps = hyps, h = 0.01),
       evap_rate2 = Qlh / Latent_Heat_Evap / rho0,
       evap_rate3 = Qlh / Latent_Heat_Evap / wtr_density(Ts)
     ) |>
@@ -476,7 +476,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
 #' @inheritParams build_dycd
 #' @noRd
 get_hyps_val <- function(depth, hyps) {
-  sapply(depth, function(l) approx(hyps[, 1], hyps[, 2], xout = l)$y)
+  sapply(depth, function(l) approx(hyps[["elev"]], hyps[["area"]], xout = l)$y)
 }
 
 #' Calculate volume of a lake

@@ -106,33 +106,33 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
   #---------- MODEL SETUP ------------
 
   #----- STORAGE -----
-  if (nrow(hyps) > 20) {
-    message("Downsampling bathymetry")
-    hyps <- hyps |>
-      dplyr::slice(c(seq(1, (nrow(hyps)-1), round(nrow(hyps) / 20)),
-                     nrow(hyps)))
-  }
+  # if (nrow(hyps) > 20) {
+  #   message("Downsampling bathymetry")
+  #   hyps <- hyps |>
+  #     dplyr::slice(c(seq(1, (nrow(hyps)-1), round(nrow(hyps) / 20)),
+  #                    nrow(hyps)))
+  # }
 
   # extend the bathymetry above crest for temporary storage as required by DYRESM (sometime)
   max_d <- max(hyps$elev)
-  if (ext_elev != 0) {
-    bathy_fmt <- hyps |>
-      dplyr::arrange(elev) |>
-      # use slope to extend hyps by 5 m
-      bathy_extrap(0.75, new.max = max_d + ext_elev) |>
-      dplyr::mutate(elev = round(elev, 2))
-  } else {
-    bathy_fmt <- hyps
-  }
+  # if (ext_elev != 0) {
+  #   hyps <- hyps |>
+  #     dplyr::arrange(elev) |>
+  #     # use slope to extend hyps by 5 m
+  #     bathy_extrap(ext_elev = ext_elev) |>
+  #     dplyr::mutate(elev = round(elev, 2))
+  # } else {
+  #   hyps <- hyps
+  # }
 
 
-  # print(bathy_fmt)
+  # print(hyps)
 
   # outHeights <- c(mean(lvl[,2]) - 2,
-                  # (0.75 * (mean(lvl[,2]) - min(bathy_fmt[, 1])) + min(bathy_fmt[, 1])))
-  outHeights <- min(bathy_fmt[["elev"]]) + 0.5
+                  # (0.75 * (mean(lvl[,2]) - min(hyps[, 1])) + min(hyps[, 1])))
+  outHeights <- min(hyps[["elev"]]) + 0.5
   # print(outHeights)
-  # outHeights <- round(min(outHeights[outHeights > min(bathy_fmt[, 1])]), 2)
+  # outHeights <- round(min(outHeights[outHeights > min(hyps[, 1])]), 2)
 
   if (!is.null(outf)) {
     outNames <- names(outf)
@@ -161,7 +161,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
 
   make_DYstg(lakename = lakename,
              latitude = lat,
-             bathy = bathy_fmt,
+             bathy = hyps,
              surfElev = surfElev,
              infNames = names(inf),
              outNames = outNames,

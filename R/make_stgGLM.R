@@ -39,7 +39,7 @@ make_stgGLM <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
                    longitude = lon,
                    base_elev = min(bathy_glm$elev),
                    bsn_len = len, bsn_wid = wid, bsn_vals = nrow(bathy_glm),
-                   H = round(bathy_glm$elev, 2), A = round(bathy_glm$area, 0))
+                   H = bathy_glm$elev, A = bathy_glm$area)
 
   glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
 

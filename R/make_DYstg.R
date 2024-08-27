@@ -39,9 +39,10 @@ make_DYstg <-  function(lakename = "!unknown",
     outHeights = rep(surfElev - 1, length(outNames))
   }
 
-  bathy[["elev"]] <- round(bathy[["elev"]], 2)
+  # bathy[["elev"]] <- round(bathy[["elev"]], 2)
   bathy <- bathy |>
-    dplyr::select(elev, area)
+    dplyr::select(elev, area) |>
+    dplyr::arrange(elev) # Needs to be in order of increasing elevation
 
 
   #----- check for outflow heights

@@ -38,45 +38,45 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
   # gotm$grid$nlev <- nlev
 
   # keep the hyps table a manageable size
-  if(nrow(hyps) > 20) {
-    bathy <- hyps |>
-      dplyr::slice(c(seq(1,(nrow(hyps)-1), round(nrow(hyps) / 20)),
-                     nrow(hyps)) )
-  } else {
-    bathy <- hyps
+  # if(nrow(hyps) > 20) {
+  #   bathy <- hyps |>
+  #     dplyr::slice(c(seq(1,(nrow(hyps)-1), round(nrow(hyps) / 20)),
+  #                    nrow(hyps)) )
+  # } else {
+  #   bathy <- hyps
+  # }
+
+  # if (ext_elev != 0){
+  #   bathy.gotm <- data.frame(bathy) |>
+  #     dplyr::mutate(elev = round(elev - (min(elev) + init_depth),2)) |>
+  #     bathy_extrap(0.75, ext_elev)
+  # } else {
+  #   bathy.gotm <- data.frame(bathy)
+  # }
+  # bathy.gotm <- bathy.gotm |>
+  #   dplyr::mutate(elev = round(elev, 2))
+
+
+  z_diff <- round((min(hyps$elev) + init_depth), 2)
+  a0 <- round(approx(hyps$elev, hyps$area, z_diff)$y)
+  if (!(z_diff %in% hyps$elev)) {
+    hyps <- rbind(hyps, c(z_diff, a0, 0))
   }
 
-  if (ext_elev != 0){
-    bathy.gotm <- data.frame(bathy) |>
-      dplyr::mutate(elev = round(elev - (min(elev) + init_depth),2)) |>
-      bathy_extrap(0.75, ext_elev)
-  } else {
-    bathy.gotm <- data.frame(bathy)
-  }
-  bathy.gotm <- bathy.gotm |>
-    dplyr::mutate(elev = round(elev, 2))
 
-
-  z_diff <- round((min(bathy.gotm$elev) + init_depth), 2)
-  a0 <- round(approx(bathy.gotm$elev, bathy.gotm$area, z_diff)$y)
-  if (!(z_diff %in% bathy.gotm$elev)) {
-    bathy.gotm <- rbind(bathy.gotm, c(z_diff, a0, 0))
-  }
-
-
-  bathy.gotm <- bathy.gotm |>
+  hyps <- hyps |>
     dplyr::mutate(elev = round(elev - z_diff, 2)) |>
     dplyr::arrange(-elev)  |>
     dplyr::select(elev, area)
 
-  bathy.gotm <- rbind(c(round(nrow(bathy.gotm), 0),
-                        round(ncol(bathy.gotm), 0)),
-                      bathy.gotm) |>
+  hyps <- rbind(c(round(nrow(hyps), 0),
+                        round(ncol(hyps), 0)),
+                      hyps) |>
     dplyr::mutate_all(as.character)
 
 
   # write the hypso file
-  utils::write.table(bathy.gotm, file.path(path_gotm, "inputs/hypsograph.dat"),
+  utils::write.table(hyps, file.path(path_gotm, "inputs/hypsograph.dat"),
                      sep = "\t", row.names = FALSE, quote = FALSE,
                      col.names = FALSE)
 

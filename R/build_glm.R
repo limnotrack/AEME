@@ -63,25 +63,25 @@ build_glm <- function(lakename, model_controls, date_range,
   # elipse dimensions at surface for nml
   dims_lake <- lake_dims(lake_shape)
 
-  if (nrow(hyps) > 20) {
-    hyps <- hyps |>
-      dplyr::slice(c(seq(1, (nrow(hyps) - 1), round(nrow(hyps) / 20)),
-              nrow(hyps)))
-  }
+  # if (nrow(hyps) > 20) {
+  #   hyps <- hyps |>
+  #     dplyr::slice(c(seq(1, (nrow(hyps) - 1), round(nrow(hyps) / 20)),
+  #             nrow(hyps)))
+  # }
 
-  if (ext_elev != 0) {
-    new_depth <- max(hyps[["elev"]]) + ext_elev
-    bathy_ext <- hyps |>
-      dplyr::arrange(elev) |>
-      # use slope to extend hyps by 2 m
-      bathy_extrap(z.range = 0.75, new.max = new_depth)
-  } else {
-    bathy_ext <- hyps
-  }
+  # if (ext_elev != 0) {
+  #   new_depth <- max(hyps[["elev"]]) + ext_elev
+  #   bathy_ext <- hyps |>
+  #     dplyr::arrange(elev) |>
+  #     # use slope to extend hyps by 2 m
+  #     bathy_extrap(z.range = 0.75, new.max = new_depth)
+  # } else {
+  #   bathy_ext <- hyps
+  # }
 
-  crest <- max(bathy_ext[["elev"]])
+  crest <- max(hyps[["elev"]])
 
-  glm_nml <- make_stgGLM(glm_nml, lakename, bathy = bathy_ext, lat = lat,
+  glm_nml <- make_stgGLM(glm_nml, lakename, bathy = hyps, lat = lat,
                          lon = lon, crest = crest, dims_lake = dims_lake)
 
   # Make meteorology file
@@ -105,7 +105,7 @@ build_glm <- function(lakename, model_controls, date_range,
   }
   glm_nml <- make_wdrGLM(outf = outf,
                          heights_wdr = heights_wdr,
-                         bathy = bathy_ext,
+                         bathy = hyps,
                          dims_lake = dims_lake,
                          wdr_factor = outf_factor, update_nml = TRUE,
                          glm_nml = glm_nml, path_glm = path_glm)
