@@ -46,6 +46,8 @@ generate_hypsograph <- function(max_depth, surface_area,
   if (ext_elev > 0) {
     hyps <- extrap_hyps(hyps = hyps, ext_elev = ext_elev)
   }
+  hyps <- hyps |>
+    dplyr::mutate(depth = -depth)
 
   return(hyps)
 }
