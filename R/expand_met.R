@@ -38,7 +38,7 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
   for(i in vars.all) {assign(paste0("is.", i), any(grepl(i,colnames(met))))}
 
   # check for compulsory variables
-  for (i in c("radswd","tmpair","pprain")) {
+  for (i in c("radswd", "tmpair", "pprain")) {
     # check that the var is in the met df
     if(isFALSE(get(paste0("is.",i)))) { stop(paste0(i, " is required but not
                                                     present"))}
@@ -65,7 +65,7 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
     # estimate humidity from wet bulb temperature,
     # see: https://www.omnicalculator.com/physics/relative-humidity
     humrel <- 100 * (exp(17.625 * tmpdew/(243.04 + tmpdew)) /
-                      exp(17.625 * tmpair/(243.04 + tmpair)))
+                       exp(17.625 * tmpair/(243.04 + tmpair)))
   } else {
     humrel <- met[,which(grepl("humrel",colnames(met)))]
   }
@@ -148,10 +148,15 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
   # if wind speed
   if (is.wndspd) {
     wndspd <- met[,which(grepl("wndspd",colnames(met)))]
-  } else {
+  }
+  if (is.wnddir) {
+    wnddir <- met[,which(grepl("wnddir",colnames(met)))]
+  }
+  # if there are vector U and V components
+  if (is.wnduvu & is.wnduvu) {
 
     # check that wind U and V are supplied
-    if (!is.wnduvu|!is.wnduvu) {
+    if (!is.wnduvu | !is.wnduvu) {
       stop("wndspd (wind speed m/s) is not supplied, therefore, wnduvu & wnduvv
            (wind vector U & V components m/s) are required, but not present")
     }
@@ -160,41 +165,51 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
     wnduvv <- met[, which(grepl("wnduvv", colnames(met)))]
 
     # get wind speed from vector components
-    wndspd <- uv2ds(wnduvu, wnduvv)[, 2]
+    wnd_ds <- uv2ds(wnduvu, wnduvv)
+    wndspd <- wnd_ds[, 2]
+    wnddir <- wnd_ds[, 1]
+    is.wndspd <- TRUE
+    is.wnddir <- TRUE
 
   }
 
+  # check that wind speed and dir are supplied
+  if(!is.wnddir) {
+    wnddir <- rep(180, length(wndspd))
+  }
+
   # if no vector U and V components
-  if (is.wnduvu & is.wnduvu) {
+  # if (is.wnduvu & is.wnduvu) {
+  #
+  #   wnduvu <- met[, which(grepl("wnduvu",colnames(met)))]
+  #   wnduvv <- met[, which(grepl("wnduvv",colnames(met)))]
+  #
+  #   if(!is.wnddir) {
+  #     # wnddir <- uv2ds(u = wnduvu, v = wnduvv)[, 1]
+  #     # is.wnddir <- TRUE
+  #   } else {
+  #     # adjust wind direction to represent direction to (not from)
+  #     wnddir <- met[,which(grepl("wnddir", colnames(met)))]
+  #     wnddir <- ifelse((wnddir + 180) > 360, wnddir - 180, wnddir + 180)
+  #   }
+  #   # get wind speed from vector components
+  #   wndspd <- uv2ds(wnduvu, wnduvv)[, 2]
+  #   is.wndspd <- TRUE
+  #
+  # }
 
-    wnduvu <- met[, which(grepl("wnduvu",colnames(met)))]
-    wnduvv <- met[, which(grepl("wnduvv",colnames(met)))]
 
-    if(!is.wnddir) {
-      wnddir <- uv2ds(u = wnduvu, v = wnduvv)[, 1]
-    } else {
-      # adjust wind direction to represent direction to (not from)
-      wnddir <- met[,which(grepl("wnddir", colnames(met)))]
-      wnddir <- ifelse((wnddir + 180) > 360, wnddir - 180, wnddir + 180)
-    }
 
-  } else {
+  if(!is.wndspd) {
+    stop(strwrap("wnduvu & wnduvv wind vector components not supplied,
+    therefore, wndspd (& ideally direction) are required, but not present",
+                 width = 80))
+  }
+  if (!is.wnduvu & !is.wnduvu) {
 
-    # check that wind speed and dir are supplied
-    if(!is.wnddir) {
-      wnddir <- rep(180, length(wndspd))
-    } else {
-      # adjust wind direction to represent direction to (not from)
-      wnddir <- met[,which(grepl("wnddir", colnames(met)))]
-      wnddir <- ifelse((wnddir + 180) > 360, wnddir - 180, wnddir + 180)
-    }
-
-    if(!is.wndspd) { stop("wnduvu & wnduvv wind vector components not supplied,
-                          therefore, wndspd (& ideally direction) are required,
-                          but not present")}
-
-    # get wind speed from vector components
-    wndspd <- uv2ds(wnduvu, wnduvv)[, 2]
+    u_v <- ds2uv(d = wnddir, s = wndspd)
+    wnduvu <- u_v[, "v"]
+    wnduvv <- u_v[, "u"]
   }
 
   if (!is.radlwd) {
@@ -240,6 +255,9 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
                     wndspd, wnddir, wnduvu, wnduvv,
                     pprain, ppsnow)
   colnames(out) <- (c("Date", paste0("MET_", colnames(out)[2:ncol(out)])))
+
+  # Round to 2 decimal places
+  out[, -1] <- round(out[, -1], 3)
 
 
   if (print.plot) {
