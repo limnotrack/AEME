@@ -84,7 +84,7 @@ build_aeme <- function(aeme = NULL,
   #                "gotm_wet" = 1)
   # outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
   #                 "gotm_wet" = 1)
-  # ext_elev = 5
+  # ext_elev = 0
   # use_bgc = T
   # calc_wbal = T
   # calc_wlev = T
