@@ -44,7 +44,6 @@ Imports:
     withr,
     yaml,
     zoo
-URL: https://expert-guide-29ve1vw.pages.github.io/
 VignetteBuilder: knitr
 Remotes: 
     github::limnotrack/aemetools
