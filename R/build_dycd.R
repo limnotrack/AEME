@@ -68,8 +68,8 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
 
   depth <- max(hyps$elev) - min(hyps$elev)
   sub_layers <- get_model_layers(depth = depth)
-  minLyrThk <- min(sub_layers$h)
-  maxLyrThk <- max(sub_layers$h)
+  minLyrThk <- round(min(sub_layers$h), 2)
+  maxLyrThk <- round(max(sub_layers$h), 2)
 
   #----- CONFIGURATION ------
   vars.dy <- model_controls |>
