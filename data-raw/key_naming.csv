@@ -107,11 +107,12 @@ MET_radlwd,,LongWave,,,Longwave radiation,Longwave_radiation_W/m2,Longwave~radia
 MET_cldcvr,cloud_0to1,Cloud,cloud,,Cloud cover,Cloud_cover,Cloud~cover~(0-1),-,1,,FALSE,NA
 MET_tmpair,tempture_C,AirTemp,airt,,Air temperature,Air_temperature_degC,Air~temperature~(degree~C),degC,1,,FALSE,NA
 MET_tmpdew,,,,,Dewpoint temperature,Dewpoint_temperature_degC,Dewpoint~temperature~(degree~C),degC,,,FALSE,NA
-MET_prsttn,,,airp,,Air pressure,Air_pressure_Pa,Air~pressure~(Pa),Pa,1,,FALSE,NA
+MET_prsttn,,,airp,,Station pressure,Station_pressure_Pa,Station~pressure~(Pa),Pa,1,,FALSE,NA
 MET_prmslp,,,,,Mean sea level pressure,Mean_sea_level_pressure_Pa,Mean~sea~level~pressure~(Pa),Pa,1,,FALSE,NA
 MET_prvapr,vapour_hPa,,,,Vapour pressure,Vapour_pressure_hPa,Vapour~pressure~(hPa),hPa,1,,FALSE,NA
 MET_humrel,,RelHum,hum,,Relative humidity,Relative_humidity_percent,Relative~humidity~('%'),%,1,,FALSE,NA
 MET_wndspd,wind_ms^-1,WindSpeed,,,Wind speed,Wind_speed_m/s,Wind~speed~(m/s),m/s,1,,FALSE,NA
+MET_wnddir,wind_direction_degrees,,,,Wind direction,Wind_direction_degree,Wind~direction~(degree),degree,1,,FALSE,NA
 MET_wnduvu,,,u10,,u wind speed,u_wind_speed_m/s,u~wind~speed~(m/s),m/s,1,,FALSE,NA
 MET_wnduvv,,,v10,,v wind speed,v_wind_speed_m/s,v~wind~speed~(m/s),m/s,1,,FALSE,NA
 MET_pprain,rain_m,Rain,precip,,Rain,Rain_m,Rain~(m),m,1,,FALSE,NA
