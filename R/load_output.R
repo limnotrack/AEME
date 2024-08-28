@@ -12,6 +12,8 @@
 #'
 #' @importFrom dplyr filter pull case_when
 #' @importFrom ncdf4 nc_open nc_close
+#' @importFrom parallelly availableCores makeClusterPSOCK
+#' @importFrom parallel clusterExport parLapply stopCluster
 #'
 
 load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
@@ -40,16 +42,14 @@ load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
   # Extract model output fron netCDF files and return as a list
   if (parallel) {
 
-    ncores <- min(c(parallel::detectCores() - 1, length(model)))
-    cl <- parallel::makeCluster(ncores)
+    ncores <- min(c(parallelly::availableCores(omit = 1), length(model)))
+    cl <- parallelly::makeClusterPSOCK(ncores, autoStop = TRUE)
     on.exit({
       parallel::stopCluster(cl)
     })
     parallel::clusterExport(cl, varlist = list("lake_dir", "vars_sim",
                                                "aeme", "nlev"),
                             envir = environment())
-    # parallel::clusterEvalQ(cl, expr = {library(LakeEnsemblR); library(gotmtools);
-    # })
     message("Reading models in parallel... ", paste0("[", format(Sys.time()), "]"))
     mods <- parallel::parLapply(cl = cl, model, \(m) {
       out_file <- dplyr::case_when(m == "dy_cd" ~ file.path(lake_dir, m,

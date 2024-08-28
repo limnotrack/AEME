@@ -20,6 +20,7 @@
 #'
 #' @importFrom parallel parLapply makeCluster detectCores clusterExport
 #' stopCluster
+#' @importFrom parallelly availableCores makeClusterPSOCK
 #' @importFrom stats setNames
 #'
 #' @examples
@@ -75,9 +76,9 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
 
   if (parallel) {
     if (missing(ncores)) {
-      ncores <- min(c(parallel::detectCores() - 1, length(model)))
+      ncores <- min(c(parallelly::availableCores(omit = 1), length(model)))
     }
-    cl <- parallel::makeCluster(ncores)
+    cl <- parallelly::makeClusterPSOCK(ncores, autoStop = TRUE)
     parallel::clusterExport(cl, varlist = list("run_model_args", "run_dy_cd",
                                                "run_glm_aed", "run_gotm_wet"),
                             envir = environment())
