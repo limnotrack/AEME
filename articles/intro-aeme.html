@@ -99,14 +99,17 @@ model. The <code>aeme</code> object contains the following slots:</p>
 containing information about the lake (name, id, latitude, longitude,
 elevation, shape, depth, area)</li>
 <li>
-<strong>time</strong> - a list object containing information about
-the time (start, stop, time_step, spin_up)</li>
+<a href="#sec-time"><strong>time</strong></a> - a list object
+containing information about the time (start, stop, time_step,
+spin_up)</li>
 <li>
-<strong>configuration</strong> - a list object containing
-information about the configuration (dy_cd, glm_aed, gotm_wet)</li>
+<a href="#sec-configuration"><strong>configuration</strong></a> - a
+list object containing information about the configuration (dy_cd,
+glm_aed, gotm_wet)</li>
 <li>
-<strong>observations</strong> - a list object containing information
-about the observations (lake, level)</li>
+<a href="#sec-observations"><strong>observations</strong></a> - a
+list object containing information about the observations (lake,
+level)</li>
 <li>
 <strong>inputs</strong> - a list object containing information about
 the inputs ()</li>
@@ -385,7 +388,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for AEME [2024-08-27 00:36:11]</span></span>
+<span><span class="co">#&gt; Building simulation for AEME [2024-08-28 02:38:18]</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
 <span><span class="co">#&gt; Missing values in observed water level</span></span>
 <span><span class="co">#&gt; Using constant water level</span></span>
@@ -396,7 +399,6 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; Writing DYRESM configuration</span></span>
 <span><span class="co">#&gt; [1] "TEMPTURE SALINITY DO"</span></span>
 <span><span class="co">#&gt; Writing DYRESM control file</span></span>
-<span><span class="co">#&gt; Downsampling bathymetry</span></span>
 <span><span class="co">#&gt; Building GLM3-AED2 model for lake aeme</span></span>
 <span><span class="co">#&gt; Copied in GLM nml file</span></span>
 <span><span class="co">#&gt; Copied in AED nml file</span></span>
@@ -426,7 +428,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; Lake: Present; Level: Present</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Input</span></span>
-<span><span class="co">#&gt; Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=132);</span></span>
+<span><span class="co">#&gt; Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=44);</span></span>
 <span><span class="co">#&gt; Meteo: Present; Use longwave: TRUE; Kw: 1.31</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Inflows</span></span>

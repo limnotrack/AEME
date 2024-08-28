@@ -52,8 +52,12 @@
 
 
 
-
-<div class="row">
+<link href="aeme-inputs_files/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="aeme-inputs_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="aeme-inputs_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="aeme-inputs_files/datatables-binding-0.33/datatables.js"></script><link href="aeme-inputs_files/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="aeme-inputs_files/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="aeme-inputs_files/dt-core-1.13.6/js/jquery.dataTables.min.js"></script><link href="aeme-inputs_files/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="aeme-inputs_files/crosstalk-1.2.1/js/crosstalk.min.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>AEME Inputs</h1>
             
@@ -64,12 +68,43 @@
 
     
     
-<p><img src="images/logo.png" width="120"></p>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
 <p>Inputs for AEME are designed to similar to most standard data inputs
 used in lake ecosystem modelling.</p>
+</div>
+<div class="section level2">
+<h2 id="lake">Lake<a class="anchor" aria-label="anchor" href="#lake"></a>
+</h2>
+<p>Lake inputs include:</p>
+</div>
+<div class="section level2">
+<h2 id="meteorological-data">Meteorological Data<a class="anchor" aria-label="anchor" href="#meteorological-data"></a>
+</h2>
+<p>Meteorological data requirements for lake modelling are similar to
+those used in most lake ecosystem models. The following meteorological
+variables are <strong>required</strong> for AEME:</p>
+<ul>
+<li>Air temperature</li>
+<li>Shortwave radiation</li>
+<li>Wind speed</li>
+<li>Rain</li>
+<li>Either relative humidity or dew point temperature</li>
+<li>Either mean sea level pressure or station pressure</li>
+</ul>
+<p>The following meteorological variables can be
+<strong>derived</strong> from the required variables:</p>
+<ul>
+<li>Dew point temperature</li>
+<li>Relative humidity</li>
+<li>Precipitation vapor pressure</li>
+<li>Wind u and v components</li>
+<li>Cloud cover</li>
+<li>Longwave radiation</li>
+</ul>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"filter":"none","vertical":false,"data":[["Shortwave radiation","Air temperature","Wind speed","Rain","Snow","u wind speed","v wind speed","Mean sea level pressure","Station pressure","Cloud cover","Longwave radiation","Dewpoint temperature","Vapour pressure","Relative humidity","Wind direction"],["MET_radswd","MET_tmpair","MET_wndspd","MET_pprain","MET_ppsnow","MET_wnduvu","MET_wnduvv","MET_prmslp","MET_prsttn","MET_cldcvr","MET_radlwd","MET_tmpdew","MET_prvapr","MET_humrel","MET_wnddir"],["W/m2","degC","m/s","m","m","m/s","m/s","Pa","Pa","-","W/m2","degC","hPa","%","degree"],["Yes","Yes","Yes","Yes","Defaults to 0 if not provided","Can be derived from wind speed and direction","Can be derived from wind speed and direction","Can be derived from station pressure","Can be derived from mean sea level pressure","Can be derived from date, air temperature, relative humiity, shortwave radiation, latitude, longitude and elevation","Can be derived from cloud cover, air temperature and relative humidity","Can be derived from air temperature and relative humidity","Can be derived from air temperature and relative humidity","Can be derived from air temperature and dew point temperature","Can be derived"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Name<\/th>\n      <th>Variable<\/th>\n      <th>Units<\/th>\n      <th>Required<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"name":"Name","targets":0},{"name":"Variable","targets":1},{"name":"Units","targets":2},{"name":"Required","targets":3}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="section level2">
 <h2 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
@@ -82,85 +117,10 @@ data (e.g. scaling wind factor) and/or update the inflow/outflow data
 (e.g. scaling inflow factor).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"aeme_parameters"</span><span class="op">)</span></span>
-<span><span class="va">aeme_parameters</span></span>
-<span><span class="co">#&gt;       model          file                               name    value      min</span></span>
-<span><span class="co">#&gt; 1   glm_aed      glm3.nml                           light/Kw 5.80e-01 1.00e-01</span></span>
-<span><span class="co">#&gt; 2   glm_aed           met                         MET_wndspd 1.00e+00 7.00e-01</span></span>
-<span><span class="co">#&gt; 3   glm_aed           met                         MET_radswd 1.00e+00 7.00e-01</span></span>
-<span><span class="co">#&gt; 4   glm_aed      glm3.nml               mixing/coef_mix_conv 1.40e-01 1.00e-01</span></span>
-<span><span class="co">#&gt; 5   glm_aed      glm3.nml              mixing/coef_wind_stir 2.10e-01 2.00e-01</span></span>
-<span><span class="co">#&gt; 6   glm_aed      glm3.nml              mixing/coef_mix_shear 1.40e-01 1.00e-01</span></span>
-<span><span class="co">#&gt; 7   glm_aed      glm3.nml               mixing/coef_mix_turb 5.60e-01 2.00e-01</span></span>
-<span><span class="co">#&gt; 8   glm_aed      glm3.nml                mixing/coef_mix_hyp 7.40e-01 4.00e-01</span></span>
-<span><span class="co">#&gt; 9   glm_aed           wdr                            outflow 1.00e+00 5.00e-01</span></span>
-<span><span class="co">#&gt; 10  glm_aed           inf                             inflow 1.00e+00 5.00e-01</span></span>
-<span><span class="co">#&gt; 11 gotm_wet     gotm.yaml        turbulence/turb_param/k_min 6.32e-07 1.00e-09</span></span>
-<span><span class="co">#&gt; 12 gotm_wet     gotm.yaml  light_extinction/A/constant_value 5.50e-01 3.95e-01</span></span>
-<span><span class="co">#&gt; 13 gotm_wet     gotm.yaml light_extinction/g1/constant_value 5.90e-01 4.40e-01</span></span>
-<span><span class="co">#&gt; 14 gotm_wet     gotm.yaml light_extinction/g2/constant_value 2.00e-01 5.00e-02</span></span>
-<span><span class="co">#&gt; 15 gotm_wet           met                         MET_wndspd 1.00e+00 7.00e-01</span></span>
-<span><span class="co">#&gt; 16 gotm_wet           met                         MET_radswd 1.00e+00 7.00e-01</span></span>
-<span><span class="co">#&gt; 17 gotm_wet           wdr                            outflow 1.00e+00 5.00e-01</span></span>
-<span><span class="co">#&gt; 18 gotm_wet           inf                             inflow 1.00e+00 5.00e-01</span></span>
-<span><span class="co">#&gt; 19    dy_cd           cfg     light_extinction_coefficient/7 9.00e-01 1.00e-01</span></span>
-<span><span class="co">#&gt; 20    dy_cd dyresm3p1.par           vertical_mixing_coeff/15 2.00e+02 5.00e+01</span></span>
-<span><span class="co">#&gt; 21    dy_cd           met                         MET_wndspd 1.00e+00 7.00e-01</span></span>
-<span><span class="co">#&gt; 22    dy_cd           met                         MET_radswd 1.00e+00 7.00e-01</span></span>
-<span><span class="co">#&gt; 23    dy_cd           wdr                            outflow 1.00e+00 5.00e-01</span></span>
-<span><span class="co">#&gt; 24    dy_cd           inf                             inflow 1.00e+00 5.00e-01</span></span>
-<span><span class="co">#&gt;         max       module group</span></span>
-<span><span class="co">#&gt; 1  5.52e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 2  1.30e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 3  1.30e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 4  2.00e-01 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 5  3.00e-01 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 6  2.00e-01 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 7  7.00e-01 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 8  8.00e-01 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 9  2.50e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 10 2.50e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 11 1.00e-05 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 12 6.59e-01 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 13 7.40e-01 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 14 2.70e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 15 1.30e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 16 1.30e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 17 2.50e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 18 2.50e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 19 1.40e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 20 7.50e+02 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 21 1.30e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 22 1.30e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 23 2.50e+00 hydrodynamic    NA</span></span>
-<span><span class="co">#&gt; 24 2.50e+00 hydrodynamic    NA</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<span><span class="va">aeme_parameters</span></span></code></pre></div>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-e5c8c404fe174e4c81bd" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e5c8c404fe174e4c81bd">{"x":{"filter":"none","vertical":false,"data":[["glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","dy_cd","dy_cd","dy_cd","dy_cd","dy_cd","dy_cd"],["glm3.nml","met","met","glm3.nml","glm3.nml","glm3.nml","glm3.nml","glm3.nml","wdr","inf","gotm.yaml","gotm.yaml","gotm.yaml","gotm.yaml","met","met","wdr","inf","cfg","dyresm3p1.par","met","met","wdr","inf"],["light/Kw","MET_wndspd","MET_radswd","mixing/coef_mix_conv","mixing/coef_wind_stir","mixing/coef_mix_shear","mixing/coef_mix_turb","mixing/coef_mix_hyp","outflow","inflow","turbulence/turb_param/k_min","light_extinction/A/constant_value","light_extinction/g1/constant_value","light_extinction/g2/constant_value","MET_wndspd","MET_radswd","outflow","inflow","light_extinction_coefficient/7","vertical_mixing_coeff/15","MET_wndspd","MET_radswd","outflow","inflow"],[0.58,1,1,0.14,0.21,0.14,0.5600000000000001,0.74,1,1,6.32e-07,0.55,0.59,0.2,1,1,1,1,0.9,200,1,1,1,1],[0.1,0.7,0.7,0.1,0.2,0.1,0.2,0.4,0.5,0.5,1e-09,0.395,0.44,0.05,0.7,0.7,0.5,0.5,0.1,50,0.7,0.7,0.5,0.5],[5.52,1.3,1.3,0.2,0.3,0.2,0.7,0.8,2.5,2.5,1e-05,0.659,0.74,2.7,1.3,1.3,2.5,2.5,1.4,750,1.3,1.3,2.5,2.5],["hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>model<\/th>\n      <th>file<\/th>\n      <th>name<\/th>\n      <th>value<\/th>\n      <th>min<\/th>\n      <th>max<\/th>\n      <th>module<\/th>\n      <th>group<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5]},{"name":"model","targets":0},{"name":"file","targets":1},{"name":"name","targets":2},{"name":"value","targets":3},{"name":"min","targets":4},{"name":"max","targets":5},{"name":"module","targets":6},{"name":"group","targets":7}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/parameters.html">parameters</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">aeme_parameters</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
-<span>                   model_controls <span class="op">=</span> <span class="va">model_controls</span>, ext_elev <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2024-08-27 00:34:27]</span></span>
-<span><span class="co">#&gt; Using observed water level</span></span>
-<span><span class="co">#&gt; Missing values in observed water level</span></span>
-<span><span class="co">#&gt; Using constant water level</span></span>
-<span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
-<span><span class="co">#&gt; Calculating lake level using lake depth and a sinisoidal function.</span></span>
-<span><span class="co">#&gt; Building DYRESM-CAEDYM for lake wainamu</span></span>
-<span><span class="co">#&gt; Copied in DYRESM par file</span></span>
-<span><span class="co">#&gt; Writing DYRESM configuration</span></span>
-<span><span class="co">#&gt; Writing DYRESM control file</span></span>
-<span><span class="co">#&gt; Downsampling bathymetry</span></span>
-<span><span class="co">#&gt; Building GLM3-AED2 model for lake wainamu</span></span>
-<span><span class="co">#&gt; Copied in GLM nml file</span></span>
-<span><span class="co">#&gt; Building GOTM-WET for lake wainamu</span></span>
-<span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
-<span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models in parallel... [2024-08-27 00:34:32]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-08-27 00:34:56]</span></span>
-<span><span class="co">#&gt; Reading models in parallel... [2024-08-27 00:34:56]</span></span>
-<span><span class="co">#&gt; Model reading complete![2024-08-27 00:35:00]</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
