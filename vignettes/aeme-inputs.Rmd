@@ -33,7 +33,16 @@ met_vars <- key_naming |>
   dplyr::mutate(
     Required = dplyr::case_when(
       Variable %in% c("MET_radswd", "MET_tmpair", "MET_wndspd", "MET_pprain") ~ "Yes",
-      Variable %in% c("MET_tmpdew", "MET_humrel", "MET_prvapr") ~ "One of the three",
+      Variable %in% c("MET_ppsnow") ~ "Defaults to 0 if not provided",
+      Variable %in% c("MET_prsttn") ~ "Can be derived from mean sea level pressure",
+      Variable %in% c("MET_prmslp") ~ "Can be derived from station pressure",
+      Variable %in% c("MET_tmpdew") ~ "Can be derived from air temperature and relative humidity",
+      Variable %in% c("MET_humrel") ~ "Can be derived from air temperature and dew point temperature",
+      Variable %in% c("MET_prvapr") ~ "Can be derived from air temperature and relative humidity",
+      Variable %in% c("MET_wnduvu", "MET_wnduvv") ~ "Can be derived from wind speed and direction",
+      Variable %in% c("MET_wndspd", "MET_wndir") ~ "Can be derived from u an v wind vectors",
+      Variable %in% c("MET_cldcvr") ~ "Can be derived from date, air temperature, relative humiity, shortwave radiation, latitude, longitude and elevation",
+      Variable %in% c("MET_radlwd") ~ "Can be derived from cloud cover, air temperature and relative humidity",
       .default = "Can be derived" 
     )
   ) |> 
@@ -52,9 +61,28 @@ Lake inputs include:
 
 ## Meteorological Data
 
-Meteorological data inputs include:
+Meteorological data requirements for lake modelling are similar to those used in
+most lake ecosystem models. The following meteorological variables are 
+**required** for AEME: 
 
-```{r}
+- Air temperature
+- Shortwave radiation
+- Wind speed
+- Rain
+- Either relative humidity or dew point temperature
+- Either mean sea level pressure or station pressure
+
+The following meteorological variables can be **derived** from the required
+variables:
+
+- Dew point temperature
+- Relative humidity
+- Precipitation vapor pressure
+- Wind u and v components
+- Cloud cover
+- Longwave radiation
+
+```{r echo=FALSE}
 DT::datatable(met_vars, rownames = FALSE)
 ```
 
@@ -68,9 +96,13 @@ The parameters in this data frame are used to update the model configuration
 files and/or update the meteorological data (e.g. scaling wind factor) and/or
 update the inflow/outflow data (e.g. scaling inflow factor). 
 
-```{r}
+```{r echo=TRUE, eval=FALSE}
 utils::data("aeme_parameters")
 aeme_parameters
+```
+
+```{r echo=FALSE}
+DT::datatable(aeme_parameters, rownames = FALSE)
 ```
 
 ```{r}
