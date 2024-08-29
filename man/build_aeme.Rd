@@ -43,7 +43,7 @@ outflows. Needs to be named according to the model.}
 
 \item{use_bgc}{logical; switch to use the biogeochemical model.}
 
-\item{calc_wbal}{logical; calculate water balance.}
+\item{calc_wbal}{logical; calculate water balance. Default = TRUE.}
 
 \item{calc_wlev}{logical; calculate water level.}
 

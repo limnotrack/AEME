@@ -181,9 +181,9 @@ build_aeme <- function(aeme = NULL,
                            These are required to build the models"),
                    sep = "\n"))
       }
-      hyps <- data.frame(elev = c(lke$elevation - lke$depth, lke$elevation),
-                         area = c(0, lke$area),
-                         depth = c(lke$depth, 0))
+      hyps <- data.frame(elev = c(lke$elevation, lke$elevation - lke$depth),
+                         area = c(lke$area, 0),
+                         depth = c(0, -lke$depth))
       input(aeme) <- list(init_profile = inp$init_profile,
                           hypsograph = hyps, meteo = inp$meteo,
                           use_lw = inp$use_lw, Kw = inp$Kw)
