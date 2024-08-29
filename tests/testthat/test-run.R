@@ -924,3 +924,40 @@ test_that("summarise multi-year output", {
   testthat::expect_true(is(aeme_summ, "AemeSummary"))
 
 })
+
+test_that("can run with generated hypsgraph", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+
+  hyps <- generate_hypsograph(aeme = aeme, ext_elev = 5)
+  inp <- input(aeme)
+  inp$hypsograph <- hyps
+  input(aeme) <- inp
+
+  model_controls <- get_model_controls()
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     use_bgc = FALSE, calc_wbal = TRUE,
+                     calc_wlev = TRUE)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
+                   model_controls = model_controls, path = path,
+                   parallel = FALSE)
+
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                  tolower(lke$name)),
+                                    model[1], "DYsim.nc"))
+  testthat::expect_true(file_chk)
+
+  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
+                                                      tolower(lke$name)),
+                                        model[-1], "output", "output.nc")))
+  testthat::expect_true(file_chk)
+
+})
