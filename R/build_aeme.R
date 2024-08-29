@@ -14,7 +14,7 @@
 #'  outflows. Needs to be named according to the model.
 #' @inheritParams generate_hypsograph
 #' @param use_bgc logical; switch to use the biogeochemical model.
-#' @param calc_wbal logical; calculate water balance.
+#' @param calc_wbal logical; calculate water balance. Default = TRUE.
 #' @param calc_wlev logical; calculate water level.
 #' @param use_aeme logical; use AEME object to generate model confiuration
 #' files.
