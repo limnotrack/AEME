@@ -179,8 +179,8 @@ locations in New Zealand.</p>
 <span>                                 parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Checking if lat/lon point is in the grid...</span></span>
 <span><span class="co">#&gt; Point is in the grid.</span></span>
-<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2024-08-28 02:37:27]</span></span>
-<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-08-28 02:37:51]</span></span></code></pre></div>
+<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2024-08-29 00:04:16]</span></span>
+<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-08-29 00:04:41]</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -460,7 +460,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">F</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2024-08-28 02:38:03]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2024-08-29 00:04:52]</span></span>
 <span><span class="co">#&gt; Warning in regularize.values(x, y, ties, missing(ties), na.rm = na.rm):</span></span>
 <span><span class="co">#&gt; collapsing to unique 'x' values</span></span>
 <span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
@@ -535,10 +535,10 @@ object.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-08-28 02:38:05]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-08-29 00:04:53]</span></span>
 <span><span class="co">#&gt; Warning in system2(file.path(bin_path, "glm_aed", "glm.exe"), wait = TRUE, :</span></span>
 <span><span class="co">#&gt; running command</span></span>
-<span><span class="co">#&gt; '"C:/Users/runneradmin/AppData/Local/Temp/RtmpuK4p3w/temp_libpath32478967aa7/AEME/extbin/glm_aed/glm.exe"'</span></span>
+<span><span class="co">#&gt; '"C:/Users/runneradmin/AppData/Local/Temp/RtmpsbsJ1J/temp_libpath8f078df3fca/AEME/extbin/glm_aed/glm.exe"'</span></span>
 <span><span class="co">#&gt; had status 1</span></span>
 <span><span class="co">#&gt; [1] "FAILED"</span></span>
 <span><span class="co">#&gt;  [1] "     glm built using gcc version 11.2.0"                                                </span></span>
@@ -551,8 +551,8 @@ object.</p>
 <span><span class="co">#&gt;  [8] "     NOTE: value for base_elev is no longer used; A[1] is assumed."                     </span></span>
 <span><span class="co">#&gt;  [9] "     ERROR: H and A in morphometry must be monotonically increasing"                    </span></span>
 <span><span class="co">#&gt; [10] "     A[37] = 151995.460000; A[38] = 139450.180000; H[37] = 28.000000; H[38] = 28.200000"</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-08-28 02:38:06]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-08-28 02:38:06]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-08-29 00:04:54]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-08-29 00:04:54]</span></span>
 <span><span class="co">#&gt; No aeme/45819_wainamu/glm_aed/output/output.nc present.</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model gotm_wet</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model gotm_wet</span></span></code></pre></div>
