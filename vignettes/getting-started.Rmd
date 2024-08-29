@@ -300,7 +300,7 @@ to include in the ensemble. The models available are `dy_cd`, `glm_aed`, and
 
 ```{r select-models}
 # Select models
-model <- c("glm_aed", "gotm_wet")
+model <- c("dy_cd", "glm_aed", "gotm_wet")
 ```
 
 ```{r build-ensemble}
