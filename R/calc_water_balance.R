@@ -15,7 +15,6 @@
 #' @param obs_lake data frame of lake observations in ensemble standard format
 #' @param obs_met data frame of meteorology, must include MET_tmpair, MET_wndspd
 #'  & MET_prvapr, continuous Date, extent defines output extent
-#' @param ext_elev numeric; elevation to extend bathymetry
 #' @param elevation numeric; elevation of lake
 #' @param print_plots logical; print plots of water balance components
 #' @param coeffs numeric vector; coefficients for estimating lake surface
@@ -35,7 +34,7 @@
 
 calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
                                outf = NULL, level = NULL, obs_lake = NULL,
-                               obs_met, ext_elev, elevation,
+                               obs_met, elevation,
                                print_plots = FALSE, coeffs = NULL) {
 
   # Set timezone temporarily to UTC
@@ -194,15 +193,6 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       print()
   }
 
-  # extended hypsography
-  # if (ext_elev != 0) {
-  #   hyps.ext <- bathy_extrap(hyps, 0.75, (max(hyps$elev) + ext_elev))
-  # } else {
-  #   hyps.ext <- hyps
-  # }
-  # hyps.ext <- hyps.ext |>
-  #   dplyr::mutate(elev = round(elev, 2))
-
   if ("sst" %in% names(obs_met)) {
     col_select <- c("Date", "MET_wnduvu", "MET_wnduvv", "MET_tmpair",
                     "MET_humrel", "MET_prsttn", "MET_pprain", "sst")
@@ -293,7 +283,9 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   # V = calc_V(depth = evap$value, hyps = hyps)
 
   if (any(is.na(wbal$area))) {
-    stop("NA's in area. Most likely due to 'ext_elev' being too small.")
+    stop(strwrap("NA's in area. Most likely due to the hypsograph being too
+                 small.\nConsider extending the elevation of the hypsograph with
+                 the function `extrap_hyps(..., ext_elev = 5).` "))
   }
 
   # get total inflow discharge

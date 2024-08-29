@@ -10,7 +10,7 @@
 #' @noRd
 
 make_yamlGOTM <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
-                          inf, outf, init_depth, path_gotm, ext_elev,
+                          inf, outf, init_depth, path_gotm,
                           outf_factor, inf_factor, Kw, use_bgc, hum_type = 1,
                           est_swr_hr = TRUE) {
 
@@ -34,28 +34,6 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
   gotm$light_extinction$method <- 7
   gotm$light_extinction$g2$method <- 0
   gotm$light_extinction$g2$constant_value <- round(1 / Kw, 2)
-
-  # gotm$grid$nlev <- nlev
-
-  # keep the hyps table a manageable size
-  # if(nrow(hyps) > 20) {
-  #   bathy <- hyps |>
-  #     dplyr::slice(c(seq(1,(nrow(hyps)-1), round(nrow(hyps) / 20)),
-  #                    nrow(hyps)) )
-  # } else {
-  #   bathy <- hyps
-  # }
-
-  # if (ext_elev != 0){
-  #   bathy.gotm <- data.frame(bathy) |>
-  #     dplyr::mutate(elev = round(elev - (min(elev) + init_depth),2)) |>
-  #     bathy_extrap(0.75, ext_elev)
-  # } else {
-  #   bathy.gotm <- data.frame(bathy)
-  # }
-  # bathy.gotm <- bathy.gotm |>
-  #   dplyr::mutate(elev = round(elev, 2))
-
 
   z_diff <- round((min(hyps$elev) + init_depth), 2)
   a0 <- round(approx(hyps$elev, hyps$area, z_diff)$y)

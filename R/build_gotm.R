@@ -10,8 +10,7 @@
 build_gotm <- function(lakename, model_controls, date_range,
                        lake_shape, lat, lon, hyps, lake_dir,
                        lvl, inf, outf, met, init_prof, init_depth,
-                       nlev = 40, ext_elev = 0,
-                       outf_factor = 1.0, inf_factor = 1, Kw,
+                       nlev = 40, outf_factor = 1.0, inf_factor = 1, Kw,
                        use_bgc, hum_type = 1, overwrite_yaml = TRUE,
                        est_swr_hr = TRUE) {
 
@@ -52,7 +51,7 @@ build_gotm <- function(lakename, model_controls, date_range,
                         hyps = hyps, lat = lat, lon = lon, nlev = nlev,
                         met = met, inf = inf, outf = outf,
                         init_depth = init_depth, path_gotm = path_gotm,
-                        ext_elev = ext_elev, outf_factor = outf_factor,
+                        outf_factor = outf_factor,
                         inf_factor = inf_factor, Kw = Kw, use_bgc = use_bgc,
                         hum_type = hum_type, est_swr_hr = est_swr_hr)
 

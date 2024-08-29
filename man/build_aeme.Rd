@@ -39,8 +39,7 @@ Needs to be named according to the model.}
 \item{outf_factor}{vector; containing numeric factor to multiple the
 outflows. Needs to be named according to the model.}
 
-\item{ext_elev}{numeric; extension in elevation for the hypsogrph in metres.
-Defaults to 1.}
+\item{ext_elev}{numeric; metres to extend the hypograph by.}
 
 \item{use_bgc}{logical; switch to use the biogeochemical model.}
 

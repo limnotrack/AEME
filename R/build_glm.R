@@ -17,7 +17,7 @@ build_glm <- function(lakename, model_controls, date_range,
                       lvl, inf, outf, met,
                       lake_dir, config_dir, init_prof, init_depth,
                       inf_factor = 1, outf_factor = 1,
-                      Kw, ext_elev, use_bgc, use_lw, overwrite_nml = TRUE) {
+                      Kw, use_bgc, use_lw, overwrite_nml = TRUE) {
 
   message(paste0("Building GLM3-AED2 model for lake ", lakename))
 
@@ -67,16 +67,6 @@ build_glm <- function(lakename, model_controls, date_range,
   #   hyps <- hyps |>
   #     dplyr::slice(c(seq(1, (nrow(hyps) - 1), round(nrow(hyps) / 20)),
   #             nrow(hyps)))
-  # }
-
-  # if (ext_elev != 0) {
-  #   new_depth <- max(hyps[["elev"]]) + ext_elev
-  #   bathy_ext <- hyps |>
-  #     dplyr::arrange(elev) |>
-  #     # use slope to extend hyps by 2 m
-  #     bathy_extrap(z.range = 0.75, new.max = new_depth)
-  # } else {
-  #   bathy_ext <- hyps
   # }
 
   crest <- max(hyps[["elev"]])

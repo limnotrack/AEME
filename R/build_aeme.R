@@ -12,8 +12,7 @@
 #'  Needs to be named according to the model.
 #' @param outf_factor vector; containing numeric factor to multiple the
 #'  outflows. Needs to be named according to the model.
-#' @param ext_elev numeric; extension in elevation for the hypsogrph in metres.
-#' Defaults to 1.
+#' @inheritParams generate_hypsograph
 #' @param use_bgc logical; switch to use the biogeochemical model.
 #' @param calc_wbal logical; calculate water balance.
 #' @param calc_wlev logical; calculate water level.
@@ -205,6 +204,16 @@ build_aeme <- function(aeme = NULL,
       depths <- c(depths, min(hyps$depth))
     }
     areas <- approx(x = hyps$depth, y = hyps$area, xout = depths)$y
+    if (any(hyps$depth > 0)) {
+      ext_depths <- hyps |>
+        dplyr::filter(depth > 0) |>
+        dplyr::pull(depth)
+      ext_areas <- hyps |>
+        dplyr::filter(depth > 0) |>
+        dplyr::pull(area)
+      depths <- c(ext_depths, depths)
+      areas <- c(ext_areas, areas)
+    }
     hyps <- data.frame(elev = surf_elev + depths,
                        area = areas,
                        depth = depths)
@@ -360,7 +369,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                                  level = level,
                                  obs_lake = aeme_obs[["lake"]],
                                  obs_met = met,
-                                 ext_elev = ext_elev,
                                  elevation = elev,
                                  print_plots = FALSE,
                                  coeffs = coeffs)
@@ -556,7 +564,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                init_depth = init_depth,
                inf_factor = inf_factor[["dy_cd"]],
                outf_factor = outf_factor[["dy_cd"]],
-               Kw = Kw, ext_elev = ext_elev,
+               Kw = Kw,
                use_bgc = use_bgc, use_lw = inp$use_lw,
                overwrite_cfg = overwrite)
     # run_dy_cd(sim_folder = lake_dir, verbose = TRUE)
@@ -571,7 +579,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               met = met, lake_dir = lake_dir,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
-              Kw = Kw, ext_elev = ext_elev, use_bgc = use_bgc,
+              Kw = Kw, use_bgc = use_bgc,
               use_lw = inp$use_lw, overwrite_nml = overwrite)
     # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
@@ -591,7 +599,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                init_prof = init_prof, init_depth = init_depth, inf = inf,
                outf = outf, met = met, inf_factor = inf_factor[["gotm_wet"]],
                outf_factor = outf_factor[["gotm_wet"]], Kw = Kw,
-               ext_elev = ext_elev, nlev = nlev, use_bgc = use_bgc,
+               nlev = nlev, use_bgc = use_bgc,
                hum_type = hum_type, overwrite_yaml = overwrite,
                est_swr_hr = est_swr_hr)
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)

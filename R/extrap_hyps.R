@@ -1,10 +1,7 @@
 #' Extend hypsmetry to a greater elevation using linear extrapolation
 #'
 #' @param hyps dataframe; with hypsograph
-#' @param z_range numeric; 0-1, representing fraction of hypsograph to be used.
-#' Default is 0.2, which uses the top 20% of the hypsograph for extrapolation.
-#' when extrapolating the hypsmetry.
-#' @param ext_elev numeric; new max depth.
+#' @inheritParams generate_hypsograph
 #'
 #' @return dataframe with extrapolated hypsmetry
 #' @export

@@ -13,7 +13,6 @@
 #' @param lake_dir filepath; for outputting model configuration
 #' @param inf_factor numeric; scaling factor for inflows
 #' @param outf_factor numeric; scaling factor for outflows
-#' @param ext_elev numeric; to extend the elevation of the hypsograph
 #' @param Kw numeric; light extinction coefficient
 #' @param init_prof dataframe; of initial profile with depth, temperature and
 #'  salinity.
@@ -28,7 +27,7 @@
 build_dycd <- function(lakename, model_controls, date_range, lat, lon,
                        inf, outf, met, hyps, lvl, lake_dir,
                        inf_factor = 1.0, outf_factor = 1.0,
-                       ext_elev = 0, Kw, init_prof, init_depth, use_bgc, use_lw,
+                       Kw, init_prof, init_depth, use_bgc, use_lw,
                        overwrite_cfg = TRUE) {
 
   message(paste0("Building DYRESM-CAEDYM for lake ", lakename))
@@ -66,7 +65,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
   # make the batch file to run the model
   # make_DYbat(lakename, runCD = T, filePath = path.dy, pause = T)
 
-  depth <- max(hyps$elev) - min(hyps$elev)
+  depth <- hyps$elev[hyps$depth == 0] - min(hyps$elev)
   sub_layers <- get_model_layers(depth = depth)
   minLyrThk <- round(min(sub_layers$h), 2)
   maxLyrThk <- round(max(sub_layers$h), 2)
@@ -115,16 +114,6 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
 
   # extend the bathymetry above crest for temporary storage as required by DYRESM (sometime)
   max_d <- max(hyps$elev)
-  # if (ext_elev != 0) {
-  #   hyps <- hyps |>
-  #     dplyr::arrange(elev) |>
-  #     # use slope to extend hyps by 5 m
-  #     bathy_extrap(ext_elev = ext_elev) |>
-  #     dplyr::mutate(elev = round(elev, 2))
-  # } else {
-  #   hyps <- hyps
-  # }
-
 
   # print(hyps)
 
