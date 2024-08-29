@@ -45,8 +45,7 @@ test_that("running GLM works", {
   outp <- output(aeme)
   lake_dir <- get_lake_dir(aeme)
   lke <- lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
+  file_chk <- file.exists(file.path(lake_dir,
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 
@@ -950,14 +949,12 @@ test_that("can run with generated hypsgraph", {
                    model_controls = model_controls, path = path,
                    parallel = FALSE)
 
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                  tolower(lke$name)),
-                                    model[1], "DYsim.nc"))
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  file_chk <- file.exists(file.path(lake_dir, model[1], "DYsim.nc"))
   testthat::expect_true(file_chk)
 
-  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                      tolower(lke$name)),
-                                        model[-1], "output", "output.nc")))
+  file_chk <- all(file.exists(file.path(lake_dir, model[-1], "output",
+                                        "output.nc")))
   testthat::expect_true(file_chk)
 
 })
