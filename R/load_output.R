@@ -43,10 +43,8 @@ load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
   if (parallel) {
 
     ncores <- min(c(parallelly::availableCores(omit = 1), length(model)))
-    cl <- parallelly::makeClusterPSOCK(ncores, autoStop = TRUE)
-    on.exit({
-      parallel::stopCluster(cl)
-    })
+    cl <- parallelly::makeClusterPSOCK(ncores)
+    on.exit({ parallel::stopCluster(cl) })
     parallel::clusterExport(cl, varlist = list("lake_dir", "vars_sim",
                                                "aeme", "nlev"),
                             envir = environment())

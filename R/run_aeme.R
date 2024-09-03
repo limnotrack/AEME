@@ -78,7 +78,8 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
     if (missing(ncores)) {
       ncores <- min(c(parallelly::availableCores(omit = 1), length(model)))
     }
-    cl <- parallelly::makeClusterPSOCK(ncores, autoStop = TRUE)
+    cl <- parallelly::makeClusterPSOCK(ncores)
+    on.exit({ parallel::stopCluster(cl) })
     parallel::clusterExport(cl, varlist = list("run_model_args", "run_dy_cd",
                                                "run_glm_aed", "run_gotm_wet"),
                             envir = environment())
