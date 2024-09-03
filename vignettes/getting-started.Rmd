@@ -144,8 +144,7 @@ the location of our lake. This only works for locations in New Zealand.
 
 ```{r get-era5-met}
 # Get ERA5 meteorological data
-met <- aemetools::get_era5_point(lat = lat, lon = lon, years = 2020:2021,
-                                 parallel = TRUE)
+met <- aemetools::get_era5_point(lat = lat, lon = lon, years = 2020:2021)
 
 ```
 
