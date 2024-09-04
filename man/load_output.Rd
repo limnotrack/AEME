@@ -10,6 +10,7 @@ load_output(
   path,
   model_controls,
   parallel = FALSE,
+  cl = NULL,
   nlev = NULL,
   ens_n = 1
 )
