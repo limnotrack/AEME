@@ -20,7 +20,6 @@
 #'
 #' @importFrom parallel parLapply makeCluster detectCores clusterExport
 #' stopCluster
-#' @importFrom parallelly availableCores makeClusterPSOCK
 #' @importFrom stats setNames
 #'
 #' @examples
@@ -55,11 +54,7 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
     stop("`model_controls` need to be provided to load model output.")
   }
 
-
-
-  lke <- lake(aeme)
-  sim_folder <- file.path(path, paste0(lke$id,"_",
-                                       tolower(lke$name)))
+  sim_folder <- get_lake_dir(aeme = aeme, path = path)
   if (!dir.exists(sim_folder)) {
     stop("Simulation folder does not exist.")
   }
@@ -74,12 +69,15 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
   run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
                          debug = debug, timeout = timeout)
 
+  cl <- NULL # Initialize cluster object
   if (parallel) {
     if (missing(ncores)) {
-      ncores <- min(c(parallelly::availableCores(omit = 1), length(model)))
+      ncores <- min(c(parallel::detectCores() - 1, length(model)))
     }
-    cl <- parallelly::makeClusterPSOCK(ncores)
-    on.exit({ parallel::stopCluster(cl) })
+    cl <- parallel::makeCluster(ncores)
+    on.exit({
+      parallel::stopCluster(cl)
+    })
     parallel::clusterExport(cl, varlist = list("run_model_args", "run_dy_cd",
                                                "run_glm_aed", "run_gotm_wet"),
                             envir = environment())
@@ -91,7 +89,6 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
       }),
       model
     )
-    parallel::stopCluster(cl)
     message("Model run complete!", paste0("[", format(Sys.time()), "]"))
 
   } else {
@@ -122,7 +119,7 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
   if (return) {
     aeme <- load_output(model = model, aeme = aeme, path = path,
                         model_controls = model_controls, parallel = parallel,
-                        nlev = nlev, ens_n = ens_n)
+                        cl = cl, nlev = nlev, ens_n = ens_n)
     return(aeme)
   }
 

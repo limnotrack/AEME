@@ -30,7 +30,6 @@ Imports:
     lwgeom,
     ncdf4,
     parallel,
-    parallelly,
     patchwork,
     psychrolib,
     RColorBrewer,

@@ -12,12 +12,13 @@
 #'
 #' @importFrom dplyr filter pull case_when
 #' @importFrom ncdf4 nc_open nc_close
-#' @importFrom parallelly availableCores makeClusterPSOCK
-#' @importFrom parallel clusterExport parLapply stopCluster
+#' @importFrom parallel clusterExport parLapply stopCluster detectCores
+#' makeCluster
+#'
 #'
 
 load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
-                        nlev = NULL, ens_n = 1) {
+                        cl = NULL, nlev = NULL, ens_n = 1) {
 
   if (is.null(nlev)) {
     # inp <- input(aeme)
@@ -42,9 +43,13 @@ load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
   # Extract model output fron netCDF files and return as a list
   if (parallel) {
 
-    ncores <- min(c(parallelly::availableCores(omit = 1), length(model)))
-    cl <- parallelly::makeClusterPSOCK(ncores)
-    on.exit({ parallel::stopCluster(cl) })
+    if (is.null(cl)) {
+      ncores <- min(c(parallel::detectCores() - 1, length(model)))
+      cl <- parallel::makeCluster(ncores)
+      on.exit({
+        parallel::stopCluster(cl)
+      })
+    }
     parallel::clusterExport(cl, varlist = list("lake_dir", "vars_sim",
                                                "aeme", "nlev"),
                             envir = environment())
