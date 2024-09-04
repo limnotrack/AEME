@@ -43,8 +43,7 @@ test_that("running GLM works", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
   # plot_output(aeme, model = model)
   outp <- output(aeme)
-  lake_dir <- get_lake_dir(aeme)
-  lke <- lake(aeme)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
   file_chk <- file.exists(file.path(lake_dir,
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
