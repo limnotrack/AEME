@@ -37,8 +37,8 @@ test_that("plotting model output works", {
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, model_controls = model_controls, parallel = TRUE,
-                   ncores = 2L)
+                   path = path, model_controls = model_controls,
+                   parallel = TRUE, ncores = 2L)
 
 
   p1 <- plot(aeme, "output")
@@ -120,8 +120,8 @@ test_that("plotting model output works with no lake & level observations", {
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, model_controls = model_controls, parallel = TRUE,
-                   ncores = 2L)
+                   path = path, model_controls = model_controls,
+                   parallel = TRUE, ncores = 2L)
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
@@ -146,8 +146,8 @@ test_that("plotting model residuals for 2d and 1d variables", {
                      ext_elev = 5, use_bgc = FALSE)
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, model_controls = model_controls, parallel = TRUE,
-                   ncores = 2L)
+                   path = path, model_controls = model_controls,
+                   parallel = TRUE, ncores = 2L)
 
   var_sim <- c("HYD_temp", "HYD_thmcln")
   p1 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_temp")

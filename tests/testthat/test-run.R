@@ -215,7 +215,7 @@ test_that("running models in parallel works", {
   met <- inp$meteo
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE)
+                   parallel = TRUE, ncores = 2)
   plot_output(aeme = aeme, model = model)
 
   lke <- lake(aeme)
@@ -267,7 +267,7 @@ test_that("running models with wbal method = 1", {
   met <- inp$meteo
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE)
+                   parallel = TRUE, ncores = 2)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model[1], "DYsim.nc"))
@@ -350,7 +350,7 @@ test_that("running models with wbal method = 3", {
                      calc_wlev = F, hum_type = 1)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE)
+                   parallel = TRUE, ncores = 2)
 
   # plot_output(aeme, model)
   # plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
@@ -446,7 +446,7 @@ test_that("running models in parallel with no wbal calculated", {
 
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE)
+                   parallel = TRUE, ncores = 2)
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = FALSE, facet = FALSE)
 
@@ -485,7 +485,7 @@ test_that("running models with no wbal/outflows calculated", {
 
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE)
+                   parallel = TRUE, ncores = 2)
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
 
@@ -520,7 +520,7 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
 
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE)
+                   parallel = TRUE, ncores = 2)
 
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
@@ -551,7 +551,7 @@ test_that("getting model output works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, use_bgc = TRUE)
   run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
-           parallel = TRUE, return = FALSE)
+           parallel = TRUE, return = FALSE, ncores = 2)
 
   aeme <- load_output(model = model, aeme = aeme, path = path,
                       model_controls = model_controls, parallel = FALSE)
@@ -577,7 +577,7 @@ test_that("getting model output in parallel works", {
              use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE)
+                   parallel = TRUE, ncores = 2)
 
   outp <- output(aeme)
   output_chk <- !all(is.null(unlist(outp)))
@@ -696,7 +696,7 @@ test_that("can build all models, run and write to new directory & re-run", {
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
 
-  aeme <- run_aeme(aeme = aeme, model = model, parallel = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, parallel = TRUE, ncores = 2,
                    model_controls = model_controls, path = path)
 
   path2 <- file.path(tmpdir, "lake-rewrite")
