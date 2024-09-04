@@ -196,6 +196,14 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
 
     mod_layers <- ncdf4::ncvar_get(nc, "z")[, idx]
     mod_layers[mod_layers > 1000000] <- NA
+    depth <- ncdf4::ncvar_get(nc, "lake_level")
+    if (is.nan(depth[1])) {
+      message(strwrap("Error reading initial GLM depth, potentially due to
+                      errors in parameter input.\nReturning NULL...",
+                      width = 70))
+      return(NULL)
+    }
+    depth <- depth[idx]
 
     Qe <- ncdf4::ncvar_get(nc, "daily_qe")[idx]
     Qh <- ncdf4::ncvar_get(nc, "daily_qh")[idx]
