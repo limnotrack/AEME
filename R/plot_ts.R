@@ -27,8 +27,8 @@ plot_ts <- function(aeme, model, var_sim, add_obs = TRUE, depth_range = NULL,
 
   if (!all(var_chk)) {
     stop(strwrap("No variables found in model controls.\nMake sure
-                 to set simulate = TRUE for selected variables when
-                 executing `run_aeme`.", width = 80))
+                 to set simulate = TRUE in the `model_controls` for selected
+                 variables when executing `run_aeme`.", width = 80))
   }
 
   # Check model output is present
