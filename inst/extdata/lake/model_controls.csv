@@ -47,7 +47,7 @@ NCS_ss5,FALSE,5,,,1
 NCS_ss6,FALSE,5,,,1
 NCS_iss,FALSE,,,,1
 NCS_tss,FALSE,,,,1
-ZOO_zoo1,FALSE,0.1,1,0,1
+ZOO_zoo1,TRUE,0.1,1,0,1
 ZOO_zoo2,FALSE,0.1,,,1
 ZOO_zoo3,FALSE,0.1,,,1
 ZOO_zoo4,FALSE,0.1,,,1
