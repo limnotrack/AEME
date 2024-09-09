@@ -3,9 +3,7 @@
 #' @inheritParams build_aeme
 #' @inheritParams run_aeme
 #' @param nlev numeric; number of levels to return in model output. If NULL,
-#' calculates number of levels based on lake depth as provided within the
-#' hypsograph. If the lake is less thatn 3m deep, it outputs every 0.1m, else
-#' if it is greater than 3m, it outputs every 0.33m. Defaults to NULL.
+#' calculates number of levels based on the `model_layer_structure`.
 #'
 #' @return Updated aeme object with model output
 #' @export
