@@ -17,6 +17,7 @@
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/build_aeme.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/catchment_yields.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/check_model_output.html</loc></url>
+<url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/check_var_in_output.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/configuration-aeme-method.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/configuration-set-aeme-method.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/configuration-set.html</loc></url>
@@ -28,6 +29,7 @@
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_model_controls.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_model_outfile.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_nml_value.html</loc></url>
+<url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_obs.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_obs_column_names.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_var.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/get_var_indices.html</loc></url>
@@ -72,10 +74,15 @@
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/parameters.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot-Aeme-ANY-method.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_fluxes.html</loc></url>
+<url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_nit.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_output.html</loc></url>
+<url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_phs.html</loc></url>
+<url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_phytos.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_resid.html</loc></url>
+<url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_ts.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_var.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_wbal.html</loc></url>
+<url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/plot_zoops.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/read_nml.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/remove_output.html</loc></url>
 <url><loc>https://expert-guide-29ve1vw.pages.github.io/reference/retrieve_params.html</loc></url>
