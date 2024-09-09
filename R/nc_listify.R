@@ -184,6 +184,19 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     if (length(idx) == 0) stop("No output for GLM at ", output_hour, " hour")
     dates <- dates[idx] |> as.Date()
 
+    cfg <- configuration(aeme)
+    aed <- cfg[["glm_aed"]][["ecosystem"]]
+    if (!is.null(aed)) {
+      phy_idx <- get_nml_value(glm_nml = aed$aed, arg_name = "the_phytos")
+      phy_group <- get_nml_value(glm_nml = aed$phyto, arg_name = "pd%p_name") |>
+        strsplit(",")
+      phy_group <- phy_group[[1]][phy_idx]
+      # Get carbon to chlorohpyll ratio
+      Xcc <- get_nml_value(glm_nml = aed$phyto, arg_name = "pd%Xcc")[phy_idx]
+      phy_group_aeme <- paste0("PHY_", phy_group)
+      names(Xcc) <- phy_group_aeme
+    }
+
     # Get air temperature for GLM
     inp <- input(aeme)
     MET_tmpair <- inp$meteo |>
@@ -505,6 +518,12 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
 
         if (!is.na(conv.fact)) {
           out <- out * conv.fact
+        }
+
+        if (vars_sim[i] %in% phy_group_aeme) {
+          conc_mg_m3 <- out * 12.01
+          chla_mg_m3 <- conc_mg_m3 / Xcc[vars_sim[i]]
+          out <- chla_mg_m3
         }
 
       } else if (model == "gotm_wet") {
