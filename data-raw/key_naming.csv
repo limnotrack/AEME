@@ -45,12 +45,12 @@ CHM_oxymet,,,,,Metalimnetic oygen,Metalimnetic_oxygen_mg/L,Metalimnetic~oxygen~(
 CHM_oxyhyp,,,,,Hypolimnetic oxygen,Hypolimnetic_oxygen_mg/L,Hypolimnetic~oxygen~(mg~L^-1),mg/L-1,1,,TRUE,CHM_oxy
 CHM_oxymom,,,,,Metalimnetic oxygen minima,Metalimnetic_oxygen_minima_mg/L,Metalimnetic~oxygen~minima~(mg~L^-1),mg/L-1,1,,TRUE,CHM_oxy
 CHM_oxynal,,,,,Number of anoxic layers,Number_of_anoxic_layers,Number~of~anoxic~layers,-,1,,TRUE,CHM_oxy
-PHS_frp,PO4,PHS_frp,abiotic_water_sPO4W,instances/abiotic_water/initialization/sPO4W,,Phosphate-P_g/m3,Phosphate-P~(g~m^-3),g/m-3,0.03097376,1.00E-03,FALSE,NA
+PHS_frp,PO4,PHS_frp,abiotic_water_sPO4W,instances/abiotic_water/initialization/sPO4W,Phosphate,Phosphate-P_g/m3,Phosphate-P~(g~m^-3),g/m-3,0.03097376,1.00E-03,FALSE,NA
 PHS_dop,DOPL,OGM_dop,abiotic_water_sPDOMW,instances/abiotic_water/initialization/sPDOMW,Dissolved organic P,Dissolved_organic_P_g/m3,Dissolved~organic~(g~m^-3),g/m-3,0.03097376,4.00E-05,FALSE,NA
 PHS_dopr,DOPR,,,,,,,,0.03097376,,FALSE,NA
 PHS_pop,POPL,OGM_pop,abiotic_water_sPPOMW,instances/abiotic_water/initialization/sPPOMW,Particulate organic P,Particulate_organic_P_g/m3,Particulate~organic~(g~m^-3),g/m-3,0.03097376,1.60E-04,FALSE,NA
 PHS_popr,POPR,,,,,,,,0.03097376,,FALSE,NA
-PHS_pip,PIP,PHS_frp_ads,abiotic_water_sPAIMW,instances/abiotic_water/initialization/sPAIMW,Particulate inorganic phosphorus,Particulate_inorganic_phosphorus_g/m3,Particulate~inorganic~phosphorus~(g~m^-3),g/m-3,0.03097376,6.00E-04,FALSE,NA
+PHS_pip,PIP,PHS_frp_ads,abiotic_water_sPAIMW,instances/abiotic_water/initialization/sPAIMW,Particulate inorganic P,Particulate_inorganic_P_g/m3,Particulate~inorganic~P~(g~m^-3),g/m-3,0.03097376,6.00E-04,FALSE,NA
 PHS_tp,TP,TOT_tp,wet_totP_calculator_result,,Total phosphorus,Total_phosphorus_g/m3,Total~phosphorus~(g~m^-3),g/m-3,0.03097376,,FALSE,NA
 NIT_amm,NH4,NIT_amm,abiotic_water_sNH4W,instances/abiotic_water/initialization/sNH4W,Ammoniacal nitrogen,Ammoniacal_nitrogen_g/m3,Ammoniacal~nitrogen~(g~m^-3),g/m-3,0.0140067,0.004,FALSE,NA
 NIT_nit,NO3,NIT_nit,abiotic_water_sNO3W,instances/abiotic_water/initialization/sNO3W,Nitrate,Nitrate-N_g/m3,Nitrate-N~(g~m^-3),g/m-3,0.0140067,4.10E-04,FALSE,NA
