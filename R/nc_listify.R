@@ -186,6 +186,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
 
     cfg <- configuration(aeme)
     aed <- cfg[["glm_aed"]][["ecosystem"]]
+    phy_group_aeme <- c()
     if (!is.null(aed)) {
       phy_idx <- get_nml_value(glm_nml = aed$aed, arg_name = "the_phytos")
       phy_group <- get_nml_value(glm_nml = aed$phyto, arg_name = "pd%p_name") |>
