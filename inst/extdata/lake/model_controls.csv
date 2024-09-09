@@ -35,7 +35,7 @@ PHY_dinof,FALSE,0.1,1,0,1
 PHY_cyano,TRUE,0.1,1,0,1
 PHY_nodul,FALSE,0.1,1,0,1
 PHY_green,TRUE,0.1,1,0,1
-PHY_crypt,TRUE,0.1,1,0,1
+PHY_crypt,FALSE,0.1,1,0,1
 PHY_mdiat,FALSE,0.1,1,0,1
 PHY_diatom,TRUE,0.1,1,0,1
 PHY_tchla,TRUE,,,,1
