@@ -36,9 +36,7 @@ loaded. Defaults to 1.}
 "model_controls.csv".}
 
 \item{nlev}{numeric; number of levels to return in model output. If NULL,
-calculates number of levels based on lake depth as provided within the
-hypsograph. If the lake is less thatn 3m deep, it outputs every 0.1m, else
-if it is greater than 3m, it outputs every 0.33m. Defaults to NULL.}
+calculates number of levels based on the `model_layer_structure`.}
 
 \item{verbose}{logical; print model output to console. Defaults to FALSE.}
 
