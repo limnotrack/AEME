@@ -15,6 +15,8 @@ plot_ts(aeme, model, var_sim, add_obs = TRUE, depth_range = NULL, ens_n = 1)
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp"). Can
 be a vector.}
 
+\item{add_obs}{logical; add observations to the plot. Default is TRUE.}
+
 \item{depth_range}{numeric; range of depths to average. Default is NULL,
 which averages over all depths.}
 }
