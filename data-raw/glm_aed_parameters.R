@@ -143,7 +143,7 @@ phy_pars <- lapply(phy, \(p) {
   }
   sub
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 # View(phy_pars)
 
@@ -159,7 +159,7 @@ zoo_pars <- zoo_pars |>
 #     dplyr::mutate(group = p, file = "aed2_zoop_pars.nml")
 #   sub
 # }) |>
-#   do.call(rbind, args = _)
+#   dplyr::bind_rows()
 
 glm_aed_parameters <- dplyr::bind_rows(aed, phy_pars, zoo_pars) |>
   dplyr::mutate(default = as.numeric(default), value = default)

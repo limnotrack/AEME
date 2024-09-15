@@ -20,7 +20,7 @@
 #' }
 #'
 #' @importFrom dplyr group_by summarise mutate n case_when where across
-#' relocate filter left_join select last_col
+#' relocate filter left_join select last_col bind_rows case_when
 #' @importFrom stats cor cor.test lm
 #'
 #' @export
@@ -54,7 +54,7 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
       }
       data.frame(model = m, r2 = r2)
     }) |>
-      do.call(rbind, args = _)
+      dplyr::bind_rows()
     fit$Model <- model_names$Model[match(fit$model, model_names$model)]
     fit <- fit |>
       dplyr::select(Model, r2)
@@ -103,7 +103,7 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
       dplyr::relocate(c(n, obs_na, sim_na), .after = dplyr::last_col())
 
   }) |>
-    do.call(rbind, args = _) # Bind list of data frames into one data frame and return
+    dplyr::bind_rows() # Bind list of data frames into one data frame and return
 
   lst
 }

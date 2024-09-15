@@ -39,7 +39,7 @@ gotm_pars <- lapply(names(gotm), \(n) {
                        description = desc, default = def, value = value, fraction,
                        logical, logical_val, char, char_val)
           }) |>
-            do.call(rbind, args = _)
+            dplyr::bind_rows()
           return(df3)
         } else {
           txt1 <- which(grepl(n, gotm_text))[1]
@@ -138,14 +138,14 @@ out <- lapply(wc, \(w) {
     #            name = paste0("instances/", w, "/parameters/", p),
     #            description = desc, default = def, value)
   }) |>
-    do.call(rbind, args = _)
+    dplyr::bind_rows()
   df |>
     dplyr::mutate(
       min = default - (0.25 * abs(default)),
       max = default + (0.25 * abs(default))
     )
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 wc_sa <- out |>
   dplyr::mutate(
@@ -182,14 +182,14 @@ out <- lapply(wc, \(w) {
     #            name = paste0("instances/", w, "/initialization/", p),
     #            description = desc, default = def, value)
   }) |>
-    do.call(rbind, args = _)
+    dplyr::bind_rows()
   df |>
     dplyr::mutate(
       min = default - (0.5 * abs(default)),
       max = default + (0.5 * abs(default))
     )
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 wc_ic_sa <- out |>
   dplyr::mutate(
@@ -219,14 +219,14 @@ out <- lapply(sed, \(s) {
                name = paste0("instances/", s, "/parameters/", p),
                description = desc, default = def, value)
   }) |>
-    do.call(rbind, args = _)
+    dplyr::bind_rows()
   df |>
     dplyr::mutate(
       min = default - (0.25 * abs(default)),
       max = default + (0.25 * abs(default))
     )
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 sed_sa <- out |>
   dplyr::mutate(
@@ -254,14 +254,14 @@ out <- lapply(sed, \(s) {
                name = paste0("instances/", s, "/initialization/", p),
                description = desc, default = def, value)
   }) |>
-    do.call(rbind, args = _)
+    dplyr::bind_rows()
   df |>
     dplyr::mutate(
       min = default - (0.5 * abs(default)),
       max = default + (0.5 * abs(default))
     )
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 sed_ic_sa <- out |>
   dplyr::mutate(
@@ -294,14 +294,14 @@ out <- lapply(sed, \(s) {
                name = paste0("instances/", s, "/parameters/", p),
                description = desc, default = def, value)
   }) |>
-    do.call(rbind, args = _)
+    dplyr::bind_rows()
   df |>
     dplyr::mutate(
       min = default - (0.25 * abs(default)),
       max = default + (0.25 * abs(default))
     )
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 resus_sa <- out |>
   dplyr::mutate(
@@ -338,7 +338,7 @@ out <- lapply(phy, \(ph) {
                description = desc, default = def, value = value, fraction,
                logical, logical_val, char, char_val)
   }) |>
-    do.call(rbind, args = _)
+    dplyr::bind_rows()
   df |>
     dplyr::mutate(
       min = default - (0.25 * abs(default)),
@@ -355,7 +355,7 @@ out <- lapply(phy, \(ph) {
       )
     )
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 phy_sa <- out |>
   dplyr::mutate(
@@ -390,7 +390,7 @@ out <- lapply(phy, \(ph) {
                description = desc, default = def, value = value, fraction,
                logical, logical_val, char, char_val)
   }) |>
-    do.call(rbind, args = _)
+    dplyr::bind_rows()
   df |>
     dplyr::mutate(
       min = default - (0.5 * abs(default)),
@@ -407,7 +407,7 @@ out <- lapply(phy, \(ph) {
       )
     )
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 phy_ic_sa <- out |>
   dplyr::mutate(
@@ -444,7 +444,7 @@ out2 <- lapply(zoop, \(zp) {
                description = desc, default = def, value = value, fraction,
                logical, logical_val, char, char_val)
   }) |>
-    do.call(rbind, args = _)
+    dplyr::bind_rows()
   df |>
     dplyr::mutate(
       min = default - (0.25 * abs(default)),
@@ -461,7 +461,7 @@ out2 <- lapply(zoop, \(zp) {
       )
     )
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 zoop_sa <- out2 |>
   dplyr::mutate(
@@ -489,7 +489,7 @@ out2 <- lapply(zoop, \(zp) {
                name = paste0("instances/", zp, "/initialization/", p),
                description = desc, default = def, value = value, fraction)
   }) |>
-    do.call(rbind, args = _)
+    dplyr::bind_rows()
   df |>
     dplyr::mutate(
       min = default - (0.25 * abs(default)),
@@ -506,7 +506,7 @@ out2 <- lapply(zoop, \(zp) {
       )
     )
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 zoop_ic_sa <- out2 |>
   dplyr::mutate(
@@ -608,7 +608,7 @@ phy_pars <- lapply(phy, \(p) {
   }
   sub
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 
 # Zooplankton II ----
@@ -654,7 +654,7 @@ zoo_pars <- lapply(zoop, \(p) {
   sub |>
     dplyr::mutate(group = p)
 }) |>
-  do.call(rbind, args = _)
+  dplyr::bind_rows()
 
 # WET II ----
 # Combine ----

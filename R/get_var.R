@@ -136,7 +136,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
                      sim = p,
                      Model = m)
         }) |>
-          do.call(rbind, args = _)
+          dplyr::bind_rows()
 
         df <- dplyr::left_join(obs_sub, mod, by = c("Date" = "Date",
                                                     "depth_mid" = "depth_mid"))
@@ -210,7 +210,6 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
 
   if (return_df) {
     dplyr::bind_rows(lst) |>
-    # do.call(rbind, lst) |>
       dplyr::mutate(Model = dplyr::case_when(
         Model == "dy_cd" ~ "DYRESM-CAEDYM",
         Model == "glm_aed" ~ "GLM-AED",

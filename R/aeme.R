@@ -1093,7 +1093,7 @@ setMethod("summary", "Aeme", function(object) {
 #' theme_bw facet_wrap
 #' @importFrom patchwork wrap_plots
 #' @importFrom tidyr pivot_longer
-#' @importFrom dplyr left_join
+#' @importFrom dplyr left_join bind_rows filter contains
 #'
 #' @return prints the Aeme object to the console.
 #' @export
@@ -1378,7 +1378,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
         df
       }
     }) |>
-      do.call(rbind, args = _)
+      dplyr::bind_rows()
 
     if (!is.null(obs$lake)) {
       obs_temp <- obs$lake |>

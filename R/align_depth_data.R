@@ -14,6 +14,9 @@
 #'  \item \code{depth_from}: Depth from which the variable is extracted
 #'  \item \code{depth_to}: Depth to which the variable is extracted
 #'  }
+#'
+#' @importFrom dplyr filter left_join mutate bind_rows case_when
+#'
 #' @export
 
 align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
@@ -56,7 +59,7 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
   }
 
   if (return_df) {
-    obs$lake_adj <- do.call(rbind, lst)
+    obs$lake_adj <- dplyr::bind_rows(lst)
     if (!is.null(obs$lake_adj)) {
       obs$lake_adj <- obs$lake_adj |>
         dplyr::mutate(Model = dplyr::case_when(

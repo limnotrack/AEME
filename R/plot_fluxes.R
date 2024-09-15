@@ -12,7 +12,7 @@
 #'
 #' @export
 #'
-#' @importFrom dplyr left_join mutate
+#' @importFrom dplyr left_join mutate bind_rows
 #' @importFrom ggplot2 aes facet_wrap geom_hline geom_line labs theme_bw
 #' @importFrom utils data
 #'
@@ -26,7 +26,7 @@ plot_fluxes <- function(aeme, cumulative = FALSE) {
     get_var(aeme, model = model, var_sim = v, return_df = TRUE,
             cumulative = cumulative)
   }) |>
-    do.call(what = rbind, args = _)
+    dplyr::bind_rows()
 
   df <- df |>
     dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],

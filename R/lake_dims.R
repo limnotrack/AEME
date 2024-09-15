@@ -6,6 +6,7 @@
 #' @noRd
 #'
 #' @importFrom sf st_transform st_centroid st_coordinates
+#' @importFrom dplyr bind_rows
 
 lake_dims <- function(lake_shape) {
 
@@ -23,8 +24,8 @@ lake_dims <- function(lake_shape) {
   bot <- centre
   bot[2] <- bot[2] - 100000
 
-  vert <- rbind(top, bot)
-  star <- lapply(seq(0,160,20),
+  vert <- dplyr::bind_rows(top, bot)
+  star <- lapply(seq(0, 160, 20),
                 FUN = rotate, vert = vert, centre = centre, shp = shp) |>
     unlist()
 
