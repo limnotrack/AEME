@@ -22,6 +22,12 @@
 #'
 #' @importFrom lubridate ddays
 #' @importFrom withr local_locale local_timezone
+#' @importFrom dplyr filter left_join mutate distinct group_by summarise
+#' bind_rows
+#' @importFrom tidyr pivot_longer
+#' @importFrom ggplot2 ggplot aes geom_point geom_smooth theme_bw labs
+#' @importFrom stats lm optim
+#' @importFrom zoo rollmean
 #'
 #' @return data frame of water balance components which are:
 #' - Date
@@ -89,12 +95,13 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
           message("Using optimisation function")
           # Initial parameter values
           initial_parameters <- c(ampl = ampl, offset = offset)
-          optim_lvl_params(initial_parameters, mod.lvl = mod.lvl, surf = surf)
+          # optim_lvl_params(initial_parameters, mod.lvl = mod.lvl, surf = surf)
 
           # Optimize the parameters
-          optimized_parameters <- optim(par = initial_parameters, fn = optim_lvl_params,
-                                        mod.lvl = mod.lvl, surf = surf,
-                                        method = "L-BFGS-B")
+          optimized_parameters <- stats::optim(par = initial_parameters,
+                                               fn = optim_lvl_params,
+                                               mod.lvl = mod.lvl, surf = surf,
+                                               method = "L-BFGS-B")
           ampl <- optimized_parameters$par["ampl"]
           offset <- optimized_parameters$par["offset"]
         } else {
@@ -403,14 +410,14 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     # Separate negative into inflows and positive into outflows
     wb <- wb |>
       # Smooth outflow by 5 days ----
-      dplyr::mutate(
-        outflow_dy_cd = zoo::rollmean(wb$outflow_dy_cd, 5, na.pad = TRUE,
+    dplyr::mutate(
+      outflow_dy_cd = zoo::rollmean(wb$outflow_dy_cd, 5, na.pad = TRUE,
+                                    align = c("right")),
+      outflow_glm_aed = zoo::rollmean(wb$outflow_glm_aed, 5, na.pad = TRUE,
                                       align = c("right")),
-        outflow_glm_aed = zoo::rollmean(wb$outflow_glm_aed, 5, na.pad = TRUE,
-                                        align = c("right")),
-        outflow_gotm_wet = zoo::rollmean(wb$outflow_gotm_wet, 5, na.pad = TRUE,
-                                         align = c("right"))
-      ) |>
+      outflow_gotm_wet = zoo::rollmean(wb$outflow_gotm_wet, 5, na.pad = TRUE,
+                                       align = c("right"))
+    ) |>
       dplyr::mutate(
         inflow_dy_cd = dplyr::case_when(
           outflow_dy_cd < 0 ~ abs(outflow_dy_cd),

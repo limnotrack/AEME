@@ -6,6 +6,7 @@
 #' @return dataframe with extrapolated hypsmetry
 #' @export
 #' @importFrom stats approx
+#' @importFrom dplyr filter bind_rows
 
 extrap_hyps <- function(hyps, z_range = 0.2, ext_elev) {
 

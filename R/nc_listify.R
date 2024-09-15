@@ -15,7 +15,7 @@
 #'
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @importFrom utils data
-#' @importFrom dplyr filter mutate
+#' @importFrom dplyr filter mutate pull select bind_rows
 #' @importFrom withr local_locale local_timezone
 #' @importFrom lubridate hour
 #' @importFrom rLakeAnalyzer thermo.depth center.buoyancy meta.depths
