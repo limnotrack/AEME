@@ -47,7 +47,8 @@ check_obs_var <- function(aeme, var_sim) {
     dplyr::bind_rows()
   vars_present <- out |>
     dplyr::filter(n > 0) |>
-    dplyr::pull(var_aeme)
+    dplyr::pull(var_aeme) |>
+    unique()
 
   return(list(obs = out, vars_present = vars_present))
 }
