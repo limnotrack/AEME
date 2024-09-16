@@ -2,9 +2,9 @@
 #'
 #' @inheritParams build_aeme
 #'
+#' @export
+#'
 #' @return A logical matrix indicating if the variable is present in the model
-#'
-#'
 
 check_var_in_output <- function(aeme, model, var_sim, ens_n = 1) {
   outp <- output(aeme)
