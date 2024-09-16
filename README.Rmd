@@ -87,7 +87,7 @@ structure and allows for condensed output to be printed to the console:
 aeme
 ```
 
-Model data can be visualised easily using the `plot_output()` function
+Model data can be visualised easily using the `plot_output()` function:
 
 ```{r, label="plot_output-HYD_temp",echo=TRUE,results="hide",fig.keep="all",fig.height=7}
 p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")

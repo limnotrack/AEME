@@ -65,7 +65,7 @@ model <- c("dy_cd", "glm_aed", "gotm_wet")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                             model_controls = model_controls,
                             ext_elev = 5, use_bgc = TRUE)
-#> Building simulation for Wainamu [2024-08-27 06:16:09]
+#> Building simulation for Wainamu [2024-09-16 02:21:43]
 #> Missing state variables in inflows: PHY_crypt
 #> Added default values for missing variables.
 #> Using observed water level
@@ -122,10 +122,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> instances/abiotic_water/initialization/sDIMW 4 replaced with 3
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
                       path = path, parallel = TRUE)
-#> Running models in parallel... [2024-08-27 18:16:13]
-#> Model run complete![2024-08-27 18:17:58]
-#> Reading models in parallel... [2024-08-27 18:17:59]
-#> Model reading complete![2024-08-27 18:18:12]
+#> Running models in parallel... [2024-09-16 02:21:58]
+#> Model run complete![2024-09-16 02:25:03]
+#> Reading models in parallel... [2024-09-16 02:25:04]
+#> Model reading complete![2024-09-16 02:25:07]
 ```
 
 The model input and output is handled as it’s own S4 object of class
@@ -188,12 +188,11 @@ aeme
 #> GOTM-WET: 1
 ```
 
-Model data can be visualised easily using the `plot_output()` function
+Model data can be visualised easily using the `plot_output()` function:
 
 ``` r
 p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 p1
-#> Warning: Using size for a discrete variable is not advised.
 #> Warning: Removed 246 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 ```
