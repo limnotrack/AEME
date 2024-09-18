@@ -3,10 +3,10 @@ Type: Package
 Title: Aquatic Ecosystem Model Ensemble
 Version: 0.1.0
 Author: Authors@R: c(person("Tadhg", "Moore", role = c("aut","cre"),
-    email = "tadhg.moore6@gmail.com"),
+    email = "tadhg@limnotrack.com"),
     person("Chris", "McBride", role = "aut",
     email = "chris@limnotrack.com"))
-Maintainer: Tadhg Moore <tadhg.moore6@gmail.com>
+Maintainer: Tadhg Moore <tadhg@limnotrack.com>
 Description: Run an ensemble of aquatic ecosystem models on lakes and reservoir
     using varying levels of inputs.
 License: GPL (>= 2)
