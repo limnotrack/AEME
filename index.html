@@ -66,7 +66,7 @@
 <div class="section level2">
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
-<p>This package was developed by <a href="http://limnotrack.com/" class="external-link">LimnoTrack</a> as part of the Lake Ecosystem Restoration New Zealand Modelling Platform (LERNZmp) project. <a href="http://limnotrack.com/" class="external-link"><img src="reference/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"></a></p>
+<p>This package was developed by <a href="http://limnotrack.com/" class="external-link">LimnoTrack</a> as part of the Lake Ecosystem Restoration New Zealand Modelling Platform (LERNZmp) project. <a href="http://limnotrack.com/" class="external-link"><img src="reference/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="60"></a></p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -103,7 +103,7 @@
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2024-09-16 02:21:43]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2024-09-18 03:18:48]</span></span>
 <span><span class="co">#&gt; Missing state variables in inflows: PHY_crypt</span></span>
 <span><span class="co">#&gt; Added default values for missing variables.</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
@@ -160,10 +160,10 @@
 <span><span class="co">#&gt; instances/abiotic_water/initialization/sDIMW 4 replaced with 3</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                      path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models in parallel... [2024-09-16 02:21:58]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-09-16 02:25:03]</span></span>
-<span><span class="co">#&gt; Reading models in parallel... [2024-09-16 02:25:04]</span></span>
-<span><span class="co">#&gt; Model reading complete![2024-09-16 02:25:07]</span></span></code></pre></div>
+<span><span class="co">#&gt; Running models in parallel... [2024-09-18 15:18:52]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-09-18 15:21:12]</span></span>
+<span><span class="co">#&gt; Reading models in parallel... [2024-09-18 15:21:13]</span></span>
+<span><span class="co">#&gt; Model reading complete![2024-09-18 15:21:16]</span></span></code></pre></div>
 <p>The model input and output is handled as it’s own S4 object of class <code>aeme</code>. This allows for the standardisation and generalisation of functions for this class alongside ensuring integrity and validity to it’s structure.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
