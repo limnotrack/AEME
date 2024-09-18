@@ -25,7 +25,7 @@ and run an ensemble of aquatic ecosystem models. The models are
 This package was developed by [LimnoTrack](http://limnotrack.com/) as
 part of the Lake Ecosystem Restoration New Zealand Modelling Platform
 (LERNZmp) project.
-<a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"/></a>
+<a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="60"/></a>
 
 ## Installation
 
@@ -65,7 +65,7 @@ model <- c("dy_cd", "glm_aed", "gotm_wet")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                             model_controls = model_controls,
                             ext_elev = 5, use_bgc = TRUE)
-#> Building simulation for Wainamu [2024-09-16 02:21:43]
+#> Building simulation for Wainamu [2024-09-18 03:18:48]
 #> Missing state variables in inflows: PHY_crypt
 #> Added default values for missing variables.
 #> Using observed water level
@@ -122,10 +122,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> instances/abiotic_water/initialization/sDIMW 4 replaced with 3
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
                       path = path, parallel = TRUE)
-#> Running models in parallel... [2024-09-16 02:21:58]
-#> Model run complete![2024-09-16 02:25:03]
-#> Reading models in parallel... [2024-09-16 02:25:04]
-#> Model reading complete![2024-09-16 02:25:07]
+#> Running models in parallel... [2024-09-18 15:18:52]
+#> Model run complete![2024-09-18 15:21:12]
+#> Reading models in parallel... [2024-09-18 15:21:13]
+#> Model reading complete![2024-09-18 15:21:16]
 ```
 
 The model input and output is handled as it’s own S4 object of class
