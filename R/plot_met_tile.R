@@ -55,7 +55,7 @@ plot_met_tile <- function(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE) {
     dplyr::left_join(key_naming[, c("name", "name_parse")]
                      , by = c("name" = "name"))
 
-  plot_tile(df = df, use_hydro_year = use_hydro_year)
+  plot_tile(df = df, lat = lat, use_hydro_year = use_hydro_year)
 
 }
 
@@ -70,7 +70,7 @@ plot_met_tile <- function(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE) {
 #' @param use_hydro_year Logical. If \code{TRUE}, the hydrological year is used
 #'
 #' @noRd
-plot_tile <- function(df, use_hydro_year = TRUE) {
+plot_tile <- function(df, lat, use_hydro_year = TRUE) {
   if (use_hydro_year) {
 
     if (lat < 0) {
