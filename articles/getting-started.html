@@ -115,17 +115,17 @@ an API key from LINZ.</p>
 <p>You can easily create a key on the LINZ website: <a href="https://data.linz.govt.nz/" class="external-link uri">https://data.linz.govt.nz/</a> or use the function within
 the <code>aemetools</code> package to create one.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://special-enigma-8p9lgre.pages.github.io/reference/create_linz_key.html" class="external-link">create_linz_key</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/create_linz_key.html" class="external-link">create_linz_key</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Then adding it to your <code>.Renviron</code> file.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add the LINZ API key to your .Renviron file</span></span>
-<span><span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://special-enigma-8p9lgre.pages.github.io/reference/add_linz_key.html" class="external-link">add_linz_key</a></span><span class="op">(</span>key <span class="op">=</span> <span class="st">"your_key_here"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/add_linz_key.html" class="external-link">add_linz_key</a></span><span class="op">(</span>key <span class="op">=</span> <span class="st">"your_key_here"</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>get_dem_value</code> function will return the elevation of
 the lake in metres above sea level.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the elevation of the lake</span></span>
 <span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LINZ_KEY"</span><span class="op">)</span></span>
-<span><span class="va">elevation</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://special-enigma-8p9lgre.pages.github.io/reference/get_dem_value.html" class="external-link">get_dem_value</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, key <span class="op">=</span> <span class="va">key</span><span class="op">)</span></span>
+<span><span class="va">elevation</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_dem_value.html" class="external-link">get_dem_value</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, key <span class="op">=</span> <span class="va">key</span><span class="op">)</span></span>
 <span><span class="va">elevation</span> <span class="co"># in metres above sea level</span></span>
 <span><span class="co">#&gt; [1] 29</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -175,7 +175,7 @@ meteorological data for the location of our lake. This only works for
 locations in New Zealand.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
-<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://special-enigma-8p9lgre.pages.github.io/reference/get_era5_point.html" class="external-link">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_point.html" class="external-link">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -455,7 +455,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">F</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2024-09-18 03:32:25]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2024-09-23 05:23:08]</span></span>
 <span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
 <span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
@@ -532,11 +532,11 @@ object.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-09-18 03:32:27]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2024-09-18 03:32:46]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-09-18 03:32:47]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-09-18 03:32:47]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-09-18 03:32:47]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-09-23 05:23:10]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2024-09-23 05:23:29]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-09-23 05:23:30]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-09-23 05:23:31]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-09-23 05:23:31]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd</span></span>
 <span><span class="co">#&gt; Retrieving and formatting dyresmSALINITY_Var for model dy_cd</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
@@ -579,7 +579,7 @@ the <code>.rds</code>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
