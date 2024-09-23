@@ -1,3 +1,37 @@
+test_that("plotting model met tile", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  p1 <- plot_met_tile(aeme = aeme)
+  testthat::expect_true(ggplot2::is.ggplot(p1))
+
+  p2 <- plot_met_tile(aeme = aeme, var_inp = c("MET_tmpair", "MET_pprain"))
+  testthat::expect_true(ggplot2::is.ggplot(p2))
+  p3 <- plot_met_tile(aeme = aeme, var_inp = c("MET_pprain"),
+                      use_hydro_year = FALSE)
+  testthat::expect_true(ggplot2::is.ggplot(p3))
+
+})
+
+test_that("plotting hypsograph", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  p1 <- plot_hyps(aeme = aeme)
+  testthat::expect_true(ggplot2::is.ggplot(p1))
+  p2 <- plot_hyps(aeme = aeme, y = "depth", add_surface = TRUE)
+  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_error({
+    p3 <- plot_hyps(aeme = aeme, y = "elevation", add_surface = TRUE)
+  })
+})
+
 test_that("plotting model output works", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
