@@ -33,9 +33,21 @@ test_that("plotting observations", {
   p1 <- plot_obs(aeme = aeme, var_sim = c("HYD_temp", "LKE_lvlwtr"))
   testthat::expect_true(ggplot2::is.ggplot(p1))
   p2 <- plot_obs(aeme = aeme, var_sim = "LKE_lvlwtr", add_line = TRUE)
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is.ggplot(p2))
   testthat::expect_error({
     p3 <- plot_obs(aeme = aeme, var_sim = "HYD_thmcln")
+  })
+})
+
+test_that("plotting inflows and outflows", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  p1 <- plot_flows(aeme = aeme)
+  testthat::expect_true(ggplot2::is.ggplot(p1))
+  p2 <- plot_flows(aeme = aeme, flow = "inflow", var_sim = "HYD_temp")
+  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_error({
+    p3 <- plot_flows(aeme = aeme, flow = "outflow", var_sim = "HYD_temp")
   })
 })
 
