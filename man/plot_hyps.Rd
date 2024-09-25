@@ -24,3 +24,8 @@ ggplot object
 \description{
 Plot hypsograph
 }
+\examples{
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme <- readRDS(aeme_file)
+plot_hyps(aeme = aeme)
+}
