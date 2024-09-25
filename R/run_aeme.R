@@ -23,24 +23,15 @@
 #' @importFrom stats setNames
 #'
 #' @examples
-#' \dontrun{
-#' tmpdir <- tempdir()
-#' aeme_dir <- system.file("extdata/lake/", package = "AEME")
-#' # Copy files from package into tempdir
-#' file.copy(aeme_dir, tmpdir, recursive = TRUE)
-#' path <- file.path(tmpdir, "lake")
-#' aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+#' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+#' aeme <- readRDS(aeme_file)
+#' path <- tempdir()
 #' model_controls <- get_model_controls()
-#' inf_factor = c("glm_aed" = 1)
-#' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
-#' build_aeme(path = path, aeme = aeme, model = model,
-#'            model_controls = model_controls, inf_factor = inf_factor,
-#'            use_bgc = TRUE)
-#' run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
-#'           return = FALSE)
-#' }
-
+#' aeme <- build_aeme(path = path, aeme = aeme, model = model,
+#' model_controls = model_controls, ext_elev = 5)
+#' aeme <- run_aeme(aeme = aeme, model = model, path = path)
+#' plot_output(aeme, model = model)
 run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
                      model_controls = NULL, nlev = NULL, verbose = FALSE,
                      debug = FALSE, timeout = 0, parallel = FALSE, ncores,
