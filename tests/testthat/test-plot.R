@@ -1,10 +1,6 @@
 test_that("plotting model met tile", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
   p1 <- plot_met_tile(aeme = aeme)
   testthat::expect_true(ggplot2::is.ggplot(p1))
 
@@ -17,12 +13,8 @@ test_that("plotting model met tile", {
 })
 
 test_that("plotting hypsograph", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
   p1 <- plot_hyps(aeme = aeme)
   testthat::expect_true(ggplot2::is.ggplot(p1))
   p2 <- plot_hyps(aeme = aeme, y = "depth", add_surface = TRUE)
@@ -30,22 +22,34 @@ test_that("plotting hypsograph", {
   testthat::expect_error({
     p3 <- plot_hyps(aeme = aeme, y = "elevation", add_surface = TRUE)
   })
+  p4 <- plot_hyps(aeme = aeme, y = "depth", add_surface = TRUE,
+                  incl_ext_elev = TRUE)
+  testthat::expect_true(ggplot2::is.ggplot(p4))
+})
+
+test_that("plotting observations", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  p1 <- plot_obs(aeme = aeme, var_sim = c("HYD_temp", "LKE_lvlwtr"))
+  testthat::expect_true(ggplot2::is.ggplot(p1))
+  p2 <- plot_obs(aeme = aeme, var_sim = "LKE_lvlwtr", add_line = TRUE)
+  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_error({
+    p3 <- plot_obs(aeme = aeme, var_sim = "HYD_thmcln")
+  })
 })
 
 test_that("plotting model output works", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
 
   testthat::expect_error({
     p1 <- plot_output(aeme = aeme, model = model,
@@ -97,12 +101,9 @@ test_that("plotting model output works", {
 
 
 test_that("plotting model output works with no lake observations", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -114,8 +115,8 @@ test_that("plotting model output works with no lake observations", {
   observations(aeme) <- obs
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
 
 
   # Run models
@@ -130,12 +131,9 @@ test_that("plotting model output works with no lake observations", {
 })
 
 test_that("plotting model output works with no lake & level observations", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -148,8 +146,8 @@ test_that("plotting model output works with no lake & level observations", {
   observations(aeme) <- obs
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, inf_factor = inf_factor,
-                         ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
 
 
   # Run models
@@ -164,12 +162,9 @@ test_that("plotting model output works with no lake & level observations", {
 })
 
 test_that("plotting model residuals for 2d and 1d variables", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -192,12 +187,9 @@ test_that("plotting model residuals for 2d and 1d variables", {
 })
 
 test_that("plotting phytoplankton model output works", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)
   model_controls <- model_controls |>
     dplyr::mutate(simulate = dplyr::case_when(
