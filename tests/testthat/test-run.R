@@ -24,12 +24,9 @@ test_that("running DYRESM works", {
 })
 
 test_that("running GLM works", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
   model_controls <- get_model_controls()
   inf_factor <- c("glm_aed" = 1)
   outf_factor <- c("glm_aed" = 1)
