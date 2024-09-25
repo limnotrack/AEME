@@ -3,6 +3,9 @@
 #' @inheritParams plot_output
 #' @param add_line logical, add line to the plot
 #'
+#' @importFrom ggplot2 ggplot geom_point geom_line facet_wrap labs
+#' @importFrom dplyr filter left_join mutate bind_rows
+#'
 #' @return ggplot object
 #' @export
 #'

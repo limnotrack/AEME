@@ -20,7 +20,7 @@ ggplot object
 Plot observations
 }
 \examples{
-path <- system.file("extdata/lake/", package = "AEME")
-aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme <- readRDS(aeme_file)
 plot_obs(aeme = aeme, var_sim = c("HYD_temp", "LKE_lvlwtr"))
 }
