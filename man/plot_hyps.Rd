@@ -4,7 +4,7 @@
 \alias{plot_hyps}
 \title{Plot hypsograph}
 \usage{
-plot_hyps(aeme, y = "elev", add_surface = FALSE)
+plot_hyps(aeme, y = "elev", add_surface = FALSE, incl_ext_elev = FALSE)
 }
 \arguments{
 \item{aeme}{aeme; object.}
@@ -14,6 +14,9 @@ be either 'elev' or 'depth'.}
 
 \item{add_surface}{Logical; if TRUE, add a horizontal line representing the
 lake surface elevation. Default is FALSE.}
+
+\item{incl_ext_elev}{Logical; if TRUE, include the external elevation in the
+hypsograph plot. Default is FALSE.}
 }
 \value{
 ggplot object

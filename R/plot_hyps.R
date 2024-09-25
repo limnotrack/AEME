@@ -5,15 +5,21 @@
 #'  be either 'elev' or 'depth'.
 #' @param add_surface Logical; if TRUE, add a horizontal line representing the
 #' lake surface elevation. Default is FALSE.
+#' @param incl_ext_elev Logical; if TRUE, include the external elevation in the
+#' hypsograph plot. Default is FALSE.
+#'
 #'
 #' @importFrom ggplot2 ggplot aes scale_linetype_manual guides geom_line
 #' geom_point labs geom_hline
 #'
 #' @return ggplot object
 #' @export
-#'
-
-plot_hyps <- function(aeme, y = "elev", add_surface = FALSE) {
+#' @examples
+#' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+#' aeme <- readRDS(aeme_file)
+#' plot_hyps(aeme = aeme)
+plot_hyps <- function(aeme, y = "elev", add_surface = FALSE,
+                      incl_ext_elev = FALSE) {
   # Check if aeme is a Aeme object
   if (!inherits(aeme, "Aeme")) {
     stop("aeme must be a Aeme object")
@@ -24,6 +30,10 @@ plot_hyps <- function(aeme, y = "elev", add_surface = FALSE) {
     stop("No hypsograph data found in input slot")
   }
   hyps <- inp$hypsograph
+  if (!incl_ext_elev) {
+    hyps <- hyps |>
+      dplyr::filter(depth <= 0)
+  }
 
   # Check if y is a column in hyps
   if (!y %in% names(hyps)) {
