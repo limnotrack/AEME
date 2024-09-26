@@ -38,6 +38,7 @@ RAD_par,PAR,rad,rad,,Photosynthetically active radiation,Photosynthetically_acti
 RAD_extc,EXTC,extc_coef,,,Light extinction coefficient,Light_extinction_coefficient_/m,Light~extinction~coefficient~(m^-1),m-1,1,,FALSE,NA
 RAD_secchi,,,,,Secchi disk depth,Secchi_disk_depth_m,Secchi~disk~depth~m,m,1,,FALSE,NA
 CHM_salt,SALINITY,salt,salt,,Salinity,Salinity_PSU,Salinity~(PSU),PSU,1,0,FALSE,NA
+CHM_ph,,,,,pH,pH,pH,-,1,7,FALSE,NA
 CHM_oxy,DO,OXY_oxy,abiotic_water_sO2W,instances/abiotic_water/initialization/sO2W,Dissolved oxygen,Dissolved_oxygen_mg/L,Dissolved~oxygen~(mg~L^-1),mg/L-1,0.032,10.3,FALSE,NA
 CHM_oxycln,,,,,Oxycline depth,Oxycline_depth_m,Oxycline~depth~(m),m,1,,TRUE,CHM_oxy
 CHM_oxyepi,,,,,Epilimnetic oxygen,Epilimnetic_oxygen_mg/L,Epilimnetic~oxygen~(mg~L^-1),mg/L-1,1,,TRUE,CHM_oxy
