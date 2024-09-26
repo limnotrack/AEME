@@ -65,8 +65,8 @@ plot_obs <- function(aeme, var_sim = "HYD_temp", add_line = FALSE) {
     levs <- levels(df$fdepth)
     levs <- gsub(",", "-", levs)
     levs <- gsub("\\(|]", "", levs)
-    df <- df |>
-      dplyr::mutate(fdepth = factor(fdepth, labels = levs))
+    levels(df$fdepth) <- levs
+    # df$fdepth <- factor(df$fdepth, levels = levs, labels = levs)
   } else {
     df <- df |>
       dplyr::mutate(fdepth = factor(depth_mid))
