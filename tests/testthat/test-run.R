@@ -920,7 +920,7 @@ test_that("summarise multi-year output", {
   s3 <- object.size(aeme_summ)
   s3 / s2
   s1 / s2
-  testthat::expect_true(is(aeme_summ, "AemeSummary"))
+  testthat::expect_true(is(aeme_summ, "Aeme"))
   testthat::expect_true(s3 < s2)
 
 })
