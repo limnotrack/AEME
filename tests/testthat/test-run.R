@@ -906,17 +906,22 @@ test_that("summarise multi-year output", {
   model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed")
+  model <- c("glm_aed", "gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
                      calc_wlev = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  s1 <- object.size(aeme)
+  aeme <- run_aeme(aeme = aeme, model = model,
                    model_controls = model_controls, path = path,
-                   parallel = FALSE)
-
+                   parallel = TRUE)
+  s2 <- object.size(aeme)
   aeme_summ <- summary(aeme)
+  s3 <- object.size(aeme_summ)
+  # s3 / s2
+  # s1 / s2
   testthat::expect_true(is(aeme_summ, "AemeSummary"))
+  testthat::expect_true(s3 < s2)
 
 })
 

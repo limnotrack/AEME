@@ -134,25 +134,44 @@ summarise_aeme <- function(aeme) {
       v_list <- lapply(vars, \(v) {
         va <- out[[v]]
         if (is.matrix(va)) {
-          return(NULL)
-        } else if (is.vector(va)) {
-          df <- data.frame(Date = dates[idx], value = va[idx],
-                           adj_Date = dates[idx] - lubridate::dmonths(5),
-                           month = lubridate::month(dates[idx]),
-                           doy = lubridate::yday(dates[idx])) |>
-            dplyr::mutate(adj_doy = lubridate::yday(adj_Date))
-
-          suppressWarnings({
-            summ <- df |>
-              dplyr::group_by(adj_doy) |>
-              dplyr::summarise(
-                doy = doy[1], month = month[1],
-                mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
-                median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
-                n = sum(!is.na(value)), .groups = "keep") |>
-              dplyr::ungroup() |>
-              as.data.frame()
+          epidep <- out[["HYD_epidep"]][idx]
+          depths <- out[["LKE_depths"]][, idx]
+          na_idx <- which(is.na(epidep))
+          epidep[na_idx] <- apply(depths[, na_idx], 2, \(x) max(x))
+          epidep[is.na(epidep)]
+          epidep <- ifelse(is.na(epidep), 0, epidep)
+          dat <- lapply(1:ncol(va[, idx]), \(c) {
+            btm <- which(depths[, c] > epidep[c])
+            surf <- which(depths[, c] <= epidep[c])
+            s <- mean(va[surf, c], na.rm = TRUE)
+            if (length(btm) > 0) {
+              b <- mean(va[btm, c], na.rm = TRUE)
+            } else {
+              b <- NA
+            }
+            matrix(c(s, b), nrow = 1)
           })
+          mat <- do.call(rbind, dat)
+          return(mat)
+        } else if (is.vector(va)) {
+          return(va)
+          # df <- data.frame(Date = dates[idx], value = va[idx],
+          #                  adj_Date = dates[idx] - lubridate::dmonths(5),
+          #                  month = lubridate::month(dates[idx]),
+          #                  doy = lubridate::yday(dates[idx])) |>
+          #   dplyr::mutate(adj_doy = lubridate::yday(adj_Date))
+          #
+          # suppressWarnings({
+          #   summ <- df |>
+          #     dplyr::group_by(adj_doy) |>
+          #     dplyr::summarise(
+          #       doy = doy[1], month = month[1],
+          #       mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
+          #       median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
+          #       n = sum(!is.na(value)), .groups = "keep") |>
+          #     dplyr::ungroup() |>
+          #     as.data.frame()
+          # })
         }
       })
       names(v_list) <- vars
