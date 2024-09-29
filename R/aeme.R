@@ -1052,7 +1052,7 @@ setMethod("show", "Aeme", function(object) {
 #'
 #' @title Summarise an Aeme object
 #' @param object An Aeme object.
-#' @return AemeSummary object.
+#' @return Aeme object.
 #' @export
 setMethod("summary", "Aeme", function(object) {
 
@@ -1070,11 +1070,11 @@ setMethod("summary", "Aeme", function(object) {
   # param <- parameters(aeme_summ)
 
   # Create an instance of the aemeSummary class
-  summary_object <- new("AemeSummary",
-                        aeme = aeme_summ
-                        )
+  # summary_object <- new("AemeSummary",
+  #                       aeme = aeme_summ
+  #                       )
 
-  return(summary_object)
+  return(aeme_summ)
 
 })
 

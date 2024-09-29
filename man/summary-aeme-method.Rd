@@ -10,7 +10,7 @@
 \item{object}{An Aeme object.}
 }
 \value{
-AemeSummary object.
+Aeme object.
 }
 \description{
 Summarise an Aeme object
