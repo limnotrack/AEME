@@ -13,100 +13,100 @@
 summarise_aeme <- function(aeme) {
 
   # Observation summary ----
-  obs <- observations(aeme)
-  if (!is.null(obs$lake)) {
-    lake_summ <- obs$lake |>
-      dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
-                    adj_Date = Date - lubridate::dmonths(5),
-                    depth_mid = (depth_from + depth_to) / 2,
-                    adj_doy = lubridate::yday(adj_Date)) |>
-      dplyr::group_by(var_aeme, adj_doy, depth_mid) |>
-      dplyr::summarise(
-        doy = doy[1], month = month[1],
-        mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
-        median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
-        n = sum(!is.na(value)), .groups = "keep") |>
-      dplyr::ungroup() |>
-      as.data.frame()
-  }
-  if (!is.null(obs$level)) {
-    level_summ <- obs$level |>
-      dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
-                    adj_Date = Date - lubridate::dmonths(5),
-                    # depth_mid = (depth_from + depth_to) / 2,
-                    adj_doy = lubridate::yday(adj_Date)) |>
-      dplyr::group_by(var_aeme, adj_doy) |>
-      dplyr::summarise(
-        doy = doy[1], month = month[1],
-        mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
-        median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
-        n = sum(!is.na(value)), .groups = "keep") |>
-      dplyr::ungroup() |>
-      as.data.frame()
-  }
-
-  # Met summary ----
-  inp <- input(aeme)
-
-  met_summ <- inp$meteo |>
-    tidyr::pivot_longer(cols = -c(Date), names_to = "meteo", values_to = "value") |>
-    dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
-                  adj_Date = Date - lubridate::dmonths(5),
-                  adj_doy = lubridate::yday(adj_Date)) |>
-    dplyr::group_by(meteo, adj_doy) |>
-    dplyr::summarise(
-      doy = doy[1], month = month[1],
-      mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
-      median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
-      n = sum(!is.na(value)), .groups = "keep") |>
-    dplyr::ungroup() |>
-    as.data.frame()
-
-  # Inflow summary ----
-  inf <- inflows(aeme)
-  if (!is.null(inf$data)) {
-    inf_names <- names(inf$data)
-    inf_summ <- lapply(inf_names, \(i) {
-      dat <- inf$data[[i]]
-      dat_summ <- dat |>
-        tidyr::pivot_longer(cols = -c(Date), names_to = "var_aeme", values_to = "value") |>
-        dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
-                      adj_Date = Date - lubridate::dmonths(5),
-                      adj_doy = lubridate::yday(adj_Date)) |>
-        dplyr::group_by(var_aeme, adj_doy) |>
-        dplyr::summarise(
-          doy = doy[1], month = month[1],
-          mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
-          median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
-          n = sum(!is.na(value)), .groups = "keep") |>
-        dplyr::ungroup() |>
-        as.data.frame()
-    })
-    names(inf_summ) <- inf_names
-  }
-
-  # Outflow summary ----
-  outf <- outflows(aeme)
-  if (!is.null(outf$data)) {
-    outf_names <- names(outf$data)
-    outf_summ <- lapply(outf_names, \(o) {
-      dat <- outf$data[[o]]
-      dat_summ <- dat |>
-        tidyr::pivot_longer(cols = -c(Date), names_to = "var_aeme", values_to = "value") |>
-        dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
-                      adj_Date = Date - lubridate::dmonths(5),
-                      adj_doy = lubridate::yday(adj_Date)) |>
-        dplyr::group_by(var_aeme, adj_doy) |>
-        dplyr::summarise(
-          doy = doy[1], month = month[1],
-          mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
-          median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
-          n = sum(!is.na(value)), .groups = "keep") |>
-        dplyr::ungroup() |>
-        as.data.frame()
-    })
-    names(outf_summ) <- outf_names
-  }
+  # obs <- observations(aeme)
+  # if (!is.null(obs$lake)) {
+  #   lake_summ <- obs$lake |>
+  #     dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
+  #                   adj_Date = Date - lubridate::dmonths(5),
+  #                   depth_mid = (depth_from + depth_to) / 2,
+  #                   adj_doy = lubridate::yday(adj_Date)) |>
+  #     dplyr::group_by(var_aeme, adj_doy, depth_mid) |>
+  #     dplyr::summarise(
+  #       doy = doy[1], month = month[1],
+  #       mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
+  #       median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
+  #       n = sum(!is.na(value)), .groups = "keep") |>
+  #     dplyr::ungroup() |>
+  #     as.data.frame()
+  # }
+  # if (!is.null(obs$level)) {
+  #   level_summ <- obs$level |>
+  #     dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
+  #                   adj_Date = Date - lubridate::dmonths(5),
+  #                   # depth_mid = (depth_from + depth_to) / 2,
+  #                   adj_doy = lubridate::yday(adj_Date)) |>
+  #     dplyr::group_by(var_aeme, adj_doy) |>
+  #     dplyr::summarise(
+  #       doy = doy[1], month = month[1],
+  #       mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
+  #       median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
+  #       n = sum(!is.na(value)), .groups = "keep") |>
+  #     dplyr::ungroup() |>
+  #     as.data.frame()
+  # }
+  #
+  # # Met summary ----
+  # inp <- input(aeme)
+  #
+  # met_summ <- inp$meteo |>
+  #   tidyr::pivot_longer(cols = -c(Date), names_to = "meteo", values_to = "value") |>
+  #   dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
+  #                 adj_Date = Date - lubridate::dmonths(5),
+  #                 adj_doy = lubridate::yday(adj_Date)) |>
+  #   dplyr::group_by(meteo, adj_doy) |>
+  #   dplyr::summarise(
+  #     doy = doy[1], month = month[1],
+  #     mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
+  #     median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
+  #     n = sum(!is.na(value)), .groups = "keep") |>
+  #   dplyr::ungroup() |>
+  #   as.data.frame()
+  #
+  # # Inflow summary ----
+  # inf <- inflows(aeme)
+  # if (!is.null(inf$data)) {
+  #   inf_names <- names(inf$data)
+  #   inf_summ <- lapply(inf_names, \(i) {
+  #     dat <- inf$data[[i]]
+  #     dat_summ <- dat |>
+  #       tidyr::pivot_longer(cols = -c(Date), names_to = "var_aeme", values_to = "value") |>
+  #       dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
+  #                     adj_Date = Date - lubridate::dmonths(5),
+  #                     adj_doy = lubridate::yday(adj_Date)) |>
+  #       dplyr::group_by(var_aeme, adj_doy) |>
+  #       dplyr::summarise(
+  #         doy = doy[1], month = month[1],
+  #         mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
+  #         median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
+  #         n = sum(!is.na(value)), .groups = "keep") |>
+  #       dplyr::ungroup() |>
+  #       as.data.frame()
+  #   })
+  #   names(inf_summ) <- inf_names
+  # }
+  #
+  # # Outflow summary ----
+  # outf <- outflows(aeme)
+  # if (!is.null(outf$data)) {
+  #   outf_names <- names(outf$data)
+  #   outf_summ <- lapply(outf_names, \(o) {
+  #     dat <- outf$data[[o]]
+  #     dat_summ <- dat |>
+  #       tidyr::pivot_longer(cols = -c(Date), names_to = "var_aeme", values_to = "value") |>
+  #       dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
+  #                     adj_Date = Date - lubridate::dmonths(5),
+  #                     adj_doy = lubridate::yday(adj_Date)) |>
+  #       dplyr::group_by(var_aeme, adj_doy) |>
+  #       dplyr::summarise(
+  #         doy = doy[1], month = month[1],
+  #         mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
+  #         median = median(value, na.rm = TRUE), min = min(value, na.rm = TRUE),
+  #         n = sum(!is.na(value)), .groups = "keep") |>
+  #       dplyr::ungroup() |>
+  #       as.data.frame()
+  #   })
+  #   names(outf_summ) <- outf_names
+  # }
 
   # Water balance summary ----
   # wb <- water_balance(aeme)
@@ -185,14 +185,14 @@ summarise_aeme <- function(aeme) {
   })
   names(outp_summ) <- ensembles
 
-  inp$meteo <- met_summ
-  input(aeme) <- inp
-
-  inf$data <- inf_summ
-  inflows(aeme) <- inf
-
-  outf$data <- outf_summ
-  outflows(aeme) <- outf
+  # inp$meteo <- met_summ
+  # input(aeme) <- inp
+  #
+  # inf$data <- inf_summ
+  # inflows(aeme) <- inf
+  #
+  # outf$data <- outf_summ
+  # outflows(aeme) <- outf
 
   for (n in names(outp_summ)) {
     outp[[n]] <- outp_summ[[n]]
