@@ -123,6 +123,10 @@ summarise_aeme <- function(aeme) {
   outp <- output(aeme)
   aeme_time <- time(aeme)
 
+  # Calculate seasonal profiles ----
+  seas_pro <- calc_seasonal_profiles(aeme = aeme, model = model, ens_n = 1)
+  outp$seasonal_profiles <- seas_pro
+
   ensembles <- names(outp)[grepl("ens", names(outp))]
   outp_summ <- lapply(ensembles, \(ens) {
     model <- names(outp[[ens]])

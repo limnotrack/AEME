@@ -129,6 +129,8 @@ test_that("plotting model summary output works", {
                    parallel = TRUE, ncores = 2L)
   aeme_summ <- summary(aeme)
 
+  outp <- output(aeme_summ)
+  testthat::expect_true(is.data.frame(outp$seasonal_profiles))
   p1 <- plot_output(aeme = aeme_summ, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is.ggplot(p1))
   p2 <- plot_output(aeme = aeme_summ, model = model, var_sim = "HYD_thmcln")
