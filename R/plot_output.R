@@ -147,17 +147,29 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
   # mod_labels <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
   #                          name = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
 
-  df <- get_var(aeme = aeme, model = model, var_sim = var_sim, ens_n = ens_n,
-                return_df = TRUE, remove_spin_up = remove_spin_up,
-                cumulative = cumulative)
+  summ_check <- check_if_summary(aeme = aeme, model = model, var_sim = var_sim,
+                                 ens_n = ens_n)
+  if (summ_check) {
+    df <- get_var_summary(aeme = aeme, model = model, var_sim = var_sim,
+                          ens_n = ens_n)
+    if (is.null(ylim)) {
+      ylim <- range(df$value, na.rm = TRUE)
+    } else {
+      ylim <- var_lims
+    }
+    plot_var_summary(data = df, ylim = ylim, xlim = xlim)
+  } else {
+    df <- get_var(aeme = aeme, model = model, var_sim = var_sim, ens_n = ens_n,
+                  return_df = TRUE, remove_spin_up = remove_spin_up,
+                  cumulative = cumulative)
+    # Align observations to modelled depths because observations are relative to
+    # the lake surface while modelled depths are relative to the lake bottom
+    obs <- align_depth_data(aeme = aeme, model = model, ens_n = ens_n,
+                            var_sim = var_sim)
 
-  # Align observations to modelled depths because observations are relative to
-  # the lake surface while modelled depths are relative to the lake bottom
-  obs <- align_depth_data(aeme = aeme, model = model, ens_n = ens_n,
-                          var_sim = var_sim)
 
-
-  plot_var(df = df, ylim = ylim, xlim = xlim, var_lims = var_lims, obs = obs,
-           add_obs = add_obs, level = level, facet = facet,
-           print_plots = print_plots)
+    plot_var(df = df, ylim = ylim, xlim = xlim, var_lims = var_lims, obs = obs,
+             add_obs = add_obs, level = level, facet = facet,
+             print_plots = print_plots)
+  }
 }
