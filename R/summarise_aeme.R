@@ -121,6 +121,19 @@ summarise_aeme <- function(aeme) {
 
   # Output summary ----
   outp <- output(aeme)
+  # Filter out NULLs in list
+  tst <- outp$ens_001[!sapply(outp$ens_001, is.null)]
+  model <- names(tst)
+  obs_vars <- get_obs_vars(aeme)
+  out_vars <- get_output_vars(aeme)
+  obs_vars <- obs_vars[obs_vars %in% out_vars]
+  model_obs_df <- lapply(obs_vars, \(v) {
+    get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE)
+  }) |>
+    dplyr::bind_rows() |>
+    dplyr::select(Date, Model, var_aeme, depth_mid, obs, sim)
+  outp$model_obs_df <- model_obs_df
+
   aeme_time <- time(aeme)
 
   # Calculate seasonal profiles ----
