@@ -216,7 +216,8 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
         Model == "gotm_wet" ~ "GOTM-WET"
         ),
         var_sim = var_sim
-      )
+      ) |>
+      dplyr::filter(!is.na(Date))
   } else {
     lst
   }
