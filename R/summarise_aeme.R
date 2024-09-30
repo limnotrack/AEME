@@ -130,7 +130,7 @@ summarise_aeme <- function(aeme) {
       dates <- outp[[ens]][[m]]$Date
       idx <- which(dates >= aeme_time$start & dates <= aeme_time$stop)
       out <- outp[[ens]][[m]]
-      vars <- names(out)[-1]
+      vars <- names(out)
       v_list <- lapply(vars, \(v) {
         va <- out[[v]]
         if (is.matrix(va)) {
@@ -154,7 +154,7 @@ summarise_aeme <- function(aeme) {
           mat <- do.call(rbind, dat)
           return(mat)
         } else if (is.vector(va)) {
-          return(va)
+          return(va[idx])
           # df <- data.frame(Date = dates[idx], value = va[idx],
           #                  adj_Date = dates[idx] - lubridate::dmonths(5),
           #                  month = lubridate::month(dates[idx]),
@@ -175,6 +175,7 @@ summarise_aeme <- function(aeme) {
         }
       })
       names(v_list) <- vars
+      v_list$Date <- dates[idx]
 
       # Filter out NULLs in list
       v_list <- v_list[!sapply(v_list, is.null)]
@@ -200,4 +201,27 @@ summarise_aeme <- function(aeme) {
   output(aeme) <- outp
 
   return(aeme)
+}
+
+#' Check if AEME is a summary
+#' @param aeme Aeme object
+#' @param model Character vector of model names
+#' @param ens_n Integer of ensemble number
+#' @return Logical vector
+#' @noRd
+check_if_summary <- function(aeme, model, var_sim, ens_n = 1) {
+
+  outp <- output(aeme)
+
+  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+
+  # Check if var_sim is in output
+  chk <- sapply(model, \(m) {
+    dat <- outp[[ens_lab]][[m]][[var_sim]]
+    if (is.vector(dat)) {
+      return(FALSE)
+    }
+    ncol(dat) == 2
+  })
+  return(all(chk))
 }
