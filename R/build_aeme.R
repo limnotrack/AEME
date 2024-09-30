@@ -44,7 +44,6 @@
 #' @export
 #'
 #' @examples
-#' install.packages("configr", repos = "http://cran.us.r-project.org")
 #' tmpdir <- tempdir()
 #' aeme_dir <- system.file("extdata/lake/", package = "AEME")
 #' # Copy files from package into tempdir
