@@ -1,6 +1,7 @@
 #' Summarise the Aeme object
 #'
 #' @inheritParams build_aeme
+#' @inheritParams run_aeme
 #'
 #' @return Aeme object
 #' @noRd
@@ -10,7 +11,7 @@
 #' @importFrom tidyr pivot_longer
 #'
 
-summarise_aeme <- function(aeme) {
+summarise_aeme <- function(aeme, ens_n = 1) {
 
   # Observation summary ----
   # obs <- observations(aeme)
@@ -122,13 +123,16 @@ summarise_aeme <- function(aeme) {
   # Output summary ----
   outp <- output(aeme)
   # Filter out NULLs in list
-  tst <- outp$ens_001[!sapply(outp$ens_001, is.null)]
-  model <- names(tst)
-  obs_vars <- get_obs_vars(aeme)
-  out_vars <- get_output_vars(aeme)
-  obs_vars <- obs_vars[obs_vars %in% out_vars]
-  if (length(obs_vars) > 0) {
-    model_obs_df <- lapply(obs_vars, \(v) {
+  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+  out <- outp[[ens_lab]][!sapply(outp[[ens_lab]], is.null)]
+  model <- names(out)
+  tgt_vars <- get_mod_obs_vars(aeme, model = model, ens_n = ens_n)
+
+  # obs_vars <- get_obs_vars(aeme)
+  # out_vars <- get_output_vars(aeme, model = model)
+  # tgt_vars <- obs_vars[obs_vars %in% out_vars]
+  if (length(tgt_vars) > 0) {
+    model_obs_df <- lapply(tgt_vars, \(v) {
       get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE)
     }) |>
       dplyr::bind_rows() |>
