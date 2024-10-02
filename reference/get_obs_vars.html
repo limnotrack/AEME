@@ -63,14 +63,14 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">aeme_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/aeme.rds"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">aeme_file</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">get_obs_vars</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Cyanobacteria                 Salinity        Secchi disk depth </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              "PHY_cyano"               "CHM_salt"             "RAD_secchi" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        Water temperature      Total chlorophyll a Dissolved organic carbon </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               "HYD_temp"              "PHY_tchla"                "CAR_doc" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Phosphate      Ammoniacal nitrogen                  Nitrate </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                "PHS_frp"                "NIT_amm"                "NIT_nit" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           Total nitrogen         Total phosphorus         Dissolved oxygen </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 "NIT_tn"                 "PHS_tp"                "CHM_oxy" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            Cyanobacteria         Dissolved oxygen                 Salinity </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              "PHY_cyano"                "CHM_oxy"               "CHM_salt" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Secchi disk depth        Water temperature      Total chlorophyll a </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             "RAD_secchi"               "HYD_temp"              "PHY_tchla" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dissolved organic carbon                Phosphate      Ammoniacal nitrogen </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                "CAR_doc"                "PHS_frp"                "NIT_amm" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  Nitrate           Total nitrogen         Total phosphorus </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                "NIT_nit"                 "NIT_tn"                 "PHS_tp" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              Water level </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             "LKE_lvlwtr" </span>
 </code></pre></div>
