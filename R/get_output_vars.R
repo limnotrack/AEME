@@ -1,6 +1,7 @@
 #' Get the output variables from an AEME object
 #'
 #' @inheritParams build_aeme
+#' @inheritParams run_aeme
 #'
 #' @return A character vector of the output variables
 #' @export
@@ -20,11 +21,11 @@
 #' parallel = TRUE, ncores = 2L)
 #' get_output_vars(aeme, model)
 
-get_output_vars <- function(aeme, model, n_ens = 1) {
+get_output_vars <- function(aeme, model, ens_n = 1) {
 
   outp <- AEME::output(aeme)
-  ens_label <- paste0("ens_", sprintf("%03d", n_ens))
-  out <- outp[[ens_label]]
+  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+  out <- outp[[ens_lab]]
 
   # Loop through the variables and get the ones that are not all -99
   out_vars <- c()

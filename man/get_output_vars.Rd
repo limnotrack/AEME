@@ -4,13 +4,16 @@
 \alias{get_output_vars}
 \title{Get the output variables from an AEME object}
 \usage{
-get_output_vars(aeme, model, n_ens = 1)
+get_output_vars(aeme, model, ens_n = 1)
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
+
+\item{ens_n}{numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.}
 }
 \value{
 A character vector of the output variables
