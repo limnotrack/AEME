@@ -32,13 +32,14 @@ get_output_vars <- function(aeme, model, ens_n = 1) {
   for (m in model) {
     mod_vars <- names(out[[m]])
     for (i in 1:length(mod_vars)) {
-      if (!all(is.na(out[[m]][[mod_vars[i]]]))) {
-        if (!all(out[[m]][[mod_vars[i]]] == -99)) {
-          out_vars <- c(out_vars, mod_vars[i])
-        }
+      v <- out[[m]][[mod_vars[i]]]
+      v[is.na(v)] <- -99
+      if (!all(v == -99)) {
+        out_vars <- c(out_vars, mod_vars[i])
       }
     }
   }
+  out_vars <- unique(out_vars)
   utils::data("key_naming", package = "AEME")
   out_var_names <- key_naming$name_text[match(out_vars, key_naming$name)]
   nmes <- setNames(out_vars, out_var_names)
