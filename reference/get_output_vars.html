@@ -78,7 +78,7 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>                   model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>                   ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2024-10-02 21:53:02]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2024-10-02 22:03:16]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Missing state variables in inflows: PHY_crypt</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Added default values for missing variables.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
@@ -86,7 +86,7 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using constant water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Correcting water balance using estimated outflows (method = 2).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating lake level using lake depth and a sinisoidal function.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'C:\Users\RUNNER~1\AppData\Local\Temp\RtmpcfLxhu\45819_wainamu' already exists</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'C:\Users\RUNNER~1\AppData\Local\Temp\RtmpGuNIi7\45819_wainamu' already exists</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Building GLM3-AED2 model for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Copied in AED nml file</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>    oxy_initial   = 312.5 replaced with 312.5</span>
@@ -131,81 +131,17 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>path <span class="op">=</span> <span class="va">path</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>parallel <span class="op">=</span> <span class="cn">TRUE</span>, ncores <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models in parallel... [2024-10-02 21:53:06]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2024-10-02 21:53:11]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading models in parallel... [2024-10-02 21:53:11]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Model reading complete![2024-10-02 21:53:13]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models in parallel... [2024-10-02 22:03:20]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2024-10-02 22:03:24]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading models in parallel... [2024-10-02 22:03:24]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Model reading complete![2024-10-02 22:03:26]</span>
 <span class="r-in"><span><span class="fu">get_output_vars</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    Water temperature                    Water temperature </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                           "HYD_temp"                           "HYD_temp" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    Thermocline depth                    Thermocline depth </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "HYD_thmcln"                         "HYD_thmcln" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Dissolved oxygen                     Dissolved oxygen </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                            "CHM_oxy"                            "CHM_oxy" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  Total chlorophyll a                  Total chlorophyll a </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          "PHY_tchla"                          "PHY_tchla" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                       Total nitrogen                       Total nitrogen </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             "NIT_tn"                             "NIT_tn" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Total phosphorus                     Total phosphorus </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             "PHS_tp"                             "PHS_tp" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          Water level                               Volume </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_lvlwtr"                              "LKE_V" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Change in volume                         Surface area </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             "LKE_dV"                             "LKE_A0" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          Evaporation                          Evaporation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_evprte"                         "LKE_evpflx" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Evaporative heat flux                   Sensible heat flux </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             "LKE_Qe"                             "LKE_Qh" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   Longwave radiation                  Shortwave radiation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                            "LKE_Qlw"                            "LKE_Qsw" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Net surface heat flux                          Evaporation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                           "LKE_Qnet"                         "LKE_evpvol" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        Precipitation                        Precipitation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_precip"                         "LKE_pcpvol" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                               Inflow                              Outflow </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_inflow"                        "LKE_outflow" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    Net water balance                           Lake layer </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_netwbl"                         "LKE_layers" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                           Lake depth                      e-folding depth </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_depths"                          "LKE_efold" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      e-folding depth                       Euphotic depth </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_efoldh"                         "LKE_photic" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                       Euphotic depth                  Surface temperature </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        "LKE_photich"                          "HYD_surft" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      Air temperature     Water-air temperature difference </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "MET_tmpair"                         "HYD_atdiff" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Salinity                            Phosphate </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                           "CHM_salt"                            "PHS_frp" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  Dissolved organic P                Particulate organic P </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                            "PHS_dop"                            "PHS_pop" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              Particulate inorganic P                  Ammoniacal nitrogen </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                            "PHS_pip"                            "NIT_amm" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              Nitrate                  Dissolved organic N </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                            "NIT_nit"                            "NIT_don" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Particulate organic N             Dissolved organic carbon </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                            "NIT_pon"                            "CAR_doc" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           Particulate organic carbon                        Cyanobacteria </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                            "CAR_poc"                          "PHY_cyano" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          Green algae                   Diatoms freshwater </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          "PHY_green"                         "PHY_diatom" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Suspended solids                   Centre of buoyancy </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                            "NCS_ss1"                         "HYD_ctrbuy" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Epilimnion depth                    Hypolimnion depth </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "HYD_epidep"                         "HYD_hypdep" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    Schmidt stability                       Oxycline depth </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "HYD_schstb"                         "CHM_oxycln" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   Epilimnetic oxygen                  Hypolimnetic oxygen </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "CHM_oxyepi"                         "CHM_oxyhyp" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   Metalimnetic oygen           Metalimnetic oxygen minima </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "CHM_oxymet"                         "CHM_oxymom" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              Number of anoxic layers    Trophic Level Index Chlorophyll-a </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "CHM_oxynal"                           "LKE_tlic" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Trophic Level Index Total Nitrogen Trophic Level Index Total Phosphorus </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                           "LKE_tlin"                           "LKE_tlip" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Trophic Level Index Secchi depth                Trophic Level Index 3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          "LKE_tlise"                           "LKE_tli3" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Trophic Level Index 4                                 Time </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                           "LKE_tli4"                               "Date" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    Water temperature                    Thermocline depth </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           "HYD_temp"                         "HYD_thmcln" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                     Dissolved oxygen                  Total chlorophyll a </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            "CHM_oxy"                          "PHY_tchla" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       Total nitrogen                     Total phosphorus </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                             "NIT_tn"                             "PHS_tp" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                          Water level                               Volume </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_lvlwtr"                              "LKE_V" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                     Change in volume                         Surface area </span>
