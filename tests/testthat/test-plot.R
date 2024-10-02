@@ -130,7 +130,7 @@ test_that("plotting model summary output works", {
                    path = path, model_controls = model_controls,
                    parallel = TRUE, ncores = 2L)
 
-  get_output_vars(aeme)
+  get_output_vars(aeme, model)
   aeme_summ <- summary(aeme)
 
   outp <- output(aeme_summ)
