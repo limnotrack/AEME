@@ -18,20 +18,24 @@
 #' aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 #' path = path, model_controls = model_controls,
 #' parallel = TRUE, ncores = 2L)
-#' get_output_vars(aeme)
+#' get_output_vars(aeme, model)
 
-get_output_vars <- function(aeme, n_ens = 1) {
-  
+get_output_vars <- function(aeme, model, n_ens = 1) {
+
   outp <- AEME::output(aeme)
   ens_label <- paste0("ens_", sprintf("%03d", n_ens))
   out <- outp[[ens_label]]
-  mod_vars <- names(out$glm_aed)
-  
+
   # Loop through the variables and get the ones that are not all -99
   out_vars <- c()
-  for (i in 1:length(mod_vars)) {
-    if (!all(out$glm_aed[[mod_vars[i]]] == -99)) {
-      out_vars <- c(out_vars, mod_vars[i])
+  for (m in model) {
+    mod_vars <- names(out[[m]])
+    for (i in 1:length(mod_vars)) {
+      if (!all(is.na(out[[m]][[mod_vars[i]]]))) {
+        if (!all(out[[m]][[mod_vars[i]]] == -99)) {
+          out_vars <- c(out_vars, mod_vars[i])
+        }
+      }
     }
   }
   utils::data("key_naming", package = "AEME")
@@ -40,12 +44,12 @@ get_output_vars <- function(aeme, n_ens = 1) {
   nmes <- nmes[!is.na(nmes)]
   nmes <- nmes[!is.na(names(nmes)) & names(nmes) != ""]
   nmes <- nmes[-1]
-  
+
   # order variables with target variables first
   tgt_vars <- c("HYD_temp", "HYD_thmcln", "CHM_oxy", "PHY_tchla",
                 "NIT_tn", "PHS_tp")
-  
+
   nmes <- nmes[order(match(nmes, tgt_vars))]
-  
+
   return(nmes)
 }

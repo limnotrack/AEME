@@ -4,10 +4,13 @@
 \alias{get_output_vars}
 \title{Get the output variables from an AEME object}
 \usage{
-get_output_vars(aeme, n_ens = 1)
+get_output_vars(aeme, model, n_ens = 1)
 }
 \arguments{
 \item{aeme}{aeme; object.}
+
+\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
+`gotm_wet`.}
 }
 \value{
 A character vector of the output variables
@@ -28,5 +31,5 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-get_output_vars(aeme)
+get_output_vars(aeme, model)
 }

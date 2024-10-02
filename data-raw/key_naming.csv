@@ -3,7 +3,7 @@ Date,Date,time,date,,Time,,,,1,,FALSE,NA
 outflow,,,,,Outflow,Outflow_m3,Outflow~(m^3),m3,1,,FALSE,NA
 HYD_flow,VOL,flow,flow,,Discharge,Discharge_m3,Discharge~(m^3),m3,1,,FALSE,NA
 HYD_temp,TEMPTURE,temp,temp,,Water temperature,Water_temperature_degC,Temperature~(degree~C),degC,1,10,FALSE,NA
-HYD_dens,DENSITY,rho,rho,,,Density_g/cm3,Density~(g~cm^-3),g/cm3,1,,TRUE,HYD_temp
+HYD_dens,DENSITY,rho,rho,,Water density,Density_g/cm3,Density~(g~cm^-3),g/cm3,1,,TRUE,HYD_temp
 HYD_thmcln,,,,,Thermocline depth,Thermocline_depth_m,Thermocline~depth~(m),m3,1,,TRUE,HYD_temp
 HYD_schstb,,,,,Schmidt stability,Schmidt_stability_J/m2,Schmidt~stability~(J~m^2),J/m2,1,,TRUE,HYD_temp
 HYD_ctrbuy,,,,,Centre of buoyancy,Centre_of_buoyancy_m,Centre~of~buoyancy~(m),m3,1,,TRUE,HYD_temp
@@ -11,6 +11,8 @@ HYD_epidep,,,,,Epilimnion depth,Epilimnion_depth_m,Epilimnion~depth~(m),m3,1,,TR
 HYD_hypdep,,,,,Hypolimnion depth,Hypolimnion_depth_m,Hypolimnion~depth~(m),m3,1,,TRUE,HYD_temp
 HYD_surft,,,,,Surface temperature,Surface_temperature_degC,Surface~temperature~(degree~C),degC,1,,FALSE,NA
 HYD_atdiff,,,,,Water-air temperature difference,Water-air_temperature_difference_degC,Water-air~temperature~difference~(degree~C),degC,1,,FALSE,NA
+LKE_layers,,,,,Lake layer,Lake_layers_m,Lake~layers~(m),m,1,,FALSE,NA
+LKE_depths,,,,,Lake depth,Lake_depth_m,Lake~depth~(m),m,1,,FALSE,NA
 LKE_evprte,,,,,Evaporation,Evaporation_m/day,Evaporation~(m~day^-1),m/day-1,1,,FALSE,NA
 LKE_evpvol,dyresmEVAP_DAILY,evaporation,evap,,Evaporation,Evaporation_m3,Evaporation~(m^3),m3,1,,FALSE,NA
 LKE_evpflx,dyresmEVAP_DAILY,evap_mass_flux,evap,,Evaporation,Evaporation_flux_m/s,Evaporation~flux~(m^-1),m-1,1,,FALSE,NA
@@ -32,6 +34,10 @@ LKE_efold,,,,,e-folding depth,e-folding_depth_m,e-folding~depth~(m),m,1,,FALSE,N
 LKE_efoldh,,,,,e-folding depth,e-folding_depth_m,e-folding~depth~(m),m,1,,FALSE,NA
 LKE_photic,,,,,Euphotic depth,Euphotic_depth_m,Euphotic~depth~(m),m,1,,FALSE,NA
 LKE_photich,,,,,Euphotic depth,Euphotic_depth_m,Euphotic~depth~(m),m,1,,FALSE,NA
+LKE_tlic,,,,,Trophic Level Index Chlorophyll-a,Trophic_Level_Index_chlorophyll_a,Trophic~Level~Index~chlorophyll-a,-,1,,TRUE,PHY_tchla;HYD_epidep
+LKE_tlin,,,,,Trophic Level Index Total Nitrogen,Trophic_Level_Index_total_nitrogen,Trophic~Level~Index~TN,-,1,,TRUE,PHS_tn;HYD_epidep
+LKE_tlip,,,,,Trophic Level Index Total Phosphorus,Trophic_Level_Index_total_phosphorus,Trophic~Level~Index~TP,-,1,,TRUE,PHS_tp;HYD_epidep
+LKE_tlise,,,,,Trophic Level Index Secchi depth,Trophic_Level_Index_secchi_depth,Trophic~Level~Index~secchi~depth,-,1,,TRUE,LKE_photic
 LKE_tli3,,,,,Trophic Level Index 3,Trophic_Level_Index_3,Trophic~Level~Index~3,-,1,,TRUE,PHS_tp;NIT_tn;PHY_tchla;HYD_epidep
 LKE_tli4,,,,,Trophic Level Index 4,Trophic_Level_Index_4,Trophic~Level~Index~4,-,1,,TRUE,PHS_tp;NIT_tn;PHY_tchla;HYD_epidep;LKE_photic
 RAD_par,PAR,rad,rad,,Photosynthetically active radiation,Photosynthetically_active_radiation_umol/m2/s,Photosynthetically~active~radiation~(umol~m^2~s^-1),umol/m2/s-1,1,,FALSE,NA
