@@ -19,7 +19,13 @@ get_obs_vars <- function(aeme) {
   aeme_time <- AEME::time(aeme)
 
   obs_vars <- AEME::observations(aeme) |>
-    dplyr::bind_rows() |>
+    dplyr::bind_rows()
+
+  if (nrow(obs_vars) == 0) {
+    return()
+  }
+
+  obs_vars <- obs_vars |>
     dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop)
 
   if (nrow(obs_vars) == 0) {
