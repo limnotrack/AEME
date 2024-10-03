@@ -82,9 +82,23 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim, xlim, var_lims,
       }
     }
 
-    obs_sub <- obs$lake |>
-      dplyr::filter(var_aeme == var_sim & Date >= min(df$Date) &
-                      Date <= max(df$Date))
+    # Catch no observations
+    if (!is.atomic(obs$lake)) {
+      # Initialise an empty dataframe
+      obs_sub <- data.frame(Date = as.Date(character(0)),
+                             value = numeric(0),
+                             var_aeme = character(0),
+                             Model = character(0))
+    } else {
+      obs_sub <- obs$lake
+    }
+
+
+    if (nrow(obs_sub) > 0) {
+      obs_sub <- obs_sub |>
+        dplyr::filter(var_aeme == var_sim & Date >= min(df$Date) &
+                        Date <= max(df$Date))
+    }
 
     if (nrow(obs_sub) > 0 & add_obs) {
       p <- p +
