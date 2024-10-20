@@ -66,12 +66,11 @@ test_that("running GOTM works", {
                      model = model, model_controls = model_controls,
                      inf_factor = inf_factor, ext_elev = 5,
                      use_bgc = FALSE)
-  # set_gotm_grid(aeme = aeme, thickness_factor = 5, path = path, method = 0,
-  #               ddl = 0, ddu = 1)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
   plot_output(aeme, model = model)
-    # inp <- input(aeme)
+
+  # inp <- input(aeme)
   # outp <- output(aeme)
   # filled.contour(t(outp$ens_001$gotm_wet$HYD_temp))
   # wb <- water_balance(aeme)
