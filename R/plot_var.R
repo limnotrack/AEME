@@ -21,6 +21,9 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim, xlim, var_lims,
                   return_df = TRUE, cumulative = cumulative)
   } else {
     var_sim <- unique(df$var_sim)
+    var_lims <- range(df$value, na.rm = TRUE)
+    ylim <- c(0, max(df$lyr_top, na.rm = TRUE))
+    xlim <- range(df$Date)
   }
 
   df <- df |>
