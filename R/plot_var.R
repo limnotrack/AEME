@@ -10,9 +10,9 @@
 #' @return ggplot2 object or list of ggplot2 objects
 #' @export
 
-plot_var <- function(df = NULL, aeme, model, var_sim, ylim, xlim, var_lims,
-                     obs = NULL, add_obs = TRUE, level = FALSE, facet = FALSE,
-                     cumulative = FALSE, print_plots = FALSE) {
+plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
+                     var_lims, obs = NULL, add_obs = TRUE, level = FALSE,
+                     facet = FALSE, cumulative = FALSE, print_plots = FALSE) {
 
   utils::data("key_naming", package = "AEME", envir = environment())
 

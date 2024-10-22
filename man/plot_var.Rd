@@ -9,7 +9,7 @@ plot_var(
   aeme,
   model,
   var_sim,
-  ylim,
+  ylim = NULL,
   xlim,
   var_lims,
   obs = NULL,
