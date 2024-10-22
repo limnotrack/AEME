@@ -9,7 +9,7 @@ HYD_schstb,,,,,Schmidt stability,Schmidt_stability_J/m2,Schmidt~stability~(J~m^2
 HYD_ctrbuy,,,,,Centre of buoyancy,Centre_of_buoyancy_m,Centre~of~buoyancy~(m),m3,1,,TRUE,HYD_temp
 HYD_epidep,,,,,Epilimnion depth,Epilimnion_depth_m,Epilimnion~depth~(m),m3,1,,TRUE,HYD_temp
 HYD_hypdep,,,,,Hypolimnion depth,Hypolimnion_depth_m,Hypolimnion~depth~(m),m3,1,,TRUE,HYD_temp
-HYD_surft,,,,,Surface temperature,Surface_temperature_degC,Surface~temperature~(degree~C),degC,1,,FALSE,NA
+HYD_surft,,,,,Remote sensed skin temperature,Remote_sensed_skin_temperature_degC,Remote~sensed~skin~temperature~(degree~C),degC,1,,FALSE,NA
 HYD_atdiff,,,,,Water-air temperature difference,Water-air_temperature_difference_degC,Water-air~temperature~difference~(degree~C),degC,1,,FALSE,NA
 LKE_layers,,,,,Lake layer,Lake_layers_m,Lake~layers~(m),m,1,,FALSE,NA
 LKE_depths,,,,,Lake depth,Lake_depth_m,Lake~depth~(m),m,1,,FALSE,NA
