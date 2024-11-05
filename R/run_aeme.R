@@ -156,7 +156,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
 
   stdout <- ifelse(verbose, "", TRUE)
   stderr <- ifelse(verbose, "", TRUE)
-
+  message("DYRESM-CAEDYM running... [", format(Sys.time()), "]")
   # Create reference netcdf
   if (verbose) {
     system2(file.path(bin_path, "dy_cd", "createDYref.exe"),
@@ -203,7 +203,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
                    args = info_fils)
 
     if (any(grepl("ERROR|Error", out))) {
-      stop("Could not extract DYRESM information:\n", paste0(out,
+      stop("Could not extract DYRESM-CAEDYM information:\n", paste0(out,
                                                              collapse = "\n"))
     }
   }
@@ -245,7 +245,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
   bin_path <- system.file('extbin/', package = "AEME")
   setwd(file.path(sim_folder, "glm_aed"))
   unlink("output/output.nc")
-
+  message("GLM-AED running... [", format(Sys.time()), "]")
   if (verbose) {
     system2(file.path(bin_path, "glm_aed", "glm.exe"),
             wait = TRUE, stdout = "",
@@ -284,7 +284,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
   setwd(file.path(sim_folder, "gotm_wet"))
   unlink("output/output.nc")
   dir.create("output", showWarnings = FALSE)
-
+  message("GOTM-WET running... [", format(Sys.time()), "]")
   if (verbose) {
     system2(file.path(bin_path, "gotm_wet", "gotm.exe"),
             wait = TRUE, stdout = "",
@@ -293,7 +293,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
     out <- system2(file.path(bin_path, "gotm_wet", "gotm.exe"),
                    wait = TRUE, stdout = TRUE,
                    stderr = TRUE, timeout = timeout)
-    success <- sum(grepl("GOTM finished on", out)) == 1
+    success <- sum(grepl("GOTM-WET finished on", out)) == 1
     if (success) {
       message("GOTM-WET run successful! [", format(Sys.time()), "]")
     } else {
