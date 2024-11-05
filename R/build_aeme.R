@@ -309,6 +309,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (!is.null(aeme_outf[["data"]]) & length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
+
+        if (names(aeme_outf[["data"]])[i] == "wbal" & calc_wbal) next
+
         check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
                    aeme_time = aeme_time,
                    name = paste0("outflow-", names(aeme_outf[["data"]])[i]))
