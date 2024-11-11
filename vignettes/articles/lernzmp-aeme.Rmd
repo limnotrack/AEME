@@ -1,0 +1,32 @@
+---
+title: "Using LERNZmp with AEME"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+lernzmp_exam <- system.file("extdata/lernzmp_example", package = "AEME")
+
+```
+
+```{r setup}
+library(AEME)
+```
+
+# Introduction
+
+The [Lake Ecosystem Research New Zealand Model Platform
+(LERNZmp)](https://limnotrack.shinyapps.io/LERNZmp/) is a web platform that
+provides a user-friendly interface to the lake ecosystem model output for New
+Zealand lakes. The platform is designed to provide a simple way to explore the
+model output across multiple lakes and also to compare the model results with
+observed data.
+
+The platform is located here:
+[LERNZmp](https://limnotrack.shinyapps.io/LERNZmp/). Select and load a lake
+model output on the "Overview" tab. The model output can be downloaded in the
+"Download Models" tab. This downloads a ".zip" folder containing the model
+output for the selected lake(s) as ".rds" files and a lake metadata file
+"LERNZmp_lake_metadata.csv".
