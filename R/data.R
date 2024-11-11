@@ -3,7 +3,7 @@
 #' A reference table for variable names between the models in AEME.
 #'
 #' @format ## `key_naming`
-#' A data frame with 125 rows and 13 columns:
+#' A data frame with 126 rows and 13 columns:
 #' \describe{
 #'   \item{name}{AEME variable name}
 #'   \item{dy_cd}{DYRESM variable name}

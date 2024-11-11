@@ -4,7 +4,7 @@ outflow,,,,,Outflow,Outflow_m3,Outflow~(m^3),m3,1,,FALSE,NA
 HYD_flow,VOL,flow,flow,,Discharge,Discharge_m3,Discharge~(m^3),m3,1,,FALSE,NA
 HYD_temp,TEMPTURE,temp,temp,,Water temperature,Water_temperature_degC,Temperature~(degree~C),degC,1,10,FALSE,NA
 HYD_dens,DENSITY,rho,rho,,Water density,Density_g/cm3,Density~(g~cm^-3),g/cm3,1,,TRUE,HYD_temp
-HYD_thmcln,,,,,Thermocline depth,Thermocline_depth_m,Thermocline~depth~(m),m3,1,,TRUE,HYD_temp
+HYD_thmcln,,,,,Thermocline depth,Thermocline_depth_m,Thermocline~depth~(m),m,1,,TRUE,HYD_temp
 HYD_schstb,,,,,Schmidt stability,Schmidt_stability_J/m2,Schmidt~stability~(J~m^2),J/m2,1,,TRUE,HYD_temp
 HYD_ctrbuy,,,,,Centre of buoyancy,Centre_of_buoyancy_m,Centre~of~buoyancy~(m),m3,1,,TRUE,HYD_temp
 HYD_epidep,,,,,Epilimnion depth,Epilimnion_depth_m,Epilimnion~depth~(m),m3,1,,TRUE,HYD_temp
@@ -84,6 +84,7 @@ PHY_crypt,CRYPT,PHY_crypt,,,Cryptophytes,Cryptophytes_mgchla/m3,Cryptophytes~(mg
 PHY_mdiat,MDIAT,PHY_mdiat,,,Diatoms marine,Diatoms_marine_mgchla/m3,Diatoms~marine~(mg~chla~m^-3),mg chla/m3,1,,FALSE,NA
 PHY_diatom,FDIAT,PHY_diatom,diatoms_oChla,instances/diatoms/initialization/sDW,Diatoms freshwater,Diatoms_freshwater_mgchla/m3,Diatoms~freshwater~(mg~chla~m^-3),mg chla/m3,1,0.1,FALSE,NA
 PHY_tchla,TCHLA,PHY_TCHLA,wet_chla_calculator_result,,Total chlorophyll a,Total_chlorophyll_a_mg/m3,Total~chlorophyll~a~(mg~m^-3),mg/m3,1,,FALSE,NA
+PHY_rstchla,,,,,Remotely sensed total chlorophyll a,Remotely_sensed_total_chlorophyll_a_mg/m3,Remotely~sensed~total~chlorophyll~a~(mg~m^-3),mg/m3,1,,FALSE,NA
 NCS_ss1,SSOL1,NCS_ss1,abiotic_water_sDIMW,instances/abiotic_water/initialization/sDIMW,Suspended solids,Suspended_solids_1,Suspended~solids~1,,1,0.43,FALSE,NA
 NCS_ss2,SSOL2,NCS_ss2,,,Suspended solids,Suspended_solids_2,Suspended~solids~2,,1,0,FALSE,NA
 NCS_ss3,SSOL3,,,,Suspended solids,Suspended_solids_3,Suspended~solids~3,,1,,FALSE,NA
