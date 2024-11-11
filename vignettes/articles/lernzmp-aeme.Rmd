@@ -7,7 +7,10 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-lernzmp_exam <- system.file("extdata/lernzmp_example", package = "AEME")
+lernzmp_exam <- system.file("extdata/lernzmp", package = "AEME")
+dir.create("lernzmp")
+file.copy(list.files(lernzmp_exam, full.names = TRUE), "lernzmp")
+
 
 ```
 
@@ -30,3 +33,86 @@ model output on the "Overview" tab. The model output can be downloaded in the
 "Download Models" tab. This downloads a ".zip" folder containing the model
 output for the selected lake(s) as ".rds" files and a lake metadata file
 "LERNZmp_lake_metadata.csv".
+
+# Using LERNZmp output with AEME
+
+Once you have downloaded the LERNZmp model output and unzipped the folder, you
+should a similar file structure to the following:
+
+```{r}
+#| label: lernzmp-file-structure
+list.files("lernzmp")
+```
+
+## LERNZmp metadata
+
+The metadata file contains information about the all the lakes in the LERNZmp 
+platform. This includes the lake ID, name surface area (ha), region, geomorphic 
+type, depth, depth measurement (measured or predicted), data (no data/minimal 
+data/limited and irregular/periodic but sparse/seasonal but detailed) and 
+lernzmp file name.
+
+```{r}
+#| label: lernzmp-metadata
+metadata <- read.csv("lernzmp/LERNZmp_lake_metadata.csv")
+metadata
+```
+
+The lakes included in this example have ID's LID11133 and LID40102. We will 
+filter the metadata to examine these two lakes.
+
+```{r}
+#| label: lernzmp-metadata-filter
+
+metadata <- metadata |> 
+  dplyr::filter(aeme_file %in% c("LID11133", "LID40102"))
+metadata
+```
+
+These are lakes Rotorua (LID11133) and Rotoma (LID40102), respectively.
+
+# Build AEME models
+
+We will now build AEME models for these two lakes using the LERNZmp model 
+output. We will first load the AEME object from the ".rds" files.
+
+The AEME object contains the lake metadata, model output, and model controls.
+More details can be found `vignette("intro-aeme")`.
+
+```{r}
+#| label: lernzmp-load-aeme
+aeme <- readRDS("lernzmp/LID11133.rds")
+aeme
+```
+
+
+
+```{r}
+#| label: lernzmp-build-aeme
+
+model <- c("glm_aed", "gotm_wet")
+path <- "aeme" # directory in which the model configuration will be built
+
+aeme <- build_aeme(aeme = aeme, model = model, path = path,
+                    use_aeme = TRUE, use_bgc = TRUE)
+```
+
+```{r}
+#| label: lernzmp-aeme-list-files
+
+list.files("aeme", recursive = TRUE)
+```
+
+```{r}
+#| label: lernzmp-run-aeme
+aeme <- run_aeme(aeme = aeme, model = model, path = path)
+
+plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
+```
+
+```{r}
+#| label: lernzmp-plot-oxygen
+plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
+```
+
+
