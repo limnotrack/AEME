@@ -557,6 +557,10 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
   names(vars_list) <- key_naming$name[key_naming[[model]] %in% var_names]
   nc_list <- c(nc_list, vars_list)
 
+  if ("PHY_tchla" %in% names(nc_list)) {
+    nc_list$PHY_rstchla <- nc_list$PHY_tchla[nrow(nc_list$PHY_tchla), ]
+  }
+
   # Calculate lakeAnalyzer values
   if (lake_analyzer) {
 
