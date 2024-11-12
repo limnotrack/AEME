@@ -55,7 +55,7 @@ lernzmp file name.
 ```{r}
 #| label: lernzmp-metadata
 metadata <- read.csv("lernzmp/LERNZmp_lake_metadata.csv")
-metadata
+head(metadata)
 ```
 
 The lakes included in this example have ID's LID11133 and LID40102. We will 
@@ -76,21 +76,33 @@ These are lakes Rotorua (LID11133) and Rotoma (LID40102), respectively.
 We will now build AEME models for these two lakes using the LERNZmp model 
 output. We will first load the AEME object from the ".rds" files.
 
-The AEME object contains the lake metadata, model output, and model controls.
-More details can be found `vignette("intro-aeme")`.
+The `Aeme` object contains the lake metadata, model output, and model controls.
+More details can be found `vignette("intro-aeme")`. It is an S4 object of the
+class `Aeme`.
 
 ```{r}
 #| label: lernzmp-load-aeme
 aeme <- readRDS("lernzmp/LID11133.rds")
+class(aeme)
+```
+
+It can be printed to the console to see the contents of the object.
+
+```{r}
+#| label: lernzmp-print-aeme
 aeme
 ```
 
-
+This allows for quick inspection of all the different slots within the `Aeme`
+object. The lake section has the lake metadata, the time section has the start, 
+stop and spin-up dates, the configuration section has the model configuration 
+which allows for the building of the AEME models locally.
 
 ```{r}
 #| label: lernzmp-build-aeme
+#| echo: false
 
-model <- c("glm_aed", "gotm_wet")
+model <- c("glm_aed", "gotm_wet") # models to build
 path <- "aeme" # directory in which the model configuration will be built
 
 aeme <- build_aeme(aeme = aeme, model = model, path = path,
@@ -103,12 +115,27 @@ aeme <- build_aeme(aeme = aeme, model = model, path = path,
 list.files("aeme", recursive = TRUE)
 ```
 
+# Run AEME models
+
+We will now run the AEME models for the two lakes. This will run the models
+with the configurations built in the `path` directory. The `parallel` argument
+is set to `TRUE` to run the models in parallel which can speed up the process.
+
 ```{r}
 #| label: lernzmp-run-aeme
-aeme <- run_aeme(aeme = aeme, model = model, path = path)
+aeme <- run_aeme(aeme = aeme, model = model, path = path, parallel = TRUE)
+aeme
+```
 
+In the "Output" section of the `Aeme` object, the "Number of ensembles" is set to
+1 indicating that there is now output for each model in the `Aeme` object.
+
+
+```{r}
+#| label: lernzmp-plot-temperature
 plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 ```
+
 
 ```{r}
 #| label: lernzmp-plot-oxygen
