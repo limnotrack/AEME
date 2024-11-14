@@ -14,9 +14,6 @@ file.copy(list.files(lernzmp_exam, full.names = TRUE), "lernzmp")
 
 ```
 
-```{r setup}
-library(AEME)
-```
 
 # Introduction
 
@@ -58,6 +55,14 @@ metadata <- read.csv("lernzmp/LERNZmp_lake_metadata.csv")
 head(metadata)
 ```
 
+## RDS files
+
+RDS files are binary files that store R objects, such as data sets, and are a 
+native format for R. RDS files preserve data types and classes and are generally
+smaller than their text file counterparts. The AEME objects are an S4 object of the
+class `Aeme`. This object class an store model configuration, inputs and outputs
+and allows for the easy transfer of a lake model setup.
+
 The lakes included in this example have ID's LID11133 and LID40102. We will 
 filter the metadata to examine these two lakes.
 
@@ -79,6 +84,25 @@ output. We will first load the AEME object from the ".rds" files.
 The `Aeme` object contains the lake metadata, model output, and model controls.
 More details can be found `vignette("intro-aeme")`. It is an S4 object of the
 class `Aeme`.
+
+First, make sure to install the `AEME` package.
+
+```{r}
+#| label: lernzmp-install-aeme
+#| echo: FALSE
+
+# install.packages("pak")
+pak::pak("limnotrack/AEME")
+
+```
+
+Once installed, load the `AEME` package.
+
+```{r setup}
+library(AEME)
+```
+
+Now, we will load the AEME object for Lake Rotorua (LID11133).
 
 ```{r}
 #| label: lernzmp-load-aeme
