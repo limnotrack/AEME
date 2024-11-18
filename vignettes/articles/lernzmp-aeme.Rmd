@@ -90,6 +90,7 @@ First, make sure to install the `AEME` package.
 ```{r}
 #| label: lernzmp-install-aeme
 #| echo: FALSE
+#| eval: FALSE
 
 # install.packages("pak")
 pak::pak("limnotrack/AEME")
