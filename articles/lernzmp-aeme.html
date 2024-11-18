@@ -8,8 +8,8 @@
 <title>Using LERNZmp with AEME • AEME</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Using LERNZmp with AEME">
 </head>
 <body>
@@ -151,171 +151,8 @@ output, and model controls. More details can be found
 <code><a href="../articles/intro-aeme.html">vignette("intro-aeme")</a></code>. It is an S4 object of the class
 <code>Aeme</code>.</p>
 <p>First, make sure to install the <code>AEME</code> package.</p>
-<pre><code><span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading metadata database</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading metadata database ... done</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Will <span style="font-style: italic;">install</span> 49 packages.</span></span>
-<span><span class="co">#&gt; → Will <span style="font-style: italic;">update</span> 1 package.</span></span>
-<span><span class="co">#&gt; → Will <span style="font-style: italic;">download</span> 49 CRAN packages (119.38 MB), cached: 1 (0 B).</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">AEME</span>          0.1.0 → 0.1.0    [bld][cmp] (GitHub: 147a74a)</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">classInt</span>              0.4-10   [cmp][dl] <span style="color: #555555;">(505.04 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">cli</span>                   3.6.3    [cmp][dl] <span style="color: #555555;">(1.36 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">colorspace</span>            2.1-1    [cmp][dl] <span style="color: #555555;">(2.67 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">DBI</span>                   1.2.3    [dl] <span style="color: #555555;">(937.78 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">dplyr</span>                 1.1.4    [cmp][dl] <span style="color: #555555;">(1.58 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">e1071</span>                 1.7-16   [cmp][dl] <span style="color: #555555;">(671.93 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">fansi</span>                 1.0.6    [cmp][dl] <span style="color: #555555;">(322.97 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">farver</span>                2.1.2    [cmp][dl] <span style="color: #555555;">(1.52 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">generics</span>              0.1.3    [dl] <span style="color: #555555;">(83.69 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">ggplot2</span>               3.5.1    [dl] <span style="color: #555555;">(5.01 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">glue</span>                  1.8.0    [cmp][dl] <span style="color: #555555;">(183.78 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">gtable</span>                0.3.6    [dl] <span style="color: #555555;">(249.79 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">isoband</span>               0.2.7    [cmp][dl] <span style="color: #555555;">(1.93 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">labeling</span>              0.4.3    [dl] <span style="color: #555555;">(63.36 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">lifecycle</span>             1.0.4    [dl] <span style="color: #555555;">(140.93 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">lubridate</span>             1.9.3    [cmp][dl] <span style="color: #555555;">(987.20 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">lwgeom</span>                0.2-14   [cmp][dl] <span style="color: #555555;">(10.95 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">magrittr</span>              2.0.3    [cmp][dl] <span style="color: #555555;">(229.42 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">munsell</span>               0.5.1    [dl] <span style="color: #555555;">(244.68 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">ncdf4</span>                 1.23     [cmp][dl] <span style="color: #555555;">(7.29 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">patchwork</span>             1.3.0    [dl] <span style="color: #555555;">(3.35 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">pillar</span>                1.9.0    [dl] <span style="color: #555555;">(663.33 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">pkgconfig</span>             2.0.3    [dl] <span style="color: #555555;">(22.81 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">plyr</span>                  1.8.9    [cmp][dl] <span style="color: #555555;">(1.11 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">proxy</span>                 0.4-27   [cmp][dl] <span style="color: #555555;">(181.19 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">psychrolib</span>            2.5.2    [cmp][dl] <span style="color: #555555;">(487.49 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">purrr</span>                 1.0.2    [cmp][dl] <span style="color: #555555;">(510.64 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">R6</span>                    2.5.1    [dl] <span style="color: #555555;">(84.98 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">RColorBrewer</span>          1.1-3    [dl] <span style="color: #555555;">(54.47 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">Rcpp</span>                  1.0.13-1 [cmp][dl] <span style="color: #555555;">(2.90 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">rLakeAnalyzer</span>         1.11.4.1 [dl] <span style="color: #555555;">(605.05 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">rlang</span>                 1.1.4    [cmp][dl] <span style="color: #555555;">(1.62 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">s2</span>                    1.1.7    [cmp][dl] <span style="color: #555555;">(4.09 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">scales</span>                1.3.0    [cmp][dl] <span style="color: #555555;">(714.75 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">sf</span>                    1.0-19   [cmp][dl] <span style="color: #555555;">(40.98 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">stringi</span>               1.8.4    [cmp][dl] <span style="color: #555555;">(15.03 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">stringr</span>               1.5.1    [dl] <span style="color: #555555;">(323.42 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">tibble</span>                3.2.1    [cmp][dl] <span style="color: #555555;">(695.05 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">tidyr</span>                 1.3.1    [cmp][dl] <span style="color: #555555;">(1.27 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">tidyselect</span>            1.2.1    [cmp][dl] <span style="color: #555555;">(228.15 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">timechange</span>            0.3.0    [cmp][dl] <span style="color: #555555;">(514.48 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">units</span>                 0.8-5    [cmp][dl] <span style="color: #555555;">(784.55 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">utf8</span>                  1.2.4    [cmp][dl] <span style="color: #555555;">(150.80 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">vctrs</span>                 0.6.5    [cmp][dl] <span style="color: #555555;">(1.36 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">viridisLite</span>           0.4.2    [dl] <span style="color: #555555;">(1.30 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">withr</span>                 3.0.2    [dl] <span style="color: #555555;">(231.37 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">wk</span>                    0.9.4    [cmp][dl] <span style="color: #555555;">(2.05 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">yaml</span>                  2.3.10   [cmp][dl] <span style="color: #555555;">(119.45 kB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">+ </span><span style="color: #0000BB;">zoo</span>                   1.8-12   [cmp][dl] <span style="color: #555555;">(1.03 MB)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Getting 49 pkgs (119.38 MB), 1 cached</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">cli</span> 3.6.3 (i386+x86_64-w64-mingw32) (1.36 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">DBI</span> 1.2.3 (i386+x86_64-w64-mingw32) (941.47 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">dplyr</span> 1.1.4 (i386+x86_64-w64-mingw32) (1.59 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">e1071</span> 1.7-16 (i386+x86_64-w64-mingw32) (672.44 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">magrittr</span> 2.0.3 (i386+x86_64-w64-mingw32) (229.11 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">munsell</span> 0.5.1 (i386+x86_64-w64-mingw32) (246.01 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">plyr</span> 1.8.9 (i386+x86_64-w64-mingw32) (1.11 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">classInt</span> 0.4-10 (i386+x86_64-w64-mingw32) (504.95 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">colorspace</span> 2.1-1 (i386+x86_64-w64-mingw32) (2.67 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">psychrolib</span> 2.5.2 (i386+x86_64-w64-mingw32) (487.46 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">Rcpp</span> 1.0.13-1 (i386+x86_64-w64-mingw32) (2.88 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">rLakeAnalyzer</span> 1.11.4.1 (i386+x86_64-w64-mingw32) (606.16 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">rlang</span> 1.1.4 (i386+x86_64-w64-mingw32) (1.62 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">yaml</span> 2.3.10 (i386+x86_64-w64-mingw32) (117.04 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">stringr</span> 1.5.1 (i386+x86_64-w64-mingw32) (324.14 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">tibble</span> 3.2.1 (i386+x86_64-w64-mingw32) (695.40 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">tidyr</span> 1.3.1 (i386+x86_64-w64-mingw32) (1.27 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">pillar</span> 1.9.0 (i386+x86_64-w64-mingw32) (663.49 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">pkgconfig</span> 2.0.3 (i386+x86_64-w64-mingw32) (23.00 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">lubridate</span> 1.9.3 (i386+x86_64-w64-mingw32) (989.98 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">patchwork</span> 1.3.0 (i386+x86_64-w64-mingw32) (3.35 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">isoband</span> 0.2.7 (i386+x86_64-w64-mingw32) (1.93 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">gtable</span> 0.3.6 (i386+x86_64-w64-mingw32) (250.32 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">ncdf4</span> 1.23 (i386+x86_64-w64-mingw32) (7.28 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">vctrs</span> 0.6.5 (i386+x86_64-w64-mingw32) (1.34 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">viridisLite</span> 0.4.2 (i386+x86_64-w64-mingw32) (1.30 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">withr</span> 3.0.2 (i386+x86_64-w64-mingw32) (232.10 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">lifecycle</span> 1.0.4 (i386+x86_64-w64-mingw32) (141.91 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">proxy</span> 0.4-27 (i386+x86_64-w64-mingw32) (180.54 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">zoo</span> 1.8-12 (i386+x86_64-w64-mingw32) (1.03 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">fansi</span> 1.0.6 (i386+x86_64-w64-mingw32) (320.43 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">utf8</span> 1.2.4 (i386+x86_64-w64-mingw32) (149.20 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">purrr</span> 1.0.2 (i386+x86_64-w64-mingw32) (510.98 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">R6</span> 2.5.1 (i386+x86_64-w64-mingw32) (85.25 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">RColorBrewer</span> 1.1-3 (i386+x86_64-w64-mingw32) (54.57 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">timechange</span> 0.3.0 (i386+x86_64-w64-mingw32) (507.15 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">units</span> 0.8-5 (i386+x86_64-w64-mingw32) (783.33 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">wk</span> 0.9.4 (i386+x86_64-w64-mingw32) (2.04 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">glue</span> 1.8.0 (i386+x86_64-w64-mingw32) (183.12 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">tidyselect</span> 1.2.1 (i386+x86_64-w64-mingw32) (229.99 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">AEME</span> 0.1.0 (source) (27.95 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">stringi</span> 1.8.4 (i386+x86_64-w64-mingw32) (15.01 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">labeling</span> 0.4.3 (i386+x86_64-w64-mingw32) (63.85 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">farver</span> 2.1.2 (i386+x86_64-w64-mingw32) (1.51 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">generics</span> 0.1.3 (i386+x86_64-w64-mingw32) (83.89 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">scales</span> 1.3.0 (i386+x86_64-w64-mingw32) (721.01 kB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">ggplot2</span> 3.5.1 (i386+x86_64-w64-mingw32) (5.02 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">s2</span> 1.1.7 (i386+x86_64-w64-mingw32) (4.07 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">lwgeom</span> 0.2-14 (i386+x86_64-w64-mingw32) (10.95 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Got <span style="color: #0000BB;">sf</span> 1.0-19 (i386+x86_64-w64-mingw32) (40.08 MB)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">classInt</span> 0.4-10  <span style="color: #9E9E9E;">(133ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">DBI</span> 1.2.3  <span style="color: #9E9E9E;">(204ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">cli</span> 3.6.3  <span style="color: #9E9E9E;">(309ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">dplyr</span> 1.1.4  <span style="color: #9E9E9E;">(266ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">colorspace</span> 2.1-1  <span style="color: #9E9E9E;">(425ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">e1071</span> 1.7-16  <span style="color: #9E9E9E;">(230ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">fansi</span> 1.0.6  <span style="color: #9E9E9E;">(216ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">farver</span> 2.1.2  <span style="color: #9E9E9E;">(231ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">generics</span> 0.1.3  <span style="color: #9E9E9E;">(234ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">ggplot2</span> 3.5.1  <span style="color: #9E9E9E;">(326ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">glue</span> 1.8.0  <span style="color: #9E9E9E;">(318ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">gtable</span> 0.3.6  <span style="color: #9E9E9E;">(293ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">isoband</span> 0.2.7  <span style="color: #9E9E9E;">(209ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">labeling</span> 0.4.3  <span style="color: #9E9E9E;">(302ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">lifecycle</span> 1.0.4  <span style="color: #9E9E9E;">(310ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">lubridate</span> 1.9.3  <span style="color: #9E9E9E;">(340ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">magrittr</span> 2.0.3  <span style="color: #9E9E9E;">(206ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">munsell</span> 0.5.1  <span style="color: #9E9E9E;">(199ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">ncdf4</span> 1.23  <span style="color: #9E9E9E;">(230ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">patchwork</span> 1.3.0  <span style="color: #9E9E9E;">(235ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">pillar</span> 1.9.0  <span style="color: #9E9E9E;">(217ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">lwgeom</span> 0.2-14  <span style="color: #9E9E9E;">(733ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">pkgconfig</span> 2.0.3  <span style="color: #9E9E9E;">(221ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">plyr</span> 1.8.9  <span style="color: #9E9E9E;">(205ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">proxy</span> 0.4-27  <span style="color: #9E9E9E;">(217ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">psychrolib</span> 2.5.2  <span style="color: #9E9E9E;">(263ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">purrr</span> 1.0.2  <span style="color: #9E9E9E;">(267ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">R6</span> 2.5.1  <span style="color: #9E9E9E;">(278ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">RColorBrewer</span> 1.1-3  <span style="color: #9E9E9E;">(247ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">rLakeAnalyzer</span> 1.11.4.1  <span style="color: #9E9E9E;">(193ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">rlang</span> 1.1.4  <span style="color: #9E9E9E;">(218ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">s2</span> 1.1.7  <span style="color: #9E9E9E;">(374ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">scales</span> 1.3.0  <span style="color: #9E9E9E;">(380ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">stringr</span> 1.5.1  <span style="color: #9E9E9E;">(173ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">stringi</span> 1.8.4  <span style="color: #9E9E9E;">(375ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">tibble</span> 3.2.1  <span style="color: #9E9E9E;">(188ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">tidyr</span> 1.3.1  <span style="color: #9E9E9E;">(194ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">tidyselect</span> 1.2.1  <span style="color: #9E9E9E;">(169ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">Rcpp</span> 1.0.13-1  <span style="color: #9E9E9E;">(1.4s)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">timechange</span> 0.3.0  <span style="color: #9E9E9E;">(203ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">units</span> 0.8-5  <span style="color: #9E9E9E;">(203ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">utf8</span> 1.2.4  <span style="color: #9E9E9E;">(241ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">vctrs</span> 0.6.5  <span style="color: #9E9E9E;">(243ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">viridisLite</span> 0.4.2  <span style="color: #9E9E9E;">(189ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">withr</span> 3.0.2  <span style="color: #9E9E9E;">(303ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">sf</span> 1.0-19  <span style="color: #9E9E9E;">(2s)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">wk</span> 0.9.4  <span style="color: #9E9E9E;">(640ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">yaml</span> 2.3.10  <span style="color: #9E9E9E;">(502ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">zoo</span> 1.8-12  <span style="color: #9E9E9E;">(482ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Packaging <span style="color: #0000BB;">AEME</span> 0.1.0</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Packaged <span style="color: #0000BB;">AEME</span> 0.1.0 <span style="color: #9E9E9E;">(33.6s)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building <span style="color: #0000BB;">AEME</span> 0.1.0</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Built <span style="color: #0000BB;">AEME</span> 0.1.0 <span style="color: #9E9E9E;">(15.6s)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Installed <span style="color: #0000BB;">AEME</span> 0.1.0 (github::limnotrack/AEME@147a74a) <span style="color: #9E9E9E;">(455ms)</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> 1 pkg + 56 deps: kept 7, upd 1, added 49, dld 50 (NA B) <span style="color: #B2B2B2;">[1m 10.1s]</span></span></span></code></pre>
 <p>Once installed, load the <code>AEME</code> package.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://limnotrack.github.io/AEME/">AEME</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'AEME'</span></span>
@@ -323,7 +160,7 @@ output, and model controls. More details can be found
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     time</span></span></code></pre></div>
 <p>Now, we will load the AEME object for Lake Rotorua (LID11133).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"lernzmp/LID11133.rds"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Aeme"</span></span>
@@ -331,7 +168,7 @@ output, and model controls. More details can be found
 <span><span class="co">#&gt; [1] "AEME"</span></span></code></pre></div>
 <p>It can be printed to the console to see the contents of the
 object.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
@@ -379,8 +216,8 @@ the <code>Aeme</code> object. The lake section has the lake metadata,
 the time section has the start, stop and spin-up dates, the
 configuration section has the model configuration which allows for the
 building of the AEME models locally.</p>
-<pre><code><span><span class="co">#&gt; Building simulation for Rotorua [2024-11-14 10:34:20]</span></span>
-<span><span class="co">#&gt; Building existing configuration for Rotorua [2024-11-14 10:34:20]</span></span>
+<pre><code><span><span class="co">#&gt; Building simulation for Rotorua [2024-11-18 03:52:29]</span></span>
+<span><span class="co">#&gt; Building existing configuration for Rotorua [2024-11-18 03:52:29]</span></span>
 <span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy, NIT_don, NIT_pon, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, NCS_ss1</span></span>
 <span><span class="co">#&gt; Added default values for missing variables.</span></span>
 <span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy, NIT_don, NIT_pon, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, NCS_ss1</span></span>
@@ -439,7 +276,7 @@ building of the AEME models locally.</p>
 <span><span class="co">#&gt; instances/diatoms/initialization/sNW 0.038 replaced with 0.038</span></span>
 <span><span class="co">#&gt; instances/diatoms/initialization/sPW 0.0024 replaced with 0.0024</span></span>
 <span><span class="co">#&gt; instances/abiotic_water/initialization/sDIMW 3 replaced with 3</span></span></code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"aeme"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "LID11133_rotorua/glm_aed/aed2/aed2.nml"                  </span></span>
 <span><span class="co">#&gt;  [2] "LID11133_rotorua/glm_aed/aed2/aed2_phyto_pars.nml"       </span></span>
@@ -500,12 +337,12 @@ building of the AEME models locally.</p>
 models with the configurations built in the <code>path</code> directory.
 The <code>parallel</code> argument is set to <code>TRUE</code> to run
 the models in parallel which can speed up the process.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models in parallel... [2024-11-14 10:34:57]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-11-14 10:36:36]</span></span>
-<span><span class="co">#&gt; Reading models in parallel... [2024-11-14 10:36:36]</span></span>
-<span><span class="co">#&gt; Model reading complete![2024-11-14 10:37:07]</span></span>
+<span><span class="co">#&gt; Running models in parallel... [2024-11-18 03:53:04]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-11-18 03:54:51]</span></span>
+<span><span class="co">#&gt; Reading models in parallel... [2024-11-18 03:54:51]</span></span>
+<span><span class="co">#&gt; Model reading complete![2024-11-18 03:55:22]</span></span>
 <span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
@@ -551,12 +388,12 @@ the models in parallel which can speed up the process.</p>
 <p>In the “Output” section of the <code>Aeme</code> object, the “Number
 of ensembles” is set to 1 indicating that there is now output for each
 model in the <code>Aeme</code> object.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 332 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="lernzmp-aeme_files/figure-html/lernzmp-plot-temperature-1.png" width="700"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"CHM_oxy"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 332 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
