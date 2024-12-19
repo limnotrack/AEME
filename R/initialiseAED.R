@@ -8,7 +8,7 @@
 #'
 #' @importFrom dplyr filter pull
 
-initialiseAED <- function(model_controls, path_aed) {
+initialiseAED <- function(model_controls, path_aed, print = TRUE) {
 
   this_ctrls <-  model_controls |>
     dplyr::filter(simulate,
@@ -71,12 +71,16 @@ initialiseAED <- function(model_controls, path_aed) {
                                                       vals.init), collapse=","))
 
 
-      message(paste0(this.name, " ", paste0(vals.init[this.col],
+      if (print) {
+        message(paste0(this.name, " ", paste0(vals.init[this.col],
                                             " replaced with ", init.new)))
+      }
       # Zooplankton initialisation
     } else if (grepl("ZOO_", this.name)) {
 
-      message("Using default zooplankton initialisation")
+      if (print) {
+        message("Using default zooplankton initialisation")
+      }
 
       # this.zoo <- gsub("^.*_", "", this_ctrls$var_aeme[i])
       # this.col <- which(zoo.groups == gsub("ZOO_","", this.name))
@@ -110,7 +114,9 @@ initialiseAED <- function(model_controls, path_aed) {
 
       # skip if not found
       if (length(this.line) == 0) {
-        message(paste0(nm.init, " not found"))
+        if (print) {
+          message(paste0(nm.init, " not found"))
+        }
         next
       }
 
@@ -131,7 +137,9 @@ initialiseAED <- function(model_controls, path_aed) {
       aed_nml[this.line] <- paste0(strsplit(aed_nml[this.line],
                                             " = ")[[1]][1], " = ", val.new)
 
-      message(paste0(og, " replaced with ", val.new))
+      if (print) {
+        message(paste0(og, " replaced with ", val.new))
+      }
 
     }
   }

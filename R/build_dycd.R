@@ -28,9 +28,11 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
                        inf, outf, met, hyps, lvl, lake_dir,
                        inf_factor = 1.0, outf_factor = 1.0,
                        Kw, init_prof, init_depth, use_bgc, use_lw,
-                       overwrite_cfg = TRUE) {
+                       overwrite_cfg = TRUE, print = TRUE) {
 
-  message(paste0("Building DYRESM-CAEDYM for lake ", lakename))
+  if (print) {
+    message(paste0("Building DYRESM-CAEDYM for lake ", lakename))
+  }
 
   #------- MODEL FOLDERS SETUP --------
   verDY <- 3.1
@@ -59,7 +61,9 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
     fils <- list.files(config_dir, full.names = TRUE)
     file.copy(fils, file.path(path.dy, basename(fils)))
     overwrite_cfg <- TRUE
-    message("Copied in DYRESM par file")
+    if (print) {
+      message("Copied in DYRESM par file")
+    }
   }
 
   # make the batch file to run the model
@@ -77,7 +81,9 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
     rename_modelvars(type_output = "dy_cd")
 
   if (overwrite_cfg | !file.exists(cfg_file)) {
-    message("Writing DYRESM configuration")
+    if (print) {
+      message("Writing DYRESM configuration")
+    }
     # make the .cfg file
     make_DYCDcfg(lakename = lakename,
                  date_range = date_range,
@@ -91,7 +97,9 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
   }
 
   if (overwrite_cfg | !file.exists(con_file)) {
-    message("Writing DYRESM control file")
+    if (print) {
+      message("Writing DYRESM control file")
+    }
     # make the .con file
     make_DYCDcon(lakename = lakename,
                  verCD = verCD,

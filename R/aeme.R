@@ -137,6 +137,7 @@ setClass("Aeme",
 #' @param water_balance List representing water balance information.
 #' @param output List representing output information.
 #' @param parameters Dataframe containing model parameters.
+#' @param print Logical; print messages. Default is TRUE.
 #' @return An instance of the Aeme class.
 #'
 #' @importFrom sf st_area sf_use_s2
@@ -148,7 +149,7 @@ setClass("Aeme",
 
 aeme_constructor <- function(
     lake, time, configuration, observations,
-    input, inflows, outflows, water_balance, output, parameters
+    input, inflows, outflows, water_balance, output, parameters, print = TRUE
 ) {
 
   # Set timezone temporarily to UTC
@@ -286,11 +287,15 @@ aeme_constructor <- function(
     stop("Lake shape or area must be provided.")
   }
   if (is(lake$shape, "sf") & is.null(lake$area)) {
-    message("Calculating lake area from lake shape.")
+    if (print) {
+      message("Calculating lake area from lake shape.")
+    }
     suppressMessages(sf::sf_use_s2(FALSE))
     lake$area <- sf::st_area(lake$shape) |>
       units::drop_units()
-    message(paste0("   ", round(lake$area, 2), " m2"))
+    if (print) {
+      message(paste0("   ", round(lake$area, 2), " m2"))
+    }
     suppressMessages(sf::sf_use_s2(TRUE))
   }
   if (!is.null(lake$shape) & !is.null(lake$area)) {
@@ -351,7 +356,9 @@ aeme_constructor <- function(
     stop("Time stop must be greater than time start.")
   }
   if (is.null(time$time_step)) {
-    message(strwrap("Time step missing.\nSetting time step to 3600 seconds."))
+    if (print) {
+      message(strwrap("Time step missing.\nSetting time step to 3600 seconds."))
+    }
     time$time_step <- 3600
   }
   if (!is.numeric(time$time_step)) {
@@ -359,8 +366,10 @@ aeme_constructor <- function(
   }
   if (!is.list(time$spin_up)) {
     if (is.null(time$spin_up)) {
-      message(strwrap("Spin up for models missing.\nSetting spin up to 2 for
+      if (print) {
+        message(strwrap("Spin up for models missing.\nSetting spin up to 2 for
                       all models."))
+      }
       time$spin_up <- list(
         dy_cd = 2,
         glm_aed = 2,
@@ -447,8 +456,10 @@ aeme_constructor <- function(
     } else {
       if (!is.POSIXct(input$meteo$Date) &
           !lubridate::is.Date(input$meteo$Date)) {
-        message(strwrap("Input meteo datetime is not in POSIXct/Date format.
+        if (print) {
+          message(strwrap("Input meteo datetime is not in POSIXct/Date format.
                         Converting to 'Date' format."))
+        }
         input$meteo$Date <- as.Date(input$meteo$Date)
         if (any(is.na(input$meteo$Date))) {
           stop(strwrap("NA's introduced when coercing to Date object. Input
@@ -459,7 +470,9 @@ aeme_constructor <- function(
   }
   if (!is.logical(input$use_lw)) {
     if (is.null(input$use_lw)) {
-      message(strwrap("Use longwave missing.\nSetting use longwave to TRUE."))
+      if (print) {
+        message(strwrap("Use longwave missing.\nSetting use longwave to TRUE."))
+      }
       input$use_lw <- TRUE
     } else {
       stop("Input use longwave must be logical.")

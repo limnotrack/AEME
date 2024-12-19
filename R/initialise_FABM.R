@@ -10,17 +10,17 @@
 #' @noRd
 #'
 
-initialise_FABM <- function(path_gotm, model_controls) {
+initialise_FABM <- function(path_gotm, model_controls, print = TRUE) {
 
   fabm <- yaml::read_yaml(file.path(path_gotm, "fabm.yaml"))
 
   this_ctrls <- model_controls |>
     dplyr::filter(simulate,
                   !var_aeme %in% c("DateTime","HYD_flow","HYD_temp","HYD_dens",
-                               "RAD_par","RAD_extc","RAD_secchi",
-                               "CHM_salt",
-                               "PHS_pip", "NIT_pin",
-                               "PHS_tp","NIT_tn","PHY_tchla")
+                                   "RAD_par","RAD_extc","RAD_secchi",
+                                   "CHM_salt",
+                                   "PHS_pip", "NIT_pin",
+                                   "PHS_tp","NIT_tn","PHY_tchla")
     )
 
   nme_chk <- rename_modelvars(input = this_ctrls$var_aeme,
@@ -51,18 +51,24 @@ initialise_FABM <- function(path_gotm, model_controls) {
       sPW <- signif(sDW * (1 / 106), 2)
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sDW"]]
-      message(paste0(paste0(key[1:3], collapse = "/"), "/sDW ",
-                     paste0(old_val, " replaced with ", sDW)))
+      if (print) {
+        message(paste0(paste0(key[1:3], collapse = "/"), "/sDW ",
+                       paste0(old_val, " replaced with ", sDW)))
+      }
       fabm[[key[1]]][[key[2]]][[key[3]]][["sDW"]] <- sDW
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sNW"]]
-      message(paste0(paste0(key[1:3], collapse = "/"), "/sNW ",
-                     paste0(old_val, " replaced with ", sNW)))
+      if (print) {
+        message(paste0(paste0(key[1:3], collapse = "/"), "/sNW ",
+                       paste0(old_val, " replaced with ", sNW)))
+      }
       fabm[[key[1]]][[key[2]]][[key[3]]][["sNW"]] <- sNW
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sPW"]]
-      message(paste0(paste0(key[1:3], collapse = "/"), "/sPW ",
-                     paste0(old_val, " replaced with ", sPW)))
+      if (print) {
+        message(paste0(paste0(key[1:3], collapse = "/"), "/sPW ",
+                       paste0(old_val, " replaced with ", sPW)))
+      }
       fabm[[key[1]]][[key[2]]][[key[3]]][["sPW"]] <- sPW
 
     } else if (key[2] %in% c("cladocerans")) {
@@ -73,18 +79,24 @@ initialise_FABM <- function(path_gotm, model_controls) {
       sP <- cPDZooRef * sD
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sD"]]
-      message(paste0(paste0(key[1:3], collapse = "/"), "/sD ",
-                     paste0(old_val, " replaced with ", sD)))
+      if (print) {
+        message(paste0(paste0(key[1:3], collapse = "/"), "/sD ",
+                       paste0(old_val, " replaced with ", sD)))
+      }
       fabm[[key[1]]][[key[2]]][[key[3]]][["sD"]] <- sD
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sN"]]
-      message(paste0(paste0(key[1:3], collapse = "/"), "/sN ",
-                     paste0(old_val, " replaced with ", sN)))
+      if (print) {
+        message(paste0(paste0(key[1:3], collapse = "/"), "/sN ",
+                       paste0(old_val, " replaced with ", sN)))
+      }
       fabm[[key[1]]][[key[2]]][[key[3]]][["sN"]] <- sN
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sP"]]
-      message(paste0(paste0(key[1:3], collapse = "/"), "/sP ",
-                     paste0(old_val, " replaced with ", sP)))
+      if (print) {
+        message(paste0(paste0(key[1:3], collapse = "/"), "/sP ",
+                       paste0(old_val, " replaced with ", sP)))
+      }
       fabm[[key[1]]][[key[2]]][[key[3]]][["sP"]] <- sP
     } else {
       if (length(key) == 4) {
@@ -92,8 +104,10 @@ initialise_FABM <- function(path_gotm, model_controls) {
         new_val <- this_ctrls$initial_wc[i]
         fabm[[key[1]]][[key[2]]][[key[3]]][[key[4]]] <- this_ctrls$initial_wc[i]
       }
-      message(paste0(params[i], " ", paste0(old_val,
-                                            " replaced with ", new_val)))
+      if (print) {
+        message(paste0(params[i], " ", paste0(old_val,
+                                              " replaced with ", new_val)))
+      }
     }
   }
 

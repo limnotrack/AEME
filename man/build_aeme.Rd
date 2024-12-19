@@ -13,6 +13,7 @@ build_aeme(
   outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   ext_elev = 0,
   use_bgc = FALSE,
+  print = TRUE,
   calc_wbal = TRUE,
   calc_wlev = TRUE,
   use_aeme = FALSE,
@@ -42,6 +43,8 @@ outflows. Needs to be named according to the model.}
 \item{ext_elev}{numeric; metres to extend the hypograph by.}
 
 \item{use_bgc}{logical; switch to use the biogeochemical model.}
+
+\item{print}{logical; print messages. Default = TRUE.}
 
 \item{calc_wbal}{logical; calculate water balance. Default = TRUE.}
 

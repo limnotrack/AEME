@@ -41,7 +41,8 @@
 calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
                                outf = NULL, level = NULL, obs_lake = NULL,
                                obs_met, elevation,
-                               print_plots = FALSE, coeffs = NULL) {
+                               print_plots = FALSE, coeffs = NULL,
+                               print = TRUE) {
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
@@ -61,7 +62,9 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     #   stop("No observations of lake level provided")
     # }
     if (!is.null(level)) {
-      message("Using observed water level")
+      if (print) {
+        message("Using observed water level")
+      }
       # placeholder.. add optimised sin model here..!
       ampl <- ((quantile(level$value, 0.9) -
                   quantile(level$value, 0.1)) / 2) |>
@@ -82,17 +85,23 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       }
 
       if (all(!is.na(mod.lvl$value))) {
-        message(strwrap("No missing values in observed water level.
+        if (print) {
+          message(strwrap("No missing values in observed water level.
                       Using observed water level"))
+        }
       } else {
-        message("Missing values in observed water level")
+        if (print) {
+          message("Missing values in observed water level")
+        }
         # Number of observations
         n_lvl <- sum(!is.na(mod.lvl$value))
 
         # If there are greater than or equal to 9 observations, use the
         # optimisation function
         if (n_lvl >= 9) {
-          message("Using optimisation function")
+          if (print) {
+            message("Using optimisation function")
+          }
           # Initial parameter values
           initial_parameters <- c(ampl = ampl, offset = offset)
           # optim_lvl_params(initial_parameters, mod.lvl = mod.lvl, surf = surf)
@@ -106,7 +115,9 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
           offset <- optimized_parameters$par["offset"]
         } else {
           # Use constant water level
-          message("Using constant water level")
+          if (print) {
+            message("Using constant water level")
+          }
           ampl <- 0
           offset <- 0
         }
@@ -121,7 +132,9 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       }
     } else {
       # Use constant water level
-      message("No water level present. Using constant water level.")
+      if (print) {
+        message("No water level present. Using constant water level.")
+      }
       ampl <- 0
       offset <- 0
       # Calculate the modelled water level
@@ -175,14 +188,18 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     }
   } else {
     if (!is.null(coeffs)) {
-      message("Estimating temperature using supplied coefficients...")
+      if (print) {
+        message("Estimating temperature using supplied coefficients...")
+      }
       evap$value <- coeffs[1] + coeffs[2] * evap$T5avg #
     }
   }
 
   # if less than 10 measurements
   if (sum(!is.na(evap[["value"]])) < 10 & is.null(coeffs)) {
-    message("Estimating temperature using Stefan & Preud'homme (2007)...")
+    if (print) {
+      message("Estimating temperature using Stefan & Preud'homme (2007)...")
+    }
     coeffs <- c(5, 0.75)
     evap$value <- coeffs[1] + coeffs[2] * evap$T5avg # (Stefan & Preud'homme, 2007) www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
   } else {
