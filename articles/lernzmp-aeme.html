@@ -129,6 +129,8 @@ We will filter the metadata to examine these two lakes.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="va">metadata</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">aeme_file</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LID11133"</span>, <span class="st">"LID40102"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
+<span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span>
 <span><span class="va">metadata</span></span>
 <span><span class="co">#&gt;          ID    Name    Area        Region Geomorphic.type Depth</span></span>
 <span><span class="co">#&gt; 1 LID 11133 Rotorua 8060.23 Bay of Plenty        Volcanic 45.27</span></span>
@@ -219,119 +221,14 @@ the <code>Aeme</code> object. The lake section has the lake metadata,
 the time section has the start, stop and spin-up dates, the
 configuration section has the model configuration which allows for the
 building of the AEME models locally.</p>
-<pre><code><span><span class="co">#&gt; Building simulation for Rotorua [2024-11-18 05:20:59]</span></span>
-<span><span class="co">#&gt; Building existing configuration for Rotorua [2024-11-18 05:20:59]</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy, NIT_don, NIT_pon, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, NCS_ss1</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy, NIT_don, NIT_pon, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, NCS_ss1</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy, NIT_don, NIT_pon, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, NCS_ss1</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy, NIT_don, NIT_pon, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, NCS_ss1</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy, NIT_don, NIT_pon, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, NCS_ss1</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy, NIT_don, NIT_pon, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, NCS_ss1</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy, NIT_pon, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, NCS_ss1</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
-<span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
-<span><span class="co">#&gt; Calculating lake level using lake depth and a sinisoidal function.</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span> <span class="co"># models to build</span></span>
+<span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"aeme"</span> <span class="co"># directory in which the model configuration will be built</span></span>
+<span></span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
+<span>                    use_aeme <span class="op">=</span> <span class="cn">TRUE</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span>, print <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in dir.create(lake_dir, showWarnings = TRUE): 'aeme\LID11133_rotorua'</span></span>
-<span><span class="co">#&gt; already exists</span></span>
-<span><span class="co">#&gt; Building GLM3-AED2 model for lake rotorua</span></span>
-<span><span class="co">#&gt; Copied in AED nml file</span></span>
-<span><span class="co">#&gt;    oxy_initial = 312.5 replaced with 312.5</span></span>
-<span><span class="co">#&gt;    frp_initial = 0.1614 replaced with 0.1614</span></span>
-<span><span class="co">#&gt;    dop_initial = 0.3229 replaced with 0.3229</span></span>
-<span><span class="co">#&gt;    pop_initial = 0.3229 replaced with 0.3229</span></span>
-<span><span class="co">#&gt;    amm_initial = 1.1423 replaced with 1.1423</span></span>
-<span><span class="co">#&gt;    nit_initial = 0.4284 replaced with 0.4284</span></span>
-<span><span class="co">#&gt;    don_initial = 21.4183 replaced with 21.4183</span></span>
-<span><span class="co">#&gt;    pon_initial = 7.1394 replaced with 7.1394</span></span>
-<span><span class="co">#&gt;    doc_initial = 41.6285 replaced with 41.6285</span></span>
-<span><span class="co">#&gt;    poc_initial = 16.6514 replaced with 16.6514</span></span>
-<span><span class="co">#&gt;    rsi_initial = 1 replaced with 1</span></span>
-<span><span class="co">#&gt; PHY_cyano 0.24022 replaced with 0.24022</span></span>
-<span><span class="co">#&gt; PHY_green 0.300275 replaced with 0.300275</span></span>
-<span><span class="co">#&gt; PHY_diatom 0.300275 replaced with 0.300275</span></span>
-<span><span class="co">#&gt;    ss_initial = 3 replaced with 3,</span></span>
-<span><span class="co">#&gt; Building GOTM-WET for lake rotorua</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sO2W 10 replaced with 10</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sPO4W 0.005 replaced with 0.005</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sPDOMW 0.01 replaced with 0.01</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sPPOMW 0.01 replaced with 0.01</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sNH4W 0.016 replaced with 0.016</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sNO3W 0.006 replaced with 0.006</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sNDOMW 0.3 replaced with 0.3</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sNPOMW 0.1 replaced with 0.1</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sDDOMW 0.5 replaced with 0.5</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sDPOMW 0.2 replaced with 0.2</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sSiO2W 1 replaced with 1</span></span>
-<span><span class="co">#&gt; instances/cyanobacteria/initialization/sDW 0.2 replaced with 0.2</span></span>
-<span><span class="co">#&gt; instances/cyanobacteria/initialization/sNW 0.03 replaced with 0.03</span></span>
-<span><span class="co">#&gt; instances/cyanobacteria/initialization/sPW 0.0019 replaced with 0.0019</span></span>
-<span><span class="co">#&gt; instances/greens/initialization/sDW 0.1 replaced with 0.1</span></span>
-<span><span class="co">#&gt; instances/greens/initialization/sNW 0.015 replaced with 0.015</span></span>
-<span><span class="co">#&gt; instances/greens/initialization/sPW 0.00094 replaced with 0.00094</span></span>
-<span><span class="co">#&gt; instances/diatoms/initialization/sDW 0.25 replaced with 0.25</span></span>
-<span><span class="co">#&gt; instances/diatoms/initialization/sNW 0.038 replaced with 0.038</span></span>
-<span><span class="co">#&gt; instances/diatoms/initialization/sPW 0.0024 replaced with 0.0024</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sDIMW 3 replaced with 3</span></span></code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"aeme"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "LID11133_rotorua/glm_aed/aed2/aed2.nml"                  </span></span>
-<span><span class="co">#&gt;  [2] "LID11133_rotorua/glm_aed/aed2/aed2_phyto_pars.nml"       </span></span>
-<span><span class="co">#&gt;  [3] "LID11133_rotorua/glm_aed/aed2/aed2_zoop_pars.nml"        </span></span>
-<span><span class="co">#&gt;  [4] "LID11133_rotorua/glm_aed/bcs/inflow_lumped.csv"          </span></span>
-<span><span class="co">#&gt;  [5] "LID11133_rotorua/glm_aed/bcs/inflow_NZS4081641.csv"      </span></span>
-<span><span class="co">#&gt;  [6] "LID11133_rotorua/glm_aed/bcs/inflow_NZS4083363.csv"      </span></span>
-<span><span class="co">#&gt;  [7] "LID11133_rotorua/glm_aed/bcs/inflow_NZS4084132.csv"      </span></span>
-<span><span class="co">#&gt;  [8] "LID11133_rotorua/glm_aed/bcs/inflow_NZS4084816.csv"      </span></span>
-<span><span class="co">#&gt;  [9] "LID11133_rotorua/glm_aed/bcs/inflow_NZS4086165.csv"      </span></span>
-<span><span class="co">#&gt; [10] "LID11133_rotorua/glm_aed/bcs/inflow_precip.csv"          </span></span>
-<span><span class="co">#&gt; [11] "LID11133_rotorua/glm_aed/bcs/meteo_glm.csv"              </span></span>
-<span><span class="co">#&gt; [12] "LID11133_rotorua/glm_aed/bcs/outflow_wbal.csv"           </span></span>
-<span><span class="co">#&gt; [13] "LID11133_rotorua/glm_aed/glm3.nml"                       </span></span>
-<span><span class="co">#&gt; [14] "LID11133_rotorua/gotm_wet/fabm.yaml"                     </span></span>
-<span><span class="co">#&gt; [15] "LID11133_rotorua/gotm_wet/gotm.yaml"                     </span></span>
-<span><span class="co">#&gt; [16] "LID11133_rotorua/gotm_wet/inputs/hypsograph.dat"         </span></span>
-<span><span class="co">#&gt; [17] "LID11133_rotorua/gotm_wet/inputs/inf_chem_lumped.dat"    </span></span>
-<span><span class="co">#&gt; [18] "LID11133_rotorua/gotm_wet/inputs/inf_chem_NZS4081641.dat"</span></span>
-<span><span class="co">#&gt; [19] "LID11133_rotorua/gotm_wet/inputs/inf_chem_NZS4083363.dat"</span></span>
-<span><span class="co">#&gt; [20] "LID11133_rotorua/gotm_wet/inputs/inf_chem_NZS4084132.dat"</span></span>
-<span><span class="co">#&gt; [21] "LID11133_rotorua/gotm_wet/inputs/inf_chem_NZS4084816.dat"</span></span>
-<span><span class="co">#&gt; [22] "LID11133_rotorua/gotm_wet/inputs/inf_chem_NZS4086165.dat"</span></span>
-<span><span class="co">#&gt; [23] "LID11133_rotorua/gotm_wet/inputs/inf_chem_precip.dat"    </span></span>
-<span><span class="co">#&gt; [24] "LID11133_rotorua/gotm_wet/inputs/inf_flow_lumped.dat"    </span></span>
-<span><span class="co">#&gt; [25] "LID11133_rotorua/gotm_wet/inputs/inf_flow_NZS4081641.dat"</span></span>
-<span><span class="co">#&gt; [26] "LID11133_rotorua/gotm_wet/inputs/inf_flow_NZS4083363.dat"</span></span>
-<span><span class="co">#&gt; [27] "LID11133_rotorua/gotm_wet/inputs/inf_flow_NZS4084132.dat"</span></span>
-<span><span class="co">#&gt; [28] "LID11133_rotorua/gotm_wet/inputs/inf_flow_NZS4084816.dat"</span></span>
-<span><span class="co">#&gt; [29] "LID11133_rotorua/gotm_wet/inputs/inf_flow_NZS4086165.dat"</span></span>
-<span><span class="co">#&gt; [30] "LID11133_rotorua/gotm_wet/inputs/inf_flow_precip.dat"    </span></span>
-<span><span class="co">#&gt; [31] "LID11133_rotorua/gotm_wet/inputs/inf_salt_lumped.dat"    </span></span>
-<span><span class="co">#&gt; [32] "LID11133_rotorua/gotm_wet/inputs/inf_salt_NZS4081641.dat"</span></span>
-<span><span class="co">#&gt; [33] "LID11133_rotorua/gotm_wet/inputs/inf_salt_NZS4083363.dat"</span></span>
-<span><span class="co">#&gt; [34] "LID11133_rotorua/gotm_wet/inputs/inf_salt_NZS4084132.dat"</span></span>
-<span><span class="co">#&gt; [35] "LID11133_rotorua/gotm_wet/inputs/inf_salt_NZS4084816.dat"</span></span>
-<span><span class="co">#&gt; [36] "LID11133_rotorua/gotm_wet/inputs/inf_salt_NZS4086165.dat"</span></span>
-<span><span class="co">#&gt; [37] "LID11133_rotorua/gotm_wet/inputs/inf_salt_precip.dat"    </span></span>
-<span><span class="co">#&gt; [38] "LID11133_rotorua/gotm_wet/inputs/inf_temp_lumped.dat"    </span></span>
-<span><span class="co">#&gt; [39] "LID11133_rotorua/gotm_wet/inputs/inf_temp_NZS4081641.dat"</span></span>
-<span><span class="co">#&gt; [40] "LID11133_rotorua/gotm_wet/inputs/inf_temp_NZS4083363.dat"</span></span>
-<span><span class="co">#&gt; [41] "LID11133_rotorua/gotm_wet/inputs/inf_temp_NZS4084132.dat"</span></span>
-<span><span class="co">#&gt; [42] "LID11133_rotorua/gotm_wet/inputs/inf_temp_NZS4084816.dat"</span></span>
-<span><span class="co">#&gt; [43] "LID11133_rotorua/gotm_wet/inputs/inf_temp_NZS4086165.dat"</span></span>
-<span><span class="co">#&gt; [44] "LID11133_rotorua/gotm_wet/inputs/inf_temp_precip.dat"    </span></span>
-<span><span class="co">#&gt; [45] "LID11133_rotorua/gotm_wet/inputs/lyrs.dat"               </span></span>
-<span><span class="co">#&gt; [46] "LID11133_rotorua/gotm_wet/inputs/meteo.dat"              </span></span>
-<span><span class="co">#&gt; [47] "LID11133_rotorua/gotm_wet/inputs/meteo_swr.dat"          </span></span>
-<span><span class="co">#&gt; [48] "LID11133_rotorua/gotm_wet/inputs/outf_wbal.dat"          </span></span>
-<span><span class="co">#&gt; [49] "LID11133_rotorua/gotm_wet/inputs/s_prof_file.dat"        </span></span>
-<span><span class="co">#&gt; [50] "LID11133_rotorua/gotm_wet/inputs/t_prof_file.dat"        </span></span>
-<span><span class="co">#&gt; [51] "LID11133_rotorua/gotm_wet/output.yaml"</span></span></code></pre></div>
+<span><span class="co">#&gt; already exists</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="run-aeme-models">Run AEME models<a class="anchor" aria-label="anchor" href="#run-aeme-models"></a>
@@ -340,12 +237,12 @@ building of the AEME models locally.</p>
 models with the configurations built in the <code>path</code> directory.
 The <code>parallel</code> argument is set to <code>TRUE</code> to run
 the models in parallel which can speed up the process.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models in parallel... [2024-11-18 05:21:34]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-11-18 05:23:15]</span></span>
-<span><span class="co">#&gt; Reading models in parallel... [2024-11-18 05:23:15]</span></span>
-<span><span class="co">#&gt; Model reading complete![2024-11-18 05:23:45]</span></span>
+<span><span class="co">#&gt; Running models in parallel... [2024-12-19 02:09:34]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-12-19 02:11:13]</span></span>
+<span><span class="co">#&gt; Reading models in parallel... [2024-12-19 02:11:13]</span></span>
+<span><span class="co">#&gt; Model reading complete![2024-12-19 02:11:45]</span></span>
 <span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
@@ -391,16 +288,53 @@ the models in parallel which can speed up the process.</p>
 <p>In the “Output” section of the <code>Aeme</code> object, the “Number
 of ensembles” is set to 1 indicating that there is now output for each
 model in the <code>Aeme</code> object.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 332 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="lernzmp-aeme_files/figure-html/lernzmp-plot-temperature-1.png" width="700"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"CHM_oxy"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 332 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="lernzmp-aeme_files/figure-html/lernzmp-plot-oxygen-1.png" width="700"></p>
+</div>
+<div class="section level2">
+<h2 id="access-aeme-input-data">Access AEME input data<a class="anchor" aria-label="anchor" href="#access-aeme-input-data"></a>
+</h2>
+<p>The <code>Aeme</code> object contains the input data for the models.
+This includes the lake metadata, model controls, and model
+configuration. The <code>input</code> slot contains the initial profile
+(“init_profile”), initial depth (“init_depth”), hypograph (“hypograph”),
+meteorological data (“meteo”), switch for using longwave radiation
+(“use_lw”) and light extinction coefficient (“Kw”) for the models.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">inp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/input.html">input</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">inp</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "init_profile" "init_depth"   "hypsograph"   "meteo"        "use_lw"      </span></span>
+<span><span class="co">#&gt; [6] "Kw"</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="hypsograph-data">Hypsograph data<a class="anchor" aria-label="anchor" href="#hypsograph-data"></a>
+</h3>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hyps</span> <span class="op">&lt;-</span> <span class="va">inp</span><span class="op">$</span><span class="va">hypsograph</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hyps</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     elev     area depth</span></span>
+<span><span class="co">#&gt; 1 289.88 92216772   5.0</span></span>
+<span><span class="co">#&gt; 2 289.38 91198888   4.5</span></span>
+<span><span class="co">#&gt; 3 288.88 90383984   4.0</span></span>
+<span><span class="co">#&gt; 4 288.38 89698688   3.5</span></span>
+<span><span class="co">#&gt; 5 287.88 89045360   3.0</span></span>
+<span><span class="co">#&gt; 6 287.38 88405268   2.5</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">hyps</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">area</span>, y <span class="op">=</span> <span class="va">depth</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Depth (m)"</span>, x <span class="op">=</span> <span class="st">"Area (m^2)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="lernzmp-aeme_files/figure-html/plot-hypsograph-1.png" width="700"></p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -52,6 +52,7 @@
 <span>  outf_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>glm_aed <span class="op">=</span> <span class="fl">1</span>, dy_cd <span class="op">=</span> <span class="fl">1</span>, gotm_wet <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  ext_elev <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  use_bgc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  print <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  calc_wbal <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  calc_wlev <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  use_aeme <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -100,6 +101,10 @@ outflows. Needs to be named according to the model.</p></dd>
 
 <dt id="arg-use-bgc">use_bgc<a class="anchor" aria-label="anchor" href="#arg-use-bgc"></a></dt>
 <dd><p>logical; switch to use the biogeochemical model.</p></dd>
+
+
+<dt id="arg-print">print<a class="anchor" aria-label="anchor" href="#arg-print"></a></dt>
+<dd><p>logical; print messages. Default = TRUE.</p></dd>
 
 
 <dt id="arg-calc-wbal">calc_wbal<a class="anchor" aria-label="anchor" href="#arg-calc-wbal"></a></dt>
@@ -165,7 +170,7 @@ values. Default = TRUE.</p></dd>
 <span class="r-in"><span><span class="fu">build_aeme</span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>               model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>               use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2024-11-18 05:18:57]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2024-12-19 02:07:12]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using constant water level</span>
