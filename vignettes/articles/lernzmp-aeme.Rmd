@@ -124,20 +124,15 @@ which allows for the building of the AEME models locally.
 
 ```{r}
 #| label: lernzmp-build-aeme
-#| echo: false
+#| echo: true
 
 model <- c("glm_aed", "gotm_wet") # models to build
 path <- "aeme" # directory in which the model configuration will be built
 
 aeme <- build_aeme(aeme = aeme, model = model, path = path,
-                    use_aeme = TRUE, use_bgc = TRUE)
+                    use_aeme = TRUE, use_bgc = TRUE, print = FALSE)
 ```
 
-```{r}
-#| label: lernzmp-aeme-list-files
-
-list.files("aeme", recursive = TRUE)
-```
 
 # Run AEME models
 
@@ -164,6 +159,43 @@ plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 ```{r}
 #| label: lernzmp-plot-oxygen
 plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
+```
+
+# Access AEME input data
+
+The `Aeme` object contains the input data for the models. This includes the
+lake metadata, model controls, and model configuration. The `input` slot
+contains the initial profile ("init_profile"), initial depth ("init_depth"),
+hypograph ("hypograph"), meteorological data ("meteo"), switch for using 
+longwave radiation ("use_lw") and light extinction coefficient ("Kw") for the 
+models.
+
+```{r}
+#| label: lernzmp-input-data
+
+inp <- input(aeme)
+names(inp)
+```
+
+## Hypsograph data
+
+```{r}
+#| label: lernzmp-input-hypsograph
+
+hyps <- inp$hypsograph
+head(hyps)
+```
+
+```{r}
+#| label: plot-hypsograph
+
+library(ggplot2)
+ggplot(hyps, aes(x = area, y = depth)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_line() +
+  labs(y = "Depth (m)", x = "Area (m^2)") +
+  theme_bw()
+
 ```
 
 
