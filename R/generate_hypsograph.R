@@ -7,7 +7,9 @@
 #' must be provided.
 #' @param max_depth The maximum depth of the lake.
 #' @param surface_area The surface area of the lake.
-#' @param volume_development The volume development factor.
+#' @param mean_depth The mean depth of the lake.
+#' @param volume_development The volume development factor. Default is 3 * mean_depth / max_depth.
+#' However
 #' @param z_range numeric; 0-1, representing fraction of hypsograph to be used
 #' for extrapolation. Default is 0.2, which uses the top 20% of the hypsograph
 #' for extrapolation.
@@ -26,8 +28,8 @@
 #'
 
 generate_hypsograph <- function(aeme = NULL, max_depth, surface_area,
-                                volume_development = 1.5, elev = NULL,
-                                z_range = 0.2, ext_elev = 0) {
+                                mean_depth, volume_development = NULL,
+                                elev = NULL, z_range = 0.2, ext_elev = 0) {
 
   utils::data("model_layer_structure", package = "AEME", envir = environment())
 
@@ -52,6 +54,14 @@ generate_hypsograph <- function(aeme = NULL, max_depth, surface_area,
     dplyr::pull(zi)
   if (!max_depth %in% depths) {
     depths <- c(depths, max_depth)
+  }
+
+  if (is.null(volume_development)) {
+    if (missing(mean_depth)) {
+      stop(strwrap("If volume_development is not provided, then mean_depth
+                   must be provided."))
+    }
+    volume_development <- 3 * mean_depth / max_depth
   }
 
   # Estimate the relative area at each depth

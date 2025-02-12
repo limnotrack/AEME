@@ -8,7 +8,8 @@ generate_hypsograph(
   aeme = NULL,
   max_depth,
   surface_area,
-  volume_development = 1.5,
+  mean_depth,
+  volume_development = NULL,
   elev = NULL,
   z_range = 0.2,
   ext_elev = 0
@@ -22,7 +23,10 @@ must be provided.}
 
 \item{surface_area}{The surface area of the lake.}
 
-\item{volume_development}{The volume development factor.}
+\item{mean_depth}{The mean depth of the lake.}
+
+\item{volume_development}{The volume development factor. Default is 3 * mean_depth / max_depth.
+However}
 
 \item{elev}{The elevation of the lake. If not provided, it is assumed to be
 the same as the maximum depth.}
