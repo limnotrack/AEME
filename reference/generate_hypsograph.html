@@ -50,7 +50,8 @@ depth, surface area, and volume development factor.</p>
 <span>  aeme <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">max_depth</span>,</span>
 <span>  <span class="va">surface_area</span>,</span>
-<span>  volume_development <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>  <span class="va">mean_depth</span>,</span>
+<span>  volume_development <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  elev <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  z_range <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>  ext_elev <span class="op">=</span> <span class="fl">0</span></span>
@@ -74,8 +75,13 @@ must be provided.</p></dd>
 <dd><p>The surface area of the lake.</p></dd>
 
 
+<dt id="arg-mean-depth">mean_depth<a class="anchor" aria-label="anchor" href="#arg-mean-depth"></a></dt>
+<dd><p>The mean depth of the lake.</p></dd>
+
+
 <dt id="arg-volume-development">volume_development<a class="anchor" aria-label="anchor" href="#arg-volume-development"></a></dt>
-<dd><p>The volume development factor.</p></dd>
+<dd><p>The volume development factor. Default is 3 * mean_depth / max_depth.
+However</p></dd>
 
 
 <dt id="arg-elev">elev<a class="anchor" aria-label="anchor" href="#arg-elev"></a></dt>
