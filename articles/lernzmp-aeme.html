@@ -16,7 +16,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
@@ -129,8 +129,6 @@ We will filter the metadata to examine these two lakes.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="va">metadata</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">aeme_file</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LID11133"</span>, <span class="st">"LID40102"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
-<span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span>
 <span><span class="va">metadata</span></span>
 <span><span class="co">#&gt;          ID    Name    Area        Region Geomorphic.type Depth</span></span>
 <span><span class="co">#&gt; 1 LID 11133 Rotorua 8060.23 Bay of Plenty        Volcanic 45.27</span></span>
@@ -239,10 +237,10 @@ The <code>parallel</code> argument is set to <code>TRUE</code> to run
 the models in parallel which can speed up the process.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models in parallel... [2024-12-19 02:09:34]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-12-19 02:11:13]</span></span>
-<span><span class="co">#&gt; Reading models in parallel... [2024-12-19 02:11:13]</span></span>
-<span><span class="co">#&gt; Model reading complete![2024-12-19 02:11:45]</span></span>
+<span><span class="co">#&gt; Running models in parallel... [2025-02-12 22:04:31]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-02-12 22:06:41]</span></span>
+<span><span class="co">#&gt; Reading models in parallel... [2025-02-12 22:06:41]</span></span>
+<span><span class="co">#&gt; Model reading complete![2025-02-12 22:07:12]</span></span>
 <span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
