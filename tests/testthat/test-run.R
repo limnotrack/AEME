@@ -938,7 +938,7 @@ test_that("can run with generated hypsgraph", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 
-  hyps <- generate_hypsograph(aeme = aeme, ext_elev = 5)
+  hyps <- generate_hypsograph(aeme = aeme, ext_elev = 5, mean_depth = 4.2)
   inp <- input(aeme)
   inp$hypsograph <- hyps
   input(aeme) <- inp

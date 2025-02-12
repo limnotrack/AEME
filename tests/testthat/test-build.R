@@ -238,7 +238,8 @@ test_that("can build all models with the generated hypsograph", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
 
-  hyps <- generate_hypsograph(aeme = aeme, ext_elev = 5)
+  hyps <- generate_hypsograph(aeme = aeme, ext_elev = 5,
+                              volume_development = 1.2)
   inp <- input(aeme)
   inp$hypsograph <- hyps
   input(aeme) <- inp
