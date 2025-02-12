@@ -20,9 +20,10 @@ Suggests:
     aemetools (>= 0.0.0.9000),
     DT,
     knitr,
-    leaflet,
     rmarkdown,
-    testthat (>= 3.0.0)
+    sf,
+    testthat (>= 3.0.0),
+    tmap
 Imports: 
     dplyr,
     ggplot2,
