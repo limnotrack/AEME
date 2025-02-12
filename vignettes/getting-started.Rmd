@@ -22,6 +22,11 @@ up the model for a lake in New Zealand.
 
 ```{r setup}
 library(AEME)
+library(sf) # For spatial data
+library(tmap) # For mapping
+tmap_mode("view") # Set tmap mode to interactive view model
+tmap_options(basemap.server = "OpenStreetMap") # Set the basemap to OpenStreetMap
+
 ```
 
 
@@ -39,10 +44,13 @@ lon <- 174.46898
 
 ```{r view-in leaflet}
 # View the location of the lake in a map
-library(leaflet)
-leaflet() |> 
-  addTiles() |> 
-  addMarkers(lng = lon, lat = lat, popup = "Wainamu Lake")
+
+coords <- data.frame(lat = lat, lon = lon) |> 
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+
+tm_shape(coords) +
+  tm_bubbles() +
+  tm_view(set_view = c(lon, lat, 16))
 
 ```
 
@@ -204,19 +212,27 @@ more detailed hypsograph data for your lake.
 
 If you have information regarding the maximum depth of the lake, the surface
 area and an estimate of volume development, you can generate a hypsograph using
-the `generate_hypsograph` function.
+the `generate_hypsograph` function. The `volume_development` parameter is a
+scaling factor for the volume development of the lake. Values below 1.5 are 
+lakes with a concave hypsograph, values above 1.5 are lakes with a
+convex hypsograph, and values of 1.5 are lakes with a linear hypsograph. 
+
+For Wainamu Lake, we will use a volume development of 1.62 which was calculated 
+from a bathymetry survey of the lake. You can view this on the 
+[LERNZmp platform](https://limnotrack.shinyapps.io/LERNZmp/).
 
 ```{r generate-hypsograph}
 
 # Generate a hypsograph
 hypsograph <- generate_hypsograph(max_depth = depth, surface_area = area,
-                                  volume_development = 1.4, elev = elevation,
+                                  volume_development = 0.5, elev = elevation,
                                   ext_elev = 1)
 
 ggplot(hypsograph, aes(x = area, y = elev)) +
   geom_line() +
   geom_point() +
-  geom_line(data = hypsograph_simple, aes(x = area, y = elev), linetype = "dashed") +
+  geom_line(data = hypsograph_simple, aes(x = area, y = elev), 
+            linetype = "dashed") +
   xlab("Area (m2)") +
   ylab("Elevation (m)") +
   theme_bw()
