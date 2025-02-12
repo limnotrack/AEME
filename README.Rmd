@@ -53,7 +53,7 @@ devtools::install_github("limnotrack/AEME")
 This is a basic example which shows you how to build and run one of the
 models in the ensemble:
 
-```{r example}
+```{r example, results='hide', message=FALSE, warning=FALSE}
 library(AEME)
 ## basic example code
 tmpdir <- tempdir()
@@ -89,7 +89,7 @@ aeme
 
 Model data can be visualised easily using the `plot_output()` function:
 
-```{r, label="plot_output-HYD_temp",echo=TRUE,results="hide",fig.keep="all",fig.height=7}
+```{r, label="plot_output-HYD_temp",echo=TRUE,results="hide",fig.keep="all",fig.height=7,warning=FALSE}
 p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 p1
 
