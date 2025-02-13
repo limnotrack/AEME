@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml)
 [![Codecov test
@@ -23,19 +23,20 @@ and run an ensemble of aquatic ecosystem models. The models are
 ## Development
 
 This package was developed by [LimnoTrack](http://limnotrack.com/) as
-part of the Lake Ecosystem Restoration New Zealand Modelling Platform
-(LERNZmp) project.
-<a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="60"/></a>
+part of the [Lake Ecosystem Research New Zealand Modelling
+Platform](https://limnotrack.shinyapps.io/LERNZmp/) (LERNZmp) project.
+<a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="50"/></a>
 
 ## Installation
 
-You can install the development version of AEME from
-[GitHub](https://github.com/) with:
+You can install AEME from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("limnotrack/AEME")
 ```
+
+Currently, AEME is only available for Windows users.
 
 ## Example
 
@@ -152,10 +153,8 @@ We have a host of vignettes to help you get started with AEME:
 
 ## Extension
 
-For downloading meteorological data, calibration and sensitivity
-analysis there is the
-[aemetools](https://limnotrack.github.io/AEME/articles/aeme-inputs.html)
-package.
-
-For processing bathymetry data, there is the
-[bathytools](https://limnotrack.github.io/bathytools/) package.
+- [aemetools](https://limnotrack.github.io/AEME/articles/aeme-inputs.html) -
+  For downloading meteorological data, calibration and sensitivity
+  analysis.
+- [bathytools](https://limnotrack.github.io/bathytools/) - For
+  processing lake bathymetry data.
