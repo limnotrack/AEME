@@ -19,11 +19,11 @@ yaml_to_aeme <- function(path, file) {
   withr::local_timezone("UTC")
 
   yaml <- yaml::read_yaml(file.path(path, file))
-  if (!is.null(yaml$lake$shape)) {
-    invisible(capture.output({
-      yaml$lake$shape <- sf::st_read(file.path(path, yaml$lake$shape))
-    }))
-  }
+  # if (!is.null(yaml$lake$shape)) {
+  #   invisible(capture.output({
+  #     yaml$lake$shape <- sf::st_read(file.path(path, yaml$lake$shape))
+  #   }))
+  # }
   # if (!is.null(yaml$catchment$shape)) {
   #   invisible(capture.output({
   #     yaml$catchment$shape <- sf::st_read(file.path(path, yaml$catchment$shape))
