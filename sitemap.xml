@@ -16,6 +16,7 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/assess_model.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/build_aeme.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/catchment_yields.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/check_AEME.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_model_output.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_obs_var.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_var_in_output.html</loc></url>
@@ -76,7 +77,6 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/parameters-set-aeme-method.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/parameters-set.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/parameters.html</loc></url>
-<url><loc>https://limnotrack.github.io/AEME/reference/pkg_check.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/plot-Aeme-method.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_flows.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_fluxes.html</loc></url>
