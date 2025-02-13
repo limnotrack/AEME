@@ -79,7 +79,7 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>                   model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>                   ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-02-13 00:24:12]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-02-13 02:05:53]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Missing state variables in inflows: PHY_crypt</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Added default values for missing variables.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
@@ -87,7 +87,7 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using constant water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Correcting water balance using estimated outflows (method = 2).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating lake level using lake depth and a sinisoidal function.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'C:\Users\RUNNER~1\AppData\Local\Temp\RtmpY9cVeu\45819_wainamu' already exists</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp8UBBrk\45819_wainamu' already exists</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Building GLM3-AED2 model for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Copied in AED nml file</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>    oxy_initial   = 312.5 replaced with 312.5</span>
@@ -132,10 +132,10 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>path <span class="op">=</span> <span class="va">path</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>parallel <span class="op">=</span> <span class="cn">TRUE</span>, ncores <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models in parallel... [2025-02-13 00:24:16]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-02-13 00:24:20]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading models in parallel... [2025-02-13 00:24:20]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Model reading complete![2025-02-13 00:24:22]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models in parallel... [2025-02-13 02:05:56]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-02-13 02:06:01]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading models in parallel... [2025-02-13 02:06:01]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Model reading complete![2025-02-13 02:06:03]</span>
 <span class="r-in"><span><span class="fu">get_output_vars</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    Water temperature                    Thermocline depth </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                           "HYD_temp"                         "HYD_thmcln" </span>
