@@ -3,7 +3,7 @@
 #' @returns TRUE if the package is working correctly
 #' @export
 
-pkg_check <- function() {
+check_AEME <- function() {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
