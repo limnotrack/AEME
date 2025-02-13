@@ -1,8 +1,8 @@
 ---
-title: "Getting started"
+title: "Set up AEME for a new lake"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting started}
+  %\VignetteIndexEntry{Set up AEME for a new lake}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -54,19 +54,58 @@ tm_shape(coords) +
 
 ```
 
+## Get lake shapefile
+
+If you have a shapefile for the lake, you can use the `sf` package to read it 
+in. However, if you do not have a shapefile you can download most lake 
+shapefiles from [OpenStreetMap](https://www.openstreetmap.org/) using the [`osmdata`](https://docs.ropensci.org/osmdata/) package. 
+
+```{r get-lake-shapefile}
+library(sf)
+library(osmdata)
+
+# Get lake shapefile
+osm_data <- opq(bbox = "New Zealand") |> 
+  add_osm_feature(key = "name", value = "Lake Wainamu") |> 
+  osmdata_sf()
+
+# Extract lake polygon
+lake <- osm_data$osm_multipolygons |> 
+  st_make_valid()
+lake
+```
+
+Visualise the lake shapefile on a map.
+
+```{r view-lake-shapefile}
+# View the lake shapefile
+tm_shape(lake) +
+  tm_borders(lwd = 2) 
+```
+
+As you can see it matches the location of the lake we defined earlier and that 
+it perfectly matches the outline from the OpenStreetMap polygon.
+
 ## Depth and area data
 
 The depth and area of the lake are required for the model. These can be
-obtained from a variety of sources, including regional councils, the New Zealand
-Hydrological Database, or from the lake owner.
+obtained from a variety of sources. For this example, we will use the known 
+depth of the lake (13.07 m), however for the area we will calculate this from
+the shapefile.
 
-
-```{r}
+```{r set-depth}
 # Set depth & area
 depth <- 13.07 # Depth of the lake in metres
-area <- 152343 # Area of the lake in m2
 ```
 
+```{r calc-area}
+# Calculate the area of the lake in m2
+area <- st_area(lake) |> 
+  units::set_units("m^2") |> 
+  as.numeric()
+area
+
+```
 
 ## Elevation data
 

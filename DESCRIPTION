@@ -20,6 +20,7 @@ Suggests:
     aemetools (>= 0.0.0.9000),
     DT,
     knitr,
+    osmdata,
     rmarkdown,
     sf,
     testthat (>= 3.0.0),
