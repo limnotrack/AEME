@@ -61,7 +61,6 @@ in. However, if you do not have a shapefile you can download most lake
 shapefiles from [OpenStreetMap](https://www.openstreetmap.org/) using the [`osmdata`](https://docs.ropensci.org/osmdata/) package. 
 
 ```{r get-lake-shapefile}
-library(sf)
 library(osmdata)
 
 # Get lake shapefile
