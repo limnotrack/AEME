@@ -1,3 +1,8 @@
+test_that("package check is working", {
+  chk <- pkg_check()
+  testthat::expect_true(chk)
+})
+
 test_that("running DYRESM works", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
