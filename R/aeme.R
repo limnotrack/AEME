@@ -11,10 +11,8 @@
 #'  \item \code{\bold{latitude}}: numeric; lake latitude.
 #'  \item \code{\bold{longitude}}: numeric; lake longitude.
 #'  \item \code{\bold{elevation}}: numeric; lake elevation.
-#'  \item \code{shape}: sf; lake shape.
 #'  \item \code{\bold{depth}}: numeric; lake depth.
-#'  \item \code{\bold{area}}: numeric; lake area. Calculated from shape if not
-#'  provided.
+#'  \item \code{\bold{area}}: numeric; lake area.
 #'  }
 #' @slot time A list representing time information. \itemize{
 #' \item \code{\bold{start}}: character; start date.
@@ -277,42 +275,41 @@ aeme_constructor <- function(
   if (!is.numeric(lake$elevation)) {
     stop("Lake elevation must be numeric.")
   }
-  if (!is(lake$shape, "sf") & !is.null(lake$shape)) {
-    stop("Lake shape must be an 'sf' object or NULL.")
-  }
+  # if (!is(lake$shape, "sf") & !is.null(lake$shape)) {
+  #   stop("Lake shape must be an 'sf' object or NULL.")
+  # }
   if (!is.numeric(lake$depth)) {
     stop("Lake depth must be numeric.")
   }
-  if (is.null(lake$shape) & is.null(lake$area)) {
-    stop("Lake shape or area must be provided.")
+  if (is.null(lake$area)) {
+    stop("Lake area must be provided.")
   }
-  if (is(lake$shape, "sf") & is.null(lake$area)) {
-    if (print) {
-      message("Calculating lake area from lake shape.")
-    }
-    suppressMessages(sf::sf_use_s2(FALSE))
-    lake$area <- sf::st_area(lake$shape) |>
-      units::drop_units()
-    if (print) {
-      message(paste0("   ", round(lake$area, 2), " m2"))
-    }
-    suppressMessages(sf::sf_use_s2(TRUE))
-  }
-  if (!is.null(lake$shape) & !is.null(lake$area)) {
-    suppressMessages(sf::sf_use_s2(FALSE))
-    shape_area <- sf::st_area(lake$shape) |>
-      units::drop_units() |>
-      round(2)
-    suppressMessages(sf::sf_use_s2(TRUE))
-    if (abs(shape_area - lake$area) > 10) {
-      warning(paste(strwrap(paste0("Lake area [", lake$area,
-                                   " m2] is different to the area calculated from the lake
-                     shape [", shape_area, " m2].")), collapse = "\n"))
-    }
-  }
-  if (!is.numeric(lake$area) & !is.null(lake$area)) {
-    stop(paste(strwrap("Lake area must be numeric or NULL. If NULL,
-                       lake shape needs to be provided."), collpse = "\n"))
+  # if (is(lake$shape, "sf") & is.null(lake$area)) {
+  #   if (print) {
+  #     message("Calculating lake area from lake shape.")
+  #   }
+  #   suppressMessages(sf::sf_use_s2(FALSE))
+  #   lake$area <- sf::st_area(lake$shape) |>
+  #     units::drop_units()
+  #   if (print) {
+  #     message(paste0("   ", round(lake$area, 2), " m2"))
+  #   }
+  #   suppressMessages(sf::sf_use_s2(TRUE))
+  # }
+  # if (!is.null(lake$shape) & !is.null(lake$area)) {
+  #   suppressMessages(sf::sf_use_s2(FALSE))
+  #   shape_area <- sf::st_area(lake$shape) |>
+  #     units::drop_units() |>
+  #     round(2)
+  #   suppressMessages(sf::sf_use_s2(TRUE))
+  #   if (abs(shape_area - lake$area) > 10) {
+  #     warning(paste(strwrap(paste0("Lake area [", lake$area,
+  #                                  " m2] is different to the area calculated from the lake
+  #                    shape [", shape_area, " m2].")), collapse = "\n"))
+  #   }
+  # }
+  if (!is.numeric(lake$area)) {
+    stop(paste(strwrap("Lake area must be numeric."), collpse = "\n"))
   }
 
   # Catchment type checking for specific elements
@@ -568,120 +565,120 @@ aeme_constructor <- function(
 # Accessor functions ----
 
 #' @title Access lake slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of lake characteristics
 #' @export
 setGeneric("lake", function(aeme) standardGeneric("lake"))
 
 #' @title Access lake slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of lake characteristics
 #' @export
 setMethod("lake", "Aeme", function(aeme) aeme@lake)
 
 #' @title Access time slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of time characteristics
 #' @export
 setGeneric("time", function(aeme) standardGeneric("time"))
 
 #' @title Access time slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of time characteristics
 #' @export
 setMethod("time", "Aeme", function(aeme) aeme@time)
 
 #' @title Access configuration slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of configuration characteristics
 #' @export
 setGeneric("configuration", function(aeme) standardGeneric("configuration"))
 
 #' @title Access configuration slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of configuration characteristics
 #' @export
 setMethod("configuration", "Aeme", function(aeme) aeme@configuration)
 
 #' @title Access observations slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of observations characteristics
 #' @export
 setGeneric("observations", function(aeme) standardGeneric("observations"))
 
 #' @title Access observations slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of observations characteristics
 #' @export
 setMethod("observations", "Aeme", function(aeme) aeme@observations)
 
 #' @title Access input slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of input characteristics
 #' @export
 setGeneric("input", function(aeme) standardGeneric("input"))
 
 #' @title Access input slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of input characteristics
 #' @export
 setMethod("input", "Aeme", function(aeme) aeme@input)
 
 #' @title Access inflows slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of inflows characteristics
 #' @export
 setGeneric("inflows", function(aeme) standardGeneric("inflows"))
 
 #' @title Access inflows slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of inflows characteristics
 #' @export
 setMethod("inflows", "Aeme", function(aeme) aeme@inflows)
 
 #' @title Access outflows slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of outflows characteristics
 #' @export
 setGeneric("outflows", function(aeme) standardGeneric("outflows"))
 
 #' @title Access outflows slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of outflows characteristics
 #' @export
 setMethod("outflows", "Aeme", function(aeme) aeme@outflows)
 
 #' @title Access water_balance slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of water_balance characteristics
 #' @export
 setGeneric("water_balance", function(aeme) standardGeneric("water_balance"))
 
 #' @title Access water_balance slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of water_balance characteristics
 #' @export
 setMethod("water_balance", "Aeme", function(aeme) aeme@water_balance)
 
 
 #' @title Access output slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of output characteristics
 #' @export
 setGeneric("output", function(aeme) standardGeneric("output"))
 #' @title Access output slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return list of output characteristics
 #' @export
 setMethod("output", "Aeme", function(aeme) aeme@output)
 
 #' @title Access parameters slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return dataframe of parameters
 #' @export
 setGeneric("parameters", function(aeme) standardGeneric("parameters"))
 #' @title Access parameters slot
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @return dataframe of parameters
 #' @export
 setMethod("parameters", "Aeme", function(aeme) aeme@parameters)
@@ -692,7 +689,7 @@ setMethod("parameters", "Aeme", function(aeme) aeme@parameters)
 #' Update the lake slot of an Aeme object
 #'
 #' @title Set lake in Aeme object
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @param value New lake data to be assigned.
 #' @return A modified Aeme object with updated lake slot.
 #' @export
@@ -700,7 +697,7 @@ setGeneric("lake<-", function(aeme, value) standardGeneric("lake<-"))
 
 #' Update the lake slot of an Aeme object
 #'
-#' This method updates the "lake" slot of a Aeme object with new data.
+#' This method updates the "lake" slot of An Aeme object with new data.
 #'
 #' @title Set lake in Aeme object
 #' @param aeme An Aeme object.
@@ -716,7 +713,7 @@ setMethod("lake<-", "Aeme", function(aeme, value) {
 #' Update the time slot of an Aeme object
 #'
 #' @title Set time in Aeme object
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @param value New time data to be assigned.
 #' @return A modified Aeme object with updated time slot.
 #' @export
@@ -724,7 +721,7 @@ setGeneric("time<-", function(aeme, value) standardGeneric("time<-"))
 
 #' Update the time slot of an Aeme object
 #'
-#' This method updates the "time" slot of a Aeme object with new data.
+#' This method updates the "time" slot of An Aeme object with new data.
 #'
 #' @title Set time in Aeme object
 #' @param aeme An Aeme object.
@@ -749,7 +746,7 @@ setGeneric("configuration<-", function(aeme, value)
 
 #' Update the configuration slot of an aeme object
 #'
-#' This method updates the "configuration" slot of a Aeme object with new data.
+#' This method updates the "configuration" slot of An Aeme object with new data.
 #'
 #' @title Set configuration in Aeme object
 #' @param aeme An Aeme object.
@@ -765,7 +762,7 @@ setMethod("configuration<-", "Aeme", function(aeme, value) {
 #' Update the observations slot of an Aeme object
 #'
 #' @title Set observations in Aeme object
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @param value New observations data to be assigned.
 #' @return A modified Aeme object with updated observations slot.
 #' @export
@@ -774,7 +771,7 @@ setGeneric("observations<-", function(aeme, value)
 
 #' Update the observations slot of an Aeme object
 #'
-#' This method updates the "observations" slot of a Aeme object with new data.
+#' This method updates the "observations" slot of An Aeme object with new data.
 #'
 #' @title Set observations in Aeme object
 #' @param aeme An Aeme object.
@@ -790,7 +787,7 @@ setMethod("observations<-", "Aeme", function(aeme, value) {
 #' Update the input slot of an Aeme object
 #'
 #' @title Set input in Aeme object
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @param value New input data to be assigned.
 #' @return A modified Aeme object with updated input slot.
 #' @export
@@ -798,7 +795,7 @@ setGeneric("input<-", function(aeme, value) standardGeneric("input<-"))
 
 #' Update the input slot of an Aeme object
 #'
-#' This method updates the "input" slot of a Aeme object with new data.
+#' This method updates the "input" slot of An Aeme object with new data.
 #'
 #' @title Set input in Aeme object
 #' @param aeme An Aeme object.
@@ -814,7 +811,7 @@ setMethod("input<-", "Aeme", function(aeme, value) {
 #' Update the inflows slot of an Aeme object
 #'
 #' @title Set inflows in Aeme object
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @param value New inflows data to be assigned.
 #' @return A modified Aeme object with updated inflows slot.
 #' @export
@@ -822,7 +819,7 @@ setGeneric("inflows<-", function(aeme, value) standardGeneric("inflows<-"))
 
 #' Update the inflows slot of an Aeme object
 #'
-#' This method updates the "inflows" slot of a Aeme object with new data.
+#' This method updates the "inflows" slot of An Aeme object with new data.
 #'
 #' @title Set inflows in Aeme object
 #' @param aeme An Aeme object.
@@ -838,7 +835,7 @@ setMethod("inflows<-", "Aeme", function(aeme, value) {
 #' Update the outflows slot of an Aeme object
 #'
 #' @title Set outflows in Aeme object
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @param value New outflows data to be assigned.
 #' @return A modified Aeme object with updated outflows slot.
 #' @export
@@ -846,7 +843,7 @@ setGeneric("outflows<-", function(aeme, value) standardGeneric("outflows<-"))
 
 #' Update the outflows slot of an Aeme object
 #'
-#' This method updates the "outflows" slot of a Aeme object with new data.
+#' This method updates the "outflows" slot of An Aeme object with new data.
 #'
 #' @title Set outflows in Aeme object
 #' @param aeme An Aeme object.
@@ -870,7 +867,7 @@ setGeneric("water_balance<-", function(aeme, value) standardGeneric("water_balan
 
 #' Update the water_balance slot of an Aeme object
 #'
-#' This method updates the "water_balance" slot of a Aeme object with new data.
+#' This method updates the "water_balance" slot of An Aeme object with new data.
 #'
 #' @title Set water_balance in Aeme object
 #' @param aeme An Aeme object.
@@ -886,7 +883,7 @@ setMethod("water_balance<-", "Aeme", function(aeme, value) {
 #' Update the output slot of an Aeme object
 #'
 #' @title Set output in Aeme object
-#' @param aeme A Aeme object.
+#' @param aeme An Aeme object.
 #' @param value New output data to be assigned.
 #' @return A modified Aeme object with updated output slot.
 #' @export
@@ -918,7 +915,7 @@ setGeneric("parameters<-", function(aeme, value) standardGeneric("parameters<-")
 
 #' Update the parameters slot of an Aeme object
 #'
-#' This method updates the "parameters" slot of a Aeme object with new data.
+#' This method updates the "parameters" slot of An Aeme object with new data.
 #'
 #' @title Set parameters in Aeme object
 #' @param aeme An Aeme object.
@@ -974,8 +971,7 @@ setMethod("show", "Aeme", function(object) {
                                              2),
     "; Elev: ", round(lke$elevation, 2), "m; Depth: ",
     round(lke$depth, 2), "m;\nArea: ", round(lke$area, 2),
-    " m2; Shape file: ", ifelse(is(lke$shape, "sf"), "Present",
-                                "Absent"),
+    " m2",
     "\n-------------------------------------------------------------------\n",
     # "  Catchment \n",
     # "Name: ", ifelse(is.null(catchm$name), NA, catchm$name),
@@ -1129,12 +1125,12 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
 
   if (y == "lake") {
     p <- ggplot2::ggplot()
-    if (is(obj$shape, "sf")) {
-      lake_shp <- obj$shape |>
-        sf::st_transform(4326) |>
-        sf::st_geometry()
-      p <- p + ggplot2::geom_sf(data = lake_shp, fill = "lightblue")
-    }
+    # if (is(obj$shape, "sf")) {
+    #   lake_shp <- obj$shape |>
+    #     sf::st_transform(4326) |>
+    #     sf::st_geometry()
+    #   p <- p + ggplot2::geom_sf(data = lake_shp, fill = "lightblue")
+    # }
     pnt <- data.frame(lat = obj$latitude, lon = obj$longitude) |>
       sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
 
