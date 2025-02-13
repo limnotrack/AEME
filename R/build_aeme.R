@@ -16,6 +16,9 @@
 #' @param use_bgc logical; switch to use the biogeochemical model.
 #' @param print logical; print messages. Default = TRUE.
 #' @param calc_wbal logical; calculate water balance. Default = TRUE.
+#' @param wb_method numeric; method to use for calculating water balance. Must be
+#' 1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
+#' outflows calculated). Default = 2
 #' @param calc_wlev logical; calculate water level.
 #' @param use_aeme logical; use AEME object to generate model confiuration
 #' files.
@@ -70,6 +73,7 @@ build_aeme <- function(aeme = NULL,
                        use_bgc = FALSE,
                        print = TRUE,
                        calc_wbal = TRUE,
+                       wb_method = 2,
                        calc_wlev = TRUE,
                        use_aeme = FALSE,
                        coeffs = NULL,
@@ -373,7 +377,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (calc_wbal | calc_wlev) {
       wbal <- calc_water_balance(aeme_time = aeme_time,
                                  model = model,
-                                 method = w_bal$method,
+                                 method = wb_method,
                                  use = w_bal$use,
                                  hyps = hyps,
                                  inf = inf,
@@ -389,15 +393,15 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # Calculate water balance ----
     if (calc_wbal) {
 
-      if (w_bal$method == 1) {
+      if (wb_method == 1) {
         msg <- paste(strwrap("No water balance correction applied
                              (method = 1)."),
                      collapse = "\n")
-      } else if (w_bal$method == 2) {
+      } else if (wb_method == 2) {
         msg <- paste(strwrap("Correcting water balance using estimated
                              outflows (method = 2)."),
                      collapse = "\n")
-      } else if (w_bal$method == 3) {
+      } else if (wb_method == 3) {
         msg <- paste(strwrap("Correcting water balance using estimated
                              inflows and outflows (method = 3)."),
                      collapse = "\n")
@@ -414,7 +418,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       }
 
       # Add water balance to outflow if method is 2 or 3
-      if (w_bal$method %in% c(2, 3)) {
+      if (wb_method %in% c(2, 3)) {
         outf[["wbal"]] <- wbal |>
           dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
       }
