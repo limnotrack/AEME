@@ -34,9 +34,9 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
-    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
     <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
+    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul>
 </li>
       </ul>
@@ -265,7 +265,7 @@ the <code>yaml_to_aeme</code> function. The YAML file contains all the
 information required to run the model.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yaml_to_aeme.html">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/methods/slot.html" class="external-link">slotNames</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
+<span><span class="fu">slotNames</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "lake"          "time"          "configuration" "observations" </span></span>
 <span><span class="co">#&gt;  [5] "input"         "inflows"       "outflows"      "water_balance"</span></span>
 <span><span class="co">#&gt;  [9] "output"        "parameters"</span></span></code></pre></div>
@@ -389,7 +389,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for AEME [2025-02-13 03:17:27]</span></span>
+<span><span class="co">#&gt; Building simulation for AEME [2025-02-13 18:48:01]</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
 <span><span class="co">#&gt; Missing values in observed water level</span></span>
 <span><span class="co">#&gt; Using constant water level</span></span>
