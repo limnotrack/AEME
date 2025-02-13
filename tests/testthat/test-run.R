@@ -255,14 +255,10 @@ test_that("running models with wbal method = 1", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
 
-  w_bal <- water_balance(aeme)
-  w_bal$method <- 1
-  water_balance(aeme) <- w_bal
-
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
-                     calc_wlev = F)
+                     wb_method = 1, calc_wlev = F)
   inp <- input(aeme)
   met <- inp$meteo
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
@@ -334,9 +330,6 @@ test_that("running models with wbal method = 3", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
 
-  w_bal <- water_balance(aeme)
-  w_bal$method <- 3
-  water_balance(aeme) <- w_bal
   infl <- inflows(aeme)
   infl$data <- NULL
   inflows(aeme) <- infl
@@ -347,7 +340,7 @@ test_that("running models with wbal method = 3", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
-                     calc_wlev = F, hum_type = 1)
+                     wb_method = 3, calc_wlev = F, hum_type = 1)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path,
                    parallel = TRUE, ncores = 2)
