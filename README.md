@@ -138,3 +138,24 @@ p2
 ```
 
 <img src="man/figures/README-plot-output-HYD_wlev-1.png" width="100%" />
+
+## Documentation
+
+We have a host of vignettes to help you get started with AEME:
+
+- [Introduction to
+  AEME](https://limnotrack.github.io/AEME/articles/intro-aeme.html)
+- [Set up for your own
+  lake](https://limnotrack.github.io/AEME/articles/getting-started.html)
+- [Description of model
+  inputs](https://limnotrack.github.io/AEME/articles/aeme-inputs.html)
+
+## Extension
+
+For downloading meteorological data, calibration and sensitivity
+analysis there is the
+[aemetools](https://limnotrack.github.io/AEME/articles/aeme-inputs.html)
+package.
+
+For processing bathymetry data, there is the
+[bathytools](https://limnotrack.github.io/bathytools/) package.
