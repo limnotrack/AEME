@@ -7,7 +7,7 @@
 observations(aeme) <- value
 }
 \arguments{
-\item{aeme}{A Aeme object.}
+\item{aeme}{An Aeme object.}
 
 \item{value}{New observations data to be assigned.}
 }

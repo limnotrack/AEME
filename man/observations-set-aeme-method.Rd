@@ -18,5 +18,5 @@ A modified Aeme object with updated observations slot.
 Update the observations slot of an Aeme object
 }
 \details{
-This method updates the "observations" slot of a Aeme object with new data.
+This method updates the "observations" slot of An Aeme object with new data.
 }

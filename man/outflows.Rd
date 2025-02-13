@@ -7,7 +7,7 @@
 outflows(aeme)
 }
 \arguments{
-\item{aeme}{A Aeme object.}
+\item{aeme}{An Aeme object.}
 }
 \value{
 list of outflows characteristics

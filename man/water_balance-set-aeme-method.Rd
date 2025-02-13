@@ -18,5 +18,5 @@ A modified Aeme object with updated water_balance slot.
 Update the water_balance slot of an Aeme object
 }
 \details{
-This method updates the "water_balance" slot of a Aeme object with new data.
+This method updates the "water_balance" slot of An Aeme object with new data.
 }

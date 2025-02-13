@@ -18,5 +18,5 @@ A modified Aeme object with updated outflows slot.
 Update the outflows slot of an Aeme object
 }
 \details{
-This method updates the "outflows" slot of a Aeme object with new data.
+This method updates the "outflows" slot of An Aeme object with new data.
 }

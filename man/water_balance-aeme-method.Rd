@@ -7,7 +7,7 @@
 \S4method{water_balance}{Aeme}(aeme)
 }
 \arguments{
-\item{aeme}{A Aeme object.}
+\item{aeme}{An Aeme object.}
 }
 \value{
 list of water_balance characteristics

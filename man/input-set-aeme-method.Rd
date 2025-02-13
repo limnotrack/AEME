@@ -18,5 +18,5 @@ A modified Aeme object with updated input slot.
 Update the input slot of an Aeme object
 }
 \details{
-This method updates the "input" slot of a Aeme object with new data.
+This method updates the "input" slot of An Aeme object with new data.
 }

@@ -18,5 +18,5 @@ A modified Aeme object with updated parameters slot.
 Update the parameters slot of an Aeme object
 }
 \details{
-This method updates the "parameters" slot of a Aeme object with new data.
+This method updates the "parameters" slot of An Aeme object with new data.
 }

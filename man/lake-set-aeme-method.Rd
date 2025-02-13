@@ -18,5 +18,5 @@ A modified Aeme object with updated lake slot.
 Update the lake slot of an Aeme object
 }
 \details{
-This method updates the "lake" slot of a Aeme object with new data.
+This method updates the "lake" slot of An Aeme object with new data.
 }

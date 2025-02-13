@@ -7,7 +7,7 @@
 output(aeme) <- value
 }
 \arguments{
-\item{aeme}{A Aeme object.}
+\item{aeme}{An Aeme object.}
 
 \item{value}{New output data to be assigned.}
 }
