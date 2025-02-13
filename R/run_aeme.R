@@ -293,7 +293,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
     out <- system2(file.path(bin_path, "gotm_wet", "gotm.exe"),
                    wait = TRUE, stdout = TRUE,
                    stderr = TRUE, timeout = timeout)
-    success <- sum(grepl("GOTM-WET finished on", out)) == 1
+    success <- sum(grepl("GOTM-WET finished on|GOTM finished on", out)) == 1
     if (success) {
       message("GOTM-WET run successful! [", format(Sys.time()), "]")
     } else {
