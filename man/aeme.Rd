@@ -21,10 +21,8 @@ are required to run the models.
 \item \code{\bold{latitude}}: numeric; lake latitude.
 \item \code{\bold{longitude}}: numeric; lake longitude.
 \item \code{\bold{elevation}}: numeric; lake elevation.
-\item \code{shape}: sf; lake shape.
 \item \code{\bold{depth}}: numeric; lake depth.
-\item \code{\bold{area}}: numeric; lake area. Calculated from shape if not
-provided.
+\item \code{\bold{area}}: numeric; lake area.
 }}
 
 \item{\code{time}}{A list representing time information. \itemize{

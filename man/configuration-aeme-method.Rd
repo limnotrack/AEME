@@ -7,7 +7,7 @@
 \S4method{configuration}{Aeme}(aeme)
 }
 \arguments{
-\item{aeme}{A Aeme object.}
+\item{aeme}{An Aeme object.}
 }
 \value{
 list of configuration characteristics

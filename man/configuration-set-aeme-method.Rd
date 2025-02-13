@@ -18,5 +18,5 @@ A modified Aeme object with updated configuration slot.
 Update the configuration slot of an aeme object
 }
 \details{
-This method updates the "configuration" slot of a Aeme object with new data.
+This method updates the "configuration" slot of An Aeme object with new data.
 }

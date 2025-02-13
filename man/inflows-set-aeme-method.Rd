@@ -18,5 +18,5 @@ A modified Aeme object with updated inflows slot.
 Update the inflows slot of an Aeme object
 }
 \details{
-This method updates the "inflows" slot of a Aeme object with new data.
+This method updates the "inflows" slot of An Aeme object with new data.
 }
