@@ -15,6 +15,7 @@ build_aeme(
   use_bgc = FALSE,
   print = TRUE,
   calc_wbal = TRUE,
+  wb_method = 2,
   calc_wlev = TRUE,
   use_aeme = FALSE,
   coeffs = NULL,
@@ -47,6 +48,10 @@ outflows. Needs to be named according to the model.}
 \item{print}{logical; print messages. Default = TRUE.}
 
 \item{calc_wbal}{logical; calculate water balance. Default = TRUE.}
+
+\item{wb_method}{numeric; method to use for calculating water balance. Must be
+1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
+outflows calculated). Default = 2}
 
 \item{calc_wlev}{logical; calculate water level.}
 
