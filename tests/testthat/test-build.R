@@ -362,8 +362,7 @@ test_that("building all models and loading to aeme works", {
              model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
              use_bgc = TRUE)
   aeme <- load_configuration(model = model, aeme = aeme,
-                             model_controls = model_controls, path = path,
-                             use_bgc = TRUE)
+                             model_controls = model_controls, path = path)
   cfg <- configuration(aeme)
   chk <- all(sapply(cfg, is.list)) & (is.vector(cfg$dy_cd$ecosystem)) &
     all(sapply(cfg[2:3],\(x) is.list(x[["ecosystem"]])))
@@ -386,7 +385,7 @@ test_that("can build all models and write to new directory", {
              model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
              use_bgc = TRUE)
   aeme <- load_configuration(model = model, aeme = aeme,
-                             path = path, use_bgc = TRUE)
+                             path = path)
 
   path2 <- file.path(tmpdir, "lake-rewrite")
   aeme <- write_configuration(model = model, aeme = aeme,
