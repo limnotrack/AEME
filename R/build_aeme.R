@@ -363,6 +363,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
     # Lake level ----
     w_bal <- water_balance(aeme)
+    w_bal$method <- wb_method
     if (w_bal$use == "obs") {
       level <- aeme_obs[["level"]]
     } else if(w_bal$use == "model") {
@@ -377,7 +378,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (calc_wbal | calc_wlev) {
       wbal <- calc_water_balance(aeme_time = aeme_time,
                                  model = model,
-                                 method = wb_method,
+                                 method = w_bal$method,
                                  use = w_bal$use,
                                  hyps = hyps,
                                  inf = inf,
