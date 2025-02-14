@@ -1,0 +1,87 @@
+---
+title: "Guide to AEME"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Guide to AEME}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(AEME)
+```
+
+# Introduction
+
+We will load in an `Aeme` object and demonstrate how to access data and input 
+variables into the object.
+
+We will use lake Wainamu as an example.
+
+```{r load-aeme}
+rds_file <- system.file("extdata/lernzmp/LID45819.rds", package = "AEME")
+aeme <- readRDS(rds_file)
+class(aeme)
+
+```
+
+The `Aeme` object is an S4 R object that contains all the data and input variables
+required to run the AEME model.
+
+We can view all the slots within this object using the `slotNames` function.
+
+```{r slot-names}
+slotNames(aeme)
+```
+
+## Access data
+
+To access the data from each of the 'slots' within the `Aeme` object, we can use
+functions of the same name as the slot to retrieve the data.
+
+For example, to access the data from the `lake` slot, we can use the `lake()` function.
+
+```{r lake}
+
+lke <- lake(aeme)
+lke
+
+```
+
+Each of the slots is a list containing the data required to run the AEME model.
+
+```{r slot-class}
+class(lke)
+```
+
+## Update data
+
+If you wish to update the data within the `Aeme` object, you must:
+
+1. Extract the data from the slot using the associated function
+2. Update the data
+3. Assign the updated data back to the slot using the associated function
+
+For example, to update the lake name, you can do the following:
+
+```{r update-lake}
+lke <- lake(aeme) # Extract the data
+lke$name <- "Updated Lake Name" # Update the data
+lake(aeme) <- lke # Assign the updated data back to the slot
+aeme
+```
+
+The `Aeme` object now contains the updated lake name.
+
+## Update the input data
+
+To update the input data, you can follow the same process as updating the data.
+
+## Lake
