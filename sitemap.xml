@@ -1,6 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://limnotrack.github.io/AEME/404.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/articles/aeme-inputs.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/articles/guide-aeme.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/articles/index.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/articles/intro-aeme.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/articles/lernzmp-aeme.html</loc></url>
@@ -28,6 +29,7 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/extrap_hyps.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/generate_hypsograph.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_lake_dir.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/get_models.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_model_controls.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_model_outfile.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_mod_obs_vars.html</loc></url>
@@ -92,6 +94,7 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_var.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_wbal.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_zoops.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/read_aeme_from_files.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/read_nml.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/remove_output.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/retrieve_params.html</loc></url>
@@ -108,6 +111,7 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/water_balance-set-aeme-method.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/water_balance-set.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/water_balance.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/write_aeme_to_files.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/write_configuration.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/write_nml.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/write_yaml.html</loc></url>

@@ -19,6 +19,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-aeme.html">Guide to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
@@ -43,7 +44,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">load_configuration</span><span class="op">(</span><span class="va">model</span>, <span class="va">aeme</span>, model_controls <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">path</span>, use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">load_configuration</span><span class="op">(</span><span class="va">model</span>, <span class="va">aeme</span>, model_controls <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">path</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,10 +67,6 @@
 
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
 <dd><p>filepath; where input files are located relative to `config`.</p></dd>
-
-
-<dt id="arg-use-bgc">use_bgc<a class="anchor" aria-label="anchor" href="#arg-use-bgc"></a></dt>
-<dd><p>logical; switch to use the biogeochemical model.</p></dd>
 
 </dl></div>
     <div class="section level2">

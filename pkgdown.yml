@@ -3,10 +3,11 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   aeme-inputs: aeme-inputs.html
+  guide-aeme: guide-aeme.html
   intro-aeme: intro-aeme.html
   articles/lernzmp-aeme: lernzmp-aeme.html
   setup-new-lake: setup-new-lake.html
-last_built: 2025-02-13T23:58Z
+last_built: 2025-02-14T04:41Z
 urls:
   reference: https://limnotrack.github.io/AEME/reference
   article: https://limnotrack.github.io/AEME/articles
