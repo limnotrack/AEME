@@ -637,8 +637,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
   # Load model configuration ----
   aeme <- load_configuration(model = model, aeme = aeme,
-                             model_controls = model_controls, path = path,
-                             use_bgc = use_bgc)
+                             model_controls = model_controls, path = path)
 
   return(aeme)
 }
