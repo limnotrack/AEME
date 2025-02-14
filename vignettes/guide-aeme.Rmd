@@ -73,7 +73,7 @@ For example, to update the lake name, you can do the following:
 
 ```{r update-lake}
 lke <- lake(aeme) # Extract the data
-lke$name <- "Updated Lake Name" # Update the data
+lke$name <- "TEST NAME" # Update the data
 lake(aeme) <- lke # Assign the updated data back to the slot
 aeme
 ```
