@@ -7,11 +7,10 @@
 #'
 #'
 
-load_configuration <- function(model, aeme, model_controls = NULL, path,
-                               use_bgc = FALSE) {
+load_configuration <- function(model, aeme, model_controls = NULL, path) {
 
   lke <- lake(aeme)
-  get_config_args <- list(lake = lke, path = path, use_bgc = use_bgc)
+  get_config_args <- list(lake = lke, path = path)
   model_config <- setNames(
     lapply(model, function(m) do.call(paste0("get_config_", m),
                                       get_config_args)),
@@ -48,7 +47,7 @@ load_configuration <- function(model, aeme, model_controls = NULL, path,
 #'
 #' @return list of physical and bgc model configurations
 #' @noRd
-get_config_dy_cd <- function(lake, path, use_bgc) {
+get_config_dy_cd <- function(lake, path) {
 
   lake_dir <- file.path(path, paste0(lake$id, "_", tolower(lake$name)))
   name <- tolower(lake$name)
@@ -64,6 +63,10 @@ get_config_dy_cd <- function(lake, path, use_bgc) {
   }
   cfg <- readLines(cfg_file)
   out$physical = list(par = par, cfg = cfg)
+
+  # Bio file
+  bio_file <- file.path(lake_dir, "dy_cd", "caedym3p1.bio")
+  use_bgc <- file.exists(bio_file)
 
   if (use_bgc) {
 
@@ -105,7 +108,7 @@ get_config_dy_cd <- function(lake, path, use_bgc) {
 #'
 #' @return list of physical and bgc model configurations
 #' @noRd
-get_config_glm_aed <- function(lake, path, use_bgc) {
+get_config_glm_aed <- function(lake, path) {
 
   lake_dir <- file.path(path, paste0(lake$id, "_", tolower(lake$name)))
   out <- list(physical = NULL, bgc = NULL)
@@ -114,6 +117,9 @@ get_config_glm_aed <- function(lake, path, use_bgc) {
     stop("No GLM nml file present at\n", nml_file)
   }
   out$physical <- read_nml(nml_file = nml_file)
+
+  aed_file <- file.path(lake_dir, "glm_aed", "aed2", "aed2.nml")
+  use_bgc <- file.exists(aed_file)
 
   if (use_bgc) {
     aed_file <- file.path(lake_dir, "glm_aed", "aed2", "aed2.nml")
@@ -147,7 +153,7 @@ get_config_glm_aed <- function(lake, path, use_bgc) {
 #'
 #' @return list of physical and bgc model configurations
 #' @noRd
-get_config_gotm_wet <- function(lake, path, use_bgc) {
+get_config_gotm_wet <- function(lake, path) {
 
   lake_dir <- file.path(path, paste0(lake$id, "_", tolower(lake$name)))
   out <- list(physical = NULL, bgc = NULL)
@@ -165,6 +171,8 @@ get_config_gotm_wet <- function(lake, path, use_bgc) {
     out[["physical"]][["output"]] <- yaml::read_yaml(file = yaml_file)
   })
 
+  fabm_file <- file.path(lake_dir, "gotm_wet", "fabm.yaml")
+  use_bgc <- file.exists(fabm_file)
 
   if (use_bgc) {
     fabm_file <- file.path(lake_dir, "gotm_wet", "fabm.yaml")
