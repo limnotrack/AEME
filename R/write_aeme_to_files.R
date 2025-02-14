@@ -1,6 +1,8 @@
 #' Write an AEME object to files
 #'
 #' @inheritParams build_aeme
+#' @param include_output logical, include output files. Default is FALSE. The
+#' output files can be large and take up a lot of space.
 #'
 #' @returns NULL
 #' @export
@@ -15,7 +17,7 @@
 #' aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
 #' write_aeme_to_files(aeme, path)
 
-write_aeme_to_files <- function(aeme, path) {
+write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
 
   # Create lake directory
   lake_dir <- get_lake_dir(aeme, path)
@@ -96,6 +98,10 @@ write_aeme_to_files <- function(aeme, path) {
 
     # output
     if (slot_name %in% c("output")) {
+
+      if (!include_output) {
+        next
+      }
 
       lke <- lake(aeme)
       max_depth <- lke$depth

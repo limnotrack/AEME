@@ -4,12 +4,15 @@
 \alias{write_aeme_to_files}
 \title{Write an AEME object to files}
 \usage{
-write_aeme_to_files(aeme, path)
+write_aeme_to_files(aeme, path, include_output = FALSE)
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
+
+\item{include_output}{logical, include output files. Default is FALSE. The
+output files can be large and take up a lot of space.}
 }
 \description{
 Write an AEME object to files
