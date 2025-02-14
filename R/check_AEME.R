@@ -14,6 +14,7 @@ check_AEME <- function() {
     aeme <- yaml_to_aeme(path = path, "aeme.yaml")
     })
   })
+  message("Check: Loading Aeme object complete! [", format(Sys.time()), "]")
   lke <- lake(aeme)
   model_controls <- get_model_controls(use_bgc = FALSE)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -26,7 +27,10 @@ check_AEME <- function() {
                          model_controls = model_controls, ext_elev = 2)
     })
   })
+  message("Check: Build Aeme model ensemble configuration complete! [",
+          format(Sys.time()), "]")
 
+  message("Check: Running Aeme model ensemble... [", format(Sys.time()), "]")
   suppressWarnings({
     suppressMessages({
       aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
@@ -34,6 +38,8 @@ check_AEME <- function() {
                    parallel = TRUE, ncores = 2)
     })
   })
+  message("Check: Run Aeme model ensemble complete! [", format(Sys.time()), "]")
+
   dy_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model[1], "DYsim.nc"))
@@ -41,6 +47,8 @@ check_AEME <- function() {
   mod_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
                                                      tolower(lke$name)),
                                         model[-1], "output", "output.nc")))
+  message("Check: Aeme model output present complete! [", format(Sys.time()),
+          "]")
 
   all(c(dy_chk, mod_chk))
 }
