@@ -54,6 +54,7 @@
 <span>  use_bgc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  print <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  calc_wbal <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  wb_method <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  calc_wlev <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  use_aeme <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  coeffs <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -111,6 +112,12 @@ outflows. Needs to be named according to the model.</p></dd>
 <dd><p>logical; calculate water balance. Default = TRUE.</p></dd>
 
 
+<dt id="arg-wb-method">wb_method<a class="anchor" aria-label="anchor" href="#arg-wb-method"></a></dt>
+<dd><p>numeric; method to use for calculating water balance. Must be
+1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
+outflows calculated). Default = 2</p></dd>
+
+
 <dt id="arg-calc-wlev">calc_wlev<a class="anchor" aria-label="anchor" href="#arg-calc-wlev"></a></dt>
 <dd><p>logical; calculate water level.</p></dd>
 
@@ -160,9 +167,6 @@ values. Default = TRUE.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmpdir</span>, <span class="st">"lake"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="yaml_to_aeme.html">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Linking to GEOS 3.12.2, GDAL 3.9.3, PROJ 9.4.1; sf_use_s2() is FALSE</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Lake area [152343 m2] is different to the area calculated from the lake</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> shape [152433.09 m2].</span>
 <span class="r-in"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_model_controls.html">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">inf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
@@ -170,7 +174,7 @@ values. Default = TRUE.</p></dd>
 <span class="r-in"><span><span class="fu">build_aeme</span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>               model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>               use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-02-13 18:46:48]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-02-13 23:56:28]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using constant water level</span>
@@ -182,7 +186,7 @@ values. Default = TRUE.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Lake</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Area: 152343 m2; Shape file: Present</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Area: 152343 m2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Time</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span>

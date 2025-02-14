@@ -98,7 +98,7 @@ model. The <code>aeme</code> object contains the following slots:</p>
 <li>
 <a href="#sec-lake"><strong>lake</strong></a> - a list object
 containing information about the lake (name, id, latitude, longitude,
-elevation, shape, depth, area)</li>
+elevation, depth, area)</li>
 <li>
 <a href="#sec-time"><strong>time</strong></a> - a list object
 containing information about the time (start, stop, time_step,
@@ -299,15 +299,6 @@ function.</p>
 <span><span class="co">#&gt; $elevation</span></span>
 <span><span class="co">#&gt; [1] 23.64</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $shape</span></span>
-<span><span class="co">#&gt; Simple feature collection with 1 feature and 4 fields</span></span>
-<span><span class="co">#&gt; Geometry type: POLYGON</span></span>
-<span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: 174.4645 ymin: -36.89195 xmax: 174.4757 ymax: -36.88648</span></span>
-<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt;   lake_id   name_final    lake elevation                       geometry</span></span>
-<span><span class="co">#&gt; 1   45819 Lake Wainamu wainamu     36.36 POLYGON ((174.4734 -36.8912...</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $depth</span></span>
 <span><span class="co">#&gt; [1] 13.07</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -325,7 +316,7 @@ function.</p>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Lake</span></span>
 <span><span class="co">#&gt; AEME (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;</span></span>
-<span><span class="co">#&gt; Area: 152343 m2; Shape file: Present</span></span>
+<span><span class="co">#&gt; Area: 152343 m2</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Time</span></span>
 <span><span class="co">#&gt; Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span></span>
@@ -389,7 +380,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for AEME [2025-02-13 18:48:01]</span></span>
+<span><span class="co">#&gt; Building simulation for AEME [2025-02-13 23:57:35]</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
 <span><span class="co">#&gt; Missing values in observed water level</span></span>
 <span><span class="co">#&gt; Using constant water level</span></span>
@@ -412,7 +403,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Lake</span></span>
 <span><span class="co">#&gt; AEME (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;</span></span>
-<span><span class="co">#&gt; Area: 152343 m2; Shape file: Present</span></span>
+<span><span class="co">#&gt; Area: 152343 m2</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Time</span></span>
 <span><span class="co">#&gt; Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span></span>
