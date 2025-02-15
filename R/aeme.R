@@ -1047,7 +1047,7 @@ setMethod("show", "Aeme", function(object) {
     "Number of parameters: ", nrow(params),
     "\n-------------------------------------------------------------------\n",
     "  Output: ", "\n",
-    "Number of ensembles: ", outp$n_members,
+    # "Number of ensembles: ", outp$n_members,
     "\nDY-CD:    ", paste(n_dyresm, collapse = " "),
     "\nGLM-AED:  ", paste(n_glm, collapse = " "),
     "\nGOTM-WET: ", paste(n_gotm, collapse = " "),
