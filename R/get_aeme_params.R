@@ -1,4 +1,4 @@
-#' Retrieve parameters for each model
+#' Make parameters dataframe for AEME
 #'
 #' @inheritParams build_aeme
 #' @param module character; vector of modules to retrieve parameters for.
@@ -11,7 +11,7 @@
 #' @importFrom dplyr bind_rows filter
 #'
 
-retrieve_params <- function(model, module, name, par) {
+get_aeme_parameters <- function(model, module, name, par) {
 
   accept_model <- c("dy_cd", "glm_aed", "gotm_wet")
 
