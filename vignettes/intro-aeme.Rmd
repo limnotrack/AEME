@@ -20,26 +20,32 @@ knitr::opts_chunk$set(
 library(AEME)
 ## basic example code
 tmpdir <- tempdir()
-aeme_dir <- system.file("extdata/lake/", package = "AEME")
-# Copy files from package into tempdir
-file.copy(aeme_dir, tmpdir, recursive = TRUE)
-path <- file.path(tmpdir, "lake")
-yaml <- yaml::read_yaml(file.path(path, "aeme.yaml"))
-str(yaml)
-# aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+aeme_file <- system.file("extdata/lernzmp/LID45819.rds", package = "AEME")
+aeme <- readRDS(aeme_file)
 # slotNames(aeme)
 
-# convert list into a tree structure
-lake_names <- paste0(names(yaml$lake), collapse = ", ")
-time_names <- paste0(names(yaml$time), collapse = ", ")
-config_names <- paste0(names(yaml$configuration), collapse = ", ")
-obs_names <- paste0(names(yaml$observations), collapse = ", ")
-input_names <- paste0(names(yaml$inputs), collapse = ", ")
-inflow_names <- paste0(names(yaml$inflows), collapse = ", ")
-outflow_names <- paste0(names(yaml$outflows), collapse = ", ")
-water_balance_names <- paste0(names(yaml$water_balance), collapse = ", ")
-output_names <- paste0(names(yaml$outputs), collapse = ", ")
+lke <- lake(aeme)
+tme <- time(aeme)
+cfg <- configuration(aeme)
+obs <- observations(aeme)
+inp <- input(aeme)
+inf <- inflows(aeme)
+outf <- outflows(aeme)
+wbal <- water_balance(aeme)
+outp <- output(aeme)
+pars <- parameters(aeme)
 
+# convert list into a tree structure
+lake_names <- paste0(names(lke), collapse = ", ")
+time_names <- paste0(names(tme), collapse = ", ")
+config_names <- paste0(names(cfg), collapse = ", ")
+obs_names <- paste0(names(obs), collapse = ", ")
+input_names <- paste0(names(inp), collapse = ", ")
+inflow_names <- paste0(names(inf), collapse = ", ")
+outflow_names <- paste0(names(outf), collapse = ", ")
+water_balance_names <- paste0(names(wbal), collapse = ", ")
+output_names <- paste0(names(outp), collapse = ", ")
+parameter_names <- paste0(names(pars), collapse = ", ")
 
 ```
 
@@ -73,25 +79,27 @@ the following slots:
     (`r lake_names`)
 -   [**time**](#sec-time) - a list object containing information about the time
     (`r time_names`)
--   [**configuration**](#sec-configuration) - a list object containing information about the
-    configuration (`r config_names`)
--   [**observations**](#sec-observations) - a list object containing information about the
-    observations (`r obs_names`)
--   **inputs** - a list object containing information about the inputs
-    (`r input_names`)
--   **inflows** - a list object containing information about the inflows
-    (`r inflow_names`)
--   **outflows** - a list object containing information about the outflows
-    (`r outflow_names`)
--   **water_balance** - a list object containing information about the water
-    balance configuration (`r water_balance_names`)
--   **outputs** - a list object containing information about the outputs
-    (`r output_names`)
+-   [**configuration**](#sec-configuration) - a list object containing
+    information about the configuration (`r config_names`)
+-   [**observations**](#sec-observations) - a list object containing information
+    about the observations (`r obs_names`)
+-   [**inputs**](#sec-inputs) - a list object containing information about the
+    inputs (`r input_names`)
+-   [**inflows**](#sec-inflows) - a list object containing information about the
+    inflows (`r inflow_names`)
+-   [**outflows**](#sec-outflows) - a list object containing information about
+    the outflows (`r outflow_names`)
+-   [**water_balance**](#sec-water_balance) - a list object containing
+    information about the water balance configuration (`r water_balance_names`)
+-   [**parameters**](#sec-parameters) - a data.frame describing the parameters
+    to be input with column names (`r parameter_names`)
+-   [**outputs**](#sec-outputs) - a list object containing information about the
+    outputs (`r output_names`)
 
 #### Lake {#sec-lake}
 
-The `lake` slot contains information about the lake. It is a list
-object that contains the following objects:
+The `lake` slot contains information about the lake. It is a list object that
+contains the following objects:
 
 -   name - Name of the lake (character).
 
@@ -119,8 +127,8 @@ Objects in **bold** are required for building and running the model.
 
 #### Time {#sec-time}
 
-The `time` slot contains information about the time. It is a list
-object that contains the following objects:
+The `time` slot contains information about the time. It is a list object that
+contains the following objects:
 
 -   **start** - Start date of the simulation (character). The start date must be
     in the format `YYYY-MM-DD HH:MM:SS`.
@@ -143,11 +151,11 @@ The `configuration` slot is a list that contains each of the model
 configurations. This includes the configurations files for the hydrodynamic
 components as well as the aquatic ecosystem model components:
 
-| Model         | Hyrodynamic                         | Ecosystem                                                        |
+| Model | Hyrodynamic | Ecosystem |
 |--------------------|---------------------------|---------------------------------|
-| DYRESM-CAEDYM | *.cfg* file and *.par* file         | *.con*, *caedym3p1.bio, caedym3p1.chm* and *caedym3p1.sed* files |
-| GLM-AED       | *glm3.nml* file                     | *aed2.nml*, *phytos.nml*, *zoops.nml* files                      |
-| GOTM-WET      | *gotm.yaml* and *output.yaml* files | *fabm.yaml* file                                                 |
+| DYRESM-CAEDYM | *.cfg* file and *.par* file | *.con*, *caedym3p1.bio, caedym3p1.chm* and *caedym3p1.sed* files |
+| GLM-AED | *glm3.nml* file | *aed2.nml*, *phytos.nml*, *zoops.nml* files |
+| GOTM-WET | *gotm.yaml* and *output.yaml* files | *fabm.yaml* file |
 
 : Files for hydrodynamic and ecosystem models.
 
@@ -155,10 +163,9 @@ components as well as the aquatic ecosystem model components:
 
 The `observations` slot is a list that contains observations of in-lake (`lake`)
 variables (e.g. water temperature, chlorophyll-a, dissolved oxygen etc.) and
-water level (`level`). The observations are used to assess model performance 
-using the function \code{assess_model()} and
-also to calibrate the model using the
-[aemetools](https://github.com/limnotrack/aemetools) package. 
+water level (`level`). The observations are used to assess model performance
+using the function \code{assess_model()} and also to calibrate the model using
+the [aemetools](https://github.com/limnotrack/aemetools) package.
 
 The `lake` observations are stored in a data frame with the following columns:
 
@@ -169,17 +176,132 @@ The `lake` observations are stored in a data frame with the following columns:
     metres.
 
 -   **var** - Variable name of the observation (character). The variable names
-    an input preparation are designed in the [AEME inputs article](aeme-inputs.html).
-    
+    an input preparation are designed in the [AEME inputs
+    article](aeme-inputs.html).
+
 -   **value** - Value of the observation (numeric).
 
 The `level` observations are stored in a data frame with the following columns:
 
 -   **Date** - Date of the observation (character). The date must be in the
     format `YYYY-MM-DD HH:MM:SS`.
-    
+
 -   **value** - Value of the observation (numeric).
 
+#### Input {#sec-inputs}
+
+The `input` slot is a list that contains the following objects:
+
+-   init_profile - profile to initialise the lake simulation (data.frame). It
+    has the columns: "depth", "temperature" and "salt". If this is not provided,
+    it is automatically generated using the values in the
+    [`model_controls`](#sec-model_controls).
+
+-   init_depth - depth of the lake when initialising the model (vector), If not
+    provided, will assume the depth from the `hypsograph`.
+
+-   **hypsograph** - the lake hypsograph. This is a data.frame with the columns
+    "elev", "depth" and "area". If you do not have this data, you can generate
+    one using the `generate_hypsograph()` function.
+
+-   **meteo** - the meteorological data. A data.frame which at a minimum must
+    contain the columns date ("Date"), air temperature ("MET_tmpair), wind speed
+    ("MET_wndspd") and shortwave radiation ("MET_radswd"). See [AEME
+    Inputs](https://limnotrack.github.io/AEME/articles/aeme-inputs.html#meteorological-data)
+
+-   use_lw - Logical switch to use longwave radiation. Defaults to TRUE.
+
+-   **Kw** - the light extinction coefficient ($m^{-1}$).
+
+#### Inflows {#sec-inflows}
+
+The inflows slot is a list that contains the following objects:
+
+-   data - named list of data.frames which contain the columns date ("Date"),
+    flow ("HYD_flow"; $m^3 day^{-1}$). Temperature can also be provided
+    ("HYD_temp"), however if not provided then it will be estimated using air
+    temperature. The name for the list will be used as the stream identifier in
+    each model. If `method` in the water_balance section is set to`3`, then
+    "wbal" will be added to the data, this contains a separate inflow for each
+    model, estimated using the different evaporation functions inside each
+    model.
+
+-   factor - list of scaling factors to be applied to the inflows. Named
+    according to each model.
+
+If no inflows are present then this slot will be empty.
+
+#### Outflows {#sec-outflows}
+
+The outflows slot is a list that contains the following objects:
+
+-   data - named list of data.frames which contain the columns date ("Date"),
+    flow ("HYD_flow"; $m^3 day^{-1}$). If `method` in the water_balance section
+    is set to `2` or `3`, then "wbal" will be added to the data, this contains a
+    separate outflow for each model, estimated using the different evaporation
+    functions inside each model.
+
+-   factor - list of scaling factors to be applied to the outflows. Named
+    according to each model. However, this can also be passed as a parameter in
+    the model_parameters section and calibrated there. This is the preferred
+    method for applying scaling factors.
+
+If no outflows are present then this slot will be empty.
+
+#### Water balance
+
+The water balance slot is generated internally when the `build_aeme()` function
+is called and the `wb_method` is set to `2` or `3`. The slot contains:
+
+-   use: define which lake level to use. Can either be observed ("obs") or
+    modelled ("mod") lake level. Default = "obs".
+
+-   method: This can be `1` (no inflows or outflows) or `2` (outflows
+    calculated) or `3` (inflows and outflows calculated). The default is `2` .
+
+-   data: list of two data.frames. "wbal" which contains the diagnostics for
+    estimating evaporation and water balance for each model and "model" which
+    contains the modelled lake water level if `use` is "mod".
+
+#### Parameters
+
+The parameters slot contains a data.frame of parameters which are used when
+building the model. These will update the default model parameters or scale the
+meteorological or scale the inflows and outflows for each model.
+
+The columns for the parameters data.frame are:
+
+-   model - Either "dy_cd", "glm_aed" and "gotm_wet".
+
+-   file - Either the name of the file e.g. "glm3.nml" for model specific files
+    or "met" for meteorological variables or "inf" for inflow or "wdr" for
+    outflows. (Outflows were initiallly referred to as withdrawals, hence the
+    "wdr" notation, this will probably be updated to reflect the current
+    outflows slot soon...).
+
+-   name - Name of the parameter. If the name of the parameter is nested in a
+    nml/yaml file, then the whole hierarchy needs to be provide with each level
+    separated by a "/" e.g. "light/Kw" for Kw in GLM-AED.
+
+-   value - Value of the parameter.
+
+-   min - Minimum range of the parameter. This is used in the
+    `aemetools::calib_aeme()` and `aemetools::sa_aeme()` function.
+
+-   max - Maximum range of the parameter. This is used in the
+    `aemetools::calib_aeme()` and `aemetools::sa_aeme()` function.
+
+-   module - Module that the parameter is in. Not necessary, but is helpful for
+    identifying which parameters are in which module for GLM-AED and GOTM-WET.
+
+-   group - Phytoplankton group. This is only used for GOTM-WET phytoplankton
+    parameters.
+
+There is a function `get_aeme_parameters()` which allows you to select
+parameters based on model and module. See `?get_aeme_parameters()` for more
+details.
+
+#### Output
 
 ### Creation
 
