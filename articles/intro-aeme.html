@@ -65,7 +65,6 @@
 
     
     
-<p><img src="articles/images/logo.png" width="120"></p>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
@@ -101,32 +100,38 @@ containing information about the lake (name, id, latitude, longitude,
 elevation, depth, area)</li>
 <li>
 <a href="#sec-time"><strong>time</strong></a> - a list object
-containing information about the time (start, stop, time_step,
-spin_up)</li>
+containing information about the time (start, stop, spin_up,
+time_step)</li>
 <li>
 <a href="#sec-configuration"><strong>configuration</strong></a> - a
-list object containing information about the configuration (dy_cd,
-glm_aed, gotm_wet)</li>
+list object containing information about the configuration
+(model_controls, dy_cd, glm_aed, gotm_wet)</li>
 <li>
 <a href="#sec-observations"><strong>observations</strong></a> - a
 list object containing information about the observations (lake,
 level)</li>
 <li>
-<strong>inputs</strong> - a list object containing information about
-the inputs ()</li>
+<a href="#sec-inputs"><strong>inputs</strong></a> - a list object
+containing information about the inputs (init_profile, init_depth,
+hypsograph, meteo, use_lw, Kw)</li>
 <li>
-<strong>inflows</strong> - a list object containing information
-about the inflows (data, factor)</li>
+<a href="#sec-inflows"><strong>inflows</strong></a> - a list object
+containing information about the inflows (data, factor)</li>
 <li>
-<strong>outflows</strong> - a list object containing information
-about the outflows (data, factor, lvl)</li>
+<a href="#sec-outflows"><strong>outflows</strong></a> - a list
+object containing information about the outflows (data, outflow_lvl,
+factor)</li>
 <li>
-<strong>water_balance</strong> - a list object containing
-information about the water balance configuration (method, use,
-data)</li>
+<a href="#sec-water_balance"><strong>water_balance</strong></a> - a
+list object containing information about the water balance configuration
+(use, method, data)</li>
 <li>
-<strong>outputs</strong> - a list object containing information
-about the outputs ()</li>
+<a href="#sec-parameters"><strong>parameters</strong></a> - a
+data.frame describing the parameters to be input with column names
+(model, file, name, value, min, max, module, group)</li>
+<li>
+<a href="#sec-outputs"><strong>outputs</strong></a> - a list object
+containing information about the outputs (n_members)</li>
 </ul>
 <div class="section level4">
 <h4 id="sec-lake">Lake<a class="anchor" aria-label="anchor" href="#sec-lake"></a>
@@ -256,16 +261,174 @@ date must be in the format <code>YYYY-MM-DD HH:MM:SS</code>.</p></li>
 (numeric).</p></li>
 </ul>
 </div>
+<div class="section level4">
+<h4 id="sec-inputs">Input<a class="anchor" aria-label="anchor" href="#sec-inputs"></a>
+</h4>
+<p>The <code>input</code> slot is a list that contains the following
+objects:</p>
+<ul>
+<li><p>init_profile - profile to initialise the lake simulation
+(data.frame). It has the columns: “depth”, “temperature” and “salt”. If
+this is not provided, it is automatically generated using the values in
+the <a href="#sec-model_controls"><code>model_controls</code></a>.</p></li>
+<li><p>init_depth - depth of the lake when initialising the model
+(vector), If not provided, will assume the depth from the
+<code>hypsograph</code>.</p></li>
+<li><p><strong>hypsograph</strong> - the lake hypsograph. This is a
+data.frame with the columns “elev”, “depth” and “area”. If you do not
+have this data, you can generate one using the
+<code><a href="../reference/generate_hypsograph.html">generate_hypsograph()</a></code> function.</p></li>
+<li><p><strong>meteo</strong> - the meteorological data. A data.frame
+which at a minimum must contain the columns date (“Date”), air
+temperature (“MET_tmpair), wind speed (”MET_wndspd”) and shortwave
+radiation (“MET_radswd”). See <a href="https://limnotrack.github.io/AEME/articles/aeme-inputs.html#meteorological-data">AEME
+Inputs</a></p></li>
+<li><p>use_lw - Logical switch to use longwave radiation. Defaults to
+TRUE.</p></li>
+<li><p><strong>Kw</strong> - the light extinction coefficient
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>m</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">m^{-1}</annotation></semantics></math>).</p></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="sec-inflows">Inflows<a class="anchor" aria-label="anchor" href="#sec-inflows"></a>
+</h4>
+<p>The inflows slot is a list that contains the following objects:</p>
+<ul>
+<li><p>data - named list of data.frames which contain the columns date
+(“Date”), flow (“HYD_flow”;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>m</mi><mn>3</mn></msup><mi>d</mi><mi>a</mi><msup><mi>y</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m^3 day^{-1}</annotation></semantics></math>).
+Temperature can also be provided (“HYD_temp”), however if not provided
+then it will be estimated using air temperature. The name for the list
+will be used as the stream identifier in each model. If
+<code>method</code> in the water_balance section is set
+to<code>3</code>, then “wbal” will be added to the data, this contains a
+separate inflow for each model, estimated using the different
+evaporation functions inside each model.</p></li>
+<li><p>factor - list of scaling factors to be applied to the inflows.
+Named according to each model.</p></li>
+</ul>
+<p>If no inflows are present then this slot will be empty.</p>
+</div>
+<div class="section level4">
+<h4 id="sec-outflows">Outflows<a class="anchor" aria-label="anchor" href="#sec-outflows"></a>
+</h4>
+<p>The outflows slot is a list that contains the following objects:</p>
+<ul>
+<li><p>data - named list of data.frames which contain the columns date
+(“Date”), flow (“HYD_flow”;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>m</mi><mn>3</mn></msup><mi>d</mi><mi>a</mi><msup><mi>y</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m^3 day^{-1}</annotation></semantics></math>).
+If <code>method</code> in the water_balance section is set to
+<code>2</code> or <code>3</code>, then “wbal” will be added to the data,
+this contains a separate outflow for each model, estimated using the
+different evaporation functions inside each model.</p></li>
+<li><p>factor - list of scaling factors to be applied to the outflows.
+Named according to each model. However, this can also be passed as a
+parameter in the model_parameters section and calibrated there. This is
+the preferred method for applying scaling factors.</p></li>
+</ul>
+<p>If no outflows are present then this slot will be empty.</p>
+</div>
+<div class="section level4">
+<h4 id="water-balance">Water balance<a class="anchor" aria-label="anchor" href="#water-balance"></a>
+</h4>
+<p>The water balance slot is generated internally when the
+<code><a href="../reference/build_aeme.html">build_aeme()</a></code> function is called and the
+<code>wb_method</code> is set to <code>2</code> or <code>3</code>. The
+slot contains:</p>
+<ul>
+<li><p>use: define which lake level to use. Can either be observed
+(“obs”) or modelled (“mod”) lake level. Default = “obs”.</p></li>
+<li><p>method: This can be <code>1</code> (no inflows or outflows) or
+<code>2</code> (outflows calculated) or <code>3</code> (inflows and
+outflows calculated). The default is <code>2</code> .</p></li>
+<li><p>data: list of two data.frames. “wbal” which contains the
+diagnostics for estimating evaporation and water balance for each model
+and “model” which contains the modelled lake water level if
+<code>use</code> is “mod”.</p></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
+</h4>
+<p>The parameters slot contains a data.frame of parameters which are
+used when building the model. These will update the default model
+parameters or scale the meteorological or scale the inflows and outflows
+for each model.</p>
+<p>The columns for the parameters data.frame are:</p>
+<ul>
+<li><p>model - Either “dy_cd”, “glm_aed” and “gotm_wet”.</p></li>
+<li><p>file - Either the name of the file e.g. “glm3.nml” for model
+specific files or “met” for meteorological variables or “inf” for inflow
+or “wdr” for outflows. (Outflows were initiallly referred to as
+withdrawals, hence the “wdr” notation, this will probably be updated to
+reflect the current outflows slot soon…).</p></li>
+<li><p>name - Name of the parameter. If the name of the parameter is
+nested in a nml/yaml file, then the whole hierarchy needs to be provide
+with each level separated by a “/” e.g. “light/Kw” for Kw in
+GLM-AED.</p></li>
+<li><p>value - Value of the parameter.</p></li>
+<li><p>min - Minimum range of the parameter. This is used in the
+<code><a href="https://limnotrack.github.io/aemetools/reference/calib_aeme.html" class="external-link">aemetools::calib_aeme()</a></code> and
+<code><a href="https://limnotrack.github.io/aemetools/reference/sa_aeme.html" class="external-link">aemetools::sa_aeme()</a></code> function.</p></li>
+<li><p>max - Maximum range of the parameter. This is used in the
+<code><a href="https://limnotrack.github.io/aemetools/reference/calib_aeme.html" class="external-link">aemetools::calib_aeme()</a></code> and
+<code><a href="https://limnotrack.github.io/aemetools/reference/sa_aeme.html" class="external-link">aemetools::sa_aeme()</a></code> function.</p></li>
+<li><p>module - Module that the parameter is in. Not necessary, but is
+helpful for identifying which parameters are in which module for GLM-AED
+and GOTM-WET.</p></li>
+<li><p>group - Phytoplankton group. This is only used for GOTM-WET
+phytoplankton parameters.</p></li>
+</ul>
+<p>There is a function <code><a href="../reference/get_aeme_parameters.html">get_aeme_parameters()</a></code> which allows
+you to select parameters based on model and module. See
+<code>?get_aeme_parameters()</code> for more details.</p>
+</div>
+<div class="section level4">
+<h4 id="output">Output<a class="anchor" aria-label="anchor" href="#output"></a>
+</h4>
+</div>
 </div>
 <div class="section level3">
 <h3 id="creation">Creation<a class="anchor" aria-label="anchor" href="#creation"></a>
 </h3>
-<p>The <code>aeme</code> object can be created from a YAML file using
-the <code>yaml_to_aeme</code> function. The YAML file contains all the
-information required to run the model.</p>
+<p>The <code>aeme</code> object can be created using the
+<code><a href="../reference/aeme_constructor.html">aeme_constructor()</a></code> function. It requires the basic inputs
+to from a YAML file using the <code>yaml_to_aeme</code> function. The
+YAML file contains all the information required to run the model.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yaml_to_aeme.html">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
-<span><span class="fu">slotNames</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Define lake list</span></span>
+<span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">36.88921</span></span>
+<span><span class="va">lon</span> <span class="op">&lt;-</span> <span class="fl">174.4669</span></span>
+<span><span class="va">depth</span> <span class="op">&lt;-</span> <span class="fl">13.08</span></span>
+<span><span class="va">area</span> <span class="op">&lt;-</span> <span class="fl">153648</span></span>
+<span></span>
+<span><span class="va">lake</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    latitude <span class="op">=</span> <span class="va">lat</span>,</span>
+<span>    longitude <span class="op">=</span> <span class="va">lon</span>,</span>
+<span>    <span class="co"># elevation = elevation,</span></span>
+<span>    depth <span class="op">=</span> <span class="va">depth</span>,</span>
+<span>    area <span class="op">=</span> <span class="va">area</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2020-07-01"</span><span class="op">)</span>,</span>
+<span>  stop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2022-06-30"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hypsograph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_hypsograph.html">generate_hypsograph</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="va">depth</span>, surface_area <span class="op">=</span> <span class="va">area</span>,</span>
+<span>                                  volume_development <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_point.html" class="external-link">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2022</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#' Define input list</span></span>
+<span><span class="va">input</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  hypsograph <span class="op">=</span> <span class="va">hypsograph</span>,</span>
+<span>  meteo <span class="op">=</span> <span class="va">met</span>,</span>
+<span>  Kw <span class="op">=</span> <span class="fl">1.21</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aeme_constructor.html">aeme_constructor</a></span><span class="op">(</span>lake <span class="op">=</span> <span class="va">lake</span>, time <span class="op">=</span> <span class="va">time</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">slotNames</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "lake"          "time"          "configuration" "observations" </span></span>
 <span><span class="co">#&gt;  [5] "input"         "inflows"       "outflows"      "water_balance"</span></span>
 <span><span class="co">#&gt;  [9] "output"        "parameters"</span></span></code></pre></div>
@@ -279,7 +442,7 @@ information required to run the model.</p>
 slot names of the <code>aeme</code> object. For example, the
 <code>lake</code> slot can be manipulated using the <code>lake</code>
 function.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load lake data</span></span>
 <span><span class="va">lke</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lake.html">lake</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co"># Print lake data to console</span></span>
@@ -288,22 +451,22 @@ function.</p>
 <span><span class="co">#&gt; [1] "Wainamu"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $id</span></span>
-<span><span class="co">#&gt; [1] "45819"</span></span>
+<span><span class="co">#&gt; [1] "LID45819"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $latitude</span></span>
-<span><span class="co">#&gt; [1] -36.8898</span></span>
+<span><span class="co">#&gt; [1] -36.88921</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $longitude</span></span>
-<span><span class="co">#&gt; [1] 174.469</span></span>
+<span><span class="co">#&gt; [1] 174.4669</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $elevation</span></span>
-<span><span class="co">#&gt; [1] 23.64</span></span>
+<span><span class="co">#&gt; [1] 23.2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $depth</span></span>
-<span><span class="co">#&gt; [1] 13.07</span></span>
+<span><span class="co">#&gt; [1] 13.48</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $area</span></span>
-<span><span class="co">#&gt; [1] 152343</span></span>
+<span><span class="co">#&gt; [1] 153648</span></span>
 <span></span>
 <span><span class="co"># Change lake name</span></span>
 <span><span class="va">lke</span><span class="op">[[</span><span class="st">"name"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"AEME"</span></span>
@@ -315,26 +478,26 @@ function.</p>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Lake</span></span>
-<span><span class="co">#&gt; AEME (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;</span></span>
-<span><span class="co">#&gt; Area: 152343 m2</span></span>
+<span><span class="co">#&gt; AEME (ID: LID45819); Lat: -36.89; Lon: 174.47; Elev: 23.2m; Depth: 13.48m;</span></span>
+<span><span class="co">#&gt; Area: 153648 m2</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Time</span></span>
-<span><span class="co">#&gt; Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span></span>
-<span><span class="co">#&gt;  Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1</span></span>
+<span><span class="co">#&gt; Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600</span></span>
+<span><span class="co">#&gt;  Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Configuration</span></span>
-<span><span class="co">#&gt;     Model controls: Absent </span></span>
+<span><span class="co">#&gt;     Model controls: Present</span></span>
 <span><span class="co">#&gt;           Physical   |   Biogeochemical</span></span>
 <span><span class="co">#&gt; DY-CD    : Absent     |   Absent </span></span>
-<span><span class="co">#&gt; GLM-AED  : Absent     |   Absent </span></span>
-<span><span class="co">#&gt; GOTM-WET : Absent     |   Absent </span></span>
+<span><span class="co">#&gt; GLM-AED  : Present    |   Present</span></span>
+<span><span class="co">#&gt; GOTM-WET : Present    |   Present</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Observations</span></span>
-<span><span class="co">#&gt; Lake: Present; Level: Present</span></span>
+<span><span class="co">#&gt; Lake: Present; Level: Absent</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Input</span></span>
-<span><span class="co">#&gt; Inital profile: Absent; Inital depth: 13.07m; Hypsograph: Present (n=132);</span></span>
-<span><span class="co">#&gt; Meteo: Present; Use longwave: TRUE; Kw: 1.31</span></span>
+<span><span class="co">#&gt; Inital profile: Present; Inital depth: 13.48m; Hypsograph: Present (n=53);</span></span>
+<span><span class="co">#&gt; Meteo: Present; Use longwave: TRUE; Kw: 1.214286</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Inflows</span></span>
 <span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
@@ -343,10 +506,10 @@ function.</p>
 <span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Water balance</span></span>
-<span><span class="co">#&gt; Method: 2; Use: obs; Modelled: Absent; Water balance: Absent</span></span>
+<span><span class="co">#&gt; Method: 2; Use: obs; Modelled: Absent; Water balance: Present</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Parameters: </span></span>
-<span><span class="co">#&gt; Number of parameters: 0</span></span>
+<span><span class="co">#&gt; Number of parameters: 18</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Output: </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -361,10 +524,10 @@ function.</p>
 applied to the different slots of the <code>aeme</code> object. For
 example, the <code>lake</code> slot can be visualised using the
 <code>plot</code> function.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"lake"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro-aeme_files/figure-html/aeme-visualisation-lake-1.png" width="672"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"input"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro-aeme_files/figure-html/aeme-visualisation-input-1.png" width="672"></p>
 </div>
@@ -372,20 +535,33 @@ example, the <code>lake</code> slot can be visualised using the
 <div class="section level2">
 <h2 id="build-model-ensemble">Build Model Ensemble<a class="anchor" aria-label="anchor" href="#build-model-ensemble"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">inf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span>
+<span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"aeme"</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for AEME [2025-02-15 02:10:49]</span></span>
-<span><span class="co">#&gt; Using observed water level</span></span>
-<span><span class="co">#&gt; Missing values in observed water level</span></span>
-<span><span class="co">#&gt; Using constant water level</span></span>
+<span><span class="co">#&gt; Building simulation for AEME [2025-02-15 02:41:01]</span></span>
+<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
+<span><span class="co">#&gt; Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
+<span><span class="co">#&gt; Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
+<span><span class="co">#&gt; Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
+<span><span class="co">#&gt; Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
+<span><span class="co">#&gt; Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
+<span><span class="co">#&gt; Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
 <span><span class="co">#&gt; Calculating lake level using lake depth and a sinisoidal function.</span></span>
+<span><span class="co">#&gt; Warning in dir.create(lake_dir, showWarnings = TRUE): cannot create dir</span></span>
+<span><span class="co">#&gt; 'aeme\LID45819_aeme', reason 'No such file or directory'</span></span>
 <span><span class="co">#&gt; Building DYRESM-CAEDYM for lake aeme</span></span>
 <span><span class="co">#&gt; Copied in DYRESM par file</span></span>
 <span><span class="co">#&gt; Writing DYRESM configuration</span></span>
@@ -398,16 +574,18 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; Building GOTM-WET for lake aeme</span></span>
 <span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
 <span><span class="co">#&gt; instances/abiotic_water/initialization/sO2W 13 replaced with 10</span></span>
+<span><span class="co">#&gt; Warning in input_model_parameters(aeme = aeme, model = model, param = param, :</span></span>
+<span><span class="co">#&gt; No parameters in 'param' for dy_cd.</span></span>
 <span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Lake</span></span>
-<span><span class="co">#&gt; AEME (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;</span></span>
-<span><span class="co">#&gt; Area: 152343 m2</span></span>
+<span><span class="co">#&gt; AEME (ID: LID45819); Lat: -36.89; Lon: 174.47; Elev: 23.2m; Depth: 13.48m;</span></span>
+<span><span class="co">#&gt; Area: 153648 m2</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Time</span></span>
-<span><span class="co">#&gt; Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span></span>
-<span><span class="co">#&gt;  Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1</span></span>
+<span><span class="co">#&gt; Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600</span></span>
+<span><span class="co">#&gt;  Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Configuration</span></span>
 <span><span class="co">#&gt;     Model controls: Present</span></span>
@@ -417,11 +595,11 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; GOTM-WET : Present    |   Present</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Observations</span></span>
-<span><span class="co">#&gt; Lake: Present; Level: Present</span></span>
+<span><span class="co">#&gt; Lake: Present; Level: Absent</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Input</span></span>
-<span><span class="co">#&gt; Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=44);</span></span>
-<span><span class="co">#&gt; Meteo: Present; Use longwave: TRUE; Kw: 1.31</span></span>
+<span><span class="co">#&gt; Inital profile: Present; Inital depth: 13.48m; Hypsograph: Present (n=54);</span></span>
+<span><span class="co">#&gt; Meteo: Present; Use longwave: TRUE; Kw: 1.214286</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Inflows</span></span>
 <span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
@@ -433,14 +611,14 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; Method: 2; Use: obs; Modelled: Absent; Water balance: Present</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Parameters: </span></span>
-<span><span class="co">#&gt; Number of parameters: 0</span></span>
+<span><span class="co">#&gt; Number of parameters: 18</span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Output: </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; DY-CD:    </span></span>
 <span><span class="co">#&gt; GLM-AED:  </span></span>
 <span><span class="co">#&gt; GOTM-WET:</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
