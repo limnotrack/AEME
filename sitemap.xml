@@ -30,6 +30,7 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/expand_met.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/extrap_hyps.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/generate_hypsograph.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/get_aeme_parameters.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_lake_dir.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_models.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_model_controls.html</loc></url>
@@ -99,7 +100,6 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/read_aeme_from_files.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/read_nml.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/remove_output.html</loc></url>
-<url><loc>https://limnotrack.github.io/AEME/reference/retrieve_params.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/run_aeme.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/set_gotm_grid.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/set_nml.html</loc></url>
