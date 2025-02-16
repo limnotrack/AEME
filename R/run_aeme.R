@@ -246,12 +246,18 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
   setwd(file.path(sim_folder, "glm_aed"))
   unlink("output/output.nc")
   message("GLM-AED running... [", format(Sys.time()), "]")
+  sys_OS <- get_os()
+  if (sys_OS == "windows") {
+    bin_exec <- file.path(bin_path, "glm_aed", "glm.exe")
+  } else if (sys_OS == "osx") {
+    bin_exec <- file.path(bin_path, "glm_aed", "glm")
+  }
   if (verbose) {
-    system2(file.path(bin_path, "glm_aed", "glm.exe"),
+    system2(bin_exec,
             wait = TRUE, stdout = "",
             stderr = "", timeout = timeout)
   } else {
-    out <- system2(file.path(bin_path, "glm_aed", "glm.exe"),
+    out <- system2(bin_exec,
                    wait = TRUE, stdout = TRUE,
                    stderr = TRUE, timeout = timeout)
     success <- sum(grepl("Model Run Complete", out)) == 1
@@ -302,3 +308,20 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
   }
 }
 
+#' Check model output
+#' @noRd
+get_os <- function() {
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
+  }
+  tolower(os)
+}
