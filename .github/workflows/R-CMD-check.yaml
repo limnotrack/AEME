@@ -19,7 +19,7 @@ jobs:
       matrix:
         config:
           - {os: windows-latest, r: 'release'}
-          - {os: macos-latest, r: 'release', args: '--no-build-vignettes'}
+          - {os: macos-latest, r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GH_ACTIONS }}
@@ -46,3 +46,4 @@ jobs:
         with:
           upload-snapshots: true
           error-on: '"error"'
+          build_args: '"--no-build-vignettes"'
