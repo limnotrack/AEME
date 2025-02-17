@@ -50,3 +50,4 @@ URL: https://limnotrack.github.io/AEME/
 VignetteBuilder: knitr
 Remotes: 
     github::limnotrack/aemetools
+Config/Needs/website: rmarkdown
