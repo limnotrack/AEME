@@ -19,7 +19,7 @@ jobs:
       matrix:
         config:
           - {os: windows-latest, r: 'release'}
-          - {os: macos-latest, r: 'release'}
+          - {os: macos-latest, r: 'release', args: '--no-build-vignettes'}
 
     env:
       GITHUB_PAT: ${{ secrets.GH_ACTIONS }}
