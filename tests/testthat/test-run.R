@@ -894,7 +894,8 @@ test_that("running all models with new parameters works", {
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- c("glm_aed")
-  }aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  }
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE, ext_elev = 5)
 
