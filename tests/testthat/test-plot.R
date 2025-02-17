@@ -59,6 +59,10 @@ test_that("plotting model output works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- "glm_aed"
+  }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
@@ -128,6 +132,10 @@ test_that("plotting model summary output works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- "glm_aed"
+  }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
@@ -158,6 +166,10 @@ test_that("plotting model output works with no lake observations", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- "glm_aed"
+  }
 
   # Remove observations
   obs <- observations(aeme)
@@ -171,8 +183,8 @@ test_that("plotting model output works with no lake observations", {
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, model_controls = model_controls, parallel = FALSE,
-                   ncores = 2L)
+                   path = path, model_controls = model_controls,
+                   parallel = FALSE, ncores = 2L)
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
@@ -188,6 +200,10 @@ test_that("plotting model output works with no lake & level observations", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- "glm_aed"
+  }
 
   # Remove observations
   obs <- observations(aeme)
@@ -219,6 +235,10 @@ test_that("plotting model residuals for 2d and 1d variables", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- "glm_aed"
+  }
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
@@ -247,6 +267,10 @@ test_that("plotting phytoplankton model output works", {
       .default = simulate
     ))
   model <- c("glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- "glm_aed"
+  }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE)

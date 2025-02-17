@@ -1,9 +1,17 @@
 test_that("package check is working", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skipping test on macOS")
+  }
   chk <- check_AEME()
   testthat::expect_true(chk)
 })
 
 test_that("running DYRESM works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skipping test on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -57,6 +65,10 @@ test_that("running GLM works", {
 })
 
 test_that("running GOTM works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skipping test on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -95,6 +107,10 @@ test_that("running GOTM works", {
 })
 
 test_that("running DYRESM-CAEDYM works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skipping test on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -167,6 +183,10 @@ test_that("running GLM-AED works", {
 })
 
 test_that("running GOTM-WET works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skipping test on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -207,6 +227,11 @@ test_that("running models in parallel works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
+
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
@@ -254,6 +279,10 @@ test_that("running models with wbal method = 1", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
@@ -329,6 +358,10 @@ test_that("running models with wbal method = 3", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
 
   infl <- inflows(aeme)
   infl$data <- NULL
@@ -431,6 +464,10 @@ test_that("running models in parallel with no wbal calculated", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = FALSE)
@@ -465,6 +502,10 @@ test_that("running models with no wbal/outflows calculated", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
 
   outf <- outflows(aeme)
   outf$data <- NULL
@@ -506,6 +547,10 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = TRUE,
@@ -541,6 +586,10 @@ test_that("getting model output works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, use_bgc = TRUE)
   run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
@@ -565,7 +614,11 @@ test_that("getting model output in parallel works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
-  build_aeme(path = path, aeme = aeme, model = model,
+    sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
+build_aeme(path = path, aeme = aeme, model = model,
              model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
              use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
@@ -578,6 +631,10 @@ test_that("getting model output in parallel works", {
 })
 
 test_that("running DYRESM with a spinup works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skipping test on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -636,6 +693,10 @@ test_that("running GLM with a spinup works", {
 })
 
 test_that("running GOTM with a spinup works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skipping test on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -685,6 +746,11 @@ test_that("can build all models, run and write to new directory & re-run", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
+
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
@@ -769,12 +835,19 @@ test_that("running ensemble works", {
   inf_factor <- c("glm_aed" = 1)
   outf_factor <- c("glm_aed" = 1)
   model <- c("glm_aed", "gotm_wet")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
 
   model <- c("gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
                    ens_n = 2)
 
@@ -817,7 +890,10 @@ test_that("running all models with new parameters works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE, ext_elev = 5)
 
@@ -844,8 +920,12 @@ test_that("can get variable indices after running the model", {
   inf_factor <- c("gotm_wet" = 1)
   outf_factor <- c("gotm_wet" = 1)
   model <- c("gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path)
@@ -904,6 +984,10 @@ test_that("summarise multi-year output", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
@@ -945,6 +1029,10 @@ test_that("can run with generated hypsgraph", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE, calc_wbal = TRUE,

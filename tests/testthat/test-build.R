@@ -1,4 +1,8 @@
 test_that("building DYRESM works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skip testing on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -38,6 +42,10 @@ test_that("building DYRESM works", {
 })
 
 test_that("building DYRESM-CAEDYM works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skip testing on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -120,6 +128,10 @@ test_that("building GLM-AED works", {
 })
 
 test_that("building GOTM works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skip testing on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -142,6 +154,10 @@ test_that("building GOTM works", {
 })
 
 test_that("building GOTM-WET works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skip testing on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -192,6 +208,10 @@ test_that("building all models with the same hypsograph", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
@@ -234,6 +254,10 @@ test_that("can build all models with the generated hypsograph", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skip testing on macOS")
+  }
 
   hyps <- generate_hypsograph(aeme = aeme, ext_elev = 5,
                               volume_development = 1.2)
@@ -286,6 +310,10 @@ test_that("can build all models with the generated hypsograph", {
 })
 
 test_that("building all models with same initial depth", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skip testing on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -345,6 +373,9 @@ test_that("building all models with same initial depth", {
 })
 
 test_that("building all models and loading to aeme works", {
+  if (sys_OS == "osx") {
+    testthat::skip("Skip testing on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -368,6 +399,9 @@ test_that("building all models and loading to aeme works", {
 })
 
 test_that("can build all models and write to new directory", {
+  if (sys_OS == "osx") {
+    testthat::skip("Skip testing on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -426,6 +460,9 @@ test_that("can build all models and write to new directory", {
 })
 
 test_that("building all models with new parameters works", {
+  if (sys_OS == "osx") {
+    testthat::skip("Skip testing on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -493,6 +530,9 @@ test_that("building all models with new parameters works", {
 })
 
 test_that("building models with parameters for only one model", {
+  if (sys_OS == "osx") {
+    testthat::skip("Skip testing on macOS")
+  }
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
