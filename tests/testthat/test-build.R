@@ -373,6 +373,7 @@ test_that("building all models with same initial depth", {
 })
 
 test_that("building all models and loading to aeme works", {
+  sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     testthat::skip("Skip testing on macOS")
   }
@@ -399,6 +400,7 @@ test_that("building all models and loading to aeme works", {
 })
 
 test_that("can build all models and write to new directory", {
+  sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     testthat::skip("Skip testing on macOS")
   }
@@ -460,6 +462,7 @@ test_that("can build all models and write to new directory", {
 })
 
 test_that("building all models with new parameters works", {
+  sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     testthat::skip("Skip testing on macOS")
   }
@@ -530,6 +533,7 @@ test_that("building all models with new parameters works", {
 })
 
 test_that("building models with parameters for only one model", {
+  sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     testthat::skip("Skip testing on macOS")
   }
