@@ -449,7 +449,8 @@ YAML file contains all the information required to run the model.</p>
 <span><span class="va">hypsograph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_hypsograph.html">generate_hypsograph</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="va">depth</span>, surface_area <span class="op">=</span> <span class="va">area</span>,</span>
 <span>                                  volume_development <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_point.html" class="external-link">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_land_point_nz.html" class="external-link">get_era5_land_point_nz</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>,</span>
+<span>                                         years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2022</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#' Define input list</span></span>
 <span><span class="va">input</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -576,7 +577,7 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for AEME [2025-02-19 07:03:32]</span></span>
+<span><span class="co">#&gt; Building simulation for AEME [2025-07-16 15:57:45]</span></span>
 <span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
 <span><span class="co">#&gt; Added default values for missing variables.</span></span>
 <span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
@@ -664,7 +665,7 @@ example, the <code>lake</code> slot can be visualised using the
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

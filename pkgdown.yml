@@ -1,12 +1,12 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   aeme-inputs: aeme-inputs.html
   intro-aeme: intro-aeme.html
   articles/lernzmp-aeme: lernzmp-aeme.html
   setup-new-lake: setup-new-lake.html
-last_built: 2025-02-19T07:02Z
+last_built: 2025-07-16T15:56Z
 urls:
   reference: https://limnotrack.github.io/AEME/reference
   article: https://limnotrack.github.io/AEME/articles

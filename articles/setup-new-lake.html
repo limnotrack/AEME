@@ -79,7 +79,7 @@ process of setting up the model for a lake in New Zealand.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     time</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span> <span class="co"># For spatial data</span></span>
-<span><span class="co">#&gt; Linking to GEOS 3.12.2, GDAL 3.9.3, PROJ 9.4.1; sf_use_s2() is TRUE</span></span>
+<span><span class="co">#&gt; Linking to GEOS 3.13.1, GDAL 3.11.0, PROJ 9.6.0; sf_use_s2() is TRUE</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span> <span class="co"># For mapping</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_mode.html" class="external-link">tmap_mode</a></span><span class="op">(</span><span class="st">"view"</span><span class="op">)</span> <span class="co"># Set tmap mode to interactive view model</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> tmap mode set to <span style="color: #0000BB;">"view"</span>.</span></span>
@@ -104,7 +104,7 @@ lake.</p>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html" class="external-link">tm_bubbles</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_view.html" class="external-link">tm_view</a></span><span class="op">(</span>set_view <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">lon</span>, <span class="va">lat</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="leaflet html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:700px;height:432.632880098888px;"></div>
-<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}},"attributionControl":true},"calls":[{"method":"createMapPane","args":["tmap401",401]},{"method":"addLayersControl","args":[[],"coords",{"collapsed":true,"autoZIndex":true,"position":"topleft"}]},{"method":"addProviderTiles","args":["OpenStreetMap",null,"OpenStreetMap",{"minZoom":0,"maxZoom":18,"maxNativeZoom":17,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addCircleMarkers","args":[-36.8898,174.46898,9.3331,null,"coords",{"interactive":false,"className":"","pane":"tmap401","stroke":true,"color":"#404040","weight":1,"opacity":1,"fill":true,"fillColor":"#999999","fillOpacity":1},null,null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"setView":[[-36.8898,174.46898],16,[]],"limits":{"lat":[-36.8898,-36.8898],"lng":[174.46898,174.46898]}},"evals":[],"jsHooks":[]}</script><div class="section level3">
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}},"attributionControl":true},"calls":[{"method":"createMapPane","args":["tmap401",401]},{"method":"addLayersControl","args":[[],"coords",{"collapsed":true,"autoZIndex":true,"position":"topleft"}]},{"method":"addProviderTiles","args":["OpenStreetMap",null,"OpenStreetMap",{"minZoom":0,"maxZoom":18,"maxNativeZoom":17,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addCircleMarkers","args":[-36.8898,174.46898,9.3331,"X0000001","coords",{"interactive":false,"className":"","pane":"tmap401","stroke":true,"color":"#404040","weight":1,"opacity":1,"fill":true,"fillColor":"#999999","fillOpacity":1},null,null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"setView":[[-36.8898,174.46898],16,[]],"limits":{"lat":[-36.8898,-36.8898],"lng":[174.46898,174.46898]}},"evals":[],"jsHooks":[]}</script><div class="section level3">
 <h3 id="get-lake-shapefile">Get lake shapefile<a class="anchor" aria-label="anchor" href="#get-lake-shapefile"></a>
 </h3>
 <p>If you have a shapefile for the lake, you can use the <code>sf</code>
@@ -182,6 +182,8 @@ the lake in metres above sea level.</p>
 <code class="sourceCode R"><span><span class="co"># Get the elevation of the lake</span></span>
 <span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LINZ_KEY"</span><span class="op">)</span></span>
 <span><span class="va">elevation</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_dem_value.html" class="external-link">get_dem_value</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, key <span class="op">=</span> <span class="va">key</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'AEME::time' by 'terra::time' when loading</span></span>
+<span><span class="co">#&gt; 'aemetools'</span></span>
 <span><span class="va">elevation</span> <span class="co"># in metres above sea level</span></span>
 <span><span class="co">#&gt; [1] 29</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -227,37 +229,34 @@ stop times for the model run.</p>
 <h4 id="download-era5-data">Download ERA5 data<a class="anchor" aria-label="anchor" href="#download-era5-data"></a>
 </h4>
 <p>We will use the <code>aemetools</code> package to download the ERA5
-meteorological data for the location of our lake. This only works for
-locations in New Zealand.</p>
+meteorological data for the location of our lake. This works for all
+locations around the world. However, it’s date range is only from
+1900-2021.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
-<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_point.html" class="external-link">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
+<span><span class="co">#&gt; INFO [2025-07-16 16:01:47] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2025-07-16 16:01:47] downloading</span></span>
+<span><span class="co">#&gt; INFO [2025-07-16 16:01:48] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Summary of meteorological data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       Date              MET_tmpair       MET_tmpdew       MET_wnduvu     </span></span>
-<span><span class="co">#&gt;  Min.   :2020-01-01   Min.   : 9.137   Min.   : 3.094   Min.   :-10.826  </span></span>
-<span><span class="co">#&gt;  1st Qu.:2020-07-01   1st Qu.:13.406   1st Qu.: 9.326   1st Qu.: -2.087  </span></span>
-<span><span class="co">#&gt;  Median :2020-12-31   Median :15.801   Median :11.932   Median :  1.425  </span></span>
-<span><span class="co">#&gt;  Mean   :2020-12-31   Mean   :15.868   Mean   :11.835   Mean   :  1.128  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:2021-07-01   3rd Qu.:18.327   3rd Qu.:14.488   3rd Qu.:  4.256  </span></span>
-<span><span class="co">#&gt;  Max.   :2021-12-31   Max.   :21.985   Max.   :19.221   Max.   : 10.963  </span></span>
-<span><span class="co">#&gt;    MET_wnduvv         MET_pprain        MET_ppsnow          MET_prsttn    </span></span>
-<span><span class="co">#&gt;  Min.   :-10.1534   Min.   : 0.0000   Min.   :0.000e+00   Min.   : 98312  </span></span>
-<span><span class="co">#&gt;  1st Qu.: -2.2161   1st Qu.: 0.1230   1st Qu.:0.000e+00   1st Qu.:100537  </span></span>
-<span><span class="co">#&gt;  Median :  0.8029   Median : 0.9502   Median :0.000e+00   Median :101066  </span></span>
-<span><span class="co">#&gt;  Mean   :  0.5009   Mean   : 4.2050   Mean   :4.553e-16   Mean   :101004  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:  3.4222   3rd Qu.: 4.7504   3rd Qu.:2.168e-16   3rd Qu.:101481  </span></span>
-<span><span class="co">#&gt;  Max.   :  9.2317   Max.   :51.6713   Max.   :3.470e-15   Max.   :102963  </span></span>
-<span><span class="co">#&gt;    MET_radswd    </span></span>
-<span><span class="co">#&gt;  Min.   : 13.58  </span></span>
-<span><span class="co">#&gt;  1st Qu.:110.94  </span></span>
-<span><span class="co">#&gt;  Median :173.46  </span></span>
-<span><span class="co">#&gt;  Mean   :187.14  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:262.12  </span></span>
-<span><span class="co">#&gt;  Max.   :530.52</span></span></code></pre></div>
+<span><span class="co">#&gt;       Date              MET_tmpair       MET_pprain         MET_wndspd    </span></span>
+<span><span class="co">#&gt;  Min.   :2011-01-01   Min.   : 6.669   Min.   :  0.0000   Min.   : 1.379  </span></span>
+<span><span class="co">#&gt;  1st Qu.:2013-10-01   1st Qu.:13.890   1st Qu.:  0.1170   1st Qu.: 4.133  </span></span>
+<span><span class="co">#&gt;  Median :2016-07-01   Median :16.001   Median :  0.6145   Median : 5.872  </span></span>
+<span><span class="co">#&gt;  Mean   :2016-07-01   Mean   :16.246   Mean   :  3.1857   Mean   : 6.200  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:2019-04-01   3rd Qu.:18.627   3rd Qu.:  3.3404   3rd Qu.: 7.938  </span></span>
+<span><span class="co">#&gt;  Max.   :2021-12-31   Max.   :22.957   Max.   :127.5880   Max.   :15.542  </span></span>
+<span><span class="co">#&gt;    MET_radswd      MET_prsttn       MET_radlwd      MET_humrel   </span></span>
+<span><span class="co">#&gt;  Min.   : 13.2   Min.   : 98490   Min.   :260.6   Min.   :51.04  </span></span>
+<span><span class="co">#&gt;  1st Qu.:111.8   1st Qu.:100934   1st Qu.:318.0   1st Qu.:71.57  </span></span>
+<span><span class="co">#&gt;  Median :177.4   Median :101459   Median :335.3   Median :77.22  </span></span>
+<span><span class="co">#&gt;  Mean   :187.3   Mean   :101421   Mean   :335.9   Mean   :77.05  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:258.5   3rd Qu.:101927   3rd Qu.:352.8   3rd Qu.:82.67  </span></span>
+<span><span class="co">#&gt;  Max.   :383.9   Max.   :103515   Max.   :419.3   Max.   :95.49</span></span></code></pre></div>
 <p>The depth of this lake is 13.07 m, the area is 152343 m2, and the
 light extinction coefficient (Kw) is 1.31 m-1.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -520,7 +519,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">F</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2025-02-19 07:07:35]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2025-07-16 16:01:54]</span></span>
 <span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
 <span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
@@ -595,14 +594,14 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-02-19 07:07:37]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM running... [2025-02-19 07:07:37]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2025-02-19 07:07:57]</span></span>
-<span><span class="co">#&gt; GLM-AED running... [2025-02-19 07:07:57]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2025-02-19 07:07:58]</span></span>
-<span><span class="co">#&gt; GOTM-WET running... [2025-02-19 07:07:58]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2025-02-19 07:07:58]</span></span>
-<span><span class="co">#&gt; Model run complete![2025-02-19 07:07:58]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-07-16 16:01:58]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM running... [2025-07-16 16:01:58]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2025-07-16 16:02:17]</span></span>
+<span><span class="co">#&gt; GLM-AED running... [2025-07-16 16:02:17]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2025-07-16 16:02:17]</span></span>
+<span><span class="co">#&gt; GOTM-WET running... [2025-07-16 16:02:17]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2025-07-16 16:02:18]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-07-16 16:02:18]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd</span></span>
 <span><span class="co">#&gt; Retrieving and formatting dyresmSALINITY_Var for model dy_cd</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
@@ -645,7 +644,7 @@ the <code>.rds</code>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
