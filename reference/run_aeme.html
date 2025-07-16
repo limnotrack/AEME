@@ -139,19 +139,19 @@ FALSE.</p></dd>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>model_controls <span class="op">=</span> <span class="va">model_controls</span>, ext_elev <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-07-16 15:57:15]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-07-16 18:13:06]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using constant water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Correcting water balance using estimated outflows (method = 2).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating lake level using lake depth and a sinisoidal function.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'C:\Users\RUNNER~1\AppData\Local\Temp\RtmpQN8bK6\45819_wainamu' already exists</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp2BV4lY\45819_wainamu' already exists</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Building GLM3-AED2 model for lake wainamu</span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">run_aeme</span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models... (Have you tried parallelizing?) [2025-07-16 15:57:16]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED running... [2025-07-16 15:57:16]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED run successful! [2025-07-16 15:57:16]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-07-16 15:57:16]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models... (Have you tried parallelizing?) [2025-07-16 18:13:07]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED running... [2025-07-16 18:13:07]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED run successful! [2025-07-16 18:13:08]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-07-16 18:13:08]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting temp for model glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting salt for model glm_aed</span>
 <span class="r-in"><span><span class="fu"><a href="plot_output.html">plot_output</a></span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span></span>
