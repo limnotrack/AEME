@@ -186,11 +186,12 @@ time <- list(
 ### Download ERA5 data
 
 We will use the `aemetools` package to download the ERA5 meteorological data for
-the location of our lake. This only works for locations in New Zealand.
+the location of our lake. This works for all locations around the world. 
+However, it's date range is only from 1900-2021.
 
 ```{r get-era5-met}
 # Get ERA5 meteorological data
-met <- aemetools::get_era5_point(lat = lat, lon = lon, years = 2020:2021)
+met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
 
 ```
 

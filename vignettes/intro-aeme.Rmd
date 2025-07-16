@@ -364,7 +364,8 @@ time <- list(
 hypsograph <- generate_hypsograph(max_depth = depth, surface_area = area,
                                   volume_development = 1.2)
 
-met <- aemetools::get_era5_point(lat = lat, lon = lon, years = 2020:2022)
+met <- aemetools::get_era5_land_point_nz(lat = lat, lon = lon,
+                                         years = 2020:2022)
 
 #' Define input list
 input = list(
