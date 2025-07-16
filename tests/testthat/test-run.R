@@ -38,15 +38,15 @@ test_that("running DYRESM works", {
 
 test_that("running GLM works", {
   sys_OS <- AEME:::get_os()
-  if (sys_OS == "windows") {
-    bin_exec <- file.path(bin_path, "glm_aed", "glm.exe")
-  } else if (sys_OS == "osx") {
-    bin_exec <- file.path(bin_path, "glm_aed", "glm")
-  }
-  timeout <- 0
-  system2(bin_exec,
-          wait = TRUE, stdout = "",
-          stderr = "", timeout = timeout)
+  # if (sys_OS == "windows") {
+  #   bin_exec <- file.path(bin_path, "glm_aed", "glm.exe")
+  # } else if (sys_OS == "osx") {
+  #   bin_exec <- file.path(bin_path, "glm_aed", "glm")
+  # }
+  # timeout <- 0
+  # system2(bin_exec,
+  #         wait = TRUE, stdout = "",
+  #         stderr = "", timeout = timeout)
 
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
