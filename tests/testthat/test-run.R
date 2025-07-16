@@ -37,12 +37,7 @@ test_that("running DYRESM works", {
 })
 
 test_that("running GLM works", {
-
-  bin_path <- system.file('extbin/', package = "AEME")
-  setwd(file.path(sim_folder, "glm_aed"))
-  unlink("output/output.nc")
-  message("GLM-AED running... [", format(Sys.time()), "]")
-  sys_OS <- get_os()
+  sys_OS <- AEME:::get_os()
   if (sys_OS == "windows") {
     bin_exec <- file.path(bin_path, "glm_aed", "glm.exe")
   } else if (sys_OS == "osx") {
