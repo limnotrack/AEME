@@ -2,12 +2,12 @@
 % Please edit documentation in R/extrap_hyps.R
 \name{extrap_hyps}
 \alias{extrap_hyps}
-\title{Extend hypsmetry to a greater elevation using linear extrapolation}
+\title{Extend hypsometry to a greater elevation using linear extrapolation}
 \usage{
-extrap_hyps(hyps, z_range = 0.2, ext_elev)
+extrap_hyps(hypsograph, z_range = 0.2, ext_elev)
 }
 \arguments{
-\item{hyps}{dataframe; with hypsograph}
+\item{hypsograph}{dataframe; with hypsograph}
 
 \item{z_range}{numeric; 0-1, representing fraction of hypsograph to be used
 for extrapolation. Default is 0.2, which uses the top 20% of the hypsograph
@@ -19,5 +19,5 @@ for extrapolation.}
 dataframe with extrapolated hypsmetry
 }
 \description{
-Extend hypsmetry to a greater elevation using linear extrapolation
+Extend hypsometry to a greater elevation using linear extrapolation
 }
