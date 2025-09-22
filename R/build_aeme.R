@@ -178,63 +178,10 @@ build_aeme <- function(aeme = NULL,
     # coords.xyz <- c(lke[["longitude"]], lke[["latitude"]], lke[["elevation"]])
 
     # Inputs ----
-    #* Hypsograph ----
     inp <- input(aeme)
-    if (is.null(inp[["hypsograph"]])) {
-      warning(paste(strwrap("Hypsograph is not present. This function will
-                            generate a simple hypsograph using lake depth and
-                            area."),
-                    collapse = "\n"))
-      if (any(c(is.null(lke$elevation), is.null(lke$depth), is.null(lke$area)))) {
-        stop(paste(strwrap("Lake elevation, depth and area are not present.
-                           These are required to build the models"),
-                   sep = "\n"))
-      }
-      hyps <- data.frame(elev = c(lke$elevation, lke$elevation - lke$depth),
-                         area = c(lke$area, 0),
-                         depth = c(0, -lke$depth))
-      input(aeme) <- list(init_profile = inp$init_profile,
-                          hypsograph = hyps, meteo = inp$meteo,
-                          use_lw = inp$use_lw, Kw = inp$Kw)
-    } else {
-      hyps <- inp[["hypsograph"]]
-    }
-    # Extend & arrange hypsograph
-    utils::data("model_layer_structure", package = "AEME", envir = environment())
-    # Generate a sequence of depths from 0 to the maximum depth
-    surf_elev <- hyps |>
-      dplyr::filter(depth == 0) |>
-      dplyr::pull(elev)
-    depths <- model_layer_structure |>
-      dplyr::filter(zi <= abs(min(hyps$depth))) |>
-      dplyr::pull(zi)
-    depths <- -depths
-    if (!min(hyps$depth) %in% depths) {
-      depths <- c(depths, min(hyps$depth))
-    }
-    areas <- approx(x = hyps$depth, y = hyps$area, xout = depths)$y
-    if (any(hyps$depth > 0)) {
-      ext_depths <- hyps |>
-        dplyr::filter(depth > 0) |>
-        dplyr::pull(depth)
-      ext_areas <- hyps |>
-        dplyr::filter(depth > 0) |>
-        dplyr::pull(area)
-      depths <- c(ext_depths, depths)
-      areas <- c(ext_areas, areas)
-    }
-    hyps <- data.frame(elev = surf_elev + depths,
-                       area = areas,
-                       depth = depths)
-
-    if (ext_elev > 0) {
-      hyps <- extrap_hyps(hyps = hyps, ext_elev = ext_elev)
-    }
-    hyps <- hyps |>
-      dplyr::arrange(dplyr::desc(elev)) |>
-      dplyr::mutate(elev = round(elev, 2),
-                    depth = round(depth, 2),
-                    area = round(area, 2))
+    #* Hypsograph ----
+    hyps <- add_hypsograph(hypsograph = inp[["hypsograph"]],
+                           surf_elev = elev, ext_elev = ext_elev)
 
     #* Inital depth
     if (!is.null(inp[["init_depth"]])) {
