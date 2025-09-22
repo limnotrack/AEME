@@ -9,10 +9,7 @@ set_time(aeme, start, stop, spin_up)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{start}{Start time in the format "YYYY-mm-dd" or "YYYY-mm-dd HH:MM" or 
-"YYYY-mm-dd HH:MM:SS"}
-
-\item{stop}{Stop time in the format "YYYY-mm-dd" or "YYYY-mm-dd HH:MM" or
+\item{start, stop}{Time in the format "YYYY-mm-dd" or "YYYY-mm-dd HH:MM" or 
 "YYYY-mm-dd HH:MM:SS"}
 
 \item{spin_up}{Spin-up time in days. Can be a single numeric value or a list with
