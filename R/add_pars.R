@@ -9,11 +9,9 @@
 #'
 
 add_pars <- function(aeme, pars) {
-  # Check if Aeme is of "Aeme" class
-  if (!inherits(aeme, "Aeme")) {
-    stop("aeme must be of class 'Aeme'")
-  }
-
+  # Check if aeme is a Aeme object
+  aeme <- check_aeme(aeme)
+  
   if (!is.data.frame(pars)) {
     stop("pars must be a data frame")
   }

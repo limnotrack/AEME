@@ -12,10 +12,8 @@
 
 add_obs <- function(aeme, lake = NULL, level = NULL) {
 
-  # Check if Aeme is of "Aeme" class
-  if (!inherits(aeme, "Aeme")) {
-    stop("aeme must be of class 'Aeme'")
-  }
+  # Check if aeme is a Aeme object
+  aeme <- check_aeme(aeme)
   obs <- observations(aeme)
 
   if (!is.null(lake)) {

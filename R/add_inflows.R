@@ -10,11 +10,9 @@
 #'
 
 add_inflows <- function(aeme, data) {
-  # Check if Aeme is of "Aeme" class
-  if (!inherits(aeme, "Aeme")) {
-    stop("aeme must be of class 'Aeme'")
-  }
-
+  # Check if aeme is a Aeme object
+  aeme <- check_aeme(aeme)
+  
   if (!is.list(data)) {
     stop("data must be a list")
   }
