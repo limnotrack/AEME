@@ -242,3 +242,61 @@ test_that("parameters can be added to an aeme object", {
 
 
 })
+
+test_that("aeme object inflows can be manipulated", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  
+  inf <- get_inflows(aeme)
+  testthat::expect_true(is.list(inf))
+  inf_df <- get_inflows(aeme, return_df = TRUE)
+  testthat::expect_true(is.data.frame(inf_df) & nrow(inf_df) > 0)
+  testthat::expect_true(c("inflow_id") %in% colnames(inf_df))
+  inflow_id <- names(inf)
+  
+  aeme <- remove_inflow(aeme, inflow_id = inflow_id)
+  inf_chk <- get_inflows(aeme)
+  testthat::expect_true(length(inf_chk) == 0)
+  
+  aeme <- add_inflow(aeme = aeme, inflow = inf, inflow_id = "test")
+  inf_chk2 <- get_inflows(aeme)
+  testthat::expect_true(length(inf_chk2) == length(inf))
+  testthat::expect_true(all(names(inf_chk2) == c("test")))
+  
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  
+  aeme <- set_precip(aeme = aeme, type = "precip_as_inflow")
+  inf <- get_inflows(aeme)
+  met <- get_met(aeme)
+  status1 <- precip_status(aeme)
+  testthat::expect_true("precip" %in% names(inf))
+  testthat::expect_true(all(met$MET_pprain == 0))
+  
+  aeme <- set_precip(aeme = aeme, type = "precip_as_met")
+  inf <- get_inflows(aeme)
+  met <- get_met(aeme)
+  status2 <- precip_status(aeme)
+  testthat::expect_true(status2 != status1)
+  testthat::expect_true(!("precip" %in% names(inf)))
+  testthat::expect_true(any(met$MET_pprain > 0))
+  
+})
+
+test_that("aeme object hypsograph can be manipulated", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  
+  hyps <- get_hypsograph(aeme)
+  testthat::expect_true(is.data.frame(hyps) & nrow(hyps) > 0)
+  
+  adj_hyps <- hyps |> 
+    dplyr::mutate(area = area * 0.2)
+  fmt_hyps <- add_hypsograph(hypsograph = hyps)
+  
+  aeme <- add_hypsograph(aeme = aeme, hypsograph = adj_hyps)
+  hyps2 <- get_hypsograph(aeme)
+  testthat::expect_true(is.data.frame(hyps2) & nrow(hyps2) > 0)
+  testthat::expect_true(all(hyps2$area == adj_hyps$area) & nrow(hyps2) == nrow(adj_hyps))
+  
+})
