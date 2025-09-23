@@ -18,7 +18,7 @@
 set_time <- function(aeme, start, stop, spin_up) {
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
-  model <- get_models()
+  model <- list_models()
   aeme_time <- time(aeme)
   # Check if start and stop are of the format "YYYY-MM-DD HH:MM:SS"
   if (!missing(start)) {

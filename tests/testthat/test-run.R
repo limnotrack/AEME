@@ -1006,14 +1006,14 @@ test_that("summarise multi-year output", {
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
                      calc_wlev = TRUE)
 
-  tgt_vars <- get_mod_obs_vars(aeme = aeme, model = model)
+  tgt_vars <- list_mod_obs_vars(aeme = aeme, model = model)
   testthat::expect_true(length(tgt_vars) == 0)
   testthat::expect_true(is.vector(tgt_vars))
   s1 <- object.size(aeme)
   aeme <- run_aeme(aeme = aeme, model = model,
                    model_controls = model_controls, path = path,
                    parallel = TRUE)
-  tgt_vars <- get_mod_obs_vars(aeme = aeme, model = model)
+  tgt_vars <- list_mod_obs_vars(aeme = aeme, model = model)
   testthat::expect_true(length(tgt_vars) > 0)
   s2 <- object.size(aeme)
   aeme_summ <- summary(aeme)

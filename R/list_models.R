@@ -6,7 +6,7 @@
 #' @export
 #'
 
-get_models <- function(aeme = NULL) {
+list_models <- function(aeme = NULL) {
   models <- c("DYRESM-CAEDYM" = "dy_cd", "GLM-AED" = "glm_aed",
               "GOTM-WET" = "gotm_wet")
 

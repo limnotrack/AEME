@@ -126,9 +126,9 @@ summarise_aeme <- function(aeme, ens_n = 1) {
   ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
   out <- outp[[ens_lab]][!sapply(outp[[ens_lab]], is.null)]
   model <- names(out)
-  tgt_vars <- get_mod_obs_vars(aeme, model = model, ens_n = ens_n)
+  tgt_vars <- list_mod_obs_vars(aeme, model = model, ens_n = ens_n)
 
-  # obs_vars <- get_obs_vars(aeme)
+  # obs_vars <- list_obs_vars(aeme)
   # out_vars <- get_output_vars(aeme, model = model)
   # tgt_vars <- obs_vars[obs_vars %in% out_vars]
   if (length(tgt_vars) > 0) {

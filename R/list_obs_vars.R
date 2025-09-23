@@ -12,9 +12,9 @@
 #' @examples
 #' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 #' aeme <- readRDS(aeme_file)
-#' get_obs_vars(aeme)
+#' list_obs_vars(aeme)
 
-get_obs_vars <- function(aeme) {
+list_obs_vars <- function(aeme) {
   utils::data("key_naming", package = "AEME")
   aeme_time <- AEME::time(aeme)
 

@@ -125,7 +125,7 @@ test_that("plotting model output works", {
 test_that("plotting model summary output works", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
-  obs_vars <- get_obs_vars(aeme)
+  obs_vars <- list_obs_vars(aeme)
   testthat::expect_true(is.vector(obs_vars))
   path <- tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)

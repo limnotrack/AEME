@@ -70,7 +70,7 @@ testthat::test_that("can build AEME with simple set of inputs", {
   aeme <- aeme_constructor(lake = aeme_input$lake, time = aeme_input$time,
                            input = aeme_input$input)
   
-  obs_vars <- get_obs_vars(aeme)
+  obs_vars <- list_obs_vars(aeme)
   testthat::expect_true(is.null(obs_vars))
   
   model_controls <- get_model_controls()
@@ -133,7 +133,7 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
                    model_controls = model_controls, path = path)
   
-  tgt_vars <- get_mod_obs_vars(aeme, model = model)
+  tgt_vars <- list_mod_obs_vars(aeme, model = model)
   testthat::expect_true(is.null(tgt_vars))
   
   p1 <- plot_output(aeme, model = model)
