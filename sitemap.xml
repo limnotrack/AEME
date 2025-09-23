@@ -9,7 +9,9 @@
 <url><loc>https://limnotrack.github.io/AEME/index.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/LICENSE.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/add_hypsograph.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/add_inflow.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/add_inflows.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/add_met.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/add_obs.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/add_pars.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/aeme.html</loc></url>
@@ -20,7 +22,7 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/assess_model.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/build_aeme.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/catchment_yields.html</loc></url>
-<url><loc>https://limnotrack.github.io/AEME/reference/check_AEME.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/check_AEME_pkg.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_model_output.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_obs_var.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_var_in_output.html</loc></url>
@@ -32,7 +34,11 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/extrap_hyps.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/generate_hypsograph.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_aeme_parameters.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/get_hypsograph.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/get_inflows.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/get_lake.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_lake_dir.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/get_met.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_models.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_model_controls.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_model_outfile.html</loc></url>
@@ -98,12 +104,16 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_var.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_wbal.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_zoops.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/precip_status.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/read_aeme_from_files.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/read_nml.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/remove_inflow.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/remove_output.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/run_aeme.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/set_gotm_grid.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/set_inflows.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/set_nml.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/set_precip.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/set_time.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/show-aeme-method.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/summary-aeme-method.html</loc></url>
