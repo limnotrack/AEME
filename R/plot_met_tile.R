@@ -28,10 +28,8 @@
 plot_met_tile <- function(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE) {
 
   # Check if aeme is a Aeme object
-  if (!inherits(aeme, "Aeme")) {
-    stop("aeme must be a Aeme object")
-  }
-
+  aeme <- check_aeme(aeme)
+  
   # Load Rdata
   utils::data("key_naming", package = "AEME", envir = environment())
 

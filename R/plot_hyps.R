@@ -21,9 +21,7 @@
 plot_hyps <- function(aeme, y = "elev", add_surface = FALSE,
                       incl_ext_elev = FALSE) {
   # Check if aeme is a Aeme object
-  if (!inherits(aeme, "Aeme")) {
-    stop("aeme must be a Aeme object")
-  }
+  aeme <- check_aeme(aeme)
   # Load input slot
   inp <- input(aeme)
   if (!is.data.frame(inp$hypsograph)) {

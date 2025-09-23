@@ -74,9 +74,9 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
 
-  # Check if aeme is a aeme class
-  if (!inherits(aeme, "Aeme")) stop("aeme must be an aeme class")
-
+  # Check if aeme is a Aeme object
+  aeme <- check_aeme(aeme)
+  
   # Check if model is a character vector
   if (!is.character(model)) stop("model must be a character vector")
 

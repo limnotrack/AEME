@@ -15,10 +15,8 @@
 #' plot_obs(aeme = aeme, var_sim = c("HYD_temp", "LKE_lvlwtr"))
 plot_obs <- function(aeme, var_sim = "HYD_temp", add_line = FALSE) {
   # Check if aeme is a Aeme object
-  if (!inherits(aeme, "Aeme")) {
-    stop("aeme must be a Aeme object")
-  }
-
+  aeme <- check_aeme(aeme)
+  
   # Load key_naming
   utils::data("key_naming", package = "AEME", envir = environment())
 
