@@ -39,14 +39,11 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/get_lake.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_lake_dir.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_met.html</loc></url>
-<url><loc>https://limnotrack.github.io/AEME/reference/get_models.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_model_controls.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_model_outfile.html</loc></url>
-<url><loc>https://limnotrack.github.io/AEME/reference/get_mod_obs_vars.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_nml_value.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_obs.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_obs_column_names.html</loc></url>
-<url><loc>https://limnotrack.github.io/AEME/reference/get_obs_vars.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_output_vars.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_var.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/get_var_indices.html</loc></url>
@@ -68,6 +65,9 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/lake-set-aeme-method.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/lake-set.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/lake.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/list_models.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/list_mod_obs_vars.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/list_obs_vars.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/load_configuration.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/load_output.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/model_controls.html</loc></url>
