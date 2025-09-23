@@ -74,7 +74,7 @@ set_precip <- function(aeme, type = "precip_as_inflow") {
         # Add preceding zeros if needed
         if (diff_len >= -5 & diff_len < 0) {
           n_add <- nrow(met) - length(precip_mm)
-          message(paste0("Adding preceding zeros (n=", n_add, 
+          message(paste0("Inflows: 'precip_as_met' Adding preceding zeros (n=", n_add, 
                          ") to match meteorological data length"))
           precip_mm <- c(rep(0, n_add), precip_mm)
         } else {
