@@ -4,14 +4,28 @@
 \alias{add_hypsograph}
 \title{Add hypsograph to Aeme object}
 \usage{
-add_hypsograph(aeme = NULL, hypsograph = NULL, surf_elev = 0, ext_elev = 0)
+add_hypsograph(
+  aeme = NULL,
+  hypsograph = NULL,
+  surf_elev = 0,
+  lake_depth = NULL,
+  lake_area = NULL,
+  ext_elev = 0
+)
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
 \item{hypsograph}{data frame with columns "depth" and "area". Depth should be
 monotonic decreasing and area should be monotonic increasing. If elevation is
-not provided, it will be calculated as depth + lake elevation.}
+not provided, it will be calculated as depth + lake elevation.
+If NULL, a simple hypsograph will be generated using lake depth and area.}
+
+\item{surf_elev}{Lake surface elevation (m). Required if hypsograph is NULL.}
+
+\item{lake_depth}{Lake maximum depth (m). Required if hypsograph is NULL.}
+
+\item{lake_area}{Lake surface area (m2). Required if hypsograph is NULL.}
 
 \item{ext_elev}{numeric; metres to extend the hypograph by.}
 }

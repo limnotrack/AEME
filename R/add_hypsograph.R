@@ -4,6 +4,10 @@
 #' @param hypsograph data frame with columns "depth" and "area". Depth should be
 #' monotonic decreasing and area should be monotonic increasing. If elevation is
 #' not provided, it will be calculated as depth + lake elevation.
+#' If NULL, a simple hypsograph will be generated using lake depth and area.
+#' @param surf_elev Lake surface elevation (m). Required if hypsograph is NULL.
+#' @param lake_depth Lake maximum depth (m). Required if hypsograph is NULL.
+#' @param lake_area Lake surface area (m2). Required if hypsograph is NULL.
 #' 
 #' @importFrom dplyr arrange desc
 #'
@@ -16,14 +20,12 @@
 #' hypsograph <- data.frame(depth = depth, area = area)
 
 add_hypsograph <- function(aeme = NULL, hypsograph = NULL,
-                           surf_elev = 0,
+                           surf_elev = 0, lake_depth = NULL, lake_area = NULL,
                            ext_elev = 0) {
   
   if (!is.null(aeme)) {
     # Check if aeme is a Aeme object
-    if (!inherits(aeme, "Aeme")) {
-      stop("aeme must be a Aeme object")
-    }
+    aeme <- check_aeme(aeme)
     
     lke <- lake(aeme)
     inp <- input(aeme)
@@ -47,23 +49,11 @@ add_hypsograph <- function(aeme = NULL, hypsograph = NULL,
                              depth = c(0, -lake_depth))
   }
   
-  # Check hypsograph is a data frame
-  if (!is.data.frame(hypsograph)) {
-    stop("hypsograph must be a data frame")
-  }
-  # Check hypsograph has required columns: depth and area
-  required_cols <- c("depth", "area")
-  if (!all(required_cols %in% colnames(hypsograph))) {
-    stop(paste("hypsograph must contain the following columns:", 
-               paste(required_cols, collapse = ", ")))
-  }
-  
   # Add elevation column if not present
   if (!"elev" %in% colnames(hypsograph)) {
     message("Adding elevation column to hypsograph")
     hypsograph$elev <- hypsograph$depth + surf_elev
   }
-  
   
   # Extend & arrange hypsograph
   utils::data("model_layer_structure", package = "AEME", envir = environment())
@@ -103,17 +93,10 @@ add_hypsograph <- function(aeme = NULL, hypsograph = NULL,
     dplyr::arrange(dplyr::desc(elev)) |>
     dplyr::mutate(elev = round(elev, 2),
                   depth = round(depth, 2),
-                  area = round(area, 2))
+                  area = round(area, 2)) |> 
+    check_hypsograph()
   
-  # Check depth and area are monotonic
-  hypsograph <- hypsograph |> 
-    dplyr::arrange(dplyr::desc(depth))
-  if (any(diff(hypsograph$depth) >= 0)) {
-    stop("depth must be monotonic decreasing")
-  }
-  if (any(diff(hypsograph$area) >= 0)) {
-    stop("area must be monotonic increasing")
-  }
+
   if (is.null(aeme)) {
     return(hypsograph)
   } else {
