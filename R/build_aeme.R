@@ -180,8 +180,9 @@ build_aeme <- function(aeme = NULL,
     # Inputs ----
     inp <- input(aeme)
     #* Hypsograph ----
-    hyps <- add_hypsograph(hypsograph = inp[["hypsograph"]],
-                           surf_elev = elev, ext_elev = ext_elev)
+    hyps <- add_hypsograph(hypsograph = inp[["hypsograph"]], surf_elev = elev, 
+                           lake_depth = lke[["depth"]], 
+                           lake_area = lke[["area"]], ext_elev = ext_elev)
 
     #* Inital depth
     if (!is.null(inp[["init_depth"]])) {
