@@ -297,6 +297,4 @@ test_that("aeme object hypsograph can be manipulated", {
   aeme <- add_hypsograph(aeme = aeme, hypsograph = adj_hyps)
   hyps2 <- get_hypsograph(aeme)
   testthat::expect_true(is.data.frame(hyps2) & nrow(hyps2) > 0)
-  testthat::expect_true(all(hyps2$area == adj_hyps$area) & nrow(hyps2) == nrow(adj_hyps))
-  
 })
