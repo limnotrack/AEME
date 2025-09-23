@@ -69,6 +69,18 @@ set_precip <- function(aeme, type = "precip_as_inflow") {
       inf_vol <- inf[["precip"]][["HYD_flow"]]
       # Convert inflow volume (m3) to precip (mm)
       precip_mm <- (inf_vol / lake_area) * 1000
+      if (length(precip_mm) != nrow(met)) {
+        diff_len <- length(precip_mm) - nrow(met)
+        # Add preceding zeros if needed
+        if (diff_len >= -5 & diff_len < 0) {
+          n_add <- nrow(met) - length(precip_mm)
+          message(paste0("Adding preceding zeros (n=", n_add, 
+                         ") to match meteorological data length"))
+          precip_mm <- c(rep(0, n_add), precip_mm)
+        } else {
+          stop("Inflow and meteorological data have incompatible lengths")
+        }
+      }
       met[["MET_pprain"]] <- precip_mm
       met[["MET_ppsnow"]] <- 0
       aeme <- add_met(aeme = aeme, met = met)
