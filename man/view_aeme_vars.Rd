@@ -4,14 +4,21 @@
 \alias{view_aeme_vars}
 \title{View AEME variables}
 \usage{
-view_aeme_vars(group = "all")
+view_aeme_vars(group = NULL, var_aeme = NULL, name = NULL)
 }
 \arguments{
-\item{group}{character string to filter variables by group. Default is "all".
+\item{group}{character string to filter variables by group. Default is NULL.
 Options include "HYD" (hydrodynamic), "LKE" (Lake), "RAD" (Radiation),
 "CHM" (Chemistry), "PHS" (Phosphorus), "NIT" (Nitrogen), "CAR" (Carbon),
  "SIL" (Silica), "MET" (Meteorologica), "ZOO" (Zooplankton),
- "PHY" (Phytoplankton),}
+ "PHY" (Phytoplankton),
+"MAC" (Macrophytes), "NCS" (Non-conservative substances).}
+
+\item{var_aeme}{character vector of exact AEME variable names to filter by
+(e.g., "HYD_temp", "CHM_oxy", "PHS_tp"). Default is NULL.}
+
+\item{name}{character string to filter variables by partial match in either
+the variable name or descriptive text. Default is NULL.}
 }
 \value{
 A data frame with AEME variables
@@ -20,8 +27,15 @@ A data frame with AEME variables
 View AEME variables
 }
 \examples{
-view_aeme_vars()
-view_aeme_vars("HYD")
-view_aeme_vars("CHM")
-view_aeme_vars("PHY")
+# Filter by group keyword in var_aeme
+view_aeme_vars(group = "NIT")
+
+# Filter by exact variable name
+view_aeme_vars(var_aeme = "NIT_tn")
+
+# Filter by partial name or text match
+view_aeme_vars(name = "chlorophyll")
+
+# Combine filters
+view_aeme_vars(group = "NIT", var_aeme = "HYD_temp", name = "phosphate")
 }
