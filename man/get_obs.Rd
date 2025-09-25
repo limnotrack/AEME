@@ -10,7 +10,10 @@ get_obs(aeme, var_sim, depth_range = NULL)
 \item{aeme}{aeme; object.}
 
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp"). Can
-be a vector.}
+be a vector. If missing, all variables are returned.}
+
+\item{depth_range}{numeric vector of length 2; depth range (in meters) to
+filter observations. If NULL, all depths are returned.}
 }
 \value{
 A data frame with the following columns:

@@ -307,3 +307,16 @@ test_that("var_aeme can be checked correctly", {
     check_aeme_vars("temp")
   })
 })
+
+test_that("observations can be extracted from Aeme object", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  obs_df <- get_obs(aeme)
+  testthat::expect_true(is.data.frame(obs_df) & nrow(obs_df) > 0)
+  testthat::expect_true(length(unique(obs_df$var_aeme)) > 1)
+  
+  lke_lvl <- get_obs(aeme, var_sim = "LKE_lvlwtr")
+  testthat::expect_true(is.data.frame(lke_lvl) & nrow(lke_lvl) > 0 & 
+                          all(lke_lvl$var_aeme == "LKE_lvlwtr"))
+  
+})
