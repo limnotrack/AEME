@@ -20,6 +20,7 @@
 #' @importFrom dplyr filter bind_rows pull
 
 check_obs_var <- function(aeme, var_sim) {
+  var_sim <- check_aeme_vars(var_sim)
   obs <- observations(aeme)
   tme <- time(aeme)
   cfg <- configuration(aeme)

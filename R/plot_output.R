@@ -76,7 +76,7 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
 
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
-  
+  var_sim <- check_aeme_vars(var_sim)
   # Check if model is a character vector
   if (!is.character(model)) stop("model must be a character vector")
 

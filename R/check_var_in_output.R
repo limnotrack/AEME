@@ -7,6 +7,7 @@
 #' @return A logical matrix indicating if the variable is present in the model
 
 check_var_in_output <- function(aeme, model, var_sim, ens_n = 1) {
+  var_sim <- check_aeme_vars(var_sim)
   outp <- output(aeme)
   ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
   out <- lapply(model, \(m) {

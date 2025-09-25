@@ -18,6 +18,7 @@
 plot_ts <- function(aeme, model, var_sim, add_obs = TRUE, depth_range = NULL,
                         ens_n = 1) {
 
+  var_sim <- check_aeme_vars(var_sim)
   # Get model controls
   model_controls <- get_model_controls(aeme)
   if (is.null(model_controls)) {

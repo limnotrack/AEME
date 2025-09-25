@@ -28,6 +28,11 @@
 
 assess_model <- function(aeme, model, var_sim = "HYD_temp") {
 
+  # Check aeme is Aeme object
+  aeme <- check_aeme(aeme)
+  # Check model is in aeme
+  var_sim <- check_aeme_vars(var_sim)
+  
   # Extract observations
   obs <- observations(aeme)
 

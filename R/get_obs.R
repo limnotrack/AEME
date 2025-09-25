@@ -17,6 +17,7 @@
 
 get_obs <- function(aeme, var_sim, depth_range = NULL) {
 
+  var_sim <- check_aeme_vars(var_sim)
   # Load observations
   obs <- observations(aeme)
   tme <- time(aeme)

@@ -20,6 +20,7 @@ plot_flows <- function(aeme, flow = c("inflow", "outflow"),
                        var_sim = "HYD_flow") {
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
+  var_sim <- check_aeme_vars(var_sim)
   
   # Check flow arg
   if (!all(flow %in% c("inflow", "outflow"))) {
