@@ -298,3 +298,12 @@ test_that("aeme object hypsograph can be manipulated", {
   hyps2 <- get_hypsograph(aeme)
   testthat::expect_true(is.data.frame(hyps2) & nrow(hyps2) > 0)
 })
+
+test_that("var_aeme can be checked correctly", {
+  var_sim <- "HYD_temp"
+  chk <- check_aeme_vars(var_sim)
+  testthat::expect_true(length(chk) == 1 & chk == var_sim)
+  testthat::expect_error({
+    check_aeme_vars("temp")
+  })
+})
