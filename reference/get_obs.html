@@ -56,7 +56,12 @@
 
 <dt id="arg-var-sim">var_sim<a class="anchor" aria-label="anchor" href="#arg-var-sim"></a></dt>
 <dd><p>character; variable in the AEME format (e.g. "HYD_temp"). Can
-be a vector.</p></dd>
+be a vector. If missing, all variables are returned.</p></dd>
+
+
+<dt id="arg-depth-range">depth_range<a class="anchor" aria-label="anchor" href="#arg-depth-range"></a></dt>
+<dd><p>numeric vector of length 2; depth range (in meters) to
+filter observations. If NULL, all depths are returned.</p></dd>
 
 </dl></div>
     <div class="section level2">
