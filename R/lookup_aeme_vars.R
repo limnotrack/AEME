@@ -19,18 +19,18 @@
 #'
 #' @examples
 #' # Filter by group keyword in var_aeme
-#' view_aeme_vars(group = "NIT")
+#' lookup_aeme_vars(group = "NIT")
 #' 
 #' # Filter by exact variable name
-#' view_aeme_vars(var_aeme = "NIT_tn")
+#' lookup_aeme_vars(var_aeme = "NIT_tn")
 #' 
 #' # Filter by partial name or text match
-#' view_aeme_vars(name = "chlorophyll")
+#' lookup_aeme_vars(name = "chlorophyll")
 #' 
 #' # Combine filters
-#' view_aeme_vars(group = "NIT", var_aeme = "HYD_temp", name = "phosphate")
+#' lookup_aeme_vars(group = "NIT", var_aeme = "HYD_temp", name = "phosphate")
 
-view_aeme_vars <- function(group = NULL, var_aeme = NULL, name = NULL) {
+lookup_aeme_vars <- function(group = NULL, var_aeme = NULL, name = NULL) {
   # Load dataset
   utils::data("key_naming", package = "AEME", envir = environment())
   
