@@ -23,6 +23,7 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/build_aeme.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/catchment_yields.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_AEME_pkg.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/check_aeme_vars.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_model_output.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_obs_var.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_var_in_output.html</loc></url>
@@ -70,6 +71,7 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/list_obs_vars.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/load_configuration.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/load_output.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/lookup_aeme_vars.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/model_controls.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/model_layer_structure.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/names-aeme-method.html</loc></url>
@@ -121,7 +123,6 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/time-set-aeme-method.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/time-set.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/time.html</loc></url>
-<url><loc>https://limnotrack.github.io/AEME/reference/view_aeme_vars.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/water_balance-aeme-method.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/water_balance-set-aeme-method.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/water_balance-set.html</loc></url>
