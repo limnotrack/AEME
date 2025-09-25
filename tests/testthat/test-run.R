@@ -273,7 +273,7 @@ test_that("running models in parallel works", {
 
   pl <- plot_resid(aeme = aeme, model = model, var_sim = var_sim)
   testthat::expect_true(is.list(pl))
-  testthat::expect_true(all(sapply(pl, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(pl, ggplot2::is_ggplot)))
 })
 
 test_that("running models with wbal method = 1", {
@@ -741,7 +741,7 @@ test_that("running GOTM with a spinup works", {
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16))
-  testthat::expect_true(all(ggplot2::is.ggplot(p1)))
+  testthat::expect_true(all(ggplot2::is_ggplot(p1)))
 
   testthat::expect_true(file_chk)
 })

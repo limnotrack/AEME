@@ -138,8 +138,8 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   
   p1 <- plot_output(aeme, model = model)
   p2 <- plot_output(aeme, model = model, var_sim = "LKE_lvlwtr", facet = FALSE)
-  testthat::expect_true(ggplot2::is.ggplot(p1))
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
   
   lke <- lake(aeme)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",

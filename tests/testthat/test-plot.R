@@ -2,13 +2,13 @@ test_that("plotting model met tile", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   p1 <- plot_met_tile(aeme = aeme)
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
 
   p2 <- plot_met_tile(aeme = aeme, var_inp = c("MET_tmpair", "MET_pprain"))
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
   p3 <- plot_met_tile(aeme = aeme, var_inp = c("MET_pprain"),
                       use_hydro_year = FALSE)
-  testthat::expect_true(ggplot2::is.ggplot(p3))
+  testthat::expect_true(ggplot2::is_ggplot(p3))
 
 })
 
@@ -16,24 +16,24 @@ test_that("plotting hypsograph", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   p1 <- plot_hyps(aeme = aeme)
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
   p2 <- plot_hyps(aeme = aeme, y = "depth", add_surface = TRUE)
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
   testthat::expect_error({
     p3 <- plot_hyps(aeme = aeme, y = "elevation", add_surface = TRUE)
   })
   p4 <- plot_hyps(aeme = aeme, y = "depth", add_surface = TRUE,
                   incl_ext_elev = TRUE)
-  testthat::expect_true(ggplot2::is.ggplot(p4))
+  testthat::expect_true(ggplot2::is_ggplot(p4))
 })
 
 test_that("plotting observations", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   p1 <- plot_obs(aeme = aeme, var_sim = c("HYD_temp", "LKE_lvlwtr"))
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
   p2 <- plot_obs(aeme = aeme, var_sim = "LKE_lvlwtr", add_line = TRUE)
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
   testthat::expect_error({
     p3 <- plot_obs(aeme = aeme, var_sim = "HYD_thmcln")
   })
@@ -43,9 +43,9 @@ test_that("plotting inflows and outflows", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   p1 <- plot_flows(aeme = aeme)
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
   p2 <- plot_flows(aeme = aeme, flow = "inflow", var_sim = "HYD_temp")
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
   testthat::expect_error({
     p3 <- plot_flows(aeme = aeme, flow = "outflow", var_sim = "HYD_temp")
   })
@@ -74,20 +74,20 @@ test_that("plotting model output works", {
   })
 
   plake <- plot(aeme, "lake")
-  testthat::expect_true(ggplot2::is.ggplot(plake))
+  testthat::expect_true(ggplot2::is_ggplot(plake))
 
   pinput <- plot(aeme, "input")
-  testthat::expect_true(ggplot2::is.ggplot(plake))
+  testthat::expect_true(ggplot2::is_ggplot(plake))
 
 
   poutf <- plot(aeme, "outflows")
-  testthat::expect_true(ggplot2::is.ggplot(poutf))
+  testthat::expect_true(ggplot2::is_ggplot(poutf))
 
   pinf <- plot(aeme, "inflows")
-  testthat::expect_true(ggplot2::is.ggplot(pinf))
+  testthat::expect_true(ggplot2::is_ggplot(pinf))
 
   pwbal <- plot(aeme, "water_balance")
-  testthat::expect_true(ggplot2::is.ggplot(pwbal))
+  testthat::expect_true(ggplot2::is_ggplot(pwbal))
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
@@ -96,30 +96,30 @@ test_that("plotting model output works", {
 
 
   p1 <- plot(aeme, "output")
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16), facet = FALSE)
   testthat::expect_true(is.list(p1))
-  testthat::expect_true(all(c(ggplot2::is.ggplot(p1[[1]]),
-                              ggplot2::is.ggplot(p1[[2]]),
-                              ggplot2::is.ggplot(p1[[3]]))))
+  testthat::expect_true(all(c(ggplot2::is_ggplot(p1[[1]]),
+                              ggplot2::is_ggplot(p1[[2]]),
+                              ggplot2::is_ggplot(p1[[3]]))))
 
   p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_evpflx",
                     print_plots = FALSE, cumulative = TRUE, facet = FALSE)
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
 
   p3 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
                     facet = FALSE)
-  testthat::expect_true(ggplot2::is.ggplot(p3))
+  testthat::expect_true(ggplot2::is_ggplot(p3))
 
   df <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(is.data.frame(df))
   plist <- plot_var(df = df, facet = FALSE)
-  testthat::expect_true(ggplot2::is.ggplot(plist[[1]]))
+  testthat::expect_true(ggplot2::is_ggplot(plist[[1]]))
   p4 <- plot_var(df = df, facet = TRUE)
-  testthat::expect_true(ggplot2::is.ggplot(p4))
+  testthat::expect_true(ggplot2::is_ggplot(p4))
 })
 
 test_that("plotting model summary output works", {
@@ -152,9 +152,9 @@ test_that("plotting model summary output works", {
   testthat::expect_true(is.data.frame(outp$seasonal_profiles))
   testthat::expect_true(is.data.frame(outp$model_obs_df))
   p1 <- plot_output(aeme = aeme_summ, model = model, var_sim = "HYD_temp")
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
   p2 <- plot_output(aeme = aeme_summ, model = model, var_sim = "HYD_thmcln")
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
 })
 
 
@@ -189,7 +189,7 @@ test_that("plotting model output works with no lake observations", {
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16))
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
 })
 
 test_that("plotting model output works with no lake & level observations", {
@@ -224,7 +224,7 @@ test_that("plotting model output works with no lake & level observations", {
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16))
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
 })
 
 test_that("plotting model residuals for 2d and 1d variables", {
@@ -250,10 +250,10 @@ test_that("plotting model residuals for 2d and 1d variables", {
 
   var_sim <- c("HYD_temp", "HYD_thmcln")
   p1 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_temp")
-  testthat::expect_true(ggplot2::is.ggplot(p1$HYD_temp))
+  testthat::expect_true(ggplot2::is_ggplot(p1$HYD_temp))
 
   p2 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_thmcln")
-  testthat::expect_true(ggplot2::is.ggplot(p2$HYD_thmcln))
+  testthat::expect_true(ggplot2::is_ggplot(p2$HYD_thmcln))
 })
 
 test_that("plotting phytoplankton model output works", {
@@ -281,17 +281,17 @@ test_that("plotting phytoplankton model output works", {
                    parallel = TRUE, ncores = 2L)
 
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp")
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
 
   p2 <- plot_phytos(aeme = aeme, model = model)
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
 
   p3 <- plot_nit(aeme = aeme, model = model)
-  testthat::expect_true(ggplot2::is.ggplot(p3))
+  testthat::expect_true(ggplot2::is_ggplot(p3))
 
   p4 <- plot_phs(aeme = aeme, model = model)
-  testthat::expect_true(ggplot2::is.ggplot(p4))
+  testthat::expect_true(ggplot2::is_ggplot(p4))
 
   p5 <- plot_zoops(aeme = aeme, model = model)
-  testthat::expect_true(ggplot2::is.ggplot(p5))
+  testthat::expect_true(ggplot2::is_ggplot(p5))
 })
