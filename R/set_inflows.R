@@ -3,8 +3,6 @@
 #' Replace existing inflow data in an Aeme object with new inflow data. The new
 #' inflow data can be provided as either a named list of data frames or a single
 #' data frame containing an "inflow_id" column to identify different inflows.
-#' If the original inflows include a "precip" inflow, it will be
-#' retained in the updated inflows.
 #'
 #' @inheritParams build_aeme
 #'
@@ -42,9 +40,9 @@ set_inflows <- function(aeme, inflows) {
   # Overwrite original inflows with new inflows
   inf[["data"]] <- inflows
   # If precipitation inflow exists in original inflows, keep it
-  if ("precip" %in% curr_names) {
-    inf[["data"]][["precip"]] <- inf_list[["precip"]]
-  }
+  # if ("precip" %in% curr_names) {
+  #   inf[["data"]][["precip"]] <- inf_list[["precip"]]
+  # }
   
   inflows(aeme) <- inf
   return(aeme)

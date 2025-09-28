@@ -16,6 +16,4 @@ Aeme object with inflows replaced
 Replace existing inflow data in an Aeme object with new inflow data. The new
 inflow data can be provided as either a named list of data frames or a single
 data frame containing an "inflow_id" column to identify different inflows.
-If the original inflows include a "precip" inflow, it will be
-retained in the updated inflows.
 }
