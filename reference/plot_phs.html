@@ -43,7 +43,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_phs</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span>, add_obs <span class="op">=</span> <span class="cn">TRUE</span>, depth_range <span class="op">=</span> <span class="cn">NULL</span>, ens_n <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_phs</span><span class="op">(</span></span>
+<span>  <span class="va">aeme</span>,</span>
+<span>  <span class="va">model</span>,</span>
+<span>  add_obs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  depth_range <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  remove_spin_up <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ens_n <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,6 +69,16 @@
 <dt id="arg-depth-range">depth_range<a class="anchor" aria-label="anchor" href="#arg-depth-range"></a></dt>
 <dd><p>numeric; range of depths to plot. Default is NULL, which
 averages over all depths.</p></dd>
+
+
+<dt id="arg-remove-spin-up">remove_spin_up<a class="anchor" aria-label="anchor" href="#arg-remove-spin-up"></a></dt>
+<dd><p>logical; remove spin-up period from plot. Default is
+TRUE.</p></dd>
+
+
+<dt id="arg-ens-n">ens_n<a class="anchor" aria-label="anchor" href="#arg-ens-n"></a></dt>
+<dd><p>numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.</p></dd>
 
 </dl></div>
     <div class="section level2">
