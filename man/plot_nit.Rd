@@ -4,7 +4,14 @@
 \alias{plot_nit}
 \title{Plot phytoplankton variables}
 \usage{
-plot_nit(aeme, model, add_obs = TRUE, depth_range = NULL, ens_n = 1)
+plot_nit(
+  aeme,
+  model,
+  add_obs = TRUE,
+  depth_range = NULL,
+  remove_spin_up = TRUE,
+  ens_n = 1
+)
 }
 \arguments{
 \item{aeme}{aeme; object.}
@@ -14,6 +21,12 @@ plot_nit(aeme, model, add_obs = TRUE, depth_range = NULL, ens_n = 1)
 
 \item{depth_range}{numeric; range of depths to plot. Default is NULL, which
 averages over all depths.}
+
+\item{remove_spin_up}{logical; remove spin-up period from plot. Default is
+TRUE.}
+
+\item{ens_n}{numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.}
 }
 \value{
 A ggplot object

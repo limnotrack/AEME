@@ -1,6 +1,7 @@
 #' Plot phytoplankton variables
 #'
 #' @inheritParams build_aeme
+#' @inheritParams get_var
 #' @param depth_range numeric; range of depths to plot. Default is NULL, which
 #' averages over all depths.
 #'
@@ -9,7 +10,7 @@
 #'
 
 plot_zoops <- function(aeme, model, add_obs = TRUE, depth_range = NULL,
-                       ens_n = 1) {
+                       remove_spin_up = TRUE, ens_n = 1) {
 
   zoop_vars <- model_controls |>
     dplyr::filter(grepl("ZOO", var_aeme) & simulate) |>
@@ -23,6 +24,7 @@ plot_zoops <- function(aeme, model, add_obs = TRUE, depth_range = NULL,
 
 
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = zoop_vars,
-                ens_n = ens_n, depth_range = depth_range, add_obs = add_obs)
+                remove_spin_up = remove_spin_up, ens_n = ens_n,
+                depth_range = depth_range, add_obs = add_obs)
   return(p1)
 }

@@ -1,6 +1,7 @@
 #' Plot phytoplankton variables
 #'
 #' @inheritParams build_aeme
+#' @inheritParams get_var
 #' @param depth_range numeric; range of depths to plot. Default is NULL, which
 #' averages over all depths.
 #'
@@ -9,7 +10,7 @@
 #'
 
 plot_phs <- function(aeme, model, add_obs = TRUE, depth_range = NULL,
-                     ens_n = 1) {
+                     remove_spin_up = TRUE, ens_n = 1) {
 
   # Set colours for Nitrogen variables
   phs_cols <- c("Particulate inorganic P" = "#0072B2",
@@ -30,7 +31,8 @@ plot_phs <- function(aeme, model, add_obs = TRUE, depth_range = NULL,
   y_lab <- eval(parse(text = "P~(g~m^-3)"))
 
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = phs_vars,
-                ens_n = ens_n, depth_range = depth_range, add_obs = add_obs) +
+                remove_spin_up = remove_spin_up, ens_n = ens_n, 
+                depth_range = depth_range, add_obs = add_obs) +
     ggplot2::labs(x = "Date", y = y_lab, colour = "Group") +
     ggplot2::guides(linewidth = "none", alpha = "none")
 

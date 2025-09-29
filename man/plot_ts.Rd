@@ -4,7 +4,15 @@
 \alias{plot_ts}
 \title{Plot multi-variable timeseries}
 \usage{
-plot_ts(aeme, model, var_sim, add_obs = TRUE, depth_range = NULL, ens_n = 1)
+plot_ts(
+  aeme,
+  model,
+  var_sim,
+  remove_spin_up = TRUE,
+  add_obs = TRUE,
+  depth_range = NULL,
+  ens_n = 1
+)
 }
 \arguments{
 \item{aeme}{aeme; object.}
@@ -15,10 +23,16 @@ plot_ts(aeme, model, var_sim, add_obs = TRUE, depth_range = NULL, ens_n = 1)
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp"). Can
 be a vector.}
 
+\item{remove_spin_up}{logical; remove spin-up period from plot. Default is
+TRUE.}
+
 \item{add_obs}{logical; add observations to the plot. Default is TRUE.}
 
 \item{depth_range}{numeric; range of depths to average. Default is NULL,
 which averages over all depths.}
+
+\item{ens_n}{numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.}
 }
 \value{
 A ggplot object

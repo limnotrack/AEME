@@ -4,7 +4,14 @@
 \alias{plot_phytos}
 \title{Plot phytoplankton variables}
 \usage{
-plot_phytos(aeme, model, add_obs = TRUE, depth_range = NULL, ens_n = 1)
+plot_phytos(
+  aeme,
+  model,
+  add_obs = TRUE,
+  remove_spin_up = TRUE,
+  depth_range = NULL,
+  ens_n = 1
+)
 }
 \arguments{
 \item{aeme}{aeme; object.}
@@ -12,8 +19,14 @@ plot_phytos(aeme, model, add_obs = TRUE, depth_range = NULL, ens_n = 1)
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
+\item{remove_spin_up}{logical; remove spin-up period from plot. Default is
+TRUE.}
+
 \item{depth_range}{numeric; range of depths to plot. Default is NULL, which
 averages over all depths.}
+
+\item{ens_n}{numeric; ensemble number to allocate to model output which is
+loaded. Defaults to 1.}
 }
 \value{
 A ggplot object

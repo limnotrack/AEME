@@ -1,6 +1,7 @@
 #' Plot multi-variable timeseries
 #'
 #' @inheritParams build_aeme
+#' @inheritParams get_var
 #' @param depth_range numeric; range of depths to average. Default is NULL,
 #' which averages over all depths.
 #' @param var_sim character; variable in the AEME format (e.g. "HYD_temp"). Can
@@ -15,8 +16,8 @@
 #' @export
 #'
 
-plot_ts <- function(aeme, model, var_sim, add_obs = TRUE, depth_range = NULL,
-                        ens_n = 1) {
+plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
+                    add_obs = TRUE, depth_range = NULL, ens_n = 1) {
 
   var_sim <- check_aeme_vars(var_sim)
   # Get model controls
@@ -43,7 +44,8 @@ plot_ts <- function(aeme, model, var_sim, add_obs = TRUE, depth_range = NULL,
 
   # Get variables
   out_df <- lapply(var_sim, \(v) {
-    df <- get_var(aeme = aeme, model = model, var_sim = v)
+    df <- get_var(aeme = aeme, model = model, var_sim = v, 
+                  remove_spin_up = remove_spin_up)
     if (!is.null(depth_range)) {
       depth_range <- abs(depth_range)
       df <- df |>

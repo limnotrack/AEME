@@ -1,6 +1,7 @@
 #' Plot phytoplankton variables
 #'
 #' @inheritParams build_aeme
+#' @inheritParams get_var
 #' @param depth_range numeric; range of depths to plot. Default is NULL, which
 #' averages over all depths.
 #'
@@ -8,8 +9,8 @@
 #' @export
 #'
 
-plot_phytos <- function(aeme, model, add_obs = TRUE, depth_range = NULL,
-                        ens_n = 1) {
+plot_phytos <- function(aeme, model, add_obs = TRUE, remove_spin_up = TRUE,
+                        depth_range = NULL, ens_n = 1) {
 
   # Set colours for phytopplankton variables
   phy_cols <- c("Cyanobacteria" = "#56B4E9",
@@ -30,7 +31,8 @@ plot_phytos <- function(aeme, model, add_obs = TRUE, depth_range = NULL,
   y_lab <- eval(parse(text = "Chlorophyll~(mg~chla~m^-3)"))
 
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = phy_vars,
-                ens_n = ens_n, depth_range = depth_range, add_obs = add_obs) +
+                remove_spin_up = remove_spin_up, ens_n = ens_n, 
+                depth_range = depth_range, add_obs = add_obs) +
     ggplot2::labs(x = "Date", y = y_lab, colour = "Group")
 
   p1$scales$scales <- list()
