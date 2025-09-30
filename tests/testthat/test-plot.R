@@ -225,6 +225,12 @@ test_that("plotting model output works with no lake & level observations", {
                     level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16))
   testthat::expect_true(ggplot2::is_ggplot(p1))
+  
+  p2 <- plot_wbal(aeme = aeme)
+  testthat::expect_true(ggplot2::is_ggplot(p2))
+  
+  p3 <- plot_wbal_ann(aeme = aeme)
+  testthat::expect_true(ggplot2::is_ggplot(p3))
 })
 
 test_that("plotting model residuals for 2d and 1d variables", {
