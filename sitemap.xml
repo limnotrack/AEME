@@ -21,6 +21,7 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/align_depth_data.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/assess_model.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/build_aeme.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/calc_lake_vol.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/catchment_yields.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_AEME_pkg.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/check_aeme_vars.html</loc></url>
@@ -105,6 +106,7 @@
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_ts.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_var.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_wbal.html</loc></url>
+<url><loc>https://limnotrack.github.io/AEME/reference/plot_wbal_annual.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/plot_zoops.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/precip_status.html</loc></url>
 <url><loc>https://limnotrack.github.io/AEME/reference/read_aeme_from_files.html</loc></url>
