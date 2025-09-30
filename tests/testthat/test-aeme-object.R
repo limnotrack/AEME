@@ -320,3 +320,11 @@ test_that("observations can be extracted from Aeme object", {
                           all(lke_lvl$var_aeme == "LKE_lvlwtr"))
   
 })
+
+test_that("lake volume can be calculated", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  vol <- calc_lake_vol(aeme)
+  testthat::expect_true(is.numeric(vol) & vol > 0)
+})
+
