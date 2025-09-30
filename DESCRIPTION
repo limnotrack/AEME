@@ -7,7 +7,7 @@ Author: Authors@R: c(person("Tadhg", "Moore", role = c("aut","cre"),
     person("Chris", "McBride", role = "aut",
     email = "chris@limnotrack.com"))
 Maintainer: Tadhg Moore <tadhg@limnotrack.com>
-Description: Run an ensemble of aquatic ecosystem models on lakes and reservoir
+Description: Run an ensemble of aquatic ecosystem models on lakes and reservoirs
     using varying levels of inputs.
 License: GPL (>= 2)
 Encoding: UTF-8
@@ -49,7 +49,7 @@ Imports:
     withr,
     yaml,
     zoo
-URL: https://limnotrack.github.io/AEME/
+URL: https://limnotrack.com/AEME
 VignetteBuilder: knitr
 Remotes: 
     github::limnotrack/aemetools,
