@@ -1,0 +1,16 @@
+citHeader("To cite AEME in publications use:")
+
+citEntry(
+  entry    = "Manual",
+  title    = "AEME: Aquatic Ecosystem Model Ensemble",
+  author   = personList(
+               c(person("Tadhg", "Moore", role = c("aut","cre"),
+    email = "tadhg@limnotrack.com", comment = c(ORCID = "0000-0002-3834-8868")),
+    person("Chris", "McBride", role = "aut",
+    email = "chris@limnotrack.com", comment = c(ORCID = "0000-0001-5784-9767")))
+             ),
+  year     = "2025",
+  note     = "R package version 0.1.0",
+  url      = "https://github.com/limnotrack/AEME",
+  textVersion = "Moore, T. & McBride, C. (2025). AEME: Aquatic Ecosystem Model Ensemble. R package version 0.1.0. https://github.com/limnotrack/AEME"
+)
