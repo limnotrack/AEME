@@ -31,6 +31,7 @@
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/limnotrack/AEME/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -39,7 +40,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Write an AEME object to files</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/main/R/write_aeme_to_files.R" class="external-link"><code>R/write_aeme_to_files.R</code></a></small>
       <div class="d-none name"><code>write_aeme_to_files.Rd</code></div>
     </div>
 
@@ -78,7 +79,7 @@ output files can be large and take up a lot of space.</p></dd>
 <span class="r-in"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_model_controls.html">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>,</span></span>
 <span class="r-in"><span>model_controls <span class="op">=</span> <span class="va">model_controls</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-10-01 21:20:53]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-10-01 21:26:09]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using constant water level</span>
@@ -87,10 +88,10 @@ output files can be large and take up a lot of space.</p></dd>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'test_write\45819_wainamu' already exists</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Building GLM3-AED2 model for lake wainamu</span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models... (Have you tried parallelizing?) [2025-10-01 21:20:54]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED running... [2025-10-01 21:20:54]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED run successful! [2025-10-01 21:20:55]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-10-01 21:20:55]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models... (Have you tried parallelizing?) [2025-10-01 21:26:10]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED running... [2025-10-01 21:26:10]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED run successful! [2025-10-01 21:26:11]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-10-01 21:26:11]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting temp for model glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting salt for model glm_aed</span>
 <span class="r-in"><span><span class="fu">write_aeme_to_files</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">path</span><span class="op">)</span></span></span>
