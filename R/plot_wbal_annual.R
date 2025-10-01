@@ -5,6 +5,8 @@
 #'  object.
 #'
 #' @inheritParams plot_var
+#' @param lake_frac Logical. If TRUE, water balance components are expressed as
+#' a fraction of lake volume. Default is FALSE.
 #'
 #' @return ggplot2 object
 #'
@@ -17,7 +19,8 @@
 #' @importFrom ggplot2 ggplot geom_bar geom_point position_stack geom_hline
 #'  facet_wrap labs aes
 
-plot_wbal_annual <- function(aeme, model, remove_spin_up = FALSE) {
+plot_wbal_annual <- function(aeme, model, lake_frac = FALSE, 
+                             remove_spin_up = FALSE) {
   
   utils::data("key_naming", package = "AEME", envir = environment())
   
@@ -57,7 +60,7 @@ plot_wbal_annual <- function(aeme, model, remove_spin_up = FALSE) {
         label %in% c("Evaporation", "Outflow") ~ -value,
         TRUE ~ value
       ),
-      lake_frac = abs(value) / lake_vol
+      lake_frac = value / lake_vol
       ) # Convert to fraction of lake volume
   
   df_wid <- df |> 
@@ -65,22 +68,32 @@ plot_wbal_annual <- function(aeme, model, remove_spin_up = FALSE) {
     tidyr::pivot_wider(names_from = label, values_from = value) |> 
     dplyr::mutate(
       net = (Inflow + Precipitation) + (Outflow + Evaporation),
-      net_frac = net / lake_vol,
+      lake_frac = net / lake_vol,
       type = "Net Balance"
     ) 
   
+  if (lake_frac) {
+    y1_var <- "lake_frac"
+    y2_var <- "lake_frac"
+  } else {
+    y1_var <- "value"
+    y2_var <- "net"
+  }
+  
 
   ggplot2::ggplot() +
-    ggplot2::geom_bar(data = df, ggplot2::aes(x = year_class, y = value, 
+    ggplot2::geom_bar(data = df, ggplot2::aes(x = year_class, 
+                                              y = .data[[y1_var]], 
                                               fill = label), 
              stat = "identity", position = "stack") +
     ggplot2::geom_segment(data = df_wid, 
                      ggplot2::aes(x = year_class, xend = year_class,
-                                  y = 0, yend = net), 
+                                  y = 0, yend = .data[[y2_var]]), 
                      color = "black") +
-    ggplot2::geom_point(data = df_wid, ggplot2::aes(x = year_class, y = net,
-                                                    shape = type), 
-               position = position_stack(vjust = 0.5), color = "black",
+    ggplot2::geom_point(data = df_wid, ggplot2::aes(x = year_class,
+                                                    y = .data[[y2_var]],
+                                                    shape = type),
+                                                    color = "black",
                size = 3) +
     ggplot2::geom_hline(yintercept = 0) +
     ggplot2::facet_wrap(~ Model, ncol = 1) +

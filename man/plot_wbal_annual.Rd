@@ -4,13 +4,16 @@
 \alias{plot_wbal_annual}
 \title{Plot annual water balance components}
 \usage{
-plot_wbal_annual(aeme, model, remove_spin_up = FALSE)
+plot_wbal_annual(aeme, model, lake_frac = FALSE, remove_spin_up = FALSE)
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
 \item{model}{character vector; model(s) to plot. If missing, all models
 in the Aeme object will be plotted.}
+
+\item{lake_frac}{Logical. If TRUE, water balance components are expressed as
+a fraction of lake volume. Default is FALSE.}
 }
 \value{
 ggplot2 object
