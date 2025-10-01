@@ -229,7 +229,7 @@ test_that("plotting model output works with no lake & level observations", {
   p2 <- plot_wbal(aeme = aeme)
   testthat::expect_true(ggplot2::is_ggplot(p2))
   
-  p3 <- plot_wbal_ann(aeme = aeme)
+  p3 <- plot_wbal_annual(aeme = aeme)
   testthat::expect_true(ggplot2::is_ggplot(p3))
 })
 
