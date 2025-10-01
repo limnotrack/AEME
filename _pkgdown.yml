@@ -1,4 +1,3 @@
-url: https://limnotrack.github.io/AEME/
 template:
   bootstrap: 5
   bootswatch: cosmo
@@ -9,8 +8,19 @@ template:
 navbar:
   inverse: true
   structure:
-    left:  [intro, reference, articles, tutorials, news]
+    left:  [intro, reference, articles, tutorials, news, contributing]
     right: [search, github]
+  components:
+    news:
+      text: Changelog
+      href: news/index.html
+    contributing:
+      text: Contributing
+      menu:
+      - text: Contributing
+        href: CONTRIBUTING.html
+      - text: Code of conduct
+        href: CODE_OF_CONDUCT.html
 home:
   title: AEME - Aquatic Ecosytem Model Ensemble
   sidebar:
