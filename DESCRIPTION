@@ -10,6 +10,7 @@ Maintainer: Tadhg Moore <tadhg@limnotrack.com>
 Description: Run an ensemble of aquatic ecosystem models on lakes and reservoirs
     using varying levels of inputs.
 License: GPL (>= 2)
+Language: en-GB
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3
