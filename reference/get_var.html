@@ -70,7 +70,7 @@
 
 
 <dt id="arg-var-sim">var_sim<a class="anchor" aria-label="anchor" href="#arg-var-sim"></a></dt>
-<dd><p>string; of variable to plot</p></dd>
+<dd><p>character; variable in the AEME format (e.g. "HYD_temp").</p></dd>
 
 
 <dt id="arg-depth">depth<a class="anchor" aria-label="anchor" href="#arg-depth"></a></dt>
@@ -83,20 +83,10 @@ NULL, the variable profiles are extracted.</p></dd>
 list. Default is TRUE.</p></dd>
 
 
-<dt id="arg-ens-n">ens_n<a class="anchor" aria-label="anchor" href="#arg-ens-n"></a></dt>
-<dd><p>numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.</p></dd>
-
-
 <dt id="arg-use-obs">use_obs<a class="anchor" aria-label="anchor" href="#arg-use-obs"></a></dt>
 <dd><p>logical; if TRUE, use observations to extract the variable at
 time and depth of observations. Default is FALSE. Use this option if you
 want to compare model output to observations.</p></dd>
-
-
-<dt id="arg-remove-spin-up">remove_spin_up<a class="anchor" aria-label="anchor" href="#arg-remove-spin-up"></a></dt>
-<dd><p>logical; remove spin-up period from plot. Default is
-TRUE.</p></dd>
 
 
 <dt id="arg-cumulative">cumulative<a class="anchor" aria-label="anchor" href="#arg-cumulative"></a></dt>

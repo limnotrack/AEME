@@ -46,7 +46,7 @@ evaporation volume, lake precipitation, lake inflow, and lake outflow.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_wbal</span><span class="op">(</span><span class="va">aeme</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_wbal</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -55,6 +55,11 @@ evaporation volume, lake precipitation, lake inflow, and lake outflow.</p>
 
 <dl><dt id="arg-aeme">aeme<a class="anchor" aria-label="anchor" href="#arg-aeme"></a></dt>
 <dd><p>aeme; object.</p></dd>
+
+
+<dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
+<dd><p>character vector; model(s) to plot. If missing, all models
+in the Aeme object will be plotted.</p></dd>
 
 
 <dt id="arg-cumulative">cumulative<a class="anchor" aria-label="anchor" href="#arg-cumulative"></a></dt>

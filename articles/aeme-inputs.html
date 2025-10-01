@@ -108,6 +108,22 @@ variables are <strong>required</strong> for AEME:</p>
 <script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"filter":"none","vertical":false,"data":[["Shortwave radiation","Air temperature","Wind speed","Rain","Snow","u wind speed","v wind speed","Mean sea level pressure","Station pressure","Cloud cover","Longwave radiation","Dewpoint temperature","Vapour pressure","Relative humidity","Wind direction"],["MET_radswd","MET_tmpair","MET_wndspd","MET_pprain","MET_ppsnow","MET_wnduvu","MET_wnduvv","MET_prmslp","MET_prsttn","MET_cldcvr","MET_radlwd","MET_tmpdew","MET_prvapr","MET_humrel","MET_wnddir"],["W/m2","degC","m/s","m","m","m/s","m/s","Pa","Pa","-","W/m2","degC","hPa","%","degree"],["Yes","Yes","Yes","Yes","Defaults to 0 if not provided","Can be derived from wind speed and direction","Can be derived from wind speed and direction","Can be derived from station pressure","Can be derived from mean sea level pressure","Can be derived from date, air temperature, relative humiity, shortwave radiation, latitude, longitude and elevation","Can be derived from cloud cover, air temperature and relative humidity","Can be derived from air temperature and relative humidity","Can be derived from air temperature and relative humidity","Can be derived from air temperature and dew point temperature","Can be derived"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Name<\/th>\n      <th>Variable<\/th>\n      <th>Units<\/th>\n      <th>Required<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"name":"Name","targets":0},{"name":"Variable","targets":1},{"name":"Units","targets":2},{"name":"Required","targets":3}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="section level2">
+<h2 id="inflows-and-outflows">Inflows and Outflows<a class="anchor" aria-label="anchor" href="#inflows-and-outflows"></a>
+</h2>
+<div class="section level3">
+<h3 id="inflows">Inflows<a class="anchor" aria-label="anchor" href="#inflows"></a>
+</h3>
+<p>Inflows are important for lake hydrodynamics and water quality.
+Inflows can be specified as a time series of flow rates (m3/s) and
+temperature (C). They can also include nutrient and sediment
+concentrations if the biogeochemistry model is being used.</p>
+<p>One of the most important features of configuring an inflow is
+ensuring that the variables are in the correct units and that the
+variable names match those specified in the <code>key_naming</code> data
+frame.</p>
+</div>
+</div>
+<div class="section level2">
 <h2 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
 </h2>
 <p>Being able to specify the parameters of the model is crucial for the
