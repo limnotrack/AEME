@@ -11,6 +11,7 @@ stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecy
 [![pkgdown](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/limnotrack/AEME/branch/main/graph/badge.svg)](https://app.codecov.io/gh/limnotrack/AEME?branch=main)
+[![DOI](https://zenodo.org/badge/679273467.svg)](https://zenodo.org/badge/latestdoi/679273467)
 
 <!-- badges: end -->
 
@@ -82,7 +83,7 @@ aeme
 #> -------------------------------------------------------------------
 #>   Lake
 #> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;
-#> Area: 152343 m2; Shape file: Present
+#> Area: 152343 m2
 #> -------------------------------------------------------------------
 #>   Time
 #> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
@@ -115,7 +116,7 @@ aeme
 #> Number of parameters: 0
 #> -------------------------------------------------------------------
 #>   Output: 
-#> Number of ensembles: 1
+#> 
 #> DY-CD:    1
 #> GLM-AED:  1
 #> GOTM-WET: 1
