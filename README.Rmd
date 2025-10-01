@@ -25,6 +25,7 @@ knitr::opts_chunk$set(
 [![pkgdown](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/limnotrack/AEME/branch/main/graph/badge.svg)](https://app.codecov.io/gh/limnotrack/AEME?branch=main)
+[![DOI](https://zenodo.org/badge/679273467.svg)](https://zenodo.org/badge/latestdoi/679273467)
 
 <!-- badges: end -->
 
