@@ -1,6 +1,6 @@
 {
   "title": "AEME: Aquatic Ecosystem Model Ensemble",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "GPL-2.0-or-later",
   "upload_type": "software",
   "description": "<p>Run an ensemble of aquatic ecosystem models on lakes and reservoirs using varying levels of inputs.<\/p>",

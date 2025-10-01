@@ -1,7 +1,7 @@
 Type: Package
 Package: AEME
 Title: Aquatic Ecosystem Model Ensemble
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Tadhg", "Moore", , "tadhg@limnotrack.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3834-8868")),
