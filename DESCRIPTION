@@ -1,34 +1,18 @@
-Package: AEME
 Type: Package
+Package: AEME
 Title: Aquatic Ecosystem Model Ensemble
 Version: 0.1.0
-Author: Authors@R: c(person("Tadhg", "Moore", role = c("aut","cre"),
-    email = "tadhg@limnotrack.com", comment = c(ORCID = "0000-0002-3834-8868")),
-    person("Chris", "McBride", role = "aut",
-    email = "chris@limnotrack.com", comment = c(ORCID = "0000-0001-5784-9767")))
+Author: Authors@R: c(person("Tadhg", "Moore", role = c("aut","cre"), email
+    = "tadhg@limnotrack.com", comment = c(ORCID = "0000-0002-3834-8868")),
+    person("Chris", "McBride", role = "aut", email =
+    "chris@limnotrack.com", comment = c(ORCID = "0000-0001-5784-9767")))
 Maintainer: Tadhg Moore <tadhg@limnotrack.com>
-Description: Run an ensemble of aquatic ecosystem models on lakes and reservoirs
-    using varying levels of inputs.
+Description: Run an ensemble of aquatic ecosystem models on lakes and
+    reservoirs using varying levels of inputs.
 License: GPL (>= 2)
-Language: en-GB
-Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.3.3
-Config/testthat/edition: 3
+URL: https://limnotrack.com/AEME
 Depends: 
-    R (>= 2.10)
-Suggests: 
-    aemetools (>= 0.0.0.9000),
-    DT,
-    GLM3r (>= 3.1.17),
-    GOTMr (>= 0.0.0.10),
-    knitr,
-    LakeEnsemblR (>= 1.2.9),
-    osmdata,
-    rmarkdown,
-    sf,
-    testthat (>= 3.0.0),
-    tmap
+    R (>= 3.5.0)
 Imports: 
     dplyr,
     ggplot2,
@@ -50,11 +34,28 @@ Imports:
     withr,
     yaml,
     zoo
-URL: https://limnotrack.com/AEME
-VignetteBuilder: knitr
+Suggests: 
+    aemetools (>= 0.0.0.9000),
+    DT,
+    GLM3r (>= 3.1.17),
+    GOTMr (>= 0.0.0.10),
+    knitr,
+    LakeEnsemblR (>= 1.2.9),
+    osmdata,
+    rmarkdown,
+    sf,
+    testthat (>= 3.0.0),
+    tmap
+VignetteBuilder: 
+    knitr
 Remotes: 
-    github::limnotrack/aemetools,
-    github::aemon-j/LakeEnsemblR,
+    github::aemon-j/GLM3r,
     github::aemon-j/GOTMr,
-    github::aemon-j/GLM3r
+    github::aemon-j/LakeEnsemblR,
+    github::limnotrack/aemetools
 Config/Needs/website: rmarkdown
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-GB
+LazyData: true
+RoxygenNote: 7.3.3
