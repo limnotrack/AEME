@@ -168,31 +168,26 @@ test_that("building GOTM-WET works", {
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE, wb_method = 3)
   lke <- lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "fabm.yaml"))
+  file_chk <- file.exists(file.path(lake_dir, model, "fabm.yaml"))
   testthat::expect_true(file_chk)
 
   # Check inflow files are generated
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "inputs", "inf_flow_wbal_in.dat"))
+  file_chk <- file.exists(file.path(lake_dir, model, "inputs",
+                                    "inf_flow_inf_water_bal.dat"))
   testthat::expect_true(file_chk)
 
   # Check outflow files are generated
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "inputs", "outf_outflow.dat"))
+  file_chk <- file.exists(file.path(lake_dir, model, "inputs",
+                                    "outf_outflow.dat"))
   testthat::expect_true(file_chk)
 
   # Check met file is generated
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "inputs", "meteo.dat"))
+  file_chk <- file.exists(file.path(lake_dir, model, "inputs", "meteo.dat"))
   testthat::expect_true(file_chk)
 
 })
