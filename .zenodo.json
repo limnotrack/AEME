@@ -1,0 +1,35 @@
+{
+  "title": "AEME: Aquatic Ecosystem Model Ensemble",
+  "version": "0.1.0",
+  "license": "GPL (>= 2)",
+  "upload_type": "software",
+  "description": "<p>Run an ensemble of aquatic ecosystem models on lakes and reservoirs using varying levels of inputs.<\/p>",
+  "keywords": [
+    "ecosystem",
+    "modelling"
+  ],
+  "access_right": "open",
+  "language": "eng",
+  "contributors": [
+    {
+      "name": "Moore, Tadhg",
+      "orcid": "0000-0002-3834-8868",
+      "type": "contactperson"
+    }
+  ],
+  "creators": [
+    {
+      "name": "Moore, Tadhg",
+      "orcid": "0000-0002-3834-8868"
+    },
+    {
+      "name": "McBride, Christopher",
+      "orcid": "0000-0001-5784-9767"
+    }
+  ],
+  "communities": [
+    {
+      "identifier": "limnotrack"
+    }
+  ]
+}
