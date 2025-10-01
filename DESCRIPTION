@@ -12,7 +12,7 @@ Maintainer: Tadhg Moore <tadhg@limnotrack.com>
 Description: Run an ensemble of aquatic ecosystem models on lakes and
     reservoirs using varying levels of inputs.
 License: GPL (>= 2)
-URL: https://limnotrack.com/AEME
+URL: https://github.com/limnotrack/AEME, https://limnotrack.com/AEME
 Depends: 
     R (>= 3.5.0)
 Imports: 
