@@ -87,6 +87,19 @@ DT::datatable(met_vars, rownames = FALSE)
 ```
 
 
+## Inflows and Outflows
+
+### Inflows
+
+Inflows are important for lake hydrodynamics and water quality. Inflows can be
+specified as a time series of flow rates (m3/s) and temperature (C). They can
+also include nutrient and sediment concentrations if the biogeochemistry model
+is being used.
+
+One of the most important features of configuring an inflow is ensuring that
+the variables are in the correct units and that the variable names match
+those specified in the `key_naming` data frame.
+
 
 ## Parameters
 
