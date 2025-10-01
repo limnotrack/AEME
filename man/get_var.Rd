@@ -22,7 +22,7 @@ get_var(
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
-\item{var_sim}{string; of variable to plot}
+\item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp").}
 
 \item{depth}{numeric; depth of the variable to extract. Default is NULL. If
 NULL, the variable profiles are extracted.}
@@ -30,15 +30,9 @@ NULL, the variable profiles are extracted.}
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.}
 
-\item{ens_n}{numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.}
-
 \item{use_obs}{logical; if TRUE, use observations to extract the variable at
 time and depth of observations. Default is FALSE. Use this option if you
 want to compare model output to observations.}
-
-\item{remove_spin_up}{logical; remove spin-up period from plot. Default is
-TRUE.}
 
 \item{cumulative}{logical; if TRUE, return cumulative sum of variable}
 }

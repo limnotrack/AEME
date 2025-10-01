@@ -17,11 +17,14 @@
 #' @importFrom ggplot2 ggplot geom_bar geom_point position_stack geom_hline
 #'  facet_wrap labs aes
 
-plot_wbal_annual <- function(aeme, remove_spin_up = FALSE) {
+plot_wbal_annual <- function(aeme, model, remove_spin_up = FALSE) {
   
   utils::data("key_naming", package = "AEME", envir = environment())
   
   lake_vol <- calc_lake_vol(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  }
   
   vars <- c("LKE_evpvol", "LKE_pcpvol", "LKE_inflow", "LKE_outflow")
   df <- lapply(vars, \(v) {

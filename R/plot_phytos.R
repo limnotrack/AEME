@@ -1,6 +1,6 @@
 #' Plot phytoplankton variables
 #'
-#' @inheritParams build_aeme
+#' @inheritParams plot_output
 #' @inheritParams get_var
 #' @param depth_range numeric; range of depths to plot. Default is NULL, which
 #' averages over all depths.
@@ -12,6 +12,9 @@
 plot_phytos <- function(aeme, model, add_obs = TRUE, remove_spin_up = TRUE,
                         depth_range = NULL, ens_n = 1) {
 
+  if (missing(model)) {
+    model <- list_models(aeme)
+  }
   # Set colours for phytopplankton variables
   phy_cols <- c("Cyanobacteria" = "#56B4E9",
                 "Green algae" = "#009E73",

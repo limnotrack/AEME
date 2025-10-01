@@ -12,10 +12,9 @@ align_depth_data(aeme, model, var_sim, ens_n = 1, return_df = TRUE)
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
-\item{var_sim}{string; of variable to plot}
+\item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp").}
 
-\item{ens_n}{numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.}
+\item{ens_n}{integer; ensemble number to plot. Default is 1.}
 
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.}

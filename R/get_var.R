@@ -1,6 +1,7 @@
 #' Get variable from aeme
 #'
-#' @inheritParams plot_output
+#' @inheritParams build_aeme
+#' @param var_sim character; variable in the AEME format (e.g. "HYD_temp").
 #' @param use_obs logical; if TRUE, use observations to extract the variable at
 #' time and depth of observations. Default is FALSE. Use this option if you
 #' want to compare model output to observations.

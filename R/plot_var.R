@@ -15,6 +15,9 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
                      facet = FALSE, cumulative = FALSE, print_plots = FALSE) {
 
   utils::data("key_naming", package = "AEME", envir = environment())
+  if (missing(model)) {
+    model <- list_models(aeme)
+  }
 
   if (is.null(df)) {
     df <- get_var(aeme = aeme, model = model, var_sim = var_sim,

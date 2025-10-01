@@ -1,6 +1,5 @@
 #' Plot model residuals
 #'
-#' @inheritParams build_aeme
 #' @inheritParams plot_output
 #'
 #' @return list of ggplot2 objects
@@ -16,6 +15,9 @@
 
 plot_resid <- function(aeme, model, var_sim = "HYD_temp") {
 
+  if (missing(model)) {
+    model <- list_models(aeme)
+  }
   # Extract observations
   obs <- observations(aeme)
   my_cols <- RColorBrewer::brewer.pal(11, "Spectral")

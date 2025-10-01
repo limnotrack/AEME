@@ -1,6 +1,5 @@
 #' Check if a variable is present in the observations for the model time period
 #'
-#' @inheritParams build_aeme
 #' @inheritParams get_var
 #'
 #' @export

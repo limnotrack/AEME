@@ -1,6 +1,6 @@
 #' Plot multi-variable timeseries
 #'
-#' @inheritParams build_aeme
+#' @inheritParams plot_output
 #' @inheritParams get_var
 #' @param depth_range numeric; range of depths to average. Default is NULL,
 #' which averages over all depths.
@@ -24,6 +24,9 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
   model_controls <- get_model_controls(aeme)
   if (is.null(model_controls)) {
     stop("No model controls found")
+  }
+  if (missing(model)) {
+    model <- list_models(aeme)
   }
 
   sim_vars <- model_controls |>

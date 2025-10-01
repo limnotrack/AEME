@@ -17,8 +17,8 @@ plot_ts(
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{character vector; model(s) to plot. If missing, all models
+in the Aeme object will be plotted.}
 
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp"). Can
 be a vector.}
@@ -31,8 +31,7 @@ TRUE.}
 \item{depth_range}{numeric; range of depths to average. Default is NULL,
 which averages over all depths.}
 
-\item{ens_n}{numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.}
+\item{ens_n}{integer; ensemble number to plot. Default is 1.}
 }
 \value{
 A ggplot object

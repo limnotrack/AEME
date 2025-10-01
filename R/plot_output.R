@@ -5,7 +5,10 @@
 #'
 #' @inheritParams build_aeme
 #' @inheritParams run_aeme
+#' @param model character vector; model(s) to plot. If missing, all models
+#' in the Aeme object will be plotted.
 #' @param var_sim string; of variable to plot
+#' @param ens_n integer; ensemble number to plot. Default is 1.
 #' @param level logical; include lake level. Only applies for contour plots.
 #' @param remove_spin_up logical; remove spin-up period from plot. Default is
 #' TRUE.
@@ -77,6 +80,9 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
   var_sim <- check_aeme_vars(var_sim)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  }
   # Check if model is a character vector
   if (!is.character(model)) stop("model must be a character vector")
 

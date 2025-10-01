@@ -4,10 +4,13 @@
 \alias{plot_wbal}
 \title{Plot water balance components}
 \usage{
-plot_wbal(aeme, cumulative = FALSE)
+plot_wbal(aeme, model, cumulative = FALSE)
 }
 \arguments{
 \item{aeme}{aeme; object.}
+
+\item{model}{character vector; model(s) to plot. If missing, all models
+in the Aeme object will be plotted.}
 
 \item{cumulative}{logical; plot cumulative sum of variable}
 }

@@ -4,10 +4,13 @@
 \alias{plot_wbal_annual}
 \title{Plot annual water balance components}
 \usage{
-plot_wbal_annual(aeme, remove_spin_up = FALSE)
+plot_wbal_annual(aeme, model, remove_spin_up = FALSE)
 }
 \arguments{
 \item{aeme}{aeme; object.}
+
+\item{model}{character vector; model(s) to plot. If missing, all models
+in the Aeme object will be plotted.}
 }
 \value{
 ggplot2 object

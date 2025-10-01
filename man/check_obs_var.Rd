@@ -9,7 +9,7 @@ check_obs_var(aeme, var_sim)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{var_sim}{string; of variable to plot}
+\item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp").}
 }
 \value{
 A list with two elements:
