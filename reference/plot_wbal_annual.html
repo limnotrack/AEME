@@ -56,7 +56,7 @@ precipitation, inflow, outflow, and net balance for each model in the Aeme
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_wbal_annual</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span>, remove_spin_up <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_wbal_annual</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span>, lake_frac <span class="op">=</span> <span class="cn">FALSE</span>, remove_spin_up <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -70,6 +70,11 @@ precipitation, inflow, outflow, and net balance for each model in the Aeme
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
 <dd><p>character vector; model(s) to plot. If missing, all models
 in the Aeme object will be plotted.</p></dd>
+
+
+<dt id="arg-lake-frac">lake_frac<a class="anchor" aria-label="anchor" href="#arg-lake-frac"></a></dt>
+<dd><p>Logical. If TRUE, water balance components are expressed as
+a fraction of lake volume. Default is FALSE.</p></dd>
 
 </dl></div>
     <div class="section level2">
