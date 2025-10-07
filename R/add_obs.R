@@ -25,6 +25,16 @@ add_obs <- function(aeme, lake = NULL, level = NULL) {
 
     obs$lake <- lake
   }
+  
+  if (!is.null(level)) {
+
+    # Check if level is a data frame with columns "Date", "var_aeme" and "value"
+    if (!is.data.frame(level) || !all(c("Date", "var_aeme", "value") %in% colnames(level))) {
+      stop("level must be a data frame with columns 'Date', 'var_aeme' and 'value'")
+    }
+
+    obs$level <- level
+  }
 
   observations(aeme) <- obs
 
