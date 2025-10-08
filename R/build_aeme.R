@@ -184,7 +184,7 @@ build_aeme <- function(aeme = NULL,
                            lake_depth = lke[["depth"]], 
                            lake_area = lke[["area"]], ext_elev = ext_elev)
 
-    #* Inital depth
+    #* Initial depth
     if (!is.null(inp[["init_depth"]])) {
       init_depth <- inp[["init_depth"]]
     } else {
