@@ -28,16 +28,16 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
   obs <- observations(aeme)
   inp <- input(aeme)
   ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
-
-
+  
+  
   # Align the observed data with the model data ----
   lst <- lapply(model, \(m) {
     depth <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
                         depth = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
-
+    
     df <- get_var(aeme = aeme, model = m, var_sim = var_sim,
                   return_df = TRUE)
-
+    
     if (!is.null(obs$lake)) {
       obs$lake |>
         dplyr::filter(Date %in% df$Date & var_aeme == var_sim) |>
@@ -47,7 +47,7 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
         dplyr::filter(elev >= 0)
     }
   })
-
+  
   # Adjust water level observations
   if (!is.null(obs$level)) {
     obs$level_adj <- obs$level |>
@@ -60,22 +60,12 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
       obs$level_adj <- NULL
     }
   }
-
+  
   if (return_df) {
     obs$lake_adj <- dplyr::bind_rows(lst)
-    if (is.data.frame(obs$lake_adj)) {
-      obs$lake_adj <- obs$lake_adj |>
-        dplyr::mutate(Model = dplyr::case_when(
-          Model == "dy_cd" ~ "DYRESM-CAEDYM",
-          Model == "glm_aed" ~ "GLM-AED",
-          Model == "gotm_wet" ~ "GOTM-WET"
-        ),
-        var_sim = var_sim
-        )
-    } else {
+    if (!is.data.frame(obs$lake_adj) || nrow(obs$lake_adj) == 0) {
       obs[["lake_adj"]] <- NULL
     }
-
   } else {
     obs$lake_adj <- lst
   }
