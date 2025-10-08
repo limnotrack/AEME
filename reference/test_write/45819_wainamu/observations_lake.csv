@@ -1,4 +1,4 @@
-"lake","lake_id","site_id","var_aeme","units","depth_from","depth_to","datetime","value","flag_detection","Date"
+"lake","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA"
 "wainamu",45819,44616,"PHY_cyano","mm^3/L",0,0,"2019-08-07",0.031,NA,2019-08-07
 "wainamu",45819,44616,"CHM_salt","ppt",0,0,"2019-08-07",0.11,NA,2019-08-07
 "wainamu",45819,44616,"RAD_secchi","m",0,0,"2019-08-07",2.1,NA,2019-08-07

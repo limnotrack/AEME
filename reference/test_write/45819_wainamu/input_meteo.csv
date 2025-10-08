@@ -1,4 +1,4 @@
-"Date","MET_radswd","MET_radlwd","MET_cldcvr","MET_tmpair","MET_airmax","MET_airmin","MET_dewmax","MET_dewmin","MET_humrel","MET_tmpdew","MET_prvapr","MET_prsttn","MET_prmslp","MET_wndspd","MET_wnddir","MET_wnduvu","MET_wnduvv","MET_pprain","MET_ppsnow"
+"meteo","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA"
 2019-01-01,311.566,368.307,0.539,19.526,0,0,0,0,84.875,16.913,19.277,100667,100945.102,5.29,37.157,3.195,4.216,0.443,0
 2019-01-02,322.271,360.538,0.506,19.502,0,0,0,0,78.749,15.714,17.859,100714,100992.254,5.293,60.24,4.595,2.627,0.955,0
 2019-01-03,323.851,375.792,0.479,20.136,0,0,0,0,87.794,18.048,20.708,100706,100983.63,7.359,57.087,6.178,3.999,0.955,0
