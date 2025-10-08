@@ -63,7 +63,7 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
         if (is.null(obs)) {
           next
         }
-        if (is.atomic(df)) {
+        if (is.data.frame(df)) {
           df <- data.frame(obs = df)
           names(df) <- obs
         }

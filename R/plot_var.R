@@ -85,7 +85,7 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
     }
 
     # Catch no observations
-    if (!is.atomic(obs$lake)) {
+    if (!is.data.frame(obs$lake)) {
       # Initialise an empty dataframe
       obs_sub <- data.frame(Date = as.Date(character(0)),
                              value = numeric(0),
