@@ -13,7 +13,8 @@
 #'   \item{name_text}{Regular text string variable name}
 #'   \item{name_full}{String variable name}
 #'   \item{name_parse}{Variable name for parsing}
-#'   \item{units}{Units of the variable}
+#'   \item{units}{Units of the variable. As defined using the
+#'    \href{https://cran.r-project.org/package=units}{\pkg{units}} package.}
 #'   \item{conversion_aed}{Unit conversion for GLM-AED}
 #'   \item{default}{Default value for the variable}
 #'   \item{derived}{Logical value if the variable is derived}
