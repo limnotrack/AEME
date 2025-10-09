@@ -22,6 +22,7 @@ A data frame with 126 rows and 13 columns:
   \item{default}{Default value for the variable}
   \item{derived}{Logical value if the variable is derived}
   \item{derived_from}{Variable name that the variable is derived from}
+  \item{keywords}{Keywords associated with the variable}
 }
 }
 \source{

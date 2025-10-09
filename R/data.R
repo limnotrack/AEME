@@ -19,6 +19,7 @@
 #'   \item{default}{Default value for the variable}
 #'   \item{derived}{Logical value if the variable is derived}
 #'   \item{derived_from}{Variable name that the variable is derived from}
+#'   \item{keywords}{Keywords associated with the variable}
 #' }
 #' @source Package development.
 "key_naming"

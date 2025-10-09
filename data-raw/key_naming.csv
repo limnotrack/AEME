@@ -1,127 +1,127 @@
-name,dy_cd,glm_aed,gotm_wet,gotm_fabm,name_text,name_full,name_parse,units,conversion_aed,default,derived,derived_from
-Date,Date,time,date,,Time,,,,1,,FALSE,NA
-outflow,,,,,Outflow,Outflow_m3,Outflow~(m^3),m3,1,,FALSE,NA
-HYD_flow,VOL,flow,flow,,Discharge,Discharge_m3,Discharge~(m^3),m3,1,,FALSE,NA
-HYD_temp,TEMPTURE,temp,temp,,Water temperature,Water_temperature_degC,Temperature~(degree~C),degC,1,10,FALSE,NA
-HYD_dens,DENSITY,rho,rho,,Water density,Density_g/cm3,Density~(g~cm^-3),g/cm3,1,,TRUE,HYD_temp
-HYD_thmcln,,,,,Thermocline depth,Thermocline_depth_m,Thermocline~depth~(m),m,1,,TRUE,HYD_temp
-HYD_schstb,,,,,Schmidt stability,Schmidt_stability_J/m2,Schmidt~stability~(J~m^2),J/m2,1,,TRUE,HYD_temp
-HYD_ctrbuy,,,,,Centre of buoyancy,Centre_of_buoyancy_m,Centre~of~buoyancy~(m),m3,1,,TRUE,HYD_temp
-HYD_epidep,,,,,Epilimnion depth,Epilimnion_depth_m,Epilimnion~depth~(m),m3,1,,TRUE,HYD_temp
-HYD_hypdep,,,,,Hypolimnion depth,Hypolimnion_depth_m,Hypolimnion~depth~(m),m3,1,,TRUE,HYD_temp
-HYD_surft,,,,,Remote sensed skin temperature,Remote_sensed_skin_temperature_degC,Remote~sensed~skin~temperature~(degree~C),degC,1,,FALSE,NA
-HYD_atdiff,,,,,Water-air temperature difference,Water-air_temperature_difference_degC,Water-air~temperature~difference~(degree~C),degC,1,,FALSE,NA
-LKE_layers,,,,,Lake layer,Lake_layers_m,Lake~layers~(m),m,1,,FALSE,NA
-LKE_depths,,,,,Lake depth,Lake_depth_m,Lake~depth~(m),m,1,,FALSE,NA
-LKE_evprte,,,,,Evaporation,Evaporation_m/day,Evaporation~(m~day^-1),m/day,1,,FALSE,NA
-LKE_evpvol,dyresmEVAP_DAILY,evaporation,evap,,Evaporation,Evaporation_m3,Evaporation~(m^3),m3,1,,FALSE,NA
-LKE_evpflx,dyresmEVAP_DAILY,evap_mass_flux,evap,,Evaporation,Evaporation_flux_m/s,Evaporation~flux~(m^-1),m-1,1,,FALSE,NA
-LKE_lvlwtr,,,,,Water level,Water_level_m,Water~level~(m),m,1,,FALSE,NA
-LKE_V,,,,,Volume,Volume_m3,Volume~(m^3),m3,1,,FALSE,NA
-LKE_dV,,,,,Change in volume,Change_in_volume_m3,Change~in~volume~(m^3),m3,1,,FALSE,NA
-LKE_A0,,,,,Surface area,Surface_area_m2,Surface~area~(m^2),m2,1,,FALSE,NA
-LKE_Qe,,,,,Evaporative heat flux,Evaporative_heat_flux_W/m2,Evaporative~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA
-LKE_Qh,,,,,Sensible heat flux,Sensible_heat_flux_W/m2,Sensible~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA
-LKE_Qsw,,,,,Shortwave radiation,Shortwave_radiation_W/m2,Shortwave~radiation~(W~m^-2),W/m2,1,,FALSE,NA
-LKE_Qlw,,,,,Longwave radiation,Longwave_radiation_W/m2,Longwave~radiation~(W~m^-2),W/m2,1,,FALSE,NA
-LKE_Qnet,,,,,Net surface heat flux,Net_surface_heat_flux_W/m2,Net~surface~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA
-LKE_precip,,,,,Precipitation,Precipitation_m/day,Precipitation~(m~day^-1),m/day,1,,FALSE,NA
-LKE_pcpvol,,,,,Precipitation,Precipitation_m3,Precipitation~(m^3),m3,1,,FALSE,NA
-LKE_inflow,,,,,Inflow,Inflow_m3,Inflow~(m^3),m3,1,,FALSE,NA
-LKE_outflow,,,,,Outflow,Outflow_m3,Outflow~(m^3),m3,1,,FALSE,NA
-LKE_netwbl,,,,,Net water balance,Net_water_balance_m3,Net~water~balance~(m^3),m3,1,,FALSE,NA
-LKE_efold,,,,,e-folding depth,e-folding_depth_m,e-folding~depth~(m),m,1,,FALSE,NA
-LKE_efoldh,,,,,e-folding depth,e-folding_depth_m,e-folding~depth~(m),m,1,,FALSE,NA
-LKE_photic,,,,,Euphotic depth,Euphotic_depth_m,Euphotic~depth~(m),m,1,,FALSE,NA
-LKE_photich,,,,,Euphotic depth,Euphotic_depth_m,Euphotic~depth~(m),m,1,,FALSE,NA
-LKE_tlic,,,,,Trophic Level Index Chlorophyll-a,Trophic_Level_Index_chlorophyll_a,Trophic~Level~Index~chlorophyll-a,1,1,,TRUE,PHY_tchla;HYD_epidep
-LKE_tlin,,,,,Trophic Level Index Total Nitrogen,Trophic_Level_Index_total_nitrogen,Trophic~Level~Index~TN,1,1,,TRUE,PHS_tn;HYD_epidep
-LKE_tlip,,,,,Trophic Level Index Total Phosphorus,Trophic_Level_Index_total_phosphorus,Trophic~Level~Index~TP,1,1,,TRUE,PHS_tp;HYD_epidep
-LKE_tlise,,,,,Trophic Level Index Secchi depth,Trophic_Level_Index_secchi_depth,Trophic~Level~Index~secchi~depth,1,1,,TRUE,LKE_photic
-LKE_tli3,,,,,Trophic Level Index 3,Trophic_Level_Index_3,Trophic~Level~Index~3,1,1,,TRUE,PHS_tp;NIT_tn;PHY_tchla;HYD_epidep
-LKE_tli4,,,,,Trophic Level Index 4,Trophic_Level_Index_4,Trophic~Level~Index~4,1,1,,TRUE,PHS_tp;NIT_tn;PHY_tchla;HYD_epidep;LKE_photic
-RAD_par,PAR,rad,rad,,Photosynthetically active radiation,Photosynthetically_active_radiation_umol/m2/s,Photosynthetically~active~radiation~(umol~m^2~s^-1),umol/m2/s,1,,FALSE,NA
-RAD_extc,EXTC,extc_coef,,,Light extinction coefficient,Light_extinction_coefficient_/m,Light~extinction~coefficient~(m^-1),m-1,1,,FALSE,NA
-RAD_secchi,,,,,Secchi disk depth,Secchi_disk_depth_m,Secchi~disk~depth~m,m,1,,FALSE,NA
-CHM_salt,SALINITY,salt,salt,,Salinity,Salinity_PSU,Salinity~(PSU),1,1,0,FALSE,NA
-CHM_ph,,,,,pH,pH,pH,1,1,7,FALSE,NA
-CHM_oxy,DO,OXY_oxy,abiotic_water_sO2W,instances/abiotic_water/initialization/sO2W,Dissolved oxygen,Dissolved_oxygen_mg/L,Dissolved~oxygen~(mg~L^-1),mg/L,0.032,10.3,FALSE,NA
-CHM_oxycln,,,,,Oxycline depth,Oxycline_depth_m,Oxycline~depth~(m),m,1,,TRUE,CHM_oxy
-CHM_oxyepi,,,,,Epilimnetic oxygen,Epilimnetic_oxygen_mg/L,Epilimnetic~oxygen~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy
-CHM_oxymet,,,,,Metalimnetic oygen,Metalimnetic_oxygen_mg/L,Metalimnetic~oxygen~(mg~L^-1),mg/L,,,TRUE,CHM_oxy
-CHM_oxyhyp,,,,,Hypolimnetic oxygen,Hypolimnetic_oxygen_mg/L,Hypolimnetic~oxygen~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy
-CHM_oxymom,,,,,Metalimnetic oxygen minima,Metalimnetic_oxygen_minima_mg/L,Metalimnetic~oxygen~minima~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy
-CHM_oxynal,,,,,Number of anoxic layers,Number_of_anoxic_layers,Number~of~anoxic~layers,1,1,,TRUE,CHM_oxy
-PHS_frp,PO4,PHS_frp,abiotic_water_sPO4W,instances/abiotic_water/initialization/sPO4W,Phosphate,Phosphate-P_g/m3,Phosphate-P~(g~m^-3),g/m^3,0.03097376,1.00E-03,FALSE,NA
-PHS_dop,DOPL,OGM_dop,abiotic_water_sPDOMW,instances/abiotic_water/initialization/sPDOMW,Dissolved organic P,Dissolved_organic_P_g/m3,Dissolved~organic~(g~m^-3),g/m^3,0.03097376,4.00E-05,FALSE,NA
-PHS_dopr,DOPR,,,,,,,,0.03097376,,FALSE,NA
-PHS_pop,POPL,OGM_pop,abiotic_water_sPPOMW,instances/abiotic_water/initialization/sPPOMW,Particulate organic P,Particulate_organic_P_g/m3,Particulate~organic~(g~m^-3),g/m^3,0.03097376,1.60E-04,FALSE,NA
-PHS_popr,POPR,,,,,,,,0.03097376,,FALSE,NA
-PHS_pip,PIP,PHS_frp_ads,abiotic_water_sPAIMW,instances/abiotic_water/initialization/sPAIMW,Particulate inorganic P,Particulate_inorganic_P_g/m3,Particulate~inorganic~P~(g~m^-3),g/m^3,0.03097376,6.00E-04,FALSE,NA
-PHS_tp,TP,TOT_tp,wet_totP_calculator_result,,Total phosphorus,Total_phosphorus_g/m3,Total~phosphorus~(g~m^-3),g/m^3,0.03097376,,FALSE,NA
-NIT_amm,NH4,NIT_amm,abiotic_water_sNH4W,instances/abiotic_water/initialization/sNH4W,Ammoniacal nitrogen,Ammoniacal_nitrogen_g/m3,Ammoniacal~nitrogen~(g~m^-3),g/m^3,0.0140067,0.004,FALSE,NA
-NIT_nit,NO3,NIT_nit,abiotic_water_sNO3W,instances/abiotic_water/initialization/sNO3W,Nitrate,Nitrate-N_g/m3,Nitrate-N~(g~m^-3),g/m^3,0.0140067,4.10E-04,FALSE,NA
-NIT_don,DONL,OGM_don,abiotic_water_sNDOMW,instances/abiotic_water/initialization/sNDOMW,Dissolved organic N,Dissolved_organic_N_g/m3,Dissolved~organic~N~(g~m^-3),g/m^3,0.0140067,4.10E-04,FALSE,NA
-NIT_donr,DONR,,,,,,,,0.0140067,,FALSE,NA
-NIT_pon,PONL,OGM_pon,abiotic_water_sNPOMW,instances/abiotic_water/initialization/sNPOMW,Particulate organic N,Particulate_organic_N_g/m3,Particulate~organic~N~(g~m^-3),g/m^3,0.0140067,0.002,FALSE,NA
-NIT_ponr,PONR,,,,,,,,0.0140067,,FALSE,NA
-NIT_pin,PIN,,,,Particulate inorganic N,Particulate_inorganic_N_g/m3,Particulate~inorganic~N~(g~m^-3),g/m^3,0.0140067,,FALSE,NA
-NIT_tn,TN,TOT_tn,wet_totN_calculator_result,,Total nitrogen,Total_nitrogen_g/m3,Total~nitrogen~(g~m^-3),g/m^3,0.0140067,,FALSE,NA
-CAR_dic,DIC,CAR_dic,abiotic_water_sDIMW,instances/abiotic_water/initialization/sDIMW,Dissolved inorganic carbon,Dissolved_inorganic_carbon_g/m3,Dissolved~inorganic~carbon~(g~m^-3),g/m^3,0.012011,,FALSE,NA
-CAR_doc,DOCL,OGM_doc,abiotic_water_sDDOMW,instances/abiotic_water/initialization/sDDOMW,Dissolved organic carbon,Dissolved_organic_carbon_g/m3,Dissolved~organic~carbon~(g~m^-3),g/m^3,0.012011,0.008,FALSE,NA
-CAR_docr,DOCR,,,,,,,,0.012011,,FALSE,NA
-CAR_poc,POCL,OGM_poc,abiotic_water_sDPOMW,instances/abiotic_water/initialization/sDPOMW,Particulate organic carbon,Particulate_organic_carbon_g/m3,Particulate~organic~carbon~(g~m^-3),g/m^3,0.012011,0.01,FALSE,NA
-CAR_pocr,POCR,,,,,,,,0.012011,,FALSE,NA
-CAR_pH,PH,CAR_pH,,,,pH,pH,,1,,FALSE,NA
-CAR_ch4,,CAR_ch4,,,Carbon CH4,,,,1,,FALSE,NA
-SIL_rsi,SiO2,SIL_rsi,abiotic_water_sSiO2W,instances/abiotic_water/initialization/sSiO2W,,Silica,Silica,,1,10,FALSE,NA
-BAC_bac,BAC,,,,,Bacteria,Bacteria,,1,,FALSE,NA
-PHY_dinof,DINOF,PHY_dinof,,,,Dinoflagellates_mgchla/m3,Dinoflagellates~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA
-PHY_cyano,CYANO,PHY_cyano,cyanobacteria_oChla,instances/cyanobacteria/initialization/sDW,Cyanobacteria,Cyanophytes_mgchla/m3,Cyanophytes~(mg~chla~m^-3),mg/m^3,1,0.1,FALSE,NA
-PHY_nodul,NODUL,PHY_nodul,,,,Nodularia_mgchla/m3,Nodularia~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA
-PHY_green,CHLOR,PHY_green,greens_oChla,instances/greens/initialization/sDW,Green algae,Chlorophytes_mgchla/m3,Chlorophytes~(mg~chla~m^-3),mg/m^3,1,0.1,FALSE,NA
-PHY_crypt,CRYPT,PHY_crypt,,,Cryptophytes,Cryptophytes_mgchla/m3,Cryptophytes~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA
-PHY_mdiat,MDIAT,PHY_mdiat,,,Diatoms marine,Diatoms_marine_mgchla/m3,Diatoms~marine~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA
-PHY_diatom,FDIAT,PHY_diatom,diatoms_oChla,instances/diatoms/initialization/sDW,Diatoms freshwater,Diatoms_freshwater_mgchla/m3,Diatoms~freshwater~(mg~chla~m^-3),mg/m^3,1,0.1,FALSE,NA
-PHY_tchla,TCHLA,PHY_TCHLA,wet_chla_calculator_result,,Total chlorophyll a,Total_chlorophyll_a_mg/m3,Total~chlorophyll~a~(mg~m^-3),mg/m3,1,,FALSE,NA
-PHY_rstchla,,,,,Remotely sensed total chlorophyll a,Remotely_sensed_total_chlorophyll_a_mg/m3,Remotely~sensed~total~chlorophyll~a~(mg~m^-3),mg/m3,1,,FALSE,NA
-NCS_ss1,SSOL1,NCS_ss1,abiotic_water_sDIMW,instances/abiotic_water/initialization/sDIMW,Suspended solids,Suspended_solids_1,Suspended~solids~1,,1,0.43,FALSE,NA
-NCS_ss2,SSOL2,NCS_ss2,,,Suspended solids,Suspended_solids_2,Suspended~solids~2,,1,0,FALSE,NA
-NCS_ss3,SSOL3,,,,Suspended solids,Suspended_solids_3,Suspended~solids~3,,1,,FALSE,NA
-NCS_ss4,SSOL4,,,,Suspended solids,Suspended_solids_4,Suspended~solids~4,,1,,FALSE,NA
-NCS_ss5,SSOL5,,,,Suspended solids,Suspended_solids_5,Suspended~solids~5,,1,,FALSE,NA
-NCS_ss6,SSOL6,,,,Suspended solids,Suspended_solids_6,Suspended~solids~6,,1,,FALSE,NA
-NCS_iss,,,,,Total suspended inorganic solids,Total_suspended_inorganic_solids_g/m3,Total~suspended~inorganic~solids~g~m3,,1,,FALSE,NA
-NCS_tss,,,,,Total suspended solids,Total_suspended_solids_g/m3,Total~suspended~solids~g~m3,,1,,FALSE,NA
-ZOO_zoo1,ZOOP1,ZOO_zoo01,cladocerans_sD,instances/cladocerans/initialization/sD,Zooplankton,Zooplankton_1,Zooplankton~1,,0.012011,,FALSE,NA
-ZOO_zoo2,ZOOP2,,copepods_sD,instances/copepods/initialization/sD,Zooplankton,Zooplankton_2,Zooplankton~2,,1,,FALSE,NA
-ZOO_zoo3,ZOOP3,,zoobenthos_sD,instances/zoobenthos/initialization/sD,Zooplankton,Zooplankton_3,Zooplankton~3,,1,,FALSE,NA
-ZOO_zoo4,ZOOP4,,,,Zooplankton,Zooplankton_4,Zooplankton~4,,1,,FALSE,NA
-ZOO_zoo5,ZOOP5,,,,Zooplankton,Zooplankton_5,Zooplankton~5,,1,,FALSE,NA
-FSH_fish1,FISH1,,,,Fish,Fish_1,Fish~1,,1,,FALSE,NA
-FSH_fish2,FISH2,,,,Fish,Fish_2,Fish~2,,1,,FALSE,NA
-FSH_fish3,FISH3,,,,Fish,Fish_3,Fish~3,,1,,FALSE,NA
-FSH_jelly,JELY1,,,,,Jellyfish,Jellyfish,,1,,FALSE,NA
-MAC_macalg1,MACA1,,,,Macroalgae,Macroalgae_1,Macroalgae~1,,1,,FALSE,NA
-MAC_macalg2,MACA2,,,,Macroalgae,Macroalgae_2,Macroalgae~2,,1,,FALSE,NA
-MAC_macalg3,MACA3,,,,Macroalgae,Macroalgae_3,Macroalgae~3,,1,,FALSE,NA
-MAC_macalg4,MACA4,,,,Macroalgae,Macroalgae_4,Macroalgae~4,,1,,FALSE,NA
-CLM_clam1,CLAM1,,,,Bivalves,Bivalves_1,Bivalves~1,,1,,FALSE,NA
-CLM_clam2,CLAM2,,,,Bivalves,Bivalves_2,Bivalves~2,,1,,FALSE,NA
-CLM_clam3,CLAM3,,,,Bivalves,Bivalves_3,Bivalves~3,,1,,FALSE,NA
-TRC_col,COL,,,,Inert,Inert_tracer,Inert~tracer,,1,,FALSE,NA
-MET_radswd,solar_Wm^2,ShortWave,swr,,Shortwave radiation,Shortwave_radiation_W/m2,Shortwave~radiation~(W/m2),W/m2,1,,FALSE,NA
-MET_radlwd,,LongWave,,,Longwave radiation,Longwave_radiation_W/m2,Longwave~radiation~(W/m2),W/m2,1,,FALSE,NA
-MET_cldcvr,cloud_0to1,Cloud,cloud,,Cloud cover,Cloud_cover,Cloud~cover~(0-1),1,1,,FALSE,NA
-MET_tmpair,tempture_C,AirTemp,airt,,Air temperature,Air_temperature_degC,Air~temperature~(degree~C),degC,1,,FALSE,NA
-MET_tmpdew,,,,,Dewpoint temperature,Dewpoint_temperature_degC,Dewpoint~temperature~(degree~C),degC,,,FALSE,NA
-MET_prsttn,,,airp,,Station pressure,Station_pressure_Pa,Station~pressure~(Pa),Pa,1,,FALSE,NA
-MET_prmslp,,,,,Mean sea level pressure,Mean_sea_level_pressure_Pa,Mean~sea~level~pressure~(Pa),Pa,1,,FALSE,NA
-MET_prvapr,vapour_hPa,,,,Vapour pressure,Vapour_pressure_hPa,Vapour~pressure~(hPa),hPa,1,,FALSE,NA
-MET_humrel,,RelHum,hum,,Relative humidity,Relative_humidity_percent,Relative~humidity~('%'),%,1,,FALSE,NA
-MET_wndspd,wind_ms^-1,WindSpeed,,,Wind speed,Wind_speed_m/s,Wind~speed~(m/s),m/s,1,,FALSE,NA
-MET_wnddir,wind_direction_degrees,,,,Wind direction,Wind_direction_degree,Wind~direction~(degree),degree,1,,FALSE,NA
-MET_wnduvu,,,u10,,u wind speed,u_wind_speed_m/s,u~wind~speed~(m/s),m/s,1,,FALSE,NA
-MET_wnduvv,,,v10,,v wind speed,v_wind_speed_m/s,v~wind~speed~(m/s),m/s,1,,FALSE,NA
-MET_pprain,rain_m,Rain,precip,,Rain,Rain_m,Rain~(m),m,1,,FALSE,NA
-MET_ppsnow,,Snow,,,Snow,Snow_m,Snow~(m),m,1,,FALSE,NA
+name,dy_cd,glm_aed,gotm_wet,gotm_fabm,name_text,name_full,name_parse,units,conversion_aed,default,derived,derived_from,keywords
+Date,Date,time,date,,Time,,,,1,,FALSE,NA,date|time
+outflow,,,,,Outflow,Outflow_m3,Outflow~(m^3),m3,1,,FALSE,NA,outflow|discharge|flow
+HYD_flow,VOL,flow,flow,,Discharge,Discharge_m3,Discharge~(m^3),m3,1,,FALSE,NA,flow|discharge|inflow
+HYD_temp,TEMPTURE,temp,temp,,Water temperature,Water_temperature_degC,Temperature~(degree~C),degC,1,10,FALSE,NA,temperature|temp|water temp|HYD_temp
+HYD_dens,DENSITY,rho,rho,,Water density,Density_g/cm3,Density~(g~cm^-3),g/cm3,1,,TRUE,HYD_temp,density|HYD_dens
+HYD_thmcln,,,,,Thermocline depth,Thermocline_depth_m,Thermocline~depth~(m),m,1,,TRUE,HYD_temp,thermocline|depth|HYD_thmcln
+HYD_schstb,,,,,Schmidt stability,Schmidt_stability_J/m2,Schmidt~stability~(J~m^2),J/m2,1,,TRUE,HYD_temp,stability|schmidt|HYD_schstb
+HYD_ctrbuy,,,,,Centre of buoyancy,Centre_of_buoyancy_m,Centre~of~buoyancy~(m),m3,1,,TRUE,HYD_temp,buoyancy|center|HYD_ctrbuy
+HYD_epidep,,,,,Epilimnion depth,Epilimnion_depth_m,Epilimnion~depth~(m),m3,1,,TRUE,HYD_temp,epilimnion|epi depth|HYD_epidep
+HYD_hypdep,,,,,Hypolimnion depth,Hypolimnion_depth_m,Hypolimnion~depth~(m),m3,1,,TRUE,HYD_temp,hypolimnion|hyp depth|HYD_hypdep
+HYD_surft,,,,,Remote sensed skin temperature,Remote_sensed_skin_temperature_degC,Remote~sensed~skin~temperature~(degree~C),degC,1,,FALSE,NA,surface temperature|skin temp|HYD_surft
+HYD_atdiff,,,,,Water-air temperature difference,Water-air_temperature_difference_degC,Water-air~temperature~difference~(degree~C),degC,1,,FALSE,NA,air water temp difference|temp diff|HYD_atdiff
+LKE_layers,,,,,Lake layer,Lake_layers_m,Lake~layers~(m),m,1,,FALSE,NA,lake layer|LKE_layers
+LKE_depths,,,,,Lake depth,Lake_depth_m,Lake~depth~(m),m,1,,FALSE,NA,depth|lake depth|LKE_depths
+LKE_evprte,,,,,Evaporation,Evaporation_m/day,Evaporation~(m~day^-1),m/day,1,,FALSE,NA,evaporation|evap|LKE_evprte
+LKE_evpvol,dyresmEVAP_DAILY,evaporation,evap,,Evaporation,Evaporation_m3,Evaporation~(m^3),m3,1,,FALSE,NA,evaporation volume|evpvol|LKE_evpvol
+LKE_evpflx,dyresmEVAP_DAILY,evap_mass_flux,evap,,Evaporation,Evaporation_flux_m/s,Evaporation~flux~(m^-1),m-1,1,,FALSE,NA,evaporation flux|flux|LKE_evpflx
+LKE_lvlwtr,,,,,Water level,Water_level_m,Water~level~(m),m,1,,FALSE,NA,water level|level|LKE_lvlwtr
+LKE_V,,,,,Volume,Volume_m3,Volume~(m^3),m3,1,,FALSE,NA,volume|V|LKE_V
+LKE_dV,,,,,Change in volume,Change_in_volume_m3,Change~in~volume~(m^3),m3,1,,FALSE,NA,change in volume|dV|LKE_dV
+LKE_A0,,,,,Surface area,Surface_area_m2,Surface~area~(m^2),m2,1,,FALSE,NA,surface area|A0|LKE_A0
+LKE_Qe,,,,,Evaporative heat flux,Evaporative_heat_flux_W/m2,Evaporative~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA,evaporative heat flux|Qe|LKE_Qe
+LKE_Qh,,,,,Sensible heat flux,Sensible_heat_flux_W/m2,Sensible~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA,sensible heat flux|Qh|LKE_Qh
+LKE_Qsw,,,,,Shortwave radiation,Shortwave_radiation_W/m2,Shortwave~radiation~(W~m^-2),W/m2,1,,FALSE,NA,shortwave radiation|Qsw|LKE_Qsw
+LKE_Qlw,,,,,Longwave radiation,Longwave_radiation_W/m2,Longwave~radiation~(W~m^-2),W/m2,1,,FALSE,NA,longwave radiation|Qlw|LKE_Qlw
+LKE_Qnet,,,,,Net surface heat flux,Net_surface_heat_flux_W/m2,Net~surface~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA,net surface heat flux|Qnet|LKE_Qnet
+LKE_precip,,,,,Precipitation,Precipitation_m/day,Precipitation~(m~day^-1),m/day,1,,FALSE,NA,precipitation|precip|LKE_precip
+LKE_pcpvol,,,,,Precipitation,Precipitation_m3,Precipitation~(m^3),m3,1,,FALSE,NA,precipitation volume|pcpvol|LKE_pcpvol
+LKE_inflow,,,,,Inflow,Inflow_m3,Inflow~(m^3),m3,1,,FALSE,NA,inflow|LKE_inflow
+LKE_outflow,,,,,Outflow,Outflow_m3,Outflow~(m^3),m3,1,,FALSE,NA,outflow|LKE_outflow
+LKE_netwbl,,,,,Net water balance,Net_water_balance_m3,Net~water~balance~(m^3),m3,1,,FALSE,NA,net water balance|netwbl|LKE_netwbl
+LKE_efold,,,,,e-folding depth,e-folding_depth_m,e-folding~depth~(m),m,1,,FALSE,NA,e-folding depth|efold|LKE_efold
+LKE_efoldh,,,,,e-folding depth,e-folding_depth_m,e-folding~depth~(m),m,1,,FALSE,NA,e-folding depth high|efoldh|LKE_efoldh
+LKE_photic,,,,,Euphotic depth,Euphotic_depth_m,Euphotic~depth~(m),m,1,,FALSE,NA,euphotic depth|photic|LKE_photic
+LKE_photich,,,,,Euphotic depth,Euphotic_depth_m,Euphotic~depth~(m),m,1,,FALSE,NA,euphotic depth high|photich|LKE_photich
+LKE_tlic,,,,,Trophic Level Index Chlorophyll-a,Trophic_Level_Index_chlorophyll_a,Trophic~Level~Index~chlorophyll-a,1,1,,TRUE,PHY_tchla;HYD_epidep,trophic level index chlorophyll|TLI_chla|LKE_tlic
+LKE_tlin,,,,,Trophic Level Index Total Nitrogen,Trophic_Level_Index_total_nitrogen,Trophic~Level~Index~TN,1,1,,TRUE,PHS_tn;HYD_epidep,trophic level index total nitrogen|TLI_TN|LKE_tlin
+LKE_tlip,,,,,Trophic Level Index Total Phosphorus,Trophic_Level_Index_total_phosphorus,Trophic~Level~Index~TP,1,1,,TRUE,PHS_tp;HYD_epidep,trophic level index total phosphorus|TLI_TP|LKE_tlip
+LKE_tlise,,,,,Trophic Level Index Secchi depth,Trophic_Level_Index_secchi_depth,Trophic~Level~Index~secchi~depth,1,1,,TRUE,LKE_photic,trophic level index secchi|TLI_Secchi|LKE_tlise
+LKE_tli3,,,,,Trophic Level Index 3,Trophic_Level_Index_3,Trophic~Level~Index~3,1,1,,TRUE,PHS_tp;NIT_tn;PHY_tchla;HYD_epidep,trophic level index 3|TLI3|LKE_tli3
+LKE_tli4,,,,,Trophic Level Index 4,Trophic_Level_Index_4,Trophic~Level~Index~4,1,1,,TRUE,PHS_tp;NIT_tn;PHY_tchla;HYD_epidep;LKE_photic,trophic level index 4|TLI4|LKE_tli4
+RAD_par,PAR,rad,rad,,Photosynthetically active radiation,Photosynthetically_active_radiation_umol/m2/s,Photosynthetically~active~radiation~(umol~m^2~s^-1),umol/m2/s,1,,FALSE,NA,photosynthetically active radiation|PAR|RAD_par
+RAD_extc,EXTC,extc_coef,,,Light extinction coefficient,Light_extinction_coefficient_/m,Light~extinction~coefficient~(m^-1),m-1,1,,FALSE,NA,light extinction coefficient|extc|RAD_extc
+RAD_secchi,,,,,Secchi disk depth,Secchi_disk_depth_m,Secchi~disk~depth~m,m,1,,FALSE,NA,secchi disk depth|secchi|RAD_secchi
+CHM_salt,SALINITY,salt,salt,,Salinity,Salinity_PSU,Salinity~(PSU),1,1,0,FALSE,NA,salinity|salt|CHM_salt
+CHM_ph,,,,,pH,pH,pH,1,1,7,FALSE,NA,pH|CHM_ph
+CHM_oxy,DO,OXY_oxy,abiotic_water_sO2W,instances/abiotic_water/initialization/sO2W,Dissolved oxygen,Dissolved_oxygen_mg/L,Dissolved~oxygen~(mg~L^-1),mg/L,0.032,10.3,FALSE,NA,dissolved oxygen|DO|CHM_oxy|do|oxy
+CHM_oxycln,,,,,Oxycline depth,Oxycline_depth_m,Oxycline~depth~(m),m,1,,TRUE,CHM_oxy,oxycline depth|CHM_oxycln
+CHM_oxyepi,,,,,Epilimnetic oxygen,Epilimnetic_oxygen_mg/L,Epilimnetic~oxygen~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy,epilimnetic oxygen|CHM_oxyepi
+CHM_oxymet,,,,,Metalimnetic oygen,Metalimnetic_oxygen_mg/L,Metalimnetic~oxygen~(mg~L^-1),mg/L,,,TRUE,CHM_oxy,metalimnetic oxygen|CHM_oxymet
+CHM_oxyhyp,,,,,Hypolimnetic oxygen,Hypolimnetic_oxygen_mg/L,Hypolimnetic~oxygen~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy,hypolimnetic oxygen|CHM_oxyhyp
+CHM_oxymom,,,,,Metalimnetic oxygen minima,Metalimnetic_oxygen_minima_mg/L,Metalimnetic~oxygen~minima~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy,metalimnetic oxygen minima|CHM_oxymom
+CHM_oxynal,,,,,Number of anoxic layers,Number_of_anoxic_layers,Number~of~anoxic~layers,1,1,,TRUE,CHM_oxy,anoxic layers|CHM_oxynal
+PHS_frp,PO4,PHS_frp,abiotic_water_sPO4W,instances/abiotic_water/initialization/sPO4W,Phosphate,Phosphate-P_g/m3,Phosphate-P~(g~m^-3),g/m^3,0.03097376,1.00E-03,FALSE,NA,phosphate|PHS_frp
+PHS_dop,DOPL,OGM_dop,abiotic_water_sPDOMW,instances/abiotic_water/initialization/sPDOMW,Dissolved organic P,Dissolved_organic_P_g/m3,Dissolved~organic~(g~m^-3),g/m^3,0.03097376,4.00E-05,FALSE,NA,dissolved organic P|PHS_dop
+PHS_dopr,DOPR,,,,,,,,0.03097376,,FALSE,NA,dissolved organic P residual|PHS_dopr
+PHS_pop,POPL,OGM_pop,abiotic_water_sPPOMW,instances/abiotic_water/initialization/sPPOMW,Particulate organic P,Particulate_organic_P_g/m3,Particulate~organic~(g~m^-3),g/m^3,0.03097376,1.60E-04,FALSE,NA,particulate organic P|PHS_pop
+PHS_popr,POPR,,,,,,,,0.03097376,,FALSE,NA,particulate organic P residual|PHS_popr
+PHS_pip,PIP,PHS_frp_ads,abiotic_water_sPAIMW,instances/abiotic_water/initialization/sPAIMW,Particulate inorganic P,Particulate_inorganic_P_g/m3,Particulate~inorganic~P~(g~m^-3),g/m^3,0.03097376,6.00E-04,FALSE,NA,particulate inorganic P|PHS_pip
+PHS_tp,TP,TOT_tp,wet_totP_calculator_result,,Total phosphorus,Total_phosphorus_g/m3,Total~phosphorus~(g~m^-3),g/m^3,0.03097376,,FALSE,NA,total phosphorus|PHS_tp
+NIT_amm,NH4,NIT_amm,abiotic_water_sNH4W,instances/abiotic_water/initialization/sNH4W,Ammoniacal nitrogen,Ammoniacal_nitrogen_g/m3,Ammoniacal~nitrogen~(g~m^-3),g/m^3,0.0140067,0.004,FALSE,NA,ammoniacal nitrogen|NH3|NH4|NIT_amm
+NIT_nit,NO3,NIT_nit,abiotic_water_sNO3W,instances/abiotic_water/initialization/sNO3W,Nitrate,Nitrate-N_g/m3,Nitrate-N~(g~m^-3),g/m^3,0.0140067,4.10E-04,FALSE,NA,nitrate|NO3|NO2|NIT_nit
+NIT_don,DONL,OGM_don,abiotic_water_sNDOMW,instances/abiotic_water/initialization/sNDOMW,Dissolved organic N,Dissolved_organic_N_g/m3,Dissolved~organic~N~(g~m^-3),g/m^3,0.0140067,4.10E-04,FALSE,NA,dissolved organic N|NIT_don
+NIT_donr,DONR,,,,,,,,0.0140067,,FALSE,NA,dissolved organic N residual|NIT_donr
+NIT_pon,PONL,OGM_pon,abiotic_water_sNPOMW,instances/abiotic_water/initialization/sNPOMW,Particulate organic N,Particulate_organic_N_g/m3,Particulate~organic~N~(g~m^-3),g/m^3,0.0140067,0.002,FALSE,NA,particulate organic N|NIT_pon
+NIT_ponr,PONR,,,,,,,,0.0140067,,FALSE,NA,particulate organic N residual|NIT_ponr
+NIT_pin,PIN,,,,Particulate inorganic N,Particulate_inorganic_N_g/m3,Particulate~inorganic~N~(g~m^-3),g/m^3,0.0140067,,FALSE,NA,particulate inorganic N|NIT_pin
+NIT_tn,TN,TOT_tn,wet_totN_calculator_result,,Total nitrogen,Total_nitrogen_g/m3,Total~nitrogen~(g~m^-3),g/m^3,0.0140067,,FALSE,NA,total nitrogen|NIT_tn
+CAR_dic,DIC,CAR_dic,abiotic_water_sDIMW,instances/abiotic_water/initialization/sDIMW,Dissolved inorganic carbon,Dissolved_inorganic_carbon_g/m3,Dissolved~inorganic~carbon~(g~m^-3),g/m^3,0.012011,,FALSE,NA,dissolved inorganic carbon|CAR_dic
+CAR_doc,DOCL,OGM_doc,abiotic_water_sDDOMW,instances/abiotic_water/initialization/sDDOMW,Dissolved organic carbon,Dissolved_organic_carbon_g/m3,Dissolved~organic~carbon~(g~m^-3),g/m^3,0.012011,0.008,FALSE,NA,dissolved organic carbon|CAR_doc
+CAR_docr,DOCR,,,,,,,,0.012011,,FALSE,NA,dissolved organic carbon residual|CAR_docr
+CAR_poc,POCL,OGM_poc,abiotic_water_sDPOMW,instances/abiotic_water/initialization/sDPOMW,Particulate organic carbon,Particulate_organic_carbon_g/m3,Particulate~organic~carbon~(g~m^-3),g/m^3,0.012011,0.01,FALSE,NA,particulate organic carbon|CAR_poc
+CAR_pocr,POCR,,,,,,,,0.012011,,FALSE,NA,particulate organic carbon residual|CAR_pocr
+CAR_pH,PH,CAR_pH,,,,pH,pH,,1,,FALSE,NA,pH|CAR_pH
+CAR_ch4,,CAR_ch4,,,Carbon CH4,,,,1,,FALSE,NA,carbon CH4|CAR_ch4
+SIL_rsi,SiO2,SIL_rsi,abiotic_water_sSiO2W,instances/abiotic_water/initialization/sSiO2W,,Silica,Silica,,1,10,FALSE,NA,silica|SIL_rsi
+BAC_bac,BAC,,,,,Bacteria,Bacteria,,1,,FALSE,NA,bacteria|BAC_bac
+PHY_dinof,DINOF,PHY_dinof,,,,Dinoflagellates_mgchla/m3,Dinoflagellates~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA,dinoflagellates|PHY_dinof
+PHY_cyano,CYANO,PHY_cyano,cyanobacteria_oChla,instances/cyanobacteria/initialization/sDW,Cyanobacteria,Cyanophytes_mgchla/m3,Cyanophytes~(mg~chla~m^-3),mg/m^3,1,0.1,FALSE,NA,cyanobacteria|PHY_cyano
+PHY_nodul,NODUL,PHY_nodul,,,,Nodularia_mgchla/m3,Nodularia~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA,nodularia|PHY_nodul
+PHY_green,CHLOR,PHY_green,greens_oChla,instances/greens/initialization/sDW,Green algae,Chlorophytes_mgchla/m3,Chlorophytes~(mg~chla~m^-3),mg/m^3,1,0.1,FALSE,NA,green algae|PHY_green
+PHY_crypt,CRYPT,PHY_crypt,,,Cryptophytes,Cryptophytes_mgchla/m3,Cryptophytes~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA,cryptophytes|PHY_crypt
+PHY_mdiat,MDIAT,PHY_mdiat,,,Diatoms marine,Diatoms_marine_mgchla/m3,Diatoms~marine~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA,marine diatoms|PHY_mdiat
+PHY_diatom,FDIAT,PHY_diatom,diatoms_oChla,instances/diatoms/initialization/sDW,Diatoms freshwater,Diatoms_freshwater_mgchla/m3,Diatoms~freshwater~(mg~chla~m^-3),mg/m^3,1,0.1,FALSE,NA,freshwater diatoms|PHY_diatom
+PHY_tchla,TCHLA,PHY_TCHLA,wet_chla_calculator_result,,Total chlorophyll a,Total_chlorophyll_a_mg/m3,Total~chlorophyll~a~(mg~m^-3),mg/m3,1,,FALSE,NA,chlorophyll|PHY_tchla
+PHY_rstchla,,,,,Remotely sensed total chlorophyll a,Remotely_sensed_total_chlorophyll_a_mg/m3,Remotely~sensed~total~chlorophyll~a~(mg~m^-3),mg/m3,1,,FALSE,NA,remote chlorophyll|PHY_rstchla
+NCS_ss1,SSOL1,NCS_ss1,abiotic_water_sDIMW,instances/abiotic_water/initialization/sDIMW,Suspended solids,Suspended_solids_1,Suspended~solids~1,,1,0.43,FALSE,NA,suspended solids 1|NCS_ss1
+NCS_ss2,SSOL2,NCS_ss2,,,Suspended solids,Suspended_solids_2,Suspended~solids~2,,1,0,FALSE,NA,suspended solids 2|NCS_ss2
+NCS_ss3,SSOL3,,,,Suspended solids,Suspended_solids_3,Suspended~solids~3,,1,,FALSE,NA,suspended solids 3|NCS_ss3
+NCS_ss4,SSOL4,,,,Suspended solids,Suspended_solids_4,Suspended~solids~4,,1,,FALSE,NA,suspended solids 4|NCS_ss4
+NCS_ss5,SSOL5,,,,Suspended solids,Suspended_solids_5,Suspended~solids~5,,1,,FALSE,NA,suspended solids 5|NCS_ss5
+NCS_ss6,SSOL6,,,,Suspended solids,Suspended_solids_6,Suspended~solids~6,,1,,FALSE,NA,suspended solids 6|NCS_ss6
+NCS_iss,,,,,Total suspended inorganic solids,Total_suspended_inorganic_solids_g/m3,Total~suspended~inorganic~solids~g~m3,,1,,FALSE,NA,inert suspended solids|NCS_iss
+NCS_tss,,,,,Total suspended solids,Total_suspended_solids_g/m3,Total~suspended~solids~g~m3,,1,,FALSE,NA,total suspended solids|NCS_tss
+ZOO_zoo1,ZOOP1,ZOO_zoo01,cladocerans_sD,instances/cladocerans/initialization/sD,Zooplankton,Zooplankton_1,Zooplankton~1,,0.012011,,FALSE,NA,zooplankton 1|ZOO_zoo1
+ZOO_zoo2,ZOOP2,,copepods_sD,instances/copepods/initialization/sD,Zooplankton,Zooplankton_2,Zooplankton~2,,1,,FALSE,NA,zooplankton 2|ZOO_zoo2
+ZOO_zoo3,ZOOP3,,zoobenthos_sD,instances/zoobenthos/initialization/sD,Zooplankton,Zooplankton_3,Zooplankton~3,,1,,FALSE,NA,zooplankton 3|ZOO_zoo3
+ZOO_zoo4,ZOOP4,,,,Zooplankton,Zooplankton_4,Zooplankton~4,,1,,FALSE,NA,zooplankton 4|ZOO_zoo4
+ZOO_zoo5,ZOOP5,,,,Zooplankton,Zooplankton_5,Zooplankton~5,,1,,FALSE,NA,zooplankton 5|ZOO_zoo5
+FSH_fish1,FISH1,,,,Fish,Fish_1,Fish~1,,1,,FALSE,NA,fish 1|FSH_fish1
+FSH_fish2,FISH2,,,,Fish,Fish_2,Fish~2,,1,,FALSE,NA,fish 2|FSH_fish2
+FSH_fish3,FISH3,,,,Fish,Fish_3,Fish~3,,1,,FALSE,NA,fish 3|FSH_fish3
+FSH_jelly,JELY1,,,,,Jellyfish,Jellyfish,,1,,FALSE,NA,jellyfish|FSH_jelly
+MAC_macalg1,MACA1,,,,Macroalgae,Macroalgae_1,Macroalgae~1,,1,,FALSE,NA,macroalgae 1|MAC_macalg1
+MAC_macalg2,MACA2,,,,Macroalgae,Macroalgae_2,Macroalgae~2,,1,,FALSE,NA,macroalgae 2|MAC_macalg2
+MAC_macalg3,MACA3,,,,Macroalgae,Macroalgae_3,Macroalgae~3,,1,,FALSE,NA,macroalgae 3|MAC_macalg3
+MAC_macalg4,MACA4,,,,Macroalgae,Macroalgae_4,Macroalgae~4,,1,,FALSE,NA,macroalgae 4|MAC_macalg4
+CLM_clam1,CLAM1,,,,Bivalves,Bivalves_1,Bivalves~1,,1,,FALSE,NA,bivalves 1|CLM_clam1
+CLM_clam2,CLAM2,,,,Bivalves,Bivalves_2,Bivalves~2,,1,,FALSE,NA,bivalves 2|CLM_clam2
+CLM_clam3,CLAM3,,,,Bivalves,Bivalves_3,Bivalves~3,,1,,FALSE,NA,bivalves 3|CLM_clam3
+TRC_col,COL,,,,Inert,Inert_tracer,Inert~tracer,,1,,FALSE,NA,inert|TRC_col
+MET_radswd,solar_Wm^2,ShortWave,swr,,Shortwave radiation,Shortwave_radiation_W/m2,Shortwave~radiation~(W/m2),W/m2,1,,FALSE,NA,shortwave radiation|MET_radswd
+MET_radlwd,,LongWave,,,Longwave radiation,Longwave_radiation_W/m2,Longwave~radiation~(W/m2),W/m2,1,,FALSE,NA,longwave radiation|MET_radlwd
+MET_cldcvr,cloud_0to1,Cloud,cloud,,Cloud cover,Cloud_cover,Cloud~cover~(0-1),1,1,,FALSE,NA,cloud cover|MET_cldcvr
+MET_tmpair,tempture_C,AirTemp,airt,,Air temperature,Air_temperature_degC,Air~temperature~(degree~C),degC,1,,FALSE,NA,air temperature|MET_tmpair
+MET_tmpdew,,,,,Dewpoint temperature,Dewpoint_temperature_degC,Dewpoint~temperature~(degree~C),degC,,,FALSE,NA,dewpoint temperature|MET_tmpdew
+MET_prsttn,,,airp,,Station pressure,Station_pressure_Pa,Station~pressure~(Pa),Pa,1,,FALSE,NA,station pressure|MET_prsttn
+MET_prmslp,,,,,Mean sea level pressure,Mean_sea_level_pressure_Pa,Mean~sea~level~pressure~(Pa),Pa,1,,FALSE,NA,mean sea level pressure|MET_prmslp
+MET_prvapr,vapour_hPa,,,,Vapour pressure,Vapour_pressure_hPa,Vapour~pressure~(hPa),hPa,1,,FALSE,NA,vapour pressure|MET_prvapr
+MET_humrel,,RelHum,hum,,Relative humidity,Relative_humidity_percent,Relative~humidity~('%'),%,1,,FALSE,NA,relative humidity|MET_humrel
+MET_wndspd,wind_ms^-1,WindSpeed,,,Wind speed,Wind_speed_m/s,Wind~speed~(m/s),m/s,1,,FALSE,NA,wind speed|MET_wndspd
+MET_wnddir,wind_direction_degrees,,,,Wind direction,Wind_direction_degree,Wind~direction~(degree),degree,1,,FALSE,NA,wind direction|MET_wnddir
+MET_wnduvu,,,u10,,u wind speed,u_wind_speed_m/s,u~wind~speed~(m/s),m/s,1,,FALSE,NA,u wind speed|MET_wnduvu
+MET_wnduvv,,,v10,,v wind speed,v_wind_speed_m/s,v~wind~speed~(m/s),m/s,1,,FALSE,NA,v wind speed|MET_wnduvv
+MET_pprain,rain_m,Rain,precip,,Rain,Rain_m,Rain~(m),m,1,,FALSE,NA,rain|MET_pprain
+MET_ppsnow,,Snow,,,Snow,Snow_m,Snow~(m),m,1,,FALSE,NA,snow|MET_ppsnow
