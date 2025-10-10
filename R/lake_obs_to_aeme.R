@@ -196,8 +196,8 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
     remove_lake_id <- TRUE
     lake_id_col <- "lake_id"
     data[[lake_id_col]] <- "lake_1"
-    warning(strwrap("lake_id_col not provided. Using default 'lake_id' with all
-                     values set to 'lake_1'."))
+    warning(strwrap("lake_id_col not provided. Assuming all data is for a single
+                    lake.."))
   } else {
     remove_lake_id <- FALSE
   }
