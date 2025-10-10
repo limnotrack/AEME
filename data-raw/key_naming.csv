@@ -58,7 +58,7 @@ PHS_dopr,DOPR,,,,,,,,0.03097376,,FALSE,NA,dissolved organic P residual|PHS_dopr
 PHS_pop,POPL,OGM_pop,abiotic_water_sPPOMW,instances/abiotic_water/initialization/sPPOMW,Particulate organic P,Particulate_organic_P_g/m3,Particulate~organic~(g~m^-3),g/m^3,0.03097376,1.60E-04,FALSE,NA,particulate organic P|PHS_pop
 PHS_popr,POPR,,,,,,,,0.03097376,,FALSE,NA,particulate organic P residual|PHS_popr
 PHS_pip,PIP,PHS_frp_ads,abiotic_water_sPAIMW,instances/abiotic_water/initialization/sPAIMW,Particulate inorganic P,Particulate_inorganic_P_g/m3,Particulate~inorganic~P~(g~m^-3),g/m^3,0.03097376,6.00E-04,FALSE,NA,particulate inorganic P|PHS_pip
-PHS_tp,TP,TOT_tp,wet_totP_calculator_result,,Total phosphorus,Total_phosphorus_g/m3,Total~phosphorus~(g~m^-3),g/m^3,0.03097376,,FALSE,NA,total phosphorus|PHS_tp
+PHS_tp,TP,TOT_tp,wet_totP_calculator_result,,Total phosphorus,Total_phosphorus_g/m3,Total~phosphorus~(g~m^-3),g/m^3,0.03097376,,FALSE,NA,total phosphorus|total p|tot p|PHS_tp
 NIT_amm,NH4,NIT_amm,abiotic_water_sNH4W,instances/abiotic_water/initialization/sNH4W,Ammoniacal nitrogen,Ammoniacal_nitrogen_g/m3,Ammoniacal~nitrogen~(g~m^-3),g/m^3,0.0140067,0.004,FALSE,NA,ammoniacal nitrogen|NH3|NH4|NIT_amm
 NIT_nit,NO3,NIT_nit,abiotic_water_sNO3W,instances/abiotic_water/initialization/sNO3W,Nitrate,Nitrate-N_g/m3,Nitrate-N~(g~m^-3),g/m^3,0.0140067,4.10E-04,FALSE,NA,nitrate|NO3|NO2|NIT_nit
 NIT_don,DONL,OGM_don,abiotic_water_sNDOMW,instances/abiotic_water/initialization/sNDOMW,Dissolved organic N,Dissolved_organic_N_g/m3,Dissolved~organic~N~(g~m^-3),g/m^3,0.0140067,4.10E-04,FALSE,NA,dissolved organic N|NIT_don
@@ -66,7 +66,7 @@ NIT_donr,DONR,,,,,,,,0.0140067,,FALSE,NA,dissolved organic N residual|NIT_donr
 NIT_pon,PONL,OGM_pon,abiotic_water_sNPOMW,instances/abiotic_water/initialization/sNPOMW,Particulate organic N,Particulate_organic_N_g/m3,Particulate~organic~N~(g~m^-3),g/m^3,0.0140067,0.002,FALSE,NA,particulate organic N|NIT_pon
 NIT_ponr,PONR,,,,,,,,0.0140067,,FALSE,NA,particulate organic N residual|NIT_ponr
 NIT_pin,PIN,,,,Particulate inorganic N,Particulate_inorganic_N_g/m3,Particulate~inorganic~N~(g~m^-3),g/m^3,0.0140067,,FALSE,NA,particulate inorganic N|NIT_pin
-NIT_tn,TN,TOT_tn,wet_totN_calculator_result,,Total nitrogen,Total_nitrogen_g/m3,Total~nitrogen~(g~m^-3),g/m^3,0.0140067,,FALSE,NA,total nitrogen|NIT_tn
+NIT_tn,TN,TOT_tn,wet_totN_calculator_result,,Total nitrogen,Total_nitrogen_g/m3,Total~nitrogen~(g~m^-3),g/m^3,0.0140067,,FALSE,NA,total nitrogen|total n|tot n|NIT_tn
 CAR_dic,DIC,CAR_dic,abiotic_water_sDIMW,instances/abiotic_water/initialization/sDIMW,Dissolved inorganic carbon,Dissolved_inorganic_carbon_g/m3,Dissolved~inorganic~carbon~(g~m^-3),g/m^3,0.012011,,FALSE,NA,dissolved inorganic carbon|CAR_dic
 CAR_doc,DOCL,OGM_doc,abiotic_water_sDDOMW,instances/abiotic_water/initialization/sDDOMW,Dissolved organic carbon,Dissolved_organic_carbon_g/m3,Dissolved~organic~carbon~(g~m^-3),g/m^3,0.012011,0.008,FALSE,NA,dissolved organic carbon|CAR_doc
 CAR_docr,DOCR,,,,,,,,0.012011,,FALSE,NA,dissolved organic carbon residual|CAR_docr
@@ -83,8 +83,8 @@ PHY_green,CHLOR,PHY_green,greens_oChla,instances/greens/initialization/sDW,Green
 PHY_crypt,CRYPT,PHY_crypt,,,Cryptophytes,Cryptophytes_mgchla/m3,Cryptophytes~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA,cryptophytes|PHY_crypt
 PHY_mdiat,MDIAT,PHY_mdiat,,,Diatoms marine,Diatoms_marine_mgchla/m3,Diatoms~marine~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA,marine diatoms|PHY_mdiat
 PHY_diatom,FDIAT,PHY_diatom,diatoms_oChla,instances/diatoms/initialization/sDW,Diatoms freshwater,Diatoms_freshwater_mgchla/m3,Diatoms~freshwater~(mg~chla~m^-3),mg/m^3,1,0.1,FALSE,NA,freshwater diatoms|PHY_diatom
-PHY_tchla,TCHLA,PHY_TCHLA,wet_chla_calculator_result,,Total chlorophyll a,Total_chlorophyll_a_mg/m3,Total~chlorophyll~a~(mg~m^-3),mg/m3,1,,FALSE,NA,chlorophyll|PHY_tchla
-PHY_rstchla,,,,,Remotely sensed total chlorophyll a,Remotely_sensed_total_chlorophyll_a_mg/m3,Remotely~sensed~total~chlorophyll~a~(mg~m^-3),mg/m3,1,,FALSE,NA,remote chlorophyll|PHY_rstchla
+PHY_tchla,TCHLA,PHY_TCHLA,wet_chla_calculator_result,,Total chlorophyll a,Total_chlorophyll_a_mg/m3,Total~chlorophyll~a~(mg~m^-3),mg/m^3,1,,FALSE,NA,chlorophyll|PHY_tchla
+PHY_rstchla,,,,,Remotely sensed total chlorophyll a,Remotely_sensed_total_chlorophyll_a_mg/m3,Remotely~sensed~total~chlorophyll~a~(mg~m^-3),mg/m^3,1,,FALSE,NA,remote chlorophyll|PHY_rstchla
 NCS_ss1,SSOL1,NCS_ss1,abiotic_water_sDIMW,instances/abiotic_water/initialization/sDIMW,Suspended solids,Suspended_solids_1,Suspended~solids~1,,1,0.43,FALSE,NA,suspended solids 1|NCS_ss1
 NCS_ss2,SSOL2,NCS_ss2,,,Suspended solids,Suspended_solids_2,Suspended~solids~2,,1,0,FALSE,NA,suspended solids 2|NCS_ss2
 NCS_ss3,SSOL3,,,,Suspended solids,Suspended_solids_3,Suspended~solids~3,,1,,FALSE,NA,suspended solids 3|NCS_ss3
