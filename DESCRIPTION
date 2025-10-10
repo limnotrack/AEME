@@ -30,6 +30,7 @@ Imports:
     stats,
     stringdist,
     stringr,
+    tibble,
     tidyr,
     tools,
     units,
