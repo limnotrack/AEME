@@ -346,3 +346,37 @@ test_that("lake observations can be formatted", {
                           all(c("Date", "var_aeme", "depth_from", "depth_to",
                                 "value") %in% colnames(out)))
 })
+
+test_that("lake observations can be added", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  obs_df <- get_obs(aeme)
+  obs_level <- obs_df |> 
+    dplyr::filter(var_aeme == "LKE_lvlwtr")
+  obs_lake <- obs_df |>
+    dplyr::filter(var_aeme != "LKE_lvlwtr")
+  obs <- observations(aeme)
+  obs$lake <- NULL
+  obs$level <- NULL
+  observations(aeme) <- obs
+  
+  obs_df2 <- get_obs(aeme)
+  testthat::expect_true(is.data.frame(obs_df2) & nrow(obs_df2) == 0)
+  
+  obs_df_half <- obs_lake[1:ceiling(nrow(obs_lake)/2), ]
+  aeme <- add_obs(aeme = aeme, lake = obs_df_half)
+  obs_df3 <- get_obs(aeme)
+  testthat::expect_true(is.data.frame(obs_df3) & nrow(obs_df3) == nrow(obs_df_half))
+  
+  obs_df_third <- obs_lake[floor(nrow(obs_lake)/3): nrow(obs_lake), ]
+  obs_lake |> 
+    dplyr::filter(var_aeme == "RAD_secchi") 
+  obs_df_third |> 
+    dplyr::filter(var_aeme == "RAD_secchi") 
+  aeme <- add_obs(aeme = aeme, lake = obs_df_third)
+  obs_df4 <- get_obs(aeme)
+
+  testthat::expect_true(is.data.frame(obs_df4) & nrow(obs_df4) == nrow(obs_lake) & 
+                          all(obs_df4$var_aeme != "LKE_lvlwtr"))
+  
+})
