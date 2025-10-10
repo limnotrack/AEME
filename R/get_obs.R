@@ -54,11 +54,13 @@ get_obs <- function(aeme, var_sim, depth_range = NULL) {
       dplyr::filter(depth_mid >= min(depth_range) & depth_mid <= max(depth_range))
   }
   
-  df <- dplyr::bind_rows(lake, level) |>
-    dplyr::arrange(Date, var_aeme, depth_from, depth_to)
+  df <- dplyr::bind_rows(lake, level)
 
   if (nrow(df) == 0) {
     warning("No observations found for the selected variable.")
+  } else {
+    df <- df  |>
+      dplyr::arrange(Date, var_aeme, depth_from, depth_to)
   }
   return(df)
 }
