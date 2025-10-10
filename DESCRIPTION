@@ -28,6 +28,7 @@ Imports:
     rLakeAnalyzer,
     sf,
     stats,
+    stringdist,
     stringr,
     tidyr,
     tools,

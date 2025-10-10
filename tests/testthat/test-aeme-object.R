@@ -1,18 +1,14 @@
 test_that("aeme object can be read from yaml file", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
+  path <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
   testthat::expect_s4_class(aeme, "Aeme")
   testthat::expect_output(print(aeme))
 })
 
 test_that("aeme object can be constructed from add-in", {
-
+  
   # insert_aeme()
-
+  
   aeme_list <- list(
     # Define lake list
     lake = list(
@@ -33,8 +29,8 @@ test_that("aeme object can be constructed from add-in", {
         "dy_cd" = 365,
         "glm_aed" = 365,
         "gotm_wet" = 365
-        )
-      ),
+      )
+    ),
     # Define observations list
     observations = list(
       lake = NULL, # dataframe of lake observations in the AEME format
@@ -47,7 +43,7 @@ test_that("aeme object can be constructed from add-in", {
       meteo = data.frame(), # dataframe of meteorological data in the AEME format
       use_lw = TRUE, # Logical use incoming longwave radiation
       Kw = numeric() # Light attenuation coefficient [m-1]
-      ),
+    ),
     # Define inflows list
     inflows = list(
       data = list(
@@ -57,8 +53,8 @@ test_that("aeme object can be constructed from add-in", {
         "dy_cd" = 1,
         "glm_aed" = 1,
         "gotm_wet" = 1
-        )
-      ),
+      )
+    ),
     # Define outflows list
     outflows = list(
       data = list(
@@ -68,8 +64,8 @@ test_that("aeme object can be constructed from add-in", {
         "dy_cd" = 1,
         "glm_aed" = 1,
         "gotm_wet" = 1
-        )
-      ),
+      )
+    ),
     # Define water balance list
     water_balance = list(
       method = 2, # Method for calculating water balance. 1 = none, 2 = outflows, 3 = inflows and outflows
@@ -77,19 +73,19 @@ test_that("aeme object can be constructed from add-in", {
       data = list(
         model = data.frame(), # dataframe with modelled water balance data
         wbal = data.frame() # Calculated water balance with build_aeme()
-        )
       )
     )
-
+  )
+  
   aeme <- aeme_constructor(lake = aeme_list$lake, time = aeme_list$time,
                            observations = aeme_list$observations,
                            input = aeme_list$input,
                            inflows = aeme_list$inflows,
                            outflows = aeme_list$outflows,
                            water_balance = aeme_list$water_balance)
-
+  
   testthat::expect_s4_class(aeme, "Aeme")
-
+  
 })
 
 test_that("aeme object can be built with partial information", {
@@ -122,18 +118,18 @@ test_that("aeme object can be built with partial information", {
       use = "mod" # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
     )
   )
-
+  
   aeme <- aeme_constructor(lake = aeme_list$lake, time = aeme_list$time,
                            input = aeme_list$input,
                            water_balance = aeme_list$water_balance)
   testthat::expect_s4_class(aeme, "Aeme")
-
+  
   wbal <- water_balance(aeme)
-
+  
   testthat::expect_true(wbal$use == aeme_list$water_balance$use)
   testthat::expect_true(wbal$method == 2)
-
-
+  
+  
 })
 
 
@@ -167,7 +163,7 @@ test_that("aeme object errors when non alpha numeric chars present", {
       use = "mod" # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
     )
   )
-
+  
   testthat::expect_error({
     aeme_constructor(lake = aeme_list$lake, time = aeme_list$time,
                      input = aeme_list$input, water_balance = aeme_list$water_balance)
@@ -175,7 +171,7 @@ test_that("aeme object errors when non alpha numeric chars present", {
 })
 
 test_that("parameters can be added to an aeme object", {
-
+  
   params <- data.frame(
     model = c("glm_aed"),
     file = c("glm3.nml"),
@@ -191,7 +187,7 @@ test_that("parameters can be added to an aeme object", {
     char = FALSE,
     char_val = NA
   )
-
+  
   aeme_list <- list(
     # Define lake list
     lake = list(
@@ -223,24 +219,24 @@ test_that("parameters can be added to an aeme object", {
     # Define parameters list
     parameters = params[, 1:5]
   )
-
+  
   testthat::expect_error(aeme_constructor(lake = aeme_list$lake, time = aeme_list$time,
                                           input = aeme_list$input,
                                           water_balance = aeme_list$water_balance,
                                           parameters = aeme_list$parameters))
   aeme_list$parameters <- params
-
+  
   aeme <- aeme_constructor(lake = aeme_list$lake, time = aeme_list$time,
                            input = aeme_list$input,
                            water_balance = aeme_list$water_balance,
                            parameters = aeme_list$parameters)
   testthat::expect_s4_class(aeme, "Aeme")
-
+  
   pars <- parameters(aeme)
-
+  
   testthat::expect_true(all(pars[, 1:7] == params[, 1:7]))
-
-
+  
+  
 })
 
 test_that("aeme object inflows can be manipulated", {
@@ -328,3 +324,25 @@ test_that("lake volume can be calculated", {
   testthat::expect_true(is.numeric(vol) & vol > 0)
 })
 
+test_that("lake observations can be formatted", {
+  obs_file <- system.file("extdata/lake/data/lake_obs.csv", package = "AEME")
+  obs <- read.csv(obs_file)
+  
+  code <- generate_var_map_code(data = obs, var_col_name = "var_aeme")
+  eval(parse(text = code))
+  
+  obs_test <- obs |> 
+    dplyr::rename(
+      DateTime = datetime,
+      variable = var_aeme,
+      Depth = depth_from,
+      meas = value
+    )
+  
+  out <- lake_obs_to_aeme(data = obs_test, depth_col_name = "Depth", 
+                          value_col_name = "meas", var_map = var_map)
+  
+  testthat::expect_true(is.data.frame(out) & nrow(out) > 0 & 
+                          all(c("Date", "var_aeme", "depth_from", "depth_to",
+                                "value") %in% colnames(out)))
+})
