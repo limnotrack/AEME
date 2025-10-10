@@ -22,8 +22,19 @@ add_obs <- function(aeme, lake = NULL, level = NULL) {
     if (!is.data.frame(lake) || !all(c("Date", "var_aeme", "depth_from", "depth_to", "value") %in% colnames(lake))) {
       stop("lake must be a data frame with columns 'Date', 'var_aeme', 'depth_from', 'depth_to' and 'value'")
     }
+    
+    orig_data <- obs$lake
+    
+    # Combine existing and new lake data, avoiding duplicates
+    if (!is.null(orig_data)) {
+      combined_data <- dplyr::bind_rows(orig_data, lake) |>
+        dplyr::distinct(Date, var_aeme, depth_from, depth_to, .keep_all = TRUE) |>
+        dplyr::arrange(Date, var_aeme, depth_from, depth_to)
+      obs$lake <- combined_data
+    } else {
+      obs$lake <- lake
+    }
 
-    obs$lake <- lake
   }
   
   if (!is.null(level)) {
@@ -32,11 +43,20 @@ add_obs <- function(aeme, lake = NULL, level = NULL) {
     if (!is.data.frame(level) || !all(c("Date", "var_aeme", "value") %in% colnames(level))) {
       stop("level must be a data frame with columns 'Date', 'var_aeme' and 'value'")
     }
+    
+    orig_data <- obs$level
+    # Combine existing and new level data, avoiding duplicates
+    if (!is.null(orig_data)) {
+      combined_data <- dplyr::bind_rows(orig_data, level) |>
+        dplyr::distinct(Date, var_aeme, .keep_all = TRUE) |
+        dplyr::arrange(Date, var_aeme)
+      obs$level <- combined_data
+    } else {
+      obs$level <- level
+    }
 
-    obs$level <- level
   }
 
   observations(aeme) <- obs
-
   return(aeme)
 }
