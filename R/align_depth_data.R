@@ -43,7 +43,8 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
         dplyr::filter(Date %in% df$Date & var_aeme == var_sim) |>
         # merge(x = _, depth, by = "Date") |>
         dplyr::left_join(depth, by = "Date") |>
-        dplyr::mutate(elev = depth - depth_from, Model = m) |>
+        dplyr::mutate(elev = depth - depth_from, 
+                      Model = toggle_models(m, to = "display")) |>
         dplyr::filter(elev >= 0)
     }
   })

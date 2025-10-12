@@ -13,11 +13,7 @@ plot_var_summary <- function(data, ylim, xlim) {
   data <- data |>
     tidyr::separate(var_sim, into = c("group", "var", "loc"), sep = "_") |>
     dplyr::mutate(var_sim = paste0(group, "_", var),
-                  Model = dplyr::case_when(
-                    Model == "glm_aed" ~ "GLM-AED",
-                    Model == "gotm_wet" ~ "GOTM-WET",
-                    Model == "dy_cd" ~ "DYRESM-CAEDYM",
-                    .default = Model),
+                  Model = toggle_models(Model, to = "display"),
                   loc = dplyr::case_when(
                     loc == "top" ~ "Surface",
                     loc == "btm" ~ "Bottom",

@@ -75,7 +75,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
     df <- data.frame(Date = as.Date(NA),
                      lyr_top = NA,
                      value = NA,
-                     Model = m,
+                     Model = toggle_models(m, to = "display"),
                      lyr_thk = NA)
 
     if (is.null(variable)) {
@@ -106,12 +106,12 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
         df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]][date_ind],
                          sim = outp[[ens_lab]][[m]][["LKE_lvlwtr"]][date_ind] +
                            min(inp$hypsograph$elev),
-                         Model = m) |>
+                         Model = toggle_models(m, to = "display")) |>
           dplyr::left_join(obs_sub, by = c("Date" = "Date"))
       } else if (is.vector(variable)) {
         df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]][date_ind],
                          sim = outp[[ens_lab]][[m]][[var_sim]][date_ind],
-                         Model = m) |>
+                         Model = toggle_models(m, to = "display")) |>
           dplyr::left_join(obs_sub, by = c("Date" = "Date")) |>
           dplyr::mutate(
             sim = dplyr::case_when(
@@ -130,13 +130,13 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
             return(data.frame(Date = outp[[ens_lab]][[m]][["Date"]][d],
                               depth_mid = obs_deps,
                               sim = NA,
-                              Model = m))
+                              Model = toggle_models(m, to = "display")))
           }
           p <- stats::approx(depth, v, obs_deps, rule = 2)$y
           data.frame(Date = outp[[ens_lab]][[m]][["Date"]][d],
                      depth_mid = obs_deps,
                      sim = p,
-                     Model = m)
+                     Model = toggle_models(m, to = "display"))
         }) |>
           dplyr::bind_rows()
 
@@ -148,7 +148,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
       df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
                        lyr_top = NA,
                        value = variable,
-                       Model = m,
+                       Model = toggle_models(m, to = "display"),
                        lyr_thk = NA)
       # Trim off the spin up period ----
       if (remove_spin_up) {
@@ -181,14 +181,14 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
         df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
                          lyr_top = depth,
                          value = value,
-                         Model = m,
+                         Model = toggle_models(m, to = "display"),
                          lyr_thk = NA)
       } else {
         df <- data.frame(Date = rep(outp[[ens_lab]][[m]][["Date"]],
                                     each = nrow(variable)),
                          lyr_top = as.vector(lyr),
                          value = as.vector(variable),
-                         Model = m) |>
+                         Model = toggle_models(m, to = "display")) |>
           dplyr::mutate(lyr_thk = ifelse(c(-999, diff(lyr_top)) < 0, # | is.na(-c(NA,diff(lyr_top))),
                                          c(diff(lyr_top),NA),
                                          c(NA,diff(lyr_top))))
@@ -211,7 +211,8 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
   })
 
   if (return_df) {
-    dplyr::bind_rows(lst) |>
+    df <- lst |> 
+    dplyr::bind_rows() |>
       dplyr::mutate(Model = dplyr::case_when(
         Model == "dy_cd" ~ "DYRESM-CAEDYM",
         Model == "glm_aed" ~ "GLM-AED",
@@ -220,7 +221,8 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
         var_sim = var_sim
       ) |>
       dplyr::filter(!is.na(Date))
+    return(df)
   } else {
-    lst
+    return(lst)
   }
 }

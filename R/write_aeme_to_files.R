@@ -139,11 +139,7 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
           }
           out <- out |>
             dplyr::mutate(depth = depth - max(depth), value = round(value, 4),
-                          model = dplyr::case_when(
-                            Model == "DYRESM-CAEDYM" ~ "dy_cd",
-                            Model == "GLM-AED" ~ "glm_aed",
-                            Model == "GOTM-WET" ~ "gotm_wet"
-                          )
+                          model = toggle_models(Model, to = "code")
             ) |>
             dplyr::select(Date, model, var_sim, depth, value) |>
             dplyr::mutate(ens = ens)

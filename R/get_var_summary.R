@@ -18,20 +18,20 @@ get_var_summary <- function(aeme, model, var_sim, ens_n = 1) {
     df <- data.frame(Date = as.Date(NA),
                      lyr_top = NA,
                      value = NA,
-                     Model = m,
+                     Model = toggle_models(m, to = "display"),
                      lyr_thk = NA)
 
     if (is.matrix(variable)) {
       df_top <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
                            lyr_top = NA,
                            value = variable[, 1],
-                           Model = m,
+                           Model = toggle_models(m, to = "display"),
                            lyr_thk = NA,
                            var_sim = paste0(var_sim, "_top"))
       df_btm <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
                            lyr_top = NA,
                            value = variable[, 2],
-                           Model = m,
+                           Model = toggle_models(m, to = "display"),
                            lyr_thk = NA,
                            var_sim = paste0(var_sim, "_btm"))
       df <- rbind(df_top, df_btm)
