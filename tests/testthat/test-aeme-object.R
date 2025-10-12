@@ -1,3 +1,26 @@
+test_that("model toggle works", {
+  mod1 <- toggle_models(model = c("dy_cd", "glm_aed"))
+  testthat::expect_true(length(mod1) == 2 & all(mod1 %in% c("DYRESM-CAEDYM", "GLM-AED" )))
+  
+  mod2 <- toggle_models(model = c("GOTM-WET"), to = "code")
+  testthat::expect_true(length(mod2) == 1 & all(mod2 %in% c("gotm_wet")))
+  
+  testthat::expect_error({
+    toggle_models(model = c("dyresm", "glm"))
+  })
+  mod3 <- toggle_models(mod2, to = "code")
+  testthat::expect_true(length(mod3) == 1 & all(mod3 %in% c("gotm_wet")))
+  
+  mod4 <- toggle_models(model = rep("GOTM-WET", 100), to = "code")
+  testthat::expect_true(length(mod4) == 100 & all(mod4 %in% c("gotm_wet")))
+  
+  df <- data.frame(model = rep(c("dy_cd", "glm_aed"), 50))
+  df <- df |> 
+    dplyr::mutate(Model = toggle_models(model, to = "display"))
+  testthat::expect_true(nrow(df) == 100 & all(df$Model %in% c("DYRESM-CAEDYM", "GLM-AED" )))
+  
+})
+
 test_that("aeme object can be read from yaml file", {
   path <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
