@@ -21,7 +21,7 @@
 get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
                     ens_n = 1, use_obs = FALSE, remove_spin_up = TRUE,
                     cumulative = FALSE) {
-
+  
   var_sim <- check_aeme_vars(var_sim)
   # Extract output from aeme ----
   inp <- input(aeme)
@@ -33,7 +33,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
   aeme_time <- time(aeme)
   names(model) <- model
   ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
-
+  
   if (use_obs) {
     obs <- observations(aeme)
     if (var_sim == "LKE_lvlwtr") {
@@ -67,7 +67,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
     obs_sub <- obs_sub |>
       dplyr::rename(obs = value)
   }
-
+  
   # Loop through the models and extract the variable of interest ----
   lst <- lapply(model, \(m) {
     variable <- outp[[ens_lab]][[m]][[var_sim]]
@@ -77,7 +77,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
                      value = NA,
                      Model = toggle_models(m, to = "display"),
                      lyr_thk = NA)
-
+    
     if (is.null(variable)) {
       message(strwrap(paste0(var_sim, " is not in output for model ", m,
                              ". Returning a dataframe with NA's.")))
@@ -95,14 +95,14 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
                              ". Returning a dataframe with NA's.")))
       return(df)
     }
-
+    
     if (use_obs) {
-
+      
       obs_dates <- unique(obs_sub$Date)
       date_ind <- which(outp[[ens_lab]][[m]][["Date"]] %in% obs_dates)
-
+      
       if (var_sim == "LKE_lvlwtr") {
-
+        
         df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]][date_ind],
                          sim = outp[[ens_lab]][[m]][["LKE_lvlwtr"]][date_ind] +
                            min(inp$hypsograph$elev),
@@ -120,12 +120,12 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
             )
           )
       } else {
-
+        
         mod <- lapply(date_ind, \(d) {
           depth <- outp[[ens_lab]][[m]][["LKE_depths"]][, d]
           v <- outp[[ens_lab]][[m]][[var_sim]][, d]
           obs_deps <- unique(obs_sub$depth_mid[obs_sub$Date == outp[[ens_lab]][[m]][["Date"]][d]])
-
+          
           if (all(is.na(v)) | all(is.na(depth))) {
             return(data.frame(Date = outp[[ens_lab]][[m]][["Date"]][d],
                               depth_mid = obs_deps,
@@ -139,10 +139,10 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
                      Model = toggle_models(m, to = "display"))
         }) |>
           dplyr::bind_rows()
-
+        
         df <- dplyr::left_join(obs_sub, mod, by = c("Date" = "Date",
                                                     "depth_mid" = "depth_mid"))
-
+        
       }
     } else if (is.null(dim(variable))) {
       df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
@@ -161,7 +161,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
       }
     } else {
       dep <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
-                          depth = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
+                        depth = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
       lyr <- outp[[ens_lab]][[m]][["LKE_layers"]]
       if (!is.null(depth)) {
         min_depth <- 0
@@ -193,14 +193,14 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
                                          c(diff(lyr_top),NA),
                                          c(NA,diff(lyr_top))))
       }
-
-
+      
+      
       # Trim off the spin up period ----
       if (remove_spin_up) {
         idx2 <- which(df$Date >= aeme_time$start & df$Date <= aeme_time$stop)
         df <- df[idx2, ]
       }
-
+      
       if (cumulative) {
         warning("Applying cumulative to a value with a depth component.")
         df <- df |>
@@ -209,16 +209,12 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
     }
     df
   })
-
+  
   if (return_df) {
     df <- lst |> 
-    dplyr::bind_rows() |>
-      dplyr::mutate(Model = dplyr::case_when(
-        Model == "dy_cd" ~ "DYRESM-CAEDYM",
-        Model == "glm_aed" ~ "GLM-AED",
-        Model == "gotm_wet" ~ "GOTM-WET"
-        ),
-        var_sim = var_sim
+      dplyr::bind_rows() |>
+      dplyr::mutate(Model = toggle_models(Model, to = "display"),
+                    var_sim = var_sim
       ) |>
       dplyr::filter(!is.na(Date))
     return(df)
