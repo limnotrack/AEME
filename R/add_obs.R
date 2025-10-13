@@ -48,7 +48,7 @@ add_obs <- function(aeme, lake = NULL, level = NULL) {
     # Combine existing and new level data, avoiding duplicates
     if (!is.null(orig_data)) {
       combined_data <- dplyr::bind_rows(orig_data, level) |>
-        dplyr::distinct(Date, var_aeme, .keep_all = TRUE) |
+        dplyr::distinct(Date, var_aeme, .keep_all = TRUE) |> 
         dplyr::arrange(Date, var_aeme)
       obs$level <- combined_data
     } else {
