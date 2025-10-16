@@ -403,3 +403,37 @@ test_that("lake observations can be added", {
                           all(obs_df4$var_aeme != "LKE_lvlwtr"))
   
 })
+
+test_that("GLM-AED sediment parameters can be added", {
+  
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  model_controls <- get_model_controls()
+  path <- "."
+  
+  param <- data.frame(
+    model = "glm_aed",
+    file = "glm3.nml",
+    name = "sediment/sed_temp_mean",
+    value = c(0.9, 0.08, 0.7),
+    min = 0.01,
+    max = 1
+  ) 
+  
+  param <- pars <- aeme_parameters_bgc |> 
+    # dplyr::mutate(value = 0.5) |> 
+    dplyr::bind_rows(param)
+  
+  aeme <- add_pars(aeme = aeme, pars = pars)
+  
+  aeme <- build_aeme(aeme = aeme, model = model, use_bgc = TRUE,
+                     model_controls = model_controls, path = path)
+  
+  lake_dir <- get_lake_dir(aeme, path = path)
+  glm_nml_file <- file.path(lake_dir, "glm_aed", "glm3.nml")
+  nml <- read_nml(glm_nml_file)
+  sed_temp_mean <- nml[["sediment"]][["sed_temp_mean"]]
+  testthat::expect_true(all(sed_temp_mean == param$value[param$model == "glm_aed" & 
+                                                           param$name == "sediment/sed_temp_mean"]))
+})

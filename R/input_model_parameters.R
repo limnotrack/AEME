@@ -16,6 +16,8 @@ input_model_parameters <- function(aeme, model, param, path) {
   if (!is.character(model))
     stop("Parameter 'model' must be a character string.")
 
+  # Collapse parameters
+  param <- collapse_params(param)
 
   # Load AEME data
   lke <- AEME::lake(aeme)
@@ -58,11 +60,12 @@ input_model_parameters <- function(aeme, model, param, path) {
 
       # Apply scaling factors ----
       for (v in met_idx) {
+        value <- unlist(param[["value"]][v])
         if (param$name[v] == "MET_wndspd") {
-          met[["MET_wnduvu"]] <- met[["MET_wnduvu"]] * param[["value"]][v]
-          met[["MET_wnduvv"]] <- met[["MET_wnduvv"]] * param[["value"]][v]
+          met[["MET_wnduvu"]] <- met[["MET_wnduvu"]] * value
+          met[["MET_wnduvv"]] <- met[["MET_wnduvv"]] * value
         }
-        met[[param$name[v]]] <- met[[param$name[v]]] * param[["value"]][v]
+        met[[param$name[v]]] <- met[[param$name[v]]] * value
         if (param$name[v] == "MET_cldcvr") {
           met[[param$name[v]]][met[[param$name[v]]] < 0] <- 0
           met[[param$name[v]]][met[[param$name[v]]] > 1] <- 1
@@ -93,11 +96,11 @@ input_model_parameters <- function(aeme, model, param, path) {
       aeme_outf <- outflows(aeme)
       wdr <- aeme_outf[["data"]]
       for (c in names(wdr)) {
+        value <- unlist(param[["value"]][wdr_idx])
         if (c == "wbal") {
-          wdr[[c]][[col_id]] <- wdr[[c]][[col_id]] * param[["value"]][wdr_idx]
+          wdr[[c]][[col_id]] <- wdr[[c]][[col_id]] * value
         } else {
-          wdr[[c]][["outflow"]] <- wdr[[c]][["outflow"]] *
-            param[["value"]][wdr_idx]
+          wdr[[c]][["outflow"]] <- wdr[[c]][["outflow"]] * value
         }
       }
       if (m == "glm_aed") {
@@ -118,7 +121,7 @@ input_model_parameters <- function(aeme, model, param, path) {
       col_id <- paste0(param$name[inf_idx], "_", m)
       aeme_inf <- inflows(aeme)
       inf <- aeme_inf[["data"]]
-      inf_factor <- param[["value"]][inf_idx]
+      inf_factor <- unlist(param[["value"]][inf_idx])
 
       if (m == "glm_aed") {
         make_infGLM(path_glm = model_path, list_inf = inf,
@@ -148,11 +151,11 @@ input_model_parameters <- function(aeme, model, param, path) {
           cfg <- readLines(cfg_file)
           idx <- which(grepl(tools::file_ext(f), param$file))
           for (p in idx) {
+            value <- unlist(param$value[p])
             nme <- strsplit(param$name[p], "/")[[1]]
             lno <- as.numeric(nme[length(nme)])
             cmnt <- strsplit(trimws(cfg[lno]), "#")[[1]]
-            cfg[lno] <- paste0(param$value[p], paste(" #", cmnt[2],
-                                                     collapse = " "))
+            cfg[lno] <- paste0(value, paste(" #", cmnt[2], collapse = " "))
           }
           writeLines(cfg, cfg_file)
         }
@@ -177,11 +180,13 @@ input_model_parameters <- function(aeme, model, param, path) {
             grp_idx <- get_nml_value(aed, grp)
 
             if (length(grp_idx) > 1) {
-              wid <- tidyr::pivot_wider(param[idx, c("name", "value", "group")],
-                                        names_from = "group",
-                                        values_from = "value") |>
+              wid <- param |>
+                dplyr::slice(idx) |>
+                dplyr::mutate(value = unlist(value)) |> 
+                dplyr::select(name, value, group) |>
+                tidyr::pivot_wider(names_from = "group", 
+                                   values_from = "value") |>
                 as.data.frame()
-
 
               names <- strsplit(get_nml_value(nml, "pd%p_name"), ",")[[1]]
 
@@ -208,7 +213,7 @@ input_model_parameters <- function(aeme, model, param, path) {
               arg_list <- lapply(idx, \(p) {
                 par <- strsplit(param$name[p], "/")[[1]][2]
                 vals <- get_nml_value(nml, par)
-                vals[grp_idx] <- param$value[p]
+                vals[grp_idx] <- unlist(param$value[p])
                 vals
               })
               names(arg_list) <- sapply(idx, \(p) {
@@ -216,11 +221,13 @@ input_model_parameters <- function(aeme, model, param, path) {
               })
             }
           } else {
+            
+            
             pnames <- sapply(idx, \(p) {
               nme <- gsub("/", "::", param$name[p])
             })
             arg_list <- lapply(idx, \(p) {
-              param$value[p]
+              unlist(param$value[p])
             })
             names(arg_list) <- pnames
           }
@@ -242,7 +249,7 @@ input_model_parameters <- function(aeme, model, param, path) {
           idx <- which(param$file == f)
           pnames <- lapply(idx, \(p) {
             list(name = strsplit(param$name[p], "/")[[1]],
-                 value = param$value[p])
+                 value = unlist(param$value[p]))
             # nme[length(nme)]
           })
           for (i in pnames) {
@@ -261,4 +268,23 @@ input_model_parameters <- function(aeme, model, param, path) {
 
   })
   return(invisible())
+}
+
+#' Collapse model parameters
+#' 
+#' @param param_df data.frame; parameters to collapse
+#'
+#' @return data.frame; collapsed parameters
+#' @noRd
+#'
+collapse_params <- function(param_df) {
+  param_df |>
+    dplyr::group_by(model, file, name, group) |>
+    dplyr::summarise(
+      value = list(value),
+      min   = list(min),
+      max   = list(max),
+      .groups = "drop"
+    ) |>
+    tibble::as_tibble()
 }
