@@ -102,14 +102,16 @@ check_glm_nml <- function(file) {
   if (!is.null(nml$sediment)) {
     sed <- nml$sediment
     n_zones <- as.numeric(sed$n_zones)
-    n_temp_vals <- length(as.numeric(sed$sed_temp_mean))
-    
-    if (n_temp_vals != n_zones) {
-      issues <- c(
-        issues,
-        paste0("Number of sed_temp_mean values (", n_temp_vals,
-               ") does not match n_zones (", n_zones, ")")
-      )
+    # Check parameter lengths are consistent with n_zones
+    pars <- c("sed_heat_Ksoil", "sed_temp_depth", "sed_temp_mean",
+              "sed_temp_amplitude", "sed_temp_peak_doy", "zone_heights", 
+              "sed_reflectivity", "sed_roughness")
+    for (p in pars) {
+      vals <- as.numeric(sed[[p]])
+      if (length(vals) != n_zones) {
+        issues <- c(issues, paste0("Number of ", p, " values (", length(vals),
+                                   ") does not match n_zones (", n_zones, ")"))
+      }
     }
   }
   
