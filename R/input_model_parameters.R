@@ -235,6 +235,9 @@ input_model_parameters <- function(aeme, model, param, path) {
           # Set and write nml file
           nml <- set_nml(nml, arg_list = arg_list)
           write_nml(nml, cfg_file)
+          if (f == "glm3.nml") {
+            check_glm_nml(file = cfg_file)
+          }
         }
       }
     }

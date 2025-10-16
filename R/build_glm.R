@@ -135,4 +135,7 @@ build_glm <- function(lakename, model_controls, date_range,
 
   # Write the GLM nml file
   if (overwrite_nml) write_nml(glm_nml, file.path(path_glm, "glm3.nml"))
+  check_glm_nml(file = file.path(path_glm, "glm3.nml"))
+  
+  return(invisible())
 }
