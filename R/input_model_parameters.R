@@ -281,6 +281,12 @@ input_model_parameters <- function(aeme, model, param, path) {
 #' @noRd
 #'
 collapse_params <- function(param_df) {
+  req_col_names <- c("model", "file", "name", "value", "min", "max", "group")
+  if (!all(req_col_names %in% names(param_df))) {
+    stop(paste0("param_df must contain the following columns: ",
+                paste(req_col_names, collapse = ", "), "."))
+  }
+  
   param_df |>
     dplyr::group_by(model, file, name, group) |>
     dplyr::summarise(

@@ -15,6 +15,15 @@ add_param <- function(aeme, param) {
   if (!is.data.frame(param)) {
     stop("param must be a data frame")
   }
+  
+  if (!"group" %in% names(param_df)) {
+    param_df$group <- NA
+  }
+  required_cols <- c("model", "file", "name", "value", "min", "max", "group")
+  if (!all(required_cols %in% colnames(param))) {
+    stop(paste0("param must have columns: ", 
+                paste(required_cols, collapse = ", ")))
+  }
 
   param_old <- parameters(aeme)
   if (nrow(param_old) == 0) {
