@@ -33,8 +33,16 @@ check_glm_nml <- function(file) {
   }
   
   # --- File existence checks ---
-  inflow_files <- strsplit(nml$inflow$inflow_fl, ",")[[1]]
-  outflow_files <- strsplit(nml$outflow$outflow_fl, ",")[[1]]
+  if (!is.null(nml$inflow)) {
+    inflow_files <- strsplit(nml$inflow$inflow_fl, ",")[[1]]
+  } else {
+    inflow_files <- NULL
+  }
+  if (!is.null(nml$outflow)) {
+    outflow_files <- strsplit(nml$outflow$outflow_fl, ",")[[1]]
+  } else {
+    outflow_files <- NULL
+  }
   file_paths <- c(
     nml$meteorology$meteo_fl,
     inflow_files,
