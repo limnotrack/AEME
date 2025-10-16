@@ -412,7 +412,7 @@ test_that("GLM-AED sediment parameters can be added", {
   model_controls <- get_model_controls()
   path <- "."
   
-  param <- data.frame(
+  sed_param <- data.frame(
     model = "glm_aed",
     file = "glm3.nml",
     name = "sediment/sed_temp_mean",
@@ -421,11 +421,20 @@ test_that("GLM-AED sediment parameters can be added", {
     max = 1
   ) 
   
-  param <- pars <- aeme_parameters_bgc |> 
-    # dplyr::mutate(value = 0.5) |> 
-    dplyr::bind_rows(param)
+  param <- aeme_parameters_bgc |> 
+    dplyr::mutate(value = 0.5) |>
+    dplyr::bind_rows(sed_param)
   
-  aeme <- add_pars(aeme = aeme, pars = pars)
+  aeme <- add_param(aeme = aeme, param = param)
+  param1 <- AEME::parameters(aeme)
+  
+  testthat::expect_true(nrow(param1) == nrow(param))
+  
+  param <- aeme_parameters_bgc |> 
+    dplyr::mutate(value = 1.5)
+  aeme <- add_param(aeme = aeme, param = param)
+  param2 <- AEME::parameters(aeme)
+  
   
   aeme <- build_aeme(aeme = aeme, model = model, use_bgc = TRUE,
                      model_controls = model_controls, path = path)
@@ -436,4 +445,8 @@ test_that("GLM-AED sediment parameters can be added", {
   sed_temp_mean <- nml[["sediment"]][["sed_temp_mean"]]
   testthat::expect_true(all(sed_temp_mean == param$value[param$model == "glm_aed" & 
                                                            param$name == "sediment/sed_temp_mean"]))
+  
+  aeme <- remove_param(aeme)
+  param3 <- AEME::parameters(aeme)
+  testthat::expect_true(nrow(param3) == 0)
 })
