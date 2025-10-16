@@ -246,9 +246,35 @@ locations around the world. However, it’s date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2025-10-12 23:56:35] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2025-10-12 23:56:35] downloading</span></span>
-<span><span class="co">#&gt; INFO [2025-10-12 23:56:36] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2025-10-16 00:35:57] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:01] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:05] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:09] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:13] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:17] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:22] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:26] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:30] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:34] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:39] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:43] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:47] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:51] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:36:55] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:00] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:04] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:08] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:12] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:16] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:21] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:25] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:29] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:33] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:38] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:42] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:46] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:46] downloading</span></span>
+<span><span class="co">#&gt; INFO [2025-10-16 00:37:48] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -530,7 +556,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">F</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2025-10-12 23:56:43]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2025-10-16 00:37:55]</span></span>
 <span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
 <span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
@@ -541,6 +567,8 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt; Writing DYRESM control file</span></span>
 <span><span class="co">#&gt; Building GLM3-AED2 model for lake wainamu</span></span>
 <span><span class="co">#&gt; Copied in GLM nml file</span></span>
+<span><span class="co">#&gt; Issues found in GLM nml:</span></span>
+<span><span class="co">#&gt;  - Missing input files: bcs/inflow_none.csv</span></span>
 <span><span class="co">#&gt; Building GOTM-WET for lake wainamu</span></span>
 <span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
 <span></span>
@@ -605,14 +633,14 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-10-12 23:56:48]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM running... [2025-10-12 23:56:48]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2025-10-12 23:57:06]</span></span>
-<span><span class="co">#&gt; GLM-AED running... [2025-10-12 23:57:06]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2025-10-12 23:57:07]</span></span>
-<span><span class="co">#&gt; GOTM-WET running... [2025-10-12 23:57:07]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2025-10-12 23:57:08]</span></span>
-<span><span class="co">#&gt; Model run complete![2025-10-12 23:57:08]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-10-16 00:38:00]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM running... [2025-10-16 00:38:00]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2025-10-16 00:38:19]</span></span>
+<span><span class="co">#&gt; GLM-AED running... [2025-10-16 00:38:19]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2025-10-16 00:38:20]</span></span>
+<span><span class="co">#&gt; GOTM-WET running... [2025-10-16 00:38:20]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2025-10-16 00:38:20]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-10-16 00:38:20]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd</span></span>
 <span><span class="co">#&gt; Retrieving and formatting dyresmSALINITY_Var for model dy_cd</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>

@@ -235,7 +235,9 @@ building of the AEME models locally.</p>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
 <span>                    use_aeme <span class="op">=</span> <span class="cn">TRUE</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span>, print <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in dir.create(lake_dir, showWarnings = TRUE): 'aeme\LID11133_rotorua'</span></span>
-<span><span class="co">#&gt; already exists</span></span></code></pre></div>
+<span><span class="co">#&gt; already exists</span></span>
+<span><span class="co">#&gt; GLM nml checks passed with no issues.</span></span>
+<span><span class="co">#&gt; GLM nml checks passed with no issues.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="run-aeme-models">Run AEME models<a class="anchor" aria-label="anchor" href="#run-aeme-models"></a>
@@ -246,10 +248,10 @@ The <code>parallel</code> argument is set to <code>TRUE</code> to run
 the models in parallel which can speed up the process.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models in parallel... [2025-10-12 23:53:28]</span></span>
-<span><span class="co">#&gt; Model run complete![2025-10-12 23:55:06]</span></span>
-<span><span class="co">#&gt; Reading models in parallel... [2025-10-12 23:55:06]</span></span>
-<span><span class="co">#&gt; Model reading complete![2025-10-12 23:55:34]</span></span>
+<span><span class="co">#&gt; Running models in parallel... [2025-10-16 00:32:54]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-10-16 00:34:38]</span></span>
+<span><span class="co">#&gt; Reading models in parallel... [2025-10-16 00:34:39]</span></span>
+<span><span class="co">#&gt; Model reading complete![2025-10-16 00:35:08]</span></span>
 <span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
