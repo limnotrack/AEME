@@ -75,9 +75,11 @@ plot_wbal_annual <- function(aeme, model, lake_frac = FALSE,
   if (lake_frac) {
     y1_var <- "lake_frac"
     y2_var <- "lake_frac"
+    y_lab <- "Fraction of Lake Volume (0-1)"
   } else {
     y1_var <- "value"
     y2_var <- "net"
+    y_lab <- "Volume (m3)"
   }
   
 
@@ -99,7 +101,7 @@ plot_wbal_annual <- function(aeme, model, lake_frac = FALSE,
     ggplot2::facet_wrap(~ Model, ncol = 1) +
     ggplot2::labs(
       x = "Year",
-      y = "Volume (m3)",
+      y = y_lab,
       fill = "Variable",
       shape = ""
     )
