@@ -104,7 +104,9 @@ aed <- ler_wq |>
       grepl("frp_initial", parameter) ~ "initial_conditions",
       .default = process
     )
-  )
+  ) |> 
+  dplyr::filter(parameter != "pon_initial ") |> 
+  dplyr::distinct(module, domain, process, parameter, path, .keep_all = TRUE)
 
 head(aed)
 tail(aed, 10)
@@ -208,6 +210,12 @@ glm_aed_parameters <- glm_aed_parameters |>
   dplyr::select(model, file, name, value, min, max, dplyr::everything()) |>
   dplyr::bind_rows(glm_p)
 dim(glm_aed_parameters)
+
+glm_aed_parameters[glm_aed_parameters$name == "aed2_organic_matter/poc_initial", ]$par
+
+df2 <- glm_aed_parameters |>
+  dplyr::distinct(model, file, name, par, group, .keep_all = TRUE)
+
 head(glm_aed_parameters)
 tail(glm_aed_parameters)
 glm_aed_parameters |>
