@@ -1,6 +1,6 @@
 #' Get modeled observation variables
 #'
-#' @param aeme Aeme object
+#' @inheritParams build_aeme
 #'
 #' @returns Data frame with modeled observation variables and summary 
 #' statistics.
@@ -10,9 +10,12 @@
 #' @export
 #'
 
-get_mod_obs_vars <- function(aeme) {
+get_mod_obs_vars <- function(aeme, model) {
   tme <- time(aeme)
-  out_vars <- get_output_vars(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  }
+  out_vars <- get_output_vars(aeme = aeme, model = model)
   if (is.null(out_vars)) {
     model_controls <- get_model_controls(aeme)
     if (!is.null(model_controls)) {

@@ -4,10 +4,13 @@
 \alias{get_mod_obs_vars}
 \title{Get modeled observation variables}
 \usage{
-get_mod_obs_vars(aeme)
+get_mod_obs_vars(aeme, model)
 }
 \arguments{
-\item{aeme}{Aeme object}
+\item{aeme}{aeme; object.}
+
+\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
+`gotm_wet`.}
 }
 \value{
 Data frame with modeled observation variables and summary 
