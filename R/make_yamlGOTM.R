@@ -36,7 +36,14 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
   gotm$light_extinction$g2$constant_value <- round(1 / Kw, 2)
 
   z_diff <- round((min(hyps$elev) + init_depth), 2)
-  a0 <- round(approx(hyps$elev, hyps$area, z_diff)$y)
+  if (z_diff > max(hyps$elev)) {
+    # Extrapolate using a linear model of the top 10% of the hypsograph
+    top_n <- max(ceiling(0.1 * nrow(hyps)), 3)
+    lm_top <- lm(area ~ elev, data = hyps[order(-hyps$elev), ][1:top_n, ])
+    a0 <- round(predict(lm_top, newdata = data.frame(elev = z_diff)), 0)
+  } else {
+    a0 <- round(approx(hyps$elev, hyps$area, z_diff, rule = )$y)
+  }
   if (!(z_diff %in% hyps$elev)) {
     hyps <- rbind(hyps, c(z_diff, a0, 0))
   }
