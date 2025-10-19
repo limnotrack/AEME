@@ -24,6 +24,9 @@
 get_output_vars <- function(aeme, model, ens_n = 1) {
 
   outp <- output(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  }
   if (outp$n_members == 0) return()
   ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
   out <- outp[[ens_lab]]
