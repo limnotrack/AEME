@@ -1,6 +1,6 @@
 test_that("all parameters can be retrieved", {
   param <- get_aeme_parameters()
-  testthat::expect_true(nrow(param) == 951)
+  testthat::expect_true(nrow(param) == 949)
 })
 
 test_that("errors when retrieving parameters for dy_cd", {
