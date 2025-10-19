@@ -58,6 +58,11 @@ test_that("running GLM works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
+  
+  obs <- get_obs(aeme)
+  mod_obs_vars <- get_mod_obs_vars(aeme)
+  testthat::expect_true(all(mod_obs_vars$var_aeme %in% obs$var_aeme))
+  
   # cfg <- configuration(aeme)
   # cfg$model_controls <- NULL
   # configuration(aeme) <- cfg

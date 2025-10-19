@@ -334,6 +334,12 @@ test_that("observations can be extracted from Aeme object", {
   testthat::expect_true(is.data.frame(obs_df) & nrow(obs_df) > 0)
   testthat::expect_true(length(unique(obs_df$var_aeme)) > 1)
   
+  mod_obs_vars <- get_mod_obs_vars(aeme)
+  
+  testthat::expect_true(is.character(mod_obs_vars$var_aeme) & 
+                          nrow(mod_obs_vars) > 1)
+  testthat::expect_true(all(mod_obs_vars$var_aeme %in% obs_df$var_aeme))
+  
   lke_lvl <- get_obs(aeme, var_sim = "LKE_lvlwtr")
   testthat::expect_true(is.data.frame(lke_lvl) & nrow(lke_lvl) > 0 & 
                           all(lke_lvl$var_aeme == "LKE_lvlwtr"))
