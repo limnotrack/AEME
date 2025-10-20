@@ -518,7 +518,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
 
   # Create directory for lake ----
-  dir.create(lake_dir, showWarnings = TRUE)
+  dir.create(lake_dir, showWarnings = FALSE, recursive = TRUE)
 
   if (length(inf) == 0) {
     inf <- NULL
