@@ -35,8 +35,7 @@ build_glm <- function(lakename, model_controls, date_range,
 
   glm_file <- file.path(path_glm, "glm3.nml")
   if (!file.exists(glm_file)) {
-    glm_file <- system.file("extdata/glm_aed/glm3.nml",
-                            package = "AEME")
+    glm_file <- system.file("extdata/glm_aed/glm3.nml", package = "AEME")
     file.copy(glm_file, file.path(path_glm, "glm3.nml"))
     overwrite_nml <- TRUE
     if (print) {
@@ -94,7 +93,7 @@ build_glm <- function(lakename, model_controls, date_range,
                          mass = TRUE, inf_factor = inf_factor)
 
   #--- make outflows table and modify nml
-  heights_wdr <- max(hyps$elev) - min(hyps$elev) - 1 #outf |> select(-1) |> colnames(.) |> gsub("^.*_","",.) |> as.numeric()
+  heights_wdr <- max(hyps$elev) - min(hyps$elev) - 1
   if (heights_wdr > (max(hyps$elev) - min(hyps$elev))) {
     if (print) {
       message("Withdrawal depth is too low!")
