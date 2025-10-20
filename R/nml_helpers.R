@@ -261,6 +261,8 @@ print.nml <- function(x, ...){
       if (length(blckList[[j]])>1){
         if (is.logical(blckList[[j]])){
           charText <- to.glm_boolean(blckList[[j]])
+        } else if (is.character(blckList[[j]])) {
+          charText <- paste0("'", paste(blckList[[j]], collapse="','"), "'")
         } else {
           charText <- c(blckList[[j]])
         }
