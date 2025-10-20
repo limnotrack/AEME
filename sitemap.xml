@@ -46,6 +46,7 @@
 <url><loc>/reference/get_lake.html</loc></url>
 <url><loc>/reference/get_lake_dir.html</loc></url>
 <url><loc>/reference/get_met.html</loc></url>
+<url><loc>/reference/get_model_config_files.html</loc></url>
 <url><loc>/reference/get_model_controls.html</loc></url>
 <url><loc>/reference/get_model_outfile.html</loc></url>
 <url><loc>/reference/get_mod_obs_vars.html</loc></url>
@@ -117,6 +118,7 @@
 <url><loc>/reference/plot_zoops.html</loc></url>
 <url><loc>/reference/precip_status.html</loc></url>
 <url><loc>/reference/read_aeme_from_files.html</loc></url>
+<url><loc>/reference/read_gotm_profile.html</loc></url>
 <url><loc>/reference/read_nml.html</loc></url>
 <url><loc>/reference/remove_inflow.html</loc></url>
 <url><loc>/reference/remove_output.html</loc></url>
@@ -124,6 +126,7 @@
 <url><loc>/reference/run_aeme.html</loc></url>
 <url><loc>/reference/set_gotm_grid.html</loc></url>
 <url><loc>/reference/set_inflows.html</loc></url>
+<url><loc>/reference/set_model_controls.html</loc></url>
 <url><loc>/reference/set_nml.html</loc></url>
 <url><loc>/reference/set_precip.html</loc></url>
 <url><loc>/reference/set_time.html</loc></url>
@@ -134,6 +137,7 @@
 <url><loc>/reference/time-set.html</loc></url>
 <url><loc>/reference/time.html</loc></url>
 <url><loc>/reference/toggle_models.html</loc></url>
+<url><loc>/reference/update_init.html</loc></url>
 <url><loc>/reference/water_balance-aeme-method.html</loc></url>
 <url><loc>/reference/water_balance-set-aeme-method.html</loc></url>
 <url><loc>/reference/water_balance-set.html</loc></url>
