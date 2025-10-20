@@ -34,8 +34,15 @@ buildVal	<-	function(textLine, lineNum, blckName){
   if (any(grep("'",parVl))){
 
     parVl	<-	gsub("'","",parVl)
+    if (any(grep(",",parVl))) {
+      parVl	<-	c(unlist(strsplit(parVl,",")))
+    }
   }else if (any(grep("\"",parVl))){
     parVl  <-	gsub("\"","",parVl)
+    parVl	<-	gsub("'","",parVl)
+    if (any(grep(",",parVl))) {
+      parVl	<-	c(unlist(strsplit(parVl,",")))
+    }
   }else if (isTRUE(grepl(".true.",parVl) || grepl(".false.",parVl))){
     logicals <- unlist(strsplit(parVl,","))
     parVl <- from.glm_boolean(logicals)
