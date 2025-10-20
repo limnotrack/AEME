@@ -64,11 +64,12 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 
       lengths <- dims_outf$length
       widths  <- dims_outf$width
-      if (length(names_wdr) > 1) {
-        outflow_fl <- paste0("'bcs/outflow_", names_wdr, ".csv'")
-      } else {
-        outflow_fl <- paste0("bcs/outflow_", names_wdr, ".csv")
-      }
+      outflow_fl <- paste0("bcs/outflow_", names_wdr, ".csv")
+      # if (length(names_wdr) > 1) {
+      #   outflow_fl <- paste0("'bcs/outflow_", names_wdr, ".csv'")
+      # } else {
+      #   outflow_fl <- paste0("bcs/outflow_", names_wdr, ".csv")
+      # }
 
       outflow <- list(
         num_outlet = n_wdr,
