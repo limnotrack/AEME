@@ -246,7 +246,7 @@ get_arg_name <- function(arg_name){
 }
 
 #' @export
-print.nml <- function(x, ...){
+print.nml <- function(x, ...) {
   glm_nml <- x
   for (i in seq_len(length(names(glm_nml)))){ # these are the blocks
     blckNm  <-	names(glm_nml)[i]
