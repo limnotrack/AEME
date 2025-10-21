@@ -12,9 +12,25 @@
 aeme_to_inflow <- function(aeme) {
   aeme <- check_aeme(aeme)
   model <- list_models(aeme = aeme)
+  outflow_factor <- rep(1, length(model))
+  names(outflow_factor) <- model
+  
+  model_parameters <- parameters(aeme)
+  if (!is.null(model_parameters)) {
+    # Get outflow factor if present
+    outflow_fct <- model_parameters |> 
+      dplyr::filter(name == "outflow", file == "wdr") |> 
+      dplyr::select(model, value) 
+    for (m in model) {
+      if (m %in% outflow_fct$model) {
+        outflow_factor[m] <- outflow_fct |> 
+          dplyr::filter(model == m) |> 
+          dplyr::pull(value)
+      }
+    }
+  }
   
   inflow_vars <- c(
-    # "HYD_flow", 
     "LKE_outflow",
     "HYD_temp", "CHM_salt", "CHM_oxy",
     "NIT_tn", "NIT_nit", "NIT_amm", #"NIT_din",
@@ -27,6 +43,10 @@ aeme_to_inflow <- function(aeme) {
     df <- lapply(inflow_vars, \(var) {
       dat <- get_var(aeme = aeme, model = m, var_sim = var, depth = 0.25,
                      remove_spin_up = FALSE)
+      if (var == "LKE_outflow") {
+        dat <- dat |> 
+          dplyr::mutate(value = value * outflow_factor[m])
+      }
       if (all(is.na(dat$value)) | all(dat$value < 0)) {
         return(NULL)
       } else {
