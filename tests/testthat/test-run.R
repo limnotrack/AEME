@@ -78,6 +78,15 @@ test_that("running GLM works", {
   testthat::expect_true(is.data.frame(v))
   testthat::expect_error(get_var(aeme = aeme, model = model, var_sim = "HYD_temp",
                                  depth = 15))
+  
+  outflow_inflow <- aeme_to_inflow(aeme)
+  testthat::expect_true(is.list(outflow_inflow))
+  testthat::expect_true(all(model %in% names(outflow_inflow)))
+  
+  aeme2 <- add_inflow(aeme, inflow = outflow_inflow[[model]], 
+                      inflow_id = "outflow_inflow")
+  inf <- inflows(aeme2)
+  testthat::expect_true("outflow_inflow" %in% names(inf$data))
 })
 
 test_that("running GOTM works", {
