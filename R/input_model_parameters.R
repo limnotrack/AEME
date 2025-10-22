@@ -92,7 +92,7 @@ input_model_parameters <- function(aeme, model, param, path) {
 
       # Read in wdr data ----
       wdr_idx <- which(param$model == m & param$file == "wdr")
-      col_id <- paste0(param$name[wdr_idx], "_", m)
+      col_id <- "HYD_flow"
       aeme_outf <- outflows(aeme)
       wdr <- aeme_outf[["data"]]
       for (c in names(wdr)) {
