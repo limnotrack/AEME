@@ -150,7 +150,7 @@ read_aeme_from_files <- function(path) {
           })
           names(mods) <- model
 
-          ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+          ens_lab <- format_ens_label(ens_n = ens_n)
 
           outp[[ens_lab]] <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
                                   gotm_wet = mods[["gotm_wet"]])

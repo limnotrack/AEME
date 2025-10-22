@@ -123,7 +123,7 @@ summarise_aeme <- function(aeme, ens_n = 1) {
   # Output summary ----
   outp <- output(aeme)
   # Filter out NULLs in list
-  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+  ens_lab <- format_ens_label(ens_n = ens_n)
   out <- outp[[ens_lab]][!sapply(outp[[ens_lab]], is.null)]
   model <- names(out)
   tgt_vars <- list_mod_obs_vars(aeme, model = model, ens_n = ens_n)
@@ -235,7 +235,7 @@ check_if_summary <- function(aeme, model, var_sim, ens_n = 1) {
 
   outp <- output(aeme)
 
-  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+  ens_lab <- format_ens_label(ens_n = ens_n)
 
   # Check if var_sim is in output
   chk <- sapply(model, \(m) {

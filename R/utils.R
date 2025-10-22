@@ -127,3 +127,11 @@ check_met <- function(met) {
   
   invisible(met)
 }
+
+#' Format ensemble member label
+#' @param ens_n integer; ensemble member number
+#' @returns character; formatted ensemble member label
+#' @noRd
+format_ens_label <- function(ens_n) {
+  paste0("ens_", sprintf("%03d", ens_n))
+}

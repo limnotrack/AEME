@@ -103,7 +103,7 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
 
   outp <- output(aeme)
 
-  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+  ens_lab <- format_ens_label(ens_n = ens_n)
 
   # Check if var_sim is in output
   chk <- sapply(model, \(m){

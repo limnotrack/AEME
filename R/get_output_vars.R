@@ -28,7 +28,7 @@ get_output_vars <- function(aeme, model, ens_n = 1) {
     model <- list_models(aeme)
   }
   if (outp$n_members == 0) return()
-  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+  ens_lab <- format_ens_label(ens_n = ens_n)
   out <- outp[[ens_lab]]
 
   # Loop through the variables and get the ones that are not all -99

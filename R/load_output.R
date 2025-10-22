@@ -123,7 +123,7 @@ load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
   # lapply(mods, \(x) x$HYD_temp[, 500])
   # lapply(mods, \(x) x$LKE_layers[, 10])
 
-  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+  ens_lab <- format_ens_label(ens_n = ens_n)
 
   outp[[ens_lab]] <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
                           gotm_wet = mods[["gotm_wet"]])

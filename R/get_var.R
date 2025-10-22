@@ -32,7 +32,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
   outp <- output(aeme)
   aeme_time <- time(aeme)
   names(model) <- model
-  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+  ens_lab <- format_ens_label(ens_n = ens_n)
   
   if (use_obs) {
     obs <- observations(aeme)
