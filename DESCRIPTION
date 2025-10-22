@@ -26,6 +26,7 @@ Imports:
     psychrolib,
     RColorBrewer,
     rLakeAnalyzer,
+    rstudioapi,
     sf,
     stats,
     stringdist,
