@@ -24,7 +24,6 @@ test_that("building DYRESM works", {
   
   file_chk <- file.exists(file.path(lake_dir, model, "wainamu.inf"))
   testthat::expect_true(file_chk)
-  
 })
 
 test_that("building DYRESM-CAEDYM works", {
@@ -33,7 +32,8 @@ test_that("building DYRESM-CAEDYM works", {
     testthat::skip("Skip testing on macOS")
   }
   path <- tempdir()
-  aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
