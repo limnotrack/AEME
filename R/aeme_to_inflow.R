@@ -76,7 +76,11 @@ aeme_to_inflow <- function(aeme) {
         return(dat)
       }
     }) |> 
-      dplyr::bind_rows() |>
+      dplyr::bind_rows()
+    if (nrow(df) == 0) {
+      return(NULL)
+    }
+    df <- df |>
       dplyr::select(Date, var_sim, value)
     df_wid <- df |> 
       tidyr::pivot_wider(names_from = var_sim, values_from = value) |> 
