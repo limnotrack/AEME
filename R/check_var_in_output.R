@@ -9,7 +9,7 @@
 check_var_in_output <- function(aeme, model, var_sim, ens_n = 1) {
   var_sim <- check_aeme_vars(var_sim)
   outp <- output(aeme)
-  ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
+  ens_lab <- format_ens_label(ens_n = ens_n)
   out <- lapply(model, \(m) {
     d <- sapply(var_sim, \(v) {
       chk <- !is.null(outp[[ens_lab]][[m]][[v]])
@@ -18,7 +18,7 @@ check_var_in_output <- function(aeme, model, var_sim, ens_n = 1) {
       }
       chk
     })
-    d <- t(as.matrix(d))
+    d <- as.data.frame(t(as.matrix(d)))
     row.names(d) <- m
     d
     # t(data.frame(d)) |>
