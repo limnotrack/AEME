@@ -24,18 +24,24 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
   if (length(outf) > 0) {
 
     if (length(outf) > 1) {
+      if ("wbal" %in% names(outf)) {
+        outf[["wbal"]] <- outf[["wbal"]] |>
+          dplyr::filter(model == "dy_cd") |> 
+          dplyr::select(-model) |> 
+          dplyr::rename(wbal = HYD_flow)
+      }
       df_wdr <- Reduce(function(x, y) dplyr::full_join(x, y, by = "Date"),
-                       outf) |>
-        dplyr::select(c(Date, outflow, outflow_glm_aed)) |>
-        dplyr::rename(wbal = outflow_glm_aed)
+                       outf)
     } else if (length(outf) == 1){
       df_wdr <- outf[[1]]
-      if (ncol(df_wdr) > 2) {
-        df_wdr <- df_wdr |>
-          dplyr::select(c(Date, outflow_glm_aed)) |>
-          dplyr::rename(wbal = outflow_glm_aed)
-      }
     }
+    
+    if ("model" %in% colnames(df_wdr)) {
+      df_wdr <- df_wdr |>
+        dplyr::filter(model == "glm_aed") |> 
+        dplyr::select(-model)
+    }
+    
     df_wdr <- df_wdr[stats::complete.cases(df_wdr), ]
 
     df_wdr <- df_wdr |>

@@ -21,16 +21,28 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
                         outf_factor = 1.0) {
 
   if (length(wdrData) > 1) {
+    if ("wbal" %in% names(wdrData)) {
+      wdrData[["wbal"]] <- wdrData[["wbal"]] |>
+        dplyr::filter(model == "dy_cd") |> 
+        dplyr::select(-model) |> 
+        dplyr::rename(wbal = HYD_flow)
+    }
+    
     wdrData <- Reduce(merge, wdrData) |>
-      dplyr::select(c(Date, outflow, outflow_dy_cd)) |>
-      dplyr::rename(wbal = outflow_dy_cd)
+      dplyr::select(c(Date, outflow, wbal)) 
   } else {
     wdrData <- wdrData[[1]]
-    if (ncol(wdrData) > 2) {
+    if ("model" %in% colnames(wdrData)) {
       wdrData <- wdrData |>
-        dplyr::select(c(Date, outflow_dy_cd)) |>
-        dplyr::rename(outflow = outflow_dy_cd)
+        dplyr::filter(model == "dy_cd") |> 
+        dplyr::select(-model) |> 
+        dplyr::rename(outflow = HYD_flow)
     }
+    # if (ncol(wdrData) > 2) {
+    #   wdrData <- wdrData |>
+    #     dplyr::select(c(Date, outflow_dy_cd)) |>
+    #     dplyr::rename(outflow = outflow_dy_cd)
+    # }
   }
   wdrData <- wdrData[stats::complete.cases(wdrData), ] |>
     # round discharge data

@@ -14,19 +14,24 @@
 
 make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
                         date_range, inf_factor = 1) {
-
+  
   if (length(infList) > 0) {
     for (i in 1:length(infList)) {
-
-      if (names(infList)[i] == "wbal") {
-        infList[[i]] <-  infList[[i]] |>
-          dplyr::select(-c(inflow_glm_aed, inflow_gotm_wet)) |>
-          dplyr::rename(HYD_flow = inflow_dy_cd)
+      
+      # if (names(infList)[i] == "wbal") {
+      #   infList[[i]] <-  infList[[i]] |>
+      #     dplyr::select(-c(inflow_glm_aed, inflow_gotm_wet)) |>
+      #     dplyr::rename(HYD_flow = inflow_dy_cd)
+      # }
+      if ("model" %in% names(infList[[i]])) {
+        infList[[i]] <- infList[[i]] |> 
+          dplyr::filter(model == "dy_cd") |> 
+          dplyr::select(-model)
       }
-
+      
       # format the tables
       colnames(infList[[i]]) <- rename_modelvars(input = names(infList[[i]]),
-                                             type_output = "dy_cd")
+                                                 type_output = "dy_cd")
     }
   } else {
     infList <- list("EMPTY" = data.frame(
@@ -38,10 +43,10 @@ make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
     )
     )
   }
-
+  
   # get names for inflows
   infNames <- names(infList)
-
+  
   # set infNum
   names(infList) <- 1:length(infList)
   inf <- infList |>
@@ -65,28 +70,28 @@ make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
                   dplyr::across(3:ncol(inf), \(x) ifelse(is.na(x), 0, x)))|>
     # sort by date
     dplyr::arrange(Date)
-
-
-
+  
+  
+  
   #-------- make the file! ---------
-
+  
   # open the file connection
   f <- file(paste0(filePath,"/",lakename,".inf"),"w")
-
+  
   # make a header to print to file
   writeLines(paste0("DYRESM-CAEDYM Inflow file for lake ",lakename,". ", info), f)
   writeLines(paste0(length(infNames),"         # Number of inflows"),f)
-
+  
   # add inf IDs
   for (i in 1:length(infNames) ) {
-
+    
     writeLines(txtComment(infNames[i], width = 37, paste0("# Inflow ",i)), f)
-
+    
   }
-
+  
   #add data
   utils::write.table(inf, f, sep = "\t", quote = FALSE, row.names = FALSE)
-
+  
   # close and write file
   close(f)
 }

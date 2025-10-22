@@ -23,10 +23,17 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
   n_inf <- length(names_inf)
 
   # Check if wbal is in the inflows
-  if ("wbal" %in% names_inf) {
-    list_inf[["wbal"]] <-  list_inf[["wbal"]] |>
-      dplyr::select(-c(inflow_dy_cd, inflow_gotm_wet)) |>
-      dplyr::rename(HYD_flow = inflow_glm_aed)
+  # if ("wbal" %in% names_inf) {
+  #   list_inf[["wbal"]] <-  list_inf[["wbal"]] |>
+  #     dplyr::select(-c(inflow_dy_cd, inflow_gotm_wet)) |>
+  #     dplyr::rename(HYD_flow = inflow_glm_aed)
+  # }
+  for (i in 1:length(list_inf)) {
+    if ("model" %in% colnames(list_inf[[i]])) {
+      list_inf[[i]] <- list_inf[[i]] |>
+        dplyr::filter(model == "glm_aed") |> 
+        dplyr::select(-model)
+    }
   }
 
   # check all the names are identical

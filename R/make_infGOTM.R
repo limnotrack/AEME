@@ -15,9 +15,9 @@ make_infGOTM <- function(inf_list, inf_factor = 1, path_gotm, gotm = NULL,
   names_inf <- names(inf_list)
   # Check if wbal is in the inflows
   if ("wbal" %in% names_inf) {
-    inf_list[["inf_water_bal"]] <-  inf_list[["wbal"]] |>
-      dplyr::select(-c(inflow_glm_aed, inflow_dy_cd)) |>
-      dplyr::rename(HYD_flow = inflow_gotm_wet)
+    inf_list[["inf_water_bal"]] <-  inf_list[["wbal"]] #|>
+      # dplyr::select(-c(inflow_glm_aed, inflow_dy_cd)) |>
+      # dplyr::rename(HYD_flow = inflow_gotm_wet)
     inf_list[["wbal"]] <- NULL
     names_inf <- gsub("wbal", "inf_water_bal", names_inf)
   }
@@ -26,6 +26,11 @@ make_infGOTM <- function(inf_list, inf_factor = 1, path_gotm, gotm = NULL,
     for (f in 1:length(names_inf)) {
 
       df <- inf_list[[f]]
+      if ("model" %in% names(df)) {
+        df <- df |> 
+          dplyr::filter(model == "gotm_wet") |> 
+          dplyr::select(-model)
+      }
 
       if("NCS_ss2" %in% colnames(df)) {
         df$NCS_ss2 <- NULL

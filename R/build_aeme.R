@@ -356,7 +356,14 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                      collapse = "\n")
         inf[["wbal"]] <- wbal |>
           dplyr::select(Date, inflow_dy_cd, inflow_glm_aed, inflow_gotm_wet,
-                        HYD_temp, CHM_salt)
+                        HYD_temp, CHM_salt) |> 
+          # pivot inflow to long format and separate the model
+          tidyr::pivot_longer(cols = -c(Date, HYD_temp, CHM_salt),
+                              names_to = "model",
+                              values_to = "HYD_flow") |>
+          dplyr::filter(!is.na(HYD_flow)) |>
+          dplyr::mutate(model = gsub("inflow_", "", model)) |> 
+          dplyr::select(Date, HYD_flow, HYD_temp, CHM_salt, model)
         # Add missing variables to water balance e.g. if use_bgc = TRUE
         if (any(!inf_vars %in% names(inf[["wbal"]]))) {
           add_vars <- setdiff(inf_vars, names(inf[["wbal"]]))
@@ -369,7 +376,14 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       # Add water balance to outflow if method is 2 or 3
       if (wb_method %in% c(2, 3)) {
         outf[["wbal"]] <- wbal |>
-          dplyr::select(Date, outflow_dy_cd, outflow_glm_aed, outflow_gotm_wet)
+          dplyr::select(Date, outflow_dy_cd, outflow_glm_aed,
+                        outflow_gotm_wet) |> 
+          # pivot outflow to long format and separate the model
+          tidyr::pivot_longer(cols = -Date,
+                              names_to = "model",
+                              values_to = "HYD_flow") |>
+          dplyr::filter(!is.na(HYD_flow)) |>
+          dplyr::mutate(model = gsub("outflow_", "", model))
       }
 
       if (print) {
