@@ -92,16 +92,11 @@ input_model_parameters <- function(aeme, model, param, path) {
 
       # Read in wdr data ----
       wdr_idx <- which(param$model == m & param$file == "wdr")
-      col_id <- "HYD_flow"
       aeme_outf <- outflows(aeme)
       wdr <- aeme_outf[["data"]]
       for (c in names(wdr)) {
         value <- unlist(param[["value"]][wdr_idx])
-        if (c == "wbal") {
-          wdr[[c]][[col_id]] <- wdr[[c]][[col_id]] * value
-        } else {
-          wdr[[c]][["outflow"]] <- wdr[[c]][["outflow"]] * value
-        }
+        wdr[[c]][["outflow"]] <- wdr[[c]][["outflow"]] * value
       }
       if (m == "glm_aed") {
         make_wdrGLM(outf = wdr, path_glm = model_path, update_nml = FALSE)
