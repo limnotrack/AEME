@@ -1,10 +1,14 @@
 test_that("all parameters can be retrieved", {
   param <- get_aeme_parameters()
-  testthat::expect_true(nrow(param) == 949)
+  testthat::expect_true(nrow(param) == 965)
 })
 
-test_that("errors when retrieving parameters for dy_cd", {
-  testthat::expect_error(param <- get_aeme_parameters(model = "dy_cd"))
+test_that("DYRESM parameters can be retrieved", {
+  param <- get_aeme_parameters(model = "dy_cd")
+  testthat::expect_true(length(unique(param$model)) == 1)
+  testthat::expect_true(nrow(param) == 16)
+  param <- get_aeme_parameters(name = "vert_mix_coeff/15")
+  
 })
 
 test_that("GLM Kw parameter can be retrieved", {
@@ -38,8 +42,6 @@ test_that("all oxygen module parameters can be retrieved", {
   param <- get_aeme_parameters(model = "glm_aed", module = c("oxygen", "light"))
   testthat::expect_true(length(unique(param$module)) == 2)
 })
-
-
 
 test_that("multiple GOTM parameters can be retrieved", {
   tgt_names <- paste0(c("g2", "g1"), "/constant_value")
