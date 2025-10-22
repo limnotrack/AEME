@@ -52,12 +52,10 @@ test_that("running GLM works", {
   aeme <- readRDS(aeme_file)
   path <- tempdir()
   model_controls <- get_model_controls()
-  inf_factor <- c("glm_aed" = 1)
-  outf_factor <- c("glm_aed" = 1)
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
-                     ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls, ext_elev = 5,
+                     use_bgc = FALSE)
   
   obs <- get_obs(aeme)
   mod_obs_vars <- get_mod_obs_vars(aeme)
@@ -78,15 +76,6 @@ test_that("running GLM works", {
   testthat::expect_true(is.data.frame(v))
   testthat::expect_error(get_var(aeme = aeme, model = model, var_sim = "HYD_temp",
                                  depth = 15))
-  
-  outflow_inflow <- aeme_to_inflow(aeme)
-  testthat::expect_true(is.list(outflow_inflow))
-  testthat::expect_true(all(model %in% names(outflow_inflow)))
-  
-  aeme2 <- add_inflow(aeme, inflow = outflow_inflow[[model]], 
-                      inflow_id = "outflow_inflow")
-  inf <- inflows(aeme2)
-  testthat::expect_true("outflow_inflow" %in% names(inf$data))
 })
 
 test_that("running GOTM works", {
@@ -1076,4 +1065,49 @@ test_that("can run with generated hypsgraph", {
                                         "output.nc")))
   testthat::expect_true(file_chk)
 
+})
+
+test_that("add AEME output as inflow", {
+  sys_OS <- AEME:::get_os()
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- "."
+  model_controls <- get_model_controls()
+  model <- c("glm_aed", "gotm_wet")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5,
+                     use_bgc = FALSE)
+  
+  obs <- get_obs(aeme)
+  mod_obs_vars <- get_mod_obs_vars(aeme)
+  testthat::expect_true(all(mod_obs_vars$var_aeme %in% obs$var_aeme))
+  
+  # cfg <- configuration(aeme)
+  # cfg$model_controls <- NULL
+  # configuration(aeme) <- cfg
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
+  # plot_output(aeme, model = model)
+  outp <- output(aeme)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  file_chk <- file.exists(file.path(lake_dir,
+                                    model, "output", "output.nc"))
+  testthat::expect_true(all(file_chk))
+  
+  v <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp", depth = 0)
+  testthat::expect_true(is.data.frame(v))
+  testthat::expect_error(get_var(aeme = aeme, model = model, var_sim = "HYD_temp",
+                                 depth = 15))
+  
+  outflow_inflow <- aeme_to_inflow(aeme)
+  testthat::expect_true(is.data.frame(outflow_inflow))
+  testthat::expect_true("model" %in% names(outflow_inflow))
+
+  aeme2 <- add_inflow(aeme, inflow = outflow_inflow, 
+                      inflow_id = "outflow_inflow")
+  aeme2 <- build_aeme(path = path, aeme = aeme2, model = model,
+                      model_controls = model_controls,
+                      ext_elev = 5, use_bgc = FALSE)
+  aeme2 <- run_aeme(aeme2, model, verbose = TRUE, path = path)
+  inf <- inflows(aeme2)
+  testthat::expect_true("outflow_inflow" %in% names(inf$data))
 })
