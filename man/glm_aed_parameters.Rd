@@ -3,7 +3,7 @@
 \docType{data}
 \name{glm_aed_parameters}
 \alias{glm_aed_parameters}
-\title{Example dataframe used for calibrating the biogeochemistry in the GOTM-WET
+\title{Example dataframe used for calibrating the biogeochemistry in the GLM-AED
 model.}
 \format{
 ## `glm_aed_parameters`
@@ -25,7 +25,7 @@ Package development.
 glm_aed_parameters
 }
 \description{
-All the parameters within the fabm.yaml file. This includes three
+All the parameters within the aed2.nml file. This includes three
 phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
 group (cladocerans). This has the values in the default file and 25 % parameter
 ranges for sensitivity analysis.
