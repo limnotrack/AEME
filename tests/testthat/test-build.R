@@ -3,21 +3,14 @@ test_that("building DYRESM works", {
   if (sys_OS == "osx") {
     testthat::skip("Skip testing on macOS")
   }
-  tmpdir <- tempdir()
+  path <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
-  # aeme <- yaml_to_aeme(path = "inst/extdata/lake", "aeme.yaml")
-  # config <- yaml::read_yaml("inst/extdata/lake/aeme.yaml")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
   model_controls <- get_model_controls()
-  inf_factor = c("dy_cd" = 1)
-  outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-             model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-             use_bgc = FALSE)
+             model_controls = model_controls,
+             ext_elev = 5, use_bgc = FALSE)
   lke <- lake(aeme)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   file_chk <- file.exists(file.path(lake_dir, model, "dyresm3p1.par"))
