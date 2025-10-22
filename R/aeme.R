@@ -1208,7 +1208,8 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
     df <- lapply(seq_along(obj$data), function(i) {
       cbind(obj$data[[i]], flow_name = names(obj$data)[i])
     }) |>
-      dplyr::bind_rows()
+      dplyr::bind_rows() |> 
+      dplyr::select(-dplyr::any_of("model"))
     p1 <- df |>
       tidyr::pivot_longer(cols = -c("Date", "flow_name"), names_to = "var_aeme", values_to = "value") |>
       dplyr::left_join(key_naming[, c("name", "name_parse")], by = c("var_aeme" = "name")) |>
