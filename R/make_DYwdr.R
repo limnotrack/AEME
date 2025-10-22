@@ -25,7 +25,7 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
       wdrData[["wbal"]] <- wdrData[["wbal"]] |>
         dplyr::filter(model == "dy_cd") |> 
         dplyr::select(-model) |> 
-        dplyr::rename(wbal = HYD_flow)
+        dplyr::rename(wbal = outflow)
     }
     
     wdrData <- Reduce(merge, wdrData) |>
@@ -35,8 +35,7 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
     if ("model" %in% colnames(wdrData)) {
       wdrData <- wdrData |>
         dplyr::filter(model == "dy_cd") |> 
-        dplyr::select(-model) |> 
-        dplyr::rename(outflow = HYD_flow)
+        dplyr::select(-model) 
     }
     # if (ncol(wdrData) > 2) {
     #   wdrData <- wdrData |>

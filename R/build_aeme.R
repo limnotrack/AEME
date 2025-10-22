@@ -381,8 +381,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
           # pivot outflow to long format and separate the model
           tidyr::pivot_longer(cols = -Date,
                               names_to = "model",
-                              values_to = "HYD_flow") |>
-          dplyr::filter(!is.na(HYD_flow)) |>
+                              values_to = "outflow") |>
+          dplyr::filter(!is.na(outflow)) |>
           dplyr::mutate(model = gsub("outflow_", "", model))
       }
 

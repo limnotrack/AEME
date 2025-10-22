@@ -16,8 +16,7 @@ make_wdrGOTM <- function(outf, path_gotm, outf_factor = 1) {
     if ("model" %in% colnames(outf_df)) {
       outf_df <- outf_df |>
         dplyr::filter(model == "gotm_wet") |> 
-        dplyr::select(-model) |> 
-        dplyr::rename(outflow = HYD_flow)
+        dplyr::select(-model) 
     }
     outf_df <- outf_df[stats::complete.cases(outf_df), ]
 
