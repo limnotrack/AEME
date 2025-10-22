@@ -246,9 +246,9 @@ locations around the world. However, it’s date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2025-10-22 03:49:10] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2025-10-22 03:49:10] downloading</span></span>
-<span><span class="co">#&gt; INFO [2025-10-22 03:49:12] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2025-10-22 21:52:49] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2025-10-22 21:52:49] downloading</span></span>
+<span><span class="co">#&gt; INFO [2025-10-22 21:52:51] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -530,7 +530,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">F</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2025-10-22 03:49:19]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2025-10-22 21:52:57]</span></span>
 <span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
 <span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
@@ -607,14 +607,14 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-10-22 03:49:23]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM running... [2025-10-22 03:49:23]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2025-10-22 03:49:42]</span></span>
-<span><span class="co">#&gt; GLM-AED running... [2025-10-22 03:49:42]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2025-10-22 03:49:42]</span></span>
-<span><span class="co">#&gt; GOTM-WET running... [2025-10-22 03:49:42]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2025-10-22 03:49:43]</span></span>
-<span><span class="co">#&gt; Model run complete![2025-10-22 03:49:43]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-10-22 21:53:02]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM running... [2025-10-22 21:53:02]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2025-10-22 21:53:21]</span></span>
+<span><span class="co">#&gt; GLM-AED running... [2025-10-22 21:53:21]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2025-10-22 21:53:22]</span></span>
+<span><span class="co">#&gt; GOTM-WET running... [2025-10-22 21:53:22]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2025-10-22 21:53:23]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-10-22 21:53:23]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd</span></span>
 <span><span class="co">#&gt; Retrieving and formatting dyresmSALINITY_Var for model dy_cd</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
