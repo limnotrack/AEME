@@ -14,7 +14,7 @@ Description: Run an ensemble of aquatic ecosystem models on lakes and
 License: GPL (>= 2)
 URL: https://github.com/limnotrack/AEME, https://limnotrack.com/AEME
 Depends: 
-    R (>= 3.5.0)
+    R (>= 4.2.0)
 Imports: 
     dplyr,
     ggplot2,
