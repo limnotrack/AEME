@@ -15,28 +15,21 @@ test_that("building DYRESM works", {
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
              model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
              use_bgc = FALSE)
   lke <- lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "dyresm3p1.par"))
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  file_chk <- file.exists(file.path(lake_dir, model, "dyresm3p1.par"))
   testthat::expect_true(file_chk)
   
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "wainamu.wdr"))
+  file_chk <- file.exists(file.path(lake_dir, model, "wainamu.wdr"))
   testthat::expect_true(file_chk)
   
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "wainamu.met"))
+  file_chk <- file.exists(file.path(lake_dir, model, "wainamu.met"))
   testthat::expect_true(file_chk)
   
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "wainamu.inf"))
+  file_chk <- file.exists(file.path(lake_dir, model, "wainamu.inf"))
   testthat::expect_true(file_chk)
   
 })
@@ -46,13 +39,8 @@ test_that("building DYRESM-CAEDYM works", {
   if (sys_OS == "osx") {
     testthat::skip("Skip testing on macOS")
   }
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  list.files(tmpdir, full.names = TRUE, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  path <- tempdir()
+  aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
@@ -60,10 +48,8 @@ test_that("building DYRESM-CAEDYM works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                      use_bgc = TRUE)
-  lke <- lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "dyresm3p1.par"))
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  file_chk <- file.exists(file.path(lake_dir, model, "dyresm3p1.par"))
   testthat::expect_true(file_chk)
   
   model_controls2 <- get_model_controls(aeme = aeme)
