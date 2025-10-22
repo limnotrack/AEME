@@ -6,6 +6,9 @@
 \usage{
 insert_aeme()
 }
+\value{
+Inserts code snippet at cursor position
+}
 \description{
 Call this function as an addin to insert a default `aeme` list at the
 cursor position.

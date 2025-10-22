@@ -3,19 +3,20 @@
 #' @inheritParams build_aeme
 #'
 #' @return Data frame with seasonal profiles for each model and variable
+#' @importFrom dplyr mutate filter group_by summarise arrange desc left_join
 #' @noRd
 calc_seasonal_profiles <- function(aeme, model, ens_n = 1) {
 
   # Check output is in aeme
   if (!is(aeme, "Aeme")) stop("aeme is not an `Aeme` object")
 
-  inp <- AEME::input(aeme)
+  inp <- input(aeme)
   hyps <- inp$hyps |>
     dplyr::mutate(area_Ha = area / 10000)
   btm_elev <- min(hyps$elev)
   max_lake_depth <- abs(min(hyps$depth))
   total_lake_benthic_area <- sum(hyps$area)
-  outp <- AEME::output(aeme)
+  outp <- output(aeme)
   ens_lab <- format_ens_label(ens_n = ens_n)
 
   # Check if var_sim is in output
@@ -29,7 +30,7 @@ calc_seasonal_profiles <- function(aeme, model, ens_n = 1) {
   vars_sim <- c("HYD_temp", "CHM_oxy")
 
   df <- lapply(vars_sim, \(v) {
-    AEME::get_var(aeme = aeme, model = model, var_sim = v, ens_n = ens_n)
+    get_var(aeme = aeme, model = model, var_sim = v, ens_n = ens_n)
   }) |>
     dplyr::bind_rows()
 
@@ -60,7 +61,7 @@ calc_seasonal_profiles <- function(aeme, model, ens_n = 1) {
   ) |>
     dplyr::mutate(season = factor(season, levels = c("Spring", "Summer", "Autumn", "Winter")))
 
-  thick <- plyr::round_any(max(df$lyr_thk), 0.1, ceiling)
+  thick <- round(max(df$lyr_thk) / 0.1) * 0.1
   n_intervals <- ceiling(max_lake_depth / thick)
   intv <- 1 / n_intervals
 

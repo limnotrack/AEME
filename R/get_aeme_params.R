@@ -2,6 +2,7 @@
 #'
 #' @inheritParams build_aeme
 #' @param module character; vector of modules to retrieve parameters for.
+#' @param name character; vector of parameter names to retrieve.
 #' @param par character; vector of parameters to retrieve.
 #'
 #' @return dataframe; of parameters filtered by model, module and parameter.

@@ -1,7 +1,6 @@
 #' Read an AEME object from files
 #'
 #' @param path Path to the directory containing the AEME files.
-#' @param aeme An empty or template AEME object to populate with data.
 #'
 #' @returns An AEME object populated with data from the files.
 #' @export

@@ -11,6 +11,10 @@ check_var_in_output(aeme, model, var_sim, ens_n = 1)
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
+
+\item{var_sim}{string; of variable to plot}
+
+\item{ens_n}{integer; ensemble number to plot. Default is 1.}
 }
 \value{
 A logical matrix indicating if the variable is present in the model

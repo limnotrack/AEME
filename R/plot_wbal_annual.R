@@ -4,7 +4,7 @@
 #' precipitation, inflow, outflow, and net balance for each model in the Aeme
 #'  object.
 #'
-#' @inheritParams plot_var
+#' @inheritParams plot_output
 #' @param lake_frac Logical. If TRUE, water balance components are expressed as
 #' a fraction of lake volume. Default is FALSE.
 #'

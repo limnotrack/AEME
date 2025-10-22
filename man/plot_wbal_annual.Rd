@@ -14,6 +14,9 @@ in the Aeme object will be plotted.}
 
 \item{lake_frac}{Logical. If TRUE, water balance components are expressed as
 a fraction of lake volume. Default is FALSE.}
+
+\item{remove_spin_up}{logical; remove spin-up period from plot. Default is
+TRUE.}
 }
 \value{
 ggplot2 object

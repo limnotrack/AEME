@@ -4,6 +4,7 @@
 #'
 #' @inheritParams ncdf4::nc_close
 #' @inheritParams build_aeme
+#' @param vars_sim character; vector of AEME variable names to get indices for.
 #' @param month numeric; vector of months to subset the data.
 #' @param depth_range numeric; vector of depth ranges, length two to subset the
 #'  data.

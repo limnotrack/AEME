@@ -28,6 +28,8 @@ load_output(
 
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
 
+\item{cl}{an object of class \code{"cluster"}.}
+
 \item{nlev}{numeric; number of levels to return in model output. If NULL,
 calculates number of levels based on the `model_layer_structure`.}
 

@@ -12,6 +12,8 @@ get_aeme_parameters(model, module, name, par)
 
 \item{module}{character; vector of modules to retrieve parameters for.}
 
+\item{name}{character; vector of parameter names to retrieve.}
+
 \item{par}{character; vector of parameters to retrieve.}
 }
 \value{

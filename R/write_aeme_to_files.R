@@ -135,7 +135,7 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
               )
           } else {
             out <- out |>
-              dplyr:::mutate(depth = NA)
+              dplyr::mutate(depth = NA)
           }
           out <- out |>
             dplyr::mutate(depth = depth - max(depth), value = round(value, 4),

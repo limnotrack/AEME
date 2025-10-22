@@ -11,7 +11,7 @@
 #' @inheritParams build_aeme
 #'
 #' @return list; GOTM model configuration
-#' @export
+#' @noRd
 #'
 #' @importFrom yaml read_yaml
 #'

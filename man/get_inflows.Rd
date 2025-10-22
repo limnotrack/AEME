@@ -8,6 +8,10 @@ get_inflows(aeme, return_df = FALSE)
 }
 \arguments{
 \item{aeme}{aeme; object.}
+
+\item{return_df}{Logical. If TRUE, returns a single data frame with all 
+inflows. If FALSE, returns a list of data frames for each inflow. Default is 
+FALSE.}
 }
 \value{
 A list of data frames or a single data frame with all inflows

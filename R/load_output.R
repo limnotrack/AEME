@@ -2,6 +2,7 @@
 #'
 #' @inheritParams build_aeme
 #' @inheritParams run_aeme
+#' @inheritParams parallel::stopCluster
 #' @param nlev numeric; number of levels to return in model output. If NULL,
 #' calculates number of levels based on the `model_layer_structure`.
 #'

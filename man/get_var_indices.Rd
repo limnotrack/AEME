@@ -25,6 +25,8 @@ get_var_indices(
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
+\item{vars_sim}{character; vector of AEME variable names to get indices for.}
+
 \item{month}{numeric; vector of months to subset the data.}
 
 \item{depth_range}{numeric; vector of depth ranges, length two to subset the

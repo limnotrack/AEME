@@ -2,7 +2,10 @@
 #'
 #' Call this function as an addin to insert a default `aeme` list at the
 #' cursor position.
-#'
+#' 
+#' @importFrom rstudioapi insertText
+#' 
+#' @returns Inserts code snippet at cursor position
 #' @export
 
 insert_aeme <- function() {

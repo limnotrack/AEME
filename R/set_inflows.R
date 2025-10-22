@@ -5,6 +5,10 @@
 #' data frame containing an "inflow_id" column to identify different inflows.
 #'
 #' @inheritParams build_aeme
+#' @param inflows Either a named list of data frames for each inflow, or a 
+#' single data frame containing an "inflow_id" column to identify different 
+#' inflows. Each data frame must have columns "Date", "HYD_flow", "HYD_temp" and
+#' "CHM_salt".
 #'
 #' @returns Aeme object with inflows replaced
 #' 

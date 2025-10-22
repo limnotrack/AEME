@@ -30,9 +30,14 @@ NULL, the variable profiles are extracted.}
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.}
 
+\item{ens_n}{integer; ensemble number to plot. Default is 1.}
+
 \item{use_obs}{logical; if TRUE, use observations to extract the variable at
 time and depth of observations. Default is FALSE. Use this option if you
 want to compare model output to observations.}
+
+\item{remove_spin_up}{logical; remove spin-up period from plot. Default is
+TRUE.}
 
 \item{cumulative}{logical; if TRUE, return cumulative sum of variable}
 }

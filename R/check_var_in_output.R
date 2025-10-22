@@ -1,6 +1,7 @@
 #' Check if a variable is present in the model output
 #'
 #' @inheritParams build_aeme
+#' @inheritParams plot_output
 #'
 #' @export
 #'

@@ -8,6 +8,11 @@ set_inflows(aeme, inflows)
 }
 \arguments{
 \item{aeme}{aeme; object.}
+
+\item{inflows}{Either a named list of data frames for each inflow, or a 
+single data frame containing an "inflow_id" column to identify different 
+inflows. Each data frame must have columns "Date", "HYD_flow", "HYD_temp" and
+"CHM_salt".}
 }
 \value{
 Aeme object with inflows replaced

@@ -8,8 +8,6 @@ read_aeme_from_files(path)
 }
 \arguments{
 \item{path}{Path to the directory containing the AEME files.}
-
-\item{aeme}{An empty or template AEME object to populate with data.}
 }
 \value{
 An AEME object populated with data from the files.
