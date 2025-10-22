@@ -234,8 +234,10 @@ building of the AEME models locally.</p>
 <span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
 <span>                    use_aeme <span class="op">=</span> <span class="cn">TRUE</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span>, print <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; GLM nml checks passed with no issues.</span></span>
-<span><span class="co">#&gt; GLM nml checks passed with no issues.</span></span></code></pre></div>
+<span><span class="co">#&gt; Issues found in GLM nml:</span></span>
+<span><span class="co">#&gt;  - Missing input files: bcs/outflow_wbal.csv</span></span>
+<span><span class="co">#&gt; Issues found in GLM nml:</span></span>
+<span><span class="co">#&gt;  - Missing input files: bcs/outflow_wbal.csv</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="run-aeme-models">Run AEME models<a class="anchor" aria-label="anchor" href="#run-aeme-models"></a>
@@ -246,10 +248,10 @@ The <code>parallel</code> argument is set to <code>TRUE</code> to run
 the models in parallel which can speed up the process.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models in parallel... [2025-10-21 22:47:55]</span></span>
-<span><span class="co">#&gt; Model run complete![2025-10-21 22:49:46]</span></span>
-<span><span class="co">#&gt; Reading models in parallel... [2025-10-21 22:49:46]</span></span>
-<span><span class="co">#&gt; Model reading complete![2025-10-21 22:50:23]</span></span>
+<span><span class="co">#&gt; Running models in parallel... [2025-10-22 03:47:00]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-10-22 03:48:06]</span></span>
+<span><span class="co">#&gt; Reading models in parallel... [2025-10-22 03:48:06]</span></span>
+<span><span class="co">#&gt; Model reading complete![2025-10-22 03:48:29]</span></span>
 <span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
@@ -290,21 +292,25 @@ the models in parallel which can speed up the process.</p>
 <span><span class="co">#&gt;   Output: </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; DY-CD:    0</span></span>
-<span><span class="co">#&gt; GLM-AED:  1</span></span>
+<span><span class="co">#&gt; GLM-AED:  0</span></span>
 <span><span class="co">#&gt; GOTM-WET: 1</span></span></code></pre></div>
 <p>In the “Output” section of the <code>Aeme</code> object, the “Number
 of ensembles” is set to 1 indicating that there is now output for each
 model in the <code>Aeme</code> object.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in plot_output(aeme = aeme, model = model, var_sim = "HYD_temp"):</span></span>
+<span><span class="co">#&gt; Variable 'HYD_temp' not in output for model(s) glm_aed</span></span>
 <span><span class="co">#&gt; Warning: Using <span style="color: #00BB00;">size</span> for a discrete variable is not advised.</span></span>
-<span><span class="co">#&gt; Warning: Removed 332 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 166 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="lernzmp-aeme_files/figure-html/lernzmp-plot-temperature-1.png" width="700"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"CHM_oxy"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy"):</span></span>
+<span><span class="co">#&gt; Variable 'CHM_oxy' not in output for model(s) glm_aed</span></span>
 <span><span class="co">#&gt; Warning: Using <span style="color: #00BB00;">size</span> for a discrete variable is not advised.</span></span>
-<span><span class="co">#&gt; Warning: Removed 332 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 166 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="lernzmp-aeme_files/figure-html/lernzmp-plot-oxygen-1.png" width="700"></p>
 </div>
