@@ -123,9 +123,11 @@
 <url><loc>/reference/read_gotm_profile.html</loc></url>
 <url><loc>/reference/read_nml.html</loc></url>
 <url><loc>/reference/remove_inflow.html</loc></url>
+<url><loc>/reference/remove_outflow.html</loc></url>
 <url><loc>/reference/remove_output.html</loc></url>
 <url><loc>/reference/remove_param.html</loc></url>
 <url><loc>/reference/run_aeme.html</loc></url>
+<url><loc>/reference/set_gotm_grid.html</loc></url>
 <url><loc>/reference/set_inflows.html</loc></url>
 <url><loc>/reference/set_model_controls.html</loc></url>
 <url><loc>/reference/set_nml.html</loc></url>
