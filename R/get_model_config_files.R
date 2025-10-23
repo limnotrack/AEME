@@ -12,7 +12,7 @@ get_model_config_files <- function(aeme, model, path) {
     glm_files <- list.files(
       path = file.path(lake_dir, "glm_aed"),
       pattern = "\\.nml$",
-      full.names = TRUE
+      full.names = TRUE, recursive = TRUE
     )
     names(glm_files) <- basename(tools::file_path_sans_ext(glm_files))
   } else {
