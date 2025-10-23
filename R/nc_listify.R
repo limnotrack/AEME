@@ -68,12 +68,13 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     # Light
     rad <- ncdf4::ncvar_get(nc, "rad")[, idx]
     efold <- sapply(seq_len(ncol(rad)), \(t) {
-      if (t == 1) return(0) # Day 1 is always 0
+      if (t == 1 | all(rad[, t] == 0)) return(0) # Day 1 is always 0
       if (sum(!is.na(rad[, t])) < 2) return(NA)
+      print(t)
       zeta[t] - approx(rad[, t], zi[, t], xout = (1/exp(1) * rad[nrow(rad), t]))$y
     })
     euphotic <- sapply(seq_len(ncol(rad)), \(t) {
-      if (t == 1) return(0) # Day 1 is always 0
+      if (t == 1 | all(rad[, t] == 0)) return(0) # Day 1 is always 0
       if (sum(!is.na(rad[, t])) < 2) return(NA)
       zeta[t] - approx(rad[, t], zi[, t], xout = (0.01 * rad[nrow(rad), t]))$y
     })
