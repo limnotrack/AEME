@@ -367,8 +367,10 @@ test_that("building all models and loading to aeme works", {
   aeme <- load_configuration(model = model, aeme = aeme,
                              model_controls = model_controls, path = path)
   cfg <- configuration(aeme)
-  chk <- all(sapply(cfg, is.list)) & (is.vector(cfg$dy_cd$ecosystem)) &
-    all(sapply(cfg[2:3],\(x) is.list(x[["ecosystem"]])))
+  mod_cfg_chk <- sapply(model, \(m) is.list(cfg[[m]]))
+  mod_bgc_cfg_chk <- sapply(model, \(m) is.list(cfg[[m]][["ecosystem"]]))
+  chk <- all(mod_cfg_chk) & (is.vector(cfg$dy_cd$ecosystem)) &
+    all(mod_bgc_cfg_chk)
   
   testthat::expect_true(chk)
 })
