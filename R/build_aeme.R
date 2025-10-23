@@ -255,9 +255,11 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
         check_time(df = inf[[names(aeme_inf[["data"]])[i]]], model = model,
                    aeme_time = aeme_time,
                    name = paste0("inflow-", names(aeme_inf[["data"]])[i]))
+        
+        pot_inf_vars <- c("Date","HYD_flow", inf_vars, "model")
 
         inf[[i]] <- inf[[i]] |>
-          dplyr::select(all_of(c("Date","HYD_flow", inf_vars)))
+          dplyr::select(dplyr::any_of(pot_inf_vars))
       }
     }
     inf_factor <- aeme_inf[["factor"]]
