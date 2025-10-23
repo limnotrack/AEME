@@ -7,7 +7,8 @@
 #'
 #'
 
-load_configuration <- function(model, aeme, model_controls = NULL, path) {
+load_configuration <- function(model, aeme, model_controls = NULL, 
+                               use_bgc = FALSE, path) {
 
   lke <- lake(aeme)
   get_config_args <- list(lake = lke, path = path)
@@ -25,6 +26,7 @@ load_configuration <- function(model, aeme, model_controls = NULL, path) {
   #                        glm_aed = model_config[["glm_aed"]][["bgc"]],
   #                        gotm_wet = model_config[["gotm_wet"]][["bgc"]]))
   out <- list(model_controls = model_controls,
+              use_bgc = use_bgc,
               dy_cd = list(hydrodynamic = model_config[["dy_cd"]][["physical"]],
                            ecosystem = model_config[["dy_cd"]][["bgc"]]),
               glm_aed = list(hydrodynamic =

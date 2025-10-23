@@ -150,8 +150,7 @@ build_aeme <- function(aeme = NULL,
           message("Building existing configuration for ", lke$name, " [",
                   format(Sys.time()), "]")
         }
-        write_configuration(model = model, aeme = aeme,
-                            path = path)
+        write_configuration(model = model, aeme = aeme, path = path)
         overwrite <- FALSE
         # Potentially add in option to switch off bgc and/or use default bgc setup
         # return(aeme)
@@ -599,8 +598,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
 
   # Load model configuration ----
-  aeme <- load_configuration(model = model, aeme = aeme,
-                             model_controls = model_controls, path = path)
+  aeme <- load_configuration(model = model, aeme = aeme, 
+                             model_controls = model_controls, use_bgc = use_bgc, 
+                             path = path)
 
   return(aeme)
 }

@@ -4,7 +4,7 @@
 \alias{load_configuration}
 \title{Load model configuration to the aeme object}
 \usage{
-load_configuration(model, aeme, model_controls = NULL, path)
+load_configuration(model, aeme, model_controls = NULL, use_bgc = FALSE, path)
 }
 \arguments{
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
@@ -14,6 +14,8 @@ load_configuration(model, aeme, model_controls = NULL, path)
 
 \item{model_controls}{dataframe; of configuration loaded from
 "model_controls.csv".}
+
+\item{use_bgc}{logical; switch to use the biogeochemical model.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 }

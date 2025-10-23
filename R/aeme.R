@@ -160,6 +160,7 @@ aeme_constructor <- function(
   }
   cfg_dflt <- list(
     model_controls = NULL,
+    use_bgc = FALSE,
     dy_cd = NULL,
     glm_aed = NULL,
     gotm_wet = NULL
@@ -384,6 +385,9 @@ aeme_constructor <- function(
     if (!is.data.frame(configuration$model_controls)) {
       stop("Configuration model_controls must be a dataframe or NULL.")
     }
+  }
+  if (!is.logical(configuration$use_bgc)) {
+    stop("Configuration use_bgc must be logical.")
   }
   if (!is.null(configuration$dy_cd)) {
     if (!is.list(configuration$dy_cd)) {
@@ -989,6 +993,8 @@ setMethod("show", "Aeme", function(object) {
     "  Configuration\n",
     "    Model controls: ", ifelse(is.null(config[["model_controls"]]),
                                    "Absent ", "Present"), "\n",
+    "    Use biogeochemical model: ", ifelse(config[["use_bgc"]],
+                                   "Yes ", "No"), "\n",
     "          Physical   |   Biogeochemical",
     "\nDY-CD    : ", ifelse(is.null(config[["dy_cd"]][["hydrodynamic"]]),
                             "Absent ", "Present"), "    |   ",
