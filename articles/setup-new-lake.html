@@ -193,8 +193,6 @@ the lake in metres above sea level.</p>
 <code class="sourceCode R"><span><span class="co"># Get the elevation of the lake</span></span>
 <span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LINZ_KEY"</span><span class="op">)</span></span>
 <span><span class="va">elevation</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_dem_value.html" class="external-link">get_dem_value</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, key <span class="op">=</span> <span class="va">key</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: replacing previous import 'AEME::time' by 'terra::time' when loading</span></span>
-<span><span class="co">#&gt; 'aemetools'</span></span>
 <span><span class="va">elevation</span> <span class="co"># in metres above sea level</span></span>
 <span><span class="co">#&gt; [1] 29</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -246,41 +244,9 @@ locations around the world. However, it’s date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:30:23] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:30:27] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:30:31] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:30:36] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:30:40] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:30:47] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:30:51] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:30:55] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:00] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:04] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:08] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:12] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:16] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:20] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:25] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:29] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:33] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:37] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:42] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:46] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:50] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:54] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:31:58] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:03] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:07] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:11] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:15] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:19] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:23] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:28] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:32] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:36] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:40] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:40] downloading</span></span>
-<span><span class="co">#&gt; INFO [2025-10-23 02:32:42] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2025-10-23 03:15:28] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2025-10-23 03:15:28] downloading</span></span>
+<span><span class="co">#&gt; INFO [2025-10-23 03:15:30] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -411,6 +377,7 @@ with default values for inputs not provided.</p>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Configuration</span></span>
 <span><span class="co">#&gt;     Model controls: Absent </span></span>
+<span><span class="co">#&gt;     Use biogeochemical model: No</span></span>
 <span><span class="co">#&gt;           Physical   |   Biogeochemical</span></span>
 <span><span class="co">#&gt; DY-CD    : Absent     |   Absent </span></span>
 <span><span class="co">#&gt; GLM-AED  : Absent     |   Absent </span></span>
@@ -562,7 +529,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">F</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2025-10-23 02:32:49]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2025-10-23 03:15:37]</span></span>
 <span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
 <span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
@@ -591,6 +558,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Configuration</span></span>
 <span><span class="co">#&gt;     Model controls: Present</span></span>
+<span><span class="co">#&gt;     Use biogeochemical model: No</span></span>
 <span><span class="co">#&gt;           Physical   |   Biogeochemical</span></span>
 <span><span class="co">#&gt; DY-CD    : Present    |   Present</span></span>
 <span><span class="co">#&gt; GLM-AED  : Present    |   Absent </span></span>
@@ -639,14 +607,14 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-10-23 02:32:53]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM running... [2025-10-23 02:32:53]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2025-10-23 02:33:11]</span></span>
-<span><span class="co">#&gt; GLM-AED running... [2025-10-23 02:33:11]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2025-10-23 02:33:12]</span></span>
-<span><span class="co">#&gt; GOTM-WET running... [2025-10-23 02:33:12]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2025-10-23 02:33:12]</span></span>
-<span><span class="co">#&gt; Model run complete![2025-10-23 02:33:12]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-10-23 03:15:41]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM running... [2025-10-23 03:15:41]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2025-10-23 03:16:00]</span></span>
+<span><span class="co">#&gt; GLM-AED running... [2025-10-23 03:16:00]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2025-10-23 03:16:00]</span></span>
+<span><span class="co">#&gt; GOTM-WET running... [2025-10-23 03:16:00]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2025-10-23 03:16:01]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-10-23 03:16:01]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd</span></span>
 <span><span class="co">#&gt; Retrieving and formatting dyresmSALINITY_Var for model dy_cd</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
