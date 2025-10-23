@@ -183,7 +183,7 @@ input_model_parameters <- function(aeme, model, param, path) {
                                    values_from = "value") |>
                 as.data.frame()
 
-              names <- strsplit(get_nml_value(nml, "pd%p_name"), ",")[[1]]
+              names <- get_nml_value(nml, "pd%p_name")
 
               grp_idx <- grep(paste0(substr(names(wid)[-1], 1, 4),
                                      collapse = "|"), names)
