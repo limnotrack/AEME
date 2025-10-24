@@ -19,6 +19,8 @@ set_gotm_grid(
 \arguments{
 \item{gotm}{list; GOTM model configuration}
 
+\item{path_gotm}{character; path to GOTM model directory}
+
 \item{depth}{numeric; depth of the lake}
 
 \item{method}{0=equal by default with optional zooming, 1=prescribed relative

@@ -1,6 +1,7 @@
 #' Set grid for GOTM model
 #'
 #' @param gotm list; GOTM model configuration
+#' @param path_gotm character; path to GOTM model directory
 #' @param depth numeric; depth of the lake
 #' @param method 0=equal by default with optional zooming, 1=prescribed relative
 #' fractions, 2=prescribed layer thicknesses
