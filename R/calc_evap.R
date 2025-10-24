@@ -18,28 +18,29 @@
 
 calc_evap <- function(met, altitude,
                       model = "gotm_wet", method = "fairall", gusty = FALSE) {
-
+  
   if (model == "gotm_wet") {
-    evap <- sapply(seq_len(nrow(met)), \(n) {
-      if(method == "fairall") {
-        calc_fairall(u10 = met[["u10"]][n], v10 = met[["v10"]][n],
-                     sst = met[["sst"]][n], airt = met[["airt"]][n],
-                     hum = met[["hum"]][n], airp = met[["airp"]][n],
-                     precip = met[["precip"]][n])$evap
-      } else if(method == "kondo") {
+    if (method == "fairall") {
+      evap <- calc_fairall_vec(u10 = met[["u10"]], v10 = met[["v10"]],
+                               sst = met[["sst"]], airt = met[["airt"]],
+                               hum = met[["hum"]], airp = met[["airp"]],
+                               precip = met[["precip"]])["evap"] |> 
+        unlist()
+    } else {
+      evap <- sapply(seq_len(nrow(met)), \(n) {
         calc_kondo(u10 = met[["u10"]][n], v10 = met[["v10"]][n],
                    sst = met[["sst"]][n], airt = met[["airt"]][n],
                    hum = met[["hum"]][n], airp = met[["airp"]][n],
                    precip = met[["precip"]][n])
-      }
-    })
+      })
+    }
   } else if(model == "glm_aed") {
-
+    
     # Source: https://github.com/AquaticEcoDynamics/GLM/blob/d18630994ef935fac8d9405ff0018b26c83ce271/src/glm_surface.c
     # Constants
     mwrw2a <- 18.016 / 28.966
     CE <- 0.0013
-
+    
     # GLM variable names
     AirTemp <- met[["airt"]]
     LakeTemp <- met[["sst"]]
@@ -51,27 +52,27 @@ calc_evap <- function(met, altitude,
     SatVap_surface <- saturated_vapour(LakeTemp) #hPa
     p_atm <- ((100*AirPres) * ((1 - 2.25577e-5*altitude) ^5.25588))/100
     latent_heat_vap <- 2.501e6 - 2370*LakeTemp
-
+    
     rho_air <- atm_density(p_atm*100.0, SatVapDef*100.0, AirTemp) # kg/m3
     # rho_o <- atm_density(p_atm*100.0, SatVap_surface*100.0, LakeTemp) # kg/m3
-
+    
     Q_latentheat <- -CE * rho_air * latent_heat_vap * (mwrw2a/p_atm) * WindSp * (SatVap_surface - SatVapDef)
     Q_latentheat[Q_latentheat > 0] <- 0 # no condensation
     # evap <- Q_latentheat / (latent_heat_vap)
-
+    
     evap <- Q_latentheat / (latent_heat_vap * Density)
-
+    
   } else {
     Ts <- wtemp
     #saturation vapor pressure
     es <- exp(2.3026 *(((7.5*Ts)/(Ts+237.3)+0.7858)))
     #evaporative heat flux
     Qlh <- -((0.622/981.9) *         #constant/mean station pressure
-             0.0013 *               #latent heat transfer coefficient
-             1.168 *                #density of air
-             2453000 *              #latent heat of evaporation of water
-             wndspd *           #wind speed in m/s
-             (prvapr - es))
+               0.0013 *               #latent heat transfer coefficient
+               1.168 *                #density of air
+               2453000 *              #latent heat of evaporation of water
+               wndspd *           #wind speed in m/s
+               (prvapr - es))
   }
   return(evap)
 }
