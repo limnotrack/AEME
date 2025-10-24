@@ -240,7 +240,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     dplyr::select(all_of(col_select)) |>
     dplyr::rename(u10 = MET_wnduvu, v10 = MET_wnduvv, airt = MET_tmpair,
                   hum = MET_humrel, airp = MET_prsttn, precip = MET_pprain) |>
-    dplyr::mutate(precip = precip / 86400, airp = airp * 100) #|>
+    dplyr::mutate(precip = precip / 86400, airp = airp) #|>
   
   # Estimate lake surface temperature (use sea surface temperature abbrev 'sst')
   if (!("sst" %in% names(obs_met))) {
@@ -274,7 +274,9 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   wbal <- lapply(model, \(m) {
     wbal_init |> 
       dplyr::mutate(
-        model = m,
+        model = m
+      ) |> 
+      dplyr::mutate(
         area = get_hyps_val(depth = value, hyps = hyps),
         # Calculate 5-day average water temperature
         T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE, align = c("right")),
@@ -303,6 +305,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
           model == "gotm_wet" ~ calc_evap(met = gotm_met, model = "gotm_wet",
                                           method = "fairall"),
           model == "glm_aed" ~ -(evap / area) / 86400,
+          .default = 0
         ),
         evap_m3 = -evap_flux * area * 86400,
         # dy_cd_evap_flux = -(evap / area) / 86400,
