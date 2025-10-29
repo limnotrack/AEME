@@ -182,8 +182,13 @@ test_that("running GLM-AED works", {
   plot_output(aeme, model = model, "HYD_schstb", facet = FALSE) /
     plot_output(aeme, model = model, "CHM_oxycln", facet = FALSE) /
     plot_output(aeme, model = model, "HYD_thmcln", facet = FALSE)
+  
+  pstrat <- plot_output(aeme, model = model, var_sim = "HYD_strat", 
+                        facet = FALSE)
+  testthat::expect_true(ggplot2::is_ggplot(pstrat))
 
-  var_sim <- c("LKE_lvlwtr", "HYD_temp", "HYD_thmcln", "HYD_schstb")
+  var_sim <- c("LKE_lvlwtr", "HYD_strat", "HYD_temp", "HYD_thmcln",
+               "HYD_schstb")
   model_performance <- assess_model(aeme = aeme, model = model,
                                     var_sim = var_sim)
 

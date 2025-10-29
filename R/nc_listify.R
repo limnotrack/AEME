@@ -579,6 +579,7 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     depths <- nc_list[["LKE_layers"]]
 
     fun_list <- list(HYD_thmcln = rLakeAnalyzer::thermo.depth,
+                     HYD_strat = is_strat,
                      HYD_ctrbuy = rLakeAnalyzer::center.buoyancy,
                      HYD_epidep = rLakeAnalyzer::meta.depths,
                      HYD_hypdep = rLakeAnalyzer::meta.depths)

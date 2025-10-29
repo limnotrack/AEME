@@ -559,16 +559,13 @@ test_that("derived variables are in aeme object", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls()
-  inf_factor = c("glm_aed" = 1)
-  outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
-                     ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls, ext_elev = 5, use_bgc = FALSE)
   
-  vars_chk <- c("HYD_temp", "HYD_thmcln", "CHM_oxycln")
+  vars_chk <- c("HYD_temp", "HYD_strat", "HYD_thmcln", "CHM_oxycln")
   chk <- check_obs_var(aeme = aeme, var_sim =  vars_chk)
-  testthat::expect_true(length(chk$vars_present) == 3)
+  testthat::expect_true(length(chk$vars_present) == 4)
   testthat::expect_true(all(chk$obs$n > 0))
   
   obs <- observations(aeme)

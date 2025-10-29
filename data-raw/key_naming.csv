@@ -4,6 +4,7 @@ outflow,,,,,Outflow,Outflow_m3,Outflow~(m^3),m3,1,,FALSE,NA,outflow|discharge|fl
 HYD_flow,VOL,flow,flow,,Discharge,Discharge_m3,Discharge~(m^3),m3,1,,FALSE,NA,flow|discharge|inflow
 HYD_temp,TEMPTURE,temp,temp,,Water temperature,Water_temperature_degC,Temperature~(degree~C),degC,1,10,FALSE,NA,temperature|temp|water temp|HYD_temp
 HYD_dens,DENSITY,rho,rho,,Water density,Density_g/cm3,Density~(g~cm^-3),g/cm3,1,,TRUE,HYD_temp,density|HYD_dens
+HYD_strat,,,,,Stratified,Stratified,Stratified~(1),,1,,TRUE,HYD_temp,strat|stratifed|stratification|HYD_strat
 HYD_thmcln,,,,,Thermocline depth,Thermocline_depth_m,Thermocline~depth~(m),m,1,,TRUE,HYD_temp,thermocline|depth|HYD_thmcln
 HYD_schstb,,,,,Schmidt stability,Schmidt_stability_J/m2,Schmidt~stability~(J~m^2),J/m2,1,,TRUE,HYD_temp,stability|schmidt|HYD_schstb
 HYD_ctrbuy,,,,,Centre of buoyancy,Centre_of_buoyancy_m,Centre~of~buoyancy~(m),m3,1,,TRUE,HYD_temp,buoyancy|center|HYD_ctrbuy

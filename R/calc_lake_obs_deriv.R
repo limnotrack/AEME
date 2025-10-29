@@ -65,6 +65,7 @@ calc_lake_obs_deriv <- function(aeme) {
 
 
     fun_list <- list(HYD_thmcln = rLakeAnalyzer::thermo.depth,
+                     HYD_strat = is_strat,
                      HYD_ctrbuy = rLakeAnalyzer::center.buoyancy,
                      HYD_epidep = rLakeAnalyzer::meta.depths,
                      HYD_hypdep = rLakeAnalyzer::meta.depths)
