@@ -102,10 +102,10 @@ the variable name or descriptive text. Default is NULL.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Filter by partial name or text match</span></span></span>
 <span class="r-in"><span><span class="fu">lookup_aeme_vars</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"chlorophyll"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      var_aeme                                text units</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    LKE_tlic   Trophic Level Index Chlorophyll-a     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 PHY_rstchla Remotely sensed total chlorophyll a mg/m3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   PHY_tchla                 Total chlorophyll a mg/m3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      var_aeme                                text  units</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    LKE_tlic   Trophic Level Index Chlorophyll-a      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 PHY_rstchla Remotely sensed total chlorophyll a mg/m^3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   PHY_tchla                 Total chlorophyll a mg/m^3</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Combine filters</span></span></span>
 <span class="r-in"><span><span class="fu">lookup_aeme_vars</span><span class="op">(</span>group <span class="op">=</span> <span class="st">"NIT"</span>, var_aeme <span class="op">=</span> <span class="st">"HYD_temp"</span>, name <span class="op">=</span> <span class="st">"phosphate"</span><span class="op">)</span></span></span>
