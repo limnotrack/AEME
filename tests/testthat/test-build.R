@@ -9,8 +9,8 @@ test_that("building DYRESM works", {
   model_controls <- get_model_controls()
   model <- c("dy_cd")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-             model_controls = model_controls,
-             ext_elev = 5, use_bgc = FALSE)
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = FALSE)
   lke <- lake(aeme)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   file_chk <- file.exists(file.path(lake_dir, model, "dyresm3p1.par"))
@@ -39,8 +39,8 @@ test_that("building DYRESM-CAEDYM works", {
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-                     use_bgc = TRUE)
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = TRUE)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   file_chk <- file.exists(file.path(lake_dir, model, "dyresm3p1.par"))
   testthat::expect_true(file_chk)
@@ -96,9 +96,9 @@ test_that("building GLM-AED works", {
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
-  build_aeme(path = path, aeme = aeme, model = model,
-             model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-             use_bgc = TRUE)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, 
+                     model_controls = model_controls, inf_factor = inf_factor, 
+                     ext_elev = 5, use_bgc = TRUE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -564,7 +564,7 @@ test_that("derived variables are in aeme object", {
                      model_controls = model_controls, ext_elev = 5, use_bgc = FALSE)
   
   vars_chk <- c("HYD_temp", "HYD_strat", "HYD_thmcln", "CHM_oxycln")
-  chk <- check_obs_var(aeme = aeme, var_sim =  vars_chk)
+  chk <- check_obs_var(aeme = aeme, var_sim = vars_chk)
   testthat::expect_true(length(chk$vars_present) == 4)
   testthat::expect_true(all(chk$obs$n > 0))
   
