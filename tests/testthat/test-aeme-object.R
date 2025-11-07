@@ -426,10 +426,67 @@ test_that("GLM-AED sediment parameters can be added", {
     min = 0.01,
     max = 1
   ) 
+  sed_doy <- data.frame(
+    model = "glm_aed",
+    file = "glm3.nml",
+    name = "sediment/sed_temp_peak_doy",
+    value = c(200, 150, 250),
+    min = 1,
+    max = 365
+  )
+  sed_temp_amplitude <- data.frame(
+    model = "glm_aed",
+    file = "glm3.nml",
+    name = "sediment/sed_temp_amplitude",
+    value = c(2.0, 1.5, 2.5),
+    min = 0.1,
+    max = 5
+  )
+  zone_heights <- data.frame(
+    model = "glm_aed",
+    file = "glm3.nml",
+    name = c("zone_heights"),
+    value = c(5, 10, 14),
+    min = 0.01,
+    max = 2
+  )
+  n_zones <- nrow(sed_param)
+  
+  sed_default_pars <- tibble::tribble(
+    ~name, ~value,
+    "sediment/sed_heat_Ksoil", 1.2,
+    "sediment/sed_temp_depth", 0.2,
+    "sediment/sed_reflectivity", 0.1,
+    "sediment/sed_roughness", 0.1
+  )
+  # Repeat for each zone
+  sed_default_pars <- sed_default_pars |>
+    dplyr::slice(rep(1:dplyr::n(), each = n_zones)) |>
+    dplyr::mutate(
+      model = "glm_aed",
+      file = "glm3.nml"
+    )
+  sed_zones <- data.frame(
+    name = "sediment/n_zones",
+    value = n_zones,
+    model = "glm_aed",
+    file = "glm3.nml",
+    min = n_zones,
+    max = n_zones
+  )
+  
+  glm_sed_pars <- dplyr::bind_rows(sed_param, sed_default_pars,
+                                   sed_doy, sed_temp_amplitude, zone_heights
+                                   ) |> 
+    dplyr::mutate(
+      min = 0.1 * value,
+      max = 2 * value
+    ) |> 
+    dplyr::bind_rows(sed_zones)
   
   param <- aeme_parameters_bgc |> 
     dplyr::mutate(value = 0.5) |>
-    dplyr::bind_rows(sed_param)
+    dplyr::bind_rows(glm_sed_pars)
   
   aeme <- add_param(aeme = aeme, param = param)
   param1 <- AEME::parameters(aeme)
