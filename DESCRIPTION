@@ -16,6 +16,7 @@ URL: https://github.com/limnotrack/AEME, https://limnotrack.com/AEME
 Depends: 
     R (>= 4.2.0)
 Imports: 
+    cli,
     dplyr,
     ggplot2,
     lubridate,
