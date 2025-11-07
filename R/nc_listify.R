@@ -31,7 +31,10 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
-
+  
+  model <- check_model(model = model)
+  path <- check_path(path = path, must_exist = TRUE)
+  
   # reduce the key to the simvars
   key_naming <- key_naming |>
     dplyr::filter(name %in% vars_sim) |>
@@ -110,7 +113,8 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     out_file <- file.path(lake_dir, model, "output", "output_daily.nc")
 
     if (!file.exists(out_file)) {
-      message("No ", out_file, " present.")
+      cli_inform_safe(c("i" = paste0("Retrieving and formatting ", vars_sim.model[i],
+                                     " for model ", model)))
       return(NULL)
     }
 
@@ -212,9 +216,8 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
     mod_layers[mod_layers > 1000000] <- NA
     depth <- ncdf4::ncvar_get(nc, "lake_level")
     if (is.nan(depth[1])) {
-      message(strwrap("Error reading initial GLM depth, potentially due to
-                      errors in parameter input.\nReturning NULL...",
-                      width = 70))
+      cli_inform_safe("Error reading initial GLM depth, potentially due to
+                      errors in parameter input.\nReturning NULL...")
       return(NULL)
     }
     depth <- depth[idx]
@@ -251,8 +254,8 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
   # mod_layers are elevation from bottom, last row is bottom
   mod_layers <- ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")[, idx]
   if (!is.matrix(mod_layers)) {
-   message(strwrap("Error reading DYRESM layers, potentially due to water level
-                   fluctuations.\nReturning NULL...", width = 70))
+    cli_inform_safe("Error reading DYRESM layers, potentially due to water level
+                   fluctuations.\nReturning NULL...")
    return(NULL)
   }
 
@@ -474,8 +477,9 @@ nc_listify <- function(nc, model, vars_sim, nlev, aeme,
       out[,1:ncol(out)] <- -99
 
     } else {
-      message(paste0("Retrieving and formatting ", vars_sim.model[i],
-                     " for model ", model))
+      cli_inform_safe(c("i" = paste0("Retrieving and formatting ", 
+                                      vars_sim.model[i],
+                                      " for model ", model)))
       # get the table from the nc file
       this.var <- ncdf4::ncvar_get(nc, vars_sim.model[i])[, idx]
 

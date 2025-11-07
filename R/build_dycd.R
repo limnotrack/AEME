@@ -28,11 +28,10 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
                        inf, outf, met, hyps, lvl, lake_dir,
                        inf_factor = 1.0, outf_factor = 1.0,
                        Kw, init_prof, init_depth, use_bgc, use_lw,
-                       overwrite_cfg = TRUE, print = TRUE) {
+                       overwrite_cfg = TRUE) {
 
-  if (print) {
-    message(paste0("Building DYRESM-CAEDYM for lake ", lakename))
-  }
+  msg <- paste0("Building DYRESM-CAEDYM for lake ", lakename)
+  cli_inform_safe(c("i" = msg))
 
   #------- MODEL FOLDERS SETUP --------
   verDY <- 3.1
@@ -44,7 +43,6 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
   cfg_file <- file.path(lake_dir, "dy_cd", paste0(lakename, ".cfg"))
   con_file <- file.path(lake_dir, "dy_cd", paste0(lakename, ".con"))
 
-  # print(path.dy)
   # if running caedym, setup the dummy folders
   if ( !is.null(verCD) ) {
 
@@ -61,9 +59,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
     fils <- list.files(config_dir, full.names = TRUE)
     file.copy(fils, file.path(path.dy, basename(fils)))
     overwrite_cfg <- TRUE
-    if (print) {
-      message("Copied in DYRESM par file")
-    }
+    cli_inform_safe(c("i" = "Copied in DYRESM .par file"))
   }
 
   # make the batch file to run the model
@@ -81,9 +77,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
     rename_modelvars(type_output = "dy_cd")
 
   if (overwrite_cfg | !file.exists(cfg_file)) {
-    if (print) {
-      message("Writing DYRESM configuration")
-    }
+    cli_inform_safe(c("i" = "Writing DYRESM configuration file"))
     # make the .cfg file
     make_DYCDcfg(lakename = lakename,
                  date_range = date_range,
@@ -97,9 +91,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
   }
 
   if (overwrite_cfg | !file.exists(con_file)) {
-    if (print) {
-      message("Writing DYRESM control file")
-    }
+    cli_inform_safe(c("i" = "Writing DYRESM-CAEDYM control file"))
     # make the .con file
     make_DYCDcon(lakename = lakename,
                  verCD = verCD,
@@ -123,12 +115,10 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
   # extend the bathymetry above crest for temporary storage as required by DYRESM (sometime)
   max_d <- max(hyps$elev)
 
-  # print(hyps)
 
   # outHeights <- c(mean(lvl[,2]) - 2,
                   # (0.75 * (mean(lvl[,2]) - min(hyps[, 1])) + min(hyps[, 1])))
   outHeights <- min(hyps[["elev"]]) + 0.5
-  # print(outHeights)
   # outHeights <- round(min(outHeights[outHeights > min(hyps[, 1])]), 2)
 
   if (!is.null(outf)) {

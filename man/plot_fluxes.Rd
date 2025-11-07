@@ -4,10 +4,13 @@
 \alias{plot_fluxes}
 \title{Plot fluxes}
 \usage{
-plot_fluxes(aeme, cumulative = FALSE)
+plot_fluxes(aeme, model, cumulative = FALSE)
 }
 \arguments{
-\item{aeme}{AEME data object}
+\item{aeme}{aeme; object.}
+
+\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
+`gotm_wet`.}
 
 \item{cumulative}{logical; if \code{TRUE}, plot cumulative fluxes. If
 \code{FALSE}, plot instantaneous fluxes.}

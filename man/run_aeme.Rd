@@ -54,7 +54,8 @@ to `min(c(detectCores() - 1, length(model)))`.}
 \item{check_output}{logical; check model output after running? Defaults to
 FALSE.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 }
 \value{
 an `aeme` object with model output loaded.

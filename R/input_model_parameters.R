@@ -11,10 +11,15 @@
 input_model_parameters <- function(aeme, model, param, path) {
 
   # Function checks ----
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
+  path <- check_path(path = path, must_exist = TRUE)
   if (!is.data.frame(param))
-    stop("Parameter 'param' must be a data.frame.")
-  if (!is.character(model))
-    stop("Parameter 'model' must be a character string.")
+    stop("'param' must be a data.frame.")
 
   # Collapse parameters
   param <- collapse_params(param)
@@ -36,7 +41,7 @@ input_model_parameters <- function(aeme, model, param, path) {
   # Check model parameters in supplied parameters
   for (m in model) {
     if (!m %in% param[["model"]]) {
-      warning("No parameters in 'param' for ", m, ".")
+      cli::cli_warn(paste0("No parameters in 'param' for ", m, "."))
     }
   }
 

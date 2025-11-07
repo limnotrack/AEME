@@ -13,7 +13,6 @@ build_aeme(
   outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   ext_elev = 0,
   use_bgc = FALSE,
-  print = TRUE,
   calc_wbal = TRUE,
   wb_method = 2,
   calc_wlev = TRUE,
@@ -45,8 +44,6 @@ outflows. Needs to be named according to the model.}
 
 \item{use_bgc}{logical; switch to use the biogeochemical model.}
 
-\item{print}{logical; print messages. Default = TRUE.}
-
 \item{calc_wbal}{logical; calculate water balance. Default = TRUE.}
 
 \item{wb_method}{numeric; method to use for calculating water balance. Must be
@@ -73,7 +70,8 @@ Default = 3.}
 \item{est_swr_hr}{logical; estimate hourly shortwave radiation from daily
 values. Default = TRUE.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 }
 \value{
 builds the model ensemble configuration.

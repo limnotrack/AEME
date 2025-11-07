@@ -14,7 +14,7 @@ get_mod_obs_vars <- function(aeme, model) {
   aeme <- check_aeme(aeme)
   tme <- time(aeme)
   if (missing(model)) {
-    model <- list_models(aeme)
+    model <- list_models()
   } else {
     model <- check_model(model = model)
   }

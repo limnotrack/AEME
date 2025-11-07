@@ -4,18 +4,19 @@
 \alias{check_model_output}
 \title{Check model output}
 \usage{
-check_model_output(path, aeme, model)
+check_model_output(aeme, model, path)
 }
 \arguments{
-\item{path}{filepath; where input files are located relative to `config`.}
-
 \item{aeme}{aeme; object.}
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
+
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 }
 \value{
-logical; if model output passes checks or not.
+Invisibly TRUE if model output passes checks; otherwise aborts
 }
 \description{
 Check model output

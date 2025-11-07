@@ -14,7 +14,6 @@
 #'  outflows. Needs to be named according to the model.
 #' @inheritParams generate_hypsograph
 #' @param use_bgc logical; switch to use the biogeochemical model.
-#' @param print logical; print messages. Default = TRUE.
 #' @param calc_wbal logical; calculate water balance. Default = TRUE.
 #' @param wb_method numeric; method to use for calculating water balance. Must be
 #' 1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
@@ -34,7 +33,8 @@
 #' Default = 3.
 #' @param est_swr_hr logical; estimate hourly shortwave radiation from daily
 #' values. Default = TRUE.
-#' @param path filepath; where input files are located relative to `config`.
+#' @param path filepath; where input files are located relative to the current 
+#' working directory.
 #'
 #' @return builds the model ensemble configuration.
 #'
@@ -71,7 +71,6 @@ build_aeme <- function(aeme = NULL,
                                        "gotm_wet" = 1),
                        ext_elev = 0,
                        use_bgc = FALSE,
-                       print = TRUE,
                        calc_wbal = TRUE,
                        wb_method = 2,
                        calc_wlev = TRUE,
@@ -96,6 +95,9 @@ build_aeme <- function(aeme = NULL,
   # coeffs = NULL
   # hum_type = 3
   # est_swr_hr = TRUE
+  # wb_method = 2
+  # print = TRUE
+  # path = "."
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
@@ -104,6 +106,9 @@ build_aeme <- function(aeme = NULL,
   if (is.null(aeme) & is.null(config)) {
     stop("Either 'aeme' or 'config' must be supplied.")
   }
+  model <- check_model(model = model)
+  path <- check_path(path = path, create = TRUE)
+  
   if (is.null(model_controls) & !is.null(aeme)) {
     cfg <- configuration(aeme)
     model_controls <- cfg$model_controls
@@ -128,14 +133,25 @@ build_aeme <- function(aeme = NULL,
   } else {
     inf_vars <- c("HYD_temp", "CHM_salt")
   }
+  
+  # Compute total steps dynamically
+  use_pb <- getOption("AEME_inform")
+  if (use_pb) {
+    n_models <- length(model)
+    n_extra <- sum(c(calc_wbal, calc_wlev, use_aeme))
+    total_steps <- n_models + n_extra
+  }
 
   # AEME input ----
   if (!is.null(aeme)) {
 
     lke <- lake(aeme)
-    if (print) {
-      message("Building simulation for ", lke$name, " [", format(Sys.time()),
-              "]")
+    # Only create progress bar if messages are enabled
+    if (use_pb) {
+      cli::cli_progress_bar(
+        name = "Building AEME models",
+        total = total_steps
+      )
     }
     aeme_time <- time(aeme)
     lake_dir <- get_lake_dir(aeme = aeme, path = path)
@@ -146,9 +162,10 @@ build_aeme <- function(aeme = NULL,
     if (use_aeme) {
       model_config <- configuration(aeme)
       if (all(sapply(model, \(x) !is.null(model_config[[x]][["hydrodynamic"]])))) {
-        if (print) {
-          message("Building existing configuration for ", lke$name, " [",
-                  format(Sys.time()), "]")
+        if (use_pb) {
+          cli::cli_progress_update(status = "Using existing configuration for {lke$name}")
+          # message("Building existing configuration for ", lke$name, " [",
+          #         format(Sys.time()), "]")
         }
         write_configuration(model = model, aeme = aeme, path = path)
         overwrite <- FALSE
@@ -240,17 +257,20 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       for (i in 1:length(aeme_inf[["data"]])) {
         inf[[names(aeme_inf[["data"]])[i]]] <- aeme_inf[["data"]][[i]]
         if (any(!inf_vars %in% names(inf[[i]]))) {
-          if (print) {
-            message(paste0("Missing state variables in inflows: ",
-                         paste0(setdiff(inf_vars, names(inf[[i]])), collapse = ", ")))
-          }
+          msg <- paste(setdiff(inf_vars, names(inf[[i]])), collapse = ", ")
+          cli_inform_safe(
+            c(
+              "!" = "Missing state variables in inflows:",
+              "x" = msg
+            )
+          )
           add_vars <- setdiff(inf_vars, names(inf[[i]]))
           for (v in add_vars) {
             inf[[i]][[v]] <- model_controls$inf_default[match(v, model_controls$var_aeme)]
           }
-          if (print) {
-            message("Added default values for missing variables.")
-          }
+          cli_inform_safe(
+            c("i" = "Added default values for missing variables.")
+          )
         }
         check_time(df = inf[[names(aeme_inf[["data"]])[i]]], model = model,
                    aeme_time = aeme_time,
@@ -337,7 +357,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                                  obs_met = met,
                                  elevation = elev,
                                  print_plots = FALSE,
-                                 coeffs = coeffs, print = print)
+                                 coeffs = coeffs)
     }
 
     # Calculate water balance ----
@@ -381,9 +401,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
           # dplyr::mutate(model = gsub("outflow_", "", model))
       }
 
-      if (print) {
-        message(msg)
-      }
+      cli_inform_safe(c("i" = msg))
       w_bal[["data"]][["wbal"]] <- wbal
     } else {
       w_bal[["data"]][["wbal"]] <- NULL
@@ -401,11 +419,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                            factor = aeme_outf[["factor"]])
 
     if (calc_wlev) {
-      if (print) {
-        message(paste(strwrap("Calculating lake level using lake depth
-                            and a sinisoidal function."),
-                    collapse = "\n"))
-      }
+      cli_inform_safe(c("i" = "Calculating lake level using lake depth
+                            and a sinisoidal function."))
       lvl <- wbal |>
         dplyr::select(Date, value) |>
         dplyr::mutate(var_aeme = "LKE_lvlwtr")
@@ -415,10 +430,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # observations(aeme) <- list(lake = aeme_obs[["lake"]],
     #                                 level = lvl)
     if (aeme_time[["start"]] %in% lvl[["Date"]]) {
-      if (print) {
-        message(strwrap("Observed lake level is present.\nUpdating initial lake
+      cli_inform_safe(c("i" = "Observed lake level is present.\nUpdating initial lake
                         model depth..."))
-      }
       init_depth <- lvl |>
         dplyr::filter(Date == aeme_time[["start"]] &
                         var_aeme == "LKE_lvlwtr") |>
@@ -532,7 +545,10 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   if (length(inf) == 0) {
     inf <- NULL
   }
-
+  if (use_pb) {
+    cli::cli_progress_update(inc = 1, 
+                             status = paste0("Building model configurations for ", lke$name))
+  }
   if ("dy_cd" %in% model) {
     #--- configure DYRESM-CAEDYM
     dates.dy <- c(date_range[1] - spin_up[["dy_cd"]], date_range[2]) |>
@@ -546,7 +562,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                outf_factor = outf_factor[["dy_cd"]],
                Kw = Kw,
                use_bgc = use_bgc, use_lw = inp$use_lw,
-               overwrite_cfg = overwrite, print = print)
+               overwrite_cfg = overwrite)
     # run_dy_cd(sim_folder = lake_dir, verbose = TRUE)
   }
   if ("glm_aed" %in% model) {
@@ -560,7 +576,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
               Kw = Kw, use_bgc = use_bgc,
-              use_lw = inp$use_lw, overwrite_nml = overwrite, print = print)
+              use_lw = inp$use_lw, overwrite_nml = overwrite)
     # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
   if("gotm_wet" %in% model) {
@@ -581,7 +597,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                outf_factor = outf_factor[["gotm_wet"]], Kw = Kw,
                nlev = nlev, use_bgc = use_bgc,
                hum_type = hum_type, overwrite_yaml = overwrite,
-               est_swr_hr = est_swr_hr, print = print)
+               est_swr_hr = est_swr_hr)
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
 
   }
@@ -597,6 +613,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   aeme <- load_configuration(model = model, aeme = aeme, 
                              model_controls = model_controls, use_bgc = use_bgc, 
                              path = path)
+  
+  # Close progress bar
+  if (use_pb) cli::cli_progress_done()
 
   return(aeme)
 }

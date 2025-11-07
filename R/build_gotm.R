@@ -12,11 +12,10 @@ build_gotm <- function(lakename, model_controls, date_range,
                        lvl, inf, outf, met, init_prof, init_depth,
                        nlev = 40, outf_factor = 1.0, inf_factor = 1, Kw,
                        use_bgc, hum_type = 1, overwrite_yaml = TRUE,
-                       est_swr_hr = TRUE, print = TRUE) {
+                       est_swr_hr = TRUE) {
 
-  if (print) {
-    message(paste0("Building GOTM-WET for lake ", lakename))
-  }
+  msg <- paste0("Building GOTM-WET model for lake ", lakename)
+  cli_inform_safe(c("i" = msg))
 
   path_gotm <- file.path(lake_dir, "gotm_wet")
 
@@ -39,9 +38,7 @@ build_gotm <- function(lakename, model_controls, date_range,
     fils <- list.files(gotm_cfg_dir, full.names = TRUE)
     file.copy(fils, file.path(path_gotm, basename(fils)))
     overwrite_yaml <- TRUE
-    if (print) {
-      message("Copied all GOTM configuration files")
-    }
+    cli_inform_safe(c("i" = "Copied in GOTM configuration files"))
   }
 
   # housekeeping
@@ -67,8 +64,7 @@ build_gotm <- function(lakename, model_controls, date_range,
                          tbl_obs = init_prof,
                          tmpwtr = model_controls$initial_wc[model_controls$var_aeme == "HYD_temp"],
                          start_date = date_range[1], path_gotm = path_gotm,
-                         use_bgc = use_bgc, model_controls = model_controls,
-                         print = print)
+                         use_bgc = use_bgc, model_controls = model_controls)
 
   if (overwrite_yaml) write_yaml(gotm, gotm_file)
 }

@@ -4,15 +4,16 @@
 \alias{write_configuration}
 \title{Write model configuration from the aeme object}
 \usage{
-write_configuration(model, aeme, path)
+write_configuration(aeme, model, path)
 }
 \arguments{
+\item{aeme}{aeme; object.}
+
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
 
-\item{aeme}{aeme; object.}
-
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 }
 \value{
 aeme object which was passed to the function,

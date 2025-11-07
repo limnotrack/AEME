@@ -37,6 +37,13 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
                      debug = FALSE, timeout = 0, parallel = FALSE, ncores,
                      check_output = FALSE, path = ".") {
 
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
+  path <- check_path(path = path, must_exist = TRUE)
   if (is.null(model_controls)) {
     model_controls <- get_model_controls(aeme = aeme)
   }
@@ -324,4 +331,43 @@ get_os <- function() {
       os <- "linux"
   }
   tolower(os)
+}
+
+get_glm_aed_version <- function() {
+  bin_path <- system.file('extbin/', package = "AEME")
+  glm_exec <- ifelse(get_os() == "windows",
+                     file.path(bin_path, "glm_aed", "glm.exe"),
+                     file.path(bin_path, "glm_aed", "glm"))
+  vers <- system2(glm_exec, args = "--version", stdout = TRUE)
+  vers <- gsub("GLM version ", "", vers)
+  return(vers)
+}
+
+get_gotm_wet_version <- function() {
+  bin_path <- system.file('extbin/', package = "AEME")
+  gotm_exec <- ifelse(get_os() == "windows",
+                      file.path(bin_path, "gotm_wet", "gotm.exe"),
+                      file.path(bin_path, "gotm_wet", "gotm"))
+  vers <- system2(gotm_exec, args = "--version", stdout = TRUE)
+  return(vers)
+}
+
+get_dy_cd_version <- function() {
+  bin_path <- system.file('extbin/', package = "AEME")
+  dycd_readme <- file.path(bin_path, "dy_cd", "README_DY3p1p0-CD3p1p0.txt")
+  vers <- readLines(dycd_readme, n = 9)
+  return(vers)
+}
+
+get_model_version <- function(model) {
+  if (model == "glm_aed") {
+    vers <- get_glm_aed_version()
+  } else if (model == "gotm_wet") {
+    vers <- get_gotm_wet_version()
+  } else if (model == "dy_cd") {
+    vers <- get_dy_cd_version()
+  } else {
+    vers <- NA
+  }
+  return(vers)
 }

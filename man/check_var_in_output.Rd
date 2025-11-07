@@ -14,10 +14,11 @@ check_var_in_output(aeme, model, var_sim, ens_n = 1)
 
 \item{var_sim}{string; of variable to plot}
 
-\item{ens_n}{integer; ensemble number to plot. Default is 1.}
+\item{ens_n}{numeric; ensemble number}
 }
 \value{
-A logical matrix indicating if the variable is present in the model
+A list with logical matrices indicating if each variable is present per model,
+  plus an overall `all_present` flag.
 }
 \description{
 Check if a variable is present in the model output

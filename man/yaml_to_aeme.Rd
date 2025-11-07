@@ -7,7 +7,8 @@
 yaml_to_aeme(path, file)
 }
 \arguments{
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 
 \item{file}{filepath; to aeme.yaml file}
 }

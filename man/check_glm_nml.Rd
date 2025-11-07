@@ -10,7 +10,7 @@ check_glm_nml(file)
 \item{file}{path to GLM nml file}
 }
 \value{
-TRUE if no issues found, FALSE otherwise
+Invisibly returns TRUE if no issues found, otherwise aborts with informative messages
 }
 \description{
 Check GLM nml for common issues

@@ -15,7 +15,8 @@ input_model_parameters(aeme, model, param, path)
 \item{param}{data.frame; parameters to input into the model
 configuration files}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 }
 \description{
 Input model parameters

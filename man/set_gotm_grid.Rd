@@ -28,7 +28,8 @@ fractions, 2=prescribed layer thicknesses}
 
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 
 \item{thickness_factor}{numeric; factor to multiply the thickness of the
 layers. Default is 1.}

@@ -17,11 +17,10 @@ build_glm <- function(lakename, model_controls, date_range,
                       lvl, inf, outf, met,
                       lake_dir, config_dir, init_prof, init_depth,
                       inf_factor = 1, outf_factor = 1,
-                      Kw, use_bgc, use_lw, overwrite_nml = TRUE, print = TRUE) {
+                      Kw, use_bgc, use_lw, overwrite_nml = TRUE) {
 
-  if (print) {
-    message(paste0("Building GLM3-AED2 model for lake ", lakename))
-  }
+  msg <- paste0("Building GLM-AED2 for lake ", lakename)
+  cli_inform_safe(c("i" = msg))
 
   path_glm <- file.path(lake_dir, "glm_aed")
 
@@ -38,9 +37,7 @@ build_glm <- function(lakename, model_controls, date_range,
     glm_file <- system.file("extdata/glm_aed/glm3.nml", package = "AEME")
     file.copy(glm_file, file.path(path_glm, "glm3.nml"))
     overwrite_nml <- TRUE
-    if (print) {
-      message("Copied in GLM nml file")
-    }
+    cli_inform_safe(c("i" = "Copied in GLM nml file"))
   }
   if (use_bgc) {
     aed_files <- list.files(system.file("extdata/glm_aed/", package = "AEME"),
@@ -48,9 +45,7 @@ build_glm <- function(lakename, model_controls, date_range,
     aed_path <- file.path(path_glm, "aed2")
     dir.create(aed_path, showWarnings = FALSE)
     file.copy(aed_files, aed_path)
-    if (print) {
-      message("Copied in AED nml file")
-    }
+    cli_inform_safe(c("i" = "Copied in AED nml file"))
   }
 
   # Remove output files
@@ -95,9 +90,8 @@ build_glm <- function(lakename, model_controls, date_range,
   #--- make outflows table and modify nml
   heights_wdr <- max(hyps$elev) - min(hyps$elev) - 1
   if (heights_wdr > (max(hyps$elev) - min(hyps$elev))) {
-    if (print) {
-      message("Withdrawal depth is too low!")
-    }
+    cli_inform_safe(c("!" = "Withdrawal depth is too high, setting to 75% of 
+                      lake depth"))
     heights_wdr <- 0.75 * (max(hyps$elev) - min(hyps$elev))
   }
   glm_nml <- make_wdrGLM(outf = outf,
@@ -114,7 +108,7 @@ build_glm <- function(lakename, model_controls, date_range,
 
   if (use_bgc) {
     initialiseAED(model_controls = model_controls,
-                  path_aed = file.path(path_glm, "aed2"), print = print)
+                  path_aed = file.path(path_glm, "aed2"))
   }
 
   if (use_bgc) {

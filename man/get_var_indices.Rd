@@ -23,7 +23,8 @@ get_var_indices(
 
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 
 \item{vars_sim}{character; vector of AEME variable names to get indices for.}
 

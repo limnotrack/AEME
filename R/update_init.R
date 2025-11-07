@@ -58,8 +58,9 @@ update_init <- function(aeme, model_controls = NULL) {
       new_val <- summ$median[summ$var_aeme == v]
       old_val <- mod_ctrls$initial_wc[mod_ctrls$var_aeme == v]
       mod_ctrls$initial_wc[mod_ctrls$var_aeme == v] <- new_val
-      message(paste0("Setting initial value for ", v, " from ", old_val,
-                     " to ", new_val))
+      msg <- paste0("Setting initial value for ", v, " from ", old_val,
+                     " to ", new_val)
+      cli_inform_safe(c("i" = msg))
     }
     depths <- seq(from = 0, to = init_depth, length.out = 10) |> 
       round(digits = 2)
@@ -96,11 +97,11 @@ update_init <- function(aeme, model_controls = NULL) {
       temperature = init_values[["HYD_temp"]],
       salt = init_values[["CHM_salt"]]
     )
-    message("Updating initial profile in AEME input.")
+    cli_inform_safe(c("i" = "Updating initial profile in AEME input."))
     inp$init_profile <- init_profile
     input(aeme) <- inp
   } else {
-    warning("No lake observations found in AEME object.")
+    cli::cli_warn("No lake observations found in AEME object.")
   }
   
   if (is.null(model_controls)) {
