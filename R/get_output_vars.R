@@ -23,6 +23,12 @@
 
 get_output_vars <- function(aeme, model, ens_n = 1) {
 
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
   outp <- output(aeme)
   if (missing(model)) {
     model <- list_models(aeme)

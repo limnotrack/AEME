@@ -25,8 +25,11 @@ plot_wbal_annual <- function(aeme, model, lake_frac = FALSE,
   utils::data("key_naming", package = "AEME", envir = environment())
   
   lake_vol <- calc_lake_vol(aeme)
+  aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
   }
   
   vars <- c("LKE_evpvol", "LKE_pcpvol", "LKE_inflow", "LKE_outflow")

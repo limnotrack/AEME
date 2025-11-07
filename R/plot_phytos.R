@@ -12,8 +12,11 @@
 plot_phytos <- function(aeme, model, add_obs = TRUE, remove_spin_up = TRUE,
                         depth_range = NULL, ens_n = 1) {
 
+  aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
   }
   # Set colours for phytopplankton variables
   phy_cols <- c("Cyanobacteria" = "#56B4E9",

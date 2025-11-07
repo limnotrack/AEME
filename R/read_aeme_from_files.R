@@ -18,10 +18,7 @@
 #' aeme2 <- read_aeme_from_files(aeme_path)
 
 read_aeme_from_files <- function(path) {
-  # Ensure the directory exists
-  if (!dir.exists(path)) {
-    stop("The specified directory does not exist.")
-  }
+  path <- check_path(path = path, must_exist = TRUE)
   init_path <- dirname(path)
   lake_dirname <- basename(path)
   id <- strsplit(lake_dirname, "_")[[1]][1]

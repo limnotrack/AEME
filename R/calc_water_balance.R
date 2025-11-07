@@ -52,12 +52,12 @@
 calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
                                outf = NULL, level = NULL, obs_lake = NULL,
                                obs_met, elevation,
-                               print_plots = FALSE, coeffs = NULL,
-                               print = TRUE) {
+                               print_plots = FALSE, coeffs = NULL) {
   
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
+  model <- check_model(model = model)
   
   # Get dates to use for calculating the water balance
   max_spin <- max(unlist(aeme_time[["spin_up"]])[model])
@@ -73,9 +73,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     #   stop("No observations of lake level provided")
     # }
     if (!is.null(level)) {
-      if (print) {
-        message("Using observed water level")
-      }
+      cli_inform_safe(c("i" = "Using observed water level"))
       # placeholder.. add optimised sin model here..!
       ampl <- ((quantile(level$value, 0.9) -
                   quantile(level$value, 0.1)) / 2) |>
@@ -96,23 +94,19 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       }
       
       if (all(!is.na(mod.lvl$value))) {
-        if (print) {
-          message(strwrap("No missing values in observed water level.
+        cli_inform_safe(c(i = "No missing values in observed water level.
                       Using observed water level"))
-        }
+        
       } else {
-        if (print) {
-          message("Missing values in observed water level")
-        }
+        cli_inform_safe(c("!" ="Missing values in observed water level"))
         # Number of observations
         n_lvl <- sum(!is.na(mod.lvl$value))
         
         # If there are greater than or equal to 9 observations, use the
         # optimisation function
         if (n_lvl >= 9) {
-          if (print) {
-            message("Using optimisation function")
-          }
+          cli_inform_safe(c(i = "Using optimisation to fit
+                                seasonal water level fluctuations"))
           # Initial parameter values
           initial_parameters <- c(ampl = ampl, offset = offset)
           # optim_lvl_params(initial_parameters, mod.lvl = mod.lvl, surf = surf)
@@ -126,9 +120,8 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
           offset <- optimized_parameters$par["offset"]
         } else {
           # Use constant water level
-          if (print) {
-            message("Using constant water level")
-          }
+          cli_inform_safe(c(i = "Insufficient water level observations.
+                                Using constant water level"))
           ampl <- 0
           offset <- 0
         }
@@ -143,9 +136,8 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       }
     } else {
       # Use constant water level
-      if (print) {
-        message("No water level present. Using constant water level.")
-      }
+      cli_inform_safe(c(i = "No water level present.
+                        Using constant water level."))
       ampl <- 0
       offset <- 0
       # Calculate the modelled water level
@@ -162,9 +154,10 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       dplyr::filter(Date >= spin_start & Date <= date_stop)
     
     if (any(!mod.lvl$Date %in% date_vector)) {
-      stop(strwrap(paste0("Modelled water level date range does not cover the
-                          simulation period (", spin_start, " to ", date_stop,
-                          "). ")))
+      cli::cli_abort(c(
+        "!" = "Modelled water level date range does not cover the simulation period.",
+        "i" = "Expected range: {spin_start} to {date_stop}."
+      ))
     }
   }
   
@@ -199,18 +192,17 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     }
   } else {
     if (!is.null(coeffs)) {
-      if (print) {
-        message("Estimating temperature using supplied coefficients...")
-      }
+      cli_inform_safe(c("i" = "Using supplied coefficients for estimating lake
+      surface temperature."))
       evap$value <- coeffs[1] + coeffs[2] * evap$T5avg #
     }
   }
   
   # if less than 10 measurements
   if (sum(!is.na(evap[["value"]])) < 10 & is.null(coeffs)) {
-    if (print) {
-      message("Estimating temperature using Stefan & Preud'homme (2007)...")
-    }
+    cli_inform_safe(c("i" = "Insufficient lake temperature observations
+                      to estimate surface temperature.
+                      Using Stefan & Preud'homme (2007) method."))
     coeffs <- c(5, 0.75)
     evap$value <- coeffs[1] + coeffs[2] * evap$T5avg # (Stefan & Preud'homme, 2007) www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
   } else {

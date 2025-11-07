@@ -23,6 +23,12 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
                     ens_n = 1, use_obs = FALSE, remove_spin_up = TRUE,
                     cumulative = FALSE) {
   
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
   var_sim <- check_aeme_vars(var_sim)
   # Extract output from aeme ----
   inp <- input(aeme)

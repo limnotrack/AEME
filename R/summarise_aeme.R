@@ -12,7 +12,7 @@
 #'
 
 summarise_aeme <- function(aeme, ens_n = 1) {
-
+  aeme <- check_aeme(aeme)
   # Observation summary ----
   # obs <- observations(aeme)
   # if (!is.null(obs$lake)) {

@@ -19,10 +19,7 @@ get_aeme_parameters <- function(model, module, name, par) {
   if (missing(model)) {
     model <- accept_model
   } else {
-    if (any(!model %in% accept_model)) {
-      stop("Model not found! Please check the spelling of the model. \n",
-           "Possible models are: ", paste0(accept_model, collapse = ", "))
-    }
+    model <- check_model(model = model)
   }
 
   # Load parameters and combine

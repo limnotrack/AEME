@@ -19,6 +19,8 @@
 
 write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
 
+  aeme <- check_aeme(aeme)
+  path <- check_path(path = path, create = TRUE)
   # Create lake directory
   lake_dir <- get_lake_dir(aeme, path)
   model <- list_models(aeme = aeme)

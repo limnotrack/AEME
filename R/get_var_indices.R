@@ -17,6 +17,9 @@ get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
                             month = NULL, depth_range = NULL) {
 
   # Check function args ----
+  aeme <- check_aeme(aeme)
+  model <- check_model(model = model)
+  path <- check_path(path = path, must_exist = TRUE)
   if (length(model) != 1) {
     stop("model must be a single string.")
   }

@@ -23,6 +23,12 @@
 #' list_mod_obs_vars(aeme = aeme, model = model)
 
 list_mod_obs_vars <- function(aeme, model, ens_n = 1) {
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
   obs_vars <- list_obs_vars(aeme)
   out_vars <- get_output_vars(aeme, model = model, ens_n = ens_n)
   tgt_vars <- obs_vars[obs_vars %in% out_vars]

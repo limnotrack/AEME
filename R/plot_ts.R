@@ -19,14 +19,17 @@
 plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
                     add_obs = TRUE, depth_range = NULL, ens_n = 1) {
 
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
   var_sim <- check_aeme_vars(var_sim)
   # Get model controls
   model_controls <- get_model_controls(aeme)
   if (is.null(model_controls)) {
     stop("No model controls found")
-  }
-  if (missing(model)) {
-    model <- list_models(aeme)
   }
 
   sim_vars <- model_controls |>

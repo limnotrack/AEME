@@ -30,6 +30,8 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
 
   # Check aeme is Aeme object
   aeme <- check_aeme(aeme)
+  # Check model is valid
+  model <- check_model(model = model)
   # Check model is in aeme
   var_sim <- check_aeme_vars(var_sim)
   

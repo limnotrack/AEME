@@ -9,6 +9,7 @@ calc_seasonal_profiles <- function(aeme, model, ens_n = 1) {
 
   # Check output is in aeme
   if (!is(aeme, "Aeme")) stop("aeme is not an `Aeme` object")
+  model <- check_model(model = model)
 
   inp <- input(aeme)
   hyps <- inp$hyps |>

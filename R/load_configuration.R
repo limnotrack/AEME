@@ -7,9 +7,19 @@
 #'
 #'
 
-load_configuration <- function(model, aeme, model_controls = NULL, 
+load_configuration <- function(aeme, model, model_controls = NULL, 
                                use_bgc = FALSE, path) {
 
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
+  if (is.null(model_controls)) {
+    model_controls <- get_model_controls(aeme = aeme)
+  }
+  path <- check_path(path = path, must_exist = TRUE)
   lke <- lake(aeme)
   get_config_args <- list(lake = lke, path = path)
   model_config <- setNames(

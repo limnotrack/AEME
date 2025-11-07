@@ -7,6 +7,9 @@
 #'
 
 get_model_outfile <- function(aeme, model, path) {
+  aeme <- check_aeme(aeme)
+  model <- check_model(model = model)
+  path <- check_path(path = path, must_exist = TRUE)
   lake_dir <- get_lake_dir(path = path, aeme = aeme)
   cfg <- configuration(aeme)
   out_file <- lapply(model, \(m) {

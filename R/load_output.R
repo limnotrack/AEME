@@ -19,6 +19,13 @@
 load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
                         cl = NULL, nlev = NULL, ens_n = 1) {
 
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
+  path <- check_path(path = path, must_exist = TRUE)
   if (is.null(nlev)) {
     # inp <- input(aeme)
     # hyps <- inp$hypsograph

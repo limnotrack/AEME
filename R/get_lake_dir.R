@@ -7,9 +7,8 @@
 #'
 
 get_lake_dir <- function(aeme, path = getwd()) {
-  if (!is(aeme, "Aeme")) {
-    stop("aeme must be an AEME object")
-  }
+  aeme <- check_aeme(aeme = aeme)
+  path <- check_path(path = path, must_exist = TRUE)
   lke <- AEME::lake(aeme)
   lakename <- tolower(lke[["name"]])
   lake_dir <- file.path(path, paste0(lke$id, "_", lakename))

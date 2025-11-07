@@ -79,6 +79,11 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
 
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
   var_sim <- check_aeme_vars(var_sim)
   if (missing(model)) {
     model <- list_models(aeme)

@@ -17,7 +17,8 @@ yaml_to_aeme <- function(path, file) {
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
-
+  path <- check_path(path = path, must_exist = TRUE)
+  
   yaml <- yaml::read_yaml(file.path(path, file))
   # if (!is.null(yaml$lake$shape)) {
   #   invisible(capture.output({

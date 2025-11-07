@@ -5,10 +5,17 @@
 #' @return aeme object which was passed to the function,
 #' @export
 
-write_configuration <- function(model, aeme, path) {
+write_configuration <- function(aeme, model, path) {
 
   if (!dir.exists(path)) dir.create(path)
-
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
+  path <- check_path(path = path, create = TRUE)
+  
   lke <- lake(aeme)
   get_config_args <- list(aeme = aeme, path = path)
   lapply(model, \(m) do.call(paste0("write_config_", m),

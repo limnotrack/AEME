@@ -7,6 +7,10 @@
 #'
 
 get_model_config_files <- function(aeme, model, path) {
+  
+  aeme <- check_aeme(aeme)
+  model <- check_model(model = model)
+  path <- check_path(path = path, must_exist = TRUE)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   if ("glm_aed" %in% model) {
     glm_files <- list.files(

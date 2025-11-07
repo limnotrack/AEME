@@ -15,8 +15,11 @@
 
 plot_resid <- function(aeme, model, var_sim = "HYD_temp") {
 
+  aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
   }
   # Extract observations
   obs <- observations(aeme)

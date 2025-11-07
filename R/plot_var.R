@@ -17,6 +17,12 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
   utils::data("key_naming", package = "AEME", envir = environment())
 
   if (is.null(df)) {
+    aeme <- check_aeme(aeme)
+    if (missing(model)) {
+      model <- list_models(aeme)
+    } else {
+      model <- check_model(model = model)
+    }
     df <- get_var(aeme = aeme, model = model, var_sim = var_sim,
                   return_df = TRUE, cumulative = cumulative)
   } else {

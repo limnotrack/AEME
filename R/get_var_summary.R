@@ -6,6 +6,12 @@
 #' @noRd
 get_var_summary <- function(aeme, model, var_sim, ens_n = 1) {
 
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
   var_sim <- check_aeme_vars(var_sim)
   outp <- output(aeme)
   ens_lab <- format_ens_label(ens_n = ens_n)
