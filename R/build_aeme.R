@@ -392,13 +392,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       # Add water balance to outflow if method is 2 or 3
       if (wb_method %in% c(2, 3)) {
         outf[["wbal"]] <- wbal |>
-          dplyr::select(Date, model, outflow) #|> 
-          # pivot outflow to long format and separate the model
-          # tidyr::pivot_longer(cols = -Date,
-          #                     names_to = "model",
-          #                     values_to = "outflow") |>
-          # dplyr::filter(!is.na(outflow)) |>
-          # dplyr::mutate(model = gsub("outflow_", "", model))
+          dplyr::select(Date, model, outflow)
       }
 
       cli_inform_safe(c("i" = msg))
