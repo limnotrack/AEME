@@ -1,0 +1,66 @@
+# Get variable from aeme
+
+Get variable from aeme
+
+## Usage
+
+``` r
+get_var(
+  aeme,
+  model,
+  var_sim,
+  depth = NULL,
+  return_df = TRUE,
+  ens_n = 1,
+  use_obs = FALSE,
+  remove_spin_up = TRUE,
+  cumulative = FALSE
+)
+```
+
+## Arguments
+
+- aeme:
+
+  aeme; object.
+
+- model:
+
+  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
+  \`gotm_wet\`.
+
+- var_sim:
+
+  character; variable in the AEME format (e.g. "HYD_temp").
+
+- depth:
+
+  numeric; depth of the variable to extract. Default is NULL. If NULL,
+  the variable profiles are extracted.
+
+- return_df:
+
+  logical; if TRUE, return a dataframe; if FALSE, return a list. Default
+  is TRUE.
+
+- ens_n:
+
+  integer; ensemble number to plot. Default is 1.
+
+- use_obs:
+
+  logical; if TRUE, use observations to extract the variable at time and
+  depth of observations. Default is FALSE. Use this option if you want
+  to compare model output to observations.
+
+- remove_spin_up:
+
+  logical; remove spin-up period from plot. Default is TRUE.
+
+- cumulative:
+
+  logical; if TRUE, return cumulative sum of variable
+
+## Value
+
+dataframe or list

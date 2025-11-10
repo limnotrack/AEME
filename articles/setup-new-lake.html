@@ -202,7 +202,7 @@ the lake in metres above sea level.</p>
 construct the AEME object.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define lake list</span></span>
-<span><span class="va">lake</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span><span class="va">lake</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    name <span class="op">=</span> <span class="st">"Wainamu"</span>,</span>
 <span>    id <span class="op">=</span> <span class="fl">45819</span>,</span>
 <span>    latitude <span class="op">=</span> <span class="va">lat</span>,</span>
@@ -244,9 +244,9 @@ locations around the world. However, it’s date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2025-10-30 00:16:37] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2025-10-30 00:16:37] downloading</span></span>
-<span><span class="co">#&gt; INFO [2025-10-30 00:16:39] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2025-11-10 03:08:24] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2025-11-10 03:08:24] downloading</span></span>
+<span><span class="co">#&gt; INFO [2025-11-10 03:08:26] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -303,7 +303,7 @@ not ideal, but it will work for this example.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Area (m2)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Elevation (m)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="setup-new-lake_files/figure-html/plot-hypsograph-1.png" width="700"></p>
+<p><img src="setup-new-lake_files/figure-html/plot-hypsograph-1.png" class="r-plt" width="700"></p>
 <p>As you can see, the hypsograph is a simple cone shape. Ideally, you
 would have more detailed hypsograph data for your lake.</p>
 <p>If you have information regarding the maximum depth of the lake, the
@@ -332,10 +332,10 @@ platform</a>.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Area (m2)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Elevation (m)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="setup-new-lake_files/figure-html/generate-hypsograph-1.png" width="700"></p>
+<p><img src="setup-new-lake_files/figure-html/generate-hypsograph-1.png" class="r-plt" width="700"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define input list</span></span>
-<span><span class="va">input</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span><span class="va">input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    init_depth <span class="op">=</span> <span class="va">depth</span>,</span>
 <span>    hypsograph <span class="op">=</span> <span class="va">hypsograph</span>,</span>
 <span>    meteo <span class="op">=</span> <span class="va">met</span>,</span>
@@ -529,21 +529,22 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">F</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2025-10-30 00:16:45]</span></span>
-<span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
-<span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
-<span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
-<span><span class="co">#&gt; Calculating lake level using lake depth and a sinisoidal function.</span></span>
-<span><span class="co">#&gt; Building DYRESM-CAEDYM for lake wainamu</span></span>
-<span><span class="co">#&gt; Copied in DYRESM par file</span></span>
-<span><span class="co">#&gt; Writing DYRESM configuration</span></span>
-<span><span class="co">#&gt; Writing DYRESM control file</span></span>
-<span><span class="co">#&gt; Building GLM3-AED2 model for lake wainamu</span></span>
-<span><span class="co">#&gt; Copied in GLM nml file</span></span>
-<span><span class="co">#&gt; Issues found in GLM nml:</span></span>
-<span><span class="co">#&gt;  - Missing input files: bcs/inflow_none.csv</span></span>
-<span><span class="co">#&gt; Building GOTM-WET for lake wainamu</span></span>
-<span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No water level present. Using constant water level.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Insufficient lake temperature observations to estimate surface temperature.</span></span>
+<span><span class="co">#&gt;   Using Stefan &amp; Preud'homme (2007) method.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Calculating lake level using lake depth and a sinisoidal function.</span></span>
+<span><span class="co">#&gt; Building AEME models <span style="color: #00BB00;">■■■■■■■                         </span>  20% | Building model con…</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building DYRESM-CAEDYM for lake wainamu</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in DYRESM .par file</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing DYRESM configuration file</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing DYRESM-CAEDYM control file</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building GLM-AED2 for lake wainamu</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM nml checks passed with no issues.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building GOTM-WET model for lake wainamu</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in GOTM configuration files</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
@@ -607,20 +608,20 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-10-30 00:16:50]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM running... [2025-10-30 00:16:50]</span></span>
-<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2025-10-30 00:17:09]</span></span>
-<span><span class="co">#&gt; GLM-AED running... [2025-10-30 00:17:09]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2025-10-30 00:17:09]</span></span>
-<span><span class="co">#&gt; GOTM-WET running... [2025-10-30 00:17:09]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2025-10-30 00:17:10]</span></span>
-<span><span class="co">#&gt; Model run complete![2025-10-30 00:17:10]</span></span>
-<span><span class="co">#&gt; Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd</span></span>
-<span><span class="co">#&gt; Retrieving and formatting dyresmSALINITY_Var for model dy_cd</span></span>
-<span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
-<span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span>
-<span><span class="co">#&gt; Retrieving and formatting temp for model gotm_wet</span></span>
-<span><span class="co">#&gt; Retrieving and formatting salt for model gotm_wet</span></span></code></pre></div>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-11-10 03:08:37]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM running... [2025-11-10 03:08:37]</span></span>
+<span><span class="co">#&gt; DYRESM-CAEDYM run successful! [2025-11-10 03:08:56]</span></span>
+<span><span class="co">#&gt; GLM-AED running... [2025-11-10 03:08:56]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2025-11-10 03:08:57]</span></span>
+<span><span class="co">#&gt; GOTM-WET running... [2025-11-10 03:08:57]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2025-11-10 03:08:58]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-11-10 03:08:58]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting dyresmSALINITY_Var for model dy_cd</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting temp for model glm_aed</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting salt for model glm_aed</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting temp for model gotm_wet</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting salt for model gotm_wet</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="view-the-output">View the output<a class="anchor" aria-label="anchor" href="#view-the-output"></a>
@@ -630,10 +631,10 @@ slot of the <code>aeme</code> object. This is a list with a list for
 each model. The list contains the output data from the model run.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># View the output</span></span>
-<span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 246 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
-<p><img src="setup-new-lake_files/figure-html/view-output-1.png" width="700"></p>
+<p><img src="setup-new-lake_files/figure-html/view-output-1.png" class="r-plt" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="saving-the-aeme-object">Saving the AEME object<a class="anchor" aria-label="anchor" href="#saving-the-aeme-object"></a>
@@ -657,7 +658,7 @@ the <code>.rds</code>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

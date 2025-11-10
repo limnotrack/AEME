@@ -30,8 +30,10 @@
 <url><loc>/reference/check_AEME_pkg.html</loc></url>
 <url><loc>/reference/check_aeme_vars.html</loc></url>
 <url><loc>/reference/check_glm_nml.html</loc></url>
+<url><loc>/reference/check_model.html</loc></url>
 <url><loc>/reference/check_model_output.html</loc></url>
 <url><loc>/reference/check_obs_var.html</loc></url>
+<url><loc>/reference/check_path.html</loc></url>
 <url><loc>/reference/check_var_in_output.html</loc></url>
 <url><loc>/reference/configuration-aeme-method.html</loc></url>
 <url><loc>/reference/configuration-set-aeme-method.html</loc></url>

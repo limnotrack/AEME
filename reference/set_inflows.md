@@ -1,0 +1,29 @@
+# Set inflow data from Aeme object
+
+Replace existing inflow data in an Aeme object with new inflow data. The
+new inflow data can be provided as either a named list of data frames or
+a single data frame containing an "inflow_id" column to identify
+different inflows.
+
+## Usage
+
+``` r
+set_inflows(aeme, inflows)
+```
+
+## Arguments
+
+- aeme:
+
+  aeme; object.
+
+- inflows:
+
+  Either a named list of data frames for each inflow, or a single data
+  frame containing an "inflow_id" column to identify different inflows.
+  Each data frame must have columns "Date", "HYD_flow", "HYD_temp" and
+  "CHM_salt".
+
+## Value
+
+Aeme object with inflows replaced

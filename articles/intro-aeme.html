@@ -569,10 +569,10 @@ example, the <code>lake</code> slot can be visualised using the
 <code>plot</code> function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"lake"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="intro-aeme_files/figure-html/aeme-visualisation-lake-1.png" width="672"></p>
+<p><img src="intro-aeme_files/figure-html/aeme-visualisation-lake-1.png" class="r-plt" width="672"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"input"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="intro-aeme_files/figure-html/aeme-visualisation-input-1.png" width="672"></p>
+<p><img src="intro-aeme_files/figure-html/aeme-visualisation-input-1.png" class="r-plt" width="672"></p>
 </div>
 </div>
 <div class="section level2">
@@ -587,38 +587,44 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for AEME [2025-10-30 00:13:33]</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; Missing state variables in inflows: CHM_oxy</span></span>
-<span><span class="co">#&gt; Added default values for missing variables.</span></span>
-<span><span class="co">#&gt; No water level present. Using constant water level.</span></span>
-<span><span class="co">#&gt; Correcting water balance using estimated outflows (method = 2).</span></span>
-<span><span class="co">#&gt; Calculating lake level using lake depth and a sinisoidal function.</span></span>
-<span><span class="co">#&gt; Building DYRESM-CAEDYM for lake aeme</span></span>
-<span><span class="co">#&gt; Copied in DYRESM par file</span></span>
-<span><span class="co">#&gt; Writing DYRESM configuration</span></span>
-<span><span class="co">#&gt; [1] "TEMPTURE SALINITY DO"</span></span>
-<span><span class="co">#&gt; Writing DYRESM control file</span></span>
-<span><span class="co">#&gt; Building GLM3-AED2 model for lake aeme</span></span>
-<span><span class="co">#&gt; Copied in GLM nml file</span></span>
-<span><span class="co">#&gt; Copied in AED nml file</span></span>
-<span><span class="co">#&gt;    oxy_initial   = 625 replaced with 312.5</span></span>
-<span><span class="co">#&gt; GLM nml checks passed with no issues.</span></span>
-<span><span class="co">#&gt; Building GOTM-WET for lake aeme</span></span>
-<span><span class="co">#&gt; Copied all GOTM configuration files</span></span>
-<span><span class="co">#&gt; instances/abiotic_water/initialization/sO2W 13 replaced with 10</span></span>
-<span><span class="co">#&gt; Warning in input_model_parameters(aeme = aeme, model = model, param = param, :</span></span>
-<span><span class="co">#&gt; No parameters in 'param' for dy_cd.</span></span>
-<span><span class="co">#&gt; GLM nml checks passed with no issues.</span></span>
+<span><span class="co">#&gt; Created missing directory <span style="color: #0000BB;">aeme</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Missing state variables in inflows:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> CHM_oxy</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Missing state variables in inflows:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> CHM_oxy</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Missing state variables in inflows:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> CHM_oxy</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Missing state variables in inflows:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> CHM_oxy</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Missing state variables in inflows:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> CHM_oxy</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Missing state variables in inflows:</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> CHM_oxy</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Added default values for missing variables.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No water level present. Using constant water level.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Calculating lake level using lake depth and a sinisoidal function.</span></span>
+<span><span class="co">#&gt; Building AEME models <span style="color: #00BB00;">■■■■■■■                         </span>  20% | Building model con…</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building DYRESM-CAEDYM for lake aeme</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in DYRESM .par file</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing DYRESM configuration file</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing DYRESM-CAEDYM control file</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building GLM-AED2 for lake aeme</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in AED nml file</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span>  oxy_initial = 625 replaced with 312.5</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM nml checks passed with no issues.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building GOTM-WET model for lake aeme</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in GOTM configuration files</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sO2W 13 replaced with 10</span></span>
+<span><span class="co">#&gt; Warning: No parameters in 'param' for dy_cd.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM nml checks passed with no issues.</span></span>
 <span><span class="va">aeme</span></span>
 <span><span class="co">#&gt;             AEME </span></span>
 <span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
@@ -676,7 +682,7 @@ example, the <code>lake</code> slot can be visualised using the
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
