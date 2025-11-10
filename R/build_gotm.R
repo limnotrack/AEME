@@ -67,4 +67,5 @@ build_gotm <- function(lakename, model_controls, date_range,
                          use_bgc = use_bgc, model_controls = model_controls)
 
   if (overwrite_yaml) write_yaml(gotm, gotm_file)
+  check_gotm_yaml(file = gotm_file)
 }
