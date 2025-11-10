@@ -22,16 +22,15 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 
 
   if (length(outf) > 0) {
-
+    if ("wbal" %in% names(outf)) {
+      outf[["wbal"]] <- outf[["wbal"]] |>
+        dplyr::filter(model == "glm_aed") |> 
+        dplyr::select(-model) |> 
+        dplyr::rename(wbal = outflow)
+    }
+    
     if (length(outf) > 1) {
-      if ("wbal" %in% names(outf)) {
-        outf[["wbal"]] <- outf[["wbal"]] |>
-          dplyr::filter(model == "glm_aed") |> 
-          dplyr::select(-model) |> 
-          dplyr::rename(wbal = outflow)
-      }
-      df_wdr <- Reduce(function(x, y) dplyr::full_join(x, y, by = "Date"),
-                       outf)
+      df_wdr <- Reduce(function(x, y) dplyr::full_join(x, y, by = "Date"), outf)
     } else if (length(outf) == 1){
       df_wdr <- outf[[1]]
     }
@@ -100,7 +99,7 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 
       this.name <- paste0("outflow_", colnames(df_wdr)[i], ".csv")
 
-      utils::write.csv(this.out, file.path(path_glm, "bcs", this.name),
+      write.csv(this.out, file.path(path_glm, "bcs", this.name), 
                 row.names = FALSE, quote = FALSE)
 
     }
