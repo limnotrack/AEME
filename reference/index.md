@@ -31,6 +31,8 @@
 - [`check_aeme_vars()`](check_aeme_vars.md) : Check AEME variable names
 - [`check_glm_nml()`](check_glm_nml.md) : Check GLM nml for common
   issues
+- [`check_gotm_yaml()`](check_gotm_yaml.md) : Check GOTM YAML
+  configuration file for common issues
 - [`check_model()`](check_model.md) : Check model name and return
   standardized code
 - [`check_model_output()`](check_model_output.md) : Check model output

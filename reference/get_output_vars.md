@@ -66,7 +66,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ PHY_crypt replaced with
 #> ℹ PHY_diatom 0.300275 replaced with 0.300275
 #> ℹ  ss_initial = 3,3 replaced with 3,
-#> ✔ GLM nml checks passed with no issues.
+#> ✔ GLM nml validation completed — no issues detected.
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sO2W 13 replaced with 10
@@ -99,14 +99,15 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Setting initial condition forinstances/diatoms/initialization/sPW: 0.005
 #>   replaced with 0.0024
 #> ℹ instances/abiotic_water/initialization/sDIMW 4 replaced with 3
+#> ✔ GOTM YAML validation completed — no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> Running models in parallel... [2025-11-10 03:03:17]
-#> Model run complete![2025-11-10 03:03:22]
-#> Reading models in parallel... [2025-11-10 03:03:22]
-#> Model reading complete![2025-11-10 03:03:24]
+#> Running models in parallel... [2025-11-10 04:32:58]
+#> Model run complete![2025-11-10 04:33:03]
+#> Reading models in parallel... [2025-11-10 04:33:03]
+#> Model reading complete![2025-11-10 04:33:05]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 

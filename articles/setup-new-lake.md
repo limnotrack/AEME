@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-11-10 03:08:24] job submitted
-#> INFO [2025-11-10 03:08:24] downloading
-#> INFO [2025-11-10 03:08:26] extracting
+#> INFO [2025-11-10 04:38:04] job submitted
+#> INFO [2025-11-10 04:38:04] downloading
+#> INFO [2025-11-10 04:38:06] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -492,22 +492,23 @@ path <- "aeme"
 # Build ensemble
 aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
                    use_bgc = F, path = path)
+#> Building AEME object ■■■■■■■                           20% | Calculating water …
 #> ℹ No water level present. Using constant water level.
 #> ℹ Insufficient lake temperature observations to estimate surface temperature.
 #>   Using Stefan & Preud'homme (2007) method.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
-#> Building AEME models ■■■■■■■                           20% | Building model con…
-#> 
 #> ℹ Building DYRESM-CAEDYM for lake wainamu
 #> ℹ Copied in DYRESM .par file
 #> ℹ Writing DYRESM configuration file
 #> ℹ Writing DYRESM-CAEDYM control file
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
-#> ✔ GLM nml checks passed with no issues.
+#> ✔ GLM nml validation completed — no issues detected.
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
+#> ✔ GOTM YAML validation completed — no issues detected.
+#> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | Writing GOTM-WET c…
 
 print(aeme)
 #>             AEME 
@@ -576,14 +577,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> Running models... (Have you tried parallelizing?) [2025-11-10 03:08:37]
-#> DYRESM-CAEDYM running... [2025-11-10 03:08:37]
-#> DYRESM-CAEDYM run successful! [2025-11-10 03:08:56]
-#> GLM-AED running... [2025-11-10 03:08:56]
-#> GLM-AED run successful! [2025-11-10 03:08:57]
-#> GOTM-WET running... [2025-11-10 03:08:57]
-#> GOTM-WET run successful! [2025-11-10 03:08:58]
-#> Model run complete![2025-11-10 03:08:58]
+#> Running models... (Have you tried parallelizing?) [2025-11-10 04:38:17]
+#> DYRESM-CAEDYM running... [2025-11-10 04:38:17]
+#> DYRESM-CAEDYM run successful! [2025-11-10 04:38:47]
+#> GLM-AED running... [2025-11-10 04:38:47]
+#> GLM-AED run successful! [2025-11-10 04:38:47]
+#> GOTM-WET running... [2025-11-10 04:38:47]
+#> GOTM-WET run successful! [2025-11-10 04:38:48]
+#> Model run complete![2025-11-10 04:38:48]
 #> ℹ Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd
 #> ℹ Retrieving and formatting dyresmSALINITY_Var for model dy_cd
 #> ℹ Retrieving and formatting temp for model glm_aed

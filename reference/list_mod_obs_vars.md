@@ -66,15 +66,15 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ PHY_crypt replaced with
 #> ℹ PHY_diatom 0.300275 replaced with 0.300275
 #> ℹ  ss_initial = 3, replaced with 3,
-#> ✔ GLM nml checks passed with no issues.
+#> ✔ GLM nml validation completed — no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> Running models in parallel... [2025-11-10 03:03:32]
-#> Model run complete![2025-11-10 03:03:36]
-#> Reading models in parallel... [2025-11-10 03:03:36]
-#> Model reading complete![2025-11-10 03:03:38]
+#> Running models in parallel... [2025-11-10 04:33:13]
+#> Model run complete![2025-11-10 04:33:18]
+#> Reading models in parallel... [2025-11-10 04:33:18]
+#> Model reading complete![2025-11-10 04:33:20]
 list_mod_obs_vars(aeme = aeme, model = model)
 #>              Cyanobacteria           Dissolved oxygen 
 #>                "PHY_cyano"                  "CHM_oxy" 
