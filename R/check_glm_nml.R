@@ -1,11 +1,15 @@
 #' Check GLM nml for common issues
 #' 
 #' @param file path to GLM nml file
-#' @returns Invisibly returns TRUE if no issues found, otherwise aborts with informative messages
-#' @importFrom cli cli_abort cli_inform
+#' @returns Invisibly returns TRUE if no issues found, otherwise aborts with 
+#' informative messages
+#' @importFrom cli cli_abort
 #' @export
 check_glm_nml <- function(file) {
-  nml <- read_nml(file)
+  nml <- tryCatch(read_nml(file), error = function(e) {
+    cli::cli_abort(c("!" = "Failed to read GLM nml file {.file {file}}.",
+                     "x" = e$message))
+  })
   base_path <- dirname(file)
   issues <- character()
   
@@ -21,12 +25,21 @@ check_glm_nml <- function(file) {
                          "light", "sediment")
   missing_sections <- setdiff(required_sections, names(nml))
   if (length(missing_sections) > 0) {
-    issues <- c(issues, paste("Missing sections:", paste(missing_sections, collapse = ", ")))
+    issues <- c(issues, paste("Missing sections:",
+                              paste(missing_sections, collapse = ", ")))
   }
   
   # --- File existence checks ---
-  inflow_files  <- if (!is.null(nml$inflow)) strsplit(nml$inflow$inflow_fl, ",")[[1]] else NULL
-  outflow_files <- if (!is.null(nml$outflow)) strsplit(nml$outflow$outflow_fl, ",")[[1]] else NULL
+  if (!is.null(nml$inflow)) {
+    inflow_files  <- strsplit(nml$inflow$inflow_fl, ",")[[1]]
+  } else {
+    inflow_files <- NULL
+  }
+  if (!is.null(nml$outflow)) {
+    outflow_files <- strsplit(nml$outflow$outflow_fl, ",")[[1]]
+  } else {
+    outflow_files <- NULL
+  }
   
   file_paths <- c(
     nml$meteorology$meteo_fl,
@@ -38,7 +51,9 @@ check_glm_nml <- function(file) {
   file_paths <- na.omit(unlist(file_paths))
   missing_files <- file_paths[!vapply(file_paths, check_file, logical(1))]
   if (length(missing_files) > 0) {
-    issues <- c(issues, paste("Missing input files:", paste(missing_files, collapse = ", ")))
+    issues <- c(issues,
+                paste("Missing input files:", paste(missing_files, 
+                                                    collapse = ", ")))
   }
   
   # --- Morphometry checks ---
@@ -48,14 +63,26 @@ check_glm_nml <- function(file) {
     A <- as.numeric(morpho$A)
     bsn_vals <- as.numeric(morpho$bsn_vals)
     
-    if (length(H) != bsn_vals) issues <- c(issues, "Number of H values does not match bsn_vals")
-    if (length(A) != bsn_vals) issues <- c(issues, "Number of A values does not match bsn_vals")
+    if (length(H) != bsn_vals) {
+      issues <- c(issues, "Number of H values does not match bsn_vals")
+    }
+    if (length(A) != bsn_vals) {
+      issues <- c(issues, "Number of A values does not match bsn_vals")
+    }
     
-    if (!is_monotonic_increasing(H)) issues <- c(issues, "H is not monotonically increasing")
-    if (!is_monotonic_increasing(A)) issues <- c(issues, "A is not monotonically increasing")
+    if (!is_monotonic_increasing(H)) {
+      issues <- c(issues, "H is not monotonically increasing")
+    }
+    if (!is_monotonic_increasing(A)) {
+      issues <- c(issues, "A is not monotonically increasing")
+    }
     
-    if (morpho$latitude < -90 || morpho$latitude > 90) issues <- c(issues, "Latitude out of range (-90 to 90)")
-    if (morpho$longitude < -180 || morpho$longitude > 180) issues <- c(issues, "Longitude out of range (-180 to 180)")
+    if (morpho$latitude < -90 || morpho$latitude > 90) {
+      issues <- c(issues, "Latitude out of range (-90 to 90)")
+    }
+    if (morpho$longitude < -180 || morpho$longitude > 180) {
+      issues <- c(issues, "Longitude out of range (-180 to 180)")
+    }
   }
   
   # --- Time checks ---
@@ -89,8 +116,12 @@ check_glm_nml <- function(file) {
   light <- nml$light
   if (!is.null(light)) {
     n_bands <- as.numeric(light$n_bands)
-    if (length(as.numeric(light$light_extc)) != n_bands) issues <- c(issues, "Number of light_extc values does not match n_bands")
-    if (length(as.numeric(light$energy_frac)) != n_bands) issues <- c(issues, "Number of energy_frac values does not match n_bands")
+    if (length(as.numeric(light$light_extc)) != n_bands) {
+      issues <- c(issues, "Number of light_extc values does not match n_bands")
+    }
+    if (length(as.numeric(light$energy_frac)) != n_bands) {
+      issues <- c(issues, "Number of energy_frac values does not match n_bands")
+    }
   }
   
   # --- Mixing parameter ranges ---
@@ -98,18 +129,23 @@ check_glm_nml <- function(file) {
   if (!is.null(mix)) {
     for (nm in names(mix)) {
       val <- suppressWarnings(as.numeric(mix[[nm]]))
-      if (!is.na(val) && val < 0) issues <- c(issues, paste("Mixing parameter", nm, "is negative"))
+      if (!is.na(val) && val < 0) issues <- c(issues,
+                                              paste("Mixing parameter", nm,
+                                                    "is negative"))
     }
   }
   
   # --- Output ---
   if (length(issues) == 0) {
-    cli_inform_safe(c("v" = "GLM nml checks passed with no issues."))
+    cli_inform_safe(
+      c("v" = "GLM nml validation completed — no issues detected.")
+    )
     return(invisible(TRUE))
   } else {
     cli::cli_abort(
       c("!" = "Issues found in GLM nml file {.file {file}}:",
-        sprintf("• %s", issues)),
+        setNames(issues, rep("x", length(issues)))
+        ),
       class = "aeme_error_glm_nml"
     )
   }
