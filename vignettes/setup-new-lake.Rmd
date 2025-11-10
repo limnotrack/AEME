@@ -400,7 +400,7 @@ from the model run.
 
 ```{r view-output}
 # View the output
-plot_output(aeme = aeme, model = model)
+plot_output(aeme = aeme)
 ```
 
 
