@@ -150,7 +150,7 @@ AEME object.
 
 ```{r create-lake-list}
 # Define lake list
-lake = list(
+lake <- list(
     name = "Wainamu",
     id = 45819,
     latitude = lat,
@@ -283,7 +283,7 @@ ggplot(hypsograph, aes(x = area, y = elev)) +
 
 ```{r make-aeme-list}
 # Define input list
-input = list(
+input <- list(
     init_depth = depth,
     hypsograph = hypsograph,
     meteo = met,
