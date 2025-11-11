@@ -113,6 +113,8 @@ test_that("plotting model output works", {
   p3 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
                     facet = FALSE)
   testthat::expect_true(ggplot2::is_ggplot(p3))
+  p4 <- plot_wlev(aeme = aeme, model = model)
+  testthat::expect_true(ggplot2::is_ggplot(p4))
 
   df <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(is.data.frame(df))
