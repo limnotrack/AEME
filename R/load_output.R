@@ -70,7 +70,7 @@ load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
                     output_hour = output_hour,
                     path = path)
     })
-    cli_inform_safe(c("i" = paste0("Model reading complete! ",
+    cli_inform_safe(c("v" = paste0("Model reading complete! ",
                                    "[", format(Sys.time()), "]")))
     
   } else {
