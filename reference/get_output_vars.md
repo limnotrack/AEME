@@ -40,7 +40,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
 #> ! Missing state variables in inflows:
-#> ✖ PHY_crypt
+#> ! PHY_crypt
 #> ℹ Added default values for missing variables.
 #> ℹ Using observed water level
 #> ! Missing values in observed water level
@@ -80,23 +80,23 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5
 #> ℹ instances/abiotic_water/initialization/sDPOMW 0.1 replaced with 0.2
 #> ℹ instances/abiotic_water/initialization/sSiO2W 3.5 replaced with 1
-#> ℹ Setting initial condition forinstances/cyanobacteria/initialization/sDW: 0.1
+#> ℹ Setting initial condition for instances/cyanobacteria/initialization/sDW: 0.1
 #>   replaced with 0.2
-#> ℹ Setting initial condition forinstances/cyanobacteria/initialization/sNW: 0.03
-#>   replaced with 0.03
-#> ℹ Setting initial condition forinstances/cyanobacteria/initialization/sPW:
+#> ℹ Setting initial condition for instances/cyanobacteria/initialization/sNW:
+#>   0.03 replaced with 0.03
+#> ℹ Setting initial condition for instances/cyanobacteria/initialization/sPW:
 #>   0.003 replaced with 0.0019
-#> ℹ Setting initial condition forinstances/greens/initialization/sDW: 0.1
+#> ℹ Setting initial condition for instances/greens/initialization/sDW: 0.1
 #>   replaced with 0.1
-#> ℹ Setting initial condition forinstances/greens/initialization/sNW: 0.05
+#> ℹ Setting initial condition for instances/greens/initialization/sNW: 0.05
 #>   replaced with 0.015
-#> ℹ Setting initial condition forinstances/greens/initialization/sPW: 0.001
+#> ℹ Setting initial condition for instances/greens/initialization/sPW: 0.001
 #>   replaced with 0.00094
-#> ℹ Setting initial condition forinstances/diatoms/initialization/sDW: 0.2
+#> ℹ Setting initial condition for instances/diatoms/initialization/sDW: 0.2
 #>   replaced with 0.25
-#> ℹ Setting initial condition forinstances/diatoms/initialization/sNW: 0.05
+#> ℹ Setting initial condition for instances/diatoms/initialization/sNW: 0.05
 #>   replaced with 0.038
-#> ℹ Setting initial condition forinstances/diatoms/initialization/sPW: 0.005
+#> ℹ Setting initial condition for instances/diatoms/initialization/sPW: 0.005
 #>   replaced with 0.0024
 #> ℹ instances/abiotic_water/initialization/sDIMW 4 replaced with 3
 #> ✔ GOTM YAML validation completed — no issues detected.
@@ -104,10 +104,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> Running models in parallel... [2025-11-10 04:32:58]
-#> Model run complete![2025-11-10 04:33:03]
-#> Reading models in parallel... [2025-11-10 04:33:03]
-#> Model reading complete![2025-11-10 04:33:05]
+#> Running models in parallel... [2025-11-11 01:17:10]
+#> Model run complete![2025-11-11 01:17:14]
+#> Reading models in parallel... [2025-11-11 01:17:14]
+#> Model reading complete![2025-11-11 01:17:16]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 

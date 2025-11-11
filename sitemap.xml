@@ -26,6 +26,12 @@
 <url><loc>/reference/assess_model.html</loc></url>
 <url><loc>/reference/build_aeme.html</loc></url>
 <url><loc>/reference/calc_lake_vol.html</loc></url>
+<url><loc>/reference/calc_tli3.html</loc></url>
+<url><loc>/reference/calc_tli4.html</loc></url>
+<url><loc>/reference/calc_tli_chla.html</loc></url>
+<url><loc>/reference/calc_tli_n.html</loc></url>
+<url><loc>/reference/calc_tli_p.html</loc></url>
+<url><loc>/reference/calc_tli_secchi.html</loc></url>
 <url><loc>/reference/catchment_yields.html</loc></url>
 <url><loc>/reference/check_AEME_pkg.html</loc></url>
 <url><loc>/reference/check_aeme_vars.html</loc></url>
@@ -40,6 +46,7 @@
 <url><loc>/reference/configuration-set-aeme-method.html</loc></url>
 <url><loc>/reference/configuration-set.html</loc></url>
 <url><loc>/reference/configuration.html</loc></url>
+<url><loc>/reference/convert_do.html</loc></url>
 <url><loc>/reference/dy_cd_parameters.html</loc></url>
 <url><loc>/reference/expand_met.html</loc></url>
 <url><loc>/reference/extrap_hyps.html</loc></url>
@@ -89,6 +96,7 @@
 <url><loc>/reference/model_controls.html</loc></url>
 <url><loc>/reference/model_layer_structure.html</loc></url>
 <url><loc>/reference/names-aeme-method.html</loc></url>
+<url><loc>/reference/o2_at_sat.html</loc></url>
 <url><loc>/reference/observations-aeme-method.html</loc></url>
 <url><loc>/reference/observations-set-aeme-method.html</loc></url>
 <url><loc>/reference/observations-set.html</loc></url>

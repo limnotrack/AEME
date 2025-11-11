@@ -41,7 +41,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
 #> ! Missing state variables in inflows:
-#> ✖ PHY_crypt
+#> ! PHY_crypt
 #> ℹ Added default values for missing variables.
 #> ℹ Using observed water level
 #> ! Missing values in observed water level
@@ -71,10 +71,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> Running models in parallel... [2025-11-10 04:33:13]
-#> Model run complete![2025-11-10 04:33:18]
-#> Reading models in parallel... [2025-11-10 04:33:18]
-#> Model reading complete![2025-11-10 04:33:20]
+#> Running models in parallel... [2025-11-11 01:17:24]
+#> Model run complete![2025-11-11 01:17:29]
+#> Reading models in parallel... [2025-11-11 01:17:29]
+#> Model reading complete![2025-11-11 01:17:31]
 list_mod_obs_vars(aeme = aeme, model = model)
 #>              Cyanobacteria           Dissolved oxygen 
 #>                "PHY_cyano"                  "CHM_oxy" 

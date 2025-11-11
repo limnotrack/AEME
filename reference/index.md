@@ -25,6 +25,14 @@
   directories
 - [`calc_lake_vol()`](calc_lake_vol.md) : Calculate the volume of a lake
   using bathymetry data or a hypsograph
+- [`calc_tli3()`](calc_tli3.md) : Calculate TLI 3
+- [`calc_tli4()`](calc_tli4.md) : Calculate TLI 4
+- [`calc_tli_chla()`](calc_tli_chla.md) : Calculate TLI chlorophyll
+  component
+- [`calc_tli_n()`](calc_tli_n.md) : Calculate TLI nitrogen component
+- [`calc_tli_p()`](calc_tli_p.md) : Calculate TLI phosphorus component
+- [`calc_tli_secchi()`](calc_tli_secchi.md) : Calculate TLI secchi
+  component
 - [`catchment_yields`](catchment_yields.md) : Catchment yields
 - [`check_AEME_pkg()`](check_AEME_pkg.md) : Check if the package is
   working correctly
@@ -48,6 +56,8 @@
 - [`` `configuration<-`() ``](configuration-set.md) : Set configuration
   in Aeme object
 - [`configuration()`](configuration.md) : Access configuration slot
+- [`convert_do()`](convert_do.md) : Convert dissolved oxygen between
+  mg/L and percent saturation
 - [`dy_cd_parameters`](dy_cd_parameters.md) : Example dataframe used for
   calibrating the biogeochemistry in the DYRESM-CAEDYM model.
 - [`expand_met()`](expand_met.md) : Expand a minimal set of meteorology
@@ -123,6 +133,8 @@
 - [`model_layer_structure`](model_layer_structure.md) : Reference data
   frame for model layer structure.
 - [`names(`*`<Aeme>`*`)`](names-aeme-method.md) : Update names Method
+- [`o2_at_sat()`](o2_at_sat.md) : Estimate oxygen saturation
+  concentration
 - [`observations(`*`<Aeme>`*`)`](observations-aeme-method.md) : Access
   observations slot
 - [`` `observations<-`( ``*`<Aeme>`*`)`](observations-set-aeme-method.md)
