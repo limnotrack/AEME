@@ -47,7 +47,7 @@ RAD_secchi,,,,,Secchi disk depth,Secchi_disk_depth_m,Secchi~disk~depth~m,m,1,,FA
 CHM_salt,SALINITY,salt,salt,,Salinity,Salinity_PSU,Salinity~(PSU),1,1,0,FALSE,NA,salinity|salt|CHM_salt
 CHM_ph,,,,,pH,pH,pH,1,1,7,FALSE,NA,pH|CHM_ph
 CHM_oxy,DO,OXY_oxy,abiotic_water_sO2W,instances/abiotic_water/initialization/sO2W,Dissolved oxygen,Dissolved_oxygen_mg/L,Dissolved~oxygen~(mg~L^-1),mg/L,0.032,10.3,FALSE,NA,dissolved oxygen|DO|CHM_oxy|do|oxy
-CHM_oxysat,,,,,Dissolved oxygen saturation,Dissolved_oxygen_%,Dissolved~oxygen~(%),%,1,,TRUE,CHM_oxy,dissolved oxygen percent saturation|DO_SAT|CHM_oxysat|do_sat|oxy_sat
+CHM_oxysat,,,,,Dissolved oxygen saturation,Dissolved_oxygen_%,Dissolved~oxygen~(plain('%')),%,1,,TRUE,CHM_oxy,dissolved oxygen percent saturation|DO_SAT|CHM_oxysat|do_sat|oxy_sat
 CHM_oxycln,,,,,Oxycline depth,Oxycline_depth_m,Oxycline~depth~(m),m,1,,TRUE,CHM_oxy,oxycline depth|CHM_oxycln
 CHM_oxyepi,,,,,Epilimnetic oxygen,Epilimnetic_oxygen_mg/L,Epilimnetic~oxygen~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy,epilimnetic oxygen|CHM_oxyepi
 CHM_oxymet,,,,,Metalimnetic oygen,Metalimnetic_oxygen_mg/L,Metalimnetic~oxygen~(mg~L^-1),mg/L,,,TRUE,CHM_oxy,metalimnetic oxygen|CHM_oxymet
