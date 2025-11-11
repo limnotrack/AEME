@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-11-11 20:42:59] job submitted
-#> INFO [2025-11-11 20:42:59] downloading
-#> INFO [2025-11-11 20:43:01] extracting
+#> INFO [2025-11-11 21:22:01] job submitted
+#> INFO [2025-11-11 21:22:01] downloading
+#> INFO [2025-11-11 21:22:02] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -502,8 +502,6 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #> ℹ Copied in DYRESM .par file
 #> ℹ Writing DYRESM configuration file
 #> ℹ Writing DYRESM-CAEDYM control file
-#> Building AEME object ■■■■■■■■■■■■■■■■■■■               60% | Writing GLM-AED2 c…
-#> 
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ✔ GLM nml validation completed — no issues detected.
@@ -579,20 +577,20 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-11 20:43:11]
-#> DYRESM-CAEDYM running... [2025-11-11 20:43:11]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-11 21:22:13]
+#> DYRESM-CAEDYM running... [2025-11-11 21:22:13]
 #> 
-#> DYRESM-CAEDYM run successful! [2025-11-11 20:43:30]
+#> DYRESM-CAEDYM run successful! [2025-11-11 21:22:32]
 #> 
-#> GLM-AED running... [2025-11-11 20:43:30]
+#> GLM-AED running... [2025-11-11 21:22:32]
 #> 
-#> GLM-AED run successful! [2025-11-11 20:43:30]
+#> GLM-AED run successful! [2025-11-11 21:22:33]
 #> 
-#> GOTM-WET running... [2025-11-11 20:43:30]
+#> GOTM-WET running... [2025-11-11 21:22:33]
 #> 
-#> GOTM-WET run successful! [2025-11-11 20:43:31]
+#> GOTM-WET run successful! [2025-11-11 21:22:33]
 #> 
-#> ✔ Model run complete! [2025-11-11 20:43:31]
+#> ✔ Model run complete! [2025-11-11 21:22:33]
 #> ℹ Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd
 #> ℹ Retrieving and formatting dyresmSALINITY_Var for model dy_cd
 #> ℹ Retrieving and formatting temp for model glm_aed

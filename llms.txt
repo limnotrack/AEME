@@ -326,6 +326,7 @@ We have a host of vignettes to help you get started with AEME:
 - [`plot_wbal()`](plot_wbal.md) : Plot water balance components
 - [`plot_wbal_annual()`](plot_wbal_annual.md) : Plot annual water
   balance components
+- [`plot_wlev()`](plot_wlev.md) : Plot lake water level
 - [`plot_zoops()`](plot_zoops.md) : Plot phytoplankton variables
 - [`precip_status()`](precip_status.md) : Get current precipitation
   status in Aeme object
