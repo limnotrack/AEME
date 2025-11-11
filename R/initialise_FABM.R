@@ -51,21 +51,21 @@ initialise_FABM <- function(path_gotm, model_controls) {
       sPW <- signif(sDW * (1 / 106), 2)
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sDW"]]
-      msg <- paste0("Setting initial condition for", 
+      msg <- paste0("Setting initial condition for ", 
                     paste0(key[1:3], collapse = '/'), 
                     "/sDW: ", old_val, " replaced with ", sDW)
       cli_inform_safe(c("i" = msg))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sDW"]] <- sDW
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sNW"]]
-      msg <- paste0("Setting initial condition for", 
+      msg <- paste0("Setting initial condition for ", 
                     paste0(key[1:3], collapse = '/'), 
                     "/sNW: ", old_val, " replaced with ", sNW)
       cli_inform_safe(c("i" = msg))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sNW"]] <- sNW
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sPW"]]
-      msg <- paste0("Setting initial condition for", 
+      msg <- paste0("Setting initial condition for ", 
                     paste0(key[1:3], collapse = '/'), 
                     "/sPW: ", old_val, " replaced with ", sPW)
       cli_inform_safe(c("i" = msg))

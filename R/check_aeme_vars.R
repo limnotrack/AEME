@@ -40,17 +40,20 @@ check_aeme_vars <- function(vars) {
   # Format suggestions
   suggestion_text <- paste(
     mapply(function(var, sug) {
-      sug_text <- if (all(is.na(sug))) "No close match" else paste(sug, collapse = "/")
-      paste0("{.val ", var, "} → ", sug_text)
+      if (all(is.na(sug))) {
+        sug_text <- "No close match" 
+      } else{
+        sug_text <- paste(sug, collapse = "/")
+      } 
+      paste0(var, " → ", sug_text)
     }, invalid, suggestions),
     collapse = ", "
   )
   
-  # Abort with structured, informative message
   cli::cli_abort(
     c(
-      "!" = "Invalid variable{?s}: {.val {invalid}}.",
-      "i" = "Did you mean?: {suggestion_text}"
+      "x" = "Invalid variable{?s}: {.val {invalid}}.",
+      "i" = paste("Did you mean?:", suggestion_text)
     ),
     class = "aeme_error_vars_invalid"
   )
