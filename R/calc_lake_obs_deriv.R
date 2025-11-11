@@ -335,7 +335,8 @@ calc_lake_obs_deriv <- function(aeme) {
     out_df <- out_list |>
       dplyr::bind_rows() |>
       dplyr::filter(!is.na(value)) |>
-      dplyr::mutate(lake = lke$name, lake_id = lke$name_id)
+      # dplyr::mutate(lake = lke$name, lake_id = lke$name_id) |> 
+      dplyr::select(Date, var_aeme, depth_from, depth_to, value)
     
     obs$lake <- obs$lake |>
       dplyr::bind_rows(out_df)
