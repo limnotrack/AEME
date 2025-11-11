@@ -189,10 +189,6 @@ can speed up the process.
 
 ``` r
 aeme <- run_aeme(aeme = aeme, model = model, path = path, parallel = TRUE)
-#> Running models in parallel... [2025-11-11 03:19:37]
-#> Model run complete![2025-11-11 03:21:27]
-#> Reading models in parallel... [2025-11-11 03:21:28]
-#> Model reading complete![2025-11-11 03:22:04]
 aeme
 #>             AEME 
 #> -------------------------------------------------------------------

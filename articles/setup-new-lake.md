@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-11-11 03:22:39] job submitted
-#> INFO [2025-11-11 03:22:39] downloading
-#> INFO [2025-11-11 03:22:40] extracting
+#> INFO [2025-11-11 20:42:59] job submitted
+#> INFO [2025-11-11 20:42:59] downloading
+#> INFO [2025-11-11 20:43:01] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -498,12 +498,12 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   Using Stefan & Preud'homme (2007) method.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
-#> Building AEME object ■■■■■■■■■■■■■                     40% | Writing DYRESM-CAE…
-#> 
 #> ℹ Building DYRESM-CAEDYM for lake wainamu
 #> ℹ Copied in DYRESM .par file
 #> ℹ Writing DYRESM configuration file
 #> ℹ Writing DYRESM-CAEDYM control file
+#> Building AEME object ■■■■■■■■■■■■■■■■■■■               60% | Writing GLM-AED2 c…
+#> 
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ✔ GLM nml validation completed — no issues detected.
@@ -579,14 +579,20 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> Running models... (Have you tried parallelizing?) [2025-11-11 03:22:51]
-#> DYRESM-CAEDYM running... [2025-11-11 03:22:51]
-#> DYRESM-CAEDYM run successful! [2025-11-11 03:23:09]
-#> GLM-AED running... [2025-11-11 03:23:09]
-#> GLM-AED run successful! [2025-11-11 03:23:10]
-#> GOTM-WET running... [2025-11-11 03:23:10]
-#> GOTM-WET run successful! [2025-11-11 03:23:11]
-#> Model run complete![2025-11-11 03:23:11]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-11 20:43:11]
+#> DYRESM-CAEDYM running... [2025-11-11 20:43:11]
+#> 
+#> DYRESM-CAEDYM run successful! [2025-11-11 20:43:30]
+#> 
+#> GLM-AED running... [2025-11-11 20:43:30]
+#> 
+#> GLM-AED run successful! [2025-11-11 20:43:30]
+#> 
+#> GOTM-WET running... [2025-11-11 20:43:30]
+#> 
+#> GOTM-WET run successful! [2025-11-11 20:43:31]
+#> 
+#> ✔ Model run complete! [2025-11-11 20:43:31]
 #> ℹ Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd
 #> ℹ Retrieving and formatting dyresmSALINITY_Var for model dy_cd
 #> ℹ Retrieving and formatting temp for model glm_aed
