@@ -82,6 +82,10 @@ test_that("building GLM works", {
   tli4 <- obs$lake |>
     dplyr::filter(var_aeme == "LKE_tli4")
   testthat::expect_true(all(!is.na(tli4$value)))
+  
+  oxysat <- obs$lake |> 
+    dplyr::filter(var_aeme == "CHM_oxysat")
+  testthat::expect_true(all(!is.na(oxysat$value)))
 })
 
 test_that("building GLM-AED works", {
