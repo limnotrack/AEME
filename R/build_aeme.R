@@ -262,7 +262,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
           cli_inform_safe(
             c(
               "!" = "Missing state variables in inflows:",
-              "x" = msg
+              "!" = msg
             )
           )
           add_vars <- setdiff(inf_vars, names(inf[[i]]))
