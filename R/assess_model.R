@@ -35,6 +35,10 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
   # Check model is in aeme
   var_sim <- check_aeme_vars(var_sim)
   
+  data("key_naming", package = "AEME", envir = environment())
+  var_name <- key_naming |> 
+    dplyr::select(name, name_text, name_parse)
+  
   # Extract observations
   obs <- observations(aeme)
 
@@ -110,7 +114,8 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
       dplyr::relocate(c(n, obs_na, sim_na), .after = dplyr::last_col())
 
   }) |>
-    dplyr::bind_rows() # Bind list of data frames into one data frame and return
+    dplyr::bind_rows() |>  # Bind list of data frames into one data frame and return
+    dplyr::left_join(var_name, by = c("var_sim" = "name"))
 
-  lst
+  return(lst)
 }
