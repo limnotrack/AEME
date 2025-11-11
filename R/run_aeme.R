@@ -75,42 +75,48 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
     cl <- parallel::makeCluster(ncores)
     on.exit({
       parallel::stopCluster(cl)
-    })
+    }, add = TRUE)
     parallel::clusterExport(cl, varlist = list("run_model_args", "run_dy_cd",
                                                "run_glm_aed", "run_gotm_wet"),
                             envir = environment())
-    message("Running models in parallel... ", paste0("[", format(Sys.time()),
-                                                     "]"))
+    cli_inform_safe(c("i" = paste0("Running models in parallel... ", 
+                      "[", format(Sys.time()), "]")))
     model_out <- stats::setNames(
       parallel::parLapply(cl, model, function(mod_name) {
         do.call(paste0("run_", mod_name), run_model_args)
       }),
       model
     )
-    message("Model run complete!", paste0("[", format(Sys.time()), "]"))
+    cli_inform_safe(c("v" = paste0("Model run complete! ", 
+                                   "[", format(Sys.time()), "]")))
 
   } else {
-    message("Running models... (Have you tried parallelizing?) ",
-            paste0("[", format(Sys.time()), "]"))
+    cli_inform_safe(c("i" = paste0("Running models... (Have you tried ",
+                                   "parallelizing?) ",
+                      "[", format(Sys.time()), "]")))
     model_out <- setNames(
       lapply(model, function(mod_name) do.call(paste0("run_", mod_name),
                                                run_model_args)),
       model
     )
-    message("Model run complete!", paste0("[", format(Sys.time()), "]"))
+    cli_inform_safe(c("v" = paste0("Model run complete! ",
+                                   "[", format(Sys.time()), "]")))
   }
 
   if (check_output) {
-    message("Checking model output...")
+    cli_inform_safe(c("i" = "Checking model output..."))
     chk <- sapply(model, \(m) {
       check_model_output(path = path, aeme = aeme, model = m)
     })
     if (any(chk)) {
-      message("Models ", paste0(model[chk], collapse = ", "), " passed checks.")
+      cli_inform_safe(c("v" = paste0("Models ", paste0(model[chk],
+                                                        collapse = ", "),
+                                     " passed checks.")))
     }
     if (any(!chk)) {
-      message("Warning: Models ", paste0(model[!chk], collapse = ", "),
-              " failed checks.")
+      cli_inform_safe(c("!" = paste0("Warning: Models ",
+                                     paste0(model[!chk], collapse = ", "),
+                                     " failed checks.")))
     }
   }
 
