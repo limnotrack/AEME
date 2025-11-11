@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-11-11 02:55:25] job submitted
-#> INFO [2025-11-11 02:55:25] downloading
-#> INFO [2025-11-11 02:55:26] extracting
+#> INFO [2025-11-11 03:22:39] job submitted
+#> INFO [2025-11-11 03:22:39] downloading
+#> INFO [2025-11-11 03:22:40] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -579,14 +579,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> Running models... (Have you tried parallelizing?) [2025-11-11 02:55:37]
-#> DYRESM-CAEDYM running... [2025-11-11 02:55:37]
-#> DYRESM-CAEDYM run successful! [2025-11-11 02:55:56]
-#> GLM-AED running... [2025-11-11 02:55:56]
-#> GLM-AED run successful! [2025-11-11 02:55:56]
-#> GOTM-WET running... [2025-11-11 02:55:56]
-#> GOTM-WET run successful! [2025-11-11 02:55:57]
-#> Model run complete![2025-11-11 02:55:57]
+#> Running models... (Have you tried parallelizing?) [2025-11-11 03:22:51]
+#> DYRESM-CAEDYM running... [2025-11-11 03:22:51]
+#> DYRESM-CAEDYM run successful! [2025-11-11 03:23:09]
+#> GLM-AED running... [2025-11-11 03:23:09]
+#> GLM-AED run successful! [2025-11-11 03:23:10]
+#> GOTM-WET running... [2025-11-11 03:23:10]
+#> GOTM-WET run successful! [2025-11-11 03:23:11]
+#> Model run complete![2025-11-11 03:23:11]
 #> ℹ Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd
 #> ℹ Retrieving and formatting dyresmSALINITY_Var for model dy_cd
 #> ℹ Retrieving and formatting temp for model glm_aed
