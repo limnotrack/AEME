@@ -49,19 +49,35 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
   }
   
   if (return & is.null(model_controls)) {
-    stop("`model_controls` need to be provided to load model output.")
+    cli::cli_abort(c("x" = "`model_controls` need to be provided to load model
+                     output."))
   }
   
   sim_folder <- get_lake_dir(aeme = aeme, path = path)
   if (!dir.exists(sim_folder)) {
-    stop("Simulation folder does not exist.")
+    # stop("Simulation folder does not exist.")
+    cli::cli_abort(c("x" = "Simulation folder does not exist
+                     {.file {sim_folder}}"))
   }
   
   # Check if model directories exist
   model_dir_chk <- !any(dir.exists(file.path(sim_folder, model)))
   if (model_dir_chk) {
-    stop("Model folder does not exist.\n",
-         file.path(sim_folder, model)[dir.exists(file.path(sim_folder, model))])
+    missing_model_dirs <- model[!dir.exists(file.path(sim_folder, model))]
+    cli::cli_abort(c("x" = "Model folder(s) do not exist: {paste0(missing_model_dirs,
+                                             collapse = ', ')}"))
+  }
+  
+  # Delete previous model output if it exists
+  model_output <- get_model_outfile(aeme = aeme, model = model, path = path)
+  for (m in model) {
+    if (file.exists(model_output[[m]])) {
+      unlink(model_output[[m]])
+      cli_inform_safe(c("i" = paste0("Deleted previous output for model ",
+                                     toggle_models(m, to = "display"),
+                                     " at {.file ",
+                                     model_output[[m]], "}")))
+    }
   }
   
   run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
@@ -160,7 +176,6 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
                 paste0(dy.prefix, c(".con")), "DYsim.nc")
   info_fils <- c("DYref.nc", "DYsim.nc", paste0(dy.prefix, c( ".cfg")))
   # Delete historic files
-  unlink("DYsim.nc")
   unlink("DYref.nc")
   unlink("morphinterp.out")
   unlink("dy.log")
@@ -259,7 +274,6 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     setwd(oldwd)
   })
   setwd(file.path(sim_folder, "glm_aed"))
-  unlink("output/output.nc")
   cli_inform_safe(c(">" = paste0("GLM-AED2 running... ", "[",
                                  format(Sys.time()), "]")))
   
@@ -315,7 +329,6 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
   })
   bin_path <- system.file('extbin/', package = "AEME")
   setwd(file.path(sim_folder, "gotm_wet"))
-  unlink("output/output.nc")
   dir.create("output", showWarnings = FALSE)
   cli_inform_safe(c(">" = paste0("GOTM-WET running... ",
                                  "[", format(Sys.time()), "]")))
