@@ -31,7 +31,7 @@ model_controls = model_controls)
 #> Caused by error in `eval(expr, envir = envir)`:
 #> ! object 'path' not found
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): `model_controls` need to be provided to load model output.
+#> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): ✖ `model_controls` need to be provided to load model output.
 write_aeme_to_files(aeme, path)
 aeme_path <- get_lake_dir(aeme = aeme, path = path)
 aeme2 <- read_aeme_from_files(aeme_path)

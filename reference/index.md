@@ -81,6 +81,7 @@
   configuration files paths
 - [`get_model_controls()`](get_model_controls.md) : Get model controls
 - [`get_model_outfile()`](get_model_outfile.md) : Get model output file
+- [`get_model_version()`](get_model_version.md) : Get model version
 - [`get_mod_obs_vars()`](get_mod_obs_vars.md) : Get modeled observation
   variables
 - [`get_nml_value()`](get_nml_value.md) : gets a nml value according to
