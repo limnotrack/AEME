@@ -71,7 +71,7 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
   # Delete previous model output if it exists
   model_output <- get_model_outfile(aeme = aeme, model = model, path = path)
   for (m in model) {
-    if (file.exists(model_output[[m]])) {
+    if (any(file.exists(model_output[[m]]))) {
       unlink(model_output[[m]])
       cli_inform_safe(c("i" = paste0("Deleted previous output for model ",
                                      toggle_models(m, to = "display"),
