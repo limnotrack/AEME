@@ -113,6 +113,8 @@
   parameters
 - [`insert_aeme()`](insert_aeme.md) : Insert default aeme list code
   snippet.
+- [`is_strat()`](is_strat.md) : Check if water temperature profile is
+  stratified
 - [`key_naming`](key_naming.md) : Model variable naming
 - [`lake(`*`<Aeme>`*`)`](lake-aeme-method.md) : Access lake slot
 - [`` `lake<-`( ``*`<Aeme>`*`)`](lake-set-aeme-method.md) : Set lake in

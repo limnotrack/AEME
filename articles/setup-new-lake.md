@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-11-12 03:08:18] job submitted
-#> INFO [2025-11-12 03:08:18] downloading
-#> INFO [2025-11-12 03:08:20] extracting
+#> INFO [2025-11-12 03:56:34] job submitted
+#> INFO [2025-11-12 03:56:34] downloading
+#> INFO [2025-11-12 03:56:37] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -579,20 +579,20 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-12 03:08:31]
-#> → DYRESM-CAEDYM running... [2025-11-12 03:08:31]
-#> ✔ DYRESM-CAEDYM run successful! [2025-11-12 03:08:46]
-#> → GLM-AED2 running... [2025-11-12 03:08:46]
-#> ! GLM-AED2 run FAILED! [2025-11-12 03:08:46] Model Run Complete
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-12 03:56:47]
+#> → DYRESM-CAEDYM running... [2025-11-12 03:56:47]
+#> ✔ DYRESM-CAEDYM run successful! [2025-11-12 03:57:06]
+#> → GLM-AED2 running... [2025-11-12 03:57:06]
+#> ! GLM-AED2 run FAILED! [2025-11-12 03:57:07] Model Run Complete
 #>   -------------------------------------------------------
 #> 
 #> Reading configuration from glm3.nml NOTE: value for base_elev is no longer
 #>   used; A[1] is assumed.  VolAtCrest= 1532216.38935; MaxVol= 1532216.38935 (m3)
 #>   WARNING last zone height is less than maximum depth ... adding an extra zone
 #>   to compensate Directory "output" does not exist - attempting to create it
-#> → GOTM-WET running... [2025-11-12 03:08:46]
-#> ✔ GOTM-WET run successful! [2025-11-12 03:08:47]
-#> ✔ Model run complete! [2025-11-12 03:08:47]
+#> → GOTM-WET running... [2025-11-12 03:57:07]
+#> ✔ GOTM-WET run successful! [2025-11-12 03:57:07]
+#> ✔ Model run complete! [2025-11-12 03:57:07]
 #> ℹ Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd
 #> ℹ Retrieving and formatting dyresmSALINITY_Var for model dy_cd
 #> ℹ Retrieving and formatting temp for model glm_aed

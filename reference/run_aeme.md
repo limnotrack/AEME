@@ -106,9 +106,9 @@ model_controls = model_controls, ext_elev = 5)
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ✔ GLM nml validation completed — no issues detected.
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-12 03:04:06]
-#> → GLM-AED2 running... [2025-11-12 03:04:06]
-#> ! GLM-AED2 run FAILED! [2025-11-12 03:04:07]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-12 03:52:06]
+#> → GLM-AED2 running... [2025-11-12 03:52:06]
+#> ! GLM-AED2 run FAILED! [2025-11-12 03:52:06]
 #> 
 #> Model Run Complete -------------------------------------------------------
 #> 
@@ -116,7 +116,7 @@ aeme <- run_aeme(aeme = aeme, model = model, path = path)
 #>   used; A[1] is assumed.  VolAtCrest= 2025283.24483; MaxVol= 2025283.24483 (m3)
 #>   WARNING last zone height is less than maximum depth ... adding an extra zone
 #>   to compensate
-#> ✔ Model run complete! [2025-11-12 03:04:07]
+#> ✔ Model run complete! [2025-11-12 03:52:06]
 #> ℹ Retrieving and formatting temp for model glm_aed
 #> ℹ Retrieving and formatting salt for model glm_aed
 plot_output(aeme, model = model)
