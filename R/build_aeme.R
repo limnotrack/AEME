@@ -135,7 +135,7 @@ build_aeme <- function(aeme = NULL,
   }
   
   # Compute total steps dynamically
-  use_pb <- getOption("AEME_inform")
+  use_pb <- getOption("AEME.inform")
   if (use_pb) {
     n_models <- length(model)
     n_extra <- sum(c(calc_wbal))

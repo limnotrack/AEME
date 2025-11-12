@@ -7,7 +7,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-options(AEME_inform = FALSE)
+options(AEME.inform = FALSE)
 lernzmp_exam <- system.file("extdata/lernzmp", package = "AEME")
 dir.create("lernzmp")
 file.copy(list.files(lernzmp_exam, full.names = TRUE), "lernzmp")
