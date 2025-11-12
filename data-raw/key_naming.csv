@@ -50,7 +50,7 @@ CHM_oxy,DO,OXY_oxy,abiotic_water_sO2W,instances/abiotic_water/initialization/sO2
 CHM_oxysat,,,,,Dissolved oxygen saturation,Dissolved_oxygen_%,Dissolved~oxygen~(plain('%')),%,1,,TRUE,CHM_oxy,dissolved oxygen percent saturation|DO_SAT|CHM_oxysat|do_sat|oxy_sat
 CHM_oxycln,,,,,Oxycline depth,Oxycline_depth_m,Oxycline~depth~(m),m,1,,TRUE,CHM_oxy,oxycline depth|CHM_oxycln
 CHM_oxyepi,,,,,Epilimnetic oxygen,Epilimnetic_oxygen_mg/L,Epilimnetic~oxygen~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy,epilimnetic oxygen|CHM_oxyepi
-CHM_oxymet,,,,,Metalimnetic oygen,Metalimnetic_oxygen_mg/L,Metalimnetic~oxygen~(mg~L^-1),mg/L,,,TRUE,CHM_oxy,metalimnetic oxygen|CHM_oxymet
+CHM_oxymet,,,,,Metalimnetic oygen,Metalimnetic_oxygen_mg/L,Metalimnetic~oxygen~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy,metalimnetic oxygen|CHM_oxymet
 CHM_oxyhyp,,,,,Hypolimnetic oxygen,Hypolimnetic_oxygen_mg/L,Hypolimnetic~oxygen~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy,hypolimnetic oxygen|CHM_oxyhyp
 CHM_oxymom,,,,,Metalimnetic oxygen minima,Metalimnetic_oxygen_minima_mg/L,Metalimnetic~oxygen~minima~(mg~L^-1),mg/L,1,,TRUE,CHM_oxy,metalimnetic oxygen minima|CHM_oxymom
 CHM_oxynal,,,,,Number of anoxic layers,Number_of_anoxic_layers,Number~of~anoxic~layers,1,1,,TRUE,CHM_oxy,anoxic layers|CHM_oxynal
@@ -116,7 +116,7 @@ MET_radswd,solar_Wm^2,ShortWave,swr,,Shortwave radiation,Shortwave_radiation_W/m
 MET_radlwd,,LongWave,,,Longwave radiation,Longwave_radiation_W/m2,Longwave~radiation~(W/m2),W/m2,1,,FALSE,NA,longwave radiation|MET_radlwd
 MET_cldcvr,cloud_0to1,Cloud,cloud,,Cloud cover,Cloud_cover,Cloud~cover~(0-1),1,1,,FALSE,NA,cloud cover|MET_cldcvr
 MET_tmpair,tempture_C,AirTemp,airt,,Air temperature,Air_temperature_degC,Air~temperature~(degree~C),degC,1,,FALSE,NA,air temperature|MET_tmpair
-MET_tmpdew,,,,,Dewpoint temperature,Dewpoint_temperature_degC,Dewpoint~temperature~(degree~C),degC,,,FALSE,NA,dewpoint temperature|MET_tmpdew
+MET_tmpdew,,,,,Dewpoint temperature,Dewpoint_temperature_degC,Dewpoint~temperature~(degree~C),degC,1,,FALSE,NA,dewpoint temperature|MET_tmpdew
 MET_prsttn,,,airp,,Station pressure,Station_pressure_Pa,Station~pressure~(Pa),Pa,1,,FALSE,NA,station pressure|MET_prsttn
 MET_prmslp,,,,,Mean sea level pressure,Mean_sea_level_pressure_Pa,Mean~sea~level~pressure~(Pa),Pa,1,,FALSE,NA,mean sea level pressure|MET_prmslp
 MET_prvapr,vapour_hPa,,,,Vapour pressure,Vapour_pressure_hPa,Vapour~pressure~(hPa),hPa,1,,FALSE,NA,vapour pressure|MET_prvapr
