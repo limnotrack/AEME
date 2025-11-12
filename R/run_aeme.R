@@ -358,16 +358,26 @@ get_os <- function() {
   tolower(os)
 }
 
+#' Get GLM-AED model version
+#' @return version string
+#' @noRd
 get_glm_aed_version <- function() {
-  bin_path <- system.file('extbin/', package = "AEME")
-  glm_exec <- ifelse(get_os() == "windows",
-                     file.path(bin_path, "glm_aed", "glm.exe"),
-                     file.path(bin_path, "glm_aed", "glm"))
-  vers <- system2(glm_exec, args = "--version", stdout = TRUE)
-  vers <- gsub("GLM version ", "", vers)
+  
+  # Allow user-specified executable path
+  bin_exec <- getOption("AEME.glm_exec", default = NULL)
+  if (is.null(bin_exec)) {
+    bin_path <- system.file('extbin/', package = "AEME")
+    bin_exec <- ifelse(get_os() == "windows",
+                       file.path(bin_path, "glm_aed", "glm.exe"),
+                       file.path(bin_path, "glm_aed", "glm"))
+  }
+  vers <- system2(bin_exec, args = "--version", stdout = TRUE)
   return(vers)
 }
 
+#' Get GOTM-WET model version
+#' @return version string
+#' @noRd
 get_gotm_wet_version <- function() {
   bin_path <- system.file('extbin/', package = "AEME")
   gotm_exec <- ifelse(get_os() == "windows",
@@ -377,6 +387,9 @@ get_gotm_wet_version <- function() {
   return(vers)
 }
 
+#' Get DYRESM-CAEDYM model version
+#' @return version string
+#' @noRd
 get_dy_cd_version <- function() {
   bin_path <- system.file('extbin/', package = "AEME")
   dycd_readme <- file.path(bin_path, "dy_cd", "README_DY3p1p0-CD3p1p0.txt")
@@ -384,7 +397,16 @@ get_dy_cd_version <- function() {
   return(vers)
 }
 
+#' Get model version
+#' @param model model name. Only "glm_aed", "gotm_wet", and "dy_cd" are
+#' supported. 
+#' @return version string
+#' @export
 get_model_version <- function(model) {
+  if (length(model) > 1) {
+    cli::cli_abort("Only one model can be checked at a time.")
+  }
+  model <- check_model(model = model)
   if (model == "glm_aed") {
     vers <- get_glm_aed_version()
   } else if (model == "gotm_wet") {
