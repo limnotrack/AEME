@@ -116,8 +116,6 @@ test_that("running GLM with different exec works", {
   testthat::expect_true(file_chk)
 })
 
-
-
 test_that("running GOTM works", {
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
