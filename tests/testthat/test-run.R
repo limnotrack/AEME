@@ -64,6 +64,7 @@ test_that("running GLM works", {
   # cfg <- configuration(aeme)
   # cfg$model_controls <- NULL
   # configuration(aeme) <- cfg
+  options("AEME.glm_exec" = "C:/Users/data/Downloads/glm_3.9.016/glm_3.9.016/glm.exe")
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
   # plot_output(aeme, model = model)
   outp <- output(aeme)
@@ -77,6 +78,45 @@ test_that("running GLM works", {
   testthat::expect_error(get_var(aeme = aeme, model = model, var_sim = "HYD_temp",
                                  depth = 15))
 })
+
+test_that("running GLM with different exec works", {
+  sys_OS <- AEME:::get_os()
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
+  model_controls <- get_model_controls()
+  model <- c("glm_aed")
+  
+  path <- tempdir()  # or wherever you want to save
+  
+  glm_exec_url <- "https://github.com/AquaticEcoDynamics/Binaries/raw/master/windows/glm_3.9.016.zip"
+  
+  download.file(
+    glm_exec_url,
+    destfile = file.path(path, "glm_3.9.016.zip"),
+    mode = "wb"
+  )
+  unzip(file.path(path, "glm_3.9.016.zip"), exdir = file.path(path, "glm_exec"))
+  glm_exec <- file.path(path, "glm_exec", "glm_3.9.016", "glm.exe")
+  file.exists(glm_exec)
+  options("AEME.glm_exec" = file.path(path, "glm_exec", "glm_3.9.016", "glm.exe"))
+  
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5,
+                     use_bgc = FALSE)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
+  
+  glm_ver <- get_model_version(model = model)
+  testthat::expect_true(any(grepl("3.9.016", glm_ver)))
+  # plot_output(aeme, model = model)
+  outp <- output(aeme)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  file_chk <- file.exists(file.path(lake_dir,
+                                    model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
+})
+
+
 
 test_that("running GOTM works", {
   sys_OS <- AEME:::get_os()
