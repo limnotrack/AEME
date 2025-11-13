@@ -1,7 +1,8 @@
+library(AEME)
 # Grab from LER-WQ library ----
 ler_wq <- read.csv("https://raw.githubusercontent.com/aemon-j/LakeEnsemblR.WQ/main/data/LakeEnsemblR_WQ_dictionary.csv")
 
-glm_dir <- system.file("extdata/glm_aed/", package = "AEME")
+glm_dir <- "inst/extdata/glm_aed/"
 
 # GLM nml file
 glm_file <- file.path(glm_dir, "glm3.nml")
@@ -31,8 +32,14 @@ glm_p <- lapply(names(glm_pars), \(n) {
                char_val) |>
       dplyr::mutate(
         model = "glm_aed",
+        index = dplyr::case_when(
+          grepl("sed_heat_Ksoil|sed_temp_depth|sed_temp_mean|sed_temp_amplitude|
+                sed_temp_peak_doy|zone_heights|sed_reflectivity|sed_roughness", par) ~ 1,
+          .default = NA_integer_ 
+        ),
         min = default - (0.5 * abs(default)),
-        max = default + (0.5 * abs(default))
+        max = default + (0.5 * abs(default)),
+        group = NA_character_
       )
   }) |>
     dplyr::bind_rows()
@@ -227,9 +234,10 @@ glm_aed_parameters |>
 # glm_aed_parameters |>
 #   dplyr::filter(!par %in% param$par)
 
-param_names <- AEME:::get_param_names()
+param_names <- param_colnames()
 glm_aed_parameters  <- glm_aed_parameters |>
-  dplyr::select(dplyr::all_of(param_names))
+  dplyr::select(dplyr::any_of(param_names)) |> 
+  tibble::as_tibble()
 
 usethis::use_data(glm_aed_parameters, overwrite = TRUE)
 

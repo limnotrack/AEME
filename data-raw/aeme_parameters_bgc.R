@@ -1,8 +1,9 @@
 ## code to prepare `aeme_parameters_bgc` dataset goes here
 
-param_names <- AEME:::get_param_names()
+param_names <- param_colnames()
 aeme_parameters_bgc <- read.csv("data-raw/aeme_parameters_bgc.csv") |>
-  dplyr::mutate(group = NA) |>
-  dplyr::select(dplyr::any_of(c(param_names)))
+  dplyr::mutate(group = NA_character_) |>
+  dplyr::select(dplyr::any_of(c(param_names))) |> 
+  tibble::as_tibble()
 
 usethis::use_data(aeme_parameters_bgc, overwrite = TRUE)

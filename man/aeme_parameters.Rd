@@ -14,6 +14,13 @@ A data frame with 17 rows and 6 columns:
   \item{value}{Value of the parameter}
   \item{min}{Minimum range of the parameter}
   \item{max}{Maximum range of the parameter}
+  \item{group}{Phytoplankton Group for the parameter, only applies to
+  phytoplankton parameters}
+  \item{index}{Index for the parameter in the model file, only used for
+  parameters that have multiple values in a vector such as
+   "sediment/sed_temp_mean" in GLM-AED2}
+  \item{module}{Module for the parameter in the model, useful to help
+  identify parameters} 
 }
 }
 \source{

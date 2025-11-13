@@ -3,31 +3,33 @@
 \docType{data}
 \name{dy_cd_parameters}
 \alias{dy_cd_parameters}
-\title{Example dataframe used for calibrating the biogeochemistry in the 
-DYRESM-CAEDYM model.}
+\title{Example dataset of parameters for the DYRESM-CAEDYM model}
 \format{
-## `dy_cd_parameters`
-A data frame with 253 rows and 7 columns:
+A data frame with 253 rows and 9 columns:
 \describe{
-  \item{model}{Model for the parameter}
+  \item{model}{Model to which the parameter belongs}
   \item{file}{File in which the parameter is stored}
   \item{name}{Name of the parameter}
-  \item{value}{Value of the parameter}
+  \item{value}{Default value of the parameter}
   \item{min}{Minimum range of the parameter}
   \item{max}{Maximum range of the parameter}
-  \item{var}{Maximum range of the parameter}
+  \item{group}{Phytoplankton group for the parameter; only applies to
+    phytoplankton parameters}
+  \item{index}{Index for parameters with multiple values in a vector (e.g.,
+    `"sediment/sed_temp_mean"` in GLM-AED2)}
+  \item{module}{Model module associated with the parameter, useful for
+    identifying functional groupings}
 }
 }
 \source{
-Package development.
+Created during package development.
 }
 \usage{
 dy_cd_parameters
 }
 \description{
-All the parameters within the aed2.nml file. This includes three
-phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
-group (cladocerans). This has the values in the default file and 25 % parameter
-ranges for sensitivity analysis.
+This dataset contains all parameters defined in the `.par` and `.cfg` file.
+The values represent defaults from the standard configuration file, with 
+±25% parameter ranges for use in sensitivity analysis or model calibration.
 }
 \keyword{datasets}
