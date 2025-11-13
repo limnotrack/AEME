@@ -297,7 +297,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     out <- system2(bin_exec,
                    wait = TRUE, stdout = TRUE,
                    stderr = TRUE, timeout = timeout)
-    success <- sum(grepl("GLM-AED2 Run Complete", out)) == 1
+    success <- sum(grepl("Model Run Complete", out)) == 1
     if (success) {
       # message("GLM-AED run successful! [", format(Sys.time()), "]")
       cli_inform_safe(c("v" = paste0("GLM-AED2 run successful! ",
