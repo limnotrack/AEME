@@ -233,7 +233,7 @@ aeme_constructor <- function(
       gotm_wet = NULL
     )
   }
-  param_names <- get_param_names()
+  param_names <- param_colnames()
   if (missing(parameters)) {
     parameters <- data.frame(matrix(nrow = 0, ncol = length(param_names)))
     colnames(parameters) <- param_names
@@ -1456,15 +1456,6 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
 setMethod("names", "Aeme", function(x) {
   slotNames(x)
 })
-
-#' Get parameters data frame column names
-#' @noRd
-
-get_param_names <- function() {
-  param_names <- c("model", "file", "name", "value", "min", "max", "module",
-                   "group", "par", "logical", "logical_val", "char", "char_val")
-  return(param_names)
-}
 
 #' Get column names for the observational data frame
 #' @export
