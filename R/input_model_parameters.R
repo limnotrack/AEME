@@ -279,9 +279,9 @@ input_model_parameters <- function(aeme, model, param, path) {
 #'
 #' @return data.frame; collapsed parameters
 #' @noRd
-#'
 collapse_params <- function(param_df) {
-  req_col_names <- c("model", "file", "name", "value", "min", "max", "group")
+  req_col_names <- c("model", "file", "name", "value", "min", "max", "group",
+                     "index")
   if (!all(req_col_names %in% names(param_df))) {
     stop(paste0("param_df must contain the following columns: ",
                 paste(req_col_names, collapse = ", "), "."))
@@ -289,6 +289,7 @@ collapse_params <- function(param_df) {
   
   param_df |>
     dplyr::group_by(model, file, name, group) |>
+    dplyr::arrange(index, .by_group = TRUE) |>
     dplyr::summarise(
       value = list(value),
       min   = list(min),
@@ -297,3 +298,4 @@ collapse_params <- function(param_df) {
     ) |>
     tibble::as_tibble()
 }
+
