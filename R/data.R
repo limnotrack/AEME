@@ -73,6 +73,13 @@
 #'   \item{value}{Value of the parameter}
 #'   \item{min}{Minimum range of the parameter}
 #'   \item{max}{Maximum range of the parameter}
+#'   \item{group}{Phytoplankton Group for the parameter, only applies to
+#'   phytoplankton parameters}
+#'   \item{index}{Index for the parameter in the model file, only used for
+#'   parameters that have multiple values in a vector such as
+#'    "sediment/sed_temp_mean" in GLM-AED2}
+#'   \item{module}{Module for the parameter in the model, useful to help
+#'   identify parameters} 
 #' }
 #' @source Package development.
 "aeme_parameters"
@@ -91,43 +98,51 @@
 #'   \item{value}{Value of the parameter}
 #'   \item{min}{Minimum range of the parameter}
 #'   \item{max}{Maximum range of the parameter}
-#'   \item{var}{Maximum range of the parameter}
+#'   \item{group}{Phytoplankton Group for the parameter, only applies to
+#'   phytoplankton parameters}
+#'   \item{index}{Index for the parameter in the model file, only used for
+#'   parameters that have multiple values in a vector such as
+#'    "sediment/sed_temp_mean" in GLM-AED2}
+#'   \item{module}{Module for the parameter in the model, useful to help
+#'   identify parameters} 
 #' }
 #' @source Package development.
 "aeme_parameters_bgc"
 
-#' Example dataframe used for calibrating the biogeochemistry in the 
-#' DYRESM-CAEDYM model.
+#' Example dataset of parameters for the DYRESM-CAEDYM model
 #'
-#' All the parameters within the aed2.nml file. This includes three
-#' phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
-#' group (cladocerans). This has the values in the default file and 25 % parameter
-#' ranges for sensitivity analysis.
+#' This dataset contains all parameters defined in the `.par` and `.cfg` file.
+#' The values represent defaults from the standard configuration file, with 
+#' ±25% parameter ranges for use in sensitivity analysis or model calibration.
 #'
-#' @format ## `dy_cd_parameters`
-#' A data frame with 253 rows and 7 columns:
+#' @format A data frame with 253 rows and 9 columns:
 #' \describe{
-#'   \item{model}{Model for the parameter}
+#'   \item{model}{Model to which the parameter belongs}
 #'   \item{file}{File in which the parameter is stored}
 #'   \item{name}{Name of the parameter}
-#'   \item{value}{Value of the parameter}
+#'   \item{value}{Default value of the parameter}
 #'   \item{min}{Minimum range of the parameter}
 #'   \item{max}{Maximum range of the parameter}
-#'   \item{var}{Maximum range of the parameter}
+#'   \item{group}{Phytoplankton group for the parameter; only applies to
+#'     phytoplankton parameters}
+#'   \item{index}{Index for parameters with multiple values in a vector (e.g.,
+#'     `"sediment/sed_temp_mean"` in GLM-AED2)}
+#'   \item{module}{Model module associated with the parameter, useful for
+#'     identifying functional groupings}
 #' }
-#' @source Package development.
+#'
+#' @source Created during package development.
 "dy_cd_parameters"
 
-#' Example dataframe used for calibrating the biogeochemistry in the GOTM-WET
-#' model.
+
+#' Example dataset of parameters for the GOTM-WET model
 #'
-#' All the parameters within the fabm.yaml file. This includes three
-#' phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
-#' group (cladocerans). This has the values in the default file and 25 % parameter
-#' ranges for sensitivity analysis.
+#' All the parameters within the `gotm.yaml` and `fabm.yaml` file. 
+#' This includes three phytoplankton groups (greens, cyanobacteria an diatoms),
+#' one zooplankton group (cladocerans). This has the values in the default file 
+#' and 25 % parameter ranges for sensitivity analysis or model calibration.
 #'
-#' @format ## `gotm_wet_parameters`
-#' A data frame with 182 rows and 7 columns:
+#' @format A data frame with 628 rows and 14 columns:
 #' \describe{
 #'   \item{model}{Model for the parameter}
 #'   \item{file}{File in which the parameter is stored}
@@ -135,7 +150,18 @@
 #'   \item{value}{Value of the parameter}
 #'   \item{min}{Minimum range of the parameter}
 #'   \item{max}{Maximum range of the parameter}
-#'   \item{var}{Maximum range of the parameter}
+#'   \item{group}{Phytoplankton Group for the parameter, only applies to
+#'   phytoplankton parameters}
+#'   \item{index}{Index for the parameter in the model file, only used for
+#'   parameters that have multiple values in a vector such as
+#'    "sediment/sed_temp_mean" in GLM-AED2}
+#'   \item{module}{Module for the parameter in the model, useful to help
+#'   identify parameters} 
+#'   \item{par}{Short name for the parameter}
+#'   \item{logical}{Logical value if the parameter is boolean}
+#'   \item{logical_val}{Value if the parameter is boolean}
+#'   \item{char}{Logical value if the parameter is character}
+#'   \item{char_val}{Value if the parameter is character}
 #' }
 #' @source Package development.
 "gotm_wet_parameters"
@@ -148,7 +174,7 @@
 #' group (cladocerans). This has the values in the default file and 25 % parameter
 #' ranges for sensitivity analysis.
 #'
-#' @format ## `glm_aed_parameters`
+#' @format `glm_aed_parameters`
 #' A data frame with 253 rows and 7 columns:
 #' \describe{
 #'   \item{model}{Model for the parameter}
@@ -157,7 +183,18 @@
 #'   \item{value}{Value of the parameter}
 #'   \item{min}{Minimum range of the parameter}
 #'   \item{max}{Maximum range of the parameter}
-#'   \item{var}{Maximum range of the parameter}
+#'   \item{group}{Phytoplankton Group for the parameter, only applies to
+#'   phytoplankton parameters}
+#'   \item{index}{Index for the parameter in the model file, only used for
+#'   parameters that have multiple values in a vector such as
+#'    "sediment/sed_temp_mean" in GLM-AED2}
+#'   \item{module}{Module for the parameter in the model, useful to help
+#'   identify parameters} 
+#'   \item{par}{Short name for the parameter}
+#'   \item{logical}{Logical value if the parameter is boolean}
+#'   \item{logical_val}{Value if the parameter is boolean}
+#'   \item{char}{Logical value if the parameter is character}
+#'   \item{char_val}{Value if the parameter is character}
 #' }
 #' @source Package development.
 "glm_aed_parameters"
@@ -175,6 +212,7 @@
 #'   \item{zi}{Interface depth (m)}
 #'   \item{h}{Layer thickness (m)}
 #'   \item{z}{Layer depth (m)}
+#'   \item{n}{Layer number}
 #' }
 #' @source Package development.
 "model_layer_structure"
