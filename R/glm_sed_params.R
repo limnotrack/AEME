@@ -127,8 +127,9 @@ glm_sed_params <- function(n_zones = 1,
     value = values_vec,
     min   = min_vec,
     max   = max_vec,
-    group = "sediment",
+    group = NA_character_,
     index = index_vec,
+    module = "sediment",
     stringsAsFactors = FALSE
   )
   
@@ -140,8 +141,9 @@ glm_sed_params <- function(n_zones = 1,
     value = c(benthic_mode, n_zones),
     min   = c(benthic_mode, n_zones),
     max   = c(benthic_mode, n_zones),
-    group = "sediment",
+    group = NA_character_,
     index = c(NA_integer_, NA_integer_),
+    module = "sediment",
     stringsAsFactors = FALSE
   )
   
