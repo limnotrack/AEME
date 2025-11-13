@@ -11,6 +11,7 @@ A data frame with 191 rows and 3 columns:
   \item{zi}{Interface depth (m)}
   \item{h}{Layer thickness (m)}
   \item{z}{Layer depth (m)}
+  \item{n}{Layer number}
 }
 }
 \source{
