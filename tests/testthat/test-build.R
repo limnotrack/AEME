@@ -605,15 +605,15 @@ test_that("can update initial profile with obs", {
   # obs <- get_obs(aeme = aeme)
   
   model_files <- get_model_config_files(aeme = aeme, model = model, path = path)
-  testthat::expect_true(length(model_files) > 0)
-  testthat::expect_true(all(file.exists(model_files)))
+  testthat::expect_true(length(unlist(model_files)) > 0)
+  testthat::expect_true(all(file.exists(unlist(model_files))))
   
-  glm_nml <- read_nml(model_files["glm3"])
+  glm_nml <- read_nml(model_files$glm_aed["glm3"])
   testthat::expect_true(all(glm_nml$init_profiles$the_temps %in%
                               inp2$init_profile$temperature))
   
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
-  gotm_yaml <- yaml::read_yaml(model_files["gotm"])
+  gotm_yaml <- yaml::read_yaml(model_files$gotm_wet["gotm"])
   init_tprof_file <- file.path(lake_dir, "gotm_wet", 
                                gotm_yaml$temperature$file)
   init_sprof_file <- file.path(lake_dir, "gotm_wet", 
@@ -627,10 +627,10 @@ test_that("can update initial profile with obs", {
   testthat::expect_true(all(gotm_tprof$salinity %in%
                               inp2$init_profile$salinity))
   
-  aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = TRUE)
+  aeme <- run_aeme(aeme = aeme, model = model, path = path)
   
   lke <- lake(aeme)
-  file_chk <- file.exists(file.path(lake_dir, model[1], "DYsim.nc"))
+  file_chk <- file.exists(file.path(lake_dir, "dy_cd", "DYsim.nc"))
   testthat::expect_true(file_chk)
   
   file_chk <- all(file.exists(file.path(lake_dir, model[-1], "output", 
