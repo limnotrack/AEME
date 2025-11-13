@@ -1,3 +1,4 @@
+library(AEME)
 param_names <- param_colnames()
 aeme_parameters <- read.csv("data-raw/aeme_parameters.csv") |>
   dplyr::mutate(group = NA_character_)|>

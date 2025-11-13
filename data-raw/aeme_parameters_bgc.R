@@ -1,5 +1,5 @@
 ## code to prepare `aeme_parameters_bgc` dataset goes here
-
+library(AEME)
 param_names <- param_colnames()
 aeme_parameters_bgc <- read.csv("data-raw/aeme_parameters_bgc.csv") |>
   dplyr::mutate(group = NA_character_) |>
