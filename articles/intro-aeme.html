@@ -387,11 +387,14 @@ GLM-AED.</p></li>
 <li><p>max - Maximum range of the parameter. This is used in the
 <code><a href="https://limnotrack.github.io/aemetools/reference/calib_aeme.html" class="external-link">aemetools::calib_aeme()</a></code> and
 <code><a href="https://limnotrack.github.io/aemetools/reference/sa_aeme.html" class="external-link">aemetools::sa_aeme()</a></code> function.</p></li>
+<li><p>group - Phytoplankton group. This is only used for GOTM-WET
+phytoplankton parameters.</p></li>
+<li><p>index - Index of the parameter. This is only used for GLM-AED
+parameters that are vectors e.g. sediment parameters
+(“sed_temp_mean”).</p></li>
 <li><p>module - Module that the parameter is in. Not necessary, but is
 helpful for identifying which parameters are in which module for GLM-AED
 and GOTM-WET.</p></li>
-<li><p>group - Phytoplankton group. This is only used for GOTM-WET
-phytoplankton parameters.</p></li>
 </ul>
 <p>There is a function <code><a href="../reference/get_aeme_parameters.html">get_aeme_parameters()</a></code> which allows
 you to select parameters based on model and module. See
@@ -580,12 +583,10 @@ example, the <code>lake</code> slot can be visualised using the
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">inf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span>
 <span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"aeme"</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
-<span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>,</span>
+<span>                            model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
 <span>                            ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Created missing directory <span style="color: #0000BB;">aeme</span>.</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Missing state variables in inflows:</span></span>

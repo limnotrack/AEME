@@ -70,6 +70,7 @@
 <url><loc>/reference/get_var.html</loc></url>
 <url><loc>/reference/get_var_indices.html</loc></url>
 <url><loc>/reference/glm_aed_parameters.html</loc></url>
+<url><loc>/reference/glm_sed_params.html</loc></url>
 <url><loc>/reference/gotm_wet_parameters.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/inflows-aeme-method.html</loc></url>
@@ -115,6 +116,7 @@
 <url><loc>/reference/parameters-set-aeme-method.html</loc></url>
 <url><loc>/reference/parameters-set.html</loc></url>
 <url><loc>/reference/parameters.html</loc></url>
+<url><loc>/reference/param_colnames.html</loc></url>
 <url><loc>/reference/plot-Aeme-method.html</loc></url>
 <url><loc>/reference/plot_flows.html</loc></url>
 <url><loc>/reference/plot_fluxes.html</loc></url>

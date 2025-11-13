@@ -269,12 +269,16 @@ The columns for the parameters data.frame are:
   [`aemetools::sa_aeme()`](https://limnotrack.github.io/aemetools/reference/sa_aeme.html)
   function.
 
+- group - Phytoplankton group. This is only used for GOTM-WET
+  phytoplankton parameters.
+
+- index - Index of the parameter. This is only used for GLM-AED
+  parameters that are vectors e.g. sediment parameters
+  (“sed_temp_mean”).
+
 - module - Module that the parameter is in. Not necessary, but is
   helpful for identifying which parameters are in which module for
   GLM-AED and GOTM-WET.
-
-- group - Phytoplankton group. This is only used for GOTM-WET
-  phytoplankton parameters.
 
 There is a function
 [`get_aeme_parameters()`](../reference/get_aeme_parameters.md) which
@@ -470,12 +474,10 @@ plot(aeme, "input")
 
 ``` r
 model_controls <- get_model_controls()
-inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("dy_cd", "glm_aed", "gotm_wet")
 path <- "aeme"
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                            model_controls = model_controls, inf_factor = inf_factor,
+                            model_controls = model_controls,
                             ext_elev = 5, use_bgc = TRUE)
 #> Created missing directory aeme.
 #> ! Missing state variables in inflows:

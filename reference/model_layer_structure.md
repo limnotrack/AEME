@@ -27,6 +27,10 @@ model_layer_structure
 
   Layer depth (m)
 
+- n:
+
+  Layer number
+
 ## Source
 
 Package development.

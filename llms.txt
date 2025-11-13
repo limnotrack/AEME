@@ -207,8 +207,8 @@ We have a host of vignettes to help you get started with AEME:
 - [`configuration()`](configuration.md) : Access configuration slot
 - [`convert_do()`](convert_do.md) : Convert dissolved oxygen between
   mg/L and percent saturation
-- [`dy_cd_parameters`](dy_cd_parameters.md) : Example dataframe used for
-  calibrating the biogeochemistry in the DYRESM-CAEDYM model.
+- [`dy_cd_parameters`](dy_cd_parameters.md) : Example dataset of
+  parameters for the DYRESM-CAEDYM model
 - [`expand_met()`](expand_met.md) : Expand a minimal set of meteorology
   inputs to a complete set of variables suitable for all models
 - [`extrap_hyps()`](extrap_hyps.md) : Extend hypsometry to a greater
@@ -245,8 +245,10 @@ We have a host of vignettes to help you get started with AEME:
 - [`get_var_indices()`](get_var_indices.md) : Get variable indices
 - [`glm_aed_parameters`](glm_aed_parameters.md) : Example dataframe used
   for calibrating the biogeochemistry in the GLM-AED model.
-- [`gotm_wet_parameters`](gotm_wet_parameters.md) : Example dataframe
-  used for calibrating the biogeochemistry in the GOTM-WET model.
+- [`glm_sed_params()`](glm_sed_params.md) : Generate GLM Sediment
+  Parameters
+- [`gotm_wet_parameters`](gotm_wet_parameters.md) : Example dataset of
+  parameters for the GOTM-WET model
 - [`inflows(`*`<Aeme>`*`)`](inflows-aeme-method.md) : Access inflows
   slot
 - [`` `inflows<-`( ``*`<Aeme>`*`)`](inflows-set-aeme-method.md) : Set
@@ -312,6 +314,8 @@ We have a host of vignettes to help you get started with AEME:
 - [`` `parameters<-`() ``](parameters-set.md) : Set parameters in Aeme
   object
 - [`parameters()`](parameters.md) : Access parameters slot
+- [`param_colnames()`](param_colnames.md) : Get AEME parameters data
+  frame column names
 - [`plot(`*`<Aeme>`*`)`](plot-Aeme-method.md) : Update summary Method
 - [`plot_flows()`](plot_flows.md) : Plot inflows and/or outflows
 - [`plot_fluxes()`](plot_fluxes.md) : Plot fluxes

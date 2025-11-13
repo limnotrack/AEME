@@ -42,16 +42,10 @@ model_controls = model_controls)
 #> ℹ Copied in GLM nml file
 #> ✔ GLM nml validation completed — no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-12 03:52:13]
-#> → GLM-AED2 running... [2025-11-12 03:52:13]
-#> ! GLM-AED2 run FAILED! [2025-11-12 03:52:13] Model Run Complete
-#>   -------------------------------------------------------
-#> 
-#> Reading configuration from glm3.nml NOTE: value for base_elev is no longer
-#>   used; A[1] is assumed.  VolAtCrest= 1103698.51576; MaxVol= 1103698.51576 (m3)
-#>   WARNING last zone height is less than maximum depth ... adding an extra zone
-#>   to compensate Directory "output" does not exist - attempting to create it
-#> ✔ Model run complete! [2025-11-12 03:52:14]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-13 20:44:52]
+#> → GLM-AED2 running... [2025-11-13 20:44:52]
+#> ✔ GLM-AED2 run successful! [2025-11-13 20:44:52]
+#> ✔ Model run complete! [2025-11-13 20:44:52]
 #> ℹ Retrieving and formatting temp for model glm_aed
 #> ℹ Retrieving and formatting salt for model glm_aed
 write_aeme_to_files(aeme, path)

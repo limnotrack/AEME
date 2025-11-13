@@ -26,4 +26,4 @@ get_model_config_files(aeme, model, path)
 
 ## Value
 
-A named vector with paths to model configuration files
+A list with model configuration files paths

@@ -36,6 +36,22 @@ aeme_parameters
 
   Maximum range of the parameter
 
+- group:
+
+  Phytoplankton Group for the parameter, only applies to phytoplankton
+  parameters
+
+- index:
+
+  Index for the parameter in the model file, only used for parameters
+  that have multiple values in a vector such as "sediment/sed_temp_mean"
+  in GLM-AED2
+
+- module:
+
+  Module for the parameter in the model, useful to help identify
+  parameters
+
 ## Source
 
 Package development.

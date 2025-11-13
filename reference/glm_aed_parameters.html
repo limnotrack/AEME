@@ -64,7 +64,7 @@ ranges for sensitivity analysis.</p>
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>## `glm_aed_parameters`
+    <p>`glm_aed_parameters`
 A data frame with 253 rows and 7 columns:</p><dl><dt>model</dt>
 <dd><p>Model for the parameter</p></dd>
 
@@ -83,8 +83,33 @@ A data frame with 253 rows and 7 columns:</p><dl><dt>model</dt>
   <dt>max</dt>
 <dd><p>Maximum range of the parameter</p></dd>
 
-  <dt>var</dt>
-<dd><p>Maximum range of the parameter</p></dd>
+  <dt>group</dt>
+<dd><p>Phytoplankton Group for the parameter, only applies to
+  phytoplankton parameters</p></dd>
+
+  <dt>index</dt>
+<dd><p>Index for the parameter in the model file, only used for
+  parameters that have multiple values in a vector such as
+   "sediment/sed_temp_mean" in GLM-AED2</p></dd>
+
+  <dt>module</dt>
+<dd><p>Module for the parameter in the model, useful to help
+  identify parameters</p></dd>
+
+  <dt>par</dt>
+<dd><p>Short name for the parameter</p></dd>
+
+  <dt>logical</dt>
+<dd><p>Logical value if the parameter is boolean</p></dd>
+
+  <dt>logical_val</dt>
+<dd><p>Value if the parameter is boolean</p></dd>
+
+  <dt>char</dt>
+<dd><p>Logical value if the parameter is character</p></dd>
+
+  <dt>char_val</dt>
+<dd><p>Value if the parameter is character</p></dd>
 
 
 </dl></div>

@@ -1,9 +1,9 @@
-# Example dataframe used for calibrating the biogeochemistry in the GOTM-WET model.
+# Example dataset of parameters for the GOTM-WET model
 
-All the parameters within the fabm.yaml file. This includes three
-phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
-group (cladocerans). This has the values in the default file and 25
-ranges for sensitivity analysis.
+All the parameters within the \`gotm.yaml\` and \`fabm.yaml\` file. This
+includes three phytoplankton groups (greens, cyanobacteria an diatoms),
+one zooplankton group (cladocerans). This has the values in the default
+file and 25
 
 ## Usage
 
@@ -13,7 +13,7 @@ gotm_wet_parameters
 
 ## Format
 
-\## \`gotm_wet_parameters\` A data frame with 182 rows and 7 columns:
+A data frame with 628 rows and 14 columns:
 
 - model:
 
@@ -39,9 +39,41 @@ gotm_wet_parameters
 
   Maximum range of the parameter
 
-- var:
+- group:
 
-  Maximum range of the parameter
+  Phytoplankton Group for the parameter, only applies to phytoplankton
+  parameters
+
+- index:
+
+  Index for the parameter in the model file, only used for parameters
+  that have multiple values in a vector such as "sediment/sed_temp_mean"
+  in GLM-AED2
+
+- module:
+
+  Module for the parameter in the model, useful to help identify
+  parameters
+
+- par:
+
+  Short name for the parameter
+
+- logical:
+
+  Logical value if the parameter is boolean
+
+- logical_val:
+
+  Value if the parameter is boolean
+
+- char:
+
+  Logical value if the parameter is character
+
+- char_val:
+
+  Value if the parameter is character
 
 ## Source
 

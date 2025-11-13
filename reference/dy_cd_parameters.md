@@ -1,9 +1,8 @@
-# Example dataframe used for calibrating the biogeochemistry in the DYRESM-CAEDYM model.
+# Example dataset of parameters for the DYRESM-CAEDYM model
 
-All the parameters within the aed2.nml file. This includes three
-phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
-group (cladocerans). This has the values in the default file and 25
-ranges for sensitivity analysis.
+This dataset contains all parameters defined in the \`.par\` and
+\`.cfg\` file. The values represent defaults from the standard
+configuration file, with ±25
 
 ## Usage
 
@@ -13,11 +12,11 @@ dy_cd_parameters
 
 ## Format
 
-\## \`dy_cd_parameters\` A data frame with 253 rows and 7 columns:
+A data frame with 253 rows and 9 columns:
 
 - model:
 
-  Model for the parameter
+  Model to which the parameter belongs
 
 - file:
 
@@ -29,7 +28,7 @@ dy_cd_parameters
 
 - value:
 
-  Value of the parameter
+  Default value of the parameter
 
 - min:
 
@@ -39,10 +38,21 @@ dy_cd_parameters
 
   Maximum range of the parameter
 
-- var:
+- group:
 
-  Maximum range of the parameter
+  Phytoplankton group for the parameter; only applies to phytoplankton
+  parameters
+
+- index:
+
+  Index for parameters with multiple values in a vector (e.g.,
+  \`"sediment/sed_temp_mean"\` in GLM-AED2)
+
+- module:
+
+  Model module associated with the parameter, useful for identifying
+  functional groupings
 
 ## Source
 
-Package development.
+Created during package development.

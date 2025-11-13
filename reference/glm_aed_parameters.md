@@ -13,7 +13,7 @@ glm_aed_parameters
 
 ## Format
 
-\## \`glm_aed_parameters\` A data frame with 253 rows and 7 columns:
+\`glm_aed_parameters\` A data frame with 253 rows and 7 columns:
 
 - model:
 
@@ -39,9 +39,41 @@ glm_aed_parameters
 
   Maximum range of the parameter
 
-- var:
+- group:
 
-  Maximum range of the parameter
+  Phytoplankton Group for the parameter, only applies to phytoplankton
+  parameters
+
+- index:
+
+  Index for the parameter in the model file, only used for parameters
+  that have multiple values in a vector such as "sediment/sed_temp_mean"
+  in GLM-AED2
+
+- module:
+
+  Module for the parameter in the model, useful to help identify
+  parameters
+
+- par:
+
+  Short name for the parameter
+
+- logical:
+
+  Logical value if the parameter is boolean
+
+- logical_val:
+
+  Value if the parameter is boolean
+
+- char:
+
+  Logical value if the parameter is character
+
+- char_val:
+
+  Value if the parameter is character
 
 ## Source
 

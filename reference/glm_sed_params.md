@@ -1,0 +1,95 @@
+# Generate GLM Sediment Parameters
+
+Generate GLM Sediment Parameters
+
+## Usage
+
+``` r
+glm_sed_params(
+  n_zones = 1,
+  zone_heights = c(10),
+  sed_heat_Ksoil = 0.01,
+  sed_temp_depth = 0.2,
+  sed_temp_mean = c(12),
+  sed_temp_amplitude = c(8),
+  sed_temp_peak_doy = c(30),
+  sed_reflectivity = c(0.01),
+  sed_roughness = c(0.01),
+  benthic_mode = 2
+)
+```
+
+## Arguments
+
+- n_zones:
+
+  Number of sediment zones to simulate. Default is 1.
+
+- zone_heights:
+
+  Upper height of zone boundarys (m). Length must equal 'n_zones'. 0 is
+  lake bottom. Default is c(10) for n_zones = 1.
+
+- sed_heat_Ksoil:
+
+  Heat conductivity of soil/sediment. Default is 0.01.
+
+- sed_temp_depth:
+
+  Depth of soil/sediment layer below the lake bottom, used for heat flux
+  calculation. Default is 0.2.
+
+- sed_temp_mean:
+
+  Annual mean sediment temperature. Default is 12.
+
+- sed_temp_amplitude:
+
+  Amplitude of temperature variation experienced in the sediment over
+  one year. Default is 8.
+
+- sed_temp_peak_doy:
+
+  Day of the year where the sediment temperature peaks. Default is 30.
+
+- sed_reflectivity:
+
+  Sediment reflectivity. Default is 0.01.
+
+- sed_roughness:
+
+  Sediment roughness. Default is 0.01.
+
+- benthic_mode:
+
+  Switch to configure which mode of benthic interaction to apply.
+  Options are:
+
+  - 0: Bottom layer only
+
+  - 1: Bottom layer & layer flanks
+
+  - 2: Sediment zones with individual properties (default)
+
+## Value
+
+Data frame of GLM sediment parameters
+
+## Examples
+
+``` r
+# Generate sediment parameters for 1 zone
+sed_params_1zone <- generate_glm_sed_params(n_zones = 1)
+#> Error in generate_glm_sed_params(n_zones = 1): could not find function "generate_glm_sed_params"
+print(sed_params_1zone)
+#> Error: object 'sed_params_1zone' not found
+#' # Generate sediment parameters for 3 zones
+sed_params_3zones <- generate_glm_sed_params(
+  n_zones = 3,
+  zone_heights = c(5, 15, 20),
+  sed_temp_mean = c(10, 12, 14)
+)
+#> Error in generate_glm_sed_params(n_zones = 3, zone_heights = c(5, 15,     20), sed_temp_mean = c(10, 12, 14)): could not find function "generate_glm_sed_params"
+print(sed_params_3zones)
+#> Error: object 'sed_params_3zones' not found
+```
