@@ -2,7 +2,7 @@
 #'
 #' @inheritParams build_aeme
 #'
-#' @returns A named vector with paths to model configuration files
+#' @returns A list with model configuration files paths
 #' @export
 #'
 
@@ -12,16 +12,20 @@ get_model_config_files <- function(aeme, model, path) {
   model <- check_model(model = model)
   path <- check_path(path = path, must_exist = TRUE)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  
+  out <- list()
+  
   if ("glm_aed" %in% model) {
     glm_files <- list.files(
       path = file.path(lake_dir, "glm_aed"),
       pattern = "\\.nml$",
-      full.names = TRUE, recursive = TRUE
+      full.names = TRUE,
+      recursive = TRUE
     )
     names(glm_files) <- basename(tools::file_path_sans_ext(glm_files))
-  } else {
-    glm_files <- NULL
+    out$glm_aed <- glm_files
   }
+  
   if ("gotm_wet" %in% model) {
     gotm_files <- list.files(
       path = file.path(lake_dir, "gotm_wet"),
@@ -29,23 +33,19 @@ get_model_config_files <- function(aeme, model, path) {
       full.names = TRUE
     )
     names(gotm_files) <- basename(tools::file_path_sans_ext(gotm_files))
-  } else {
-    gotm_files <- NULL
+    out$gotm_wet <- gotm_files
   }
   
   if ("dy_cd" %in% model) {
-    # Files with .bio, .chm, .sed, .par extensions
     dycd_files <- list.files(
       path = file.path(lake_dir, "dy_cd"),
       pattern = "\\.(bio|chm|sed|par)$",
       full.names = TRUE
     )
-    # Name files using their extensions
     names(dycd_files) <- tools::file_ext(basename(dycd_files))
-  } else {
-    dycd_files <- NULL
+    out$dy_cd <- dycd_files
   }
   
-  all_files <- c(glm_files, gotm_files, dycd_files)
-  return(all_files)
+  return(out)
 }
+

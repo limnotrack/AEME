@@ -16,7 +16,7 @@ get_model_config_files(aeme, model, path)
 working directory.}
 }
 \value{
-A named vector with paths to model configuration files
+A list with model configuration files paths
 }
 \description{
 Get model configuration files paths
