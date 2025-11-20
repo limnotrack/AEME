@@ -587,7 +587,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               use_lw = inp$use_lw, overwrite_nml = overwrite)
     # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
-  if("gotm_wet" %in% model) {
+  if ("gotm_wet" %in% model) {
     #--- configure GOTM-WET
     if (use_pb) {
       cli::cli_progress_update(
@@ -628,6 +628,16 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     input_model_parameters(aeme = aeme, model = model, param = param,
                            path = path)
   }
+  
+  # Check model cfg files ----
+  cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
+  if ("gotm_wet" %in% model) {
+    check_gotm_yaml(file = cfg_files$gotm_wet["gotm"])
+  }
+  if ("glm_aed" %in% model) {
+    check_glm_nml(file = cfg_files$glm_aed["glm3"])
+  } 
+  
 
   # Load model configuration ----
   aeme <- load_configuration(model = model, aeme = aeme, 
