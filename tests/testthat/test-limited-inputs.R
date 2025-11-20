@@ -136,8 +136,8 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   tgt_vars <- list_mod_obs_vars(aeme, model = model)
   testthat::expect_true(is.null(tgt_vars))
   
-  p1 <- plot_output(aeme, model = model)
-  p2 <- plot_output(aeme, model = model, var_sim = "LKE_lvlwtr", facet = FALSE)
+  p1 <- plot_output(aeme)
+  p2 <- plot_output(aeme, var_sim = "LKE_lvlwtr", facet = FALSE)
   testthat::expect_true(ggplot2::is_ggplot(p1))
   testthat::expect_true(ggplot2::is_ggplot(p2))
   

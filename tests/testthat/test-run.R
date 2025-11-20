@@ -34,20 +34,25 @@ test_that("running DYRESM works", {
   testthat::expect_true(file_chk)
   outp <- output(aeme)
   testthat::expect_true(!is.null(outp$ens_001$dy_cd))
+  
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  
+  vars_sim <- "HYD_temp"
+  out <- read_dy_output(file = outfile$dy_cd, vars_sim = vars_sim)
+  testthat::expect_true(nrow(out$HYD_temp) > 2)
+  out2 <- read_dy_output(file = outfile$dy_cd, vars_sim = "HYD_temp", 
+                         depths = c(0, 11))
+  testthat::expect_true(nrow(out2$HYD_temp) == 2)
+  testthat::expect_true(all(out2$HYD_temp[1, ] >= out2$HYD_temp[2, ]))
+  out3 <- read_dy_output(file = outfile$dy_cd, vars_sim = "HYD_temp", 
+                         depths = c(0, 11), dates = c("2020-09-01", "2020-12-02"))
+  testthat::expect_true(ncol(out3$HYD_temp) == 2)
+  
 })
 
 test_that("running GLM works", {
   sys_OS <- AEME:::get_os()
-  # if (sys_OS == "windows") {
-  #   bin_exec <- file.path(bin_path, "glm_aed", "glm.exe")
-  # } else if (sys_OS == "osx") {
-  #   bin_exec <- file.path(bin_path, "glm_aed", "glm")
-  # }
-  # timeout <- 0
-  # system2(bin_exec,
-  #         wait = TRUE, stdout = "",
-  #         stderr = "", timeout = timeout)
-
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   path <- tempdir()
@@ -64,15 +69,37 @@ test_that("running GLM works", {
   # cfg <- configuration(aeme)
   # cfg$model_controls <- NULL
   # configuration(aeme) <- cfg
-  options("AEME.glm_exec" = "C:/Users/data/Downloads/glm_3.9.016/glm_3.9.016/glm.exe")
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
-  # plot_output(aeme, model = model)
-  outp <- output(aeme)
+  # options("AEME.glm_exec" = "C:/Users/data/Downloads/glm_3.9.016/glm_3.9.016/glm.exe")
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  
+  vars_sim <- get_vars_sim(aeme = aeme)
+  out <- read_glm_output(file = outfile$glm_aed, vars_sim = vars_sim)
+  testthat::expect_true(nrow(out$HYD_temp) > 2)
+  
+  var_indices <- get_var_indices(aeme = aeme, model = model, path = path,
+                                 use_obs = TRUE, vars_sim = vars_sim)
+  
+  out <- read_glm_output(file = outfile$glm_aed, vars_sim = vars_sim, 
+                         depths = var_indices$HYD_temp$depths, incl_fluxes = FALSE,
+                         date_index = var_indices$HYD_temp$date_index)
+  
+  out2 <- read_glm_output(file = outfile$glm_aed, vars_sim = "HYD_temp", 
+                          depths = c(0, 11), incl_fluxes = FALSE)
+  testthat::expect_true(nrow(out2$HYD_temp) == 2)
+  testthat::expect_true(all(out2$HYD_temp[1, ] >= out2$HYD_temp[2, ]))
+  out3 <- read_glm_output(file = outfile$glm_aed, vars_sim = "HYD_temp", 
+                          depths = c(0, 11), incl_fluxes = FALSE, 
+                          dates = c("2020-09-01", "2020-12-02"))
+  testthat::expect_true(ncol(out3$HYD_temp) == 2)
+  
+  plot_output(aeme)
+  outp <- output(aeme)
   file_chk <- file.exists(file.path(lake_dir,
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
-
+  
   v <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp", depth = 0)
   testthat::expect_true(is.data.frame(v))
   testthat::expect_error(get_var(aeme = aeme, model = model, var_sim = "HYD_temp",
@@ -99,12 +126,13 @@ test_that("running GLM with different exec works", {
   unzip(file.path(path, "glm_3.9.016.zip"), exdir = file.path(path, "glm_exec"))
   glm_exec <- file.path(path, "glm_exec", "glm_3.9.016", "glm.exe")
   file.exists(glm_exec)
-  options("AEME.glm_exec" = file.path(path, "glm_exec", "glm_3.9.016", "glm.exe"))
+  options("AEME.glm_exec" = file.path(path, "glm_exec", "glm_3.9.016",
+                                      "glm.exe"))
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, ext_elev = 5,
                      use_bgc = FALSE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
   
   glm_ver <- get_model_version(model = model)
   testthat::expect_true(any(grepl("3.9.016", glm_ver)))
@@ -114,6 +142,8 @@ test_that("running GLM with different exec works", {
   file_chk <- file.exists(file.path(lake_dir,
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
+  options("AEME.glm_exec" = NULL)
+  
 })
 
 test_that("running GOTM works", {
@@ -137,20 +167,24 @@ test_that("running GOTM works", {
                      use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
-  plot_output(aeme, model = model)
-
-  # inp <- input(aeme)
-  # outp <- output(aeme)
-  # filled.contour(t(outp$ens_001$gotm_wet$HYD_temp))
-  # wb <- water_balance(aeme)
-  # head(outp[[model]]$Date)
-  # head(outp[[model]]$LKE_V)
-  # head(outp[[model]]$HYD_Ts)
-  # head(outp[[model]]$LKE_lvlwtr) + min(inp$hypsograph$elev)
-  # head(wb$data$wbal)
-  # AEME:::calc_V(wb$data$wbal$value[1], hyps = inp$hypsograph, h = 0.01)
-
-
+  plot_output(aeme)
+  plot_output(aeme, var_sim = "LKE_evpflx")
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  
+  vars_sim <- "HYD_temp"
+  out <- read_gotm_output(file = outfile$gotm_wet["output"], 
+                          vars_sim = vars_sim)
+  testthat::expect_true(nrow(out$HYD_temp) > 2)
+  out2 <- read_gotm_output(file = outfile$gotm_wet["output"], 
+                           vars_sim = "HYD_temp", depths = c(0, 11))
+  testthat::expect_true(nrow(out2$HYD_temp) == 2)
+  testthat::expect_true(all(out2$HYD_temp[1, ] >= out2$HYD_temp[2, ]))
+  out3 <- read_gotm_output(file = outfile$gotm_wet["output"], 
+                           vars_sim = "HYD_temp", depths = c(0, 11), 
+                           dates = c("2020-09-01", "2020-12-02"))
+  testthat::expect_true(ncol(out3$HYD_temp) == 2)
+  
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -176,14 +210,14 @@ test_that("running DYRESM-CAEDYM works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "DYsim.nc"))
   testthat::expect_true(file_chk)
-
+  
   outp <- output(aeme)
   testthat::expect_true(!is.null(outp$ens_001$dy_cd))
 })
@@ -195,7 +229,11 @@ test_that("running GLM-AED works", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln",
+               "HYD_schstb")
   model_controls <- get_model_controls(use_bgc = TRUE)
+  model_controls <- set_vars_sim(model_controls = model_controls,
+                                 vars_sim = vars_sim)
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
@@ -206,15 +244,18 @@ test_that("running GLM-AED works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path)
-  # plot_output(aeme, model = model, c("LKE_tli3"), facet = FALSE)
+  
+  file <- get_model_outfile(aeme = aeme, model = model, path = path)
 
+  # plot_output(aeme, model = model, c("LKE_tli3"), facet = FALSE)
+  
   v1 <- get_var(aeme = aeme, model = model, var = "HYD_temp")
   v2 <- get_var(aeme = aeme, model = model, var = "HYD_temp",
                 remove_spin_up = FALSE)
   testthat::expect_true(v1$Date[1] > v2$Date[1])
-
+  
   plot_output(aeme, model = model, "HYD_temp", facet = TRUE, remove_spin_up = TRUE, level = FALSE) /
     plot_output(aeme, model = model, "CHM_oxy", facet = TRUE, remove_spin_up = FALSE)
   plot_output(aeme, model = model, "HYD_schstb", facet = FALSE) /
@@ -224,14 +265,12 @@ test_that("running GLM-AED works", {
   pstrat <- plot_output(aeme, model = model, var_sim = "HYD_strat", 
                         facet = FALSE)
   testthat::expect_true(ggplot2::is_ggplot(pstrat))
-
-  var_sim <- c("LKE_lvlwtr", "HYD_strat", "HYD_temp", "HYD_thmcln",
-               "HYD_schstb")
+  
   model_performance <- assess_model(aeme = aeme, model = model,
-                                    var_sim = var_sim)
-
-
-
+                                    var_sim = vars_sim)
+  
+  
+  
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -262,9 +301,9 @@ test_that("running GOTM-WET works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
-  # plot_output(aeme = aeme, model = model)
+  plot_output(aeme = aeme, model = model)
   # plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -285,34 +324,34 @@ test_that("running models in parallel works", {
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-
+  
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
                      calc_wlev = FALSE)
   inp <- input(aeme)
   met <- inp$meteo
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
-
+                   parallel = TRUE, ncores = 3)
+  
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model[1], "DYsim.nc"))
   testthat::expect_true(file_chk)
-
+  
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
                                                      tolower(lke$name)),
                                         model[-1], "output", "output.nc")))
   testthat::expect_true(file_chk)
-
+  
   var_sim <- c("LKE_lvlwtr", "HYD_temp")
-
+  
   model_performance <- assess_model(aeme = aeme, model = model,
                                     var_sim = var_sim)
   testthat::expect_true(is.data.frame(model_performance))
-
+  
   pl <- plot_resid(aeme = aeme, model = model, var_sim = var_sim)
   testthat::expect_true(is.list(pl))
   testthat::expect_true(all(sapply(pl, ggplot2::is_ggplot)))
@@ -336,30 +375,30 @@ test_that("running models with wbal method = 1", {
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-
+  
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
                      wb_method = 1, calc_wlev = F)
   inp <- input(aeme)
   met <- inp$meteo
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
+                   parallel = TRUE, ncores = 3)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model[1], "DYsim.nc"))
   testthat::expect_true(file_chk)
-
+  
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
                                                      tolower(lke$name)),
                                         model[-1], "output", "output.nc")))
   testthat::expect_true(file_chk)
-
+  
   model_performance <- assess_model(aeme = aeme, model = model,
                                     var_sim = c("LKE_lvlwtr", "HYD_temp"))
   testthat::expect_true(is.data.frame(model_performance))
-
+  
   # DYRESM - Check for number of inflow and outflow files
   inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
                                                     tolower(lke$name)),
@@ -367,14 +406,14 @@ test_that("running models with wbal method = 1", {
   n_inf <- as.numeric(strsplit(readLines(inflow_files)[2], "#")[[1]][1])
   inf <- read.delim(inflow_files, skip = 3, sep = "\t")
   testthat::expect_equal(n_inf, max(inf$InfNum))
-
+  
   outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
                                                      tolower(lke$name)),
                                         "dy_cd"), pattern = "wdr", full.names = TRUE)
   n_wdr <- as.numeric(strsplit(readLines(outflow_files)[2], "#")[[1]][1])
   wdr <- read.delim(outflow_files, skip = 2, sep = "\t")
   testthat::expect_equal(n_wdr, ncol(wdr) - 1)
-
+  
   # GLM - Check for number of inflow and outflow files
   inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
                                                     tolower(lke$name)),
@@ -384,7 +423,7 @@ test_that("running models with wbal method = 1", {
                                         "glm_aed", "bcs"), pattern = "outf")
   testthat::expect_equal(length(inflow_files), 1)
   testthat::expect_equal(length(outflow_files), 1)
-
+  
   # GOTM - Check for number of inflow and outflow files
   inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
                                                     tolower(lke$name)),
@@ -415,22 +454,22 @@ test_that("running models with wbal method = 3", {
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-
+  
   infl <- inflows(aeme)
   infl$data <- NULL
   inflows(aeme) <- infl
   outf <- outflows(aeme)
   outf$data <- NULL
   outflows(aeme) <- outf
-
+  
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
                      wb_method = 3, calc_wlev = F, hum_type = 1)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
-
+                   parallel = TRUE, ncores = 3)
+  
   # plot_output(aeme, model)
   # plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
   #             facet = F) /
@@ -439,8 +478,8 @@ test_that("running models with wbal method = 3", {
   # plot_wbal(aeme = aeme)
   #
   #   tst <- get_var(aeme = aeme, model = model, var = "LKE_netwbl")
-
-
+  
+  
   # w_bal <- water_balance(aeme)
   #
   # gotm_evap <- get_var(aeme = aeme, model = "dy_cd",
@@ -458,17 +497,17 @@ test_that("running models with wbal method = 3", {
   #   geom_line(data = w_bal$data$wbal, aes(x = Date, y = Ts,
   #                                         colour = "Est")) +
   #   geom_line(data = gotm_ts, aes(x = Date, y = value))
-
+  
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model[1], "DYsim.nc"))
   testthat::expect_true(file_chk)
-
+  
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
                                                      tolower(lke$name)),
                                         model[-1], "output", "output.nc")))
   testthat::expect_true(file_chk)
-
+  
   # DYRESM - Check for number of inflow and outflow files
   inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
                                                     tolower(lke$name)),
@@ -476,14 +515,14 @@ test_that("running models with wbal method = 3", {
   n_inf <- as.numeric(strsplit(readLines(inflow_files)[2], "#")[[1]][1])
   inf <- read.delim(inflow_files, skip = 3, sep = "\t")
   testthat::expect_equal(n_inf, max(inf$InfNum))
-
+  
   outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
                                                      tolower(lke$name)),
                                         "dy_cd"), pattern = "wdr", full.names = TRUE)
   n_wdr <- as.numeric(strsplit(readLines(outflow_files)[2], "#")[[1]][1])
   wdr <- read.delim(outflow_files, skip = 2, sep = "\t")
   testthat::expect_equal(n_wdr, ncol(wdr) - 1)
-
+  
   # GLM - Check for number of inflow and outflow files
   inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
                                                     tolower(lke$name)),
@@ -493,7 +532,7 @@ test_that("running models with wbal method = 3", {
                                         "glm_aed", "bcs"), pattern = "outf")
   testthat::expect_equal(length(inflow_files), 1)
   testthat::expect_equal(length(outflow_files), 1)
-
+  
   # GOTM - Check for number of inflow and outflow files
   inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
                                                     tolower(lke$name)),
@@ -526,13 +565,13 @@ test_that("running models in parallel with no wbal calculated", {
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = FALSE)
   outf <- outflows(aeme)
   names(outf$data)
-
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
+                   parallel = TRUE, ncores = 3)
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = FALSE, facet = FALSE)
-
+  
   lke <- lake(aeme)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
                                                      tolower(lke$name)),
@@ -559,23 +598,23 @@ test_that("running models with no wbal/outflows calculated", {
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-
+  
   outf <- outflows(aeme)
   outf$data <- NULL
   outflows(aeme) <- outf
-
+  
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = F)
   outf <- outflows(aeme)
   names(outf$data)
-
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = T,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
+                   parallel = F, ncores = 3L)
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
-
+  
   lke <- lake(aeme)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
                                                      tolower(lke$name)),
@@ -595,7 +634,7 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   inp <- input(aeme)
   summary(inp$meteo)
-
+  
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -608,16 +647,16 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = TRUE,
                      calc_wlev = FALSE)
-
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
-
+                   parallel = TRUE, ncores = 3)
+  
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
   plot_output(aeme = aeme, model = model, var_sim = "LKE_outflow",
               add_obs = F)
-
+  
   lke <- lake(aeme)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
                                                      tolower(lke$name)),
@@ -645,12 +684,12 @@ test_that("getting model output works", {
   }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, use_bgc = TRUE)
-  run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
-           parallel = TRUE, return = FALSE, ncores = 2)
-
+  run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,
+           parallel = TRUE, return = FALSE, ncores = 3)
+  
   aeme <- load_output(model = model, aeme = aeme, path = path,
                       model_controls = model_controls, parallel = FALSE)
-
+  
   outp <- output(aeme)
   output_chk <- !all(is.null(unlist(outp)))
   testthat::expect_true(output_chk)
@@ -667,17 +706,17 @@ test_that("getting model output in parallel works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
-    sys_OS <- AEME:::get_os()
+  sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-build_aeme(path = path, aeme = aeme, model = model,
+  build_aeme(path = path, aeme = aeme, model = model,
              model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
              use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
-
+                   parallel = TRUE, ncores = 3)
+  
   outp <- output(aeme)
   output_chk <- !all(is.null(unlist(outp)))
   testthat::expect_true(output_chk)
@@ -698,12 +737,12 @@ test_that("running DYRESM with a spinup works", {
   inf_factor <- c("dy_cd" = 1)
   outf_factor <- c("dy_cd" = 1)
   model <- c("dy_cd")
-
+  
   # Add spin up time
   tim <- time(aeme)
   tim[["spin_up"]][[model]] <- 100
   time(aeme) <- tim
-
+  
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
@@ -727,12 +766,12 @@ test_that("running GLM with a spinup works", {
   inf_factor <- c("glm_aed" = 1)
   outf_factor <- c("glm_aed" = 1)
   model <- c("glm_aed")
-
+  
   # Add spin up time
   tim <- time(aeme)
   tim[["spin_up"]][[model]] <- 100
   time(aeme) <- tim
-
+  
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
@@ -760,31 +799,31 @@ test_that("running GOTM with a spinup works", {
   inf_factor <- c("gotm_wet" = 1)
   outf_factor <- c("gotm_wet" = 1)
   model <- c("gotm_wet")
-
-
+  
+  
   tim <- time(aeme)
   tim[["spin_up"]][[model]] <- 200
   time(aeme) <- tim
-
+  
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
-
+  
   plot_output(aeme = aeme, model = model, var_sim = "LKE_outflow",
               level = TRUE, print_plots = FALSE,
               var_lims = c(0, 30))
-
+  
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16))
   testthat::expect_true(all(ggplot2::is_ggplot(p1)))
-
+  
   testthat::expect_true(file_chk)
 })
 
@@ -803,18 +842,17 @@ test_that("can build all models, run and write to new directory & re-run", {
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-
+  
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
-
-  aeme <- run_aeme(aeme = aeme, model = model, parallel = TRUE, ncores = 2,
+  
+  aeme <- run_aeme(aeme = aeme, model = model, parallel = TRUE, ncores = 3,
                    model_controls = model_controls, path = path)
-
+  
   path2 <- file.path(tmpdir, "lake-rewrite")
-  aeme <- write_configuration(model = model, aeme = aeme,
-                              path = path2)
-
+  aeme <- write_configuration(aeme = aeme, model = model, path = path2)
+  
   # Check DYRESM files
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -825,8 +863,8 @@ test_that("can build all models, run and write to new directory & re-run", {
                                                  tolower(lke$name)),
                                     "dy_cd", paste0(tolower(lke$name), ".con")))
   testthat::expect_true(file_chk)
-
-
+  
+  
   caedym_fils <- c("bio", "chm", "sed")
   sapply(caedym_fils, \(f) {
     file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -834,7 +872,7 @@ test_that("can build all models, run and write to new directory & re-run", {
                                       "dy_cd", paste0("caedym3p1.", f)))
     testthat::expect_true(file_chk)
   })
-
+  
   # Check GLM files
   file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
                                                   tolower(lke$name)),
@@ -844,8 +882,8 @@ test_that("can build all models, run and write to new directory & re-run", {
                                                   tolower(lke$name)),
                                     "glm_aed", "aed2", "aed2.nml"))
   testthat::expect_true(file_chk)
-
-
+  
+  
   # Check GOTM files
   file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
                                                   tolower(lke$name)),
@@ -855,26 +893,26 @@ test_that("can build all models, run and write to new directory & re-run", {
                                                   tolower(lke$name)),
                                     "gotm_wet", "fabm.yaml"))
   testthat::expect_true(file_chk)
-
-
+  
+  
   #
   aeme <- build_aeme(path = path2, aeme = aeme,
                      model = model, model_controls = model_controls,
                      inf_factor = inf_factor, ext_elev = 5,
                      use_bgc = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path2)
-
+  
   file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
                                                   tolower(lke$name)),
                                     model[1], "DYsim.nc"))
   testthat::expect_true(file_chk)
-
+  
   file_chk <- all(file.exists(file.path(path2, paste0(lke$id, "_",
                                                       tolower(lke$name)),
                                         model[-1], "output", "output.nc")))
   testthat::expect_true(file_chk)
-
+  
 })
 
 test_that("running ensemble works", {
@@ -895,24 +933,24 @@ test_that("running ensemble works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
-
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
+  
   model <- c("gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,
                    ens_n = 2)
-
-
+  
+  
   outp <- output(aeme)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
-
+  
   testthat::expect_true(outp$n_members > 1)
 })
 
@@ -923,7 +961,7 @@ test_that("running all models with new parameters works", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-
+  
   utils::data("aeme_parameters")
   aeme_parameters <- aeme_parameters |>
     dplyr::mutate(
@@ -935,11 +973,11 @@ test_that("running all models with new parameters works", {
         .default = value
       )
     )
-
+  
   parameters(aeme) <- aeme_parameters
   # parameters(aeme) <- aeme_parameters |>
   #   dplyr::filter( model == "glm")
-
+  
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -951,14 +989,14 @@ test_that("running all models with new parameters works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE, ext_elev = 5)
-
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
-
+  
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
+  
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
-
+  
   file_chk <- file.exists(file.path(lake_dir, model[1], "DYsim.nc"))
   testthat::expect_true(file_chk)
-
+  
   file_chk <- all(file.exists(file.path(lake_dir, model[-1], "output",
                                         "output.nc")))
   testthat::expect_true(file_chk)
@@ -982,14 +1020,14 @@ test_that("can get variable indices after running the model", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
   var_indices <- get_var_indices(model = model, aeme = aeme, path = path,
-                                 vars_sim = "HYD_temp")
+                                 vars_sim = "HYD_temp", use_obs = TRUE)
   testthat::expect_true(length(var_indices) > 0)
   testthat::expect_true(is.list(var_indices))
-  testthat::expect_true(length(var_indices$HYD_temp$time) == 10)
-
+  testthat::expect_true(length(var_indices$HYD_temp$date_index) == 10)
+  
 })
 
 test_that("assess model with no lake level data", {
@@ -999,11 +1037,11 @@ test_that("assess model with no lake level data", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-
+  
   obs <- observations(aeme)
   obs$level <- NULL
   observations(aeme) <- obs
-
+  
   model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -1014,13 +1052,13 @@ test_that("assess model with no lake level data", {
                      calc_wlev = FALSE)
   inp <- input(aeme)
   met <- inp$meteo
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
                    parallel = FALSE)
   model_performance <- assess_model(aeme = aeme, model = model,
                                     var_sim = c("LKE_lvlwtr", "HYD_temp"))
   testthat::expect_true(is.data.frame(model_performance))
-
+  
 })
 
 test_that("summarise multi-year output", {
@@ -1030,11 +1068,11 @@ test_that("summarise multi-year output", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-
+  
   aeme_time <- time(aeme)
   aeme_time$start <- as.POSIXct("2020-01-01 00:00:00")
   time(aeme) <- aeme_time
-
+  
   model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -1047,7 +1085,7 @@ test_that("summarise multi-year output", {
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
                      calc_wlev = TRUE)
-
+  
   tgt_vars <- list_mod_obs_vars(aeme = aeme, model = model)
   testthat::expect_true(length(tgt_vars) == 0)
   testthat::expect_true(is.vector(tgt_vars))
@@ -1055,6 +1093,7 @@ test_that("summarise multi-year output", {
   aeme <- run_aeme(aeme = aeme, model = model,
                    model_controls = model_controls, path = path,
                    parallel = TRUE)
+  plot_output(aeme)
   tgt_vars <- list_mod_obs_vars(aeme = aeme, model = model)
   testthat::expect_true(length(tgt_vars) > 0)
   s2 <- object.size(aeme)
@@ -1064,7 +1103,7 @@ test_that("summarise multi-year output", {
   s1 / s2
   testthat::expect_true(is(aeme_summ, "Aeme"))
   testthat::expect_true(s3 < s2)
-
+  
 })
 
 test_that("can run with generated hypsgraph", {
@@ -1074,12 +1113,12 @@ test_that("can run with generated hypsgraph", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-
+  
   hyps <- generate_hypsograph(aeme = aeme, ext_elev = 5, mean_depth = 4.2)
   inp <- input(aeme)
   inp$hypsograph <- hyps
   input(aeme) <- inp
-
+  
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -1095,15 +1134,15 @@ test_that("can run with generated hypsgraph", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
                    parallel = FALSE)
-
+  
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   file_chk <- file.exists(file.path(lake_dir, model[1], "DYsim.nc"))
   testthat::expect_true(file_chk)
-
+  
   file_chk <- all(file.exists(file.path(lake_dir, model[-1], "output",
                                         "output.nc")))
   testthat::expect_true(file_chk)
-
+  
 })
 
 test_that("add AEME output as inflow", {
@@ -1124,7 +1163,7 @@ test_that("add AEME output as inflow", {
   # cfg <- configuration(aeme)
   # cfg$model_controls <- NULL
   # configuration(aeme) <- cfg
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
   # plot_output(aeme, model = model)
   outp <- output(aeme)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
@@ -1138,16 +1177,16 @@ test_that("add AEME output as inflow", {
                                  var_sim = "HYD_temp", depth = 15))
   
   outflow_inflow <- aeme_to_inflow(aeme)
-
+  
   testthat::expect_true(is.data.frame(outflow_inflow))
   testthat::expect_true("model" %in% names(outflow_inflow))
-
+  
   aeme2 <- add_inflow(aeme, inflow = outflow_inflow, 
                       inflow_id = "outflow_inflow")
   aeme2 <- build_aeme(path = path, aeme = aeme2, model = model,
                       model_controls = model_controls,
                       ext_elev = 5, use_bgc = FALSE)
-  aeme2 <- run_aeme(aeme2, model, verbose = TRUE, path = path)
+  aeme2 <- run_aeme(aeme2, model, verbose = FALSE, path = path)
   inf <- inflows(aeme2)
   testthat::expect_true("outflow_inflow" %in% names(inf$data))
 })

@@ -17,7 +17,8 @@ test_that("building lernzmp example works", {
   testthat::expect_true(any(grepl("glm_aed/glm3.nml", mod_files)))
   testthat::expect_true(any(grepl("bcs/outflow_wbal.csv", mod_files)))
   
-  aeme <- run_aeme(aeme = aeme, model = model, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, path = path, parallel = TRUE, 
+                   ncores = 2L)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),

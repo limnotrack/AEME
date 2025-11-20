@@ -92,7 +92,7 @@ test_that("plotting model output works", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = TRUE, ncores = 3L)
 
 
   p1 <- plot(aeme, "output")
@@ -131,6 +131,7 @@ test_that("plotting model summary output works", {
   testthat::expect_true(is.vector(obs_vars))
   path <- tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)
+  model_controls <- set_vars_sim(model_controls, c("HYD_thmcln"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
@@ -221,7 +222,7 @@ test_that("plotting model output works with no lake & level observations", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = F, ncores = 2L)
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
@@ -240,6 +241,8 @@ test_that("plotting model residuals for 2d and 1d variables", {
   aeme <- readRDS(aeme_file)
   path <- tempdir()
   model_controls <- get_model_controls()
+  var_sim <- c("HYD_temp", "HYD_thmcln")
+  model_controls <- set_vars_sim(model_controls, var_sim)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
@@ -254,9 +257,8 @@ test_that("plotting model residuals for 2d and 1d variables", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = TRUE, ncores = 3L)
 
-  var_sim <- c("HYD_temp", "HYD_thmcln")
   p1 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1$HYD_temp))
 
@@ -286,7 +288,7 @@ test_that("plotting phytoplankton model output works", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = TRUE, ncores = 3L)
 
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1))

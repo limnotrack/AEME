@@ -204,6 +204,7 @@ test_that("parameters can be added to an aeme object", {
     max = c(1.0),
     module = "light",
     group = NA,
+    index = NA,
     par = "Kw",
     logical = FALSE,
     logical_val = NA,
@@ -485,6 +486,7 @@ test_that("GLM-AED sediment parameters can be added", {
     dplyr::bind_rows(sed_zones)
   
   param <- aeme_parameters_bgc |> 
+    dplyr::filter(!grepl("sediment", name)) |> 
     dplyr::mutate(value = 0.5) |>
     dplyr::bind_rows(glm_sed_pars)
   
@@ -494,7 +496,8 @@ test_that("GLM-AED sediment parameters can be added", {
   testthat::expect_true(nrow(param1) == nrow(param))
   
   param <- aeme_parameters_bgc |> 
-    dplyr::mutate(value = 1.5)
+    dplyr::filter(!grepl("sediment", name)) |> 
+    dplyr::mutate(value = 0.95)
   aeme <- add_param(aeme = aeme, param = param)
   param2 <- AEME::parameters(aeme)
   
