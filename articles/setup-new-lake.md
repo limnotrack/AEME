@@ -191,9 +191,38 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-11-13 20:49:17] job submitted
-#> INFO [2025-11-13 20:49:17] downloading
-#> INFO [2025-11-13 20:49:18] extracting
+#> INFO [2025-11-20 01:42:38] job submitted
+#> INFO [2025-11-20 01:42:42] job updated
+#> INFO [2025-11-20 01:42:47] job updated
+#> INFO [2025-11-20 01:42:51] job updated
+#> INFO [2025-11-20 01:42:55] job updated
+#> INFO [2025-11-20 01:42:59] job updated
+#> INFO [2025-11-20 01:43:03] job updated
+#> INFO [2025-11-20 01:43:08] job updated
+#> INFO [2025-11-20 01:43:12] job updated
+#> INFO [2025-11-20 01:43:16] job updated
+#> INFO [2025-11-20 01:43:20] job updated
+#> INFO [2025-11-20 01:43:24] job updated
+#> INFO [2025-11-20 01:43:29] job updated
+#> INFO [2025-11-20 01:43:33] job updated
+#> INFO [2025-11-20 01:43:37] job updated
+#> INFO [2025-11-20 01:43:41] job updated
+#> INFO [2025-11-20 01:43:45] job updated
+#> INFO [2025-11-20 01:43:49] job updated
+#> INFO [2025-11-20 01:43:54] job updated
+#> INFO [2025-11-20 01:43:58] job updated
+#> INFO [2025-11-20 01:44:02] job updated
+#> INFO [2025-11-20 01:44:06] job updated
+#> INFO [2025-11-20 01:44:10] job updated
+#> INFO [2025-11-20 01:44:15] job updated
+#> INFO [2025-11-20 01:44:19] job updated
+#> INFO [2025-11-20 01:44:23] job updated
+#> INFO [2025-11-20 01:44:27] job updated
+#> INFO [2025-11-20 01:44:32] job updated
+#> INFO [2025-11-20 01:44:36] job updated
+#> INFO [2025-11-20 01:44:40] job updated
+#> INFO [2025-11-20 01:44:40] downloading
+#> INFO [2025-11-20 01:44:42] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -408,68 +437,88 @@ model_controls
 #> 1     HYD_flow    FALSE          NA         NA          NA     1.00000000
 #> 2     HYD_temp     TRUE       15.00     11.000          NA     1.00000000
 #> 3     HYD_dens    FALSE          NA         NA          NA     1.00000000
-#> 4      RAD_par    FALSE          NA         NA          NA     1.00000000
-#> 5     RAD_extc    FALSE          NA         NA          NA     1.00000000
-#> 6   RAD_secchi    FALSE          NA         NA          NA     1.00000000
-#> 7     CHM_salt     TRUE        0.00      0.000       0e+00     1.00000000
-#> 8      CHM_oxy     TRUE       10.00     10.000       1e+01     0.03200000
-#> 9      PHS_frp    FALSE        0.00      0.010       1e+06     0.03097376
-#> 10     PHS_dop    FALSE        0.00      0.010       1e+06     0.03097376
-#> 11    PHS_dopr    FALSE        0.00         NA          NA     0.03097376
-#> 12     PHS_pop    FALSE        0.00      0.010       1e-04     0.03097376
-#> 13    PHS_popr    FALSE        0.00         NA          NA     0.03097376
-#> 14     PHS_pip    FALSE        0.00      0.002       5e-03     0.03097376
-#> 15      PHS_tp    FALSE          NA         NA          NA     0.03097376
-#> 16     NIT_amm    FALSE        0.05      0.020       1e+06     0.01400670
-#> 17     NIT_nit    FALSE        0.20      0.015       1e+06     0.01400670
-#> 18     NIT_don    FALSE        0.00      0.300       1e+06     0.01400670
-#> 19    NIT_donr    FALSE        0.00         NA          NA     0.01400670
-#> 20     NIT_pon    FALSE        0.00      0.100       1e-03     0.01400670
-#> 21    NIT_ponr    FALSE        0.00         NA          NA     0.01400670
-#> 22     NIT_pin    FALSE          NA      0.010       1e-03     0.01400670
-#> 23      NIT_tn    FALSE          NA         NA          NA     0.01400670
-#> 24     CAR_dic    FALSE       10.00      2.000       1e+06     0.01201100
-#> 25     CAR_doc    FALSE        0.00      0.500       1e+06     0.01201100
-#> 26    CAR_docr    FALSE        0.00         NA       1e+06     0.01201100
-#> 27     CAR_poc    FALSE        0.00      0.200       1e-01     0.01201100
-#> 28    CAR_pocr    FALSE        0.00         NA          NA     0.01201100
-#> 29      CAR_ph    FALSE        0.00         NA          NA     1.00000000
-#> 30     CAR_ch4    FALSE          NA         NA          NA     1.00000000
-#> 31     SIL_rsi    FALSE        0.00      1.000       1e+07     1.00000000
-#> 32     BAC_bac    FALSE        0.00         NA          NA     1.00000000
-#> 33   PHY_dinof    FALSE        0.10      1.000       0e+00     1.00000000
-#> 34   PHY_cyano    FALSE        0.10      1.000       0e+00     1.00000000
-#> 35   PHY_nodul    FALSE        0.10      1.000       0e+00     1.00000000
-#> 36   PHY_green    FALSE        0.10      1.000       0e+00     1.00000000
-#> 37   PHY_crypt    FALSE        0.10      1.000       0e+00     1.00000000
-#> 38   PHY_mdiat    FALSE        0.10      1.000       0e+00     1.00000000
-#> 39  PHY_diatom    FALSE        0.10      1.000       0e+00     1.00000000
-#> 40   PHY_tchla    FALSE          NA         NA          NA     1.00000000
-#> 41     NCS_ss1    FALSE        5.00      3.000       3e-01     1.00000000
-#> 42     NCS_ss2    FALSE        5.00      3.000       3e-01     1.00000000
-#> 43     NCS_ss3    FALSE        5.00         NA          NA     1.00000000
-#> 44     NCS_ss4    FALSE        5.00         NA          NA     1.00000000
-#> 45     NCS_ss5    FALSE        5.00         NA          NA     1.00000000
-#> 46     NCS_ss6    FALSE        5.00         NA          NA     1.00000000
-#> 47     NCS_iss    FALSE          NA         NA          NA     1.00000000
-#> 48     NCS_tss    FALSE          NA         NA          NA     1.00000000
-#> 49    ZOO_zoo1    FALSE        0.10      1.000       0e+00     1.00000000
-#> 50    ZOO_zoo2    FALSE        0.10         NA          NA     1.00000000
-#> 51    ZOO_zoo3    FALSE        0.10         NA          NA     1.00000000
-#> 52    ZOO_zoo4    FALSE        0.10         NA          NA     1.00000000
-#> 53    ZOO_zoo5    FALSE        0.10         NA          NA     1.00000000
-#> 54   FSH_fish1    FALSE        0.00      1.000          NA     1.00000000
-#> 55   FSH_fish2    FALSE        0.00         NA          NA     1.00000000
-#> 56   FSH_fish3    FALSE        0.00         NA          NA     1.00000000
-#> 57   FSH_jelly    FALSE        0.00         NA          NA     1.00000000
-#> 58 MAC_macalg1    FALSE        0.00         NA          NA     1.00000000
-#> 59 MAC_macalg2    FALSE        0.00         NA          NA     1.00000000
-#> 60 MAC_macalg3    FALSE        0.00         NA          NA     1.00000000
-#> 61 MAC_macalg4    FALSE        0.00         NA          NA     1.00000000
-#> 62   CLM_clam1    FALSE        0.00         NA          NA     1.00000000
-#> 63   CLM_clam2    FALSE        0.00         NA          NA     1.00000000
-#> 64   CLM_clam3    FALSE        0.00         NA          NA     1.00000000
-#> 65     TRC_col    FALSE        0.00      0.000       0e+00     1.00000000
+#> 4     HYD_dens    FALSE          NA         NA          NA             NA
+#> 5    HYD_strat    FALSE          NA         NA          NA             NA
+#> 6   HYD_thmcln    FALSE          NA         NA          NA             NA
+#> 7   HYD_schstb    FALSE          NA         NA          NA             NA
+#> 8   HYD_ctrbuy    FALSE          NA         NA          NA             NA
+#> 9   HYD_epidep    FALSE          NA         NA          NA             NA
+#> 10  HYD_hypdep    FALSE          NA         NA          NA             NA
+#> 11     RAD_par    FALSE          NA         NA          NA     1.00000000
+#> 12    RAD_extc    FALSE          NA         NA          NA     1.00000000
+#> 13  RAD_secchi    FALSE          NA         NA          NA     1.00000000
+#> 14    LKE_tlic    FALSE          NA         NA          NA             NA
+#> 15    LKE_tlin    FALSE          NA         NA          NA             NA
+#> 16    LKE_tlip    FALSE          NA         NA          NA             NA
+#> 17   LKE_tlise    FALSE          NA         NA          NA             NA
+#> 18    LKE_tli3    FALSE          NA         NA          NA             NA
+#> 19    LKE_tli4    FALSE          NA         NA          NA             NA
+#> 20    CHM_salt     TRUE        0.00      0.000       0e+00     1.00000000
+#> 21     CHM_oxy     TRUE       10.00     10.000       1e+01     0.03200000
+#> 22  CHM_oxysat    FALSE          NA         NA          NA             NA
+#> 23  CHM_oxycln    FALSE          NA         NA          NA             NA
+#> 24  CHM_oxyepi    FALSE          NA         NA          NA             NA
+#> 25  CHM_oxymet    FALSE          NA         NA          NA             NA
+#> 26  CHM_oxyhyp    FALSE          NA         NA          NA             NA
+#> 27  CHM_oxymom    FALSE          NA         NA          NA             NA
+#> 28  CHM_oxynal    FALSE          NA         NA          NA             NA
+#> 29     PHS_frp    FALSE        0.00      0.010       1e+06     0.03097376
+#> 30     PHS_dop    FALSE        0.00      0.010       1e+06     0.03097376
+#> 31    PHS_dopr    FALSE        0.00         NA          NA     0.03097376
+#> 32     PHS_pop    FALSE        0.00      0.010       1e-04     0.03097376
+#> 33    PHS_popr    FALSE        0.00         NA          NA     0.03097376
+#> 34     PHS_pip    FALSE        0.00      0.002       5e-03     0.03097376
+#> 35      PHS_tp    FALSE          NA         NA          NA     0.03097376
+#> 36     NIT_amm    FALSE        0.05      0.020       1e+06     0.01400670
+#> 37     NIT_nit    FALSE        0.20      0.015       1e+06     0.01400670
+#> 38     NIT_don    FALSE        0.00      0.300       1e+06     0.01400670
+#> 39    NIT_donr    FALSE        0.00         NA          NA     0.01400670
+#> 40     NIT_pon    FALSE        0.00      0.100       1e-03     0.01400670
+#> 41    NIT_ponr    FALSE        0.00         NA          NA     0.01400670
+#> 42     NIT_pin    FALSE          NA      0.010       1e-03     0.01400670
+#> 43      NIT_tn    FALSE          NA         NA          NA     0.01400670
+#> 44     CAR_dic    FALSE       10.00      2.000       1e+06     0.01201100
+#> 45     CAR_doc    FALSE        0.00      0.500       1e+06     0.01201100
+#> 46    CAR_docr    FALSE        0.00         NA       1e+06     0.01201100
+#> 47     CAR_poc    FALSE        0.00      0.200       1e-01     0.01201100
+#> 48    CAR_pocr    FALSE        0.00         NA          NA     0.01201100
+#> 49      CAR_ph    FALSE        0.00         NA          NA     1.00000000
+#> 50     CAR_ch4    FALSE          NA         NA          NA     1.00000000
+#> 51     SIL_rsi    FALSE        0.00      1.000       1e+07     1.00000000
+#> 52     BAC_bac    FALSE        0.00         NA          NA     1.00000000
+#> 53   PHY_dinof    FALSE        0.10      1.000       0e+00     1.00000000
+#> 54   PHY_cyano    FALSE        0.10      1.000       0e+00     1.00000000
+#> 55   PHY_nodul    FALSE        0.10      1.000       0e+00     1.00000000
+#> 56   PHY_green    FALSE        0.10      1.000       0e+00     1.00000000
+#> 57   PHY_crypt    FALSE        0.10      1.000       0e+00     1.00000000
+#> 58   PHY_mdiat    FALSE        0.10      1.000       0e+00     1.00000000
+#> 59  PHY_diatom    FALSE        0.10      1.000       0e+00     1.00000000
+#> 60   PHY_tchla    FALSE          NA         NA          NA     1.00000000
+#> 61     NCS_ss1    FALSE        5.00      3.000       3e-01     1.00000000
+#> 62     NCS_ss2    FALSE        5.00      3.000       3e-01     1.00000000
+#> 63     NCS_ss3    FALSE        5.00         NA          NA     1.00000000
+#> 64     NCS_ss4    FALSE        5.00         NA          NA     1.00000000
+#> 65     NCS_ss5    FALSE        5.00         NA          NA     1.00000000
+#> 66     NCS_ss6    FALSE        5.00         NA          NA     1.00000000
+#> 67     NCS_iss    FALSE          NA         NA          NA     1.00000000
+#> 68     NCS_tss    FALSE          NA         NA          NA     1.00000000
+#> 69    ZOO_zoo1    FALSE        0.10      1.000       0e+00     1.00000000
+#> 70    ZOO_zoo2    FALSE        0.10         NA          NA     1.00000000
+#> 71    ZOO_zoo3    FALSE        0.10         NA          NA     1.00000000
+#> 72    ZOO_zoo4    FALSE        0.10         NA          NA     1.00000000
+#> 73    ZOO_zoo5    FALSE        0.10         NA          NA     1.00000000
+#> 74   FSH_fish1    FALSE        0.00      1.000          NA     1.00000000
+#> 75   FSH_fish2    FALSE        0.00         NA          NA     1.00000000
+#> 76   FSH_fish3    FALSE        0.00         NA          NA     1.00000000
+#> 77   FSH_jelly    FALSE        0.00         NA          NA     1.00000000
+#> 78 MAC_macalg1    FALSE        0.00         NA          NA     1.00000000
+#> 79 MAC_macalg2    FALSE        0.00         NA          NA     1.00000000
+#> 80 MAC_macalg3    FALSE        0.00         NA          NA     1.00000000
+#> 81 MAC_macalg4    FALSE        0.00         NA          NA     1.00000000
+#> 82   CLM_clam1    FALSE        0.00         NA          NA     1.00000000
+#> 83   CLM_clam2    FALSE        0.00         NA          NA     1.00000000
+#> 84   CLM_clam3    FALSE        0.00         NA          NA     1.00000000
+#> 85     TRC_col    FALSE        0.00      0.000       0e+00     1.00000000
 ```
 
 ### Build the ensemble
@@ -492,7 +541,6 @@ path <- "aeme"
 # Build ensemble
 aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
                    use_bgc = F, path = path)
-#> Building AEME object ■■■■■■■                           20% | Calculating water …
 #> ℹ No water level present. Using constant water level.
 #> ℹ Insufficient lake temperature observations to estimate surface temperature.
 #>   Using Stefan & Preud'homme (2007) method.
@@ -506,10 +554,10 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #> ℹ Writing DYRESM-CAEDYM control file
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
-#> ✔ GLM nml validation completed — no issues detected.
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
 #> ✔ GOTM YAML validation completed — no issues detected.
+#> ✔ GLM nml validation completed — no issues detected.
 #> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | Writing GOTM-WET c…
 
 print(aeme)
@@ -579,20 +627,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-13 20:49:31]
-#> → DYRESM-CAEDYM running... [2025-11-13 20:49:31]
-#> ✔ DYRESM-CAEDYM run successful! [2025-11-13 20:49:52]
-#> → GLM-AED2 running... [2025-11-13 20:49:52]
-#> ✔ GLM-AED2 run successful! [2025-11-13 20:49:52]
-#> → GOTM-WET running... [2025-11-13 20:49:52]
-#> ✔ GOTM-WET run successful! [2025-11-13 20:49:53]
-#> ✔ Model run complete! [2025-11-13 20:49:53]
-#> ℹ Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd
-#> ℹ Retrieving and formatting dyresmSALINITY_Var for model dy_cd
-#> ℹ Retrieving and formatting temp for model glm_aed
-#> ℹ Retrieving and formatting salt for model glm_aed
-#> ℹ Retrieving and formatting temp for model gotm_wet
-#> ℹ Retrieving and formatting salt for model gotm_wet
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-20 01:44:52]
+#> → DYRESM-CAEDYM running... [2025-11-20 01:44:52]
+#> ✔ DYRESM-CAEDYM run successful! [2025-11-20 01:45:06]
+#> → GLM-AED2 running... [2025-11-20 01:45:06]
+#> ✔ GLM-AED2 run successful! [2025-11-20 01:45:07]
+#> → GOTM-WET running... [2025-11-20 01:45:07]
+#> ✔ GOTM-WET run successful! [2025-11-20 01:45:07]
+#> ✔ Model run complete! [2025-11-20 01:45:07]
 ```
 
 ### View the output

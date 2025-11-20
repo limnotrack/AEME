@@ -11,7 +11,6 @@ run_aeme(
   return = TRUE,
   ens_n = 1,
   model_controls = NULL,
-  nlev = NULL,
   verbose = FALSE,
   debug = FALSE,
   timeout = 0,
@@ -46,11 +45,6 @@ run_aeme(
 - model_controls:
 
   dataframe; of configuration loaded from "model_controls.csv".
-
-- nlev:
-
-  numeric; number of levels to return in model output. If NULL,
-  calculates number of levels based on the \`model_layer_structure\`.
 
 - verbose:
 
@@ -106,14 +100,12 @@ model_controls = model_controls, ext_elev = 5)
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ✔ GLM nml validation completed — no issues detected.
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-13 20:44:44]
-#> → GLM-AED2 running... [2025-11-13 20:44:44]
-#> ✔ GLM-AED2 run successful! [2025-11-13 20:44:45]
-#> ✔ Model run complete! [2025-11-13 20:44:45]
-#> ℹ Retrieving and formatting temp for model glm_aed
-#> ℹ Retrieving and formatting salt for model glm_aed
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-20 01:38:25]
+#> → GLM-AED2 running... [2025-11-20 01:38:25]
+#> ✔ GLM-AED2 run successful! [2025-11-20 01:38:26]
+#> ✔ Model run complete! [2025-11-20 01:38:26]
 plot_output(aeme, model = model)
 #> Warning: Using size for a discrete variable is not advised.
-#> Warning: Removed 82 rows containing missing values or values outside the scale range
+#> Warning: Removed 86 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 ```

@@ -39,9 +39,6 @@ model <- c("glm_aed", "gotm_wet")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
-#> ! Missing state variables in inflows:
-#> ! PHY_crypt
-#> ℹ Added default values for missing variables.
 #> ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Insufficient water level observations. Using constant water level
@@ -63,10 +60,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ  rsi_initial = 1 replaced with 1
 #> ℹ PHY_cyano 0.24022 replaced with 0.24022
 #> ℹ PHY_green 0.300275 replaced with 0.300275
-#> ℹ PHY_crypt replaced with
 #> ℹ PHY_diatom 0.300275 replaced with 0.300275
 #> ℹ  ss_initial = 3,3 replaced with 3,
-#> ✔ GLM nml validation completed — no issues detected.
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sO2W 13 replaced with 10
@@ -100,78 +95,54 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   replaced with 0.0024
 #> ℹ instances/abiotic_water/initialization/sDIMW 4 replaced with 3
 #> ✔ GOTM YAML validation completed — no issues detected.
+#> ✔ GLM nml validation completed — no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2025-11-13 20:44:06]
-#> ℹ Reading models in parallel...[2025-11-13 20:44:11]
-#> ✔ Model reading complete! [2025-11-13 20:44:13]
+#> ℹ Running models in parallel... [2025-11-20 01:37:47]
+#> ✔ Model run complete! [2025-11-20 01:37:51]
+#> ℹ Reading models in parallel...[2025-11-20 01:37:51]
+#> ✔ Model reading complete! [2025-11-20 01:37:52]
 get_output_vars(aeme, model)
-#>                    Water temperature                    Thermocline depth 
-#>                           "HYD_temp"                         "HYD_thmcln" 
-#>                     Dissolved oxygen                  Total chlorophyll a 
-#>                            "CHM_oxy"                          "PHY_tchla" 
-#>                       Total nitrogen                     Total phosphorus 
-#>                             "NIT_tn"                             "PHS_tp" 
-#>                          Water level                               Volume 
-#>                         "LKE_lvlwtr"                              "LKE_V" 
-#>                     Change in volume                         Surface area 
-#>                             "LKE_dV"                             "LKE_A0" 
-#>                          Evaporation                          Evaporation 
-#>                         "LKE_evprte"                         "LKE_evpflx" 
-#>                Evaporative heat flux                   Sensible heat flux 
-#>                             "LKE_Qe"                             "LKE_Qh" 
-#>                   Longwave radiation                  Shortwave radiation 
-#>                            "LKE_Qlw"                            "LKE_Qsw" 
-#>                Net surface heat flux                          Evaporation 
-#>                           "LKE_Qnet"                         "LKE_evpvol" 
-#>                        Precipitation                        Precipitation 
-#>                         "LKE_precip"                         "LKE_pcpvol" 
-#>                               Inflow                              Outflow 
-#>                         "LKE_inflow"                        "LKE_outflow" 
-#>                    Net water balance                           Lake layer 
-#>                         "LKE_netwbl"                         "LKE_layers" 
-#>                           Lake depth                      e-folding depth 
-#>                         "LKE_depths"                          "LKE_efold" 
-#>                      e-folding depth                       Euphotic depth 
-#>                         "LKE_efoldh"                         "LKE_photic" 
-#>                       Euphotic depth       Remote sensed skin temperature 
-#>                        "LKE_photich"                          "HYD_surft" 
-#>                      Air temperature     Water-air temperature difference 
-#>                         "MET_tmpair"                         "HYD_atdiff" 
-#>                             Salinity                            Phosphate 
-#>                           "CHM_salt"                            "PHS_frp" 
-#>                  Dissolved organic P                Particulate organic P 
-#>                            "PHS_dop"                            "PHS_pop" 
-#>              Particulate inorganic P                  Ammoniacal nitrogen 
-#>                            "PHS_pip"                            "NIT_amm" 
-#>                              Nitrate                  Dissolved organic N 
-#>                            "NIT_nit"                            "NIT_don" 
-#>                Particulate organic N             Dissolved organic carbon 
-#>                            "NIT_pon"                            "CAR_doc" 
-#>           Particulate organic carbon                        Cyanobacteria 
-#>                            "CAR_poc"                          "PHY_cyano" 
-#>                          Green algae                   Diatoms freshwater 
-#>                          "PHY_green"                         "PHY_diatom" 
-#>                     Suspended solids  Remotely sensed total chlorophyll a 
-#>                            "NCS_ss1"                        "PHY_rstchla" 
-#>                           Stratified                   Centre of buoyancy 
-#>                          "HYD_strat"                         "HYD_ctrbuy" 
-#>                     Epilimnion depth                    Hypolimnion depth 
-#>                         "HYD_epidep"                         "HYD_hypdep" 
-#>                    Schmidt stability                       Oxycline depth 
-#>                         "HYD_schstb"                         "CHM_oxycln" 
-#>                   Epilimnetic oxygen                  Hypolimnetic oxygen 
-#>                         "CHM_oxyepi"                         "CHM_oxyhyp" 
-#>                   Metalimnetic oygen           Metalimnetic oxygen minima 
-#>                         "CHM_oxymet"                         "CHM_oxymom" 
-#>              Number of anoxic layers    Trophic Level Index Chlorophyll-a 
-#>                         "CHM_oxynal"                           "LKE_tlic" 
-#>   Trophic Level Index Total Nitrogen Trophic Level Index Total Phosphorus 
-#>                           "LKE_tlin"                           "LKE_tlip" 
-#>     Trophic Level Index Secchi depth                Trophic Level Index 3 
-#>                          "LKE_tlise"                           "LKE_tli3" 
-#>                Trophic Level Index 4 
-#>                           "LKE_tli4" 
+#>                Water temperature                 Dissolved oxygen 
+#>                       "HYD_temp"                        "CHM_oxy" 
+#>              Total chlorophyll a                   Total nitrogen 
+#>                      "PHY_tchla"                         "NIT_tn" 
+#>                 Total phosphorus            Evaporative heat flux 
+#>                         "PHS_tp"                         "LKE_Qe" 
+#>               Sensible heat flux               Longwave radiation 
+#>                         "LKE_Qh"                        "LKE_Qlw" 
+#>              Shortwave radiation                           Volume 
+#>                        "LKE_Qsw"                          "LKE_V" 
+#>                      Evaporation                      Evaporation 
+#>                     "LKE_evpvol"                     "LKE_evpflx" 
+#>                     Surface area                      Evaporation 
+#>                         "LKE_A0"                     "LKE_evprte" 
+#>                           Inflow                          Outflow 
+#>                     "LKE_inflow"                    "LKE_outflow" 
+#>                    Precipitation                    Precipitation 
+#>                     "LKE_precip"                     "LKE_pcpvol" 
+#>   Remote sensed skin temperature                  e-folding depth 
+#>                      "HYD_surft"                      "LKE_efold" 
+#>                   Euphotic depth                             Time 
+#>                     "LKE_photic"                           "Date" 
+#>                       Lake depth                         Salinity 
+#>                     "LKE_depths"                       "CHM_salt" 
+#>                        Phosphate              Dissolved organic P 
+#>                        "PHS_frp"                        "PHS_dop" 
+#>            Particulate organic P          Particulate inorganic P 
+#>                        "PHS_pop"                        "PHS_pip" 
+#>              Ammoniacal nitrogen                          Nitrate 
+#>                        "NIT_amm"                        "NIT_nit" 
+#>              Dissolved organic N            Particulate organic N 
+#>                        "NIT_don"                        "NIT_pon" 
+#>         Dissolved organic carbon       Particulate organic carbon 
+#>                        "CAR_doc"                        "CAR_poc" 
+#>                    Cyanobacteria                      Green algae 
+#>                      "PHY_cyano"                      "PHY_green" 
+#>               Diatoms freshwater                 Suspended solids 
+#>                     "PHY_diatom"                        "NCS_ss1" 
+#>                  Air temperature Water-air temperature difference 
+#>                     "MET_tmpair"                     "HYD_atdiff" 
 ```

@@ -6,27 +6,26 @@ Load AEME output to the aeme object
 
 ``` r
 load_output(
-  model,
   aeme,
+  model,
   path,
   model_controls,
   parallel = FALSE,
   cl = NULL,
-  nlev = NULL,
   ens_n = 1
 )
 ```
 
 ## Arguments
 
+- aeme:
+
+  aeme; object.
+
 - model:
 
   vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
   \`gotm_wet\`.
-
-- aeme:
-
-  aeme; object.
 
 - path:
 
@@ -44,11 +43,6 @@ load_output(
 - cl:
 
   an object of class `"cluster"`.
-
-- nlev:
-
-  numeric; number of levels to return in model output. If NULL,
-  calculates number of levels based on the \`model_layer_structure\`.
 
 - ens_n:
 

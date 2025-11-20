@@ -513,12 +513,12 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file
 #> ℹ  oxy_initial = 625 replaced with 312.5
-#> ✔ GLM nml validation completed — no issues detected.
 #> ℹ Building GOTM-WET model for lake aeme
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sO2W 13 replaced with 10
-#> ✔ GOTM YAML validation completed — no issues detected.
 #> Warning: No parameters in 'param' for dy_cd.
+#> ✔ GLM nml validation completed — no issues detected.
+#> ✔ GOTM YAML validation completed — no issues detected.
 #> ✔ GLM nml validation completed — no issues detected.
 #> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | Writing GOTM-WET c…
 aeme

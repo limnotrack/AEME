@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -244,9 +244,38 @@ locations around the world. However, it’s date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2025-11-13 20:49:17] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2025-11-13 20:49:17] downloading</span></span>
-<span><span class="co">#&gt; INFO [2025-11-13 20:49:18] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2025-11-20 01:42:38] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:42:42] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:42:47] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:42:51] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:42:55] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:42:59] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:03] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:08] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:12] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:16] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:20] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:24] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:29] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:33] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:37] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:41] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:45] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:49] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:54] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:43:58] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:02] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:06] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:10] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:15] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:19] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:23] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:27] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:32] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:36] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:40] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:40] downloading</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 01:44:42] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -447,68 +476,88 @@ variables.</p>
 <span><span class="co">#&gt; 1     HYD_flow    FALSE          NA         NA          NA     1.00000000</span></span>
 <span><span class="co">#&gt; 2     HYD_temp     TRUE       15.00     11.000          NA     1.00000000</span></span>
 <span><span class="co">#&gt; 3     HYD_dens    FALSE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 4      RAD_par    FALSE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 5     RAD_extc    FALSE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 6   RAD_secchi    FALSE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 7     CHM_salt     TRUE        0.00      0.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 8      CHM_oxy     TRUE       10.00     10.000       1e+01     0.03200000</span></span>
-<span><span class="co">#&gt; 9      PHS_frp    FALSE        0.00      0.010       1e+06     0.03097376</span></span>
-<span><span class="co">#&gt; 10     PHS_dop    FALSE        0.00      0.010       1e+06     0.03097376</span></span>
-<span><span class="co">#&gt; 11    PHS_dopr    FALSE        0.00         NA          NA     0.03097376</span></span>
-<span><span class="co">#&gt; 12     PHS_pop    FALSE        0.00      0.010       1e-04     0.03097376</span></span>
-<span><span class="co">#&gt; 13    PHS_popr    FALSE        0.00         NA          NA     0.03097376</span></span>
-<span><span class="co">#&gt; 14     PHS_pip    FALSE        0.00      0.002       5e-03     0.03097376</span></span>
-<span><span class="co">#&gt; 15      PHS_tp    FALSE          NA         NA          NA     0.03097376</span></span>
-<span><span class="co">#&gt; 16     NIT_amm    FALSE        0.05      0.020       1e+06     0.01400670</span></span>
-<span><span class="co">#&gt; 17     NIT_nit    FALSE        0.20      0.015       1e+06     0.01400670</span></span>
-<span><span class="co">#&gt; 18     NIT_don    FALSE        0.00      0.300       1e+06     0.01400670</span></span>
-<span><span class="co">#&gt; 19    NIT_donr    FALSE        0.00         NA          NA     0.01400670</span></span>
-<span><span class="co">#&gt; 20     NIT_pon    FALSE        0.00      0.100       1e-03     0.01400670</span></span>
-<span><span class="co">#&gt; 21    NIT_ponr    FALSE        0.00         NA          NA     0.01400670</span></span>
-<span><span class="co">#&gt; 22     NIT_pin    FALSE          NA      0.010       1e-03     0.01400670</span></span>
-<span><span class="co">#&gt; 23      NIT_tn    FALSE          NA         NA          NA     0.01400670</span></span>
-<span><span class="co">#&gt; 24     CAR_dic    FALSE       10.00      2.000       1e+06     0.01201100</span></span>
-<span><span class="co">#&gt; 25     CAR_doc    FALSE        0.00      0.500       1e+06     0.01201100</span></span>
-<span><span class="co">#&gt; 26    CAR_docr    FALSE        0.00         NA       1e+06     0.01201100</span></span>
-<span><span class="co">#&gt; 27     CAR_poc    FALSE        0.00      0.200       1e-01     0.01201100</span></span>
-<span><span class="co">#&gt; 28    CAR_pocr    FALSE        0.00         NA          NA     0.01201100</span></span>
-<span><span class="co">#&gt; 29      CAR_ph    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 30     CAR_ch4    FALSE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 31     SIL_rsi    FALSE        0.00      1.000       1e+07     1.00000000</span></span>
-<span><span class="co">#&gt; 32     BAC_bac    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 33   PHY_dinof    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 34   PHY_cyano    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 35   PHY_nodul    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 36   PHY_green    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 37   PHY_crypt    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 38   PHY_mdiat    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 39  PHY_diatom    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 40   PHY_tchla    FALSE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 41     NCS_ss1    FALSE        5.00      3.000       3e-01     1.00000000</span></span>
-<span><span class="co">#&gt; 42     NCS_ss2    FALSE        5.00      3.000       3e-01     1.00000000</span></span>
-<span><span class="co">#&gt; 43     NCS_ss3    FALSE        5.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 44     NCS_ss4    FALSE        5.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 45     NCS_ss5    FALSE        5.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 46     NCS_ss6    FALSE        5.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 47     NCS_iss    FALSE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 48     NCS_tss    FALSE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 49    ZOO_zoo1    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 50    ZOO_zoo2    FALSE        0.10         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 51    ZOO_zoo3    FALSE        0.10         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 52    ZOO_zoo4    FALSE        0.10         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 53    ZOO_zoo5    FALSE        0.10         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 54   FSH_fish1    FALSE        0.00      1.000          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 55   FSH_fish2    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 56   FSH_fish3    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 57   FSH_jelly    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 58 MAC_macalg1    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 59 MAC_macalg2    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 60 MAC_macalg3    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 61 MAC_macalg4    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 62   CLM_clam1    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 63   CLM_clam2    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 64   CLM_clam3    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 65     TRC_col    FALSE        0.00      0.000       0e+00     1.00000000</span></span></code></pre></div>
+<span><span class="co">#&gt; 4     HYD_dens    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 5    HYD_strat    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 6   HYD_thmcln    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 7   HYD_schstb    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 8   HYD_ctrbuy    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 9   HYD_epidep    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 10  HYD_hypdep    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 11     RAD_par    FALSE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 12    RAD_extc    FALSE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 13  RAD_secchi    FALSE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 14    LKE_tlic    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 15    LKE_tlin    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 16    LKE_tlip    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 17   LKE_tlise    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 18    LKE_tli3    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 19    LKE_tli4    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 20    CHM_salt     TRUE        0.00      0.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 21     CHM_oxy     TRUE       10.00     10.000       1e+01     0.03200000</span></span>
+<span><span class="co">#&gt; 22  CHM_oxysat    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 23  CHM_oxycln    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 24  CHM_oxyepi    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 25  CHM_oxymet    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 26  CHM_oxyhyp    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 27  CHM_oxymom    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 28  CHM_oxynal    FALSE          NA         NA          NA             NA</span></span>
+<span><span class="co">#&gt; 29     PHS_frp    FALSE        0.00      0.010       1e+06     0.03097376</span></span>
+<span><span class="co">#&gt; 30     PHS_dop    FALSE        0.00      0.010       1e+06     0.03097376</span></span>
+<span><span class="co">#&gt; 31    PHS_dopr    FALSE        0.00         NA          NA     0.03097376</span></span>
+<span><span class="co">#&gt; 32     PHS_pop    FALSE        0.00      0.010       1e-04     0.03097376</span></span>
+<span><span class="co">#&gt; 33    PHS_popr    FALSE        0.00         NA          NA     0.03097376</span></span>
+<span><span class="co">#&gt; 34     PHS_pip    FALSE        0.00      0.002       5e-03     0.03097376</span></span>
+<span><span class="co">#&gt; 35      PHS_tp    FALSE          NA         NA          NA     0.03097376</span></span>
+<span><span class="co">#&gt; 36     NIT_amm    FALSE        0.05      0.020       1e+06     0.01400670</span></span>
+<span><span class="co">#&gt; 37     NIT_nit    FALSE        0.20      0.015       1e+06     0.01400670</span></span>
+<span><span class="co">#&gt; 38     NIT_don    FALSE        0.00      0.300       1e+06     0.01400670</span></span>
+<span><span class="co">#&gt; 39    NIT_donr    FALSE        0.00         NA          NA     0.01400670</span></span>
+<span><span class="co">#&gt; 40     NIT_pon    FALSE        0.00      0.100       1e-03     0.01400670</span></span>
+<span><span class="co">#&gt; 41    NIT_ponr    FALSE        0.00         NA          NA     0.01400670</span></span>
+<span><span class="co">#&gt; 42     NIT_pin    FALSE          NA      0.010       1e-03     0.01400670</span></span>
+<span><span class="co">#&gt; 43      NIT_tn    FALSE          NA         NA          NA     0.01400670</span></span>
+<span><span class="co">#&gt; 44     CAR_dic    FALSE       10.00      2.000       1e+06     0.01201100</span></span>
+<span><span class="co">#&gt; 45     CAR_doc    FALSE        0.00      0.500       1e+06     0.01201100</span></span>
+<span><span class="co">#&gt; 46    CAR_docr    FALSE        0.00         NA       1e+06     0.01201100</span></span>
+<span><span class="co">#&gt; 47     CAR_poc    FALSE        0.00      0.200       1e-01     0.01201100</span></span>
+<span><span class="co">#&gt; 48    CAR_pocr    FALSE        0.00         NA          NA     0.01201100</span></span>
+<span><span class="co">#&gt; 49      CAR_ph    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 50     CAR_ch4    FALSE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 51     SIL_rsi    FALSE        0.00      1.000       1e+07     1.00000000</span></span>
+<span><span class="co">#&gt; 52     BAC_bac    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 53   PHY_dinof    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 54   PHY_cyano    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 55   PHY_nodul    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 56   PHY_green    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 57   PHY_crypt    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 58   PHY_mdiat    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 59  PHY_diatom    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 60   PHY_tchla    FALSE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 61     NCS_ss1    FALSE        5.00      3.000       3e-01     1.00000000</span></span>
+<span><span class="co">#&gt; 62     NCS_ss2    FALSE        5.00      3.000       3e-01     1.00000000</span></span>
+<span><span class="co">#&gt; 63     NCS_ss3    FALSE        5.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 64     NCS_ss4    FALSE        5.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 65     NCS_ss5    FALSE        5.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 66     NCS_ss6    FALSE        5.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 67     NCS_iss    FALSE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 68     NCS_tss    FALSE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 69    ZOO_zoo1    FALSE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 70    ZOO_zoo2    FALSE        0.10         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 71    ZOO_zoo3    FALSE        0.10         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 72    ZOO_zoo4    FALSE        0.10         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 73    ZOO_zoo5    FALSE        0.10         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 74   FSH_fish1    FALSE        0.00      1.000          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 75   FSH_fish2    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 76   FSH_fish3    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 77   FSH_jelly    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 78 MAC_macalg1    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 79 MAC_macalg2    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 80 MAC_macalg3    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 81 MAC_macalg4    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 82   CLM_clam1    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 83   CLM_clam2    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 84   CLM_clam3    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 85     TRC_col    FALSE        0.00      0.000       0e+00     1.00000000</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="build-the-ensemble">Build the ensemble<a class="anchor" aria-label="anchor" href="#build-the-ensemble"></a>
@@ -529,7 +578,6 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">F</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building AEME object <span style="color: #00BB00;">■■■■■■■                         </span>  20% | Calculating water …</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Insufficient lake temperature observations to estimate surface temperature.</span></span>
 <span><span class="co">#&gt;   Using Stefan &amp; Preud'homme (2007) method.</span></span>
@@ -543,10 +591,10 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing DYRESM-CAEDYM control file</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building GLM-AED2 for lake wainamu</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM nml validation completed — no issues detected.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building GOTM-WET model for lake wainamu</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in GOTM configuration files</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM YAML validation completed — no issues detected.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM nml validation completed — no issues detected.</span></span>
 <span><span class="co">#&gt; Building AEME object <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% | Writing GOTM-WET c…</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
@@ -611,20 +659,14 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2025-11-13 20:49:31]</span></span>
-<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2025-11-13 20:49:31]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2025-11-13 20:49:52]</span></span>
-<span><span class="co">#&gt; → GLM-AED2 running... [2025-11-13 20:49:52]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED2 run successful! [2025-11-13 20:49:52]</span></span>
-<span><span class="co">#&gt; → GOTM-WET running... [2025-11-13 20:49:52]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2025-11-13 20:49:53]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2025-11-13 20:49:53]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting dyresmTEMPTURE_Var for model dy_cd</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting dyresmSALINITY_Var for model dy_cd</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting temp for model glm_aed</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting salt for model glm_aed</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting temp for model gotm_wet</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Retrieving and formatting salt for model gotm_wet</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2025-11-20 01:44:52]</span></span>
+<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2025-11-20 01:44:52]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2025-11-20 01:45:06]</span></span>
+<span><span class="co">#&gt; → GLM-AED2 running... [2025-11-20 01:45:06]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED2 run successful! [2025-11-20 01:45:07]</span></span>
+<span><span class="co">#&gt; → GOTM-WET running... [2025-11-20 01:45:07]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2025-11-20 01:45:07]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2025-11-20 01:45:07]</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="view-the-output">View the output<a class="anchor" aria-label="anchor" href="#view-the-output"></a>

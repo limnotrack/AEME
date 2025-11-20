@@ -151,6 +151,8 @@ We have a host of vignettes to help you get started with AEME:
 
 ## All functions
 
+- [`add_deriv_output()`](add_deriv_output.md) : Add derived output
+  variables to model output
 - [`add_hypsograph()`](add_hypsograph.md) : Add hypsograph to Aeme
   object
 - [`add_inflow()`](add_inflow.md) : Set inflow data from Aeme object
@@ -219,6 +221,8 @@ We have a host of vignettes to help you get started with AEME:
   variable mapping code for lake observation data
 - [`get_aeme_parameters()`](get_aeme_parameters.md) : Make parameters
   dataframe for AEME
+- [`get_date_index()`](get_date_index.md) : Get date index for each
+  model in the AEME object
 - [`get_hypsograph()`](get_hypsograph.md) : Get hypsograph from Aeme
   object
 - [`get_inflows()`](get_inflows.md) : Get inflow data from Aeme object
@@ -242,6 +246,8 @@ We have a host of vignettes to help you get started with AEME:
 - [`get_output_vars()`](get_output_vars.md) : Get the output variables
   from an AEME object
 - [`get_var()`](get_var.md) : Get variable from aeme
+- [`get_vars_sim()`](get_vars_sim.md) : Get all variables to be
+  simulated
 - [`get_var_indices()`](get_var_indices.md) : Get variable indices
 - [`glm_aed_parameters`](glm_aed_parameters.md) : Example dataframe used
   for calibrating the biogeochemistry in the GLM-AED model.
@@ -339,7 +345,14 @@ We have a host of vignettes to help you get started with AEME:
   status in Aeme object
 - [`read_aeme_from_files()`](read_aeme_from_files.md) : Read an AEME
   object from files
+- [`read_dy_output()`](read_dy_output.md) : Read DYRESM output
+- [`read_glm_output()`](read_glm_output.md) : Read GLM netCDF output
+- [`read_gotm_flux_output()`](read_gotm_flux_output.md) : Read GOTM flux
+  output
+- [`read_gotm_output()`](read_gotm_output.md) : Read GOTM output
 - [`read_gotm_profile()`](read_gotm_profile.md) : Read GOTM profile file
+- [`read_model_outputs()`](read_model_outputs.md) : Read model outputs
+  and format to AEME standard
 - [`read_nml()`](read_nml.md) : read in a GLM simulation \*.nml file
 - [`remove_inflow()`](remove_inflow.md) : Remove inflow data from Aeme
   object
@@ -357,6 +370,8 @@ We have a host of vignettes to help you get started with AEME:
 - [`set_precip()`](set_precip.md) : Set precipitation as either
   meteorological input or inflow
 - [`set_time()`](set_time.md) : Set time parameters for an Aeme object
+- [`set_vars_sim()`](set_vars_sim.md) : Set simulation variables in
+  model controls
 - [`show(`*`<Aeme>`*`)`](show-aeme-method.md) : Print Aeme object to the
   console
 - [`summary(`*`<Aeme>`*`)`](summary-aeme-method.md) : Summarise an Aeme

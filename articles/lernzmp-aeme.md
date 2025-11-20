@@ -241,7 +241,7 @@ is set to 1 indicating that there is now output for each model in the
 ``` r
 plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 #> Warning: Using size for a discrete variable is not advised.
-#> Warning: Removed 332 rows containing missing values or values outside the scale range
+#> Warning: Removed 334 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 ```
 
@@ -250,7 +250,7 @@ plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 ``` r
 plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
 #> Warning: Using size for a discrete variable is not advised.
-#> Warning: Removed 332 rows containing missing values or values outside the scale range
+#> Warning: Removed 334 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 ```
 
