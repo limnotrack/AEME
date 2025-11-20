@@ -10,25 +10,25 @@ HYD_schstb,,,,,Schmidt stability,Schmidt_stability_J/m2,Schmidt~stability~(J~m^2
 HYD_ctrbuy,,,,,Centre of buoyancy,Centre_of_buoyancy_m,Centre~of~buoyancy~(m),m3,1,,TRUE,HYD_temp,buoyancy|center|HYD_ctrbuy
 HYD_epidep,,,,,Epilimnion depth,Epilimnion_depth_m,Epilimnion~depth~(m),m3,1,,TRUE,HYD_temp,epilimnion|epi depth|HYD_epidep
 HYD_hypdep,,,,,Hypolimnion depth,Hypolimnion_depth_m,Hypolimnion~depth~(m),m3,1,,TRUE,HYD_temp,hypolimnion|hyp depth|HYD_hypdep
-HYD_surft,,,,,Remote sensed skin temperature,Remote_sensed_skin_temperature_degC,Remote~sensed~skin~temperature~(degree~C),degC,1,,FALSE,NA,surface temperature|skin temp|HYD_surft
+HYD_surft,,surface_temp,sst,,Remote sensed skin temperature,Remote_sensed_skin_temperature_degC,Remote~sensed~skin~temperature~(degree~C),degC,1,,FALSE,NA,surface temperature|skin temp|HYD_surft
 HYD_atdiff,,,,,Water-air temperature difference,Water-air_temperature_difference_degC,Water-air~temperature~difference~(degree~C),degC,1,,FALSE,NA,air water temp difference|temp diff|HYD_atdiff
 LKE_layers,,,,,Lake layer,Lake_layers_m,Lake~layers~(m),m,1,,FALSE,NA,lake layer|LKE_layers
 LKE_depths,,,,,Lake depth,Lake_depth_m,Lake~depth~(m),m,1,,FALSE,NA,depth|lake depth|LKE_depths
 LKE_evprte,,,,,Evaporation,Evaporation_m/day,Evaporation~(m~day^-1),m/day,1,,FALSE,NA,evaporation|evap|LKE_evprte
 LKE_evpvol,dyresmEVAP_DAILY,evaporation,evap,,Evaporation,Evaporation_m3,Evaporation~(m^3),m3,1,,FALSE,NA,evaporation volume|evpvol|LKE_evpvol
 LKE_evpflx,dyresmEVAP_DAILY,evap_mass_flux,evap,,Evaporation,Evaporation_flux_m/s,Evaporation~flux~(m^-1),m-1,1,,FALSE,NA,evaporation flux|flux|LKE_evpflx
-LKE_lvlwtr,,,,,Water level,Water_level_m,Water~level~(m),m,1,,FALSE,NA,water level|level|LKE_lvlwtr
-LKE_V,,,,,Volume,Volume_m3,Volume~(m^3),m3,1,,FALSE,NA,volume|V|LKE_V
+LKE_lvlwtr,,lake_level,zeta,,Water level,Water_level_m,Water~level~(m),m,1,,FALSE,NA,water level|level|LKE_lvlwtr
+LKE_V,,lake_volume,,,Volume,Volume_m3,Volume~(m^3),m3,1,,FALSE,NA,volume|V|LKE_V
 LKE_dV,,,,,Change in volume,Change_in_volume_m3,Change~in~volume~(m^3),m3,1,,FALSE,NA,change in volume|dV|LKE_dV
-LKE_A0,,,,,Surface area,Surface_area_m2,Surface~area~(m^2),m2,1,,FALSE,NA,surface area|A0|LKE_A0
-LKE_Qe,,,,,Evaporative heat flux,Evaporative_heat_flux_W/m2,Evaporative~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA,evaporative heat flux|Qe|LKE_Qe
-LKE_Qh,,,,,Sensible heat flux,Sensible_heat_flux_W/m2,Sensible~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA,sensible heat flux|Qh|LKE_Qh
-LKE_Qsw,,,,,Shortwave radiation,Shortwave_radiation_W/m2,Shortwave~radiation~(W~m^-2),W/m2,1,,FALSE,NA,shortwave radiation|Qsw|LKE_Qsw
-LKE_Qlw,,,,,Longwave radiation,Longwave_radiation_W/m2,Longwave~radiation~(W~m^-2),W/m2,1,,FALSE,NA,longwave radiation|Qlw|LKE_Qlw
+LKE_A0,,surface_area,,,Surface area,Surface_area_m2,Surface~area~(m^2),m2,1,,FALSE,NA,surface area|A0|LKE_A0
+LKE_Qe,,daily_qe,qe,,Evaporative heat flux,Evaporative_heat_flux_W/m2,Evaporative~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA,evaporative heat flux|Qe|LKE_Qe
+LKE_Qh,,daily_qh,qh,,Sensible heat flux,Sensible_heat_flux_W/m2,Sensible~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA,sensible heat flux|Qh|LKE_Qh
+LKE_Qsw,,daily_qsw,I_0,,Shortwave radiation,Shortwave_radiation_W/m2,Shortwave~radiation~(W~m^-2),W/m2,1,,FALSE,NA,shortwave radiation|Qsw|LKE_Qsw
+LKE_Qlw,,daily_qlw,ql,,Longwave radiation,Longwave_radiation_W/m2,Longwave~radiation~(W~m^-2),W/m2,1,,FALSE,NA,longwave radiation|Qlw|LKE_Qlw
 LKE_Qnet,,,,,Net surface heat flux,Net_surface_heat_flux_W/m2,Net~surface~heat~flux~(W~m^-2),W/m2,1,,FALSE,NA,net surface heat flux|Qnet|LKE_Qnet
-LKE_precip,,,,,Precipitation,Precipitation_m/day,Precipitation~(m~day^-1),m/day,1,,FALSE,NA,precipitation|precip|LKE_precip
+LKE_precip,,precipitation,precip,,Precipitation,Precipitation_m/day,Precipitation~(m~day^-1),m/day,1,,FALSE,NA,precipitation|precip|LKE_precip
 LKE_pcpvol,,,,,Precipitation,Precipitation_m3,Precipitation~(m^3),m3,1,,FALSE,NA,precipitation volume|pcpvol|LKE_pcpvol
-LKE_inflow,,,,,Inflow,Inflow_m3,Inflow~(m^3),m3,1,,FALSE,NA,inflow|LKE_inflow
+LKE_inflow,,tot_inflow_vol,,,Inflow,Inflow_m3,Inflow~(m^3),m3,1,,FALSE,NA,inflow|LKE_inflow
 LKE_outflow,,,,,Outflow,Outflow_m3,Outflow~(m^3),m3,1,,FALSE,NA,outflow|LKE_outflow
 LKE_netwbl,,,,,Net water balance,Net_water_balance_m3,Net~water~balance~(m^3),m3,1,,FALSE,NA,net water balance|netwbl|LKE_netwbl
 LKE_efold,,,,,e-folding depth,e-folding_depth_m,e-folding~depth~(m),m,1,,FALSE,NA,e-folding depth|efold|LKE_efold
