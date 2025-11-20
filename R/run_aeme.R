@@ -33,7 +33,7 @@
 #' aeme <- run_aeme(aeme = aeme, model = model, path = path)
 #' plot_output(aeme, model = model)
 run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
-                     model_controls = NULL, nlev = NULL, verbose = FALSE,
+                     model_controls = NULL, verbose = FALSE,
                      debug = FALSE, timeout = 0, parallel = FALSE, ncores,
                      check_output = FALSE, path = ".") {
   
@@ -103,6 +103,8 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
       }),
       model
     )
+    cli_inform_safe(c("v" = paste0("Model run complete! ",
+                                   "[", format(Sys.time()), "]")))
     
   } else {
     cli_inform_safe(c("i" = paste0("Running models... (Have you tried ",
@@ -137,7 +139,7 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
   if (return) {
     aeme <- load_output(model = model, aeme = aeme, path = path,
                         model_controls = model_controls, parallel = parallel,
-                        cl = cl, nlev = nlev, ens_n = ens_n)
+                        cl = cl, ens_n = ens_n)
     return(aeme)
   }
   
