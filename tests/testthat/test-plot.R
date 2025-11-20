@@ -92,7 +92,7 @@ test_that("plotting model output works", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 3L)
+                   parallel = TRUE, ncores = 2L)
 
 
   p1 <- plot(aeme, "output")
@@ -257,7 +257,7 @@ test_that("plotting model residuals for 2d and 1d variables", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 3L)
+                   parallel = TRUE, ncores = 2L)
 
   p1 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1$HYD_temp))
@@ -288,7 +288,7 @@ test_that("plotting phytoplankton model output works", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 3L)
+                   parallel = TRUE, ncores = 2L)
 
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1))
