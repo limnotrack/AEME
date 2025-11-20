@@ -73,8 +73,24 @@ test_that("running GLM works", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
-  
   vars_sim <- get_vars_sim(aeme = aeme)
+  
+  # Read GLM output using ncdf4
+  nc <- ncdf4::nc_open(outfile$glm_aed)
+  outp1 <- read_model_outputs(nc = nc, model = model, vars_sim = vars_sim)
+  testthat::expect_true(is.list(outp1))
+  testthat::expect_true(nrow(outp1$HYD_temp) == 43)
+  testthat::expect_true(length(outp1) == 20)
+  
+  outp2 <- read_model_outputs(nc = nc, model = model,  vars_sim = "HYD_temp",
+                              incl_fluxes = FALSE)
+  testthat::expect_true(is.list(outp2))
+  testthat::expect_true(nrow(outp2$HYD_temp) == 43)
+  testthat::expect_true(length(outp2) == 4)
+  
+  ncdf4::nc_close(nc)
+  
+  
   out <- read_glm_output(file = outfile$glm_aed, vars_sim = vars_sim)
   testthat::expect_true(nrow(out$HYD_temp) > 2)
   
