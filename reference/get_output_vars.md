@@ -100,10 +100,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2025-11-20 21:51:56]
-#> ✔ Model run complete! [2025-11-20 21:52:01]
-#> ℹ Reading models in parallel...[2025-11-20 21:52:01]
-#> ✔ Model reading complete! [2025-11-20 21:52:02]
+#> ℹ Running models in parallel... [2025-11-20 23:28:26]
+#> ✔ Model run complete! [2025-11-20 23:28:32]
+#> ℹ Reading models in parallel...[2025-11-20 23:28:32]
+#> ✔ Model reading complete! [2025-11-20 23:28:32]
 get_output_vars(aeme, model)
 #>                Water temperature                 Dissolved oxygen 
 #>                       "HYD_temp"                        "CHM_oxy" 
@@ -123,10 +123,8 @@ get_output_vars(aeme, model)
 #>                     "LKE_inflow"                    "LKE_outflow" 
 #>                    Precipitation                    Precipitation 
 #>                     "LKE_precip"                     "LKE_pcpvol" 
-#>   Remote sensed skin temperature                  e-folding depth 
-#>                      "HYD_surft"                      "LKE_efold" 
-#>                   Euphotic depth                             Time 
-#>                     "LKE_photic"                           "Date" 
+#>   Remote sensed skin temperature                             Time 
+#>                      "HYD_surft"                           "Date" 
 #>                       Lake depth                         Salinity 
 #>                     "LKE_depths"                       "CHM_salt" 
 #>                        Phosphate              Dissolved organic P 
