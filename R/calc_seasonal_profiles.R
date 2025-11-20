@@ -39,8 +39,8 @@ calc_seasonal_profiles <- function(aeme, model, ens_n = 1) {
     dplyr::filter(var_sim == "HYD_temp") |>
     dplyr::group_by(Date, Model) |>
     dplyr::summarise(
-      Ts = value[which.max(lyr_top)],
-      Tb = value[which.min(lyr_top)],
+      Ts = value[which.max(depth)],
+      Tb = value[which.min(depth)],
       Tdiff = Ts - Tb,
       strat = abs(Tdiff) > 1, .groups = "drop"
     )
@@ -62,7 +62,12 @@ calc_seasonal_profiles <- function(aeme, model, ens_n = 1) {
   ) |>
     dplyr::mutate(season = factor(season, levels = c("Spring", "Summer", "Autumn", "Winter")))
 
-  thick <- round(max(df$lyr_thk) / 0.1) * 0.1
+  thick <- df |> 
+    dplyr::filter(Date == df$Date[1]) |> 
+    dplyr::pull(depth) |> 
+    diff() |> 
+    max() * 0.1
+  # thick <- round(max(df$lyr_thk) / 0.1) * 0.1
   n_intervals <- ceiling(max_lake_depth / thick)
   intv <- 1 / n_intervals
 
@@ -90,14 +95,14 @@ calc_seasonal_profiles <- function(aeme, model, ens_n = 1) {
 
   df_adj <- df |>
     dplyr::group_by(Date, Model, var_sim) |>
-    dplyr::mutate(elev = btm_elev + cumsum(lyr_thk),
-                  level = sum(lyr_thk),
-                  depth = max(lyr_top) - lyr_top,
-                  depth_centre = dplyr::case_when(
-                    lyr_top == max(lyr_top) ~ max(lyr_top),
-                    .default = lyr_top - 0.5 * lyr_thk,
-                  ),
-                  prop_depth = depth_centre / level,
+    dplyr::mutate(#elev = btm_elev + cumsum(lyr_thk),
+                  #level = sum(lyr_thk),
+                  # depth = max(lyr_top) - lyr_top,
+                  # depth_centre = dplyr::case_when(
+                  #   lyr_top == max(lyr_top) ~ max(lyr_top),
+                  #   .default = lyr_top - 0.5 * lyr_thk,
+                  # ),
+                  prop_depth = depth / max(depth),
                   # fdepth = cut(depth, breaks = seq(0, max(depth) + 0.5, 0.5)),
                   fprop_depth = cut(prop_depth, breaks = seq(0, 1, intv),
                                     labels = FALSE),
