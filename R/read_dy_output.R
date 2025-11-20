@@ -12,6 +12,10 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                            dates = NULL, date_index = NULL, incl_fluxes = FALSE, 
                            output_hour = 0, file) {
   
+  # Set timezone
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+  
   if (is.null(nc)) {
     nc <- open_nc_safe(file, model = "dy_cd")
     on.exit(ncdf4::nc_close(nc))
@@ -22,11 +26,14 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   if (!("dyresmTime" %in% names(nc$var))) {
     return(NULL)
   }
-  dy_dates <- as.POSIXct((ncdf4::ncvar_get(nc, "dyresmTime") - 2415018.5) *
+  dy_time <- ncdf4::ncvar_get(nc, "dyresmTime")
+  dy_time[dy_time > 9.9e36] <- NA
+  dy_dates <- as.POSIXct((dy_time - 2415018.5) *
                            86400, origin = "1899-12-30")
   idx <- which(lubridate::hour(dy_dates) == output_hour)
   if (length(idx) == 0) stop("No output for DYRESM at ", output_hour, " hour")
   dy_dates <- dy_dates |> as.Date()
+  valid_dates <- dy_dates[!is.na(as.numeric(dy_dates))]
   if (is.null(date_index)) {
     if (!is.null(dates)) {
       date_index <- which(dy_dates %in% dates)
@@ -36,6 +43,9 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     } else {
       date_index <- seq_along(dy_dates)
     }
+  }
+  if (length(valid_dates) < length(date_index)) {
+    date_index <- seq_along(valid_dates)
   }
   dates <- dy_dates[date_index]
   out_list[["Date"]] <- dates
