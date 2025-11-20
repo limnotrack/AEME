@@ -99,7 +99,7 @@ calc_HYD_epidep <- function(out_list, hyps) {
   
   safe_apply(ncol(wtr), function(c) {
     v <- rLakeAnalyzer::meta.depths(wtr[, c], depths[, c])
-    if (is.nan(v[1])) NA_real_ else v[1]
+    if (is.nan(v[1])) max(depths[, c]) else v[1]
   })
 }
 
