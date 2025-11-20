@@ -74,6 +74,8 @@
   dataframe for AEME
 - [`get_date_index()`](get_date_index.md) : Get date index for each
   model in the AEME object
+- [`get_deriv_inputs()`](get_deriv_inputs.md) : Get derived variables
+  needed for simulation
 - [`get_hypsograph()`](get_hypsograph.md) : Get hypsograph from Aeme
   object
 - [`get_inflows()`](get_inflows.md) : Get inflow data from Aeme object
