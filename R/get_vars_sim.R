@@ -53,7 +53,16 @@ get_vars_sim <- function(vars_sim, aeme, model_controls) {
       deriv <- unique(c(deriv, more))
     }
     all_vars <- unique(c(vars_sim, deriv)) 
-    all_vars <- all_vars[order(all_vars)]
-    return(all_vars)
+    priority <- c("HYD", "CHM", "LKE")
+    
+    # Order variables
+    ret_vars <- key_naming |>
+      dplyr::filter(name %in% all_vars) |>
+      dplyr::mutate(group = sub("_.*$", "", name),
+                    order  = match(group, priority)) |>
+      dplyr::arrange(order, derived) |> 
+      dplyr::pull(name)
+    
+    return(ret_vars)
   }
 }
