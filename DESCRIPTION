@@ -28,6 +28,7 @@ Imports:
     RColorBrewer,
     rLakeAnalyzer,
     rstudioapi,
+    sf,
     stats,
     stringdist,
     stringr,
@@ -48,7 +49,6 @@ Suggests:
     LakeEnsemblR (>= 1.2.9),
     osmdata,
     rmarkdown,
-    sf,
     testthat (>= 3.0.0),
     tmap
 VignetteBuilder: 
