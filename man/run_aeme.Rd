@@ -10,7 +10,6 @@ run_aeme(
   return = TRUE,
   ens_n = 1,
   model_controls = NULL,
-  nlev = NULL,
   verbose = FALSE,
   debug = FALSE,
   timeout = 0,
@@ -34,9 +33,6 @@ loaded. Defaults to 1.}
 
 \item{model_controls}{dataframe; of configuration loaded from
 "model_controls.csv".}
-
-\item{nlev}{numeric; number of levels to return in model output. If NULL,
-calculates number of levels based on the `model_layer_structure`.}
 
 \item{verbose}{logical; print model output to console. Defaults to FALSE.}
 
