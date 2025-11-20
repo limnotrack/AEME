@@ -1,5 +1,8 @@
 #' Read model outputs and format to AEME standard
 #'
+#' @param nc Open netCDF object. If NULL, will open netCDF from lake_dir. This
+#' is useful when reading multiple variables from the same file to avoid
+#' reopening the file multiple times. Defaults to NULL.
 #' @param lake_dir Directory of lake model outputs
 #' @param model Model name. One of "gotm_wet", "glm_aed", or "dy_cd".
 #' @param vars_sim Variables to extract in the AEME format e.g. "HYD_temp"
@@ -18,8 +21,8 @@
 #' @returns List of model outputs in AEME standard format
 #' @export
 
-read_model_outputs <- function(lake_dir, model, vars_sim = NULL, depths = NULL, 
-                               dates = NULL, date_index = NULL,
+read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL, 
+                               depths = NULL, dates = NULL, date_index = NULL,
                                incl_fluxes = TRUE, output_hour = 0) {
   
   # Set timezone
@@ -31,26 +34,33 @@ read_model_outputs <- function(lake_dir, model, vars_sim = NULL, depths = NULL,
   if (length(model) != 1) {
     cli::cli_abort("Please supply a single model name.")
   }
-  lake_dir <- check_path(lake_dir, must_exist = TRUE)
-  
-  # cfg_file
-  cfg_file <- get_model_config_files(model = model, 
-                                     lake_dir = lake_dir)[[model]]
-  cfg <- load_model_config(model = model, lake_dir = lake_dir)
-  
-  # Load model hypsograph
-  hyps <- load_model_hypsograph(model = model, lake_dir = lake_dir)
-  
-  # Read in model netCDF file
-  nc_files <- get_model_outfile(model = model, lake_dir = lake_dir)[[model]]
-  if (model == "gotm_wet") {
-    nc_file <- nc_files["output"]  
-    incl_fluxes <- ifelse("output_daily" %in% names(nc_files), FALSE, TRUE)
+  if (is.null(nc)) {
+    lake_dir <- check_path(lake_dir, must_exist = TRUE)
+    
+    # cfg_file
+    cfg_file <- get_model_config_files(model = model, 
+                                       lake_dir = lake_dir)[[model]]
+    cfg <- load_model_config(model = model, lake_dir = lake_dir)
+    
+    # Load model hypsograph
+    hyps <- load_model_hypsograph(model = model, lake_dir = lake_dir)
+    
+    # Read in model netCDF file
+    nc_files <- get_model_outfile(model = model, lake_dir = lake_dir)[[model]]
+    if (model == "gotm_wet") {
+      nc_file <- nc_files["output"]  
+      incl_fluxes <- ifelse("output_daily" %in% names(nc_files), FALSE, TRUE)
+      read_gotm_daily <- incl_fluxes
+    } else {
+      nc_file <- nc_files
+      read_gotm_daily <- FALSE
+    }
+    nc <- open_nc_safe(file = nc_file, model = model)
+    on.exit(ncdf4::nc_close(nc), add = TRUE)
   } else {
-    nc_file <- nc_files
+    read_gotm_daily <- FALSE
   }
-  nc <- open_nc_safe(file = nc_file, model = model)
-  on.exit(ncdf4::nc_close(nc), add = TRUE)
+
   
   if (is.null(date_index)) {
     # ---- 1. extract time info for this model
@@ -82,7 +92,7 @@ read_model_outputs <- function(lake_dir, model, vars_sim = NULL, depths = NULL,
                                                  date_index = date_index)
   )
   
-  if (model == "gotm_wet" & !incl_fluxes) {
+  if (model == "gotm_wet" & !incl_fluxes & read_gotm_daily) {
     add_vars <- read_gotm_output(file = nc_files["output_daily"], 
                                  incl_fluxes = TRUE, date_index = date_index)
     # Add missing vars to out_list

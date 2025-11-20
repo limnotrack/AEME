@@ -5,6 +5,7 @@
 \title{Read model outputs and format to AEME standard}
 \usage{
 read_model_outputs(
+  nc = NULL,
   lake_dir,
   model,
   vars_sim = NULL,
@@ -16,6 +17,10 @@ read_model_outputs(
 )
 }
 \arguments{
+\item{nc}{Open netCDF object. If NULL, will open netCDF from lake_dir. This
+is useful when reading multiple variables from the same file to avoid
+reopening the file multiple times. Defaults to NULL.}
+
 \item{lake_dir}{Directory of lake model outputs}
 
 \item{model}{Model name. One of "gotm_wet", "glm_aed", or "dy_cd".}
