@@ -34,20 +34,20 @@ plot_resid <- function(aeme, model, var_sim = "HYD_temp") {
     df <- get_var(aeme = aeme, model = model, var_sim = v,
                   use_obs = TRUE) |>
       dplyr::mutate(resid = sim - obs, yday = lubridate::yday(Date))
-    dep_chk <- "depth_mid" %in% names(df)
-    if (all(is.na(df$depth_mid))) {
+    dep_chk <- "depth" %in% names(df)
+    if (all(is.na(df$depth))) {
       dep_chk <- FALSE
     }
 
-    if ("depth_mid" %in% names(df) & all(!is.na(df$depth_mid))) {
+    if ("depth" %in% names(df) & all(!is.na(df$depth))) {
       df <- df |>
-        dplyr::mutate(fdepth = factor(depth_mid))
+        dplyr::mutate(fdepth = factor(depth))
     }
-    n_depths <- unique(df$depth_mid) |> length()
+    n_depths <- unique(df$depth) |> length()
     if (n_depths > 15) {
       # Group depths into 10 categories
       df <- df |>
-        dplyr::mutate(fdepth = cut(depth_mid, breaks = 15))
+        dplyr::mutate(fdepth = cut(depth, breaks = 15))
       levs <- levels(df$fdepth)
       levs <- gsub(",", "-", levs)
       levs <- gsub("\\(|]", "", levs)
@@ -90,7 +90,7 @@ plot_resid <- function(aeme, model, var_sim = "HYD_temp") {
       ls[[length(ls) + 1]] <- ggplot2::ggplot() +
         ggplot2::geom_vline(xintercept = 0, linetype = "dashed") +
         {if (dep_chk) ggplot2::geom_point(data = df,
-                                          ggplot2::aes(x = resid, y = depth_mid,
+                                          ggplot2::aes(x = resid, y = depth,
                                                        colour = obs))} +
         ggplot2::labs(x = "Residuals", y = "Depth (m)",
                       colour = "") +
