@@ -4,7 +4,7 @@
 \alias{get_model_outfile}
 \title{Get model output file}
 \usage{
-get_model_outfile(aeme, model, path)
+get_model_outfile(aeme, model, path, lake_dir = NULL)
 }
 \arguments{
 \item{aeme}{aeme; object.}
@@ -14,6 +14,9 @@ get_model_outfile(aeme, model, path)
 
 \item{path}{filepath; where input files are located relative to the current 
 working directory.}
+
+\item{lake_dir}{Path to the lake AEME directory. If NULL, it will be
+computed from `aeme` and `path`.}
 }
 \value{
 list of model output files.

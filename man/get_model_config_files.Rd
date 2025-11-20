@@ -4,7 +4,7 @@
 \alias{get_model_config_files}
 \title{Get model configuration files paths}
 \usage{
-get_model_config_files(aeme, model, path)
+get_model_config_files(aeme, model, path, lake_dir = NULL)
 }
 \arguments{
 \item{aeme}{aeme; object.}
@@ -14,6 +14,9 @@ get_model_config_files(aeme, model, path)
 
 \item{path}{filepath; where input files are located relative to the current 
 working directory.}
+
+\item{lake_dir}{Path to the lake AEME directory. If NULL, it will be
+computed from `aeme` and `path`.}
 }
 \value{
 A list with model configuration files paths
