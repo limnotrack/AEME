@@ -155,6 +155,7 @@
 - [`` `observations<-`() ``](observations-set.md) : Set observations in
   Aeme object
 - [`observations()`](observations.md) : Access observations slot
+- [`open_nc_safe()`](open_nc_safe.md) : Safely open a NetCDF file
 - [`outflows(`*`<Aeme>`*`)`](outflows-aeme-method.md) : Access outflows
   slot
 - [`` `outflows<-`( ``*`<Aeme>`*`)`](outflows-set-aeme-method.md) : Set
