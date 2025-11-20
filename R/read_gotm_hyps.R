@@ -7,32 +7,31 @@
 #'
 read_gotm_hyps <- function(file) {
   
-  # Read all lines
-  lines <- readr::read_lines(file)
+  # Read lines
+  lines <- readLines(file)
   
-  # First line contains: n_levels   flag
+  # Parse header: "52 2"
   header <- lines[[1]] |>
     strsplit("\\s+") |>
-    (\(x) x[[1]])() |>
-    as.numeric()
+    (\(x) as.numeric(x[[1]]))()
   
   n_levels <- header[1]
   
-  # Read remaining lines as a dataframe
+  # Read remaining lines into a data frame
   out <- lines[-1] |>
-    (\(x) readr::read_table(
-      file = I(x),
-      col_names = c("depth", "area"),
-      col_types = readr::cols(
-        depth = readr::col_double(),
-        area  = readr::col_double()
-      )
+    (\(x) paste(x, collapse = "\n"))() |>
+    (\(x) read.table(
+      text = x,
+      col.names = c("depth", "area"),
+      colClasses = c("numeric", "numeric")
     ))()
   
-  # Optionally check number of rows
+  # Optional check
   if (nrow(out) != n_levels) {
-    warning("Number of rows does not match header value n_levels = ", n_levels)
+    warning("Number of rows (", nrow(out),
+            ") does not match header n_levels = ", n_levels)
   }
   
   out
 }
+
