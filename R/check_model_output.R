@@ -35,8 +35,11 @@ check_model_output <- function(aeme, model, path) {
 #' @param file path to NetCDF file
 #' @param model name of the model (for error messages)
 #' @return ncdf4 object
-#' @noRd
+#' @export
 open_nc_safe <- function(file, model) {
+  if (missing(model)) {
+    model <- "model"
+  }
   if (!file.exists(file)) {
     cli::cli_abort("{.val {model}} output file not found: {.file {file}}")
   }
@@ -53,7 +56,6 @@ open_nc_safe <- function(file, model) {
       "{.val {model}} output file is corrupt (invalid netCDF ID): {.file {file}}"
     )
   }
-  
   nc
 }
 
