@@ -23,7 +23,7 @@ get_model_controls <- function(aeme = NULL, use_bgc = FALSE) {
                   "NIT_amm", "NIT_nit", "NIT_don", "NIT_pon", "NIT_tn",
                   "CAR_doc", "CAR_poc",
                   "SIL_rsi",
-                  "PHY_cyano", "PHY_green", "PHY_crypt", "PHY_diatom",
+                  "PHY_cyano", "PHY_green", "PHY_diatom",
                   "PHY_tchla",
                   "NCS_ss1"
     )
