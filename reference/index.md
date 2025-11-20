@@ -98,7 +98,7 @@
   from an AEME object
 - [`get_var()`](get_var.md) : Get variable from aeme
 - [`get_vars_sim()`](get_vars_sim.md) : Get all variables to be
-  simulated
+  simulated, including those that are derived from others.
 - [`get_var_indices()`](get_var_indices.md) : Get variable indices
 - [`glm_aed_parameters`](glm_aed_parameters.md) : Example dataframe used
   for calibrating the biogeochemistry in the GLM-AED model.

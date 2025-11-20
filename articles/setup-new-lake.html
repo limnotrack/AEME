@@ -244,38 +244,9 @@ locations around the world. However, it’s date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:42:38] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:42:42] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:42:47] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:42:51] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:42:55] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:42:59] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:03] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:08] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:12] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:16] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:20] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:24] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:29] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:33] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:37] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:41] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:45] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:49] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:54] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:43:58] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:02] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:06] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:10] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:15] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:19] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:23] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:27] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:32] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:36] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:40] job updated</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:40] downloading</span></span>
-<span><span class="co">#&gt; INFO [2025-11-20 01:44:42] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2025-11-20 03:05:55] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 03:05:55] downloading</span></span>
+<span><span class="co">#&gt; INFO [2025-11-20 03:05:58] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -659,14 +630,14 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2025-11-20 01:44:52]</span></span>
-<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2025-11-20 01:44:52]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2025-11-20 01:45:06]</span></span>
-<span><span class="co">#&gt; → GLM-AED2 running... [2025-11-20 01:45:06]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED2 run successful! [2025-11-20 01:45:07]</span></span>
-<span><span class="co">#&gt; → GOTM-WET running... [2025-11-20 01:45:07]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2025-11-20 01:45:07]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2025-11-20 01:45:07]</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2025-11-20 03:06:08]</span></span>
+<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2025-11-20 03:06:08]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2025-11-20 03:06:27]</span></span>
+<span><span class="co">#&gt; → GLM-AED2 running... [2025-11-20 03:06:27]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED2 run successful! [2025-11-20 03:06:28]</span></span>
+<span><span class="co">#&gt; → GOTM-WET running... [2025-11-20 03:06:28]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2025-11-20 03:06:29]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2025-11-20 03:06:29]</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="view-the-output">View the output<a class="anchor" aria-label="anchor" href="#view-the-output"></a>

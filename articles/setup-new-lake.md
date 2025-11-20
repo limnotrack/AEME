@@ -191,38 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-11-20 01:42:38] job submitted
-#> INFO [2025-11-20 01:42:42] job updated
-#> INFO [2025-11-20 01:42:47] job updated
-#> INFO [2025-11-20 01:42:51] job updated
-#> INFO [2025-11-20 01:42:55] job updated
-#> INFO [2025-11-20 01:42:59] job updated
-#> INFO [2025-11-20 01:43:03] job updated
-#> INFO [2025-11-20 01:43:08] job updated
-#> INFO [2025-11-20 01:43:12] job updated
-#> INFO [2025-11-20 01:43:16] job updated
-#> INFO [2025-11-20 01:43:20] job updated
-#> INFO [2025-11-20 01:43:24] job updated
-#> INFO [2025-11-20 01:43:29] job updated
-#> INFO [2025-11-20 01:43:33] job updated
-#> INFO [2025-11-20 01:43:37] job updated
-#> INFO [2025-11-20 01:43:41] job updated
-#> INFO [2025-11-20 01:43:45] job updated
-#> INFO [2025-11-20 01:43:49] job updated
-#> INFO [2025-11-20 01:43:54] job updated
-#> INFO [2025-11-20 01:43:58] job updated
-#> INFO [2025-11-20 01:44:02] job updated
-#> INFO [2025-11-20 01:44:06] job updated
-#> INFO [2025-11-20 01:44:10] job updated
-#> INFO [2025-11-20 01:44:15] job updated
-#> INFO [2025-11-20 01:44:19] job updated
-#> INFO [2025-11-20 01:44:23] job updated
-#> INFO [2025-11-20 01:44:27] job updated
-#> INFO [2025-11-20 01:44:32] job updated
-#> INFO [2025-11-20 01:44:36] job updated
-#> INFO [2025-11-20 01:44:40] job updated
-#> INFO [2025-11-20 01:44:40] downloading
-#> INFO [2025-11-20 01:44:42] extracting
+#> INFO [2025-11-20 03:05:55] job submitted
+#> INFO [2025-11-20 03:05:55] downloading
+#> INFO [2025-11-20 03:05:58] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -627,14 +598,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-20 01:44:52]
-#> → DYRESM-CAEDYM running... [2025-11-20 01:44:52]
-#> ✔ DYRESM-CAEDYM run successful! [2025-11-20 01:45:06]
-#> → GLM-AED2 running... [2025-11-20 01:45:06]
-#> ✔ GLM-AED2 run successful! [2025-11-20 01:45:07]
-#> → GOTM-WET running... [2025-11-20 01:45:07]
-#> ✔ GOTM-WET run successful! [2025-11-20 01:45:07]
-#> ✔ Model run complete! [2025-11-20 01:45:07]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-20 03:06:08]
+#> → DYRESM-CAEDYM running... [2025-11-20 03:06:08]
+#> ✔ DYRESM-CAEDYM run successful! [2025-11-20 03:06:27]
+#> → GLM-AED2 running... [2025-11-20 03:06:27]
+#> ✔ GLM-AED2 run successful! [2025-11-20 03:06:28]
+#> → GOTM-WET running... [2025-11-20 03:06:28]
+#> ✔ GOTM-WET run successful! [2025-11-20 03:06:29]
+#> ✔ Model run complete! [2025-11-20 03:06:29]
 ```
 
 ### View the output

@@ -100,10 +100,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2025-11-20 01:37:47]
-#> ✔ Model run complete! [2025-11-20 01:37:51]
-#> ℹ Reading models in parallel...[2025-11-20 01:37:51]
-#> ✔ Model reading complete! [2025-11-20 01:37:52]
+#> ℹ Running models in parallel... [2025-11-20 03:00:43]
+#> ✔ Model run complete! [2025-11-20 03:00:47]
+#> ℹ Reading models in parallel...[2025-11-20 03:00:47]
+#> ✔ Model reading complete! [2025-11-20 03:00:49]
 get_output_vars(aeme, model)
 #>                Water temperature                 Dissolved oxygen 
 #>                       "HYD_temp"                        "CHM_oxy" 
