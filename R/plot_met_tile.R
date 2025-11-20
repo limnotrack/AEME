@@ -31,7 +31,7 @@ plot_met_tile <- function(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE) {
   aeme <- check_aeme(aeme)
   
   # Load Rdata
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   # Load lake data for hydrological year
   lke <- lake(aeme)

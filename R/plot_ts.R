@@ -74,7 +74,7 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
     dplyr::bind_rows()
 
   # Add key naming
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
   out_df <- out_df |>
     dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
                      by = c("var_sim" = "name"))

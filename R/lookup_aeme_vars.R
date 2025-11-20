@@ -32,7 +32,7 @@
 
 lookup_aeme_vars <- function(group = NULL, var_aeme = NULL, name = NULL) {
   # Load dataset
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
   
   df <- key_naming |>
     dplyr::select(name, name_text, units) |>

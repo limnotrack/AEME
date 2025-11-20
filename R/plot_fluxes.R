@@ -25,7 +25,7 @@ plot_fluxes <- function(aeme, model, cumulative = FALSE) {
   } else {
     model <- check_model(model = model)
   }
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   vars <- c("LKE_Qsw", "LKE_Qlw", "LKE_Qe", "LKE_Qh")
   df <- lapply(vars, \(v) {

@@ -8,7 +8,7 @@
 #' @noRd
 plot_var_summary <- function(data, ylim, xlim) {
 
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   data <- data |>
     tidyr::separate(var_sim, into = c("group", "var", "loc"), sep = "_") |>

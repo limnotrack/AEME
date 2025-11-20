@@ -18,7 +18,7 @@ plot_obs <- function(aeme, var_sim = "HYD_temp", add_line = FALSE) {
   aeme <- check_aeme(aeme)
   
   # Load key_naming
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   # Load observation slot
   obs <- observations(aeme)

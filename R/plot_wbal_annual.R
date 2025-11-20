@@ -22,7 +22,7 @@
 plot_wbal_annual <- function(aeme, model, lake_frac = FALSE, 
                              remove_spin_up = FALSE) {
   
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
   
   lake_vol <- calc_lake_vol(aeme)
   aeme <- check_aeme(aeme)

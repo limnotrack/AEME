@@ -31,7 +31,7 @@ plot_flows <- function(aeme, flow = c("inflow", "outflow"),
   }
 
   # Load key_naming
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   inf <- list()
   outf <- list()

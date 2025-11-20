@@ -15,7 +15,7 @@ rename_modelvars <- function(input,
                              verbose = FALSE) {
 
   # Load Rdata
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   this.key <- data.frame(key_naming[key_naming[, type_input] %in% input, ])
 
