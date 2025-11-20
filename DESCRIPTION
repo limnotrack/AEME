@@ -28,7 +28,6 @@ Imports:
     RColorBrewer,
     rLakeAnalyzer,
     rstudioapi,
-    sf,
     stats,
     stringdist,
     stringr,
