@@ -40,11 +40,11 @@ model_controls = model_controls)
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
-#> ✔ GLM nml validation completed — no issues detected.
+#> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-20 03:01:30]
-#> → GLM-AED2 running... [2025-11-20 03:01:30]
-#> ✔ GLM-AED2 run successful! [2025-11-20 03:01:31]
-#> ✔ Model run complete! [2025-11-20 03:01:31]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-20 21:11:20]
+#> → GLM-AED2 running... [2025-11-20 21:11:20]
+#> ✔ GLM-AED2 run successful! [2025-11-20 21:11:20]
+#> ✔ Model run complete! [2025-11-20 21:11:20]
 write_aeme_to_files(aeme, path)
 ```

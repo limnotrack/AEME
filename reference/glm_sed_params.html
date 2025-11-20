@@ -124,19 +124,91 @@ apply. Options are:</p><ul><li><p>0: Bottom layer only</p></li>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Generate sediment parameters for 1 zone</span></span></span>
-<span class="r-in"><span><span class="va">sed_params_1zone</span> <span class="op">&lt;-</span> <span class="fu">generate_glm_sed_params</span><span class="op">(</span>n_zones <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in generate_glm_sed_params(n_zones = 1):</span> could not find function "generate_glm_sed_params"</span>
+<span class="r-in"><span><span class="va">sed_params_1zone</span> <span class="op">&lt;-</span> <span class="fu">glm_sed_params</span><span class="op">(</span>n_zones <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sed_params_1zone</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'sed_params_1zone' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      model     file                        name value    min    max group index</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  glm_aed glm3.nml       sediment/benthic_mode  2.00  2.000  2.000  &lt;NA&gt;    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  glm_aed glm3.nml            sediment/n_zones  1.00  1.000  1.000  &lt;NA&gt;    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  glm_aed glm3.nml      sediment/sed_temp_mean 12.00  6.000 18.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  glm_aed glm3.nml       sediment/zone_heights 10.00  5.000 15.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      module</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 sediment</span>
 <span class="r-in"><span><span class="co">#' # Generate sediment parameters for 3 zones</span></span></span>
-<span class="r-in"><span><span class="va">sed_params_3zones</span> <span class="op">&lt;-</span> <span class="fu">generate_glm_sed_params</span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">sed_params_3zones</span> <span class="op">&lt;-</span> <span class="fu">glm_sed_params</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  n_zones <span class="op">=</span> <span class="fl">3</span>,</span></span>
 <span class="r-in"><span>  zone_heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">15</span>, <span class="fl">20</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  sed_temp_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">12</span>, <span class="fl">14</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in generate_glm_sed_params(n_zones = 3, zone_heights = c(5, 15,     20), sed_temp_mean = c(10, 12, 14)):</span> could not find function "generate_glm_sed_params"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sed_params_3zones</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'sed_params_3zones' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      model     file                        name value    min    max group index</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  glm_aed glm3.nml       sediment/benthic_mode  2.00  2.000  2.000  &lt;NA&gt;    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  glm_aed glm3.nml            sediment/n_zones  3.00  3.000  3.000  &lt;NA&gt;    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  glm_aed glm3.nml      sediment/sed_temp_mean 10.00  5.000 15.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 glm_aed glm3.nml      sediment/sed_temp_mean 12.00  6.000 18.000  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 glm_aed glm3.nml      sediment/sed_temp_mean 14.00  7.000 21.000  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 glm_aed glm3.nml       sediment/zone_heights  5.00  2.500  7.500  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 glm_aed glm3.nml       sediment/zone_heights 15.00  7.500 22.500  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 glm_aed glm3.nml       sediment/zone_heights 20.00 10.000 30.000  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      module</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 sediment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26 sediment</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

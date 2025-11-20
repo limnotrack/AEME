@@ -62,15 +62,15 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ PHY_green 0.300275 replaced with 0.300275
 #> ℹ PHY_diatom 0.300275 replaced with 0.300275
 #> ℹ  ss_initial = 3, replaced with 3,
-#> ✔ GLM nml validation completed — no issues detected.
+#> ✔ GLM nml validation completed - no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2025-11-20 03:00:58]
-#> ✔ Model run complete! [2025-11-20 03:01:02]
-#> ℹ Reading models in parallel...[2025-11-20 03:01:02]
-#> ✔ Model reading complete! [2025-11-20 03:01:03]
+#> ℹ Running models in parallel... [2025-11-20 21:10:48]
+#> ✔ Model run complete! [2025-11-20 21:10:52]
+#> ℹ Reading models in parallel...[2025-11-20 21:10:52]
+#> ✔ Model reading complete! [2025-11-20 21:10:53]
 list_mod_obs_vars(aeme = aeme, model = model)
 #>            Cyanobacteria         Dissolved oxygen                 Salinity 
 #>              "PHY_cyano"                "CHM_oxy"               "CHM_salt" 

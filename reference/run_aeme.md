@@ -98,12 +98,12 @@ model_controls = model_controls, ext_elev = 5)
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
-#> ✔ GLM nml validation completed — no issues detected.
+#> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-20 03:01:23]
-#> → GLM-AED2 running... [2025-11-20 03:01:23]
-#> ✔ GLM-AED2 run successful! [2025-11-20 03:01:23]
-#> ✔ Model run complete! [2025-11-20 03:01:23]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-20 21:11:12]
+#> → GLM-AED2 running... [2025-11-20 21:11:12]
+#> ✔ GLM-AED2 run successful! [2025-11-20 21:11:13]
+#> ✔ Model run complete! [2025-11-20 21:11:13]
 plot_output(aeme, model = model)
 #> Warning: Using size for a discrete variable is not advised.
 #> Warning: Removed 86 rows containing missing values or values outside the scale range

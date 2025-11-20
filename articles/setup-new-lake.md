@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-11-20 03:05:55] job submitted
-#> INFO [2025-11-20 03:05:55] downloading
-#> INFO [2025-11-20 03:05:58] extracting
+#> INFO [2025-11-20 21:15:44] job submitted
+#> INFO [2025-11-20 21:15:44] downloading
+#> INFO [2025-11-20 21:15:45] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -527,8 +527,8 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #> ℹ Copied in GLM nml file
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
-#> ✔ GOTM YAML validation completed — no issues detected.
-#> ✔ GLM nml validation completed — no issues detected.
+#> ✔ GOTM YAML validation completed - no issues detected.
+#> ✔ GLM nml validation completed - no issues detected.
 #> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | Writing GOTM-WET c…
 
 print(aeme)
@@ -598,14 +598,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-20 03:06:08]
-#> → DYRESM-CAEDYM running... [2025-11-20 03:06:08]
-#> ✔ DYRESM-CAEDYM run successful! [2025-11-20 03:06:27]
-#> → GLM-AED2 running... [2025-11-20 03:06:27]
-#> ✔ GLM-AED2 run successful! [2025-11-20 03:06:28]
-#> → GOTM-WET running... [2025-11-20 03:06:28]
-#> ✔ GOTM-WET run successful! [2025-11-20 03:06:29]
-#> ✔ Model run complete! [2025-11-20 03:06:29]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-20 21:15:57]
+#> → DYRESM-CAEDYM running... [2025-11-20 21:15:57]
+#> ✔ DYRESM-CAEDYM run successful! [2025-11-20 21:16:19]
+#> → GLM-AED2 running... [2025-11-20 21:16:19]
+#> ✔ GLM-AED2 run successful! [2025-11-20 21:16:20]
+#> → GOTM-WET running... [2025-11-20 21:16:20]
+#> ✔ GOTM-WET run successful! [2025-11-20 21:16:21]
+#> ✔ Model run complete! [2025-11-20 21:16:21]
 ```
 
 ### View the output

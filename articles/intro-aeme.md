@@ -519,9 +519,9 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sO2W 13 replaced with 10
 #> Warning: No parameters in 'param' for dy_cd.
-#> ✔ GLM nml validation completed — no issues detected.
-#> ✔ GOTM YAML validation completed — no issues detected.
-#> ✔ GLM nml validation completed — no issues detected.
+#> ✔ GLM nml validation completed - no issues detected.
+#> ✔ GOTM YAML validation completed - no issues detected.
+#> ✔ GLM nml validation completed - no issues detected.
 aeme
 #>             AEME 
 #> -------------------------------------------------------------------
