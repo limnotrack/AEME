@@ -20,7 +20,7 @@ read_gotm_hyps <- function(file) {
   
   # Read remaining lines as a dataframe
   out <- lines[-1] |>
-    (\(x) readr::read_table2(
+    (\(x) readr::read_table(
       file = I(x),
       col_names = c("depth", "area"),
       col_types = readr::cols(
