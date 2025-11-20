@@ -9,10 +9,16 @@
 #' @importFrom dplyr filter pull
 
 initialiseAED <- function(model_controls, path_aed) {
-  
+  data("key_naming", package = "AEME", envir = environment())
+  deriv_vars <- key_naming |>
+    dplyr::filter(derived) |>
+    dplyr::pull(name)
   this_ctrls <-  model_controls |>
     dplyr::filter(simulate,
-                  !var_aeme %in% c("DateTime","HYD_flow","HYD_temp","HYD_dens",
+                  !var_aeme %in% deriv_vars,
+                  !var_aeme %in% c("DateTime",
+                                   "HYD_flow","HYD_temp","HYD_dens",
+                                   "LKE_lvlwtr",
                                    "RAD_par","RAD_extc","RAD_secchi",
                                    "CHM_salt",
                                    "PHS_pip", "NIT_pin",
@@ -24,7 +30,9 @@ initialiseAED <- function(model_controls, path_aed) {
   this_ctrls <- this_ctrls[nme_chk != "", ]
   
   if (sum(is.na(this_ctrls$initial_wc)) > 0) {
-    stop("incomplete initialisation, please check your key file")
+    na_vars <- this_ctrls$var_aeme[which(is.na(this_ctrls$initial_wc))]
+    cli::cli_abort("Initial concentrations missing for: {paste(na_vars, collapse = ', ')}.
+                  Please check your key file")
   }
   
   aed_cfg <- file.path(path_aed, "aed2.nml")
