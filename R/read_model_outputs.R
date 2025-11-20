@@ -95,9 +95,11 @@ read_model_outputs <- function(lake_dir, model, vars_sim = NULL, depths = NULL,
   # ---- 4. add derivative outputs
   data("key_naming", package = "AEME", envir = environment())
   deriv_vars <- key_naming |> 
-    dplyr::filter(name %in% vars_sim & derived)
-  if (nrow(deriv_vars) > 0) {
-    out_list <- add_deriv_output(out_list = out_list, hyps = hyps)
+    dplyr::filter(name %in% vars_sim & derived) |> 
+    dplyr::pull(name)
+  if (length(deriv_vars) > 0) {
+    out_list <- add_deriv_output(out_list = out_list, hyps = hyps, 
+                                 vars_sim = deriv_vars)
   }
   
   # ---- 5. convert all 1 dimension variables to vectors
