@@ -116,20 +116,20 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
   })
   if (any(!chk)) {
     if (all(!chk)) {
-      stop(paste0("Variable '", var_sim, "' not in output for model(s) ",
-                  paste0(model, collapse = ", ")))
+      cli::cli_abort("Variable '{var_sim}' not in output for model(s):
+                     {paste0(model[!chk], collapse = ', ')}")
     }
-    warning(paste0("Variable '", var_sim, "' not in output for model(s) ",
-                   paste0(model[!chk], collapse = ", ")))
+    cli::cli_alert_warning("Variable '{var_sim}' not in output for model(s): 
+                           {paste0(model[!chk], collapse = ', ')}")
     model <- model[chk]
   }
 
   # Date lims
   # Find date range and have output in Date format
-  this.list <- sapply(model, \(m){
+  all_dates <- sapply(model, \(m){
     "[["(outp[[ens_lab]][[m]], "Date")
   })
-  xlim <- as.Date(range(this.list, na.rm = TRUE))
+  xlim <- as.Date(range(all_dates, na.rm = TRUE))
   if (remove_spin_up) {
     xlim <- c(as.Date(tme$start), as.Date(tme$stop))
   }
@@ -144,10 +144,10 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
 
   # colour lims
   if (is.null(var_lims)) {
-    this.list <- sapply(model, \(m){
+    all_vals <- sapply(model, \(m){
       "[["(outp[[ens_lab]][[m]], var_sim)
     })
-    vect <- unlist(this.list)
+    vect <- unlist(all_vals)
     if (add_obs) {
       var_lims <- range(c(vect, obs_lake[["value"]]), na.rm = TRUE)
     } else {
