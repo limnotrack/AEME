@@ -149,14 +149,14 @@ aeme_constructor <- function(
     lake, time, configuration, observations,
     input, inflows, outflows, water_balance, output, parameters, print = TRUE
 ) {
-
+  
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
-
+  
   # If missing arguments, create default list objects
   if (missing(lake) & missing(time) & missing(input)) {
-    stop("Objects lake, time, and input must be provided.")
+    cli::cli_abort("Objects lake, time, and input must be provided.")
   }
   cfg_dflt <- list(
     model_controls = NULL,
@@ -233,57 +233,57 @@ aeme_constructor <- function(
       gotm_wet = NULL
     )
   }
-  param_names <- param_colnames()
+  param_names <- param_colnames(incl_opt = FALSE)
   if (missing(parameters)) {
     parameters <- data.frame(matrix(nrow = 0, ncol = length(param_names)))
     colnames(parameters) <- param_names
   }
-
+  
   # Validate the types before creating the object
   if (!is.list(lake) || !is.list(time) ||
       !is.list(configuration) || !is.list(observations) || !is.list(input) ||
       !is.list(inflows) || !is.list(outflows) || !is.list(water_balance) ||
       !is.list(output) || !is.data.frame(parameters)) {
-    stop("All inputs must be lists or data frames.")
+    cli::cli_abort("All inputs must be lists or data frames.")
   }
-
+  
   # Lake type checking for specific elements
   if (!is.character(lake$name)) {
-    stop("Lake name must be a character.")
+    cli::cli_abort("Lake name must be a character.")
   }
   if (any(grepl("[^[:alnum:]]", lake$name))) {
-    stop(strwrap(paste0("Lake name '", lake$name, "' contains non-alphanumeric
+    cli::cli_abort("Lake name {.val {lake$name}} contains non-alphanumeric
                           characters. Please remove these characters from the
-                          lake name.")))
+                          lake name.")
   }
   if (!is.character(lake$id)) {
     lake$id <- as.character(lake$id)
     if (is.na(lake$id)) {
-      stop("Lake id must be a character.")
+      cli::cli_abort("Lake id must be a character.")
     }
   }
   if (any(grepl("[^[:alnum:]]", lake$id))) {
-    stop(strwrap(paste0("Lake id '", lake$id, "' contains non-alphanumeric
+    cli::cli_abort("Lake id {.val {lake$id}} contains non-alphanumeric
                           characters. Please remove these characters from the
-                          lake name.")))
+                          lake id.")
   }
   if (!is.numeric(lake$latitude)) {
-    stop("Lake latitude must be numeric.")
+    cli::cli_abort("Lake latitude must be numeric.")
   }
   if (!is.numeric(lake$longitude)) {
-    stop("Lake longitude must be numeric.")
+    cli::cli_abort("Lake longitude must be numeric.")
   }
   if (!is.numeric(lake$elevation)) {
-    stop("Lake elevation must be numeric.")
+    cli::cli_abort("Lake elevation must be numeric.")
   }
   # if (!is(lake$shape, "sf") & !is.null(lake$shape)) {
-  #   stop("Lake shape must be an 'sf' object or NULL.")
+  #   cli::cli_abort("Lake shape must be an 'sf' object or NULL.")
   # }
   if (!is.numeric(lake$depth)) {
-    stop("Lake depth must be numeric.")
+    cli::cli_abort("Lake depth must be numeric.")
   }
   if (is.null(lake$area)) {
-    stop("Lake area must be provided.")
+    cli::cli_abort("Lake area must be provided.")
   }
   # if (is(lake$shape, "sf") & is.null(lake$area)) {
   #   if (print) {
@@ -310,18 +310,18 @@ aeme_constructor <- function(
   #   }
   # }
   if (!is.numeric(lake$area)) {
-    stop(paste(strwrap("Lake area must be numeric."), collpse = "\n"))
+    cli::cli_abort("Lake area {.val {lake$area}} must be numeric.")
   }
-
+  
   # Catchment type checking for specific elements
   # if (!is.character(catchment$name)) {
-  #   stop("Catchment name must be a character.")
+  #   cli::cli_abort("Catchment name must be a character.")
   # }
   # if (!is(catchment$shape, "sf") & !is.null(catchment$shape)) {
-  #   stop("Catchment shape must be an 'sf' object or NULL.")
+  #   cli::cli_abort("Catchment shape must be an 'sf' object or NULL.")
   # }
   # if (!is.numeric(catchment$area) & !is.null(catchment$area)) {
-  #   stop(paste(strwrap("Catchment area must be numeric or NULL. If NULL,
+  #   cli::cli_abort(paste(strwrap("Catchment area must be numeric or NULL. If NULL,
   #                      catchment shape needs to be provided."), collpse = "\n"))
   # }
   # if (is(catchment$shape, "sf") & is.null(catchment$area)) {
@@ -333,25 +333,25 @@ aeme_constructor <- function(
   #   suppressMessages(sf::sf_use_s2(TRUE))
   # }
   # if (!is(catchment$shape, "sf") & is.null(catchment$area)) {
-  #   stop("Catchment area must be provided if no catchment shape is present.")
+  #   cli::cli_abort("Catchment area must be provided if no catchment shape is present.")
   # }
-
+  
   # Time type checking for specific elements
   is.POSIXct <- function(x) inherits(x, "POSIXct")
   if (is.character(time$start)) {
     time$start <- as.POSIXct(time$start, format = "%Y-%m-%d %H:%M:%S",
                              tz = "UTC")
   } else if(!is.POSIXct(time$start)) {
-    stop("Time start must be POSIXct.")
+    cli::cli_abort("Time start must be POSIXct.")
   }
   if (is.character(time$stop)) {
     time$stop <- as.POSIXct(time$stop, format = "%Y-%m-%d %H:%M:%S",
                             tz = "UTC")
   } else if(!is.POSIXct(time$stop)) {
-    stop("Time stop must be POSIXct.")
+    cli::cli_abort("Time stop must be POSIXct.")
   }
   if (time$stop <= time$start) {
-    stop("Time stop must be greater than time start.")
+    cli::cli_abort("Time stop must be greater than time start.")
   }
   if (is.null(time$time_step)) {
     if (print) {
@@ -360,7 +360,7 @@ aeme_constructor <- function(
     time$time_step <- 3600
   }
   if (!is.numeric(time$time_step)) {
-    stop("Time step must be numeric.")
+    cli::cli_abort("Time step must be numeric.")
   }
   if (!is.list(time$spin_up)) {
     if (is.null(time$spin_up)) {
@@ -374,41 +374,42 @@ aeme_constructor <- function(
         gotm_wet = 2
       )
     } else {
-      stop("Time spin-up must be a list.")
+      cli::cli_abort("Time spin-up must be a list.")
     }
   } else if (all(!is.numeric(unlist(time$spin_up)))) {
-    stop("Time spin-up for models must be numeric.")
+    cli::cli_abort("Time spin-up for models must be numeric.")
   }
-
+  
   # Configuration type checking for specific elements
   if (!is.null(configuration$model_controls)) {
     if (!is.data.frame(configuration$model_controls)) {
-      stop("Configuration model_controls must be a dataframe or NULL.")
+      cli::cli_abort("Configuration model_controls must be a dataframe or
+                     NULL.")
     }
   }
   if (!is.logical(configuration$use_bgc)) {
-    stop("Configuration use_bgc must be logical.")
+    cli::cli_abort("Configuration use_bgc must be logical.")
   }
   if (!is.null(configuration$dy_cd)) {
     if (!is.list(configuration$dy_cd)) {
-      stop("Configuration dy_cd must be a list or NULL.")
+      cli::cli_abort("Configuration dy_cd must be a list or NULL.")
     }
   }
   if (!is.null(configuration$glm_aed)) {
     if (!is.list(configuration$glm_aed)) {
-      stop("Configuration glm_aed must be a list or NULL.")
+      cli::cli_abort("Configuration glm_aed must be a list or NULL.")
     }
   }
   if (!is.null(configuration$gotm_wet)) {
     if (!is.list(configuration$gotm_wet)) {
-      stop("Configuration gotm_wet must be a list or NULL.")
+      cli::cli_abort("Configuration gotm_wet must be a list or NULL.")
     }
   }
-
+  
   # Observations type checking for specific elements
   if (!is.null(observations$level)) {
     if (!is.data.frame(observations$level)) {
-      stop("Observations level must be a dataframe or NULL.")
+      cli::cli_abort("Observations level must be a dataframe or NULL.")
     }
   }
   obs_col_names <- get_obs_column_names()
@@ -421,12 +422,12 @@ aeme_constructor <- function(
   # }
   if (!is.null(observations$lake)) {
     if (!is.data.frame(observations$lake)) {
-      stop("Observations lake must be a dataframe or NULL.")
+      cli::cli_abort("Observations lake must be a dataframe or NULL.")
     }
     obs_col_names <- get_obs_column_names()
     if (!all(obs_col_names %in% colnames(observations$lake))) {
-      stop(paste("Observations lake must contain the following columns:",
-                 paste(obs_col_names, collapse = ", ")))
+      cli::cli_abort("Observations lake must contain the following columns: 
+                   {.val {paste(obs_col_names, collapse = ', ')}}.")
     }
   }
   # if (is.null(observations$lake)) {
@@ -436,121 +437,122 @@ aeme_constructor <- function(
   #   observations$lake <- df |>
   #     dplyr::filter(!is.na(value))
   # }
-
+  
   # Input type checking for specific elements
   if (!is.null(input$init_profile)) {
     if (!is.data.frame(input$init_profile)) {
-      stop("Input inital temperature profile must be a dataframe or NULL.")
+      cli::cli_abort("Input inital temperature profile must be a dataframe or
+                     NULL.")
     }
   }
   if (!is.numeric(input$init_depth)) {
-    stop("Lake inital depth must be numeric.")
+    cli::cli_abort("Lake inital depth must be numeric.")
   }
   if (!is.null(input$hypsograph)) {
     if (!is.data.frame(input$hypsograph)) {
-      stop("Input hypsograph must be a dataframe or NULL.")
+      cli::cli_abort("Input hypsograph must be a dataframe or NULL.")
     }
   }
   if (!is.null(input$meteo)) {
     if (!is.data.frame(input$meteo)) {
-      stop("Input meteo must be a dataframe or NULL.")
+      cli::cli_abort("Input meteo must be a dataframe or NULL.")
     } else {
       if (!is.POSIXct(input$meteo$Date) &
           !lubridate::is.Date(input$meteo$Date)) {
-        if (print) {
-          message(strwrap("Input meteo datetime is not in POSIXct/Date format.
-                        Converting to 'Date' format."))
-        }
+        cli_inform_safe(c("!" = "Input meteo datetime is not in POSIXct/Date
+                          format.",
+                          "i" = "Converting to 'Date' format."))
         input$meteo$Date <- as.Date(input$meteo$Date)
         if (any(is.na(input$meteo$Date))) {
-          stop(strwrap("NA's introduced when coercing to Date object. Input
-                       meteo datetime is preferred in POSIXct/Date format."))
+          cli::cli_abort("NA's introduced when coercing to Date object. Input
+                       meteo datetime is preferred in POSIXct/Date format.")
         }
       }
     }
   }
   if (!is.logical(input$use_lw)) {
     if (is.null(input$use_lw)) {
-      if (print) {
-        message(strwrap("Use longwave missing.\nSetting use longwave to TRUE."))
-      }
+      cli_inform_safe(c("!" = "Use longwave missing.",
+                        "i" = "Setting use longwave to TRUE."))
       input$use_lw <- TRUE
     } else {
-      stop("Input use longwave must be logical.")
+      cli::cli_abort("Input use longwave must be logical.")
     }
   }
   if (!is.numeric(input$Kw)) {
-    stop("Input Kw must be numeric.")
+    cli::cli_abort("Input Kw must be numeric.")
   }
-
+  
   # Inflows type checking for specific elements
   if (!is.null(inflows$data)) {
     if (!is.list(inflows$data)) {
       if (!all(sapply(inflows$data, is.data.frame))) {
-        stop("Inflows data must be a list of dataframes or NULL.")
+        cli::cli_abort("Inflows data must be a list of dataframes or NULL.")
       }
     }
   }
   if (!is.list(inflows$factor)) {
-    stop("Inflows factor must be a list.")
+    cli::cli_abort("Inflows factor must be a list.")
   } else if (all(!is.numeric(unlist(inflows$factor)))) {
-    stop("Inflows factor for models must be numeric.")
+    cli::cli_abort("Inflows factor for models must be numeric.")
   }
-
+  
   # Outflows type checking for specific elements
   if (!is.null(outflows$data)) {
     if (!is.list(outflows$data)) {
       if (!all(sapply(outflows$data, is.data.frame))) {
-        stop("Outflows data must be a list of dataframes or NULL.")
+        cli::cli_abort("Outflows data must be a list of dataframes or NULL.")
       }
     }
   }
   if (!is.list(outflows$factor)) {
-    stop("Outflows factor must be a list.")
+    cli::cli_abort("Outflows factor must be a list.")
   } else if (all(!is.numeric(unlist(outflows$factor)))) {
-    stop("Outflows factor for models must be numeric.")
+    cli::cli_abort("Outflows factor for models must be numeric.")
   }
-
+  
   # Water balance type checking for specific elements
   if (!is.list(water_balance)) {
-    stop("Water balance must be a list of lists or NULL.")
+    cli::cli_abort("Water balance must be a list of lists or NULL.")
   }
   if (!is.null(water_balance[["data"]][["model"]])) {
     if (!is.data.frame(water_balance[["data"]][["model"]])) {
-      stop("Modelled water level must be a dataframe or NULL.")
+      cli::cli_abort("Modelled water level must be a dataframe or NULL.")
     }
   }
   if (!is.numeric(water_balance$method)) {
-    stop("Water balance method must be numeric. Accepted values are 1-3")
+    cli::cli_abort("Water balance method must be numeric. Accepted values are 1-3")
   } else if (water_balance$method < 1 | water_balance$method > 3) {
-    stop(strwrap("Water balance method selected not available. Accepted values
-                 are 1 (none), 2 (outflows) or 3 (inflows & outflows"))
+    cli::cli_abort("Water balance method selected {.val {water_balance$method}} 
+    not available. Accepted values are 1 (none), 2 (outflows) or 3 (inflows & outflows).")
   }
   if (!is.null(water_balance$use)) {
     if (!is.character(water_balance$use)) {
-      stop("Water balance use must be a character of 'obs' or 'mod'.")
+      cli::cli_abort("Water balance use must be a character of 'obs' or 'mod'.")
     }
     if (!water_balance$use %in% c("obs", "mod")) {
-      stop(strwrap("Water balance use must be one of 'obs',
+      cli::cli_abort("Water balance use must be one of 'obs',
+                   'mod'. {.val {water_balance$use}} given.")
+      cli::cli_abort(strwrap("Water balance use must be one of 'obs',
                    'mod'."))
     }
   }
-
+  
   # Output type checking for specific elements
   if (!is.list(output)) {
-    stop("Output must be a list of lists or NULL.")
+    cli::cli_abort("Output must be a list of lists or NULL.")
   }
-
+  
   # Parameters type checking for specific elements
   if (!is.data.frame(parameters)) {
-    stop("Parameters must be a dataframe.")
+    cli::cli_abort("Parameters must be a dataframe.")
   }
   if (!all(param_names %in% names(parameters))) {
-    stop(strwrap(paste0("Parameters must have the following columns: ",
-                        paste(param_names, collapse = ", "), ".")))
+    cli::cli_abort("Parameters must have the following columns:
+                   {paste(param_names, collapse = ', ')}.")
   }
-
-
+  
+  
   new("Aeme",
       lake = lake,
       # catchment = catchment,
@@ -952,7 +954,7 @@ setMethod("show", "Aeme", function(object) {
   wbal <- water_balance(object)
   outp <- output(object)
   params <- parameters(object)
-
+  
   n_dyresm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
   n_glm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
   n_gotm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
@@ -964,7 +966,7 @@ setMethod("show", "Aeme", function(object) {
       n_gotm[i] <- ifelse(!is.null(outp[[ens_names[i]]][["gotm_wet"]]), 1, 0)
     }
   }
-
+  
   cat(
     "\t\t\t   AEME ",
     paste0(
@@ -994,7 +996,7 @@ setMethod("show", "Aeme", function(object) {
     "    Model controls: ", ifelse(is.null(config[["model_controls"]]),
                                    "Absent ", "Present"), "\n",
     "    Use biogeochemical model: ", ifelse(config[["use_bgc"]],
-                                   "Yes ", "No"), "\n",
+                                             "Yes ", "No"), "\n",
     "          Physical   |   Biogeochemical",
     "\nDY-CD    : ", ifelse(is.null(config[["dy_cd"]][["hydrodynamic"]]),
                             "Absent ", "Present"), "    |   ",
@@ -1070,9 +1072,9 @@ setMethod("show", "Aeme", function(object) {
 #' @return Aeme object.
 #' @export
 setMethod("summary", "Aeme", function(object) {
-
+  
   aeme_summ <- summarise_aeme(object)
-
+  
   # lke <- lake(aeme_summ)
   # aeme_time <- time(aeme_summ)
   # cfg <- configuration(aeme_summ)
@@ -1083,14 +1085,14 @@ setMethod("summary", "Aeme", function(object) {
   # wb <- water_balance(aeme_summ)
   # outp <- output(aeme_summ)
   # param <- parameters(aeme_summ)
-
+  
   # Create an instance of the aemeSummary class
   # summary_object <- new("AemeSummary",
   #                       aeme = aeme_summ
   #                       )
-
+  
   return(aeme_summ)
-
+  
 })
 
 #' Plot an Aeme object
@@ -1113,22 +1115,22 @@ setMethod("summary", "Aeme", function(object) {
 #' @return prints the Aeme object to the console.
 #' @export
 setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
-
+  
   if (missing(y)) {
     y <- "output"
   }
-
+  
   if (!(y %in% slotNames(x))) {
-    stop("'", y, "' is not a named slot in x. Options are:\n'",
-         paste(slotNames(x), collapse = "', '"), "'.")
+    cli::cli_abort("'", y, "' is not a named slot in x. Options are:\n'",
+                   paste(slotNames(x), collapse = "', '"), "'.")
   }
-
+  
   obj <- eval(parse(text = paste0(y, '(x)')))
-
+  
   if (all(sapply(obj, is.null))) {
-    stop("No data in '", y, "' slot in x.")
+    cli::cli_abort("No data in '", y, "' slot in x.")
   }
-
+  
   if (y == "lake") {
     p <- ggplot2::ggplot()
     # if (is(obj$shape, "sf")) {
@@ -1139,7 +1141,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
     # }
     pnt <- data.frame(lat = obj$latitude, lon = obj$longitude) |>
       sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
-
+    
     p <- p + ggplot2::geom_sf(data = pnt) +
       ggplot2::labs(x = "Longitude", y = "Latitude",
                     title = paste0(obj$name, " (", obj$id,")"),
@@ -1147,12 +1149,12 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
                                       "m; Depth: ", obj$depth, "m"))
     return(p)
   }
-
+  
   if (y == "input") {
-
+    
     # Load Rdata
-    utils::data("key_naming", package = "AEME", envir = environment())
-
+    data("key_naming", package = "AEME", envir = environment())
+    
     inp <- input(x)
     p1 <- ggplot2::ggplot() +
       ggplot2::geom_line(data = inp$hypsograph, ggplot2::aes(x = area, y = elev)) +
@@ -1160,7 +1162,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
       ggplot2::labs(x = "Area (m2)", y = "Elevation (m)") +
       ggplot2::ggtitle("Hypsograph") +
       ggplot2::theme_bw()
-
+    
     p2 <- inp$meteo |>
       tidyr::pivot_longer(cols = !dplyr::contains("Date")) |>
       dplyr::left_join(key_naming[, c("name", "name_parse")], by = c("name" = "name")) |>
@@ -1169,13 +1171,13 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
       ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
       ggplot2::facet_wrap(~name_parse, scales = "free_y", labeller = ggplot2::label_parsed) +
       ggplot2::theme_bw()
-
+    
     g <- p1 + p2 + patchwork::plot_layout(nrow = 1, widths = c(1, 4))
     return(g)
   }
-
+  
   if (y == "observations") {
-
+    
     if (!is.null(obj$lake) & !!is.null(obj$level)) {
       p1 <- obj$lake |>
         dplyr::bind_rows(obj$level) |>
@@ -1208,9 +1210,9 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
     }
     return(p1)
   }
-
+  
   if (y == "inflows" | y == "outflows") {
-
+    
     df <- lapply(seq_along(obj$data), function(i) {
       cbind(obj$data[[i]], flow_name = names(obj$data)[i])
     }) |>
@@ -1226,8 +1228,8 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
       ggplot2::labs(x = "Date", y = "Value") +
       ggplot2::theme_bw()
     return(p1)
-
-
+    
+    
     if (!is.null(obj$data)) {
       par(mfrow = c(length(obj$data), 1))
       xlims <- range(do.call(c, lapply(obj$data, "[", "Date")), na.rm = TRUE) |>
@@ -1262,7 +1264,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
             axis.Date(side = 1, at = seq(min(x), max(x), by = "6 months"),
                       x = x, labels = labels, format = "%m/%Y")
           }
-
+          
         } else if (y == "outflows") {
           vars <- names(obj$data[[i]])[-1]
           x <- obj$data[[i]]$Date
@@ -1286,7 +1288,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
       }
     }
   }
-
+  
   if (y == "water_balance") {
     obs <- observations(x)
     if (!is.null(obj$data$wbal)) {
@@ -1301,7 +1303,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
           ggplot2::geom_point(data = level, ggplot2::aes(x = Date, y = value,
                                                          colour = "Obs"))
       }
-
+      
       p2 <- wbal |>
         dplyr::select(Date, dplyr::contains("outflow")) |>
         tidyr::pivot_longer(cols = dplyr::contains("outflow"),
@@ -1311,7 +1313,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
         ggplot2::ggplot() +
         ggplot2::geom_line(ggplot2::aes(x = Date, y = value, col = Model)) +
         ggplot2::labs(x = "Date", y = "Outflow (m3/day)")
-
+      
       p3 <- wbal |>
         dplyr::select(Date, dplyr::contains("evap_m3")) |>
         tidyr::pivot_longer(cols = dplyr::contains("evap_m3"),
@@ -1321,10 +1323,10 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
         ggplot2::ggplot() +
         ggplot2::geom_line(ggplot2::aes(x = Date, y = value, col = Model)) +
         ggplot2::labs(x = "Date", y = "Evaporation (m3/day)")
-
+      
       g <- patchwork::wrap_plots(p1, p2, p3, ncol = 1, guides = "collect")
       return(g)
-
+      
       par(mfrow = c(3, 1))
       ylim <- range(c(wbal$lvlwtr, level$value), na.rm = TRUE)
       plot(wbal$Date, wbal$lvlwtr, type = "l", axes = FALSE,
@@ -1337,7 +1339,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
       if (nrow(level)) {
         points(level$Date, level$value, pch = 16, col = "red")
       }
-
+      
       ylim <- range(wbal[, c("outflow_gotm_wet", "outflow_glm_aed")],
                     na.rm = TRUE)
       plot(wbal$Date, wbal$outflow_gotm_wet, type = "l",
@@ -1348,8 +1350,8 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
       axis.Date(side = 1, at = seq(min(wbal$Date), max(wbal$Date),
                                    by = "6 months"),
                 x = wbal$Date, labels = FALSE, format = "%m/%Y")
-
-
+      
+      
       ylim <- range(wbal[, c("gotm_wet_evap_m3", "glm_aed_evap_m3")],
                     na.rm = TRUE)
       plot(wbal$Date, wbal$gotm_wet_evap_m3, type = "l",
@@ -1363,7 +1365,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
                 x = wbal$Date, labels = TRUE, format = "%m/%Y")
     }
   }
-
+  
   if (y == "output") {
     # inp <- input(x)
     ens_n <- 1
@@ -1372,14 +1374,14 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
     model <- names(outp[[ens_lab]])
     p1 <- plot_output(aeme = x, model = model, ens_n = ens_n)
     return(p1)
-
+    
     obs <- observations(x)
-
+    
     # z <- t(as.matrix(outp[[m]][["HYD_temp"]]))
     # Date = outp[[m]][["Date"]]
     # filled.contour(x = Date, z = z, color.palette = hcl.colors,
     #                key.title = title(main = "Temp\n(\u00B0C)"))
-
+    
     mod <- lapply(names(outp), \(m) {
       if (!is.null(outp[[m]])) {
         depth <- outp[[m]][["LKE_lvlwtr"]]
@@ -1395,7 +1397,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
       }
     }) |>
       dplyr::bind_rows()
-
+    
     if (!is.null(obs$lake)) {
       obs_temp <- obs$lake |>
         dplyr::filter(var == "HYD_temp" & Date %in% mod$Date) |>
@@ -1408,7 +1410,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
         dplyr::filter(Date %in% mod$Date & var == "LKE_lvlwtr") |>
         dplyr::mutate(lvl_adj = value - min(inp$hypsograph$elev))
     }
-
+    
     #
     par(mfrow = c(2, 1))
     ylim <- range(mod$Ts, mod$Tb, na.rm = TRUE)
@@ -1428,7 +1430,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
            pch = c(NA, NA, 1, 4), col = "black", bg = "transparent")
     # legend("bottomright", legend = c(), pch = c(1, 4),
     #        col = "black", bg = "transparent")
-
+    
     # Water level
     base::plot(mod$Date, mod$lvl, type = "n", ylab = "Water level (m)",
                xlab = "Time", main = "Water level")
