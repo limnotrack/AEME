@@ -14,7 +14,7 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
                      var_lims, obs = NULL, add_obs = TRUE, level = FALSE,
                      facet = FALSE, cumulative = FALSE, print_plots = FALSE) {
 
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   if (is.null(df)) {
     aeme <- check_aeme(aeme)
@@ -35,7 +35,7 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
     dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
                      by = c("var_sim" = "name"))
 
-  if (!all(is.na(df$lyr_thk))) {
+  if (!all(is.na(df$depth))) {
     # Plot variables with depth
     if (all(is.na(df$value))) {
       p <- ggplot2::ggplot() +
@@ -128,6 +128,23 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, add_obs,
 
   my_cols <- RColorBrewer::brewer.pal(11, "Spectral")
   fill_lab <- eval(parse(text = df$name_parse[1]))
+  df <- df |> 
+    dplyr::group_by(Date, Model) |> 
+    dplyr::arrange(depth, .by_group = TRUE) |> 
+    dplyr::mutate(
+      # internal boundaries
+      mid_next = dplyr::lead(depth),
+      mid_prev = dplyr::lag(depth),
+      # boundaries: surface = 0, then central midpoints, bottom extrapolated
+      upper = dplyr::if_else(dplyr::row_number() == 1, 
+                      0,                               # surface
+                      (depth + mid_prev) / 2),
+      lower = dplyr::if_else(dplyr::row_number() == n(), 
+                      depth + (depth - mid_prev) / 2,  # bottom extrapolated
+                      (depth + mid_next) / 2)
+    ) |> 
+    dplyr::mutate(lyr_thk = lower - upper) |> 
+    dplyr::arrange(Date, dplyr::desc(depth)) 
 
   p <- ggplot2::ggplot() +
     ggplot2::geom_col(data = df, ggplot2::aes(x = Date, y = lyr_thk,
