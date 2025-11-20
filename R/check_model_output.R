@@ -30,7 +30,6 @@ check_model_output <- function(aeme, model, path) {
   invisible(TRUE)
 }
 
-
 #' Safely open a NetCDF file
 #'
 #' @param file path to NetCDF file
@@ -39,19 +38,22 @@ check_model_output <- function(aeme, model, path) {
 #' @noRd
 open_nc_safe <- function(file, model) {
   if (!file.exists(file)) {
-    cli::cli_abort("{.val {model}} output file not found: {.file {file}}",
-                   class = "aeme_error_model_output_missing")
+    cli::cli_abort("{.val {model}} output file not found: {.file {file}}")
   }
   
   nc <- tryCatch(
-    ncdf4::nc_open(file, return_on_error = TRUE),
+    ncdf4::nc_open(file),
     error = function(e) {
-      cli::cli_abort("{.val {model}} output file cannot be opened: {.file {file}}",
-                     class = "aeme_error_model_output_corrupt")
+      cli::cli_abort("{.val {model}} output file cannot be opened: {.file {file}}")
     }
   )
   
-  on.exit(ncdf4::nc_close(nc), add = TRUE)
+  if (nc$error) {
+    cli::cli_abort(
+      "{.val {model}} output file is corrupt (invalid netCDF ID): {.file {file}}"
+    )
+  }
+  
   nc
 }
 
@@ -114,5 +116,3 @@ check_glm_output <- function(nc, out_file) {
   # If the nc object has errors, open_nc_safe() will already abort.
   cli_inform_safe("GLM-AED output file {.file {out_file}} passed initial checks.")
 }
-
-
