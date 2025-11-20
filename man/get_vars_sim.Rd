@@ -2,11 +2,15 @@
 % Please edit documentation in R/get_vars_sim.R
 \name{get_vars_sim}
 \alias{get_vars_sim}
-\title{Get all variables to be simulated}
+\title{Get all variables to be simulated, including those that are
+derived from others.}
 \usage{
-get_vars_sim(aeme, model_controls)
+get_vars_sim(vars_sim, aeme, model_controls)
 }
 \arguments{
+\item{vars_sim}{vector of variable names to be simulated. If NULL, the
+variables are taken from model_controls where simulate == TRUE.}
+
 \item{aeme}{aeme; object.}
 
 \item{model_controls}{dataframe; of configuration loaded from
@@ -16,9 +20,11 @@ get_vars_sim(aeme, model_controls)
 vector of variable names
 }
 \description{
-Get all variables to be simulated
+Get all variables to be simulated, including those that are
+derived from others.
 }
 \examples{
 data("model_controls", package = "AEME")
 get_vars_sim(model_controls)
+get_vars_sim("HYD_thmcln")
 }

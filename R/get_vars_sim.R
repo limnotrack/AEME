@@ -1,5 +1,8 @@
-#' Get all variables to be simulated
+#' Get all variables to be simulated, including those that are
+#' derived from others.
 #'
+#' @param vars_sim vector of variable names to be simulated. If NULL, the
+#'   variables are taken from model_controls where simulate == TRUE.
 #' @inheritParams build_aeme
 #'
 #' @returns vector of variable names
@@ -8,21 +11,23 @@
 #' @examples
 #' data("model_controls", package = "AEME")
 #' get_vars_sim(model_controls)
-get_vars_sim <- function(aeme, model_controls) {
+#' get_vars_sim("HYD_thmcln")
+get_vars_sim <- function(vars_sim, aeme, model_controls) {
   data("key_naming", package = "AEME", envir = environment())
   
-  if (!missing(aeme)) {
-    model_controls <- get_model_controls(aeme)
-  } else {
-    if (missing(model_controls)) {
-      stop("Either aeme or model_controls must be provided")
+  if (missing(vars_sim)) {
+    if (!missing(aeme)) {
+      model_controls <- get_model_controls(aeme)
+    } else {
+      if (missing(model_controls)) {
+        stop("Either aeme or model_controls must be provided")
+      }
     }
+    vars_sim <- model_controls |> 
+      dplyr::filter(simulate) |> 
+      dplyr::arrange(var_aeme) |> 
+      dplyr::pull(var_aeme)
   }
-  
-  vars_sim <- model_controls |> 
-    dplyr::filter(simulate) |> 
-    dplyr::arrange(var_aeme) |> 
-    dplyr::pull(var_aeme)
   
   deriv_vars <- key_naming |> 
     dplyr::filter(name %in% vars_sim, derived)
