@@ -45,7 +45,7 @@ check_aeme_vars <- function(vars) {
       } else{
         sug_text <- paste(sug, collapse = "/")
       } 
-      paste0(var, " → ", sug_text)
+      paste0(var, " -> ", sug_text)
     }, invalid, suggestions),
     collapse = ", "
   )

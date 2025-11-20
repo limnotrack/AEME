@@ -138,7 +138,7 @@ check_glm_nml <- function(file) {
   # --- Output ---
   if (length(issues) == 0) {
     cli_inform_safe(
-      c("v" = "GLM nml validation completed — no issues detected.")
+      c("v" = "GLM nml validation completed - no issues detected.")
     )
     return(invisible(TRUE))
   } else {

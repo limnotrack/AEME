@@ -55,11 +55,11 @@ check_gotm_yaml <- function(file) {
   # --- Grid settings ---
   grid <- gotm$grid
   if (is.null(grid$nlev) || grid$nlev < 1)
-    issues <- c(issues, "Number of grid levels (nlev) must be ≥ 1.")
+    issues <- c(issues, "Number of grid levels (nlev) must be >= 1.")
   if (!is.null(grid$ddu) && grid$ddu < 0)
-    issues <- c(issues, "Surface zooming (ddu) must be ≥ 0.")
+    issues <- c(issues, "Surface zooming (ddu) must be >= 0.")
   if (!is.null(grid$ddl) && grid$ddl < 0)
-    issues <- c(issues, "Bottom zooming (ddl) must be ≥ 0.")
+    issues <- c(issues, "Bottom zooming (ddl) must be >= 0.")
   
   # --- Meteorology ---
   meteo <- gotm$surface$meteo
@@ -140,7 +140,7 @@ check_gotm_yaml <- function(file) {
   if (is.null(bottom)) {
     issues <- c(issues, "Missing 'bottom' section.")
   } else if (is.null(bottom$h0b) || bottom$h0b < 0) {
-    issues <- c(issues, "Bottom roughness (h0b) must be ≥ 0.")
+    issues <- c(issues, "Bottom roughness (h0b) must be >= 0.")
   }
   
   # --- Streams checks (multiple streams) ---
@@ -256,7 +256,7 @@ check_gotm_yaml <- function(file) {
   # --- Final messages ---
   if (length(issues) == 0) {
     cli_inform_safe(
-      c("v" = "GOTM YAML validation completed — no issues detected.")
+      c("v" = "GOTM YAML validation completed - no issues detected.")
     )
     return(invisible(TRUE))
   } else {
