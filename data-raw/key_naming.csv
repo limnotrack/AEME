@@ -60,7 +60,7 @@ PHS_dopr,DOPR,,,,,,,,0.03097376,,FALSE,NA,dissolved organic P residual|PHS_dopr
 PHS_pop,POPL,OGM_pop,abiotic_water_sPPOMW,instances/abiotic_water/initialization/sPPOMW,Particulate organic P,Particulate_organic_P_g/m3,Particulate~organic~(g~m^-3),g/m^3,0.03097376,1.60E-04,FALSE,NA,particulate organic P|PHS_pop
 PHS_popr,POPR,,,,,,,,0.03097376,,FALSE,NA,particulate organic P residual|PHS_popr
 PHS_pip,PIP,PHS_frp_ads,abiotic_water_sPAIMW,instances/abiotic_water/initialization/sPAIMW,Particulate inorganic P,Particulate_inorganic_P_g/m3,Particulate~inorganic~P~(g~m^-3),g/m^3,0.03097376,6.00E-04,FALSE,NA,particulate inorganic P|PHS_pip
-PHS_tp,TP,TOT_tp,wet_totP_calculator_result,,Total phosphorus,Total_phosphorus_g/m3,Total~phosphorus~(g~m^-3),g/m^3,0.03097376,,FALSE,NA,total phosphorus|total p|tot p|PHS_tp
+PHS_tp,TP,TOT_tp,wet_totP_calculator_result,,Total phosphorus,Total_phosphorus_g/m3,Total~phosphorus~(g~m^-3),g/m^3,0.03097376,,FALSE,NA,total phosphorus|total p|tot p|PHS_tp|TP
 NIT_amm,NH4,NIT_amm,abiotic_water_sNH4W,instances/abiotic_water/initialization/sNH4W,Ammoniacal nitrogen,Ammoniacal_nitrogen_g/m3,Ammoniacal~nitrogen~(g~m^-3),g/m^3,0.0140067,0.004,FALSE,NA,ammoniacal nitrogen|NH3|NH4|NIT_amm
 NIT_nit,NO3,NIT_nit,abiotic_water_sNO3W,instances/abiotic_water/initialization/sNO3W,Nitrate,Nitrate-N_g/m3,Nitrate-N~(g~m^-3),g/m^3,0.0140067,4.10E-04,FALSE,NA,nitrate|NO3|NO2|NIT_nit
 NIT_don,DONL,OGM_don,abiotic_water_sNDOMW,instances/abiotic_water/initialization/sNDOMW,Dissolved organic N,Dissolved_organic_N_g/m3,Dissolved~organic~N~(g~m^-3),g/m^3,0.0140067,4.10E-04,FALSE,NA,dissolved organic N|NIT_don
@@ -68,7 +68,7 @@ NIT_donr,DONR,,,,,,,,0.0140067,,FALSE,NA,dissolved organic N residual|NIT_donr
 NIT_pon,PONL,OGM_pon,abiotic_water_sNPOMW,instances/abiotic_water/initialization/sNPOMW,Particulate organic N,Particulate_organic_N_g/m3,Particulate~organic~N~(g~m^-3),g/m^3,0.0140067,0.002,FALSE,NA,particulate organic N|NIT_pon
 NIT_ponr,PONR,,,,,,,,0.0140067,,FALSE,NA,particulate organic N residual|NIT_ponr
 NIT_pin,PIN,,,,Particulate inorganic N,Particulate_inorganic_N_g/m3,Particulate~inorganic~N~(g~m^-3),g/m^3,0.0140067,,FALSE,NA,particulate inorganic N|NIT_pin
-NIT_tn,TN,TOT_tn,wet_totN_calculator_result,,Total nitrogen,Total_nitrogen_g/m3,Total~nitrogen~(g~m^-3),g/m^3,0.0140067,,FALSE,NA,total nitrogen|total n|tot n|NIT_tn
+NIT_tn,TN,TOT_tn,wet_totN_calculator_result,,Total nitrogen,Total_nitrogen_g/m3,Total~nitrogen~(g~m^-3),g/m^3,0.0140067,,FALSE,NA,total nitrogen|total n|tot n|NIT_tn|TN
 CAR_dic,DIC,CAR_dic,abiotic_water_sDIMW,instances/abiotic_water/initialization/sDIMW,Dissolved inorganic carbon,Dissolved_inorganic_carbon_g/m3,Dissolved~inorganic~carbon~(g~m^-3),g/m^3,0.012011,,FALSE,NA,dissolved inorganic carbon|CAR_dic
 CAR_doc,DOCL,OGM_doc,abiotic_water_sDDOMW,instances/abiotic_water/initialization/sDDOMW,Dissolved organic carbon,Dissolved_organic_carbon_g/m3,Dissolved~organic~carbon~(g~m^-3),g/m^3,0.012011,0.008,FALSE,NA,dissolved organic carbon|CAR_doc
 CAR_docr,DOCR,,,,,,,,0.012011,,FALSE,NA,dissolved organic carbon residual|CAR_docr
