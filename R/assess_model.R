@@ -47,8 +47,7 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
   lst <- lapply(var_sim, \(v) {
 
     # Extract variable from aeme
-    df <- get_var(aeme = aeme, model = model, var_sim = v,
-                  use_obs = TRUE)
+    df <- get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE)
 
     model_names <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
                               Model = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
