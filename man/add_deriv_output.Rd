@@ -4,7 +4,7 @@
 \alias{add_deriv_output}
 \title{Add derived output variables to model output}
 \usage{
-add_deriv_output(out_list, hyps)
+add_deriv_output(out_list, hyps, vars_sim = NULL)
 }
 \arguments{
 \item{out_list}{list of model output variables}

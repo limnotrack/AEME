@@ -5,33 +5,285 @@
 #'
 #' @returns List of model output variables with derived variables added
 #' @export
-#'
-add_deriv_output <- function(out_list, hyps) {
+
+add_deriv_output <- function(out_list, hyps, vars_sim = NULL) {
   
   hyps <- prepare_hyps(hyps)
   
-  .deriv_registry <- list(
-    lakeanalyzer = calc_lakeanalyzer,
-    schstb       = calc_schstb,
-    oxygen       = calc_oxygen,
-    tli          = calc_tli_module
-  )
+  if (is.null(vars_sim)) {
+    vars_sim <- names(.deriv_deps)
+  }
+  # Step 1: expand variable set with dependencies
+  all_vars <- resolve_dependencies(vars_sim = vars_sim)
   
-  # Default: run all modules
-  # if (is.null(vars_sim)) {
-    vars_sim <- names(.deriv_registry)
-  # }
-  
-  # vars_sim <- intersect(vars_sim, names(.deriv_registry))
-  
-  for (v in vars_sim) {
-    newvals <- .deriv_registry[[v]](out_list, hyps)
-    if (!is.null(newvals)) {
-      out_list[names(newvals)] <- newvals
-    }
+  # Step 2: run in dependency order
+  orig_vars <- names(out_list)
+  for (v in all_vars) {
+    fun <- .deriv_registry[[v]]
+    out_list[[v]] <- fun(out_list, hyps)
   }
   
+  # Step 3: select only requested variables
+  out_list <- out_list[intersect(names(out_list), c(orig_vars, vars_sim))]
+  
   out_list
+}
+
+
+#' Thermocline depth calculation function
+#' @noRd
+calc_HYD_thmcln <- function(out_list, hyps) {
+  wtr    <- out_list[["HYD_temp"]]
+  depths <- out_list[["LKE_depths"]]
+  
+  safe_apply(ncol(wtr), function(c) {
+    v <- rLakeAnalyzer::thermo.depth(wtr[, c], depths[, c])
+    if (is.nan(v)) NA_real_ else v
+  })
+}
+
+#' Stratification status calculation function
+#' @noRd
+calc_HYD_strat <- function(out_list, hyps) {
+  wtr    <- out_list[["HYD_temp"]]
+  depths <- out_list[["LKE_depths"]]
+  
+  safe_apply(ncol(wtr), function(c) {
+    v <- is_strat(wtr[, c], depths[, c])
+    if (is.nan(v)) NA_real_ else v
+  })
+}
+
+#' Schmidt stability calculation function
+#' @noRd
+calc_HYD_schstb <- function(out_list, hyps) {
+  wtr    <- out_list[["HYD_temp"]]
+  depths <- out_list[["LKE_depths"]]
+  
+  safe_apply(ncol(wtr), function(c) {
+    
+    bthD <- c(0, depths[, c])
+    bthA <- approx(x = hyps$full_depth, y = hyps$area,
+                   xout = bthD, rule = 2)$y
+    
+    if (any(is.na(bthA))) return(NA_real_)
+    
+    v <- rLakeAnalyzer::schmidt.stability(
+      wtr    = wtr[, c],
+      depths = depths[, c],
+      bthA   = bthA,
+      bthD   = bthD
+    )
+    
+    if (is.nan(v)) NA_real_ else v
+  })
+}
+
+#' Center of buoyancy calculation function
+#' @noRd
+calc_HYD_ctrbuy <- function(out_list, hyps) {
+  wtr    <- out_list[["HYD_temp"]]
+  depths <- out_list[["LKE_depths"]]
+  
+  safe_apply(ncol(wtr), function(c) {
+    v <- rLakeAnalyzer::center.buoyancy(wtr[, c], depths[, c])
+    if (is.nan(v)) NA_real_ else v
+  })
+}
+
+#' Epilimnion depth calculation function
+#' @noRd
+calc_HYD_epidep <- function(out_list, hyps) {
+  wtr    <- out_list[["HYD_temp"]]
+  depths <- out_list[["LKE_depths"]]
+  
+  safe_apply(ncol(wtr), function(c) {
+    v <- rLakeAnalyzer::meta.depths(wtr[, c], depths[, c])
+    if (is.nan(v[1])) NA_real_ else v[1]
+  })
+}
+
+#' Hypolimnion depth calculation function
+#' @noRd
+calc_HYD_hypdep <- function(out_list, hyps) {
+  wtr    <- out_list[["HYD_temp"]]
+  depths <- out_list[["LKE_depths"]]
+  
+  safe_apply(ncol(wtr), function(c) {
+    v <- rLakeAnalyzer::meta.depths(wtr[, c], depths[, c])
+    if (is.nan(v[2])) NA_real_ else v[2]
+  })
+}
+
+#' Oxycline depth calculation function
+#' @noRd
+calc_CHM_oxycln <- function(out_list, hyps) {
+  oxy    <- out_list[["CHM_oxy"]]
+  depths <- out_list[["LKE_depths"]]
+  
+  safe_apply(ncol(oxy), function(c) {
+    v <- cline_depth(oxy[, c], depths[, c], water = FALSE)
+    if (is.nan(v)) NA_real_ else v
+  })
+}
+
+#' Epilimnion oxygen calculation function
+#' @noRd
+calc_CHM_oxyepi <- function(out_list, hyps) {
+  oxy    <- out_list[["CHM_oxy"]]
+  depths <- out_list[["LKE_depths"]]
+  epi    <- out_list[["HYD_epidep"]]
+  
+  safe_apply(ncol(oxy), function(c) {
+    idx <- which(depths[, c] <= epi[c])
+    mean(oxy[idx, c], na.rm = TRUE)
+  })
+}
+
+#' Hypolimnion oxygen calculation function
+#' @noRd
+calc_CHM_oxyhyp <- function(out_list, hyps) {
+  oxy    <- out_list[["CHM_oxy"]]
+  depths <- out_list[["LKE_depths"]]
+  hyp    <- out_list[["HYD_hypdep"]]
+  
+  safe_apply(ncol(oxy), function(c) {
+    idx <- which(depths[, c] >= hyp[c])
+    mean(oxy[idx, c], na.rm = TRUE)
+  })
+}
+
+#' Metalimnion oxygen calculation function
+#' @noRd
+calc_CHM_oxymet <- function(out_list, hyps) {
+  oxy    <- out_list[["CHM_oxy"]]
+  depths <- out_list[["LKE_depths"]]
+  epi    <- out_list[["HYD_epidep"]]
+  hyp    <- out_list[["HYD_hypdep"]]
+  
+  safe_apply(ncol(oxy), function(c) {
+    idx <- which(depths[, c] >= epi[c] & depths[, c] < hyp[c])
+    mean(oxy[idx, c], na.rm = TRUE)
+  })
+}
+
+#' Metalimnion oxygen maximum calculation function
+#' @noRd
+calc_CHM_oxymom <- function(out_list, hyps) {
+  meta <- calc_CHM_oxymet(out_list, hyps)
+  epi  <- calc_CHM_oxyepi(out_list, hyps)
+  hyp  <- calc_CHM_oxyhyp(out_list, hyps)
+  
+  meta - (epi + hyp) / 2
+}
+
+#' Number of anoxic layers calculation function
+#' @noRd
+calc_CHM_oxynal <- function(out_list, hyps) {
+  oxy        <- out_list[["CHM_oxy"]]
+  depths     <- out_list[["LKE_depths"]]
+  lake_level <- out_list[["LKE_lvlwtr"]]
+  
+  safe_apply(ncol(oxy), function(c) {
+    if (all(is.na(oxy[, c]))) return(NA_real_)
+    
+    interpolated <- approx(
+      y = oxy[, c], x = depths[, c],
+      xout = seq(0, lake_level[c], by = 0.2),
+      rule = 2
+    )$y
+    
+    sum(interpolated < 1)
+  })
+}
+
+#' TLI chlorophyll-a calculation function
+#' @noRd
+calc_LKE_tlic <- function(out_list, hyps) {
+  depths <- out_list$LKE_depths
+  epi    <- out_list$HYD_epidep
+  chla   <- out_list$PHY_tchla
+  
+  safe_apply(ncol(depths), function(c) {
+    idx <- which(depths[, c] <= epi[c])
+    calc_tli_chla(mean(chla[idx, c], na.rm = TRUE))
+  })
+}
+
+#' TLI total nitrogen calculation function
+#' @noRd
+calc_LKE_tlin <- function(out_list, hyps) {
+  depths <- out_list$LKE_depths
+  epi    <- out_list$HYD_epidep
+  tn     <- out_list$NIT_tn
+  
+  safe_apply(ncol(depths), function(c) {
+    idx <- which(depths[, c] <= epi[c])
+    calc_tli_n(mean(tn[idx, c], na.rm = TRUE))
+  })
+}
+
+#' TLI total phosphorus calculation function
+#' @noRd
+calc_LKE_tlip <- function(out_list, hyps) {
+  depths <- out_list$LKE_depths
+  epi    <- out_list$HYD_epidep
+  tp     <- out_list$PHS_tp
+  
+  safe_apply(ncol(depths), function(c) {
+    idx <- which(depths[, c] <= epi[c])
+    calc_tli_p(mean(tp[idx, c], na.rm = TRUE))
+  })
+}
+
+#' TLI Secchi depth calculation function
+#' @noRd
+calc_LKE_tlise <- function(out_list, hyps) {
+  secchi <- out_list$LKE_photic
+  
+  safe_apply(length(secchi), function(c) {
+    calc_tli_secchi(secchi[c])
+  })
+}
+
+#' TLI 3 calculation function
+#' @noRd
+calc_LKE_tli3 <- function(out_list, hyps) {
+  depths <- out_list$LKE_depths
+  epi    <- out_list$HYD_epidep
+  chla   <- out_list$PHY_tchla
+  tn     <- out_list$NIT_tn
+  tp     <- out_list$PHS_tp
+  
+  safe_apply(ncol(depths), function(c) {
+    idx <- which(depths[, c] <= epi[c])
+    calc_tli3(
+      mean(chla[idx, c], na.rm = TRUE),
+      mean(tn[idx, c], na.rm = TRUE),
+      mean(tp[idx, c], na.rm = TRUE)
+    )
+  })
+}
+
+#' TLI 4 calculation function
+#' @noRd
+calc_LKE_tli4 <- function(out_list, hyps) {
+  depths <- out_list$LKE_depths
+  epi    <- out_list$HYD_epidep
+  chla   <- out_list$PHY_tchla
+  tn     <- out_list$NIT_tn
+  tp     <- out_list$PHS_tp
+  secchi <- out_list$LKE_photic
+  
+  safe_apply(ncol(depths), function(c) {
+    idx <- which(depths[, c] <= epi[c])
+    calc_tli4(
+      mean(chla[idx, c], na.rm = TRUE),
+      mean(tn[idx, c], na.rm = TRUE),
+      mean(tp[idx, c], na.rm = TRUE),
+      secchi[c]
+    )
+  })
 }
 
 #' TLI calculation functions
@@ -205,156 +457,3 @@ safe_apply <- function(n, f) {
 get_epi <- function(depths, e)  which(depths <= e)
 get_hyp <- function(depths, h)  which(depths >= h)
 get_meta <- function(depths, e, h) which(depths >= e & depths < h)
-
-
-# add_deriv_output <- function(out_list, hyps) {
-#   
-#   # Determine z_step
-#   # depth <- out_list[["depth"]]
-#   # z_step <- if (mean(depth, na.rm = TRUE) < 10) 0.2 else 0.5
-#   
-#   # Input objects
-#   # inp <- input(aeme)
-#   # hyps <- inp$hypsograph
-#   hyps$full_depth <- max(hyps$elev) - hyps$elev
-#   
-#   # Temperature & depths
-#   wtr <- out_list[["HYD_temp"]]
-#   depths <- out_list[["LKE_depths"]]
-#   lake_level <- out_list[["LKE_lvlwtr"]]
-#   
-#   # LakeAnalyzer functions
-#   fun_list <- list(
-#     HYD_thmcln = rLakeAnalyzer::thermo.depth,
-#     HYD_strat  = is_strat,
-#     HYD_ctrbuy = rLakeAnalyzer::center.buoyancy,
-#     HYD_epidep = rLakeAnalyzer::meta.depths,
-#     HYD_hypdep = rLakeAnalyzer::meta.depths
-#   )
-#   
-#   laz_list <- lapply(names(fun_list), \(f) {
-#     idx <- ifelse(f == "HYD_hypdep", 2, 1)
-#     vapply(1:ncol(wtr), \(c) {
-#       if (all(is.na(wtr[, c]))) return(NA)
-#       v <- fun_list[[f]](wtr = wtr[, c], depths = depths[, c])
-#       v[is.nan(v)] <- NA
-#       v[idx]
-#     }, numeric(1))
-#   })
-#   names(laz_list) <- names(fun_list)
-#   
-#   # Schmidt stability
-#   laz_list[["HYD_schstb"]] <- vapply(1:ncol(wtr), \(c) {
-#     bthD <- c(0, depths[, c])
-#     bthA <- approx(x = hyps$full_depth, y = hyps$area,
-#                    xout = bthD, rule = 2)$y
-#     
-#     if (any(is.na(bthA)) || length(unique(bthA)) <= 1 ||
-#         sum(!is.na(wtr[, c])) <= 1) return(NA)
-#     
-#     v <- rLakeAnalyzer::schmidt.stability(
-#       wtr = wtr[, c],
-#       depths = depths[, c],
-#       bthA = bthA,
-#       bthD = bthD
-#     )
-#     v[is.nan(v)] <- NA
-#     v
-#   }, numeric(1))
-#   
-#   # Add to out_list
-#   for (n in names(laz_list)) out_list[[n]] <- laz_list[[n]]
-#   
-#   # Oxygen calculations
-#   if ("CHM_oxy" %in% names(out_list) & !is.null(out_list[["CHM_oxy"]])) {
-#     oxy <- out_list[["CHM_oxy"]]
-#     
-#     # Oxycline
-#     oxy_cline <- vapply(1:ncol(oxy), \(c) {
-#       v <- cline_depth(wtr = oxy[, c], depths = depths[, c], water = FALSE)
-#       v[is.nan(v)] <- NA
-#       v
-#     }, numeric(1))
-#     
-#     # Epilimnion / Hypolimnion / Metalimnion oxygen
-#     epi_oxy <- vapply(1:ncol(wtr), \(c) {
-#       idx <- which(depths[, c] <= laz_list$HYD_epidep[c])
-#       mean(oxy[idx, c])
-#     }, numeric(1))
-#     
-#     hyp_oxy <- vapply(1:ncol(wtr), \(c) {
-#       idx <- which(depths[, c] >= laz_list$HYD_hypdep[c])
-#       mean(oxy[idx, c])
-#     }, numeric(1))
-#     
-#     meta_oxy <- vapply(1:ncol(wtr), \(c) {
-#       idx <- which(depths[, c] >= laz_list$HYD_epidep[c] &
-#                      depths[, c] < laz_list$HYD_hypdep[c])
-#       mean(oxy[idx, c])
-#     }, numeric(1))
-#     
-#     exp_oxy <- (epi_oxy + hyp_oxy) / 2
-#     
-#     # Add oxygen outputs
-#     out_list$CHM_oxycln <- oxy_cline
-#     out_list$CHM_oxyepi <- epi_oxy
-#     out_list$CHM_oxyhyp <- hyp_oxy
-#     out_list$CHM_oxymet <- meta_oxy
-#     out_list$CHM_oxymom <- meta_oxy - exp_oxy
-#     
-#     # Number of anoxic layers
-#     out_list$CHM_oxynal <- vapply(1:ncol(wtr), \(c) {
-#       if (all(is.na(oxy[, c])) || length(unique(depths[, c])) <= 1)
-#         return(NA)
-#       
-#       oxy_layers <- approx(
-#         y = oxy[, c], x = depths[, c],
-#         xout = seq(0, lake_level[c], by = 0.2),
-#         rule = 2
-#       )$y
-#       
-#       sum(oxy_layers < 1)
-#     }, numeric(1))
-#   }
-#   
-#   # Switch for calculating TLI
-#   calc_tli <- all(c("PHS_tp", "NIT_tn", "PHY_tchla", "HYD_epidep") %in%
-#                     names(out_list))
-#   # Calculate TLI
-#   if (calc_tli) {
-#     tlc <- lapply(1:ncol(wtr), \(c) {
-#       idx <- which(depths[, c] <= laz_list$HYD_epidep[c])
-#       if (is.na(laz_list$HYD_epidep[c])) {
-#         idx <- nrow(depths)
-#       }
-#       chla <- mean(out_list[["PHY_tchla"]][idx, c])
-#       tn <- mean(out_list[["NIT_tn"]][idx, c]) #* 1000
-#       tp <- mean(out_list[["PHS_tp"]][idx, c]) #* 1000
-#       secchi <- out_list[["LKE_photic"]][c]
-#       
-#       tli_c <- calc_tli_chla(chla)
-#       tli_n <-  calc_tli_n(tn)
-#       tli_p <-  calc_tli_p(tp)
-#       tli_secchi <-  calc_tli_secchi(secchi)
-#       
-#       tli_3 <- calc_tli3(chla = chla, tn = tn, tp = tp)
-#       tli_4 <- calc_tli4(chla = chla, tn = tn, tp = tp, secchi = secchi)
-#       
-#       data.frame(tli_c = tli_c, tli_n = tli_n, tli_p = tli_p,
-#                  tli_secchi = tli_secchi, tli_3 = tli_3, tli_4 = tli_4)
-#       
-#     }) |>
-#       dplyr::bind_rows()
-#     
-#     out_list[["LKE_tlic"]] <- as.vector(tlc$tli_c)
-#     out_list[["LKE_tlin"]] <- as.vector(tlc$tli_n)
-#     out_list[["LKE_tlip"]] <- as.vector(tlc$tli_p)
-#     out_list[["LKE_tlise"]] <- as.vector(tlc$tli_secchi)
-#     
-#     out_list[["LKE_tli3"]] <- as.vector(tlc$tli_3)
-#     out_list[["LKE_tli4"]] <- as.vector(tlc$tli_4)
-#     
-#   }
-#   
-#   return(out_list)
-# }
