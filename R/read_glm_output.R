@@ -97,11 +97,14 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     out_list[["LKE_precip"]] <- ncdf4::ncvar_get(nc, "precipitation")[date_index]
     out_list[["LKE_pcpvol"]] <- out_list[["LKE_precip"]] * out_list[["LKE_A0"]]
     out_list[["HYD_surft"]] <- ncdf4::ncvar_get(nc, "surface_temp")[date_index]
-    
+  }
+  
+  if ("LKE_photic" %in% vars_sim | "LKE_efold" %in% vars_sim) {
     rad <- ncdf4::ncvar_get(nc, "radn")[, date_index]
     rad <- interp_static_grid(var = rad,
                               midpoints = midpoints,
                               out_depths = out_depths)
+    
     suppressWarnings({
       out_list[["LKE_efold"]] <- sapply(seq_len(ncol(rad)), \(t) {
         if (sum(!is.na(rad[, t])) < 2 | length(unique(out_depths[, t])) <= 1 |
@@ -120,8 +123,9 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
         approx(rad[, t], out_depths[, t], xout = ref_rad)$y
       })
     })
-    
+    vars_sim <- vars_sim[!vars_sim %in% c("LKE_photic", "LKE_efold")]
   }
+  
   out_list <- lapply(out_list, as.vector)
   out_list[["Date"]] <- dates
   

@@ -50,19 +50,6 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   zi <- ncdf4::ncvar_get(nc, "zi")[, date_index]
   z <- ncdf4::ncvar_get(nc, "z")[, date_index]
   
-  # Light
-  rad <- ncdf4::ncvar_get(nc, "rad")[, date_index]
-  efold <- sapply(seq_len(ncol(rad)), \(t) {
-    if (t == 1 | all(rad[, t] == 0)) return(0) # Day 1 is always 0
-    if (sum(!is.na(rad[, t])) < 2) return(NA)
-    zeta[t] - approx(rad[, t], zi[, t], xout = (1/exp(1) * rad[nrow(rad), t]))$y
-  })
-  euphotic <- sapply(seq_len(ncol(rad)), \(t) {
-    if (t == 1 | all(rad[, t] == 0)) return(0) # Day 1 is always 0
-    if (sum(!is.na(rad[, t])) < 2) return(NA)
-    zeta[t] - approx(rad[, t], zi[, t], xout = (0.01 * rad[nrow(rad), t]))$y
-  })
-  
   sst <- ncdf4::ncvar_get(nc, "sst")[date_index]
   if (sum(is.na(sst)) > 0) { # sum(sst == 0) > 1
     # Run-length encoding of the vector
@@ -120,8 +107,24 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   out_list[["Date"]] <- dates
   out_list[["LKE_lvlwtr"]] <- as.vector(lake_level)
   out_list[["LKE_depths"]] <- as.matrix(out_depths)
-  out_list[["LKE_efold"]] <- as.vector(abs(efold))
-  out_list[["LKE_photic"]] <- as.vector(abs(euphotic))
+  if ("LKE_photic" %in% vars_sim | "LKE_efold" %in% vars_sim) {
+    # Light
+    rad <- ncdf4::ncvar_get(nc, "rad")[, date_index]
+    efold <- sapply(seq_len(ncol(rad)), \(t) {
+      if (t == 1 | all(rad[, t] == 0)) return(0) # Day 1 is always 0
+      if (sum(!is.na(rad[, t])) < 2) return(NA)
+      zeta[t] - approx(rad[, t], zi[, t], xout = (1/exp(1) * rad[nrow(rad), t]))$y
+    })
+    euphotic <- sapply(seq_len(ncol(rad)), \(t) {
+      if (t == 1 | all(rad[, t] == 0)) return(0) # Day 1 is always 0
+      if (sum(!is.na(rad[, t])) < 2) return(NA)
+      zeta[t] - approx(rad[, t], zi[, t], xout = (0.01 * rad[nrow(rad), t]))$y
+    })
+    
+    out_list[["LKE_efold"]] <- as.vector(abs(efold))
+    out_list[["LKE_photic"]] <- as.vector(abs(euphotic))
+    vars_sim <- vars_sim[!vars_sim %in% c("LKE_photic", "LKE_efold")]
+  }
   
   
   if (!is.null(vars_sim)) {
