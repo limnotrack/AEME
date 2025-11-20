@@ -24,7 +24,7 @@ file.copy(aeme_dir, tmpdir, recursive = TRUE)
 path <- file.path(tmpdir, "lake")
 aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
 
-utils::data("key_naming", package = "AEME")
+data("key_naming", package = "AEME")
 
 met_vars <- key_naming |> 
   dplyr::filter(grepl("MET", name)) |> 
