@@ -23,6 +23,7 @@ calc_tli_p <- function(tp) {
 #' @param secchi Secchi depth in meters
 #' @return TLI secchi component
 calc_tli_secchi <- function(secchi) {
+  if (length(secchi) < 1) return(NA)
   5.56 + 2.6 * log10(1/secchi - 1/40)
 }
 
