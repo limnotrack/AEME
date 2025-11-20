@@ -165,8 +165,7 @@ test_that("running GOTM works", {
                      model = model, model_controls = model_controls,
                      inf_factor = inf_factor, ext_elev = 5,
                      use_bgc = FALSE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   model_controls = model_controls, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, path = path)
   plot_output(aeme)
   plot_output(aeme, var_sim = "LKE_evpflx")
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
@@ -229,8 +228,7 @@ test_that("running GLM-AED works", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln",
-               "HYD_schstb")
+  vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model_controls <- set_vars_sim(model_controls = model_controls,
                                  vars_sim = vars_sim)
@@ -244,8 +242,7 @@ test_that("running GLM-AED works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
   
   file <- get_model_outfile(aeme = aeme, model = model, path = path)
 
