@@ -1,0 +1,54 @@
+#' Get all variables to be simulated
+#'
+#' @inheritParams build_aeme
+#'
+#' @returns vector of variable names
+#' @export
+#'
+#' @examples
+#' data("model_controls", package = "AEME")
+#' get_vars_sim(model_controls)
+get_vars_sim <- function(aeme, model_controls) {
+  data("key_naming", package = "AEME", envir = environment())
+  
+  if (!missing(aeme)) {
+    model_controls <- get_model_controls(aeme)
+  } else {
+    if (missing(model_controls)) {
+      stop("Either aeme or model_controls must be provided")
+    }
+  }
+  
+  vars_sim <- model_controls |> 
+    dplyr::filter(simulate) |> 
+    dplyr::arrange(var_aeme) |> 
+    dplyr::pull(var_aeme)
+  
+  deriv_vars <- key_naming |> 
+    dplyr::filter(name %in% vars_sim, derived)
+  
+  if (nrow(deriv_vars) == 0) {
+    return(vars_sim)
+  } else {
+    deriv <- deriv_vars |> 
+      dplyr::pull(derived_from) |> 
+      strsplit(";\\s*") |>
+      unlist() |> 
+      unique()
+    
+    # Check for double deriatives
+    more_deriv <- key_naming |> 
+      dplyr::filter(name %in% deriv, derived)
+    if (nrow(more_deriv) > 0) {
+      more <- more_deriv |> 
+        dplyr::pull(derived_from) |> 
+        strsplit(";\\s*") |>
+        unlist() |> 
+        unique()
+      deriv <- unique(c(deriv, more))
+    }
+    all_vars <- unique(c(vars_sim, deriv)) 
+    all_vars <- all_vars[order(all_vars)]
+    return(all_vars)
+  }
+}
