@@ -26,10 +26,10 @@
 #'
 #' @examples
 #' # Generate sediment parameters for 1 zone
-#' sed_params_1zone <- generate_glm_sed_params(n_zones = 1)
+#' sed_params_1zone <- glm_sed_params(n_zones = 1)
 #' print(sed_params_1zone)
 #' #' # Generate sediment parameters for 3 zones
-#' sed_params_3zones <- generate_glm_sed_params(
+#' sed_params_3zones <- glm_sed_params(
 #'   n_zones = 3,
 #'   zone_heights = c(5, 15, 20),
 #'   sed_temp_mean = c(10, 12, 14)
