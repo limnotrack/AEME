@@ -5,21 +5,20 @@
 \title{Load AEME output to the aeme object}
 \usage{
 load_output(
-  model,
   aeme,
+  model,
   path,
   model_controls,
   parallel = FALSE,
   cl = NULL,
-  nlev = NULL,
   ens_n = 1
 )
 }
 \arguments{
+\item{aeme}{aeme; object.}
+
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
-
-\item{aeme}{aeme; object.}
 
 \item{path}{filepath; where input files are located relative to the current 
 working directory.}
@@ -30,9 +29,6 @@ working directory.}
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
 
 \item{cl}{an object of class \code{"cluster"}.}
-
-\item{nlev}{numeric; number of levels to return in model output. If NULL,
-calculates number of levels based on the `model_layer_structure`.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
