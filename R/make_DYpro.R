@@ -53,7 +53,7 @@ make_DYpro <-  function(lakename = "!unknown",
 
   writeLines(paste0(nrow(proTable),"   # initial profile n layers"),f)
   writeLines("Elev(m)   T(degC)    S(ppt)",f)
-  utils::write.table(unname(proTable), f, sep="\t", quote=FALSE, col.names = F,
+  write.table(unname(proTable), f, sep="\t", quote=FALSE, col.names = F,
                      row.names=FALSE)
 
   close(f)

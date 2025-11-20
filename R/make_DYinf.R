@@ -90,7 +90,7 @@ make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
   }
   
   #add data
-  utils::write.table(inf, f, sep = "\t", quote = FALSE, row.names = FALSE)
+  write.table(inf, f, sep = "\t", quote = FALSE, row.names = FALSE)
   
   # close and write file
   close(f)

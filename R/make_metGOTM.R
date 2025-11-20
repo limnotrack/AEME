@@ -52,7 +52,7 @@ make_metGOTM <- function(df_met, path.gotm, hum_type = 3, lat, lon,
   }
 
 
-  utils::write.table(met_swr, file.path(path.gotm, "inputs", "meteo_swr.dat"),
+  write.table(met_swr, file.path(path.gotm, "inputs", "meteo_swr.dat"),
                      row.names = FALSE, col.names = FALSE, quote = FALSE,
                      na = "", sep = "\t")
 
@@ -67,7 +67,7 @@ make_metGOTM <- function(df_met, path.gotm, hum_type = 3, lat, lon,
                   dplyr::across(3:ncol(met_main), \(x) format(x, nsmall = 4,
                                                               width = 12)))
 
-  utils::write.table(met_main, file.path(path.gotm, "inputs", "meteo.dat"),
+  write.table(met_main, file.path(path.gotm, "inputs", "meteo.dat"),
                      row.names = FALSE, col.names = FALSE, quote = FALSE,
                      na = "", sep = "\t")
 

@@ -17,7 +17,7 @@ get_model_controls <- function(aeme = NULL, use_bgc = FALSE) {
     config <- configuration(aeme)
     model_controls <- config$model_controls
   } else {
-    utils::data("model_controls", package = "AEME")
+    data("model_controls", package = "AEME")
     hyd_vars <- c("HYD_temp", "CHM_salt", "CHM_oxy")
     bgc_vars <- c("PHS_frp", "PHS_dop", "PHS_pop", "PHS_pip", "PHS_tp",
                   "NIT_amm", "NIT_nit", "NIT_don", "NIT_pon", "NIT_tn",

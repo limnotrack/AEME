@@ -474,7 +474,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       stop(config[["input"]][["hypsograph"]],
            " does not exist. Check file path.")
     }
-    hyps <- utils::read.csv(file.path(path, config[["input"]][["hypsograph"]]))
+    hyps <- read.csv(file.path(path, config[["input"]][["hypsograph"]]))
     # Extend & arrange hypsograph
     if (ext_elev > 0) {
       hyps <- bathy_extrap(hyps, ext_elev)
@@ -489,7 +489,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (file.exists(file.path(path, config[["observations"]][["level"]]))) {
       # lvl <- readr::read_csv(config[["observations"]][["level"]],
       #                        show_col_types = FALSE)
-      lvl <- utils::read.csv(file.path(path,
+      lvl <- read.csv(file.path(path,
                                        config[["observations"]][["level"]]))
     }
 
@@ -507,7 +507,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (!is.null(config[["inflows"]][["data"]])) {
       for(i in 1:length(config[["inflows"]][["data"]])) {
         inf[[names(config[["inflows"]][["data"]])[i]]] <-
-          utils::read.csv(file.path(path, config[["inflows"]][["data"]][[i]]))
+          read.csv(file.path(path, config[["inflows"]][["data"]][[i]]))
         if(any(!inf_vars %in% names(inf[[i]]))) {
           stop("missing state variables in inflow tables")
         }
@@ -522,7 +522,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (!file.exists(file.path(path, config[["input"]][["meteo"]]))) {
       stop(config[["input"]][["meteo"]], " does not exist. Check file path.")
     }
-    met <- utils::read.csv(file.path(path, config[["input"]][["meteo"]]))
+    met <- read.csv(file.path(path, config[["input"]][["meteo"]]))
 
     Kw <- config[["input"]][["Kw"]]
 
@@ -530,7 +530,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (!is.null(config[["outflows"]][["data"]])) {
       for(i in 1:length(config[["outflows"]][["data"]])) {
         outf[[names(config[["outflows"]][["data"]])[i]]] <-
-          utils::read.csv(file.path(path, config[["outflows"]][["data"]][[i]]))
+          read.csv(file.path(path, config[["outflows"]][["data"]][[i]]))
       }
     }
 

@@ -167,7 +167,7 @@ is_nml_file <- function(nml_file){
 #' @importFrom utils capture.output
 #' @importFrom tools showNonASCIIfile
 what_ascii <- function(file){
-  response <- utils::capture.output(tools::showNonASCIIfile(file))
+  response <- capture.output(tools::showNonASCIIfile(file))
   return(response)
 }
 

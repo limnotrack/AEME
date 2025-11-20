@@ -67,7 +67,7 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
                     "                                  # Number of outflows"),f)
 
   #add data
-  utils::write.table(wdrData, f, sep = "\t", quote = FALSE, row.names = FALSE)
+  write.table(wdrData, f, sep = "\t", quote = FALSE, row.names = FALSE)
 
   # close and write file
   close(f)

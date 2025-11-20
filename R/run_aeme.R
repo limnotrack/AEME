@@ -255,7 +255,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   } else {
     cli_inform_safe(c("!" = paste0("DYRESM-CAEDYM run FAILED! ",
                                    "[", format(Sys.time()), "]\n",
-                                   paste0(utils::tail(out, 10),
+                                   paste0(tail(out, 10),
                                           collapse = "\n"))))
   }
 }
@@ -307,7 +307,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     } else {
       cli_inform_safe(c("!" = paste0("GLM-AED2 run FAILED! ",
                                      "[", format(Sys.time()), "]\n",
-                                     paste0(utils::tail(out, 10),
+                                     paste0(tail(out, 10),
                                             collapse = "\n"))))
     }
   }
@@ -349,7 +349,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
     } else {
       cli_inform_safe(c("!" = paste0("GOTM-WET run FAILED! ",
                                      "[", format(Sys.time()), "]\n",
-                                     paste0(utils::tail(out, 10),
+                                     paste0(tail(out, 10),
                                             collapse = "\n"))))
     }
   }
