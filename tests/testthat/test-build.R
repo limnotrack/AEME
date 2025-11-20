@@ -449,7 +449,7 @@ test_that("building all models with new parameters works", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   
-  utils::data("aeme_parameters")
+  data("aeme_parameters")
   aeme_parameters <- aeme_parameters |>
     dplyr::mutate(
       value = dplyr::case_when(
@@ -520,7 +520,7 @@ test_that("building models with parameters for only one model", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   
-  utils::data("aeme_parameters")
+  data("aeme_parameters")
   aeme_parameters <- aeme_parameters |>
     dplyr::mutate(
       value = dplyr::case_when(
