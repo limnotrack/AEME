@@ -36,21 +36,12 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   }
   if (is.null(nc)) {
     lake_dir <- check_path(lake_dir, must_exist = TRUE)
-    
-    # cfg_file
-    cfg_file <- get_model_config_files(model = model, 
-                                       lake_dir = lake_dir)[[model]]
-    cfg <- load_model_config(model = model, lake_dir = lake_dir)
-    
-    # Load model hypsograph
-    hyps <- load_model_hypsograph(model = model, lake_dir = lake_dir)
-    
     # Read in model netCDF file
     nc_files <- get_model_outfile(model = model, lake_dir = lake_dir)[[model]]
     if (model == "gotm_wet") {
       nc_file <- nc_files["output"]  
       incl_fluxes <- ifelse("output_daily" %in% names(nc_files), FALSE, TRUE)
-      read_gotm_daily <- incl_fluxes
+      read_gotm_daily <- !incl_fluxes
     } else {
       nc_file <- nc_files
       read_gotm_daily <- FALSE
@@ -61,6 +52,8 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
     read_gotm_daily <- FALSE
   }
 
+  # Load model hypsograph
+  hyps <- load_model_hypsograph(model = model, lake_dir = lake_dir)
   
   if (is.null(date_index)) {
     # ---- 1. extract time info for this model
