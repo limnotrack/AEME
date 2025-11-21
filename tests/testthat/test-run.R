@@ -245,7 +245,7 @@ test_that("running GLM-AED works", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb", 
-                "CHM_oxycln")
+                "CHM_oxycln", "CHM_oxynal")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model_controls <- set_vars_sim(model_controls = model_controls,
                                  vars_sim = vars_sim)
@@ -266,7 +266,7 @@ test_that("running GLM-AED works", {
   # plot_output(aeme, model = model, c("LKE_tli3"), facet = FALSE)
   
   v1 <- get_var(aeme = aeme, model = model, var = "HYD_temp")
-  v2 <- get_var(aeme = aeme, model = model, var = "HYD_temp",
+  v2 <- get_var(aeme = aeme, model = model, var = "CHM_oxynal",
                 remove_spin_up = FALSE)
   testthat::expect_true(v1$Date[1] > v2$Date[1])
   
