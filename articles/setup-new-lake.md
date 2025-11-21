@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-11-21 01:19:34] job submitted
-#> INFO [2025-11-21 01:19:34] downloading
-#> INFO [2025-11-21 01:19:36] extracting
+#> INFO [2025-11-21 02:40:30] job submitted
+#> INFO [2025-11-21 02:40:30] downloading
+#> INFO [2025-11-21 02:40:32] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -598,14 +598,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-21 01:19:47]
-#> → DYRESM-CAEDYM running... [2025-11-21 01:19:47]
-#> ✔ DYRESM-CAEDYM run successful! [2025-11-21 01:20:06]
-#> → GLM-AED2 running... [2025-11-21 01:20:06]
-#> ✔ GLM-AED2 run successful! [2025-11-21 01:20:06]
-#> → GOTM-WET running... [2025-11-21 01:20:06]
-#> ✔ GOTM-WET run successful! [2025-11-21 01:20:07]
-#> ✔ Model run complete! [2025-11-21 01:20:07]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-21 02:40:42]
+#> → DYRESM-CAEDYM running... [2025-11-21 02:40:42]
+#> ✔ DYRESM-CAEDYM run successful! [2025-11-21 02:41:03]
+#> → GLM-AED2 running... [2025-11-21 02:41:03]
+#> ✔ GLM-AED2 run successful! [2025-11-21 02:41:04]
+#> → GOTM-WET running... [2025-11-21 02:41:04]
+#> ✔ GOTM-WET run successful! [2025-11-21 02:41:04]
+#> ✔ Model run complete! [2025-11-21 02:41:04]
 ```
 
 ### View the output
