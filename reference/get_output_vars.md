@@ -100,45 +100,47 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2025-11-20 23:52:17]
-#> ✔ Model run complete! [2025-11-20 23:52:22]
-#> ℹ Reading models in parallel...[2025-11-20 23:52:22]
-#> ✔ Model reading complete! [2025-11-20 23:52:22]
+#> ℹ Running models in parallel... [2025-11-21 01:14:16]
+#> ✔ Model run complete! [2025-11-21 01:14:21]
+#> ℹ Reading models in parallel...[2025-11-21 01:14:21]
+#> ✔ Model reading complete! [2025-11-21 01:14:22]
 get_output_vars(aeme, model)
-#>              Water temperature               Dissolved oxygen 
-#>                     "HYD_temp"                      "CHM_oxy" 
-#>            Total chlorophyll a                 Total nitrogen 
-#>                    "PHY_tchla"                       "NIT_tn" 
-#>               Total phosphorus          Evaporative heat flux 
-#>                       "PHS_tp"                       "LKE_Qe" 
-#>             Sensible heat flux             Longwave radiation 
-#>                       "LKE_Qh"                      "LKE_Qlw" 
-#>            Shortwave radiation                         Volume 
-#>                      "LKE_Qsw"                        "LKE_V" 
-#>                    Evaporation                    Evaporation 
-#>                   "LKE_evpvol"                   "LKE_evpflx" 
-#>                   Surface area                    Evaporation 
-#>                       "LKE_A0"                   "LKE_evprte" 
-#>                         Inflow                        Outflow 
-#>                   "LKE_inflow"                  "LKE_outflow" 
-#>                  Precipitation                  Precipitation 
-#>                   "LKE_precip"                   "LKE_pcpvol" 
-#> Remote sensed skin temperature                           Time 
-#>                    "HYD_surft"                         "Date" 
-#>                     Lake depth                       Salinity 
-#>                   "LKE_depths"                     "CHM_salt" 
-#>                      Phosphate            Dissolved organic P 
-#>                      "PHS_frp"                      "PHS_dop" 
-#>          Particulate organic P        Particulate inorganic P 
-#>                      "PHS_pop"                      "PHS_pip" 
-#>            Ammoniacal nitrogen                        Nitrate 
-#>                      "NIT_amm"                      "NIT_nit" 
-#>            Dissolved organic N          Particulate organic N 
-#>                      "NIT_don"                      "NIT_pon" 
-#>       Dissolved organic carbon     Particulate organic carbon 
-#>                      "CAR_doc"                      "CAR_poc" 
-#>                  Cyanobacteria                    Green algae 
-#>                    "PHY_cyano"                    "PHY_green" 
-#>             Diatoms freshwater               Suspended solids 
-#>                   "PHY_diatom"                      "NCS_ss1" 
+#>                Water temperature                 Dissolved oxygen 
+#>                       "HYD_temp"                        "CHM_oxy" 
+#>              Total chlorophyll a                   Total nitrogen 
+#>                      "PHY_tchla"                         "NIT_tn" 
+#>                 Total phosphorus            Evaporative heat flux 
+#>                         "PHS_tp"                         "LKE_Qe" 
+#>               Sensible heat flux               Longwave radiation 
+#>                         "LKE_Qh"                        "LKE_Qlw" 
+#>              Shortwave radiation                           Volume 
+#>                        "LKE_Qsw"                          "LKE_V" 
+#>                      Evaporation                      Evaporation 
+#>                     "LKE_evpvol"                     "LKE_evpflx" 
+#>                     Surface area                      Evaporation 
+#>                         "LKE_A0"                     "LKE_evprte" 
+#>                           Inflow                          Outflow 
+#>                     "LKE_inflow"                    "LKE_outflow" 
+#>                    Precipitation                    Precipitation 
+#>                     "LKE_precip"                     "LKE_pcpvol" 
+#>   Remote sensed skin temperature                             Time 
+#>                      "HYD_surft"                           "Date" 
+#>                       Lake depth                         Salinity 
+#>                     "LKE_depths"                       "CHM_salt" 
+#>                        Phosphate              Dissolved organic P 
+#>                        "PHS_frp"                        "PHS_dop" 
+#>            Particulate organic P          Particulate inorganic P 
+#>                        "PHS_pop"                        "PHS_pip" 
+#>              Ammoniacal nitrogen                          Nitrate 
+#>                        "NIT_amm"                        "NIT_nit" 
+#>              Dissolved organic N            Particulate organic N 
+#>                        "NIT_don"                        "NIT_pon" 
+#>         Dissolved organic carbon       Particulate organic carbon 
+#>                        "CAR_doc"                        "CAR_poc" 
+#>                    Cyanobacteria                      Green algae 
+#>                      "PHY_cyano"                      "PHY_green" 
+#>               Diatoms freshwater                 Suspended solids 
+#>                     "PHY_diatom"                        "NCS_ss1" 
+#>                  Air temperature Water-air temperature difference 
+#>                     "MET_tmpair"                     "HYD_atdiff" 
 ```
