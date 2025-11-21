@@ -64,7 +64,7 @@ NULL
   CHM_oxycln = c("HYD_epidep", "HYD_hypdep"),
   CHM_oxymet = c("HYD_epidep", "HYD_hypdep"),
   CHM_oxymom = c("HYD_epidep", "HYD_hypdep"),
-  CHM_oxynal = c("HYD_epidep", "HYD_hypdep"),
+  CHM_oxynal = character(0),
   
   # Lake trophic index requires epilimnetic depth
   LKE_tlic   = "HYD_epidep",
