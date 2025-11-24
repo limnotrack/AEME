@@ -40,6 +40,9 @@ open_nc_safe <- function(file, model) {
   if (missing(model)) {
     model <- "model"
   }
+  if (length(file) != 1 || !is.character(file)) {
+    cli::cli_abort("File path {.val {file}} must be a single character string.")
+  }
   if (!file.exists(file)) {
     cli::cli_abort("{.val {model}} output file not found: {.file {file}}")
   }
