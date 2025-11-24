@@ -37,7 +37,12 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       date_index <- seq_along(gotm_dates)
     }
   }
-
+  if (length(gotm_dates) < max(date_index)) {
+    cli::cli_alert_warning("date_index exceeds available GOTM output dates.
+                           Returning available dates only.")
+    date_index <- date_index[date_index <= length(gotm_dates)]
+  }
+  
   t_start <- date_index[1]
   start_1d <- c(1, 1, t_start)
   start_2d <- c(1, 1, 1, t_start)

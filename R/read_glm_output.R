@@ -47,6 +47,11 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       date_index <- seq_along(glm_dates)
     }
   }
+  if (length(glm_dates) < max(date_index)) {
+    cli::cli_alert_warning("date_index exceeds available GLM output dates. 
+                          Returning available dates only.")
+    date_index <- date_index[date_index <= length(glm_dates)]
+  }
   dates <- glm_dates[date_index] |>
     as.Date()
 

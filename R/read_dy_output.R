@@ -45,6 +45,9 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     }
   }
   if (length(valid_dates) < length(date_index)) {
+    cli::cli_alert_warning(
+    "Some specified dates are not present in DYRESM output"
+    )
     date_index <- seq_along(valid_dates)
   }
   dates <- dy_dates[date_index]
