@@ -208,6 +208,35 @@ test_that("running GOTM works", {
   testthat::expect_true(file_chk)
 })
 
+test_that("running all models with running out of water works", {
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    testthat::skip("Skipping test on macOS")
+  }
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls()
+  outf_factor = c("dy_cd" = 1.5, "glm_aed" = 1.5, "gotm_wet" = 1.5)
+  outf_param <- aeme_parameters |> 
+    dplyr::filter(name == "outflow") |> 
+    dplyr::mutate(value = 2)
+  aeme <- add_param(aeme, param = outf_param)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  aeme <- build_aeme(path = path, aeme = aeme,
+                     model = model, model_controls = model_controls,
+                     inf_factor = inf_factor, outf_factor = outf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme(aeme = aeme, model = model, path = path)
+  plot_output(aeme)
+  plot_output(aeme, var_sim = "LKE_lvlwtr")
+  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  testthat::expect_true(all(file.exists(unlist(outfile))))
+})
+
 test_that("running DYRESM-CAEDYM works", {
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
