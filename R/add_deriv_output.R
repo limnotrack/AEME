@@ -260,7 +260,11 @@ calc_CHM_oxynal <- function(out_list, hyps) {
 #' @noRd
 check_vars <- function(out_list, req_vars) {
   # Check if vars are NULL
-  all(sapply(req_vars, is.null))
+  if (any(sapply(req_vars, function(v) is.null(out_list[[v]])))) {
+    return(FALSE)
+  } else {
+    return(TRUE)
+  }
 }
 
 
