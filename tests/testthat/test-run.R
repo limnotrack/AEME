@@ -175,6 +175,9 @@ test_that("running GOTM works", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls()
+  model_controls <- set_vars_sim(model_controls = model_controls,
+                                 vars_sim = c("CHM_oxynal", "CHM_oxymom",
+                                              "LKE_tli4", "LKE_tli3"))
   inf_factor = c("gotm_wet" = 1)
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")

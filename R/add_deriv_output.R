@@ -33,6 +33,11 @@ add_deriv_output <- function(out_list, hyps, vars_sim = NULL) {
 #' Thermocline depth calculation function
 #' @noRd
 calc_HYD_thmcln <- function(out_list, hyps) {
+  req_vars <- c("HYD_temp", "LKE_depths")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   wtr    <- out_list[["HYD_temp"]]
   depths <- out_list[["LKE_depths"]]
   
@@ -45,6 +50,11 @@ calc_HYD_thmcln <- function(out_list, hyps) {
 #' Stratification status calculation function
 #' @noRd
 calc_HYD_strat <- function(out_list, hyps) {
+  req_vars <- c("HYD_temp", "LKE_depths")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   wtr    <- out_list[["HYD_temp"]]
   depths <- out_list[["LKE_depths"]]
   
@@ -57,6 +67,11 @@ calc_HYD_strat <- function(out_list, hyps) {
 #' Schmidt stability calculation function
 #' @noRd
 calc_HYD_schstb <- function(out_list, hyps) {
+  req_vars <- c("HYD_temp", "LKE_depths")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   wtr    <- out_list[["HYD_temp"]]
   depths <- out_list[["LKE_depths"]]
   
@@ -82,6 +97,11 @@ calc_HYD_schstb <- function(out_list, hyps) {
 #' Center of buoyancy calculation function
 #' @noRd
 calc_HYD_ctrbuy <- function(out_list, hyps) {
+  req_vars <- c("HYD_temp", "LKE_depths")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   wtr    <- out_list[["HYD_temp"]]
   depths <- out_list[["LKE_depths"]]
   
@@ -94,6 +114,11 @@ calc_HYD_ctrbuy <- function(out_list, hyps) {
 #' Epilimnion depth calculation function
 #' @noRd
 calc_HYD_epidep <- function(out_list, hyps) {
+  req_vars <- c("HYD_temp", "LKE_depths")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   wtr    <- out_list[["HYD_temp"]]
   depths <- out_list[["LKE_depths"]]
   
@@ -106,6 +131,11 @@ calc_HYD_epidep <- function(out_list, hyps) {
 #' Hypolimnion depth calculation function
 #' @noRd
 calc_HYD_hypdep <- function(out_list, hyps) {
+  req_vars <- c("HYD_temp", "LKE_depths")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   wtr    <- out_list[["HYD_temp"]]
   depths <- out_list[["LKE_depths"]]
   
@@ -118,6 +148,11 @@ calc_HYD_hypdep <- function(out_list, hyps) {
 #' Oxycline depth calculation function
 #' @noRd
 calc_CHM_oxycln <- function(out_list, hyps) {
+  req_vars <- c("CHM_oxy", "LKE_depths")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   oxy    <- out_list[["CHM_oxy"]]
   depths <- out_list[["LKE_depths"]]
   
@@ -130,6 +165,11 @@ calc_CHM_oxycln <- function(out_list, hyps) {
 #' Epilimnion oxygen calculation function
 #' @noRd
 calc_CHM_oxyepi <- function(out_list, hyps) {
+  req_vars <- c("CHM_oxy", "LKE_depths", "HYD_epidep")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   oxy    <- out_list[["CHM_oxy"]]
   depths <- out_list[["LKE_depths"]]
   epi    <- out_list[["HYD_epidep"]]
@@ -143,6 +183,11 @@ calc_CHM_oxyepi <- function(out_list, hyps) {
 #' Hypolimnion oxygen calculation function
 #' @noRd
 calc_CHM_oxyhyp <- function(out_list, hyps) {
+  req_vars <- c("CHM_oxy", "LKE_depths", "HYD_hypdep")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   oxy    <- out_list[["CHM_oxy"]]
   depths <- out_list[["LKE_depths"]]
   hyp    <- out_list[["HYD_hypdep"]]
@@ -156,6 +201,11 @@ calc_CHM_oxyhyp <- function(out_list, hyps) {
 #' Metalimnion oxygen calculation function
 #' @noRd
 calc_CHM_oxymet <- function(out_list, hyps) {
+  req_vars <- c("CHM_oxy", "LKE_depths", "HYD_epidep", "HYD_hypdep")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   oxy    <- out_list[["CHM_oxy"]]
   depths <- out_list[["LKE_depths"]]
   epi    <- out_list[["HYD_epidep"]]
@@ -170,6 +220,11 @@ calc_CHM_oxymet <- function(out_list, hyps) {
 #' Metalimnion oxygen maximum calculation function
 #' @noRd
 calc_CHM_oxymom <- function(out_list, hyps) {
+  req_vars <- c("CHM_oxy", "LKE_depths", "HYD_epidep", "HYD_hypdep")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   meta <- calc_CHM_oxymet(out_list, hyps)
   epi  <- calc_CHM_oxyepi(out_list, hyps)
   hyp  <- calc_CHM_oxyhyp(out_list, hyps)
@@ -180,6 +235,11 @@ calc_CHM_oxymom <- function(out_list, hyps) {
 #' Number of anoxic layers calculation function
 #' @noRd
 calc_CHM_oxynal <- function(out_list, hyps) {
+  req_vars <- c("CHM_oxy", "LKE_depths", "LKE_lvlwtr")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   oxy        <- out_list[["CHM_oxy"]]
   depths     <- out_list[["LKE_depths"]]
   lake_level <- out_list[["LKE_lvlwtr"]]
@@ -197,9 +257,22 @@ calc_CHM_oxynal <- function(out_list, hyps) {
   })
 }
 
+#' @noRd
+check_vars <- function(out_list, req_vars) {
+  # Check if vars are NULL
+  all(sapply(req_vars, is.null))
+}
+
+
 #' TLI chlorophyll-a calculation function
 #' @noRd
 calc_LKE_tlic <- function(out_list, hyps) {
+  req_vars <- c("PHY_tchla", "LKE_depths", "HYD_epidep")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
+    
   depths <- out_list$LKE_depths
   epi    <- out_list$HYD_epidep
   chla   <- out_list$PHY_tchla
@@ -213,6 +286,11 @@ calc_LKE_tlic <- function(out_list, hyps) {
 #' TLI total nitrogen calculation function
 #' @noRd
 calc_LKE_tlin <- function(out_list, hyps) {
+  req_vars <- c("NIT_tn", "LKE_depths", "HYD_epidep")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   depths <- out_list$LKE_depths
   epi    <- out_list$HYD_epidep
   tn     <- out_list$NIT_tn
@@ -226,6 +304,11 @@ calc_LKE_tlin <- function(out_list, hyps) {
 #' TLI total phosphorus calculation function
 #' @noRd
 calc_LKE_tlip <- function(out_list, hyps) {
+  req_vars <- c("PHS_tp", "LKE_depths", "HYD_epidep")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   depths <- out_list$LKE_depths
   epi    <- out_list$HYD_epidep
   tp     <- out_list$PHS_tp
@@ -249,6 +332,11 @@ calc_LKE_tlise <- function(out_list, hyps) {
 #' TLI 3 calculation function
 #' @noRd
 calc_LKE_tli3 <- function(out_list, hyps) {
+  req_vars <- c("PHY_tchla", "NIT_tn", "PHS_tp", "LKE_depths", "HYD_epidep")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   depths <- out_list$LKE_depths
   epi    <- out_list$HYD_epidep
   chla   <- out_list$PHY_tchla
@@ -268,6 +356,12 @@ calc_LKE_tli3 <- function(out_list, hyps) {
 #' TLI 4 calculation function
 #' @noRd
 calc_LKE_tli4 <- function(out_list, hyps) {
+  req_vars <- c("PHY_tchla", "NIT_tn", "PHS_tp", "LKE_photic",
+                 "LKE_depths", "HYD_epidep")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
   depths <- out_list$LKE_depths
   epi    <- out_list$HYD_epidep
   chla   <- out_list$PHY_tchla
