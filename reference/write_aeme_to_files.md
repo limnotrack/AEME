@@ -42,9 +42,9 @@ model_controls = model_controls)
 #> ℹ Copied in GLM nml file
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-25 04:26:44]
-#> → GLM-AED2 running... [2025-11-25 04:26:44]
-#> ✔ GLM-AED2 run successful! [2025-11-25 04:26:45]
-#> ✔ Model run complete! [2025-11-25 04:26:45]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-25 20:26:41]
+#> → GLM-AED2 running... [2025-11-25 20:26:41]
+#> ✔ GLM-AED2 run successful! [2025-11-25 20:26:41]
+#> ✔ Model run complete! [2025-11-25 20:26:41]
 write_aeme_to_files(aeme, path)
 ```
