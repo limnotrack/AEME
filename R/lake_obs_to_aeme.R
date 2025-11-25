@@ -41,7 +41,7 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
   
   # Check data is a data frame
   if (!is.data.frame(data)) {
-    stop("Data must be a data frame.")
+    cli::cli_abort("{.arg data} must be a data frame.")
   }
   
   # Variable
@@ -49,48 +49,47 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
     var_col_name <- names(data)[grepl("var|parameter|param", names(data), 
                                       ignore.case = TRUE)]
     if (length(var_col_name) == 0) {
-      stop("Variable column name not provided and could not be inferred.")
+      cli::cli_abort("Variable column name not provided and could not be 
+                     inferred.")
     } else if (length(var_col_name) > 1) {
-      stop("Multiple variable column names inferred: c(\"", 
-           paste0(var_col_name, collapse = "\", "),
-           "\"). Please specify one.")
+      cli::cli_abort("Multiple variable column names inferred: 
+      {.var {var_col_name}}. Please specify one.")
     }
   } else {
     # Check variable column is in data
     if (!var_col_name %in% names(data)) {
-      stop("Provided var_col_name '", var_col_name, 
-           "' not found in data.")
+      cli::cli_abort("Provided var_col_name '{.var {var_col_name}}' not found in data.")
     }
     # Check variable column is character
     if (!is.character(data[[var_col_name]])) {
-      stop("Variable column '", var_col_name, "' must be character.")
+      cli::cli_abort("Variable column '{.var {var_col_name}}' must be character.")
     }
   }
   
   # Check var_map is a dataframe
   if (!is.data.frame(var_map)) {
-    stop("var_map must be a data frame.")
+    cli::cli_abort("{.arg var_map} must be a data frame.")
   } else {
     # Check var_map has required columns
     req_cols <- c("var_aeme", "name", "unit")
     if (!all(req_cols %in% names(var_map))) {
       missing_cols <- req_cols[!req_cols %in% names(var_map)]
-      stop("var_map is missing required columns: ", 
-           paste(missing_cols, collapse = ", "))
+      cli::cli_abort("{.arg var_map} is missing required columns: 
+                     {.var {missing_cols}}.")
     }
     
     # Check var_aeme in var_map is in sub_key_naming
     if (!all(var_map$var_aeme %in% sub_key_naming$name)) {
       wrong_vars <- var_map$var_aeme[!var_map$var_aeme %in% sub_key_naming$name]
-      stop("The following var_aeme in var_map are not in key_naming: ", 
-           paste(wrong_vars, collapse = ", "))
+      cli::cli_abort("The following var_aeme in var_map are not in key_naming: 
+                     {.var {wrong_vars}}.")
     }
     
     # Check name in var_map in data
     if (!all(var_map$name %in% data[[var_col_name]])) {
       wrong_names <- var_map$name[!var_map$name %in% data[[var_col_name]]]
-      stop("The following names in var_map are not in data: ", 
-           paste(wrong_names, collapse = ", "))
+      cli::cli_abort("The following names in var_map are not in data: 
+                     {.var {wrong_names}}.")
     }
     
     # Check all units in var_map are valid in the units package
@@ -101,8 +100,8 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
       }, error = function(e) FALSE)
     })]
     if (length(invalid_units) > 0) {
-      stop("The following units in var_map are not valid: ", 
-           paste(unique(invalid_units), collapse = ", "))
+      cli::cli_abort("The following units in {.arg var_map} are not valid: 
+                     {.var {unique(invalid_units)}}.")
     }
   }
   
@@ -141,9 +140,12 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
       stop("Provided datetime_col_name '", datetime_col_name, 
            "' not found in data.")
     }
-    # Check datetime column is POSIXct
-    if (!inherits(data[[datetime_col_name]], "POSIXct")) {
-      stop("Datetime column '", datetime_col_name, "' must be of class POSIXct.")
+    # Check datetime column is POSIXct or Date
+    if (!inherits(data[[datetime_col_name]], "POSIXct") |
+        !inherits(data[[datetime_col_name]], "Date")
+        ) {
+      cli::cli_abort("Datetime column {.val {datetime_col_name}} must be of 
+                     class POSIXct or Date.")
     }
   }
   
