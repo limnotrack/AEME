@@ -115,8 +115,10 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                "CHM_oxymet", "CHM_oxymom", "CHM_oxynal", "LKE_tlic", "LKE_tlin", 
                "LKE_tlip", "LKE_tlise", "LKE_tli3", "LKE_tli4"
                )
-  for (var in vars_1d) {
-    if (var %in% names(out_list)) {
+  vars_1d_in <- vars_1d[vars_1d %in% names(out_list)]
+  if (length(vars_1d_in) > 0) {
+    # Convert to vector
+    for (var in vars_1d_in) {
       out_list[[var]] <- as.vector(out_list[[var]])
     }
   }
@@ -334,3 +336,26 @@ interp_static_grid <- function(var, midpoints, out_depths, digits = 4) {
   out <- round(out, digits)
   return(out)
 }
+
+#' Create an empty model output structure with error reason
+#' @param reason Reason for empty model output
+#' @return Structure with class "model_output_error"
+#' @keywords internal
+#' @noRd
+empty_model_output <- function(reason) {
+  structure(
+    list(ok = FALSE, reason = reason),
+    class = "model_output_error"
+  )
+}
+
+#' Check if object is a model output error
+#' @param x Object to check
+#' @return Logical indicating if object is a model output error
+#' @export
+is_model_error <- function(x) inherits(x, "model_output_error")
+
+
+has_error      <- function(x) !isTRUE(x$ok)
+
+
