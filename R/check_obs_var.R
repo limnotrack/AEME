@@ -17,6 +17,9 @@
 #' }
 #'
 #' @importFrom dplyr filter bind_rows pull
+#' @importFrom lubridate ddays
+#' @importFrom cli cli_alert_danger cli_text cli_alert_success
+#'
 
 check_obs_var <- function(aeme, var_sim) {
   aeme    <- check_aeme(aeme)

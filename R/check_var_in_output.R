@@ -6,6 +6,8 @@
 #' @return A list with logical matrices indicating if each variable is present per model,
 #'   plus an overall `all_present` flag.
 #' @export
+#' @importFrom cli cli_warn
+#' 
 check_var_in_output <- function(aeme, model, var_sim, ens_n = 1) {
   # --- Input validation ---
   aeme    <- check_aeme(aeme)

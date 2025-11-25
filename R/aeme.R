@@ -142,6 +142,7 @@ setClass("Aeme",
 #' @importFrom units drop_units
 #' @importFrom lubridate is.Date
 #' @importFrom withr local_locale local_timezone
+#' @importFrom cli cli_abort
 #'
 #' @export
 

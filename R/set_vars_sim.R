@@ -5,6 +5,8 @@
 #' @param simulate logical, whether to simulate the variables in vars_sim
 #' @param exclusive logical, if TRUE, set all other variables to not simulate
 #'
+#' @importFrom dplyr bind_rows arrange desc
+#' @importFrom cli cli_alert_info
 #' @returns Updated model_controls data frame
 #' @export
 #'
