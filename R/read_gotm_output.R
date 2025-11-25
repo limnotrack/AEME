@@ -19,7 +19,8 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   ## dates.. gotm seems to output the intial profiles, then every tstep
   out_steps <- ncdf4::ncvar_get(nc, "time")
   if (length(out_steps) == 0) {
-    return(NULL)
+    out <- empty_model_output(reason = "Empty time dimension")
+    return(out)
   }
   date_start <- ncdf4::ncatt_get(nc, "time", "units")$value |>
     gsub("seconds since ", "", x = _) |>
@@ -161,5 +162,6 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     out_list <- c(out_list, flux_list)
   }
   
+  out_list <- c(out_list, list(ok = TRUE, reason = NULL))
   return(out_list)
 }

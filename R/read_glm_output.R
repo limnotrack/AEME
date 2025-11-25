@@ -31,7 +31,8 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   # glm DOES NOT output initial profiles
   hours_since  <- ncdf4::ncvar_get(nc, "time")
   if (length(hours_since) == 0) {
-    return(NULL)
+    out <- empty_model_output(reason = "Empty time dimension")
+    return(out)
   }
   date_start <- as.POSIXct(gsub("hours since ", "",
                                 ncdf4::ncatt_get(nc,'time','units')$value))
@@ -165,5 +166,6 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     
     out_list <- c(out_list, out_vars)
   }
+  out_list <- c(out_list, list(ok = TRUE, reason = NULL))
   return(out_list)
 }

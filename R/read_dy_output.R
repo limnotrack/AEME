@@ -24,7 +24,8 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   # dyresm outputs initial profiles as first col
   if (!("dyresmTime" %in% names(nc$var))) {
-    return(NULL)
+    out <- empty_model_output(reason = "Empty time dimension")
+    return(out)
   }
   dy_time <- ncdf4::ncvar_get(nc, "dyresmTime")
   dy_time[dy_time > 9.9e36] <- NA
@@ -218,5 +219,6 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     # euphotic <- rep(NA, length(idx))
   }
   
+  out_list <- c(out_list, list(ok = TRUE, reason = NULL))
   return(out_list)
 }
