@@ -141,9 +141,7 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
            "' not found in data.")
     }
     # Check datetime column is POSIXct or Date
-    if (!inherits(data[[datetime_col_name]], "POSIXct") |
-        !inherits(data[[datetime_col_name]], "Date")
-        ) {
+    if (!inherits(data[[datetime_col_name]], c("POSIXct", "Date"))) {
       cli::cli_abort("Datetime column {.val {datetime_col_name}} must be of 
                      class POSIXct or Date.")
     }
