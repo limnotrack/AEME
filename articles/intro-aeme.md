@@ -507,12 +507,12 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Copied in DYRESM .par file
 #> ℹ Writing DYRESM configuration file
 #> ℹ Writing DYRESM-CAEDYM control file
+#> Building AEME object ■■■■■■■■■■■■■■■■■■■               60% | Writing GLM-AED2 c…
+#> 
 #> ℹ Building GLM-AED2 for lake aeme
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file
 #> ℹ  oxy_initial = 625 replaced with 312.5
-#> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | Writing GOTM-WET c…
-#> 
 #> ℹ Building GOTM-WET model for lake aeme
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sO2W 13 replaced with 10
@@ -520,6 +520,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
+#> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | Writing GOTM-WET c…
 aeme
 #>             AEME 
 #> -------------------------------------------------------------------

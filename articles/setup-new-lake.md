@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-11-25 01:30:26] job submitted
-#> INFO [2025-11-25 01:30:26] downloading
-#> INFO [2025-11-25 01:30:33] extracting
+#> INFO [2025-11-25 04:30:47] job submitted
+#> INFO [2025-11-25 04:30:47] downloading
+#> INFO [2025-11-25 04:30:49] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -525,12 +525,11 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #> ℹ Writing DYRESM-CAEDYM control file
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
-#> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | Writing GOTM-WET c…
-#> 
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
+#> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | Writing GOTM-WET c…
 
 print(aeme)
 #>             AEME 
@@ -599,14 +598,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-25 01:30:45]
-#> → DYRESM-CAEDYM running... [2025-11-25 01:30:45]
-#> ✔ DYRESM-CAEDYM run successful! [2025-11-25 01:31:04]
-#> → GLM-AED2 running... [2025-11-25 01:31:04]
-#> ✔ GLM-AED2 run successful! [2025-11-25 01:31:05]
-#> → GOTM-WET running... [2025-11-25 01:31:05]
-#> ✔ GOTM-WET run successful! [2025-11-25 01:31:06]
-#> ✔ Model run complete! [2025-11-25 01:31:06]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-25 04:31:02]
+#> → DYRESM-CAEDYM running... [2025-11-25 04:31:02]
+#> ✔ DYRESM-CAEDYM run successful! [2025-11-25 04:31:21]
+#> → GLM-AED2 running... [2025-11-25 04:31:21]
+#> ✔ GLM-AED2 run successful! [2025-11-25 04:31:22]
+#> → GOTM-WET running... [2025-11-25 04:31:22]
+#> ✔ GOTM-WET run successful! [2025-11-25 04:31:23]
+#> ✔ Model run complete! [2025-11-25 04:31:23]
 ```
 
 ### View the output
