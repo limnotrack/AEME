@@ -61,6 +61,7 @@ calc_HYD_strat <- function(out_list, hyps) {
   depths <- out_list[["LKE_depths"]]
   
   safe_apply(ncol(wtr), function(c) {
+    if (all(is.na(wtr[, c]))) return(NA_real_)
     v <- is_strat(wtr[, c], depths[, c])
     if (is.nan(v)) NA_real_ else v
   })
@@ -79,6 +80,7 @@ calc_HYD_schstb <- function(out_list, hyps) {
   
   safe_apply(ncol(wtr), function(c) {
     
+    if (all(is.na(wtr[, c]))) return(NA_real_)
     bthD <- c(0, depths[, c])
     bthA <- approx(x = hyps$full_depth, y = hyps$area,
                    xout = bthD, rule = 2)$y
@@ -108,6 +110,7 @@ calc_HYD_ctrbuy <- function(out_list, hyps) {
   depths <- out_list[["LKE_depths"]]
   
   safe_apply(ncol(wtr), function(c) {
+    if (all(is.na(wtr[, c]))) return(NA_real_)
     v <- rLakeAnalyzer::center.buoyancy(wtr[, c], depths[, c])
     if (is.nan(v)) NA_real_ else v
   })
@@ -125,6 +128,7 @@ calc_HYD_epidep <- function(out_list, hyps) {
   depths <- out_list[["LKE_depths"]]
   
   safe_apply(ncol(wtr), function(c) {
+    if (all(is.na(wtr[, c]))) return(NA_real_)
     v <- rLakeAnalyzer::meta.depths(wtr[, c], depths[, c])
     if (is.nan(v[1])) max(depths[, c]) else v[1]
   })
@@ -142,6 +146,7 @@ calc_HYD_hypdep <- function(out_list, hyps) {
   depths <- out_list[["LKE_depths"]]
   
   safe_apply(ncol(wtr), function(c) {
+    if (all(is.na(wtr[, c]))) return(NA_real_)
     v <- rLakeAnalyzer::meta.depths(wtr[, c], depths[, c])
     if (is.nan(v[2])) NA_real_ else v[2]
   })
@@ -159,6 +164,7 @@ calc_CHM_oxycln <- function(out_list, hyps) {
   depths <- out_list[["LKE_depths"]]
   
   safe_apply(ncol(oxy), function(c) {
+    if (all(is.na(oxy[, c]))) return(NA_real_)
     v <- cline_depth(oxy[, c], depths[, c], water = FALSE)
     if (is.nan(v)) NA_real_ else v
   })
@@ -177,6 +183,7 @@ calc_CHM_oxyepi <- function(out_list, hyps) {
   epi    <- out_list[["HYD_epidep"]]
   
   safe_apply(ncol(oxy), function(c) {
+    if (all(is.na(oxy[, c]))) return(NA_real_)
     idx <- which(depths[, c] <= epi[c])
     mean(oxy[idx, c], na.rm = TRUE)
   })
@@ -195,6 +202,7 @@ calc_CHM_oxyhyp <- function(out_list, hyps) {
   hyp    <- out_list[["HYD_hypdep"]]
   
   safe_apply(ncol(oxy), function(c) {
+    if (all(is.na(oxy[, c]))) return(NA_real_)
     idx <- which(depths[, c] >= hyp[c])
     mean(oxy[idx, c], na.rm = TRUE)
   })
@@ -214,6 +222,7 @@ calc_CHM_oxymet <- function(out_list, hyps) {
   hyp    <- out_list[["HYD_hypdep"]]
   
   safe_apply(ncol(oxy), function(c) {
+    if (all(is.na(oxy[, c]))) return(NA_real_)
     idx <- which(depths[, c] >= epi[c] & depths[, c] < hyp[c])
     mean(oxy[idx, c], na.rm = TRUE)
   })
