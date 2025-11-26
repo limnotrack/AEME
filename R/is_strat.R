@@ -11,7 +11,9 @@ is_strat <- function(wtr, depths, t_diff = 1) {
     cli::cli_abort("wtr and depths must have the same length")
   }
   if (any(is.na(wtr)) || any(is.na(depths))) {
-    cli::cli_abort("wtr and depths must not contain NA values")
+    cli::cli_alert_warning("wtr and depths must not contain NA values.
+                           Returning NA.")
+    return(NA)
   }
   if (length(wtr) < 2) {
     return(FALSE)
