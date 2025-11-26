@@ -38,12 +38,14 @@ calc_HYD_thmcln <- function(out_list, hyps) {
   if (!var_check) {
     return(NULL)
   }
+  max_dep <- abs(min(hyps$depth))
   wtr    <- out_list[["HYD_temp"]]
   depths <- out_list[["LKE_depths"]]
   
   safe_apply(ncol(wtr), function(c) {
+    if (all(is.na(wtr[, c]))) return(NA_real_)
     v <- rLakeAnalyzer::thermo.depth(wtr[, c], depths[, c])
-    if (is.nan(v)) NA_real_ else v
+    if (is.nan(v)) max_dep else v
   })
 }
 
