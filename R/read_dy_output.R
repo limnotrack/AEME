@@ -46,10 +46,12 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     }
   }
   if (length(valid_dates) < length(date_index)) {
-    cli::cli_alert_warning(
-    "Some specified dates are not present in DYRESM output"
+    cli::cli_alert_warning("date_index exceeds available DYRESM output dates. 
+                          Returning empty output.")
+    out <- empty_model_output(
+      reason = "date_index exceeds available DYRESM output dates"
     )
-    date_index <- seq_along(valid_dates)
+    return(out)
   }
   dates <- dy_dates[date_index]
   out_list[["Date"]] <- dates

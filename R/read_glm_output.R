@@ -50,12 +50,15 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   }
   if (length(glm_dates) < max(date_index)) {
     cli::cli_alert_warning("date_index exceeds available GLM output dates. 
-                          Returning available dates only.")
-    date_index <- date_index[date_index <= length(glm_dates)]
+                          Returning empty output.")
+    out <- empty_model_output(
+      reason = "date_index exceeds available GLM output dates"
+    )
+    return(out)
   }
   dates <- glm_dates[date_index] |>
     as.Date()
-
+  
   # Extract depths and format
   mod_layers <- ncdf4::ncvar_get(nc, "z")[, date_index]
   mod_layers[mod_layers > 1000000] <- NA
