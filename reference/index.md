@@ -123,6 +123,8 @@
   parameters
 - [`insert_aeme()`](insert_aeme.md) : Insert default aeme list code
   snippet.
+- [`is_model_error()`](is_model_error.md) : Check if object is a model
+  output error
 - [`is_strat()`](is_strat.md) : Check if water temperature profile is
   stratified
 - [`key_naming`](key_naming.md) : Model variable naming
