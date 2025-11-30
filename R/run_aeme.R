@@ -146,16 +146,25 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
 }
 
 
-#' Run DYRESM-CAEDYM
+#' Run AEME models
+#' 
+#' @description
+#' These functions provide a unified interface for running external
+#' hydrodynamic or biogeochemical lake models from within R.  
+#' Each function moves into the appropriate simulation directory,
+#' executes the model's command-line binary, prints progress messages,
+#' and reports whether the model run completed successfully.  
+#' The functions are intended to be called for their side effects:
+#' they do not return model results directly, but instead produce
+#' model output files in the simulation folder.
 #'
 #' @param sim_folder the directory where simulation files are contained
 #' @param verbose Logical: Should output of model be shown
 #' @param debug Logical; save debug file. DYRESM only.
 #' @inheritParams base::system2
 #'
-#' @importFrom utils tail
-#' @return runs DYRESM-CAEDYM
-#' @noRd
+#' @return Invisibly returns `NULL`.
+#' @export
 
 run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
                       timeout = 0) {
@@ -260,14 +269,8 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   }
 }
 
-#' Run GLM-AED
-#'
-#' @inheritParams run_dy_cd
-#'
-#' @importFrom utils tail
-#' @return runs GLM-AED
-#' @noRd
-
+#' @rdname run_dy_cd
+#' @export
 run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
                         timeout = 0) {
   
@@ -284,11 +287,13 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
   if (is.null(bin_exec)) {
     bin_path <- system.file('extbin/', package = "AEME")
     sys_OS <- get_os()
-    if (sys_OS == "windows") {
-      bin_exec <- file.path(bin_path, "glm_aed", "glm.exe")
-    } else if (sys_OS == "osx") {
-      bin_exec <- file.path(bin_path, "glm_aed", "glm")
-    }
+    
+    bin_exec <- switch(sys_OS,
+                       "windows" = file.path(bin_path, "glm_aed", "windows", 
+                                             "glm.exe"),
+                       "osx" = file.path(bin_path, "glm_aed", "macos", "glm"),
+                       "linux" = file.path(bin_path, "glm_aed", "linux", "glm")
+    )
   }
   
   if (verbose) {
@@ -313,15 +318,8 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
   }
 }
 
-#' Run GOTM-WET
-#'
-#' @inheritParams run_dy_cd
-#'
-#' @return runs GOTM-WET
-#' @noRd
-#'
-#' @importFrom utils tail
-
+#' @rdname run_dy_cd
+#' @export
 run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
                          timeout = 0) {
   
@@ -370,7 +368,7 @@ get_os <- function() {
     if (grepl("linux-gnu", R.version$os))
       os <- "linux"
   }
-  tolower(os)
+  return(tolower(os))
 }
 
 #' Get GLM-AED model version
