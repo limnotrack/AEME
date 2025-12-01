@@ -53,19 +53,25 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
                      output."))
   }
   
-  sim_folder <- get_lake_dir(aeme = aeme, path = path)
-  if (!dir.exists(sim_folder)) {
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  if (!dir.exists(lake_dir)) {
     # stop("Simulation folder does not exist.")
     cli::cli_abort(c("x" = "Simulation folder does not exist
-                     {.file {sim_folder}}"))
+                     {.path {lake_dir}}"))
   }
+  sim_folder <- setNames(
+    lapply(model, function(m) {
+      file.path(lake_dir, m)
+    }),
+    model
+  )
   
   # Check if model directories exist
-  model_dir_chk <- !any(dir.exists(file.path(sim_folder, model)))
+  model_dir_chk <- !any(dir.exists(unlist(sim_folder)))
   if (model_dir_chk) {
-    missing_model_dirs <- model[!dir.exists(file.path(sim_folder, model))]
-    cli::cli_abort(c("x" = "Model folder(s) do not exist: {paste0(missing_model_dirs,
-                                             collapse = ', ')}"))
+    missing_model_dirs <- model[!dir.exists(unlist(sim_folder))]
+    cli::cli_abort(c("x" = "Model folder(s) do not exist:
+    {paste0(missing_model_dirs, collapse = ', ')}"))
   }
   
   # Delete previous model output if it exists
@@ -80,6 +86,13 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
     }
   }
   
+  # A lookup table of model runners
+  model_funs <- list(
+    dy_cd      = run_dy_cd,
+    glm_aed    = run_glm_aed,
+    gotm_wet   = run_gotm_wet
+  )
+  
   run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
                          debug = debug, timeout = timeout)
   
@@ -92,14 +105,17 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
     on.exit({
       parallel::stopCluster(cl)
     }, add = TRUE)
-    parallel::clusterExport(cl, varlist = list("run_model_args", "run_dy_cd",
-                                               "run_glm_aed", "run_gotm_wet"),
-                            envir = environment())
+    parallel::clusterExport(cl,
+                            varlist = c("model_funs", "run_model_args"),
+                            envir = environment()
+    )
     cli_inform_safe(c("i" = paste0("Running models in parallel... ", 
                                    "[", format(Sys.time()), "]")))
-    model_out <- stats::setNames(
-      parallel::parLapply(cl, model, function(mod_name) {
-        do.call(paste0("run_", mod_name), run_model_args)
+    model_out <- setNames(
+      parallel::parLapply(cl, model, function(m) {
+        args <- run_model_args
+        args$sim_folder <- args$sim_folder[[m]]
+        do.call(model_funs[[m]], args)
       }),
       model
     )
@@ -111,8 +127,11 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
                                    "parallelizing?) ",
                                    "[", format(Sys.time()), "]")))
     model_out <- setNames(
-      lapply(model, function(mod_name) do.call(paste0("run_", mod_name),
-                                               run_model_args)),
+      lapply(model, function(m) {
+        args <- run_model_args
+        args$sim_folder <- args$sim_folder[[m]]
+        do.call(model_funs[[m]], args)
+      }),
       model
     )
     cli_inform_safe(c("v" = paste0("Model run complete! ",
@@ -177,10 +196,9 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   
   arg <- ifelse(debug, "> dycd.log", "")
   
-  dy.prefix <- gsub(".stg", "", list.files(file.path(sim_folder, "dy_cd"),
-                                           pattern = "stg"))
+  dy.prefix <- gsub(".stg", "", list.files(sim_folder, pattern = "stg"))
   
-  setwd(file.path(sim_folder, "dy_cd"))
+  setwd(sim_folder)
   ref_fils <- c(paste0(dy.prefix, c(".stg", ".met", ".inf", ".wdr")),
                 "DYref.nc")
   sim_fils <- c(paste0(dy.prefix, c(".pro")),  "dyresm3p1.par",
@@ -278,7 +296,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
   on.exit({
     setwd(oldwd)
   })
-  setwd(file.path(sim_folder, "glm_aed"))
+  setwd(sim_folder)
   cli_inform_safe(c(">" = paste0("GLM-AED2 running... ", "[",
                                  format(Sys.time()), "]")))
   
@@ -328,7 +346,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
     setwd(oldwd)
   })
   bin_path <- system.file('extbin/', package = "AEME")
-  setwd(file.path(sim_folder, "gotm_wet"))
+  setwd(sim_folder)
   dir.create("output", showWarnings = FALSE)
   cli_inform_safe(c(">" = paste0("GOTM-WET running... ",
                                  "[", format(Sys.time()), "]")))
