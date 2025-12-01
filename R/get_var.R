@@ -183,7 +183,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
         #                       sim = NA,
         #                       Model = toggle_models(m, to = "display")))
         #   }
-        #   # p <- stats::approx(depth, v, obs_deps, rule = 2)$y
+        #   # p <- approx(depth, v, obs_deps, rule = 2)$y
         #   data.frame(Date = outp[[ens_lab]][[m]][["Date"]][d],
         #              depth_mid = obs_deps,
         #              sim = p,

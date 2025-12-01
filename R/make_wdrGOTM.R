@@ -18,7 +18,7 @@ make_wdrGOTM <- function(outf, path_gotm, outf_factor = 1) {
         dplyr::filter(model == "gotm_wet") |> 
         dplyr::select(-model) 
     }
-    outf_df <- outf_df[stats::complete.cases(outf_df), ]
+    outf_df <- outf_df[complete.cases(outf_df), ]
 
     outf_df <- outf_df |>
       dplyr::mutate(outflow = (outflow / 86400 * -1 * outf_factor),

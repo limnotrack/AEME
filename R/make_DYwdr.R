@@ -43,7 +43,7 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
     #     dplyr::rename(outflow = outflow_dy_cd)
     # }
   }
-  wdrData <- wdrData[stats::complete.cases(wdrData), ] |>
+  wdrData <- wdrData[complete.cases(wdrData), ] |>
     # round discharge data
     dplyr::mutate(dplyr::across(2:ncol(wdrData), \(x) x * outf_factor),
                   dplyr::across(2:ncol(wdrData), \(x) round(x, digits = 3)),

@@ -112,7 +112,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
           # optim_lvl_params(initial_parameters, mod.lvl = mod.lvl, surf = surf)
           
           # Optimize the parameters
-          optimized_parameters <- stats::optim(par = initial_parameters,
+          optimized_parameters <- optim(par = initial_parameters,
                                                fn = optim_lvl_params,
                                                mod.lvl = mod.lvl, surf = surf,
                                                method = "L-BFGS-B")
@@ -206,7 +206,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     coeffs <- c(5, 0.75)
     evap$value <- coeffs[1] + coeffs[2] * evap$T5avg # (Stefan & Preud'homme, 2007) www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
   } else {
-    fit <- stats::lm(value ~ T5avg, data = evap)
+    fit <- lm(value ~ T5avg, data = evap)
     coeffs <- coefficients(fit)
   }
   

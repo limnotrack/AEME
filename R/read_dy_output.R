@@ -206,7 +206,7 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     out_list[["LKE_V"]] <- sapply(1:length(lake_level), function(d) {
       if(is.na(lake_level[d]) | is.infinite(lake_level[d])) return(NA)
       layerD <- (seq(dz, (lake_level[d] - dz), dz)) + adj_dep
-      layerA <- stats::approx(H, A, layerD)$y
+      layerA <- approx(H, A, layerD)$y
       sum((layerA) * dz)
     })
     # inflow <- inflow #/ A0

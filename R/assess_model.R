@@ -58,7 +58,7 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
       sub_df <- df |>
         dplyr::filter(Model == model_names$Model[model_names$model == m])
       if (!all(is.na(sub_df$sim))) {
-        fit <- stats::lm(obs ~ sim,
+        fit <- lm(obs ~ sim,
                          data = sub_df)
         r2 <- summary(fit)$r.squared
       }
@@ -83,9 +83,9 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
                        d2 = mae^2 / mean((abs(mean(sim -
                                                      mean(obs, na.rm = TRUE))) +
                                             abs(obs - mean(obs, na.rm = TRUE)))^2),
-                       r = ifelse(all(is.na(sim)), NA, tryCatch(stats::cor(sim, obs, use = "complete.obs"), error = function(e) NA)),
+                       r = ifelse(all(is.na(sim)), NA, tryCatch(cor(sim, obs, use = "complete.obs"), error = function(e) NA)),
                        rs = ifelse(all(is.na(sim)), NA, suppressWarnings({
-                         tryCatch(stats::cor.test(sim, obs, method = "spearman")$estimate, error = function(e) NA)
+                         tryCatch(cor.test(sim, obs, method = "spearman")$estimate, error = function(e) NA)
                        })),
                        n = dplyr::n(),
                        obs_na = sum(is.na(obs)),

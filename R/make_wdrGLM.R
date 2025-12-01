@@ -41,7 +41,7 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
         dplyr::select(-model)
     }
     
-    df_wdr <- df_wdr[stats::complete.cases(df_wdr), ]
+    df_wdr <- df_wdr[complete.cases(df_wdr), ]
 
     df_wdr <- df_wdr |>
       # convert discharge values to cumecs
@@ -127,7 +127,7 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 elipse_dims <- function(bathy, height, dims_lake) {
 
   # planar area of the lake at outflow elevation
-  a.wdr <- stats::approx(bathy[["elev"]], bathy[["area"]], xout = height)[2] |>
+  a.wdr <- approx(bathy[["elev"]], bathy[["area"]], xout = height)[2] |>
     as.numeric() |>
     round()
 
