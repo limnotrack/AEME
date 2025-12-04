@@ -28,7 +28,7 @@ build_glm <- function(lakename, model_controls, date_range,
   dir.create(path_glm, recursive = TRUE, showWarnings = FALSE)
   dir.create(file.path(path_glm, "bcs"), showWarnings = FALSE,
              recursive = TRUE)
-  dir.create(file.path(path_glm, "aed2"), showWarnings = FALSE,
+  dir.create(file.path(path_glm, "aed"), showWarnings = FALSE,
              recursive = TRUE)
 
 
@@ -41,11 +41,11 @@ build_glm <- function(lakename, model_controls, date_range,
   }
   if (use_bgc) {
     aed_files <- list.files(system.file("extdata/glm_aed/", package = "AEME"),
-                            full.names = TRUE, pattern = c("aed2"))
-    aed_path <- file.path(path_glm, "aed2")
+                            full.names = TRUE, pattern = "^aed[_.]")
+    aed_path <- file.path(path_glm, "aed")
     dir.create(aed_path, showWarnings = FALSE)
     file.copy(aed_files, aed_path)
-    cli_inform_safe(c("i" = "Copied in AED nml file"))
+    cli_inform_safe(c("i" = "Copied in AED nml file and supporting files"))
   }
 
   # Remove output files
@@ -108,26 +108,28 @@ build_glm <- function(lakename, model_controls, date_range,
 
   if (use_bgc) {
     initialiseAED(model_controls = model_controls,
-                  path_aed = file.path(path_glm, "aed2"))
+                  path_aed = file.path(path_glm, "aed"))
   }
 
   if (use_bgc) {
-    glm_nml[["wq_setup"]] <- list("wq_lib" = "aed2",
-                                  "wq_nml_file" = "aed2/aed2.nml",
+    glm_nml[["wq_setup"]] <- list("wq_lib" = "aed",
+                                  "wq_nml_file" = "aed/aed.nml",
                                   "ode_method" = 1,
                                   "split_factor" = 1,
                                   "bioshade_feedback" = TRUE,
                                   "repair_state" = TRUE)
-    if (!file.exists(file.path(path_glm, glm_nml[["wq_setup"]][["wq_nml_file"]]))) {
-      warning(file.path(path_glm, glm_nml[["wq_setup"]][["wq_nml_file"]]),
-              " does not exist.")
+    wq_nml_file <- file.path(path_glm, glm_nml[["wq_setup"]][["wq_nml_file"]])
+    if (!file.exists(wq_nml_file)) {
+      cli::cli_alert_warning(" {.file {wq_nml_file}} does not exist.")
     }
   } else {
     glm_nml[["wq_setup"]] <- NULL
   }
 
   # Write the GLM nml file
-  if (overwrite_nml) write_nml(glm_nml, file.path(path_glm, "glm3.nml"))
+  if (overwrite_nml) {
+    write_nml(glm_nml, file.path(path_glm, "glm3.nml"))
+  }
   # check_glm_nml(file = file.path(path_glm, "glm3.nml"))
   
   return(invisible())

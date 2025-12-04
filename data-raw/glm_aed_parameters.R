@@ -239,5 +239,154 @@ glm_aed_parameters  <- glm_aed_parameters |>
   dplyr::select(dplyr::any_of(param_names)) |> 
   tibble::as_tibble()
 
+
+#GLM-AED parameters
+
+aed_file <- file.path(glm_dir, "aed.nml")
+aed_nml <- AEME::read_nml(aed_file)
+
+# Recursively extract parameters from the lists into a dataframe
+aed_pars <- lapply(names(aed_nml), function(section) {
+  print(section)
+  lst <- lapply(names(aed_nml[[section]]), function(param) {
+    print(param)
+    value <- aed_nml[[section]][[param]]
+    if (is.list(value)) {
+      # If the parameter is a list, extract each sub-parameter
+      sub_params <- lapply(names(value), function(sub_param) {
+        sub_value <- value[[sub_param]]
+        data.frame(
+          model = "glm_aed",
+          file = "aed.nml",
+          name = paste0(section, "/", param, "/", sub_param),
+          value = I(list(sub_value)),
+          module = section,
+          group = NA,
+          index = NA
+        )
+      })
+      df2 <- do.call(rbind, sub_params)
+      return(df2)
+    } else {
+      # If the parameter is not a list, extract directly
+      df2 <- data.frame(
+        model = "glm_aed",
+        file = "aed.nml",
+        name = paste0(section, "/", param),
+        value = value,
+        module = section,
+        group = NA,
+        index = NA
+      )
+    }
+    if (nrow(df2) > 1) {
+      df2$index <- seq(1, nrow(df2))
+    }
+    return(df2)
+  })
+  df <- do.call(rbind, lst)
+  if (any(is.na(as.numeric(df$value)))) {
+    df <- df |> 
+      dplyr::mutate(
+        char = is.character(value),
+        char_val = ifelse(char, as.character(value), NA),
+        value = as.numeric(as.character(value)),
+        min = value - (0.5 * abs(value)),
+        max = value + (0.5 * abs(value))
+      )
+  } else {
+    df <- df |> 
+      dplyr::mutate(
+        min = value - (0.5 * abs(value)),
+        max = value + (0.5 * abs(value))
+      )
+  }
+  return(df)
+})
+aed_pars_df <- dplyr::bind_rows(aed_pars)
+aed_pars_df2 <- aed_pars_df |>
+  dplyr::filter(is.na(index) | index == 1) |> 
+  dplyr::select(model, file, name, value, min, max, module, group, index,
+                char, char_val) |> 
+  dplyr::mutate(
+    min = dplyr::case_when(
+      grepl("theta", name) ~ 1, .default = min
+    ),
+    max = dplyr::case_when(
+      grepl("theta", name) ~ 1.12, .default = max
+    )
+  )
+
+
+# GLM-AED phytoplankton parameters
+phy_csv_file <- basename(aed_nml[["aed_phytoplankton"]][["dbase"]])
+phy_csv_filepath <- file.path(glm_dir, phy_csv_file)
+phy_param <- readr::read_csv(phy_csv_filepath, show_col_types = FALSE)
+# strip "'" from colnames
+colnames(phy_param) <- gsub("'", "", colnames(phy_param))
+phy_long <- phy_param |> 
+  tidyr::pivot_longer(cols = -c(p_name), names_to = "group", values_to = "value") |> 
+  dplyr::mutate(model = "glm_aed",
+                name = gsub("'", "", p_name),
+                file = phy_csv_file,
+                module = "phytoplankton"
+                ) |> 
+  dplyr::select(model, file, name, value, module, group) |> 
+  dplyr::mutate(min = value - (0.5 * abs(value)),
+                max = value + (0.5 * abs(value)))
+
+zoo_csv_file <- basename(aed_nml[["aed_zooplankton"]][["dbase"]])
+zoo_csv_filepath <- file.path(glm_dir, zoo_csv_file)
+zoo_param <- readr::read_csv(zoo_csv_filepath, show_col_types = FALSE)
+# strip "'" from colnames
+colnames(zoo_param) <- gsub("'", "", colnames(zoo_param))
+zoo_long <- zoo_param |>
+  tidyr::pivot_longer(cols = -c(zoop_name), names_to = "group", values_to = "value") |> 
+  dplyr::mutate(model = "glm_aed",
+                name = gsub("'", "", zoop_name),
+                file = zoo_csv_file,
+                module = "zooplankton",
+                value_num = as.numeric(value),
+                char = ifelse(is.na(value_num), TRUE, FALSE),
+                char_val = ifelse(char, value, NA),
+                value = ifelse(char, NA, value_num)
+                
+  ) |> 
+  dplyr::mutate(min = value - (0.5 * abs(value)),
+                max = value + (0.5 * abs(value))) |> 
+  dplyr::select(model, file, name, value, min, max, module, group, char, 
+                char_val) 
+  
+macrophyte_csv_file <- basename(aed_nml[["aed_macrophyte"]][["dbase"]])
+macrophyte_csv_filepath <- file.path(glm_dir, macrophyte_csv_file)
+macrophyte_param <- readr::read_csv(macrophyte_csv_filepath, show_col_types = FALSE)
+# strip "'" from colnames
+colnames(macrophyte_param) <- gsub("'", "", colnames(macrophyte_param))
+macrophyte_long <- macrophyte_param |>
+  tidyr::pivot_longer(cols = -c(m_name), names_to = "group", values_to = "value") |> 
+  dplyr::mutate(model = "glm_aed",
+                name = gsub("'", "", m_name),
+                file = macrophyte_csv_file,
+                module = "macrophyte",
+  ) |> 
+  dplyr::mutate(min = value - (0.5 * abs(value)),
+                max = value + (0.5 * abs(value))) |> 
+  dplyr::select(model, file, name, value, min, max, module, group)
+
+
+glm_aed_parameters <- dplyr::bind_rows(glm_aed_parameters,
+                                        aed_pars_df2,
+                                        phy_long,
+                                        zoo_long,
+                                        macrophyte_long) 
+
+na_params <- which(is.na(glm_aed_parameters$value))
+if (length(na_params) > 0) {
+  print("Parameters with NA values:")
+  print(glm_aed_parameters$name[na_params])
+  glm_aed_parameters <- glm_aed_parameters |> 
+    dplyr::filter(!is.na(value))
+}
+
 usethis::use_data(glm_aed_parameters, overwrite = TRUE)
 

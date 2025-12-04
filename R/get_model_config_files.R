@@ -26,6 +26,26 @@ get_model_config_files <- function(aeme, model, path, lake_dir = NULL) {
       recursive = TRUE
     )
     names(glm_files) <- basename(tools::file_path_sans_ext(glm_files))
+    if ("aed" %in% names(glm_files)) {
+      aed_nml <- read_nml(glm_files["aed"])
+      # Recursively search for "dbase" in the list aed_nml
+      csv_file_sections <- c("aed_phytoplankton", "aed_zooplankton",
+                             "aed_macrophyte")
+      # Extract dbase value from each section
+      for (section in csv_file_sections) {
+        if (section %in% names(aed_nml)) {
+          dbase_value <- aed_nml[[section]]$dbase
+          if (!is.null(dbase_value)) {
+            csv_file_path <- file.path(dirname(glm_files["glm3"]), dbase_value)
+            if (file.exists(csv_file_path)) {
+              csv_name <- basename(tools::file_path_sans_ext(dbase_value))
+              glm_files[csv_name] <- csv_file_path
+            }
+          }
+        }
+      }
+      
+    }
     out$glm_aed <- glm_files
   }
   
