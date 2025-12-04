@@ -16,13 +16,16 @@
 #' @importFrom lubridate hour
 #' @importFrom rLakeAnalyzer thermo.depth center.buoyancy meta.depths
 
-read_model_nc <- function(aeme, model, path, vars_sim, incl_fluxes = TRUE,
-                          output_hour = 0, remove_spin_up = FALSE) {
+read_model_nc <- function(aeme, model, path, lake_dir = NULL, vars_sim, 
+                          incl_fluxes = TRUE, output_hour = 0, 
+                          remove_spin_up = FALSE) {
   
   model <- check_model(model)
   aeme  <- check_aeme(aeme)
-  path  <- check_path(path, must_exist = TRUE)
-  lake_dir <- get_lake_dir(aeme, path)
+  if (is.null(lake_dir)) {
+    path  <- check_path(path, must_exist = TRUE)
+    lake_dir <- get_lake_dir(aeme, path)
+  }
   date_index <- get_date_index(aeme = aeme, model = model,
                                remove_spin_up = remove_spin_up)[[model]]
   
@@ -36,19 +39,6 @@ read_model_nc <- function(aeme, model, path, vars_sim, incl_fluxes = TRUE,
   )
   
   return(out)
-}
-
-#' Get netCDF file path for model
-#' @param lake_dir character; lake directory
-#' @param model character; model name
-#' @return character; path to netCDF file
-#' @noRd
-get_nc_path <- function(lake_dir, model) {
-  if (model == "dy_cd") {
-    file.path(lake_dir, model, "DYsim.nc")
-  } else {
-    file.path(lake_dir, model, "output", "output.nc")
-  }
 }
 
 #' Extract model time information from netCDF

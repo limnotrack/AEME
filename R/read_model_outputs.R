@@ -57,7 +57,7 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   
   if (is.null(date_index)) {
     # ---- 1. extract time info for this model
-    time_info <- extract_model_time(nc, model)
+    time_info <- extract_model_time(nc = nc, model = model)
     dt <- time_info$datetime
     date_index <- seq_along(dt)
     
@@ -269,7 +269,8 @@ load_model_hypsograph <- function(model, lake_dir) {
     hyps <- read_gotm_hyps(file = hyps_file) |> 
       dplyr::mutate(elev = depth)
   } else if (model == "glm_aed") {
-    init_depth <- cfg$init_profiles$lake_depth + cfg$morphometry$base_elev
+    lake_btm <- min(cfg$morphometry$H)
+    init_depth <- cfg$init_profiles$lake_depth + lake_btm
     hyps <- data.frame(elev = cfg$morphometry$H, area = cfg$morphometry$A) |> 
       dplyr::mutate(depth = elev - init_depth) |> 
       dplyr::arrange(dplyr::desc(elev))
