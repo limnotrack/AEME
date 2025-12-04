@@ -134,26 +134,11 @@ build_aeme <- function(aeme = NULL,
     inf_vars <- c("HYD_temp", "CHM_salt")
   }
   
-  # Compute total steps dynamically
-  use_pb <- getOption("AEME.inform")
-  if (use_pb) {
-    n_models <- length(model)
-    n_extra <- sum(c(calc_wbal))
-    total_steps <- n_models + n_extra + 1
-  }
 
   # AEME input ----
   if (!is.null(aeme)) {
 
     lke <- lake(aeme)
-    # Only create progress bar if messages are enabled
-    if (use_pb) {
-      cli::cli_progress_bar(
-        name = "Building AEME object",
-        status = "Starting...",
-        total = total_steps
-      )
-    }
     aeme_time <- time(aeme)
     lake_dir <- get_lake_dir(aeme = aeme, path = path)
     date_range <- as.Date(c(aeme_time[["start"]], aeme_time[["stop"]]))
@@ -163,11 +148,6 @@ build_aeme <- function(aeme = NULL,
     if (use_aeme) {
       model_config <- configuration(aeme)
       if (all(sapply(model, \(x) !is.null(model_config[[x]][["hydrodynamic"]])))) {
-        if (use_pb) {
-          cli::cli_progress_update(status = "Using existing configuration for {lke$name}")
-          # message("Building existing configuration for ", lke$name, " [",
-          #         format(Sys.time()), "]")
-        }
         write_configuration(model = model, aeme = aeme, path = path)
         overwrite <- FALSE
         # Potentially add in option to switch off bgc and/or use default bgc setup
@@ -346,11 +326,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
     # Calculate water balance ----
     if (calc_wbal | calc_wlev) {
-      if (use_pb) {
-        cli::cli_progress_update(
-          status = "Calculating water balance for {lke$name}"
-        )
-      }
       wbal <- calc_water_balance(aeme_time = aeme_time,
                                  model = model,
                                  method = w_bal$method,
@@ -547,12 +522,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   if ("dy_cd" %in% model) {
     #--- configure DYRESM-CAEDYM
-    if (use_pb) {
-      cli::cli_progress_update(
-        status = "Writing DYRESM-CAEDYM configuration for {lke$name}"
-      )
-    }
-    
     dates.dy <- c(date_range[1] - spin_up[["dy_cd"]], date_range[2]) |>
       `names<-`(NULL)
     build_dycd(lakename, model_controls = model_controls, date_range = dates.dy,
@@ -569,11 +538,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   if ("glm_aed" %in% model) {
     #--- configure GLM-AED2
-    if (use_pb) {
-      cli::cli_progress_update(
-        status = "Writing GLM-AED2 configuration for {lke$name}"
-      )
-    }
     dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
       `names<-`(NULL)
     build_glm(lakename, model_controls = model_controls, date_range = dates.glm,
@@ -589,11 +553,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   if ("gotm_wet" %in% model) {
     #--- configure GOTM-WET
-    if (use_pb) {
-      cli::cli_progress_update(
-        status = "Writing GOTM-WET configuration for {lke$name}"
-      )
-    }
     dates.gotm <- c(date_range[1] - spin_up[["gotm_wet"]], date_range[2]) |>
       `names<-`(NULL)
     depth <- max(hyps$elev) - min(hyps$elev)
@@ -643,9 +602,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   aeme <- load_configuration(model = model, aeme = aeme, 
                              model_controls = model_controls, use_bgc = use_bgc, 
                              path = path)
-  
-  # Close progress bar
-  if (use_pb) cli::cli_progress_done()
 
   return(aeme)
 }
