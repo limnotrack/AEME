@@ -50,7 +50,7 @@ set_glm_aed_models <- function(aeme, aed_models = c("aed_sedflux", "aed_oxygen",
         cfg_files <- get_model_config_files(aeme = aeme, model = "glm_aed", 
                                             path = path)[["glm_aed"]]
         glm_bgc_models <- names(cfg_files)
-        glm_bgc_model <- glm_bgc_models[grepl("aed", glm_bgc_models)]
+        glm_bgc_model <- glm_bgc_models[grepl("^aed$", glm_bgc_models)]
         if (length(glm_bgc_model) == 0) {
           cli::cli_abort("No glm_aed model configuration files found for the 
                          specified {.arg aeme} at {.arg path}.")
