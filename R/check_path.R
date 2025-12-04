@@ -20,7 +20,8 @@ check_path <- function(path, create = FALSE, must_exist = FALSE) {
   }
   
   if (length(path) != 1L) {
-    cli::cli_abort("{.arg path} must be a single file path, not {length(path)}.")
+    cli::cli_abort("{.arg path} must be a single file path, not 
+                   {length(path)}.")
   }
   
   # Normalize (resolve relative paths)
@@ -32,7 +33,8 @@ check_path <- function(path, create = FALSE, must_exist = FALSE) {
       cli::cli_abort(
         c(
           "!" = "Directory does not exist: {.file {path}}.",
-          "i" = "Make sure to run {.code build_aeme()} before calling this function."
+          "i" = "Make sure to run {.code build_aeme()} before calling this 
+          function."
         ),
         class = "aeme_error_path_missing"
       )
