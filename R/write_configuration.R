@@ -72,9 +72,8 @@ write_config_dy_cd <- function(aeme, path) {
 #' @noRd
 write_config_glm_aed <- function(aeme, path) {
 
-  lke <- lake(aeme)
-  model_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)),
-                         "glm_aed")
+  lake_dir <- get_lake_dir(aeme, path)
+  model_dir <- file.path(lake_dir, "glm_aed")
 
   if (!dir.exists(model_dir)) dir.create(model_dir, recursive = TRUE)
   model_config <- configuration(aeme)
@@ -84,25 +83,46 @@ write_config_glm_aed <- function(aeme, path) {
   write_nml(glm_nml = model_config$glm_aed$hydrodynamic, nml_file)
 
   if (!is.null(model_config[["glm_aed"]][["ecosystem"]])) {
-    aed_dir <- file.path(model_dir, "aed2")
-    if (!dir.exists(aed_dir)) dir.create(aed_dir, recursive = TRUE)
-
-    # Write AED2 nml file
+    # aed_dir <- file.path(model_dir, "aed2")
+    # if (!dir.exists(aed_dir)) dir.create(aed_dir, recursive = TRUE)
+    # 
+    # # Write AED2 nml file
+    # if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["aed"]])) {
+    #   aed_file <- file.path(aed_dir, "aed2.nml")
+    #   write_nml(glm_nml = model_config$glm_aed$ecosystem$aed, aed_file)
+    # }
+    # 
+    # # Write AED2 phyto pars file
+    # if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["phyto"]])) {
+    #   phyto_file <- file.path(aed_dir, "aed2_phyto_pars.nml")
+    #   write_nml(glm_nml = model_config$glm_aed$ecosystem$phyto, phyto_file)
+    # }
+    # 
+    # # Write AED2 zoop pars file
+    # if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["zoop"]])) {
+    #   zoop_file <- file.path(aed_dir, "aed2_zoop_pars.nml")
+    #   write_nml(glm_nml = model_config$glm_aed$ecosystem$zoop, zoop_file)
+    # }
+    aed_dir <- file.path(model_dir, "aed")
+    aed_dir <- check_path(aed_dir, create = TRUE)
     if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["aed"]])) {
-      aed_file <- file.path(aed_dir, "aed2.nml")
+      aed_file <- file.path(aed_dir, "aed.nml")
       write_nml(glm_nml = model_config$glm_aed$ecosystem$aed, aed_file)
     }
-
-    # Write AED2 phyto pars file
-    if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["phyto"]])) {
-      phyto_file <- file.path(aed_dir, "aed2_phyto_pars.nml")
-      write_nml(glm_nml = model_config$glm_aed$ecosystem$phyto, phyto_file)
+    if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["aed_phyto_pars"]])) {
+      phyto_file <- file.path(aed_dir, "aed_phyto_pars.csv")
+      write_aed_param_csv(df = model_config$glm_aed$ecosystem$aed_phyto_pars,
+                          file = phyto_file)
     }
-
-    # Write AED2 zoop pars file
-    if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["zoop"]])) {
-      zoop_file <- file.path(aed_dir, "aed2_zoop_pars.nml")
-      write_nml(glm_nml = model_config$glm_aed$ecosystem$zoop, zoop_file)
+    if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["aed_zoop_pars"]])) {
+      zoop_file <- file.path(aed_dir, "aed_zoop_pars.csv")
+      write_aed_param_csv(df = model_config$glm_aed$ecosystem$aed_zoop_pars,
+                          file = zoop_file)
+    }
+    if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["aed_macrophyte_pars"]])) {
+      macrophyte_file <- file.path(aed_dir, "aed_macrophyte_pars.csv")
+      write_aed_param_csv(df = model_config$glm_aed$ecosystem$aed_macrophyte_pars,
+                          file = macrophyte_file)
     }
   }
   invisible()
@@ -132,7 +152,7 @@ write_config_gotm_wet <- function(aeme, path) {
 
   if (!is.null(model_config[["gotm_wet"]][["ecosystem"]])) {
     fabm_file <- file.path(model_dir, "fabm.yaml")
-    write_yaml(model_config[["gotm_wet"]][["ecosystem"]], fabm_file)
+    write_yaml(model_config[["gotm_wet"]][["ecosystem"]][["fabm"]], fabm_file)
   }
   invisible()
 }
