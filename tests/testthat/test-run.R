@@ -73,6 +73,9 @@ test_that("running GLM works", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  outfile2 <- get_model_outfile(lake_dir = lake_dir, model = model)
+  testthat::expect_equal(outfile, outfile2)
+  
   vars_sim <- get_vars_sim(aeme = aeme)
   
   # Read GLM output using ncdf4
@@ -282,21 +285,19 @@ test_that("running GLM-AED works", {
   model_controls <- get_model_controls(use_bgc = TRUE)
   model_controls <- set_vars_sim(model_controls = model_controls,
                                  vars_sim = vars_sim)
-  inf_factor = c("glm_aed" = 1)
-  outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
   tim <- time(aeme)
   tim$start <- tim$start + (100 * 86400)
   tim$spin_up$glm_aed <- 100
   time(aeme) <- tim
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = T, path = path)
   
   file <- get_model_outfile(aeme = aeme, model = model, path = path)
 
-  # plot_output(aeme, model = model, c("LKE_tli3"), facet = FALSE)
+  plot_output(aeme, model = model)
   
   v1 <- get_var(aeme = aeme, model = model, var = "HYD_temp")
   v2 <- get_var(aeme = aeme, model = model, var = "CHM_oxynal",
@@ -1236,4 +1237,38 @@ test_that("add AEME output as inflow", {
   aeme2 <- run_aeme(aeme2, model, verbose = FALSE, path = path)
   inf <- inflows(aeme2)
   testthat::expect_true("outflow_inflow" %in% names(inf$data))
+})
+
+test_that("running GLM-AED with multiple aed models", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  yaml_path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = yaml_path, "aeme.yaml")
+  path <- "aeme"
+  vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb", 
+                "CHM_oxycln", "CHM_oxynal")
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model_controls <- set_vars_sim(model_controls = model_controls,
+                                 vars_sim = vars_sim)
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = TRUE)
+  aed_models = c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
+                 "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton", 
+                 "aed_zooplankton", "aed_macrophyte")
+  for (i in seq_len(length(aed_models))) {
+    sel_models <- aed_models[1:i]
+    set_glm_aed_models(aeme = aeme, path = path,
+                       aed_models = sel_models)
+    aeme <- run_aeme(aeme = aeme, model = model, verbose = T, path = path)
+    
+    # Check output files
+    lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
+    file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
+    testthat::expect_true(file_chk)
+  }
+
 })
