@@ -226,6 +226,8 @@
 - [`remove_param()`](remove_param.md) : Remove parameter(s) from Aeme
   object
 - [`run_aeme()`](run_aeme.md) : Run aquatic model ensemble
+- [`run_dy_cd()`](run_dy_cd.md) [`run_glm_aed()`](run_dy_cd.md)
+  [`run_gotm_wet()`](run_dy_cd.md) : Run AEME models
 - [`set_glm_aed_models()`](set_glm_aed_models.md) : Set GLM-AED Models
 - [`set_gotm_grid()`](set_gotm_grid.md) : Set grid for GOTM model
 - [`set_inflows()`](set_inflows.md) : Set inflow data from Aeme object
