@@ -274,7 +274,7 @@ aed_pars <- lapply(names(aed_nml), function(section) {
         file = "aed.nml",
         name = paste0(section, "/", param),
         value = value,
-        module = section,
+        module = gsub("aed_", "", section),
         group = NA,
         index = NA
       )
