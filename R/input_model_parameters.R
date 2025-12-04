@@ -164,8 +164,9 @@ input_model_parameters <- function(aeme, model, param, path) {
     #* GLM-AED ----
     if (m == "glm_aed") {
       # m <- "glm_aed"
-      nml_files <- c("aed2.nml", "aed2_phyto_pars.nml", "aed2_zoop_pars.nml", "glm3.nml", 
-                     "aed.nml")
+      nml_files <- c("aed2/aed2.nml", "aed2/aed2_phyto_pars.nml", 
+                     "aed2/aed2_zoop_pars.nml", "glm3.nml", 
+                     "aed/aed.nml")
       # cfg_files <- c("glm3.nml", "aed2/aed2.nml", "aed2/aed2_phyto_pars.nml",
       #                "aed2/aed2_zoop_pars.nml")
       sel_files <- nml_files[nml_files %in% all_p$file]
