@@ -187,10 +187,14 @@ test_that("running GOTM works", {
   aeme <- build_aeme(path = path, aeme = aeme,
                      model = model, model_controls = model_controls,
                      inf_factor = inf_factor, ext_elev = 5,
-                     use_bgc = FALSE)
+                     use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, path = path)
   plot_output(aeme)
   plot_output(aeme, var_sim = "LKE_evpflx")
+  p1 <- plot_output(aeme, var_sim = "CHM_oxynal")
+  testthat::expect_true(ggplot2::is.ggplot(p1))
+  p2 <- plot_output(aeme, var_sim = "LKE_tli4")
+  testthat::expect_true(ggplot2::is.ggplot(p2))
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
   
