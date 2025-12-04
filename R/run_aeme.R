@@ -398,9 +398,10 @@ get_glm_aed_version <- function() {
   bin_exec <- getOption("AEME.glm_exec", default = NULL)
   if (is.null(bin_exec)) {
     bin_path <- system.file('extbin/', package = "AEME")
+    bin_exec <- file.path(bin_path, "glm_aed", get_os(), "glm")
     bin_exec <- ifelse(get_os() == "windows",
-                       file.path(bin_path, "glm_aed", "glm.exe"),
-                       file.path(bin_path, "glm_aed", "glm"))
+                       file.path(bin_path, "glm_aed", "windows", "glm.exe"),
+                       bin_exec)
   }
   vers <- system2(bin_exec, args = "--version", stdout = TRUE)
   return(vers)
