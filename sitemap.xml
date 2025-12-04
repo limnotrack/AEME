@@ -17,6 +17,7 @@
 <url><loc>/reference/add_inflows.html</loc></url>
 <url><loc>/reference/add_met.html</loc></url>
 <url><loc>/reference/add_obs.html</loc></url>
+<url><loc>/reference/add_output.html</loc></url>
 <url><loc>/reference/add_param.html</loc></url>
 <url><loc>/reference/aeme.html</loc></url>
 <url><loc>/reference/aeme_constructor.html</loc></url>
@@ -75,6 +76,7 @@
 <url><loc>/reference/get_var_indices.html</loc></url>
 <url><loc>/reference/glm_aed_parameters.html</loc></url>
 <url><loc>/reference/glm_sed_params.html</loc></url>
+<url><loc>/reference/glm_to_aeme.html</loc></url>
 <url><loc>/reference/gotm_wet_parameters.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/inflows-aeme-method.html</loc></url>
@@ -141,6 +143,7 @@
 <url><loc>/reference/plot_wlev.html</loc></url>
 <url><loc>/reference/plot_zoops.html</loc></url>
 <url><loc>/reference/precip_status.html</loc></url>
+<url><loc>/reference/read_aed_param_csv.html</loc></url>
 <url><loc>/reference/read_aeme_from_files.html</loc></url>
 <url><loc>/reference/read_dy_output.html</loc></url>
 <url><loc>/reference/read_glm_output.html</loc></url>
@@ -154,6 +157,7 @@
 <url><loc>/reference/remove_output.html</loc></url>
 <url><loc>/reference/remove_param.html</loc></url>
 <url><loc>/reference/run_aeme.html</loc></url>
+<url><loc>/reference/set_glm_aed_models.html</loc></url>
 <url><loc>/reference/set_gotm_grid.html</loc></url>
 <url><loc>/reference/set_inflows.html</loc></url>
 <url><loc>/reference/set_model_controls.html</loc></url>

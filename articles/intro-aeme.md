@@ -511,16 +511,16 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> 
 #> ℹ Building GLM-AED2 for lake aeme
 #> ℹ Copied in GLM nml file
-#> ℹ Copied in AED nml file
-#> ℹ  oxy_initial = 625 replaced with 312.5
+#> ℹ Copied in AED nml file and supporting files
+#> ℹ 225 replaced with 312.5
+#> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | Writing GOTM-WET c…
+#> 
 #> ℹ Building GOTM-WET model for lake aeme
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sO2W 13 replaced with 10
 #> Warning: No parameters in 'param' for dy_cd.
-#> ✔ GLM nml validation completed - no issues detected.
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
-#> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■■■         80% | Writing GOTM-WET c…
 aeme
 #>             AEME 
 #> -------------------------------------------------------------------
@@ -537,7 +537,7 @@ aeme
 #>     Use biogeochemical model: Yes 
 #>           Physical   |   Biogeochemical
 #> DY-CD    : Present    |   Present
-#> GLM-AED  : Present    |   Present
+#> GLM-AED  : Present    |   Absent 
 #> GOTM-WET : Present    |   Present
 #> -------------------------------------------------------------------
 #>   Observations

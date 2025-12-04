@@ -46,38 +46,35 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
-#> ℹ Copied in AED nml file
-#> ℹ  oxy_initial = 312.5 replaced with 312.5
-#> ℹ  frp_initial = 0.3229 replaced with 0.3229
-#> ℹ  dop_initial = 0.3229 replaced with 0.3229
-#> ℹ  pop_initial = 0.3229 replaced with 0.3229
-#> ℹ  amm_initial = 1.4279 replaced with 1.4279
-#> ℹ  nit_initial = 1.0709 replaced with 1.0709
-#> ℹ  don_initial = 21.4183 replaced with 21.4183
-#> ℹ  pon_initial = 7.1394 replaced with 7.1394
-#> ℹ  doc_initial = 41.6285 replaced with 41.6285
-#> ℹ  poc_initial = 16.6514 replaced with 16.6514
-#> ℹ  rsi_initial = 1 replaced with 1
+#> ℹ Copied in AED nml file and supporting files
+#> ℹ 312.5 replaced with 312.5
+#> ℹ 0.3229 replaced with 0.3229
+#> ℹ 0.3229 replaced with 0.3229
+#> ℹ 0.3229 replaced with 0.3229
+#> ℹ 1.4279 replaced with 1.4279
+#> ℹ 1.0709 replaced with 1.0709
+#> ℹ 21.4183 replaced with 21.4183
+#> ℹ 7.1394 replaced with 7.1394
+#> ℹ 41.6285 replaced with 41.6285
+#> ℹ 16.6514 replaced with 16.6514
+#> ℹ 1 replaced with 1
 #> ℹ PHY_cyano 0.24022 replaced with 0.24022
 #> ℹ PHY_green 0.300275 replaced with 0.300275
 #> ℹ PHY_diatom 0.300275 replaced with 0.300275
-#> ℹ  ss_initial = 3, replaced with 3,
 #> ✔ GLM nml validation completed - no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2025-12-01 23:47:44]
-#> ✔ Model run complete! [2025-12-01 23:47:48]
-#> ℹ Reading models in parallel...[2025-12-01 23:47:48]
-#> ✔ Model reading complete! [2025-12-01 23:47:48]
+#> ℹ Running models in parallel... [2025-12-04 02:43:43]
+#> ✔ Model run complete! [2025-12-04 02:43:46]
+#> ℹ Reading models in parallel...[2025-12-04 02:43:46]
+#> ✔ Model reading complete! [2025-12-04 02:43:47]
 list_mod_obs_vars(aeme = aeme, model = model)
 #>            Cyanobacteria         Dissolved oxygen                 Salinity 
 #>              "PHY_cyano"                "CHM_oxy"               "CHM_salt" 
-#>        Water temperature      Total chlorophyll a Dissolved organic carbon 
-#>               "HYD_temp"              "PHY_tchla"                "CAR_doc" 
-#>                Phosphate      Ammoniacal nitrogen                  Nitrate 
-#>                "PHS_frp"                "NIT_amm"                "NIT_nit" 
-#>           Total nitrogen         Total phosphorus 
-#>                 "NIT_tn"                 "PHS_tp" 
+#>        Water temperature Dissolved organic carbon                Phosphate 
+#>               "HYD_temp"                "CAR_doc"                "PHS_frp" 
+#>      Ammoniacal nitrogen                  Nitrate 
+#>                "NIT_amm"                "NIT_nit" 
 ```

@@ -5,7 +5,7 @@ Get model output file
 ## Usage
 
 ``` r
-get_model_outfile(aeme, model, path, lake_dir = NULL)
+get_model_outfile(aeme = NULL, model, path = NULL, lake_dir = NULL)
 ```
 
 ## Arguments

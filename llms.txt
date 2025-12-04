@@ -159,6 +159,7 @@ We have a host of vignettes to help you get started with AEME:
 - [`add_inflows()`](add_inflows.md) : Add inflows to Aeme object
 - [`add_met()`](add_met.md) : Add meteorological data to Aeme object
 - [`add_obs()`](add_obs.md) : Add observations to Aeme object
+- [`add_output()`](add_output.md) : Add model output to Aeme object
 - [`add_param()`](add_param.md) : Add model parameters to Aeme object
 - [`Aeme`](aeme.md) [`Aeme-class`](aeme.md) : Aeme Class
 - [`aeme_constructor()`](aeme_constructor.md) : Constructor function for
@@ -255,6 +256,8 @@ We have a host of vignettes to help you get started with AEME:
   for calibrating the biogeochemistry in the GLM-AED model.
 - [`glm_sed_params()`](glm_sed_params.md) : Generate GLM Sediment
   Parameters
+- [`glm_to_aeme()`](glm_to_aeme.md) : Load a GLM nml file and convert to
+  aeme object
 - [`gotm_wet_parameters`](gotm_wet_parameters.md) : Example dataset of
   parameters for the GOTM-WET model
 - [`inflows(`*`<Aeme>`*`)`](inflows-aeme-method.md) : Access inflows
@@ -348,6 +351,11 @@ We have a host of vignettes to help you get started with AEME:
 - [`plot_zoops()`](plot_zoops.md) : Plot phytoplankton variables
 - [`precip_status()`](precip_status.md) : Get current precipitation
   status in Aeme object
+- [`read_aed_param_csv()`](read_aed_param_csv.md)
+  [`write_aed_param_csv()`](read_aed_param_csv.md) : Read and write AED
+  parameter CSV files These functions handle reading and writing AED
+  parameter CSV files, ensuring that single quotes are properly managed
+  in column names and specific columns.
 - [`read_aeme_from_files()`](read_aeme_from_files.md) : Read an AEME
   object from files
 - [`read_dy_output()`](read_dy_output.md) : Read DYRESM output
@@ -367,6 +375,7 @@ We have a host of vignettes to help you get started with AEME:
 - [`remove_param()`](remove_param.md) : Remove parameter(s) from Aeme
   object
 - [`run_aeme()`](run_aeme.md) : Run aquatic model ensemble
+- [`set_glm_aed_models()`](set_glm_aed_models.md) : Set GLM-AED Models
 - [`set_gotm_grid()`](set_gotm_grid.md) : Set grid for GOTM model
 - [`set_inflows()`](set_inflows.md) : Set inflow data from Aeme object
 - [`set_model_controls()`](set_model_controls.md) : Set model controls

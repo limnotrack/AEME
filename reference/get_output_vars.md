@@ -46,22 +46,21 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
-#> ℹ Copied in AED nml file
-#> ℹ  oxy_initial = 625 replaced with 312.5
-#> ℹ  frp_initial = 0.3229 replaced with 0.3229
-#> ℹ  dop_initial = 0.3229 replaced with 0.3229
-#> ℹ  pop_initial = 0.3229 replaced with 0.3229
-#> ℹ  amm_initial = 1.4279 replaced with 1.4279
-#> ℹ  nit_initial = 1.0709 replaced with 1.0709
-#> ℹ  don_initial = 21.4183 replaced with 21.4183
-#> ℹ  pon_initial = 7.1394 replaced with 7.1394
-#> ℹ  doc_initial = 41.6285 replaced with 41.6285
-#> ℹ  poc_initial = 16.6514 replaced with 16.6514
-#> ℹ  rsi_initial = 1 replaced with 1
-#> ℹ PHY_cyano 0.24022 replaced with 0.24022
-#> ℹ PHY_green 0.300275 replaced with 0.300275
-#> ℹ PHY_diatom 0.300275 replaced with 0.300275
-#> ℹ  ss_initial = 3,3 replaced with 3,
+#> ℹ Copied in AED nml file and supporting files
+#> ℹ 225 replaced with 312.5
+#> ℹ 0.05 replaced with 0.3229
+#> ℹ 0.008 replaced with 0.3229
+#> ℹ 0.05 replaced with 0.3229
+#> ℹ 2.25 replaced with 1.4279
+#> ℹ 6.96 replaced with 1.0709
+#> ℹ 21 replaced with 21.4183
+#> ℹ 19.8 replaced with 7.1394
+#> ℹ 15 replaced with 41.6285
+#> ℹ 15 replaced with 16.6514
+#> ℹ 100 replaced with 1
+#> ℹ PHY_cyano 2 replaced with 0.24022
+#> ℹ PHY_green 0.04 replaced with 0.300275
+#> ℹ PHY_diatom 10 replaced with 0.300275
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sO2W 13 replaced with 10
@@ -100,10 +99,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2025-12-01 23:47:30]
-#> ✔ Model run complete! [2025-12-01 23:47:34]
-#> ℹ Reading models in parallel...[2025-12-01 23:47:34]
-#> ✔ Model reading complete! [2025-12-01 23:47:35]
+#> ℹ Running models in parallel... [2025-12-04 02:43:30]
+#> ✔ Model run complete! [2025-12-04 02:43:33]
+#> ℹ Reading models in parallel...[2025-12-04 02:43:33]
+#> ✔ Model reading complete! [2025-12-04 02:43:34]
 get_output_vars(aeme, model)
 #>                Water temperature                 Dissolved oxygen 
 #>                       "HYD_temp"                        "CHM_oxy" 
@@ -129,18 +128,18 @@ get_output_vars(aeme, model)
 #>                     "LKE_depths"                       "CHM_salt" 
 #>                        Phosphate              Dissolved organic P 
 #>                        "PHS_frp"                        "PHS_dop" 
-#>            Particulate organic P          Particulate inorganic P 
-#>                        "PHS_pop"                        "PHS_pip" 
-#>              Ammoniacal nitrogen                          Nitrate 
-#>                        "NIT_amm"                        "NIT_nit" 
-#>              Dissolved organic N            Particulate organic N 
-#>                        "NIT_don"                        "NIT_pon" 
-#>         Dissolved organic carbon       Particulate organic carbon 
-#>                        "CAR_doc"                        "CAR_poc" 
-#>                    Cyanobacteria                      Green algae 
-#>                      "PHY_cyano"                      "PHY_green" 
-#>               Diatoms freshwater                 Suspended solids 
-#>                     "PHY_diatom"                        "NCS_ss1" 
+#>            Particulate organic P              Ammoniacal nitrogen 
+#>                        "PHS_pop"                        "NIT_amm" 
+#>                          Nitrate              Dissolved organic N 
+#>                        "NIT_nit"                        "NIT_don" 
+#>            Particulate organic N         Dissolved organic carbon 
+#>                        "NIT_pon"                        "CAR_doc" 
+#>       Particulate organic carbon                    Cyanobacteria 
+#>                        "CAR_poc"                      "PHY_cyano" 
+#>                      Green algae               Diatoms freshwater 
+#>                      "PHY_green"                     "PHY_diatom" 
+#>          Particulate inorganic P                 Suspended solids 
+#>                        "PHS_pip"                        "NCS_ss1" 
 #>                  Air temperature Water-air temperature difference 
 #>                     "MET_tmpair"                     "HYD_atdiff" 
 ```
