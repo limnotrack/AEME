@@ -44,10 +44,11 @@ resolve_glm_aed <- function(lake_dir, cfg) {
   
   # Expected basename
   expected_name <- paste0(nml$output$out_fn, ".nc")
+  model_dir <- dirname(cfg[["glm3"]])
   
   # Search recursively
   files <- list.files(
-    path = lake_dir,
+    path = model_dir,
     pattern = paste0("^", expected_name, "$"),
     full.names = TRUE,
     recursive = TRUE
@@ -66,6 +67,9 @@ resolve_dy_cd <- function(lake_dir, cfg) {
     full.names = TRUE,
     recursive = TRUE
   )
+  if (length(files) == 0) {
+    files <- file.path(lake_dir, "dy_cd", "DYsim.nc")
+  }
   names(files) <- "DYsim"
   files
 }
@@ -74,11 +78,12 @@ resolve_dy_cd <- function(lake_dir, cfg) {
 #' @noRd
 resolve_gotm_wet <- function(lake_dir, cfg) {
   output <- yaml::read_yaml(cfg[["output"]])
-  out_names <- paste0(names(output), "\\.nc$")
+  out_names <- paste0(basename(names(output)), "\\.nc$")
+  model_dir <- dirname(cfg[["output"]])
   
   files <- unlist(lapply(out_names, function(pat) {
     list.files(
-      path = lake_dir,
+      path = model_dir,
       pattern = pat,
       full.names = TRUE,
       recursive = TRUE
