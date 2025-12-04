@@ -7,7 +7,8 @@
 load_output(
   aeme,
   model,
-  path,
+  path = NULL,
+  lake_dir = NULL,
   model_controls,
   parallel = FALSE,
   cl = NULL,

@@ -8,14 +8,13 @@
 #' @export
 #'
 #' @importFrom dplyr filter pull case_when
-#' @importFrom ncdf4 nc_open nc_close
 #' @importFrom parallel clusterExport parLapply stopCluster detectCores
 #' makeCluster
 #'
 #'
 
-load_output <- function(aeme, model, path, model_controls, parallel = FALSE,
-                        cl = NULL, ens_n = 1) {
+load_output <- function(aeme, model, path = NULL, lake_dir = NULL, model_controls, 
+                        parallel = FALSE, cl = NULL, ens_n = 1) {
   
   aeme <- check_aeme(aeme)
   if (missing(model)) {
@@ -25,8 +24,11 @@ load_output <- function(aeme, model, path, model_controls, parallel = FALSE,
   }
   if (missing(model_controls)) {
     model_controls <- get_model_controls(aeme)
+    if (is.null(model_controls)) {
+      model_controls <- get_model_controls()
+    }
   }
-  path <- check_path(path = path, must_exist = TRUE)
+  # path <- check_path(path = path, must_exist = TRUE)
   outp <- output(aeme)
   aeme_time <- time(aeme)
   output_hour <- 0
@@ -45,14 +47,14 @@ load_output <- function(aeme, model, path, model_controls, parallel = FALSE,
       }, add = TRUE)
     }
     parallel::clusterExport(cl, varlist = list("aeme", "path", "vars_sim",  
-                                               "output_hour"),
+                                               "lake_dir", "output_hour"),
                             envir = environment())
     # message("Reading models in parallel... ", paste0("[", format(Sys.time()), "]"))
     cli_inform_safe(c("i" = paste0("Reading models in parallel...",
                                    "[", format(Sys.time()), "]")))
     mods <- parallel::parLapply(cl = cl, model, \(m) {
       
-      read_model_nc(aeme = aeme, model = m, path = path, 
+      read_model_nc(aeme = aeme, model = m, path = path, lake_dir = lake_dir,
                     vars_sim = vars_sim, incl_fluxes = TRUE, 
                     output_hour = output_hour)
     })
@@ -61,7 +63,7 @@ load_output <- function(aeme, model, path, model_controls, parallel = FALSE,
     
   } else {
     mods <- lapply(model, \(m) {
-      read_model_nc(aeme = aeme, model = m, path = path, 
+      read_model_nc(aeme = aeme, model = m, path = path, lake_dir = lake_dir,
                     vars_sim = vars_sim, incl_fluxes = TRUE, 
                     output_hour = output_hour)
     })
