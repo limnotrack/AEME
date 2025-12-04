@@ -4,11 +4,13 @@
 \alias{get_aeme_parameters}
 \title{Make parameters dataframe for AEME}
 \usage{
-get_aeme_parameters(model, module, name, par)
+get_aeme_parameters(model, file, module, name, par)
 }
 \arguments{
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
+
+\item{file}{character; vector of file names to retrieve.}
 
 \item{module}{character; vector of modules to retrieve parameters for.}
 
