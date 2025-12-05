@@ -1,5 +1,5 @@
 &aed_models
-   models = 'aed_sedflux','aed_oxygen','aed_silica','aed_nitrogen','aed_phosphorus','aed_organic_matter','aed_phytoplankton','aed_zooplankton','aed_macrophyte'
+   models = 'aed_sedflux','aed_oxygen','aed_silica','aed_nitrogen','aed_phosphorus','aed_organic_matter','aed_phytoplankton','aed_zooplankton','aed_macrophyte','aed_totals'
 /
 &aed_sedflux
    sedflux_model = 'Constant2d'
@@ -184,4 +184,14 @@
    simstaticbiomass = .false.
    simmacfeedback = .true.
    dbase = 'aed/aed_macrophyte_pars.csv'
+/
+&aed_totals
+   TN_vars =  'NIT_nit','NIT_amm','OGM_don','OGM_pon','PHY_green_IN'
+   TN_varscale = 1.0, 1.0, 1.0, 1.0, 0.15
+   TP_vars =  'PHS_frp','OGM_dop','OGM_pop','PHY_green_IP'
+   TP_varscale = 1.0, 1.0, 1.0, 0.01
+   TOC_vars = 'OGM_doc','OGM_poc','PHY_green','PHY_diatom' !,'PHY_crypto'
+   TOC_varscale = 1.0, 1.0, 1.0, 1.0, 1.0
+!  TSS_vars = 'NCS_ss1','PHY_green' !, ....
+!  TSS_varscale = 0.1,0.1           !,  <vector same length as TSS names>
 /

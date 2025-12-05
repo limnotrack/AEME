@@ -19,15 +19,17 @@
 #' @importFrom cli cli_abort
 #'
 
-set_glm_aed_models <- function(aeme, aed_models = c("aed_sedflux", "aed_oxygen",
-                                                    "aed_silica",
-                                                    "aed_nitrogen", 
-                                                    "aed_phosphorus",
-                                                    "aed_organic_matter", 
-                                                    "aed_phytoplankton", 
-                                                    "aed_zooplankton",
-                                                    "aed_macrophyte"), 
-                               path, file = NULL, nml = NULL) {
+set_glm_aed_models <- function(aeme, path, aed_models = c("aed_sedflux",
+                                                          "aed_oxygen",
+                                                          "aed_silica",
+                                                          "aed_nitrogen", 
+                                                          "aed_phosphorus",
+                                                          "aed_organic_matter", 
+                                                          "aed_phytoplankton", 
+                                                          "aed_zooplankton",
+                                                          "aed_macrophyte",
+                                                          "aed_totals"), 
+                               file = NULL, nml = NULL) {
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
   
