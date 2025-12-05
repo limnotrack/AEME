@@ -112,7 +112,11 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
 
   # Check if var_sim is in output
   chk <- sapply(model, \(m){
-    var_sim %in% names(outp[[ens_lab]][[m]])
+    if (var_sim %in% names(outp[[ens_lab]][[m]])) {
+      !is.null(outp[[ens_lab]][[m]][[var_sim]])
+    } else {
+      FALSE
+    }
   })
   if (any(!chk)) {
     if (all(!chk)) {
