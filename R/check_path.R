@@ -41,7 +41,8 @@ check_path <- function(path, create = FALSE, must_exist = FALSE) {
     }
     if (create) {
       dir.create(path, recursive = TRUE, showWarnings = FALSE)
-      cli_inform_safe(c("✓" = "Created missing directory {.file {path}}."))
+      msg <- paste0("Created missing directory: ", path)
+      cli_inform_safe(c("✓" = msg))
     }
   }
   return(path)
