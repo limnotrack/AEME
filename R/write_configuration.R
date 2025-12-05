@@ -7,7 +7,6 @@
 
 write_configuration <- function(aeme, model, path) {
 
-  if (!dir.exists(path)) dir.create(path)
   aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
