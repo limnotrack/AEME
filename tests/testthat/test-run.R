@@ -285,7 +285,8 @@ test_that("running GLM-AED works", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb", 
-                "CHM_oxycln", "CHM_oxynal")
+                "CHM_oxycln", "CHM_oxynal",
+                "NIT_tn", "PHS_tp", "PHY_tchla")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model_controls <- set_vars_sim(model_controls = model_controls,
                                  vars_sim = vars_sim)
@@ -294,6 +295,10 @@ test_that("running GLM-AED works", {
   tim$start <- tim$start + (100 * 86400)
   tim$spin_up$glm_aed <- 100
   time(aeme) <- tim
+  # set_glm_aed_models(aeme = aeme, path = path, aed_models = c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
+  #                                                "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton", "aed_zooplankton",
+  #                                                "aed_macrophyte", "aed_totals"))
+  path = "aeme"
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE)
@@ -313,6 +318,13 @@ test_that("running GLM-AED works", {
   plot_output(aeme, model = model, "HYD_schstb", facet = FALSE) /
     plot_output(aeme, model = model, "CHM_oxycln", facet = FALSE) /
     plot_output(aeme, model = model, "HYD_thmcln", facet = FALSE)
+  
+  p1 <- plot_output(aeme, model = model, "PHY_tchla", facet = FALSE)
+  p2 <- plot_output(aeme, model = model, "NIT_tn", facet = FALSE)
+  p3 <- plot_output(aeme, model = model, "PHS_tp", facet = FALSE)
+  plot_phytos(aeme)
+  plot_phs(aeme)
+  plot_nit(aeme)
   
   pstrat <- plot_output(aeme, model = model, var_sim = "HYD_strat", 
                         facet = FALSE)
