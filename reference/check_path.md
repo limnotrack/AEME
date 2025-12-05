@@ -32,7 +32,6 @@ Normalized file path as a character string.
 
 ``` r
 check_path("aeme", create = TRUE)
-#> Error in "lapply(text, glue_cmd, .envir = .envir)": ! Could not evaluate cli `{}` expression: `path`.
-#> Caused by error in `eval(expr, envir = envir)`:
-#> ! object 'path' not found
+#> Created missing directory: D:\a\AEME\AEME\docs\reference\aeme
+#> [1] "D:\\a\\AEME\\AEME\\docs\\reference\\aeme"
 ```

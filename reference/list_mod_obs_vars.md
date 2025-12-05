@@ -66,15 +66,17 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2025-12-04 04:13:26]
-#> ✔ Model run complete! [2025-12-04 04:13:30]
-#> ℹ Reading models in parallel...[2025-12-04 04:13:30]
-#> ✔ Model reading complete! [2025-12-04 04:13:30]
+#> ℹ Running models in parallel... [2025-12-05 04:07:18]
+#> ✔ Model run complete! [2025-12-05 04:07:22]
+#> ℹ Reading models in parallel...[2025-12-05 04:07:22]
+#> ✔ Model reading complete! [2025-12-05 04:07:23]
 list_mod_obs_vars(aeme = aeme, model = model)
 #>            Cyanobacteria         Dissolved oxygen                 Salinity 
 #>              "PHY_cyano"                "CHM_oxy"               "CHM_salt" 
-#>        Water temperature Dissolved organic carbon                Phosphate 
-#>               "HYD_temp"                "CAR_doc"                "PHS_frp" 
-#>      Ammoniacal nitrogen                  Nitrate 
-#>                "NIT_amm"                "NIT_nit" 
+#>        Water temperature      Total chlorophyll a Dissolved organic carbon 
+#>               "HYD_temp"              "PHY_tchla"                "CAR_doc" 
+#>                Phosphate      Ammoniacal nitrogen                  Nitrate 
+#>                "PHS_frp"                "NIT_amm"                "NIT_nit" 
+#>           Total nitrogen         Total phosphorus 
+#>                 "NIT_tn"                 "PHS_tp" 
 ```

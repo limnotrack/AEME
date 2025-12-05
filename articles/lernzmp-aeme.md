@@ -177,7 +177,7 @@ model <- c("glm_aed", "gotm_wet") # models to build
 path <- "aeme" # directory in which the model configuration will be built
 
 aeme <- build_aeme(aeme = aeme, model = model, path = path,
-                    use_aeme = TRUE, use_bgc = TRUE)
+                   use_bgc = TRUE)
 ```
 
 ## Run AEME models

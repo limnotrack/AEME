@@ -479,7 +479,7 @@ path <- "aeme"
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                             model_controls = model_controls,
                             ext_elev = 5, use_bgc = TRUE)
-#> Created missing directory aeme.
+#> Created missing directory: D:\a\AEME\AEME\vignettes\aeme
 #> ! Missing state variables in inflows:
 #> ! CHM_oxy
 #> ℹ Added default values for missing variables.
@@ -531,7 +531,7 @@ aeme
 #>     Use biogeochemical model: Yes 
 #>           Physical   |   Biogeochemical
 #> DY-CD    : Present    |   Present
-#> GLM-AED  : Present    |   Absent 
+#> GLM-AED  : Present    |   Present
 #> GOTM-WET : Present    |   Present
 #> -------------------------------------------------------------------
 #>   Observations

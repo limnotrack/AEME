@@ -215,6 +215,8 @@
   output
 - [`read_gotm_output()`](read_gotm_output.md) : Read GOTM output
 - [`read_gotm_profile()`](read_gotm_profile.md) : Read GOTM profile file
+- [`read_model_config()`](read_model_config.md) : Read in model
+  configuration files for a given model and lake directory
 - [`read_model_outputs()`](read_model_outputs.md) : Read model outputs
   and format to AEME standard
 - [`read_nml()`](read_nml.md) : read in a GLM simulation \*.nml file

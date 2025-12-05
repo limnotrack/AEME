@@ -8,10 +8,10 @@ file.
 ``` r
 set_glm_aed_models(
   aeme,
+  path,
   aed_models = c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
     "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton", "aed_zooplankton",
-    "aed_macrophyte"),
-  path,
+    "aed_macrophyte", "aed_totals"),
   file = NULL,
   nml = NULL
 )
@@ -23,17 +23,17 @@ set_glm_aed_models(
 
   aeme; object.
 
+- path:
+
+  filepath; where input files are located relative to the current
+  working directory.
+
 - aed_models:
 
   Character vector of GLM-AED models to include. Default includes all
   available AED models: "aed_sedflux", "aed_oxygen", "aed_silica",
   "aed_nitrogen", "aed_phosphorus", "aed_organic_matter",
   "aed_phytoplankton", "aed_zooplankton", and "aed_macrophyte".
-
-- path:
-
-  filepath; where input files are located relative to the current
-  working directory.
 
 - file:
 

@@ -27,13 +27,21 @@ path <- "test_write"
 model_controls <- get_model_controls()
 aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
 model_controls = model_controls)
-#> Error in "lapply(text, glue_cmd, .envir = .envir)": ! Could not evaluate cli `{}` expression: `path`.
-#> Caused by error in `eval(expr, envir = envir)`:
-#> ! object 'path' not found
+#> Created missing directory: D:\a\AEME\AEME\docs\reference\test_write
+#> ℹ Using observed water level
+#> ! Missing values in observed water level
+#> ℹ Insufficient water level observations. Using constant water level
+#> ℹ Correcting water balance using estimated outflows (method = 2).
+#> ℹ Calculating lake level using lake depth and a sinisoidal function.
+#> ℹ Building GLM-AED2 for lake wainamu
+#> ℹ Copied in GLM nml file
+#> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): ✖ `model_controls` need to be provided to load model output.
+#> ℹ Running models... (Have you tried parallelizing?) [2025-12-05 04:07:37]
+#> → GLM-AED2 running... [2025-12-05 04:07:37]
+#> ✔ GLM-AED2 run successful! [2025-12-05 04:07:38]
+#> ✔ Model run complete! [2025-12-05 04:07:38]
 write_aeme_to_files(aeme, path)
 aeme_path <- get_lake_dir(aeme = aeme, path = path)
 aeme2 <- read_aeme_from_files(aeme_path)
-#> Error in check_model(model = model): `model` must be provided and not be empty.
 ```
