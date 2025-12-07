@@ -11,7 +11,7 @@ test_that("building lernzmp example works", {
   path <- tempdir() # directory in which the model configuration will be built
   
   aeme <- build_aeme(aeme = aeme, model = model, path = path,
-                     use_aeme = TRUE, use_bgc = TRUE)
+                     use_bgc = TRUE)
   testthat::expect_true(is(aeme, "Aeme"))
   mod_files <- list.files(path, recursive = TRUE)
   testthat::expect_true(any(grepl("glm_aed/glm3.nml", mod_files)))
