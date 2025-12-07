@@ -26,6 +26,7 @@ Imports:
     patchwork,
     psychrolib,
     RColorBrewer,
+    readr,
     rLakeAnalyzer,
     rstudioapi,
     sf,
