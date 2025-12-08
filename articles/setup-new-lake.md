@@ -191,41 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-12-07 23:23:36] job submitted
-#> INFO [2025-12-07 23:23:41] job updated
-#> INFO [2025-12-07 23:23:45] job updated
-#> INFO [2025-12-07 23:23:49] job updated
-#> INFO [2025-12-07 23:23:53] job updated
-#> INFO [2025-12-07 23:23:57] job updated
-#> INFO [2025-12-07 23:24:01] job updated
-#> INFO [2025-12-07 23:24:05] job updated
-#> INFO [2025-12-07 23:24:10] job updated
-#> INFO [2025-12-07 23:24:14] job updated
-#> INFO [2025-12-07 23:24:18] job updated
-#> INFO [2025-12-07 23:24:22] job updated
-#> INFO [2025-12-07 23:24:26] job updated
-#> INFO [2025-12-07 23:24:30] job updated
-#> INFO [2025-12-07 23:24:34] job updated
-#> INFO [2025-12-07 23:24:39] job updated
-#> INFO [2025-12-07 23:24:43] job updated
-#> INFO [2025-12-07 23:24:47] job updated
-#> INFO [2025-12-07 23:24:51] job updated
-#> INFO [2025-12-07 23:24:55] job updated
-#> INFO [2025-12-07 23:24:59] job updated
-#> INFO [2025-12-07 23:25:03] job updated
-#> INFO [2025-12-07 23:25:08] job updated
-#> INFO [2025-12-07 23:25:12] job updated
-#> INFO [2025-12-07 23:25:16] job updated
-#> INFO [2025-12-07 23:25:20] job updated
-#> INFO [2025-12-07 23:25:24] job updated
-#> INFO [2025-12-07 23:25:28] job updated
-#> INFO [2025-12-07 23:25:32] job updated
-#> INFO [2025-12-07 23:25:37] job updated
-#> INFO [2025-12-07 23:25:41] job updated
-#> INFO [2025-12-07 23:25:45] job updated
-#> INFO [2025-12-07 23:25:49] job updated
-#> INFO [2025-12-07 23:25:49] downloading
-#> INFO [2025-12-07 23:25:50] extracting
+#> INFO [2025-12-08 00:45:44] job submitted
+#> INFO [2025-12-08 00:45:44] downloading
+#> INFO [2025-12-08 00:45:46] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -627,14 +595,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-12-07 23:26:02]
-#> → DYRESM-CAEDYM running... [2025-12-07 23:26:02]
-#> ✔ DYRESM-CAEDYM run successful! [2025-12-07 23:26:22]
-#> → GLM-AED2 running... [2025-12-07 23:26:22]
-#> ✔ GLM-AED2 run successful! [2025-12-07 23:26:22]
-#> → GOTM-WET running... [2025-12-07 23:26:22]
-#> ✔ GOTM-WET run successful! [2025-12-07 23:26:23]
-#> ✔ Model run complete! [2025-12-07 23:26:23]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-12-08 00:45:57]
+#> → DYRESM-CAEDYM running... [2025-12-08 00:45:57]
+#> ✔ DYRESM-CAEDYM run successful! [2025-12-08 00:46:16]
+#> → GLM-AED2 running... [2025-12-08 00:46:16]
+#> ✔ GLM-AED2 run successful! [2025-12-08 00:46:17]
+#> → GOTM-WET running... [2025-12-08 00:46:17]
+#> ✔ GOTM-WET run successful! [2025-12-08 00:46:18]
+#> ✔ Model run complete! [2025-12-08 00:46:18]
 ```
 
 ### View the output
