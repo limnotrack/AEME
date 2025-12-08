@@ -65,6 +65,7 @@ is_var_present <- function(out_model, var) {
   if (chk) {
     chk <- !all(out_model[[var]] == -99)
   }
+  if (is.na(chk)) chk <- FALSE
   return(chk)
 }
 
