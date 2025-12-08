@@ -12,7 +12,7 @@ library(AEME)
 #> 
 #>     time
 library(sf) # For spatial data
-#> Linking to GEOS 3.13.1, GDAL 3.11.0, PROJ 9.6.0; sf_use_s2() is TRUE
+#> Linking to GEOS 3.13.1, GDAL 3.11.4, PROJ 9.7.0; sf_use_s2() is TRUE
 library(tmap) # For mapping
 tmap_mode("view") # Set tmap mode to interactive view model
 #> ℹ tmap modes "plot" - "view"
@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-12-08 00:45:44] job submitted
-#> INFO [2025-12-08 00:45:44] downloading
-#> INFO [2025-12-08 00:45:46] extracting
+#> INFO [2025-12-08 21:21:24] job submitted
+#> INFO [2025-12-08 21:21:24] downloading
+#> INFO [2025-12-08 21:21:26] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -595,14 +595,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-12-08 00:45:57]
-#> → DYRESM-CAEDYM running... [2025-12-08 00:45:57]
-#> ✔ DYRESM-CAEDYM run successful! [2025-12-08 00:46:16]
-#> → GLM-AED2 running... [2025-12-08 00:46:16]
-#> ✔ GLM-AED2 run successful! [2025-12-08 00:46:17]
-#> → GOTM-WET running... [2025-12-08 00:46:17]
-#> ✔ GOTM-WET run successful! [2025-12-08 00:46:18]
-#> ✔ Model run complete! [2025-12-08 00:46:18]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-12-08 21:21:37]
+#> → DYRESM-CAEDYM running... [2025-12-08 21:21:37]
+#> ✔ DYRESM-CAEDYM run successful! [2025-12-08 21:21:55]
+#> → GLM-AED2 running... [2025-12-08 21:21:55]
+#> ✔ GLM-AED2 run successful! [2025-12-08 21:21:56]
+#> → GOTM-WET running... [2025-12-08 21:21:56]
+#> ✔ GOTM-WET run successful! [2025-12-08 21:21:57]
+#> ✔ Model run complete! [2025-12-08 21:21:57]
 ```
 
 ### View the output
