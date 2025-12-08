@@ -417,7 +417,7 @@ test_that("can build all models and write to new directory", {
   testthat::expect_true(file_chk)
   file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
                                                   tolower(lke$name)),
-                                    "glm_aed", "aed2", "aed2.nml"))
+                                    "glm_aed", "aed", "aed.nml"))
   testthat::expect_true(file_chk)
   
   
