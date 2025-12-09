@@ -144,7 +144,6 @@ test_that("GLM sediment parameters can be input and run", {
   testthat::expect_true(file.exists(outfiles$glm_aed))
 })
 
-
 test_that("GLM sediment parameters can be input and run with bgc", {
   path <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
@@ -180,3 +179,63 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   outfiles <- get_model_outfile(aeme = aeme, model = model, path = path)
   testthat::expect_true(file.exists(outfiles$glm_aed))
 })
+
+test_that("GLM sediment parameters can be input and run with bgc", {
+  path <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
+  model_controls <- get_model_controls()
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, use_bgc = TRUE)
+  
+  glm_pattern <- pattern <- paste0(
+    "p_initial|p0|Xcc|",
+    "R_growth|theta_growth|T_opt|T_max|",
+    "I_K|KePHY|",
+    "f_pr|R_resp|k_fres|k_fdom|",
+    # "salTol|S_bep|S_opt|S_maxsp|",
+    # "simDINUptake|simDONUptake|simNFixation|simINDynamics|",
+    "K_N|",
+    "K_P|",
+    "w_p"
+  )
+  glm_phy_param <- AEME::get_aeme_parameters(model = "glm_aed",
+                                             module = "phytoplankton",
+                                             file = "aed_phyto_pars.csv") |> 
+    # dplyr::select(dplyr::all_of(par_cols)) |> 
+    dplyr::filter(grepl(glm_pattern, name)) |> 
+    dplyr::mutate(
+      value = 10,
+      min = dplyr::case_when(
+        value < 0 ~ value * 2,
+        value > 0 ~ value * 0.1,
+        TRUE ~ value * 0.5
+      ),
+      max = dplyr::case_when(
+        value < 0 ~ value * 0.1,
+        value > 0 ~ value * 2,
+        TRUE ~ value * 1.5
+      )
+    )
+  
+  input_model_parameters(aeme = aeme, model = model, param = glm_phy_param,
+                         path = path)
+  
+  glm_cfg <- read_model_config(model = model, path = path)
+  n_vals <- sum(glm_cfg$bgc$aed_phyto_pars$cyano == 10)
+  testthat::expect_equal(n_vals, nrow(glm_phy_param) / 3)
+  
+  
+  aed_param <- AEME::get_aeme_parameters(model = "glm_aed",
+                                             module = "oxygen",
+                                             file = "aed.nml") |> 
+    dplyr::mutate(value = 10)
+  
+  input_model_parameters(aeme = aeme, model = model, param = aed_param,
+                         path = path)
+  glm_cfg <- read_model_config(model = model, path = path)
+  testthat::expect_true(glm_cfg$bgc$aed$aed_oxygen$oxy_initial == 10)
+  testthat::expect_true(glm_cfg$bgc$aed$aed_oxygen$ksed_oxy == 10)
+})
+  
