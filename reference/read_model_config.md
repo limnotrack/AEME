@@ -21,6 +21,6 @@ read_model_config(model, path)
 
 ## Value
 
-List with model configuration components. This includes a 'physical'
-list with physical model configuration and a 'bgc' list with
+List with model configuration components. This includes a 'hydrodynamic'
+list with hydrodynamic model configuration and a 'bgc' list with
 biogeochemistry model configuration (if applicable).

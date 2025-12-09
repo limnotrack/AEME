@@ -220,12 +220,16 @@ We have a host of vignettes to help you get started with AEME:
   hypsograph curve
 - [`generate_var_map_code()`](generate_var_map_code.md) : Generate
   variable mapping code for lake observation data
+- [`get_aed_sed_const2d_param()`](get_aed_sed_const2d_param.md) : Get
+  AED sed_const2d parameters
 - [`get_aeme_parameters()`](get_aeme_parameters.md) : Make parameters
   dataframe for AEME
 - [`get_date_index()`](get_date_index.md) : Get date index for each
   model in the AEME object
 - [`get_deriv_inputs()`](get_deriv_inputs.md) : Get derived variables
   needed for simulation
+- [`get_glm_sed_zones()`](get_glm_sed_zones.md) : Get number of sediment
+  zones in GLM-AED model
 - [`get_hypsograph()`](get_hypsograph.md) : Get hypsograph from Aeme
   object
 - [`get_inflows()`](get_inflows.md) : Get inflow data from Aeme object
@@ -379,6 +383,8 @@ We have a host of vignettes to help you get started with AEME:
 - [`run_aeme()`](run_aeme.md) : Run aquatic model ensemble
 - [`run_dy_cd()`](run_dy_cd.md) [`run_glm_aed()`](run_dy_cd.md)
   [`run_gotm_wet()`](run_dy_cd.md) : Run AEME models
+- [`set_aed_sed_const2d()`](set_aed_sed_const2d.md) : Setup AED
+  aed_sed_const2d sediment model parameters
 - [`set_glm_aed_models()`](set_glm_aed_models.md) : Set GLM-AED Models
 - [`set_gotm_grid()`](set_gotm_grid.md) : Set grid for GOTM model
 - [`set_inflows()`](set_inflows.md) : Set inflow data from Aeme object
