@@ -1288,3 +1288,50 @@ test_that("running GLM-AED with multiple aed models", {
   }
 
 })
+
+test_that("updating AED sed params works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  yaml_path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = yaml_path, "aeme.yaml")
+  path <- tempdir()
+  vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb", 
+                "CHM_oxycln", "CHM_oxynal")
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model_controls <- set_vars_sim(model_controls = model_controls,
+                                 vars_sim = vars_sim)
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = TRUE)
+  set_aed_sed_const2d(aeme = aeme, path = path)
+  
+  aeme <- run_aeme(aeme = aeme, model = model, path = path)
+  
+  sed_param <- get_aed_sed_const2d_param(aeme = aeme, path = path)
+  testthat::expect_true(is.data.frame(sed_param))
+  testthat::expect_true(max(sed_param$index, na.rm = TRUE) == 1)
+  
+  upd_sed_pars <- glm_sed_params(n_zones = 2, zone_heights = c(6, 14))
+  
+  aeme <- add_param(aeme, upd_sed_pars)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     ext_elev = 5, use_bgc = TRUE)
+  cfg <- read_model_config(model = model, path = path)
+  
+  set_aed_sed_const2d(aeme = aeme, path = path)
+  cfg2 <- read_model_config(model = model, path = path)
+  
+  testthat::expect_false(identical(cfg, cfg2))
+  testthat::expect_true(cfg$bgc$aed$aed_sed_const2d$n_zones == 1)
+  testthat::expect_true(cfg2$bgc$aed$aed_sed_const2d$n_zones == 2)
+  
+  aeme <- run_aeme(aeme = aeme, model = model, path = path)
+  # Check output files
+  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
+  file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
+  
+})
