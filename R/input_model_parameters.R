@@ -169,7 +169,7 @@ input_model_parameters <- function(aeme, model, param, path) {
                      "aed/aed.nml")
       # cfg_files <- c("glm3.nml", "aed2/aed2.nml", "aed2/aed2_phyto_pars.nml",
       #                "aed2/aed2_zoop_pars.nml")
-      sel_files <- nml_files[nml_files %in% all_p$file]
+      sel_files <- nml_files[basename(nml_files) %in% all_p$file]
       for (f in sel_files) {
         idx <- which(all_p$file == basename(f))
         cfg_file <- file.path(lake_dir, m, f)
