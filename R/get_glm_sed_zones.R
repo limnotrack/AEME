@@ -15,6 +15,6 @@ get_glm_sed_zones <- function(aeme, path, lake_dir = NULL) {
     lake_dir <- get_lake_dir(aeme = aeme, path = path)
   }
   model_config <- read_model_config(model = "glm_aed", path = path)
-  n_zones <- model_config$physical$sediment$n_zones
+  n_zones <- model_config$hydrodynamic$sediment$n_zones
   return(n_zones)
 }

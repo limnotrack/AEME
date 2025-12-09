@@ -4,8 +4,8 @@
 #'  one model at a time.
 #' @param path character; directory which contains the model configuration files.
 #'
-#' @returns List with model configuration components. This includes a 'physical'
-#' list with physical model configuration and a 'bgc' list with biogeochemistry
+#' @returns List with model configuration components. This includes a 'hydrodynamic'
+#' list with hydrodynamic model configuration and a 'bgc' list with biogeochemistry
 #' model configuration (if applicable).
 #' @export
 #'
@@ -34,16 +34,16 @@ read_model_config <- function(model, path) {
   })
   
   if (model == "dy_cd") {
-    out$physical <- list(par = cfg$par, cfg = cfg$cfg)
+    out$hydrodynamic <- list(par = cfg$par, cfg = cfg$cfg)
     # Remove par and cfg from list
     cfg$par <- NULL
     cfg$cfg <- NULL
   } else if (model == "glm_aed") {
-    out$physical <- cfg[["glm3"]]
+    out$hydrodynamic <- cfg[["glm3"]]
     # Remove glm3 from list
     cfg[["glm3"]] <- NULL
   } else if (model == "gotm_wet") {
-    out$physical <- list(gotm = cfg[["gotm"]],
+    out$hydrodynamic <- list(gotm = cfg[["gotm"]],
                          output = cfg[["output"]])
     # Remove gotm and output from list
     cfg[["gotm"]] <- NULL

@@ -6,19 +6,31 @@
 #' @export
 
 write_configuration <- function(aeme, model, path) {
-
-  aeme <- check_aeme(aeme)
-  if (missing(model)) {
-    model <- list_models(aeme)
-  } else {
-    model <- check_model(model = model)
-  }
-  path <- check_path(path = path, create = TRUE)
   
+  aeme  <- check_aeme(aeme)
+  model <- if (missing(model)) list_models(aeme) else check_model(model)
+  path  <- check_path(path, create = TRUE)
+  lake_dir <- get_lake_dir(aeme, path)
   lke <- lake(aeme)
-  get_config_args <- list(aeme = aeme, path = path)
-  lapply(model, \(m) do.call(paste0("write_config_", m),
-                                      get_config_args))
+  name <- tolower(lke$name)
+  model_config <- configuration(aeme)
+  
+  writers <- list(
+    dy_cd    = write_config_dy_cd,
+    glm_aed  = write_config_glm_aed,
+    gotm_wet = write_config_gotm_wet
+  )
+
+  lapply(model, function(m) {
+    if (m %in% names(writers)) {
+      writers[[m]](
+        model_config = model_config[[m]],
+        model_dir = file.path(lake_dir, m),
+        name = name
+      )
+    }
+  })
+  
   aeme
 }
 
@@ -28,36 +40,32 @@ write_configuration <- function(aeme, model, path) {
 #'
 #' @return write DYRESM config files to disk
 #' @noRd
-write_config_dy_cd <- function(aeme, path) {
+write_config_dy_cd <- function(model_config, model_dir, name) {
 
-  lke <- lake(aeme)
-  name <- tolower(lke$name)
-  model_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)), "dy_cd")
-  if (!dir.exists(model_dir)) dir.create(model_dir, recursive = TRUE)
-  model_config <- configuration(aeme)
-  if (is.null(model_config[["dy_cd"]][["hydrodynamic"]]))
-    stop("No DYRESM hydrodynamic configuration present")
+  model_dir <- check_path(model_dir, create = TRUE)
+  if (is.null(model_config[["hydrodynamic"]]))
+    cli::cli_abort("No DYRESM hydrodynamic configuration present")
   par_file <- file.path(model_dir, "dyresm3p1.par")
-  writeLines(model_config$dy_cd$hydrodynamic$par, par_file)
+  writeLines(model_config$hydrodynamic$par, par_file)
 
   cfg_file <- file.path(model_dir, paste0(name, ".cfg"))
-  writeLines(model_config$dy_cd$hydrodynamic$cfg, cfg_file)
+  writeLines(model_config$hydrodynamic$cfg, cfg_file)
 
-  if (!is.null(model_config[["dy_cd"]][["ecosystem"]])) {
+  if (!is.null(model_config[["bgc"]])) {
     con_file <- file.path(model_dir, paste0(name, ".con"))
-    writeLines(model_config$dy_cd$ecosystem$con, con_file)
+    writeLines(model_config$bgc$con, con_file)
 
     # Write CAEDYM bio file
     bio_file <- file.path(model_dir, "caedym3p1.bio")
-    writeLines(model_config$dy_cd$ecosystem$bio, bio_file)
+    writeLines(model_config$bgc$bio, bio_file)
 
     # Write CAEDYM chm file
     chm_file <- file.path(model_dir, "caedym3p1.chm")
-    writeLines(model_config$dy_cd$ecosystem$chm, chm_file)
+    writeLines(model_config$bgc$chm, chm_file)
 
     # Write CAEDYM sed file
     sed_file <- file.path(model_dir, "caedym3p1.sed")
-    writeLines(model_config$dy_cd$ecosystem$sed, sed_file)
+    writeLines(model_config$bgc$sed, sed_file)
 
   }
   invisible()
@@ -69,58 +77,54 @@ write_config_dy_cd <- function(aeme, path) {
 #'
 #' @return write GLM config files to disk
 #' @noRd
-write_config_glm_aed <- function(aeme, path) {
+write_config_glm_aed <- function(model_config, model_dir, name) {
 
-  lake_dir <- get_lake_dir(aeme, path)
-  model_dir <- file.path(lake_dir, "glm_aed")
-
-  if (!dir.exists(model_dir)) dir.create(model_dir, recursive = TRUE)
-  model_config <- configuration(aeme)
-  if (is.null(model_config[["glm_aed"]][["hydrodynamic"]]))
-    stop("No GLM hydrodynamic configuration present")
+  model_dir <- check_path(model_dir, create = TRUE)
+  if (is.null(model_config[["hydrodynamic"]]))
+    cli::cli_abort("No GLM hydrodynamic configuration present")
   nml_file <- file.path(model_dir, "glm3.nml")
-  write_nml(glm_nml = model_config$glm_aed$hydrodynamic, nml_file)
+  write_nml(glm_nml = model_config$hydrodynamic, nml_file)
 
-  if (!is.null(model_config[["glm_aed"]][["ecosystem"]])) {
+  if (!is.null(model_config[["bgc"]])) {
     # aed_dir <- file.path(model_dir, "aed2")
     # if (!dir.exists(aed_dir)) dir.create(aed_dir, recursive = TRUE)
     # 
     # # Write AED2 nml file
-    # if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["aed"]])) {
+    # if (!is.null(model_config[["bgc"]][["aed"]])) {
     #   aed_file <- file.path(aed_dir, "aed2.nml")
-    #   write_nml(glm_nml = model_config$glm_aed$ecosystem$aed, aed_file)
+    #   write_nml(glm_nml = model_config$bgc$aed, aed_file)
     # }
     # 
     # # Write AED2 phyto pars file
-    # if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["phyto"]])) {
+    # if (!is.null(model_config[["bgc"]][["phyto"]])) {
     #   phyto_file <- file.path(aed_dir, "aed2_phyto_pars.nml")
-    #   write_nml(glm_nml = model_config$glm_aed$ecosystem$phyto, phyto_file)
+    #   write_nml(glm_nml = model_config$bgc$phyto, phyto_file)
     # }
     # 
     # # Write AED2 zoop pars file
-    # if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["zoop"]])) {
+    # if (!is.null(model_config[["bgc"]][["zoop"]])) {
     #   zoop_file <- file.path(aed_dir, "aed2_zoop_pars.nml")
-    #   write_nml(glm_nml = model_config$glm_aed$ecosystem$zoop, zoop_file)
+    #   write_nml(glm_nml = model_config$bgc$zoop, zoop_file)
     # }
     aed_dir <- file.path(model_dir, "aed")
     aed_dir <- check_path(aed_dir, create = TRUE)
-    if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["aed"]])) {
+    if (!is.null(model_config[["bgc"]][["aed"]])) {
       aed_file <- file.path(aed_dir, "aed.nml")
-      write_nml(glm_nml = model_config$glm_aed$ecosystem$aed, aed_file)
+      write_nml(glm_nml = model_config$bgc$aed, aed_file)
     }
-    if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["aed_phyto_pars"]])) {
+    if (!is.null(model_config[["bgc"]][["aed_phyto_pars"]])) {
       phyto_file <- file.path(aed_dir, "aed_phyto_pars.csv")
-      write_aed_param_csv(df = model_config$glm_aed$ecosystem$aed_phyto_pars,
+      write_aed_param_csv(df = model_config$bgc$aed_phyto_pars,
                           file = phyto_file)
     }
-    if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["aed_zoop_pars"]])) {
+    if (!is.null(model_config[["bgc"]][["aed_zoop_pars"]])) {
       zoop_file <- file.path(aed_dir, "aed_zoop_pars.csv")
-      write_aed_param_csv(df = model_config$glm_aed$ecosystem$aed_zoop_pars,
+      write_aed_param_csv(df = model_config$bgc$aed_zoop_pars,
                           file = zoop_file)
     }
-    if (!is.null(model_config[["glm_aed"]][["ecosystem"]][["aed_macrophyte_pars"]])) {
+    if (!is.null(model_config[["bgc"]][["aed_macrophyte_pars"]])) {
       macrophyte_file <- file.path(aed_dir, "aed_macrophyte_pars.csv")
-      write_aed_param_csv(df = model_config$glm_aed$ecosystem$aed_macrophyte_pars,
+      write_aed_param_csv(df = model_config$bgc$aed_macrophyte_pars,
                           file = macrophyte_file)
     }
   }
@@ -134,24 +138,19 @@ write_config_glm_aed <- function(aeme, path) {
 #' @return write GOTM config files to disk
 #' @noRd
 
-write_config_gotm_wet <- function(aeme, path) {
+write_config_gotm_wet <- function(model_config, model_dir, name) {
 
-  lke <- lake(aeme)
-  model_dir <- file.path(path, paste0(lke$id, "_", tolower(lke$name)),
-                         "gotm_wet")
-
-  if (!dir.exists(model_dir)) dir.create(model_dir, recursive = TRUE)
-  model_config <- configuration(aeme)
-  if (is.null(model_config[["gotm_wet"]][["hydrodynamic"]]))
-    stop("No GOTM hydrodynamic configuration present")
-  write_yaml(model_config[["gotm_wet"]][["hydrodynamic"]][["gotm"]],
+  model_dir <- check_path(model_dir, create = TRUE)
+  if (is.null(model_config[["hydrodynamic"]]))
+    cli::cli_abort("No GOTM hydrodynamic configuration present")
+  write_yaml(model_config[["hydrodynamic"]][["gotm"]],
              file.path(model_dir, "gotm.yaml"))
-  write_yaml(model_config[["gotm_wet"]][["hydrodynamic"]][["output"]],
+  write_yaml(model_config[["hydrodynamic"]][["output"]],
              file.path(model_dir, "output.yaml"))
 
-  if (!is.null(model_config[["gotm_wet"]][["ecosystem"]])) {
+  if (!is.null(model_config[["bgc"]])) {
     fabm_file <- file.path(model_dir, "fabm.yaml")
-    write_yaml(model_config[["gotm_wet"]][["ecosystem"]][["fabm"]], fabm_file)
+    write_yaml(model_config[["bgc"]][["fabm"]], fabm_file)
   }
   invisible()
 }

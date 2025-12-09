@@ -128,7 +128,7 @@ input_model_parameters <- function(aeme, model, param, path) {
                     update_nml = FALSE, inf_factor = inf_factor)
       } else if(m == "gotm_wet") {
         cfg <- configuration(aeme)
-        use_bgc <-!is.null(cfg[["gotm_wet"]][["ecosystem"]])
+        use_bgc <-!is.null(cfg[["gotm_wet"]][["bgc"]])
         make_infGOTM(inf_list = inf, inf_factor = inf_factor,
                      use_bgc = use_bgc, path_gotm = model_path,
                      update_gotm = FALSE)

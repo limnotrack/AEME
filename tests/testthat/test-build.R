@@ -170,6 +170,31 @@ test_that("building GOTM-WET works", {
   
 })
 
+test_that("building all models in a different dir", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     use_bgc = FALSE)
+  
+  path <- file.path(tmpdir, "lake_new")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     use_bgc = FALSE, use_aeme = TRUE)
+})
+
 test_that("building all models with the same hypsograph", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
@@ -367,8 +392,8 @@ test_that("building all models and loading to aeme works", {
                              model_controls = model_controls, path = path)
   cfg <- configuration(aeme)
   mod_cfg_chk <- sapply(model, \(m) is.list(cfg[[m]]))
-  mod_bgc_cfg_chk <- sapply(model, \(m) is.list(cfg[[m]][["ecosystem"]]))
-  chk <- all(mod_cfg_chk) & (is.vector(cfg$dy_cd$ecosystem)) &
+  mod_bgc_cfg_chk <- sapply(model, \(m) is.list(cfg[[m]][["bgc"]]))
+  chk <- all(mod_cfg_chk) & (is.vector(cfg$dy_cd$bgc)) &
     all(mod_bgc_cfg_chk)
   
   testthat::expect_true(chk)
@@ -390,8 +415,8 @@ test_that("can build all models and write to new directory", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   build_aeme(path = path, aeme = aeme, model = model,
-             model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-             use_bgc = TRUE)
+             model_controls = model_controls, inf_factor = inf_factor,
+             ext_elev = 5, use_bgc = TRUE)
   aeme <- load_configuration(model = model, aeme = aeme,
                              path = path)
   

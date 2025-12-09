@@ -13,8 +13,8 @@ one model at a time.}
 \item{path}{character; directory which contains the model configuration files.}
 }
 \value{
-List with model configuration components. This includes a 'physical'
-list with physical model configuration and a 'bgc' list with biogeochemistry
+List with model configuration components. This includes a 'hydrodynamic'
+list with hydrodynamic model configuration and a 'bgc' list with biogeochemistry
 model configuration (if applicable).
 }
 \description{

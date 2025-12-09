@@ -31,14 +31,14 @@ load_configuration <- function(aeme, model, model_controls = NULL,
   
   out <- list(model_controls = model_controls,
               use_bgc = use_bgc,
-              dy_cd = list(hydrodynamic = model_config[["dy_cd"]][["physical"]],
-                           ecosystem = model_config[["dy_cd"]][["bgc"]]),
+              dy_cd = list(hydrodynamic = model_config[["dy_cd"]][["hydrodynamic"]],
+                           bgc = model_config[["dy_cd"]][["bgc"]]),
               glm_aed = list(hydrodynamic =
-                               model_config[["glm_aed"]][["physical"]],
-                             ecosystem = model_config[["glm_aed"]][["bgc"]]),
+                               model_config[["glm_aed"]][["hydrodynamic"]],
+                             bgc = model_config[["glm_aed"]][["bgc"]]),
               gotm_wet = list(hydrodynamic =
-                                model_config[["gotm_wet"]][["physical"]],
-                              ecosystem = model_config[["gotm_wet"]][["bgc"]])
+                                model_config[["gotm_wet"]][["hydrodynamic"]],
+                              bgc = model_config[["gotm_wet"]][["bgc"]])
   )
 
   configuration(aeme) <- out
@@ -51,12 +51,12 @@ load_configuration <- function(aeme, model, model_controls = NULL,
 #' @param lake list obtained from `lake(aeme)`
 #' @inheritParams build_aeme
 #'
-#' @return list of physical and bgc model configurations
+#' @return list of hydrodynamic and bgc model configurations
 #' @noRd
 get_config_dy_cd <- function(lake_dir, path) {
 
   name <- tolower(lake$name)
-  out <- list(physical = NULL, bgc = NULL)
+  out <- list(hydrodynamic = NULL, bgc = NULL)
   par_file <- file.path(lake_dir, "dy_cd", "dyresm3p1.par")
   if (!file.exists(par_file)) {
     stop("No DYRESM par file present at\n", par_file)
@@ -67,7 +67,7 @@ get_config_dy_cd <- function(lake_dir, path) {
     stop("No DYRESM cfg file present at\n", cfg_file)
   }
   cfg <- readLines(cfg_file)
-  out$physical = list(par = par, cfg = cfg)
+  out$hydrodynamic = list(par = par, cfg = cfg)
 
   # Bio file
   bio_file <- file.path(lake_dir, "dy_cd", "caedym3p1.bio")
@@ -111,11 +111,11 @@ get_config_dy_cd <- function(lake_dir, path) {
 #' @param lake list obtained from `lake(aeme)`
 #' @inheritParams build_aeme
 #'
-#' @return list of physical and bgc model configurations
+#' @return list of hydrodynamic and bgc model configurations
 #' @noRd
 get_config_glm_aed <- function(lake_dir, path) {
 
-  out <- list(physical = NULL, bgc = NULL)
+  out <- list(hydrodynamic = NULL, bgc = NULL)
   nml_file <- file.path(lake_dir, "glm_aed", "glm3.nml")
   if (!file.exists(nml_file)) {
     stop("No GLM nml file present at\n", nml_file)
@@ -131,7 +131,7 @@ get_config_glm_aed <- function(lake_dir, path) {
       read_aed_param_csv(f)
     }
   })
-  out$physical <- cfg[["glm3"]]
+  out$hydrodynamic <- cfg[["glm3"]]
   # Remove glm3 from list
   cfg[["glm3"]] <- NULL
   if (length(cfg) > 0) {
@@ -145,23 +145,23 @@ get_config_glm_aed <- function(lake_dir, path) {
 #' @param lake list obtained from `lake(aeme)`
 #' @inheritParams build_aeme
 #'
-#' @return list of physical and bgc model configurations
+#' @return list of hydrodynamic and bgc model configurations
 #' @noRd
 get_config_gotm_wet <- function(lake_dir, path) {
 
-  out <- list(physical = NULL, bgc = NULL)
+  out <- list(hydrodynamic = NULL, bgc = NULL)
   yaml_file <- file.path(lake_dir, "gotm_wet", "gotm.yaml")
   if (!file.exists(yaml_file)) {
     stop("No GOTM yaml file present at\n", yaml_file)
   }
-  out[["physical"]][["gotm"]] <- yaml::read_yaml(file = yaml_file)
+  out[["hydrodynamic"]][["gotm"]] <- yaml::read_yaml(file = yaml_file)
 
   yaml_file <- file.path(lake_dir, "gotm_wet", "output.yaml")
   if (!file.exists(yaml_file)) {
     stop("No GOTM output yaml file present at\n", yaml_file)
   }
   suppressWarnings({
-    out[["physical"]][["output"]] <- yaml::read_yaml(file = yaml_file)
+    out[["hydrodynamic"]][["output"]] <- yaml::read_yaml(file = yaml_file)
   })
 
   fabm_file <- file.path(lake_dir, "gotm_wet", "fabm.yaml")
