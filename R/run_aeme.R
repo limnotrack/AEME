@@ -1,7 +1,7 @@
 #' Run aquatic model ensemble
 #'
 #' @inheritParams build_aeme
-#' @inheritParams base::system2
+#' @inheritParams processx::run
 #' @param return logical; return model output within an `aeme` object? Defaults
 #' to TRUE.
 #' @inheritParams load_output
