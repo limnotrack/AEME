@@ -33,5 +33,11 @@ write_aed_param_csv <- function(df, file) {
   if (length(name_col) > 0) {
     df[[name_col]] <- paste0("'", df[[name_col]], "'")
   }
+  # Round all other columns to 3 decimal places if numeric
+  for (col in names(df)) {
+    if (is.numeric(df[[col]])) {
+      df[[col]] <- round(df[[col]], 3)
+    }
+  }
   readr::write_csv(df, file)
 }
