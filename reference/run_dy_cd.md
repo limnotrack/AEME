@@ -12,11 +12,11 @@ folder.
 ## Usage
 
 ``` r
-run_dy_cd(sim_folder, verbose = FALSE, debug = FALSE, timeout = 0)
+run_dy_cd(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
 
-run_glm_aed(sim_folder, verbose = FALSE, debug = FALSE, timeout = 0)
+run_glm_aed(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
 
-run_gotm_wet(sim_folder, verbose = FALSE, debug = FALSE, timeout = 0)
+run_gotm_wet(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
 ```
 
 ## Arguments
