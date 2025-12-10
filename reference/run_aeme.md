@@ -51,9 +51,8 @@ run_aeme(
 
 - timeout:
 
-  timeout in seconds, ignored if 0. This is a limit for the elapsed time
-  running `command` in a separate process. Fractions of seconds are
-  ignored.
+  Timeout for the process, in seconds, or as a `difftime` object. If it
+  is not finished before this, it will be killed.
 
 - parallel:
 
@@ -100,10 +99,10 @@ model_controls = model_controls, ext_elev = 5)
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-12-10 20:20:45]
-#> → GLM-AED running... [2025-12-10 20:20:45]
-#> ✔ GLM-AED2 run successful! [2025-12-10 20:20:45]
-#> ✔ Model run complete! [2025-12-10 20:20:45]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-12-10 20:45:33]
+#> → GLM-AED running... [2025-12-10 20:45:33]
+#> ✔ GLM-AED2 run successful! [2025-12-10 20:45:34]
+#> ✔ Model run complete! [2025-12-10 20:45:34]
 plot_output(aeme, model = model)
 #> Warning: Using size for a discrete variable is not advised.
 #> Warning: Removed 86 rows containing missing values or values outside the scale range
