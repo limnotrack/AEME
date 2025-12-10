@@ -173,7 +173,7 @@ run_aeme <- function(aeme, model,
     return_type,
     aeme    = aeme,
     exec_result = exec_result,
-    both    = list(aeme = aeme2, exec_result = exec_result),
+    both    = list(aeme = aeme, exec_result = exec_result),
     none    = NULL
   )
   return(out)
