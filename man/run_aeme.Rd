@@ -7,12 +7,12 @@
 run_aeme(
   aeme,
   model,
-  return = TRUE,
+  return_type = c("aeme", "exec_result", "both", "none"),
   ens_n = 1,
   model_controls = NULL,
   verbose = FALSE,
   debug = FALSE,
-  timeout = 0,
+  timeout = Inf,
   parallel = FALSE,
   ncores,
   check_output = FALSE,
@@ -24,9 +24,6 @@ run_aeme(
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
-
-\item{return}{logical; return model output within an `aeme` object? Defaults
-to TRUE.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
@@ -52,6 +49,9 @@ FALSE.}
 
 \item{path}{filepath; where input files are located relative to the current 
 working directory.}
+
+\item{return}{logical; return model output within an `aeme` object? Defaults
+to TRUE.}
 }
 \value{
 an `aeme` object with model output loaded.

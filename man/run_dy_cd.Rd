@@ -6,11 +6,11 @@
 \alias{run_gotm_wet}
 \title{Run AEME models}
 \usage{
-run_dy_cd(sim_folder, verbose = FALSE, debug = FALSE, timeout = 0)
+run_dy_cd(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
 
-run_glm_aed(sim_folder, verbose = FALSE, debug = FALSE, timeout = 0)
+run_glm_aed(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
 
-run_gotm_wet(sim_folder, verbose = FALSE, debug = FALSE, timeout = 0)
+run_gotm_wet(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
 }
 \arguments{
 \item{sim_folder}{the directory where simulation files are contained}

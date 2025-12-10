@@ -32,9 +32,11 @@
 #' model_controls = model_controls, ext_elev = 5)
 #' aeme <- run_aeme(aeme = aeme, model = model, path = path)
 #' plot_output(aeme, model = model)
-run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
+run_aeme <- function(aeme, model, 
+                     return_type = c("aeme", "exec_result", "both", "none"),
+                     ens_n = 1,
                      model_controls = NULL, verbose = FALSE,
-                     debug = FALSE, timeout = 0, parallel = FALSE, ncores,
+                     debug = FALSE, timeout = Inf, parallel = FALSE, ncores,
                      check_output = FALSE, path = ".") {
   
   aeme <- check_aeme(aeme)
@@ -47,8 +49,10 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
   if (is.null(model_controls)) {
     model_controls <- get_model_controls(aeme = aeme)
   }
+  return_type <- match.arg(return_type, choices = c("aeme", "exec_result",
+                                                    "both", "none"))
   
-  if (return & is.null(model_controls)) {
+  if (return_type == "aeme" & is.null(model_controls)) {
     cli::cli_abort(c("x" = "`model_controls` need to be provided to load model
                      output."))
   }
@@ -111,7 +115,7 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
     )
     cli_inform_safe(c("i" = paste0("Running models in parallel... ", 
                                    "[", format(Sys.time()), "]")))
-    model_out <- setNames(
+    exec_result <- setNames(
       parallel::parLapply(cl, model, function(m) {
         args <- run_model_args
         args$sim_folder <- args$sim_folder[[m]]
@@ -126,17 +130,20 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
     cli_inform_safe(c("i" = paste0("Running models... (Have you tried ",
                                    "parallelizing?) ",
                                    "[", format(Sys.time()), "]")))
-    model_out <- setNames(
-      lapply(model, function(m) {
-        args <- run_model_args
-        args$sim_folder <- args$sim_folder[[m]]
-        do.call(model_funs[[m]], args)
-      }),
-      model
+    exec_result <- Map(function(m, sim) {
+      args <- run_model_args
+      args$sim_folder <- sim
+      do.call(model_funs[[m]], args)
+    }, 
+    model, 
+    run_model_args$sim_folder[model]
     )
+    
     cli_inform_safe(c("v" = paste0("Model run complete! ",
                                    "[", format(Sys.time()), "]")))
   }
+  
+  if ("none" %in% return_type) return(invisible(NULL))
   
   if (check_output) {
     cli_inform_safe(c("i" = "Checking model output..."))
@@ -155,13 +162,21 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
     }
   }
   
-  if (return) {
+  if ("aeme" %in% return_type) {
     aeme <- load_output(model = model, aeme = aeme, path = path,
                         model_controls = model_controls, parallel = parallel,
                         cl = cl, ens_n = ens_n)
-    return(aeme)
   }
   
+  # handle return type
+  out <- switch(
+    return_type,
+    aeme    = aeme,
+    exec_result = exec_result,
+    both    = list(aeme = aeme2, exec_result = exec_result),
+    none    = NULL
+  )
+  return(out)
 }
 
 
@@ -186,7 +201,7 @@ run_aeme <- function(aeme, model, return = TRUE, ens_n = 1,
 #' @export
 
 run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
-                      timeout = 0) {
+                      timeout = Inf) {
   
   oldwd <- getwd()
   on.exit({
@@ -215,16 +230,27 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   cli_inform_safe(c(">" = paste0("DYRESM-CAEDYM running... ",
                                  "[", format(Sys.time()), "]")))
   # Create reference netcdf
+  bin_exec <- file.path(bin_path, "dy_cd", "createDYref.exe")
   if (verbose) {
-    system2(file.path(bin_path, "dy_cd", "createDYref.exe"),
-            wait = TRUE, stdout = stdout,
-            stderr = stderr,
-            args = ref_fils)
+    p <- processx::run(
+      command = bin_exec,
+      args = ref_fils,
+      wd = sim_folder,
+      echo = TRUE,               # print output live (closest to stdout="")
+      error_on_status = FALSE,
+      timeout = timeout
+    )
   } else {
-    out <- system2(file.path(bin_path, "dy_cd", "createDYref.exe"),
-                   wait = TRUE, stdout = stdout,
-                   stderr = stderr,
-                   args = ref_fils, timeout = timeout)
+    p <- processx::run(
+      command = bin_exec,
+      args = ref_fils,
+      wd = sim_folder,
+      spinner = TRUE,
+      echo = FALSE,
+      error_on_status = FALSE,  # so non-zero exit doesn't stop execution
+      timeout = timeout
+    )
+    out <- unlist(strsplit(p$stdout, "\n", fixed = TRUE))
     if (any(grepl("ERROR|Error", out))) {
       cli::cli_abort(c("x" = "Could not create DYRESM reference file:\n",
                        paste0(out, collapse = "\n")))
@@ -232,15 +258,27 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   }
   
   # Create simulation file ----
+  bin_exec <- file.path(bin_path, "dy_cd", "createDYsim.exe")
   if (verbose) {
-    system2(file.path(bin_path, "dy_cd", "createDYsim.exe"),
-            wait = TRUE, stdout = stdout,
-            stderr = stderr,
-            args = sim_fils)
+    p <- processx::run(
+      command = bin_exec,
+      args = sim_fils,
+      wd = sim_folder,
+      echo = TRUE,               # print output live (closest to stdout="")
+      error_on_status = FALSE,
+      timeout = timeout
+    )
   } else {
-    out <- system2(file.path(bin_path, "dy_cd", "createDYsim.exe"),
-                   wait = TRUE, stdout = stdout, stderr = stderr,
-                   args = sim_fils)
+    p <- processx::run(
+      command = bin_exec,
+      args = sim_fils,
+      wd = sim_folder,
+      spinner = TRUE,
+      echo = FALSE,
+      error_on_status = FALSE,  # so non-zero exit doesn't stop execution
+      timeout = timeout
+    )
+    out <- unlist(strsplit(p$stdout, "\n", fixed = TRUE))
     
     if (any(grepl("ERROR|Error", out))) {
       cli::cli_abort(c("x" = "Could not create DYRESM simulation file:\n",
@@ -248,16 +286,28 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
     }
   }
   
-  # Ext4act DYRESM info file ----
+  # Extract DYRESM info file ----
+  bin_exec <- file.path(bin_path, "dy_cd", "extractDYinfo.exe")
   if (verbose) {
-    system2(file.path(bin_path, "dy_cd", "extractDYinfo.exe"),
-            wait = TRUE, stdout = stdout,
-            stderr = stderr,
-            args = info_fils)
+    p <- processx::run(
+      command = bin_exec,
+      args = info_fils,
+      wd = sim_folder,
+      echo = TRUE,               # print output live (closest to stdout="")
+      error_on_status = FALSE,
+      timeout = timeout
+    )
   } else {
-    out <- system2(file.path(bin_path, "dy_cd", "extractDYinfo.exe"),
-                   wait = TRUE, stdout = stdout, stderr = stderr,
-                   args = info_fils)
+    p <- processx::run(
+      command = bin_exec,
+      args = info_fils,
+      wd = sim_folder,
+      spinner = TRUE,
+      echo = FALSE,
+      error_on_status = FALSE,  # so non-zero exit doesn't stop execution
+      timeout = timeout
+    )
+    out <- unlist(strsplit(p$stdout, "\n", fixed = TRUE))
     
     if (any(grepl("ERROR|Error", out))) {
       cli::cli_abort(c("x" = "Could not extract DYRESM-CAEDYM information:\n",
@@ -265,14 +315,28 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
     }
   }
   
+  bin_exec <- file.path(bin_path, "dy_cd", "dycd.exe")
   if (verbose) {
-    system2(file.path(bin_path, "dy_cd", "dycd.exe"),
-            wait = TRUE, stdout = stdout,
-            stderr = "", args = arg, timeout = timeout)
+    p <- processx::run(
+      command = bin_exec,
+      args = character(),
+      wd = sim_folder,
+      echo = TRUE,               # print output live (closest to stdout="")
+      error_on_status = FALSE,
+      timeout = timeout
+    )
   } else {
-    out <- system2(file.path(bin_path, "dy_cd", "dycd.exe"),
-                   wait = TRUE, stdout = TRUE,
-                   stderr = TRUE, args = arg, timeout = timeout)
+    p <- processx::run(
+      command = bin_exec,
+      args = character(),
+      wd = sim_folder,
+      spinner = TRUE,
+      echo = FALSE,
+      error_on_status = FALSE,  # so non-zero exit doesn't stop execution
+      timeout = timeout
+    )
+    # p$stdout contains full captured output
+    out <- unlist(strsplit(p$stdout, "\n", fixed = TRUE))
   }
   out <- readLines("dy.log")
   success <- sum(grepl("END DYRESM-CAEDYM", out)) == 1
@@ -285,19 +349,21 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
                                    paste0(tail(out, 10),
                                           collapse = "\n"))))
   }
+  return(p)
 }
 
 #' @rdname run_dy_cd
 #' @export
+#' @importFrom processx run
 run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
-                        timeout = 0) {
+                        timeout = Inf) {
   
   oldwd <- getwd()
   on.exit({
     setwd(oldwd)
   })
   setwd(sim_folder)
-  cli_inform_safe(c(">" = paste0("GLM-AED2 running... ", "[",
+  cli_inform_safe(c(">" = paste0("GLM-AED running... ", "[",
                                  format(Sys.time()), "]")))
   
   # Allow user-specified executable path
@@ -315,13 +381,31 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
   }
   
   if (verbose) {
-    system2(bin_exec,
-            wait = TRUE, stdout = "",
-            stderr = "", timeout = timeout)
+    # Stream stdout directly to console (similar to stdout = "")
+    p <- processx::run(
+      command = bin_exec,
+      args = character(),
+      wd = sim_folder,
+      echo = TRUE,               # print output live (closest to stdout="")
+      error_on_status = FALSE,
+      timeout = timeout
+    )
+    # system2(bin_exec,
+    #         wait = TRUE, stdout = "",
+    #         stderr = "", timeout = timeout)
   } else {
-    out <- system2(bin_exec,
-                   wait = TRUE, stdout = TRUE,
-                   stderr = TRUE, timeout = timeout)
+    # Capture stdout/stderr (similar to stdout=TRUE, stderr=TRUE)
+    p <- processx::run(
+      command = bin_exec,
+      args = character(),
+      wd = sim_folder,
+      spinner = TRUE,
+      echo = FALSE,
+      error_on_status = FALSE,  # so non-zero exit doesn't stop execution
+      timeout = timeout
+    )
+    # p$stdout contains full captured output
+    out <- unlist(strsplit(p$stdout, "\n", fixed = TRUE))
     success <- sum(grepl("Model Run Complete", out)) == 1
     if (success) {
       # message("GLM-AED run successful! [", format(Sys.time()), "]")
@@ -334,12 +418,13 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
                                             collapse = "\n"))))
     }
   }
+  return(p)
 }
 
 #' @rdname run_dy_cd
 #' @export
 run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
-                         timeout = 0) {
+                         timeout = Inf) {
   
   oldwd <- getwd()
   on.exit({
@@ -350,14 +435,29 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
   dir.create("output", showWarnings = FALSE)
   cli_inform_safe(c(">" = paste0("GOTM-WET running... ",
                                  "[", format(Sys.time()), "]")))
+  bin_exec <- file.path(bin_path, "gotm_wet", "gotm.exe")
   if (verbose) {
-    system2(file.path(bin_path, "gotm_wet", "gotm.exe"),
-            wait = TRUE, stdout = "",
-            stderr = "", timeout = timeout)
+    p <- processx::run(
+      command = bin_exec,
+      args = character(),
+      wd = sim_folder,
+      echo = TRUE,               # print output live (closest to stdout="")
+      error_on_status = FALSE,
+      timeout = timeout
+    )
   } else {
-    out <- system2(file.path(bin_path, "gotm_wet", "gotm.exe"),
-                   wait = TRUE, stdout = TRUE,
-                   stderr = TRUE, timeout = timeout)
+    # Capture stdout/stderr (similar to stdout=TRUE, stderr=TRUE)
+    p <- processx::run(
+      command = bin_exec,
+      args = character(),
+      wd = sim_folder,
+      spinner = TRUE,
+      echo = FALSE,
+      error_on_status = FALSE,  # so non-zero exit doesn't stop execution
+      timeout = timeout
+    )
+    # p$stdout contains full captured output
+    out <- p$stderr
     success <- sum(grepl("GOTM-WET finished on|GOTM finished on", out)) == 1
     if (success) {
       cli_inform_safe(c("v" = paste0("GOTM-WET run successful! ",
@@ -369,6 +469,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
                                             collapse = "\n"))))
     }
   }
+  return(p)
 }
 
 #' Check model output
