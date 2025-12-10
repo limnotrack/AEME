@@ -35,9 +35,8 @@ loaded. Defaults to 1.}
 
 \item{debug}{logical; write debug log (Only DYRESM). Defaults to FALSE.}
 
-\item{timeout}{timeout in seconds, ignored if 0.  This is a limit for the
-    elapsed time running \code{command} in a separate process.   Fractions
-    of seconds are ignored.}
+\item{timeout}{Timeout for the process, in seconds, or as a \code{difftime}
+object. If it is not finished before this, it will be killed.}
 
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
 

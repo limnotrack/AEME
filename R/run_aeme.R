@@ -162,7 +162,7 @@ run_aeme <- function(aeme, model,
     }
   }
   
-  if ("aeme" %in% return_type) {
+  if ("aeme" %in% return_type | "both" %in% return_type) {
     aeme <- load_output(model = model, aeme = aeme, path = path,
                         model_controls = model_controls, parallel = parallel,
                         cl = cl, ens_n = ens_n)
