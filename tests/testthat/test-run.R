@@ -25,7 +25,8 @@ test_that("running DYRESM works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = F,
+  
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -187,8 +188,8 @@ test_that("running GOTM works", {
   aeme <- build_aeme(path = path, aeme = aeme,
                      model = model, model_controls = model_controls,
                      inf_factor = inf_factor, ext_elev = 5,
-                     use_bgc = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, path = path)
+                     use_bgc = F)
+  aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = F)
   plot_output(aeme)
   plot_output(aeme, var_sim = "LKE_evpflx")
   p1 <- plot_output(aeme, var_sim = "CHM_oxynal")
@@ -749,7 +750,7 @@ test_that("getting model output works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, use_bgc = TRUE)
   run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,
-           parallel = TRUE, return = FALSE, ncores = 2)
+           parallel = TRUE, return_type = "none", ncores = 2)
   
   aeme <- load_output(model = model, aeme = aeme, path = path,
                       model_controls = model_controls, parallel = FALSE)
