@@ -19,6 +19,8 @@
 #'   \item{default}{Default value for the variable}
 #'   \item{derived}{Logical value if the variable is derived}
 #'   \item{derived_from}{Variable name that the variable is derived from}
+#'   \item{min}{Minimum value for the variable}
+#'   \item{max}{Maximum value for the variable}
 #'   \item{keywords}{Keywords associated with the variable}
 #' }
 #' @source Package development.
