@@ -81,6 +81,8 @@
   needed for simulation
 - [`get_glm_sed_zones()`](get_glm_sed_zones.md) : Get number of sediment
   zones in GLM-AED model
+- [`get_hm_palette()`](get_hm_palette.md) : Get default heatmap palette
+  for a variable
 - [`get_hypsograph()`](get_hypsograph.md) : Get hypsograph from Aeme
   object
 - [`get_inflows()`](get_inflows.md) : Get inflow data from Aeme object

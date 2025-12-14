@@ -86,6 +86,9 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>                   model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>                   ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing state variables in inflows:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> ZOO_zoo1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Added default values for missing variables.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Insufficient water level observations. Using constant water level</span>
@@ -94,101 +97,132 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED2 for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in AED nml file and supporting files</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 15 replaced with 41.6285</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using default pH initialisation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 15 replaced with 16.6514</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 225 replaced with 312.5</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0.05 replaced with 0.3229</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 2.25 replaced with 1.4279</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 21 replaced with 21.4183</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 6.96 replaced with 1.0709</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 19.8 replaced with 7.1394</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0.008 replaced with 0.3229</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0.05 replaced with 0.3229</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 2.25 replaced with 1.4279</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 6.96 replaced with 1.0709</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 21 replaced with 21.4183</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 19.8 replaced with 7.1394</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 15 replaced with 41.6285</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 15 replaced with 16.6514</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 100 replaced with 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0.05 replaced with 0.3229</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_cyano 2 replaced with 0.24022</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_green 0.04 replaced with 0.300275</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_diatom 10 replaced with 0.300275</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_green 0.04 replaced with 0.300275</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 100 replaced with 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using default zooplankton initialisation</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GOTM-WET model for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GOTM configuration files</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sO2W 13 replaced with 10</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sPO4W 0.1 replaced with 0.01</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sPDOMW 0.001 replaced with 0.01</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sPPOMW 0.001 replaced with 0.01</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sNH4W 0.05 replaced with 0.02</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sNO3W 0.5 replaced with 0.015</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sNDOMW 0.01 replaced with 0.3</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sNPOMW 0.01 replaced with 0.1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sDPOMW 0.1 replaced with 0.2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sSiO2W 3.5 replaced with 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sO2W 13 replaced with 10</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sDIMW 4 replaced with 3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sNH4W 0.05 replaced with 0.02</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sNDOMW 0.01 replaced with 0.3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sNO3W 0.5 replaced with 0.015</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sNPOMW 0.01 replaced with 0.1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sPDOMW 0.001 replaced with 0.01</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sPO4W 0.1 replaced with 0.01</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sPPOMW 0.001 replaced with 0.01</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/cyanobacteria/initialization/sDW: 0.1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/cyanobacteria/initialization/sNW:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   0.03 replaced with 0.03</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/cyanobacteria/initialization/sPW:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   0.003 replaced with 0.0019</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/greens/initialization/sDW: 0.1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/greens/initialization/sNW: 0.05</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.015</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/greens/initialization/sPW: 0.001</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.00094</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/diatoms/initialization/sDW: 0.2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.25</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/diatoms/initialization/sNW: 0.05</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.038</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/diatoms/initialization/sPW: 0.005</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.0024</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sDIMW 4 replaced with 3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/greens/initialization/sDW: 0.1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/greens/initialization/sNW: 0.05</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.015</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition for instances/greens/initialization/sPW: 0.001</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.00094</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sSiO2W 3.5 replaced with 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/cladocerans/initialization/sD 0.05 replaced with 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition forinstances/cladocerans/initialization/sN: 0.0035</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.07</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting initial condition forinstances/cladocerans/initialization/sP: 5e-04</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   replaced with 0.01</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GOTM YAML validation completed - no issues detected.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
 <span class="r-in"><span><span class="co"># Run models</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>path <span class="op">=</span> <span class="va">path</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>parallel <span class="op">=</span> <span class="cn">TRUE</span>, ncores <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models in parallel... [2025-12-10 21:23:44]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2025-12-10 21:23:48]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading models in parallel...[2025-12-10 21:23:48]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model reading complete! [2025-12-10 21:23:49]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models in parallel... [2025-12-14 22:48:48]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2025-12-14 22:48:52]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading models in parallel...[2025-12-14 22:48:52]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model reading complete! [2025-12-14 22:48:54]</span>
 <span class="r-in"><span><span class="fu">get_output_vars</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Water temperature                 Dissolved oxygen </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                       "HYD_temp"                        "CHM_oxy" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              Total chlorophyll a                   Total nitrogen </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      "PHY_tchla"                         "NIT_tn" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 Total phosphorus            Evaporative heat flux </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "PHS_tp"                         "LKE_Qe" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               Sensible heat flux               Longwave radiation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_Qh"                        "LKE_Qlw" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              Shortwave radiation                           Volume </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        "LKE_Qsw"                          "LKE_V" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      Evaporation                      Evaporation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     "LKE_evpvol"                     "LKE_evpflx" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Surface area                      Evaporation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_A0"                     "LKE_evprte" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                           Inflow                          Outflow </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     "LKE_inflow"                    "LKE_outflow" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    Precipitation                    Precipitation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     "LKE_precip"                     "LKE_pcpvol" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Remote sensed skin temperature                             Time </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      "HYD_surft"                           "Date" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                       Lake depth                         Salinity </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     "LKE_depths"                       "CHM_salt" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        Phosphate              Dissolved organic P </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        "PHS_frp"                        "PHS_dop" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Particulate organic P              Ammoniacal nitrogen </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        "PHS_pop"                        "NIT_amm" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          Nitrate              Dissolved organic N </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        "NIT_nit"                        "NIT_don" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Particulate organic N         Dissolved organic carbon </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        "NIT_pon"                        "CAR_doc" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Particulate organic carbon                    Cyanobacteria </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        "CAR_poc"                      "PHY_cyano" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      Green algae               Diatoms freshwater </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      "PHY_green"                     "PHY_diatom" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Particulate inorganic P                 Suspended solids </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        "PHS_pip"                        "NCS_ss1" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  Air temperature Water-air temperature difference </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     "MET_tmpair"                     "HYD_atdiff" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    Water temperature                    Thermocline depth </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           "HYD_temp"                         "HYD_thmcln" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                     Dissolved oxygen                  Total chlorophyll a </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            "CHM_oxy"                          "PHY_tchla" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       Total nitrogen                     Total phosphorus </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                             "NIT_tn"                             "PHS_tp" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Evaporative heat flux                   Sensible heat flux </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                             "LKE_Qe"                             "LKE_Qh" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   Longwave radiation                  Shortwave radiation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            "LKE_Qlw"                            "LKE_Qsw" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                               Volume                          Evaporation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              "LKE_V"                         "LKE_evpvol" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Evaporation                         Surface area </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_evpflx"                             "LKE_A0" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Evaporation                               Inflow </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_evprte"                         "LKE_inflow" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Outflow                        Precipitation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        "LKE_outflow"                         "LKE_precip" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Precipitation       Remote sensed skin temperature </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         "LKE_pcpvol"                          "HYD_surft" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      e-folding depth                       Euphotic depth </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          "LKE_efold"                         "LKE_photic" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Time                           Lake depth </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                               "Date"                         "LKE_depths" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Water density                             Salinity </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           "HYD_dens"                           "CHM_salt" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            Phosphate                  Dissolved organic P </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            "PHS_frp"                            "PHS_dop" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Particulate organic P                  Ammoniacal nitrogen </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            "PHS_pop"                            "NIT_amm" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Nitrate                  Dissolved organic N </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            "NIT_nit"                            "NIT_don" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Particulate organic N             Dissolved organic carbon </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            "NIT_pon"                            "CAR_doc" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Particulate organic carbon                        Cyanobacteria </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            "CAR_poc"                          "PHY_cyano" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Green algae                   Diatoms freshwater </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          "PHY_green"                         "PHY_diatom" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           Stratified                    Schmidt stability </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          "HYD_strat"                         "HYD_schstb" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   Centre of buoyancy                     Epilimnion depth </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         "HYD_ctrbuy"                         "HYD_epidep" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    Hypolimnion depth    Trophic Level Index Chlorophyll-a </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         "HYD_hypdep"                           "LKE_tlic" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Trophic Level Index Total Nitrogen Trophic Level Index Total Phosphorus </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           "LKE_tlin"                           "LKE_tlip" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Trophic Level Index Secchi depth                Trophic Level Index 3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          "LKE_tlise"                           "LKE_tli3" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Trophic Level Index 4                       Oxycline depth </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           "LKE_tli4"                         "CHM_oxycln" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   Epilimnetic oxygen                   Metalimnetic oygen </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         "CHM_oxyepi"                         "CHM_oxymet" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  Hypolimnetic oxygen           Metalimnetic oxygen minima </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         "CHM_oxyhyp"                         "CHM_oxymom" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Number of anoxic layers  Photosynthetically active radiation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         "CHM_oxynal"                            "RAD_par" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Particulate inorganic P                     Suspended solids </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            "PHS_pip"                            "NCS_ss1" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Zooplankton                      Air temperature </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           "ZOO_zoo1"                         "MET_tmpair" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Water-air temperature difference </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         "HYD_atdiff" </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

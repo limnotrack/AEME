@@ -31,7 +31,8 @@ write_yaml(x, file, fileEncoding = "UTF-8", ...)
 
 - ...:
 
-  arguments to [`as.yaml`](https://rdrr.io/pkg/yaml/man/as.yaml.html)
+  arguments to
+  [`as.yaml`](https://yaml.r-lib.org/reference/as.yaml.html)
 
 ## Author
 

@@ -65,6 +65,14 @@ key_naming
 
   Variable name that the variable is derived from
 
+- min:
+
+  Minimum value for the variable
+
+- max:
+
+  Maximum value for the variable
+
 - keywords:
 
   Keywords associated with the variable
