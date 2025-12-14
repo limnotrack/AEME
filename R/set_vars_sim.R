@@ -25,10 +25,10 @@
 #' print(updated_controls)
 #' 
 set_vars_sim <- function(model_controls,
-                               vars_sim,
-                               simulate = TRUE,
-                               exclusive = FALSE) {
-
+                         vars_sim,
+                         simulate = TRUE,
+                         exclusive = FALSE) {
+  
   stopifnot("var_aeme" %in% names(model_controls),
             "simulate" %in% names(model_controls))
   
@@ -49,7 +49,7 @@ set_vars_sim <- function(model_controls,
     cli::cli_alert_info(
       "Variables not found: {.var {paste(missing_vars, collapse = ', ')}}.
       Adding them to model_controls."
-      )
+    )
     new_rows <- data.frame(
       var_aeme = missing_vars,
       simulate = simulate,
