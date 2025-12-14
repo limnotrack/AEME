@@ -55,17 +55,17 @@ test_that("plotting model output works", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   path <- tempdir()
-  model_controls <- get_model_controls()
+  model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  model <- c("glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- "glm_aed"
   }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
-                     ext_elev = 5, use_bgc = FALSE)
+                     ext_elev = 5, use_bgc = TRUE)
 
   testthat::expect_error({
     p1 <- plot_output(aeme = aeme, model = model,
@@ -92,7 +92,7 @@ test_that("plotting model output works", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = F, ncores = 2L)
 
 
   p1 <- plot(aeme, "output")
@@ -101,6 +101,15 @@ test_that("plotting model output works", {
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
                     var_lims = c(0, 30), ylim = c(0, 16), facet = FALSE)
+  
+  plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
+  plot_output(aeme = aeme, model = model, var_sim = "HYD_dens")
+  plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
+  plot_output(aeme = aeme, model = model, var_sim = "PHY_tchla")
+  plot_output(aeme = aeme, model = model, var_sim = "PHY_cyano")
+  plot_output(aeme = aeme, model = model, var_sim = "PHY_green")
+  plot_output(aeme = aeme, model = model, var_sim = "NIT_tn")
+  plot_output(aeme = aeme, model = model, var_sim = "PHS_tp")
   testthat::expect_true(is.list(p1))
   testthat::expect_true(all(c(ggplot2::is_ggplot(p1[[1]]),
                               ggplot2::is_ggplot(p1[[2]]),
