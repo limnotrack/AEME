@@ -43,7 +43,7 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                           Returning empty output.")
     out <- empty_model_output(
       reason = "date_index exceeds available GOTM output dates"
-      )
+    )
     return(out)
   }
   
@@ -103,8 +103,11 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   Lmat <- matrix(zeta, nrow = nrow(z), ncol = length(zeta),
                  byrow = TRUE)
+  Lmat_zi <- matrix(zeta, nrow = nrow(zi), ncol = length(zeta),
+                    byrow = TRUE)
   
   midpoints <- Lmat - z
+  midpoints_zi <- Lmat_zi - zi
   
   # norm_depths <- depths / max(depths)
   # depth_mat <- matrix(data = norm_depths, ncol = 1)
@@ -149,9 +152,15 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
         return(NULL)
       }
       var <- ncdf4::ncvar_get(nc, v)[, date_index]
-      interp_static_grid(var = var,
-                         midpoints = midpoints,
-                         out_depths = out_depths)
+      if (nrow(var) == nrow(zi)) {
+        interp_static_grid(var = var,
+                           midpoints = midpoints_zi,
+                           out_depths = out_depths)
+      } else if (nrow(var) == nrow(z)) {
+        interp_static_grid(var = var,
+                           midpoints = midpoints,
+                           out_depths = out_depths)
+      }
     })
     
     out_list <- c(out_list, out_vars)
