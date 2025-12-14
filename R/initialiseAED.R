@@ -108,10 +108,14 @@ initialiseAED <- function(model_controls, path_aed) {
       msg <- paste0(var_name, " ", paste0(old_val,
                                           " replaced with ", new_val))
       cli_inform_safe(c("i" = msg))
+      
       # Zooplankton initialisation
     } else if (grepl("ZOO_", var_name)) {
       cli_inform_safe(c("i" = "Using default zooplankton initialisation"))
-      
+    
+      # pH initialisation
+    } else if (grepl("CAR_pH", var_name)) {
+      cli_inform_safe(c("i" = "Using default pH initialisation"))
     } else {
       
       nml_param_name <- paste0(gsub("^.*_","", var_name),
