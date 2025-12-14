@@ -126,7 +126,8 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
 plot_var_depth <- function(df, obs, ylim, xlim, var_lims, add_obs,
                            print_plots = FALSE) {
 
-  my_cols <- RColorBrewer::brewer.pal(11, "Spectral")
+  sel_var <- df$var_sim[1]
+  my_cols <- get_hm_palette(var = sel_var, n = 11)
   fill_lab <- eval(parse(text = df$name_parse[1]))
   df <- df |> 
     dplyr::group_by(Date, Model) |> 
@@ -150,7 +151,7 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, add_obs,
     ggplot2::geom_col(data = df, ggplot2::aes(x = Date, y = lyr_thk,
                                               fill = value),
                       position = 'stack', width = 1) +
-    ggplot2::scale_fill_gradientn(colors = rev(my_cols),
+    ggplot2::scale_fill_gradientn(colors = my_cols,
                                   # name = bquote(.(df$name_parse[1])),
                                   limits = var_lims) +
     {if(!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim)} +
