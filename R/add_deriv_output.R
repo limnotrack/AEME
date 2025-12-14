@@ -29,6 +29,23 @@ add_deriv_output <- function(out_list, hyps, vars_sim = NULL) {
   out_list
 }
 
+#' Water density calculation function
+#' @noRd
+calc_HYD_dens <- function(out_list, hyps) {
+  req_vars <- c("HYD_temp", "CHM_salt")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
+  wtr    <- out_list[["HYD_temp"]]
+  salt <- out_list[["CHM_salt"]]
+  
+  safe_apply(ncol(wtr), function(c) {
+    if (all(is.na(wtr[, c]))) return(NA_real_)
+    v <- rLakeAnalyzer::water.density(wtr[, c], sal = salt[, c])
+    v
+  })
+}
 
 #' Thermocline depth calculation function
 #' @noRd
