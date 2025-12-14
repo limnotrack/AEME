@@ -147,8 +147,9 @@ get_model_vars <- function(vars_sim, model) {
     dplyr::filter(!!dplyr::sym(model) == "") |> 
     dplyr::pull(name)
   if (length(missing_vars) > 0) {
-    cli::cli_abort("The following variables are not available in model 
-                   {.val {model}}: {.val {missing_vars}}")
+    msg <- paste0("The following variables are not available in model 
+                   ", model, ": ", paste0(missing_vars, collapse = ", "))
+    cli_inform_safe(c("!" = msg))
   }
   
   return(model_vars)
@@ -175,8 +176,11 @@ format_model_vars_vec <- function(vars_sim, model) {
     dplyr::filter(!!dplyr::sym(model) == "") |> 
     dplyr::pull(name)
   if (length(missing_vars) > 0) {
-    cli::cli_abort("The following variables are not available in model 
-                   {.val {model}}: {.val {missing_vars}}")
+    msg <- paste0("The following variables are not available in model 
+                   ", model, ": ", paste0(missing_vars, collapse = ", "))
+    cli_inform_safe(c("!" = msg))
+    model_vars <- model_vars |>
+      dplyr::filter(!name %in% missing_vars)
   }
   
   model_vars_vec <- setNames(model_vars[[model]], model_vars$name)
