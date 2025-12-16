@@ -250,9 +250,45 @@ locations around the world. However, it’s date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2025-12-14 22:53:26] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2025-12-14 22:53:26] downloading</span></span>
-<span><span class="co">#&gt; INFO [2025-12-14 22:53:28] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2025-12-16 03:43:41] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:43:45] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:43:49] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:43:53] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:43:57] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:01] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:06] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:10] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:14] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:18] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:22] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:26] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:31] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:35] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:39] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:43] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:47] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:51] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:44:55] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:00] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:04] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:09] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:13] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:17] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:21] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:25] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:29] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:34] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:38] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:42] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:46] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:50] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:55] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:45:59] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:46:03] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:46:07] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:46:11] job updated</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:46:11] downloading</span></span>
+<span><span class="co">#&gt; INFO [2025-12-16 03:46:13] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -632,14 +668,14 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2025-12-14 22:53:38]</span></span>
-<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2025-12-14 22:53:38]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2025-12-14 22:53:56]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2025-12-14 22:53:56]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED2 run successful! [2025-12-14 22:53:57]</span></span>
-<span><span class="co">#&gt; → GOTM-WET running... [2025-12-14 22:53:57]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2025-12-14 22:53:57]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2025-12-14 22:53:57]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2025-12-16 03:46:23]</span></span>
+<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2025-12-16 03:46:23]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2025-12-16 03:46:41]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2025-12-16 03:46:41]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED2 run successful! [2025-12-16 03:46:42]</span></span>
+<span><span class="co">#&gt; → GOTM-WET running... [2025-12-16 03:46:42]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2025-12-16 03:46:42]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2025-12-16 03:46:42]</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span></code></pre></div>
 </div>

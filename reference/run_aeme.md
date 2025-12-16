@@ -99,10 +99,10 @@ model_controls = model_controls, ext_elev = 5)
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-12-14 22:49:32]
-#> → GLM-AED running... [2025-12-14 22:49:32]
-#> ✔ GLM-AED2 run successful! [2025-12-14 22:49:33]
-#> ✔ Model run complete! [2025-12-14 22:49:33]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-12-16 03:39:26]
+#> → GLM-AED running... [2025-12-16 03:39:26]
+#> ✔ GLM-AED2 run successful! [2025-12-16 03:39:26]
+#> ✔ Model run complete! [2025-12-16 03:39:26]
 plot_output(aeme, model = model)
 #> Warning: Using size for a discrete variable is not advised.
 #> Warning: Removed 86 rows containing missing values or values outside the scale range
