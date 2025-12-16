@@ -191,45 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-12-16 03:43:41] job submitted
-#> INFO [2025-12-16 03:43:45] job updated
-#> INFO [2025-12-16 03:43:49] job updated
-#> INFO [2025-12-16 03:43:53] job updated
-#> INFO [2025-12-16 03:43:57] job updated
-#> INFO [2025-12-16 03:44:01] job updated
-#> INFO [2025-12-16 03:44:06] job updated
-#> INFO [2025-12-16 03:44:10] job updated
-#> INFO [2025-12-16 03:44:14] job updated
-#> INFO [2025-12-16 03:44:18] job updated
-#> INFO [2025-12-16 03:44:22] job updated
-#> INFO [2025-12-16 03:44:26] job updated
-#> INFO [2025-12-16 03:44:31] job updated
-#> INFO [2025-12-16 03:44:35] job updated
-#> INFO [2025-12-16 03:44:39] job updated
-#> INFO [2025-12-16 03:44:43] job updated
-#> INFO [2025-12-16 03:44:47] job updated
-#> INFO [2025-12-16 03:44:51] job updated
-#> INFO [2025-12-16 03:44:55] job updated
-#> INFO [2025-12-16 03:45:00] job updated
-#> INFO [2025-12-16 03:45:04] job updated
-#> INFO [2025-12-16 03:45:09] job updated
-#> INFO [2025-12-16 03:45:13] job updated
-#> INFO [2025-12-16 03:45:17] job updated
-#> INFO [2025-12-16 03:45:21] job updated
-#> INFO [2025-12-16 03:45:25] job updated
-#> INFO [2025-12-16 03:45:29] job updated
-#> INFO [2025-12-16 03:45:34] job updated
-#> INFO [2025-12-16 03:45:38] job updated
-#> INFO [2025-12-16 03:45:42] job updated
-#> INFO [2025-12-16 03:45:46] job updated
-#> INFO [2025-12-16 03:45:50] job updated
-#> INFO [2025-12-16 03:45:55] job updated
-#> INFO [2025-12-16 03:45:59] job updated
-#> INFO [2025-12-16 03:46:03] job updated
-#> INFO [2025-12-16 03:46:07] job updated
-#> INFO [2025-12-16 03:46:11] job updated
-#> INFO [2025-12-16 03:46:11] downloading
-#> INFO [2025-12-16 03:46:13] extracting
+#> INFO [2025-12-16 20:47:12] job submitted
+#> INFO [2025-12-16 20:47:12] downloading
+#> INFO [2025-12-16 20:47:14] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -630,14 +594,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-12-16 03:46:23]
-#> → DYRESM-CAEDYM running... [2025-12-16 03:46:23]
-#> ✔ DYRESM-CAEDYM run successful! [2025-12-16 03:46:41]
-#> → GLM-AED running... [2025-12-16 03:46:41]
-#> ✔ GLM-AED2 run successful! [2025-12-16 03:46:42]
-#> → GOTM-WET running... [2025-12-16 03:46:42]
-#> ✔ GOTM-WET run successful! [2025-12-16 03:46:42]
-#> ✔ Model run complete! [2025-12-16 03:46:42]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-12-16 20:47:25]
+#> → DYRESM-CAEDYM running... [2025-12-16 20:47:25]
+#> ✔ DYRESM-CAEDYM run successful! [2025-12-16 20:47:47]
+#> → GLM-AED running... [2025-12-16 20:47:47]
+#> ✔ GLM-AED2 run successful! [2025-12-16 20:47:47]
+#> → GOTM-WET running... [2025-12-16 20:47:47]
+#> ✔ GOTM-WET run successful! [2025-12-16 20:47:48]
+#> ✔ Model run complete! [2025-12-16 20:47:48]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```
