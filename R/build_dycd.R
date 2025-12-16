@@ -75,6 +75,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
     dplyr::filter(simulate) |>
     dplyr::pull(var_aeme) |>
     rename_modelvars(type_output = "dy_cd")
+  vars.dy <- vars.dy[!vars.dy %in% c("", "PH", "EXTC", "PAR", "ZOOP1")]
 
   if (overwrite_cfg | !file.exists(cfg_file)) {
     cli_inform_safe(c("i" = "Writing DYRESM configuration file"))
@@ -201,7 +202,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
            simulate | var_aeme == "NCS_ss2", # must initialise both SSOL groups!?!
            !var_aeme %in% c("Date", "HYD_flow", "HYD_temp", "HYD_dens",
                         "CHM_salt", "RAD_par", "RAD_extc", "RAD_secchi",
-                        "PHS_tp","NIT_tn","PHY_tchla")) |>
+                        "PHS_tp","NIT_tn","PHY_tchla", "CAR_pH", "ZOO_zoo1")) |>
     dplyr::select(c("var_aeme", "initial_wc", "initial_sed"))
 
   # write the .int file

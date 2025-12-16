@@ -14,6 +14,11 @@
 
 make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
                         date_range, inf_factor = 1) {
+  dy_inf_names <- c(
+    "Date", "VOL", "TEMPTURE", "SALINITY", "DO", "PO4", "DOPL", "POPL", "PIP",
+    "NH4", "NO3", "DONL", "PONL", "DOCL", "POCL", "SiO2", "CYANO",
+    "CHLOR", "FDIAT", "SSOL1"
+  )
   
   if (length(infList) > 0) {
     for (i in 1:length(infList)) {
@@ -32,6 +37,9 @@ make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
       # format the tables
       colnames(infList[[i]]) <- rename_modelvars(input = names(infList[[i]]),
                                                  type_output = "dy_cd")
+      infList[[i]] <- infList[[i]] |> 
+        dplyr::select(dplyr::any_of(dy_inf_names))
+      
     }
   } else {
     infList <- list("EMPTY" = data.frame(
