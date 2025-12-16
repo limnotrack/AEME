@@ -85,7 +85,7 @@ test_that("running GLM works", {
                               vars_sim = vars_sim)
   testthat::expect_true(is.list(outp1))
   testthat::expect_true(nrow(outp1$HYD_temp) == 43)
-  testthat::expect_true(length(outp1) == 22)
+  testthat::expect_true(length(outp1) == 53)
   
   outp2 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model,  
                               vars_sim = "HYD_temp", incl_fluxes = FALSE)
@@ -146,9 +146,8 @@ test_that("running GLM with different exec works", {
   )
   unzip(file.path(path, "glm_3.9.016.zip"), exdir = file.path(path, "glm_exec"))
   glm_exec <- file.path(path, "glm_exec", "glm_3.9.016", "glm.exe")
-  file.exists(glm_exec)
-  options("AEME.glm_exec" = file.path(path, "glm_exec", "glm_3.9.016",
-                                      "glm.exe"))
+  testthat::expect_true(file.exists(glm_exec))
+  options("AEME.glm_exec" = glm_exec)
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, ext_elev = 5,
@@ -263,11 +262,11 @@ test_that("running DYRESM-CAEDYM works", {
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
+  path = "aeme2"
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   model_controls = model_controls, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = FALSE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),

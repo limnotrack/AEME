@@ -58,7 +58,7 @@ test_that("plotting model output works", {
   model_controls <- get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed", "gotm_wet")
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- "glm_aed"
@@ -92,7 +92,7 @@ test_that("plotting model output works", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = F, ncores = 2L)
+                   parallel = TRUE, ncores = 2L)
 
 
   p1 <- plot(aeme, "output")
