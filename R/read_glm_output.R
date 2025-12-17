@@ -116,18 +116,14 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     
     suppressWarnings({
       out_list[["LKE_efold"]] <- sapply(seq_len(ncol(rad)), \(t) {
-        if (sum(!is.na(rad[, t])) < 2 | length(unique(out_depths[, t])) <= 1 |
-            length(unique(rad[, t])) <= 1) {
-          return(NA)
-        }
+        ok <- complete.cases(rad[, t], out_depths[, t])
+        if (sum(ok) < 2 || length(unique(rad[ok, t])) < 2) return(NA)
         ref_rad <- (1/exp(1) * max(rad[, t]))
         approx(rad[, t], out_depths[, t], xout = ref_rad)$y
       })
       out_list[["LKE_photic"]] <- sapply(seq_len(ncol(rad)), \(t) {
-        if (sum(!is.na(rad[, t])) < 2 | length(unique(out_depths[, t])) <= 1 |
-            length(unique(rad[, t])) <= 1) {
-          return(NA)
-        }
+        ok <- complete.cases(rad[, t], out_depths[, t])
+        if (sum(ok) < 2 || length(unique(rad[ok, t])) < 2) return(NA)
         ref_rad <- (0.01 * max(rad[, t]))
         approx(rad[, t], out_depths[, t], xout = ref_rad)$y
       })
