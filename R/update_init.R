@@ -59,7 +59,7 @@ update_init <- function(aeme, model_controls = NULL) {
       old_val <- mod_ctrls$initial_wc[mod_ctrls$var_aeme == v]
       mod_ctrls$initial_wc[mod_ctrls$var_aeme == v] <- new_val
       msg <- paste0("Setting initial value for ", v, " from ", old_val,
-                     " to ", new_val)
+                    " to ", new_val)
       cli_inform_safe(c("i" = msg))
     }
     depths <- seq(from = 0, to = init_depth, length.out = 10) |> 
@@ -84,6 +84,10 @@ update_init <- function(aeme, model_controls = NULL) {
           if (new_vals[i] > new_vals[i - 1]) {
             new_vals[i] <- new_vals[i - 1]
           }
+        }
+        if (v == "CHM_salt") {
+          # Ensure salinity is always >= 0
+          new_vals <- ifelse(new_vals < 0, 0, new_vals)
         }
       } else {
         new_vals <- rep(mod_ctrls$initial_wc[mod_ctrls$var_aeme == v],
