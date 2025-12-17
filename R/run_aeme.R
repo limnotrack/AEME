@@ -245,7 +245,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = ref_fils,
       wd = sim_folder,
-      spinner = TRUE,
+      spinner = FALSE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -273,7 +273,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = sim_fils,
       wd = sim_folder,
-      spinner = TRUE,
+      spinner = FALSE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -302,7 +302,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = info_fils,
       wd = sim_folder,
-      spinner = TRUE,
+      spinner = FALSE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -330,7 +330,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = character(),
       wd = sim_folder,
-      spinner = TRUE,
+      spinner = FALSE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -399,7 +399,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = character(),
       wd = sim_folder,
-      spinner = TRUE,
+      spinner = FALSE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -451,7 +451,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = character(),
       wd = sim_folder,
-      spinner = TRUE,
+      spinner = FALSE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
