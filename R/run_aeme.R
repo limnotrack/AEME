@@ -245,7 +245,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = ref_fils,
       wd = sim_folder,
-      spinner = FALSE,
+      spinner = TRUE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -273,7 +273,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = sim_fils,
       wd = sim_folder,
-      spinner = FALSE,
+      spinner = TRUE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -302,7 +302,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = info_fils,
       wd = sim_folder,
-      spinner = FALSE,
+      spinner = TRUE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -330,7 +330,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = character(),
       wd = sim_folder,
-      spinner = FALSE,
+      spinner = TRUE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -399,7 +399,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = character(),
       wd = sim_folder,
-      spinner = FALSE,
+      spinner = TRUE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -451,7 +451,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
       command = bin_exec,
       args = character(),
       wd = sim_folder,
-      spinner = FALSE,
+      spinner = TRUE,
       echo = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
@@ -463,10 +463,20 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
       cli_inform_safe(c("v" = paste0("GOTM-WET run successful! ",
                                      "[", format(Sys.time()), "]")))
     } else {
-      cli_inform_safe(c("!" = paste0("GOTM-WET run FAILED! ",
-                                     "[", format(Sys.time()), "]\n",
-                                     paste0(tail(out, 10),
-                                            collapse = "\n"))))
+      cli_inform_safe(c(
+        "!" = paste0(
+          "GOTM-WET run FAILED! ",
+          "[", format(Sys.time()), "]"
+        )
+      ))
+      
+      # Emit raw stderr safely (no cli wrapping)
+      msg <- paste(tail(out, 10), collapse = "\n")
+      
+      # Strip ANSI just in case
+      msg <- gsub("\033\\[[0-9;]*m", "", msg)
+      
+      message(msg)
     }
   }
   return(p)
