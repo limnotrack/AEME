@@ -344,10 +344,21 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
     cli_inform_safe(c("v" = paste0("DYRESM-CAEDYM run successful! ",
                                    "[", format(Sys.time()), "]")))
   } else {
-    cli_inform_safe(c("!" = paste0("DYRESM-CAEDYM run FAILED! ",
-                                   "[", format(Sys.time()), "]\n",
-                                   paste0(tail(out, 10),
-                                          collapse = "\n"))))
+    cli_inform_safe(c(
+      "!" = paste0(
+        "DYRESM-CAEDYM run FAILED! ",
+        "[", format(Sys.time()), "]"
+      )
+    ))
+    
+    # Emit raw stderr safely (no cli wrapping)
+    msg <- paste(tail(out, 10), collapse = "\n")
+    
+    # Strip ANSI just in case
+    msg <- gsub("\033\\[[0-9;]*m", "", msg)
+    
+    message(msg)
+    
   }
   return(p)
 }
@@ -409,13 +420,23 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     success <- sum(grepl("Model Run Complete", out)) == 1
     if (success) {
       # message("GLM-AED run successful! [", format(Sys.time()), "]")
-      cli_inform_safe(c("v" = paste0("GLM-AED2 run successful! ",
+      cli_inform_safe(c("v" = paste0("GLM-AED run successful! ",
                                      "[", format(Sys.time()), "]")))
     } else {
-      cli_inform_safe(c("!" = paste0("GLM-AED2 run FAILED! ",
-                                     "[", format(Sys.time()), "]\n",
-                                     paste0(tail(out, 10),
-                                            collapse = "\n"))))
+      cli_inform_safe(c(
+        "!" = paste0(
+          "GLM-AED run FAILED! ",
+          "[", format(Sys.time()), "]"
+        )
+      ))
+      
+      # Emit raw stderr safely (no cli wrapping)
+      msg <- paste(tail(out, 10), collapse = "\n")
+      
+      # Strip ANSI just in case
+      msg <- gsub("\033\\[[0-9;]*m", "", msg)
+      
+      message(msg)
     }
   }
   return(p)
