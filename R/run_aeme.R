@@ -163,9 +163,25 @@ run_aeme <- function(aeme, model,
   }
   
   if ("aeme" %in% return_type | "both" %in% return_type) {
-    aeme <- load_output(model = model, aeme = aeme, path = path,
-                        model_controls = model_controls, parallel = parallel,
-                        cl = cl, ens_n = ens_n)
+    
+    model_check <- sapply(model, function(m) {
+      exec_result[[m]]$status == 0
+    })
+    model_success <- model[model_check]
+    if (length(model_success) < length(model)) {
+      cli_inform_safe(c("!" = paste0("Warning: Some model runs failed and
+                                     will not be loaded: ",
+                                     paste0(model[!model_check],
+                                            collapse = ", "))))
+    }
+    
+    if (length(model_success) > 0) {
+      aeme <- load_output(model = model, aeme = aeme, path = path,
+                          model_controls = model_controls, parallel = parallel,
+                          cl = cl, ens_n = ens_n)
+    } else {
+      cli::cli_warn(c("!" = "No model output loaded as all model runs failed."))
+    }
   }
   
   # handle return type
