@@ -21,11 +21,18 @@ calc_evap <- function(met, altitude,
   
   if (model == "gotm_wet") {
     if (method == "fairall") {
-      evap <- calc_fairall_vec(u10 = met[["u10"]], v10 = met[["v10"]],
-                               sst = met[["sst"]], airt = met[["airt"]],
-                               hum = met[["hum"]], airp = met[["airp"]],
-                               precip = met[["precip"]])["evap"] |> 
+      humid <- calc_humidity_vars(hum_method = 1, hum = met[["hum"]], 
+                                  tw = met[["sst"]], ta = met[["airt"]], airp = met[["airp"]])
+      evap <- calc_fairall_vec(sst = met[["sst"]], airt = met[["airt"]],# airp = met[["airp"]],
+                               u10 = met[["u10"]], v10 = met[["v10"]],
+                               precip = met[["precip"]], qa = humid[["qa"]], 
+                               qs = humid[["qs"]], rhoa = humid[["rhoa"]])["evap"] |>
         unlist()
+      # evap <- calc_fairall_vec(u10 = met[["u10"]], v10 = met[["v10"]],
+      #                          sst = met[["sst"]], airt = met[["airt"]],
+      #                          hum = met[["hum"]], airp = met[["airp"]],
+      #                          precip = met[["precip"]])["evap"] |> 
+      #   unlist()
     } else {
       evap <- sapply(seq_len(nrow(met)), \(n) {
         calc_kondo(u10 = met[["u10"]][n], v10 = met[["v10"]][n],
@@ -46,7 +53,7 @@ calc_evap <- function(met, altitude,
     LakeTemp <- met[["sst"]]
     Density <- rLakeAnalyzer::water.density(LakeTemp)
     RelHum <- met[["hum"]]
-    AirPres <- met[["airp"]] /100 # Double check
+    AirPres <- met[["airp"]] / 100 # Double check
     WindSp <- sqrt(met[["u10"]]^2 + met[["v10"]]^2)
     SatVapDef <- (RelHum/100) * saturated_vapour(AirTemp)
     SatVap_surface <- saturated_vapour(LakeTemp) #hPa
