@@ -16,8 +16,9 @@
 #' @param use_bgc logical; switch to use the biogeochemical model.
 #' @param calc_wbal logical; calculate water balance. Default = TRUE.
 #' @param wb_method numeric; method to use for calculating water balance. Must be
-#' 1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
-#' outflows calculated). Default = 2
+#' 1 (no inflows or outflows) or 2 (outflows calculated) or 3 (Any unexplained 
+#' gain in lake storage is treated as an effective inflow; any unexplained loss 
+#' is treated as an effective outflow). Default = 2
 #' @param calc_wlev logical; calculate water level.
 #' @param use_aeme logical; use AEME object to generate model confiuration
 #' files.
@@ -327,6 +328,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
     # Calculate water balance ----
     if (calc_wbal | calc_wlev) {
+      init_elev <- round(min(hyps$elev) + init_depth, 2)
       wbal <- calc_water_balance(aeme_time = aeme_time,
                                  model = model,
                                  method = w_bal$method,
@@ -335,6 +337,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                                  inf = inf,
                                  outf = outf[["outflow"]],
                                  level = level,
+                                 init_elev = init_elev,
                                  obs_lake = aeme_obs[["lake"]],
                                  obs_met = met,
                                  elevation = elev,

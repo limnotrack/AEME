@@ -47,8 +47,9 @@ outflows. Needs to be named according to the model.}
 \item{calc_wbal}{logical; calculate water balance. Default = TRUE.}
 
 \item{wb_method}{numeric; method to use for calculating water balance. Must be
-1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
-outflows calculated). Default = 2}
+1 (no inflows or outflows) or 2 (outflows calculated) or 3 (Any unexplained 
+gain in lake storage is treated as an effective inflow; any unexplained loss 
+is treated as an effective outflow). Default = 2}
 
 \item{calc_wlev}{logical; calculate water level.}
 
