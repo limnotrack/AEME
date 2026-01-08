@@ -329,6 +329,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # Calculate water balance ----
     if (calc_wbal | calc_wlev) {
       init_elev <- round(min(hyps$elev) + init_depth, 2)
+      init_temp <- init_prof |> 
+        dplyr::filter(depth == min(depth)) |> 
+        dplyr::pull(temperature)
       wbal <- calc_water_balance(aeme_time = aeme_time,
                                  model = model,
                                  method = w_bal$method,
@@ -338,6 +341,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                                  outf = outf[["outflow"]],
                                  level = level,
                                  init_elev = init_elev,
+                                 init_temp = init_temp,
                                  obs_lake = aeme_obs[["lake"]],
                                  obs_met = met,
                                  elevation = elev,
