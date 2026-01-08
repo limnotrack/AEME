@@ -514,7 +514,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       V = volume_from_level(h = value, hyps = hyps),
       deltaV = c(0, diff(V)),
       rain = MET_pprain * area,
-      net = HYD_flow + rain - outflow - evap_m3
+      net = HYD_flow + rain - HYD_outflow - outflow - evap_m3
     ) |> 
     dplyr::select(c("Date", "model", "value", "HYD_flow", "rain",
                     evap_m3, evap_flux,
@@ -523,7 +523,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
                     # "dy_cd_evap_flux", "gotm_wet_evap_flux", "glm_aed_evap_flux",
                     "Ts", "area", "CHM_salt", "HYD_temp",
                     # "inflow", 
-                    "outflow", "net"
+                    "HYD_outflow", "outflow", "net"
                     # "inflow_dy_cd", "inflow_glm_aed", "inflow_gotm_wet",
                     # "outflow_dy_cd", "outflow_glm_aed", "outflow_gotm_wet"
     ))
