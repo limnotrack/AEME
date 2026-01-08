@@ -50,7 +50,7 @@
 #'
 
 calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
-                               outf = NULL, level = NULL, init_elev,
+                               outf = NULL, level = NULL, init_elev, init_temp,
                                obs_lake = NULL, obs_met, elevation,
                                print_plots = FALSE, coeffs = NULL) {
   
@@ -205,15 +205,10 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   # Prepare met data ----
   obs_met <- obs_met |>
     dplyr::mutate(MET_pprain = MET_pprain / 1000,
-                  MET_ppsnow = MET_ppsnow / 1000) |> # convert to m
-    dplyr::mutate(T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE,
-                                        align = c("right")))
+                  MET_ppsnow = MET_ppsnow / 1000, # convert to m
+                  T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE,
+                                        align = c("right"))) 
   
-  # Evaporation ----
-  evap <- obs_met |>
-    dplyr::select(c("Date","MET_tmpair", "MET_prvapr","MET_wndspd")) |>
-    dplyr::mutate(T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE,
-                                        align = c("right")))
   
   # If lake observations, use them to for evaporation estimations
   if (!is.null(obs_lake)) {
@@ -221,38 +216,45 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       dplyr::filter(
         var_aeme == "HYD_temp",
         depth_from < 1,
-        Date %in% evap$Date) |>
+        Date %in% obs_met$Date) |>
       dplyr::filter(!duplicated(Date)) |>
       dplyr::select(c("Date","value"))
     
     if (nrow(sub) == 0) {
       obs_lake <- NULL
+      obs_met$HYD_temp <- NA
     } else {
-      evap <- evap |>
-        dplyr::left_join(sub, by = "Date")
+      obs_met <- obs_met |>
+        dplyr::left_join(sub, by = "Date") |>
+        dplyr::rename(HYD_temp = value)
     }
   } else {
     if (!is.null(coeffs)) {
       cli_inform_safe(c("i" = "Using supplied coefficients for estimating lake
       surface temperature."))
-      evap$value <- coeffs[1] + coeffs[2] * evap$T5avg #
+      obs_met$HYD_temp <- coeffs[1] + coeffs[2] * obs_met$T5avg #
     }
   }
   
   # if less than 10 measurements
-  if (sum(!is.na(evap[["value"]])) < 10 & is.null(coeffs)) {
+  if (sum(!is.na(obs_met[["HYD_temp"]])) < 10 & is.null(coeffs)) {
     cli_inform_safe(c("i" = "Insufficient lake temperature observations
                       to estimate surface temperature.
                       Using Stefan & Preud'homme (2007) method."))
     coeffs <- c(5, 0.75)
-    evap$value <- coeffs[1] + coeffs[2] * evap$T5avg # (Stefan & Preud'homme, 2007) www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
+    obs_met$HYD_temp <- coeffs[1] + coeffs[2] * obs_met$T5avg # (Stefan & Preud'homme, 2007) www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
   } else {
-    fit <- lm(value ~ T5avg, data = evap)
+    fit <- lm(HYD_temp ~ T5avg, data = obs_met)
     coeffs <- coefficients(fit)
   }
   
+  depth <- abs(min(hyps$depth))
+  
+  obs_met <- obs_met |> 
+    estimate_surface_temperature(depth = depth)
+  
   if (print_plots) {
-    (ggplot2::ggplot(evap, ggplot2::aes(T5avg, value)) +
+    (ggplot2::ggplot(obs_met, ggplot2::aes(T5avg, sst)) +
        ggplot2::geom_point() +
        ggplot2::geom_smooth(span = 0.1, na.rm = TRUE, method = "lm") +
        ggplot2::theme_bw() + # theme(panel.border=element_blank(), axis.line=element_line()) +
@@ -274,14 +276,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     dplyr::rename(u10 = MET_wnduvu, v10 = MET_wnduvv, airt = MET_tmpair,
                   hum = MET_humrel, airp = MET_prsttn, precip = MET_pprain) |>
     dplyr::mutate(precip = precip / 86400, airp = airp) #|>
-  
-  # Estimate lake surface temperature (use sea surface temperature abbrev 'sst')
-  if (!("sst" %in% names(obs_met))) {
-    gotm_met <- gotm_met |>
-      dplyr::mutate(sst = airt * coeffs[2] + coeffs[1])
-    obs_met <- obs_met |>
-      dplyr::mutate(sst = T5avg * coeffs[2] + coeffs[1])
-  }
+
   
   # gotm_evap <- calc_evap(met = gotm_met, model ="gotm_wet")
   # glm_evap <- calc_evap(met = gotm_met, elevation = elevation,
