@@ -17,14 +17,14 @@ plot_wbal_comp <- function(wbal) {
     dplyr::left_join(mod$level, by = c("Date", "model")) |> 
     dplyr::mutate(Model = toggle_models(model))
   lims <- range(comp$est, comp$value, na.rm = TRUE)
-  p1 <- ggplot(comp) +
-    geom_point(aes(x = est, y = value)) +
-    geom_smooth(aes(x = est, y = value), method = "lm", se = FALSE, color = "blue") +
-    geom_abline(slope = 1, intercept = 0, color = "red") +
-    coord_equal(xlim = lims, ylim = lims) +
-    facet_wrap(~Model) +
-    labs(title = "Lake Level Comparison", x = "Estimated Level (m)", y = "Model Level (m)") +
-    theme_bw()
+  p1 <- ggplot2::ggplot(comp) +
+    ggplot2::geom_point(ggplot2::aes(x = est, y = value)) +
+    ggplot2::geom_smooth(ggplot2::aes(x = est, y = value), method = "lm", se = FALSE, color = "blue") +
+    ggplot2::geom_abline(slope = 1, intercept = 0, color = "red") +
+    ggplot2::coord_equal(xlim = lims, ylim = lims) +
+    ggplot2::facet_wrap(~Model) +
+    ggplot2::labs(title = "Lake Level Comparison", x = "Estimated Level (m)", y = "Model Level (m)") +
+    ggplot2::theme_bw()
   ## --- Total inflow ---
   comp <- wb |> 
     dplyr::select(Date, model, HYD_flow) |>
@@ -34,16 +34,16 @@ plot_wbal_comp <- function(wbal) {
     dplyr::filter(est > 0 & value > 0)
   
   p2 <- ggplot(comp) +
-    geom_point(aes(x = est, y = value)) +
-    geom_smooth(aes(x = est, y = value), method = "lm", se = FALSE, color = "blue") +
-    geom_abline(slope = 1, intercept = 0, color = "red") +
-    coord_equal(xlim = range(comp$est, comp$value, na.rm = TRUE),
+    ggplot2::geom_point(ggplot2::aes(x = est, y = value)) +
+    ggplot2::geom_smooth(ggplot2::aes(x = est, y = value), method = "lm", se = FALSE, color = "blue") +
+    ggplot2::geom_abline(slope = 1, intercept = 0, color = "red") +
+    ggplot2::coord_equal(xlim = range(comp$est, comp$value, na.rm = TRUE),
                 ylim = range(comp$est, comp$value, na.rm = TRUE)) +
-    scale_x_log10() +
-    scale_y_log10() +
-    facet_wrap(~Model) +
-    labs(title = "Total Inflow Comparison", x = "Estimated Inflow (m³)", y = "Model Inflow (m³)") +
-    theme_bw()
+    ggplot2::scale_x_log10() +
+    ggplot2::scale_y_log10() +
+    ggplot2::facet_wrap(~Model) +
+    ggplot2::labs(title = "Total Inflow Comparison", x = "Estimated Inflow (m³)", y = "Model Inflow (m³)") +
+    ggplot2::theme_bw()
   
   ## --- Total outflow ---
   comp <- wb |> 
@@ -53,16 +53,16 @@ plot_wbal_comp <- function(wbal) {
     dplyr::mutate(Model = toggle_models(model)) |> 
     dplyr::filter(est > 0 & value > 0)
   p3 <- ggplot(comp) +
-    geom_point(aes(x = est, y = value)) +
-    geom_smooth(aes(x = est, y = value), method = "lm", se = FALSE, color = "blue") +
-    geom_abline(slope = 1, intercept = 0, color = "red") +
-    coord_equal(xlim = range(comp$est, comp$value, na.rm = TRUE),
+    ggplot2::geom_point(ggplot2::aes(x = est, y = value)) +
+    ggplot2::geom_smooth(ggplot2::aes(x = est, y = value), method = "lm", se = FALSE, color = "blue") +
+    ggplot2::geom_abline(slope = 1, intercept = 0, color = "red") +
+    ggplot2::coord_equal(xlim = range(comp$est, comp$value, na.rm = TRUE),
                 ylim = range(comp$est, comp$value, na.rm = TRUE)) +
-    scale_x_log10() +
-    scale_y_log10() +
-    facet_wrap(~Model) +
-    labs(title = "Total Outflow Comparison", x = "Estimated Outflow (m³)", y = "Model Outflow (m³)") +
-    theme_bw()
+    ggplot2::scale_x_log10() +
+    ggplot2::scale_y_log10() +
+    ggplot2::facet_wrap(~Model) +
+    ggplot2::labs(title = "Total Outflow Comparison", x = "Estimated Outflow (m³)", y = "Model Outflow (m³)") +
+    ggplot2::theme_bw()
   
   ## --- Total rainfall ---
   # comp <- wb |> 
@@ -72,8 +72,8 @@ plot_wbal_comp <- function(wbal) {
   #   dplyr::mutate(Model = toggle_models(model)) |> 
   #   dplyr::filter(est > 0 & value > 0)
   # p4 <- ggplot(comp) +
-  #   geom_point(aes(x = est, y = value)) +
-  #   geom_smooth(aes(x = est, y = value), method = "lm",
+  #   geom_point(ggplot2::aes(x = est, y = value)) +
+  #   geom_smooth(ggplot2::aes(x = est, y = value), method = "lm",
   #               se = FALSE, color = "blue") +
   #   geom_abline(slope = 1, intercept = 0, color = "red") +
   #   coord_equal(xlim = range(comp$est, comp$value, na.rm = TRUE),
@@ -99,19 +99,19 @@ plot_wbal_comp <- function(wbal) {
     dplyr::mutate(Model = toggle_models(model)) |> 
     dplyr::filter(est > 0 & value > 0)
   
-  p4 <- ggplot(comp) +
-    geom_point(aes(x = est, y = value)) +
-    geom_smooth(aes(x = est, y = value), method = "lm",
+  p4 <- ggplot2::ggplot(comp) +
+    ggplot2::geom_point(ggplot2::aes(x = est, y = value)) +
+    ggplot2::geom_smooth(ggplot2::aes(x = est, y = value), method = "lm",
                 se = FALSE, color = "blue") +
-    geom_abline(slope = 1, intercept = 0, color = "red") +
-    coord_equal(xlim = range(comp$est, comp$value, na.rm = TRUE),
+    ggplot2::geom_abline(slope = 1, intercept = 0, color = "red") +
+    ggplot2::coord_equal(xlim = range(comp$est, comp$value, na.rm = TRUE),
                 ylim = range(comp$est, comp$value, na.rm = TRUE)) +
     # scale_x_log10() +
     # scale_y_log10() +
-    facet_wrap(~Model) +
-    labs(title = "Total Evaporation Comparison", x = "Estimated Evaporation (
+    ggplot2::facet_wrap(~Model) +
+    ggplot2::labs(title = "Total Evaporation Comparison", x = "Estimated Evaporation (
 m³)", y = "Model Evaporation (m³)") +
-    theme_bw()
+    ggplot2::theme_bw()
   
   ## --- Surface temperature ---
   comp <- wb |> 
@@ -120,15 +120,15 @@ m³)", y = "Model Evaporation (m³)") +
     dplyr::left_join(mod$ts, by = c("Date", "model")) |> 
     dplyr::mutate(Model = toggle_models(model))
   
-  p5 <- ggplot(comp) +
-    geom_point(aes(x = est, y = value)) +
-    geom_smooth(aes(x = est, y = value), method = "lm", se = FALSE, color = "blue") +
-    geom_abline(slope = 1, intercept = 0, color = "red") +
-    coord_equal(xlim = range(comp$est, comp$value, na.rm = TRUE),
+  p5 <- ggplot2::ggplot(comp) +
+    ggplot2::geom_point(ggplot2::aes(x = est, y = value)) +
+    ggplot2::geom_smooth(ggplot2::aes(x = est, y = value), method = "lm", se = FALSE, color = "blue") +
+    ggplot2::geom_abline(slope = 1, intercept = 0, color = "red") +
+    ggplot2::coord_equal(xlim = range(comp$est, comp$value, na.rm = TRUE),
                 ylim = range(comp$est, comp$value, na.rm = TRUE)) +
-    facet_wrap(~Model) +
-    labs(title = "Surface Temperature Comparison", x = "Estimated Surface Temp (°C)", y = "Model Surface Temp (°C)") +
-    theme_bw()
+    ggplot2::facet_wrap(~Model) +
+    ggplot2::labs(title = "Surface Temperature Comparison", x = "Estimated Surface Temp (°C)", y = "Model Surface Temp (°C)") +
+    ggplot2::theme_bw()
   mae <- mean(abs(comp$est - comp$value), na.rm = TRUE)
   
   patchwork::wrap_plots(p2, p3, p4, p5, ncol = 2)

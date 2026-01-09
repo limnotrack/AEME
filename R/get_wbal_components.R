@@ -27,9 +27,13 @@ get_wbal_components <- function(
   elev_offset <- min(inp$hypsograph$elev)
   
   obs <- observations(aeme)
-  lake_level <- obs$level |>
-    dplyr::filter(Date >= tme$start, Date <= tme$stop) |>
-    dplyr::mutate(level = value - elev_offset)
+  if (!is.null(obs$level)) {
+    lake_level <- obs$level |>
+      dplyr::filter(Date >= tme$start, Date <= tme$stop) |>
+      dplyr::mutate(level = value - elev_offset)
+  } else {
+    lake_level <- NULL
+  }
   
   ## --- AEME water balance ---
   wb <- water_balance(aeme)$data$wbal |>
@@ -48,13 +52,15 @@ get_wbal_components <- function(
   }
   
   wb_sum <- wb |>
+    dplyr::group_by(model) |> 
     dplyr::summarise(
       inflow  = sum(HYD_flow),
-      outflow = sum(outflow),
+      outflow = sum(outflow + HYD_outflow),
       rain    = sum(rain),
       evap_m3 = sum(evap_m3),
       .groups = "drop"
-    )
+    ) |> 
+    dplyr::mutate(Model = toggle_models(model))
   
   ## --- Helper to pull model vars ---
   get_mod <- function(var, cumulative = FALSE) {
