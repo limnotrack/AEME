@@ -182,13 +182,19 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       ampl <- 0
       offset <- 0
       # Calculate the modelled water level
-      mod_lvl <- data.frame(Date = date_vector)
-      mod_lvl <- mod_lvl |>
+      mod_lvl <- data.frame(Date = obs_met$Date) |>
         dplyr::mutate(
-          value = mod_lvl(Date, surf = surf,
-                          ampl = ampl,
-                          offset = offset)
-        )
+          lvl_obs = rep(c(surf, rep(NA, 3)), length.out = dplyr::n()),
+          is_obs_lvl = !is.na(lvl_obs)
+        ) |> 
+        dplyr::filter(Date >= spin_start & Date <= date_stop) 
+      # mod_lvl <- data.frame(Date = date_vector)
+      # mod_lvl <- mod_lvl |>
+      #   dplyr::mutate(
+      #     value = mod_lvl(Date, surf = surf,
+      #                     ampl = ampl,
+      #                     offset = offset)
+      #   )
     }
   } else if (use == "mod") {
     mod_lvl <- level |>
