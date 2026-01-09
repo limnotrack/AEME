@@ -180,6 +180,22 @@ aeme <- build_aeme(aeme = aeme, model = model, path = path,
                    use_bgc = TRUE)
 ```
 
+![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-1.png)
+
+    #> Optimization Complete:
+    #>   Best C: 4.4004
+    #>   Best h_inv: 282.1071
+    #>   Final RMSE: 0.1573
+
+![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-2.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-3.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-4.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-5.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-6.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-7.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-8.png)
+
+    #> Optimization Complete:
+    #>   Best C: 6.6358
+    #>   Best h_inv: 282.7988
+    #>   Final RMSE: 0.1415
+
+![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-9.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-10.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-11.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-12.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-13.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-14.png)
+
 ## Run AEME models
 
 We will now run the AEME models for the two lakes. This will run the
@@ -241,7 +257,7 @@ is set to 1 indicating that there is now output for each model in the
 ``` r
 plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 #> Warning: Using size for a discrete variable is not advised.
-#> Warning: Removed 334 rows containing missing values or values outside the scale range
+#> Warning: Removed 332 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 ```
 
@@ -250,7 +266,7 @@ plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 ``` r
 plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
 #> Warning: Using size for a discrete variable is not advised.
-#> Warning: Removed 334 rows containing missing values or values outside the scale range
+#> Warning: Removed 332 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 ```
 

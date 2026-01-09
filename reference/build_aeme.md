@@ -70,8 +70,9 @@ build_aeme(
 - wb_method:
 
   numeric; method to use for calculating water balance. Must be 1 (no
-  inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
-  outflows calculated). Default = 2
+  inflows or outflows) or 2 (outflows calculated) or 3 (Any unexplained
+  gain in lake storage is treated as an effective inflow; any
+  unexplained loss is treated as an effective outflow). Default = 2
 
 - calc_wlev:
 
@@ -131,8 +132,18 @@ build_aeme(path = path, aeme = aeme, model = model,
                model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE)
 #> ℹ Using observed water level
-#> ! Missing values in observed water level
-#> ℹ Insufficient water level observations. Using constant water level
+#> ℹ No missing values in observed water level. Using observed water level
+
+#> Optimization Complete:
+#>   Best C: 0.3355
+#>   Best h_inv: 23.4916
+#>   Final RMSE: 0.1397
+
+
+
+
+
+
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu

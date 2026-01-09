@@ -4,6 +4,8 @@
 
 - [`add_deriv_output()`](add_deriv_output.md) : Add derived output
   variables to model output
+- [`add_hum_vars()`](add_hum_vars.md) : Add humidity variables to
+  meteorological data frame
 - [`add_hypsograph()`](add_hypsograph.md) : Add hypsograph to Aeme
   object
 - [`add_inflow()`](add_inflow.md) : Set inflow data from Aeme object
@@ -26,6 +28,8 @@
 - [`assess_model()`](assess_model.md) : Assess model performance
 - [`build_aeme()`](build_aeme.md) : Build model configuration
   directories
+- [`calc_humidity_vars()`](calc_humidity_vars.md) : Calculate
+  humidity-related variables using GOTM formulas
 - [`calc_lake_vol()`](calc_lake_vol.md) : Calculate the volume of a lake
   using bathymetry data or a hypsograph
 - [`calc_tli3()`](calc_tli3.md) : Calculate TLI 3
@@ -63,6 +67,10 @@
   mg/L and percent saturation
 - [`dy_cd_parameters`](dy_cd_parameters.md) : Example dataset of
   parameters for the DYRESM-CAEDYM model
+- [`estimate_lake_wlev()`](estimate_lake_wlev.md) : Estimate Lake Water
+  Levels with Nudging
+- [`estimate_surface_temperature()`](estimate_surface_temperature.md) :
+  Estimate Surface Temperature Using Energy Balance Model
 - [`expand_met()`](expand_met.md) : Expand a minimal set of meteorology
   inputs to a complete set of variables suitable for all models
 - [`extrap_hyps()`](extrap_hyps.md) : Extend hypsometry to a greater
@@ -109,6 +117,8 @@
 - [`get_vars_sim()`](get_vars_sim.md) : Get all variables to be
   simulated, including those that are derived from others.
 - [`get_var_indices()`](get_var_indices.md) : Get variable indices
+- [`get_wbal_components()`](get_wbal_components.md) : Get water balance
+  components from AEME object
 - [`glm_aed_parameters`](glm_aed_parameters.md) : Example dataframe used
   for calibrating the biogeochemistry in the GLM-AED model.
 - [`glm_sed_params()`](glm_sed_params.md) : Generate GLM Sediment
@@ -204,6 +214,10 @@
 - [`plot_wbal()`](plot_wbal.md) : Plot water balance components
 - [`plot_wbal_annual()`](plot_wbal_annual.md) : Plot annual water
   balance components
+- [`plot_wbal_comp()`](plot_wbal_comp.md) : Plot Water Balance
+  Comparison
+- [`plot_wbal_summaries()`](plot_wbal_summaries.md) : Plot Water Balance
+  Summaries
 - [`plot_wlev()`](plot_wlev.md) : Plot lake water level
 - [`plot_zoops()`](plot_zoops.md) : Plot phytoplankton variables
 - [`precip_status()`](precip_status.md) : Get current precipitation

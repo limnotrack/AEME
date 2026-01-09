@@ -92,19 +92,29 @@ model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
 model_controls = model_controls, ext_elev = 5)
 #> ℹ Using observed water level
-#> ! Missing values in observed water level
-#> ℹ Insufficient water level observations. Using constant water level
+#> ℹ No missing values in observed water level. Using observed water level
+
+#> Optimization Complete:
+#>   Best C: 0.3355
+#>   Best h_inv: 23.4916
+#>   Final RMSE: 0.1397
+
+
+
+
+
+
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-12-18 00:25:58]
-#> → GLM-AED running... [2025-12-18 00:25:58]
-#> ✔ GLM-AED run successful! [2025-12-18 00:25:58]
-#> ✔ Model run complete! [2025-12-18 00:25:58]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-01-09 00:57:48]
+#> → GLM-AED running... [2026-01-09 00:57:48]
+#> ✔ GLM-AED run successful! [2026-01-09 00:57:49]
+#> ✔ Model run complete! [2026-01-09 00:57:49]
 plot_output(aeme, model = model)
 #> Warning: Using size for a discrete variable is not advised.
-#> Warning: Removed 86 rows containing missing values or values outside the scale range
+#> Warning: Removed 84 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 ```

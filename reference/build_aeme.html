@@ -116,8 +116,9 @@ outflows. Needs to be named according to the model.</p></dd>
 
 <dt id="arg-wb-method">wb_method<a class="anchor" aria-label="anchor" href="#arg-wb-method"></a></dt>
 <dd><p>numeric; method to use for calculating water balance. Must be
-1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
-outflows calculated). Default = 2</p></dd>
+1 (no inflows or outflows) or 2 (outflows calculated) or 3 (Any unexplained
+gain in lake storage is treated as an effective inflow; any unexplained loss
+is treated as an effective outflow). Default = 2</p></dd>
 
 
 <dt id="arg-calc-wlev">calc_wlev<a class="anchor" aria-label="anchor" href="#arg-calc-wlev"></a></dt>
@@ -178,8 +179,18 @@ working directory.</p></dd>
 <span class="r-in"><span>               model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>               use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Insufficient water level observations. Using constant water level</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No missing values in observed water level. Using observed water level</span>
+<span class="r-plt img"><img src="build_aeme-1.png" alt="" width="700" height="433"></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Optimization Complete:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Best C: 0.3355</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Best h_inv: 23.4916</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Final RMSE: 0.1397</span>
+<span class="r-plt img"><img src="build_aeme-2.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="build_aeme-3.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="build_aeme-4.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="build_aeme-5.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="build_aeme-6.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="build_aeme-7.png" alt="" width="700" height="433"></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Calculating lake level using lake depth and a sinisoidal function.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED2 for lake wainamu</span>

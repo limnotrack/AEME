@@ -12,7 +12,7 @@ library(AEME)
 #> 
 #>     time
 library(sf) # For spatial data
-#> Linking to GEOS 3.13.1, GDAL 3.11.4, PROJ 9.7.0; sf_use_s2() is TRUE
+#> Linking to GEOS 3.13.1, GDAL 3.11.0, PROJ 9.6.0; sf_use_s2() is TRUE
 library(tmap) # For mapping
 tmap_mode("view") # Set tmap mode to interactive view model
 #> ℹ tmap modes "plot" - "view"
@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2025-12-18 00:29:53] job submitted
-#> INFO [2025-12-18 00:29:53] downloading
-#> INFO [2025-12-18 00:29:55] extracting
+#> INFO [2026-01-09 01:12:44] job submitted
+#> INFO [2026-01-09 01:12:44] downloading
+#> INFO [2026-01-09 01:12:46] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -514,63 +514,87 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #> ℹ No water level present. Using constant water level.
 #> ℹ Insufficient lake temperature observations to estimate surface temperature.
 #>   Using Stefan & Preud'homme (2007) method.
-#> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Calculating lake level using lake depth and a sinisoidal function.
-#> ℹ Building DYRESM-CAEDYM for lake wainamu
-#> ℹ Copied in DYRESM .par file
-#> ℹ Writing DYRESM configuration file
-#> ℹ Writing DYRESM-CAEDYM control file
-#> ℹ Building GLM-AED2 for lake wainamu
-#> ℹ Copied in GLM nml file
-#> ℹ Building GOTM-WET model for lake wainamu
-#> ℹ Copied in GOTM configuration files
-#> ✔ GOTM YAML validation completed - no issues detected.
-#> ✔ GLM nml validation completed - no issues detected.
-
-print(aeme)
-#>             AEME 
-#> -------------------------------------------------------------------
-#>   Lake
-#> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 29m; Depth: 13.07m;
-#> Area: 156875.6 m2
-#> -------------------------------------------------------------------
-#>   Time
-#> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#>  Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
-#> -------------------------------------------------------------------
-#>   Configuration
-#>     Model controls: Present
-#>     Use biogeochemical model: No
-#>           Physical   |   Biogeochemical
-#> DY-CD    : Present    |   Present
-#> GLM-AED  : Present    |   Absent 
-#> GOTM-WET : Present    |   Present
-#> -------------------------------------------------------------------
-#>   Observations
-#> Lake: Absent; Level: Absent
-#> -------------------------------------------------------------------
-#>   Input
-#> Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=44);
-#> Meteo: Present; Use longwave: TRUE; Kw: 1.31
-#> -------------------------------------------------------------------
-#>   Inflows
-#> Data: Absent; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Outflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Water balance
-#> Method: 2; Use: obs; Modelled: Absent; Water balance: Present
-#> -------------------------------------------------------------------
-#>   Parameters: 
-#> Number of parameters: 0
-#> -------------------------------------------------------------------
-#>   Output: 
-#> 
-#> DY-CD:    
-#> GLM-AED:  
-#> GOTM-WET:
 ```
+
+![](setup-new-lake_files/figure-html/build-ensemble-1.png)
+
+    #> Optimization Complete:
+    #>   Best C: 0.001
+    #>   Best h_inv: 29
+    #>   Final RMSE: 0.0725
+
+![](setup-new-lake_files/figure-html/build-ensemble-2.png)![](setup-new-lake_files/figure-html/build-ensemble-3.png)![](setup-new-lake_files/figure-html/build-ensemble-4.png)![](setup-new-lake_files/figure-html/build-ensemble-5.png)![](setup-new-lake_files/figure-html/build-ensemble-6.png)![](setup-new-lake_files/figure-html/build-ensemble-7.png)![](setup-new-lake_files/figure-html/build-ensemble-8.png)
+
+    #> Optimization Complete:
+    #>   Best C: 0.001
+    #>   Best h_inv: 29
+    #>   Final RMSE: 0.0725
+
+![](setup-new-lake_files/figure-html/build-ensemble-9.png)![](setup-new-lake_files/figure-html/build-ensemble-10.png)![](setup-new-lake_files/figure-html/build-ensemble-11.png)![](setup-new-lake_files/figure-html/build-ensemble-12.png)![](setup-new-lake_files/figure-html/build-ensemble-13.png)![](setup-new-lake_files/figure-html/build-ensemble-14.png)![](setup-new-lake_files/figure-html/build-ensemble-15.png)
+
+    #> Optimization Complete:
+    #>   Best C: 0.001
+    #>   Best h_inv: 29
+    #>   Final RMSE: 0.0575
+
+![](setup-new-lake_files/figure-html/build-ensemble-16.png)![](setup-new-lake_files/figure-html/build-ensemble-17.png)![](setup-new-lake_files/figure-html/build-ensemble-18.png)![](setup-new-lake_files/figure-html/build-ensemble-19.png)![](setup-new-lake_files/figure-html/build-ensemble-20.png)![](setup-new-lake_files/figure-html/build-ensemble-21.png)
+
+    #> ℹ Correcting water balance using estimated outflows (method = 2).
+    #> ℹ Calculating lake level using lake depth and a sinisoidal function.
+    #> ℹ Building DYRESM-CAEDYM for lake wainamu
+    #> ℹ Copied in DYRESM .par file
+    #> ℹ Writing DYRESM configuration file
+    #> ℹ Writing DYRESM-CAEDYM control file
+    #> ℹ Building GLM-AED2 for lake wainamu
+    #> ℹ Copied in GLM nml file
+    #> ℹ Building GOTM-WET model for lake wainamu
+    #> ℹ Copied in GOTM configuration files
+    #> ✔ GOTM YAML validation completed - no issues detected.
+    #> ✔ GLM nml validation completed - no issues detected.
+
+    print(aeme)
+    #>             AEME 
+    #> -------------------------------------------------------------------
+    #>   Lake
+    #> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 29m; Depth: 13.07m;
+    #> Area: 156875.6 m2
+    #> -------------------------------------------------------------------
+    #>   Time
+    #> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
+    #>  Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
+    #> -------------------------------------------------------------------
+    #>   Configuration
+    #>     Model controls: Present
+    #>     Use biogeochemical model: No
+    #>           Physical   |   Biogeochemical
+    #> DY-CD    : Present    |   Present
+    #> GLM-AED  : Present    |   Absent 
+    #> GOTM-WET : Present    |   Present
+    #> -------------------------------------------------------------------
+    #>   Observations
+    #> Lake: Absent; Level: Absent
+    #> -------------------------------------------------------------------
+    #>   Input
+    #> Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=44);
+    #> Meteo: Present; Use longwave: TRUE; Kw: 1.31
+    #> -------------------------------------------------------------------
+    #>   Inflows
+    #> Data: Absent; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+    #> -------------------------------------------------------------------
+    #>   Outflows
+    #> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+    #> -------------------------------------------------------------------
+    #>   Water balance
+    #> Method: 2; Use: obs; Modelled: Absent; Water balance: Present
+    #> -------------------------------------------------------------------
+    #>   Parameters: 
+    #> Number of parameters: 0
+    #> -------------------------------------------------------------------
+    #>   Output: 
+    #> 
+    #> DY-CD:    
+    #> GLM-AED:  
+    #> GOTM-WET:
 
 By default, the `build_aeme` function will build the file configuration
 for each model. This will create the necessary files for each model to
@@ -594,14 +618,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-12-18 00:30:06]
-#> → DYRESM-CAEDYM running... [2025-12-18 00:30:06]
-#> ✔ DYRESM-CAEDYM run successful! [2025-12-18 00:30:24]
-#> → GLM-AED running... [2025-12-18 00:30:24]
-#> ✔ GLM-AED run successful! [2025-12-18 00:30:24]
-#> → GOTM-WET running... [2025-12-18 00:30:24]
-#> ✔ GOTM-WET run successful! [2025-12-18 00:30:25]
-#> ✔ Model run complete! [2025-12-18 00:30:25]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-01-09 01:13:22]
+#> → DYRESM-CAEDYM running... [2026-01-09 01:13:22]
+#> ✔ DYRESM-CAEDYM run successful! [2026-01-09 01:13:50]
+#> → GLM-AED running... [2026-01-09 01:13:50]
+#> ✔ GLM-AED run successful! [2026-01-09 01:13:51]
+#> → GOTM-WET running... [2026-01-09 01:13:51]
+#> ✔ GOTM-WET run successful! [2026-01-09 01:13:51]
+#> ✔ Model run complete! [2026-01-09 01:13:51]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```
