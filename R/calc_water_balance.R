@@ -422,9 +422,11 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
                     # spill_outflow = pmax(net_outflow - HYD_outflow, 0)
       # )
     
-    wb <- wb |> 
-      estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev) 
     # plot(wb)
+    if (method %in% c(2, 3)) {
+      wb <- wb |>
+        estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev)
+    }
     
     return(wb)
   }) |> 
@@ -434,7 +436,8 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   if (method == 1) {
     wb <- wb |>
       dplyr::mutate(
-        outflow = 0,
+        lvl_sim = NA,
+        spill_outflow = 0,
         inflow = 0
       )
     # Method 2 - Outflows
@@ -451,48 +454,35 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   } else  if (method == 3) {
     # Separate negative into inflows and positive into outflows
     wb <- wb |>
-      dplyr::group_by(model) |>
+      dplyr::group_by(model) |> 
       dplyr::arrange(Date) |>
-      
-      # 1. Raw residual
       dplyr::mutate(
-        resid = spill_outflow
-      ) |>
-      
-      # 2. Separate signs BEFORE smoothing
+        V = volume_from_level(h = lvl_sim, hyps = hyps),
+        A_t = area_from_level(h = lvl_sim, hyps = hyps),
+        dV = V - dplyr::lag(V),
+        dV = dplyr::if_else(is.na(dV), 0, dV),
+        expected_flux =
+          HYD_flow +
+          MET_pprain * A_t -
+          evap_m3 -
+          HYD_outflow -
+          spill_outflow,
+        residual = dV - expected_flux,
+        eff_inflow = dplyr::if_else(residual > 0, residual, 0),
+        eff_outflow = dplyr::if_else(residual < 0, -residual, 0),
+        net_balance_m3 =
+          HYD_flow + eff_inflow + MET_pprain * A_t -
+          evap_m3 -
+          HYD_outflow -
+          spill_outflow - eff_outflow
+      ) |> 
       dplyr::mutate(
-        spill_pos = pmax(resid, 0),      # effective outflow
-        inflow_pos = pmax(-resid, 0)      # effective inflow
+        inflow = eff_inflow,
+        spill_outflow = eff_outflow
       ) |>
-      
-      # 3. Totals (volumes)
-      dplyr::mutate(
-        tot_spill = sum(spill_pos, na.rm = TRUE),
-        tot_inflow = sum(inflow_pos, na.rm = TRUE)
-      ) |>
-      
-      # 4. Smooth weights independently
-      dplyr::mutate(
-        w_spill = zoo::rollmean(spill_pos, 5, fill = 0, align = "right"),
-        w_in = zoo::rollmean(inflow_pos, 5, fill = 0, align = "right")
-      ) |>
-      
-      # 5. Normalise weights
-      dplyr::mutate(
-        w_spill = ifelse(sum(w_spill) > 0, w_spill / sum(w_spill), 0),
-        w_in = ifelse(sum(w_in) > 0, w_in / sum(w_in), 0)
-      ) |>
-      
-      # 6. Redistribute exact volumes
-      dplyr::mutate(
-        spill_outflow = tot_spill * w_spill,
-        inflow = tot_inflow * w_in
-      ) |>
-      
-      dplyr::select(-resid, -spill_pos, -inflow_pos,
-                    -tot_spill, -tot_inflow,
-                    -w_spill, -w_in) |>
-      
+      dplyr::select(-c(V, A_t, dV, expected_flux,
+                       residual, eff_inflow, eff_outflow,
+                       net_balance_m3)) |>
       dplyr::ungroup()
   }
   
@@ -511,28 +501,43 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       ggplot2::facet_wrap(~var, scales = 'free_y')
   }
   
-  wb |>
+  sel_cols <- c("Date", "model", "value",
+                "inflow", "HYD_flow", "CHM_salt", "rain",
+                "evap_m3", "evap_flux",
+                "deltaV", "V",
+                "Ts", "area",
+                "HYD_outflow", "spill_outflow", "net")
+  
+  if ("lvl_sim" %in% names(wb)) {
+    wb <- wb |> 
+      dplyr::rename(value = lvl_sim)
+  } else {
+    wb <- wb |> 
+      dplyr::mutate(value = init_elev)
+  }
+  
+  wb_out <- wb |>
     dplyr::mutate(HYD_temp = Ts, CHM_salt = 0) |>
-    dplyr::rename(outflow = spill_outflow,
-                  value = lvl_sim) |> 
+    # dplyr::rename(#outflow = spill_outflow,
+    #               value = lvl_sim) |> 
     dplyr::mutate(
       area = area_from_level(h = value, hyps = hyps),
       V = volume_from_level(h = value, hyps = hyps),
       deltaV = c(0, diff(V)),
-      rain = MET_pprain * area,
-      net = HYD_flow + rain - HYD_outflow - outflow - evap_m3
+      rain = MET_pprain * area
+      # net = HYD_flow + rain - HYD_outflow - outflow - evap_m3
     ) |> 
-    dplyr::select(c("Date", "model", "value", "HYD_flow", "rain",
-                    evap_m3, evap_flux,
-                    # "dy_cd_evap_m3", "gotm_wet_evap_m3", "glm_aed_evap_m3",
-                    "deltaV", "V",
-                    # "dy_cd_evap_flux", "gotm_wet_evap_flux", "glm_aed_evap_flux",
-                    "Ts", "area", "CHM_salt", "HYD_temp",
-                    # "inflow", 
-                    "HYD_outflow", "outflow", "net"
-                    # "inflow_dy_cd", "inflow_glm_aed", "inflow_gotm_wet",
-                    # "outflow_dy_cd", "outflow_glm_aed", "outflow_gotm_wet"
-    ))
+    dplyr::select(dplyr::any_of(sel_cols))
+  
+  # ANy missing cols set to NA
+  missing_cols <- setdiff(sel_cols, names(wb_out))
+  if (length(missing_cols) > 0) {
+    for (col in missing_cols) {
+      wb_out[[col]] <- NA
+    }
+  }
+  
+  return(wb_out)
 }
 
 level_from_volume <- function(V, hyps) {
