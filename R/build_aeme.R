@@ -366,8 +366,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                      collapse = "\n")
         inf[["wbal"]] <- wbal |>
           dplyr::select(Date, inflow,
-                        HYD_temp, CHM_salt, model) |> 
-          dplyr::rename(HYD_flow = inflow) |>
+                        Ts, CHM_salt, model) |> 
+          dplyr::rename(HYD_flow = inflow,
+                        HYD_temp = Ts) |>
           dplyr::filter(!is.na(HYD_flow)) 
         # Add missing variables to water balance e.g. if use_bgc = TRUE
         if (any(!inf_vars %in% names(inf[["wbal"]]))) {
@@ -381,6 +382,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       # Add water balance to outflow if method is 2 or 3
       if (wb_method %in% c(2, 3)) {
         outf[["wbal"]] <- wbal |>
+          dplyr::rename(outflow = spill_outflow) |>
           dplyr::select(Date, model, outflow)
       }
 
