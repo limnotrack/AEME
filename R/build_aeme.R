@@ -81,7 +81,7 @@ build_aeme <- function(aeme = NULL,
                        est_swr_hr = TRUE,
                        path = "."
 ) {
-
+  
   # Load arguments
   # config = NULL
   # inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
@@ -99,11 +99,11 @@ build_aeme <- function(aeme = NULL,
   # wb_method = 2
   # print = TRUE
   # path = "."
-
+  
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
-
+  
   if (is.null(aeme) & is.null(config)) {
     stop("Either 'aeme' or 'config' must be supplied.")
   }
@@ -119,7 +119,7 @@ build_aeme <- function(aeme = NULL,
   } else if (is.null(model_controls) & is.null(aeme)) {
     stop("Either 'aeme' or 'model_controls' must be supplied.")
   }
-
+  
   # Metadata
   lvl <- NULL
   inf <- list()
@@ -136,16 +136,16 @@ build_aeme <- function(aeme = NULL,
     inf_vars <- c("HYD_temp", "CHM_salt")
   }
   
-
+  
   # AEME input ----
   if (!is.null(aeme)) {
-
+    
     lke <- lake(aeme)
     aeme_time <- time(aeme)
     lake_dir <- get_lake_dir(aeme = aeme, path = path)
     date_range <- as.Date(c(aeme_time[["start"]], aeme_time[["stop"]]))
     spin_up <- aeme_time[["spin_up"]]
-
+    
     # Use cache of models within AEME object ----
     if (use_aeme) {
       model_config <- configuration(aeme)
@@ -160,8 +160,8 @@ build_aeme <- function(aeme = NULL,
     } else {
       overwrite <- TRUE
     }
-
-
+    
+    
     if (!is.null(lke[["shape"]])) {
       lake_shape <- lke[["shape"]]
     } else {
@@ -175,14 +175,14 @@ build_aeme <- function(aeme = NULL,
     lon <- round(lke[["longitude"]], 5)
     elev <- round(lke[["elevation"]], 2)
     # coords.xyz <- c(lke[["longitude"]], lke[["latitude"]], lke[["elevation"]])
-
+    
     # Inputs ----
     inp <- input(aeme)
     #* Hypsograph ----
     hyps <- add_hypsograph(hypsograph = inp[["hypsograph"]], surf_elev = elev, 
                            lake_depth = lke[["depth"]], 
                            lake_area = lke[["area"]], ext_elev = ext_elev)
-
+    
     #* Initial depth
     if (!is.null(inp[["init_depth"]])) {
       init_depth <- inp[["init_depth"]]
@@ -193,7 +193,7 @@ build_aeme <- function(aeme = NULL,
                           hypsograph = hyps, meteo = inp$meteo,
                           use_lw = inp$use_lw, Kw = inp$Kw)
     }
-
+    
     #* Initial profile ----
     if (!is.null(inp[["init_profile"]])) {
       init_prof <- inp[["init_profile"]]
@@ -206,7 +206,7 @@ build_aeme <- function(aeme = NULL,
                           hypsograph = hyps, meteo = inp$meteo,
                           use_lw = inp$use_lw, Kw = inp$Kw)
     }
-
+    
     #* Meteorology ----
     if (is.null(inp[["meteo"]])) {
       stop("Meteorology data is not provided. You can download ERA5 data
@@ -228,12 +228,12 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     met <- met |>
       dplyr::mutate(Date = as.Date(Date)) |>
       expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE)
-
+    
     input(aeme) <- list(init_profile = init_prof,
                         init_depth = init_depth,
                         hypsograph = hyps, meteo = met,
                         use_lw = inp$use_lw, Kw = inp$Kw)
-
+    
     # Inflow ----
     aeme_inf <- inflows(aeme)
     if (!is.null(aeme_inf[["data"]])) {
@@ -260,33 +260,33 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                    name = paste0("inflow-", names(aeme_inf[["data"]])[i]))
         
         pot_inf_vars <- c("Date","HYD_flow", inf_vars, "model")
-
+        
         inf[[i]] <- inf[[i]] |>
           dplyr::select(dplyr::any_of(pot_inf_vars))
       }
     }
     inf_factor <- aeme_inf[["factor"]]
-
+    
     #* Light extinction Kw ----
     Kw <- inp[["Kw"]]
-
+    
     # Outflow ----
     aeme_outf <- outflows(aeme)
     if (!is.null(aeme_outf[["data"]]) & length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
-
+        
         if (names(aeme_outf[["data"]])[i] == "wbal" & calc_wbal) next
-
+        
         check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
                    aeme_time = aeme_time,
                    name = paste0("outflow-", names(aeme_outf[["data"]])[i]))
       }
     }
-
+    
     outf_factor <- aeme_outf[["factor"]]
     lakename <- tolower(lke[["name"]])
-
+    
     # Check if any non-alphanumeric characters are in lakename
     # Causes DYRESM to crash
     if (any(grepl("[^[:alnum:]]", lakename))) {
@@ -294,10 +294,10 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                           characters. Please remove these characters from the
                           lake name.")))
     }
-
+    
     # Calculate derived variables ----
     aeme <- calc_lake_obs_deriv(aeme)
-
+    
     # Check for null observations and insert empty dataframes
     aeme_obs <- observations(aeme)
     # obs_col_names <- get_obs_column_names()
@@ -312,10 +312,11 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # if (is.null(aeme_obs$level)) {
     #   aeme_obs$level <- empty_df
     # }
-
+    
     # Lake level ----
     w_bal <- water_balance(aeme)
     w_bal$method <- wb_method
+    wbal_params <- w_bal[["params"]]
     if (w_bal$use == "obs") {
       level <- aeme_obs[["level"]]
     } else if(w_bal$use == "model") {
@@ -325,33 +326,36 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       }
       level <- w_bal[["data"]][["model"]]
     }
-
+    
     # Calculate water balance ----
     if (calc_wbal | calc_wlev) {
       init_elev <- round(min(hyps$elev) + init_depth, 2)
       init_temp <- init_prof |> 
         dplyr::filter(depth == min(depth)) |> 
         dplyr::pull(temperature)
-      wbal <- calc_water_balance(aeme_time = aeme_time,
-                                 model = model,
-                                 method = w_bal$method,
-                                 use = w_bal$use,
-                                 hyps = hyps,
-                                 inf = inf,
-                                 outf = outf[["outflow"]],
-                                 level = level,
-                                 init_elev = init_elev,
-                                 init_temp = init_temp,
-                                 obs_lake = aeme_obs[["lake"]],
-                                 obs_met = met,
-                                 elevation = elev,
-                                 print_plots = FALSE,
-                                 coeffs = coeffs)
+      wbal_list <- calc_water_balance(aeme_time = aeme_time,
+                                      model = model,
+                                      method = w_bal$method,
+                                      use = w_bal$use,
+                                      hyps = hyps,
+                                      inf = inf,
+                                      outf = outf[["outflow"]],
+                                      level = level,
+                                      init_elev = init_elev,
+                                      init_temp = init_temp,
+                                      obs_lake = aeme_obs[["lake"]],
+                                      obs_met = met,
+                                      elevation = elev,
+                                      print_plots = FALSE,
+                                      params = wbal_params,
+                                      coeffs = coeffs)
+      wbal <- wbal_list$wb
+      wbal_params <- wbal_list$wbal_params
     }
-
+    
     # Calculate water balance ----
     if (calc_wbal) {
-
+      
       if (wb_method == 1) {
         msg <- paste(strwrap("No water balance correction applied
                              (method = 1)."),
@@ -378,31 +382,32 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
           }
         }
       }
-
+      
       # Add water balance to outflow if method is 2 or 3
       if (wb_method %in% c(2, 3)) {
         outf[["wbal"]] <- wbal |>
           dplyr::rename(outflow = spill_outflow) |>
           dplyr::select(Date, model, outflow)
       }
-
+      
       cli_inform_safe(c("i" = msg))
       w_bal[["data"]][["wbal"]] <- wbal
+      w_bal[["params"]] <- wbal_params
     } else {
       w_bal[["data"]][["wbal"]] <- NULL
       outf[["wbal"]] <- NULL
     }
-
+    
     #* Update water balance slot in aeme object ----
     water_balance(aeme) <- w_bal
     if (length(outf) == 0) {
       outf <- NULL
     }
-
+    
     outflows(aeme) <- list(data = outf,
                            outflow_lvl = aeme_outf[["lvl"]],
                            factor = aeme_outf[["factor"]])
-
+    
     if (calc_wlev) {
       cli_inform_safe(c("i" = "Calculating lake level using lake depth
                             and a sinisoidal function."))
@@ -423,18 +428,18 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
         dplyr::pull(value)
       init_depth <- round(init_depth - min(hyps$elev), 2)
       inp <- input(aeme)
-
+      
       # Update initial profile to match initial depth
       if (max(init_prof$depth) > init_depth) {
         init_prof$depth[which.max(init_prof$depth)] <- init_depth
       }
-
+      
       input(aeme) <- list(init_profile = inp$init_profile,
                           init_depth = init_depth,
                           hypsograph = inp$hypsograph, meteo = inp$meteo,
                           use_lw = inp$use_lw, Kw = inp$Kw)
     }
-
+    
     # Yaml config ----
   } else if (!is.null(config)) {
     lake_dir <- file.path(path, paste0(config$lake$lake_id, "_",
@@ -442,7 +447,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     date_range <- as.Date(c(config[["time"]][["start"]],
                             config[["time"]][["stop"]]))
     spin_up <- config[["time"]][["spin_up"]]
-
+    
     if (!is.null(config[["lake"]][["shape_file"]])) {
       lake_shape <- sf::st_read(file.path(path,
                                           config[["lake"]][["shape"]]))
@@ -469,25 +474,25 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       dplyr::mutate(elev = round(elev, 2),
                     depth = round(depth, 2),
                     area = round(area, 2))
-
+    
     # Water level ----
     if (file.exists(file.path(path, config[["observations"]][["level"]]))) {
       # lvl <- readr::read_csv(config[["observations"]][["level"]],
       #                        show_col_types = FALSE)
       lvl <- read.csv(file.path(path,
-                                       config[["observations"]][["level"]]))
+                                config[["observations"]][["level"]]))
     }
-
+    
     # Initial profile ----
     if (!is.null(config[["input"]][["init_profile"]])) {
-
+      
     } else {
       init_prof <- data.frame(depth = c(0,
                                         floor(max(hyps$elev) - min(hyps$elev))),
                               temperature = rep(model_controls$initial_wc[model_controls$var_aeme == "HYD_temp"], 2),
                               salt = c(0, 0))
     }
-
+    
     # Inflow ----
     if (!is.null(config[["inflows"]][["data"]])) {
       for(i in 1:length(config[["inflows"]][["data"]])) {
@@ -496,21 +501,21 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
         if(any(!inf_vars %in% names(inf[[i]]))) {
           stop("missing state variables in inflow tables")
         }
-
+        
         inf[[i]] <- inf[[i]] |>
           dplyr::select(all_of(c("Date","HYD_flow", inf_vars)))
       }
     }
     inf_factor <- config[["inflows"]][["factor"]]
-
+    
     #--- meteorology
     if (!file.exists(file.path(path, config[["input"]][["meteo"]]))) {
       stop(config[["input"]][["meteo"]], " does not exist. Check file path.")
     }
     met <- read.csv(file.path(path, config[["input"]][["meteo"]]))
-
+    
     Kw <- config[["input"]][["Kw"]]
-
+    
     # Outflow ----
     if (!is.null(config[["outflows"]][["data"]])) {
       for(i in 1:length(config[["outflows"]][["data"]])) {
@@ -518,15 +523,15 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
           read.csv(file.path(path, config[["outflows"]][["data"]][[i]]))
       }
     }
-
+    
     outf_factor <- config[["outflows"]][["factor"]]
     lakename <- tolower(config[["lake"]][["name"]])
-
+    
   }
-
+  
   # Create directory for lake ----
   dir.create(lake_dir, showWarnings = FALSE, recursive = TRUE)
-
+  
   if (length(inf) == 0) {
     inf <- NULL
   }
@@ -582,9 +587,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                hum_type = hum_type, overwrite_yaml = overwrite,
                est_swr_hr = est_swr_hr)
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
-
+    
   }
-
+  
   # Model parameters ----
   param <- parameters(aeme = aeme)
   if (nrow(param) > 1) {
@@ -607,11 +612,11 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     check_glm_nml(file = cfg_files$glm_aed["glm3"])
   } 
   
-
+  
   # Load model configuration ----
   aeme <- load_configuration(model = model, aeme = aeme, 
                              model_controls = model_controls, use_bgc = use_bgc, 
                              path = path)
-
+  
   return(aeme)
 }

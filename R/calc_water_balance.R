@@ -52,7 +52,8 @@
 calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
                                outf = NULL, level = NULL, init_elev, init_temp,
                                obs_lake = NULL, obs_met, elevation,
-                               print_plots = FALSE, coeffs = NULL) {
+                               print_plots = FALSE, params = NULL,
+                               coeffs = NULL) {
   
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
@@ -402,30 +403,19 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   wb <- lapply(model, \(m) {
     wb <- obs_met |>
       dplyr::select(Date) |>
-      
-      # add inflow discharge from fwmt model
+      # add inflow discharge
       dplyr::left_join(vol_inflow, by = "Date") |>
       dplyr::filter(model == m) |> 
       dplyr::left_join(vol_outflow, by = "Date") |>
-      
       # add evaporation estimation above
       dplyr::left_join(wb_sub, by = c("Date", "model")) |>
-      # dplyr::left_join(obs_rain, by = "Date") |> 
-      # dplyr::left_join(mod_lvl, by = "Date") |>
-      dplyr::filter(Date >= spin_start & Date <= date_stop)# |>
-      # rainfall direct to surface of lake
-      # dplyr::mutate(rain = MET_pprain * area
-                    # calculate outflow by difference
-                    # deltaV = c(0, diff(V)),
-                    # ToT_inflow = HYD_flow + rain,
-                    # net_outflow = HYD_flow + rain - evap_m3 - deltaV,
-                    # spill_outflow = pmax(net_outflow - HYD_outflow, 0)
-      # )
+      dplyr::filter(Date >= spin_start & Date <= date_stop)
     
     # plot(wb)
     if (method %in% c(2, 3)) {
       wb <- wb |>
-        estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev)
+        estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev, 
+                           params = params)
     }
     
     return(wb)
@@ -486,6 +476,17 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       dplyr::ungroup()
   }
   
+  # Extract wbal parameters
+  if (method %in% c(2, 3)) {
+    wbal_params <- wb |> 
+      # dplyr::group_by(model) |> 
+      dplyr::summarise(
+        C = mean(C), h_inv = mean(h_inv)
+      )
+  } else {
+    wbal_params <- NULL
+  } 
+  
   
   if (print_plots) {
     wb |>
@@ -537,7 +538,12 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     }
   }
   
-  return(wb_out)
+  out_list <- list(
+    wb = wb_out,
+    wbal_params = c("C" = wbal_params$C, "h_inv" = wbal_params$h_inv)
+  )
+  
+  return(out_list)
 }
 
 level_from_volume <- function(V, hyps) {
