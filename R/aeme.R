@@ -212,6 +212,7 @@ aeme_constructor <- function(
   wbal_dflt <- list(
     use = "obs",
     method = 2,
+    params = NULL,
     data = list(
       model = NULL,
       wbal = NULL
