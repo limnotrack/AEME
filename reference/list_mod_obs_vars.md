@@ -45,16 +45,42 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Added default values for missing variables.
 #> ℹ Using observed water level
 #> ℹ No missing values in observed water level. Using observed water level
+#> Parameters: C = 0.5 , h_inv = 22.9904 
 
+#> Parameters: C = 0.5 , h_inv = 22.9904 
+#> Parameters: C = 0.501 , h_inv = 22.9904 
+#> Parameters: C = 0.499 , h_inv = 22.9904 
+#> Parameters: C = 0.5 , h_inv = 22.9914 
+#> Parameters: C = 0.5 , h_inv = 22.9894 
+#> Parameters: C = 0.2661 , h_inv = 23.6504 
+#> Parameters: C = 0.2671 , h_inv = 23.6504 
+#> Parameters: C = 0.2651 , h_inv = 23.6504 
+#> Parameters: C = 0.2661 , h_inv = 23.6504 
+#> Parameters: C = 0.2661 , h_inv = 23.6494 
+#> Parameters: C = 0.3939 , h_inv = 23.3644 
+#> Parameters: C = 0.3949 , h_inv = 23.3644 
+#> Parameters: C = 0.3929 , h_inv = 23.3644 
+#> Parameters: C = 0.3939 , h_inv = 23.3654 
+#> Parameters: C = 0.3939 , h_inv = 23.3634 
+#> Parameters: C = 0.3311 , h_inv = 23.5049 
+#> Parameters: C = 0.3321 , h_inv = 23.5049 
+#> Parameters: C = 0.3301 , h_inv = 23.5049 
+#> Parameters: C = 0.3311 , h_inv = 23.5059 
+#> Parameters: C = 0.3311 , h_inv = 23.5039 
+#> Parameters: C = 0.3395 , h_inv = 23.4794 
+#> Parameters: C = 0.3405 , h_inv = 23.4794 
+#> Parameters: C = 0.3385 , h_inv = 23.4794 
+#> Parameters: C = 0.3395 , h_inv = 23.4804 
+#> Parameters: C = 0.3395 , h_inv = 23.4784 
+#> Parameters: C = 0.3355 , h_inv = 23.4916 
+#> Parameters: C = 0.3365 , h_inv = 23.4916 
+#> Parameters: C = 0.3345 , h_inv = 23.4916 
+#> Parameters: C = 0.3355 , h_inv = 23.4926 
+#> Parameters: C = 0.3355 , h_inv = 23.4906 
 #> Optimization Complete:
 #>   Best C: 0.3355
 #>   Best h_inv: 23.4916
 #>   Final RMSE: 0.1397
-
-
-
-
-
 
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
@@ -81,10 +107,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-01-12 22:18:10]
-#> ✔ Model run complete! [2026-01-12 22:18:14]
-#> ℹ Reading models in parallel...[2026-01-12 22:18:14]
-#> ✔ Model reading complete! [2026-01-12 22:18:15]
+#> ℹ Running models in parallel... [2026-01-19 23:33:54]
+#> ✔ Model run complete! [2026-01-19 23:33:57]
+#> ℹ Reading models in parallel...[2026-01-19 23:33:57]
+#> ✔ Model reading complete! [2026-01-19 23:33:59]
 list_mod_obs_vars(aeme = aeme, model = model)
 #>              Cyanobacteria           Dissolved oxygen 
 #>                "PHY_cyano"                  "CHM_oxy" 

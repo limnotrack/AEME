@@ -12,7 +12,7 @@ library(AEME)
 #> 
 #>     time
 library(sf) # For spatial data
-#> Linking to GEOS 3.13.1, GDAL 3.11.0, PROJ 9.6.0; sf_use_s2() is TRUE
+#> Linking to GEOS 3.13.1, GDAL 3.11.4, PROJ 9.7.0; sf_use_s2() is TRUE
 library(tmap) # For mapping
 tmap_mode("view") # Set tmap mode to interactive view model
 #> ℹ tmap modes "plot" - "view"
@@ -191,9 +191,38 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-01-12 22:33:04] job submitted
-#> INFO [2026-01-12 22:33:04] downloading
-#> INFO [2026-01-12 22:33:06] extracting
+#> INFO [2026-01-19 23:48:45] job submitted
+#> INFO [2026-01-19 23:48:49] job updated
+#> INFO [2026-01-19 23:48:53] job updated
+#> INFO [2026-01-19 23:48:57] job updated
+#> INFO [2026-01-19 23:49:01] job updated
+#> INFO [2026-01-19 23:49:06] job updated
+#> INFO [2026-01-19 23:49:10] job updated
+#> INFO [2026-01-19 23:49:14] job updated
+#> INFO [2026-01-19 23:49:18] job updated
+#> INFO [2026-01-19 23:49:22] job updated
+#> INFO [2026-01-19 23:49:26] job updated
+#> INFO [2026-01-19 23:49:30] job updated
+#> INFO [2026-01-19 23:49:35] job updated
+#> INFO [2026-01-19 23:49:39] job updated
+#> INFO [2026-01-19 23:49:43] job updated
+#> INFO [2026-01-19 23:49:47] job updated
+#> INFO [2026-01-19 23:49:51] job updated
+#> INFO [2026-01-19 23:49:55] job updated
+#> INFO [2026-01-19 23:49:59] job updated
+#> INFO [2026-01-19 23:50:04] job updated
+#> INFO [2026-01-19 23:50:09] job updated
+#> INFO [2026-01-19 23:50:13] job updated
+#> INFO [2026-01-19 23:50:17] job updated
+#> INFO [2026-01-19 23:50:21] job updated
+#> INFO [2026-01-19 23:50:25] job updated
+#> INFO [2026-01-19 23:50:29] job updated
+#> INFO [2026-01-19 23:50:33] job updated
+#> INFO [2026-01-19 23:50:38] job updated
+#> INFO [2026-01-19 23:50:42] job updated
+#> INFO [2026-01-19 23:50:46] job updated
+#> INFO [2026-01-19 23:50:46] downloading
+#> INFO [2026-01-19 23:50:47] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -514,30 +543,119 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #> ℹ No water level present. Using constant water level.
 #> ℹ Insufficient lake temperature observations to estimate surface temperature.
 #>   Using Stefan & Preud'homme (2007) method.
+#> Parameters: C = 0.5 , h_inv = 28.5
 ```
 
 ![](setup-new-lake_files/figure-html/build-ensemble-1.png)
 
+    #> Parameters: C = 0.5 , h_inv = 28.5 
+    #> Parameters: C = 0.501 , h_inv = 28.5 
+    #> Parameters: C = 0.499 , h_inv = 28.5 
+    #> Parameters: C = 0.5 , h_inv = 28.501 
+    #> Parameters: C = 0.5 , h_inv = 28.499 
+    #> Parameters: C = 0.4358 , h_inv = 29 
+    #> Parameters: C = 0.4368 , h_inv = 29 
+    #> Parameters: C = 0.4348 , h_inv = 29 
+    #> Parameters: C = 0.4358 , h_inv = 29 
+    #> Parameters: C = 0.4358 , h_inv = 28.999 
+    #> Parameters: C = 0.3889 , h_inv = 29 
+    #> Parameters: C = 0.3899 , h_inv = 29 
+    #> Parameters: C = 0.3879 , h_inv = 29 
+    #> Parameters: C = 0.3889 , h_inv = 29 
+    #> Parameters: C = 0.3889 , h_inv = 28.999 
+    #> Parameters: C = 0.2012 , h_inv = 29 
+    #> Parameters: C = 0.2022 , h_inv = 29 
+    #> Parameters: C = 0.2002 , h_inv = 29 
+    #> Parameters: C = 0.2012 , h_inv = 29 
+    #> Parameters: C = 0.2012 , h_inv = 28.999 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.002 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 28.999
     #> Optimization Complete:
     #>   Best C: 0.001
     #>   Best h_inv: 29
     #>   Final RMSE: 0.0725
 
-![](setup-new-lake_files/figure-html/build-ensemble-2.png)![](setup-new-lake_files/figure-html/build-ensemble-3.png)![](setup-new-lake_files/figure-html/build-ensemble-4.png)![](setup-new-lake_files/figure-html/build-ensemble-5.png)![](setup-new-lake_files/figure-html/build-ensemble-6.png)![](setup-new-lake_files/figure-html/build-ensemble-7.png)![](setup-new-lake_files/figure-html/build-ensemble-8.png)
+![](setup-new-lake_files/figure-html/build-ensemble-2.png)
 
+    #> Parameters: C = 0.5 , h_inv = 28.5
+
+![](setup-new-lake_files/figure-html/build-ensemble-3.png)
+
+    #> Parameters: C = 0.5 , h_inv = 28.5 
+    #> Parameters: C = 0.501 , h_inv = 28.5 
+    #> Parameters: C = 0.499 , h_inv = 28.5 
+    #> Parameters: C = 0.5 , h_inv = 28.501 
+    #> Parameters: C = 0.5 , h_inv = 28.499 
+    #> Parameters: C = 0.4358 , h_inv = 29 
+    #> Parameters: C = 0.4368 , h_inv = 29 
+    #> Parameters: C = 0.4348 , h_inv = 29 
+    #> Parameters: C = 0.4358 , h_inv = 29 
+    #> Parameters: C = 0.4358 , h_inv = 28.999 
+    #> Parameters: C = 0.3889 , h_inv = 29 
+    #> Parameters: C = 0.3899 , h_inv = 29 
+    #> Parameters: C = 0.3879 , h_inv = 29 
+    #> Parameters: C = 0.3889 , h_inv = 29 
+    #> Parameters: C = 0.3889 , h_inv = 28.999 
+    #> Parameters: C = 0.2012 , h_inv = 29 
+    #> Parameters: C = 0.2022 , h_inv = 29 
+    #> Parameters: C = 0.2002 , h_inv = 29 
+    #> Parameters: C = 0.2012 , h_inv = 29 
+    #> Parameters: C = 0.2012 , h_inv = 28.999 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.002 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 28.999
     #> Optimization Complete:
     #>   Best C: 0.001
     #>   Best h_inv: 29
     #>   Final RMSE: 0.0725
 
-![](setup-new-lake_files/figure-html/build-ensemble-9.png)![](setup-new-lake_files/figure-html/build-ensemble-10.png)![](setup-new-lake_files/figure-html/build-ensemble-11.png)![](setup-new-lake_files/figure-html/build-ensemble-12.png)![](setup-new-lake_files/figure-html/build-ensemble-13.png)![](setup-new-lake_files/figure-html/build-ensemble-14.png)![](setup-new-lake_files/figure-html/build-ensemble-15.png)
+![](setup-new-lake_files/figure-html/build-ensemble-4.png)
 
+    #> Parameters: C = 0.5 , h_inv = 28.5
+
+![](setup-new-lake_files/figure-html/build-ensemble-5.png)
+
+    #> Parameters: C = 0.5 , h_inv = 28.5 
+    #> Parameters: C = 0.501 , h_inv = 28.5 
+    #> Parameters: C = 0.499 , h_inv = 28.5 
+    #> Parameters: C = 0.5 , h_inv = 28.501 
+    #> Parameters: C = 0.5 , h_inv = 28.499 
+    #> Parameters: C = 0.4403 , h_inv = 29 
+    #> Parameters: C = 0.4413 , h_inv = 29 
+    #> Parameters: C = 0.4393 , h_inv = 29 
+    #> Parameters: C = 0.4403 , h_inv = 29 
+    #> Parameters: C = 0.4403 , h_inv = 28.999 
+    #> Parameters: C = 0.3978 , h_inv = 29 
+    #> Parameters: C = 0.3988 , h_inv = 29 
+    #> Parameters: C = 0.3968 , h_inv = 29 
+    #> Parameters: C = 0.3978 , h_inv = 29 
+    #> Parameters: C = 0.3978 , h_inv = 28.999 
+    #> Parameters: C = 0.2279 , h_inv = 29 
+    #> Parameters: C = 0.2289 , h_inv = 29 
+    #> Parameters: C = 0.2269 , h_inv = 29 
+    #> Parameters: C = 0.2279 , h_inv = 29 
+    #> Parameters: C = 0.2279 , h_inv = 28.999 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.002 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 28.999 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.002 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 29 
+    #> Parameters: C = 0.001 , h_inv = 28.999
     #> Optimization Complete:
     #>   Best C: 0.001
     #>   Best h_inv: 29
     #>   Final RMSE: 0.0575
 
-![](setup-new-lake_files/figure-html/build-ensemble-16.png)![](setup-new-lake_files/figure-html/build-ensemble-17.png)![](setup-new-lake_files/figure-html/build-ensemble-18.png)![](setup-new-lake_files/figure-html/build-ensemble-19.png)![](setup-new-lake_files/figure-html/build-ensemble-20.png)![](setup-new-lake_files/figure-html/build-ensemble-21.png)
+![](setup-new-lake_files/figure-html/build-ensemble-6.png)
 
     #> ℹ Correcting water balance using estimated outflows (method = 2).
     #> ℹ Calculating lake level using lake depth and a sinisoidal function.
@@ -618,14 +736,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-01-12 22:33:31]
-#> → DYRESM-CAEDYM running... [2026-01-12 22:33:31]
-#> ✔ DYRESM-CAEDYM run successful! [2026-01-12 22:33:58]
-#> → GLM-AED running... [2026-01-12 22:33:58]
-#> ✔ GLM-AED run successful! [2026-01-12 22:33:58]
-#> → GOTM-WET running... [2026-01-12 22:33:58]
-#> ✔ GOTM-WET run successful! [2026-01-12 22:33:59]
-#> ✔ Model run complete! [2026-01-12 22:33:59]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-01-19 23:51:09]
+#> → DYRESM-CAEDYM running... [2026-01-19 23:51:09]
+#> ✔ DYRESM-CAEDYM run successful! [2026-01-19 23:51:36]
+#> → GLM-AED running... [2026-01-19 23:51:36]
+#> ✔ GLM-AED run successful! [2026-01-19 23:51:37]
+#> → GOTM-WET running... [2026-01-19 23:51:37]
+#> ✔ GOTM-WET run successful! [2026-01-19 23:51:37]
+#> ✔ Model run complete! [2026-01-19 23:51:37]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```

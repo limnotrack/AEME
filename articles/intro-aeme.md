@@ -505,30 +505,204 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   PHY_green, SIL_rsi, ZOO_zoo1
 #> ℹ Added default values for missing variables.
 #> ℹ No water level present. Using constant water level.
+#> Parameters: C = 0.5 , h_inv = 22.7
 ```
 
 ![](intro-aeme_files/figure-html/unnamed-chunk-4-1.png)
 
+    #> Parameters: C = 0.5 , h_inv = 22.7 
+    #> Parameters: C = 0.501 , h_inv = 22.7 
+    #> Parameters: C = 0.499 , h_inv = 22.7 
+    #> Parameters: C = 0.5 , h_inv = 22.701 
+    #> Parameters: C = 0.5 , h_inv = 22.699 
+    #> Parameters: C = 0.001 , h_inv = 23.2 
+    #> Parameters: C = 0.002 , h_inv = 23.2 
+    #> Parameters: C = 0.001 , h_inv = 23.2 
+    #> Parameters: C = 0.001 , h_inv = 23.2 
+    #> Parameters: C = 0.001 , h_inv = 23.199 
+    #> Parameters: C = 0.4885 , h_inv = 22.7116 
+    #> Parameters: C = 0.4895 , h_inv = 22.7116 
+    #> Parameters: C = 0.4875 , h_inv = 22.7116 
+    #> Parameters: C = 0.4885 , h_inv = 22.7126 
+    #> Parameters: C = 0.4885 , h_inv = 22.7106 
+    #> Parameters: C = 0.2447 , h_inv = 22.9558 
+    #> Parameters: C = 0.2457 , h_inv = 22.9558 
+    #> Parameters: C = 0.2437 , h_inv = 22.9558 
+    #> Parameters: C = 0.2447 , h_inv = 22.9568 
+    #> Parameters: C = 0.2447 , h_inv = 22.9548 
+    #> Parameters: C = 0.4451 , h_inv = 22.755 
+    #> Parameters: C = 0.4461 , h_inv = 22.755 
+    #> Parameters: C = 0.4441 , h_inv = 22.755 
+    #> Parameters: C = 0.4451 , h_inv = 22.756 
+    #> Parameters: C = 0.4451 , h_inv = 22.754 
+    #> Parameters: C = 0.4534 , h_inv = 22.7497 
+    #> Parameters: C = 0.4544 , h_inv = 22.7497 
+    #> Parameters: C = 0.4524 , h_inv = 22.7497 
+    #> Parameters: C = 0.4534 , h_inv = 22.7507 
+    #> Parameters: C = 0.4534 , h_inv = 22.7487 
+    #> Parameters: C = 0.4484 , h_inv = 22.7529 
+    #> Parameters: C = 0.4494 , h_inv = 22.7529 
+    #> Parameters: C = 0.4474 , h_inv = 22.7529 
+    #> Parameters: C = 0.4484 , h_inv = 22.7539 
+    #> Parameters: C = 0.4484 , h_inv = 22.7519 
+    #> Parameters: C = 0.449 , h_inv = 22.7533 
+    #> Parameters: C = 0.45 , h_inv = 22.7533 
+    #> Parameters: C = 0.448 , h_inv = 22.7533 
+    #> Parameters: C = 0.449 , h_inv = 22.7543 
+    #> Parameters: C = 0.449 , h_inv = 22.7523 
+    #> Parameters: C = 0.4515 , h_inv = 22.7549 
+    #> Parameters: C = 0.4525 , h_inv = 22.7549 
+    #> Parameters: C = 0.4505 , h_inv = 22.7549 
+    #> Parameters: C = 0.4515 , h_inv = 22.7559 
+    #> Parameters: C = 0.4515 , h_inv = 22.7539 
+    #> Parameters: C = 0.4613 , h_inv = 22.7613 
+    #> Parameters: C = 0.4623 , h_inv = 22.7613 
+    #> Parameters: C = 0.4603 , h_inv = 22.7613 
+    #> Parameters: C = 0.4613 , h_inv = 22.7623 
+    #> Parameters: C = 0.4613 , h_inv = 22.7603 
+    #> Parameters: C = 0.5008 , h_inv = 22.787 
+    #> Parameters: C = 0.5018 , h_inv = 22.787 
+    #> Parameters: C = 0.4998 , h_inv = 22.787 
+    #> Parameters: C = 0.5008 , h_inv = 22.788 
+    #> Parameters: C = 0.5008 , h_inv = 22.786
     #> Optimization Complete:
     #>   Best C: 0.5008
     #>   Best h_inv: 22.787
     #>   Final RMSE: 0.0349
 
-![](intro-aeme_files/figure-html/unnamed-chunk-4-2.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-3.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-4.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-5.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-6.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-7.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-8.png)
+![](intro-aeme_files/figure-html/unnamed-chunk-4-2.png)
 
+    #> Parameters: C = 0.5 , h_inv = 22.7
+
+![](intro-aeme_files/figure-html/unnamed-chunk-4-3.png)
+
+    #> Parameters: C = 0.5 , h_inv = 22.7 
+    #> Parameters: C = 0.501 , h_inv = 22.7 
+    #> Parameters: C = 0.499 , h_inv = 22.7 
+    #> Parameters: C = 0.5 , h_inv = 22.701 
+    #> Parameters: C = 0.5 , h_inv = 22.699 
+    #> Parameters: C = 0.001 , h_inv = 23.2 
+    #> Parameters: C = 0.002 , h_inv = 23.2 
+    #> Parameters: C = 0.001 , h_inv = 23.2 
+    #> Parameters: C = 0.001 , h_inv = 23.2 
+    #> Parameters: C = 0.001 , h_inv = 23.199 
+    #> Parameters: C = 0.4885 , h_inv = 22.7116 
+    #> Parameters: C = 0.4895 , h_inv = 22.7116 
+    #> Parameters: C = 0.4875 , h_inv = 22.7116 
+    #> Parameters: C = 0.4885 , h_inv = 22.7126 
+    #> Parameters: C = 0.4885 , h_inv = 22.7106 
+    #> Parameters: C = 0.2447 , h_inv = 22.9558 
+    #> Parameters: C = 0.2457 , h_inv = 22.9558 
+    #> Parameters: C = 0.2437 , h_inv = 22.9558 
+    #> Parameters: C = 0.2447 , h_inv = 22.9568 
+    #> Parameters: C = 0.2447 , h_inv = 22.9548 
+    #> Parameters: C = 0.4451 , h_inv = 22.755 
+    #> Parameters: C = 0.4461 , h_inv = 22.755 
+    #> Parameters: C = 0.4441 , h_inv = 22.755 
+    #> Parameters: C = 0.4451 , h_inv = 22.756 
+    #> Parameters: C = 0.4451 , h_inv = 22.754 
+    #> Parameters: C = 0.4534 , h_inv = 22.7497 
+    #> Parameters: C = 0.4544 , h_inv = 22.7497 
+    #> Parameters: C = 0.4524 , h_inv = 22.7497 
+    #> Parameters: C = 0.4534 , h_inv = 22.7507 
+    #> Parameters: C = 0.4534 , h_inv = 22.7487 
+    #> Parameters: C = 0.4484 , h_inv = 22.7529 
+    #> Parameters: C = 0.4494 , h_inv = 22.7529 
+    #> Parameters: C = 0.4474 , h_inv = 22.7529 
+    #> Parameters: C = 0.4484 , h_inv = 22.7539 
+    #> Parameters: C = 0.4484 , h_inv = 22.7519 
+    #> Parameters: C = 0.449 , h_inv = 22.7533 
+    #> Parameters: C = 0.45 , h_inv = 22.7533 
+    #> Parameters: C = 0.448 , h_inv = 22.7533 
+    #> Parameters: C = 0.449 , h_inv = 22.7543 
+    #> Parameters: C = 0.449 , h_inv = 22.7523 
+    #> Parameters: C = 0.4515 , h_inv = 22.7549 
+    #> Parameters: C = 0.4525 , h_inv = 22.7549 
+    #> Parameters: C = 0.4505 , h_inv = 22.7549 
+    #> Parameters: C = 0.4515 , h_inv = 22.7559 
+    #> Parameters: C = 0.4515 , h_inv = 22.7539 
+    #> Parameters: C = 0.4613 , h_inv = 22.7613 
+    #> Parameters: C = 0.4623 , h_inv = 22.7613 
+    #> Parameters: C = 0.4603 , h_inv = 22.7613 
+    #> Parameters: C = 0.4613 , h_inv = 22.7623 
+    #> Parameters: C = 0.4613 , h_inv = 22.7603 
+    #> Parameters: C = 0.5008 , h_inv = 22.787 
+    #> Parameters: C = 0.5018 , h_inv = 22.787 
+    #> Parameters: C = 0.4998 , h_inv = 22.787 
+    #> Parameters: C = 0.5008 , h_inv = 22.788 
+    #> Parameters: C = 0.5008 , h_inv = 22.786
     #> Optimization Complete:
     #>   Best C: 0.5008
     #>   Best h_inv: 22.787
     #>   Final RMSE: 0.0349
 
-![](intro-aeme_files/figure-html/unnamed-chunk-4-9.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-10.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-11.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-12.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-13.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-14.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-15.png)
+![](intro-aeme_files/figure-html/unnamed-chunk-4-4.png)
 
+    #> Parameters: C = 0.5 , h_inv = 22.7
+
+![](intro-aeme_files/figure-html/unnamed-chunk-4-5.png)
+
+    #> Parameters: C = 0.5 , h_inv = 22.7 
+    #> Parameters: C = 0.501 , h_inv = 22.7 
+    #> Parameters: C = 0.499 , h_inv = 22.7 
+    #> Parameters: C = 0.5 , h_inv = 22.701 
+    #> Parameters: C = 0.5 , h_inv = 22.699 
+    #> Parameters: C = 0.001 , h_inv = 23.2 
+    #> Parameters: C = 0.002 , h_inv = 23.2 
+    #> Parameters: C = 0.001 , h_inv = 23.2 
+    #> Parameters: C = 0.001 , h_inv = 23.2 
+    #> Parameters: C = 0.001 , h_inv = 23.199 
+    #> Parameters: C = 0.4885 , h_inv = 22.7116 
+    #> Parameters: C = 0.4895 , h_inv = 22.7116 
+    #> Parameters: C = 0.4875 , h_inv = 22.7116 
+    #> Parameters: C = 0.4885 , h_inv = 22.7126 
+    #> Parameters: C = 0.4885 , h_inv = 22.7106 
+    #> Parameters: C = 0.2447 , h_inv = 22.9558 
+    #> Parameters: C = 0.2457 , h_inv = 22.9558 
+    #> Parameters: C = 0.2437 , h_inv = 22.9558 
+    #> Parameters: C = 0.2447 , h_inv = 22.9568 
+    #> Parameters: C = 0.2447 , h_inv = 22.9548 
+    #> Parameters: C = 0.4452 , h_inv = 22.7549 
+    #> Parameters: C = 0.4462 , h_inv = 22.7549 
+    #> Parameters: C = 0.4442 , h_inv = 22.7549 
+    #> Parameters: C = 0.4452 , h_inv = 22.7559 
+    #> Parameters: C = 0.4452 , h_inv = 22.7539 
+    #> Parameters: C = 0.4538 , h_inv = 22.7494 
+    #> Parameters: C = 0.4548 , h_inv = 22.7494 
+    #> Parameters: C = 0.4528 , h_inv = 22.7494 
+    #> Parameters: C = 0.4538 , h_inv = 22.7504 
+    #> Parameters: C = 0.4538 , h_inv = 22.7484 
+    #> Parameters: C = 0.4486 , h_inv = 22.7527 
+    #> Parameters: C = 0.4496 , h_inv = 22.7527 
+    #> Parameters: C = 0.4476 , h_inv = 22.7527 
+    #> Parameters: C = 0.4486 , h_inv = 22.7537 
+    #> Parameters: C = 0.4486 , h_inv = 22.7517 
+    #> Parameters: C = 0.4492 , h_inv = 22.7531 
+    #> Parameters: C = 0.4502 , h_inv = 22.7531 
+    #> Parameters: C = 0.4482 , h_inv = 22.7531 
+    #> Parameters: C = 0.4492 , h_inv = 22.7541 
+    #> Parameters: C = 0.4492 , h_inv = 22.7521 
+    #> Parameters: C = 0.4517 , h_inv = 22.7547 
+    #> Parameters: C = 0.4527 , h_inv = 22.7547 
+    #> Parameters: C = 0.4507 , h_inv = 22.7547 
+    #> Parameters: C = 0.4517 , h_inv = 22.7557 
+    #> Parameters: C = 0.4517 , h_inv = 22.7537 
+    #> Parameters: C = 0.4614 , h_inv = 22.761 
+    #> Parameters: C = 0.4624 , h_inv = 22.761 
+    #> Parameters: C = 0.4604 , h_inv = 22.761 
+    #> Parameters: C = 0.4614 , h_inv = 22.762 
+    #> Parameters: C = 0.4614 , h_inv = 22.76 
+    #> Parameters: C = 0.5004 , h_inv = 22.7863 
+    #> Parameters: C = 0.5014 , h_inv = 22.7863 
+    #> Parameters: C = 0.4994 , h_inv = 22.7863 
+    #> Parameters: C = 0.5004 , h_inv = 22.7873 
+    #> Parameters: C = 0.5004 , h_inv = 22.7853
     #> Optimization Complete:
     #>   Best C: 0.5004
     #>   Best h_inv: 22.7863
     #>   Final RMSE: 0.0349
 
-![](intro-aeme_files/figure-html/unnamed-chunk-4-16.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-17.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-18.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-19.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-20.png)![](intro-aeme_files/figure-html/unnamed-chunk-4-21.png)
+![](intro-aeme_files/figure-html/unnamed-chunk-4-6.png)
 
     #> ℹ Correcting water balance using estimated outflows (method = 2).
     #> ℹ Calculating lake level using lake depth and a sinisoidal function.

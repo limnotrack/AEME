@@ -13,6 +13,7 @@ estimate_lake_wlev(
   hyps_df,
   model,
   init_elev,
+  params = NULL,
   initial_guess = NULL,
   verbose = TRUE
 )

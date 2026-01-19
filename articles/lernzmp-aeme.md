@@ -178,23 +178,148 @@ path <- "aeme" # directory in which the model configuration will be built
 
 aeme <- build_aeme(aeme = aeme, model = model, path = path,
                    use_bgc = TRUE)
+#> Parameters: C = 0.5 , h_inv = 284.38
 ```
 
 ![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-1.png)
 
+    #> Parameters: C = 0.5 , h_inv = 284.38 
+    #> Parameters: C = 0.501 , h_inv = 284.38 
+    #> Parameters: C = 0.499 , h_inv = 284.38 
+    #> Parameters: C = 0.5 , h_inv = 284.381 
+    #> Parameters: C = 0.5 , h_inv = 284.379 
+    #> Parameters: C = 0.5234 , h_inv = 284.3741 
+    #> Parameters: C = 0.5244 , h_inv = 284.3741 
+    #> Parameters: C = 0.5224 , h_inv = 284.3741 
+    #> Parameters: C = 0.5234 , h_inv = 284.3751 
+    #> Parameters: C = 0.5234 , h_inv = 284.3731 
+    #> Parameters: C = 4.8357 , h_inv = 281.8487 
+    #> Parameters: C = 4.8367 , h_inv = 281.8487 
+    #> Parameters: C = 4.8347 , h_inv = 281.8487 
+    #> Parameters: C = 4.8357 , h_inv = 281.8497 
+    #> Parameters: C = 4.8357 , h_inv = 281.8477 
+    #> Parameters: C = 0.6518 , h_inv = 284.2989 
+    #> Parameters: C = 0.6528 , h_inv = 284.2989 
+    #> Parameters: C = 0.6508 , h_inv = 284.2989 
+    #> Parameters: C = 0.6518 , h_inv = 284.2999 
+    #> Parameters: C = 0.6518 , h_inv = 284.2979 
+    #> Parameters: C = 4.4272 , h_inv = 282.0879 
+    #> Parameters: C = 4.4282 , h_inv = 282.0879 
+    #> Parameters: C = 4.4262 , h_inv = 282.0879 
+    #> Parameters: C = 4.4272 , h_inv = 282.0889 
+    #> Parameters: C = 4.4272 , h_inv = 282.0869 
+    #> Parameters: C = 2.5395 , h_inv = 283.1934 
+    #> Parameters: C = 2.5405 , h_inv = 283.1934 
+    #> Parameters: C = 2.5385 , h_inv = 283.1934 
+    #> Parameters: C = 2.5395 , h_inv = 283.1944 
+    #> Parameters: C = 2.5395 , h_inv = 283.1924 
+    #> Parameters: C = 4.344 , h_inv = 282.1366 
+    #> Parameters: C = 4.345 , h_inv = 282.1366 
+    #> Parameters: C = 4.343 , h_inv = 282.1366 
+    #> Parameters: C = 4.344 , h_inv = 282.1376 
+    #> Parameters: C = 4.344 , h_inv = 282.1356 
+    #> Parameters: C = 4.4272 , h_inv = 282.0879 
+    #> Parameters: C = 4.4282 , h_inv = 282.0879 
+    #> Parameters: C = 4.4262 , h_inv = 282.0879 
+    #> Parameters: C = 4.4272 , h_inv = 282.0889 
+    #> Parameters: C = 4.4272 , h_inv = 282.0869 
+    #> Parameters: C = 1.4086 , h_inv = 284.2532 
+    #> Parameters: C = 1.4096 , h_inv = 284.2532 
+    #> Parameters: C = 1.4076 , h_inv = 284.2532 
+    #> Parameters: C = 1.4086 , h_inv = 284.2542 
+    #> Parameters: C = 1.4086 , h_inv = 284.2522 
+    #> Parameters: C = 4.3626 , h_inv = 282.1343 
+    #> Parameters: C = 4.3636 , h_inv = 282.1343 
+    #> Parameters: C = 4.3616 , h_inv = 282.1343 
+    #> Parameters: C = 4.3626 , h_inv = 282.1353 
+    #> Parameters: C = 4.3626 , h_inv = 282.1333 
+    #> Parameters: C = 4.4004 , h_inv = 282.1071 
+    #> Parameters: C = 4.4014 , h_inv = 282.1071 
+    #> Parameters: C = 4.3994 , h_inv = 282.1071 
+    #> Parameters: C = 4.4004 , h_inv = 282.1081 
+    #> Parameters: C = 4.4004 , h_inv = 282.1061
     #> Optimization Complete:
     #>   Best C: 4.4004
     #>   Best h_inv: 282.1071
     #>   Final RMSE: 0.1573
 
-![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-2.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-3.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-4.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-5.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-6.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-7.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-8.png)
+![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-2.png)
 
+    #> Parameters: C = 0.5 , h_inv = 284.38
+
+![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-3.png)
+
+    #> Parameters: C = 0.5 , h_inv = 284.38 
+    #> Parameters: C = 0.501 , h_inv = 284.38 
+    #> Parameters: C = 0.499 , h_inv = 284.38 
+    #> Parameters: C = 0.5 , h_inv = 284.381 
+    #> Parameters: C = 0.5 , h_inv = 284.379 
+    #> Parameters: C = 0.5264 , h_inv = 284.3734 
+    #> Parameters: C = 0.5274 , h_inv = 284.3734 
+    #> Parameters: C = 0.5254 , h_inv = 284.3734 
+    #> Parameters: C = 0.5264 , h_inv = 284.3744 
+    #> Parameters: C = 0.5264 , h_inv = 284.3724 
+    #> Parameters: C = 0.5538 , h_inv = 284.3664 
+    #> Parameters: C = 0.5548 , h_inv = 284.3664 
+    #> Parameters: C = 0.5528 , h_inv = 284.3664 
+    #> Parameters: C = 0.5538 , h_inv = 284.3674 
+    #> Parameters: C = 0.5538 , h_inv = 284.3654 
+    #> Parameters: C = 0.6632 , h_inv = 284.338 
+    #> Parameters: C = 0.6642 , h_inv = 284.338 
+    #> Parameters: C = 0.6622 , h_inv = 284.338 
+    #> Parameters: C = 0.6632 , h_inv = 284.339 
+    #> Parameters: C = 0.6632 , h_inv = 284.337 
+    #> Parameters: C = 1.1011 , h_inv = 284.2245 
+    #> Parameters: C = 1.1021 , h_inv = 284.2245 
+    #> Parameters: C = 1.1001 , h_inv = 284.2245 
+    #> Parameters: C = 1.1011 , h_inv = 284.2255 
+    #> Parameters: C = 1.1011 , h_inv = 284.2235 
+    #> Parameters: C = 2.8524 , h_inv = 283.7706 
+    #> Parameters: C = 2.8534 , h_inv = 283.7706 
+    #> Parameters: C = 2.8514 , h_inv = 283.7706 
+    #> Parameters: C = 2.8524 , h_inv = 283.7716 
+    #> Parameters: C = 2.8524 , h_inv = 283.7696 
+    #> Parameters: C = 9.8576 , h_inv = 281.9551 
+    #> Parameters: C = 9.8586 , h_inv = 281.9551 
+    #> Parameters: C = 9.8566 , h_inv = 281.9551 
+    #> Parameters: C = 9.8576 , h_inv = 281.9561 
+    #> Parameters: C = 9.8576 , h_inv = 281.9541 
+    #> Parameters: C = 6.7165 , h_inv = 282.7692 
+    #> Parameters: C = 6.7175 , h_inv = 282.7692 
+    #> Parameters: C = 6.7155 , h_inv = 282.7692 
+    #> Parameters: C = 6.7165 , h_inv = 282.7702 
+    #> Parameters: C = 6.7165 , h_inv = 282.7682 
+    #> Parameters: C = 6.2635 , h_inv = 282.8866 
+    #> Parameters: C = 6.2645 , h_inv = 282.8866 
+    #> Parameters: C = 6.2625 , h_inv = 282.8866 
+    #> Parameters: C = 6.2635 , h_inv = 282.8876 
+    #> Parameters: C = 6.2635 , h_inv = 282.8856 
+    #> Parameters: C = 6.7165 , h_inv = 282.7692 
+    #> Parameters: C = 6.7175 , h_inv = 282.7692 
+    #> Parameters: C = 6.7155 , h_inv = 282.7692 
+    #> Parameters: C = 6.7165 , h_inv = 282.7702 
+    #> Parameters: C = 6.7165 , h_inv = 282.7682 
+    #> Parameters: C = 2.4381 , h_inv = 284.3381 
+    #> Parameters: C = 2.4391 , h_inv = 284.3381 
+    #> Parameters: C = 2.4371 , h_inv = 284.3381 
+    #> Parameters: C = 2.4381 , h_inv = 284.3391 
+    #> Parameters: C = 2.4381 , h_inv = 284.3371 
+    #> Parameters: C = 6.3925 , h_inv = 282.888 
+    #> Parameters: C = 6.3935 , h_inv = 282.888 
+    #> Parameters: C = 6.3915 , h_inv = 282.888 
+    #> Parameters: C = 6.3925 , h_inv = 282.889 
+    #> Parameters: C = 6.3925 , h_inv = 282.887 
+    #> Parameters: C = 6.6358 , h_inv = 282.7988 
+    #> Parameters: C = 6.6368 , h_inv = 282.7988 
+    #> Parameters: C = 6.6348 , h_inv = 282.7988 
+    #> Parameters: C = 6.6358 , h_inv = 282.7998 
+    #> Parameters: C = 6.6358 , h_inv = 282.7978
     #> Optimization Complete:
     #>   Best C: 6.6358
     #>   Best h_inv: 282.7988
     #>   Final RMSE: 0.1415
 
-![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-9.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-10.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-11.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-12.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-13.png)![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-14.png)
+![](lernzmp-aeme_files/figure-html/lernzmp-build-aeme-4.png)
 
 ## Run AEME models
 
