@@ -72,6 +72,8 @@ test_that("running GLM works", {
   # configuration(aeme) <- cfg
   # options("AEME.glm_exec" = "C:/Users/data/Downloads/glm_3.9.016/glm_3.9.016/glm.exe")
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
+  plot_wlev(aeme, model)
+  plot_wbal(aeme, model = model)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
   outfile2 <- get_model_outfile(lake_dir = lake_dir, model = model)
@@ -84,13 +86,13 @@ test_that("running GLM works", {
   outp1 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model, 
                               vars_sim = vars_sim)
   testthat::expect_true(is.list(outp1))
-  testthat::expect_true(nrow(outp1$HYD_temp) == 43)
+  testthat::expect_true(nrow(outp1$HYD_temp) == 42)
   testthat::expect_true(length(outp1) == 53)
   
   outp2 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model,  
                               vars_sim = "HYD_temp", incl_fluxes = FALSE)
   testthat::expect_true(is.list(outp2))
-  testthat::expect_true(nrow(outp2$HYD_temp) == 43)
+  testthat::expect_true(nrow(outp2$HYD_temp) == 42)
   testthat::expect_true(length(outp2) == 6)
   
   ncdf4::nc_close(nc)
@@ -449,6 +451,9 @@ test_that("running models with wbal method = 1", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
                    parallel = TRUE, ncores = 2)
+  plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
+              facet = F) 
+  
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model[1], "DYsim.nc"))
@@ -535,8 +540,8 @@ test_that("running models with wbal method = 3", {
                    parallel = TRUE, ncores = 2)
   
   # plot_output(aeme, model)
-  # plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
-  #             facet = F) /
+  plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
+              facet = F) 
   # plot_output(aeme = aeme, model = model, var_sim = "LKE_netwbl",
   #             facet = F, cumulative = T)
   # plot_wbal(aeme = aeme)
@@ -635,6 +640,9 @@ test_that("running models in parallel with no wbal calculated", {
                    parallel = TRUE, ncores = 2)
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = FALSE, facet = FALSE)
+  plot_output(aeme = aeme, model = model, var_sim = "LKE_outflow",
+              add_obs = FALSE, facet = FALSE)
+  plot_wbal(aeme = aeme)
   
   lke <- lake(aeme)
   file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
