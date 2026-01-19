@@ -114,17 +114,20 @@ test_that("GLM sediment parameters can be input and run", {
   aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- get_model_controls()
   model <- c("glm_aed")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls)
   sed_params <- glm_sed_params(n_zones = 2, zone_heights = c(5, 14))
-  input_model_parameters(aeme = aeme, model = model, param = sed_params,
-                         path = path)
+  aeme <- AEME::add_param(aeme, sed_params)
+  # input_model_parameters(aeme = aeme, model = model, param = sed_params,
+  #                        path = path)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5)
+  
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
   nml <- read_nml(cfg_files$glm_aed["glm3"])
   zone_heights <- get_nml_value(nml, "zone_heights")
   testthat::expect_equal(zone_heights, c(5, 14))
   
-  aeme <- run_aeme(aeme = aeme, model = model, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = T)
+  AEME::plot_wlev(aeme = aeme, model = model)
   
   outfiles <- get_model_outfile(aeme = aeme, model = model, path = path)
   testthat::expect_true(file.exists(outfiles$glm_aed))
