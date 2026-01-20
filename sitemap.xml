@@ -156,12 +156,16 @@
 <url><loc>/reference/read_aed_param_csv.html</loc></url>
 <url><loc>/reference/read_aeme_from_files.html</loc></url>
 <url><loc>/reference/read_dy_output.html</loc></url>
+<url><loc>/reference/read_dy_wlev.html</loc></url>
 <url><loc>/reference/read_glm_output.html</loc></url>
+<url><loc>/reference/read_glm_wlev.html</loc></url>
 <url><loc>/reference/read_gotm_flux_output.html</loc></url>
 <url><loc>/reference/read_gotm_output.html</loc></url>
 <url><loc>/reference/read_gotm_profile.html</loc></url>
+<url><loc>/reference/read_gotm_wlev.html</loc></url>
 <url><loc>/reference/read_model_config.html</loc></url>
 <url><loc>/reference/read_model_outputs.html</loc></url>
+<url><loc>/reference/read_model_wlev.html</loc></url>
 <url><loc>/reference/read_nml.html</loc></url>
 <url><loc>/reference/remove_inflow.html</loc></url>
 <url><loc>/reference/remove_outflow.html</loc></url>

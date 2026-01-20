@@ -379,15 +379,21 @@ We have a host of vignettes to help you get started with AEME:
 - [`read_aeme_from_files()`](read_aeme_from_files.md) : Read an AEME
   object from files
 - [`read_dy_output()`](read_dy_output.md) : Read DYRESM output
+- [`read_dy_wlev()`](read_dy_wlev.md) : Read DYRESM water level output
 - [`read_glm_output()`](read_glm_output.md) : Read GLM netCDF output
+- [`read_glm_wlev()`](read_glm_wlev.md) : Read GLM lake water level
+  output
 - [`read_gotm_flux_output()`](read_gotm_flux_output.md) : Read GOTM flux
   output
 - [`read_gotm_output()`](read_gotm_output.md) : Read GOTM output
 - [`read_gotm_profile()`](read_gotm_profile.md) : Read GOTM profile file
+- [`read_gotm_wlev()`](read_gotm_wlev.md) : Read GOTM water level output
 - [`read_model_config()`](read_model_config.md) : Read in model
   configuration files for a given model and lake directory
 - [`read_model_outputs()`](read_model_outputs.md) : Read model outputs
   and format to AEME standard
+- [`read_model_wlev()`](read_model_wlev.md) : Read water level from
+  model output
 - [`read_nml()`](read_nml.md) : read in a GLM simulation \*.nml file
 - [`remove_inflow()`](remove_inflow.md) : Remove inflow data from Aeme
   object
