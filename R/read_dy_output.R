@@ -224,3 +224,43 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
   return(out_list)
 }
+
+#' Read DYRESM water level output
+#' 
+#' @inheritParams read_dy_output
+#' @return Data frame with Date and LKE_lvlwtr columns
+#' @export
+#' @importFrom ncdf4 ncvar_get ncatt_get nc_close
+#' @importFrom withr local_locale local_timezone
+#' @importFrom cli cli_abort
+read_dy_wlev <- function(nc = NULL, file) {
+  # Set timezone
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+  
+  if (is.null(nc)) {
+    nc <- open_nc_safe(file, model = "dy_cd")
+    on.exit(ncdf4::nc_close(nc))
+  }
+  
+  if (!("dyresmTime" %in% names(nc$var))) {
+    cli::cli_abort("No time dimension found in DYRESM output")
+  }
+  dy_time <- ncdf4::ncvar_get(nc, "dyresmTime")
+  dy_time[dy_time > 9.9e36] <- NA
+  dy_dates <- as.POSIXct((dy_time - 2415018.5) *
+                           86400, origin = "1899-12-30") |> as.Date()
+  
+  mod_layers <- ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")
+  if (!is.matrix(mod_layers)) {
+    cli_inform_safe("Error reading DYRESM layers, potentially due to water level
+                   fluctuations.\nReturning NULL...")
+    return(NULL)
+  }
+  
+  lake_level <- apply(mod_layers, 2, \(x) max(x, na.rm = TRUE))
+  
+  out_df <- data.frame(Date = dy_dates,
+                       LKE_lvlwtr = lake_level)
+  return(out_df)
+}

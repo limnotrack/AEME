@@ -79,10 +79,17 @@ test_that("running GLM works", {
   outfile2 <- get_model_outfile(lake_dir = lake_dir, model = model)
   testthat::expect_equal(outfile, outfile2)
   
+  wlev <- read_model_wlev(lake_dir = lake_dir, model = model)
+  testthat::expect_true(is.data.frame(wlev))
+  
   vars_sim <- get_vars_sim(aeme = aeme)
   
   # Read GLM output using ncdf4
   nc <- ncdf4::nc_open(outfile$glm_aed)
+  wlev2 <- read_model_wlev(nc = nc, model = model)
+  testthat::expect_true(is.data.frame(wlev2))
+  testthat::expect_equal(nrow(wlev), nrow(wlev2))
+  
   outp1 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model, 
                               vars_sim = vars_sim)
   testthat::expect_true(is.list(outp1))

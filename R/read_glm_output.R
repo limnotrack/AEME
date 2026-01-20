@@ -168,3 +168,30 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
   return(out_list)
 }
+
+#' Read GLM lake water level output
+#' 
+#' @inheritParams read_glm_output
+#' @returns Data frame with Date and LKE_lvlwtr columns
+#' @export
+#' @importFrom ncdf4 ncvar_get ncatt_get
+read_glm_wlev <- function(nc = NULL, file) {
+  if (is.null(nc)) {
+    nc <- open_nc_safe(file, model = "glm_aed")
+    on.exit(ncdf4::nc_close(nc))
+  }
+  hours_since  <- ncdf4::ncvar_get(nc, "time")
+  if (length(hours_since) == 0) {
+    cli::cli_abort("No time dimension in GLM output")
+  }
+  date_start <- as.POSIXct(gsub("hours since ", "",
+                                ncdf4::ncatt_get(nc,'time','units')$value))
+  glm_dates <- as.POSIXct(hours_since * 3600 + date_start) |> 
+    as.Date()
+  
+  lake_level <- ncdf4::ncvar_get(nc, "lake_level")
+  
+  out <- data.frame(Date = glm_dates,
+                    LKE_lvlwtr = lake_level)
+  return(out)
+}
