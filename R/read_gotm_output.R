@@ -192,9 +192,9 @@ read_gotm_wlev <- function(nc = NULL, file) {
     on.exit(ncdf4::nc_close(nc))
   }
   out_steps <- ncdf4::ncvar_get(nc, "time")
-  if (length(out_steps) == 0) {
-    cli::cli_abort("No time dimension in GOTM output")
-  }
+  # if (length(out_steps) == 0) {
+  #   cli::cli_abort("No time dimension in GOTM output")
+  # }
   date_start <- ncdf4::ncatt_get(nc, "time", "units")$value |>
     gsub("seconds since ", "", x = _) |>
     as.POSIXct()
@@ -204,6 +204,9 @@ read_gotm_wlev <- function(nc = NULL, file) {
   
   zi <- ncdf4::ncvar_get(nc, "zi")
   zeta <- ncdf4::ncvar_get(nc, "zeta")
+  if (is.null(dim(zi))) {
+    return(empty_wlev_df())
+  }
   
   lake_level <- zi[nrow(zi), ] - zi[1, ]
   lake_level[lake_level <= 0] <- 0
@@ -213,3 +216,13 @@ read_gotm_wlev <- function(nc = NULL, file) {
                        LKE_lvlwtr = as.vector(lake_level))
   return(out_df)
 } 
+
+#' Create empty GOTM water level data frame
+#' @returns Data frame with Date and LKE_lvlwtr columns
+#' @noRd
+empty_wlev_df <- function() {
+  data.frame(
+    Date = as.Date(character()),
+    LKE_lvlwtr  = numeric()
+  )
+}
