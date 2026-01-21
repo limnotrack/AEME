@@ -10,6 +10,7 @@ plot_output(
   aeme,
   model,
   var_sim = "HYD_temp",
+  point_size = 2,
   ens_n = 1,
   add_obs = TRUE,
   level = FALSE,
