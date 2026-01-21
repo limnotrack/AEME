@@ -68,10 +68,10 @@
 #' }
 #'
 
-plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
-                        add_obs = TRUE, level = FALSE, remove_spin_up = TRUE,
-                        print_plots = FALSE, var_lims = NULL, ylim = NULL,
-                        cumulative = FALSE, facet = TRUE) {
+plot_output <- function(aeme, model, var_sim = "HYD_temp", point_size = 2,
+                        ens_n = 1, add_obs = TRUE, level = FALSE,
+                        remove_spin_up = TRUE, print_plots = FALSE, 
+                        var_lims = NULL, ylim = NULL, cumulative = FALSE, facet = TRUE) {
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
@@ -184,7 +184,7 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
 
 
     plot_var(df = df, ylim = ylim, xlim = xlim, var_lims = var_lims, obs = obs,
-             add_obs = add_obs, level = level, facet = facet,
-             print_plots = print_plots)
+             add_obs = add_obs, level = level, facet = facet, 
+             point_size = point_size, print_plots = print_plots)
   }
 }

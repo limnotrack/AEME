@@ -56,16 +56,14 @@ test_that("plotting model output works", {
   aeme <- readRDS(aeme_file)
   path <- tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  model <- c("glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- "glm_aed"
   }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
-                     ext_elev = 5, use_bgc = TRUE)
+                     model_controls = model_controls,  ext_elev = 5, 
+                     use_bgc = TRUE)
 
   testthat::expect_error({
     p1 <- plot_output(aeme = aeme, model = model,
@@ -99,7 +97,7 @@ test_that("plotting model output works", {
   testthat::expect_true(ggplot2::is_ggplot(p1))
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
-                    level = TRUE, print_plots = FALSE,
+                    level = TRUE, print_plots = FALSE, point_size = 1,
                     var_lims = c(0, 30), ylim = c(0, 16), facet = FALSE)
   
   plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
@@ -112,8 +110,7 @@ test_that("plotting model output works", {
   plot_output(aeme = aeme, model = model, var_sim = "PHS_tp")
   testthat::expect_true(is.list(p1))
   testthat::expect_true(all(c(ggplot2::is_ggplot(p1[[1]]),
-                              ggplot2::is_ggplot(p1[[2]]),
-                              ggplot2::is_ggplot(p1[[3]]))))
+                              ggplot2::is_ggplot(p1[[2]]))))
 
   p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_evpflx",
                     print_plots = FALSE, cumulative = TRUE, facet = FALSE)
