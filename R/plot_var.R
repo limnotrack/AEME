@@ -136,14 +136,6 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, point_size, add_obs,
 
   sel_var <- df$var_sim[1]
   n <- 11
-  if (sel_var == "CHM_oxy") {
-    n <- 6
-    oxy_vals <- c(0, 2, 4, 8, 10)
-    max_val <- max(df$value, na.rm = TRUE)
-    if (max_val > 10) {
-      oxy_vals <- c(oxy_vals, max_val)
-    }
-  }
   my_cols <- get_hm_palette(var = sel_var, n = n)
   fill_lab <- eval(parse(text = df$name_parse[1]))
   df <- df |> 
@@ -168,20 +160,10 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, point_size, add_obs,
     ggplot2::geom_col(data = df, ggplot2::aes(x = Date, y = lyr_thk,
                                               fill = value),
                       position = 'stack', width = 1) +
-    {
-      if (sel_var == "CHM_oxy") {
-        ggplot2::scale_fill_gradientn(
-          colours = my_cols,
-          values  = scales::rescale(oxy_vals),
-          limits  = var_lims
-        )
-      } else {
-        ggplot2::scale_fill_gradientn(
-          colours = my_cols,
-          limits  = var_lims
-        )
-      }
-    } +
+    ggplot2::scale_fill_gradientn(
+      colours = my_cols,
+      limits  = var_lims
+    ) +
     {if(!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim)} +
     ggplot2::labs(fill = bquote(.(fill_lab))) +
     ggplot2::facet_grid(Model ~ name_text) +
