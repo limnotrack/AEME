@@ -173,7 +173,7 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, point_size, add_obs,
         ggplot2::scale_fill_gradientn(
           colours = my_cols,
           values  = scales::rescale(oxy_vals),
-          limits  = range(oxy_vals)
+          limits  = var_lims
         )
       } else {
         ggplot2::scale_fill_gradientn(
