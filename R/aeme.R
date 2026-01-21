@@ -1373,7 +1373,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
     ens_n <- 1
     ens_lab <- format_ens_label(ens_n = ens_n)
     outp <- output(x)
-    model <- names(outp[[ens_lab]])
+    model <- list_models(x)
     p1 <- plot_output(aeme = x, model = model, ens_n = ens_n)
     return(p1)
     
