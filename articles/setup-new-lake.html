@@ -250,9 +250,9 @@ locations around the world. However, it’s date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2026-01-21 23:52:39] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2026-01-21 23:52:39] downloading</span></span>
-<span><span class="co">#&gt; INFO [2026-01-21 23:52:40] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2026-01-22 00:11:20] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2026-01-22 00:11:20] downloading</span></span>
+<span><span class="co">#&gt; INFO [2026-01-22 00:11:22] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -733,14 +733,14 @@ object.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-01-21 23:53:05]</span></span>
-<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-01-21 23:53:05]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-01-21 23:53:32]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-01-21 23:53:32]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-01-21 23:53:33]</span></span>
-<span><span class="co">#&gt; → GOTM-WET running... [2026-01-21 23:53:33]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-01-21 23:53:33]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-01-21 23:53:33]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-01-22 00:11:43]</span></span>
+<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-01-22 00:11:43]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-01-22 00:12:05]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2026-01-22 00:12:05]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-01-22 00:12:05]</span></span>
+<span><span class="co">#&gt; → GOTM-WET running... [2026-01-22 00:12:05]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-01-22 00:12:06]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-01-22 00:12:06]</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span></code></pre></div>
 </div>
