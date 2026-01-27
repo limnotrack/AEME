@@ -32,7 +32,7 @@
 #'
 
 estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
-                               initial_guess = NULL, verbose = TRUE) {
+                               initial_guess = NULL, verbose = FALSE) {
   
   # 1. Setup Initial Conditions
   # Find the first non-NA observation for the starting level
@@ -60,8 +60,8 @@ estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
                               model = model, gotm_met = gotm_met)
   level_cost(params = initial_guess, data = data, hyps_df = hyps_df,
              start_lvl = start_lvl, model = model, gotm_met = gotm_met)
-  plot(out$h, type = "l")
-  points(data$lvl_obs, col = "red")
+  # plot(out$h, type = "l")
+  # points(data$lvl_obs, col = "red")
   
   # 2. Run Optimization
   # Uses the 'level_cost' function you defined previously
@@ -108,8 +108,8 @@ estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
   
   data$net_balance <- data$HYD_flow + (data$MET_pprain * A_t) - data$evap_m3 - data$spill_outflow
     
-  plot(data$lvl_sim, type = "l")
-  points(data$lvl_obs, col = "red")
+  # plot(data$lvl_sim, type = "l")
+  # points(data$lvl_obs, col = "red")
   return(data)
 }
 
@@ -128,7 +128,7 @@ level_from_volume <- function(V, hyps) {
 #' @noRd
 level_cost <- function(params, data, hyps_df, start_lvl, model,
                        gotm_met = NULL) {
-  cat("Parameters: C =", round(params[1],4), ", h_inv =", round(params[2],4), "\n")
+  # cat("Parameters: C =", round(params[1],4), ", h_inv =", round(params[2],4), "\n")
   # Penalize if h_inv is physically impossible (e.g., above max lake level)
   if(params[2] > max(hyps_df$elev)) return(1e10)
   
