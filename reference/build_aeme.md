@@ -133,43 +133,6 @@ build_aeme(path = path, aeme = aeme, model = model,
                use_bgc = FALSE)
 #> ℹ Using observed water level
 #> ℹ No missing values in observed water level. Using observed water level
-#> Parameters: C = 0.5 , h_inv = 22.9904 
-
-#> Parameters: C = 0.5 , h_inv = 22.9904 
-#> Parameters: C = 0.501 , h_inv = 22.9904 
-#> Parameters: C = 0.499 , h_inv = 22.9904 
-#> Parameters: C = 0.5 , h_inv = 22.9914 
-#> Parameters: C = 0.5 , h_inv = 22.9894 
-#> Parameters: C = 0.2661 , h_inv = 23.6504 
-#> Parameters: C = 0.2671 , h_inv = 23.6504 
-#> Parameters: C = 0.2651 , h_inv = 23.6504 
-#> Parameters: C = 0.2661 , h_inv = 23.6504 
-#> Parameters: C = 0.2661 , h_inv = 23.6494 
-#> Parameters: C = 0.3939 , h_inv = 23.3644 
-#> Parameters: C = 0.3949 , h_inv = 23.3644 
-#> Parameters: C = 0.3929 , h_inv = 23.3644 
-#> Parameters: C = 0.3939 , h_inv = 23.3654 
-#> Parameters: C = 0.3939 , h_inv = 23.3634 
-#> Parameters: C = 0.3311 , h_inv = 23.5049 
-#> Parameters: C = 0.3321 , h_inv = 23.5049 
-#> Parameters: C = 0.3301 , h_inv = 23.5049 
-#> Parameters: C = 0.3311 , h_inv = 23.5059 
-#> Parameters: C = 0.3311 , h_inv = 23.5039 
-#> Parameters: C = 0.3395 , h_inv = 23.4794 
-#> Parameters: C = 0.3405 , h_inv = 23.4794 
-#> Parameters: C = 0.3385 , h_inv = 23.4794 
-#> Parameters: C = 0.3395 , h_inv = 23.4804 
-#> Parameters: C = 0.3395 , h_inv = 23.4784 
-#> Parameters: C = 0.3355 , h_inv = 23.4916 
-#> Parameters: C = 0.3365 , h_inv = 23.4916 
-#> Parameters: C = 0.3345 , h_inv = 23.4916 
-#> Parameters: C = 0.3355 , h_inv = 23.4926 
-#> Parameters: C = 0.3355 , h_inv = 23.4906 
-#> Optimization Complete:
-#>   Best C: 0.3355
-#>   Best h_inv: 23.4916
-#>   Final RMSE: 0.1397
-
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu

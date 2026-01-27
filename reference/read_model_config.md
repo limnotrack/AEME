@@ -5,7 +5,7 @@ Read in model configuration files for a given model and lake directory
 ## Usage
 
 ``` r
-read_model_config(model, path)
+read_model_config(model, lake_dir)
 ```
 
 ## Arguments

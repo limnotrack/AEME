@@ -15,7 +15,7 @@ estimate_lake_wlev(
   init_elev,
   params = NULL,
   initial_guess = NULL,
-  verbose = TRUE
+  verbose = FALSE
 )
 ```
 

@@ -250,9 +250,39 @@ locations around the world. However, it’s date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2026-01-22 00:11:20] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2026-01-22 00:11:20] downloading</span></span>
-<span><span class="co">#&gt; INFO [2026-01-22 00:11:22] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:04] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:08] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:12] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:16] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:21] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:25] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:29] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:33] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:37] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:41] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:46] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:50] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:54] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:23:58] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:02] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:07] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:11] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:15] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:19] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:23] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:27] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:32] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:36] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:40] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:44] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:48] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:52] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:24:57] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:25:01] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:25:05] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:25:09] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:25:09] downloading</span></span>
+<span><span class="co">#&gt; INFO [2026-01-27 01:25:11] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -557,108 +587,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Insufficient lake temperature observations to estimate surface temperature.</span></span>
 <span><span class="co">#&gt;   Using Stefan &amp; Preud'homme (2007) method.</span></span>
-<span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.5</span></span></code></pre></div>
-<p><img src="setup-new-lake_files/figure-html/build-ensemble-1.png" class="r-plt" alt="" width="700"></p>
-<pre><code><span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.5 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.501 , h_inv = 28.5 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.499 , h_inv = 28.5 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.501 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.499 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4358 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4368 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4348 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4358 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4358 , h_inv = 28.999 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3889 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3899 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3879 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3889 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3889 , h_inv = 28.999 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2012 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2022 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2002 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2012 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2012 , h_inv = 28.999 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.002 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 28.999</span></span>
-<span><span class="co">#&gt; Optimization Complete:</span></span>
-<span><span class="co">#&gt;   Best C: 0.001</span></span>
-<span><span class="co">#&gt;   Best h_inv: 29</span></span>
-<span><span class="co">#&gt;   Final RMSE: 0.0725</span></span></code></pre>
-<p><img src="setup-new-lake_files/figure-html/build-ensemble-2.png" class="r-plt" alt="" width="700"></p>
-<pre><code><span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.5</span></span></code></pre>
-<p><img src="setup-new-lake_files/figure-html/build-ensemble-3.png" class="r-plt" alt="" width="700"></p>
-<pre><code><span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.5 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.501 , h_inv = 28.5 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.499 , h_inv = 28.5 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.501 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.499 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4358 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4368 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4348 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4358 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4358 , h_inv = 28.999 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3889 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3899 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3879 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3889 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3889 , h_inv = 28.999 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2012 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2022 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2002 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2012 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2012 , h_inv = 28.999 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.002 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 28.999</span></span>
-<span><span class="co">#&gt; Optimization Complete:</span></span>
-<span><span class="co">#&gt;   Best C: 0.001</span></span>
-<span><span class="co">#&gt;   Best h_inv: 29</span></span>
-<span><span class="co">#&gt;   Final RMSE: 0.0725</span></span></code></pre>
-<p><img src="setup-new-lake_files/figure-html/build-ensemble-4.png" class="r-plt" alt="" width="700"></p>
-<pre><code><span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.5</span></span></code></pre>
-<p><img src="setup-new-lake_files/figure-html/build-ensemble-5.png" class="r-plt" alt="" width="700"></p>
-<pre><code><span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.5 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.501 , h_inv = 28.5 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.499 , h_inv = 28.5 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.501 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.5 , h_inv = 28.499 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4403 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4413 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4393 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4403 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.4403 , h_inv = 28.999 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3978 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3988 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3968 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3978 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.3978 , h_inv = 28.999 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2279 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2289 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2269 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2279 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.2279 , h_inv = 28.999 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.002 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 28.999 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.002 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 29 </span></span>
-<span><span class="co">#&gt; Parameters: C = 0.001 , h_inv = 28.999</span></span>
-<span><span class="co">#&gt; Optimization Complete:</span></span>
-<span><span class="co">#&gt;   Best C: 0.001</span></span>
-<span><span class="co">#&gt;   Best h_inv: 29</span></span>
-<span><span class="co">#&gt;   Final RMSE: 0.0575</span></span></code></pre>
-<p><img src="setup-new-lake_files/figure-html/build-ensemble-6.png" class="r-plt" alt="" width="700"></p>
-<pre><code><span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Calculating lake level using lake depth and a sinisoidal function.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building DYRESM-CAEDYM for lake wainamu</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in DYRESM .par file</span></span>
@@ -713,13 +642,13 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; DY-CD:    </span></span>
 <span><span class="co">#&gt; GLM-AED:  </span></span>
-<span><span class="co">#&gt; GOTM-WET:</span></span></code></pre>
+<span><span class="co">#&gt; GOTM-WET:</span></span></code></pre></div>
 <p>By default, the <code>build_aeme</code> function will build the file
 configuration for each model. This will create the necessary files for
 each model to run. The files are also stored in the <code>aeme</code>
 object in the <code>configuration</code> slot with a list for
 hydrodynamic and ecosystem model configurations.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># View the files</span></span>
 <span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cfg</span><span class="op">[[</span><span class="st">"glm_aed"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
@@ -730,17 +659,17 @@ easy storage of all the data and also for easy sharing of the data with
 others. Sharing the <code>aeme</code> object with others allows them to
 run the ensemble of models without needing to reconstruct the
 object.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-01-22 00:11:43]</span></span>
-<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-01-22 00:11:43]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-01-22 00:12:05]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-01-22 00:12:05]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-01-22 00:12:05]</span></span>
-<span><span class="co">#&gt; → GOTM-WET running... [2026-01-22 00:12:05]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-01-22 00:12:06]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-01-22 00:12:06]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-01-27 01:25:30]</span></span>
+<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-01-27 01:25:30]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-01-27 01:25:50]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2026-01-27 01:25:50]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-01-27 01:25:50]</span></span>
+<span><span class="co">#&gt; → GOTM-WET running... [2026-01-27 01:25:50]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-01-27 01:25:51]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-01-27 01:25:51]</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span></code></pre></div>
 </div>
@@ -750,7 +679,7 @@ object.</p>
 <p>The output from the model run is stored in the <code>output</code>
 slot of the <code>aeme</code> object. This is a list with a list for
 each model. The list contains the output data from the model run.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># View the output</span></span>
 <span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 246 rows containing missing values or values outside the scale range</span></span>
@@ -763,7 +692,7 @@ each model. The list contains the output data from the model run.</p>
 <p>Saving the <code>aeme</code> object to a file can be done using the
 <code>saveRDS</code> function. This will save the object to a file with
 the <code>.rds</code>.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save the AEME object</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"aeme.rds"</span><span class="op">)</span></span></code></pre></div>
 </div>
