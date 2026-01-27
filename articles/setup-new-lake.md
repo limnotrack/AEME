@@ -191,39 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-01-27 01:23:04] job submitted
-#> INFO [2026-01-27 01:23:08] job updated
-#> INFO [2026-01-27 01:23:12] job updated
-#> INFO [2026-01-27 01:23:16] job updated
-#> INFO [2026-01-27 01:23:21] job updated
-#> INFO [2026-01-27 01:23:25] job updated
-#> INFO [2026-01-27 01:23:29] job updated
-#> INFO [2026-01-27 01:23:33] job updated
-#> INFO [2026-01-27 01:23:37] job updated
-#> INFO [2026-01-27 01:23:41] job updated
-#> INFO [2026-01-27 01:23:46] job updated
-#> INFO [2026-01-27 01:23:50] job updated
-#> INFO [2026-01-27 01:23:54] job updated
-#> INFO [2026-01-27 01:23:58] job updated
-#> INFO [2026-01-27 01:24:02] job updated
-#> INFO [2026-01-27 01:24:07] job updated
-#> INFO [2026-01-27 01:24:11] job updated
-#> INFO [2026-01-27 01:24:15] job updated
-#> INFO [2026-01-27 01:24:19] job updated
-#> INFO [2026-01-27 01:24:23] job updated
-#> INFO [2026-01-27 01:24:27] job updated
-#> INFO [2026-01-27 01:24:32] job updated
-#> INFO [2026-01-27 01:24:36] job updated
-#> INFO [2026-01-27 01:24:40] job updated
-#> INFO [2026-01-27 01:24:44] job updated
-#> INFO [2026-01-27 01:24:48] job updated
-#> INFO [2026-01-27 01:24:52] job updated
-#> INFO [2026-01-27 01:24:57] job updated
-#> INFO [2026-01-27 01:25:01] job updated
-#> INFO [2026-01-27 01:25:05] job updated
-#> INFO [2026-01-27 01:25:09] job updated
-#> INFO [2026-01-27 01:25:09] downloading
-#> INFO [2026-01-27 01:25:11] extracting
+#> INFO [2026-01-27 20:51:03] job submitted
+#> INFO [2026-01-27 20:51:03] downloading
+#> INFO [2026-01-27 20:51:05] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -624,14 +594,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-01-27 01:25:30]
-#> → DYRESM-CAEDYM running... [2026-01-27 01:25:30]
-#> ✔ DYRESM-CAEDYM run successful! [2026-01-27 01:25:50]
-#> → GLM-AED running... [2026-01-27 01:25:50]
-#> ✔ GLM-AED run successful! [2026-01-27 01:25:50]
-#> → GOTM-WET running... [2026-01-27 01:25:50]
-#> ✔ GOTM-WET run successful! [2026-01-27 01:25:51]
-#> ✔ Model run complete! [2026-01-27 01:25:51]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-01-27 20:51:27]
+#> → DYRESM-CAEDYM running... [2026-01-27 20:51:27]
+#> ✔ DYRESM-CAEDYM run successful! [2026-01-27 20:51:54]
+#> → GLM-AED running... [2026-01-27 20:51:54]
+#> ✔ GLM-AED run successful! [2026-01-27 20:51:55]
+#> → GOTM-WET running... [2026-01-27 20:51:55]
+#> ✔ GOTM-WET run successful! [2026-01-27 20:51:55]
+#> ✔ Model run complete! [2026-01-27 20:51:55]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```
