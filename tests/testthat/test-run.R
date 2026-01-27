@@ -200,6 +200,8 @@ test_that("running GOTM works", {
   aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = F)
   plot_output(aeme)
   plot_output(aeme, var_sim = "LKE_evpflx")
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  wlev <- read_model_wlev(lake_dir = lake_dir, model = model)
   # p1 <- plot_output(aeme, var_sim = "CHM_oxynal")
   # testthat::expect_true(ggplot2::is.ggplot(p1))
   # p2 <- plot_output(aeme, var_sim = "LKE_tli4")
@@ -250,6 +252,9 @@ test_that("running all models with running out of water works", {
                      inf_factor = inf_factor, outf_factor = outf_factor,
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, path = path)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  wlev <- read_model_wlev(lake_dir = lake_dir, model = "gotm_wet")
+  
   plot_output(aeme)
   plot_output(aeme, var_sim = "LKE_lvlwtr")
   outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
@@ -425,9 +430,8 @@ test_that("running models in parallel works", {
                                     var_sim = var_sim)
   testthat::expect_true(is.data.frame(model_performance))
   
-  pl <- plot_resid(aeme = aeme, model = model, var_sim = var_sim)
-  testthat::expect_true(is.list(pl))
-  testthat::expect_true(all(sapply(pl, ggplot2::is_ggplot)))
+  pl <- plot_resid(aeme = aeme, model = model, var_sim = var_sim[1])
+  testthat::expect_true(ggplot2::is_ggplot(pl))
 })
 
 test_that("running models with wbal method = 1", {

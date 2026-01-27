@@ -224,8 +224,9 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   
   input_model_parameters(aeme = aeme, model = model, param = glm_phy_param,
                          path = path)
-  
-  glm_cfg <- read_model_config(model = model, path = path)
+  get_glm_sed_zones(aeme = aeme, path = path)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  glm_cfg <- read_model_config(model = model, lake_dir = lake_dir)
   n_vals <- sum(glm_cfg$bgc$aed_phyto_pars$cyano == 10)
   testthat::expect_equal(n_vals, nrow(glm_phy_param) / 3)
   

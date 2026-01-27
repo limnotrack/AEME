@@ -16,8 +16,8 @@ set_aed_sed_const2d <- function(aeme, path, lake_dir = NULL) {
     }
     lake_dir <- get_lake_dir(aeme = aeme, path = path)
   }
-  n_zones <- get_glm_sed_zones(aeme = aeme, path = path, lake_dir = lake_dir)
-  model_config <- read_model_config(model = "glm_aed", path = path)
+  n_zones <- get_glm_sed_zones(aeme = aeme, lake_dir = lake_dir)
+  model_config <- read_model_config(model = "glm_aed", lake_dir = lake_dir)
   
   cli_inform_safe(c("i" = paste0("Setting up AED aed_sed_const2d sediment
                                  zones: ", n_zones)))

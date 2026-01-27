@@ -102,7 +102,7 @@ test_that("plotting model output works", {
   
   plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
   plot_output(aeme = aeme, model = model, var_sim = "HYD_dens")
-  plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
+  plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy", var_lims = c(0, 14))
   plot_output(aeme = aeme, model = model, var_sim = "PHY_tchla")
   plot_output(aeme = aeme, model = model, var_sim = "PHY_cyano")
   plot_output(aeme = aeme, model = model, var_sim = "PHY_green")
@@ -266,10 +266,10 @@ test_that("plotting model residuals for 2d and 1d variables", {
                    parallel = TRUE, ncores = 2L)
 
   p1 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_temp")
-  testthat::expect_true(ggplot2::is_ggplot(p1$HYD_temp))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
 
   p2 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_thmcln")
-  testthat::expect_true(ggplot2::is_ggplot(p2$HYD_thmcln))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
 })
 
 test_that("plotting phytoplankton model output works", {
