@@ -23,7 +23,7 @@ load_configuration <- function(aeme, model, model_controls = NULL,
   get_config_args <- list(path = lake_dir)
   model_config <- setNames(
     lapply(model, read_model_config,
-           path = lake_dir),
+           lake_dir = lake_dir),
     model
   )
   

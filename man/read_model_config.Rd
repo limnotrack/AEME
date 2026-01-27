@@ -4,7 +4,7 @@
 \alias{read_model_config}
 \title{Read in model configuration files for a given model and lake directory}
 \usage{
-read_model_config(model, path)
+read_model_config(model, lake_dir)
 }
 \arguments{
 \item{model}{character; model name ("dy_cd", "glm_aed", "gotm_wet"). Only

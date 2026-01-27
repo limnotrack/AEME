@@ -10,15 +10,15 @@
 #' @export
 #'
 
-read_model_config <- function(model, path) {
+read_model_config <- function(model, lake_dir) {
   model <- check_model(model)
-  path <- check_path(path, must_exist = TRUE)
+  path <- check_path(lake_dir, must_exist = TRUE)
   out <- list()
   if (length(model) != 1) {
     cli::cli_abort("Please provide only one model at a time. {.arg model} has 
                    {length(model)} models {.val {model}}.")
   }
-  model_cfg_files <- get_model_config_files(lake_dir = path, 
+  model_cfg_files <- get_model_config_files(lake_dir = lake_dir, 
                                             model = model)[[model]]
   cfg <- lapply(model_cfg_files, \(f) {
     file_type <- tools::file_ext(f)
