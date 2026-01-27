@@ -1,6 +1,7 @@
 #' Get number of sediment zones in GLM-AED model
 #'
 #' @inheritParams build_aeme
+#' @inheritParams get_model_outfile
 #'
 #' @returns Number of sediment zones
 #' @export
