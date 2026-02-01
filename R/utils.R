@@ -180,13 +180,13 @@ check_met <- function(met) {
   abort_if_missing_cols(met, c("Date", "MET_radswd", "MET_tmpair", "MET_pprain"), name = "met")
 
   # Check wind columns
-  wind1 <- "MET_wnspd"
+  wind1 <- "MET_wndspd"
   wind2 <- c("MET_wnduvu", "MET_wnduvv")
   if (!wind1 %in% colnames(met) && !all(wind2 %in% colnames(met))) {
     cli::cli_abort(
       c(
         "!" = "{.arg met} must contain either:",
-        "*" = "{.val MET_wnspd}",
+        "*" = "{.val MET_wndspd}",
         "or" = "both {.val MET_wnduvu} and {.val MET_wnduvv}."
       ),
       class = "aeme_error_met_wind"
