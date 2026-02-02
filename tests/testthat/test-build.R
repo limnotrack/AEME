@@ -177,11 +177,11 @@ test_that("building all models with minimum met variables", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-  req_met <- c("Date", "MET_tmpair", "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", 
-               "MET_pprain", "MET_radswd")
+  req_met1 <- c("Date", "MET_tmpair", "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", 
+                "MET_pprain", "MET_radswd")
   inp <- input(aeme)
   met <- inp$met |> 
-    dplyr::select(dplyr::all_of(req_met))
+    dplyr::select(dplyr::all_of(req_met1))
   aeme <- add_met(aeme = aeme, met = met)
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
@@ -192,11 +192,23 @@ test_that("building all models with minimum met variables", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
+  lke <- lake(aeme)
+  exp_met <- met |> 
+    expand_met(lat = lke$latitude, lon = lke$longitude, elev = lke$elev)
   
-  path <- file.path(tmpdir, "lake_new")
+  req_met2 <- c("Date", "MET_tmpair", "MET_humrel", "MET_wndspd", "MET_pprain",
+                "MET_radswd")
+  testthat::expect_true(all(req_met2 %in% colnames(exp_met)))
+  met <- exp_met |> 
+    dplyr::select(dplyr::all_of(req_met2))
+  aeme <- add_met(aeme = aeme, met = met)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
-                     use_bgc = FALSE, use_aeme = TRUE)
+                     use_bgc = FALSE)
+  inp <- input(aeme)
+  met <- inp$meteo
+  
+  
 })
 
 test_that("building all models in a different dir", {
