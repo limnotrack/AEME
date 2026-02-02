@@ -238,7 +238,8 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   
   input_model_parameters(aeme = aeme, model = model, param = aed_param,
                          path = path)
-  glm_cfg <- read_model_config(model = model, path = path)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  glm_cfg <- read_model_config(model = model, lake_dir = lake_dir)
   testthat::expect_true(glm_cfg$bgc$aed$aed_oxygen$oxy_initial == 10)
   testthat::expect_true(glm_cfg$bgc$aed$aed_oxygen$ksed_oxy == 10)
 })

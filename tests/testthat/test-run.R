@@ -319,7 +319,7 @@ test_that("running GLM-AED works", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = T, path = path)
   
   file <- get_model_outfile(aeme = aeme, model = model, path = path)
-
+  
   plot_output(aeme, model = model)
   
   v1 <- get_var(aeme = aeme, model = model, var = "HYD_temp")
@@ -1305,7 +1305,7 @@ test_that("running GLM-AED with multiple aed models", {
     file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
     testthat::expect_true(file_chk)
   }
-
+  
 })
 
 test_that("updating AED sed params works", {
@@ -1338,10 +1338,11 @@ test_that("updating AED sed params works", {
   aeme <- add_param(aeme, upd_sed_pars)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      ext_elev = 5, use_bgc = TRUE)
-  cfg <- read_model_config(model = model, path = path)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  cfg <- read_model_config(model = model, lake_dir = lake_dir)
   
   set_aed_sed_const2d(aeme = aeme, path = path)
-  cfg2 <- read_model_config(model = model, path = path)
+  cfg2 <- read_model_config(model = model, lake_dir = lake_dir)
   
   testthat::expect_false(identical(cfg, cfg2))
   testthat::expect_true(cfg$bgc$aed$aed_sed_const2d$n_zones == 1)
