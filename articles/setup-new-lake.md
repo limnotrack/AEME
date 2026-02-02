@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-02-01 23:14:51] job submitted
-#> INFO [2026-02-01 23:14:51] downloading
-#> INFO [2026-02-01 23:14:54] extracting
+#> INFO [2026-02-02 01:12:21] job submitted
+#> INFO [2026-02-02 01:12:21] downloading
+#> INFO [2026-02-02 01:12:22] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -434,12 +434,12 @@ model_controls
 #> 27     NIT_don     TRUE        0.00      0.300       1e+06     0.01400670
 #> 28     NIT_nit     TRUE        0.20      0.015       1e+06     0.01400670
 #> 29     NIT_pon     TRUE        0.00      0.100       1e-03     0.01400670
-#> 30      NIT_tn     TRUE          NA         NA          NA     0.01400670
+#> 30      NIT_tn     TRUE        0.00         NA          NA     0.01400670
 #> 31     PHS_dop     TRUE        0.00      0.010       1e+06     0.03097376
 #> 32     PHS_frp     TRUE        0.00      0.010       1e+06     0.03097376
 #> 33     PHS_pip     TRUE        0.00      0.002       5e-03     0.03097376
 #> 34     PHS_pop     TRUE        0.00      0.010       1e-04     0.03097376
-#> 35      PHS_tp     TRUE          NA         NA          NA     0.03097376
+#> 35      PHS_tp     TRUE        0.00         NA          NA     0.03097376
 #> 36   PHY_cyano     TRUE        0.10      1.000       0e+00     1.00000000
 #> 37  PHY_diatom     TRUE        0.10      1.000       0e+00     1.00000000
 #> 38   PHY_green     TRUE        0.10      1.000       0e+00     1.00000000
@@ -449,7 +449,7 @@ model_controls
 #> 42     SIL_rsi     TRUE        0.00      1.000       1e+07     1.00000000
 #> 43    ZOO_zoo1     TRUE        0.10      1.000       0e+00     1.00000000
 #> 44     BAC_bac    FALSE        0.00         NA          NA     1.00000000
-#> 45     CAR_ch4    FALSE          NA         NA          NA     1.00000000
+#> 45     CAR_ch4    FALSE        0.00         NA          NA     1.00000000
 #> 46     CAR_dic    FALSE       10.00      2.000       1e+06     0.01201100
 #> 47    CAR_docr    FALSE        0.00         NA       1e+06     0.01201100
 #> 48      CAR_pH    FALSE        7.00      7.000       7e+00     1.00000000
@@ -475,7 +475,7 @@ model_controls
 #> 68     NCS_ss6    FALSE        5.00         NA          NA     1.00000000
 #> 69     NCS_tss    FALSE          NA         NA          NA     1.00000000
 #> 70    NIT_donr    FALSE        0.00         NA          NA     0.01400670
-#> 71     NIT_pin    FALSE          NA      0.010       1e-03     0.01400670
+#> 71     NIT_pin    FALSE        0.00      0.010       1e-03     0.01400670
 #> 72    NIT_ponr    FALSE        0.00         NA          NA     0.01400670
 #> 73    PHS_dopr    FALSE        0.00         NA          NA     0.03097376
 #> 74    PHS_popr    FALSE        0.00         NA          NA     0.03097376
@@ -594,14 +594,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-01 23:15:16]
-#> → DYRESM-CAEDYM running... [2026-02-01 23:15:16]
-#> ✔ DYRESM-CAEDYM run successful! [2026-02-01 23:15:42]
-#> → GLM-AED running... [2026-02-01 23:15:42]
-#> ✔ GLM-AED run successful! [2026-02-01 23:15:43]
-#> → GOTM-WET running... [2026-02-01 23:15:43]
-#> ✔ GOTM-WET run successful! [2026-02-01 23:15:43]
-#> ✔ Model run complete! [2026-02-01 23:15:43]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-02 01:12:43]
+#> → DYRESM-CAEDYM running... [2026-02-02 01:12:43]
+#> ✔ DYRESM-CAEDYM run successful! [2026-02-02 01:13:10]
+#> → GLM-AED running... [2026-02-02 01:13:10]
+#> ✔ GLM-AED run successful! [2026-02-02 01:13:10]
+#> → GOTM-WET running... [2026-02-02 01:13:10]
+#> ✔ GOTM-WET run successful! [2026-02-02 01:13:11]
+#> ✔ Model run complete! [2026-02-02 01:13:11]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```
