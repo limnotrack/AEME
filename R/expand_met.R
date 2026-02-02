@@ -112,6 +112,12 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
 
 
   # if no station pressure
+  if (is.prsttn) {
+    prsttn <- met[, which(grepl("prsttn",colnames(met)))]
+  }
+  if (is.prmslp) {
+    prmslp <- met[, which(grepl("prmslp",colnames(met)))]
+  }
   if (!is.prsttn & !is.prmslp) {
     
     prsttn <- estimate_station_pressure(tmpair = tmpair, humrel = humrel,
