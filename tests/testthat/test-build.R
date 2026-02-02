@@ -170,6 +170,35 @@ test_that("building GOTM-WET works", {
   
 })
 
+test_that("building all models with minimum met variables", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  req_met <- c("Date", "MET_tmpair", "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", 
+               "MET_pprain", "MET_radswd")
+  inp <- input(aeme)
+  met <- inp$met |> 
+    dplyr::select(dplyr::all_of(req_met))
+  aeme <- add_met(aeme = aeme, met = met)
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     use_bgc = FALSE)
+  
+  path <- file.path(tmpdir, "lake_new")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     use_bgc = FALSE, use_aeme = TRUE)
+})
+
 test_that("building all models in a different dir", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
