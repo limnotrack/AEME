@@ -11,6 +11,7 @@
 #' Defaults to TRUE.
 #' @param output_hour Hour of the day to extract (0-23). Defaults to 0.
 #' @param file File path to netCDF file. Only used if `nc` is NULL.
+#' @param phyto_pars Data frame with phytoplankton parameters from AED.
 #'
 #' @returns List with AEME output variables
 #' @export
@@ -21,7 +22,7 @@
 
 read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                             dates = NULL, date_index = NULL, incl_fluxes = TRUE, 
-                            output_hour = 0, file) {
+                            output_hour = 0, file, phyto_pars) {
   
   if (is.null(nc)) {
     nc <- open_nc_safe(file, model = "glm_aed")
@@ -146,8 +147,18 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     nc_vars <- names(nc$var)
     vars_chk <- data.frame(vars = model_vars_vec,
                            present = model_vars_vec %in% nc_vars,
-                           conv_factor = model_vars$conversion_aed
-    )
+                           conv_factor = model_vars$conversion_aed)
+    
+    if (any(grepl("PHY", model_vars_vec))) {
+      phyto_vars <- model_vars_vec[grepl("PHY", model_vars_vec)]
+      phyto_vars <- phyto_vars[phyto_vars != "PHY_tchla"]
+      phyto_vars <- gsub("PHY_", "", phyto_vars)
+      Xcc <- phyto_pars |> 
+        dplyr::filter(p_name == "Xcc") 
+      for (pv in phyto_vars) {
+        vars_chk$conv_factor[vars_chk$vars == paste0("PHY_", pv)] <- 12.0 / Xcc[[pv]]
+      }
+    }
     
     out_vars <- lapply(model_vars_vec, \(v) {
       if(vars_chk$present[vars_chk$vars == v] == FALSE) {

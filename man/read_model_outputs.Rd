@@ -13,7 +13,8 @@ read_model_outputs(
   dates = NULL,
   date_index = NULL,
   incl_fluxes = TRUE,
-  output_hour = 0
+  output_hour = 0,
+  phyto_pars = NULL
 )
 }
 \arguments{
@@ -39,6 +40,9 @@ to NULL.}
 Defaults to TRUE.}
 
 \item{output_hour}{Hour of the day to extract (0-23). Defaults to 0.}
+
+\item{phyto_pars}{Dataframe of phytoplankton parameters for GLM-AED model. 
+See `?read_glm_output` for details. Defaults to NULL.}
 }
 \value{
 List of model outputs in AEME standard format

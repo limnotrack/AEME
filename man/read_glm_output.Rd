@@ -12,7 +12,8 @@ read_glm_output(
   date_index = NULL,
   incl_fluxes = TRUE,
   output_hour = 0,
-  file
+  file,
+  phyto_pars
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ Defaults to TRUE.}
 \item{output_hour}{Hour of the day to extract (0-23). Defaults to 0.}
 
 \item{file}{File path to netCDF file. Only used if `nc` is NULL.}
+
+\item{phyto_pars}{Data frame with phytoplankton parameters from AED.}
 }
 \value{
 List with AEME output variables

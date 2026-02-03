@@ -14,6 +14,8 @@
 #' @param incl_fluxes Logical indicating whether to include flux variables.
 #' Defaults to TRUE.
 #' @param output_hour Hour of the day to extract (0-23). Defaults to 0.
+#' @param phyto_pars Dataframe of phytoplankton parameters for GLM-AED model. 
+#' See `?read_glm_output` for details. Defaults to NULL.
 #'
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @importFrom withr local_locale local_timezone
@@ -23,7 +25,8 @@
 
 read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL, 
                                depths = NULL, dates = NULL, date_index = NULL,
-                               incl_fluxes = TRUE, output_hour = 0) {
+                               incl_fluxes = TRUE, output_hour = 0, 
+                               phyto_pars = NULL) {
   
   # Set timezone
   withr::local_locale(c("LC_TIME" = "C"))
@@ -79,7 +82,8 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                                                    date_index = date_index),
                      "glm_aed"  = read_glm_output(nc, vars_sim, depths = depths,
                                                   incl_fluxes = incl_fluxes, 
-                                                  date_index = date_index),
+                                                  date_index = date_index,
+                                                  phyto_pars = phyto_pars),
                      "dy_cd"    = read_dy_output(nc, vars_sim, depths = depths,
                                                  incl_fluxes = incl_fluxes, 
                                                  date_index = date_index)
