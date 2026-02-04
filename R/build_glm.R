@@ -39,7 +39,8 @@ build_glm <- function(lakename, model_controls, date_range,
     overwrite_nml <- TRUE
     cli_inform_safe(c("i" = "Copied in GLM nml file"))
   }
-  if (use_bgc) {
+  aed_file <- file.path(path_glm, "aed", "aed.nml")
+  if (!file.exists(aed_file)) {
     aed_files <- list.files(system.file("extdata/glm_aed/", package = "AEME"),
                             full.names = TRUE, pattern = "^aed[_.]")
     aed_path <- file.path(path_glm, "aed")
