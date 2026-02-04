@@ -153,10 +153,12 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       phyto_vars <- model_vars_vec[grepl("PHY", model_vars_vec)]
       phyto_vars <- phyto_vars[phyto_vars != "PHY_tchla"]
       phyto_vars <- gsub("PHY_", "", phyto_vars)
-      Xcc <- phyto_pars |> 
-        dplyr::filter(p_name == "Xcc") 
-      for (pv in phyto_vars) {
-        vars_chk$conv_factor[vars_chk$vars == paste0("PHY_", pv)] <- 12.0 / Xcc[[pv]]
+      if (!is.null(phyto_pars)) {
+        Xcc <- phyto_pars |> 
+          dplyr::filter(p_name == "Xcc") 
+        for (pv in phyto_vars) {
+          vars_chk$conv_factor[vars_chk$vars == paste0("PHY_", pv)] <- 12.0 / Xcc[[pv]]
+        }
       }
     }
     
