@@ -40,9 +40,9 @@ model_controls = model_controls)
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-02 00:58:30]
-#> → GLM-AED running... [2026-02-02 00:58:30]
-#> ✔ GLM-AED run successful! [2026-02-02 00:58:31]
-#> ✔ Model run complete! [2026-02-02 00:58:31]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-04 23:13:06]
+#> → GLM-AED running... [2026-02-04 23:13:06]
+#> ✔ GLM-AED run successful! [2026-02-04 23:13:06]
+#> ✔ Model run complete! [2026-02-04 23:13:06]
 write_aeme_to_files(aeme, path)
 ```

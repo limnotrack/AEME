@@ -59,7 +59,8 @@
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  date_index <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  incl_fluxes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  output_hour <span class="op">=</span> <span class="fl">0</span></span>
+<span>  output_hour <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  phyto_pars <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,6 +107,11 @@ Defaults to TRUE.</p></dd>
 
 <dt id="arg-output-hour">output_hour<a class="anchor" aria-label="anchor" href="#arg-output-hour"></a></dt>
 <dd><p>Hour of the day to extract (0-23). Defaults to 0.</p></dd>
+
+
+<dt id="arg-phyto-pars">phyto_pars<a class="anchor" aria-label="anchor" href="#arg-phyto-pars"></a></dt>
+<dd><p>Dataframe of phytoplankton parameters for GLM-AED model.
+See `?read_glm_output` for details. Defaults to NULL.</p></dd>
 
 </dl></div>
     <div class="section level2">

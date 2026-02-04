@@ -13,7 +13,8 @@ read_glm_output(
   date_index = NULL,
   incl_fluxes = TRUE,
   output_hour = 0,
-  file
+  file,
+  phyto_pars
 )
 ```
 
@@ -55,6 +56,10 @@ read_glm_output(
 - file:
 
   File path to netCDF file. Only used if \`nc\` is NULL.
+
+- phyto_pars:
+
+  Data frame with phytoplankton parameters from AED.
 
 ## Value
 
