@@ -48,7 +48,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
-#> ℹ Copied in AED nml file and supporting files
 #> ℹ 41.6285 replaced with 41.6285
 #> ℹ Using default pH initialisation
 #> ℹ 16.6514 replaced with 16.6514
@@ -70,10 +69,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-02-04 23:12:24]
-#> ✔ Model run complete! [2026-02-04 23:12:27]
-#> ℹ Reading models in parallel...[2026-02-04 23:12:27]
-#> ✔ Model reading complete! [2026-02-04 23:12:29]
+#> ℹ Running models in parallel... [2026-02-04 23:59:38]
+#> ✔ Model run complete! [2026-02-04 23:59:41]
+#> ℹ Reading models in parallel...[2026-02-04 23:59:41]
+#> ✔ Model reading complete! [2026-02-04 23:59:42]
 list_mod_obs_vars(aeme = aeme, model = model)
 #>              Cyanobacteria           Dissolved oxygen 
 #>                "PHY_cyano"                  "CHM_oxy" 

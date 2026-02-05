@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-02-04 23:27:25] job submitted
-#> INFO [2026-02-04 23:27:25] downloading
-#> INFO [2026-02-04 23:27:27] extracting
+#> INFO [2026-02-05 00:14:22] job submitted
+#> INFO [2026-02-05 00:14:22] downloading
+#> INFO [2026-02-05 00:14:24] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -522,6 +522,7 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #> ℹ Writing DYRESM-CAEDYM control file
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
+#> ℹ Copied in AED nml file and supporting files
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
 #> ✔ GOTM YAML validation completed - no issues detected.
@@ -540,10 +541,10 @@ print(aeme)
 #> -------------------------------------------------------------------
 #>   Configuration
 #>     Model controls: Present
-#>     Use biogeochemical model: No
+#>     Use biogeochemical model: Yes 
 #>           Physical   |   Biogeochemical
 #> DY-CD    : Present    |   Present
-#> GLM-AED  : Present    |   Absent 
+#> GLM-AED  : Present    |   Present
 #> GOTM-WET : Present    |   Present
 #> -------------------------------------------------------------------
 #>   Observations
@@ -594,14 +595,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-04 23:27:49]
-#> → DYRESM-CAEDYM running... [2026-02-04 23:27:49]
-#> ✔ DYRESM-CAEDYM run successful! [2026-02-04 23:28:16]
-#> → GLM-AED running... [2026-02-04 23:28:16]
-#> ✔ GLM-AED run successful! [2026-02-04 23:28:16]
-#> → GOTM-WET running... [2026-02-04 23:28:16]
-#> ✔ GOTM-WET run successful! [2026-02-04 23:28:17]
-#> ✔ Model run complete! [2026-02-04 23:28:17]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-05 00:14:45]
+#> → DYRESM-CAEDYM running... [2026-02-05 00:14:45]
+#> ✔ DYRESM-CAEDYM run successful! [2026-02-05 00:15:12]
+#> → GLM-AED running... [2026-02-05 00:15:12]
+#> ✔ GLM-AED run successful! [2026-02-05 00:15:12]
+#> → GOTM-WET running... [2026-02-05 00:15:12]
+#> ✔ GOTM-WET run successful! [2026-02-05 00:15:13]
+#> ✔ Model run complete! [2026-02-05 00:15:13]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```

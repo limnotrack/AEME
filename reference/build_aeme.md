@@ -137,6 +137,7 @@ build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
+#> ℹ Copied in AED nml file and supporting files
 #> ✔ GLM nml validation completed - no issues detected.
 #>             AEME 
 #> -------------------------------------------------------------------
@@ -150,10 +151,10 @@ build_aeme(path = path, aeme = aeme, model = model,
 #> -------------------------------------------------------------------
 #>   Configuration
 #>     Model controls: Present
-#>     Use biogeochemical model: No
+#>     Use biogeochemical model: Yes 
 #>           Physical   |   Biogeochemical
 #> DY-CD    : Absent     |   Absent 
-#> GLM-AED  : Present    |   Absent 
+#> GLM-AED  : Present    |   Present
 #> GOTM-WET : Absent     |   Absent 
 #> -------------------------------------------------------------------
 #>   Observations
