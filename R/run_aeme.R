@@ -121,7 +121,7 @@ run_aeme <- function(aeme, model,
         args$sim_folder <- args$sim_folder[[m]]
         do.call(model_funs[[m]], args)
       }),
-      model
+      names(model)
     )
     cli_inform_safe(c("v" = paste0("Model run complete! ",
                                    "[", format(Sys.time()), "]")))
@@ -164,7 +164,7 @@ run_aeme <- function(aeme, model,
   
   if ("aeme" %in% return_type | "both" %in% return_type) {
     
-    model_check <- sapply(model, function(m) {
+    model_check <- sapply(names(model), function(m) {
       exec_result[[m]]$status == 0
     })
     model_success <- model[model_check]
