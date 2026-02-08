@@ -26,5 +26,6 @@ Character vector of standardized model codes.
 
 ``` r
 check_model(c("GLM-AED", "gotm_wet"))
-#> [1] "glm_aed"  "gotm_wet"
+#>    GLM-AED   GOTM-WET 
+#>  "glm_aed" "gotm_wet" 
 ```
