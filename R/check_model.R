@@ -38,11 +38,21 @@ check_model <- function(model) {
     )
   }
   
-  # Map full names to short codes (returning standard internal codes)
-  mapped <- vapply(model, function(m) {
-    if (m %in% names(valid_models)) valid_models[[m]] else m
-  }, character(1))
+  # ---- Canonical named output ----
   
-  return(unname(mapped))
+  # Step 1: map everything to short codes
+  short_codes <- ifelse(
+    model %in% names(valid_models),
+    valid_models[model],
+    model
+  )
+  
+  # Step 2: rebuild named vector (full name -> short code)
+  mapped <- setNames(
+    short_codes,
+    names(valid_models)[match(short_codes, valid_models)]
+  )
+  
+  return(mapped)
 }
 
