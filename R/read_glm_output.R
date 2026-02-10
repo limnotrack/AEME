@@ -22,7 +22,7 @@
 
 read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                             dates = NULL, date_index = NULL, incl_fluxes = TRUE, 
-                            output_hour = 0, file, phyto_pars) {
+                            output_hour = 0, file, phyto_pars = NULL) {
   
   if (is.null(nc)) {
     nc <- open_nc_safe(file, model = "glm_aed")
