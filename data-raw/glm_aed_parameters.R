@@ -39,7 +39,12 @@ glm_p <- lapply(names(glm_pars), \(n) {
         ),
         min = default - (0.5 * abs(default)),
         max = default + (0.5 * abs(default)),
-        group = NA_character_
+        group = NA_character_,
+        var_sim = dplyr::case_when(
+          grepl("coef", name) & module == "mixing" ~ "HYD_thmcln",
+          grepl("sed_temp_mean|sed_temp_amplitude|sed_temp_peak_doy", name) ~ "HYD_temp",
+          .default = NA_character_
+        )
       )
   }) |>
     dplyr::bind_rows()
