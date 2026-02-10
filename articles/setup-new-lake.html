@@ -250,9 +250,39 @@ locations around the world. However, it’s date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2026-02-10 02:56:26] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2026-02-10 02:56:26] downloading</span></span>
-<span><span class="co">#&gt; INFO [2026-02-10 02:56:28] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:09] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:13] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:17] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:22] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:26] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:30] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:34] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:38] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:42] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:46] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:51] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:55] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:01:59] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:03] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:07] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:11] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:16] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:20] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:24] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:28] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:32] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:36] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:41] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:45] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:49] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:53] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:02:57] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:03:01] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:03:05] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:03:10] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:03:14] job updated</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:03:14] downloading</span></span>
+<span><span class="co">#&gt; INFO [2026-02-10 23:03:15] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -633,14 +663,14 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-02-10 02:56:48]</span></span>
-<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-02-10 02:56:48]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-02-10 02:57:08]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-02-10 02:57:08]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-02-10 02:57:08]</span></span>
-<span><span class="co">#&gt; → GOTM-WET running... [2026-02-10 02:57:08]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-02-10 02:57:09]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-02-10 02:57:09]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-02-10 23:03:37]</span></span>
+<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-02-10 23:03:37]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-02-10 23:04:04]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2026-02-10 23:04:04]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-02-10 23:04:05]</span></span>
+<span><span class="co">#&gt; → GOTM-WET running... [2026-02-10 23:04:05]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-02-10 23:04:05]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-02-10 23:04:05]</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span></code></pre></div>
 </div>

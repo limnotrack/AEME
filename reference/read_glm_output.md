@@ -14,7 +14,7 @@ read_glm_output(
   incl_fluxes = TRUE,
   output_hour = 0,
   file,
-  phyto_pars
+  phyto_pars = NULL
 )
 ```
 
