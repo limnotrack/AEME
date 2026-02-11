@@ -52,11 +52,16 @@ assess_model <- function(aeme, model, var_sim) {
 
   # Loop through variables, extract model statistics, bind to dataframe and
   # return
-  lst <- lapply(var_sim, \(v) {
+  out <- lapply(var_sim, \(v) {
 
     # Extract variable from aeme
-    df <- get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE) |> 
-      dplyr::filter(!is.na(sim), !is.infinite(sim))
+    df <- get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE)
+    if (nrow(df) > 0) {
+      df <- df |> 
+        dplyr::filter(!is.na(sim), !is.infinite(sim))
+    } else if (nrow(df) == 0) {
+      return(NULL)
+    }
 
     model_names <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
                               Model = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
@@ -122,8 +127,12 @@ assess_model <- function(aeme, model, var_sim) {
       dplyr::relocate(c(n, obs_na, sim_na), .after = dplyr::last_col())
 
   }) |>
-    dplyr::bind_rows() |>  # Bind list of data frames into one data frame and return
+    dplyr::bind_rows()  # Bind list of data frames into one data frame and return
+  
+  if (nrow(out) > 0) {
+    out <- out |> 
     dplyr::left_join(var_name, by = c("var_sim" = "name"))
+  }
 
-  return(lst)
+  return(out)
 }
