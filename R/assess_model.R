@@ -26,12 +26,20 @@
 #' @export
 #'
 
-assess_model <- function(aeme, model, var_sim = "HYD_temp") {
+assess_model <- function(aeme, model, var_sim) {
 
   # Check aeme is Aeme object
   aeme <- check_aeme(aeme)
   # Check model is valid
-  model <- check_model(model = model)
+  if (missing(model)) {
+    model <- list_models(aeme = aeme)
+  } else {
+    model <- check_model(model = model)
+  }
+  if (missing(var_sim)) {
+    var_sim <- get_mod_obs_vars(aeme = aeme, model = model) |> 
+      dplyr::pull(var_aeme)
+  }
   # Check model is in aeme
   var_sim <- check_aeme_vars(var_sim)
   
@@ -47,7 +55,8 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
   lst <- lapply(var_sim, \(v) {
 
     # Extract variable from aeme
-    df <- get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE)
+    df <- get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE) |> 
+      dplyr::filter(!is.na(sim), !is.infinite(sim))
 
     model_names <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
                               Model = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))

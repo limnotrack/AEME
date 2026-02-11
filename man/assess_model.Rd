@@ -4,7 +4,7 @@
 \alias{assess_model}
 \title{Assess model performance}
 \usage{
-assess_model(aeme, model, var_sim = "HYD_temp")
+assess_model(aeme, model, var_sim)
 }
 \arguments{
 \item{aeme}{aeme; object.}
