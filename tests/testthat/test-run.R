@@ -344,8 +344,8 @@ test_that("running GLM-AED works", {
                         facet = FALSE)
   testthat::expect_true(ggplot2::is_ggplot(pstrat))
   
-  model_performance <- assess_model(aeme = aeme, model = model,
-                                    var_sim = vars_sim)
+  model_performance <- assess_model(aeme = aeme)
+  testthat::expect_true(is.data.frame(model_performance))
   
   
   
