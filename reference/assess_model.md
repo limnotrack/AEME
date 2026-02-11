@@ -5,7 +5,7 @@ Assess model performance
 ## Usage
 
 ``` r
-assess_model(aeme, model, var_sim = "HYD_temp")
+assess_model(aeme, model, var_sim)
 ```
 
 ## Arguments
