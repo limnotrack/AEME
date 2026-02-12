@@ -340,4 +340,7 @@ test_that("plotting water balance components works", {
   p <- plot_wbal_comp(wbal = wbal)
   testthat::expect_true(ggplot2::is_ggplot(p))
   
+  p <- plot_wbal_summaries(wbal = wbal)
+  testthat::expect_true(ggplot2::is_ggplot(p))
+  
 })

@@ -227,6 +227,12 @@ test_that("running GOTM works", {
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
+  
+  outp1 <- output(aeme)
+  testthat::expect_true(outp1$n_members > 0)
+  aeme <- remove_output(aeme)
+  outp2 <- output(aeme)
+  testthat::expect_true(outp2$n_members == 0)
 })
 
 test_that("running all models with running out of water works", {

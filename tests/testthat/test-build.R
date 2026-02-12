@@ -192,6 +192,15 @@ test_that("building all models with minimum met variables", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
+  
+  cfg <- configuration(aeme)
+  configuration(aeme) <- list()
+  cfg2 <- configuration(aeme)
+  testthat::expect_equal(length(cfg2), 0)
+  aeme <- load_configuration(aeme = aeme, model = model, path = path)
+  cfg3 <- configuration(aeme)
+  testthat::expect_equal(cfg, cfg3)
+  
   lke <- lake(aeme)
   exp_met <- met |> 
     expand_met(lat = lke$latitude, lon = lke$longitude, elev = lke$elev)
