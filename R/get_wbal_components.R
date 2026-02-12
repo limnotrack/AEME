@@ -13,6 +13,12 @@ get_wbal_components <- function(
     cumulative = FALSE
 ) {
   
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
   ## --- Time handling ---
   tme <- time(aeme)
   
@@ -55,7 +61,7 @@ get_wbal_components <- function(
     dplyr::group_by(model) |> 
     dplyr::summarise(
       inflow  = sum(HYD_flow),
-      outflow = sum(outflow + HYD_outflow),
+      outflow = sum(spill_outflow + HYD_outflow),
       rain    = sum(rain),
       evap_m3 = sum(evap_m3),
       .groups = "drop"
