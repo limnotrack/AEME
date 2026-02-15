@@ -193,10 +193,13 @@ test_that("building all models with minimum met variables", {
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
   
-  cfg <- configuration(aeme)
-  configuration(aeme) <- list()
+  cfg_upd <- cfg <- configuration(aeme)
+  for (m in model) {
+    cfg_upd[[m]] <- NULL
+  }
+  configuration(aeme) <- cfg_upd
   cfg2 <- configuration(aeme)
-  testthat::expect_equal(length(cfg2), 0)
+  testthat::expect_equal(length(cfg2), 2)
   aeme <- load_configuration(aeme = aeme, model = model, path = path)
   cfg3 <- configuration(aeme)
   testthat::expect_equal(cfg, cfg3)
