@@ -523,9 +523,9 @@ test_that("Aeme can be written and read from files", {
   path <- "test_write"
   model_controls <- get_model_controls()
   aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed", 
-                     model_controls = model_controls)
+                     model_controls = model_controls, ext_elev = 3)
   aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-  write_aeme_to_files(aeme, path)
+  write_aeme_to_files(aeme, path, include_output = TRUE)
   aeme_path <- get_lake_dir(aeme = aeme, path = path)
   fils <- list.files(aeme_path, full.names = TRUE, pattern = "*.csv")
   testthat::expect_true(length(fils) > 15)
