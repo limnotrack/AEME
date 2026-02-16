@@ -298,6 +298,10 @@ test_that("plotting phytoplankton model output works", {
 
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1))
+  p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp", 
+                depth_range = c(0, 1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
+  
 
   p2 <- plot_phytos(aeme = aeme, model = model)
   testthat::expect_true(ggplot2::is_ggplot(p2))
