@@ -56,7 +56,6 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
       depth_range <- abs(depth_range)
       df <- df |>
         dplyr::group_by(Date, Model) |>
-        dplyr::mutate(depth = max(lyr_top) - lyr_top) |>
         dplyr::filter(depth >= min(depth_range) & depth <= max(depth_range))
     }
 
