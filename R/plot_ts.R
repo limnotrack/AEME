@@ -95,7 +95,8 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
     ggplot2::labs(x = "Date", y = y_lab, colour = "Variable")
 
   if (add_obs) {
-    obs <- get_obs(aeme = aeme, var_sim = var_sim, depth_range = depth_range)
+    obs <- get_obs(aeme = aeme, var_sim = var_sim, depth_range = depth_range,
+                   time_filter = TRUE)
     if (nrow(obs) > 0) {
       obs <- obs |>
         dplyr::group_by(Date, var_aeme) |>
