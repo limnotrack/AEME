@@ -5,7 +5,7 @@ Get observations for a given variable from an Aeme object
 ## Usage
 
 ``` r
-get_obs(aeme, var_sim, depth_range = NULL)
+get_obs(aeme, var_sim, depth_range = NULL, time_filter = FALSE)
 ```
 
 ## Arguments
@@ -23,6 +23,11 @@ get_obs(aeme, var_sim, depth_range = NULL)
 
   numeric vector of length 2; depth range (in meters) to filter
   observations. If NULL, all depths are returned.
+
+- time_filter:
+
+  logical; if TRUE, filter observations to the time range of the Aeme
+  object. If FALSE, all observations are returned regardless of time.
 
 ## Value
 
