@@ -57,7 +57,6 @@ parse_aed2_phyto_nml <- function(file) {
   # 3. Extract group names
   #-----------------------------
   groups <- lst[[1]] |>
-    # dplyr::filter(parameter_name == "p_name") |>
     dplyr::arrange(index) |>
     dplyr::pull(value)
   
@@ -120,7 +119,8 @@ parse_aed2_phyto_nml <- function(file) {
   
   df <- df |>
     dplyr::mutate(
-      var_sim = purrr::map_chr(parameter_name, var_sim_map)
+      var_sim = purrr::map_chr(parameter_name, var_sim_map),
+      var_sim = paste0(var_sim, "|PHY_", group)
     )
   
   #-----------------------------
@@ -151,5 +151,30 @@ parse_aed2_phyto_nml <- function(file) {
   return(df)
 }
 
-aed_phyto_pars <- parse_aed2_phyto_nml(file)
+aed2_phyto_pars <- parse_aed2_phyto_nml(file)
+
+aed_phyto_pars <- AEME::read_aed_param_csv("inst/extdata/glm_aed/aed_phyto_pars.csv")
+groups <- names(aed_phyto_pars)[-1]
+
+for (p in aed_phyto_pars$p_name) {
+  
+  for (g in groups) {
+    new_val <- aed_phyto_pars |>
+      dplyr::filter(p_name == p) |>
+      dplyr::pull(!!dplyr::sym(g))
+    if (!is.na(new_val)) {
+      old_val <- aed2_phyto_pars |>
+        dplyr::filter(parameter_name == p & group == g) |>
+        dplyr::pull(value)
+      print(paste0("Updating ", p, " for group ", g, " from ", old_val, " to ", new_val))
+      aed2_phyto_pars <- aed2_phyto_pars |>
+        dplyr::mutate(
+          value = ifelse(parameter_name == p & group == g, new_val, value)
+        )
+    }
+  }
+  
+} 
+
+aed_phyto_pars <- aed2_phyto_pars
 usethis::use_data(aed_phyto_pars, overwrite = TRUE)
