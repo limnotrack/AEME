@@ -8,8 +8,8 @@ inputs.
 ``` r
 build_aeme(
   aeme = NULL,
-  config = NULL,
   model = c("dy_cd", "glm_aed", "gotm_wet"),
+  path = ".",
   model_controls = NULL,
   inf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
@@ -22,7 +22,7 @@ build_aeme(
   coeffs = NULL,
   hum_type = 3,
   est_swr_hr = TRUE,
-  path = "."
+  config = NULL
 )
 ```
 
@@ -32,14 +32,15 @@ build_aeme(
 
   aeme; object.
 
-- config:
-
-  list; loaded via \`config \<- yaml::read_yaml("aeme.yaml")\`
-
 - model:
 
   vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
   \`gotm_wet\`.
+
+- path:
+
+  filepath; where input files are located relative to the current
+  working directory.
 
 - model_controls:
 
@@ -103,10 +104,9 @@ build_aeme(
   logical; estimate hourly shortwave radiation from daily values.
   Default = TRUE.
 
-- path:
+- config:
 
-  filepath; where input files are located relative to the current
-  working directory.
+  list; loaded via \`config \<- yaml::read_yaml("aeme.yaml")\`
 
 ## Value
 

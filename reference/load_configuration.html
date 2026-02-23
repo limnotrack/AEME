@@ -50,7 +50,21 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">load_configuration</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span>, model_controls <span class="op">=</span> <span class="cn">NULL</span>, use_bgc <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">path</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">load_configuration</span><span class="op">(</span></span>
+<span>  <span class="va">aeme</span>,</span>
+<span>  <span class="va">model</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  model_controls <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  use_bgc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ext_elev <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  calc_wbal <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  wb_method <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  calc_wlev <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  use_aeme <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  coeffs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  hum_type <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  est_swr_hr <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,6 +80,11 @@
 `gotm_wet`.</p></dd>
 
 
+<dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
+<dd><p>filepath; where input files are located relative to the current
+working directory.</p></dd>
+
+
 <dt id="arg-model-controls">model_controls<a class="anchor" aria-label="anchor" href="#arg-model-controls"></a></dt>
 <dd><p>dataframe; of configuration loaded from
 "model_controls.csv".</p></dd>
@@ -75,9 +94,49 @@
 <dd><p>logical; switch to use the biogeochemical model.</p></dd>
 
 
-<dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
-<dd><p>filepath; where input files are located relative to the current
-working directory.</p></dd>
+<dt id="arg-ext-elev">ext_elev<a class="anchor" aria-label="anchor" href="#arg-ext-elev"></a></dt>
+<dd><p>numeric; metres to extend the hypograph by.</p></dd>
+
+
+<dt id="arg-calc-wbal">calc_wbal<a class="anchor" aria-label="anchor" href="#arg-calc-wbal"></a></dt>
+<dd><p>logical; calculate water balance. Default = TRUE.</p></dd>
+
+
+<dt id="arg-wb-method">wb_method<a class="anchor" aria-label="anchor" href="#arg-wb-method"></a></dt>
+<dd><p>numeric; method to use for calculating water balance. Must be
+1 (no inflows or outflows) or 2 (outflows calculated) or 3 (Any unexplained
+gain in lake storage is treated as an effective inflow; any unexplained loss
+is treated as an effective outflow). Default = 2</p></dd>
+
+
+<dt id="arg-calc-wlev">calc_wlev<a class="anchor" aria-label="anchor" href="#arg-calc-wlev"></a></dt>
+<dd><p>logical; calculate water level.</p></dd>
+
+
+<dt id="arg-use-aeme">use_aeme<a class="anchor" aria-label="anchor" href="#arg-use-aeme"></a></dt>
+<dd><p>logical; use AEME object to generate model confiuration
+files.</p></dd>
+
+
+<dt id="arg-coeffs">coeffs<a class="anchor" aria-label="anchor" href="#arg-coeffs"></a></dt>
+<dd><p>numeric vector of length two; to be used to estimate surface
+water temperature for estimating evaporation. Defaults to NULL. If water
+temperature observations are included in `aeme` object, then it will use
+those to build a linear relationship between air temperature and water
+temperature. Otherwise. it uses the simple estimation
+ \(temp_water = 5 + 0.75 * temp_air\) from Stefan &amp; Preud'homme, 2007:
+ www.doi.org/10.1111/j.1752-1688.1993.tb01502.x</p></dd>
+
+
+<dt id="arg-hum-type">hum_type<a class="anchor" aria-label="anchor" href="#arg-hum-type"></a></dt>
+<dd><p>numeric; GOTM humidity metric [1=relative humidity (<!-- %), -->
+2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
+Default = 3.</p></dd>
+
+
+<dt id="arg-est-swr-hr">est_swr_hr<a class="anchor" aria-label="anchor" href="#arg-est-swr-hr"></a></dt>
+<dd><p>logical; estimate hourly shortwave radiation from daily
+values. Default = TRUE.</p></dd>
 
 </dl></div>
     <div class="section level2">

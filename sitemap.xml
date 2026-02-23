@@ -18,6 +18,7 @@
 <url><loc>/reference/add_inflows.html</loc></url>
 <url><loc>/reference/add_met.html</loc></url>
 <url><loc>/reference/add_obs.html</loc></url>
+<url><loc>/reference/add_outflows.html</loc></url>
 <url><loc>/reference/add_output.html</loc></url>
 <url><loc>/reference/add_param.html</loc></url>
 <url><loc>/reference/aeme.html</loc></url>
@@ -60,6 +61,7 @@
 <url><loc>/reference/generate_var_map_code.html</loc></url>
 <url><loc>/reference/get_aed_sed_const2d_param.html</loc></url>
 <url><loc>/reference/get_aeme_parameters.html</loc></url>
+<url><loc>/reference/get_aeme_path.html</loc></url>
 <url><loc>/reference/get_date_index.html</loc></url>
 <url><loc>/reference/get_deriv_inputs.html</loc></url>
 <url><loc>/reference/get_glm_sed_zones.html</loc></url>
@@ -174,6 +176,7 @@
 <url><loc>/reference/run_aeme.html</loc></url>
 <url><loc>/reference/run_dy_cd.html</loc></url>
 <url><loc>/reference/set_aed_sed_const2d.html</loc></url>
+<url><loc>/reference/set_aed_totals.html</loc></url>
 <url><loc>/reference/set_glm_aed_models.html</loc></url>
 <url><loc>/reference/set_gotm_grid.html</loc></url>
 <url><loc>/reference/set_inflows.html</loc></url>

@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-02-16 02:00:59] job submitted
-#> INFO [2026-02-16 02:00:59] downloading
-#> INFO [2026-02-16 02:01:01] extracting
+#> INFO [2026-02-23 23:46:37] job submitted
+#> INFO [2026-02-23 23:46:37] downloading
+#> INFO [2026-02-23 23:46:39] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -510,7 +510,7 @@ path <- "aeme"
 
 # Build ensemble
 aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
-                   use_bgc = F, path = path)
+                   path = path)
 #> ℹ No water level present. Using constant water level.
 #> ℹ Insufficient lake temperature observations to estimate surface temperature.
 #>   Using Stefan & Preud'homme (2007) method.
@@ -594,15 +594,15 @@ without needing to reconstruct the object.
 
 ``` r
 # Run the ensemble
-aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-16 02:01:23]
-#> → DYRESM-CAEDYM running... [2026-02-16 02:01:23]
-#> ✔ DYRESM-CAEDYM run successful! [2026-02-16 02:01:49]
-#> → GLM-AED running... [2026-02-16 02:01:49]
-#> ✔ GLM-AED run successful! [2026-02-16 02:01:50]
-#> → GOTM-WET running... [2026-02-16 02:01:50]
-#> ✔ GOTM-WET run successful! [2026-02-16 02:01:50]
-#> ✔ Model run complete! [2026-02-16 02:01:50]
+aeme <- run_aeme(aeme = aeme)
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-23 23:47:01]
+#> → DYRESM-CAEDYM running... [2026-02-23 23:47:01]
+#> ✔ DYRESM-CAEDYM run successful! [2026-02-23 23:47:30]
+#> → GLM-AED running... [2026-02-23 23:47:30]
+#> ✔ GLM-AED run successful! [2026-02-23 23:47:30]
+#> → GOTM-WET running... [2026-02-23 23:47:30]
+#> ✔ GOTM-WET run successful! [2026-02-23 23:47:31]
+#> ✔ Model run complete! [2026-02-23 23:47:31]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```
@@ -630,4 +630,34 @@ function. This will save the object to a file with the `.rds`.
 ``` r
 # Save the AEME object
 saveRDS(aeme, "aeme.rds")
+```
+
+### Using AEME in pipes
+
+The AEME functions can be used in pipes to make the workflow more
+efficient. For example, the `build_aeme` function can be used in a pipe
+to build the ensemble and then the `run_aeme` function can be used in
+the same pipe to run the ensemble.
+
+This allows for a more streamlined workflow and reduces the amount of
+code needed to build and run the ensemble. This is especially useful
+when building and running multiple ensembles for different lakes or
+different scenarios.
+
+This approach has been used with the
+[{targets}](https://books.ropensci.org/targets/) package to build and
+run multiple ensembles for different lakes and scenarios in a
+reproducible workflow.
+
+``` r
+# Build and run the ensemble in a pipe
+aeme <- aeme |> 
+  add_obs(lake = lake_obs, level = level_obs) |> 
+  add_hypsograph(hypsograph = hypsograph) |>
+  add_met(met = met) |> 
+  add_inflows(data = inf_data) |> 
+  add_outflows(data = outf_data) |>
+  add_param(param = param) |> 
+  build_aeme(model = model, use_bgc = TRUE, path = path) |> 
+  run_aeme()
 ```

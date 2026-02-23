@@ -8,6 +8,7 @@ Run aquatic model ensemble
 run_aeme(
   aeme,
   model,
+  path,
   return_type = c("aeme", "exec_result", "both", "none"),
   ens_n = 1,
   model_controls = NULL,
@@ -16,8 +17,7 @@ run_aeme(
   timeout = Inf,
   parallel = FALSE,
   ncores,
-  check_output = FALSE,
-  path = "."
+  check_output = FALSE
 )
 ```
 
@@ -31,6 +31,11 @@ run_aeme(
 
   vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
   \`gotm_wet\`.
+
+- path:
+
+  filepath; where input files are located relative to the current
+  working directory.
 
 - ens_n:
 
@@ -67,11 +72,6 @@ run_aeme(
 
   logical; check model output after running? Defaults to FALSE.
 
-- path:
-
-  filepath; where input files are located relative to the current
-  working directory.
-
 - return:
 
   logical; return model output within an \`aeme\` object? Defaults to
@@ -96,13 +96,10 @@ model_controls = model_controls, ext_elev = 5)
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
-#> ✔ GLM nml validation completed - no issues detected.
+#> Warning: NAs introduced by coercion
+#> Error: NA is not a .true. or .false.; conversion to TRUE or FALSE failed.
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-16 01:46:46]
-#> → GLM-AED running... [2026-02-16 01:46:46]
-#> ✔ GLM-AED run successful! [2026-02-16 01:46:46]
-#> ✔ Model run complete! [2026-02-16 01:46:46]
+#> Error in run_aeme(aeme = aeme, model = model, path = path): ✖ `model_controls` need to be provided to load model output.
 plot_output(aeme, model = model)
-#> Warning: Removed 84 rows containing missing values or values outside the scale range
-#> (`geom_col()`).
+#> Error in plot_output(aeme, model = model): Variable 'HYD_temp' not in output for model(s): glm_aed
 ```

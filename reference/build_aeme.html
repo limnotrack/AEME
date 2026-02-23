@@ -52,8 +52,8 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">build_aeme</span><span class="op">(</span></span>
 <span>  aeme <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  config <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  model_controls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  inf_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>glm_aed <span class="op">=</span> <span class="fl">1</span>, dy_cd <span class="op">=</span> <span class="fl">1</span>, gotm_wet <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  outf_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>glm_aed <span class="op">=</span> <span class="fl">1</span>, dy_cd <span class="op">=</span> <span class="fl">1</span>, gotm_wet <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
@@ -66,7 +66,7 @@
 <span>  coeffs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hum_type <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  est_swr_hr <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"."</span></span>
+<span>  config <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -78,13 +78,14 @@
 <dd><p>aeme; object.</p></dd>
 
 
-<dt id="arg-config">config<a class="anchor" aria-label="anchor" href="#arg-config"></a></dt>
-<dd><p>list; loaded via `config &lt;- yaml::read_yaml("aeme.yaml")`</p></dd>
-
-
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
 <dd><p>vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.</p></dd>
+
+
+<dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
+<dd><p>filepath; where input files are located relative to the current
+working directory.</p></dd>
 
 
 <dt id="arg-model-controls">model_controls<a class="anchor" aria-label="anchor" href="#arg-model-controls"></a></dt>
@@ -151,9 +152,8 @@ Default = 3.</p></dd>
 values. Default = TRUE.</p></dd>
 
 
-<dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
-<dd><p>filepath; where input files are located relative to the current
-working directory.</p></dd>
+<dt id="arg-config">config<a class="anchor" aria-label="anchor" href="#arg-config"></a></dt>
+<dd><p>list; loaded via `config &lt;- yaml::read_yaml("aeme.yaml")`</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -12,6 +12,7 @@
 - [`add_inflows()`](add_inflows.md) : Add inflows to Aeme object
 - [`add_met()`](add_met.md) : Add meteorological data to Aeme object
 - [`add_obs()`](add_obs.md) : Add observations to Aeme object
+- [`add_outflows()`](add_outflows.md) : Add outflows to Aeme object
 - [`add_output()`](add_output.md) : Add model output to Aeme object
 - [`add_param()`](add_param.md) : Add model parameters to Aeme object
 - [`Aeme`](aeme.md) [`Aeme-class`](aeme.md) : Aeme Class
@@ -83,6 +84,7 @@
   AED sed_const2d parameters
 - [`get_aeme_parameters()`](get_aeme_parameters.md) : Make parameters
   dataframe for AEME
+- [`get_aeme_path()`](get_aeme_path.md) : Get the path to the AEME data
 - [`get_date_index()`](get_date_index.md) : Get date index for each
   model in the AEME object
 - [`get_deriv_inputs()`](get_deriv_inputs.md) : Get derived variables
@@ -258,6 +260,8 @@
   [`run_gotm_wet()`](run_dy_cd.md) : Run AEME models
 - [`set_aed_sed_const2d()`](set_aed_sed_const2d.md) : Setup AED
   aed_sed_const2d sediment model parameters
+- [`set_aed_totals()`](set_aed_totals.md) : Setup AED aed_totals
+  parameters
 - [`set_glm_aed_models()`](set_glm_aed_models.md) : Set GLM-AED Models
 - [`set_gotm_grid()`](set_gotm_grid.md) : Set grid for GOTM model
 - [`set_inflows()`](set_inflows.md) : Set inflow data from Aeme object

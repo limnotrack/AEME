@@ -104,11 +104,11 @@
 /
 &outflow
    num_outlet = 2
-   outlet_type = 2, 2
-   flt_off_sw = .true., .true.
-   outl_elvs = 12.07, 12.07
-   bsn_len_outl = 427.19
-   bsn_wid_outl = 423.93
+   outlet_type = NA, 2
+   flt_off_sw = NA, .true.
+   outl_elvs = NA, 12.07
+   bsn_len_outl = NA, 427.19
+   bsn_wid_outl = NA, 423.93
    outflow_fl = 'bcs/outflow_outflow.csv','bcs/outflow_wbal.csv'
    outflow_factor = 1, 1
    seepage = .true.

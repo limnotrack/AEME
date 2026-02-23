@@ -5,7 +5,7 @@ Get the directory of the lake model setup
 ## Usage
 
 ``` r
-get_lake_dir(aeme, path = getwd())
+get_lake_dir(aeme, path)
 ```
 
 ## Arguments

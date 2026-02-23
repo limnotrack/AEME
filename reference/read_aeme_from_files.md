@@ -35,13 +35,15 @@ model_controls = model_controls)
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
-#> ✔ GLM nml validation completed - no issues detected.
+#> Warning: NAs introduced by coercion
+#> Error in value[[3L]](cond): ! Failed to read GLM nml file
+#>   D:\a\AEME\AEME\docs\reference\test_write/45819_wainamu/glm_aed/glm3.nml.
+#> ✖ NA is not a .true. or .false.; conversion to TRUE or FALSE failed.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-16 01:46:38]
-#> → GLM-AED running... [2026-02-16 01:46:38]
-#> ✔ GLM-AED run successful! [2026-02-16 01:46:38]
-#> ✔ Model run complete! [2026-02-16 01:46:38]
+#> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): ✖ `model_controls` need to be provided to load model output.
 write_aeme_to_files(aeme, path)
 aeme_path <- get_lake_dir(aeme = aeme, path = path)
 aeme2 <- read_aeme_from_files(aeme_path)
+#> Warning: NAs introduced by coercion
+#> Error: NA is not a .true. or .false.; conversion to TRUE or FALSE failed.
 ```

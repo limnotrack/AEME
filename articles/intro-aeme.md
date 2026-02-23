@@ -214,6 +214,10 @@ The outflows slot is a list that contains the following objects:
   parameter in the model_parameters section and calibrated there. This
   is the preferred method for applying scaling factors.
 
+- elevation - named list of elevations at which the outflows occur. This
+  is important that it falls within the elevation range in the
+  hypsograph. Set to `-1` if the outflow is at the surface.
+
 If no outflows are present then this slot will be empty.
 
 #### Water balance
@@ -477,8 +481,8 @@ model_controls <- get_model_controls()
 model <- c("dy_cd", "glm_aed", "gotm_wet")
 path <- "aeme"
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                            model_controls = model_controls,
-                            ext_elev = 5, use_bgc = TRUE)
+                   model_controls = model_controls,
+                   ext_elev = 5, use_bgc = TRUE)
 #> Created missing directory: D:\a\AEME\AEME\vignettes\aeme
 #> ! Missing state variables in inflows:
 #> ! CAR_doc, CAR_poc, CHM_oxy, NCS_ss1, NIT_don, NIT_pon, PHY_cyano, PHY_diatom,
@@ -567,6 +571,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Setting initial condition forinstances/cladocerans/initialization/sP: 5e-04
 #>   replaced with 0.01
 #> Warning: No parameters in 'param' for dy_cd.
+#> [1] "Configuring GLM-AED totals..."
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
 aeme
