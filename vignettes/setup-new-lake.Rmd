@@ -364,7 +364,7 @@ path <- "aeme"
 
 # Build ensemble
 aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
-                   use_bgc = F, path = path)
+                   path = path)
 
 print(aeme)
 ```
@@ -412,4 +412,31 @@ This will save the object to a file with the `.rds`.
 ```{r save-aeme}
 # Save the AEME object
 saveRDS(aeme, "aeme.rds")
+```
+
+## Using AEME in pipes
+
+The AEME functions can be used in pipes to make the workflow more efficient. For
+example, the `build_aeme` function can be used in a pipe to build the ensemble and
+then the `run_aeme` function can be used in the same pipe to run the ensemble.
+
+This allows for a more streamlined workflow and reduces the amount of code needed to
+build and run the ensemble. This is especially useful when building and running
+multiple ensembles for different lakes or different scenarios.
+
+This approach has been used with the [{targets}](https://books.ropensci.org/targets/) 
+package to build and run multiple ensembles for different lakes and scenarios in
+a reproducible workflow.
+
+```{r pipe-workflow, eval = FALSE}
+# Build and run the ensemble in a pipe
+aeme <- aeme |> 
+  add_obs(lake = lake_obs, level = level_obs) |> 
+  add_hypsograph(hypsograph = hypsograph) |>
+  add_met(met = met) |> 
+  add_inflows(data = inf_data) |> 
+  add_outflows(data = outf_data) |>
+  add_param(param = param) |> 
+  build_aeme(model = model, use_bgc = TRUE, path = path) |> 
+  run_aeme()
 ```
