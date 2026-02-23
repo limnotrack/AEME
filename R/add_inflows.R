@@ -14,7 +14,7 @@ add_inflows <- function(aeme, data) {
   aeme <- check_aeme(aeme)
   
   if (!is.list(data)) {
-    stop("data must be a list")
+    cli::cli_abort("data must be a list")
   }
 
   inf <- inflows(aeme)
