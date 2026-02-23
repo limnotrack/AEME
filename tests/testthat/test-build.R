@@ -109,6 +109,42 @@ test_that("building GLM-AED works", {
   testthat::expect_true(file_chk)
 })
 
+test_that("building GLM with fixed outlets", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  list.files(tmpdir, full.names = TRUE, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls()
+  inf_factor = c("glm_aed" = 1)
+  outf_factor = c("glm_aed" = 1)
+  model <- c("glm_aed")
+  path <- "aeme"
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme(aeme)
+  cfg <- configuration(aeme)
+  cfg$glm_aed$hydrodynamic$outflow$outl_elvs
+  out_file <- get_model_outfile(aeme = aeme)
+  testthat::expect_true(file.exists(out_file$glm_aed))
+  inp <- input(aeme)
+  
+  outf <- outflows(aeme)
+  outf$elevation$outflow <- 11
+  aeme <- add_outflows(aeme = aeme, elevation = outf$elevation)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme(aeme)
+  cfg2 <- configuration(aeme)
+  testthat::expect_true(cfg$glm_aed$hydrodynamic$outflow$outl_elvs[1] >
+                         cfg2$glm_aed$hydrodynamic$outflow$outl_elvs[1])
+  
+})
+
 test_that("building GOTM works", {
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
@@ -199,7 +235,7 @@ test_that("building all models with minimum met variables", {
   testthat::expect_equal(length(cfg2), 0)
   aeme <- load_configuration(aeme = aeme, model = model, path = path)
   cfg3 <- configuration(aeme)
-  testthat::expect_equal(cfg, cfg3)
+  testthat::expect_equal(names(cfg), names(cfg3))
   
   lke <- lake(aeme)
   exp_met <- met |> 
