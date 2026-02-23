@@ -32,18 +32,21 @@
 #' model_controls = model_controls, ext_elev = 5)
 #' aeme <- run_aeme(aeme = aeme, model = model, path = path)
 #' plot_output(aeme, model = model)
-run_aeme <- function(aeme, model, 
+run_aeme <- function(aeme, model, path, 
                      return_type = c("aeme", "exec_result", "both", "none"),
                      ens_n = 1,
                      model_controls = NULL, verbose = FALSE,
                      debug = FALSE, timeout = Inf, parallel = FALSE, ncores,
-                     check_output = FALSE, path = ".") {
+                     check_output = FALSE) {
   
   aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
   } else {
     model <- check_model(model = model)
+  }
+  if (missing(path)) {
+    path <- get_aeme_path(aeme)
   }
   path <- check_path(path = path, must_exist = TRUE)
   if (is.null(model_controls)) {
