@@ -26,12 +26,10 @@ test_that("running DYRESM works", {
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
   
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   model_controls = model_controls, path = path)
-  lke <- lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "DYsim.nc"))
+  aeme <- run_aeme(aeme = aeme)
+  lake_dir <- get_lake_dir(aeme = aeme)
+  out_file <- get_model_outfile(aeme = aeme, model = model)[[model]]
+  file_chk <- file.exists(out_file)
   testthat::expect_true(file_chk)
   outp <- output(aeme)
   testthat::expect_true(!is.null(outp$ens_001$dy_cd))
