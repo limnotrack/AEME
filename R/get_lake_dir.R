@@ -6,8 +6,11 @@
 #' @export
 #'
 
-get_lake_dir <- function(aeme, path = getwd()) {
+get_lake_dir <- function(aeme, path) {
   aeme <- check_aeme(aeme = aeme)
+  if (missing(path)) {
+    path <- get_aeme_path(aeme)
+  }
   path <- check_path(path = path, must_exist = TRUE)
   lke <- AEME::lake(aeme)
   lakename <- tolower(lke[["name"]])
