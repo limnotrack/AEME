@@ -273,6 +273,18 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     
     # Outflow ----
     aeme_outf <- outflows(aeme)
+    # Backwards compatibility with "lvl"
+    if ("lvl" %in% names(aeme_outf)) {
+      elevation_list <- list()
+      if (length(aeme_outf[["data"]]) > 0) {
+        for (i in 1:length(aeme_outf[["data"]])) {
+          elevation_list[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["lvl"]][1]
+        }
+        names(elevation_list) <- names(aeme_outf[["data"]])
+      }
+      aeme_outf[["elevation"]] <- elevation_list
+    }
+    
     if (!is.null(aeme_outf[["data"]]) & length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]

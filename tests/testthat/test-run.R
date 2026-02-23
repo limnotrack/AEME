@@ -233,6 +233,21 @@ test_that("running GOTM works", {
   testthat::expect_true(outp2$n_members == 0)
 })
 
+test_that("run GLM models with old object", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5) |> 
+    run_aeme()
+  outfile <- get_model_outfile(aeme = aeme)
+  testthat::expect_true(all(file.exists(unlist(outfile))))
+  
+})
+
 test_that("running all models with running out of water works", {
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
