@@ -14,7 +14,7 @@
 
 build_glm <- function(lakename, model_controls, date_range,
                       lake_shape, lat, lon, hyps,
-                      lvl, inf, outf, met,
+                      lvl, inf, outf, heights_wdr, met,
                       lake_dir, config_dir, init_prof, init_depth,
                       inf_factor = 1, outf_factor = 1,
                       Kw, use_bgc, use_lw, overwrite_nml = TRUE) {
@@ -89,14 +89,25 @@ build_glm <- function(lakename, model_controls, date_range,
                          mass = TRUE, inf_factor = inf_factor)
 
   #--- make outflows table and modify nml
-  heights_wdr <- max(hyps$elev) - min(hyps$elev) - 1
-  if (heights_wdr > (max(hyps$elev) - min(hyps$elev))) {
-    cli_inform_safe(c("!" = "Withdrawal depth is too high, setting to 75% of 
+  # heights_wdr <- max(hyps$elev) - min(hyps$elev) - 1
+  outlet_type <- ifelse(heights_wdr < 0, 2, 1) 
+  flt_off_sw <- outlet_type == 2
+  outf[["elevation"]] <- NULL
+  for (i in seq_along(heights_wdr)) {
+    if (is.na(heights_wdr[i]) | heights_wdr[i] <= 0) {
+      heights_wdr[i] <- max(hyps$elev) - min(hyps$elev) - 1
+    }
+    if (heights_wdr[i] > (max(hyps$elev) - min(hyps$elev))) {
+      cli_inform_safe(c("!" = "Withdrawal depth is too high, setting to 75% of 
                       lake depth"))
-    heights_wdr <- 0.75 * (max(hyps$elev) - min(hyps$elev))
+      heights_wdr[i] <- 0.75 * (max(hyps$elev) - min(hyps$elev))
+    }
   }
+
   glm_nml <- make_wdrGLM(outf = outf,
                          heights_wdr = heights_wdr,
+                         outlet_type = outlet_type,
+                         flt_off_sw = flt_off_sw,
                          bathy = hyps,
                          dims_lake = dims_lake,
                          wdr_factor = outf_factor, update_nml = TRUE,
