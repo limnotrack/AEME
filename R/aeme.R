@@ -201,7 +201,7 @@ aeme_constructor <- function(
   if (missing(outflows)) {
     outflows <- list(
       data = NULL,
-      lvl = -1,
+      elevation = -1,
       factor = list(
         dy_cd = 1,
         glm_aed = 1,

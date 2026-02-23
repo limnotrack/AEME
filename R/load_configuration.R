@@ -6,8 +6,19 @@
 #' @export
 #'
 
-load_configuration <- function(aeme, model, model_controls = NULL, 
-                               use_bgc = FALSE, path) {
+load_configuration <- function(aeme, 
+                               model,
+                               path = ".",
+                               model_controls = NULL, 
+                               use_bgc = FALSE, 
+                               ext_elev = 0,
+                               calc_wbal = TRUE,
+                               wb_method = 2,
+                               calc_wlev = TRUE,
+                               use_aeme = FALSE,
+                               coeffs = NULL,
+                               hum_type = 3,
+                               est_swr_hr = TRUE) {
 
   aeme <- check_aeme(aeme)
   if (missing(model)) {
@@ -31,6 +42,12 @@ load_configuration <- function(aeme, model, model_controls = NULL,
   
   out <- list(model_controls = model_controls,
               use_bgc = use_bgc,
+              path = path,
+              ext_elev = ext_elev,
+              calc_wbal = calc_wbal, wb_method = wb_method, 
+              calc_wlev = calc_wlev,
+              coeffs = coeffs, hum_type = hum_type,
+              est_swr_hr = est_swr_hr,
               dy_cd = list(hydrodynamic = model_config[["dy_cd"]][["hydrodynamic"]],
                            bgc = model_config[["dy_cd"]][["bgc"]]),
               glm_aed = list(hydrodynamic =

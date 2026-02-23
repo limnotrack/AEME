@@ -3,9 +3,10 @@
 #' Configure an ensemble of lake model simulations from basic set of inputs.
 #'
 #' @param aeme aeme; object.
-#' @param config list; loaded via `config <- yaml::read_yaml("aeme.yaml")`
 #' @param model vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 #'  `gotm_wet`.
+#' @param path filepath; where input files are located relative to the current 
+#' working directory.
 #' @param model_controls dataframe; of configuration loaded from
 #'  "model_controls.csv".
 #' @param inf_factor vector; containing numeric factor to multiple the inflows.
@@ -34,8 +35,7 @@
 #' Default = 3.
 #' @param est_swr_hr logical; estimate hourly shortwave radiation from daily
 #' values. Default = TRUE.
-#' @param path filepath; where input files are located relative to the current 
-#' working directory.
+#' @param config list; loaded via `config <- yaml::read_yaml("aeme.yaml")`
 #'
 #' @return builds the model ensemble configuration.
 #'
@@ -64,10 +64,11 @@
 #'                use_bgc = FALSE)
 
 build_aeme <- function(aeme = NULL,
-                       config = NULL,
                        model = c("dy_cd", "glm_aed", "gotm_wet"),
+                       path = ".",
                        model_controls = NULL,
-                       inf_factor = c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1),
+                       inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
+                                      "gotm_wet" = 1),
                        outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
                                        "gotm_wet" = 1),
                        ext_elev = 0,
@@ -79,7 +80,7 @@ build_aeme <- function(aeme = NULL,
                        coeffs = NULL,
                        hum_type = 3,
                        est_swr_hr = TRUE,
-                       path = "."
+                       config = NULL
 ) {
   
   # Load arguments
@@ -275,7 +276,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (!is.null(aeme_outf[["data"]]) & length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
-        
+
         if (names(aeme_outf[["data"]])[i] == "wbal" & calc_wbal) next
         
         check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
@@ -388,6 +389,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
         outf[["wbal"]] <- wbal |>
           dplyr::rename(outflow = spill_outflow) |>
           dplyr::select(Date, model, outflow)
+        aeme_outf[["elevation"]][["wbal"]] <- -1
       }
       
       cli_inform_safe(c("i" = msg))
@@ -405,7 +407,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     }
     
     outflows(aeme) <- list(data = outf,
-                           outflow_lvl = aeme_outf[["lvl"]],
+                           elevation = aeme_outf[["elevation"]],
                            factor = aeme_outf[["factor"]])
     
     if (calc_wlev) {
@@ -555,10 +557,12 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     #--- configure GLM-AED2
     dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
       `names<-`(NULL)
+    
     build_glm(lakename, model_controls = model_controls, date_range = dates.glm,
               lake_shape = lake_shape, lat = lat, lon = lon,
               hyps = hyps, lvl = lvl, init_prof = init_prof,
               init_depth = init_depth, inf = inf, outf = outf,
+              heights_wdr = unlist(aeme_outf[["elevation"]]),
               met = met, lake_dir = lake_dir,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
@@ -603,6 +607,12 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                            path = path)
   }
   
+  # GLM-AED totals configuration ----
+  if ("glm_aed" %in% model & use_bgc) {
+    print("Configuring GLM-AED totals...")
+    set_aed_totals(aeme = aeme, path = path)
+  } 
+  
   # Check model cfg files ----
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
   if ("gotm_wet" %in% model) {
@@ -616,7 +626,10 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   # Load model configuration ----
   aeme <- load_configuration(model = model, aeme = aeme, 
                              model_controls = model_controls, use_bgc = use_bgc, 
-                             path = path)
+                             path = path, ext_elev = ext_elev,
+                             calc_wbal = calc_wbal, wb_method = wb_method,
+                             calc_wlev = calc_wlev, coeffs = coeffs, 
+                             hum_type = hum_type, est_swr_hr = est_swr_hr)
   
   return(aeme)
 }

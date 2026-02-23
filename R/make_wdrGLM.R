@@ -14,7 +14,8 @@
 #' @importFrom utils write.csv
 #' @importFrom dplyr mutate bind_rows
 
-make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
+make_wdrGLM <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy, 
+                        dims_lake, wdr_factor = 1,
                         update_nml = TRUE, glm_nml, path_glm) {
 
 
@@ -54,7 +55,12 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
       # get the inflow attributes
       names_wdr <- names(df_wdr)[2:ncol(df_wdr)]
       n_wdr <- length(names_wdr)
-
+      # heights_wdr <- unlist(heights_wdr)
+      # Reorder to match column order
+      heights_wdr <- heights_wdr[names_wdr]
+      outlet_type <- outlet_type[names_wdr]
+      flt_off_sw <- flt_off_sw[names_wdr]
+      
       # default to outflow = 3 m below crest if not supplied
       if (missing(heights_wdr)) {
         heights_wdr <- rep(crest - 3, length(names_wdr))
@@ -78,9 +84,9 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 
       outflow <- list(
         num_outlet = n_wdr,
-        outlet_type = rep(2, n_wdr),
-        flt_off_sw = rep(TRUE, n_wdr),
-        outl_elvs = rep(round(heights_wdr, 2), n_wdr),
+        outlet_type = as.vector(outlet_type),
+        flt_off_sw = as.vector(flt_off_sw),
+        outl_elvs = as.vector(heights_wdr),
         bsn_len_outl = round(lengths, 2),
         bsn_wid_outl = round(widths, 2),
         outflow_fl = outflow_fl,
