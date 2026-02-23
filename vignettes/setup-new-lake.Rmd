@@ -389,7 +389,7 @@ reconstruct the object.
 
 ```{r run-ensemble}
 # Run the ensemble
-aeme <- run_aeme(aeme = aeme, model = model, path = path)
+aeme <- run_aeme(aeme = aeme)
 ```
 
 ## View the output
