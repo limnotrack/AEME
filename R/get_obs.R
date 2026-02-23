@@ -5,6 +5,8 @@
 #' be a vector. If missing, all variables are returned.
 #' @param depth_range numeric vector of length 2; depth range (in meters) to
 #' filter observations. If NULL, all depths are returned.
+#' @param time_filter logical; if TRUE, filter observations to the time range of
+#' the Aeme object. If FALSE, all observations are returned regardless of time.
 #'
 #' @return A data frame with the following columns:
 #' \itemize{
@@ -17,7 +19,7 @@
 #' @export
 #'
 
-get_obs <- function(aeme, var_sim, depth_range = NULL) {
+get_obs <- function(aeme, var_sim, depth_range = NULL, time_filter = FALSE) {
 
   # Load observations
   obs <- observations(aeme)
@@ -28,11 +30,9 @@ get_obs <- function(aeme, var_sim, depth_range = NULL) {
   } else {
     var_sim <- check_aeme_vars(var_sim)
   }
-  tme <- time(aeme)
   if (!is.null(obs$lake)) {
     lake <- obs$lake |>
-      dplyr::filter(var_aeme %in% var_sim,
-                    Date >= as.Date(tme$start) & Date <= as.Date(tme$stop)) |> 
+      dplyr::filter(var_aeme %in% var_sim) |> 
       dplyr::select(dplyr::all_of(obs_col_names))
   } else {
     lake <- NULL
@@ -40,7 +40,6 @@ get_obs <- function(aeme, var_sim, depth_range = NULL) {
   
   if (!is.null(obs$level) & "LKE_lvlwtr" %in% var_sim) {
     level <- obs$level |>
-      dplyr::filter(Date >= as.Date(tme$start) & Date <= as.Date(tme$stop)) |> 
       dplyr::mutate(depth_from = NA, depth_to = NA) |> 
       dplyr::select(dplyr::all_of(obs_col_names))
   } else {
@@ -61,6 +60,12 @@ get_obs <- function(aeme, var_sim, depth_range = NULL) {
   } else {
     df <- df  |>
       dplyr::arrange(Date, var_aeme, depth_from, depth_to)
+  }
+  
+  if (time_filter) {
+    tme <- time(aeme)
+    df <- df |> 
+      dplyr::filter(Date >= as.Date(tme$start) & Date <= as.Date(tme$stop))
   }
   return(df)
 }

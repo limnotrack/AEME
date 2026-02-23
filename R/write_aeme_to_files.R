@@ -124,23 +124,15 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
       ens_df <- lapply(1:n_members, \(ens) {
         out_df <- lapply(out_vars, \(v) {
           out <- AEME::get_var(aeme = aeme, model = model, var_sim = v,
-                               return_df = TRUE, ens_n = ens) |>
-            dplyr::mutate(lyr_top = round(lyr_top, 2),
-                          lyr_thk = round(lyr_thk, 2))
+                               return_df = TRUE, ens_n = ens) 
 
-          if (!all(is.na(out$lyr_top))) {
-            out <- out |>
-              dplyr::group_by(Date, Model, var_sim) |>
-              dplyr::reframe(
-                depth = out_depths,
-                value = approx(lyr_top, value, depth, rule = 2)$y
-              )
-          } else {
+          if (all(is.na(out$depth))) {
             out <- out |>
               dplyr::mutate(depth = NA)
           }
           out <- out |>
-            dplyr::mutate(depth = depth - max(depth), value = round(value, 4),
+            dplyr::mutate(#depth = depth - max(depth), 
+                          value = round(value, 4),
                           model = toggle_models(Model, to = "code")
             ) |>
             dplyr::select(Date, model, var_sim, depth, value) |>
