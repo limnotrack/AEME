@@ -7,6 +7,7 @@
 run_aeme(
   aeme,
   model,
+  path,
   return_type = c("aeme", "exec_result", "both", "none"),
   ens_n = 1,
   model_controls = NULL,
@@ -15,8 +16,7 @@ run_aeme(
   timeout = Inf,
   parallel = FALSE,
   ncores,
-  check_output = FALSE,
-  path = "."
+  check_output = FALSE
 )
 }
 \arguments{
@@ -24,6 +24,9 @@ run_aeme(
 
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
+
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
@@ -45,9 +48,6 @@ to `min(c(detectCores() - 1, length(model)))`.}
 
 \item{check_output}{logical; check model output after running? Defaults to
 FALSE.}
-
-\item{path}{filepath; where input files are located relative to the current 
-working directory.}
 
 \item{return}{logical; return model output within an `aeme` object? Defaults
 to TRUE.}

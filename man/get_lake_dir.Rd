@@ -4,7 +4,7 @@
 \alias{get_lake_dir}
 \title{Get the directory of the lake model setup}
 \usage{
-get_lake_dir(aeme, path = getwd())
+get_lake_dir(aeme, path)
 }
 \arguments{
 \item{aeme}{aeme; object.}

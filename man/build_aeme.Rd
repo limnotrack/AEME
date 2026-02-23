@@ -6,8 +6,8 @@
 \usage{
 build_aeme(
   aeme = NULL,
-  config = NULL,
   model = c("dy_cd", "glm_aed", "gotm_wet"),
+  path = ".",
   model_controls = NULL,
   inf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
   outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
@@ -20,16 +20,17 @@ build_aeme(
   coeffs = NULL,
   hum_type = 3,
   est_swr_hr = TRUE,
-  path = "."
+  config = NULL
 )
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{config}{list; loaded via `config <- yaml::read_yaml("aeme.yaml")`}
-
 \item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
 `gotm_wet`.}
+
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 
 \item{model_controls}{dataframe; of configuration loaded from
 "model_controls.csv".}
@@ -71,8 +72,7 @@ Default = 3.}
 \item{est_swr_hr}{logical; estimate hourly shortwave radiation from daily
 values. Default = TRUE.}
 
-\item{path}{filepath; where input files are located relative to the current 
-working directory.}
+\item{config}{list; loaded via `config <- yaml::read_yaml("aeme.yaml")`}
 }
 \value{
 builds the model ensemble configuration.
