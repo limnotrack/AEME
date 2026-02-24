@@ -70,6 +70,8 @@
   parameters for the DYRESM-CAEDYM model
 - [`estimate_lake_wlev()`](estimate_lake_wlev.md) : Estimate Lake Water
   Levels with Nudging
+- [`estimate_sed_zones()`](estimate_sed_zones.md) : Estimate sediment
+  zones based on hypsograph
 - [`estimate_surface_temperature()`](estimate_surface_temperature.md) :
   Estimate Surface Temperature Using Energy Balance Model
 - [`expand_met()`](expand_met.md) : Expand a minimal set of meteorology

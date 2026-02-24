@@ -532,6 +532,12 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ PHY_green 0.04 replaced with 0.300275
 #> ℹ 100 replaced with 1
 #> ℹ Using default zooplankton initialisation
+#> ✔ Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,
+#>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,
+#>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,
+#>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
+#>   aed_phytoplankton, aed_totals
+#> ℹ Setting up AED aed_sed_const2d sediment zones: 2
 #> ℹ Building GOTM-WET model for lake aeme
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5
@@ -570,7 +576,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Setting initial condition forinstances/cladocerans/initialization/sP: 5e-04
 #>   replaced with 0.01
 #> Warning: No parameters in 'param' for dy_cd.
-#> [1] "Configuring GLM-AED totals..."
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
 aeme

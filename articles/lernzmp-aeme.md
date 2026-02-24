@@ -178,7 +178,6 @@ path <- "aeme" # directory in which the model configuration will be built
 
 aeme <- build_aeme(aeme = aeme, model = model, path = path,
                    use_bgc = TRUE)
-#> [1] "Configuring GLM-AED totals..."
 ```
 
 ## Run AEME models

@@ -65,6 +65,12 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ PHY_green 0.04 replaced with 0.300275
 #> ℹ 100 replaced with 1
 #> ℹ Using default zooplankton initialisation
+#> ✔ Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,
+#>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,
+#>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,
+#>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
+#>   aed_phytoplankton, aed_totals
+#> ℹ Setting up AED aed_sed_const2d sediment zones: 2
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5
@@ -102,17 +108,16 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   replaced with 0.07
 #> ℹ Setting initial condition forinstances/cladocerans/initialization/sP: 5e-04
 #>   replaced with 0.01
-#> [1] "Configuring GLM-AED totals..."
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-02-24 00:12:54]
-#> ✔ Model run complete! [2026-02-24 00:12:58]
-#> ℹ Reading models in parallel...[2026-02-24 00:12:58]
-#> ✔ Model reading complete! [2026-02-24 00:13:00]
+#> ℹ Running models in parallel... [2026-02-24 02:55:53]
+#> ✔ Model run complete! [2026-02-24 02:55:56]
+#> ℹ Reading models in parallel...[2026-02-24 02:55:56]
+#> ✔ Model reading complete! [2026-02-24 02:55:58]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 

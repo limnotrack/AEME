@@ -64,16 +64,20 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ PHY_green 0.3 replaced with 0.300275
 #> ℹ 1 replaced with 1
 #> ℹ Using default zooplankton initialisation
-#> [1] "Configuring GLM-AED totals..."
+#> ✔ Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,
+#>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,
+#>   aed_totals to: aed_sedflux, aed_oxygen, aed_silica, aed_nitrogen,
+#>   aed_phosphorus, aed_organic_matter, aed_phytoplankton, aed_totals
+#> ℹ Setting up AED aed_sed_const2d sediment zones: 2
 #> ✔ GLM nml validation completed - no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-02-24 00:13:33]
-#> ✔ Model run complete! [2026-02-24 00:13:36]
-#> ℹ Reading models in parallel...[2026-02-24 00:13:36]
-#> ✔ Model reading complete! [2026-02-24 00:13:38]
+#> ℹ Running models in parallel... [2026-02-24 02:56:11]
+#> ✔ Model run complete! [2026-02-24 02:56:14]
+#> ℹ Reading models in parallel...[2026-02-24 02:56:14]
+#> ✔ Model reading complete! [2026-02-24 02:56:16]
 list_mod_obs_vars(aeme = aeme, model = model)
 #>              Cyanobacteria           Dissolved oxygen 
 #>                "PHY_cyano"                  "CHM_oxy" 
