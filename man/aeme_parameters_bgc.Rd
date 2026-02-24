@@ -19,7 +19,7 @@ A data frame with 30 rows and 7 columns:
   phytoplankton parameters}
   \item{index}{Index for the parameter in the model file, only used for
   parameters that have multiple values in a vector such as
-   "sediment/sed_temp_mean" in GLM-AED2}
+   "sediment/sed_temp_mean" in GLM-AED}
   \item{module}{Module for the parameter in the model, useful to help
   identify parameters} 
 }

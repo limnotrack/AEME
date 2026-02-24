@@ -566,7 +566,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     # run_dy_cd(sim_folder = lake_dir, verbose = TRUE)
   }
   if ("glm_aed" %in% model) {
-    #--- configure GLM-AED2
+    #--- configure GLM-AED
     dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
       `names<-`(NULL)
     

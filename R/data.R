@@ -79,7 +79,7 @@
 #'   phytoplankton parameters}
 #'   \item{index}{Index for the parameter in the model file, only used for
 #'   parameters that have multiple values in a vector such as
-#'    "sediment/sed_temp_mean" in GLM-AED2}
+#'    "sediment/sed_temp_mean" in GLM-AED}
 #'   \item{module}{Module for the parameter in the model, useful to help
 #'   identify parameters} 
 #' }
@@ -104,7 +104,7 @@
 #'   phytoplankton parameters}
 #'   \item{index}{Index for the parameter in the model file, only used for
 #'   parameters that have multiple values in a vector such as
-#'    "sediment/sed_temp_mean" in GLM-AED2}
+#'    "sediment/sed_temp_mean" in GLM-AED}
 #'   \item{module}{Module for the parameter in the model, useful to help
 #'   identify parameters} 
 #' }
@@ -128,7 +128,7 @@
 #'   \item{group}{Phytoplankton group for the parameter; only applies to
 #'     phytoplankton parameters}
 #'   \item{index}{Index for parameters with multiple values in a vector (e.g.,
-#'     `"sediment/sed_temp_mean"` in GLM-AED2)}
+#'     `"sediment/sed_temp_mean"` in GLM-AED)}
 #'   \item{module}{Model module associated with the parameter, useful for
 #'     identifying functional groupings}
 #' }
@@ -156,7 +156,7 @@
 #'   phytoplankton parameters}
 #'   \item{index}{Index for the parameter in the model file, only used for
 #'   parameters that have multiple values in a vector such as
-#'    "sediment/sed_temp_mean" in GLM-AED2}
+#'    "sediment/sed_temp_mean" in GLM-AED}
 #'   \item{module}{Module for the parameter in the model, useful to help
 #'   identify parameters} 
 #'   \item{par}{Short name for the parameter}
@@ -171,7 +171,7 @@
 #' Example dataframe used for calibrating the biogeochemistry in the GLM-AED
 #' model.
 #'
-#' All the parameters within the aed2.nml file. This includes three
+#' All the parameters within the AED.nml file. This includes three
 #' phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
 #' group (cladocerans). This has the values in the default file and 25 % parameter
 #' ranges for sensitivity analysis.
@@ -189,7 +189,7 @@
 #'   phytoplankton parameters}
 #'   \item{index}{Index for the parameter in the model file, only used for
 #'   parameters that have multiple values in a vector such as
-#'    "sediment/sed_temp_mean" in GLM-AED2}
+#'    "sediment/sed_temp_mean" in GLM-AED}
 #'   \item{module}{Module for the parameter in the model, useful to help
 #'   identify parameters} 
 #'   \item{par}{Short name for the parameter}

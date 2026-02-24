@@ -16,7 +16,7 @@ A data frame with 253 rows and 9 columns:
   \item{group}{Phytoplankton group for the parameter; only applies to
     phytoplankton parameters}
   \item{index}{Index for parameters with multiple values in a vector (e.g.,
-    `"sediment/sed_temp_mean"` in GLM-AED2)}
+    `"sediment/sed_temp_mean"` in GLM-AED)}
   \item{module}{Model module associated with the parameter, useful for
     identifying functional groupings}
 }

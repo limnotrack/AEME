@@ -55,7 +55,7 @@ REservoir Simulation Model (DYRESM), the General Lake Model (GLM), and the
 General Ocean Turbulence Model (GOTM, which has been adapted for closed basins
 for application to lakes and reservoirs). The models can be coupled to their
 corresponding water quality models, the DYRESM-CAEDYM (Computational Aquatic
-Ecosystem Dynamics Model), GLM-AED2 (Aquatic Ecosystem Dynamics Model 2), and
+Ecosystem Dynamics Model), GLM-AED (Aquatic Ecosystem Dynamics Model), and
 GOTM-WET (Water Ecosystem Tool).
 
 Key aspects of the AEME package include:

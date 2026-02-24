@@ -19,7 +19,7 @@ A data frame with 253 rows and 7 columns:
   phytoplankton parameters}
   \item{index}{Index for the parameter in the model file, only used for
   parameters that have multiple values in a vector such as
-   "sediment/sed_temp_mean" in GLM-AED2}
+   "sediment/sed_temp_mean" in GLM-AED}
   \item{module}{Module for the parameter in the model, useful to help
   identify parameters} 
   \item{par}{Short name for the parameter}
@@ -36,7 +36,7 @@ Package development.
 glm_aed_parameters
 }
 \description{
-All the parameters within the aed2.nml file. This includes three
+All the parameters within the AED.nml file. This includes three
 phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
 group (cladocerans). This has the values in the default file and 25 % parameter
 ranges for sensitivity analysis.
