@@ -324,10 +324,10 @@ test_that("running GLM-AED works", {
   model_controls <- set_vars_sim(model_controls = model_controls,
                                  vars_sim = vars_sim)
   model <- c("glm_aed")
-  tim <- time(aeme)
-  tim$start <- tim$start + (100 * 86400)
-  tim$spin_up$glm_aed <- 100
-  time(aeme) <- tim
+  # tim <- time(aeme)
+  # tim$start <- tim$start + (100 * 86400)
+  # tim$spin_up$glm_aed <- 100
+  # time(aeme) <- tim
   # set_glm_aed_models(aeme = aeme, path = path, aed_models = c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
   #                                                "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton", "aed_zooplankton",
   #                                                "aed_macrophyte", "aed_totals"))
@@ -335,7 +335,11 @@ test_that("running GLM-AED works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = T, path = path)
+  aeme <- aeme |> 
+    run_aeme()
+  plot_output(aeme, var_sim = "CHM_oxy") /
+    plot_output(aeme)/
+    plot_output(aeme, var_sim = "PHY_tchla")
   
   file <- get_model_outfile(aeme = aeme, model = model, path = path)
   

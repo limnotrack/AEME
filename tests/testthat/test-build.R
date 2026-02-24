@@ -235,7 +235,7 @@ test_that("building all models with minimum met variables", {
   }
   configuration(aeme) <- cfg_upd
   cfg2 <- configuration(aeme)
-  testthat::expect_equal(length(cfg2), 2)
+  testthat::expect_equal(length(cfg2), 10)
   aeme <- load_configuration(aeme = aeme, model = model, path = path)
   cfg3 <- configuration(aeme)
   testthat::expect_equal(names(cfg), names(cfg3))
