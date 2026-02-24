@@ -1,6 +1,6 @@
 # Example dataframe used for calibrating the biogeochemistry in the GLM-AED model.
 
-All the parameters within the aed2.nml file. This includes three
+All the parameters within the AED.nml file. This includes three
 phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
 group (cladocerans). This has the values in the default file and 25
 ranges for sensitivity analysis.
@@ -48,7 +48,7 @@ glm_aed_parameters
 
   Index for the parameter in the model file, only used for parameters
   that have multiple values in a vector such as "sediment/sed_temp_mean"
-  in GLM-AED2
+  in GLM-AED
 
 - module:
 

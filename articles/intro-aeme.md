@@ -7,9 +7,8 @@ DYnamic REservoir Simulation Model (DYRESM), the General Lake Model
 (GLM), and the General Ocean Turbulence Model (GOTM, which has been
 adapted for closed basins for application to lakes and reservoirs). The
 models can be coupled to their corresponding water quality models, the
-DYRESM-CAEDYM (Computational Aquatic Ecosystem Dynamics Model), GLM-AED2
-(Aquatic Ecosystem Dynamics Model 2), and GOTM-WET (Water Ecosystem
-Tool).
+DYRESM-CAEDYM (Computational Aquatic Ecosystem Dynamics Model), GLM-AED
+(Aquatic Ecosystem Dynamics Model), and GOTM-WET (Water Ecosystem Tool).
 
 Key aspects of the AEME package include:
 
@@ -515,7 +514,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Copied in DYRESM .par file
 #> ℹ Writing DYRESM configuration file
 #> ℹ Writing DYRESM-CAEDYM control file
-#> ℹ Building GLM-AED2 for lake aeme
+#> ℹ Building GLM-AED for lake aeme
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
 #> ℹ 15 replaced with 41.6285

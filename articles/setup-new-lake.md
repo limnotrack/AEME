@@ -191,9 +191,9 @@ the world. However, it’s date range is only from 1900-2021.
 ``` r
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-02-24 00:13:01] job submitted
-#> INFO [2026-02-24 00:13:01] downloading
-#> INFO [2026-02-24 00:13:02] extracting
+#> INFO [2026-02-24 00:28:05] job submitted
+#> INFO [2026-02-24 00:28:05] downloading
+#> INFO [2026-02-24 00:28:07] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -520,7 +520,7 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #> ℹ Copied in DYRESM .par file
 #> ℹ Writing DYRESM configuration file
 #> ℹ Writing DYRESM-CAEDYM control file
-#> ℹ Building GLM-AED2 for lake wainamu
+#> ℹ Building GLM-AED for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
 #> ℹ Building GOTM-WET model for lake wainamu
@@ -595,14 +595,14 @@ without needing to reconstruct the object.
 ``` r
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-24 00:13:24]
-#> → DYRESM-CAEDYM running... [2026-02-24 00:13:24]
-#> ✔ DYRESM-CAEDYM run successful! [2026-02-24 00:13:51]
-#> → GLM-AED running... [2026-02-24 00:13:51]
-#> ✔ GLM-AED run successful! [2026-02-24 00:13:52]
-#> → GOTM-WET running... [2026-02-24 00:13:52]
-#> ✔ GOTM-WET run successful! [2026-02-24 00:13:52]
-#> ✔ Model run complete! [2026-02-24 00:13:52]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-24 00:28:29]
+#> → DYRESM-CAEDYM running... [2026-02-24 00:28:29]
+#> ✔ DYRESM-CAEDYM run successful! [2026-02-24 00:28:57]
+#> → GLM-AED running... [2026-02-24 00:28:57]
+#> ✔ GLM-AED run successful! [2026-02-24 00:28:58]
+#> → GOTM-WET running... [2026-02-24 00:28:58]
+#> ✔ GOTM-WET run successful! [2026-02-24 00:28:58]
+#> ✔ Model run complete! [2026-02-24 00:28:58]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```

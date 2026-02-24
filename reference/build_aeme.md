@@ -135,7 +135,7 @@ build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ No missing values in observed water level. Using observed water level
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
-#> ℹ Building GLM-AED2 for lake wainamu
+#> ℹ Building GLM-AED for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
 #> ✔ GLM nml validation completed - no issues detected.

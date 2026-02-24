@@ -46,7 +46,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ No missing values in observed water level. Using observed water level
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
-#> ℹ Building GLM-AED2 for lake wainamu
+#> ℹ Building GLM-AED for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
 #> ℹ 15 replaced with 41.6285
@@ -109,10 +109,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-02-23 23:58:26]
-#> ✔ Model run complete! [2026-02-23 23:58:29]
-#> ℹ Reading models in parallel...[2026-02-23 23:58:29]
-#> ✔ Model reading complete! [2026-02-23 23:58:31]
+#> ℹ Running models in parallel... [2026-02-24 00:12:54]
+#> ✔ Model run complete! [2026-02-24 00:12:58]
+#> ℹ Reading models in parallel...[2026-02-24 00:12:58]
+#> ✔ Model reading complete! [2026-02-24 00:13:00]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 

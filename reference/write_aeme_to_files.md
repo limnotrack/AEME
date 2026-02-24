@@ -37,12 +37,12 @@ model_controls = model_controls)
 #> ℹ No missing values in observed water level. Using observed water level
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
-#> ℹ Building GLM-AED2 for lake wainamu
+#> ℹ Building GLM-AED for lake wainamu
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-23 23:59:35]
-#> → GLM-AED running... [2026-02-23 23:59:35]
-#> ✔ GLM-AED run successful! [2026-02-23 23:59:35]
-#> ✔ Model run complete! [2026-02-23 23:59:35]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-24 00:14:16]
+#> → GLM-AED running... [2026-02-24 00:14:16]
+#> ✔ GLM-AED run successful! [2026-02-24 00:14:17]
+#> ✔ Model run complete! [2026-02-24 00:14:17]
 write_aeme_to_files(aeme, path)
 ```

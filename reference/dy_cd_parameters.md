@@ -46,7 +46,7 @@ A data frame with 253 rows and 9 columns:
 - index:
 
   Index for parameters with multiple values in a vector (e.g.,
-  \`"sediment/sed_temp_mean"\` in GLM-AED2)
+  \`"sediment/sed_temp_mean"\` in GLM-AED)
 
 - module:
 

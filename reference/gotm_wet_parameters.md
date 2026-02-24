@@ -48,7 +48,7 @@ A data frame with 628 rows and 14 columns:
 
   Index for the parameter in the model file, only used for parameters
   that have multiple values in a vector such as "sediment/sed_temp_mean"
-  in GLM-AED2
+  in GLM-AED
 
 - module:
 
