@@ -580,6 +580,15 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               outf_factor = outf_factor[["glm_aed"]],
               Kw = Kw, use_bgc = use_bgc,
               use_lw = inp$use_lw, overwrite_nml = overwrite)
+    
+    if (use_bgc) {
+      set_glm_aed_models(aeme = aeme, path = path, 
+                         aed_models = c("aed_sedflux", "aed_oxygen", 
+                                        "aed_silica", "aed_nitrogen",
+                                        "aed_phosphorus", "aed_organic_matter",
+                                        "aed_phytoplankton", "aed_totals"))
+      set_aed_sed_const2d(aeme = aeme, path = path)
+    }
     # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
   if ("gotm_wet" %in% model) {
@@ -621,7 +630,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   
   # GLM-AED totals configuration ----
   if ("glm_aed" %in% model & use_bgc) {
-    print("Configuring GLM-AED totals...")
     set_aed_totals(aeme = aeme, path = path)
   } 
   
