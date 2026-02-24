@@ -103,14 +103,75 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Setting initial condition forinstances/cladocerans/initialization/sP: 5e-04
 #>   replaced with 0.01
 #> [1] "Configuring GLM-AED totals..."
-#> Warning: NAs introduced by coercion
-#> Error: NA is not a .true. or .false.; conversion to TRUE or FALSE failed.
+#> ✔ GOTM YAML validation completed - no issues detected.
+#> ✔ GLM nml validation completed - no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> Warning: NAs introduced by coercion
-#> Error: NA is not a .true. or .false.; conversion to TRUE or FALSE failed.
+#> ℹ Running models in parallel... [2026-02-23 23:58:26]
+#> ✔ Model run complete! [2026-02-23 23:58:29]
+#> ℹ Reading models in parallel...[2026-02-23 23:58:29]
+#> ✔ Model reading complete! [2026-02-23 23:58:31]
 get_output_vars(aeme, model)
-#> NULL
+#>                    Water temperature                    Thermocline depth 
+#>                           "HYD_temp"                         "HYD_thmcln" 
+#>                     Dissolved oxygen                  Total chlorophyll a 
+#>                            "CHM_oxy"                          "PHY_tchla" 
+#>                       Total nitrogen                     Total phosphorus 
+#>                             "NIT_tn"                             "PHS_tp" 
+#>                Evaporative heat flux                   Sensible heat flux 
+#>                             "LKE_Qe"                             "LKE_Qh" 
+#>                   Longwave radiation                  Shortwave radiation 
+#>                            "LKE_Qlw"                            "LKE_Qsw" 
+#>                               Volume                          Evaporation 
+#>                              "LKE_V"                         "LKE_evpvol" 
+#>                          Evaporation                         Surface area 
+#>                         "LKE_evpflx"                             "LKE_A0" 
+#>                          Evaporation                               Inflow 
+#>                         "LKE_evprte"                         "LKE_inflow" 
+#>                              Outflow                        Precipitation 
+#>                        "LKE_outflow"                         "LKE_precip" 
+#>                        Precipitation       Remote sensed skin temperature 
+#>                         "LKE_pcpvol"                          "HYD_surft" 
+#>                      e-folding depth                       Euphotic depth 
+#>                          "LKE_efold"                         "LKE_photic" 
+#>                           Lake depth                        Water density 
+#>                         "LKE_depths"                           "HYD_dens" 
+#>                             Salinity                            Phosphate 
+#>                           "CHM_salt"                            "PHS_frp" 
+#>                  Dissolved organic P                Particulate organic P 
+#>                            "PHS_dop"                            "PHS_pop" 
+#>                  Ammoniacal nitrogen                              Nitrate 
+#>                            "NIT_amm"                            "NIT_nit" 
+#>                  Dissolved organic N                Particulate organic N 
+#>                            "NIT_don"                            "NIT_pon" 
+#>             Dissolved organic carbon           Particulate organic carbon 
+#>                            "CAR_doc"                            "CAR_poc" 
+#>                        Cyanobacteria                          Green algae 
+#>                          "PHY_cyano"                          "PHY_green" 
+#>                   Diatoms freshwater                           Stratified 
+#>                         "PHY_diatom"                          "HYD_strat" 
+#>                    Schmidt stability                   Centre of buoyancy 
+#>                         "HYD_schstb"                         "HYD_ctrbuy" 
+#>                     Epilimnion depth                    Hypolimnion depth 
+#>                         "HYD_epidep"                         "HYD_hypdep" 
+#>    Trophic Level Index Chlorophyll-a   Trophic Level Index Total Nitrogen 
+#>                           "LKE_tlic"                           "LKE_tlin" 
+#> Trophic Level Index Total Phosphorus     Trophic Level Index Secchi depth 
+#>                           "LKE_tlip"                          "LKE_tlise" 
+#>                Trophic Level Index 3                Trophic Level Index 4 
+#>                           "LKE_tli3"                           "LKE_tli4" 
+#>                       Oxycline depth                   Epilimnetic oxygen 
+#>                         "CHM_oxycln"                         "CHM_oxyepi" 
+#>                   Metalimnetic oygen                  Hypolimnetic oxygen 
+#>                         "CHM_oxymet"                         "CHM_oxyhyp" 
+#>           Metalimnetic oxygen minima              Number of anoxic layers 
+#>                         "CHM_oxymom"                         "CHM_oxynal" 
+#>  Photosynthetically active radiation              Particulate inorganic P 
+#>                            "RAD_par"                            "PHS_pip" 
+#>                     Suspended solids                          Zooplankton 
+#>                            "NCS_ss1"                           "ZOO_zoo1" 
+#>                      Air temperature     Water-air temperature difference 
+#>                         "MET_tmpair"                         "HYD_atdiff" 
 ```

@@ -38,9 +38,11 @@ model_controls = model_controls)
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
-#> Warning: NAs introduced by coercion
-#> Error: NA is not a .true. or .false.; conversion to TRUE or FALSE failed.
+#> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): ✖ `model_controls` need to be provided to load model output.
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-23 23:59:35]
+#> → GLM-AED running... [2026-02-23 23:59:35]
+#> ✔ GLM-AED run successful! [2026-02-23 23:59:35]
+#> ✔ Model run complete! [2026-02-23 23:59:35]
 write_aeme_to_files(aeme, path)
 ```

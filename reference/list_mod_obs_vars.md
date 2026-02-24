@@ -48,14 +48,55 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
-#> Warning: NAs introduced by coercion
-#> Error: NA is not a .true. or .false.; conversion to TRUE or FALSE failed.
+#> ℹ 41.6285 replaced with 41.6285
+#> ℹ Using default pH initialisation
+#> ℹ 16.6514 replaced with 16.6514
+#> ℹ 312.5 replaced with 312.5
+#> ℹ 1.4279 replaced with 1.4279
+#> ℹ 21.4183 replaced with 21.4183
+#> ℹ 1.0709 replaced with 1.0709
+#> ℹ 7.1394 replaced with 7.1394
+#> ℹ 0.3229 replaced with 0.3229
+#> ℹ 0.3229 replaced with 0.3229
+#> ℹ 0.3229 replaced with 0.3229
+#> ℹ PHY_cyano 0.24 replaced with 0.24022
+#> ℹ PHY_diatom 0.3 replaced with 0.300275
+#> ℹ PHY_green 0.3 replaced with 0.300275
+#> ℹ 1 replaced with 1
+#> ℹ Using default zooplankton initialisation
+#> [1] "Configuring GLM-AED totals..."
+#> ✔ GLM nml validation completed - no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> Warning: NAs introduced by coercion
-#> Error: NA is not a .true. or .false.; conversion to TRUE or FALSE failed.
+#> ℹ Running models in parallel... [2026-02-23 23:58:43]
+#> ✔ Model run complete! [2026-02-23 23:58:46]
+#> ℹ Reading models in parallel...[2026-02-23 23:58:46]
+#> ✔ Model reading complete! [2026-02-23 23:58:48]
 list_mod_obs_vars(aeme = aeme, model = model)
-#> named character(0)
+#>              Cyanobacteria           Dissolved oxygen 
+#>                "PHY_cyano"                  "CHM_oxy" 
+#>                   Salinity          Water temperature 
+#>                 "CHM_salt"                 "HYD_temp" 
+#>        Total chlorophyll a   Dissolved organic carbon 
+#>                "PHY_tchla"                  "CAR_doc" 
+#>                  Phosphate        Ammoniacal nitrogen 
+#>                  "PHS_frp"                  "NIT_amm" 
+#>                    Nitrate             Total nitrogen 
+#>                  "NIT_nit"                   "NIT_tn" 
+#>           Total phosphorus          Thermocline depth 
+#>                   "PHS_tp"               "HYD_thmcln" 
+#>                 Stratified         Centre of buoyancy 
+#>                "HYD_strat"               "HYD_ctrbuy" 
+#>           Epilimnion depth          Hypolimnion depth 
+#>               "HYD_epidep"               "HYD_hypdep" 
+#>          Schmidt stability             Oxycline depth 
+#>               "HYD_schstb"               "CHM_oxycln" 
+#>         Epilimnetic oxygen         Metalimnetic oygen 
+#>               "CHM_oxyepi"               "CHM_oxymet" 
+#> Metalimnetic oxygen minima    Number of anoxic layers 
+#>               "CHM_oxymom"               "CHM_oxynal" 
+#>      Trophic Level Index 3      Trophic Level Index 4 
+#>                 "LKE_tli3"                 "LKE_tli4" 
 ```
