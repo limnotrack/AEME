@@ -91,6 +91,8 @@
   model in the AEME object
 - [`get_deriv_inputs()`](get_deriv_inputs.md) : Get derived variables
   needed for simulation
+- [`get_glm_sed_params()`](get_glm_sed_params.md) : Get number of
+  sediment zones in GLM-AED model
 - [`get_glm_sed_zones()`](get_glm_sed_zones.md) : Get number of sediment
   zones in GLM-AED model
 - [`get_hm_palette()`](get_hm_palette.md) : Get default heatmap palette
