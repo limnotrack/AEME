@@ -189,7 +189,7 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- get_model_controls()
   model <- c("glm_aed")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 5,
                      model_controls = model_controls, use_bgc = TRUE)
   
   glm_pattern <- pattern <- paste0(
@@ -224,7 +224,11 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   
   input_model_parameters(aeme = aeme, model = model, param = glm_phy_param,
                          path = path)
-  get_glm_sed_zones(aeme = aeme, path = path)
+  n_zones <- get_glm_sed_zones(aeme = aeme)
+  testthat::expect_equal(n_zones, 2)
+  glm_sed_pars <- get_glm_sed_params(aeme = aeme)
+  testthat::expect_true(nrow(glm_sed_pars) == 18)
+  
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   glm_cfg <- read_model_config(model = model, lake_dir = lake_dir)
   n_vals <- sum(glm_cfg$bgc$aed_phyto_pars$cyano == 10)
