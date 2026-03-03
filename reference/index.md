@@ -259,6 +259,8 @@
 - [`remove_output()`](remove_output.md) : Remove output from AEME object
 - [`remove_param()`](remove_param.md) : Remove parameter(s) from Aeme
   object
+- [`reset_wbal_param()`](reset_wbal_param.md) : Reset water balance
+  parameters
 - [`run_aeme()`](run_aeme.md) : Run aquatic model ensemble
 - [`run_dy_cd()`](run_dy_cd.md) [`run_glm_aed()`](run_dy_cd.md)
   [`run_gotm_wet()`](run_dy_cd.md) : Run AEME models

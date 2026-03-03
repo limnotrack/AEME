@@ -15,24 +15,25 @@ write_yaml(x, file, fileEncoding = "UTF-8", ...)
 
 - x:
 
-  the object to be converted
+  The object to be converted.
 
 - file:
 
-  either a character string naming a file or a
-  [connection](https://rdrr.io/r/base/connections.html) open for writing
+  Either a character string naming a file or a
+  [connection](https://rdrr.io/r/base/connections.html) open for
+  writing.
 
 - fileEncoding:
 
-  character string: if non-empty declares the encoding to be used on a
+  Character string: if non-empty declares the encoding to be used on a
   file (not a connection) so the character data can be re-encoded as
   they are written. See
-  [`file`](https://rdrr.io/r/base/connections.html).
+  [`file()`](https://rdrr.io/r/base/connections.html).
 
 - ...:
 
-  arguments to
-  [`as.yaml`](https://yaml.r-lib.org/reference/as.yaml.html)
+  Arguments to
+  [`as.yaml()`](https://yaml.r-lib.org/reference/as.yaml.html).
 
 ## Author
 

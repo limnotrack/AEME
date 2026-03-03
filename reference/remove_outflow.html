@@ -50,7 +50,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">remove_outflow</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">outflow_id</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">remove_outflow</span><span class="op">(</span><span class="va">aeme</span>, outflow_id <span class="op">=</span> <span class="cn">NULL</span>, all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -63,6 +63,11 @@
 
 <dt id="arg-outflow-id">outflow_id<a class="anchor" aria-label="anchor" href="#arg-outflow-id"></a></dt>
 <dd><p>A string specifying the identifier for the outflow.</p></dd>
+
+
+<dt id="arg-all">all<a class="anchor" aria-label="anchor" href="#arg-all"></a></dt>
+<dd><p>A logical value indicating whether to remove all inflows. If TRUE,
+the inflow_id argument is ignored and all inflows are removed.</p></dd>
 
 </dl></div>
     <div class="section level2">
