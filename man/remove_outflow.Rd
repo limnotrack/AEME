@@ -4,12 +4,15 @@
 \alias{remove_outflow}
 \title{Remove outflow data from Aeme object}
 \usage{
-remove_outflow(aeme, outflow_id)
+remove_outflow(aeme, outflow_id = NULL, all = FALSE)
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
 \item{outflow_id}{A string specifying the identifier for the outflow.}
+
+\item{all}{A logical value indicating whether to remove all inflows. If TRUE,
+the inflow_id argument is ignored and all inflows are removed.}
 }
 \value{
 Aeme object with outflow removed
