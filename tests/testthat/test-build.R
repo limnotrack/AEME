@@ -60,13 +60,25 @@ test_that("building GLM works", {
   list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  
+  wbal <- water_balance(aeme)
+  testthat::expect_true(is.null(wbal$params))
+  
   model_controls <- get_model_controls()
-  inf_factor = c("glm_aed" = 1)
-  outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
+  
+  # Test water balance
+  wbal <- water_balance(aeme)
+  testthat::expect_true(!is.null(wbal$params))
+  
+  aeme <- reset_wbal_param(aeme)
+  wbal2 <- water_balance(aeme)
+  testthat::expect_true(is.null(wbal2$params))
+  
+  
   lke <- lake(aeme)
   testthat::expect_true(is.character(lke$id))
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",

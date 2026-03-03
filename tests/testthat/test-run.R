@@ -1354,7 +1354,7 @@ test_that("updating AED sed params works", {
   
   sed_param <- get_aed_sed_const2d_param(aeme = aeme, path = path)
   testthat::expect_true(is.data.frame(sed_param))
-  testthat::expect_true(max(sed_param$index, na.rm = TRUE) == 1)
+  testthat::expect_true(max(sed_param$index, na.rm = TRUE) == 2)
   
   upd_sed_pars <- glm_sed_params(n_zones = 2, zone_heights = c(6, 14))
   
@@ -1368,7 +1368,7 @@ test_that("updating AED sed params works", {
   cfg2 <- read_model_config(model = model, lake_dir = lake_dir)
   
   testthat::expect_false(identical(cfg, cfg2))
-  testthat::expect_true(cfg$bgc$aed$aed_sed_const2d$n_zones == 1)
+  testthat::expect_true(cfg$bgc$aed$aed_sed_const2d$n_zones == 2)
   testthat::expect_true(cfg2$bgc$aed$aed_sed_const2d$n_zones == 2)
   
   aeme <- run_aeme(aeme = aeme, model = model, path = path)

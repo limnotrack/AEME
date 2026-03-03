@@ -283,6 +283,10 @@ test_that("aeme object inflows can be manipulated", {
   testthat::expect_true(length(inf_chk2) == length(inf))
   testthat::expect_true(all(names(inf_chk2) == c("test")))
   
+  aeme <- remove_inflow(aeme, all = TRUE)
+  inf_chk3 <- get_inflows(aeme)
+  testthat::expect_true(length(inf_chk3) == 0)
+  
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   
