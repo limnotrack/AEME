@@ -188,6 +188,15 @@ aeme_constructor <- function(
       }
     }
   }
+  
+  if (!is.null(observations[["level"]])) {
+    # Add var_aeme column if missing
+    if (!"var_aeme" %in% colnames(observations[["level"]])) {
+      observations[["level"]][["var_aeme"]] <- "LKE_lvlwtr"
+    }
+  }
+  
+  
   if (missing(inflows)) {
     inflows <- list(
       data = NULL,
