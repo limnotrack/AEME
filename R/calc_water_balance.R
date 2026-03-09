@@ -75,6 +75,19 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     # }
     if (!is.null(level)) {
       cli_inform_safe(c("i" = "Using observed water level"))
+      
+      # Check observed water level is within hyps$elev range
+      if (any(level$value < min(hyps$elev)) | any(level$value > max(hyps$elev))) {
+        lvl_range <- range(level$value, na.rm = TRUE)
+        elev_range <- range(hyps$elev, na.rm = TRUE)
+        cli::cli_abort(c(
+          "!" = "Observed water level values are outside the range of the hypsograph elevations.",
+          "i" = "Observed water level range: {lvl_range[1]} to {lvl_range[2]}.",
+          "i" = "Hypsograph elevation range: {elev_range[1]} to {elev_range[2]}."
+        ))
+      }
+      
+      
       # placeholder.. add optimised sin model here..!
       ampl <- ((quantile(level$value, 0.9) -
                   quantile(level$value, 0.1)) / 2) |>
@@ -90,6 +103,14 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
         ) |> 
         dplyr::filter(Date >= spin_start & Date <= date_stop) 
       
+      if (all(is.na(mod_lvl$lvl_obs))) {
+        mod_lvl <- mod_lvl |> 
+          dplyr::mutate(
+            lvl_obs = rep(c(surf, rep(NA, 3)), length.out = dplyr::n()),
+            is_obs_lvl = !is.na(lvl_obs)
+          )
+      }
+      
       if (any(duplicated(mod_lvl$Date))) {
         warning(strwrap("Duplicate dates in observed water level data.\n
                         Only the first occurrence will be used."))
@@ -97,84 +118,12 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
           dplyr::distinct(Date, .keep_all = TRUE)
       }
       
-      if (all(!is.na(mod_lvl$value))) {
+      if (all(!is.na(mod_lvl$lvl_obs))) {
         cli_inform_safe(c(i = "No missing values in observed water level.
                       Using observed water level"))
         
       } else {
         cli_inform_safe(c("!" ="Missing values in observed water level"))
-        if (sum(mod_lvl$is_obs) >= 2) {
-          mod_lvl <- mod_lvl |>
-            dplyr::mutate(
-              value_interp = zoo::na.approx(value_obs, x = Date, na.rm = FALSE)
-            )
-        }
-        # Number of observations
-        n_lvl <- sum(!is.na(mod_lvl$value))
-        
-        # If there are greater than or equal to 9 observations, use the
-        # optimisation function
-        if (sum(mod_lvl$is_obs) >= 5 &&
-            diff(range(mod_lvl$Date[mod_lvl$is_obs])) > 180) {
-          
-          # fit sinusoid ONLY to observed points
-          fit_idx <- which(mod_lvl$is_obs)
-          
-          optim_out <- optim(
-            par = c(ampl = ampl, offset = offset),
-            fn = optim_lvl_params,
-            mod_lvl = mod_lvl[fit_idx, ],
-            surf = surf,
-            method = "L-BFGS-B"
-          )
-          ampl <- optimized_parameters$par["ampl"]
-          offset <- optimized_parameters$par["offset"]
-        }
-        
-        
-        if (n_lvl >= 9) {
-          cli_inform_safe(c(i = "Using optimisation to fit
-                                seasonal water level fluctuations"))
-          # Initial parameter values
-          initial_parameters <- c(ampl = ampl, offset = offset)
-          # optim_lvl_params(initial_parameters, mod_lvl = mod_lvl, surf = surf)
-          
-          # Optimize the parameters
-          optimized_parameters <- optim(par = initial_parameters,
-                                        fn = optim_lvl_params,
-                                        mod_lvl = mod_lvl, surf = surf,
-                                        method = "L-BFGS-B")
-          ampl <- optimized_parameters$par["ampl"]
-          offset <- optimized_parameters$par["offset"]
-        } else {
-          # Use constant water level
-          cli_inform_safe(c(i = "Insufficient water level observations.
-                                Using constant water level"))
-          ampl <- 0
-          offset <- 0
-        }
-        
-        # Calculate the modelled water level
-        mod_lvl <- mod_lvl |>
-          dplyr::mutate(
-            value_sin = mod_lvl(Date, surf = surf,
-                                ampl = ampl,
-                                offset = offset)
-          )
-        mod_lvl <- mod_lvl |>
-          dplyr::mutate(
-            value = dplyr::case_when(
-              is_obs ~ value_obs,
-              !is.na(value_interp) ~ value_interp,
-              TRUE ~ value_sin
-            ),
-            lvl_source = dplyr::case_when(
-              is_obs ~ "obs",
-              !is.na(value_interp) ~ "interp",
-              TRUE ~ "prior"
-            )
-          )
-        
       }
     } else {
       # Use constant water level
@@ -308,7 +257,11 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     dplyr::filter(Date >= spin_start & Date <= date_stop)
   # nrow(wbal) == length(dates)
   if (any(duplicated(wbal_init$Date))) {
-    stop("Duplicated dates in the water balance data")
+    # stop("Duplicated dates in the water balance data")
+    cli::cli_abort(c(
+      "!" = "Duplicate dates in the water balance data.",
+      "i" = "Please check the input data for duplicates."
+    ))
   }
   wbal <- lapply(model, \(m) {
     wbal_init |> 
