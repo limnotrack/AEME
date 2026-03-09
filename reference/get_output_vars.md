@@ -43,7 +43,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ! ZOO_zoo1
 #> ℹ Added default values for missing variables.
 #> ℹ Using observed water level
-#> ℹ No missing values in observed water level. Using observed water level
+#> ! Missing values in observed water level
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED for lake wainamu
@@ -114,10 +114,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-03-03 02:47:33]
-#> ✔ Model run complete! [2026-03-03 02:47:36]
-#> ℹ Reading models in parallel...[2026-03-03 02:47:36]
-#> ✔ Model reading complete! [2026-03-03 02:47:38]
+#> ℹ Running models in parallel... [2026-03-09 02:14:19]
+#> ✔ Model run complete! [2026-03-09 02:14:22]
+#> ℹ Reading models in parallel...[2026-03-09 02:14:22]
+#> ✔ Model reading complete! [2026-03-09 02:14:23]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 

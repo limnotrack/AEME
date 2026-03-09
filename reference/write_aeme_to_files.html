@@ -81,16 +81,12 @@ output files can be large and take up a lot of space.</p></dd>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>,</span></span>
 <span class="r-in"><span>model_controls <span class="op">=</span> <span class="va">model_controls</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No missing values in observed water level. Using observed water level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Calculating lake level using lake depth and a sinisoidal function.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED for lake wainamu</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_water_balance(aeme_time = aeme_time, model = model, method = w_bal$method,     use = w_bal$use, hyps = hyps, inf = inf, outf = outf[["outflow"]],     level = level, init_elev = init_elev, init_temp = init_temp,     obs_lake = aeme_obs[["lake"]], obs_met = met, elevation = elev,     print_plots = FALSE, params = wbal_params, coeffs = coeffs):</span> <span style="color: #BBBB00;">!</span> Observed water level values are outside the range of the hypsograph</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>   elevations.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Observed water level range: 23.4904 to 23.6874.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Hypsograph elevation range: 10.57 to 23.64.</span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-03-03 02:48:33]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-03-03 02:48:33]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-03-03 02:48:34]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-03-03 02:48:34]</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in run_aeme(aeme = aeme, model = "glm_aed", path = path):</span> <span style="color: #BB0000;">✖</span> `model_controls` need to be provided to load model output.</span>
 <span class="r-in"><span><span class="fu">write_aeme_to_files</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">path</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>

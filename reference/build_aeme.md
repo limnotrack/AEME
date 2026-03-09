@@ -132,7 +132,7 @@ build_aeme(path = path, aeme = aeme, model = model,
                model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE)
 #> ℹ Using observed water level
-#> ℹ No missing values in observed water level. Using observed water level
+#> ! Missing values in observed water level
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED for lake wainamu
