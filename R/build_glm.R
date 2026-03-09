@@ -95,12 +95,13 @@ build_glm <- function(lakename, model_controls, date_range,
   outf[["elevation"]] <- NULL
   for (i in seq_along(heights_wdr)) {
     if (is.na(heights_wdr[i]) | heights_wdr[i] <= 0) {
-      heights_wdr[i] <- max(hyps$elev) - min(hyps$elev) - 1
+      heights_wdr[i] <- init_depth - 1
+      next
     }
-    if (heights_wdr[i] > (max(hyps$elev) - min(hyps$elev))) {
-      cli_inform_safe(c("!" = "Withdrawal depth is too high, setting to 75% of 
-                      lake depth"))
-      heights_wdr[i] <- 0.75 * (max(hyps$elev) - min(hyps$elev))
+    if (heights_wdr[i] > max(hyps$elev) || heights_wdr[i] < min(hyps$elev)) {
+      cli_inform_safe(c("!" = "Withdrawal depth is not within the range of the 
+                        hypsography. Setting to 0.75 of the maximum depth."))
+      heights_wdr[i] <- min(hyps$elev) + (0.75 * (max(hyps$elev) - min(hyps$elev)))
     }
   }
 
