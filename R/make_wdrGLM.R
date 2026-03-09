@@ -31,6 +31,13 @@ make_wdrGLM <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy,
     }
     
     if (length(outf) > 1) {
+      # Rename the outflow column to match the outflow name
+      for (n in names(outf)) {
+        if ("HYD_flow" %in% colnames(outf[[n]])) {
+          outf[[n]] <- outf[[n]] |>
+            dplyr::rename(!!n := HYD_flow)
+        }
+      }
       df_wdr <- Reduce(function(x, y) dplyr::full_join(x, y, by = "Date"), outf)
     } else if (length(outf) == 1){
       df_wdr <- outf[[1]]
@@ -67,9 +74,13 @@ make_wdrGLM <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy,
       }
 
       # get the glm outlet elevations (neg depths)
-      heights_wdr.glm <- heights_wdr# - crest
+      dim_heights <- heights_wdr# - crest
+      min_elev <- min(bathy$elev)
+      if (any(dim_heights < min_elev)) {
+        dim_heights[dim_heights < min_elev] <- heights_wdr[dim_heights < min_elev] + min_elev
+      }
 
-      dims_outf <- lapply((heights_wdr + min(bathy$elev)), FUN = elipse_dims,
+      dims_outf <- lapply(dim_heights, FUN = elipse_dims,
                           bathy = bathy, dims_lake = dims_lake)  |>
         dplyr::bind_rows()
 
