@@ -101,6 +101,7 @@ plot_wbal_annual <- function(aeme, model, lake_frac = FALSE,
                                                     color = "black",
                size = 3) +
     ggplot2::geom_hline(yintercept = 0) +
+    ggplot2::scale_x_continuous(breaks = unique(df$year_class)) +
     ggplot2::facet_wrap(~ Model, ncol = 1) +
     ggplot2::labs(
       x = "Year",
