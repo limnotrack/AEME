@@ -31,7 +31,7 @@ write_configuration <- function(aeme, model, path) {
     }
   })
   
-  aeme
+  return(aeme)
 }
 
 #' Write DYRESM-CAEDYM configuration
