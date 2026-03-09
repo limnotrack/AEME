@@ -8,11 +8,11 @@
 #' @source glmtools package: https://github.com/GLEON/glmtools
 #' @noRd
 
-buildVal	<-	function(textLine, lineNum, blckName){
+buildVal	<-	function(textLine, lineNum, blckName, coerce = TRUE){
   #-----function appends nml list with new values-----
   # remove all text after comment string
   textLine	<-	strsplit(textLine,'!')[[1]][1]
-
+  
   if (!any(grep("=", textLine))){
     stop(c("no hanging lines allowed in .nml, used ",textLine,'.\nSee line number:',lineNum,' in "&',blckName,'" section.'))
   }
@@ -22,7 +22,7 @@ buildVal	<-	function(textLine, lineNum, blckName){
   # figure out what parval is...if string, remove quotes and keep as string
   # ***for logical text, use "indentical" so that 0!= FALSE
   # can be: string, number, comma-sep-numbers, or logical
-
+  
   # special case for date:
   if (is.na(parVl)){
     stop('Empty values after "', textLine, '" on line ', lineNum,
@@ -32,7 +32,7 @@ buildVal	<-	function(textLine, lineNum, blckName){
     parVl<-paste(c(substr(parVl,1,11),' ',substr(parVl,12,nchar(parVl))),collapse='')
   }
   if (any(grep("'",parVl))){
-
+    
     parVl	<-	gsub("'","",parVl)
     if (any(grep(",",parVl))) {
       parVl	<-	c(unlist(strsplit(parVl,",")))
@@ -51,6 +51,24 @@ buildVal	<-	function(textLine, lineNum, blckName){
   }else {	# test for number
     parVl	<-	as.numeric(parVl)
   }
+  if (coerce & any(is.na(parVl))){
+    # use non-NA value if present
+    if (any(!is.na(parVl))) {
+      non_na_val <- parVl[!is.na(parVl)][1]
+      cli::cli_warn("Coercion resulted in NA for parameter {.val {parNm}}
+                       on line {.val {lineNum}} in block {.val {blckName}}. Using 
+                    non-NA value: {.val {non_na_val}}")
+      parVl[is.na(parVl)] <- non_na_val
+    } else {
+      parVl <- rep(NA, length(parVl))
+      msg <- paste0("Coercion resulted in all NA values for parameter ", parNm,
+                    " on line ", lineNum, " in block ", blckName, ". Returning NA.")
+      cli_inform_safe(c("!" = msg))
+      # stop('Unable to coerce value for parameter ', parNm, ' on line ', lineNum,
+      #      ' in block ', blckName, '. No non-NA values found.', call. = FALSE)
+    }
+  }
+  
   lineVal	<-	list(parVl)
   names(lineVal)	<-	parNm
   return(lineVal)
@@ -62,9 +80,13 @@ buildVal	<-	function(textLine, lineNum, blckName){
 #' @return a logical vector
 #' @keywords internal
 #' @noRd
-from.glm_boolean <- function(values){
-
-  logicals <- sapply(values, FUN = function(x){
+from.glm_boolean <- function(values) {
+  
+  logicals <- sapply(values, FUN = function(x) {
+    if (is.na(x) || x == "NA") {
+      return(NA)
+    }
+    
     if (!isTRUE(grepl(".true.", x) || grepl(".false.", x))){
       stop(x, ' is not a .true. or .false.; conversion to TRUE or FALSE failed.',
            call. = FALSE)
@@ -95,7 +117,7 @@ to.glm_boolean <- function(values){
 #' @return nml block
 #' @noRd
 findBlck	<-	function(nml,argName){
-
+  
   # test for argName being a string
   if (!is.character(argName)){stop(c("parameter name must be a string"))}
   fau <- " "
@@ -109,7 +131,7 @@ findBlck	<-	function(nml,argName){
       one.i <- which(fault.string==fau)[1]
       fault.string[one.i:(one.i+length(names(nml[[i]]))-1)]=names(nml[[i]])
     }
-
+    
   }
   fault.string <- fault.string[!fault.string==fau] # is empty if found
   # test to see if a block match was made
@@ -125,18 +147,18 @@ findBlck	<-	function(nml,argName){
 #' @noRd
 setnmlList <- function(glm_nml, arg_list){
   if (!is.list(arg_list)){stop("arg_list must be a list")}
-
+  
   if (any(nchar(names(arg_list)) == 0) | length(names(arg_list)) == 0){
     stop('arg_list must be a named list')
   }
-
+  
   arg_names  <-	names(arg_list)
-
+  
   for (i in seq_len(length(arg_names))){
     glm_nml <- set_nml(glm_nml, arg_name = arg_names[i],
                        arg_val = arg_list[[i]])
   }
-
+  
   return(glm_nml)
 }
 
@@ -148,10 +170,10 @@ setnmlList <- function(glm_nml, arg_list){
 #' @noRd
 #' @importFrom utils tail
 is_nml_file <- function(nml_file){
-
+  
   is_nml <- FALSE
   fl_ext <- tail(strsplit(nml_file, "\\.")[[1]],1)
-
+  
   if (fl_ext == 'nml'){
     is_nml <- TRUE
   }
@@ -179,14 +201,14 @@ what_ascii <- function(file){
 #' @noRd
 ascii_only <- function(file){
   response <- what_ascii(file)
-
-
+  
+  
   if (length(response) > 0){
     return(FALSE)
   } else {
     return(TRUE)
   }
-
+  
 }
 
 #' Get nml block
@@ -213,7 +235,7 @@ get_block <- function(glm_nml, arg_name, warn = TRUE){
               arg_name, " for explicit match")
     blck = blck[1]
   }
-
+  
   return(blck)
 }
 
@@ -225,7 +247,7 @@ get_block <- function(glm_nml, arg_name, warn = TRUE){
 #' @noRd
 get_arg_name <- function(arg_name){
   arg_split = strsplit(arg_name,'::')[[1]]
-
+  
   if (length(arg_split) > 1){
     blck = arg_split[1]
     arg_name = arg_split[2]
