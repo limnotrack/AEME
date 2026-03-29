@@ -47,6 +47,6 @@ set_glm_aed_models(
 
 ## Value
 
-Modified GLM-AED nml object if \`nml\` is provided; otherwise, the
-function writes the changes directly to the specified configuration
+If \`nml\` is provided, returns the modified nml object. Otherwise,
+returns the input Aeme object with the updated GLM-AED configuration
 file.

@@ -26,4 +26,4 @@ set_aed_totals(aeme, path, lake_dir = NULL)
 
 ## Value
 
-Invisible NULL. Updates the aed.nml file in the glm_aed model directory.
+Aeme object with aed_totals parameters set in the model config

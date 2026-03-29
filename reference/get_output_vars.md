@@ -114,10 +114,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-03-09 02:14:19]
-#> ✔ Model run complete! [2026-03-09 02:14:22]
-#> ℹ Reading models in parallel...[2026-03-09 02:14:22]
-#> ✔ Model reading complete! [2026-03-09 02:14:23]
+#> ℹ Running models in parallel... [2026-03-29 21:27:49]
+#> ✔ Model run complete! [2026-03-29 21:27:52]
+#> ℹ Reading models in parallel...[2026-03-29 21:27:52]
+#> ✔ Model reading complete! [2026-03-29 21:27:54]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 
