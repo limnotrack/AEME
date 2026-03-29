@@ -13,8 +13,7 @@ set_aed_totals(aeme, path, lake_dir = NULL)
 working directory.}
 }
 \value{
-Invisible NULL. Updates the aed.nml file in the glm_aed model
- directory.
+Aeme object with aed_totals parameters set in the model config
 }
 \description{
 This function sets up the aed_totals parameters in the aed block of the bgc 

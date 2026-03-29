@@ -12,8 +12,8 @@
 #' @param nml GLM-AED nml object. If provided, the function will modify this 
 #' object directly instead of reading from a file.
 #'
-#' @returns Modified GLM-AED nml object if `nml` is provided; otherwise, the
-#' function writes the changes directly to the specified configuration file.
+#' @returns If `nml` is provided, returns the modified nml object. Otherwise, 
+#' returns the input Aeme object with the updated GLM-AED configuration file.
 #' @export
 #' 
 #' @importFrom cli cli_abort
@@ -32,6 +32,10 @@ set_glm_aed_models <- function(aeme, path, aed_models = c("aed_sedflux",
                                file = NULL, nml = NULL) {
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
+  if (missing(path)) {
+    path <- get_aeme_path(aeme)
+  }
+  path <- check_path(path = path, must_exist = TRUE)
   
   # Check if aed_models is a character vector
   if (!is.character(aed_models)) {
@@ -78,7 +82,7 @@ set_glm_aed_models <- function(aeme, path, aed_models = c("aed_sedflux",
   
   if (write_nml) {
     write_nml(nml, file)
-    return(invisible(NULL))
+    return(invisible(aeme))
   } else {
     return(nml)
   }

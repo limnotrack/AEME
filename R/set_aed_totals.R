@@ -9,14 +9,17 @@
 #'
 #' @inheritParams build_aeme
 #'
-#' @returns Invisible NULL. Updates the aed.nml file in the glm_aed model
-#'  directory.
+#' @returns Aeme object with aed_totals parameters set in the model config
 #' @export
 #'
 
 set_aed_totals <- function(aeme, path, lake_dir = NULL) {
   
   if (is.null(lake_dir)) {
+    if (missing(path)) {
+      path <- get_aeme_path(aeme)
+    }
+    path <- check_path(path = path, must_exist = TRUE)
     if (missing(aeme) | missing(path)) {
       cli::cli_abort("Either {.arg lake_dir} or both {.arg aeme} and
                      {.arg path} must be provided.")
@@ -137,5 +140,5 @@ set_aed_totals <- function(aeme, path, lake_dir = NULL) {
   
   write_config_glm_aed(model_config = model_config, model_dir = model_dir)
   
-  return(invisible())
+  return(invisible(aeme))
 }

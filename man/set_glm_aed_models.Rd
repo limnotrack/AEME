@@ -32,8 +32,8 @@ will attempt to locate the file based on the provided Aeme object and path.}
 object directly instead of reading from a file.}
 }
 \value{
-Modified GLM-AED nml object if `nml` is provided; otherwise, the
-function writes the changes directly to the specified configuration file.
+If `nml` is provided, returns the modified nml object. Otherwise, 
+returns the input Aeme object with the updated GLM-AED configuration file.
 }
 \description{
 Set the biogeochemical models to be used in a GLM-AED configuration file.

@@ -1072,6 +1072,7 @@ setMethod("show", "Aeme", function(object) {
     "\nGOTM-WET: ", paste(n_gotm, collapse = " "),
     sep = ""
   )
+  return(invisible(object))
 })
 
 #' Summarise an Aeme object
