@@ -13,7 +13,7 @@ model_layer_structure
 
 ## Format
 
-\## \`model_layer_structure\` A data frame with 191 rows and 3 columns:
+\`model_layer_structure\` A data frame with 191 rows and 3 columns:
 
 - zi:
 

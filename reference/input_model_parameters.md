@@ -27,3 +27,7 @@ input_model_parameters(aeme, model, param, path)
 
   filepath; where input files are located relative to the current
   working directory.
+
+## Value
+
+Aeme object with parameters input into model configuration files

@@ -15,6 +15,8 @@
 - [`add_outflows()`](add_outflows.md) : Add outflows to Aeme object
 - [`add_output()`](add_output.md) : Add model output to Aeme object
 - [`add_param()`](add_param.md) : Add model parameters to Aeme object
+- [`aed_phyto_pars`](aed_phyto_pars.md) : Example dataframe of
+  parameters for phytoplankton in the GLM-AED model.
 - [`Aeme`](aeme.md) [`Aeme-class`](aeme.md) : Aeme Class
 - [`aeme_constructor()`](aeme_constructor.md) : Constructor function for
   Aeme class
