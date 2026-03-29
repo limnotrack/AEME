@@ -98,7 +98,7 @@ test_that("GLM sediment parameters can be input", {
   model_controls <- get_model_controls()
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls)
+                     model_controls = model_controls, ext_elev = 3)
   sed_params <- glm_sed_params(n_zones = 1, sed_temp_mean = 16.5)
   input_model_parameters(aeme = aeme, model = model, param = sed_params,
                          path = path)
@@ -154,7 +154,8 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   model_controls <- get_model_controls()
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, use_bgc = TRUE)
+                     model_controls = model_controls, use_bgc = TRUE, 
+                     ext_elev = 3)
   sed_params <- glm_sed_params(n_zones = 2, zone_heights = c(5, 14))
   input_model_parameters(aeme = aeme, model = model, param = sed_params,
                          path = path)

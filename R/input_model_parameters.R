@@ -4,7 +4,7 @@
 #' @param param data.frame; parameters to input into the model
 #' configuration files
 #'
-#' @return NULL
+#' @return Aeme object with parameters input into model configuration files
 #' @export
 #'
 
@@ -292,7 +292,7 @@ input_model_parameters <- function(aeme, model, param, path) {
     }
     
   })
-  return(invisible())
+  return(invisible(aeme))
 }
 
 #' Collapse model parameters
