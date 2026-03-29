@@ -208,7 +208,7 @@
 #' at different depths. Whereas for the glm_aed and dy_cd models, this is used
 #' to define the min and max width of the layers.
 #'
-#' @format ## `model_layer_structure`
+#' @format `model_layer_structure`
 #' A data frame with 191 rows and 3 columns:
 #' \describe{
 #'   \item{zi}{Interface depth (m)}
@@ -218,3 +218,22 @@
 #' }
 #' @source Package development.
 "model_layer_structure"
+
+#' Example dataframe of parameters for phytoplankton in the GLM-AED model.
+#' 
+#' This dataset contains all parameters related to phytoplankton in the 
+#' aed_phyto_pars.csv file. 
+#' 
+#' This includes three phytoplankton groups (greens, cyanobacteria an diatoms).
+#' 
+#' @format `aed_phyto_pars`
+#' A data frame with 564 rows and 5 columns:
+#' \describe{
+#'   \item{parameter_name}{Name of the parameter in AED}
+#'   \item{group}{Phytoplankton group for the parameter}
+#'   \item{value}{Default value of the parameter}
+#'   \item{description}{Description of the parameter}
+#'   \item{var_sim}{AEME variable names associated with the parameter, multiple
+#'    variables are separated by a '|' symbol}
+#' }
+"aed_phyto_pars"

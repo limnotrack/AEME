@@ -18,6 +18,9 @@ configuration files}
 \item{path}{filepath; where input files are located relative to the current 
 working directory.}
 }
+\value{
+Aeme object with parameters input into model configuration files
+}
 \description{
 Input model parameters
 }
