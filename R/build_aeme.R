@@ -237,7 +237,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     
     # Inflow ----
     aeme_inf <- inflows(aeme)
-    if (!is.null(aeme_inf[["data"]])) {
+    if (length(aeme_inf[["data"]]) > 0) {
       for (i in 1:length(aeme_inf[["data"]])) {
         inf[[names(aeme_inf[["data"]])[i]]] <- aeme_inf[["data"]][[i]]
         if (any(!inf_vars %in% names(inf[[i]]))) {
@@ -285,7 +285,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       aeme_outf[["elevation"]] <- elevation_list
     }
     
-    if (!is.null(aeme_outf[["data"]]) & length(aeme_outf[["data"]]) > 0) {
+    if (length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
 

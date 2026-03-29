@@ -287,6 +287,10 @@ test_that("aeme object inflows can be manipulated", {
   inf_chk3 <- get_inflows(aeme)
   testthat::expect_true(length(inf_chk3) == 0)
   
+  model_controls <- get_model_controls()
+  aeme2 <- build_aeme(aeme = aeme, model = "glm_aed", path = tempdir(),
+                      model_controls = model_controls, ext_elev = 3)
+  
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   
