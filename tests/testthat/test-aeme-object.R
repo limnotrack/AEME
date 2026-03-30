@@ -511,7 +511,7 @@ test_that("GLM-AED sediment parameters can be added", {
   
   
   aeme <- build_aeme(aeme = aeme, model = model, use_bgc = TRUE,
-                     model_controls = model_controls, path = path)
+                     model_controls = model_controls, path = path, ext_elev = 3)
   
   lake_dir <- get_lake_dir(aeme, path = path)
   glm_nml_file <- file.path(lake_dir, "glm_aed", "glm3.nml")

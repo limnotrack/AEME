@@ -5,7 +5,7 @@ test_that("GLM parameters can be input", {
   model_controls <- get_model_controls()
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls)
+                     model_controls = model_controls, ext_elev = 3)
   # Get parameters for calibration
   utils::data("aeme_parameters", package = "AEME")
   param <- dplyr::bind_rows(aeme_parameters)
@@ -29,7 +29,7 @@ test_that("GLM-AED parameters can be input", {
   aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- get_model_controls()
   model <- c("glm_aed")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, use_bgc = TRUE)
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
   phy_pars1 <- read_aed_param_csv(cfg_files$glm_aed["aed_phyto_pars"])

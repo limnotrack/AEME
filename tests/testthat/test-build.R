@@ -237,7 +237,7 @@ test_that("building all models with minimum met variables", {
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
   
@@ -262,7 +262,7 @@ test_that("building all models with minimum met variables", {
   met <- exp_met |> 
     dplyr::select(dplyr::all_of(req_met2))
   aeme <- add_met(aeme = aeme, met = met)
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
   inp <- input(aeme)
@@ -286,12 +286,12 @@ test_that("building all models in a different dir", {
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
   
   path <- file.path(tmpdir, "lake_new")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE, use_aeme = TRUE)
 })
@@ -311,7 +311,7 @@ test_that("building all models with the same hypsograph", {
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
   
@@ -364,7 +364,7 @@ test_that("can build all models with the generated hypsograph", {
   inp$hypsograph <- hyps
   input(aeme) <- inp
   
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
   
@@ -423,7 +423,7 @@ test_that("building all models with same initial depth", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
   
@@ -447,7 +447,7 @@ test_that("building all models with same initial depth", {
   
   inp$init_depth <- 10
   input(aeme) <- inp
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, inf_factor = inf_factor,
                      use_bgc = FALSE)
   
