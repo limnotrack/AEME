@@ -29,11 +29,11 @@ articles:
 - title: Getting started
   navbar: ~
   contents:
-  - intro-aeme
-  - aeme-inputs
-  - setup-new-lake
+  - "intro-aeme"
+  - "aeme-inputs"
+  - "setup-new-lake"
 - title: Use cases
   navbar: Use cases
   contents:
-  - reservoir-aeme
-  - lernzmp-aeme
+  - "reservoir-aeme"
+  - "lernzmp-aeme"
