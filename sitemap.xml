@@ -139,6 +139,7 @@
 <url><loc>/reference/parameters.html</loc></url>
 <url><loc>/reference/param_colnames.html</loc></url>
 <url><loc>/reference/plot-Aeme-method.html</loc></url>
+<url><loc>/reference/plot_est_wbal.html</loc></url>
 <url><loc>/reference/plot_flows.html</loc></url>
 <url><loc>/reference/plot_fluxes.html</loc></url>
 <url><loc>/reference/plot_hyps.html</loc></url>
@@ -155,6 +156,7 @@
 <url><loc>/reference/plot_wbal_annual.html</loc></url>
 <url><loc>/reference/plot_wbal_comp.html</loc></url>
 <url><loc>/reference/plot_wbal_summaries.html</loc></url>
+<url><loc>/reference/plot_weir_calibration.html</loc></url>
 <url><loc>/reference/plot_wlev.html</loc></url>
 <url><loc>/reference/plot_zoops.html</loc></url>
 <url><loc>/reference/precip_status.html</loc></url>
@@ -169,6 +171,7 @@
 <url><loc>/reference/read_gotm_profile.html</loc></url>
 <url><loc>/reference/read_gotm_wlev.html</loc></url>
 <url><loc>/reference/read_model_config.html</loc></url>
+<url><loc>/reference/read_model_hypsograph.html</loc></url>
 <url><loc>/reference/read_model_outputs.html</loc></url>
 <url><loc>/reference/read_model_wlev.html</loc></url>
 <url><loc>/reference/read_nml.html</loc></url>

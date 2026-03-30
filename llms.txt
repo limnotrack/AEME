@@ -355,6 +355,8 @@ We have a host of vignettes to help you get started with AEME:
 - [`param_colnames()`](param_colnames.md) : Get AEME parameters data
   frame column names
 - [`plot(`*`<Aeme>`*`)`](plot-Aeme-method.md) : Update summary Method
+- [`plot_est_wbal()`](plot_est_wbal.md) : Plot estimated water balance
+  diagnostics from an aeme object.
 - [`plot_flows()`](plot_flows.md) : Plot inflows and/or outflows
 - [`plot_fluxes()`](plot_fluxes.md) : Plot fluxes
 - [`plot_hyps()`](plot_hyps.md) : Plot hypsograph
@@ -375,6 +377,8 @@ We have a host of vignettes to help you get started with AEME:
   Comparison
 - [`plot_wbal_summaries()`](plot_wbal_summaries.md) : Plot Water Balance
   Summaries
+- [`plot_weir_calibration()`](plot_weir_calibration.md) : Visualise
+  calibrated weir parameters (C, h_inv) from calc_water_balance().
 - [`plot_wlev()`](plot_wlev.md) : Plot lake water level
 - [`plot_zoops()`](plot_zoops.md) : Plot phytoplankton variables
 - [`precip_status()`](precip_status.md) : Get current precipitation
@@ -398,6 +402,8 @@ We have a host of vignettes to help you get started with AEME:
 - [`read_gotm_wlev()`](read_gotm_wlev.md) : Read GOTM water level output
 - [`read_model_config()`](read_model_config.md) : Read in model
   configuration files for a given model and lake directory
+- [`read_model_hypsograph()`](read_model_hypsograph.md) : Load model
+  hypsograph from configuration
 - [`read_model_outputs()`](read_model_outputs.md) : Read model outputs
   and format to AEME standard
 - [`read_model_wlev()`](read_model_wlev.md) : Read water level from
