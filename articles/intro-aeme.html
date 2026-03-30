@@ -39,10 +39,13 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
-    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
+<li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+    <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
+    <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
+    <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -74,7 +77,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Introduction to AEME</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/vignettes/intro-aeme.Rmd" class="external-link"><code>vignettes/intro-aeme.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-improve-vignettes/vignettes/intro-aeme.Rmd" class="external-link"><code>vignettes/intro-aeme.Rmd</code></a></small>
       <div class="d-none name"><code>intro-aeme.Rmd</code></div>
     </div>
 
@@ -185,7 +188,7 @@ a list object that contains the following objects:</p>
 <li><p><strong>start</strong> - Start date of the simulation
 (character). The start date must be in the format
 <code>YYYY-MM-DD HH:MM:SS</code>.</p></li>
-<li><p><strong>end</strong> - End date of the simulation (character).
+<li><p><strong>stop</strong> - End date of the simulation (character).
 The end date must be in the format
 <code>YYYY-MM-DD HH:MM:SS</code>.</p></li>
 <li><p><strong>timestep</strong> - Timestep of the simulation (numeric).
@@ -436,20 +439,25 @@ configuring water chemistry for the inflows if
 <li><p>initial_wc - numeric; value to use in initialising the model.
 This will be automatically updated if the variable is present in the
 <code>observations</code> slot.</p></li>
-<li><p>initial_sed - numeric; value to use in intialising the sediment
+<li><p>initial_sed - numeric; value to use in initialising the sediment
 module for the DYRESM-CAEDYM model.</p></li>
 <li><p>conversion_aed - numeric; factor to multiply by to convert to
 GLM-AED units.</p></li>
 </ul>
-<p>When the model is built the mode</p>
+<p>When the model is built, the <code>model_controls</code> data.frame
+is stored in the <code>configuration</code> slot of the
+<code>aeme</code> object. It can be retrieved with
+<code>get_model_controls(aeme = aeme)</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="creation">Creation<a class="anchor" aria-label="anchor" href="#creation"></a>
 </h3>
 <p>The <code>aeme</code> object can be created using the
-<code><a href="../reference/aeme_constructor.html">aeme_constructor()</a></code> function. It requires the basic inputs
-to from a YAML file using the <code>yaml_to_aeme</code> function. The
-YAML file contains all the information required to run the model.</p>
+<code><a href="../reference/aeme_constructor.html">aeme_constructor()</a></code> function. It requires at minimum the
+<code>lake</code>, <code>time</code>, and <code>input</code> list
+objects. The object can also be created from a YAML file using the
+<code><a href="../reference/yaml_to_aeme.html">yaml_to_aeme()</a></code> function. The YAML file contains all the
+information required to run the model.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define lake list</span></span>
 <span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">36.88921</span></span>

@@ -24,7 +24,8 @@ glmtools package: https://github.com/GLEON/glmtools
 
 ## See also
 
-[get_nml_value](get_nml_value.md), [read_nml](read_nml.md)
+[get_nml_value](https://limnotrack.com/reference/get_nml_value.md),
+[read_nml](https://limnotrack.com/reference/read_nml.md)
 
 ## Author
 
