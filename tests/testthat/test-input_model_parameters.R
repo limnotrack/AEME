@@ -127,8 +127,7 @@ test_that("GLM sediment parameters can be input and run", {
   testthat::expect_equal(zone_heights, c(5, 14))
   
   aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = T)
-  AEME::plot_wlev(aeme = aeme, model = model)
-  
+
   outfiles <- get_model_outfile(aeme = aeme, model = model, path = path)
   testthat::expect_true(file.exists(outfiles$glm_aed))
   
