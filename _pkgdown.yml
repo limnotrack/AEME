@@ -1,3 +1,4 @@
+url: https://limnotrack.com
 template:
   bootstrap: 5
   bootswatch: cosmo
@@ -29,11 +30,11 @@ articles:
 - title: Getting started
   navbar: ~
   contents:
-  - "intro-aeme"
-  - "aeme-inputs"
-  - "setup-new-lake"
+  - intro-aeme
+  - aeme-inputs
+  - setup-new-lake
 - title: Use cases
   navbar: Use cases
   contents:
-  - "reservoir-aeme"
-  - "lernzmp-aeme"
+  - articles/reservoir-aeme
+  - articles/lernzmp-aeme
