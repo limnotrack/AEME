@@ -150,7 +150,9 @@ columns:
 - **Date** - Date of the observation (character). The date must be in
   the format `YYYY-MM-DD HH:MM:SS`.
 
-- **value** - Value of the observation (numeric).
+- **value** - Value of the observation (numeric). The value must be in
+  metres above sea level and within the range of the hypsograph
+  elevations.
 
 #### Input
 
