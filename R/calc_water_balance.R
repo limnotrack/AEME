@@ -338,7 +338,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   }
   
   # get total outflow discharge
-  if (is.null(outf) | length(outf) == 0) {
+  if (length(outf) == 0) {
     vol_outflow <- data.frame(Date = obs_met$Date, HYD_outflow = 0)
   } else {
     vol_outflow <- outf |>
