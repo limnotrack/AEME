@@ -56,7 +56,7 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   }
 
   # Load model hypsograph
-  hyps <- load_model_hypsograph(model = model, lake_dir = lake_dir)
+  hyps <- read_model_hypsograph(model = model, lake_dir = lake_dir)
   
   if (is.null(date_index)) {
     # ---- 1. extract time info for this model
@@ -259,38 +259,6 @@ load_model_config <- function(model, lake_dir, file) {
     cfg <- readLines(cfg_file)
   }
   return(cfg)
-}
-
-#' Load model hypsograph from configuration
-#' @param lake_dir Directory of lake model outputs
-#' @param model Model name. One of "gotm_wet", "glm_aed", or "dy_cd".
-#' @return Dataframe of hypsograph with columns elev, area, and depth
-#' @keywords internal
-#' @noRd
-load_model_hypsograph <- function(model, lake_dir) {
-  model <- check_model(model)
-  lake_dir <- check_path(lake_dir, must_exist = TRUE)
-  cfg <- load_model_config(model = model, lake_dir = lake_dir)
-  if (model == "gotm_wet") {
-    hyps_filename <- cfg$location$hypsograph
-    hyps_file <- file.path(lake_dir, "gotm_wet", hyps_filename)
-    hyps <- read_gotm_hyps(file = hyps_file) |> 
-      dplyr::mutate(elev = depth)
-  } else if (model == "glm_aed") {
-    lake_btm <- min(cfg$morphometry$H)
-    init_depth <- cfg$init_profiles$lake_depth + lake_btm
-    hyps <- data.frame(elev = cfg$morphometry$H, area = cfg$morphometry$A) |> 
-      dplyr::mutate(depth = elev - init_depth) |> 
-      dplyr::arrange(dplyr::desc(elev))
-  } else if (model == "dy_cd") {
-    stg_file <- get_model_config_files(model = model, 
-                                       lake_dir = lake_dir)[[model]]["stg"]
-    stg <- read_dy_stg(file = stg_file)
-    hyps <- stg$bathymetry |> 
-      dplyr::mutate(depth = elev - stg$surface_elev) |> 
-      dplyr::arrange(dplyr::desc(elev))
-  }
-  return(hyps)
 }
 
 #' Extract model time information
