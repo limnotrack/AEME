@@ -788,7 +788,7 @@ test_that("getting model output works", {
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 5,
                      model_controls = model_controls, use_bgc = TRUE)
   run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,
            parallel = TRUE, return_type = "none", ncores = 2)

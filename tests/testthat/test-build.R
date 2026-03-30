@@ -318,6 +318,8 @@ test_that("building all models with the same hypsograph", {
   inp <- input(aeme)
   lke <- lake(aeme)
   inp$init_depth
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  
   dy_hyps <- read_model_hypsograph(model = "dy_cd", lake_dir = lake_dir)
   glm_hyps <- read_model_hypsograph(model = "glm_aed", lake_dir = lake_dir)
   gotm_hyps <- read_model_hypsograph(model = "gotm_wet", lake_dir = lake_dir)
