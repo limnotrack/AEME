@@ -40,7 +40,7 @@ with two outlets at different levels: a regulated **penstock** at depth and a
 
 ## Setup
 
-```{r setup}
+```{r setup, message=FALSE}
 library(AEME)
 library(ggplot2)
 library(dplyr)
@@ -48,7 +48,7 @@ library(dplyr)
 
 ## Reservoir data
 
-We will use a fictional reservoir, Pūtāhinu Reservoir, located in the North
+We will use a fictional reservoir, Reservoir, located in the North
 Island of New Zealand. The reservoir has a full supply level of 150 m above sea
 level and a maximum depth of 25 m.
 
@@ -60,7 +60,7 @@ depth <- 25    # maximum depth (m)
 area  <- 1.2e6 # surface area at full supply level (m²)
 
 reservoir <- list(
-  name      = "Putahinu",
+  name      = "Reservoir",
   id        = "res001",
   latitude  = lat,
   longitude = lon,
@@ -119,7 +119,7 @@ ggplot(hypsograph, aes(x = area / 1e6, y = elev)) +
   labs(
     x     = expression("Area (km"^2 * ")"),
     y     = "Elevation (m a.s.l.)",
-    title = "Pūtāhinu Reservoir – hypsograph"
+    title = "Reservoir – hypsograph"
   ) +
   theme_bw()
 ```
@@ -337,31 +337,31 @@ by each model. Each model handles multiple outlets in its own way:
 
 ```{r model-controls}
 model_controls <- get_model_controls()
-model          <- c("dy_cd", "glm_aed", "gotm_wet")
-path           <- file.path(tempdir(), "putahinu")
+model          <- c("glm_aed")
+path           <- file.path(tempdir(), "reservoir")
 ```
 
-```{r build-aeme, eval=FALSE}
+```{r build-aeme, eval=TRUE}
 aeme <- build_aeme(
   aeme           = aeme,
   model          = model,
   model_controls = model_controls,
   path           = path,
-  ext_elev       = 5,
-  use_bgc        = FALSE
+  ext_elev       = 2,
+  use_bgc        = FALSE,
+  wb_method = 1
 )
-aeme
 ```
 
 ## Run the models
 
-```{r run-models, eval=FALSE}
+```{r run-models, eval=TRUE}
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
 ```
 
 ## View the output
 
-```{r view-output, eval=FALSE}
+```{r view-output, eval=TRUE}
 plot_output(aeme = aeme)
 ```
 
@@ -379,6 +379,7 @@ outlets at different elevations. The key steps are:
    outlets, ensuring values fall within the hypsograph elevation range.
 4. **Build and run** the model ensemble with `build_aeme()` and `run_aeme()`.
 
-All three hydrodynamic models supported by AEME (DYRESM-CAEDYM, GLM-AED, and
-GOTM-WET) handle multiple outlets and produce separate outlet files during the
-build step, allowing each outlet's contribution to be tracked independently.
+Currently only one of the three hydrodynamic models, GLM-AED, supported by AEME 
+(DYRESM-CAEDYM, GLM-AED, and GOTM-WET) can handle multiple outlets and produce 
+separate outlet files during the build step, allowing each outlet's contribution
+to be tracked independently.
