@@ -360,4 +360,16 @@ test_that("plotting water balance components works", {
   p <- plot_wbal_summaries(wbal = wbal)
   testthat::expect_true(ggplot2::is_ggplot(p))
   
+  # remove inflows & outflows
+  aeme <- aeme |> 
+    remove_inflow(all = TRUE) |> 
+    remove_outflow(all = TRUE)
+  
+  p1 <- plot_est_wbal(aeme = aeme, model = model, time_axis = "month")
+  testthat::expect_true(ggplot2::is_ggplot(p1))
+  
+  p2 <- plot_weir_calibration(aeme = aeme)
+  testthat::expect_true(ggplot2::is_ggplot(p2))
+  
+  
 })
