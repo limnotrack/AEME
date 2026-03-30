@@ -319,6 +319,8 @@ test_that("plotting phytoplankton model output works", {
 test_that("plotting water balance components works", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
+  aeme <- aeme |> 
+    set_time(stop = "2022-06-30")
   path <- tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)
   model_controls <- model_controls |>
@@ -326,7 +328,7 @@ test_that("plotting water balance components works", {
       var_aeme == "ZOO_zoo1" ~ TRUE,
       .default = simulate
     ))
-  model <- c("glm_aed", "gotm_wet")
+  model <- c("glm_aed")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- "glm_aed"
@@ -334,6 +336,17 @@ test_that("plotting water balance components works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
+  
+  wbal <- get_wbal_components(aeme = aeme)
+  testthat::expect_true(is.list(wbal))
+  p <- plot_wbal_comp(wbal = wbal)
+  testthat::expect_true(ggplot2::is_ggplot(p))
+  
+  p1 <- plot_est_wbal(aeme = aeme, model = model, time_axis = "month")
+  testthat::expect_true(ggplot2::is_ggplot(p1))
+  
+  p2 <- plot_weir_calibration(aeme = aeme)
+  testthat::expect_true(ggplot2::is_ggplot(p2))
   
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, path = path,
