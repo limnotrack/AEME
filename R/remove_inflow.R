@@ -25,6 +25,10 @@ remove_inflow <- function(aeme, inflow_id = NULL, all = FALSE) {
   
   
   if (all) {
+    precip_status <- precip_status(aeme)
+    if (precip_status == "precip_as_inflow") {
+      aeme <- set_precip(aeme, type = "precip_as_met")
+    }
     inf[["data"]] <- list()
     
   } else {
