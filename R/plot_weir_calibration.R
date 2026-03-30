@@ -24,7 +24,7 @@ plot_weir_calibration <- function(aeme, model) {
   obs      <- aeme |> observations()
   obs_wlev <- obs[["level"]]
   
-  if (length(outf[["data"]]) > 0) {
+  if (length(outf[["data"]][["outflow"]]) > 0) {
     obs_out <- outf[["data"]][["outflow"]] |>
       dplyr::rename(obs_O = outflow)
   } else {
