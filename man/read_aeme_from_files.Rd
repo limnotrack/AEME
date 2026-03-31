@@ -21,7 +21,7 @@ aeme <- readRDS(aeme_file)
 path <- "test_write"
 model_controls <- get_model_controls()
 aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
-model_controls = model_controls)
+model_controls = model_controls, ext_elev = 3)
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
 write_aeme_to_files(aeme, path)
 aeme_path <- get_lake_dir(aeme = aeme, path = path)
