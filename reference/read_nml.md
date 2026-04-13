@@ -24,7 +24,7 @@ glm_nml a nml (a list) for GLM config
 
 ## See also
 
-[get_nml_value](https://limnotrack.com/reference/get_nml_value.md)
+[get_nml_value](get_nml_value.md)
 
 ## Author
 

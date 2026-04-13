@@ -5,9 +5,5 @@ articles:
   aeme-inputs: aeme-inputs.html
   intro-aeme: intro-aeme.html
   articles/lernzmp-aeme: lernzmp-aeme.html
-  articles/reservoir-aeme: reservoir-aeme.html
   setup-new-lake: setup-new-lake.html
-last_built: 2026-03-31T00:50Z
-urls:
-  reference: https://limnotrack.com/reference
-  article: https://limnotrack.com/articles
+last_built: 2026-04-13T03:17Z

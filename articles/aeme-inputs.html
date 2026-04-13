@@ -39,13 +39,10 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
-    <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
+<li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
+    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -81,7 +78,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>AEME Inputs</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-improve-vignettes/vignettes/aeme-inputs.Rmd" class="external-link"><code>vignettes/aeme-inputs.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/vignettes/aeme-inputs.Rmd" class="external-link"><code>vignettes/aeme-inputs.Rmd</code></a></small>
       <div class="d-none name"><code>aeme-inputs.Rmd</code></div>
     </div>
 
@@ -90,64 +87,13 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p>Inputs for AEME follow standardised conventions that are compatible
-with most lake ecosystem modelling frameworks. All variable names are
-defined in the <code>key_naming</code> data frame, which maps
-human-readable names to AEME variable codes and their units.</p>
+<p>Inputs for AEME are designed to similar to most standard data inputs
+used in lake ecosystem modelling.</p>
 </div>
 <div class="section level2">
 <h2 id="lake">Lake<a class="anchor" aria-label="anchor" href="#lake"></a>
 </h2>
-<p>The <code>lake</code> list object provides physical and geographic
-metadata about the waterbody. Required fields are:</p>
-<table class="table">
-<thead><tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><code>name</code></td>
-<td>character</td>
-<td>Name of the lake or reservoir</td>
-</tr>
-<tr class="even">
-<td><code>id</code></td>
-<td>character / numeric</td>
-<td>Unique identifier</td>
-</tr>
-<tr class="odd">
-<td><code>latitude</code></td>
-<td>numeric</td>
-<td>Latitude (degrees North)</td>
-</tr>
-<tr class="even">
-<td><code>longitude</code></td>
-<td>numeric</td>
-<td>Longitude (degrees East)</td>
-</tr>
-<tr class="odd">
-<td><code>elevation</code></td>
-<td>numeric</td>
-<td>Surface elevation above sea level (m)</td>
-</tr>
-<tr class="even">
-<td><code>depth</code></td>
-<td>numeric</td>
-<td>Maximum water depth (m)</td>
-</tr>
-<tr class="odd">
-<td><code>area</code></td>
-<td>numeric</td>
-<td>Surface area at maximum depth (m²)</td>
-</tr>
-</tbody>
-</table>
-<p>The <code>depth</code> and <code>area</code> fields are used to
-generate a simple cone-shaped hypsograph if none is provided in the
-<code>input</code> slot. For more accurate simulations it is strongly
-recommended to supply a measured hypsograph.</p>
+<p>Lake inputs include:</p>
 </div>
 <div class="section level2">
 <h2 id="meteorological-data">Meteorological Data<a class="anchor" aria-label="anchor" href="#meteorological-data"></a>
@@ -182,157 +128,14 @@ variables are <strong>required</strong> for AEME:</p>
 <div class="section level3">
 <h3 id="inflows">Inflows<a class="anchor" aria-label="anchor" href="#inflows"></a>
 </h3>
-<p>Inflows supply water, heat, and (if the biogeochemistry module is
-active) nutrients and sediment to the lake. Inflows are specified as a
-<strong>named list</strong> of data frames passed to
-<code><a href="../reference/add_inflows.html">add_inflows()</a></code>. The list name is used as the stream
-identifier in each model.</p>
-<p>Each inflow data frame must contain:</p>
-<table class="table">
-<colgroup>
-<col width="28%">
-<col width="25%">
-<col width="46%">
-</colgroup>
-<thead><tr class="header">
-<th>Column</th>
-<th>Units</th>
-<th>Description</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><code>Date</code></td>
-<td><code>YYYY-MM-DD</code></td>
-<td>Date of the observation</td>
-</tr>
-<tr class="even">
-<td><code>HYD_flow</code></td>
-<td>m³ day⁻¹</td>
-<td>Volumetric flow rate</td>
-</tr>
-<tr class="odd">
-<td><code>HYD_temp</code></td>
-<td>°C</td>
-<td>Inflow water temperature (defaults to air temperature if
-absent)</td>
-</tr>
-<tr class="even">
-<td><code>CHM_salt</code></td>
-<td>PSU</td>
-<td>Salinity (0 for freshwater)</td>
-</tr>
-</tbody>
-</table>
-<p>Additional biogeochemical variables (e.g. <code>CHM_oxy</code>,
-<code>PHS_frp</code>, <code>NIT_amm</code>) can be included if the
-ecosystem model is being used. All variable names must match those in
-the <code>key_naming</code> data frame.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Example: two inflows</span></span>
-<span><span class="va">inf_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  stream_north <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    Date     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2021-12-31"</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"day"</span><span class="op">)</span>,</span>
-<span>    HYD_flow <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span>    HYD_temp <span class="op">=</span> <span class="fl">12</span>,</span>
-<span>    CHM_salt <span class="op">=</span> <span class="fl">0</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  stream_south <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    Date     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2021-12-31"</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"day"</span><span class="op">)</span>,</span>
-<span>    HYD_flow <span class="op">=</span> <span class="fl">3000</span>,</span>
-<span>    HYD_temp <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>    CHM_salt <span class="op">=</span> <span class="fl">0</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_inflows.html">add_inflows</a></span><span class="op">(</span><span class="va">aeme</span>, data <span class="op">=</span> <span class="va">inf_data</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="outflows">Outflows<a class="anchor" aria-label="anchor" href="#outflows"></a>
-</h3>
-<p>Outflows drain water from the lake or reservoir. Like inflows, they
-are specified as a <strong>named list</strong> of data frames passed to
-<code><a href="../reference/add_outflows.html">add_outflows()</a></code>.</p>
-<p>Each outflow data frame must contain:</p>
-<table class="table">
-<thead><tr class="header">
-<th>Column</th>
-<th>Units</th>
-<th>Description</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><code>Date</code></td>
-<td><code>YYYY-MM-DD</code></td>
-<td>Date</td>
-</tr>
-<tr class="even">
-<td><code>HYD_flow</code></td>
-<td>m³ day⁻¹</td>
-<td>Volumetric flow rate</td>
-</tr>
-</tbody>
-</table>
-<div class="section level4">
-<h4 id="outlet-elevation">Outlet elevation<a class="anchor" aria-label="anchor" href="#outlet-elevation"></a>
-</h4>
-<p>The <code>elevation</code> argument of <code><a href="../reference/add_outflows.html">add_outflows()</a></code>
-specifies the depth at which each outlet withdraws water:</p>
-<ul>
-<li>Set <code>elevation = -1</code> (or
-<code>elevation = list(outflow = -1)</code> for a named list) for a
-<strong>surface outlet</strong> – the outlet always withdraws from the
-current water surface.</li>
-<li>Set <code>elevation</code> to the actual elevation <strong>above sea
-level (m)</strong> for a <strong>fixed-depth outlet</strong> (e.g. a dam
-penstock or selective withdrawal). The value must fall within the
-elevation range of the hypsograph.</li>
-</ul>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Single surface outlet</span></span>
-<span><span class="va">outf_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  outlet <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    Date     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2021-12-31"</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"day"</span><span class="op">)</span>,</span>
-<span>    HYD_flow <span class="op">=</span> <span class="fl">8000</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_outflows.html">add_outflows</a></span><span class="op">(</span></span>
-<span>  <span class="va">aeme</span>,</span>
-<span>  data      <span class="op">=</span> <span class="va">outf_single</span>,</span>
-<span>  elevation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>outlet <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>  <span class="co"># surface outlet</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="multiple-outlets-at-different-levels">Multiple outlets at different levels<a class="anchor" aria-label="anchor" href="#multiple-outlets-at-different-levels"></a>
-</h4>
-<p>Reservoirs commonly have several outlets at different depths. Provide
-one entry per outlet in both <code>data</code> and
-<code>elevation</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Reservoir with a surface spillway and a deep penstock</span></span>
-<span><span class="va">outf_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  spillway <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    Date     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2021-12-31"</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"day"</span><span class="op">)</span>,</span>
-<span>    HYD_flow <span class="op">=</span> <span class="fl">2000</span>  <span class="co"># only active during high water events</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  penstock <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    Date     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2021-12-31"</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"day"</span><span class="op">)</span>,</span>
-<span>    HYD_flow <span class="op">=</span> <span class="fl">8000</span>  <span class="co"># daily regulated release</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Reservoir with full supply level at 150 m a.s.l. and max depth 25 m</span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_outflows.html">add_outflows</a></span><span class="op">(</span></span>
-<span>  <span class="va">aeme</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">outf_multi</span>,</span>
-<span>  elevation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    spillway <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,   <span class="co"># surface overflow</span></span>
-<span>    penstock <span class="op">=</span> <span class="fl">130</span>   <span class="co"># 20 m below the full supply level</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>For a worked example of a reservoir with two outlets, see
-<code>vignette("reservoir-aeme")</code>.</p>
-</div>
+<p>Inflows are important for lake hydrodynamics and water quality.
+Inflows can be specified as a time series of flow rates (m3/s) and
+temperature (C). They can also include nutrient and sediment
+concentrations if the biogeochemistry model is being used.</p>
+<p>One of the most important features of configuring an inflow is
+ensuring that the variables are in the correct units and that the
+variable names match those specified in the <code>key_naming</code> data
+frame.</p>
 </div>
 </div>
 <div class="section level2">
@@ -344,11 +147,11 @@ simulation. Parameters can be stored in a data frame within the
 update the model configuration files and/or update the meteorological
 data (e.g. scaling wind factor) and/or update the inflow/outflow data
 (e.g. scaling inflow factor).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"aeme_parameters"</span><span class="op">)</span></span>
 <span><span class="va">aeme_parameters</span></span></code></pre></div>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-e5c8c404fe174e4c81bd" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-e5c8c404fe174e4c81bd">{"x":{"filter":"none","vertical":false,"data":[["glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","dy_cd","dy_cd","dy_cd","dy_cd","dy_cd","dy_cd"],["glm3.nml","met","met","glm3.nml","glm3.nml","glm3.nml","glm3.nml","glm3.nml","wdr","inf","gotm.yaml","gotm.yaml","gotm.yaml","gotm.yaml","met","met","wdr","inf","cfg","dyresm3p1.par","met","met","wdr","inf"],["light/Kw","MET_wndspd","MET_radswd","mixing/coef_mix_conv","mixing/coef_wind_stir","mixing/coef_mix_shear","mixing/coef_mix_turb","mixing/coef_mix_hyp","outflow","inflow","turbulence/turb_param/k_min","light_extinction/A/constant_value","light_extinction/g1/constant_value","light_extinction/g2/constant_value","MET_wndspd","MET_radswd","outflow","inflow","light_extinction_coefficient/7","vert_mix_coeff/15","MET_wndspd","MET_radswd","outflow","inflow"],[0.58,1,1,0.14,0.21,0.14,0.5600000000000001,0.74,1,1,6.32e-07,0.55,0.59,0.2,1,1,1,1,0.9,200,1,1,1,1],[0.1,0.7,0.7,0.1,0.2,0.1,0.2,0.4,0.5,0.5,1e-09,0.395,0.44,0.05,0.7,0.7,0.5,0.5,0.1,50,0.7,0.7,0.5,0.5],[5.52,1.3,1.3,0.2,0.3,0.2,0.7,0.8,2.5,2.5,1e-05,0.659,0.74,2.7,1.3,1.3,2.5,2.5,1.4,750,1.3,1.3,2.5,2.5],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic"],["HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp","HYD_thmcln","HYD_thmcln","HYD_thmcln","HYD_thmcln","HYD_thmcln","LKE_lvlwtr","LKE_lvlwtr","HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp","LKE_lvlwtr","LKE_lvlwtr","HYD_temp|HYD_thmcln","HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp","LKE_lvlwtr","LKE_lvlwtr"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>model<\/th>\n      <th>file<\/th>\n      <th>name<\/th>\n      <th>value<\/th>\n      <th>min<\/th>\n      <th>max<\/th>\n      <th>group<\/th>\n      <th>index<\/th>\n      <th>module<\/th>\n      <th>var_sim<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5]},{"name":"model","targets":0},{"name":"file","targets":1},{"name":"name","targets":2},{"name":"value","targets":3},{"name":"min","targets":4},{"name":"max","targets":5},{"name":"group","targets":6},{"name":"index","targets":7},{"name":"module","targets":8},{"name":"var_sim","targets":9}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<script type="application/json" data-for="htmlwidget-e5c8c404fe174e4c81bd">{"x":{"filter":"none","vertical":false,"data":[["glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","dy_cd","dy_cd","dy_cd","dy_cd","dy_cd","dy_cd"],["glm3.nml","met","met","glm3.nml","glm3.nml","glm3.nml","glm3.nml","glm3.nml","wdr","inf","gotm.yaml","gotm.yaml","gotm.yaml","gotm.yaml","met","met","wdr","inf","cfg","dyresm3p1.par","met","met","wdr","inf"],["light/Kw","MET_wndspd","MET_radswd","mixing/coef_mix_conv","mixing/coef_wind_stir","mixing/coef_mix_shear","mixing/coef_mix_turb","mixing/coef_mix_hyp","outflow","inflow","turbulence/turb_param/k_min","light_extinction/A/constant_value","light_extinction/g1/constant_value","light_extinction/g2/constant_value","MET_wndspd","MET_radswd","outflow","inflow","light_extinction_coefficient/7","vert_mix_coeff/15","MET_wndspd","MET_radswd","outflow","inflow"],[0.58,1,1,0.14,0.21,0.14,0.5600000000000001,0.74,1,1,6.32e-07,0.55,0.59,0.2,1,1,1,1,0.9,200,1,1,1,1],[0.1,0.7,0.7,0.1,0.2,0.1,0.2,0.4,0.5,0.5,1e-09,0.395,0.44,0.05,0.7,0.7,0.5,0.5,0.1,50,0.7,0.7,0.5,0.5],[5.52,1.3,1.3,0.2,0.3,0.2,0.7,0.8,2.5,2.5,1e-05,0.659,0.74,2.7,1.3,1.3,2.5,2.5,1.4,750,1.3,1.3,2.5,2.5],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic"],["HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp","HYD_thmcln","HYD_thmcln","HYD_thmcln","HYD_thmcln","HYD_thmcln","LKE_lvlwtr","LKE_lvlwtr","HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp","LKE_lvlwtr","LKE_lvlwtr","HYD_temp|HYD_thmcln","HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp","LKE_lvlwtr","LKE_lvlwtr"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>model<\/th>\n      <th>file<\/th>\n      <th>name<\/th>\n      <th>value<\/th>\n      <th>min<\/th>\n      <th>max<\/th>\n      <th>group<\/th>\n      <th>index<\/th>\n      <th>module<\/th>\n      <th>var_sim<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5]},{"name":"model","targets":0},{"name":"file","targets":1},{"name":"name","targets":2},{"name":"value","targets":3},{"name":"min","targets":4},{"name":"max","targets":5},{"name":"group","targets":6},{"name":"index","targets":7},{"name":"module","targets":8},{"name":"var_sim","targets":9}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/parameters.html">parameters</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">aeme_parameters</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

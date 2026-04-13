@@ -109,8 +109,7 @@ aeme
 ```
 
 Model data can be visualised easily using the
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md)
-function:
+[`plot_output()`](reference/plot_output.md) function:
 
 ``` r
 p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")

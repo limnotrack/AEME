@@ -1,8 +1,7 @@
 # Generate variable mapping code for lake observation data
 
 This function generates R code to create a variable mapping data frame
-(\`var_map\`) used in the
-[`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md)
+(\`var_map\`) used in the [`lake_obs_to_aeme()`](lake_obs_to_aeme.md)
 function. It takes a data frame of lake observation data and fuzzy
 matches variable names to their corresponding AEME variable names using
 the \`key_naming\` dataset. When inputting the units of your data,

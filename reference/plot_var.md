@@ -27,11 +27,9 @@ plot_var(
 
 - df:
 
-  dataframe; output from
-  [`get_var`](https://limnotrack.com/reference/get_var.md). If `NULL`,
-  [`get_var`](https://limnotrack.com/reference/get_var.md) will be
-  called and `var_sim` will be used to extract the variable of interest
-  from `aeme` for each model.
+  dataframe; output from [`get_var`](get_var.md). If `NULL`,
+  [`get_var`](get_var.md) will be called and `var_sim` will be used to
+  extract the variable of interest from `aeme` for each model.
 
 - aeme:
 
@@ -62,8 +60,7 @@ plot_var(
 
 - obs:
 
-  list; output from
-  [`observations`](https://limnotrack.com/reference/observations.md)
+  list; output from [`observations`](observations.md)
 
 - add_obs:
 

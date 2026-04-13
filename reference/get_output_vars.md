@@ -114,10 +114,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-03-31 00:51:03]
-#> ✔ Model run complete! [2026-03-31 00:51:06]
-#> ℹ Reading models in parallel...[2026-03-31 00:51:06]
-#> ✔ Model reading complete! [2026-03-31 00:51:08]
+#> ℹ Running models in parallel... [2026-04-13 03:17:52]
+#> ✔ Model run complete! [2026-04-13 03:17:56]
+#> ℹ Reading models in parallel...[2026-04-13 03:17:56]
+#> ✔ Model reading complete! [2026-04-13 03:17:58]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 
@@ -143,36 +143,36 @@ get_output_vars(aeme, model)
 #>                          "LKE_efold"                         "LKE_photic" 
 #>                           Lake depth                        Water density 
 #>                         "LKE_depths"                           "HYD_dens" 
-#>                             Salinity                            Phosphate 
-#>                           "CHM_salt"                            "PHS_frp" 
-#>                  Dissolved organic P                Particulate organic P 
-#>                            "PHS_dop"                            "PHS_pop" 
-#>                  Ammoniacal nitrogen                              Nitrate 
-#>                            "NIT_amm"                            "NIT_nit" 
-#>                  Dissolved organic N                Particulate organic N 
-#>                            "NIT_don"                            "NIT_pon" 
-#>             Dissolved organic carbon           Particulate organic carbon 
-#>                            "CAR_doc"                            "CAR_poc" 
-#>                        Cyanobacteria                          Green algae 
-#>                          "PHY_cyano"                          "PHY_green" 
-#>                   Diatoms freshwater                           Stratified 
-#>                         "PHY_diatom"                          "HYD_strat" 
-#>                    Schmidt stability                   Centre of buoyancy 
-#>                         "HYD_schstb"                         "HYD_ctrbuy" 
-#>                     Epilimnion depth                    Hypolimnion depth 
-#>                         "HYD_epidep"                         "HYD_hypdep" 
-#>    Trophic Level Index Chlorophyll-a   Trophic Level Index Total Nitrogen 
-#>                           "LKE_tlic"                           "LKE_tlin" 
-#> Trophic Level Index Total Phosphorus     Trophic Level Index Secchi depth 
-#>                           "LKE_tlip"                          "LKE_tlise" 
-#>                Trophic Level Index 3                Trophic Level Index 4 
-#>                           "LKE_tli3"                           "LKE_tli4" 
+#>                           Stratified                    Schmidt stability 
+#>                          "HYD_strat"                         "HYD_schstb" 
+#>                   Centre of buoyancy                     Epilimnion depth 
+#>                         "HYD_ctrbuy"                         "HYD_epidep" 
+#>                    Hypolimnion depth                             Salinity 
+#>                         "HYD_hypdep"                           "CHM_salt" 
 #>                       Oxycline depth                   Epilimnetic oxygen 
 #>                         "CHM_oxycln"                         "CHM_oxyepi" 
 #>                   Metalimnetic oygen                  Hypolimnetic oxygen 
 #>                         "CHM_oxymet"                         "CHM_oxyhyp" 
 #>           Metalimnetic oxygen minima              Number of anoxic layers 
 #>                         "CHM_oxymom"                         "CHM_oxynal" 
+#>    Trophic Level Index Chlorophyll-a   Trophic Level Index Total Nitrogen 
+#>                           "LKE_tlic"                           "LKE_tlin" 
+#> Trophic Level Index Total Phosphorus     Trophic Level Index Secchi depth 
+#>                           "LKE_tlip"                          "LKE_tlise" 
+#>                Trophic Level Index 3                Trophic Level Index 4 
+#>                           "LKE_tli3"                           "LKE_tli4" 
+#>                            Phosphate                  Dissolved organic P 
+#>                            "PHS_frp"                            "PHS_dop" 
+#>                Particulate organic P                  Ammoniacal nitrogen 
+#>                            "PHS_pop"                            "NIT_amm" 
+#>                              Nitrate                  Dissolved organic N 
+#>                            "NIT_nit"                            "NIT_don" 
+#>                Particulate organic N             Dissolved organic carbon 
+#>                            "NIT_pon"                            "CAR_doc" 
+#>           Particulate organic carbon                        Cyanobacteria 
+#>                            "CAR_poc"                          "PHY_cyano" 
+#>                          Green algae                   Diatoms freshwater 
+#>                          "PHY_green"                         "PHY_diatom" 
 #>  Photosynthetically active radiation              Particulate inorganic P 
 #>                            "RAD_par"                            "PHS_pip" 
 #>                     Suspended solids                          Zooplankton 
