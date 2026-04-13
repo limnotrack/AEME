@@ -175,11 +175,12 @@ plot_glm_config <- function(aeme, path, output = NULL) {
   }
   
   # ---- 5. Build JSON data ------------------------------------------------
-  lib_lookup <- as.list(glm_aed_parameter_library$label)
-  names(lib_lookup) <- glm_aed_parameter_library$parameter
-  
+  # --- NEW: Create a simple named vector for the JS lookup ---
+  # This maps 'parameter' (key) to 'label' (value)
+  lib_vec <- glm_aed_parameter_library$label
+  names(lib_vec) <- glm_aed_parameter_library$parameter  
   config_data <- list(
-    parameter_library = lib_lookup, # Add this line
+    parameter_library = as.list(lib_vec), # Add this line
     lake = list(
       name       = lake_name,
       latitude   = latitude,
@@ -409,11 +410,36 @@ plot_glm_config <- function(aeme, path, output = NULL) {
   }
   .warn-banner p:last-child { margin-bottom: 0; }
   .warn-banner strong { font-weight: 600; }
+  .toggle-container {
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: 10px; margin-bottom: 20px; font-size: 12px; font-weight: 500;
+  }
+  .switch {
+    position: relative; display: inline-block; width: 34px; height: 20px;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--bg3); transition: .2s; border-radius: 20px;
+  }
+  .slider:before {
+    position: absolute; content: ""; height: 14px; width: 14px;
+    left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%;
+  }
+  input:checked + .slider { background-color: var(--blue600); }
+  input:checked + .slider:before { transform: translateX(14px); }
 </style>
 </head>
 <body>
 
 <div class="header">
+  <div class="toggle-container">
+    <span>Show parameter labels</span>
+    <label class="switch">
+      <input type="checkbox" id="name-toggle">
+      <span class="slider"></span>
+    </label>
+  </div>
   <h1 id="title"></h1>
   <p id="subtitle"></p>
 </div>
@@ -792,6 +818,25 @@ document.getElementById("subtitle").textContent =
       \'<div class="warn-banner">\' +
       warns.map(w => "<p>\\u26a0\\ufe0f " + w + "</p>").join("") + "</div>";
   }
+})();
+// At the very bottom of your <script> block, add this listener:
+(function() {
+  const toggle = document.getElementById("name-toggle");
+  const lib = CFG.lib || {};
+
+  toggle.addEventListener("change", function() {
+    const useLabels = this.checked;
+    
+    document.querySelectorAll(".param-key").forEach(el => {
+      const key = el.getAttribute("data-key");
+      // If toggle is on and a label exists in our library, use it. Otherwise, use the key.
+      if (useLabels && lib[key]) {
+        el.textContent = lib[key];
+      } else {
+        el.textContent = key;
+      }
+    });
+  });
 })();
 </script>
 </body>
