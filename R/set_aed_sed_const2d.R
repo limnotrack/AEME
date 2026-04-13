@@ -10,9 +10,11 @@
 set_aed_sed_const2d <- function(aeme, path, lake_dir = NULL) {
   
   if (is.null(lake_dir)) {
-    if (missing(aeme) | missing(path)) {
-      cli::cli_abort("Either {.arg lake_dir} or both {.arg aeme} and
-                     {.arg path} must be provided.")
+    if (missing(aeme)) {
+      cli::cli_abort("Either {.arg lake_dir} or {.arg aeme} must be provided.")
+    }
+    if (missing(path)) {
+      path <- get_aeme_path(aeme)
     }
     lake_dir <- get_lake_dir(aeme = aeme, path = path)
   }
