@@ -10,7 +10,7 @@ jobs:
       LINZ_KEY: ${{ secrets.LINZ_KEY }}
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - uses: r-lib/actions/setup-pandoc@v2
 
