@@ -336,6 +336,9 @@ test_that("running GLM-AED works", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE) |> 
     run_aeme()
+  html_file <- plot_glm_config(aeme = aeme)
+  testthat::expect_true(file.exists(html_file))
+  
   plot_output(aeme, var_sim = "CHM_oxy") /
     plot_output(aeme)/
     plot_output(aeme, var_sim = "PHY_tchla")
