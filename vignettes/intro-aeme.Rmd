@@ -132,7 +132,7 @@ contains the following objects:
 -   **start** - Start date of the simulation (character). The start date must be
     in the format `YYYY-MM-DD HH:MM:SS`.
 
--   **end** - End date of the simulation (character). The end date must be in
+-   **stop** - End date of the simulation (character). The end date must be in
     the format `YYYY-MM-DD HH:MM:SS`.
 
 -   **timestep** - Timestep of the simulation (numeric). The timestep must be in
@@ -335,20 +335,22 @@ The data.frame has the columns:
 -   initial_wc - numeric; value to use in initialising the model. This will be 
     automatically updated if the variable is present in the `observations` slot.
     
--   initial_sed - numeric; value to use in intialising the sediment module for 
+-   initial_sed - numeric; value to use in initialising the sediment module for 
     the DYRESM-CAEDYM model.
     
 -   conversion_aed - numeric; factor to multiply by to convert to GLM-AED units.
 
-When the model is built the mode
+When the model is built, the `model_controls` data.frame is stored in the
+`configuration` slot of the `aeme` object. It can be retrieved with
+`get_model_controls(aeme = aeme)`.
 
 
 ### Creation
 
-The `aeme` object can be created using the `aeme_constructor()` function. It 
-requires the basic inputs to 
-from a YAML file using the `yaml_to_aeme`
-function. The YAML file contains all the information required to run the model.
+The `aeme` object can be created using the `aeme_constructor()` function. It
+requires at minimum the `lake`, `time`, and `input` list objects. The object can
+also be created from a YAML file using the `yaml_to_aeme()` function. The YAML
+file contains all the information required to run the model.
 
 ```{r warning=FALSE, message=FALSE, eval=FALSE}
 # Define lake list
