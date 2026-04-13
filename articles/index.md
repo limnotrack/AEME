@@ -1,8 +1,15 @@
 # Articles
 
-### All vignettes
+### Getting started
 
-- [AEME Inputs](aeme-inputs.md):
-- [Introduction to AEME](intro-aeme.md):
-- [Using LERNZmp with AEME](lernzmp-aeme.md):
-- [Set up AEME for a new lake](setup-new-lake.md):
+- [Introduction to AEME](https://limnotrack.com/articles/intro-aeme.md):
+- [AEME Inputs](https://limnotrack.com/articles/aeme-inputs.md):
+- [Set up AEME for a new
+  lake](https://limnotrack.com/articles/setup-new-lake.md):
+
+### Use cases
+
+- [Reservoir Simulation with Multiple
+  Outlets](https://limnotrack.com/articles/reservoir-aeme.md):
+- [Using LERNZmp with
+  AEME](https://limnotrack.com/articles/lernzmp-aeme.md):

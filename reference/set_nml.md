@@ -36,7 +36,7 @@ glm_nml a modified nml
 
 ## See also
 
-[read_nml](read_nml.md)
+[read_nml](https://limnotrack.com/reference/read_nml.md)
 
 ## Author
 

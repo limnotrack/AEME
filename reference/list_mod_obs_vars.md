@@ -74,10 +74,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-04-13 03:18:10]
-#> ✔ Model run complete! [2026-04-13 03:18:14]
-#> ℹ Reading models in parallel...[2026-04-13 03:18:14]
-#> ✔ Model reading complete! [2026-04-13 03:18:15]
+#> ℹ Running models in parallel... [2026-04-13 22:52:48]
+#> ✔ Model run complete! [2026-04-13 22:52:51]
+#> ℹ Reading models in parallel...[2026-04-13 22:52:51]
+#> ✔ Model reading complete! [2026-04-13 22:52:53]
 list_mod_obs_vars(aeme = aeme, model = model)
 #>              Cyanobacteria           Dissolved oxygen 
 #>                "PHY_cyano"                  "CHM_oxy" 
