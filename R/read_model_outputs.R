@@ -32,7 +32,6 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
   
-  
   model <- check_model(model)
   if (length(model) != 1) {
     cli::cli_abort("Please supply a single model name.")
@@ -142,6 +141,17 @@ get_model_vars <- function(vars_sim, model) {
   model_vars <- key_naming |> 
     dplyr::filter(name %in% vars_sim & !derived & name != "LKE_lvlwtr") |> 
     dplyr::select(name, dplyr::sym(model), conversion_aed)
+  
+  # If any variables are not in key_naming add them as separate rows
+  if (any(!vars_sim %in% model_vars$name)) {
+    missing_vars <- vars_sim[!vars_sim %in% model_vars$name]
+    missing_df <- data.frame(name = missing_vars,
+                             conversion_aed = 1)
+    missing_df[[model]] <- missing_vars
+    model_vars <- dplyr::bind_rows(model_vars, missing_df) |> 
+      dplyr::arrange(match(name, vars_sim))
+  }
+  
   if ("dy_cd" %in% model) {
     model_vars <- model_vars |>
       dplyr::mutate(dy_cd = paste0("dyresm", dy_cd, "_Var"))
@@ -171,6 +181,17 @@ format_model_vars_vec <- function(vars_sim, model) {
   model_vars <- key_naming |> 
     dplyr::filter(name %in% vars_sim & !derived & name != "LKE_lvlwtr") |> 
     dplyr::select(name, dplyr::sym(model), conversion_aed)
+  
+  # If any variables are not in key_naming add them as separate rows
+  if (any(!vars_sim %in% model_vars$name)) {
+    missing_vars <- vars_sim[!vars_sim %in% model_vars$name]
+    missing_df <- data.frame(name = missing_vars,
+                             conversion_aed = 1)
+    missing_df[[model]] <- missing_vars
+    model_vars <- dplyr::bind_rows(model_vars, missing_df) |> 
+      dplyr::arrange(match(name, vars_sim))
+  }
+  
   if ("dy_cd" %in% model) {
     model_vars <- model_vars |>
       dplyr::mutate(dy_cd = paste0("dyresm", dy_cd, "_Var"))
