@@ -2,7 +2,7 @@
 #' 
 #' Check if the provided variable names are valid AEME variable names.
 #'
-#' @param vars Character vector of variable names to check.
+#' @param x Character vector of variable names to check.
 #'
 #' @returns Invisibly returns TRUE if all variables are valid, otherwise throws 
 #' an error.
@@ -12,19 +12,21 @@
 #' @examples
 #' check_aeme_vars("HYD_temp")
 
-check_aeme_vars <- function(vars) {
+check_aeme_vars <- function(x) {
   # Load key dataset
   data("key_naming", package = "AEME", envir = environment())
   valid_vars <- key_naming$name  # column with valid variable names
   
+  x <- guess_aeme_vars(x)
+  
   # Validate
-  is_valid <- vars %in% valid_vars
+  is_valid <- x %in% valid_vars
   if (all(is_valid)) {
-    return(vars)
+    return(x)
   }
   
   # Identify invalid variables
-  invalid <- vars[!is_valid]
+  invalid <- x[!is_valid]
   
   # Find approximate matches for suggestions
   suggestions <- lapply(invalid, function(x) {
