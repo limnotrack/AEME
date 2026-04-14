@@ -35,5 +35,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-list_mod_obs_vars(aeme = aeme, model = model)
+aeme |> 
+  list_mod_obs_vars()
 }
