@@ -320,6 +320,8 @@ We have a host of vignettes to help you get started with AEME:
   Load a GLM nml file and convert to aeme object
 - [`gotm_wet_parameters`](https://limnotrack.com/reference/gotm_wet_parameters.md)
   : Example dataset of parameters for the GOTM-WET model
+- [`guess_aeme_vars()`](https://limnotrack.com/reference/guess_aeme_vars.md)
+  : Match variable to AEME variable names
 - [`inflows(`*`<Aeme>`*`)`](https://limnotrack.com/reference/inflows-aeme-method.md)
   : Access inflows slot
 - [`` `inflows<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/inflows-set-aeme-method.md)

@@ -29,12 +29,21 @@ write_aeme_to_files(aeme, path, include_output = FALSE)
 ``` r
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme <- readRDS(aeme_file)
+model <- "glm_aed"
 path <- "test_write"
 model_controls <- get_model_controls()
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
 model_controls = model_controls, ext_elev = 5)
-#> Error: object 'model' not found
+#> ℹ Using observed water level
+#> ! Missing values in observed water level
+#> ℹ Correcting water balance using estimated outflows (method = 2).
+#> ℹ Calculating lake level using lake depth and a sinisoidal function.
+#> ℹ Building GLM-AED for lake wainamu
+#> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): ✖ `model_controls` need to be provided to load model output.
+#> ℹ Running models... (Have you tried parallelizing?) [2026-04-14 03:19:57]
+#> → GLM-AED running... [2026-04-14 03:19:57]
+#> ✔ GLM-AED run successful! [2026-04-14 03:19:58]
+#> ✔ Model run complete! [2026-04-14 03:19:58]
 write_aeme_to_files(aeme, path)
 ```

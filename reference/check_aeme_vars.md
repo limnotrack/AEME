@@ -5,12 +5,12 @@ Check if the provided variable names are valid AEME variable names.
 ## Usage
 
 ``` r
-check_aeme_vars(vars)
+check_aeme_vars(x)
 ```
 
 ## Arguments
 
-- vars:
+- x:
 
   Character vector of variable names to check.
 
