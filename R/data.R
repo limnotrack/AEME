@@ -241,19 +241,19 @@
 #' Parameter library for the GLM-AED model.
 #'
 #' This dataset contains most parameters within the glm3.nml and the aed.nml
-#' file. This includes 156 GLM parameters across 14 namelist blocks (e.g.,
+#' file. This includes 452 GLM parameters across 24 namelist blocks (e.g.,
 #' \code{&glm_setup}, \code{&mixing}, \code{&morphometry}, \code{&meteorology},
-#' \code{&inflow}, \code{&outflow}) and 125 AED parameters across 7 modules
+#' \code{&inflow}, \code{&outflow}) and 452 AED parameters across 24 modules
 #' (e.g., \code{aed_oxygen}, \code{aed_nitrogen}, \code{aed_phosphorus},
 #' \code{aed_silica}, \code{aed_phytoplankton}, \code{aed_sedflux},
-#' \code{aed_seddiagenesis}), for a combined total of 281 rows.
+#' \code{aed_seddiagenesis}), for a combined total of 452 rows.
 #'
 #' Parameters are organised by \code{module} (the namelist block or AED module
 #' they belong to) and optionally by \code{group} (a sub-category describing
 #' the process context, such as \code{"nitrification"},
 #' \code{"sediment_flux"}, or \code{"radiation"}).
 #'
-#' @format A data frame with 281 rows and 9 variables:
+#' @format A data frame with 452 rows and 9 variables:
 #' \describe{
 #'   \item{module}{Character. The configuration block (GLM) or module (AED)
 #'     the parameter belongs to. GLM modules correspond to Fortran namelist
