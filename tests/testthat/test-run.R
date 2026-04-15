@@ -64,16 +64,11 @@ test_that("running GLM works", {
   obs <- get_obs(aeme)
   mod_obs_vars <- get_mod_obs_vars(aeme)
   testthat::expect_true(all(mod_obs_vars$var_aeme %in% obs$var_aeme))
-  
-  # cfg <- configuration(aeme)
-  # cfg$model_controls <- NULL
-  # configuration(aeme) <- cfg
-  # options("AEME.glm_exec" = "C:/Users/data/Downloads/glm_3.9.016/glm_3.9.016/glm.exe")
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
-  plot_wlev(aeme, model)
-  plot_wbal(aeme, model = model)
-  lake_dir <- get_lake_dir(aeme = aeme, path = path)
-  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  plot_wlev(aeme)
+  plot_wbal(aeme)
+  lake_dir <- get_lake_dir(aeme = aeme)
+  outfile <- get_model_outfile(aeme = aeme)
   outfile2 <- get_model_outfile(lake_dir = lake_dir, model = model)
   testthat::expect_equal(outfile, outfile2)
   
