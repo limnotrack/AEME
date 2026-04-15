@@ -96,6 +96,9 @@ test_that("plotting model output works", {
   p1 <- plot(aeme, "output")
   testthat::expect_true(ggplot2::is_ggplot(p1))
 
+  p0 <- plot_output(aeme = aeme, var_sim = "temp")
+  p0 <- plot_output(aeme = aeme, var_sim = "oxy")
+  
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE, point_size = 1,
                     var_lims = c(0, 30), ylim = c(0, 16), facet = FALSE)

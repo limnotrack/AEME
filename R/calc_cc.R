@@ -32,7 +32,7 @@
 #' @noRd
 
 calc_cc <- function(date, airt, relh = NULL, dewt = NULL, swr, lat, lon, elev, 
-                    daily = FALSE){
+                    daily = FALSE) {
   
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))

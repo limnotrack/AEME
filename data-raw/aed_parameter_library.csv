@@ -1,0 +1,126 @@
+module,group,parameter,label,symbol,description,units,default,source
+aed_oxygen,initialisation,oxy_initial,Initial O2,O2|t=0,Initial dissolved oxygen concentration,mmol O2/m3,,https://aquaticecodynamics.github.io/aed-science/DO_1.html
+aed_oxygen,initialisation,oxy_min,Min O2,O2_min,Minimum dissolved oxygen concentration,mmol O2/m3,0,https://aquaticecodynamics.github.io/aed-science/DO_1.html
+aed_oxygen,initialisation,oxy_max,Max O2,O2_max,Maximum dissolved oxygen concentration,mmol O2/m3,600,https://aquaticecodynamics.github.io/aed-science/DO_1.html
+aed_oxygen,sediment_flux,Fsed_oxy,Sediment O2 flux,F_sed^oxy,Sediment O2 flux at 20C,mmol O2/m2/d,,https://aquaticecodynamics.github.io/aed-science/DO_1.html
+aed_oxygen,sediment_flux,Ksed_oxy,Half-sat O2 for SOD,K_sod^O2,Half-saturation oxygen concentration controlling O2 flux,mmol O2/m3,,https://aquaticecodynamics.github.io/aed-science/DO_1.html
+aed_oxygen,sediment_flux,theta_sed_oxy,Theta sed oxy,theta_sed^oxy,Arrhenius temperature multiplier for sediment O2 flux,-,,https://aquaticecodynamics.github.io/aed-science/DO_1.html
+aed_oxygen,sediment_flux,Fsed_oxy_variable,Sed O2 var link,,Variable name to link for spatially resolved sediment zones,string,SDF_Fsed_oxy,https://aquaticecodynamics.github.io/aed-science/DO_1.html
+aed_oxygen,atmospheric_exchange,oxy_piston_model,Piston model,Theta_oxy^piston,Selection of air/water O2 flux velocity method,-,,https://aquaticecodynamics.github.io/aed-science/DO_1.html
+aed_oxygen,atmospheric_exchange,altitude,Altitude,H,Altitude of site above sea level,m,0,https://aquaticecodynamics.github.io/aed-science/DO_1.html
+aed_nitrogen,initialisation,amm_initial,Initial NH4,NH4|t=0,Initial ammonium concentration,mmol N/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,initialisation,nit_initial,Initial NO3,NO3|t=0,Initial nitrate concentration,mmol N/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,initialisation,amm_min,Min NH4,NH4_min,Minimum ammonium concentration,mmol N/m3,0,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,initialisation,nit_min,Min NO3,NO3_min,Minimum nitrate concentration,mmol N/m3,0,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,initialisation,simN2O,Simulate N2O,Theta_N2O,"Switch to enable N2O reaction pathways (0=off, 1 or 2=on)",-,0,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,nitrification,R_nitrif,Nitrification rate,R_nitrif,Kinetic rate constant for nitrification,/d,0.01,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,nitrification,theta_nitrif,Theta nitrification,theta_nitrif,Temperature dependence of nitrification,-,1,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,nitrification,K_nitrif,K nitrification,K_nitrif,Half-saturation O2 concentration for nitrification limitation,mmol O2/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,nitrification,simNitrfpH,pH limit nitrif,Theta_nitrfpH,Switch to enable pH limitation on nitrification,boolean,.false.,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,denitrification,R_denit,Denitrification rate,R_denit,Kinetic rate constant for denitrification,/d,0.01,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,denitrification,theta_denit,Theta denitrification,theta_denit,Temperature dependence of denitrification,-,1,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,denitrification,K_denit,K denitrification,K_denit,Half-saturation O2 concentration for denitrification inhibition,mmol O2/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,denitrification,KNO3,K NO3,K_NO3,Half-saturation NO3 concentration for denitrification,mmol N/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,denitrification,oxy_lim,O2 limitation switch,Theta_oxylim^denit,"Switch to select O2 limitation function for denitrification (0=none, 1=Monod, 2=exp)",-,0,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,sediment_flux,Fsed_amm,Sed NH4 flux,F_sed^amm,Sediment ammonium flux at 20C,mmol N/m2/d,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,sediment_flux,Fsed_nit,Sed NO3 flux,F_sed^nit,Sediment nitrate flux at 20C,mmol N/m2/d,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,sediment_flux,theta_sed_amm,Theta sed NH4,theta_sed^amm,Arrhenius temperature multiplier for sediment NH4 flux,-,1,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,sediment_flux,theta_sed_nit,Theta sed NO3,theta_sed^nit,Arrhenius temperature multiplier for sediment NO3 flux,-,1,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,sediment_flux,K_sed_amm,K sed NH4,K_sed^amm,Half-saturation O2 for sediment NH4 flux oxygen mediation,mmol O2/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,sediment_flux,K_sed_nit,K sed NO3,K_sed^nit,Half-saturation O2 for sediment NO3 flux oxygen mediation,mmol O2/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,sediment_flux,Fsed_amm_variable,Sed NH4 var link,,Variable name for spatially resolved sediment NH4 flux,string,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,sediment_flux,Fsed_nit_variable,Sed NO3 var link,,Variable name for spatially resolved sediment NO3 flux,string,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,atmospheric_deposition,simDryDeposition,Dry deposition,,Switch to enable dry atmospheric deposition of N,boolean,.false.,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,atmospheric_deposition,simWetDeposition,Wet deposition,,Switch to enable wet atmospheric deposition of N,boolean,.false.,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,atmospheric_deposition,atm_din_dd,DIN dry dep flux,F_atm^DIN,Dry deposition flux of DIN,mmol N/m2/d,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,atmospheric_deposition,atm_din_conc,DIN rain conc,DIN_atm,Concentration of DIN in rainfall,mmol N/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_nitrogen,atmospheric_deposition,f_dindep_nox,Fraction as NOx,k_DINdepNOx,Fraction of deposited DIN assigned to NOx (vs NH4),-,,https://aquaticecodynamics.github.io/aed-science/inorganic-nitrogen.html
+aed_phosphorus,initialisation,frp_initial,Initial FRP,PO4|t=0,Initial filterable reactive phosphorus concentration,mmol P/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,initialisation,frp_min,Min FRP,PO4_min,Minimum FRP concentration,mmol P/m3,0,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,initialisation,simPO4Adsorption,Simulate adsorption,Theta_ads,Switch to enable PO4 adsorption/desorption,boolean,.false.,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,initialisation,ads_use_external_tss,External TSS,,Switch to use externally supplied TSS for adsorption,boolean,.false.,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,initialisation,PO4AdsCSS,Sorbent conc,,Concentration of the sorbent (suspended sediment/ite),mg/L,,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,initialisation,Kpo4p,Adsorption coef,K_po4p,PO4 adsorption coefficient,-,,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,initialisation,ads_use_pH,pH-dependent ads,,Switch for pH-dependent adsorption,boolean,.false.,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,sediment_flux,Fsed_frp,Sed PO4 flux,F_sed^frp,Sediment PO4 flux at 20C,mmol P/m2/d,,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,sediment_flux,theta_sed_frp,Theta sed PO4,theta_sed^frp,Arrhenius temperature multiplier for sediment PO4 flux,-,1,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,sediment_flux,K_sed_frp,K sed PO4,K_sed^frp,Half-saturation O2 for sediment PO4 flux oxygen mediation,mmol O2/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,sediment_flux,Fsed_frp_variable,Sed PO4 var link,,Variable name for spatially resolved sediment PO4 flux,string,,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,atmospheric_deposition,simDryDeposition,Dry deposition,,Switch to enable dry atmospheric deposition of P,boolean,.false.,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,atmospheric_deposition,simWetDeposition,Wet deposition,,Switch to enable wet atmospheric deposition of P,boolean,.false.,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,atmospheric_deposition,atm_pip_dd,PIP dry dep flux,F_atm^pip,Dry deposition flux of particulate inorganic P,mmol P/m2/d,,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_phosphorus,atmospheric_deposition,atm_frp_conc,FRP rain conc,FRP_atm,Concentration of FRP in rainfall,mmol P/m3,,https://aquaticecodynamics.github.io/aed-science/inorganic-phosphorus.html
+aed_silica,initialisation,rsi_initial,Initial RSi,RSi|t=0,Initial reactive silica concentration,mmol Si/m3,,https://aquaticecodynamics.github.io/aed-science/silica.html
+aed_silica,initialisation,rsi_min,Min RSi,RSi_min,Minimum reactive silica concentration,mmol Si/m3,0,https://aquaticecodynamics.github.io/aed-science/silica.html
+aed_silica,initialisation,rsi_max,Max RSi,RSi_max,Maximum reactive silica concentration,mmol Si/m3,,https://aquaticecodynamics.github.io/aed-science/silica.html
+aed_silica,sediment_flux,Fsed_rsi,Sed RSi flux,F_sed^rsi,Sediment reactive silica flux at 20C,mmol Si/m2/d,,https://aquaticecodynamics.github.io/aed-science/silica.html
+aed_silica,sediment_flux,theta_sed_rsi,Theta sed RSi,theta_sed^rsi,Arrhenius temperature multiplier for sediment RSi flux,-,1,https://aquaticecodynamics.github.io/aed-science/silica.html
+aed_silica,sediment_flux,K_sed_rsi,K sed RSi,K_sed^rsi,Half-saturation O2 for sediment RSi flux oxygen mediation,mmol O2/m3,,https://aquaticecodynamics.github.io/aed-science/silica.html
+aed_silica,sediment_flux,Fsed_rsi_variable,Sed RSi var link,,Variable name for spatially resolved sediment RSi flux,string,,https://aquaticecodynamics.github.io/aed-science/silica.html
+aed_phytoplankton,config,num_phytos,Number of groups,N_PHY,Number of phytoplankton groups to simulate,-,1,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,config,the_phytos,Group IDs,,List of phytoplankton group IDs to simulate,integer list,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,config,settling,Settling model,Theta_settle,"Switch to select settling/migration approach (0=none, 1=constant, 2=dynamic)",-,0,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,config,do_mpb,Microphytobenthos,,Switch to enable microphytobenthos simulation,boolean,.false.,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,config,p_excretion_target_variable,P excretion target,,Variable name for phytoplankton P excretion target,string,PHS_frp,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,config,n_excretion_target_variable,N excretion target,,Variable name for phytoplankton N excretion target,string,NIT_amm,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,config,si_excretion_target_variable,Si excretion target,,Variable name for phytoplankton Si excretion target,string,SIL_rsi,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,config,c_excretion_target_variable,C excretion target,,Variable name for phytoplankton C excretion target,string,OGM_doc,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,growth,R_growth,Max growth rate,R_growth,Maximum phytoplankton growth rate at 20C,/d,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,growth,fT_Method,Temperature function,Theta_T,"Method for temperature scaling of growth (1=Arrhenius, 2=optimum)",-,1,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,growth,theta_growth,Theta growth,theta_growth,Arrhenius temperature multiplier for growth,-,1.06,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,growth,T_std,Standard temperature,T_std,Standard temperature for growth,degC,20,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,growth,T_opt,Optimum temperature,T_opt,Optimum temperature for growth,degC,25,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,growth,T_max,Maximum temperature,T_max,Maximum temperature for growth,degC,35,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,light,lightModel,Light model,Theta_I,"Light limitation function type (0=none, 1=Webb, 2=Steele, etc.)",-,1,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,light,I_K,Light half-sat,I_K,Half-saturation light intensity for photosynthesis,umol/m2/s,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,light,I_S,Light saturation,I_S,Saturating light intensity for photosynthesis (Steele),umol/m2/s,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,light,KePHY,Specific extinction,Ke_PHY,Specific light attenuation coefficient per unit phytoplankton,/m/(mmol C/m3),,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,nitrogen,simDINUptake,DIN uptake model,,Switch to enable DIN uptake by phytoplankton,boolean,.true.,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,nitrogen,N_o,Min internal N,N_o,Minimum internal nitrogen concentration,mmol N/mmol C,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,nitrogen,K_N,Half-sat N uptake,K_N,Half-saturation concentration for nitrogen uptake,mmol N/m3,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,nitrogen,X_ncon,Constant N:C,X_ncon,Constant nitrogen to carbon ratio,mmol N/mmol C,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,nitrogen,X_nmin,Min N:C,X_nmin,Minimum nitrogen to carbon ratio,mmol N/mmol C,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,nitrogen,X_nmax,Max N:C,X_nmax,Maximum nitrogen to carbon ratio,mmol N/mmol C,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,nitrogen,R_nuptake,N uptake rate,R_nuptake,Maximum nitrogen uptake rate,mmol N/mmol C/d,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,phosphorus,simDIPUptake,DIP uptake model,,Switch to enable DIP uptake by phytoplankton,boolean,.true.,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,phosphorus,P_0,Min internal P,P_0,Minimum internal phosphorus concentration,mmol P/mmol C,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,phosphorus,K_P,Half-sat P uptake,K_P,Half-saturation concentration for phosphorus uptake,mmol P/m3,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,phosphorus,X_pcon,Constant P:C,X_pcon,Constant phosphorus to carbon ratio,mmol P/mmol C,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,phosphorus,X_pmin,Min P:C,X_pmin,Minimum phosphorus to carbon ratio,mmol P/mmol C,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,phosphorus,X_pmax,Max P:C,X_pmax,Maximum phosphorus to carbon ratio,mmol P/mmol C,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,phosphorus,R_puptake,P uptake rate,R_puptake,Maximum phosphorus uptake rate,mmol P/mmol C/d,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,silica,simSiUptake,Si uptake model,,Switch to enable silica uptake by phytoplankton (diatoms),boolean,.false.,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,silica,Si_0,Min internal Si,Si_0,Minimum internal silica concentration,mmol Si/mmol C,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,silica,K_Si,Half-sat Si uptake,K_Si,Half-saturation concentration for silica uptake,mmol Si/m3,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,silica,X_sicon,Constant Si:C,X_sicon,Constant silica to carbon ratio,mmol Si/mmol C,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,respiration,R_resp,Respiration rate,R_resp,Phytoplankton basal respiration rate at 20C,/d,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,respiration,theta_resp,Theta respiration,theta_resp,Arrhenius temperature multiplier for respiration,-,1.05,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,respiration,k_fres,Fraction to DOM,k_fres,Fraction of respiration lost as dissolved organic matter,-,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,respiration,k_fdom,DOM fraction,k_fdom,Fraction of mortality/excretion to dissolved organic matter pool,-,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,mortality,R_mortality,Mortality rate,R_mortality,Phytoplankton mortality rate,/d,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_phytoplankton,settling,w_p,Settling velocity,w_p,Sinking rate (negative = settling),m/d,,https://aquaticecodynamics.github.io/aed-science/phytoplankton.html
+aed_sedflux,config,sedflux_model,Sediment model,Theta_sed,"Switch to select sediment flux model (0=static, 1=dynamic)",-,0,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_sedflux,config,nzones,Number of zones,N_zones,Number of sediment zones for spatially varying fluxes,-,1,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_sedflux,config,Fsed_oxy,Sed O2 flux,F_sed^oxy,Sediment O2 flux for each zone (comma-separated),mmol O2/m2/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_sedflux,config,Fsed_amm,Sed NH4 flux,F_sed^amm,Sediment NH4 flux for each zone,mmol N/m2/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_sedflux,config,Fsed_nit,Sed NO3 flux,F_sed^nit,Sediment NO3 flux for each zone,mmol N/m2/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_sedflux,config,Fsed_frp,Sed PO4 flux,F_sed^frp,Sediment PO4 flux for each zone,mmol P/m2/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_sedflux,config,Fsed_rsi,Sed RSi flux,F_sed^rsi,Sediment RSi flux for each zone,mmol Si/m2/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,domain,dz_sed,Sediment layer thickness,dz_sed,Thickness of sediment layers,m,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,domain,n_sed_layers,Number of layers,N_sed,Number of sediment layers,-,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,domain,n_zones_sed,Number of zones,N_zones_sed,Number of sediment zones,-,1,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,porosity,w_sed,Burial velocity,w_sed,Sediment burial (advection) velocity,m/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,porosity,porosity,Porosity,phi,Sediment porosity,-,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,oxygen,Ksed_O2,K sed O2,K_sed_O2,Half-saturation O2 for sediment processes,mmol O2/m3,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,organic_matter,Fsed_doc,DOC sedimentation,F_sed^doc,Rate of DOC sedimentation to the sediment,mmol C/m2/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,organic_matter,Fsed_poc,POC sedimentation,F_sed^poc,Rate of POC sedimentation to the sediment,mmol C/m2/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,organic_matter,Kd_OM,OM decomposition rate,K_d^OM,Sediment organic matter decomposition rate,/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,organic_matter,theta_Kd_OM,Theta OM decomp,theta_Kd^OM,Temperature multiplier for OM decomposition,-,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,nitrogen,R_nitrif_sed,Sed nitrification,R_nitrif^sed,Nitrification rate in the sediment,/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,nitrogen,R_denit_sed,Sed denitrification,R_denit^sed,Denitrification rate in the sediment,/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,nitrogen,Ksed_NH4,K sed NH4,K_sed_NH4,Half-saturation for sediment NH4 processes,mmol N/m3,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,nitrogen,Ksed_NO3,K sed NO3,K_sed_NO3,Half-saturation for sediment NO3 denitrification,mmol N/m3,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,phosphorus,Ksed_PO4_release,K sed PO4 release,K_PO4^release,Half-saturation O2 controlling PO4 release from sediment,mmol O2/m3,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,phosphorus,K_sorp_PO4,PO4 sorption coef,K_sorp^PO4,Sediment PO4 sorption coefficient,-,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,silica,Kd_BSi,BSi dissolution rate,K_d^BSi,Biogenic silica dissolution rate in sediment,/d,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html
+aed_seddiagenesis,silica,theta_Kd_BSi,Theta BSi dissoln,theta_Kd^BSi,Temperature multiplier for BSi dissolution,-,,https://aquaticecodynamics.github.io/aed-science/sediment-biogeochemistry.html

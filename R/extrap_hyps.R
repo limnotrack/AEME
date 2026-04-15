@@ -16,7 +16,7 @@ extrap_hyps <- function(hypsograph, z_range = 0.2, ext_elev) {
   new_elev <- max(hypsograph[["elev"]]) + ext_elev
 
   hyps_sub <- hypsograph |>
-    dplyr::filter(depth <= z_slope)
+    dplyr::filter(depth >= -z_slope)
   if (nrow(hyps_sub) < 2) {
     hyps_sub <- hypsograph
   }
@@ -27,7 +27,8 @@ extrap_hyps <- function(hypsograph, z_range = 0.2, ext_elev) {
   ext_hyps$area <- predict(fit, newdata = ext_hyps)
 
   df <- ext_hyps |>
-    dplyr::bind_rows(hypsograph)
+    dplyr::bind_rows(hypsograph) |> 
+    dplyr::arrange(dplyr::desc(elev)) 
 
   return(df)
 }

@@ -170,10 +170,21 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       if (is.na(conv_factor)) {
         conv_factor <- 1
       }
-      var <- ncdf4::ncvar_get(nc, v)[, date_index] * conv_factor
-      interp_static_grid(var = var,
-                         midpoints = midpoints,
-                         out_depths = out_depths)
+      var_out <- ncdf4::ncvar_get(nc, v)
+      if (length(dim(var_out)) == 3) {
+        var_out <- var_out[, , date_index, drop = FALSE]
+      } else if (length(dim(var_out)) == 2) {
+        var <- var_out[, date_index, drop = FALSE]  * conv_factor
+        out <- interp_static_grid(var = var,
+                                  midpoints = midpoints,
+                                  out_depths = out_depths)
+        return(out)
+      } else if (length(dim(var_out)) == 1) {
+        var_out <- var_out[date_index] * conv_factor
+        return(var_out)
+      } else {
+        cli::cli_abort(paste("Variable", v, "has unsupported number of dimensions"))
+      }
     })
     
     out_list <- c(out_list, out_vars)

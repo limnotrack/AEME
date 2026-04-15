@@ -329,12 +329,19 @@ test_that("running GLM-AED works", {
   path = "aeme"
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
-                     ext_elev = 5, use_bgc = TRUE)
-  aeme <- aeme |> 
+                     ext_elev = 5, use_bgc = TRUE) |> 
     run_aeme()
+  html_file <- plot_glm_config(aeme = aeme)
+  testthat::expect_true(file.exists(html_file))
+  
   plot_output(aeme, var_sim = "CHM_oxy") /
     plot_output(aeme)/
     plot_output(aeme, var_sim = "PHY_tchla")
+  
+  diag_plot <- plot_glm_diagnostics(aeme = aeme)
+  testthat::expect_true(is.list(diag_plot))
+  chk <- sapply(diag_plot, \(x) ggplot2::is_ggplot(x))
+  testthat::expect_true(all(chk))
   
   file <- get_model_outfile(aeme = aeme, model = model, path = path)
   

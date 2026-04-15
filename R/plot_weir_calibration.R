@@ -1,6 +1,10 @@
 #' Visualise calibrated weir parameters (C, h_inv) from calc_water_balance().
 #'
 #' @inheritParams build_aeme
+#' 
+#' @import ggplot2
+#' @importFrom scales label_comma
+#' @importFrom patchwork plot_layout plot_annotation
 #'
 #' @return A patchwork object.
 #' @export

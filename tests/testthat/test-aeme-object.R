@@ -332,7 +332,7 @@ test_that("var_aeme can be checked correctly", {
   chk <- check_aeme_vars(var_sim)
   testthat::expect_true(length(chk) == 1 & chk == var_sim)
   testthat::expect_error({
-    check_aeme_vars("temp")
+    check_aeme_vars("temp789")
   })
 })
 

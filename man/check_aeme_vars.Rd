@@ -4,10 +4,10 @@
 \alias{check_aeme_vars}
 \title{Check AEME variable names}
 \usage{
-check_aeme_vars(vars)
+check_aeme_vars(x)
 }
 \arguments{
-\item{vars}{Character vector of variable names to check.}
+\item{x}{Character vector of variable names to check.}
 }
 \value{
 Invisibly returns TRUE if all variables are valid, otherwise throws 

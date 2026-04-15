@@ -10,8 +10,7 @@
 get_glm_sed_params <- function(aeme, path, lake_dir = NULL) {
   if (is.null(lake_dir)) {
     if (missing(aeme)) {
-      cli::cli_abort("Either {.arg lake_dir} or both {.arg aeme} and
-                     {.arg path} must be provided.")
+      cli::cli_abort("Either {.arg lake_dir} or {.arg aeme} must be provided.")
     }
     if (missing(path)) {
       path <- get_aeme_path(aeme)
