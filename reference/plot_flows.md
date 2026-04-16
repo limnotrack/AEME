@@ -33,4 +33,7 @@ A ggplot object
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme <- readRDS(aeme_file)
 plot_flows(aeme = aeme)
+#> Error in dplyr::mutate(dplyr::bind_rows(lapply(names(lst$data), function(n) {    dplyr::mutate(lst$data[[n]], name = n)})), HYD_flow = .data[["outflow"]]): ℹ In argument: `HYD_flow = .data[["outflow"]]`.
+#> Caused by error in `.data[["outflow"]]`:
+#> ! Column `outflow` not found in `.data`.
 ```
