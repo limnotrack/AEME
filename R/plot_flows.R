@@ -53,8 +53,7 @@ plot_flows <- function(aeme, flow = c("inflow", "outflow"),
       lst$data[[n]] |>
         dplyr::mutate(name = n)
     }) |>
-      dplyr::bind_rows() |>
-      dplyr::mutate(HYD_flow = .data[["outflow"]])
+      dplyr::bind_rows() 
     outf <- df
   }
 
