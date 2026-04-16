@@ -7,14 +7,18 @@
 yaml_to_aeme(path, file)
 }
 \arguments{
-\item{path}{filepath; where input files are located relative to the current 
-working directory.}
+\item{path}{directory where aeme.yaml file is located. Can be used instead of `file` argument.}
 
-\item{file}{filepath; to aeme.yaml file}
+\item{file}{filepath; to aeme.yaml file. Can be used instead of `path` and `file` arguments.}
 }
 \value{
 aeme object
 }
 \description{
 Convert aeme.yaml file to list
+}
+\examples{
+aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
+aeme <- yaml_to_aeme(file = aeme_yaml)
+aeme
 }
