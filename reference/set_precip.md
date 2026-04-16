@@ -13,7 +13,10 @@ structure.
 ## Usage
 
 ``` r
-set_precip(aeme, type = "precip_as_inflow")
+set_precip(
+  aeme,
+  type = c("inflow", "met", "precip_as_inflow", "precip_as_met")
+)
 ```
 
 ## Arguments
@@ -24,10 +27,11 @@ set_precip(aeme, type = "precip_as_inflow")
 
 - type:
 
-  character. Either "precip_as_met" or "precip_as_inflow". Default is
-  "precip_as_inflow". If "precip_as_met", precipitation is treated as a
-  meteorological input in mm. If "precip_as_inflow", precipitation is
-  converted to an inflow volume in m3.
+  character. Either "met" or "inflow". Default is "inflow". If "met",
+  precipitation is treated as a meteorological input in mm. If "inflow",
+  precipitation is converted to an inflow volume in m3. It is also
+  possible to use the old argument values "precip_as_met" and
+  "precip_as_inflow" for backward compatibility.
 
 ## Value
 

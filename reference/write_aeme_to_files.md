@@ -36,14 +36,9 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 model_controls = model_controls, ext_elev = 5)
 #> ℹ Using observed water level
 #> ! Missing values in observed water level
-#> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Calculating lake level using lake depth and a sinisoidal function.
-#> ℹ Building GLM-AED for lake wainamu
-#> ✔ GLM nml validation completed - no issues detected.
+#> Error in dplyr::select(dplyr::bind_rows(outf), Date, HYD_flow): Can't select columns that don't exist.
+#> ✖ Column `HYD_flow` doesn't exist.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-04-14 03:19:57]
-#> → GLM-AED running... [2026-04-14 03:19:57]
-#> ✔ GLM-AED run successful! [2026-04-14 03:19:58]
-#> ✔ Model run complete! [2026-04-14 03:19:58]
+#> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): ✖ `model_controls` need to be provided to load model output.
 write_aeme_to_files(aeme, path)
 ```
