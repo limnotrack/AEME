@@ -12,16 +12,13 @@ test_that("running DYRESM works", {
   if (sys_OS == "osx") {
     testthat::skip("Skipping test on macOS")
   }
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
+  aeme <- yaml_to_aeme(file = aeme_yaml)
   model_controls <- get_model_controls(use_bgc = F)
   inf_factor = c("dy_cd" = 1)
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
+  path <- tempdir()
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
@@ -460,22 +457,17 @@ test_that("running models in parallel works", {
 })
 
 test_that("running models with wbal method = 1", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
+  aeme <- yaml_to_aeme(file = aeme_yaml)
+  path <- tempdir()
   lke <- lake(aeme)
-  unlink(file.path(path, paste0(lke$id, "_", tolower(lke$name))),
-         recursive = TRUE)
   model_controls <- get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
-    model <- c("glm_aed")
+    model <- c("dy_cd")
   }
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
@@ -487,8 +479,7 @@ test_that("running models with wbal method = 1", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
                    parallel = TRUE, ncores = 2)
-  plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
-              facet = F) 
+  plot_wlev(aeme = aeme) 
   
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -541,19 +532,11 @@ test_that("running models with wbal method = 1", {
 })
 
 test_that("running models with wbal method = 3", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  # unlink(path, recursive = TRUE)
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
+  aeme <- yaml_to_aeme(file = aeme_yaml)
+  path <- tempdir()
   lke <- lake(aeme)
-  unlink(file.path(path, paste0(lke$id, "_", tolower(lke$name))),
-         recursive = TRUE)
   model_controls <- get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
@@ -568,9 +551,9 @@ test_that("running models with wbal method = 3", {
   outflows(aeme) <- outf
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls, 
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
-                     wb_method = 3, calc_wlev = F, hum_type = 1)
+                     wb_method = 3, calc_wlev = F)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
                    parallel = TRUE, ncores = 2)
@@ -651,22 +634,17 @@ test_that("running models with wbal method = 3", {
 
 
 test_that("running models in parallel with no wbal calculated", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
+  aeme <- yaml_to_aeme(file = aeme_yaml)
+  path <- tempdir()
   model_controls <- get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = FALSE)
   outf <- outflows(aeme)
   names(outf$data)
@@ -692,15 +670,10 @@ test_that("running models in parallel with no wbal calculated", {
 
 
 test_that("running models with no wbal/outflows calculated", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
+  aeme <- yaml_to_aeme(file = aeme_yaml)
+  path <- tempdir()
   model_controls <- get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
@@ -712,7 +685,7 @@ test_that("running models with no wbal/outflows calculated", {
   outflows(aeme) <- outf
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = F)
   outf <- outflows(aeme)
   names(outf$data)
