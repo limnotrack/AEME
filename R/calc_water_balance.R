@@ -343,9 +343,9 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   } else {
     vol_outflow <- outf |>
       dplyr::bind_rows() |>
-      dplyr::select(c("Date","outflow")) |>
+      dplyr::select(Date, HYD_flow) |>
       dplyr::group_by(Date) |>
-      dplyr::summarise(HYD_outflow = sum(outflow))
+      dplyr::summarise(HYD_outflow = sum(HYD_flow))
   }
   
   # water balance ----

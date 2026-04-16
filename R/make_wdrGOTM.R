@@ -19,6 +19,11 @@ make_wdrGOTM <- function(outf, path_gotm, outf_factor = 1) {
         dplyr::select(-model) 
     }
     outf_df <- outf_df[complete.cases(outf_df), ]
+    
+    if ("HYD_flow" %in% colnames(outf_df)) {
+      outf_df <- outf_df |>
+        dplyr::rename(outflow = HYD_flow) 
+    }
 
     outf_df <- outf_df |>
       dplyr::mutate(outflow = (outflow / 86400 * -1 * outf_factor),
