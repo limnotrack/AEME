@@ -30,6 +30,7 @@ Imports:
     RColorBrewer,
     readr,
     rLakeAnalyzer,
+    rlang,
     rstudioapi,
     scales,
     sf,
