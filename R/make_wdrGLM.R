@@ -40,7 +40,9 @@ make_wdrGLM <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy,
       }
       df_wdr <- Reduce(function(x, y) dplyr::full_join(x, y, by = "Date"), outf)
     } else if (length(outf) == 1){
-      df_wdr <- outf[[1]]
+      wdr_name <- names(outf)[1]
+      df_wdr <- outf[[1]] |> 
+        dplyr::rename(!!wdr_name := HYD_flow)
     }
     
     if ("model" %in% colnames(df_wdr)) {
