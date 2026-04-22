@@ -36,5 +36,9 @@ set_aed_sed_const2d <- function(aeme, path, lake_dir = NULL) {
   
   write_config_glm_aed(model_config = model_config, model_dir = model_dir)
   
+  cfg <- configuration(aeme)
+  cfg[["glm_aed"]] <- model_config
+  configuration(aeme) <- cfg
+  
   return(invisible(aeme))
 }
