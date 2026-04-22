@@ -100,8 +100,9 @@ input_model_parameters <- function(aeme, model, param, path) {
       aeme_outf <- outflows(aeme)
       wdr <- aeme_outf[["data"]]
       for (c in names(wdr)) {
+        flow_col <- ifelse(c == "wbal", "outflow", "HYD_flow")
         value <- unlist(param[["value"]][wdr_idx])
-        wdr[[c]][["outflow"]] <- wdr[[c]][["outflow"]] * value
+        wdr[[c]][[flow_col]] <- wdr[[c]][[flow_col]] * value
       }
       if (m == "glm_aed") {
         make_wdrGLM(outf = wdr, path_glm = model_path, update_nml = FALSE)
