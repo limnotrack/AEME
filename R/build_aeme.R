@@ -37,12 +37,11 @@
 #' values. Default = TRUE.
 #' @param config list; loaded via `config <- yaml::read_yaml("aeme.yaml")`
 #'
-#' @return builds the model ensemble configuration.
-#'
 #' @importFrom sf sf_use_s2 st_transform st_centroid st_coordinates st_buffer
 #' @importFrom dplyr select filter
 #' @importFrom utils data read.csv
 #' @importFrom withr local_locale local_timezone
+#' @importFrom cli cli_abort
 #'
 #' @return aeme object
 #'
@@ -56,8 +55,6 @@
 #' path <- file.path(tmpdir, "lake")
 #' aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 #' model_controls <- get_model_controls()
-#' inf_factor = c("glm_aed" = 1)
-#' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
 #' build_aeme(path = path, aeme = aeme, model = model,
 #'                model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
@@ -67,10 +64,8 @@ build_aeme <- function(aeme = NULL,
                        model = c("dy_cd", "glm_aed", "gotm_wet"),
                        path = ".",
                        model_controls = NULL,
-                       inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
-                                      "gotm_wet" = 1),
-                       outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
-                                       "gotm_wet" = 1),
+                       inf_factor = NULL,
+                       outf_factor = NULL,
                        ext_elev = 0,
                        use_bgc = FALSE,
                        calc_wbal = TRUE,
@@ -82,25 +77,6 @@ build_aeme <- function(aeme = NULL,
                        est_swr_hr = TRUE,
                        config = NULL
 ) {
-  
-  # Load arguments
-  # config = NULL
-  # inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
-  #                "gotm_wet" = 1)
-  # outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
-  #                 "gotm_wet" = 1)
-  # ext_elev = 0
-  # use_bgc = T
-  # calc_wbal = T
-  # calc_wlev = T
-  # use_aeme = FALSE
-  # coeffs = NULL
-  # hum_type = 3
-  # est_swr_hr = TRUE
-  # wb_method = 2
-  # print = TRUE
-  # path = "."
-  
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
@@ -111,14 +87,40 @@ build_aeme <- function(aeme = NULL,
   model <- check_model(model = model)
   path <- check_path(path = path, create = TRUE)
   
-  if (is.null(model_controls) & !is.null(aeme)) {
-    cfg <- configuration(aeme)
-    model_controls <- cfg$model_controls
+  if (!wb_method %in% 1:3) {
+    cli::cli_abort(c("`wb_method` must be 1, 2, or 3.",
+                 "i" = "1: no water balance correction applied.",
+                 "i" = "2: correcting water balance using estimated outflows.",
+                 "i" = "3: correcting water balance using estimated inflows and outflows."))
   }
-  if (is.null(model_controls) & !is.null(aeme)) {
-    stop("model_controls must be supplied.")
-  } else if (is.null(model_controls) & is.null(aeme)) {
-    stop("Either 'aeme' or 'model_controls' must be supplied.")
+  if (!hum_type %in% 1:4) {
+    cli::cli_abort(c("`hum_type` must be 1, 2, 3, or 4.",
+                 "i" = "1: relative humidity (%).",
+                 "i" = "2: wet-bulb temperature.",
+                 "i" = "3: dew point temperature.",
+                 "i" = "4: specific humidity (kg/kg)."))
+  }
+  
+  all_models <- c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1)
+  if (is.null(inf_factor))  inf_factor  <- all_models
+  if (is.null(outf_factor)) outf_factor <- all_models
+  
+  if (is.null(model_controls)) {
+    if (!is.null(aeme)) {
+      cfg <- configuration(aeme)
+      model_controls <- cfg$model_controls
+    } else {
+      model_controls <- get_model_controls(use_bgc = use_bgc)
+    }
+  }
+  
+  if (is.null(model_controls)) {
+    cli::cli_abort(
+      "{.arg model_controls} could not be extracted from {.arg aeme}. Please 
+      provide a dataframe of model controls using the 
+      {.code get_model_controls()} function.",
+      class = "aeme_error_model_controls"
+    )
   }
   
   # Metadata
