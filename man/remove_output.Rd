@@ -10,8 +10,6 @@ remove_output(aeme)
 \item{aeme}{aeme; object.}
 }
 \value{
-builds the model ensemble configuration.
-
 aeme object
 }
 \description{
