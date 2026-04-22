@@ -56,7 +56,7 @@ set_precip <- function(aeme, type = c("inflow", "met", "precip_as_inflow",
                   precip_mm = precip_m * 1000) |> 
     dplyr::select(Date, precip_mm, precip_m)
   
-  if (type == "precip_as_inflow") {
+  if (type == "inflow") {
     
     # Check if water level observations are present
     obs <- get_obs(aeme, var_sim = "LKE_lvlwtr")
@@ -106,7 +106,7 @@ set_precip <- function(aeme, type = c("inflow", "met", "precip_as_inflow",
       ))
     
     aeme <- add_inflow(aeme = aeme, inflow = inf_precip)
-  } else if (type == "precip_as_met") {
+  } else if (type == "met") {
     inf <- get_inflows(aeme)
     inf_names <- names(inf)
     if ("precip" %in% inf_names) {
@@ -132,6 +132,8 @@ set_precip <- function(aeme, type = c("inflow", "met", "precip_as_inflow",
     } else {
       stop("No 'precip' inflow found to convert to meteorological input")
     }
+  } else {
+    cli::cli_abort("Invalid type specified. Must be either 'inflow' or 'met'.")
   }
   return(aeme)
 }
