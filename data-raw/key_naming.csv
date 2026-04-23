@@ -125,5 +125,5 @@ MET_wndspd,wind_ms^-1,WindSpeed,WindSpeed,,,Wind speed,Wind_speed_m/s,Wind~speed
 MET_wnddir,wind_direction_degrees,,,,,Wind direction,Wind_direction_degree,Wind~direction~(degree),degree,1,,FALSE,NA,0,360,wind direction|MET_wnddir|wdir|dir
 MET_wnduvu,,,,u10,,u wind speed,u_wind_speed_m/s,u~wind~speed~(m/s),m/s,1,,FALSE,NA,,,u wind speed|MET_wnduvu|u10
 MET_wnduvv,,,,v10,,v wind speed,v_wind_speed_m/s,v~wind~speed~(m/s),m/s,1,,FALSE,NA,,,v wind speed|MET_wnduvv|v10
-MET_pprain,rain_m,Rain,Rain,precip,,Rain,Rain_m,Rain~(m),m,1,,FALSE,NA,0,,rain|MET_pprain|precip
-MET_ppsnow,,Snow,Snow,,,Snow,Snow_m,Snow~(m),m,1,,FALSE,NA,0,,snow|MET_ppsnow
+MET_pprain,rain_mm,Rain,Rain,precip,,Rain,Rain_m,Rain~(mm),mm,1,,FALSE,NA,0,,rain|MET_pprain|precip
+MET_ppsnow,,Snow,Snow,,,Snow,Snow_mm,Snow~(mm),mm,1,,FALSE,NA,0,,snow|MET_ppsnow
