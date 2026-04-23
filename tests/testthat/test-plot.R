@@ -44,7 +44,22 @@ test_that("plotting inflows and outflows", {
   aeme <- readRDS(aeme_file)
   p1 <- plot_flows(aeme = aeme)
   testthat::expect_true(ggplot2::is_ggplot(p1))
-  p2 <- plot_flows(aeme = aeme, flow = "inflow", var_sim = "HYD_temp")
+  p2 <- plot_flows(aeme = aeme, flow = "inflow", var_sim = "temp")
+  testthat::expect_true(ggplot2::is_ggplot(p2))
+  testthat::expect_error({
+    p3 <- plot_flows(aeme = aeme, flow = "outflow", var_sim = "HYD_temp")
+  })
+  
+  path <- tempdir()
+  model_controls <- get_model_controls()
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5) |> 
+    run_aeme()
+  
+  p1 <- plot_flows(aeme = aeme)
+  testthat::expect_true(ggplot2::is_ggplot(p1))
+  p2 <- plot_flows(aeme = aeme, flow = "inflow", var_sim = "temp")
   testthat::expect_true(ggplot2::is_ggplot(p2))
   testthat::expect_error({
     p3 <- plot_flows(aeme = aeme, flow = "outflow", var_sim = "HYD_temp")
