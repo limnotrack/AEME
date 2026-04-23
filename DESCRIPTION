@@ -22,6 +22,7 @@ Imports:
     jsonlite,
     lubridate,
     lwgeom,
+    methods,
     ncdf4,
     parallel,
     patchwork,
