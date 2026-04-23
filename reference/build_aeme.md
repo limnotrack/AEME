@@ -115,19 +115,59 @@ aeme object
 ## Examples
 
 ``` r
-tmpdir <- tempdir()
+# Read in example AEME object and build model configuration files for GLM-AED
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
-# Copy files from package into tempdir
-file.copy(aeme_dir, tmpdir, recursive = TRUE)
-#> [1] TRUE
-path <- file.path(tmpdir, "lake")
-aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+path <- "aeme" # subdirectory within working directory where model configuration files will be written
+aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
 #> Warning: ! `lake$id` was not a <character> and was coerced.
 #> ℹ Supply `lake$id` as a character string to avoid this.
 model_controls <- get_model_controls()
 model <- c("glm_aed")
-build_aeme(path = path, aeme = aeme, model = model,
-               model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-               use_bgc = FALSE)
-#> Error: object 'inf_factor' not found
+aeme <- aeme |> 
+  build_aeme(path = path, model = model, model_controls = model_controls,
+           ext_elev = 5)
+#> Created missing directory: D:\a\AEME\AEME\docs\reference\aeme
+#> ℹ Using observed water level.
+#> ! Missing values in observed water level.
+#> ℹ Correcting water balance using estimated outflows (method = 2).
+#> ℹ Calculating lake level using lake depth and a sinisoidal function.
+#> ℹ Building GLM-AED for lake wainamu
+#> ℹ Copied in GLM nml file
+#> ℹ Copied in AED nml file and supporting files
+#> ✔ GLM nml validation completed - no issues detected.
+
+# Switch on biogeochemistry and use default model controls
+aeme <- aeme |>
+  build_aeme(path = path, model = model, model_controls = model_controls, 
+              ext_elev = 5, use_bgc = TRUE)
+#> ! Missing state variables in inflows:
+#> ! ZOO_zoo1
+#> ℹ Added default values for missing variables.
+#> ℹ Using observed water level.
+#> ! Missing values in observed water level.
+#> ℹ Correcting water balance using estimated outflows (method = 2).
+#> ℹ Calculating lake level using lake depth and a sinisoidal function.
+#> ℹ Building GLM-AED for lake wainamu
+#> ℹ 15 replaced with 41.6285
+#> ℹ 15 replaced with 16.6514
+#> ℹ 225 replaced with 312.5
+#> ℹ 2.25 replaced with 1.4279
+#> ℹ 21 replaced with 21.4183
+#> ℹ 6.96 replaced with 1.0709
+#> ℹ 19.8 replaced with 7.1394
+#> ℹ 0.008 replaced with 0.3229
+#> ℹ 0.05 replaced with 0.3229
+#> ℹ 0.05 replaced with 0.3229
+#> ℹ PHY_cyano 2 replaced with 0.24022
+#> ℹ PHY_diatom 10 replaced with 0.300275
+#> ℹ PHY_green 0.04 replaced with 0.300275
+#> ℹ 100 replaced with 1
+#> ℹ Using default zooplankton initialisation
+#> ✔ Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,
+#>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,
+#>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,
+#>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
+#>   aed_phytoplankton, aed_totals
+#> ℹ Setting up AED aed_sed_const2d sediment zones: 2
+#> ✔ GLM nml validation completed - no issues detected.
 ```

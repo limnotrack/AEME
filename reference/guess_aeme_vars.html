@@ -74,7 +74,7 @@ found for an invalid variable, a warning is issued.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">guess_aeme_vars</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">guess_aeme_vars</span><span class="op">(</span><span class="va">x</span>, <span class="va">key_filter</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -83,6 +83,14 @@ found for an invalid variable, a warning is issued.</p>
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>Character vector of variable names to check.</p></dd>
+
+
+<dt id="arg-key-filter">key_filter<a class="anchor" aria-label="anchor" href="#arg-key-filter"></a></dt>
+<dd><p>Optional string to filter the AEME variable names by a
+specific keyword. If provided, only AEME variable names containing this keyword will be
+considered for matching. This can help improve matching accuracy by limiting the
+pool of candidate variable names to those relevant to a particular context
+(e.g., "met" for meteorological variables).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -101,6 +109,13 @@ the closest official AEME variable name where possible.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Variable 'tp' matched to 'PHS_tp'.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Variable 'tn' matched to 'NIT_tn'.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "HYD_temp"  "CHM_oxy"   "CHM_ph"    "PHY_tchla" "PHS_tp"    "NIT_tn"   </span>
+<span class="r-in"><span><span class="fu">guess_aeme_vars</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temp"</span>, <span class="st">"swr"</span>, <span class="st">"lwr"</span>, <span class="st">"wind"</span>, <span class="st">"precip"</span><span class="op">)</span>, key_filter <span class="op">=</span> <span class="st">"MET"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Variable 'temp' matched to 'MET_tmpair'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Variable 'swr' matched to 'MET_radswd'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Variable 'lwr' matched to 'MET_radlwd'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Variable 'wind' matched to 'MET_wndspd'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Variable 'precip' matched to 'MET_pprain'.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MET_tmpair" "MET_radswd" "MET_radlwd" "MET_wndspd" "MET_pprain"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -281,6 +281,8 @@
   Plot phytoplankton variables
 - [`precip_status()`](https://limnotrack.com/reference/precip_status.md)
   : Get current precipitation status in Aeme object
+- [`print(`*`<nml>`*`)`](https://limnotrack.com/reference/print.nml.md)
+  : Print an nml object
 - [`read_aed_param_csv()`](https://limnotrack.com/reference/read_aed_param_csv.md)
   [`write_aed_param_csv()`](https://limnotrack.com/reference/read_aed_param_csv.md)
   : Read and write AED parameter CSV files These functions handle
@@ -355,6 +357,8 @@
   : Print Aeme object to the console
 - [`summary(`*`<Aeme>`*`)`](https://limnotrack.com/reference/summary-aeme-method.md)
   : Summarise an Aeme object
+- [`summary.nml()`](https://limnotrack.com/reference/summary.nml.md) :
+  Summarise an nml object
 - [`` `time<-`() ``](https://limnotrack.com/reference/time-set.md) : Set
   the time slot of an Aeme object
 - [`time()`](https://limnotrack.com/reference/time.md) : Access the time

@@ -32,6 +32,5 @@ Normalized file path as a character string.
 
 ``` r
 check_path("aeme", create = TRUE)
-#> Created missing directory: D:\a\AEME\AEME\docs\reference\aeme
 #> [1] "D:\\a\\AEME\\AEME\\docs\\reference\\aeme"
 ```
