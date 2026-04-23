@@ -54,10 +54,9 @@ plot_flows <- function(aeme, flow = c("inflow", "outflow"),
         dplyr::mutate(name = n)
     }) |>
       dplyr::bind_rows() |>
-      dplyr::mutate(HYD_flow = .data[["outflow"]])
+      dplyr::mutate(outflow = HYD_flow)
     outf <- df
   }
-
 
   df <- dplyr::bind_rows(inf, outf) |>
     dplyr::select(dplyr::all_of(c("Date", "name", var_sim))) |>
