@@ -17,12 +17,9 @@ knitr::opts_chunk$set(
 )
 library(AEME)
 
-tmpdir <- tempdir()
+path <- tempdir()
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
-# Copy files from package into tempdir
-file.copy(aeme_dir, tmpdir, recursive = TRUE)
-path <- file.path(tmpdir, "lake")
-aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
+aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
 
 data("key_naming", package = "AEME")
 
