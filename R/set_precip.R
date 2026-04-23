@@ -31,8 +31,16 @@ set_precip <- function(aeme, type = c("inflow", "met", "precip_as_inflow",
   type <- rlang::arg_match(type)
   
   # 2. Map old names to new names for internal consistency
-  if (type == "precip_as_inflow") type <- "inflow"
-  if (type == "precip_as_met") type <- "met"
+  if (type == "precip_as_inflow") {
+    cli::cli_warn("The argument value 'precip_as_inflow' is deprecated. Please 
+                  use 'inflow' instead.")
+    type <- "inflow"
+  }
+  if (type == "precip_as_met") {
+    cli::cli_warn("The argument value 'precip_as_met' is deprecated. Please use 
+                  'met' instead.")
+    type <- "met"
+  }
   
   aeme <- check_aeme(aeme)
   met <- get_met(aeme)
