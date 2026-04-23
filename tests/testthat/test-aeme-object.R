@@ -294,6 +294,26 @@ test_that("aeme object inflows can be manipulated", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   
+  aeme <- set_precip(aeme = aeme, type = "inflow")
+  inf <- get_inflows(aeme)
+  met <- get_met(aeme)
+  status1 <- precip_status(aeme)
+  testthat::expect_true("precip" %in% names(inf))
+  testthat::expect_true(all(met$MET_pprain == 0))
+  
+  aeme <- set_precip(aeme = aeme, type = "met")
+  inf <- get_inflows(aeme)
+  met <- get_met(aeme)
+  status2 <- precip_status(aeme)
+  testthat::expect_true(status2 != status1)
+  testthat::expect_true(!("precip" %in% names(inf)))
+  testthat::expect_true(any(met$MET_pprain > 0))
+
+  
+  # Test deprecated type
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  
   aeme <- set_precip(aeme = aeme, type = "precip_as_inflow")
   inf <- get_inflows(aeme)
   met <- get_met(aeme)
