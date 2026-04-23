@@ -81,15 +81,18 @@ aeme object
 Configure an ensemble of lake model simulations from basic set of inputs.
 }
 \examples{
-tmpdir <- tempdir()
+# Read in example AEME object and build model configuration files for GLM-AED
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
-# Copy files from package into tempdir
-file.copy(aeme_dir, tmpdir, recursive = TRUE)
-path <- file.path(tmpdir, "lake")
-aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+path <- "aeme" # subdirectory within working directory where model configuration files will be written
+aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
 model_controls <- get_model_controls()
 model <- c("glm_aed")
-build_aeme(path = path, aeme = aeme, model = model,
-               model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-               use_bgc = FALSE)
+aeme <- aeme |> 
+  build_aeme(path = path, model = model, model_controls = model_controls,
+           ext_elev = 5)
+
+# Switch on biogeochemistry and use default model controls
+aeme <- aeme |>
+  build_aeme(path = path, model = model, model_controls = model_controls, 
+              ext_elev = 5, use_bgc = TRUE)
 }
