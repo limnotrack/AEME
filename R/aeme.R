@@ -83,7 +83,7 @@ setClass("Aeme",
 # Validity checking ----
 # Restored from commented-out state and expanded to cover all slots properly.
 # validObject() in setter methods will now actually enforce these rules.
-# Errors: hard failures — wrong type or impossible value; object cannot be used.
+# Errors: hard failures - wrong type or impossible value; object cannot be used.
 # Warnings: suspicious values the user should know about but that don't block construction.
 setValidity("Aeme", function(object) {
   errors <- character()
@@ -302,7 +302,7 @@ aeme_constructor <- function(
     colnames(parameters) <- param_names
   }
   
-  # Validate top-level argument types — each checked individually so the user
+  # Validate top-level argument types - each checked individually so the user
   # sees exactly which argument is wrong, not just "something is wrong".
   list_args <- list(
     lake = lake, time = time, configuration = configuration,
@@ -430,7 +430,7 @@ aeme_constructor <- function(
   if (is.numeric(lake$area) && lake$area <= 0) {
     cli::cli_abort(
       c("{.arg lake$area} must be positive.",
-        "x" = "Got {.val {lake$area}} m²."),
+        "x" = "Got {.val {lake$area}} m^2."),
       class = "aeme_error_lake_area"
     )
   }
@@ -649,7 +649,7 @@ aeme_constructor <- function(
   if (is.numeric(input$Kw) && input$Kw <= 0) {
     cli::cli_warn(
       c("!" = "{.arg input$Kw} {.val {input$Kw}} is <= 0.",
-        "i" = "The light extinction coefficient should be a positive value (m⁻¹)."),
+        "i" = "The light extinction coefficient should be a positive value (m^-1)."),
       class = "aeme_warn_kw"
     )
   }
@@ -1412,8 +1412,6 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
     )
   }
   
-  # Use slot() rather than eval(parse(...)) — safer and avoids name collisions
-  # with base generics like time(), output(), etc.
   obj <- slot(x, y)
   
   if (is.list(obj) && all(sapply(obj, is.null))) {
