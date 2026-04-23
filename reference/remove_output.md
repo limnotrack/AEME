@@ -16,6 +16,4 @@ remove_output(aeme)
 
 ## Value
 
-builds the model ensemble configuration.
-
 aeme object

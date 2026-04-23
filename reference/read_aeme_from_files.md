@@ -28,8 +28,8 @@ model_controls <- get_model_controls()
 aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
 model_controls = model_controls, ext_elev = 3)
 #> Created missing directory: D:\a\AEME\AEME\docs\reference\test_write
-#> ℹ Using observed water level
-#> ! Missing values in observed water level
+#> ℹ Using observed water level.
+#> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED for lake wainamu
@@ -37,10 +37,10 @@ model_controls = model_controls, ext_elev = 3)
 #> ℹ Copied in AED nml file and supporting files
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-04-16 21:32:25]
-#> → GLM-AED running... [2026-04-16 21:32:25]
-#> ✔ GLM-AED run successful! [2026-04-16 21:32:25]
-#> ✔ Model run complete! [2026-04-16 21:32:25]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-04-23 03:13:16]
+#> → GLM-AED running... [2026-04-23 03:13:16]
+#> ✔ GLM-AED run successful! [2026-04-23 03:13:16]
+#> ✔ Model run complete! [2026-04-23 03:13:16]
 write_aeme_to_files(aeme, path)
 aeme_path <- get_lake_dir(aeme = aeme, path = path)
 aeme2 <- read_aeme_from_files(aeme_path)

@@ -1,10 +1,13 @@
-# Access parameters slot
+# Access the parameters slot of an Aeme object
 
-Access parameters slot
+Access the parameters slot of an Aeme object
 
 ## Usage
 
 ``` r
+parameters(aeme)
+
+# S4 method for class 'Aeme'
 parameters(aeme)
 ```
 
@@ -16,4 +19,4 @@ parameters(aeme)
 
 ## Value
 
-dataframe of parameters
+Dataframe of parameters.

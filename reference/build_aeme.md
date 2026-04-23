@@ -11,8 +11,8 @@ build_aeme(
   model = c("dy_cd", "glm_aed", "gotm_wet"),
   path = ".",
   model_controls = NULL,
-  inf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
-  outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
+  inf_factor = NULL,
+  outf_factor = NULL,
   ext_elev = 0,
   use_bgc = FALSE,
   calc_wbal = TRUE,
@@ -110,8 +110,6 @@ build_aeme(
 
 ## Value
 
-builds the model ensemble configuration.
-
 aeme object
 
 ## Examples
@@ -124,61 +122,12 @@ file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #> [1] TRUE
 path <- file.path(tmpdir, "lake")
 aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+#> Warning: ! `lake$id` was not a <character> and was coerced.
+#> ℹ Supply `lake$id` as a character string to avoid this.
 model_controls <- get_model_controls()
-inf_factor = c("glm_aed" = 1)
-outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
 build_aeme(path = path, aeme = aeme, model = model,
                model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
                use_bgc = FALSE)
-#> ℹ Using observed water level
-#> ! Missing values in observed water level
-#> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Calculating lake level using lake depth and a sinisoidal function.
-#> ℹ Building GLM-AED for lake wainamu
-#> ℹ Copied in GLM nml file
-#> ℹ Copied in AED nml file and supporting files
-#> ✔ GLM nml validation completed - no issues detected.
-#>             AEME 
-#> -------------------------------------------------------------------
-#>   Lake
-#> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;
-#> Area: 152343 m2
-#> -------------------------------------------------------------------
-#>   Time
-#> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#>  Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1
-#> -------------------------------------------------------------------
-#>   Configuration
-#>     Model controls: Present
-#>     Use biogeochemical model: Yes 
-#>           Physical   |   Biogeochemical
-#> DY-CD    : Absent     |   Absent 
-#> GLM-AED  : Present    |   Present
-#> GOTM-WET : Absent     |   Absent 
-#> -------------------------------------------------------------------
-#>   Observations
-#> Lake: Present; Level: Present
-#> -------------------------------------------------------------------
-#>   Input
-#> Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=44);
-#> Meteo: Present; Use longwave: TRUE; Kw: 1.31
-#> -------------------------------------------------------------------
-#>   Inflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Outflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Water balance
-#> Method: 2; Use: obs; Modelled: Absent; Water balance: Present
-#> -------------------------------------------------------------------
-#>   Parameters: 
-#> Number of parameters: 0
-#> -------------------------------------------------------------------
-#>   Output: 
-#> 
-#> DY-CD:    
-#> GLM-AED:  
-#> GOTM-WET: 
+#> Error: object 'inf_factor' not found
 ```

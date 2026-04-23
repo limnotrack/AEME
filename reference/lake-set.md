@@ -1,10 +1,13 @@
-# Set lake in Aeme object
+# Set the lake slot of an Aeme object
 
-Update the lake slot of an Aeme object
+Set the lake slot of an Aeme object
 
 ## Usage
 
 ``` r
+lake(aeme) <- value
+
+# S4 method for class 'Aeme'
 lake(aeme) <- value
 ```
 
@@ -16,7 +19,7 @@ lake(aeme) <- value
 
 - value:
 
-  New lake data to be assigned.
+  New lake list to assign.
 
 ## Value
 

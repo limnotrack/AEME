@@ -1,10 +1,13 @@
-# Set configuration in Aeme object
+# Set the configuration slot of an Aeme object
 
-Update the configuration slot of an Aeme object
+Set the configuration slot of an Aeme object
 
 ## Usage
 
 ``` r
+configuration(aeme) <- value
+
+# S4 method for class 'Aeme'
 configuration(aeme) <- value
 ```
 
@@ -16,7 +19,7 @@ configuration(aeme) <- value
 
 - value:
 
-  New configuration data to be assigned.
+  New configuration list to assign.
 
 ## Value
 

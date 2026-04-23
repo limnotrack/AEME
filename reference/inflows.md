@@ -1,10 +1,13 @@
-# Access inflows slot
+# Access the inflows slot of an Aeme object
 
-Access inflows slot
+Access the inflows slot of an Aeme object
 
 ## Usage
 
 ``` r
+inflows(aeme)
+
+# S4 method for class 'Aeme'
 inflows(aeme)
 ```
 
@@ -16,4 +19,4 @@ inflows(aeme)
 
 ## Value
 
-list of inflows characteristics
+List of inflows characteristics.

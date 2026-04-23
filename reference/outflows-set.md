@@ -1,10 +1,13 @@
-# Set outflows in Aeme object
+# Set the outflows slot of an Aeme object
 
-Update the outflows slot of an Aeme object
+Set the outflows slot of an Aeme object
 
 ## Usage
 
 ``` r
+outflows(aeme) <- value
+
+# S4 method for class 'Aeme'
 outflows(aeme) <- value
 ```
 
@@ -16,7 +19,7 @@ outflows(aeme) <- value
 
 - value:
 
-  New outflows data to be assigned.
+  New outflows list to assign.
 
 ## Value
 

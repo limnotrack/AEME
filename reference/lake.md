@@ -1,10 +1,13 @@
-# Access lake slot
+# Access the lake slot of an Aeme object
 
-Access lake slot
+Access the lake slot of an Aeme object
 
 ## Usage
 
 ``` r
+lake(aeme)
+
+# S4 method for class 'Aeme'
 lake(aeme)
 ```
 
@@ -16,4 +19,4 @@ lake(aeme)
 
 ## Value
 
-list of lake characteristics
+List of lake characteristics.

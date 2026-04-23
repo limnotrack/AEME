@@ -1,10 +1,13 @@
-# Set time in Aeme object
+# Set the time slot of an Aeme object
 
-Update the time slot of an Aeme object
+Set the time slot of an Aeme object
 
 ## Usage
 
 ``` r
+time(aeme) <- value
+
+# S4 method for class 'Aeme'
 time(aeme) <- value
 ```
 
@@ -16,7 +19,7 @@ time(aeme) <- value
 
 - value:
 
-  New time data to be assigned.
+  New time list to assign.
 
 ## Value
 

@@ -1,10 +1,13 @@
-# Access output slot
+# Access the output slot of an Aeme object
 
-Access output slot
+Access the output slot of an Aeme object
 
 ## Usage
 
 ``` r
+output(aeme)
+
+# S4 method for class 'Aeme'
 output(aeme)
 ```
 
@@ -16,4 +19,4 @@ output(aeme)
 
 ## Value
 
-list of output characteristics
+List of output characteristics.

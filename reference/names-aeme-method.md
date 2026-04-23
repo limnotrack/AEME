@@ -1,4 +1,4 @@
-# Update names Method
+# Names method for Aeme objects
 
 Get names of an Aeme object
 
@@ -17,8 +17,8 @@ names(x)
 
 ## Value
 
-vector of names of the slots in the Aeme object to the console.
+Character vector of slot names.
 
 ## Details
 
-This method prints the names of the slots in the Aeme object.
+Returns the names of all slots in the Aeme object.

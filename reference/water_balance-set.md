@@ -1,10 +1,13 @@
-# Set water_balance in Aeme object
+# Set the water_balance slot of an Aeme object
 
-Update the water_balance slot of an Aeme object
+Set the water_balance slot of an Aeme object
 
 ## Usage
 
 ``` r
+water_balance(aeme) <- value
+
+# S4 method for class 'Aeme'
 water_balance(aeme) <- value
 ```
 
@@ -16,7 +19,7 @@ water_balance(aeme) <- value
 
 - value:
 
-  New water_balance data to be assigned.
+  New water_balance list to assign.
 
 ## Value
 

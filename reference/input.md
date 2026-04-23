@@ -1,10 +1,13 @@
-# Access input slot
+# Access the input slot of an Aeme object
 
-Access input slot
+Access the input slot of an Aeme object
 
 ## Usage
 
 ``` r
+input(aeme)
+
+# S4 method for class 'Aeme'
 input(aeme)
 ```
 
@@ -16,4 +19,4 @@ input(aeme)
 
 ## Value
 
-list of input characteristics
+List of input characteristics.

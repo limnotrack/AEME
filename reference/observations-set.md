@@ -1,10 +1,13 @@
-# Set observations in Aeme object
+# Set the observations slot of an Aeme object
 
-Update the observations slot of an Aeme object
+Set the observations slot of an Aeme object
 
 ## Usage
 
 ``` r
+observations(aeme) <- value
+
+# S4 method for class 'Aeme'
 observations(aeme) <- value
 ```
 
@@ -16,7 +19,7 @@ observations(aeme) <- value
 
 - value:
 
-  New observations data to be assigned.
+  New observations list to assign.
 
 ## Value
 

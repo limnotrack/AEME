@@ -43,8 +43,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ! Missing state variables in inflows:
 #> ! ZOO_zoo1
 #> ℹ Added default values for missing variables.
-#> ℹ Using observed water level
-#> ! Missing values in observed water level
+#> ℹ Using observed water level.
+#> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED for lake wainamu
@@ -74,10 +74,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-04-16 21:32:01]
-#> ✔ Model run complete! [2026-04-16 21:32:04]
-#> ℹ Reading models in parallel...[2026-04-16 21:32:04]
-#> ✔ Model reading complete! [2026-04-16 21:32:05]
+#> ℹ Running models in parallel... [2026-04-23 03:12:41]
+#> ✔ Model run complete! [2026-04-23 03:12:44]
+#> ℹ Reading models in parallel...[2026-04-23 03:12:44]
+#> ✔ Model reading complete! [2026-04-23 03:12:46]
 aeme |> 
   list_mod_obs_vars()
 #>              Cyanobacteria           Dissolved oxygen 

@@ -10,4 +10,4 @@ get_obs_column_names()
 
 ## Value
 
-vector of column names for the observational data frame
+Character vector of required column names for observational data.

@@ -286,8 +286,12 @@ aeme <- aeme_constructor(
   time  = time,
   input = input
 )
-#> Time step missing. Setting time step to 3600 seconds.
-#> Spin up for models missing. Setting spin up to 2 for all models.
+#> ℹ `time$start` is a <character>; converting to <POSIXct> (UTC).
+#> ℹ `time$stop` is a <character>; converting to <POSIXct> (UTC).
+#> ! `time$time_step` is missing.
+#> ℹ Defaulting to 3600 seconds (1 hour).
+#> ! `time$spin_up` is missing.
+#> ℹ Defaulting to 2 days spin-up for all models.
 aeme
 #>             AEME 
 #> -------------------------------------------------------------------
@@ -457,10 +461,10 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> Created missing directory:
-#> C:\Users\RUNNER~1\AppData\Local\Temp\RtmpoJ0avz\reservoir
+#> C:\Users\RUNNER~1\AppData\Local\Temp\RtmpgZfaxW\reservoir
 #> ℹ No water level present. Using constant water level.
-#> ℹ Insufficient lake temperature observations to estimate surface temperature.
-#>   Using Stefan & Preud'homme (2007) method.
+#> ℹ Insufficient lake temperature observations (<10).
+#> ℹ Using Stefan & Preud'homme (2007) method.
 #> ℹ No water balance correction applied (method = 1).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED for lake reservoir
@@ -473,10 +477,10 @@ aeme <- build_aeme(
 
 ``` r
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-04-16 21:46:35]
-#> → GLM-AED running... [2026-04-16 21:46:35]
-#> ✔ GLM-AED run successful! [2026-04-16 21:46:35]
-#> ✔ Model run complete! [2026-04-16 21:46:35]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-04-23 03:25:06]
+#> → GLM-AED running... [2026-04-23 03:25:06]
+#> ✔ GLM-AED run successful! [2026-04-23 03:25:06]
+#> ✔ Model run complete! [2026-04-23 03:25:06]
 ```
 
 ## View the output

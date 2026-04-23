@@ -1,10 +1,13 @@
-# Access time slot
+# Access the time slot of an Aeme object
 
-Access time slot
+Access the time slot of an Aeme object
 
 ## Usage
 
 ``` r
+time(aeme)
+
+# S4 method for class 'Aeme'
 time(aeme)
 ```
 
@@ -16,4 +19,4 @@ time(aeme)
 
 ## Value
 
-list of time characteristics
+List of time characteristics.

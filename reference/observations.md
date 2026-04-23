@@ -1,10 +1,13 @@
-# Access observations slot
+# Access the observations slot of an Aeme object
 
-Access observations slot
+Access the observations slot of an Aeme object
 
 ## Usage
 
 ``` r
+observations(aeme)
+
+# S4 method for class 'Aeme'
 observations(aeme)
 ```
 
@@ -16,4 +19,4 @@ observations(aeme)
 
 ## Value
 
-list of observations characteristics
+List of observations characteristics.

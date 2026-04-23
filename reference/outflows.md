@@ -1,10 +1,13 @@
-# Access outflows slot
+# Access the outflows slot of an Aeme object
 
-Access outflows slot
+Access the outflows slot of an Aeme object
 
 ## Usage
 
 ``` r
+outflows(aeme)
+
+# S4 method for class 'Aeme'
 outflows(aeme)
 ```
 
@@ -16,4 +19,4 @@ outflows(aeme)
 
 ## Value
 
-list of outflows characteristics
+List of outflows characteristics.

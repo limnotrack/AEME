@@ -79,14 +79,10 @@
   Check and manage file paths
 - [`check_var_in_output()`](https://limnotrack.com/reference/check_var_in_output.md)
   : Check if a variable is present in the model output
-- [`configuration(`*`<Aeme>`*`)`](https://limnotrack.com/reference/configuration-aeme-method.md)
-  : Access configuration slot
-- [`` `configuration<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/configuration-set-aeme-method.md)
-  : Set configuration in Aeme object
 - [`` `configuration<-`() ``](https://limnotrack.com/reference/configuration-set.md)
-  : Set configuration in Aeme object
+  : Set the configuration slot of an Aeme object
 - [`configuration()`](https://limnotrack.com/reference/configuration.md)
-  : Access configuration slot
+  : Access the configuration slot of an Aeme object
 - [`convert_do()`](https://limnotrack.com/reference/convert_do.md) :
   Convert dissolved oxygen between mg/L and percent saturation
 - [`dy_cd_parameters`](https://limnotrack.com/reference/dy_cd_parameters.md)
@@ -172,22 +168,14 @@
   : Example dataset of parameters for the GOTM-WET model
 - [`guess_aeme_vars()`](https://limnotrack.com/reference/guess_aeme_vars.md)
   : Match variable to AEME variable names
-- [`inflows(`*`<Aeme>`*`)`](https://limnotrack.com/reference/inflows-aeme-method.md)
-  : Access inflows slot
-- [`` `inflows<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/inflows-set-aeme-method.md)
-  : Set inflows in Aeme object
 - [`` `inflows<-`() ``](https://limnotrack.com/reference/inflows-set.md)
-  : Set inflows in Aeme object
+  : Set the inflows slot of an Aeme object
 - [`inflows()`](https://limnotrack.com/reference/inflows.md) : Access
-  inflows slot
-- [`input(`*`<Aeme>`*`)`](https://limnotrack.com/reference/input-aeme-method.md)
-  : Access input slot
-- [`` `input<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/input-set-aeme-method.md)
-  : Set input in Aeme object
+  the inflows slot of an Aeme object
 - [`` `input<-`() ``](https://limnotrack.com/reference/input-set.md) :
-  Set input in Aeme object
-- [`input()`](https://limnotrack.com/reference/input.md) : Access input
-  slot
+  Set the input slot of an Aeme object
+- [`input()`](https://limnotrack.com/reference/input.md) : Access the
+  input slot of an Aeme object
 - [`input_model_parameters()`](https://limnotrack.com/reference/input_model_parameters.md)
   : Input model parameters
 - [`insert_aeme()`](https://limnotrack.com/reference/insert_aeme.md) :
@@ -198,14 +186,10 @@
   if water temperature profile is stratified
 - [`key_naming`](https://limnotrack.com/reference/key_naming.md) : Model
   variable naming
-- [`lake(`*`<Aeme>`*`)`](https://limnotrack.com/reference/lake-aeme-method.md)
-  : Access lake slot
-- [`` `lake<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/lake-set-aeme-method.md)
-  : Set lake in Aeme object
 - [`` `lake<-`() ``](https://limnotrack.com/reference/lake-set.md) : Set
-  lake in Aeme object
-- [`lake()`](https://limnotrack.com/reference/lake.md) : Access lake
-  slot
+  the lake slot of an Aeme object
+- [`lake()`](https://limnotrack.com/reference/lake.md) : Access the lake
+  slot of an Aeme object
 - [`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md)
   : Format lake observation data to AEME format
 - [`list_models()`](https://limnotrack.com/reference/list_models.md) :
@@ -225,47 +209,31 @@
 - [`model_layer_structure`](https://limnotrack.com/reference/model_layer_structure.md)
   : Reference data frame for model layer structure.
 - [`names(`*`<Aeme>`*`)`](https://limnotrack.com/reference/names-aeme-method.md)
-  : Update names Method
+  : Names method for Aeme objects
 - [`o2_at_sat()`](https://limnotrack.com/reference/o2_at_sat.md) :
   Estimate oxygen saturation concentration
-- [`observations(`*`<Aeme>`*`)`](https://limnotrack.com/reference/observations-aeme-method.md)
-  : Access observations slot
-- [`` `observations<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/observations-set-aeme-method.md)
-  : Set observations in Aeme object
 - [`` `observations<-`() ``](https://limnotrack.com/reference/observations-set.md)
-  : Set observations in Aeme object
+  : Set the observations slot of an Aeme object
 - [`observations()`](https://limnotrack.com/reference/observations.md) :
-  Access observations slot
+  Access the observations slot of an Aeme object
 - [`open_nc_safe()`](https://limnotrack.com/reference/open_nc_safe.md) :
   Safely open a NetCDF file
-- [`outflows(`*`<Aeme>`*`)`](https://limnotrack.com/reference/outflows-aeme-method.md)
-  : Access outflows slot
-- [`` `outflows<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/outflows-set-aeme-method.md)
-  : Set outflows in Aeme object
 - [`` `outflows<-`() ``](https://limnotrack.com/reference/outflows-set.md)
-  : Set outflows in Aeme object
+  : Set the outflows slot of an Aeme object
 - [`outflows()`](https://limnotrack.com/reference/outflows.md) : Access
-  outflows slot
-- [`output(`*`<Aeme>`*`)`](https://limnotrack.com/reference/output-aeme-method.md)
-  : Access output slot
-- [`` `output<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/output-set-aeme-method.md)
-  : Set output in Aeme object
+  the outflows slot of an Aeme object
 - [`` `output<-`() ``](https://limnotrack.com/reference/output-set.md) :
-  Set output in Aeme object
-- [`output()`](https://limnotrack.com/reference/output.md) : Access
-  output slot
-- [`parameters(`*`<Aeme>`*`)`](https://limnotrack.com/reference/parameters-aeme-method.md)
-  : Access parameters slot
-- [`` `parameters<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/parameters-set-aeme-method.md)
-  : Set parameters in Aeme object
+  Set the output slot of an Aeme object
+- [`output()`](https://limnotrack.com/reference/output.md) : Access the
+  output slot of an Aeme object
 - [`` `parameters<-`() ``](https://limnotrack.com/reference/parameters-set.md)
-  : Set parameters in Aeme object
+  : Set the parameters slot of an Aeme object
 - [`parameters()`](https://limnotrack.com/reference/parameters.md) :
-  Access parameters slot
+  Access the parameters slot of an Aeme object
 - [`param_colnames()`](https://limnotrack.com/reference/param_colnames.md)
   : Get AEME parameters data frame column names
 - [`plot(`*`<Aeme>`*`)`](https://limnotrack.com/reference/plot-Aeme-method.md)
-  : Update summary Method
+  : Plot method for Aeme objects
 - [`plot_est_wbal()`](https://limnotrack.com/reference/plot_est_wbal.md)
   : Plot estimated water balance diagnostics from an aeme object.
 - [`plot_flows()`](https://limnotrack.com/reference/plot_flows.md) :
@@ -387,26 +355,18 @@
   : Print Aeme object to the console
 - [`summary(`*`<Aeme>`*`)`](https://limnotrack.com/reference/summary-aeme-method.md)
   : Summarise an Aeme object
-- [`time(`*`<Aeme>`*`)`](https://limnotrack.com/reference/time-aeme-method.md)
-  : Access time slot
-- [`` `time<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/time-set-aeme-method.md)
-  : Set time in Aeme object
 - [`` `time<-`() ``](https://limnotrack.com/reference/time-set.md) : Set
-  time in Aeme object
-- [`time()`](https://limnotrack.com/reference/time.md) : Access time
-  slot
+  the time slot of an Aeme object
+- [`time()`](https://limnotrack.com/reference/time.md) : Access the time
+  slot of an Aeme object
 - [`toggle_models()`](https://limnotrack.com/reference/toggle_models.md)
   : Toggle between model display names and codes
 - [`update_init()`](https://limnotrack.com/reference/update_init.md) :
   Update initial conditions in AEME object based on lake observations.
-- [`water_balance(`*`<Aeme>`*`)`](https://limnotrack.com/reference/water_balance-aeme-method.md)
-  : Access water_balance slot
-- [`` `water_balance<-`( ``*`<Aeme>`*`)`](https://limnotrack.com/reference/water_balance-set-aeme-method.md)
-  : Set water_balance in Aeme object
 - [`` `water_balance<-`() ``](https://limnotrack.com/reference/water_balance-set.md)
-  : Set water_balance in Aeme object
+  : Set the water_balance slot of an Aeme object
 - [`water_balance()`](https://limnotrack.com/reference/water_balance.md)
-  : Access water_balance slot
+  : Access the water_balance slot of an Aeme object
 - [`write_aeme_to_files()`](https://limnotrack.com/reference/write_aeme_to_files.md)
   : Write an AEME object to files
 - [`write_configuration()`](https://limnotrack.com/reference/write_configuration.md)

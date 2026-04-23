@@ -58,8 +58,8 @@
 <span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  model_controls <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  inf_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>glm_aed <span class="op">=</span> <span class="fl">1</span>, dy_cd <span class="op">=</span> <span class="fl">1</span>, gotm_wet <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  outf_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>glm_aed <span class="op">=</span> <span class="fl">1</span>, dy_cd <span class="op">=</span> <span class="fl">1</span>, gotm_wet <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  inf_factor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  outf_factor <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ext_elev <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  use_bgc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  calc_wbal <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -161,8 +161,7 @@ values. Default = TRUE.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>builds the model ensemble configuration.</p>
-<p>aeme object</p>
+    <p>aeme object</p>
     </div>
 
     <div class="section level2">
@@ -174,63 +173,14 @@ values. Default = TRUE.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmpdir</span>, <span class="st">"lake"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="yaml_to_aeme.html">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span><span style="color: #BBBB00;">!</span> `lake$id` was not a <span style="color: #0000BB;">&lt;character&gt;</span> and was coerced.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Supply `lake$id` as a character string to avoid this.</span>
 <span class="r-in"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_model_controls.html">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">inf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">build_aeme</span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>               model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>               use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Calculating lake level using lake depth and a sinisoidal function.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED for lake wainamu</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in AED nml file and supporting files</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 			   AEME </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Lake</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Area: 152343 m2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Configuration</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Model controls: Present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Use biogeochemical model: Yes </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           Physical   |   Biogeochemical</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DY-CD    : Absent     |   Absent </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GLM-AED  : Present    |   Present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GOTM-WET : Absent     |   Absent </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Observations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Lake: Present; Level: Present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Input</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=44);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Meteo: Present; Use longwave: TRUE; Kw: 1.31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Inflows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Outflows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Water balance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Method: 2; Use: obs; Modelled: Absent; Water balance: Present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Parameters: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of parameters: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Output: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DY-CD:    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GLM-AED:  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GOTM-WET: </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'inf_factor' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

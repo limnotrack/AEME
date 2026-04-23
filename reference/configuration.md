@@ -1,10 +1,13 @@
-# Access configuration slot
+# Access the configuration slot of an Aeme object
 
-Access configuration slot
+Access the configuration slot of an Aeme object
 
 ## Usage
 
 ``` r
+configuration(aeme)
+
+# S4 method for class 'Aeme'
 configuration(aeme)
 ```
 
@@ -16,4 +19,4 @@ configuration(aeme)
 
 ## Value
 
-list of configuration characteristics
+List of configuration characteristics.

@@ -1,10 +1,13 @@
-# Set input in Aeme object
+# Set the input slot of an Aeme object
 
-Update the input slot of an Aeme object
+Set the input slot of an Aeme object
 
 ## Usage
 
 ``` r
+input(aeme) <- value
+
+# S4 method for class 'Aeme'
 input(aeme) <- value
 ```
 
@@ -16,7 +19,7 @@ input(aeme) <- value
 
 - value:
 
-  New input data to be assigned.
+  New input list to assign.
 
 ## Value
 

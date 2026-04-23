@@ -1,4 +1,4 @@
-# Update summary Method
+# Plot method for Aeme objects
 
 Plot an Aeme object
 
@@ -17,19 +17,19 @@ plot(x, y, ..., add = FALSE)
 
 - y:
 
-  An Aeme slot (optional). Defaults to "output".
+  An Aeme slot name (character). Defaults to `"output"`.
 
 - ...:
 
-  additional arguments affecting the plot produced.
+  Additional arguments (currently unused).
 
 - add:
 
-  logical; add to current plot?
+  Logical; add to current plot? (currently unused)
 
 ## Value
 
-prints the Aeme object to the console.
+A ggplot object, or prints to the active graphics device.
 
 ## Details
 

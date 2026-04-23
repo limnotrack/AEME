@@ -1,10 +1,13 @@
-# Set output in Aeme object
+# Set the output slot of an Aeme object
 
-Update the output slot of an Aeme object
+Set the output slot of an Aeme object
 
 ## Usage
 
 ``` r
+output(aeme) <- value
+
+# S4 method for class 'Aeme'
 output(aeme) <- value
 ```
 
@@ -16,7 +19,7 @@ output(aeme) <- value
 
 - value:
 
-  New output data to be assigned.
+  New output list to assign.
 
 ## Value
 

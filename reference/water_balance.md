@@ -1,10 +1,13 @@
-# Access water_balance slot
+# Access the water_balance slot of an Aeme object
 
-Access water_balance slot
+Access the water_balance slot of an Aeme object
 
 ## Usage
 
 ``` r
+water_balance(aeme)
+
+# S4 method for class 'Aeme'
 water_balance(aeme)
 ```
 
@@ -16,4 +19,4 @@ water_balance(aeme)
 
 ## Value
 
-list of water_balance characteristics
+List of water_balance characteristics.
