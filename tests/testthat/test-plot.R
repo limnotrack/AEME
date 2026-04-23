@@ -334,7 +334,7 @@ test_that("plotting phytoplankton model output works", {
   testthat::expect_true(ggplot2::is_ggplot(p5))
 })
 
-test_that("plotting water balance components works", {
+test_that("plotting water balance components", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   aeme <- aeme |> 

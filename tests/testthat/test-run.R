@@ -1,3 +1,4 @@
+# Functions to check for model output files
 check_all_model_outfiles <- function(aeme) {
   lake_dir <- get_lake_dir(aeme)
   model_outfiles <- get_model_outfile(aeme) |> 
@@ -519,9 +520,9 @@ test_that("running models with wbal method = 1", {
   
   # GOTM - Check for number of inflow and outflow files
   inflow_files <- list.files(file.path(lake_dir, "gotm_wet", "inputs"), 
-                             pattern = "inf")
+                             pattern = "inf_")
   outflow_files <- list.files(file.path(lake_dir, "gotm_wet", "inputs"),
-                              pattern = "outf")
+                              pattern = "outf_")
   testthat::expect_equal(length(inflow_files), 3)
   testthat::expect_equal(length(outflow_files), 1)
 })
@@ -555,41 +556,35 @@ test_that("running models with wbal method = 3", {
 
   file_chk <- check_all_model_outfiles(aeme = aeme)
   testthat::expect_true(file_chk)
-  
+  lake_dir <- get_lake_dir(aeme = aeme)
   # DYRESM - Check for number of inflow and outflow files
-  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                    tolower(lke$name)),
-                                       "dy_cd"), pattern = "inf", full.names = TRUE)
+  inflow_files <- list.files(file.path(lake_dir, "dy_cd"), 
+                             pattern = "inf", full.names = TRUE)
   n_inf <- as.numeric(strsplit(readLines(inflow_files)[2], "#")[[1]][1])
   inf <- read.delim(inflow_files, skip = 3, sep = "\t")
   testthat::expect_equal(n_inf, max(inf$InfNum))
   
-  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        "dy_cd"), pattern = "wdr", full.names = TRUE)
+  outflow_files <- list.files(file.path(lake_dir, "dy_cd"), pattern = "wdr",
+                              full.names = TRUE)
   n_wdr <- as.numeric(strsplit(readLines(outflow_files)[2], "#")[[1]][1])
   wdr <- read.delim(outflow_files, skip = 2, sep = "\t")
   testthat::expect_equal(n_wdr, ncol(wdr) - 1)
   
   # GLM - Check for number of inflow and outflow files
-  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                    tolower(lke$name)),
-                                       "glm_aed", "bcs"), pattern = "inf")
-  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        "glm_aed", "bcs"), pattern = "outf")
+  inflow_files <- list.files(file.path(lake_dir, "glm_aed", "bcs"), 
+                             pattern = "inf")
+  outflow_files <- list.files(file.path(lake_dir, "glm_aed", "bcs"), 
+                              pattern = "outf")
   testthat::expect_equal(length(inflow_files), 1)
   testthat::expect_equal(length(outflow_files), 1)
   
   # GOTM - Check for number of inflow and outflow files
-  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                    tolower(lke$name)),
-                                       "gotm_wet", "inputs"), pattern = "inf")
-  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        "gotm_wet", "inputs"), pattern = "outf")
-  testthat::expect_equal(length(inflow_files), 3)
-  testthat::expect_equal(length(outflow_files), 1)
+  inflow_files <- list.files(file.path(lake_dir, "gotm_wet", "inputs"), 
+                             pattern = "inf_")
+  outflow_files <- list.files(file.path(lake_dir, "gotm_wet", "inputs"), 
+                              pattern = "outf_")
+  testthat::expect_equal(length(inflow_files), 6)
+  testthat::expect_equal(length(outflow_files), 2)
 })
 
 
