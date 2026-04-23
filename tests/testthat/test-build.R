@@ -238,8 +238,7 @@ test_that("building all models with minimum met variables", {
     model <- c("glm_aed")
   }
   aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
-                     model_controls = model_controls, inf_factor = inf_factor,
-                     use_bgc = FALSE)
+                     model_controls = model_controls, use_bgc = FALSE)
   
   cfg_upd <- cfg <- configuration(aeme)
   for (m in model) {
@@ -671,7 +670,7 @@ test_that("derived variables are in aeme object", {
   testthat::expect_true(all(!is.na(thmcln1$value)))
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
   
   obs <- observations(aeme)
