@@ -116,7 +116,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   
   if (any(is.na(wbal$area))) {
     cli::cli_abort(c(
-      "!" = "NAs in area — hypsograph may be too small.",
+      "!" = "NAs in area - hypsograph may be too small.",
       "i" = "Consider extending elevation with `extrap_hyps(..., ext_elev = 5)`."
     ))
   }
@@ -220,7 +220,8 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
     elev_range <- range(hyps$elev,   na.rm = TRUE)
     if (lvl_range[1] < elev_range[1] | lvl_range[2] > elev_range[2]) {
       cli::cli_abort(c(
-        "!" = "Observed water level values are outside the hypsograph elevation range.",
+        "!" = "Observed water level values are outside the hypsograph elevation
+        range.",
         "i" = "Observed range: {lvl_range[1]} to {lvl_range[2]}.",
         "i" = "Hypsograph range: {elev_range[1]} to {elev_range[2]}."
       ))
@@ -243,7 +244,8 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
     }
     
     if (any(duplicated(mod_lvl$Date))) {
-      cli::cli_warn("Duplicate dates in observed water level — keeping first occurrence.")
+      cli::cli_warn("Duplicate dates in observed water level - keeping first 
+                    occurrence.")
       mod_lvl <- dplyr::distinct(mod_lvl, Date, .keep_all = TRUE)
     }
     
@@ -302,7 +304,7 @@ add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
     obs_met$HYD_temp <- coeffs[1] + coeffs[2] * obs_met$T5avg
   } else {
     fit    <- lm(HYD_temp ~ T5avg, data = obs_met)
-    coeffs <- stats::coefficients(fit)  # nolint — used for side-effect doc only
+    coeffs <- stats::coefficients(fit)  # nolint - used for side-effect doc only
   }
   
   obs_met
@@ -475,7 +477,7 @@ mod_lvl <- function(dates, surf, ampl, offset) {
 }
 
 #' Calculate water density from temperature
-#' @param wtr numeric vector of water temperature (°C)
+#' @param wtr numeric vector of water temperature (degC)
 #' @noRd
 wtr_density <- function(wtr) {
   1000 * (1 - (wtr + 288.9414) * (wtr - 3.9863)^2 / (508929.2 * (wtr + 68.12963)))

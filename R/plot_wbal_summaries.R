@@ -44,7 +44,7 @@ plot_wbal_summaries <- function(wbal) {
                size = 5, shape = 3) +
     ggplot2::scale_color_manual(values = model_cols, name = "") +
     ggplot2::scale_fill_manual(values = model_cols, name = "Model") +
-    ggplot2::labs(title = "Total Inflow", y = "m³") +
+    ggplot2::labs(title = "Total Inflow", y = "m\u00b3") +
     ggplot2::theme_bw()
   
   ## --- Total outflow ---
@@ -56,7 +56,7 @@ plot_wbal_summaries <- function(wbal) {
                         size = 5, shape = 3) +
     ggplot2::scale_color_manual(values = model_cols, name = "") +
     ggplot2::scale_fill_manual(values = model_cols, name = "Model") +
-    ggplot2::labs(title = "Total Outflow", y = "m³") +
+    ggplot2::labs(title = "Total Outflow", y = "m\u00b3") +
     ggplot2::theme_bw()
   
   ## --- Total rainfall ---
@@ -68,7 +68,7 @@ plot_wbal_summaries <- function(wbal) {
                         size = 5, shape = 3) +
     ggplot2::scale_color_manual(values = model_cols, name = "") +
     ggplot2::scale_fill_manual(values = model_cols, name = "Model") +
-    ggplot2::labs(title = "Total Rainfall", y = "m³") +
+    ggplot2::labs(title = "Total Rainfall", y = "m\u00b3") +
     ggplot2::theme_bw()
   
   ## --- Total evaporation ---
@@ -80,7 +80,7 @@ plot_wbal_summaries <- function(wbal) {
                         size = 5, shape = 3) +
     ggplot2::scale_color_manual(values = model_cols, name = "") +
     ggplot2::scale_fill_manual(values = model_cols, name = "Model") +
-    ggplot2::labs(title = "Total Evaporation", y = "m³") +
+    ggplot2::labs(title = "Total Evaporation", y = "m\u00b3") +
     ggplot2::theme_bw()
   
   patchwork::wrap_plots(

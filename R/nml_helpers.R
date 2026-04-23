@@ -41,7 +41,7 @@
 }
 
 
-# ── Boolean conversion helpers ─────────────────────────────────────────────────
+# Boolean conversion helpers
 
 #' Convert GLM logical strings to R logicals
 #'
@@ -82,7 +82,7 @@ to.glm_boolean <- function(values) {
 }
 
 
-# ── Line parser ────────────────────────────────────────────────────────────────
+# Line parser
 
 #' Parse a single line from a GLM nml file into a named list entry
 #'
@@ -115,13 +115,13 @@ buildVal <- function(textLine, lineNum, blckName, coerce = TRUE) {
   if (is.na(parVl)) {
     cli::cli_abort(
       c("Empty value after {.code {trimws(textLine)}} on line {.val {lineNum}}.",
-        "i" = "Check whether the value continues on the next line — hanging",
+        "i" = "Check whether the value continues on the next line - hanging",
         " " = "values are not supported."),
       class = "nml_error_parse_empty"
     )
   }
   
-  # Special case: date string — detect by position of ':' separators.
+  # Special case: date string - detect by position of ':' separators.
   # BUG FIX: original code had nchar(parVl > 17), which compares the logical
   # TRUE/FALSE to 17 via nchar(), always returning 4 or 5. Correct form is
   # nchar(parVl) > 17.
@@ -131,7 +131,7 @@ buildVal <- function(textLine, lineNum, blckName, coerce = TRUE) {
   }
   
   # Determine value type and parse accordingly.
-  # trimws() is applied in every branch — the right-hand side of "param = value"
+  # trimws() is applied in every branch - the right-hand side of "param = value"
   # always carries a leading space after splitting on "=", and quote-stripping
   # alone does not remove it.
   if (any(grep("'", parVl))) {
@@ -166,7 +166,7 @@ buildVal <- function(textLine, lineNum, blckName, coerce = TRUE) {
       )
       parVl[is.na(parVl)] <- non_na[1]
     } else {
-      # All NA — inform (not warn) since we return NA and let caller decide
+      # All NA - inform (not warn) since we return NA and let caller decide
       cli::cli_inform(
         c("!" = "Coercion produced all NAs for parameter {.val {parNm}} on
           line {.val {lineNum}} in block {.val {blckName}}.",
@@ -183,7 +183,7 @@ buildVal <- function(textLine, lineNum, blckName, coerce = TRUE) {
 }
 
 
-# ── Block / argument lookup ────────────────────────────────────────────────────
+# Block / argument lookup
 
 #' Find which block(s) an argument belongs to in an nml object
 #'
@@ -273,12 +273,12 @@ get_block <- function(glm_nml, arg_name, warn = TRUE) {
 }
 
 
-# ── nml setters ───────────────────────────────────────────────────────────────
+# nml setters
 
 #' Set a list of parameters in an nml object
 #'
 #' @inheritParams set_nml
-#' @param arg_list A named list of parameter name–value pairs.
+#' @param arg_list A named list of parameter name-value pairs.
 #' @return An updated nml object.
 #' @noRd
 setnmlList <- function(glm_nml, arg_list) {
@@ -307,7 +307,7 @@ setnmlList <- function(glm_nml, arg_list) {
 }
 
 
-# ── File helpers ───────────────────────────────────────────────────────────────
+# File helpers
 
 #' Check whether a file path refers to a GLM nml file
 #'
@@ -344,7 +344,7 @@ ascii_only <- function(file) {
 }
 
 
-# ── S3 methods ─────────────────────────────────────────────────────────────────
+# S3 methods
 
 #' Print an nml object
 #'
