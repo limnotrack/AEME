@@ -2,16 +2,19 @@
 % Please edit documentation in R/Aeme.R
 \name{inflows}
 \alias{inflows}
-\title{Access inflows slot}
+\alias{inflows,Aeme-method}
+\title{Access the inflows slot of an Aeme object}
 \usage{
 inflows(aeme)
+
+\S4method{inflows}{Aeme}(aeme)
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 }
 \value{
-list of inflows characteristics
+List of inflows characteristics.
 }
 \description{
-Access inflows slot
+Access the inflows slot of an Aeme object
 }

@@ -2,16 +2,19 @@
 % Please edit documentation in R/Aeme.R
 \name{input}
 \alias{input}
-\title{Access input slot}
+\alias{input,Aeme-method}
+\title{Access the input slot of an Aeme object}
 \usage{
 input(aeme)
+
+\S4method{input}{Aeme}(aeme)
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 }
 \value{
-list of input characteristics
+List of input characteristics.
 }
 \description{
-Access input slot
+Access the input slot of an Aeme object
 }

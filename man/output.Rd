@@ -2,16 +2,19 @@
 % Please edit documentation in R/Aeme.R
 \name{output}
 \alias{output}
-\title{Access output slot}
+\alias{output,Aeme-method}
+\title{Access the output slot of an Aeme object}
 \usage{
 output(aeme)
+
+\S4method{output}{Aeme}(aeme)
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 }
 \value{
-list of output characteristics
+List of output characteristics.
 }
 \description{
-Access output slot
+Access the output slot of an Aeme object
 }

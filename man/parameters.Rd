@@ -2,16 +2,19 @@
 % Please edit documentation in R/Aeme.R
 \name{parameters}
 \alias{parameters}
-\title{Access parameters slot}
+\alias{parameters,Aeme-method}
+\title{Access the parameters slot of an Aeme object}
 \usage{
 parameters(aeme)
+
+\S4method{parameters}{Aeme}(aeme)
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 }
 \value{
-dataframe of parameters
+Dataframe of parameters.
 }
 \description{
-Access parameters slot
+Access the parameters slot of an Aeme object
 }

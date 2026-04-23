@@ -2,16 +2,19 @@
 % Please edit documentation in R/Aeme.R
 \name{configuration}
 \alias{configuration}
-\title{Access configuration slot}
+\alias{configuration,Aeme-method}
+\title{Access the configuration slot of an Aeme object}
 \usage{
 configuration(aeme)
+
+\S4method{configuration}{Aeme}(aeme)
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 }
 \value{
-list of configuration characteristics
+List of configuration characteristics.
 }
 \description{
-Access configuration slot
+Access the configuration slot of an Aeme object
 }

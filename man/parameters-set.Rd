@@ -2,18 +2,21 @@
 % Please edit documentation in R/Aeme.R
 \name{parameters<-}
 \alias{parameters<-}
-\title{Set parameters in Aeme object}
+\alias{parameters<-,Aeme-method}
+\title{Set the parameters slot of an Aeme object}
 \usage{
 parameters(aeme) <- value
+
+\S4method{parameters}{Aeme}(aeme) <- value
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 
-\item{value}{New parameters data to be assigned.}
+\item{value}{New parameters data.frame to assign.}
 }
 \value{
 A modified Aeme object with updated parameters slot.
 }
 \description{
-Update the parameters slot of an Aeme object
+Set the parameters slot of an Aeme object
 }

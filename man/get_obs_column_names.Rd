@@ -7,7 +7,7 @@
 get_obs_column_names()
 }
 \value{
-vector of column names for the observational data frame
+Character vector of required column names for observational data.
 }
 \description{
 Get column names for the observational data frame
