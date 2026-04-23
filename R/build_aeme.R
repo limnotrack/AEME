@@ -233,7 +233,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     check_time(df = met, model = model, aeme_time = aeme_time, name = "meteo")
     met <- met |>
       dplyr::mutate(Date = as.Date(Date)) |>
-      expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE)
+      expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE) |> 
+      standardise_met()
+    # names(met) <- gsub("MET_", "", names(met))
     
     input(aeme) <- list(init_profile = init_prof,
                         init_depth = init_depth,
