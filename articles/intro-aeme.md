@@ -489,7 +489,37 @@ path <- "aeme"
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
-#> Created missing directory: D:\a\AEME\AEME\vignettes\aeme
+#> ✔ Created missing directory: D:\a\AEME\AEME\vignettes\aeme
+#> ℹ All columns already match AEME standard variable names, skipping name
+#>   guessing.
+#> ℹ `MET_tmpair`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_tmpdew`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_radswd`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_radlwd`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_humrel`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_cldcvr`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_prsttn`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_prmslp`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_prvapr`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_wndspd`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_wnduvu`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_wnduvv`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_pprain`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_ppsnow`: values appear to be in the expected units, no conversion
+#>   applied.
 #> ! Missing state variables in inflows:
 #> ! CAR_doc, CAR_poc, CHM_oxy, NCS_ss1, NIT_don, NIT_pon, PHY_cyano, PHY_diatom,
 #>   PHY_green, SIL_rsi, ZOO_zoo1

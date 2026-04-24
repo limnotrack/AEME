@@ -119,14 +119,42 @@ aeme object
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
 path <- "aeme" # subdirectory within working directory where model configuration files will be written
 aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
-#> Warning: ! `lake$id` was not a <character> and was coerced.
-#> ℹ Supply `lake$id` as a character string to avoid this.
 model_controls <- get_model_controls()
 model <- c("glm_aed")
 aeme <- aeme |> 
   build_aeme(path = path, model = model, model_controls = model_controls,
            ext_elev = 5)
-#> Created missing directory: D:\a\AEME\AEME\docs\reference\aeme
+#> ✔ Created missing directory: D:\a\AEME\AEME\docs\reference\aeme
+#> ℹ All columns already match AEME standard variable names, skipping name
+#>   guessing.
+#> ℹ `MET_tmpair`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_tmpdew`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_radswd`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_radlwd`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_humrel`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_cldcvr`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_prsttn`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_prmslp`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_prvapr`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_wndspd`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_wnduvu`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_wnduvv`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_pprain`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_ppsnow`: values appear to be in the expected units, no conversion
+#>   applied.
 #> ℹ Using observed water level.
 #> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
@@ -140,6 +168,36 @@ aeme <- aeme |>
 aeme <- aeme |>
   build_aeme(path = path, model = model, model_controls = model_controls, 
               ext_elev = 5, use_bgc = TRUE)
+#> ℹ All columns already match AEME standard variable names, skipping name
+#>   guessing.
+#> ℹ `MET_tmpair`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_tmpdew`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_radswd`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_radlwd`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_humrel`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_cldcvr`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_prsttn`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_prmslp`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_prvapr`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_wndspd`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_wnduvu`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_wnduvv`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_pprain`: values appear to be in the expected units, no conversion
+#>   applied.
+#> ℹ `MET_ppsnow`: values appear to be in the expected units, no conversion
+#>   applied.
 #> ! Missing state variables in inflows:
 #> ! ZOO_zoo1
 #> ℹ Added default values for missing variables.

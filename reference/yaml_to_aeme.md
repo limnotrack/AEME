@@ -29,13 +29,11 @@ aeme object
 ``` r
 aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
 aeme <- yaml_to_aeme(file = aeme_yaml)
-#> Warning: ! `lake$id` was not a <character> and was coerced.
-#> ℹ Supply `lake$id` as a character string to avoid this.
 aeme
 #>             AEME 
 #> -------------------------------------------------------------------
 #>   Lake
-#> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;
+#> Wainamu (ID: LID45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;
 #> Area: 152343 m2
 #> -------------------------------------------------------------------
 #>   Time

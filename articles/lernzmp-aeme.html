@@ -243,7 +243,36 @@ building of the AEME models locally.</p>
 <span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"aeme"</span> <span class="co"># directory in which the model configuration will be built</span></span>
 <span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
-<span>                   use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>                   use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> All columns already match AEME standard variable names, skipping name</span></span>
+<span><span class="co">#&gt;   guessing.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_tmpair`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_tmpdew`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_radswd`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_radlwd`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_humrel`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_cldcvr`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_prsttn`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_prmslp`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_prvapr`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_wndspd`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_wnduvu`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_wnduvv`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> `MET_pprain`: converted from m/day to mm/day.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `MET_ppsnow`: values appear to be in the expected units, no conversion</span></span>
+<span><span class="co">#&gt;   applied.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="run-aeme-models">Run AEME models<a class="anchor" aria-label="anchor" href="#run-aeme-models"></a>
@@ -302,12 +331,12 @@ of ensembles” is set to 1 indicating that there is now output for each
 model in the <code>Aeme</code> object.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 332 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 336 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="lernzmp-aeme_files/figure-html/lernzmp-plot-temperature-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"CHM_oxy"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 332 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 336 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="lernzmp-aeme_files/figure-html/lernzmp-plot-oxygen-1.png" class="r-plt" alt="" width="700"></p>
 </div>
