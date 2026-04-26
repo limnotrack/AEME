@@ -111,11 +111,8 @@ standardise_met <- function(met, verbose = TRUE) {
   if (all(non_date %in% pot_met_vars)) {
     # All columns already match AEME standard names; skip guessing
     if (verbose) {
-      cli::cli_inform(
-        c("i" = "All columns already match AEME standard variable names,
-          skipping name guessing."),
-        class = "aeme_inform_met_all_matched"
-      )
+      cli_inform_safe(c("i" = "All columns already match AEME standard variable names,
+        skipping name guessing."))
     }
     return(met)
   }
@@ -392,11 +389,8 @@ standardise_met <- function(met, verbose = TRUE) {
     if (isFALSE(flag) || is.null(flag)) {
       # No conversion needed — emit an informational note when verbose
       if (verbose) {
-        cli::cli_inform(
-          c("i" = "{.code {var}}: values appear to be in the expected units,
-            no conversion applied."),
-          class = "aeme_inform_met_no_conversion"
-        )
+        msg <- paste0(var, ": values appear to be in the expected units, no conversion applied.")
+        cli_inform_safe(c("i" = msg))
       }
       next
     }
