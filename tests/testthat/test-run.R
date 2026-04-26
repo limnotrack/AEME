@@ -325,20 +325,23 @@ test_that("running GLM-AED works", {
   model_controls <- set_vars_sim(model_controls = model_controls,
                                  vars_sim = vars_sim)
   model <- c("glm_aed")
-  # tim <- time(aeme)
-  # tim$start <- tim$start + (100 * 86400)
-  # tim$spin_up$glm_aed <- 100
-  # time(aeme) <- tim
-  # set_glm_aed_models(aeme = aeme, path = path, aed_models = c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
-  #                                                "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton", "aed_zooplankton",
-  #                                                "aed_macrophyte", "aed_totals"))
   path = "aeme"
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
-                     ext_elev = 5, use_bgc = TRUE) |> 
-    run_aeme()
+                     ext_elev = 5, use_bgc = TRUE)
+  
+  aeme <- run_aeme(aeme)
   html_file <- plot_glm_config(aeme = aeme)
   testthat::expect_true(file.exists(html_file))
+  
+  out <- run_glm_aed_diagnostics(aeme = aeme)
+  testthat::expect_true(is.list(out))
+  testthat::expect_true(all(c("data", "plots", "summary") %in% names(out)))
+  plt_chk <- sapply(out$plots, ggplot2::is_ggplot)
+  testthat::expect_true(all(plt_chk))
+  
+  oxy_sdf <- out$data |> 
+    dplyr::filter(variable == "SDF_Fsed_oxy_Z", is.na(value))
   
   plot_output(aeme, var_sim = "CHM_oxy") /
     plot_output(aeme)/
@@ -478,6 +481,9 @@ test_that("running models with wbal method = 1", {
   if (sys_OS == "osx") {
     model <- c("dy_cd")
   }
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  # Delete all files in lake_dir
+  unlink(list.files(lake_dir, full.names = TRUE), recursive = TRUE)
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
@@ -485,9 +491,8 @@ test_that("running models with wbal method = 1", {
                      wb_method = 1, calc_wlev = F)
   inp <- input(aeme)
   met <- inp$meteo
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
+  aeme <- run_aeme(aeme = aeme, verbose = FALSE,
+                   parallel = TRUE, ncores = 2L)
 
   file_chk <- check_all_model_outfiles(aeme)
   testthat::expect_true(file_chk)
@@ -545,18 +550,18 @@ test_that("running models with wbal method = 3", {
   outf <- outflows(aeme)
   outf$data <- NULL
   outflows(aeme) <- outf
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  # Delete all files in lake_dir
+  unlink(list.files(lake_dir, full.names = TRUE), recursive = TRUE)
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, 
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
-                     wb_method = 3, calc_wlev = F)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
+                     wb_method = 3, calc_wlev = F) |> 
+    run_aeme(parallel = F, ncores = 2L)
 
   file_chk <- check_all_model_outfiles(aeme = aeme)
   testthat::expect_true(file_chk)
-  lake_dir <- get_lake_dir(aeme = aeme)
   # DYRESM - Check for number of inflow and outflow files
   inflow_files <- list.files(file.path(lake_dir, "dy_cd"), 
                              pattern = "inf", full.names = TRUE)
@@ -583,8 +588,8 @@ test_that("running models with wbal method = 3", {
                              pattern = "inf_")
   outflow_files <- list.files(file.path(lake_dir, "gotm_wet", "inputs"), 
                               pattern = "outf_")
-  testthat::expect_equal(length(inflow_files), 6)
-  testthat::expect_equal(length(outflow_files), 2)
+  testthat::expect_equal(length(inflow_files), 3)
+  testthat::expect_equal(length(outflow_files), 1)
 })
 
 
