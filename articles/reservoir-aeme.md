@@ -461,37 +461,23 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpE9qA8n\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp0kOpAc\reservoir
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
-#> ℹ `MET_tmpair`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_tmpdew`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_radswd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_radlwd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_humrel`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_cldcvr`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prsttn`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prmslp`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prvapr`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wndspd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wnduvu`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wnduvv`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_pprain`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_ppsnow`: values appear to be in the expected units, no conversion
-#>   applied.
+#> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_tmpdew: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_radswd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_radlwd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_humrel: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_cldcvr: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prsttn: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prmslp: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prvapr: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wndspd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wnduvu: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
 #> ℹ No water level present. Using constant water level.
 #> ℹ Insufficient lake temperature observations (<10).
 #> ℹ Using Stefan & Preud'homme (2007) method.
@@ -507,10 +493,10 @@ aeme <- build_aeme(
 
 ``` r
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-04-23 23:53:48]
-#> → GLM-AED running... [2026-04-23 23:53:48]
-#> ✔ GLM-AED run successful! [2026-04-23 23:53:48]
-#> ✔ Model run complete! [2026-04-23 23:53:48]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-04-26 22:46:57]
+#> → GLM-AED running... [2026-04-26 22:46:57]
+#> ✔ GLM-AED run successful! [2026-04-26 22:46:58]
+#> ✔ Model run complete! [2026-04-26 22:46:58]
 ```
 
 ## View the output

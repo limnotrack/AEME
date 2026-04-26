@@ -122,7 +122,7 @@
    sed_temp_peak_doy = 10, 10
    benthic_mode = 2
    n_zones = 2
-   zone_heights = 3.07, 18.07
+   zone_heights = 3.07, 19
    sed_reflectivity = 0.1, 0.1
    sed_roughness = 0.1, 0.1
 /

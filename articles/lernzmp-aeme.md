@@ -178,35 +178,7 @@ path <- "aeme" # directory in which the model configuration will be built
 
 aeme <- build_aeme(aeme = aeme, model = model, path = path,
                    use_bgc = TRUE)
-#> ℹ All columns already match AEME standard variable names, skipping name
-#>   guessing.
-#> ℹ `MET_tmpair`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_tmpdew`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_radswd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_radlwd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_humrel`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_cldcvr`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prsttn`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prmslp`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prvapr`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wndspd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wnduvu`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wnduvv`: values appear to be in the expected units, no conversion
-#>   applied.
 #> ✔ `MET_pprain`: converted from m/day to mm/day.
-#> ℹ `MET_ppsnow`: values appear to be in the expected units, no conversion
-#>   applied.
 ```
 
 ## Run AEME models

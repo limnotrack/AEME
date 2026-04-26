@@ -483,6 +483,8 @@ We have a host of vignettes to help you get started with AEME:
   [`run_glm_aed()`](https://limnotrack.com/reference/run_dy_cd.md)
   [`run_gotm_wet()`](https://limnotrack.com/reference/run_dy_cd.md) :
   Run AEME models
+- [`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)
+  : Run GLM-AED diagnostics
 - [`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
   : Setup AED aed_sed_const2d sediment model parameters
 - [`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md)

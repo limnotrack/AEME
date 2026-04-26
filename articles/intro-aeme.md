@@ -492,34 +492,20 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ Created missing directory: D:\a\AEME\AEME\vignettes\aeme
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
-#> ℹ `MET_tmpair`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_tmpdew`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_radswd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_radlwd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_humrel`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_cldcvr`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prsttn`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prmslp`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prvapr`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wndspd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wnduvu`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wnduvv`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_pprain`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_ppsnow`: values appear to be in the expected units, no conversion
-#>   applied.
+#> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_tmpdew: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_radswd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_radlwd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_humrel: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_cldcvr: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prsttn: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prmslp: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prvapr: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wndspd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wnduvu: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
 #> ! Missing state variables in inflows:
 #> ! CAR_doc, CAR_poc, CHM_oxy, NCS_ss1, NIT_don, NIT_pon, PHY_cyano, PHY_diatom,
 #>   PHY_green, SIL_rsi, ZOO_zoo1
@@ -564,8 +550,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ 0.008 replaced with 0.3229
 #> ℹ 0.05 replaced with 0.3229
 #> ℹ 0.05 replaced with 0.3229
-#> ℹ PHY_cyano 2 replaced with 0.24022
-#> ℹ PHY_diatom 10 replaced with 0.300275
+#> ℹ PHY_cyano 10 replaced with 0.24022
+#> ℹ PHY_diatom 8.4 replaced with 0.300275
 #> ℹ PHY_green 0.04 replaced with 0.300275
 #> ℹ 100 replaced with 1
 #> ℹ Using default zooplankton initialisation

@@ -41,34 +41,20 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    ext_elev = 5, use_bgc = TRUE)
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
-#> ℹ `MET_tmpair`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_tmpdew`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_radswd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_radlwd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_humrel`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_cldcvr`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prsttn`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prmslp`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_prvapr`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wndspd`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wnduvu`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_wnduvv`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_pprain`: values appear to be in the expected units, no conversion
-#>   applied.
-#> ℹ `MET_ppsnow`: values appear to be in the expected units, no conversion
-#>   applied.
+#> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_tmpdew: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_radswd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_radlwd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_humrel: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_cldcvr: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prsttn: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prmslp: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prvapr: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wndspd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wnduvu: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
 #> ! Missing state variables in inflows:
 #> ! ZOO_zoo1
 #> ℹ Added default values for missing variables.
@@ -90,8 +76,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ 0.008 replaced with 0.3229
 #> ℹ 0.05 replaced with 0.3229
 #> ℹ 0.05 replaced with 0.3229
-#> ℹ PHY_cyano 2 replaced with 0.24022
-#> ℹ PHY_diatom 10 replaced with 0.300275
+#> ℹ PHY_cyano 10 replaced with 0.24022
+#> ℹ PHY_diatom 8.4 replaced with 0.300275
 #> ℹ PHY_green 0.04 replaced with 0.300275
 #> ℹ 100 replaced with 1
 #> ℹ Using default zooplankton initialisation
@@ -144,10 +130,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-04-23 23:39:55]
-#> ✔ Model run complete! [2026-04-23 23:39:58]
-#> ℹ Reading models in parallel...[2026-04-23 23:39:58]
-#> ✔ Model reading complete! [2026-04-23 23:40:00]
+#> ℹ Running models in parallel... [2026-04-26 22:36:37]
+#> ✔ Model run complete! [2026-04-26 22:36:40]
+#> ℹ Reading models in parallel...[2026-04-26 22:36:40]
+#> ✔ Model reading complete! [2026-04-26 22:36:41]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 
