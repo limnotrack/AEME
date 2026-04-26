@@ -53,7 +53,9 @@ set_aed_totals <- function(aeme, path, lake_dir = NULL) {
   }
   
   # ---- Extract phyto groups ----
+  phy_group_index <- aed[["aed_phytoplankton"]][["the_phytos"]]
   phy_groups <- setdiff(names(phyto_pars), "p_name")
+  phy_groups <- phy_groups[phy_group_index]
   
   # Helper to extract a parameter row as numeric vector
   get_par <- function(par_name) {
