@@ -18,9 +18,14 @@ plot_glm_config <- function(aeme, path, output = NULL) {
   
   data("glm_aed_parameter_library", package = "AEME", envir = environment())
   
-  cfg <- configuration(aeme)
-  glm_nml <- cfg[["glm_aed"]][["hydrodynamic"]]
-  aed_nml <- cfg[["glm_aed"]][["bgc"]]
+  if (missing(path)) {
+    path <- get_aeme_path(aeme)
+  }
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  cfg <- read_model_config(model = "glm_aed", lake_dir = lake_dir)
+  
+  glm_nml <- cfg[["hydrodynamic"]]
+  aed_nml <- cfg[["bgc"]]
   
   # Convenience: safe extraction with default
   safe <- function(lst, ..., default = NA) {
