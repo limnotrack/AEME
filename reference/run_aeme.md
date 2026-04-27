@@ -115,10 +115,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- aeme |> 
   run_aeme()
-#> ℹ Running models... (Have you tried parallelizing?) [2026-04-27 00:20:10]
-#> → GLM-AED running... [2026-04-27 00:20:10]
-#> ✔ GLM-AED run successful! [2026-04-27 00:20:11]
-#> ✔ Model run complete! [2026-04-27 00:20:11]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-04-27 00:52:09]
+#> → GLM-AED running... [2026-04-27 00:52:09]
+#> ✔ GLM-AED run successful! [2026-04-27 00:52:09]
+#> ✔ Model run complete! [2026-04-27 00:52:09]
   
 # Plot model output - temperature by default
 aeme |> 
