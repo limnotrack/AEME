@@ -92,16 +92,16 @@ build_aeme <- function(aeme = NULL,
   
   if (!wb_method %in% 1:3) {
     cli::cli_abort(c("`wb_method` must be 1, 2, or 3.",
-                 "i" = "1: no water balance correction applied.",
-                 "i" = "2: correcting water balance using estimated outflows.",
-                 "i" = "3: correcting water balance using estimated inflows and outflows."))
+                     "i" = "1: no water balance correction applied.",
+                     "i" = "2: correcting water balance using estimated outflows.",
+                     "i" = "3: correcting water balance using estimated inflows and outflows."))
   }
   if (!hum_type %in% 1:4) {
     cli::cli_abort(c("`hum_type` must be 1, 2, 3, or 4.",
-                 "i" = "1: relative humidity (%).",
-                 "i" = "2: wet-bulb temperature.",
-                 "i" = "3: dew point temperature.",
-                 "i" = "4: specific humidity (kg/kg)."))
+                     "i" = "1: relative humidity (%).",
+                     "i" = "2: wet-bulb temperature.",
+                     "i" = "3: dew point temperature.",
+                     "i" = "4: specific humidity (kg/kg)."))
   }
   
   all_models <- c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1)
@@ -295,7 +295,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
-
+        
         if (names(aeme_outf[["data"]])[i] == "wbal" & calc_wbal) next
         
         check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
@@ -589,12 +589,14 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               use_lw = inp$use_lw, overwrite_nml = overwrite)
     
     if (use_bgc) {
-      set_glm_aed_models(aeme = aeme, path = path, 
-                         aed_models = c("aed_sedflux", "aed_oxygen", 
-                                        "aed_silica", "aed_nitrogen",
-                                        "aed_phosphorus", "aed_organic_matter",
-                                        "aed_phytoplankton", "aed_totals"))
-      set_aed_sed_const2d(aeme = aeme, path = path)
+      aeme <- aeme |> 
+        set_glm_aed_models(path = path, 
+                           aed_models = c("aed_sedflux", "aed_oxygen", 
+                                          "aed_silica", "aed_nitrogen",
+                                          "aed_phosphorus",
+                                          "aed_organic_matter",
+                                          "aed_phytoplankton", "aed_totals")) |> 
+        set_aed_sed_const2d(path = path)
     }
     # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
