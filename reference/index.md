@@ -93,6 +93,8 @@
   : Estimate sediment zones based on hypsograph
 - [`estimate_surface_temperature()`](https://limnotrack.com/reference/estimate_surface_temperature.md)
   : Estimate Surface Temperature Using Energy Balance Model
+- [`estimate_zone_fluxes()`](https://limnotrack.com/reference/estimate_zone_fluxes.md)
+  : Estimate zone-specific sediment fluxes from hypsograph
 - [`expand_met()`](https://limnotrack.com/reference/expand_met.md) :
   Expand a minimal set of meteorology inputs to a complete set of
   variables suitable for all models

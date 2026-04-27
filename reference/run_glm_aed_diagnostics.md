@@ -109,13 +109,33 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
 #>   aed_phytoplankton, aed_totals
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
+#> 
+#> Tier 2: zone-median summer concentrations used for adjustment:
+#>         oxy   amm   nit   frp
+#> Zone1 0.075 0.078 0.010 0.004
+#> Zone2 7.160 0.005 0.001 0.002
+#> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2 zones, direct FRP)
+#> 
+#> === Sediment zone flux estimates (obs_adjusted) ===
+#> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m
+#> 
+#>  zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m
+#>     1           0.00           3.07            10          13.1         11.5
+#>     2           3.07          19.00             0          10.0          5.0
+#>  area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp
+#>    43957     0.289    -38.8    5.835     -0.4   0.1035
+#>   108386     0.711    -19.4    0.512      0.1   0.0259
+#> 
+#> Lake-wide area-weighted average fluxes (for sanity check):
+#>     oxy     amm     nit     frp 
+#> -25.007   2.050  -0.044   0.048 
 #> ✔ GLM nml validation completed - no issues detected.
 
 aeme <- run_aeme(aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-04-26 22:37:21]
-#> → GLM-AED running... [2026-04-26 22:37:21]
-#> ✔ GLM-AED run successful! [2026-04-26 22:37:23]
-#> ✔ Model run complete! [2026-04-26 22:37:23]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-04-27 00:20:20]
+#> → GLM-AED running... [2026-04-27 00:20:20]
+#> ✔ GLM-AED run successful! [2026-04-27 00:20:23]
+#> ✔ Model run complete! [2026-04-27 00:20:23]
 out <- run_glm_aed_diagnostics(aeme = aeme)
 #> Requesting 86 variables from model output...  (sediment zone _Z variables are
 #> optional; missing ones are skipped)
@@ -128,92 +148,92 @@ out <- run_glm_aed_diagnostics(aeme = aeme)
 #> 
 #> |group                    |variable        |label                       |      min|  median|    mean|     max|     sd|flag |
 #> |:------------------------|:---------------|:---------------------------|--------:|-------:|-------:|-------:|------:|:----|
-#> |oxygen_state             |OXY_oxy         |O2 (mmol/m3)                |  158.439| 228.830| 234.104| 322.116| 50.287|ok   |
-#> |oxygen_state             |OXY_sat         |O2 saturation (%)           |   49.561|  71.764|  73.457|  95.588| 10.511|ok   |
-#> |oxygen_fluxes            |OXY_oxy_atm     |Atm O2 flux (mmol/m2/d)     |  -11.033|  15.360|  32.286| 428.343| 48.208|ok   |
-#> |oxygen_fluxes            |OXY_oxy_atmv    |Atm O2 flux (vol)           |   -1.316|   1.417|   3.197|  55.914|  5.783|ok   |
-#> |oxygen_fluxes            |OXY_oxy_dsf     |SWI O2 flux (mmol/m2/d)     |  -22.414| -15.979| -15.901| -10.096|  2.305|ok   |
-#> |oxygen_fluxes            |OXY_oxy_dsfv    |SOD (vol)                   |   -3.070|  -1.961|  -1.998|  -1.314|  0.304|ok   |
-#> |nitrogen_state           |NIT_amm         |NH4 (mmol N/m3)             |    0.000|   0.000|   0.009|   0.043|  0.013|ok   |
-#> |nitrogen_state           |NIT_n2o         |N2O (mmol N/m3)             |    0.011|   0.034|   0.108|   0.402|  0.133|ok   |
-#> |nitrogen_state           |NIT_nit         |NO3 (mmol N/m3)             |    2.423|   4.851|   4.735|   6.346|  1.016|ok   |
-#> |nitrogen_state           |NIT_no2         |NO2 (mmol N/m3)             |    0.000|   0.002|   0.016|   0.065|  0.020|ok   |
-#> |nitrogen_organic         |OGM_don         |DON (mmol N/m3)             |    0.361|   0.900|   2.461|  21.164|  3.847|ok   |
+#> |oxygen_state             |OXY_oxy         |O2 (mmol/m3)                |  176.426| 233.781| 240.075| 322.492| 44.019|ok   |
+#> |oxygen_state             |OXY_sat         |O2 saturation (%)           |   49.560|  73.746|  75.338|  95.715|  8.425|ok   |
+#> |oxygen_fluxes            |OXY_oxy_atm     |Atm O2 flux (mmol/m2/d)     |  -14.134|  11.722|  25.827| 427.104| 44.832|ok   |
+#> |oxygen_fluxes            |OXY_oxy_atmv    |Atm O2 flux (vol)           |   -1.688|   0.900|   2.576|  55.752|  5.371|ok   |
+#> |oxygen_fluxes            |OXY_oxy_dsf     |SWI O2 flux (mmol/m2/d)     |  -22.248| -14.172| -14.588|  -9.977|  2.428|ok   |
+#> |oxygen_fluxes            |OXY_oxy_dsfv    |SOD (vol)                   |   -3.227|  -1.904|  -1.940|  -1.277|  0.390|ok   |
+#> |nitrogen_state           |NIT_amm         |NH4 (mmol N/m3)             |    0.000|   0.004|   0.024|   0.111|  0.032|ok   |
+#> |nitrogen_state           |NIT_n2o         |N2O (mmol N/m3)             |    0.011|   0.056|   0.253|   1.105|  0.334|ok   |
+#> |nitrogen_state           |NIT_nit         |NO3 (mmol N/m3)             |    2.422|   3.877|   3.774|   4.530|  0.444|ok   |
+#> |nitrogen_state           |NIT_no2         |NO2 (mmol N/m3)             |    0.000|   0.014|   0.038|   0.143|  0.044|ok   |
+#> |nitrogen_organic         |OGM_don         |DON (mmol N/m3)             |    0.371|   0.878|   2.455|  21.164|  3.850|ok   |
 #> |nitrogen_organic         |OGM_donr        |Refractory DON              |    0.527|   1.315|   1.787|   8.946|  1.534|ok   |
-#> |nitrogen_organic         |OGM_pon         |PON (mmol N/m3)             |    2.652|   3.299|   3.440|   7.086|  0.636|ok   |
-#> |nitrogen_transformations |NIT_anammox     |Anammox                     |    0.000|   0.000|   0.000|   0.001|  0.000|ok   |
+#> |nitrogen_organic         |OGM_pon         |PON (mmol N/m3)             |    2.652|   3.217|   3.423|   7.086|  0.671|ok   |
+#> |nitrogen_transformations |NIT_anammox     |Anammox                     |    0.000|   0.000|   0.001|   0.005|  0.001|ok   |
 #> |nitrogen_transformations |NIT_denit       |Denitrification             |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
 #> |nitrogen_transformations |NIT_dnra        |DNRA                        |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
-#> |nitrogen_transformations |NIT_n2oprod     |N2O production              |    0.000|   0.000|   0.003|   0.032|  0.006|ok   |
-#> |nitrogen_transformations |NIT_nitrif      |Nitrification               |    0.000|   0.006|   0.026|   0.231|  0.040|ok   |
-#> |nitrogen_sediment_flux   |NIT_amm_dsf     |NH4 SWI flux                |    0.136|   0.293|   0.411|   0.822|  0.248|ok   |
-#> |nitrogen_sediment_flux   |NIT_n2o_atm     |N2O atm flux                |    0.000|   0.003|   0.011|   0.332|  0.031|ok   |
+#> |nitrogen_transformations |NIT_n2oprod     |N2O production              |    0.000|   0.002|   0.007|   0.063|  0.012|ok   |
+#> |nitrogen_transformations |NIT_nitrif      |Nitrification               |    0.000|   0.071|   0.110|   0.926|  0.151|ok   |
+#> |nitrogen_sediment_flux   |NIT_amm_dsf     |NH4 SWI flux                |    0.135|   0.532|   0.701|   1.532|  0.514|ok   |
+#> |nitrogen_sediment_flux   |NIT_n2o_atm     |N2O atm flux                |    0.000|   0.002|   0.018|   0.782|  0.062|ok   |
 #> |nitrogen_sediment_flux   |NIT_n2o_dsf     |N2O SWI flux                |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
-#> |nitrogen_sediment_flux   |NIT_nit_dsf     |NO3 SWI flux                |    0.072|   0.105|   0.108|   0.153|  0.014|ok   |
+#> |nitrogen_sediment_flux   |NIT_nit_dsf     |NO3 SWI flux                |   -0.032|   0.003|   0.011|   0.055|  0.030|ok   |
 #> |nitrogen_sediment_flux   |NIT_no2_dsf     |NO2 SWI flux                |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
-#> |phosphorus_state         |OGM_dop         |DOP                         |    0.004|   0.013|   0.036|   0.319|  0.058|ok   |
+#> |phosphorus_state         |OGM_dop         |DOP                         |    0.004|   0.012|   0.036|   0.319|  0.058|ok   |
 #> |phosphorus_state         |OGM_dopr        |Refractory DOP              |    0.009|   0.022|   0.030|   0.149|  0.026|ok   |
-#> |phosphorus_state         |OGM_pop         |POP                         |    0.082|   0.111|   0.124|   0.321|  0.036|ok   |
-#> |phosphorus_state         |PHS_frp         |FRP (mmol P/m3)             |    0.000|   0.000|   0.002|   0.010|  0.002|ok   |
+#> |phosphorus_state         |OGM_pop         |POP                         |    0.086|   0.111|   0.125|   0.321|  0.036|ok   |
+#> |phosphorus_state         |PHS_frp         |FRP (mmol P/m3)             |    0.000|   0.001|   0.002|   0.010|  0.002|ok   |
 #> |phosphorus_fluxes        |OGM_dop_min     |DOP mineralisation          |    0.000|   0.000|   0.000|   0.002|  0.000|ok   |
 #> |phosphorus_fluxes        |OGM_dop_swi     |DOP SWI flux                |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
 #> |phosphorus_fluxes        |OGM_pop_res     |POP resuspension            |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
-#> |phosphorus_fluxes        |OGM_pop_swi     |POP SWI flux                |   -0.093|  -0.028|  -0.031|  -0.021|  0.010|ok   |
-#> |phosphorus_fluxes        |PHS_frp_dsf     |FRP SWI flux                |    0.001|   0.001|   0.005|   0.014|  0.005|ok   |
-#> |phyto_biomass            |PHY_cyano       |Cyanobacteria               |    0.030|   0.031|   0.112|   0.505|  0.137|ok   |
-#> |phyto_biomass            |PHY_diatom      |Diatoms                     |    0.030|   0.030|   1.632|  19.728|  4.027|ok   |
-#> |phyto_biomass            |PHY_green       |Greens                      |    0.305|  20.858|  21.658|  47.534| 14.379|ok   |
-#> |phyto_biomass            |PHY_tchla       |Total chl-a (ug/L)          |    0.224|   6.400|   6.609|  14.227|  3.450|ok   |
-#> |phyto_biomass            |PHY_tphy        |Total phyto (mmol C/m3)     |    0.786|  21.338|  22.053|  47.430| 11.487|ok   |
-#> |phyto_stoichiometry      |PHY_cyano_NtoP  |Cyano N:P                   |   11.499|  48.934|  46.057|  71.051| 14.623|ok   |
-#> |phyto_stoichiometry      |PHY_diatom_NtoP |Diatom N:P                  |   11.447|  54.350|  49.859|  71.448| 14.895|ok   |
-#> |phyto_stoichiometry      |PHY_green_NtoP  |Green N:P                   |   11.551|  45.041|  42.600|  66.380| 13.187|ok   |
-#> |phyto_limitation         |PHY_cyano_fI    |Cyano fI                    |    0.011|   0.242|   0.232|   0.326|  0.059|ok   |
-#> |phyto_limitation         |PHY_cyano_fNit  |Cyano fN                    |    0.659|   0.988|   0.951|   0.997|  0.057|ok   |
-#> |phyto_limitation         |PHY_cyano_fPho  |Cyano fP                    |    0.000|   0.213|   0.296|   0.997|  0.295|ok   |
-#> |phyto_limitation         |PHY_cyano_fT    |Cyano fT                    |    0.469|   0.863|   0.826|   1.057|  0.157|ok   |
-#> |phyto_limitation         |PHY_diatom_fI   |Diatom fI                   |    0.027|   0.321|   0.308|   0.405|  0.063|ok   |
-#> |phyto_limitation         |PHY_diatom_fNit |Diatom fN                   |    0.659|   0.978|   0.949|   0.997|  0.057|ok   |
-#> |phyto_limitation         |PHY_diatom_fPho |Diatom fP                   |    0.000|   0.127|   0.233|   0.994|  0.297|ok   |
-#> |phyto_limitation         |PHY_diatom_fT   |Diatom fT                   |    0.664|   1.000|   0.958|   1.000|  0.058|ok   |
-#> |phyto_limitation         |PHY_green_fI    |Green fI                    |    0.011|   0.242|   0.232|   0.326|  0.059|ok   |
-#> |phyto_limitation         |PHY_green_fNit  |Green fN                    |    0.664|   0.991|   0.955|   1.000|  0.057|ok   |
-#> |phyto_limitation         |PHY_green_fPho  |Green fP                    |    0.046|   0.412|   0.431|   0.998|  0.259|ok   |
-#> |phyto_limitation         |PHY_green_fT    |Green fT                    |    0.664|   1.000|   0.958|   1.000|  0.058|ok   |
-#> |phyto_fluxes             |PHY_gpp         |GPP                         |    0.139|   1.040|   1.398|   7.004|  1.168|ok   |
-#> |phyto_fluxes             |PHY_ncp         |NCP                         |   -0.036|   0.878|   1.184|   6.327|  1.057|ok   |
-#> |phyto_fluxes             |PHY_set         |Sedimentation               |  -13.534|  -0.865|  -1.594|  -0.180|  2.286|ok   |
-#> |phyto_fluxes             |PHY_upt_nh4     |NH4 uptake                  |    0.005|   0.039|   0.054|   0.263|  0.045|ok   |
+#> |phosphorus_fluxes        |OGM_pop_swi     |POP SWI flux                |   -0.093|  -0.028|  -0.032|  -0.021|  0.010|ok   |
+#> |phosphorus_fluxes        |PHS_frp_dsf     |FRP SWI flux                |    0.001|   0.003|   0.008|   0.025|  0.009|ok   |
+#> |phyto_biomass            |PHY_cyano       |Cyanobacteria               |    0.030|   0.031|   0.112|   0.504|  0.136|ok   |
+#> |phyto_biomass            |PHY_diatom      |Diatoms                     |    0.030|   0.030|   1.618|  19.594|  4.002|ok   |
+#> |phyto_biomass            |PHY_green       |Greens                      |    0.305|  19.228|  22.932|  57.277| 17.140|ok   |
+#> |phyto_biomass            |PHY_tchla       |Total chl-a (ug/L)          |    0.224|   5.995|   6.937|  17.144|  4.213|ok   |
+#> |phyto_biomass            |PHY_tphy        |Total phyto (mmol C/m3)     |    0.786|  20.077|  23.145|  57.151| 14.030|ok   |
+#> |phyto_stoichiometry      |PHY_cyano_NtoP  |Cyano N:P                   |   11.499|  48.238|  45.319|  70.930| 14.623|ok   |
+#> |phyto_stoichiometry      |PHY_diatom_NtoP |Diatom N:P                  |   11.447|  53.348|  48.752|  71.049| 14.894|ok   |
+#> |phyto_stoichiometry      |PHY_green_NtoP  |Green N:P                   |   11.551|  44.797|  42.067|  66.727| 13.218|ok   |
+#> |phyto_limitation         |PHY_cyano_fI    |Cyano fI                    |    0.014|   0.243|   0.232|   0.328|  0.060|ok   |
+#> |phyto_limitation         |PHY_cyano_fNit  |Cyano fN                    |    0.634|   0.987|   0.950|   0.997|  0.059|ok   |
+#> |phyto_limitation         |PHY_cyano_fPho  |Cyano fP                    |    0.000|   0.244|   0.315|   0.997|  0.292|ok   |
+#> |phyto_limitation         |PHY_cyano_fT    |Cyano fT                    |    0.439|   0.863|   0.826|   1.058|  0.157|ok   |
+#> |phyto_limitation         |PHY_diatom_fI   |Diatom fI                   |    0.034|   0.321|   0.307|   0.407|  0.065|ok   |
+#> |phyto_limitation         |PHY_diatom_fNit |Diatom fN                   |    0.631|   0.978|   0.947|   0.997|  0.058|ok   |
+#> |phyto_limitation         |PHY_diatom_fPho |Diatom fP                   |    0.000|   0.159|   0.246|   0.994|  0.292|ok   |
+#> |phyto_limitation         |PHY_diatom_fT   |Diatom fT                   |    0.638|   1.000|   0.958|   1.000|  0.059|ok   |
+#> |phyto_limitation         |PHY_green_fI    |Green fI                    |    0.014|   0.243|   0.232|   0.328|  0.060|ok   |
+#> |phyto_limitation         |PHY_green_fNit  |Green fN                    |    0.637|   0.991|   0.955|   1.000|  0.058|ok   |
+#> |phyto_limitation         |PHY_green_fPho  |Green fP                    |    0.039|   0.422|   0.440|   0.998|  0.258|ok   |
+#> |phyto_limitation         |PHY_green_fT    |Green fT                    |    0.638|   1.000|   0.958|   1.000|  0.059|ok   |
+#> |phyto_fluxes             |PHY_gpp         |GPP                         |    0.121|   0.985|   1.452|   6.976|  1.260|ok   |
+#> |phyto_fluxes             |PHY_ncp         |NCP                         |   -0.057|   0.828|   1.233|   6.299|  1.153|ok   |
+#> |phyto_fluxes             |PHY_set         |Sedimentation               |  -13.444|  -0.873|  -1.623|  -0.180|  2.277|ok   |
+#> |phyto_fluxes             |PHY_upt_nh4     |NH4 uptake                  |    0.005|   0.037|   0.056|   0.262|  0.049|ok   |
 #> |phyto_fluxes             |PHY_upt_no3     |NO3 uptake                  |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
 #> |phyto_fluxes             |PHY_upt_po4     |PO4 uptake                  |    0.000|   0.000|   0.001|   0.011|  0.002|ok   |
 #> |sedflux_oxygen_Z         |OXY_oxy_atm_Z   |Atm O2 flux (per zone)      |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
-#> |sedflux_oxygen_Z         |OXY_oxy_dsf_Z   |SWI O2 exchange (per zone)  |  -23.577| -14.113| -14.037|   0.000|  6.935|ok   |
-#> |sedflux_oxygen_Z         |SDF_Fsed_oxy_Z  |SDF O2 flux (per zone)      |  -25.000| -25.000| -25.000| -25.000|  0.000|ok   |
-#> |sedflux_nitrogen_Z       |NIT_amm_dsf_Z   |NH4 SWI flux (per zone)     |    0.132|   0.287|   0.520|   1.841|  0.524|ok   |
+#> |sedflux_oxygen_Z         |OXY_oxy_dsf_Z   |SWI O2 exchange (per zone)  |  -34.720| -15.532| -14.740|  -0.025|  7.057|ok   |
+#> |sedflux_oxygen_Z         |SDF_Fsed_oxy_Z  |SDF O2 flux (per zone)      |  -38.800| -29.100| -29.100| -19.400|  9.707|ok   |
+#> |sedflux_nitrogen_Z       |NIT_amm_dsf_Z   |NH4 SWI flux (per zone)     |    0.034|   0.249|   1.176|   5.206|  1.666|ok   |
 #> |sedflux_nitrogen_Z       |NIT_n2o_atm_Z   |N2O atm flux (per zone)     |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
 #> |sedflux_nitrogen_Z       |NIT_n2o_dsf_Z   |N2O SWI flux (per zone)     |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
-#> |sedflux_nitrogen_Z       |NIT_nit_dsf_Z   |NO3 SWI flux (per zone)     |    0.000|   0.104|   0.095|   0.156|  0.048|ok   |
+#> |sedflux_nitrogen_Z       |NIT_nit_dsf_Z   |NO3 SWI flux (per zone)     |   -0.306|   0.018|  -0.029|   0.079|  0.113|ok   |
 #> |sedflux_nitrogen_Z       |NIT_no2_dsf_Z   |NO2 SWI flux (per zone)     |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
-#> |sedflux_nitrogen_Z       |SDF_Fsed_amm_Z  |SDF NH4 flux (per zone)     |    2.000|   2.000|   2.000|   2.000|  0.000|ok   |
-#> |sedflux_nitrogen_Z       |SDF_Fsed_nit_Z  |SDF NO3 flux (per zone)     |    0.200|   0.200|   0.200|   0.200|  0.000|ok   |
-#> |sedflux_phosphorus_Z     |OGM_doc_swi_Z   |DOC SWI flux (per zone)     |    0.014|   0.027|   0.037|   0.094|  0.024|ok   |
+#> |sedflux_nitrogen_Z       |SDF_Fsed_amm_Z  |SDF NH4 flux (per zone)     |    0.512|   3.173|   3.173|   5.835|  2.663|ok   |
+#> |sedflux_nitrogen_Z       |SDF_Fsed_nit_Z  |SDF NO3 flux (per zone)     |   -0.400|  -0.150|  -0.150|   0.100|  0.250|ok   |
+#> |sedflux_phosphorus_Z     |OGM_doc_swi_Z   |DOC SWI flux (per zone)     |    0.014|   0.028|   0.037|   0.093|  0.024|ok   |
 #> |sedflux_phosphorus_Z     |OGM_don_swi_Z   |DON SWI flux (per zone)     |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
 #> |sedflux_phosphorus_Z     |OGM_dop_swi_Z   |DOP SWI flux (per zone)     |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
-#> |sedflux_phosphorus_Z     |OGM_poc_swi_Z   |POC SWI flux (per zone)     |  -10.082|  -3.085|  -4.250|  -0.983|  2.375|ok   |
-#> |sedflux_phosphorus_Z     |OGM_pon_swi_Z   |PON SWI flux (per zone)     |   -2.576|  -0.805|  -0.717|  -0.259|  0.390|ok   |
-#> |sedflux_phosphorus_Z     |OGM_pop_swi_Z   |POP SWI flux (per zone)     |   -0.117|  -0.029|  -0.026|  -0.008|  0.015|ok   |
-#> |sedflux_phosphorus_Z     |PHS_frp_dsf_Z   |FRP SWI flux (per zone)     |    0.001|   0.001|   0.007|   0.044|  0.013|ok   |
-#> |sedflux_phosphorus_Z     |SDF_Fsed_frp_Z  |SDF FRP flux (per zone)     |    0.050|   0.050|   0.050|   0.050|  0.000|ok   |
+#> |sedflux_phosphorus_Z     |OGM_poc_swi_Z   |POC SWI flux (per zone)     |   -9.994|  -3.126|  -4.232|  -0.983|  2.381|ok   |
+#> |sedflux_phosphorus_Z     |OGM_pon_swi_Z   |PON SWI flux (per zone)     |   -2.576|  -0.789|  -0.714|  -0.259|  0.392|ok   |
+#> |sedflux_phosphorus_Z     |OGM_pop_swi_Z   |POP SWI flux (per zone)     |   -0.117|  -0.030|  -0.026|  -0.008|  0.015|ok   |
+#> |sedflux_phosphorus_Z     |PHS_frp_dsf_Z   |FRP SWI flux (per zone)     |    0.000|   0.001|   0.013|   0.089|  0.025|ok   |
+#> |sedflux_phosphorus_Z     |SDF_Fsed_frp_Z  |SDF FRP flux (per zone)     |    0.026|   0.065|   0.065|   0.104|  0.039|ok   |
 #> |sedflux_organic_Z        |OGM_poc_res_Z   |POC resuspension (per zone) |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
 #> |sedflux_organic_Z        |OGM_pon_res_Z   |PON resuspension (per zone) |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
 #> |sedflux_organic_Z        |OGM_pop_res_Z   |POP resuspension (per zone) |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
 #> |sedflux_organic_Z        |OGM_toc_sed_Z   |TOC sed mass (per zone)     |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
 #> |sedflux_organic_Z        |OGM_ton_sed_Z   |TON sed mass (per zone)     |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
 #> |sedflux_organic_Z        |OGM_top_sed_Z   |TOP sed mass (per zone)     |    0.000|   0.000|   0.000|   0.000|  0.000|ok   |
-#> |sedflux_organic_Z        |PHY_phy_swi_c_Z |Phyto SWI C (per zone)      | -134.660|  -5.163| -10.390|  -0.468| 18.226|ok   |
-#> |sedflux_organic_Z        |PHY_phy_swi_n_Z |Phyto SWI N (per zone)      |   -9.103|  -0.361|  -0.715|  -0.033|  1.235|ok   |
-#> |sedflux_organic_Z        |PHY_phy_swi_p_Z |Phyto SWI P (per zone)      |   -0.329|  -0.009|  -0.022|  -0.002|  0.045|ok   |
-#> |sedflux_silica_Z         |SIL_dsf_rsi_Z   |Si SWI flux (per zone)      |    0.002|   0.004|   0.102|   0.927|  0.249|ok   |
+#> |sedflux_organic_Z        |PHY_phy_swi_c_Z |Phyto SWI C (per zone)      | -133.755|  -5.456| -10.621|  -0.468| 18.218|ok   |
+#> |sedflux_organic_Z        |PHY_phy_swi_n_Z |Phyto SWI N (per zone)      |   -9.043|  -0.380|  -0.731|  -0.033|  1.235|ok   |
+#> |sedflux_organic_Z        |PHY_phy_swi_p_Z |Phyto SWI P (per zone)      |   -0.328|  -0.009|  -0.023|  -0.002|  0.045|ok   |
+#> |sedflux_silica_Z         |SIL_dsf_rsi_Z   |Si SWI flux (per zone)      |    0.002|   0.005|   0.072|   0.866|  0.183|ok   |
 
 
 

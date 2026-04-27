@@ -199,5 +199,25 @@ aeme <- aeme |>
 #>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
 #>   aed_phytoplankton, aed_totals
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
+#> 
+#> Tier 2: zone-median summer concentrations used for adjustment:
+#>         oxy   amm   nit   frp
+#> Zone1 0.075 0.078 0.010 0.004
+#> Zone2 7.160 0.005 0.001 0.002
+#> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2 zones, direct FRP)
+#> 
+#> === Sediment zone flux estimates (obs_adjusted) ===
+#> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m
+#> 
+#>  zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m
+#>     1           0.00           3.07            10          13.1         11.5
+#>     2           3.07          19.00             0          10.0          5.0
+#>  area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp
+#>    43957     0.289    -38.8    5.835     -0.4   0.1035
+#>   108386     0.711    -19.4    0.512      0.1   0.0259
+#> 
+#> Lake-wide area-weighted average fluxes (for sanity check):
+#>     oxy     amm     nit     frp 
+#> -25.007   2.050  -0.044   0.048 
 #> ✔ GLM nml validation completed - no issues detected.
 ```

@@ -53,7 +53,12 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">set_aed_sed_const2d</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">path</span>, lake_dir <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">set_aed_sed_const2d</span><span class="op">(</span></span>
+<span>  <span class="va">aeme</span>,</span>
+<span>  <span class="va">path</span>,</span>
+<span>  lake_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>fsed_oxy <span class="op">=</span> <span class="op">-</span><span class="fl">25</span>, fsed_amm <span class="op">=</span> <span class="fl">2</span>, fsed_nit <span class="op">=</span> <span class="fl">0.2</span>, fsed_frp <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,6 +72,12 @@
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
 <dd><p>filepath; where input files are located relative to the current
 working directory.</p></dd>
+
+
+<dt id="arg-baseline">baseline<a class="anchor" aria-label="anchor" href="#arg-baseline"></a></dt>
+<dd><p>Named numeric vector of baseline fluxes at
+<code>ref_depth</code>. Must include <code>fsed_oxy</code>, <code>fsed_amm</code>,
+<code>fsed_nit</code>, <code>fsed_frp</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

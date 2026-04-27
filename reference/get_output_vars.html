@@ -137,6 +137,26 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_phytoplankton, aed_totals</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting up AED aed_sed_const2d sediment zones: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tier 2: zone-median summer concentrations used for adjustment:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         oxy   amm   nit   frp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Zone1 0.075 0.078 0.010 0.004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Zone2 7.160 0.005 0.001 0.002</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2 zones, direct FRP)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === Sediment zone flux estimates (obs_adjusted) ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1           0.00           3.07            10          13.1         11.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     2           3.07          19.00             0          10.0          5.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    43957     0.289    -38.8    5.835     -0.4   0.1035</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   108386     0.711    -19.4    0.512      0.1   0.0259</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Lake-wide area-weighted average fluxes (for sanity check):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     oxy     amm     nit     frp </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -25.007   2.050  -0.044   0.048 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GOTM-WET model for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GOTM configuration files</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5</span>
@@ -180,10 +200,10 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>path <span class="op">=</span> <span class="va">path</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>parallel <span class="op">=</span> <span class="cn">TRUE</span>, ncores <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models in parallel... [2026-04-26 22:36:37]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-04-26 22:36:40]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading models in parallel...[2026-04-26 22:36:40]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model reading complete! [2026-04-26 22:36:41]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models in parallel... [2026-04-27 00:19:18]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-04-27 00:19:21]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading models in parallel...[2026-04-27 00:19:21]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model reading complete! [2026-04-27 00:19:24]</span>
 <span class="r-in"><span><span class="fu">get_output_vars</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    Water temperature                    Thermocline depth </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                           "HYD_temp"                         "HYD_thmcln" </span>

@@ -561,6 +561,26 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
 #>   aed_phytoplankton, aed_totals
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
+#> 
+#> Tier 2: zone-median summer concentrations used for adjustment:
+#>        oxy   amm nit   frp
+#> Zone1 0.29 0.064  NA 0.012
+#> Zone2 5.30 0.005  NA 0.008
+#> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2 zones, direct FRP)
+#> 
+#> === Sediment zone flux estimates (obs_adjusted) ===
+#> n_zones: 2 | max lake depth: 13.48 m | ref_depth: 5 m
+#> 
+#>  zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m
+#>     1           0.00           2.48            11          13.5         12.2
+#>     2           2.48          19.00             0          11.0          5.5
+#>  area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp
+#>    34464     0.224    -38.4    5.700     -0.4   0.0922
+#>   119184     0.776    -21.1    0.558      0.1   0.0338
+#> 
+#> Lake-wide area-weighted average fluxes (for sanity check):
+#>     oxy     amm     nit     frp 
+#> -24.993   1.710  -0.012   0.047
 #> ℹ Building GOTM-WET model for lake aeme
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5

@@ -85,15 +85,35 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   aed_totals to: aed_sedflux, aed_oxygen, aed_silica, aed_nitrogen,
 #>   aed_phosphorus, aed_organic_matter, aed_phytoplankton, aed_totals
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
+#> 
+#> Tier 2: zone-median summer concentrations used for adjustment:
+#>         oxy   amm   nit   frp
+#> Zone1 0.075 0.078 0.010 0.004
+#> Zone2 7.160 0.005 0.001 0.002
+#> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2 zones, direct FRP)
+#> 
+#> === Sediment zone flux estimates (obs_adjusted) ===
+#> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m
+#> 
+#>  zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m
+#>     1           0.00           3.07            10          13.1         11.5
+#>     2           3.07          19.00             0          10.0          5.0
+#>  area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp
+#>    43957     0.289    -38.8    5.835     -0.4   0.1035
+#>   108386     0.711    -19.4    0.512      0.1   0.0259
+#> 
+#> Lake-wide area-weighted average fluxes (for sanity check):
+#>     oxy     amm     nit     frp 
+#> -25.007   2.050  -0.044   0.048 
 #> ✔ GLM nml validation completed - no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-04-26 22:36:51]
-#> ✔ Model run complete! [2026-04-26 22:36:54]
-#> ℹ Reading models in parallel...[2026-04-26 22:36:54]
-#> ✔ Model reading complete! [2026-04-26 22:36:55]
+#> ℹ Running models in parallel... [2026-04-27 00:19:37]
+#> ✔ Model run complete! [2026-04-27 00:19:40]
+#> ℹ Reading models in parallel...[2026-04-27 00:19:40]
+#> ✔ Model reading complete! [2026-04-27 00:19:42]
 aeme |> 
   list_mod_obs_vars()
 #>              Cyanobacteria           Dissolved oxygen 

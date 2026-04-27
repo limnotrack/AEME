@@ -7,10 +7,10 @@
 &aed_sed_const2d
    n_zones = 2
    active_zones = 1, 2
-   fsed_oxy = -25, -25
-   fsed_amm = 2, 2
-   fsed_nit = 0.2, 0.2
-   fsed_frp = 0.05, 0.05
+   fsed_oxy = -38.8, -19.4
+   fsed_amm = 5.835, 0.512
+   fsed_nit = -0.4, 0.1
+   fsed_frp = 0.1035, 0.0259
 /
 &aed_oxygen
    oxy_initial = 312.5

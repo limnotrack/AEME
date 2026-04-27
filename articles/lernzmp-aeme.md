@@ -179,6 +179,28 @@ path <- "aeme" # directory in which the model configuration will be built
 aeme <- build_aeme(aeme = aeme, model = model, path = path,
                    use_bgc = TRUE)
 #> ✔ `MET_pprain`: converted from m/day to mm/day.
+#> 
+#> Tier 2: zone-median summer concentrations used for adjustment:
+#>          oxy   amm   nit   frp
+#> Zone1     NA    NA    NA    NA
+#> Zone2 7.2275 0.036 0.005 0.007
+#>   < 2 zones with data for this flux — skipping adjustment
+#>   < 2 zones with data for this flux — skipping adjustment
+#> Tier 2 adjustments applied: fsed_amm (1 zones, direct NH4); fsed_frp (1 zones, direct FRP)
+#> 
+#> === Sediment zone flux estimates (obs_adjusted) ===
+#> n_zones: 2 | max lake depth: 48.15 m | ref_depth: 5 m
+#> 
+#>  zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m
+#>     1            0.0           21.1            27          48.1         37.6
+#>     2           21.1           54.0             0          27.0         13.5
+#>   area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp
+#>    775169      0.01      -25        2     -0.4     0.05
+#>  79884791      0.99      -25        2      0.1     0.05
+#> 
+#> Lake-wide area-weighted average fluxes (for sanity check):
+#>     oxy     amm     nit     frp 
+#> -25.000   2.000   0.095   0.050
 ```
 
 ## Run AEME models
