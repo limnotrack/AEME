@@ -244,33 +244,22 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     
     # Inflow ----
     aeme_inf <- inflows(aeme)
+    # Inflow ----
+    aeme_inf <- inflows(aeme)
     if (length(aeme_inf[["data"]]) > 0) {
-      for (i in 1:length(aeme_inf[["data"]])) {
-        inf[[names(aeme_inf[["data"]])[i]]] <- aeme_inf[["data"]][[i]]
-        if (any(!inf_vars %in% names(inf[[i]]))) {
-          msg <- paste(setdiff(inf_vars, names(inf[[i]])), collapse = ", ")
-          cli_inform_safe(
-            c(
-              "!" = "Missing state variables in inflows:",
-              "!" = msg
-            )
-          )
-          add_vars <- setdiff(inf_vars, names(inf[[i]]))
-          for (v in add_vars) {
-            inf[[i]][[v]] <- model_controls$inf_default[match(v, model_controls$var_aeme)]
-          }
-          cli_inform_safe(
-            c("i" = "Added default values for missing variables.")
-          )
-        }
-        check_time(df = inf[[names(aeme_inf[["data"]])[i]]], model = model,
-                   aeme_time = aeme_time,
-                   name = paste0("inflow-", names(aeme_inf[["data"]])[i]))
-        
-        pot_inf_vars <- c("Date","HYD_flow", inf_vars, "model")
-        
-        inf[[i]] <- inf[[i]] |>
-          dplyr::select(dplyr::any_of(pot_inf_vars))
+      pot_inf_vars <- c("time", "HYD_flow", inf_vars, "model")
+      for (i in seq_along(aeme_inf[["data"]])) {
+        inf_name <- names(aeme_inf[["data"]])[i]
+        inf[[inf_name]] <- standardise_inflow(
+          inflow        = aeme_inf[["data"]][[i]],
+          model_controls = model_controls,
+          inf_vars      = inf_vars,
+          aeme_time     = aeme_time,
+          inflow_name   = paste0("inflow-", inf_name),
+          model         = model,
+          pot_inf_vars  = pot_inf_vars,
+          verbose       = verbose
+        )
       }
     }
     inf_factor <- aeme_inf[["factor"]]
