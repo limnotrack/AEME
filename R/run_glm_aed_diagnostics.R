@@ -9,6 +9,8 @@
 #'                       Default NULL = all entries.
 #' @param depth_collapse "mean", "surface" or "max" — reduce 3D variables
 #' @param plot           draw combined plots, grouped by element
+#' @param use_bounds     add dashed lines to plots showing expected bounds 
+#'  (from catalogue)
 #' @param print_table    print the kable summary
 #'
 #' @export
@@ -45,6 +47,7 @@ run_glm_aed_diagnostics <- function(aeme,
                                     groups         = NULL,
                                     depth_collapse = "mean",
                                     plot           = TRUE,
+                                    use_bounds = TRUE,
                                     print_table    = TRUE) {
   
   lake_dir <- get_lake_dir(aeme)
@@ -119,7 +122,7 @@ run_glm_aed_diagnostics <- function(aeme,
   
   # --- plots ---------------------------------------------------------------
   plots        <- lapply(sel, function(g) {
-    plot_diag_group(dat, group = g)
+    plot_diag_group(dat, group = g, use_bounds = use_bounds)
   })
   names(plots) <- names(sel)
   
@@ -781,7 +784,7 @@ summarise_diag_group <- function(data, group) {
 # 4. CORE PLOT
 # -----------------------------------------------------------------------------
 #' @noRd
-plot_diag_group <- function(data, group, free_y = TRUE) {
+plot_diag_group <- function(data, group, free_y = TRUE, use_bounds = TRUE) {
   
   vars_present <- intersect(names(group$vars), unique(data$variable))
   if (!length(vars_present)) {
@@ -830,7 +833,7 @@ plot_diag_group <- function(data, group, free_y = TRUE) {
                      panel.grid.minor = ggplot2::element_blank())
   }
   
-  if (nrow(bnd_df)) {
+  if (nrow(bnd_df) & use_bounds) {
     bnd_df <- bnd_df |> 
       dplyr::filter(variable %in% vars_present) |>
       dplyr::mutate(label = factor(unname(group$vars[variable]),

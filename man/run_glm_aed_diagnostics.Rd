@@ -10,6 +10,7 @@ run_glm_aed_diagnostics(
   groups = NULL,
   depth_collapse = "mean",
   plot = TRUE,
+  use_bounds = TRUE,
   print_table = TRUE
 )
 }
@@ -26,6 +27,9 @@ Default NULL = all entries.}
 \item{depth_collapse}{"mean", "surface" or "max" — reduce 3D variables}
 
 \item{plot}{draw combined plots, grouped by element}
+
+\item{use_bounds}{add dashed lines to plots showing expected bounds 
+(from catalogue)}
 
 \item{print_table}{print the kable summary}
 }
