@@ -2,21 +2,21 @@
 % Please edit documentation in R/Aeme.R
 \name{plot,Aeme-method}
 \alias{plot,Aeme-method}
-\title{Update summary Method}
+\title{Plot method for Aeme objects}
 \usage{
 \S4method{plot}{Aeme}(x, y, ..., add = FALSE)
 }
 \arguments{
 \item{x}{An Aeme object.}
 
-\item{y}{An Aeme slot (optional). Defaults to "output".}
+\item{y}{An Aeme slot name (character). Defaults to \code{"output"}.}
 
-\item{...}{additional arguments affecting the plot produced.}
+\item{...}{Additional arguments (currently unused).}
 
-\item{add}{logical; add to current plot?}
+\item{add}{Logical; add to current plot? (currently unused)}
 }
 \value{
-prints the Aeme object to the console.
+A ggplot object, or prints to the active graphics device.
 }
 \description{
 Plot an Aeme object

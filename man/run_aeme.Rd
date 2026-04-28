@@ -65,7 +65,11 @@ path <- tempdir()
 model_controls <- get_model_controls()
 model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
-model_controls = model_controls, ext_elev = 5)
-aeme <- run_aeme(aeme = aeme, model = model, path = path)
-plot_output(aeme, model = model)
+                   model_controls = model_controls, ext_elev = 5)
+aeme <- aeme |> 
+  run_aeme()
+  
+# Plot model output - temperature by default
+aeme |> 
+  plot_output()
 }

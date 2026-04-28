@@ -100,7 +100,7 @@ plot_weir_calibration <- function(aeme, model) {
       plot.margin      = ggplot2::margin(4, 8, 4, 8)
     )
   
-  # ── Panel 1 · Rating curve: Q vs h ────────────────────────────────────────
+  # Panel 1  Rating curve: Q vs h 
   # Shows the shape of the weir equation across the observed level range.
   # A bad h_inv shifts the curve left/right; a bad C scales it up/down.
   h_range  <- range(wb$value, na.rm = TRUE)
@@ -156,7 +156,7 @@ plot_weir_calibration <- function(aeme, model) {
     base_theme +
     ggplot2::theme(legend.position = "bottom")
   
-  # ── Panel 2 · Lake level time series: sim vs obs + h_inv reference ─────────
+  #  Panel 2  Lake level time series: sim vs obs + h_inv reference 
   # Shows where the lake sits relative to h_inv (shaded head = active weir).
   # If obs available, disagreement between sim and obs reveals nudging quality.
   p2 <- ggplot2::ggplot(wb, ggplot2::aes(x = Date)) +
@@ -191,9 +191,9 @@ plot_weir_calibration <- function(aeme, model) {
     base_theme +
     ggplot2::theme(legend.position = "bottom")
   
-  # ── Panel 3 · Weir outflow time series ────────────────────────────────────
+  #  Panel 3  Weir outflow time series 
   # spill_outflow comes from simulate_lake_nudged() using calibrated C & h_inv.
-  # weir_Q_check reconstructs it analytically — they should overlap exactly,
+  # weir_Q_check reconstructs it analytically - they should overlap exactly,
   # confirming the calibrated params are being applied correctly.
   # obs_O (from outflows()) is overlaid if available for direct comparison.
   p3 <- ggplot2::ggplot(wb, ggplot2::aes(x = Date)) +
@@ -229,10 +229,10 @@ plot_weir_calibration <- function(aeme, model) {
     base_theme +
     ggplot2::theme(legend.position = "bottom")
   
-  # ── Panel 4 · Mass-balance residual: dV - net_flux ────────────────────────
+  #  Panel 4  Mass-balance residual: dV - net_flux 
   # A zero residual means the water balance closes perfectly.
   # Systematic non-zero residual indicates a structural error:
-  #   - Positive bias at high h → h_inv too high (over-estimating head)
+  #   - Positive bias at high h -> h_inv too high (over-estimating head)
   #   - C scales all residuals proportionally
   # This mirrors the `residual` vector tracked inside simulate_lake_nudged().
   p4 <- ggplot2::ggplot(wb, ggplot2::aes(x = Date)) +
@@ -244,11 +244,11 @@ plot_weir_calibration <- function(aeme, model) {
     ggplot2::labs(
       x     = "Date",
       y     = expression("Residual \u0394V - net flux (m"^3*")"),
-      title = "Mass-balance residual  — zero = perfect closure"
+      title = "Mass-balance residual  - zero = perfect closure"
     ) +
     base_theme
   
-  # ── Panel 5 · Residual vs level (only if obs available) ───────────────────
+  #  Panel 5  Residual vs level (only if obs available) 
   # Distinguishes C error (uniform scaling) from h_inv error (sign change
   # near the true invert). A loess trend crossing zero at the wrong level
   # is the clearest signal of a misplaced h_inv.

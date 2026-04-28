@@ -42,7 +42,11 @@ plot_wbal_comp <- function(wbal) {
     ggplot2::scale_x_log10() +
     ggplot2::scale_y_log10() +
     ggplot2::facet_wrap(~Model) +
-    ggplot2::labs(title = "Total Inflow Comparison", x = "Estimated Inflow (m³)", y = "Model Inflow (m³)") +
+    ggplot2::labs(
+      title = "Total Inflow Comparison",
+      x     = "Estimated Inflow (m\u00b3)",
+      y     = "Model Inflow (m\u00b3)"
+    ) +
     ggplot2::theme_bw()
   
   ## --- Total outflow ---
@@ -61,7 +65,10 @@ plot_wbal_comp <- function(wbal) {
     ggplot2::scale_x_log10() +
     ggplot2::scale_y_log10() +
     ggplot2::facet_wrap(~Model) +
-    ggplot2::labs(title = "Total Outflow Comparison", x = "Estimated Outflow (m³)", y = "Model Outflow (m³)") +
+    ggplot2::labs(
+      title = "Total Outflow Comparison",
+      x = "Estimated Outflow (m\u00b3)",
+      y = "Model Outflow (m\u00b3)") +
     ggplot2::theme_bw()
   
   ## --- Total rainfall ---
@@ -81,7 +88,7 @@ plot_wbal_comp <- function(wbal) {
   #   scale_x_log10() +
   #   scale_y_log10() +
   #   facet_wrap(~Model) +
-  #   labs(title = "Total Rainfall Comparison", x = "Estimated Rainfall (m³)", y = "Model Rainfall (m³)") +
+  #   labs(title = "Total Rainfall Comparison", x = "Estimated Rainfall (m\u00b3)", y = "Model Rainfall (m\u00b3)") +
   #   theme_bw()
   
   
@@ -110,8 +117,8 @@ plot_wbal_comp <- function(wbal) {
     ggplot2::scale_y_log10() +
     ggplot2::facet_wrap(~Model) +
     ggplot2::labs(title = "Total Evaporation Comparison", 
-                  x = "Estimated Evaporation (m³)",
-                  y = "Model Evaporation (m³)") +
+                  x = "Estimated Evaporation (m\u00b3)",
+                  y = "Model Evaporation (m\u00b3)") +
     ggplot2::theme_bw()
   
   ## --- Surface temperature ---
@@ -128,7 +135,10 @@ plot_wbal_comp <- function(wbal) {
     ggplot2::coord_equal(xlim = range(comp$est, comp$value, na.rm = TRUE),
                          ylim = range(comp$est, comp$value, na.rm = TRUE)) +
     ggplot2::facet_wrap(~Model) +
-    ggplot2::labs(title = "Surface Temperature Comparison", x = "Estimated Surface Temp (°C)", y = "Model Surface Temp (°C)") +
+    ggplot2::labs(
+      title = "Surface Temperature Comparison", 
+      x = "Estimated Surface Temp (\u00b0C)", 
+      y = "Model Surface Temp (\u00b0C)") +
     ggplot2::theme_bw()
   mae <- mean(abs(comp$est - comp$value), na.rm = TRUE)
   

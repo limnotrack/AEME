@@ -4,13 +4,22 @@
 \alias{set_aed_sed_const2d}
 \title{Setup AED aed_sed_const2d sediment model parameters}
 \usage{
-set_aed_sed_const2d(aeme, path, lake_dir = NULL)
+set_aed_sed_const2d(
+  aeme,
+  path,
+  lake_dir = NULL,
+  baseline = c(fsed_oxy = -25, fsed_amm = 2, fsed_nit = 0.2, fsed_frp = 0.05)
+)
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
 \item{path}{filepath; where input files are located relative to the current 
 working directory.}
+
+\item{baseline}{Named numeric vector of baseline fluxes at
+\code{ref_depth}. Must include \code{fsed_oxy}, \code{fsed_amm},
+\code{fsed_nit}, \code{fsed_frp}.}
 }
 \value{
 Invisible NULL. Updates the aed.nml file in the glm_aed model

@@ -2,16 +2,19 @@
 % Please edit documentation in R/Aeme.R
 \name{observations}
 \alias{observations}
-\title{Access observations slot}
+\alias{observations,Aeme-method}
+\title{Access the observations slot of an Aeme object}
 \usage{
 observations(aeme)
+
+\S4method{observations}{Aeme}(aeme)
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 }
 \value{
-list of observations characteristics
+List of observations characteristics.
 }
 \description{
-Access observations slot
+Access the observations slot of an Aeme object
 }

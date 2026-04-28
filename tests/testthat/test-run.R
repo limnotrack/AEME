@@ -1,3 +1,12 @@
+# Functions to check for model output files
+check_all_model_outfiles <- function(aeme) {
+  lake_dir <- get_lake_dir(aeme)
+  model_outfiles <- get_model_outfile(aeme) |> 
+    unlist()
+  file_chk <- all(file.exists(model_outfiles))
+  return(file_chk)
+}
+
 test_that("package check is working", {
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
@@ -260,7 +269,7 @@ test_that("running all models with running out of water works", {
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme,
                      model = model, model_controls = model_controls,
-                     inf_factor = inf_factor, outf_factor = outf_factor,
+                     outf_factor = outf_factor,
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, path = path)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
@@ -316,20 +325,23 @@ test_that("running GLM-AED works", {
   model_controls <- set_vars_sim(model_controls = model_controls,
                                  vars_sim = vars_sim)
   model <- c("glm_aed")
-  # tim <- time(aeme)
-  # tim$start <- tim$start + (100 * 86400)
-  # tim$spin_up$glm_aed <- 100
-  # time(aeme) <- tim
-  # set_glm_aed_models(aeme = aeme, path = path, aed_models = c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
-  #                                                "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton", "aed_zooplankton",
-  #                                                "aed_macrophyte", "aed_totals"))
   path = "aeme"
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
-                     ext_elev = 5, use_bgc = TRUE) |> 
-    run_aeme()
+                     ext_elev = 5, use_bgc = TRUE)
+  
+  aeme <- run_aeme(aeme)
   html_file <- plot_glm_config(aeme = aeme)
   testthat::expect_true(file.exists(html_file))
+  
+  out <- run_glm_aed_diagnostics(aeme = aeme)
+  testthat::expect_true(is.list(out))
+  testthat::expect_true(all(c("data", "plots", "summary") %in% names(out)))
+  plt_chk <- sapply(out$plots, ggplot2::is_ggplot)
+  testthat::expect_true(all(plt_chk))
+  
+  oxy_sdf <- out$data |> 
+    dplyr::filter(variable == "SDF_Fsed_oxy_Z", is.na(value))
   
   plot_output(aeme, var_sim = "CHM_oxy") /
     plot_output(aeme)/
@@ -469,6 +481,9 @@ test_that("running models with wbal method = 1", {
   if (sys_OS == "osx") {
     model <- c("dy_cd")
   }
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  # Delete all files in lake_dir
+  unlink(list.files(lake_dir, full.names = TRUE), recursive = TRUE)
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
@@ -476,57 +491,43 @@ test_that("running models with wbal method = 1", {
                      wb_method = 1, calc_wlev = F)
   inp <- input(aeme)
   met <- inp$meteo
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
-  plot_wlev(aeme = aeme) 
-  
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model[1], "DYsim.nc"))
+  aeme <- run_aeme(aeme = aeme, verbose = FALSE,
+                   parallel = TRUE, ncores = 2L)
+
+  file_chk <- check_all_model_outfiles(aeme)
   testthat::expect_true(file_chk)
-  
-  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[-1], "output", "output.nc")))
-  testthat::expect_true(file_chk)
-  
+
   model_performance <- assess_model(aeme = aeme, model = model,
                                     var_sim = c("LKE_lvlwtr", "HYD_temp"))
   testthat::expect_true(is.data.frame(model_performance))
   
   # DYRESM - Check for number of inflow and outflow files
-  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                    tolower(lke$name)),
-                                       "dy_cd"), pattern = "inf", full.names = TRUE)
+  lake_dir <- get_lake_dir(aeme = aeme)
+  inflow_files <- list.files(file.path(lake_dir, "dy_cd"), pattern = "inf",
+                             full.names = TRUE)
   n_inf <- as.numeric(strsplit(readLines(inflow_files)[2], "#")[[1]][1])
   inf <- read.delim(inflow_files, skip = 3, sep = "\t")
   testthat::expect_equal(n_inf, max(inf$InfNum))
   
-  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        "dy_cd"), pattern = "wdr", full.names = TRUE)
+  outflow_files <- list.files(file.path(lake_dir, "dy_cd"), pattern = "wdr",
+                              full.names = TRUE)
   n_wdr <- as.numeric(strsplit(readLines(outflow_files)[2], "#")[[1]][1])
   wdr <- read.delim(outflow_files, skip = 2, sep = "\t")
   testthat::expect_equal(n_wdr, ncol(wdr) - 1)
   
   # GLM - Check for number of inflow and outflow files
-  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                    tolower(lke$name)),
-                                       "glm_aed", "bcs"), pattern = "inf")
-  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        "glm_aed", "bcs"), pattern = "outf")
+  inflow_files <- list.files(file.path(lake_dir, "glm_aed", "bcs"), 
+                             pattern = "inf")
+  outflow_files <- list.files(file.path(lake_dir, "glm_aed", "bcs"), 
+                              pattern = "outf")
   testthat::expect_equal(length(inflow_files), 1)
   testthat::expect_equal(length(outflow_files), 1)
   
   # GOTM - Check for number of inflow and outflow files
-  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                    tolower(lke$name)),
-                                       "gotm_wet", "inputs"), pattern = "inf")
-  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        "gotm_wet", "inputs"), pattern = "outf")
+  inflow_files <- list.files(file.path(lake_dir, "gotm_wet", "inputs"), 
+                             pattern = "inf_")
+  outflow_files <- list.files(file.path(lake_dir, "gotm_wet", "inputs"),
+                              pattern = "outf_")
   testthat::expect_equal(length(inflow_files), 3)
   testthat::expect_equal(length(outflow_files), 1)
 })
@@ -549,85 +550,44 @@ test_that("running models with wbal method = 3", {
   outf <- outflows(aeme)
   outf$data <- NULL
   outflows(aeme) <- outf
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  # Delete all files in lake_dir
+  unlink(list.files(lake_dir, full.names = TRUE), recursive = TRUE)
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, 
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
-                     wb_method = 3, calc_wlev = F)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
-  
-  # plot_output(aeme, model)
-  plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
-              facet = F) 
-  # plot_output(aeme = aeme, model = model, var_sim = "LKE_netwbl",
-  #             facet = F, cumulative = T)
-  # plot_wbal(aeme = aeme)
-  #
-  #   tst <- get_var(aeme = aeme, model = model, var = "LKE_netwbl")
-  
-  
-  # w_bal <- water_balance(aeme)
-  #
-  # gotm_evap <- get_var(aeme = aeme, model = "dy_cd",
-  #                      var = "LKE_evpflx")
-  #
-  # ggplot() +
-  #   geom_line(data = w_bal$data$wbal, aes(x = Date, y = -dy_cd_evap_flux,
-  #                                         colour = "Est")) +
-  #   geom_line(data = gotm_evap, aes(x = Date, y = value))
-  #
-  # gotm_ts <- get_var(aeme = aeme, model = "dy_cd",
-  #                    var = "HYD_Ts")
-  #
-  # ggplot() +
-  #   geom_line(data = w_bal$data$wbal, aes(x = Date, y = Ts,
-  #                                         colour = "Est")) +
-  #   geom_line(data = gotm_ts, aes(x = Date, y = value))
-  
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model[1], "DYsim.nc"))
+                     wb_method = 3, calc_wlev = F) |> 
+    run_aeme(parallel = F, ncores = 2L)
+
+  file_chk <- check_all_model_outfiles(aeme = aeme)
   testthat::expect_true(file_chk)
-  
-  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[-1], "output", "output.nc")))
-  testthat::expect_true(file_chk)
-  
   # DYRESM - Check for number of inflow and outflow files
-  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                    tolower(lke$name)),
-                                       "dy_cd"), pattern = "inf", full.names = TRUE)
+  inflow_files <- list.files(file.path(lake_dir, "dy_cd"), 
+                             pattern = "inf", full.names = TRUE)
   n_inf <- as.numeric(strsplit(readLines(inflow_files)[2], "#")[[1]][1])
   inf <- read.delim(inflow_files, skip = 3, sep = "\t")
   testthat::expect_equal(n_inf, max(inf$InfNum))
   
-  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        "dy_cd"), pattern = "wdr", full.names = TRUE)
+  outflow_files <- list.files(file.path(lake_dir, "dy_cd"), pattern = "wdr",
+                              full.names = TRUE)
   n_wdr <- as.numeric(strsplit(readLines(outflow_files)[2], "#")[[1]][1])
   wdr <- read.delim(outflow_files, skip = 2, sep = "\t")
   testthat::expect_equal(n_wdr, ncol(wdr) - 1)
   
   # GLM - Check for number of inflow and outflow files
-  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                    tolower(lke$name)),
-                                       "glm_aed", "bcs"), pattern = "inf")
-  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        "glm_aed", "bcs"), pattern = "outf")
+  inflow_files <- list.files(file.path(lake_dir, "glm_aed", "bcs"), 
+                             pattern = "inf")
+  outflow_files <- list.files(file.path(lake_dir, "glm_aed", "bcs"), 
+                              pattern = "outf")
   testthat::expect_equal(length(inflow_files), 1)
   testthat::expect_equal(length(outflow_files), 1)
   
   # GOTM - Check for number of inflow and outflow files
-  inflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                    tolower(lke$name)),
-                                       "gotm_wet", "inputs"), pattern = "inf")
-  outflow_files <- list.files(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        "gotm_wet", "inputs"), pattern = "outf")
+  inflow_files <- list.files(file.path(lake_dir, "gotm_wet", "inputs"), 
+                             pattern = "inf_")
+  outflow_files <- list.files(file.path(lake_dir, "gotm_wet", "inputs"), 
+                              pattern = "outf_")
   testthat::expect_equal(length(inflow_files), 3)
   testthat::expect_equal(length(outflow_files), 1)
 })
@@ -658,13 +618,7 @@ test_that("running models in parallel with no wbal calculated", {
               add_obs = FALSE, facet = FALSE)
   plot_wbal(aeme = aeme)
   
-  lke <- lake(aeme)
-  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[1], "DYsim.nc")),
-                  file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[2:3], "output", "output.nc")))
+  file_chk <- check_all_model_outfiles(aeme)
   testthat::expect_true(file_chk)
 })
 
@@ -1309,10 +1263,7 @@ test_that("running GLM-AED with multiple aed models", {
 test_that("updating AED sed params works", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  yaml_path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = yaml_path, "aeme.yaml")
+  aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   path <- tempdir()
   vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb", 
                 "CHM_oxycln", "CHM_oxynal")
@@ -1339,7 +1290,8 @@ test_that("updating AED sed params works", {
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   cfg <- read_model_config(model = model, lake_dir = lake_dir)
   
-  set_aed_sed_const2d(aeme = aeme, path = path)
+  aeme <- aeme |> 
+    set_aed_sed_const2d(path = path)
   cfg2 <- read_model_config(model = model, lake_dir = lake_dir)
   
   testthat::expect_false(identical(cfg, cfg2))

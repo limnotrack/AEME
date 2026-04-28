@@ -2,18 +2,21 @@
 % Please edit documentation in R/Aeme.R
 \name{input<-}
 \alias{input<-}
-\title{Set input in Aeme object}
+\alias{input<-,Aeme-method}
+\title{Set the input slot of an Aeme object}
 \usage{
 input(aeme) <- value
+
+\S4method{input}{Aeme}(aeme) <- value
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 
-\item{value}{New input data to be assigned.}
+\item{value}{New input list to assign.}
 }
 \value{
 A modified Aeme object with updated input slot.
 }
 \description{
-Update the input slot of an Aeme object
+Set the input slot of an Aeme object
 }

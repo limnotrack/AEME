@@ -2,16 +2,19 @@
 % Please edit documentation in R/Aeme.R
 \name{lake}
 \alias{lake}
-\title{Access lake slot}
+\alias{lake,Aeme-method}
+\title{Access the lake slot of an Aeme object}
 \usage{
 lake(aeme)
+
+\S4method{lake}{Aeme}(aeme)
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 }
 \value{
-list of lake characteristics
+List of lake characteristics.
 }
 \description{
-Access lake slot
+Access the lake slot of an Aeme object
 }

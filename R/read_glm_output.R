@@ -171,6 +171,9 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
         conv_factor <- 1
       }
       var_out <- ncdf4::ncvar_get(nc, v)
+      if (grepl("_Z", v)) {
+        return(var_out)
+      }
       if (length(dim(var_out)) == 3) {
         var_out <- var_out[, , date_index, drop = FALSE]
       } else if (length(dim(var_out)) == 2) {

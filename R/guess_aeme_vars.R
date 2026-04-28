@@ -10,6 +10,11 @@
 #' found for an invalid variable, a warning is issued.
 #'
 #' @param x Character vector of variable names to check.
+#' @param key_filter Optional string to filter the AEME variable names by a 
+#' specific keyword. If provided, only AEME variable names containing this keyword will be
+#' considered for matching. This can help improve matching accuracy by limiting the
+#' pool of candidate variable names to those relevant to a particular context
+#' (e.g., "met" for meteorological variables).
 #'
 #' @returns Character vector of variable names, with invalid names replaced by 
 #' the closest official AEME variable name where possible.
@@ -18,10 +23,17 @@
 #'
 #' @examples
 #' guess_aeme_vars(c("temp", "oxy", "ph", "chla", "tp", "tn"))
+#' guess_aeme_vars(c("temp", "swr", "lwr", "wind", "precip"), key_filter = "MET")
 
-guess_aeme_vars <- function(x) {
+guess_aeme_vars <- function(x, key_filter) {
   # 1. Load key dataset
   data("key_naming", package = "AEME", envir = environment())
+  
+  if (!missing(key_filter)) {
+    key_naming <- key_naming |>
+      dplyr::filter(grepl(key_filter, name, ignore.case = TRUE))  
+  }
+  
   valid_vars <- key_naming$name
   keywords_list <- key_naming$keywords
   

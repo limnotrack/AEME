@@ -2,18 +2,21 @@
 % Please edit documentation in R/Aeme.R
 \name{inflows<-}
 \alias{inflows<-}
-\title{Set inflows in Aeme object}
+\alias{inflows<-,Aeme-method}
+\title{Set the inflows slot of an Aeme object}
 \usage{
 inflows(aeme) <- value
+
+\S4method{inflows}{Aeme}(aeme) <- value
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 
-\item{value}{New inflows data to be assigned.}
+\item{value}{New inflows list to assign.}
 }
 \value{
 A modified Aeme object with updated inflows slot.
 }
 \description{
-Update the inflows slot of an Aeme object
+Set the inflows slot of an Aeme object
 }

@@ -2,18 +2,21 @@
 % Please edit documentation in R/Aeme.R
 \name{output<-}
 \alias{output<-}
-\title{Set output in Aeme object}
+\alias{output<-,Aeme-method}
+\title{Set the output slot of an Aeme object}
 \usage{
 output(aeme) <- value
+
+\S4method{output}{Aeme}(aeme) <- value
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 
-\item{value}{New output data to be assigned.}
+\item{value}{New output list to assign.}
 }
 \value{
 A modified Aeme object with updated output slot.
 }
 \description{
-Update the output slot of an Aeme object
+Set the output slot of an Aeme object
 }

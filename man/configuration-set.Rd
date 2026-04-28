@@ -2,18 +2,21 @@
 % Please edit documentation in R/Aeme.R
 \name{configuration<-}
 \alias{configuration<-}
-\title{Set configuration in Aeme object}
+\alias{configuration<-,Aeme-method}
+\title{Set the configuration slot of an Aeme object}
 \usage{
 configuration(aeme) <- value
+
+\S4method{configuration}{Aeme}(aeme) <- value
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 
-\item{value}{New configuration data to be assigned.}
+\item{value}{New configuration list to assign.}
 }
 \value{
 A modified Aeme object with updated configuration slot.
 }
 \description{
-Update the configuration slot of an Aeme object
+Set the configuration slot of an Aeme object
 }

@@ -9,8 +9,8 @@ build_aeme(
   model = c("dy_cd", "glm_aed", "gotm_wet"),
   path = ".",
   model_controls = NULL,
-  inf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
-  outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
+  inf_factor = NULL,
+  outf_factor = NULL,
   ext_elev = 0,
   use_bgc = FALSE,
   calc_wbal = TRUE,
@@ -75,25 +75,24 @@ values. Default = TRUE.}
 \item{config}{list; loaded via `config <- yaml::read_yaml("aeme.yaml")`}
 }
 \value{
-builds the model ensemble configuration.
-
 aeme object
 }
 \description{
 Configure an ensemble of lake model simulations from basic set of inputs.
 }
 \examples{
-tmpdir <- tempdir()
+# Read in example AEME object and build model configuration files for GLM-AED
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
-# Copy files from package into tempdir
-file.copy(aeme_dir, tmpdir, recursive = TRUE)
-path <- file.path(tmpdir, "lake")
-aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+path <- "aeme" # subdirectory within working directory where model configuration files will be written
+aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
 model_controls <- get_model_controls()
-inf_factor = c("glm_aed" = 1)
-outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
-build_aeme(path = path, aeme = aeme, model = model,
-               model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-               use_bgc = FALSE)
+aeme <- aeme |> 
+  build_aeme(path = path, model = model, model_controls = model_controls,
+           ext_elev = 5)
+
+# Switch on biogeochemistry and use default model controls
+aeme <- aeme |>
+  build_aeme(path = path, model = model, model_controls = model_controls, 
+              ext_elev = 5, use_bgc = TRUE)
 }

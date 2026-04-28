@@ -13,17 +13,27 @@
 #'
 
 check_time <- function(df, model, aeme_time, name = "") {
-  if (!"Date" %in% colnames(df)) {
-    cli::cli_abort("{.arg df} must contain a {.var Date} column.")
+  date_col <- "Date"
+  if (!date_col %in% colnames(df)) {
+    # Detect a "Date" column
+    col_classes <- sapply(df, class)
+    date_col <- names(col_classes)[sapply(col_classes, function(c) any(c %in% c("Date", "POSIXct", "POSIXt")))]
+    if (length(date_col) == 0) { 
+      # cli::cli_abort("{.arg df} must contain a {.var Date} column.")
+      cli::cli_abort(c(
+        "{.arg df} must contain a {.cls Date} column.",
+        "i" = "No date column detected. Please ensure your data frame has a column of class {.cls Date} or {.cls POSIXct}."
+      ), class = "aeme_error_missing_date_column")
+    }
   }
   
   # Compute spin-up dates
   spin_dates <- compute_spinup_dates(model, aeme_time)
-  spin_chk <- spin_dates %in% df[["Date"]]
+  spin_chk <- spin_dates %in% df[[date_col]]
   
   # Start and stop checks
-  start_chk <- as.Date(aeme_time[["start"]]) %in% df[["Date"]]
-  stop_chk  <- as.Date(aeme_time[["stop"]])  %in% df[["Date"]]
+  start_chk <- as.Date(aeme_time[["start"]]) %in% df[[date_col]]
+  stop_chk  <- as.Date(aeme_time[["stop"]])  %in% df[[date_col]]
   
   # Collect missing checks
   missing <- c(

@@ -37,40 +37,38 @@
 #' values. Default = TRUE.
 #' @param config list; loaded via `config <- yaml::read_yaml("aeme.yaml")`
 #'
-#' @return builds the model ensemble configuration.
-#'
 #' @importFrom sf sf_use_s2 st_transform st_centroid st_coordinates st_buffer
 #' @importFrom dplyr select filter
 #' @importFrom utils data read.csv
 #' @importFrom withr local_locale local_timezone
+#' @importFrom cli cli_abort
 #'
 #' @return aeme object
 #'
 #' @export
 #'
 #' @examples
-#' tmpdir <- tempdir()
+#' # Read in example AEME object and build model configuration files for GLM-AED
 #' aeme_dir <- system.file("extdata/lake/", package = "AEME")
-#' # Copy files from package into tempdir
-#' file.copy(aeme_dir, tmpdir, recursive = TRUE)
-#' path <- file.path(tmpdir, "lake")
-#' aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+#' path <- "aeme" # subdirectory within working directory where model configuration files will be written
+#' aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
 #' model_controls <- get_model_controls()
-#' inf_factor = c("glm_aed" = 1)
-#' outf_factor = c("glm_aed" = 1)
 #' model <- c("glm_aed")
-#' build_aeme(path = path, aeme = aeme, model = model,
-#'                model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-#'                use_bgc = FALSE)
+#' aeme <- aeme |> 
+#'   build_aeme(path = path, model = model, model_controls = model_controls,
+#'            ext_elev = 5)
+#' 
+#' # Switch on biogeochemistry and use default model controls
+#' aeme <- aeme |>
+#'   build_aeme(path = path, model = model, model_controls = model_controls, 
+#'               ext_elev = 5, use_bgc = TRUE)
 
 build_aeme <- function(aeme = NULL,
                        model = c("dy_cd", "glm_aed", "gotm_wet"),
                        path = ".",
                        model_controls = NULL,
-                       inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
-                                      "gotm_wet" = 1),
-                       outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
-                                       "gotm_wet" = 1),
+                       inf_factor = NULL,
+                       outf_factor = NULL,
                        ext_elev = 0,
                        use_bgc = FALSE,
                        calc_wbal = TRUE,
@@ -82,25 +80,6 @@ build_aeme <- function(aeme = NULL,
                        est_swr_hr = TRUE,
                        config = NULL
 ) {
-  
-  # Load arguments
-  # config = NULL
-  # inf_factor = c("glm_aed" = 1, "dy_cd" = 1,
-  #                "gotm_wet" = 1)
-  # outf_factor = c("glm_aed" = 1, "dy_cd" = 1,
-  #                 "gotm_wet" = 1)
-  # ext_elev = 0
-  # use_bgc = T
-  # calc_wbal = T
-  # calc_wlev = T
-  # use_aeme = FALSE
-  # coeffs = NULL
-  # hum_type = 3
-  # est_swr_hr = TRUE
-  # wb_method = 2
-  # print = TRUE
-  # path = "."
-  
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
@@ -111,14 +90,40 @@ build_aeme <- function(aeme = NULL,
   model <- check_model(model = model)
   path <- check_path(path = path, create = TRUE)
   
-  if (is.null(model_controls) & !is.null(aeme)) {
-    cfg <- configuration(aeme)
-    model_controls <- cfg$model_controls
+  if (!wb_method %in% 1:3) {
+    cli::cli_abort(c("`wb_method` must be 1, 2, or 3.",
+                     "i" = "1: no water balance correction applied.",
+                     "i" = "2: correcting water balance using estimated outflows.",
+                     "i" = "3: correcting water balance using estimated inflows and outflows."))
   }
-  if (is.null(model_controls) & !is.null(aeme)) {
-    stop("model_controls must be supplied.")
-  } else if (is.null(model_controls) & is.null(aeme)) {
-    stop("Either 'aeme' or 'model_controls' must be supplied.")
+  if (!hum_type %in% 1:4) {
+    cli::cli_abort(c("`hum_type` must be 1, 2, 3, or 4.",
+                     "i" = "1: relative humidity (%).",
+                     "i" = "2: wet-bulb temperature.",
+                     "i" = "3: dew point temperature.",
+                     "i" = "4: specific humidity (kg/kg)."))
+  }
+  
+  all_models <- c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1)
+  if (is.null(inf_factor))  inf_factor  <- all_models
+  if (is.null(outf_factor)) outf_factor <- all_models
+  
+  if (is.null(model_controls)) {
+    if (!is.null(aeme)) {
+      cfg <- configuration(aeme)
+      model_controls <- cfg$model_controls
+    } else {
+      model_controls <- get_model_controls(use_bgc = use_bgc)
+    }
+  }
+  
+  if (is.null(model_controls)) {
+    cli::cli_abort(
+      "{.arg model_controls} could not be extracted from {.arg aeme}. Please 
+      provide a dataframe of model controls using the 
+      {.code get_model_controls()} function.",
+      class = "aeme_error_model_controls"
+    )
   }
   
   # Metadata
@@ -228,7 +233,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     check_time(df = met, model = model, aeme_time = aeme_time, name = "meteo")
     met <- met |>
       dplyr::mutate(Date = as.Date(Date)) |>
-      expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE)
+      expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE) |> 
+      standardise_met()
+    # names(met) <- gsub("MET_", "", names(met))
     
     input(aeme) <- list(init_profile = init_prof,
                         init_depth = init_depth,
@@ -237,33 +244,22 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     
     # Inflow ----
     aeme_inf <- inflows(aeme)
+    # Inflow ----
+    aeme_inf <- inflows(aeme)
     if (length(aeme_inf[["data"]]) > 0) {
-      for (i in 1:length(aeme_inf[["data"]])) {
-        inf[[names(aeme_inf[["data"]])[i]]] <- aeme_inf[["data"]][[i]]
-        if (any(!inf_vars %in% names(inf[[i]]))) {
-          msg <- paste(setdiff(inf_vars, names(inf[[i]])), collapse = ", ")
-          cli_inform_safe(
-            c(
-              "!" = "Missing state variables in inflows:",
-              "!" = msg
-            )
-          )
-          add_vars <- setdiff(inf_vars, names(inf[[i]]))
-          for (v in add_vars) {
-            inf[[i]][[v]] <- model_controls$inf_default[match(v, model_controls$var_aeme)]
-          }
-          cli_inform_safe(
-            c("i" = "Added default values for missing variables.")
-          )
-        }
-        check_time(df = inf[[names(aeme_inf[["data"]])[i]]], model = model,
-                   aeme_time = aeme_time,
-                   name = paste0("inflow-", names(aeme_inf[["data"]])[i]))
-        
-        pot_inf_vars <- c("Date","HYD_flow", inf_vars, "model")
-        
-        inf[[i]] <- inf[[i]] |>
-          dplyr::select(dplyr::any_of(pot_inf_vars))
+      pot_inf_vars <- c("time", "HYD_flow", inf_vars, "model")
+      for (i in seq_along(aeme_inf[["data"]])) {
+        inf_name <- names(aeme_inf[["data"]])[i]
+        inf[[inf_name]] <- standardise_inflow(
+          inflow        = aeme_inf[["data"]][[i]],
+          model_controls = model_controls,
+          inf_vars      = inf_vars,
+          aeme_time     = aeme_time,
+          inflow_name   = paste0("inflow-", inf_name),
+          model         = model,
+          pot_inf_vars  = pot_inf_vars,
+          verbose       = verbose
+        )
       }
     }
     inf_factor <- aeme_inf[["factor"]]
@@ -288,7 +284,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
-
+        
         if (names(aeme_outf[["data"]])[i] == "wbal" & calc_wbal) next
         
         check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
@@ -582,12 +578,14 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               use_lw = inp$use_lw, overwrite_nml = overwrite)
     
     if (use_bgc) {
-      set_glm_aed_models(aeme = aeme, path = path, 
-                         aed_models = c("aed_sedflux", "aed_oxygen", 
-                                        "aed_silica", "aed_nitrogen",
-                                        "aed_phosphorus", "aed_organic_matter",
-                                        "aed_phytoplankton", "aed_totals"))
-      set_aed_sed_const2d(aeme = aeme, path = path)
+      aeme <- aeme |> 
+        set_glm_aed_models(path = path, 
+                           aed_models = c("aed_sedflux", "aed_oxygen", 
+                                          "aed_silica", "aed_nitrogen",
+                                          "aed_phosphorus",
+                                          "aed_organic_matter",
+                                          "aed_phytoplankton", "aed_totals")) |> 
+        set_aed_sed_const2d(path = path)
     }
     # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }

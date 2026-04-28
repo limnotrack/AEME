@@ -2,16 +2,19 @@
 % Please edit documentation in R/Aeme.R
 \name{water_balance}
 \alias{water_balance}
-\title{Access water_balance slot}
+\alias{water_balance,Aeme-method}
+\title{Access the water_balance slot of an Aeme object}
 \usage{
 water_balance(aeme)
+
+\S4method{water_balance}{Aeme}(aeme)
 }
 \arguments{
 \item{aeme}{An Aeme object.}
 }
 \value{
-list of water_balance characteristics
+List of water_balance characteristics.
 }
 \description{
-Access water_balance slot
+Access the water_balance slot of an Aeme object
 }

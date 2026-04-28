@@ -27,11 +27,11 @@ estimate_sed_zones <- function(hypsograph) {
   zone_heights <- sapply(zone_bp, \(d) {
     sub_hyps |> 
       dplyr::filter(depth <= d) |>
-      # dplyr::summarise(zone_heights = max(zone_heights)) |>
       dplyr::pull(zone_heights) |> 
       max()
   })
-  zone_heights[which.max(zone_heights)] <- max(hypsograph$elev) - min(hypsograph$elev) 
+  max_sed_height <- max(hypsograph$elev) - min(hypsograph$elev) 
+  zone_heights[which.max(zone_heights)] <- ceiling(max_sed_height)
   return(zone_heights)
 }
 

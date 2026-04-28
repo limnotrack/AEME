@@ -28,6 +28,13 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
         dplyr::rename(wbal = outflow)
     }
     
+    for (flow in names(wdrData)) {
+      if (flow != "wbal") {
+        wdrData[[flow]] <- wdrData[[flow]] |>
+          dplyr::rename(!!flow := HYD_flow)
+      }
+    }
+    
     wdrData <- Reduce(merge, wdrData) |>
       dplyr::rename(outflow = HYD_flow) |> 
       dplyr::select(c(Date, outflow, wbal)) 

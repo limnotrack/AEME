@@ -4,10 +4,16 @@
 \alias{guess_aeme_vars}
 \title{Match variable to AEME variable names}
 \usage{
-guess_aeme_vars(x)
+guess_aeme_vars(x, key_filter)
 }
 \arguments{
 \item{x}{Character vector of variable names to check.}
+
+\item{key_filter}{Optional string to filter the AEME variable names by a 
+specific keyword. If provided, only AEME variable names containing this keyword will be
+considered for matching. This can help improve matching accuracy by limiting the
+pool of candidate variable names to those relevant to a particular context
+(e.g., "met" for meteorological variables).}
 }
 \value{
 Character vector of variable names, with invalid names replaced by 
@@ -25,4 +31,5 @@ found for an invalid variable, a warning is issued.
 }
 \examples{
 guess_aeme_vars(c("temp", "oxy", "ph", "chla", "tp", "tn"))
+guess_aeme_vars(c("temp", "swr", "lwr", "wind", "precip"), key_filter = "MET")
 }
