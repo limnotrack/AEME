@@ -29,6 +29,7 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
     }
     
     wdrData <- Reduce(merge, wdrData) |>
+      dplyr::rename(outflow = HYD_flow) |> 
       dplyr::select(c(Date, outflow, wbal)) 
   } else {
     wdrData <- wdrData[[1]]

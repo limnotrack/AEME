@@ -30,7 +30,7 @@ plot_weir_calibration <- function(aeme, model) {
   
   if (length(outf[["data"]][["outflow"]]) > 0) {
     obs_out <- outf[["data"]][["outflow"]] |>
-      dplyr::rename(obs_O = outflow)
+      dplyr::rename(obs_O = HYD_flow)
   } else {
     obs_out <- NULL
   }
