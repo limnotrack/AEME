@@ -210,7 +210,10 @@ standardise_inflow <- function(inflow,
 #' @noRd
 .rename_inflow_columns <- function(inflow, verbose) {
   
-  non_time <- setdiff(names(inflow), "time")
+  # Columns that are always passed through without guessing
+  passthrough_cols <- c("time", "Date", "date", "model")
+  
+  non_time <- setdiff(names(inflow), passthrough_cols)
   if (length(non_time) == 0) {
     cli::cli_warn(
       c("!" = "{.arg inflow} contains only a {.code time} column.",
@@ -251,6 +254,9 @@ standardise_inflow <- function(inflow,
   )
   names(guessed) <- to_guess
   
+  # Drop any guess that is identical to the input name (no-op rename)
+  guessed[!is.na(guessed) & guessed == to_guess] <- NA
+  
   matched   <- guessed[!is.na(guessed)]
   unmatched <- to_guess[is.na(guessed)]
   
@@ -279,7 +285,6 @@ standardise_inflow <- function(inflow,
   
   inflow
 }
-
 
 # ── Internal: unit detection and conversion ────────────────────────────────────
 #
