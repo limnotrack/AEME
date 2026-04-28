@@ -142,17 +142,7 @@ standardise_inflow <- function(inflow,
       class = "aeme_error_inflow_no_time"
     )
   }
-  # Normalise to "time"
-  if (time_col[1] != "time") {
-    names(inflow)[names(inflow) == time_col[1]] <- "time"
-    if (verbose) {
-      cli::cli_inform(
-        c("i" = "Renamed {.code {time_col[1]}} to {.code time}."),
-        class = "aeme_inform_inflow_time_rename"
-      )
-    }
-  }
-  
+
   # ── Step 1: remap column names ──────────────────────────────────────────────
   
   inflow <- .rename_inflow_columns(inflow, verbose = verbose)
@@ -208,7 +198,7 @@ standardise_inflow <- function(inflow,
   # ── Step 6: select allowlisted columns ──────────────────────────────────────
   
   if (!is.null(pot_inf_vars)) {
-    inflow <- dplyr::select(inflow, dplyr::any_of(pot_inf_vars))
+    inflow <- dplyr::select(inflow, dplyr::any_of(c(time_col, pot_inf_vars)))
   }
   
   inflow
@@ -317,6 +307,7 @@ standardise_inflow <- function(inflow,
   
   # ── Dissolved oxygen (mg/L expected; detect mmol/m³ ~200-400) ────────────
   # mmol/m³ × 32/1000 = mg/L  (molar mass O₂ = 32 g/mol)
+  # mg/L typical ~8-14; mmol/m³ typical ~200-400 → unambiguous above 50
   CHM_oxy = list(
     detect  = function(x) .nz_median(x) > 50,
     convert = function(x) x * 32 / 1000,
@@ -324,128 +315,137 @@ standardise_inflow <- function(inflow,
     to      = "mg/L"
   ),
   
-  # ── Nitrogen fractions (g/m³ expected; detect mmol/m³ which is ~14x lower) ─
-  # mmol/m³ × 0.014007 = g/m³
+  # ── Nitrogen fractions (g/m³ expected; detect mmol/m³ → divide by molar mass N) ─
+  # g/m³ typical: NIT_amm 0-2, NIT_nit 0-5, DON/PON 0-5
+  # mmol/m³ would be ~70x higher (÷ 0.014007 g/mmol)
+  # Threshold > 20: safely above any real g/m³ value
   NIT_amm = list(
-    detect  = function(x) .nz_median(x) < 5,
-    convert = function(x) x * 0.014007,
+    detect  = function(x) .nz_median(x) > 20,
+    convert = function(x) x / 0.014007,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   NIT_nit = list(
-    detect  = function(x) .nz_median(x) < 5,
-    convert = function(x) x * 0.014007,
+    detect  = function(x) .nz_median(x) > 20,
+    convert = function(x) x / 0.014007,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   NIT_don = list(
-    detect  = function(x) .nz_median(x) < 5,
-    convert = function(x) x * 0.014007,
+    detect  = function(x) .nz_median(x) > 20,
+    convert = function(x) x / 0.014007,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   NIT_donr = list(
-    detect  = function(x) .nz_median(x) < 5,
-    convert = function(x) x * 0.014007,
+    detect  = function(x) .nz_median(x) > 20,
+    convert = function(x) x / 0.014007,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   NIT_pon = list(
-    detect  = function(x) .nz_median(x) < 5,
-    convert = function(x) x * 0.014007,
+    detect  = function(x) .nz_median(x) > 20,
+    convert = function(x) x / 0.014007,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   NIT_ponr = list(
-    detect  = function(x) .nz_median(x) < 5,
-    convert = function(x) x * 0.014007,
+    detect  = function(x) .nz_median(x) > 20,
+    convert = function(x) x / 0.014007,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   
-  # ── Phosphorus fractions (g/m³ expected; detect mmol/m³ which is ~31x lower) ─
-  # mmol/m³ × 0.030974 = g/m³
+  # ── Phosphorus fractions (g/m³ expected; detect mmol/m³ → divide by molar mass P) ─
+  # g/m³ typical: PHS_frp 0-5, others 0-1
+  # mmol/m³ would be ~30x higher (÷ 0.030974 g/mmol)
+  # Threshold > 10: safely above any real g/m³ P value
   PHS_frp = list(
-    detect  = function(x) .has_nonzero(x) && .nz_median(x) < 1,
-    convert = function(x) x * 0.030974,
+    detect  = function(x) .nz_median(x) > 10,
+    convert = function(x) x / 0.030974,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   PHS_dop = list(
-    detect  = function(x) .has_nonzero(x) && .nz_median(x) < 1,
-    convert = function(x) x * 0.030974,
+    detect  = function(x) .has_nonzero(x) && .nz_median(x) > 10,
+    convert = function(x) x / 0.030974,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   PHS_dopr = list(
-    detect  = function(x) .has_nonzero(x) && .nz_median(x) < 1,
-    convert = function(x) x * 0.030974,
+    detect  = function(x) .has_nonzero(x) && .nz_median(x) > 10,
+    convert = function(x) x / 0.030974,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   PHS_pop = list(
-    detect  = function(x) .has_nonzero(x) && .nz_median(x) < 1,
-    convert = function(x) x * 0.030974,
+    detect  = function(x) .has_nonzero(x) && .nz_median(x) > 10,
+    convert = function(x) x / 0.030974,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   PHS_popr = list(
-    detect  = function(x) .has_nonzero(x) && .nz_median(x) < 1,
-    convert = function(x) x * 0.030974,
+    detect  = function(x) .has_nonzero(x) && .nz_median(x) > 10,
+    convert = function(x) x / 0.030974,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   PHS_pip = list(
-    detect  = function(x) .has_nonzero(x) && .nz_median(x) < 1,
-    convert = function(x) x * 0.030974,
+    detect  = function(x) .has_nonzero(x) && .nz_median(x) > 10,
+    convert = function(x) x / 0.030974,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   
-  # ── Carbon fractions (g/m³ expected; detect mmol/m³ which is ~12x lower) ──
-  # mmol/m³ × 0.012011 = g/m³
+  # ── Carbon fractions (g/m³ expected; detect mmol/m³ → divide by molar mass C) ──
+  # g/m³ typical: CAR_doc 0-100, CAR_poc 0-50
+  # mmol/m³ would be ~80x higher (÷ 0.012011 g/mmol)
+  # Threshold > 500: safely above any real g/m³ DOC value
   CAR_doc = list(
-    detect  = function(x) .nz_median(x) < 50,
-    convert = function(x) x * 0.012011,
+    detect  = function(x) .nz_median(x) > 500,
+    convert = function(x) x / 0.012011,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   CAR_docr = list(
-    detect  = function(x) .nz_median(x) < 50,
-    convert = function(x) x * 0.012011,
+    detect  = function(x) .nz_median(x) > 500,
+    convert = function(x) x / 0.012011,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   CAR_poc = list(
-    detect  = function(x) .has_nonzero(x) && .nz_median(x) < 50,
-    convert = function(x) x * 0.012011,
+    detect  = function(x) .has_nonzero(x) && .nz_median(x) > 200,
+    convert = function(x) x / 0.012011,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   CAR_pocr = list(
-    detect  = function(x) .has_nonzero(x) && .nz_median(x) < 50,
-    convert = function(x) x * 0.012011,
+    detect  = function(x) .has_nonzero(x) && .nz_median(x) > 200,
+    convert = function(x) x / 0.012011,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
-  # CAR_dic g/m³ ~10; mmol/m³ ~832 → detect if median > 100
+  # CAR_dic: g/m³ ~10; mmol/m³ ~832 → unambiguous above 100
   CAR_dic = list(
     detect  = function(x) .nz_median(x) > 100,
-    convert = function(x) x * 0.012011,
+    convert = function(x) x / 0.012011,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
+  # CAR_ch4: g/m³ typically trace; mmol/m³ > 10 is safely non-g/m³
   CAR_ch4 = list(
-    detect  = function(x) .has_nonzero(x) && .nz_median(x) < 10,
-    convert = function(x) x * 0.016043,
+    detect  = function(x) .has_nonzero(x) && .nz_median(x) > 10,
+    convert = function(x) x / 0.016043,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
   
-  # ── Silica (g/m³ expected; detect mmol/m³ which is ~60x lower) ───────────
+  # ── Silica (g/m³ expected; detect mmol/m³ → divide by molar mass SiO₂) ──
+  # g/m³ typical: 1-30; mmol/m³ typical: 1-50 (SiO₂ 60.084 g/mol)
+  # These ranges genuinely overlap — use > 100 as a conservative threshold
   SIL_rsi = list(
-    detect  = function(x) .nz_median(x) < 10,
-    convert = function(x) x * 0.060084,
+    detect  = function(x) .nz_median(x) > 100,
+    convert = function(x) x / 0.060084,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   )

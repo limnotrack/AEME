@@ -248,6 +248,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     aeme_inf <- inflows(aeme)
     if (length(aeme_inf[["data"]]) > 0) {
       pot_inf_vars <- c("time", "HYD_flow", inf_vars, "model")
+      verbose <- getOption("AEME.inform", TRUE)
       for (i in seq_along(aeme_inf[["data"]])) {
         inf_name <- names(aeme_inf[["data"]])[i]
         inf[[inf_name]] <- standardise_inflow(
@@ -255,7 +256,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
           model_controls = model_controls,
           inf_vars      = inf_vars,
           aeme_time     = aeme_time,
-          inflow_name   = paste0("inflow-", inf_name),
+          inflow_name   = inf_name,
           model         = model,
           pot_inf_vars  = pot_inf_vars,
           verbose       = verbose
