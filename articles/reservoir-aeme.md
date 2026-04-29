@@ -461,7 +461,7 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpQVNNPc\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpAbekGX\reservoir
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
 #> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
@@ -496,10 +496,10 @@ aeme <- build_aeme(
 
 ``` r
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-04-29 03:10:12]
-#> → GLM-AED running... [2026-04-29 03:10:12]
-#> ✔ GLM-AED run successful! [2026-04-29 03:10:12]
-#> ✔ Model run complete! [2026-04-29 03:10:12]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-04-29 03:20:27]
+#> → GLM-AED running... [2026-04-29 03:20:27]
+#> ✔ GLM-AED run successful! [2026-04-29 03:20:27]
+#> ✔ Model run complete! [2026-04-29 03:20:27]
 ```
 
 ## View the output
