@@ -506,30 +506,140 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
-#> ! Missing state variables in inflows:
-#> ! CAR_doc, CAR_poc, CHM_oxy, NCS_ss1, NIT_don, NIT_pon, PHY_cyano, PHY_diatom,
-#>   PHY_green, SIL_rsi, ZOO_zoo1
-#> ℹ Added default values for missing variables.
-#> ! Missing state variables in inflows:
-#> ! CAR_doc, CAR_poc, CHM_oxy, NCS_ss1, NIT_don, NIT_pon, PHY_cyano, PHY_diatom,
-#>   PHY_green, SIL_rsi, ZOO_zoo1
-#> ℹ Added default values for missing variables.
-#> ! Missing state variables in inflows:
-#> ! CAR_doc, CAR_poc, CHM_oxy, NCS_ss1, NIT_don, NIT_pon, PHY_cyano, PHY_diatom,
-#>   PHY_green, SIL_rsi, ZOO_zoo1
-#> ℹ Added default values for missing variables.
-#> ! Missing state variables in inflows:
-#> ! CAR_doc, CAR_poc, CHM_oxy, NCS_ss1, NIT_don, NIT_pon, PHY_cyano, PHY_diatom,
-#>   PHY_green, SIL_rsi, ZOO_zoo1
-#> ℹ Added default values for missing variables.
-#> ! Missing state variables in inflows:
-#> ! CAR_doc, CAR_poc, CHM_oxy, NCS_ss1, NIT_don, NIT_pon, PHY_cyano, PHY_diatom,
-#>   PHY_green, SIL_rsi, ZOO_zoo1
-#> ℹ Added default values for missing variables.
-#> ! Missing state variables in inflows:
-#> ! CAR_doc, CAR_poc, CHM_oxy, NCS_ss1, NIT_pon, PHY_cyano, PHY_diatom,
-#>   PHY_green, SIL_rsi, ZOO_zoo1
-#> ℹ Added default values for missing variables.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! 11 missing state variables in `NZS2038486`:
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `CHM_oxy `
+#> ✖ `NCS_ss1 `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_diatom `
+#> ✖ `PHY_green `
+#> ✖ `SIL_rsi `
+#> ✖ `ZOO_zoo1 `
+#> ℹ Filled 11 missing variables with default values from `model_controls`.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! 11 missing state variables in `NZS2038499`:
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `CHM_oxy `
+#> ✖ `NCS_ss1 `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_diatom `
+#> ✖ `PHY_green `
+#> ✖ `SIL_rsi `
+#> ✖ `ZOO_zoo1 `
+#> ℹ Filled 11 missing variables with default values from `model_controls`.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! 11 missing state variables in `NZS2038500`:
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `CHM_oxy `
+#> ✖ `NCS_ss1 `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_diatom `
+#> ✖ `PHY_green `
+#> ✖ `SIL_rsi `
+#> ✖ `ZOO_zoo1 `
+#> ℹ Filled 11 missing variables with default values from `model_controls`.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! 11 missing state variables in `NZS2038304`:
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `CHM_oxy `
+#> ✖ `NCS_ss1 `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_diatom `
+#> ✖ `PHY_green `
+#> ✖ `SIL_rsi `
+#> ✖ `ZOO_zoo1 `
+#> ℹ Filled 11 missing variables with default values from `model_controls`.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! 11 missing state variables in `lumped`:
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `CHM_oxy `
+#> ✖ `NCS_ss1 `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_diatom `
+#> ✖ `PHY_green `
+#> ✖ `SIL_rsi `
+#> ✖ `ZOO_zoo1 `
+#> ℹ Filled 11 missing variables with default values from `model_controls`.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_don`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! `HYD_flow`: Negative flow values detected.
+#> ℹ Check raw data or unit conversion for this variable.
+#> Warning: ! 10 missing state variables in `precip`:
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `CHM_oxy `
+#> ✖ `NCS_ss1 `
+#> ✖ `NIT_pon `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_diatom `
+#> ✖ `PHY_green `
+#> ✖ `SIL_rsi `
+#> ✖ `ZOO_zoo1 `
+#> ℹ Filled 10 missing variables with default values from `model_controls`.
 #> ℹ No water level present. Using constant water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.

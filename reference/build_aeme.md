@@ -141,6 +141,24 @@ aeme <- aeme |>
 #> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CHM_oxy`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_don`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_pon`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CAR_doc`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CAR_poc`: values appear to be in the expected units, no conversion applied.
+#> ℹ `SIL_rsi`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
+#>   value.
+#> ℹ Check raw data or unit conversion for this variable.
 #> ℹ Using observed water level.
 #> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
@@ -170,9 +188,27 @@ aeme <- aeme |>
 #> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
-#> ! Missing state variables in inflows:
-#> ! ZOO_zoo1
-#> ℹ Added default values for missing variables.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CHM_oxy`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_don`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_pon`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CAR_doc`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CAR_poc`: values appear to be in the expected units, no conversion applied.
+#> ℹ `SIL_rsi`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
+#>   value.
+#> ℹ Check raw data or unit conversion for this variable.
+#> Warning: ! 1 missing state variable in `FWMT`:
+#> ✖ `ZOO_zoo1 `
+#> ℹ Filled 1 missing variable with default value from `model_controls`.
 #> ℹ Using observed water level.
 #> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).

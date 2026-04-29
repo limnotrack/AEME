@@ -359,6 +359,8 @@
   Set simulation variables in model controls
 - [`show(`*`<Aeme>`*`)`](https://limnotrack.com/reference/show-aeme-method.md)
   : Print Aeme object to the console
+- [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md)
+  : Standardise inflow variable names and units for AEME
 - [`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)
   : Standardise meteorological variable names and units for AEME
 - [`summary(`*`<Aeme>`*`)`](https://limnotrack.com/reference/summary-aeme-method.md)

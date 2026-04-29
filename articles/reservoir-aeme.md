@@ -461,7 +461,7 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp6herCD\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpQVNNPc\reservoir
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
 #> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
@@ -478,6 +478,9 @@ aeme <- build_aeme(
 #> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
 #> ℹ No water level present. Using constant water level.
 #> ℹ Insufficient lake temperature observations (<10).
 #> ℹ Using Stefan & Preud'homme (2007) method.
@@ -493,10 +496,10 @@ aeme <- build_aeme(
 
 ``` r
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-04-27 03:23:43]
-#> → GLM-AED running... [2026-04-27 03:23:43]
-#> ✔ GLM-AED run successful! [2026-04-27 03:23:44]
-#> ✔ Model run complete! [2026-04-27 03:23:44]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-04-29 03:10:12]
+#> → GLM-AED running... [2026-04-29 03:10:12]
+#> ✔ GLM-AED run successful! [2026-04-29 03:10:12]
+#> ✔ Model run complete! [2026-04-29 03:10:12]
 ```
 
 ## View the output

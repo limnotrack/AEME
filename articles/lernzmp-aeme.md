@@ -179,6 +179,96 @@ path <- "aeme" # directory in which the model configuration will be built
 aeme <- build_aeme(aeme = aeme, model = model, path = path,
                    use_bgc = TRUE)
 #> ✔ `MET_pprain`: converted from m/day to mm/day.
+#> Warning: ! 10 missing state variables in `NZS4081641`:
+#> ✖ `CHM_oxy `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `SIL_rsi `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_green `
+#> ✖ `PHY_diatom `
+#> ✖ `NCS_ss1 `
+#> ℹ Filled 10 missing variables with default values from
+#> `model_controls`.
+#> Warning: ! 10 missing state variables in `NZS4083363`:
+#> ✖ `CHM_oxy `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `SIL_rsi `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_green `
+#> ✖ `PHY_diatom `
+#> ✖ `NCS_ss1 `
+#> ℹ Filled 10 missing variables with default values from
+#> `model_controls`.
+#> Warning: ! 10 missing state variables in `NZS4084132`:
+#> ✖ `CHM_oxy `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `SIL_rsi `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_green `
+#> ✖ `PHY_diatom `
+#> ✖ `NCS_ss1 `
+#> ℹ Filled 10 missing variables with default values from
+#> `model_controls`.
+#> Warning: ! 10 missing state variables in `NZS4086165`:
+#> ✖ `CHM_oxy `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `SIL_rsi `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_green `
+#> ✖ `PHY_diatom `
+#> ✖ `NCS_ss1 `
+#> ℹ Filled 10 missing variables with default values from
+#> `model_controls`.
+#> Warning: ! 10 missing state variables in `NZS4084816`:
+#> ✖ `CHM_oxy `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `SIL_rsi `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_green `
+#> ✖ `PHY_diatom `
+#> ✖ `NCS_ss1 `
+#> ℹ Filled 10 missing variables with default values from
+#> `model_controls`.
+#> Warning: ! 10 missing state variables in `lumped`:
+#> ✖ `CHM_oxy `
+#> ✖ `NIT_don `
+#> ✖ `NIT_pon `
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `SIL_rsi `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_green `
+#> ✖ `PHY_diatom `
+#> ✖ `NCS_ss1 `
+#> ℹ Filled 10 missing variables with default values from
+#> `model_controls`.
+#> Warning: ! 9 missing state variables in `precip`:
+#> ✖ `CHM_oxy `
+#> ✖ `NIT_pon `
+#> ✖ `CAR_doc `
+#> ✖ `CAR_poc `
+#> ✖ `SIL_rsi `
+#> ✖ `PHY_cyano `
+#> ✖ `PHY_green `
+#> ✖ `PHY_diatom `
+#> ✖ `NCS_ss1 `
+#> ℹ Filled 9 missing variables with default values from
+#> `model_controls`.
 #> 
 #> Tier 2: zone-median summer concentrations used for adjustment:
 #>          oxy   amm   nit   frp

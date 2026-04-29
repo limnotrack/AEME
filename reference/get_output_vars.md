@@ -55,9 +55,27 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
-#> ! Missing state variables in inflows:
-#> ! ZOO_zoo1
-#> ℹ Added default values for missing variables.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CHM_oxy`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_don`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_pon`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CAR_doc`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CAR_poc`: values appear to be in the expected units, no conversion applied.
+#> ℹ `SIL_rsi`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
+#>   value.
+#> ℹ Check raw data or unit conversion for this variable.
+#> Warning: ! 1 missing state variable in `FWMT`:
+#> ✖ `ZOO_zoo1 `
+#> ℹ Filled 1 missing variable with default value from `model_controls`.
 #> ℹ Using observed water level.
 #> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
@@ -150,10 +168,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-04-27 03:11:08]
-#> ✔ Model run complete! [2026-04-27 03:11:11]
-#> ℹ Reading models in parallel...[2026-04-27 03:11:11]
-#> ✔ Model reading complete! [2026-04-27 03:11:13]
+#> ℹ Running models in parallel... [2026-04-29 02:55:41]
+#> ✔ Model run complete! [2026-04-29 02:55:44]
+#> ℹ Reading models in parallel...[2026-04-29 02:55:44]
+#> ✔ Model reading complete! [2026-04-29 02:55:46]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 

@@ -44,6 +44,24 @@ model_controls = model_controls, ext_elev = 3)
 #> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
 #> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CHM_oxy`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_don`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_pon`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CAR_doc`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CAR_poc`: values appear to be in the expected units, no conversion applied.
+#> ℹ `SIL_rsi`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
+#>   value.
+#> ℹ Check raw data or unit conversion for this variable.
 #> ℹ Using observed water level.
 #> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
@@ -53,10 +71,10 @@ model_controls = model_controls, ext_elev = 3)
 #> ℹ Copied in AED nml file and supporting files
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-04-27 03:11:54]
-#> → GLM-AED running... [2026-04-27 03:11:54]
-#> ✔ GLM-AED run successful! [2026-04-27 03:11:54]
-#> ✔ Model run complete! [2026-04-27 03:11:54]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-04-29 02:56:20]
+#> → GLM-AED running... [2026-04-29 02:56:20]
+#> ✔ GLM-AED run successful! [2026-04-29 02:56:21]
+#> ✔ Model run complete! [2026-04-29 02:56:21]
 write_aeme_to_files(aeme, path)
 aeme_path <- get_lake_dir(aeme = aeme, path = path)
 aeme2 <- read_aeme_from_files(aeme_path)
