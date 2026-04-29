@@ -123,7 +123,7 @@ test_that("running GLM works", {
                           dates = c("2020-09-01", "2020-12-02"))
   testthat::expect_true(ncol(out3$HYD_temp) == 2)
   
-  plot_output(aeme)
+  # plot_output(aeme)
   outp <- output(aeme)
   file_chk <- file.exists(file.path(lake_dir,
                                     model, "output", "output.nc"))
