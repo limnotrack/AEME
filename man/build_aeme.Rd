@@ -83,7 +83,7 @@ Configure an ensemble of lake model simulations from basic set of inputs.
 \examples{
 # Read in example AEME object and build model configuration files for GLM-AED
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
-path <- "aeme" # subdirectory within working directory where model configuration files will be written
+path <- "aeme" # subdirectory where model configuration files will be written
 aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
 model_controls <- get_model_controls()
 model <- c("glm_aed")
