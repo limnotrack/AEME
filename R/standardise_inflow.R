@@ -242,7 +242,7 @@ standardise_inflow <- function(inflow,
   to_guess <- non_time[!non_time %in% known_inflow_vars]
   
   guessed <- tryCatch(
-    guess_aeme_vars(to_guess, key_filter = NULL),
+    guess_aeme_vars(to_guess),
     error = function(e) {
       cli::cli_abort(
         c("Failed to call {.fn guess_aeme_vars}.",

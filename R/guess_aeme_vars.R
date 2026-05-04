@@ -29,7 +29,7 @@ guess_aeme_vars <- function(x, key_filter) {
   # 1. Load key dataset
   data("key_naming", package = "AEME", envir = environment())
   
-  if (!missing(key_filter)) {
+  if (!missing(key_filter) && !is.null(key_filter)) {
     key_naming <- key_naming |>
       dplyr::filter(grepl(key_filter, name, ignore.case = TRUE))  
   }
