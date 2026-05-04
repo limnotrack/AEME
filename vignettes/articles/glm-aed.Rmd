@@ -59,7 +59,7 @@ Hamilton, D.P. (2024). General Lake Model (GLM) v3.3 – science manual.
 
 ### The Aquatic Ecosystem Dynamics (AED) library
 
-The **Aquatic EcoDynamics (AED)** library (Hipsey *et al.*, 2013) is a modular
+The **Aquatic Ecodynamics (AED)** library (Hipsey *et al.*, 2013) is a modular
 biogeochemical modelling framework designed to be coupled with hydrodynamic
 models such as GLM. Each biogeochemical process is implemented as a
 self-contained *module* that can be switched on or off independently, making it
