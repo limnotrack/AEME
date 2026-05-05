@@ -1,13 +1,5 @@
 ---
 title: "GLM-AED: The General Lake Model coupled with AED"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{GLM-AED: The General Lake Model coupled with AED}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
-editor_options:
-  markdown:
-    wrap: 80
 ---
 
 ```{r options, include = FALSE}
