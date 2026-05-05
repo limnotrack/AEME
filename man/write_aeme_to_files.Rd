@@ -15,6 +15,9 @@ working directory.}
 \item{include_output}{logical, include output files. Default is FALSE. The
 output files can be large and take up a lot of space.}
 }
+\value{
+A vector of file paths to the written files
+}
 \description{
 Write an AEME object to files
 }
