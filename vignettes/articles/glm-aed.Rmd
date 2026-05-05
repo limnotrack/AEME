@@ -375,10 +375,17 @@ This html file provides a comprehensive overview of the model configuration,
 making it easy to verify that the setup matches your intentions and to identify 
 any potential issues before running the model.
 
-```{r, echo=FALSE}
-htmltools::includeHTML(config_html)
-```
+You can view the HTML file directly in RStudio's Viewer pane or open it in your 
+web browser.
 
+```{r render-html, echo=FALSE}
+htmltools::tags$iframe(
+  src = config_html,
+  width = "100%",
+  height = "600px",
+  style = "border: none;"
+)
+```
 
 ---
 
