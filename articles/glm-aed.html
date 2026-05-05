@@ -84,12 +84,12 @@
 
     
     
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <div class="section level3">
-<h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+<h3 id="the-general-lake-model-glm">The General Lake Model (GLM)<a class="anchor" aria-label="anchor" href="#the-general-lake-model-glm"></a>
 </h3>
-<div class="section level4">
-<h4 id="the-general-lake-model-glm">The General Lake Model (GLM)<a class="anchor" aria-label="anchor" href="#the-general-lake-model-glm"></a>
-</h4>
 <p>The <strong>General Lake Model (GLM)</strong> is a one-dimensional
 (1-D), variable-layer hydrodynamic model for lakes, reservoirs, and
 estuaries. Originally described by Hipsey <em>et al.</em> (2019), GLM
@@ -116,9 +116,9 @@ temperatures to drive conductive heat flux into the water column.</li>
 website</a>,</p>
 <p>Source code: :github: <a href="https://github.com/AquaticEcoDynamics/GLM/tree/master" class="external-link uri">https://github.com/AquaticEcoDynamics/GLM/tree/master</a></p>
 <p>Binaries: :github: <a href="https://github.com/AquaticEcoDynamics/Binaries" class="external-link uri">https://github.com/AquaticEcoDynamics/Binaries</a></p>
-<div class="section level5">
-<h5 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
-</h5>
+<div class="section level4">
+<h4 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h4>
 <p>Hipsey, M.R., Bruce, L.C., Boon, C., Busch, B., Carey, C.C.,
 Hamilton, D.P., Hanson, P.C., Read, J.S., de Sousa, E., Weber, M. &amp;
 Winslow, L.A. (2019). A General Lake Model (GLM 3.0) for linking with
@@ -128,9 +128,9 @@ Network (GLEON). <em>Geoscientific Model Development</em>, 12, 473–523.
 <hr>
 </div>
 </div>
-<div class="section level4">
-<h4 id="the-aquatic-ecosystem-dynamics-aed-library">The Aquatic Ecosystem Dynamics (AED) library<a class="anchor" aria-label="anchor" href="#the-aquatic-ecosystem-dynamics-aed-library"></a>
-</h4>
+<div class="section level3">
+<h3 id="the-aquatic-ecosystem-dynamics-aed-library">The Aquatic Ecosystem Dynamics (AED) library<a class="anchor" aria-label="anchor" href="#the-aquatic-ecosystem-dynamics-aed-library"></a>
+</h3>
 <p>The <strong>Aquatic Ecodynamics (AED)</strong> library (Hipsey <em>et
 al.</em>, 2013) is a modular biogeochemical modelling framework designed
 to be coupled with hydrodynamic models such as GLM. Each biogeochemical
@@ -141,9 +141,9 @@ nutrient–phytoplankton–zooplankton food-web dynamics.</p>
 <p>There is a detailed AED manual available from the <a href="https://aquaticecodynamics.github.io/aed-science/" class="external-link">AED
 website</a>, but here we provide a brief overview of the key modules
 relevant for GLM-AED.</p>
-<div class="section level5">
-<h5 id="aed-modules-available-in-aeme">AED modules available in AEME<a class="anchor" aria-label="anchor" href="#aed-modules-available-in-aeme"></a>
-</h5>
+<div class="section level4">
+<h4 id="aed-modules-available-in-aeme">AED modules available in AEME<a class="anchor" aria-label="anchor" href="#aed-modules-available-in-aeme"></a>
+</h4>
 <table class="table">
 <caption>AED biogeochemical modules available in AEME.</caption>
 <colgroup>
@@ -220,9 +220,9 @@ cyanobacteria, green algae, diatoms.</td>
 </tbody>
 </table>
 </div>
-<div class="section level5">
-<h5 id="references-1">References<a class="anchor" aria-label="anchor" href="#references-1"></a>
-</h5>
+<div class="section level4">
+<h4 id="references-1">References<a class="anchor" aria-label="anchor" href="#references-1"></a>
+</h4>
 <p>Hipsey, M.R., Busch, B., Bruce, L.C., Hamilton, D.P., &amp; Romero,
 J.R. (2013). Aquatic Ecodynamics (AED) Model Library — Science Manual.
 The University of Western Australia Technical Report. Perth,
@@ -231,9 +231,9 @@ Australia.</p>
 </div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
-</h3>
+<div class="section level2">
+<h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/limnotrack/AEME" class="external-link">AEME</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -288,12 +288,12 @@ throughout this vignette.</p>
 <span><span class="co">#&gt; GOTM-WET:</span></span></code></pre></div>
 <hr>
 </div>
+<div class="section level2">
+<h2 id="building-a-glm-aed-simulation">Building a GLM-AED simulation<a class="anchor" aria-label="anchor" href="#building-a-glm-aed-simulation"></a>
+</h2>
 <div class="section level3">
-<h3 id="building-a-glm-aed-simulation">Building a GLM-AED simulation<a class="anchor" aria-label="anchor" href="#building-a-glm-aed-simulation"></a>
+<h3 id="model-controls">Model controls<a class="anchor" aria-label="anchor" href="#model-controls"></a>
 </h3>
-<div class="section level4">
-<h4 id="model-controls">Model controls<a class="anchor" aria-label="anchor" href="#model-controls"></a>
-</h4>
 <p><code><a href="../reference/get_model_controls.html">get_model_controls()</a></code> returns a data frame that governs
 which biogeochemical variables are simulated and how they are
 initialised. Pass <code>use_bgc = TRUE</code> to enable the full suite
@@ -330,9 +330,9 @@ of water-quality variables.</p>
 <span>  vars_sim       <span class="op">=</span> <span class="va">vars_sim</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="build-the-model">Build the model<a class="anchor" aria-label="anchor" href="#build-the-model"></a>
-</h4>
+<div class="section level3">
+<h3 id="build-the-model">Build the model<a class="anchor" aria-label="anchor" href="#build-the-model"></a>
+</h3>
 <p>We will build the model in a directory called <code>aeme</code>,</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"aeme"</span></span></code></pre></div>
@@ -381,12 +381,12 @@ parsed <code>glm3.nml</code> and <code>aed/aed.nml</code>:</p>
 <hr>
 </div>
 </div>
+<div class="section level2">
+<h2 id="glm-aed-specific-features">GLM-AED specific features<a class="anchor" aria-label="anchor" href="#glm-aed-specific-features"></a>
+</h2>
 <div class="section level3">
-<h3 id="glm-aed-specific-features">GLM-AED specific features<a class="anchor" aria-label="anchor" href="#glm-aed-specific-features"></a>
+<h3 id="selecting-aed-biogeochemical-modules">Selecting AED biogeochemical modules<a class="anchor" aria-label="anchor" href="#selecting-aed-biogeochemical-modules"></a>
 </h3>
-<div class="section level4">
-<h4 id="selecting-aed-biogeochemical-modules">Selecting AED biogeochemical modules<a class="anchor" aria-label="anchor" href="#selecting-aed-biogeochemical-modules"></a>
-</h4>
 <p>By default, all AED modules are enabled.
 <code><a href="../reference/set_glm_aed_models.html">set_glm_aed_models()</a></code> lets you choose a subset — for
 example, running hydrodynamics coupled with oxygen and nutrient cycling
@@ -453,9 +453,9 @@ cycling:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
-<div class="section level4">
-<h4 id="sediment-zones">Sediment zones<a class="anchor" aria-label="anchor" href="#sediment-zones"></a>
-</h4>
+<div class="section level3">
+<h3 id="sediment-zones">Sediment zones<a class="anchor" aria-label="anchor" href="#sediment-zones"></a>
+</h3>
 <p>One of the most important GLM-AED features for water-quality
 simulation is <strong>depth-varying sediment parameters</strong>. GLM
 divides the lake bed into <em>sediment zones</em>, each with its own
@@ -465,9 +465,9 @@ oxygen and nutrients.</p>
 <p>Deeper zones typically accumulate more organic matter, experience
 longer periods of anoxia, and therefore have higher sediment oxygen
 demand (SOD) and nutrient release than shallow littoral zones.</p>
-<div class="section level5">
-<h5 id="estimating-zone-boundaries-from-the-hypsograph">Estimating zone boundaries from the hypsograph<a class="anchor" aria-label="anchor" href="#estimating-zone-boundaries-from-the-hypsograph"></a>
-</h5>
+<div class="section level4">
+<h4 id="estimating-zone-boundaries-from-the-hypsograph">Estimating zone boundaries from the hypsograph<a class="anchor" aria-label="anchor" href="#estimating-zone-boundaries-from-the-hypsograph"></a>
+</h4>
 <p><code><a href="../reference/estimate_sed_zones.html">estimate_sed_zones()</a></code> automatically partitions the
 hypsograph into an appropriate number of zones by detecting natural
 breakpoints in the depth–area relationship:</p>
@@ -480,9 +480,9 @@ breakpoints in the depth–area relationship:</p>
 measured from the lake bed (metres). The last value equals the maximum
 lake depth.</p>
 </div>
-<div class="section level5">
-<h5 id="generating-glm-sediment-parameters">Generating GLM sediment parameters<a class="anchor" aria-label="anchor" href="#generating-glm-sediment-parameters"></a>
-</h5>
+<div class="section level4">
+<h4 id="generating-glm-sediment-parameters">Generating GLM sediment parameters<a class="anchor" aria-label="anchor" href="#generating-glm-sediment-parameters"></a>
+</h4>
 <p><code><a href="../reference/glm_sed_params.html">glm_sed_params()</a></code> builds a parameters data frame
 (compatible with the AEME <code>parameters</code> slot) for the GLM
 sediment module:</p>
@@ -567,9 +567,9 @@ applied during the next <code><a href="../reference/build_aeme.html">build_aeme(
 <span><span class="co">#&gt;     oxy     amm     nit     frp </span></span>
 <span><span class="co">#&gt; -25.007   2.050  -0.044   0.048</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="inspecting-sediment-zones-in-the-built-model">Inspecting sediment zones in the built model<a class="anchor" aria-label="anchor" href="#inspecting-sediment-zones-in-the-built-model"></a>
-</h5>
+<div class="section level4">
+<h4 id="inspecting-sediment-zones-in-the-built-model">Inspecting sediment zones in the built model<a class="anchor" aria-label="anchor" href="#inspecting-sediment-zones-in-the-built-model"></a>
+</h4>
 <p>After building, you can retrieve the number of zones and their
 parameters:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -598,9 +598,9 @@ parameters:</p>
 <span><span class="co">#&gt; 17 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.01  0.01     1  &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 18 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.01  0.01     2  &lt;NA&gt;</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="estimating-depth-varying-sediment-fluxes">Estimating depth-varying sediment fluxes<a class="anchor" aria-label="anchor" href="#estimating-depth-varying-sediment-fluxes"></a>
-</h5>
+<div class="section level4">
+<h4 id="estimating-depth-varying-sediment-fluxes">Estimating depth-varying sediment fluxes<a class="anchor" aria-label="anchor" href="#estimating-depth-varying-sediment-fluxes"></a>
+</h4>
 <p><code><a href="../reference/estimate_zone_fluxes.html">estimate_zone_fluxes()</a></code> scales literature-baseline
 sediment fluxes to each zone according to its mean depth and bed-area
 fraction (Tier 1). When observed near-bed concentrations are available
@@ -648,9 +648,9 @@ estimated fluxes:</p>
 <span><span class="co">#&gt; Zone1        11.54   43957     0.289    -38.8    5.835     -0.4   0.1035</span></span>
 <span><span class="co">#&gt; Zone2         5.00  108386     0.711    -19.4    0.512      0.1   0.0259</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="applying-sediment-fluxes-to-the-aed-configuration">Applying sediment fluxes to the AED configuration<a class="anchor" aria-label="anchor" href="#applying-sediment-fluxes-to-the-aed-configuration"></a>
-</h5>
+<div class="section level4">
+<h4 id="applying-sediment-fluxes-to-the-aed-configuration">Applying sediment fluxes to the AED configuration<a class="anchor" aria-label="anchor" href="#applying-sediment-fluxes-to-the-aed-configuration"></a>
+</h4>
 <p><code><a href="../reference/set_aed_sed_const2d.html">set_aed_sed_const2d()</a></code> writes the zone-specific fluxes
 directly into the <code>aed/aed.nml</code> file and updates the
 <code>aeme</code> object:</p>
@@ -707,9 +707,9 @@ written parameters:</p>
 <hr>
 </div>
 </div>
-<div class="section level4">
-<h4 id="visualising-the-model-configuration">Visualising the model configuration<a class="anchor" aria-label="anchor" href="#visualising-the-model-configuration"></a>
-</h4>
+<div class="section level3">
+<h3 id="visualising-the-model-configuration">Visualising the model configuration<a class="anchor" aria-label="anchor" href="#visualising-the-model-configuration"></a>
+</h3>
 <p><code><a href="../reference/plot_glm_config.html">plot_glm_config()</a></code> generates an interactive HTML
 visualisation of the complete GLM-AED setup, including the hypsograph,
 sediment zones, inflow/outflow positions, active AED modules, and key
@@ -721,544 +721,25 @@ in the Viewer pane; otherwise it is saved to a temporary HTML file.</p>
 configuration, making it easy to verify that the setup matches your
 intentions and to identify any potential issues before running the
 model.</p>
-
-
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GLM-AED Configuration</title>
-<style>
-  @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600&family=JetBrains+Mono:wght@400;500&display=swap");
-  :root {
-    --bg: #fafaf8; --bg2: #f0efeb; --bg3: #e6e5e0;
-    --tx: #2c2c2a; --tx2: #5f5e5a; --tx3: #888780;
-    --bd: rgba(0,0,0,0.1);
-    --blue50: #E6F1FB; --blue200: #85B7EB; --blue600: #185FA5; --blue800: #0C447C;
-    --teal50: #E1F5EE; --teal200: #5DCAA5; --teal600: #0F6E56; --teal800: #085041;
-    --coral50: #FAECE7; --coral200: #F0997B; --coral600: #993C1D; --coral800: #712B13;
-    --amber50: #FAEEDA; --amber200: #EF9F27; --amber600: #854F0B; --amber800: #633806;
-    --green50: #EAF3DE; --green200: #97C459; --green600: #3B6D11; --green800: #27500A;
-    --purple50: #EEEDFE; --purple200: #AFA9EC; --purple600: #534AB7; --purple800: #3C3489;
-    --gray50: #F1EFE8; --gray200: #B4B2A9; --gray600: #5F5E5A; --gray800: #444441;
-    --pink50: #FBEAF0; --pink200: #ED93B1; --pink600: #993556; --pink800: #72243E;
-    --font: "DM Sans", sans-serif;
-    --mono: "JetBrains Mono", monospace;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1a1a18; --bg2: #2a2a27; --bg3: #3a3a36;
-      --tx: #e8e6dc; --tx2: #b4b2a9; --tx3: #888780;
-      --bd: rgba(255,255,255,0.1);
-      --blue50: #0C447C; --blue200: #85B7EB; --blue600: #85B7EB; --blue800: #E6F1FB;
-      --teal50: #085041; --teal200: #5DCAA5; --teal600: #5DCAA5; --teal800: #E1F5EE;
-      --coral50: #712B13; --coral200: #F0997B; --coral600: #F0997B; --coral800: #FAECE7;
-      --amber50: #633806; --amber200: #EF9F27; --amber600: #EF9F27; --amber800: #FAEEDA;
-      --green50: #27500A; --green200: #97C459; --green600: #97C459; --green800: #EAF3DE;
-      --purple50: #3C3489; --purple200: #AFA9EC; --purple600: #AFA9EC; --purple800: #EEEDFE;
-      --gray50: #444441; --gray200: #B4B2A9; --gray600: #B4B2A9; --gray800: #F1EFE8;
-      --pink50: #72243E; --pink200: #ED93B1; --pink600: #ED93B1; --pink800: #FBEAF0;
-    }
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: var(--font); background: var(--bg); color: var(--tx); line-height: 1.5; padding: 24px; max-width: 1100px; margin: 0 auto; }
-  .header { margin-bottom: 28px; }
-  .header h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
-  .header p { font-size: 13px; color: var(--tx2); }
-  .toggle-container { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 20px; font-size: 12px; font-weight: 500; }
-  .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
-  .switch input { opacity: 0; width: 0; height: 0; }
-  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg3); transition: .2s; border-radius: 20px; }
-  .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%; }
-  input:checked + .slider { background-color: var(--blue600); }
-  input:checked + .slider:before { transform: translateX(14px); }
-  .grid { display: grid; grid-template-columns: 340px 1fr; gap: 24px; }
-  @media (max-width: 780px) { .grid { grid-template-columns: 1fr; } }
-  .card { background: var(--bg2); border: 1px solid var(--bd); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-  .card h2 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
-  .card h3 { font-size: 11px; font-weight: 500; color: var(--tx3); margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 0.6px; }
-  .param-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; font-size: 13px; border-bottom: 1px solid var(--bd); }
-  .param-row:last-child { border-bottom: none; }
-  .param-key { color: var(--tx2); }
-  .param-val { font-family: var(--mono); font-size: 12px; font-weight: 500; text-align: right; }
-  .module-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  @media (max-width: 780px) { .module-grid { grid-template-columns: 1fr; } }
-  .module-full { grid-column: 1 / -1; }
-  .module { border-radius: 10px; padding: 14px; border: 1px solid; transition: transform 0.15s, box-shadow 0.15s; }
-  .module:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-  .module h3 { font-size: 13px; font-weight: 600; margin: 0 0 8px; text-transform: none; letter-spacing: 0; }
-  .module .param-row { font-size: 12px; }
-  .module .param-val { font-size: 11px; }
-  .m-oxygen { background: var(--coral50); border-color: var(--coral200); }
-  .m-oxygen h3, .m-oxygen .param-val { color: var(--coral800); }
-  .m-oxygen .param-key { color: var(--coral600); }
-  .m-sedflux { background: var(--coral50); border-color: var(--coral200); }
-  .m-sedflux h3, .m-sedflux .param-val { color: var(--coral800); }
-  .m-sedflux .param-key { color: var(--coral600); }
-  .m-nitrogen { background: var(--teal50); border-color: var(--teal200); }
-  .m-nitrogen h3, .m-nitrogen .param-val { color: var(--teal800); }
-  .m-nitrogen .param-key { color: var(--teal600); }
-  .m-phosphorus { background: var(--teal50); border-color: var(--teal200); }
-  .m-phosphorus h3, .m-phosphorus .param-val { color: var(--teal800); }
-  .m-phosphorus .param-key { color: var(--teal600); }
-  .m-orgmatter { background: var(--amber50); border-color: var(--amber200); }
-  .m-orgmatter h3, .m-orgmatter .param-val { color: var(--amber800); }
-  .m-orgmatter .param-key { color: var(--amber600); }
-  .m-phyto { background: var(--green50); border-color: var(--green200); }
-  .m-phyto h3, .m-phyto .param-val { color: var(--green800); }
-  .m-phyto .param-key { color: var(--green600); }
-  .m-zoop { background: var(--purple50); border-color: var(--purple200); }
-  .m-zoop h3, .m-zoop .param-val { color: var(--purple800); }
-  .m-zoop .param-key { color: var(--purple600); }
-  .m-macro { background: var(--pink50); border-color: var(--pink200); }
-  .m-macro h3, .m-macro .param-val { color: var(--pink800); }
-  .m-macro .param-key { color: var(--pink600); }
-  .m-silica, .m-totals { background: var(--gray50); border-color: var(--gray200); }
-  .m-silica h3, .m-silica .param-val, .m-totals h3, .m-totals .param-val { color: var(--gray800); }
-  .m-silica .param-key, .m-totals .param-key { color: var(--gray600); }
-  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-  .chip { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; border: 1px solid; }
-  .chip-cyano { background: var(--coral50); color: var(--coral800); border-color: var(--coral200); }
-  .chip-green { background: var(--teal50); color: var(--teal800); border-color: var(--teal200); }
-  .chip-diatom { background: var(--blue50); color: var(--blue800); border-color: var(--blue200); }
-  .chip-default { background: var(--gray50); color: var(--gray800); border-color: var(--gray200); }
-  .chip-zoop { background: var(--purple50); color: var(--purple800); border-color: var(--purple200); }
-  .chip-macro { background: var(--pink50); color: var(--pink800); border-color: var(--pink200); }
-  .phyto-table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 11px; }
-  .phyto-table th { text-align: left; font-weight: 500; color: var(--green600); border-bottom: 1px solid var(--green200); padding: 3px 6px; font-family: var(--mono); font-size: 10px; }
-  .phyto-table td { padding: 2px 6px; font-family: var(--mono); color: var(--green800); border-bottom: 1px solid rgba(0,0,0,0.04); }
-  .phyto-table td:first-child { color: var(--green600); font-weight: 400; }
-  .hyps-svg { width: 100%; height: auto; display: block; }
-  .zone-label { font-family: var(--mono); font-size: 10px; font-weight: 500; }
-  .zone-fill { opacity: 0.15; }
-  .zone-line { stroke-dasharray: 4 3; stroke-width: 0.8; }
-  .hyps-path { fill: none; stroke-width: 1.8; stroke-linecap: round; }
-  .hyps-area { opacity: 0.12; }
-  .axis-text { font-family: var(--mono); font-size: 10px; fill: var(--tx3); }
-  .axis-label { font-family: var(--font); font-size: 11px; fill: var(--tx2); font-weight: 500; }
-  .axis-line { stroke: var(--bd); stroke-width: 0.5; }
-  .grid-line { stroke: var(--bd); stroke-width: 0.3; }
-  .warn-banner { background: var(--amber50); border: 1px solid var(--amber200); border-radius: 10px; padding: 14px 16px; margin-top: 16px; }
-  .warn-banner p { font-size: 12px; color: var(--amber800); margin-bottom: 6px; }
-  .warn-banner p:last-child { margin-bottom: 0; }
-  .warn-banner strong { font-weight: 600; }
-</style>
-<div class="header">
-  <div class="toggle-container">
-    <span>Show parameter labels</span>
-    <label class="switch"><input type="checkbox" id="name-toggle"><span class="slider"></span></label>
-  </div>
-  <h2 id="title"></h2>
-  <p id="subtitle"></p>
-</div>
-<div class="grid">
-  <div>
-    <div class="card">
-      <h3>Hypsograph &amp; sediment zones</h3>
-      <div id="hyps-container"></div>
-    </div>
-    <div class="card" id="glm-params"></div>
-  </div>
-  <div>
-    <div class="card">
-      <h3>AED biogeochemical modules</h3>
-      <div class="module-grid" id="aed-modules"></div>
-    </div>
-    <div id="warnings"></div>
-  </div>
-</div>
-<script>
-const CFG = {"parameter_library":{"sim_name":"Run name","max_layers":"Layers","min_layer_vol":"Min layer volume","min_layer_thick":"Min layer thickness","max_layer_thick":"Max layer thickness","density_model":"Density model","non_avg":"Non-averaged","surface_mixing":"Surface mixing","coef_mix_conv":"Convective mixing","coef_wind_stir":"Wind stirring","coef_mix_shear":"Shear mixing","coef_mix_turb":"Turbulence mixing","coef_mix_KH":"KH mixing","deep_mixing":"Deep mixing","coef_mix_hyp":"Hypolimnetic mixing","diff":"Diffusivity","wq_lib":"WQ library","wq_nml_file":"WQ config file","bioshade_feedback":"Bioshade feedback","mobility_off":"Mobility off","ode_method":"ODE method","split_factor":"Split factor","repair_state":"Repair state","lake_name":"Lake name","latitude":"Latitude","longitude":"Longitude","base_elev":"Base elevation","crest_elev":"Crest elevation","bsn_len":"Basin length","bsn_wid":"Basin width","bsn_vals":"Basin values","H":"Elevations","A":"Areas","timefmt":"Time format","start":"Start","stop":"Stop","dt":"Timestep","num_days":"Number of days","timezone":"Timezone","out_dir":"Output directory","out_fn":"Output filename","nsave":"Save frequency","csv_lake_fname":"Lake CSV filename","csv_point_nlevs":"Point levels","csv_point_fname":"Point filename","csv_point_frombot":"Point from bottom","csv_point_at":"Point depths","csv_point_nvars":"Point variables count","csv_point_vars":"Point variables","csv_outlet_allinone":"Outlet all-in-one","csv_outlet_fname":"Outlet filename","csv_outlet_nvars":"Outlet variables count","csv_outlet_vars":"Outlet variables","csv_ovrflw_fname":"Overflow filename","lake_depth":"Lake depth","num_depths":"Number of depths","the_depths":"Depths","the_temps":"Temperatures","the_sals":"Salinities","num_wq_vars":"WQ variables count","wq_names":"WQ names","wq_init_vals":"WQ initial values","light_mode":"Light mode","Kw":"Light extinction","Kw_file":"Kw file","n_bands":"Number of bands","light_extc":"Light extinction coefficients","energy_frac":"Energy fractions","Benthic_Imin":"Benthic min light","AP":"Atmospheric pressure","Oz":"Ozone","WatVap":"Water vapour","AOD500":"AOD 500nm","AOD380":"AOD 380nm","Albedo":"Albedo","sed_heat_Ksoil":"Soil conductivity","sed_temp_depth":"Sediment depth","sed_temp_mean":"Mean sediment temp","sed_temp_amplitude":"Sediment temp amplitude","sed_temp_peak_doy":"Sediment temp peak DOY","benthic_mode":"Benthic mode","n_zones":"Number of zones","zone_heights":"Zone heights","sed_reflectivity":"Sediment reflectivity","sed_roughness":"Sediment roughness","snow_albedo_factor":"Snow albedo factor","snow_rho_min":"Min snow density","snow_rho_max":"Max snow density","met_sw":"Met surface heating","meteo_fl":"Met file","subdaily":"Subdaily","time_fmt":"Time format","rad_mode":"Radiation mode","albedo_mode":"Albedo mode","sw_factor":"SW factor","lw_type":"LW type","cloud_mode":"Cloud mode","lw_factor":"LW factor","atm_stab":"Atmospheric stability","rh_factor":"RH factor","at_factor":"AT factor","ce":"Latent heat coef","ch":"Sensible heat coef","rain_sw":"Rain switch","rain_factor":"Rain factor","catchrain":"Catchment rain","rain_threshold":"Rain threshold","runoff_coef":"Runoff coefficient","cd":"Drag coefficient","wind_factor":"Wind factor","fetch_mode":"Fetch mode","Aws":"Wind sheltering area","Xws":"Wind sheltering length","num_dir":"Number of directions","wind_dir":"Wind directions","fetch_scale":"Fetch scale","num_inflows":"Number of inflows","names_of_strms":"Stream names","subm_flag":"Submerged flag","strm_hf_angle":"Half angle","strmbd_slope":"Streambed slope","strmbd_drag":"Streambed drag","coef_inf_entrain":"Entrainment coef","inflow_factor":"Inflow factor","inflow_fl":"Inflow file","inflow_varnum":"Inflow var count","inflow_vars":"Inflow variables","time_fmt.1":"Time format","num_outlet":"Number of outlets","outflow_fl":"Outflow file","time_fmt.2":"Time format","outflow_factor":"Outflow factor","outflow_thick_limit":"Outflow thick limit","single_layer_draw":"Single layer draw","flt_off_sw":"Floating offtake","outlet_type":"Outlet type","outl_elvs":"Outlet elevations","bsn_len_outl":"Basin length at outlet","bsn_wid_outl":"Basin width at outlet","crit_O2":"Critical O2","crit_O2_dep":"Critical O2 depth","crit_O2_days":"Critical O2 days","outlet_crit":"Outlet criteria","O2name":"O2 name","O2idx":"O2 index","target_temp":"Target temperature","min_lake_temp":"Min lake temperature","fac_range_upper":"Upper range factor","fac_range_lower":"Lower range factor","mix_withdraw":"Mix withdraw","coupl_oxy_sw":"Coupled oxygen switch","withdrTemp_fl":"Withdrawal temp file","seepage":"Seepage","seepage_rate":"Seepage rate","crest_width":"Crest width","crest_factor":"Crest factor","oxy_initial":"Initial O2","oxy_min":"Min O2","oxy_max":"Max O2","fsed_oxy":"Sediment O2 flux","ksed_oxy":"Half-sat O2 for SOD","theta_sed_oxy":"Theta sed oxy","fsed_oxy_variable":"Sed O2 var link","oxy_piston_model":"Piston model","altitude":"Altitude","amm_initial":"Initial NH4","nit_initial":"Initial NO3","amm_min":"Min NH4","nit_min":"Min NO3","simN2O":"Simulate N2O","rnitrif":"Nitrification rate","theta_nitrif":"Theta nitrification","knitrif":"K nitrification","simNitrfpH":"pH limit nitrif","rdenit":"Denitrification rate","theta_denit":"Theta denitrification","kdenit":"K denitrification","KNO3":"K NO3","oxy_lim":"O2 limitation switch","fsed_amm":"Sed NH4 flux","fsed_nit":"Sed NO3 flux","theta_sed_amm":"Theta sed NH4","theta_sed_nit":"Theta sed NO3","K_sed_amm":"K sed NH4","K_sed_nit":"K sed NO3","fsed_amm_variable":"Sed NH4 var link","fsed_nit_variable":"Sed NO3 var link","simDryDeposition":"Dry deposition","simWetDeposition":"Wet deposition","atm_din_dd":"DIN dry dep flux","atm_din_conc":"DIN rain conc","f_dindep_nox":"Fraction as NOx","frp_initial":"Initial FRP","frp_min":"Min FRP","simPO4Adsorption":"Simulate adsorption","ads_use_external_tss":"External TSS","PO4AdsCSS":"Sorbent conc","Kpo4p":"Adsorption coef","ads_use_pH":"pH-dependent ads","fsed_frp":"Sed PO4 flux","theta_sed_frp":"Theta sed PO4","K_sed_frp":"K sed PO4","fsed_frp_variable":"Sed PO4 var link","simDryDeposition.1":"Dry deposition","simWetDeposition.1":"Wet deposition","atm_pip_dd":"PIP dry dep flux","atm_frp_conc":"FRP rain conc","rsi_initial":"Initial RSi","rsi_min":"Min RSi","rsi_max":"Max RSi","fsed_rsi":"Sed RSi flux","theta_sed_rsi":"Theta sed RSi","K_sed_rsi":"K sed RSi","fsed_rsi_variable":"Sed RSi var link","num_phytos":"Number of groups","the_phytos":"Group IDs","settling":"Settling model","do_mpb":"Microphytobenthos","p_excretion_target_variable":"P excretion target","n_excretion_target_variable":"N excretion target","si_excretion_target_variable":"Si excretion target","c_excretion_target_variable":"C excretion target","R_growth":"Max growth rate","fT_Method":"Temperature function","theta_growth":"Theta growth","T_std":"Standard temperature","T_opt":"Optimum temperature","T_max":"Maximum temperature","lightModel":"Light model","I_K":"Light half-sat","I_S":"Light saturation","KePHY":"Specific extinction","simDINUptake":"DIN uptake model","N_o":"Min internal N","K_N":"Half-sat N uptake","X_ncon":"Constant N:C","X_nmin":"Min N:C","X_nmax":"Max N:C","R_nuptake":"N uptake rate","simDIPUptake":"DIP uptake model","P_0":"Min internal P","K_P":"Half-sat P uptake","X_pcon":"Constant P:C","X_pmin":"Min P:C","X_pmax":"Max P:C","R_puptake":"P uptake rate","simSiUptake":"Si uptake model","Si_0":"Min internal Si","K_Si":"Half-sat Si uptake","X_sicon":"Constant Si:C","R_resp":"Respiration rate","theta_resp":"Theta respiration","k_fres":"Fraction to DOM","k_fdom":"DOM fraction","R_mortality":"Mortality rate","w_p":"Settling velocity","sedflux_model":"Sediment model","nzones":"Number of zones","fsed_oxy.1":"Sed O2 flux","fsed_amm.1":"Sed NH4 flux","fsed_nit.1":"Sed NO3 flux","fsed_frp.1":"Sed PO4 flux","fsed_rsi.1":"Sed RSi flux","dz_sed":"Sediment layer thickness","n_sed_layers":"Number of layers","n_zones_sed":"Number of zones","w_sed":"Burial velocity","porosity":"Porosity","ksed_o2":"K sed O2","fsed_doc":"DOC sedimentation","fsed_poc":"POC sedimentation","Kd_OM":"OM decomposition rate","theta_Kd_OM":"Theta OM decomp","rnitrif.1":"Sed nitrification","rdenit.1":"Sed denitrification","ksed_nh4":"K sed NH4","ksed_no3":"K sed NO3","ksed_po4_release":"K sed PO4 release","K_sorp_PO4":"PO4 sorption coef","Kd_BSi":"BSi dissolution rate","theta_Kd_BSi":"Theta BSi dissoln","poc_initial":"Initial POC concentration","doc_initial":"Initial DOC concentration","pon_initial":"Initial PON concentration","don_initial":"Initial DON concentration","pop_initial":"Initial POP concentration","dop_initial":"Initial DOP concentration","cpom_initial":"Initial CPOM concentration","Rpoc_hydrol":"POC hydrolysis rate","Rpon_hydrol":"PON hydrolysis rate","Rpop_hydrol":"POP hydrolysis rate","theta_hydrol":"Hydrolysis temperature scaling","Kpom_hydrol":"POM hydrolysis O2 half-saturation","Rdom_minerl":"DOM mineralisation rate","theta_minerl":"Mineralisation temperature scaling","Kdom_minerl":"DOM mineralisation O2 half-saturation","simDenitrification":"Denitrification model option","f_an":"Anaerobic mineralisation fraction","K_nit":"Denitrification NO3 half-saturation","dom_miner_oxy_reactant_var":"Aerobic mineralisation O2 link","dom_miner_nit_reactant_var":"Denitrification NO3 link","dom_miner_no2_reactant_var":"Denitrification NO2 link","dom_miner_n2o_reactant_var":"N2O reduction link","dom_miner_fe3_reactant_var":"Iron reduction link","dom_miner_so4_reactant_var":"Sulfate reduction link","dom_miner_ch4_reactant_var":"Methane production link","doc_miner_product_variable":"DIC production link","don_miner_product_variable":"NH4 production link","dop_miner_product_variable":"PO4 production link","simRPools":"Refractory OM pools option","Rdomr_minerl":"DOMR mineralisation rate","Rcpom_bdown":"CPOM breakdown rate","X_cpom_n":"CPOM nitrogen stoichiometry","X_cpom_p":"CPOM phosphorus stoichiometry","KeDOM":"DOM light attenuation coefficient","KePOM":"POM light attenuation coefficient","KeDOMR":"DOMR light attenuation coefficient","KeCPOM":"CPOM light attenuation coefficient","simPhotolysis":"Photo-mineralisation option","photo_c":"Photolysis constant","settling.1":"POM settling method","w_pom":"POM sedimentation velocity","d_pom":"POM particle diameter","rho_pom":"POM particle density","w_cpom":"CPOM sedimentation velocity","d_cpom":"CPOM particle diameter","rho_cpom":"CPOM particle density","resuspension":"POM resuspension method","resus_link":"Resuspension diagnostic link","sedimentOMfrac":"Sediment organic matter fraction","Xsc":"Sediment C stoichiometry","Xsn":"Sediment N stoichiometry","Xsp":"Sediment P stoichiometry","fsed_doc.1":"Sediment DOC flux","fsed_don":"Sediment DON flux","fsed_dop":"Sediment DOP flux","ksed_dom":"Sediment DOM flux O2 half-saturation","theta_sed_dom":"Sediment DOM flux temperature scaling","fsed_doc_variable":"Sediment DOC spatial link","fsed_don_variable":"Sediment DON spatial link","fsed_dop_variable":"Sediment DOP spatial link","p_name":"Group name","p_initial":"Initial concentration","p0":"Minimum concentration","w_p.1":"Sedimentation rate","Xcc":"Carbon to chlorophyll ratio","R_growth.1":"Max growth rate","fT_Method.1":"Temperature limitation method","theta_growth.1":"Growth temperature scaling","T_std.1":"Standard temperature","T_opt.1":"Optimum temperature","T_max.1":"Maximum temperature","lightModel.1":"Light model","I_K.1":"Light half-saturation constant","I_S.1":"Saturating light intensity","KePHY.1":"Specific attenuation coefficient","f_pr":"Exudation fraction","R_resp.1":"Respiration rate","theta_resp.1":"Respiration temperature scaling","k_fres.1":"Respiration fraction","k_fdom.1":"DOM fraction","salTol":"Salinity tolerance function","S_bep":"Salinity limitation at S_maxsp","S_maxsp":"Maximum salinity","S_opt":"Optimal salinity","simDINUptake.1":"Simulate DIN uptake","simDONUptake":"Simulate DON uptake","simNFixation":"Simulate N fixation","simINDynamics":"Internal N dynamics","N_o.1":"N uptake threshold","K_N.1":"N half-saturation constant","X_ncon.1":"Constant internal N","X_nmin.1":"Minimum internal N","X_nmax.1":"Maximum internal N","R_nuptake.1":"Max N uptake rate","k_nfix":"N fixation growth reduction","R_nfix":"N fixation rate","simDIPUptake.1":"Simulate DIP uptake","simIPDynamics":"Internal P dynamics","P_0.1":"P uptake threshold","K_P.1":"P half-saturation constant","X_pcon.1":"Constant internal P","X_pmin.1":"Minimum internal P","X_pmax.1":"Maximum internal P","R_puptake.1":"Max P uptake rate","simSiUptake.1":"Simulate Si uptake","Si_0.1":"Si uptake threshold","K_Si.1":"Si half-saturation constant","X_sicon.1":"Constant internal Si","c1":"Density increase rate coefficient","c3":"Density decrease rate coefficient","f1":"Downward motility N fraction","f2":"Upward motility N fraction","d_phy":"Mean cell diameter","zoop_name":"Group name","zoop_initial":"Initial concentration","min_zoo":"Minimum concentration","Rgrz_zoo":"Grazing rate","fassim_zoo":"Assimilation efficiency","Kgrz_zoo":"Grazing half-saturation constant","theta_grz_zoo":"Grazing temperature multiplier","Cmin_grz_zoo":"Minimum prey concentration","Rresp_zoo":"Respiration rate","theta_resp_zoo":"Respiration temperature multiplier","Tstd_zoo":"Standard temperature","Topt_zoo":"Optimal temperature","Tmax_zoo":"Maximum temperature","ffecal_zoo":"Fecal pellet fraction","fexcr_zoo":"Excretion fraction","ffecal_sed":"Fecal pellet sinking fraction","Rmort_zoo":"Mortality rate","saltfunc_zoo":"Salinity limitation function","Smin_zoo":"Minimum salinity","Smax_zoo":"Maximum salinity","Sint_zoo":"Salinity intercept","INC_zoo":"Internal N:C ratio","IPC_zoo":"Internal P:C ratio","DOmin_zoo":"Minimum oxygen concentration","num_prey":"Number of prey","prey(1)%zoop_prey":"Prey 1 state variable","prey(1)%Pzoo_prey":"Prey 1 preference factor","prey(2)%zoop_prey":"Prey 2 state variable","prey(2)%Pzoo_prey":"Prey 2 preference factor","prey(3)%zoop_prey":"Prey 3 state variable","prey(3)%Pzoo_prey":"Prey 3 preference factor","m_name":"Group name","m0":"Minimum above-ground density","K_CD":"Drag coefficient constant","f_bg":"Below-ground biomass fraction","k_omega":"Plant density-coverage constant","Xcc.1":"Carbon to chlorophyll ratio","R_growth.2":"Max growth rate","fT_Method.2":"Temperature limitation method","theta_growth.2":"Growth temperature scaling","T_std.2":"Standard temperature","T_opt.2":"Optimum temperature","T_max.2":"Maximum temperature","lightModel.2":"Light model","I_K.2":"Light half-saturation constant","I_S.2":"Saturating light intensity","KeMAC":"Specific attenuation coefficient","f_pr.1":"Exudation fraction","R_resp.2":"Respiration rate","theta_resp.2":"Respiration temperature scaling","salTol.1":"Salinity tolerance function","S_bep.1":"Salinity limitation at S_maxsp","S_maxsp.1":"Maximum salinity","S_opt.1":"Optimal salinity","K_N.2":"N half-saturation constant","X_ncon.2":"Constant internal N","K_P.2":"P half-saturation constant","X_pcon.2":"Constant internal P"},"lake":{"name":"wainamu","latitude":-36.8898,"longitude":174.469,"max_depth":18.07,"base_elev":10.57,"crest_elev":28.64,"H":[10.57,10.64,11.14,11.64,12.14,12.64,13.14,13.64,14.14,14.64,15.14,15.64,16.14,16.64,17.14,17.64,18.14,18.64,18.84,19.04,19.24,19.44,19.64,19.84,20.04,20.24,20.44,20.64,20.84,21.04,21.24,21.44,21.64,21.84,22.04,22.24,22.44,22.64,22.84,23.04,23.24,23.44,23.64,26.64,28.64],"A":[0,2190.85,11106.96,19209.55,27262.7,33761.69,39819.33,43956.62,49681.38,55931.92,62593.5,68888.1,74383.5,80012.69,86598.38,93399.72,99197.02,105908.82,108688.66,111281.94,113710.35,116048.83,118413.57,120590.99,122751.7,124862.24,126791.91,128611.25,130227.19,131780.16,133311.34,134687.9,136001.16,137359.76,138580.39,139732.98,141022.38,142234.22,143499.52,144808.35,146231.62,148074.68,152343,170847.58,206195.95],"zone_heights":[3.07,22],"n_zones":2,"init_depth":13.07},"flows":{"inflow_names":["FWMT"],"outflow_info":[{"outlet_type":2,"flt_off_sw":true,"outl_elv":12.07,"depth":-11.57},{"outlet_type":2,"flt_off_sw":true,"outl_elv":12.07,"depth":-11.57}]},"glm":{"dt":3600,"nsave":24,"Kw":1.31,"ce":0.0013,"ch":0.0013,"cd":0.0013,"coef_wind_stir":0.23,"coef_mix_shear":0.3,"coef_mix_conv":0.2,"coef_mix_turb":0.51,"coef_mix_KH":0.3,"min_layer_thick":0.2,"max_layer_thick":0.5,"max_layers":101,"start":"2020-07-30 00:00:00","stop":"2021-06-30 00:00:00","num_inflows":1,"num_outlet":2,"light_mode":0},"aed_models":["aed_sedflux","aed_oxygen","aed_silica","aed_nitrogen","aed_phosphorus","aed_organic_matter","aed_phytoplankton","aed_totals"],"sediment":{"model":"Constant2d","n_zones":2,"active_zones":[1,2],"fsed_oxy":"-38.8, -19.4","fsed_amm":"5.835, 0.512","fsed_nit":"-0.4, 0.1","fsed_frp":"0.1035, 0.0259"},"oxygen":{"oxy_initial":312.5,"oxy_min":0,"oxy_max":500,"ksed_oxy":25,"theta_sed_oxy":1.08},"nitrogen":{"amm_initial":1.4279,"nit_initial":1.0709,"rnitrif":0.2,"rdenit":9.9687},"phosphorus":{"frp_initial":0.3229},"organic_matter":{"doc_initial":41.6285,"poc_initial":16.6514,"rdom_minerl":0.0135,"f_an":0.2064,"w_pom":-0.01},"phytoplankton":{"num_groups":3,"groups":["cyano","green","diatom"],"key_params":{"cyano":{"R_growth":1.1,"Xcc":50,"theta_growth":1.06,"w_p":0,"R_resp":0.08},"green":{"R_growth":0.7,"Xcc":40,"theta_growth":1.08,"w_p":-0.01,"R_resp":0.012},"diatom":{"R_growth":1.2,"Xcc":40,"theta_growth":1.05,"w_p":-0.2,"R_resp":0.12}}},"zooplankton":{"num_groups":3,"groups":["rotifer","cladoceran","copepod"]},"macrophyte":{"num_groups":1,"groups":["submerged"],"active_zones":[2,3]}};
-const LIB = CFG.parameter_library || {};
-
-// ===== Header =====
-document.getElementById("title").textContent =
-  "GLM-AED configuration \u2014 " + (CFG.lake.name || "unnamed lake");
-document.getElementById("subtitle").textContent =
-  [
-    CFG.lake.latitude ? CFG.lake.latitude.toFixed(3) + "\u00b0, " +
-      CFG.lake.longitude.toFixed(3) + "\u00b0" : null,
-    "Max depth: " + CFG.lake.max_depth.toFixed(1) + " m",
-    CFG.glm.start + " to " + CFG.glm.stop,
-  ].filter(Boolean).join("  \u00b7  ");
-
-// ===== Hypsograph SVG =====
-(function() {
-  const H = CFG.lake.H;
-  const A = CFG.lake.A;
-  const base = CFG.lake.base_elev;
-  const crest = CFG.lake.crest_elev;
-  const initDepth = CFG.lake.init_depth;
-  const zones = CFG.lake.zone_heights || [];
-  const inflowNames = CFG.flows.inflow_names || [];
-  const outInfo = CFG.flows.outflow_info || [];
-
-  const surfElev = base + initDepth;
-  const depthVals = H.map(h => h - surfElev);
-  const areas = A.map(a => a / 1e6);
-  const maxA = Math.max(...areas);
-
-  const minVal = Math.min(...depthVals);
-  const maxVal = Math.max(...depthVals);
-  const valRange = maxVal - minVal;
-
-  const W = 310, HH = 380;
-  const ml = 42, mr = 48, mt = 25, mb = 35;
-  const pw = W - ml - mr, ph = HH - mt - mb;
-
-  const sx = v => ml + (v / (maxA || 1)) * pw;
-  const sy = v => mt + ((maxVal - v) / (valRange || 1)) * ph;
-
-  let svg = '<svg class="hyps-svg" viewBox="0 0 ' + W + " " + HH +
-    '" xmlns="http://www.w3.org/2000/svg">';
-
-  // Grid lines
-  const ngy = 6;
-  const rawStep = valRange / ngy;
-  const step = rawStep >= 5 ? Math.round(rawStep / 5) * 5
-             : rawStep >= 1 ? Math.round(rawStep)
-             : Math.round(rawStep * 10) / 10 || 1;
-  const gridStart = Math.floor(minVal / step) * step;
-  const gridEnd = Math.ceil(maxVal / step) * step;
-
-  for (let v = gridStart; v <= gridEnd; v += step) {
-    if (v < minVal - step * 0.3 || v > maxVal + step * 0.3) continue;
-    const y = sy(v);
-    svg += '<line x1="' + ml + '" y1="' + y + '" x2="' + (W - mr) +
-      '" y2="' + y + '" class="grid-line"/>';
-    const depthLabel = v > 0 ? "+" + v.toFixed(0) : v.toFixed(0);
-    svg += '<text x="' + (ml - 4) + '" y="' + (y + 3) +
-      '" text-anchor="end" class="axis-text">' + depthLabel + "</text>";
-    const elev = surfElev + v;
-    svg += '<text x="' + (W - mr + 4) + '" y="' + (y + 3) +
-      '" text-anchor="start" class="axis-text">' + elev.toFixed(1) + "</text>";
-  }
-
-  // Water surface line
-  const y0 = sy(0);
-  svg += '<line x1="' + ml + '" y1="' + y0 + '" x2="' + (W - mr) +
-    '" y2="' + y0 + '" stroke="#185FA5" stroke-width="1.2" stroke-dasharray="6 3" opacity="0.6"/>';
-  svg += '<text x="' + (ml + pw / 2) + '" y="' + (y0 - 5) +
-    '" text-anchor="middle" style="font-family:var(--mono);font-size:9px;fill:#185FA5;font-weight:500">water surface (0 m)</text>';
-
-  // Sediment zones
-  const zoneColors = ["#85B7EB", "#5DCAA5", "#EF9F27", "#AFA9EC", "#F0997B"];
-  for (let i = zones.length - 1; i >= 0; i--) {
-    const topVal = zones[i] - initDepth;
-    const botVal = (i === 0) ? minVal : zones[i - 1] - initDepth;
-    const y1 = sy(topVal);
-    const y2 = sy(botVal);
-    const col = zoneColors[i % zoneColors.length];
-    svg += '<rect x="' + ml + '" y="' + Math.min(y1, y2) + '" width="' + pw +
-      '" height="' + Math.abs(y2 - y1) + '" fill="' + col + '" class="zone-fill"/>';
-    svg += '<line x1="' + ml + '" y1="' + y1 + '" x2="' + (W - mr) +
-      '" y2="' + y1 + '" stroke="' + col + '" class="zone-line"/>';
-    svg += '<text x="' + (ml + 4) + '" y="' + (y1 + 12) +
-      '" text-anchor="start" class="zone-label" fill="' + col +
-      '">zone ' + (i + 1) + " (" + topVal.toFixed(1) + " m)</text>";
-  }
-
-  // Hypsograph area fill
-  let areaPath = "M" + sx(0) + " " + sy(depthVals[0]);
-  for (let i = 0; i < depthVals.length; i++) {
-    areaPath += " L" + sx(areas[i]) + " " + sy(depthVals[i]);
-  }
-  areaPath += " L" + sx(0) + " " + sy(depthVals[depthVals.length - 1]) + " Z";
-  svg += '<path d="' + areaPath + '" fill="#185FA5" class="hyps-area"/>';
-
-  // Hypsograph line
-  let linePath = "M" + sx(areas[0]) + " " + sy(depthVals[0]);
-  for (let i = 1; i < depthVals.length; i++) {
-    linePath += " L" + sx(areas[i]) + " " + sy(depthVals[i]);
-  }
-  svg += '<path d="' + linePath + '" stroke="#185FA5" class="hyps-path"/>';
-
-  // === Inflow markers (at surface, left edge) ===
-  // inflowNames is an array of stream names
-  for (let i = 0; i < inflowNames.length; i++) {
-    const iy = sy(0) + 4 + (i * 16);
-    svg += '<polygon points="' + ml + "," + (iy - 4) + " " + ml + "," + (iy + 4) + " " + (ml + 8) + "," + iy +
-      '" fill="#0F6E56" opacity="0.8"/>';
-    svg += '<text x="' + (ml + 11) + '" y="' + (iy + 3) +
-      '" style="font-family:var(--mono);font-size:8px;fill:#0F6E56;font-weight:500">\u2192 ' +
-      inflowNames[i] + "</text>";
-  }
-
-  // === Outflow markers ===
-  const outletTypeLabels = {
-    1: "fixed",
-    2: "floating",
-    3: "adaptive (low O\u2082)",
-    4: "adaptive (isotherm)",
-    5: "adaptive (temp series)"
-  };
-  for (let i = 0; i < outInfo.length; i++) {
-    const oi = outInfo[i];
-    const od = oi.depth;
-    const otype = oi.outlet_type || 1;
-    const isFlt = oi.flt_off_sw;
-    const ax = W - mr;
-
-    // Floating offtakes draw at the surface
-    const drawDepth = (otype === 2 || isFlt) ? 0 : od;
-    const oy = sy(drawDepth);
-
-    // Arrow
-    svg += '<polygon points="' + (ax - 8) + "," + (oy - 4) + " " + (ax - 8) + "," + (oy + 4) + " " + ax + "," + oy +
-      '" fill="#993C1D" opacity="0.8"/>';
-
-    // Label: show type and depth
-    const typeStr = outletTypeLabels[otype] || ("type " + otype);
-    let oLabel;
-    if (otype === 2 || isFlt) {
-      oLabel = typeStr + " offtake";
-    } else {
-      oLabel = typeStr + " (" + drawDepth.toFixed(1) + " m)";
-    }
-    // If floating, also show a dashed line to the configured elevation
-    if ((otype === 2 || isFlt) && od !== 0 && !isNaN(od)) {
-      const fixedY = sy(od);
-      svg += '<line x1="' + (ax - 12) + '" y1="' + oy + '" x2="' + (ax - 12) + '" y2="' + fixedY +
-        '" stroke="#993C1D" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.5"/>';
-      svg += '<circle cx="' + (ax - 12) + '" cy="' + fixedY + '" r="2" fill="#993C1D" opacity="0.5"/>';
-      svg += '<text x="' + (ax - 16) + '" y="' + (fixedY + 3) +
-        '" text-anchor="end" style="font-family:var(--mono);font-size:7px;fill:#993C1D;opacity:0.6">elev ' +
-        oi.outl_elv.toFixed(1) + "</text>";
-    }
-
-    svg += '<text x="' + (ax - 11) + '" y="' + (oy + 3 + i * 0) +
-      '" text-anchor="end" style="font-family:var(--mono);font-size:8px;fill:#993C1D;font-weight:500">' +
-      oLabel + " \u2192</text>";
-  }
-
-  // Axes
-  svg += '<line x1="' + ml + '" y1="' + mt + '" x2="' + ml + '" y2="' + (HH - mb) + '" class="axis-line"/>';
-  svg += '<line x1="' + (W - mr) + '" y1="' + mt + '" x2="' + (W - mr) + '" y2="' + (HH - mb) + '" class="axis-line"/>';
-  svg += '<line x1="' + ml + '" y1="' + (HH - mb) + '" x2="' + (W - mr) + '" y2="' + (HH - mb) + '" class="axis-line"/>';
-  svg += '<text x="' + (ml + pw / 2) + '" y="' + (HH - 4) + '" text-anchor="middle" class="axis-label">Area (km\u00b2)</text>';
-  svg += '<text x="10" y="' + (mt + ph / 2) + '" text-anchor="middle" class="axis-label" transform="rotate(-90,10,' + (mt + ph / 2) + ')">Depth (m)</text>';
-  svg += '<text x="' + (W - 8) + '" y="' + (mt + ph / 2) + '" text-anchor="middle" class="axis-label" transform="rotate(90,' + (W - 8) + "," + (mt + ph / 2) + ')">Elevation (m)</text>';
-
-  const ngx = 4;
-  for (let i = 0; i <= ngx; i++) {
-    const a = (maxA / ngx) * i;
-    svg += '<text x="' + sx(a) + '" y="' + (HH - mb + 14) + '" text-anchor="middle" class="axis-text">' +
-      (a < 1 ? a.toFixed(2) : a.toFixed(1)) + "</text>";
-  }
-  svg += "</svg>";
-  document.getElementById("hyps-container").innerHTML = svg;
-})();
-
-// ===== Shared row helper with data-key for toggle =====
-function paramRow(k, v) {
-  return '<div class="param-row"><span class="param-key" data-key="' + k + '">' + k +
-    '</span><span class="param-val">' + (v != null ? v : "\u2014") + "</span></div>";
-}
-
-// ===== GLM parameters =====
-(function() {
-  const g = CFG.glm;
-  const sections = [
-    ["Simulation", [
-      ["start", g.start + " to " + g.stop],
-      ["dt", g.dt + " s"],
-      ["nsave", "every " + g.nsave + " timesteps"],
-    ]],
-    ["Vertical structure", [
-      ["max_layers", g.max_layers],
-      ["min_layer_thick", g.min_layer_thick + " m"],
-      ["max_layer_thick", g.max_layer_thick + " m"],
-    ]],
-    ["Mixing", [
-      ["coef_wind_stir", g.coef_wind_stir],
-      ["coef_mix_shear", g.coef_mix_shear],
-      ["coef_mix_conv", g.coef_mix_conv],
-      ["coef_mix_turb", g.coef_mix_turb],
-      ["coef_mix_KH", g.coef_mix_KH],
-    ]],
-    ["Meteorology", [
-      ["ce", g.ce],
-      ["ch", g.ch],
-      ["cd", g.cd],
-    ]],
-    ["Light", [
-      ["Kw", g.Kw + " m\u207b\u00b9"],
-      ["light_mode", g.light_mode],
-    ]],
-    ["Flows", [
-      ["num_inflows", g.num_inflows],
-      ["num_outlet", g.num_outlet],
-    ]],
-  ];
-  let html = "<h2>GLM physical setup</h2>";
-  for (const [section, rows] of sections) {
-    html += "<h3>" + section + "</h3>";
-    for (const [k, v] of rows) {
-      html += paramRow(k, v);
-    }
-  }
-  document.getElementById("glm-params").innerHTML = html;
-})();
-
-// ===== AED modules =====
-(function() {
-  const el = document.getElementById("aed-modules");
-  let html = "";
-
-  html += '<div class="module m-sedflux"><h3>Sediment flux</h3>';
-  html += paramRow("sedflux_model", CFG.sediment.model);
-  html += paramRow("n_zones", CFG.sediment.n_zones);
-  const az = CFG.sediment.active_zones;
-  html += paramRow("active_zones", az && az.length ? az.join(", ") : "\u2014");
-  html += paramRow("fsed_oxy", CFG.sediment.fsed_oxy);
-  html += paramRow("fsed_amm", CFG.sediment.fsed_amm);
-  html += paramRow("fsed_nit", CFG.sediment.fsed_nit);
-  html += paramRow("fsed_frp", CFG.sediment.fsed_frp);
-  html += "</div>";
-
-  html += '<div class="module m-oxygen"><h3>Oxygen</h3>';
-  html += paramRow("oxy_initial", CFG.oxygen.oxy_initial);
-  html += paramRow("oxy_min", CFG.oxygen.oxy_min);
-  html += paramRow("oxy_max", CFG.oxygen.oxy_max);
-  html += paramRow("ksed_oxy", CFG.oxygen.ksed_oxy);
-  html += paramRow("theta_sed_oxy", CFG.oxygen.theta_sed_oxy);
-  html += "</div>";
-
-  html += '<div class="module m-nitrogen"><h3>Nitrogen</h3>';
-  html += paramRow("amm_initial", CFG.nitrogen.amm_initial);
-  html += paramRow("nit_initial", CFG.nitrogen.nit_initial);
-  html += paramRow("rnitrif", CFG.nitrogen.rnitrif);
-  html += paramRow("rdenit", CFG.nitrogen.rdenit);
-  html += "</div>";
-
-  html += '<div class="module m-phosphorus"><h3>Phosphorus</h3>';
-  html += paramRow("frp_initial", CFG.phosphorus.frp_initial);
-  html += "</div>";
-
-  html += '<div class="module m-orgmatter"><h3>Organic matter</h3>';
-  html += paramRow("doc_initial", CFG.organic_matter.doc_initial);
-  html += paramRow("poc_initial", CFG.organic_matter.poc_initial);
-  html += paramRow("rdom_minerl", CFG.organic_matter.rdom_minerl);
-  html += paramRow("f_an", CFG.organic_matter.f_an);
-  html += paramRow("w_pom", CFG.organic_matter.w_pom + " m/d");
-  html += "</div>";
-
-  if (CFG.aed_models.some(m => m.includes("silica"))) {
-    html += '<div class="module m-silica"><h3>Silica</h3>';
-    html += paramRow("silica", "included");
-    html += "</div>";
-  }
-
-  html += '<div class="module m-phyto module-full"><h3>Phytoplankton (' +
-    CFG.phytoplankton.num_groups + ' groups)</h3>';
-  html += '<div class="chips">';
-  const phytoChipClass = { cyano: "chip-cyano", green: "chip-green", diatom: "chip-diatom" };
-  for (const g of (CFG.phytoplankton.groups || [])) {
-    html += '<span class="chip ' + (phytoChipClass[g] || "chip-default") + '">' + g + "</span>";
-  }
-  html += "</div>";
-  const kp = CFG.phytoplankton.key_params;
-  const groups = CFG.phytoplankton.groups || [];
-  if (kp && groups.length > 0) {
-    const paramNames = Object.keys(kp[groups[0]] || {});
-    if (paramNames.length > 0) {
-      html += '<table class="phyto-table"><tr><th>parameter</th>';
-      for (const g of groups) html += "<th>" + g + "</th>";
-      html += "</tr>";
-      for (const p of paramNames) {
-        html += '<tr><td class="param-key" data-key="' + p + '">' + p + "</td>";
-        for (const g of groups) {
-          html += "<td>" + (kp[g] && kp[g][p] != null ? kp[g][p] : "\u2014") + "</td>";
-        }
-        html += "</tr>";
-      }
-      html += "</table>";
-    }
-  }
-  html += "</div>";
-
-  if (CFG.zooplankton.num_groups > 0) {
-    html += '<div class="module m-zoop"><h3>Zooplankton (' + CFG.zooplankton.num_groups + ' groups)</h3>';
-    html += '<div class="chips">';
-    for (const g of (CFG.zooplankton.groups || [])) {
-      html += '<span class="chip chip-zoop">' + g + "</span>";
-    }
-    html += "</div></div>";
-  }
-
-  if (CFG.macrophyte.num_groups > 0) {
-    html += '<div class="module m-macro"><h3>Macrophytes (' + CFG.macrophyte.num_groups + ' groups)</h3>';
-    html += '<div class="chips">';
-    for (const g of (CFG.macrophyte.groups || [])) {
-      html += '<span class="chip chip-macro">' + g + "</span>";
-    }
-    html += "</div>";
-    const maz = CFG.macrophyte.active_zones;
-    if (maz && maz.length > 0) html += paramRow("active_zones", maz.join(", "));
-    html += "</div>";
-  }
-
-  if (CFG.aed_models.some(m => m.includes("totals"))) {
-    html += '<div class="module m-totals"><h3>Totals</h3>';
-    html += paramRow("totals", "TN, TP, TOC");
-    html += "</div>";
-  }
-
-  el.innerHTML = html;
-})();
-
-// ===== Warnings =====
-(function() {
-  const warns = [];
-  const fsedStr = CFG.sediment.fsed_oxy;
-  if (fsedStr) {
-    const vals = String(fsedStr).split(",").map(s => parseFloat(s.trim())).filter(v => !isNaN(v));
-    if (vals.length > 1 && vals.every(v => v === vals[0])) {
-      warns.push("<strong>fsed_oxy is uniform</strong> across all " + CFG.lake.n_zones +
-        " sediment zones (" + vals[0] + " mmol/m\u00b2/d). Consider varying by zone depth.");
-    }
-    if (vals.length > 0 && Math.abs(vals[0]) >= 20) {
-      warns.push("<strong>|fsed_oxy| = " + Math.abs(vals[0]) +
-        "</strong> is a strong sediment oxygen demand. Typical range is 5\u201320 mmol/m\u00b2/d.");
-    }
-  }
-  const ce = parseFloat(CFG.glm.ce), ch = parseFloat(CFG.glm.ch), cd = parseFloat(CFG.glm.cd);
-  if (!isNaN(ce) && ce === ch && ch === cd) {
-    warns.push("<strong>ce = ch = cd = " + ce + "</strong> \u2014 fixed and identical. No stability dependence.");
-  }
-  if (warns.length) {
-    document.getElementById("warnings").innerHTML = '<div class="warn-banner">' +
-      warns.map(w => "<p>\u26a0\ufe0f " + w + "</p>").join("") + "</div>";
-  }
-})();
-
-// ===== Parameter label toggle =====
-document.getElementById("name-toggle").addEventListener("change", function() {
-  const useLabels = this.checked;
-  document.querySelectorAll(".param-key[data-key]").forEach(el => {
-    const key = el.getAttribute("data-key");
-    if (useLabels && LIB[key]) {
-      el.textContent = LIB[key];
-    } else {
-      el.textContent = key;
-    }
-  });
-});
-</script><hr>
+<p>You can view the HTML file directly in RStudio’s Viewer pane or open
+it in your web browser.</p>
+<iframe src="C:\Users\RUNNER~1\AppData\Local\Temp\RtmpAVuDyT\file1a444bba4750.html" width="100%" height="600px" style="border: none;"></iframe>
+<hr>
 </div>
 </div>
-<div class="section level3">
-<h3 id="running-glm-aed">Running GLM-AED<a class="anchor" aria-label="anchor" href="#running-glm-aed"></a>
-</h3>
+<div class="section level2">
+<h2 id="running-glm-aed">Running GLM-AED<a class="anchor" aria-label="anchor" href="#running-glm-aed"></a>
+</h2>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
+<div class="section level2">
+<h2 id="visualising-model-output">Visualising model output<a class="anchor" aria-label="anchor" href="#visualising-model-output"></a>
+</h2>
 <div class="section level3">
-<h3 id="visualising-model-output">Visualising model output<a class="anchor" aria-label="anchor" href="#visualising-model-output"></a>
+<h3 id="temperature-and-stratification">Temperature and stratification<a class="anchor" aria-label="anchor" href="#temperature-and-stratification"></a>
 </h3>
-<div class="section level4">
-<h4 id="temperature-and-stratification">Temperature and stratification<a class="anchor" aria-label="anchor" href="#temperature-and-stratification"></a>
-</h4>
 <p><code><a href="../reference/plot_output.html">plot_output()</a></code> produces a filled contour plot for
 depth-varying variables (e.g. temperature) and a time-series line plot
 for scalar variables:</p>
@@ -1270,9 +751,9 @@ Simulated water temperature (°C) at each model layer over time.
 </p>
 </div>
 </div>
-<div class="section level4">
-<h4 id="water-quality-variables">Water quality variables<a class="anchor" aria-label="anchor" href="#water-quality-variables"></a>
-</h4>
+<div class="section level3">
+<h3 id="water-quality-variables">Water quality variables<a class="anchor" aria-label="anchor" href="#water-quality-variables"></a>
+</h3>
 <p>Any variable that was listed in <code>vars_sim</code> and is present
 in the output can be plotted the same way:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -1292,9 +773,9 @@ Simulated total chlorophyll-a (µg L⁻¹) time series.
 <hr>
 </div>
 </div>
-<div class="section level3">
-<h3 id="assessing-model-performance">Assessing model performance<a class="anchor" aria-label="anchor" href="#assessing-model-performance"></a>
-</h3>
+<div class="section level2">
+<h2 id="assessing-model-performance">Assessing model performance<a class="anchor" aria-label="anchor" href="#assessing-model-performance"></a>
+</h2>
 <p>When observations are stored in the <code>aeme</code> object,
 <code><a href="../reference/assess_model.html">assess_model()</a></code> computes a suite of skill metrics (RMSE,
 NSE, bias, Pearson <em>r</em>, etc.) for each simulated variable:</p>
@@ -1378,12 +859,12 @@ NSE, bias, Pearson <em>r</em>, etc.) for each simulated variable:</p>
 <span><span class="co">#&gt; 24               Temperature~(degree~C)</span></span></code></pre></div>
 <hr>
 </div>
+<div class="section level2">
+<h2 id="glm-aed-diagnostics">GLM-AED diagnostics<a class="anchor" aria-label="anchor" href="#glm-aed-diagnostics"></a>
+</h2>
 <div class="section level3">
-<h3 id="glm-aed-diagnostics">GLM-AED diagnostics<a class="anchor" aria-label="anchor" href="#glm-aed-diagnostics"></a>
+<h3 id="comprehensive-diagnostic-report">Comprehensive diagnostic report<a class="anchor" aria-label="anchor" href="#comprehensive-diagnostic-report"></a>
 </h3>
-<div class="section level4">
-<h4 id="comprehensive-diagnostic-report">Comprehensive diagnostic report<a class="anchor" aria-label="anchor" href="#comprehensive-diagnostic-report"></a>
-</h4>
 <p><code><a href="../reference/run_glm_aed_diagnostics.html">run_glm_aed_diagnostics()</a></code> reads the model output and
 produces a structured diagnostic report — a summary table and a set of
 grouped plots — that helps you quickly identify unrealistic values or
@@ -1523,9 +1004,9 @@ plots.</li>
 <span>  print_table <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="oxygen-diagnostic-page">Oxygen diagnostic page<a class="anchor" aria-label="anchor" href="#oxygen-diagnostic-page"></a>
-</h4>
+<div class="section level3">
+<h3 id="oxygen-diagnostic-page">Oxygen diagnostic page<a class="anchor" aria-label="anchor" href="#oxygen-diagnostic-page"></a>
+</h3>
 <p><code><a href="../reference/plot_glm_diagnostics.html">plot_glm_diagnostics()</a></code> provides a focused four-page
 diagnostic panel specifically designed to debug anomalous dissolved
 oxygen behaviour — a common challenge when coupling hydrodynamics with
@@ -1551,9 +1032,9 @@ biogeochemistry:</p>
 <hr>
 </div>
 </div>
-<div class="section level3">
-<h3 id="working-with-the-glm-configuration-directly">Working with the GLM configuration directly<a class="anchor" aria-label="anchor" href="#working-with-the-glm-configuration-directly"></a>
-</h3>
+<div class="section level2">
+<h2 id="working-with-the-glm-configuration-directly">Working with the GLM configuration directly<a class="anchor" aria-label="anchor" href="#working-with-the-glm-configuration-directly"></a>
+</h2>
 <p>The raw <code>glm3.nml</code> file and <code>aed/aed.nml</code> file
 can be read, modified, and written using the NML helpers bundled with
 AEME:</p>
@@ -1569,9 +1050,9 @@ AEME:</p>
 <span><span class="co"># Access AED biogeochemistry section</span></span>
 <span><span class="va">aed_nml</span> <span class="op">&lt;-</span> <span class="va">cfg</span><span class="op">$</span><span class="va">bgc</span><span class="op">$</span><span class="va">aed</span></span>
 <span><span class="va">aed_nml</span><span class="op">$</span><span class="va">aed_nitrogen</span><span class="op">$</span><span class="va">rnitrif</span>   <span class="co"># nitrification rate</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="retrieving-parameters-by-module">Retrieving parameters by module<a class="anchor" aria-label="anchor" href="#retrieving-parameters-by-module"></a>
-</h4>
+<div class="section level3">
+<h3 id="retrieving-parameters-by-module">Retrieving parameters by module<a class="anchor" aria-label="anchor" href="#retrieving-parameters-by-module"></a>
+</h3>
 <p><code><a href="../reference/get_aeme_parameters.html">get_aeme_parameters()</a></code> provides a convenient way to query
 the AEME parameter library for all GLM-AED parameters belonging to a
 particular module:</p>
@@ -1611,9 +1092,9 @@ particular module:</p>
 <hr>
 </div>
 </div>
-<div class="section level3">
-<h3 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
-</h3>
+<div class="section level2">
+<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
+</h2>
 <p>This vignette demonstrated the key GLM-AED-specific features
 available in AEME:</p>
 <ol style="list-style-type: decimal">

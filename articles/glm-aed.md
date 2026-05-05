@@ -1,8 +1,8 @@
 # GLM-AED: The General Lake Model coupled with AED
 
-### Introduction
+## Introduction
 
-#### The General Lake Model (GLM)
+### The General Lake Model (GLM)
 
 The **General Lake Model (GLM)** is a one-dimensional (1-D),
 variable-layer hydrodynamic model for lakes, reservoirs, and estuaries.
@@ -30,7 +30,7 @@ Source code: :github:
 
 Binaries: :github: <https://github.com/AquaticEcoDynamics/Binaries>
 
-##### References
+#### References
 
 Hipsey, M.R., Bruce, L.C., Boon, C., Busch, B., Carey, C.C., Hamilton,
 D.P., Hanson, P.C., Read, J.S., de Sousa, E., Weber, M. & Winslow, L.A.
@@ -41,7 +41,7 @@ sensor data from the Global Lake Ecological Observatory Network (GLEON).
 
 ------------------------------------------------------------------------
 
-#### The Aquatic Ecosystem Dynamics (AED) library
+### The Aquatic Ecosystem Dynamics (AED) library
 
 The **Aquatic Ecodynamics (AED)** library (Hipsey *et al.*, 2013) is a
 modular biogeochemical modelling framework designed to be coupled with
@@ -55,7 +55,7 @@ There is a detailed AED manual available from the [AED
 website](https://aquaticecodynamics.github.io/aed-science/), but here we
 provide a brief overview of the key modules relevant for GLM-AED.
 
-##### AED modules available in AEME
+#### AED modules available in AEME
 
 | Module | AED name | Description |
 |----|----|----|
@@ -72,7 +72,7 @@ provide a brief overview of the key modules relevant for GLM-AED.
 
 AED biogeochemical modules available in AEME. {.table}
 
-##### References
+#### References
 
 Hipsey, M.R., Busch, B., Bruce, L.C., Hamilton, D.P., & Romero, J.R.
 (2013). Aquatic Ecodynamics (AED) Model Library — Science Manual. The
@@ -80,7 +80,7 @@ University of Western Australia Technical Report. Perth, Australia.
 
 ------------------------------------------------------------------------
 
-### Getting started
+## Getting started
 
 ``` r
 
@@ -143,9 +143,9 @@ aeme
 
 ------------------------------------------------------------------------
 
-### Building a GLM-AED simulation
+## Building a GLM-AED simulation
 
-#### Model controls
+### Model controls
 
 [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md)
 returns a data frame that governs which biogeochemical variables are
@@ -190,7 +190,7 @@ model_controls <- set_vars_sim(
 )
 ```
 
-#### Build the model
+### Build the model
 
 We will build the model in a directory called `aeme`,
 
@@ -251,9 +251,9 @@ names(cfg[["glm_aed"]])
 
 ------------------------------------------------------------------------
 
-### GLM-AED specific features
+## GLM-AED specific features
 
-#### Selecting AED biogeochemical modules
+### Selecting AED biogeochemical modules
 
 By default, all AED modules are enabled.
 [`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)
@@ -329,7 +329,7 @@ aeme <- set_glm_aed_models(
 
 ------------------------------------------------------------------------
 
-#### Sediment zones
+### Sediment zones
 
 One of the most important GLM-AED features for water-quality simulation
 is **depth-varying sediment parameters**. GLM divides the lake bed into
@@ -341,7 +341,7 @@ Deeper zones typically accumulate more organic matter, experience longer
 periods of anoxia, and therefore have higher sediment oxygen demand
 (SOD) and nutrient release than shallow littoral zones.
 
-##### Estimating zone boundaries from the hypsograph
+#### Estimating zone boundaries from the hypsograph
 
 [`estimate_sed_zones()`](https://limnotrack.com/reference/estimate_sed_zones.md)
 automatically partitions the hypsograph into an appropriate number of
@@ -358,7 +358,7 @@ zone_heights
 The returned vector gives the *upper height* of each zone measured from
 the lake bed (metres). The last value equals the maximum lake depth.
 
-##### Generating GLM sediment parameters
+#### Generating GLM sediment parameters
 
 [`glm_sed_params()`](https://limnotrack.com/reference/glm_sed_params.md)
 builds a parameters data frame (compatible with the AEME `parameters`
@@ -452,7 +452,7 @@ aeme <- build_aeme(
 #> -25.007   2.050  -0.044   0.048
 ```
 
-##### Inspecting sediment zones in the built model
+#### Inspecting sediment zones in the built model
 
 After building, you can retrieve the number of zones and their
 parameters:
@@ -485,7 +485,7 @@ sed_pars
 #> 18 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.01  0.01     2  <NA>
 ```
 
-##### Estimating depth-varying sediment fluxes
+#### Estimating depth-varying sediment fluxes
 
 [`estimate_zone_fluxes()`](https://limnotrack.com/reference/estimate_zone_fluxes.md)
 scales literature-baseline sediment fluxes to each zone according to its
@@ -541,7 +541,7 @@ fluxes$zone_summary
 #> Zone2         5.00  108386     0.711    -19.4    0.512      0.1   0.0259
 ```
 
-##### Applying sediment fluxes to the AED configuration
+#### Applying sediment fluxes to the AED configuration
 
 [`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
 writes the zone-specific fluxes directly into the `aed/aed.nml` file and
@@ -607,7 +607,7 @@ get_aed_sed_const2d_param(aeme = aeme, path = path) |>
 
 ------------------------------------------------------------------------
 
-#### Visualising the model configuration
+### Visualising the model configuration
 
 [`plot_glm_config()`](https://limnotrack.com/reference/plot_glm_config.md)
 generates an interactive HTML visualisation of the complete GLM-AED
@@ -626,19 +626,12 @@ configuration, making it easy to verify that the setup matches your
 intentions and to identify any potential issues before running the
 model.
 
-GLM-AED Configuration
-
-Show parameter labels
-
-## 
-
-### Hypsograph & sediment zones
-
-### AED biogeochemical modules
+You can view the HTML file directly in RStudio’s Viewer pane or open it
+in your web browser.
 
 ------------------------------------------------------------------------
 
-### Running GLM-AED
+## Running GLM-AED
 
 ``` r
 
@@ -647,9 +640,9 @@ aeme <- run_aeme(aeme = aeme, model = model, path = path)
 
 ------------------------------------------------------------------------
 
-### Visualising model output
+## Visualising model output
 
-#### Temperature and stratification
+### Temperature and stratification
 
 [`plot_output()`](https://limnotrack.com/reference/plot_output.md)
 produces a filled contour plot for depth-varying variables
@@ -665,7 +658,7 @@ time.](glm-aed_files/figure-html/plot-temp-1.png)
 
 Simulated water temperature (°C) at each model layer over time.
 
-#### Water quality variables
+### Water quality variables
 
 Any variable that was listed in `vars_sim` and is present in the output
 can be plotted the same way:
@@ -692,7 +685,7 @@ Simulated total chlorophyll-a (µg L⁻¹) time series.
 
 ------------------------------------------------------------------------
 
-### Assessing model performance
+## Assessing model performance
 
 When observations are stored in the `aeme` object,
 [`assess_model()`](https://limnotrack.com/reference/assess_model.md)
@@ -782,9 +775,9 @@ skill
 
 ------------------------------------------------------------------------
 
-### GLM-AED diagnostics
+## GLM-AED diagnostics
 
-#### Comprehensive diagnostic report
+### Comprehensive diagnostic report
 
 [`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)
 reads the model output and produces a structured diagnostic report — a
@@ -926,7 +919,7 @@ diag_proc <- run_glm_aed_diagnostics(
 )
 ```
 
-#### Oxygen diagnostic page
+### Oxygen diagnostic page
 
 [`plot_glm_diagnostics()`](https://limnotrack.com/reference/plot_glm_diagnostics.md)
 provides a focused four-page diagnostic panel specifically designed to
@@ -969,7 +962,7 @@ print(pages$sediment)
 
 ------------------------------------------------------------------------
 
-### Working with the GLM configuration directly
+## Working with the GLM configuration directly
 
 The raw `glm3.nml` file and `aed/aed.nml` file can be read, modified,
 and written using the NML helpers bundled with AEME:
@@ -989,7 +982,7 @@ aed_nml <- cfg$bgc$aed
 aed_nml$aed_nitrogen$rnitrif   # nitrification rate
 ```
 
-#### Retrieving parameters by module
+### Retrieving parameters by module
 
 [`get_aeme_parameters()`](https://limnotrack.com/reference/get_aeme_parameters.md)
 provides a convenient way to query the AEME parameter library for all
@@ -1036,7 +1029,7 @@ n_params[, c("name", "value", "min", "max")]
 
 ------------------------------------------------------------------------
 
-### Summary
+## Summary
 
 This vignette demonstrated the key GLM-AED-specific features available
 in AEME:
