@@ -9,7 +9,7 @@
 #'
 #' @importFrom dplyr filter pull case_when
 #' @importFrom parallel clusterExport parLapply stopCluster detectCores
-#' makeCluster
+#' @importFrom parallel makeCluster
 #'
 #'
 

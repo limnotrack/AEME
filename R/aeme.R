@@ -1390,7 +1390,7 @@ setMethod("summary", "Aeme", function(object) {
 #'
 #' @importFrom sf st_transform st_geometry
 #' @importFrom ggplot2 ggplot aes geom_sf geom_point geom_line labs ggtitle
-#' theme_bw facet_wrap
+#' @importFrom ggplot2 theme_bw facet_wrap
 #' @importFrom patchwork wrap_plots
 #' @importFrom tidyr pivot_longer
 #' @importFrom dplyr left_join bind_rows filter contains

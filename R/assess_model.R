@@ -20,7 +20,8 @@
 #' }
 #'
 #' @importFrom dplyr group_by summarise mutate n case_when where across
-#' relocate filter left_join select last_col bind_rows case_when
+#' @importFrom dplyr relocate filter left_join select last_col bind_rows 
+#' @importFrom dplyr case_when
 #' @importFrom stats cor cor.test lm
 #'
 #' @export

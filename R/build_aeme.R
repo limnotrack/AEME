@@ -244,8 +244,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     
     # Inflow ----
     aeme_inf <- inflows(aeme)
-    # Inflow ----
-    aeme_inf <- inflows(aeme)
     if (length(aeme_inf[["data"]]) > 0) {
       pot_inf_vars <- c("time", "HYD_flow", inf_vars, "model")
       verbose <- getOption("AEME.inform", TRUE)

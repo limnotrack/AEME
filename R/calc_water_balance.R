@@ -22,7 +22,7 @@
 #' @importFrom lubridate ddays
 #' @importFrom withr local_locale local_timezone
 #' @importFrom dplyr filter left_join mutate distinct group_by summarise
-#' bind_rows
+#' @importFrom dplyr bind_rows
 #' @importFrom tidyr pivot_longer
 #' @importFrom ggplot2 ggplot aes geom_point geom_smooth theme_bw labs
 #' @importFrom stats lm optim

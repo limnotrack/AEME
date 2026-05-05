@@ -9,7 +9,7 @@
 #' @param add_obs logical; add observations to the plot. Default is TRUE.
 #'
 #' @importFrom ggplot2 ggplot geom_line guides scale_linewidth_manual
-#' scale_alpha_manual facet_wrap labs geom_point aes
+#' @importFrom ggplot2 scale_alpha_manual facet_wrap labs geom_point aes
 #' @importFrom dplyr filter group_by mutate summarise left_join
 #'
 #' @return A ggplot object

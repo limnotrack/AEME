@@ -13,7 +13,7 @@
 #' @param cumulative logical; if TRUE, return cumulative sum of variable
 #'
 #' @importFrom dplyr arrange filter left_join mutate select bind_rows case_when
-#' rename
+#' @importFrom dplyr rename
 #'
 #' @return dataframe or list
 #' @export

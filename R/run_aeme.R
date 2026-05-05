@@ -19,7 +19,7 @@
 #' @export
 #'
 #' @importFrom parallel parLapply makeCluster detectCores clusterExport
-#' stopCluster
+#' @importFrom parallel stopCluster
 #' @importFrom stats setNames
 #'
 #' @examples

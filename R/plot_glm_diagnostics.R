@@ -18,8 +18,8 @@
 #'   plots are displayed interactively. Defaults to NULL.
 #'
 #' @importFrom ggplot2 ggplot aes geom_line geom_hline labs theme_minimal
-#'   theme scale_colour_manual element_text element_blank annotate theme_void
-#'   ggsave
+#' @importFrom ggplot2 theme scale_colour_manual element_text element_blank 
+#' @importFrom ggplot2 annotate theme_void ggsave
 #' @importFrom patchwork wrap_plots plot_annotation patchworkGrob
 #' @importFrom cli cli_abort cli_alert_success
 #'
