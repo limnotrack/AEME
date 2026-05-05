@@ -41,6 +41,12 @@ wind mixing, inflows, and outflows. Its key architectural features include:
   shortwave radiation computed from standard meteorological inputs.
 - **Sediment heat exchange** — allows depth-varying bed temperatures to drive
   conductive heat flux into the water column.
+  
+There is more detailed GLM documentation available from the [GLM website](https://aquatic.science.uwa.edu.au/research/models/GLM/),
+
+Source code: :github: <https://github.com/AquaticEcoDynamics/GLM/tree/master>
+
+Binaries: :github: <https://github.com/AquaticEcoDynamics/Binaries>
 
 #### References
 
@@ -50,10 +56,6 @@ A General Lake Model (GLM 3.0) for linking with high-frequency sensor data
 from the Global Lake Ecological Observatory Network (GLEON).
 *Geoscientific Model Development*, 12, 473–523.
 <https://doi.org/10.5194/gmd-12-473-2019>
-
-Bruce, L.C., Hipsey, M.R., Boon, C., Busch, B., de la Fuente, J. &
-Hamilton, D.P. (2024). General Lake Model (GLM) v3.3 – science manual.
-*Zenodo*. <https://doi.org/10.5281/zenodo.11542180>
 
 ---
 
@@ -65,6 +67,9 @@ models such as GLM. Each biogeochemical process is implemented as a
 self-contained *module* that can be switched on or off independently, making it
 easy to build simulations that range from simple oxygen tracking through to
 full nutrient–phytoplankton–zooplankton food-web dynamics.
+
+There is a detailed AED manual available from the [AED website](https://aquaticecodynamics.github.io/aed-science/),
+but here we provide a brief overview of the key modules relevant for GLM-AED.
 
 #### AED modules available in AEME
 
