@@ -105,13 +105,13 @@ configurations. This includes the configurations files for the
 hydrodynamic components as well as the aquatic ecosystem model
 components:
 
-| Model         | Hyrodynamic                         | Ecosystem                                                        |
-|---------------|-------------------------------------|------------------------------------------------------------------|
-| DYRESM-CAEDYM | *.cfg* file and *.par* file         | *.con*, *caedym3p1.bio, caedym3p1.chm* and *caedym3p1.sed* files |
-| GLM-AED       | *glm3.nml* file                     | *aed2.nml*, *phytos.nml*, *zoops.nml* files                      |
-| GOTM-WET      | *gotm.yaml* and *output.yaml* files | *fabm.yaml* file                                                 |
+| Model | Hyrodynamic | Ecosystem |
+|----|----|----|
+| DYRESM-CAEDYM | *.cfg* file and *.par* file | *.con*, *caedym3p1.bio, caedym3p1.chm* and *caedym3p1.sed* files |
+| GLM-AED | *glm3.nml* file | *aed2.nml*, *phytos.nml*, *zoops.nml* files |
+| GOTM-WET | *gotm.yaml* and *output.yaml* files | *fabm.yaml* file |
 
-Files for hydrodynamic and ecosystem models.
+Files for hydrodynamic and ecosystem models. {.table}
 
 When [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) is
 ran, the `model_controls` data.frame that is passed to the function as
@@ -180,14 +180,14 @@ The `input` slot is a list that contains the following objects:
 
 - use_lw - Logical switch to use longwave radiation. Defaults to TRUE.
 
-- **Kw** - the light extinction coefficient ($m^{- 1}$).
+- **Kw** - the light extinction coefficient ($`m^{-1}`$).
 
 #### Inflows
 
 The inflows slot is a list that contains the following objects:
 
 - data - named list of data.frames which contain the columns date
-  (“Date”), flow (“HYD_flow”; $m^{3}day^{- 1}$). Temperature can also be
+  (“Date”), flow (“HYD_flow”; $`m^3 day^{-1}`$). Temperature can also be
   provided (“HYD_temp”), however if not provided then it will be
   estimated using air temperature. The name for the list will be used as
   the stream identifier in each model. If `method` in the water_balance
@@ -205,7 +205,7 @@ If no inflows are present then this slot will be empty.
 The outflows slot is a list that contains the following objects:
 
 - data - named list of data.frames which contain the columns date
-  (“Date”), flow (“HYD_flow”; $m^{3}day^{- 1}$). If `method` in the
+  (“Date”), flow (“HYD_flow”; $`m^3 day^{-1}`$). If `method` in the
   water_balance section is set to `2` or `3`, then “wbal” will be added
   to the data, this contains a separate outflow for each model,
   estimated using the different evaporation functions inside each model.
@@ -337,6 +337,7 @@ function. The YAML file contains all the information required to run the
 model.
 
 ``` r
+
 # Define lake list
 lat <- -36.88921
 lon <- 174.4669
@@ -372,6 +373,7 @@ aeme <- aeme_constructor(lake = lake, time = time, input = input)
 ```
 
 ``` r
+
 slotNames(aeme)
 #>  [1] "lake"          "time"          "configuration" "observations" 
 #>  [5] "input"         "inflows"       "outflows"      "water_balance"
@@ -385,6 +387,7 @@ The functions are defined by the slot names of the `aeme` object. For
 example, the `lake` slot can be manipulated using the `lake` function.
 
 ``` r
+
 # Load lake data
 lke <- lake(aeme)
 # Print lake data to console
@@ -469,12 +472,14 @@ object. For example, the `lake` slot can be visualised using the `plot`
 function.
 
 ``` r
+
 plot(aeme, "lake")
 ```
 
 ![](intro-aeme_files/figure-html/aeme-visualisation-lake-1.png)
 
 ``` r
+
 plot(aeme, "input")
 ```
 
@@ -483,6 +488,7 @@ plot(aeme, "input")
 ## Build Model Ensemble
 
 ``` r
+
 model_controls <- get_model_controls()
 model <- c("dy_cd", "glm_aed", "gotm_wet")
 path <- "aeme"
@@ -777,5 +783,6 @@ aeme
 ```
 
 ``` r
+
 cfg <- configuration(aeme)
 ```

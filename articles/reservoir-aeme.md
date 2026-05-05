@@ -27,6 +27,7 @@ outlets at different levels: a regulated **penstock** at depth and a
 ## Setup
 
 ``` r
+
 library(AEME)
 library(ggplot2)
 library(dplyr)
@@ -39,6 +40,7 @@ Island of New Zealand. The reservoir has a full supply level of 150 m
 above sea level and a maximum depth of 25 m.
 
 ``` r
+
 lat   <- -37.80
 lon   <- 176.00
 elev  <- 150   # full supply level (m a.s.l.)
@@ -59,6 +61,7 @@ reservoir <- list(
 ## Simulation period
 
 ``` r
+
 time <- list(
   start = "2020-08-01 00:00:00",
   stop  = "2021-06-30 00:00:00"
@@ -71,6 +74,7 @@ Meteorological data bundled with the AEME package (originally from Lake
 Wainamu, North Island) is reused here to drive the reservoir simulation.
 
 ``` r
+
 meteo_file <- system.file("extdata/lake/data/meteo.csv", package = "AEME")
 met <- read.csv(meteo_file) |>
   mutate(Date = as.Date(Date))
@@ -94,6 +98,7 @@ by a higher `volume_development` parameter (values \> 1.5 give a convex,
 cylindrical shape; a value of 3 corresponds to a perfect cylinder).
 
 ``` r
+
 hypsograph <- generate_hypsograph(
   max_depth          = depth,
   surface_area       = area,
@@ -113,6 +118,7 @@ head(hypsograph)
 ```
 
 ``` r
+
 ggplot(hypsograph, aes(x = area / 1e6, y = elev)) +
   geom_line(linewidth = 1, colour = "#0065a9") +
   geom_point(size = 1.5, colour = "#0065a9") +
@@ -135,6 +141,7 @@ and `HYD_flow` (m³ day⁻¹). Temperature (`HYD_temp`, °C) and salinity
 (`CHM_salt`, PSU) columns are recommended.
 
 ``` r
+
 set.seed(42)
 sim_dates <- seq(as.Date("2020-01-01"), as.Date("2021-12-31"), by = "day")
 doy       <- as.integer(format(sim_dates, "%j"))
@@ -169,12 +176,13 @@ head(inflow_data[, 1:3])
 The key feature demonstrated in this vignette is the configuration of
 **two outlets at different elevations**:
 
-| Outlet       | Elevation    | Description                                            |
-|--------------|--------------|--------------------------------------------------------|
-| **Penstock** | 130 m        | Regulated bottom release; 20 m below full supply level |
-| **Spillway** | -1 (surface) | Uncontrolled overflow at the water surface             |
+| Outlet | Elevation | Description |
+|----|----|----|
+| **Penstock** | 130 m | Regulated bottom release; 20 m below full supply level |
+| **Spillway** | -1 (surface) | Uncontrolled overflow at the water surface |
 
 ``` r
+
 # Penstock: regulated base flow with small seasonal variation
 penstock_flow <- pmax(0,
   60000 + 15000 * sin(2 * pi * (doy - 100) / 365) +
@@ -199,6 +207,7 @@ spillway_data <- data.frame(
 Visualise the inflow and both outflows over the simulation period:
 
 ``` r
+
 flows <- bind_rows(
   mutate(inflow_data[, c("Date", "HYD_flow")], stream = "Inflow"),
   mutate(penstock_data, stream = "Penstock (130 m)"),
@@ -236,6 +245,7 @@ elevation range of the hypsograph. Below we illustrate where the two
 outlets sit relative to the reservoir hypsograph.
 
 ``` r
+
 outlet_lines <- data.frame(
   elev  = c(130, max(hypsograph$elev)),
   label = c("Penstock (130 m)", "Spillway (surface)")
@@ -271,6 +281,7 @@ The `input` list must include at minimum the hypsograph, meteorological
 data, and light extinction coefficient (`Kw`).
 
 ``` r
+
 input <- list(
   init_depth = depth,
   hypsograph = hypsograph,
@@ -281,6 +292,7 @@ input <- list(
 ```
 
 ``` r
+
 aeme <- aeme_constructor(
   lake  = reservoir,
   time  = time,
@@ -343,6 +355,7 @@ Inflows are added as a named list of data frames. The name (here
 `"river"`) is used as the stream identifier in each model.
 
 ``` r
+
 aeme <- add_inflows(aeme, data = list(river = inflow_data))
 ```
 
@@ -359,6 +372,7 @@ function accepts:
   outlet.
 
 ``` r
+
 aeme <- add_outflows(
   aeme,
   data = list(
@@ -385,6 +399,7 @@ Printing the `aeme` object now shows both outlets registered in the
 outflows slot:
 
 ``` r
+
 aeme
 #>             AEME 
 #> -------------------------------------------------------------------
@@ -445,12 +460,14 @@ model. Each model handles multiple outlets in its own way:
   column per outlet and the number of outlets in the header.
 
 ``` r
+
 model_controls <- get_model_controls()
 model          <- c("glm_aed")
 path           <- file.path(tempdir(), "reservoir")
 ```
 
 ``` r
+
 aeme <- build_aeme(
   aeme           = aeme,
   model          = model,
@@ -461,7 +478,7 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpAbekGX\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp4E5b1P\reservoir
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
 #> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
@@ -495,16 +512,18 @@ aeme <- build_aeme(
 ## Run the models
 
 ``` r
+
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-04-29 03:20:27]
-#> → GLM-AED running... [2026-04-29 03:20:27]
-#> ✔ GLM-AED run successful! [2026-04-29 03:20:27]
-#> ✔ Model run complete! [2026-04-29 03:20:27]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-05 04:54:48]
+#> → GLM-AED running... [2026-05-05 04:54:48]
+#> ✔ GLM-AED run successful! [2026-05-05 04:54:48]
+#> ✔ Model run complete! [2026-05-05 04:54:48]
 ```
 
 ## View the output
 
 ``` r
+
 plot_output(aeme = aeme)
 #> Warning: Removed 124 rows containing missing values or values outside the scale range
 #> (`geom_col()`).

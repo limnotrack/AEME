@@ -19,6 +19,7 @@ website](reference/figures/limnotrack_border.jpg)](http://limnotrack.com/)
 You can install AEME from [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("limnotrack/AEME")
 ```
@@ -31,6 +32,7 @@ This is a basic example which shows you how to build and run one of the
 models in the ensemble:
 
 ``` r
+
 library(AEME)
 ## basic example code
 tmpdir <- tempdir()
@@ -54,6 +56,7 @@ functions for this class alongside ensuring integrity and validity to
 it’s structure.
 
 ``` r
+
 class(aeme)
 #> [1] "Aeme"
 #> attr(,"package")
@@ -64,6 +67,7 @@ This allows for easier handling of the model output data within our
 structure and allows for condensed output to be printed to the console:
 
 ``` r
+
 aeme
 #>             AEME 
 #> -------------------------------------------------------------------
@@ -113,6 +117,7 @@ Model data can be visualised easily using the
 function:
 
 ``` r
+
 p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 p1
 ```
@@ -122,6 +127,7 @@ p1
 Also, visualising lake level plots.
 
 ``` r
+
 p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
                   facet = FALSE)
 p2
@@ -555,3 +561,5 @@ We have a host of vignettes to help you get started with AEME:
   Outlets](https://limnotrack.com/articles/reservoir-aeme.md):
 - [Using LERNZmp with
   AEME](https://limnotrack.com/articles/lernzmp-aeme.md):
+- [GLM-AED: The General Lake Model coupled with
+  AED](https://limnotrack.com/articles/glm-aed.md):

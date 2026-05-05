@@ -22,6 +22,7 @@ Once you have downloaded the LERNZmp model output and unzipped the
 folder, you should a similar file structure to the following:
 
 ``` r
+
 list.files("lernzmp")
 #> [1] "LERNZmp_lake_metadata.csv" "LID11133.rds"             
 #> [3] "LID40102.rds"              "LID45819.rds"
@@ -36,6 +37,7 @@ predicted), data (no data/minimal data/limited and irregular/periodic
 but sparse/seasonal but detailed) and lernzmp file name.
 
 ``` r
+
 metadata <- read.csv("lernzmp/LERNZmp_lake_metadata.csv")
 head(metadata)
 #>        ID            Name   Area     Region Geomorphic.type Depth
@@ -67,6 +69,7 @@ The lakes included in this example have ID’s LID11133 and LID40102. We
 will filter the metadata to examine these two lakes.
 
 ``` r
+
 metadata <- metadata |> 
   dplyr::filter(aeme_file %in% c("LID11133", "LID40102"))
 metadata
@@ -93,6 +96,7 @@ It is an S4 object of the class `Aeme`.
 First, make sure to install the `AEME` package.
 
 ``` r
+
 # install.packages("remotes")
 remotes::install_github("limnotrack/AEME")
 ```
@@ -100,6 +104,7 @@ remotes::install_github("limnotrack/AEME")
 Once installed, load the `AEME` package.
 
 ``` r
+
 library(AEME)
 #> 
 #> Attaching package: 'AEME'
@@ -111,6 +116,7 @@ library(AEME)
 Now, we will load the AEME object for Lake Rotorua (LID11133).
 
 ``` r
+
 aeme <- readRDS("lernzmp/LID11133.rds")
 class(aeme)
 #> [1] "Aeme"
@@ -121,6 +127,7 @@ class(aeme)
 It can be printed to the console to see the contents of the object.
 
 ``` r
+
 aeme
 #>             AEME 
 #> -------------------------------------------------------------------
@@ -173,6 +180,7 @@ model configuration which allows for the building of the AEME models
 locally.
 
 ``` r
+
 model <- c("glm_aed", "gotm_wet") # models to build
 path <- "aeme" # directory in which the model configuration will be built
 
@@ -301,6 +309,7 @@ models with the configurations built in the `path` directory. The
 can speed up the process.
 
 ``` r
+
 aeme <- run_aeme(aeme = aeme, model = model, path = path, parallel = TRUE)
 aeme
 #>             AEME 
@@ -352,6 +361,7 @@ is set to 1 indicating that there is now output for each model in the
 `Aeme` object.
 
 ``` r
+
 plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 #> Warning: Removed 336 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
@@ -360,6 +370,7 @@ plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 ![](lernzmp-aeme_files/figure-html/lernzmp-plot-temperature-1.png)
 
 ``` r
+
 plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
 #> Warning: Removed 336 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
@@ -377,6 +388,7 @@ switch for using longwave radiation (“use_lw”) and light extinction
 coefficient (“Kw”) for the models.
 
 ``` r
+
 inp <- input(aeme)
 names(inp)
 #> [1] "init_profile" "init_depth"   "hypsograph"   "meteo"        "use_lw"      
@@ -386,6 +398,7 @@ names(inp)
 ### Hypsograph data
 
 ``` r
+
 hyps <- inp$hypsograph
 head(hyps)
 #>     elev     area depth
@@ -398,6 +411,7 @@ head(hyps)
 ```
 
 ``` r
+
 library(ggplot2)
 ggplot(hyps, aes(x = area, y = depth)) +
   geom_hline(yintercept = 0, linetype = "dashed") +

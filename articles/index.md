@@ -13,3 +13,5 @@
   Outlets](https://limnotrack.com/articles/reservoir-aeme.md):
 - [Using LERNZmp with
   AEME](https://limnotrack.com/articles/lernzmp-aeme.md):
+- [GLM-AED: The General Lake Model coupled with
+  AED](https://limnotrack.com/articles/glm-aed.md):

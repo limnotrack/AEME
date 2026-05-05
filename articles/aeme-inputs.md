@@ -61,18 +61,19 @@ list name is used as the stream identifier in each model.
 
 Each inflow data frame must contain:
 
-| Column     | Units        | Description                                                      |
-|------------|--------------|------------------------------------------------------------------|
-| `Date`     | `YYYY-MM-DD` | Date of the observation                                          |
-| `HYD_flow` | m³ day⁻¹     | Volumetric flow rate                                             |
-| `HYD_temp` | °C           | Inflow water temperature (defaults to air temperature if absent) |
-| `CHM_salt` | PSU          | Salinity (0 for freshwater)                                      |
+| Column | Units | Description |
+|----|----|----|
+| `Date` | `YYYY-MM-DD` | Date of the observation |
+| `HYD_flow` | m³ day⁻¹ | Volumetric flow rate |
+| `HYD_temp` | °C | Inflow water temperature (defaults to air temperature if absent) |
+| `CHM_salt` | PSU | Salinity (0 for freshwater) |
 
 Additional biogeochemical variables (e.g. `CHM_oxy`, `PHS_frp`,
 `NIT_amm`) can be included if the ecosystem model is being used. All
 variable names must match those in the `key_naming` data frame.
 
 ``` r
+
 # Example: two inflows
 inf_data <- list(
   stream_north = data.frame(
@@ -119,6 +120,7 @@ specifies the depth at which each outlet withdraws water:
   The value must fall within the elevation range of the hypsograph.
 
 ``` r
+
 # Single surface outlet
 outf_single <- list(
   outlet = data.frame(
@@ -140,6 +142,7 @@ Reservoirs commonly have several outlets at different depths. Provide
 one entry per outlet in both `data` and `elevation`:
 
 ``` r
+
 # Reservoir with a surface spillway and a deep penstock
 outf_multi <- list(
   spillway = data.frame(
@@ -176,10 +179,12 @@ wind factor) and/or update the inflow/outflow data (e.g. scaling inflow
 factor).
 
 ``` r
+
 utils::data("aeme_parameters")
 aeme_parameters
 ```
 
 ``` r
+
 parameters(aeme) <- aeme_parameters
 ```

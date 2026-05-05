@@ -42,6 +42,7 @@ Jeremy Stephens \<jeremy.f.stephens@vumc.org\>, Tadhg Moore
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 tmpdir <- tempdir()
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
