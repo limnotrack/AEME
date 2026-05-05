@@ -10,7 +10,7 @@ editor_options:
     wrap: 80
 ---
 
-```{r, include = FALSE}
+```{r options, include = FALSE}
 knitr::opts_chunk$set(
   collapse  = TRUE,
   comment   = "#>",
