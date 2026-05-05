@@ -1,5 +1,5 @@
 ---
-title: "GLM-AED: The General Lake Model coupled with the Aquatic Ecosystem Dynamics library"
+title: "GLM-AED: The General Lake Model coupled with AED"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{GLM-AED: The General Lake Model coupled with AED}
@@ -103,9 +103,8 @@ We will use the example lake dataset bundled with the AEME package throughout
 this vignette.
 
 ```{r load-aeme}
-aeme_dir <- system.file("extdata/lake/", package = "AEME")
-path     <- tempdir()
-aeme     <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme     <- readRDS(aeme_file)
 aeme
 ```
 
@@ -149,6 +148,13 @@ model_controls <- set_vars_sim(
 
 ### Build the model
 
+We will build the model in a directory called `aeme`,
+
+```{r config-path}
+path <- "aeme"
+```
+
+
 `build_aeme()` translates the AEME object into all configuration files required
 by GLM-AED. Setting `use_bgc = TRUE` writes the `aed/aed.nml` file and
 supporting CSV parameter files for phytoplankton, zooplankton, and macrophytes.
@@ -159,9 +165,9 @@ model <- "glm_aed"
 aeme <- build_aeme(
   aeme           = aeme,
   model          = model,
-  model_controls = model_controls,
   path           = path,
-  ext_elev       = 5,
+  model_controls = model_controls,
+  ext_elev       = 3,
   use_bgc        = TRUE
 )
 ```
@@ -365,9 +371,17 @@ positions, active AED modules, and key parameter values. If called inside an
 RStudio session, the output opens in the Viewer pane; otherwise it is saved to
 a temporary HTML file.
 
-```{r plot-config, eval=FALSE}
-plot_glm_config(aeme = aeme, path = path)
+```{r plot-config, eval=TRUE}
+config_html <- plot_glm_config(aeme = aeme, path = path)
 ```
+This html file provides a comprehensive overview of the model configuration, 
+making it easy to verify that the setup matches your intentions and to identify 
+any potential issues before running the model.
+
+```{r, echo=FALSE}
+htmltools::includeHTML(config_html)
+```
+
 
 ---
 
