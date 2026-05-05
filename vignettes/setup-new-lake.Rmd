@@ -60,7 +60,7 @@ If you have a shapefile for the lake, you can use the `sf` package to read it
 in. However, if you do not have a shapefile you can download most lake 
 shapefiles from [OpenStreetMap](https://www.openstreetmap.org/) using the [`osmdata`](https://docs.ropensci.org/osmdata/) package. 
 
-```{r get-lake-shapefile}
+```{r get-lake-shapefile, eval=FALSE}
 library(osmdata)
 
 # Get lake shapefile
@@ -72,6 +72,9 @@ osm_data <- opq(bbox = "New Zealand") |>
 lake <- osm_data$osm_multipolygons |> 
   st_make_valid()
 lake
+```
+```{r read-lake-shapefile, echo=FALSE}
+lake <- readRDS(system.file("extdata/lake_shapefile.rds", package = "AEME"))
 ```
 
 Visualise the lake shapefile on a map.
