@@ -7,7 +7,7 @@ sediment zones, module wiring, and key parameter values.
 ## Usage
 
 ``` r
-plot_glm_config(aeme, path, output = NULL)
+plot_glm_config(aeme, path, output = NULL, return_widget = FALSE)
 ```
 
 ## Arguments
@@ -24,6 +24,11 @@ plot_glm_config(aeme, path, output = NULL)
 
   Character or NULL. Path for the output HTML file. If NULL, a temporary
   file is created and opened in the browser. Defaults to NULL.
+
+- return_widget:
+
+  Logical. If TRUE, returns the HTML widget object instead of writing to
+  file. Defaults to FALSE.
 
 ## Value
 

@@ -60,7 +60,7 @@ sediment zones, module wiring, and key parameter values.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_glm_config</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">path</span>, output <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_glm_config</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">path</span>, output <span class="op">=</span> <span class="cn">NULL</span>, return_widget <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,6 +78,11 @@ sediment zones, module wiring, and key parameter values.</p>
 <dt id="arg-output">output<a class="anchor" aria-label="anchor" href="#arg-output"></a></dt>
 <dd><p>Character or NULL. Path for the output HTML file. If NULL, a
 temporary file is created and opened in the browser. Defaults to NULL.</p></dd>
+
+
+<dt id="arg-return-widget">return_widget<a class="anchor" aria-label="anchor" href="#arg-return-widget"></a></dt>
+<dd><p>Logical. If TRUE, returns the HTML widget object instead
+of writing to file. Defaults to FALSE.</p></dd>
 
 </dl></div>
     <div class="section level2">
