@@ -4,7 +4,7 @@
 \alias{plot_glm_config}
 \title{Visualise GLM-AED model configuration}
 \usage{
-plot_glm_config(aeme, path, output = NULL)
+plot_glm_config(aeme, path, output = NULL, return_widget = FALSE)
 }
 \arguments{
 \item{aeme}{An AEME object.}
@@ -13,6 +13,9 @@ plot_glm_config(aeme, path, output = NULL)
 
 \item{output}{Character or NULL. Path for the output HTML file. If NULL, a
 temporary file is created and opened in the browser. Defaults to NULL.}
+
+\item{return_widget}{Logical. If TRUE, returns the HTML widget object instead
+of writing to file. Defaults to FALSE.}
 }
 \value{
 Invisibly returns the path to the generated HTML file.

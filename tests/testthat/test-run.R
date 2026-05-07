@@ -333,6 +333,9 @@ test_that("running GLM-AED works", {
   aeme <- run_aeme(aeme)
   html_file <- plot_glm_config(aeme = aeme)
   testthat::expect_true(file.exists(html_file))
+  html_widget <- plot_glm_config(aeme = aeme, return_widget = TRUE)
+  testthat::expect_true(!is.null(html_widget))
+  
   
   out <- run_glm_aed_diagnostics(aeme = aeme)
   testthat::expect_true(is.list(out))

@@ -368,23 +368,18 @@ positions, active AED modules, and key parameter values. If called inside an
 RStudio session, the output opens in the Viewer pane; otherwise it is saved to
 a temporary HTML file.
 
-```{r plot-config, eval=TRUE}
-config_html <- plot_glm_config(aeme = aeme, path = path)
+```{r plot-config, eval=FALSE}
+config_html <- plot_glm_config(aeme = aeme)
 ```
-This html file provides a comprehensive overview of the model configuration, 
+This html widget provides a comprehensive overview of the model configuration, 
 making it easy to verify that the setup matches your intentions and to identify 
 any potential issues before running the model.
 
-You can view the HTML file directly in RStudio's Viewer pane or open it in your 
-web browser.
+You can view the HTML widget directly in RStudio's Viewer pane or open it in 
+your web browser.
 
 ```{r render-html, echo=FALSE}
-htmltools::tags$iframe(
-  src = config_html,
-  width = "100%",
-  height = "600px",
-  style = "border: none;"
-)
+plot_glm_config(aeme = aeme, return_widget = TRUE)
 ```
 
 ---
@@ -392,7 +387,7 @@ htmltools::tags$iframe(
 ## Running GLM-AED
 
 ```{r run-aeme}
-aeme <- run_aeme(aeme = aeme, model = model, path = path)
+aeme <- run_aeme(aeme = aeme)
 ```
 
 ---
@@ -405,7 +400,7 @@ aeme <- run_aeme(aeme = aeme, model = model, path = path)
 (e.g. temperature) and a time-series line plot for scalar variables:
 
 ```{r plot-temp, fig.cap="Simulated water temperature (°C) at each model layer over time."}
-plot_output(aeme = aeme, model = model, var_sim = "HYD_temp", level = TRUE)
+plot_output(aeme = aeme, var_sim = "HYD_temp")
 ```
 
 ### Water quality variables
@@ -414,11 +409,11 @@ Any variable that was listed in `vars_sim` and is present in the output can be
 plotted the same way:
 
 ```{r plot-oxy, fig.cap="Simulated dissolved oxygen (mmol O2 m⁻³) profiles."}
-plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
+plot_output(aeme = aeme, var_sim = "CHM_oxy")
 ```
 
 ```{r plot-tchla, fig.cap="Simulated total chlorophyll-a (µg L⁻¹) time series."}
-plot_output(aeme = aeme, model = model, var_sim = "PHY_tchla")
+plot_output(aeme = aeme, var_sim = "PHY_tchla")
 ```
 
 ---

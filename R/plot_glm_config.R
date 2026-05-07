@@ -8,13 +8,15 @@
 #' @param path Character. Path to AEME project.
 #' @param output Character or NULL. Path for the output HTML file. If NULL, a
 #'   temporary file is created and opened in the browser. Defaults to NULL.
+#' @param return_widget Logical. If TRUE, returns the HTML widget object instead
+#' of writing to file. Defaults to FALSE.
 #'
 #' @importFrom jsonlite toJSON
 #' @importFrom rstudioapi viewer
 #' @return Invisibly returns the path to the generated HTML file.
 #' @export
 
-plot_glm_config <- function(aeme, path, output = NULL) {
+plot_glm_config <- function(aeme, path, output = NULL, return_widget = FALSE) {
   
   data("glm_aed_parameter_library", package = "AEME", envir = environment())
   
@@ -265,6 +267,10 @@ plot_glm_config <- function(aeme, path, output = NULL) {
   config_json <- jsonlite::toJSON(config_data, auto_unbox = TRUE, pretty = FALSE)
   
   # ---- 7. Generate HTML --------------------------------------------------
+  if (return_widget) {
+    return(.config_as_widget(config_json))
+  }
+  
   html <- .generate_config_html(config_json)
   
   # ---- 8. Write and open -------------------------------------------------
@@ -284,7 +290,16 @@ plot_glm_config <- function(aeme, path, output = NULL) {
 #' Generate the HTML visualisation
 #' @keywords internal
 #' @noRd
-.generate_config_html <- function(config_json) {
+.generate_config_html <- function(config_json, container_id = NULL) {
+  
+  # If scoped, use the container id as the CSS root; otherwise use :root and body
+  if (!is.null(container_id)) {
+    root_sel  <- paste0("#", container_id)
+    body_rule <- paste0("#", container_id)
+  } else {
+    root_sel  <- ":root"
+    body_rule <- "body"
+  }
   
   paste0('<!DOCTYPE html>
 <html lang="en">
@@ -294,7 +309,7 @@ plot_glm_config <- function(aeme, path, output = NULL) {
 <title>GLM-AED Configuration</title>
 <style>
   @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600&family=JetBrains+Mono:wght@400;500&display=swap");
-  :root {
+  ', root_sel, ' {
     --bg: #fafaf8; --bg2: #f0efeb; --bg3: #e6e5e0;
     --tx: #2c2c2a; --tx2: #5f5e5a; --tx3: #888780;
     --bd: rgba(0,0,0,0.1);
@@ -310,7 +325,7 @@ plot_glm_config <- function(aeme, path, output = NULL) {
     --mono: "JetBrains Mono", monospace;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
+    ', root_sel, ' {
       --bg: #1a1a18; --bg2: #2a2a27; --bg3: #3a3a36;
       --tx: #e8e6dc; --tx2: #b4b2a9; --tx3: #888780;
       --bd: rgba(255,255,255,0.1);
@@ -325,7 +340,7 @@ plot_glm_config <- function(aeme, path, output = NULL) {
     }
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: var(--font); background: var(--bg); color: var(--tx); line-height: 1.5; padding: 24px; max-width: 1100px; margin: 0 auto; }
+  ', body_rule, ' { font-family: var(--font); background: var(--bg); color: var(--tx); line-height: 1.5; padding: 24px; max-width: 1100px; margin: 0 auto; }
   .header { margin-bottom: 28px; }
   .header h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
   .header p { font-size: 13px; color: var(--tx2); }
@@ -813,4 +828,27 @@ document.getElementById("name-toggle").addEventListener("change", function() {
 </script>
 </body>
 </html>')
+}
+
+#' Return config visualisation as an embeddable htmltools object
+#' @keywords internal
+#' @noRd
+.config_as_widget <- function(config_json) {
+  container_id <- paste0("glm-cfg-", format(Sys.time(), "%H%M%S"))
+  
+  full_html <- .generate_config_html(config_json, container_id = container_id)
+  
+  # Extract body content only — styles are already correctly scoped
+  body_content <- sub("(?s).*<body[^>]*>(.*)</body>.*", "\\1",
+                      full_html, perl = TRUE)
+  styles <- regmatches(full_html,
+                       regexpr("(?s)<style>(.*?)</style>", full_html, perl = TRUE))
+  style_content <- gsub("</?style>", "", styles)
+  
+  htmltools::browsable(
+    htmltools::tagList(
+      htmltools::tags$style(htmltools::HTML(style_content)),
+      htmltools::tags$div(id = container_id, htmltools::HTML(body_content))
+    )
+  )
 }
