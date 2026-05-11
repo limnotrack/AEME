@@ -6,13 +6,14 @@
 #'@param nml_file a string with the path to the GLM glm2.nml file or
 #'\code{'template'} for loading the GLM template nml file with GLM3r (default)
 #'@return arg_val value for the valid field in glm_nml specified by \code{arg_name}
+#' @importFrom methods is
 #'@author
 #'Jordan S. Read
 #'@seealso \link{read_nml}, \link{set_nml}
 #'@export
 get_nml_value  <-	function(glm_nml = NA, arg_name, nml_file = NA, ...){
 
-  if(!is(glm_nml, "nml") & !is.na(nml_file)){
+  if(!methods::is(glm_nml, "nml") & !is.na(nml_file)){
     stop("Must specify either an nml object via 'glm_nml' or
          an nml file path via 'nml_file'")
   }

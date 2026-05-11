@@ -6,6 +6,8 @@
 #'
 #' @returns A vector of file paths to the written files
 #' @export
+#' 
+#' @importFrom methods slotNames slot
 #'
 #' @examples
 #' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
@@ -31,13 +33,13 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
   }
 
   # Get the names of the slots
-  slot_names <- slotNames(aeme)
+  slot_names <- methods::slotNames(aeme)
   out_files <- c()
 
   # Iterate over each slot
   for (slot_name in slot_names) {
     # Get the slot content
-    slot_content <- slot(aeme, slot_name)
+    slot_content <- methods::slot(aeme, slot_name)
     if (slot_name %in% c("lake", "time", "parameters")) {
       df <- as.data.frame(slot_content)
       names(df) <- gsub("\\.", "-", names(df))

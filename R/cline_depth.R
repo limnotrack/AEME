@@ -63,9 +63,9 @@ cline_depth <- function(wtr, depths, water = TRUE, Smin = 0.1, seasonal = TRUE,
 
   #We need water density, not temperature to do this
   if (water) {
-    rhoVar = water.density(wtr)
+    rhoVar <- rLakeAnalyzer::water.density(wtr)
   } else {
-    rhoVar = wtr
+    rhoVar <- wtr
   }
 
   dRhoPerc = 0.15; #in percentage max for unique thermocline step

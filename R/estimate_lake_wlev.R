@@ -1,5 +1,10 @@
 #' Estimate Lake Water Levels with Nudging
 #'
+#' @description
+#' This function estimates lake water levels using a hydrological model with nudging
+#' to observed water levels. It optimizes parameters to minimize the error between
+#' simulated and observed levels, applying nudging to guide the simulation towards
+#' observed values.
 #' @param data data frame with columns:
 #'   - Date: Date of observation
 #'   - HYD_flow: Inflow to the lake (m3/day)
@@ -7,11 +12,6 @@
 #'   - evap_m3: Evaporation from the lake surface (m3/day)
 #'   - lvl_obs: Observed lake water level (m)
 #'   - is_obs_lvl: Logical indicating if lvl_obs is an observation (TRUE/FALSE)
-#' @description
-#' This function estimates lake water levels using a hydrological model with nudging
-#' to observed water levels. It optimizes parameters to minimize the error between
-#' simulated and observed levels, applying nudging to guide the simulation towards
-#' observed values.
 #' @param hyps_df data frame with hypsograph data containing columns:
 #'   - elev: Elevation (m)
 #'   - area: Surface area at that elevation (m2)
@@ -23,6 +23,9 @@
 #' @param initial_guess Optional initial guess for optimization parameters:
 #'   - C: Outflow coefficient
 #'   - h_inv: Inversion height for outflow calculation
+#' @param init_elev Numeric; initial lake elevation (m) to start the simulation. 
+#' This should be a reasonable estimate based on the observed levels to ensure 
+#' the optimization converges.
 #' @param verbose Logical indicating whether to print optimization details
 #'
 #' @returns A data frame with original data and additional columns:

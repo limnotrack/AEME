@@ -7,7 +7,7 @@
 #' @param to_hourly logical; convert daily cloud cover to hourly
 #'
 #' @importFrom withr local_locale local_timezone
-#' @importFrom lubridate yday hour
+#' @importFrom lubridate yday hour is.POSIXt
 #'
 #' @return numeric vector of shortwave radiation or data.frame with hourly
 #'  shortwave radiation
@@ -20,7 +20,7 @@ calc_swr <- function(time, lat, lon, cloud, to_hourly  = FALSE) {
   withr::local_timezone("UTC")
 
   # Input checks
-  if (!is.POSIXt(time))
+  if (!lubridate::is.POSIXt(time))
     stop("time must be a vector of class POSIXt")
 
   if (!is.numeric(lat) || !is.numeric(lon) || !is.numeric(cloud))

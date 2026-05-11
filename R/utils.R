@@ -140,7 +140,8 @@ check_hypsograph <- function(hypsograph, aeme = NULL) {
 #' @returns Invisibly returns the Aeme object if valid, otherwise throws an 
 #' error.
 #' @importFrom cli cli_abort
-#' @noRd
+#' @importFrom methods slotNames
+#' @export
 check_aeme <- function(aeme) {
   if (!inherits(aeme, "Aeme")) {
     cli::cli_abort(
@@ -151,7 +152,7 @@ check_aeme <- function(aeme) {
   
   required_slots <- c("lake", "time", "input", "inflows", "outflows", 
                       "water_balance", "parameters")
-  missing_slots <- setdiff(required_slots, slotNames(aeme))
+  missing_slots <- setdiff(required_slots, methods::slotNames(aeme))
   
   if (length(missing_slots) > 0) {
     cli::cli_abort(

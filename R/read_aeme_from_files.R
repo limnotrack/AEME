@@ -4,6 +4,8 @@
 #'
 #' @returns An AEME object populated with data from the files.
 #' @export
+#' 
+#' @importFrom methods slotNames
 #'
 #' @examples
 #' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
@@ -35,7 +37,7 @@ read_aeme_from_files <- function(path) {
   model <- list.dirs(path, recursive = FALSE) |>
     basename()
   # Get the names of the slots
-  slot_names <- slotNames(aeme)
+  slot_names <- methods::slotNames(aeme)
 
   # Iterate over each slot
   for (slot_name in slot_names) {
@@ -45,7 +47,7 @@ read_aeme_from_files <- function(path) {
       if (file.exists(file_path)) {
         df <- read.csv(file_path, stringsAsFactors = FALSE)
         names(df) <- gsub("-", ".", names(df))  # Revert column name changes
-        slot(aeme, slot_name) <- df
+        methods::slot(aeme, slot_name) <- df
       }
     } else if (slot_name == "time") {
       # Read CSV file for time slot
@@ -62,7 +64,7 @@ read_aeme_from_files <- function(path) {
             gotm_wet = as.numeric(df[1, grepl("gotm_wet", names(df))])
           )
         )
-        slot(aeme, slot_name) <- inp
+        methods::slot(aeme, slot_name) <- inp
       }
 
     } else if (slot_name %in% c("observations", "input")) {
@@ -81,7 +83,7 @@ read_aeme_from_files <- function(path) {
 
         slot_content[[obs_name]] <- df
       }
-      slot(aeme, slot_name) <- slot_content
+      methods::slot(aeme, slot_name) <- slot_content
     } else if (slot_name %in% c("inflows", "outflows", "water_balance")) {
       # Read CSV files for inflows, outflows, and water_balance slots
       slot_content <- list(data = list())
@@ -100,7 +102,7 @@ read_aeme_from_files <- function(path) {
           slot_content$data[[inf_name]] <- df
         }
       }
-      slot(aeme, slot_name) <- slot_content
+      methods::slot(aeme, slot_name) <- slot_content
     } else if (slot_name == "output") {
       # Read CSV file for output slot
       file_path <- file.path(path, paste0(slot_name, ".csv"))
@@ -154,7 +156,7 @@ read_aeme_from_files <- function(path) {
 
         outp$n_members <- sum(grepl("ens", names(outp)))
 
-        slot(aeme, slot_name) <- outp
+        methods::slot(aeme, slot_name) <- outp
       }
     } else if (slot_name == "configuration") {
       # Read CSV for model controls
