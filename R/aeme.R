@@ -82,7 +82,7 @@ setClass("Aeme",
 
 # Validity checking ----
 # Restored from commented-out state and expanded to cover all slots properly.
-# validObject() in setter methods will now actually enforce these rules.
+# methods::validObject() in setter methods will now actually enforce these rules.
 # Errors: hard failures - wrong type or impossible value; object cannot be used.
 # Warnings: suspicious values the user should know about but that don't block construction.
 setValidity("Aeme", function(object) {
@@ -902,7 +902,7 @@ setMethod("parameters", "Aeme", function(aeme) aeme@parameters)
 
 
 # Setter (replacement) functions ----
-# Each setter validates its input before assigning, then calls validObject()
+# Each setter validates its input before assigning, then calls methods::validObject()
 # so that setValidity() rules are enforced. This means validation is never
 # bypassed via direct @<- assignment by users.
 
@@ -925,7 +925,7 @@ setReplaceMethod("lake", "Aeme", function(aeme, value) {
     )
   aeme@lake <- value
   tryCatch(
-    validObject(aeme),
+    methods::validObject(aeme),
     error = function(e) {
       cli::cli_abort(
         c("Invalid value for {.arg lake}.",
@@ -943,11 +943,13 @@ setReplaceMethod("lake", "Aeme", function(aeme, value) {
 #' @param value New time list to assign.
 #' @return A modified Aeme object with updated time slot.
 #' @rdname time-set
+#' @importFrom stats time
 #' @export
-setGeneric("time<-", function(aeme, value) standardGeneric("time<-"))
-
+setGeneric("time<-", function(aeme, value) standardGeneric("time<-"),
+           package = "AEME")
 #' @rdname time-set
 #' @export
+#' @importFrom methods validObject
 setReplaceMethod("time", "Aeme", function(aeme, value) {
   if (!is.list(value))
     cli::cli_abort(
@@ -957,7 +959,7 @@ setReplaceMethod("time", "Aeme", function(aeme, value) {
     )
   aeme@time <- value
   tryCatch(
-    validObject(aeme),
+    methods::validObject(aeme),
     error = function(e) {
       cli::cli_abort(
         c("Invalid value for {.arg time}.",
@@ -990,7 +992,7 @@ setReplaceMethod("configuration", "Aeme", function(aeme, value) {
     )
   aeme@configuration <- value
   tryCatch(
-    validObject(aeme),
+    methods::validObject(aeme),
     error = function(e) {
       cli::cli_abort(
         c("Invalid value for {.arg configuration}.",
@@ -1023,7 +1025,7 @@ setReplaceMethod("observations", "Aeme", function(aeme, value) {
     )
   aeme@observations <- value
   tryCatch(
-    validObject(aeme),
+    methods::validObject(aeme),
     error = function(e) {
       cli::cli_abort(
         c("Invalid value for {.arg observations}.",
@@ -1055,7 +1057,7 @@ setReplaceMethod("input", "Aeme", function(aeme, value) {
     )
   aeme@input <- value
   tryCatch(
-    validObject(aeme),
+    methods::validObject(aeme),
     error = function(e) {
       cli::cli_abort(
         c("Invalid value for {.arg input}.",
@@ -1087,7 +1089,7 @@ setReplaceMethod("inflows", "Aeme", function(aeme, value) {
     )
   aeme@inflows <- value
   tryCatch(
-    validObject(aeme),
+    methods::validObject(aeme),
     error = function(e) {
       cli::cli_abort(
         c("Invalid value for {.arg inflows}.",
@@ -1119,7 +1121,7 @@ setReplaceMethod("outflows", "Aeme", function(aeme, value) {
     )
   aeme@outflows <- value
   tryCatch(
-    validObject(aeme),
+    methods::validObject(aeme),
     error = function(e) {
       cli::cli_abort(
         c("Invalid value for {.arg outflows}.",
@@ -1165,7 +1167,7 @@ setReplaceMethod("water_balance", "Aeme", function(aeme, value) {
     )
   aeme@water_balance <- value
   tryCatch(
-    validObject(aeme),
+    methods::validObject(aeme),
     error = function(e) {
       cli::cli_abort(
         c("Invalid value for {.arg water_balance}.",
@@ -1197,7 +1199,7 @@ setReplaceMethod("output", "Aeme", function(aeme, value) {
     )
   aeme@output <- value
   tryCatch(
-    validObject(aeme),
+    methods::validObject(aeme),
     error = function(e) {
       cli::cli_abort(
         c("Invalid value for {.arg output}.",
@@ -1229,7 +1231,7 @@ setReplaceMethod("parameters", "Aeme", function(aeme, value) {
     )
   aeme@parameters <- value
   tryCatch(
-    validObject(aeme),
+    methods::validObject(aeme),
     error = function(e) {
       cli::cli_abort(
         c("Invalid value for {.arg parameters}.",
@@ -1394,6 +1396,10 @@ setMethod("summary", "Aeme", function(object) {
 #' @importFrom patchwork wrap_plots
 #' @importFrom tidyr pivot_longer
 #' @importFrom dplyr left_join bind_rows filter contains
+#' @importFrom rlang .data
+#' @importFrom cli cli_abort
+#' @importFrom utils data
+#' @importFrom methods slot slotNames 
 #'
 #' @return A ggplot object, or prints to the active graphics device.
 #' @export
@@ -1403,7 +1409,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
     y <- "output"
   }
   
-  valid_slots <- slotNames(x)
+  valid_slots <- methods::slotNames(x)
   if (!y %in% valid_slots) {
     cli::cli_abort(
       c("{.val {y}} is not a valid slot name.",
@@ -1412,7 +1418,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
     )
   }
   
-  obj <- slot(x, y)
+  obj <- methods::slot(x, y)
   
   if (is.list(obj) && all(sapply(obj, is.null))) {
     cli::cli_abort(
@@ -1572,7 +1578,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
 #' @return Character vector of slot names.
 #' @export
 setMethod("names", "Aeme", function(x) {
-  slotNames(x)
+  methods::slotNames(x)
 })
 
 #' Get column names for the observational data frame
