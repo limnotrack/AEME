@@ -33,6 +33,10 @@ estimate_lake_wlev(
 - "glm_aed": GLM-AED dynamic evaporation
 - "gotm_wet": GOTM-WET dynamic evaporation}
 
+\item{init_elev}{Numeric; initial lake elevation (m) to start the simulation. 
+This should be a reasonable estimate based on the observed levels to ensure 
+the optimization converges.}
+
 \item{initial_guess}{Optional initial guess for optimization parameters:
 - C: Outflow coefficient
 - h_inv: Inversion height for outflow calculation}
