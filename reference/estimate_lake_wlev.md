@@ -41,6 +41,12 @@ estimate_lake_wlev(
   DYRESM-CAEDYM dynamic evaporation - "glm_aed": GLM-AED dynamic
   evaporation - "gotm_wet": GOTM-WET dynamic evaporation
 
+- init_elev:
+
+  Numeric; initial lake elevation (m) to start the simulation. This
+  should be a reasonable estimate based on the observed levels to ensure
+  the optimization converges.
+
 - initial_guess:
 
   Optional initial guess for optimization parameters: - C: Outflow
