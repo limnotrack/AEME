@@ -12,7 +12,29 @@ knitr::opts_chunk$set(
   warning   = FALSE
 )
 options(AEME.inform = FALSE)
+library(AEME)
 ```
+
+<a href="#parameter-library" class="skip-btn">⬇ Skip to Parameter Library</a>
+
+<style>
+.skip-btn {
+  display: inline-block;
+  margin: 8px 0 16px 0;
+  padding: 8px 16px;
+  background-color: #2c7bb6;
+  color: white !important;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+.skip-btn:hover {
+  background-color: #1a5a8a;
+  text-decoration: none;
+}
+</style>
 
 ## Introduction
 
@@ -80,11 +102,71 @@ but here we provide a brief overview of the key modules relevant for GLM-AED.
 
 : AED biogeochemical modules available in AEME.
 
-#### References
+### GLM-AED Parameter Library {#parameter-library}
 
-Hipsey, M.R., Busch, B., Bruce, L.C., Hamilton, D.P., & Romero, J.R. (2013).
-Aquatic Ecodynamics (AED) Model Library — Science Manual. The University of
-Western Australia Technical Report. Perth, Australia.
+The `glm_aed_parameter_library` dataset provides a comprehensive list of all 
+parameters used in the GLM-AED configuration, including their default values, 
+units, and typical ranges. This library serves as a reference for users to 
+understand the parameters governing the model behaviour and to guide 
+parameterisation for specific applications. It also includes metadata such as 
+the associated AED module and a brief description of each parameter's role in 
+the model and a web source link for further information.
+
+```{r glm-aed-lib, echo=FALSE}
+# Prep the data
+df <- glm_aed_parameter_library |>
+  dplyr::mutate(
+    # Make source URLs into clickable hyperlinks
+    source = ifelse(
+      !is.na(source) & grepl("^http", source),
+      paste0('<a href="', source, '" target="_blank">&#x1F517;</a>'),
+      source
+    ),
+    # Make symbol italic if not NA
+    symbol = ifelse(!is.na(symbol), paste0("<i>", symbol, "</i>"), NA)
+  )
+
+DT::datatable(
+  df,
+  escape = FALSE,  # allows HTML rendering in cells
+  rownames = FALSE,
+  colnames = c(
+    "Module", "Group", "Parameter", "Label",
+    "Symbol", "Description", "Units", "Default", "Source"
+  ),
+  filter = "top",  # per-column filters
+  extensions = c("Buttons", "FixedHeader"),
+  options = list(
+    dom = "Bfrtip",
+    buttons = c("csv", "excel", "pdf"),
+    pageLength = 10,
+    lengthMenu = c(10, 20, 50, 100),
+    fixedHeader = TRUE,
+    scrollX = TRUE,
+    autoWidth = TRUE,
+    columnDefs = list(
+      list(width = "200px", targets = 5),   # Description column wider
+      list(width = "80px",  targets = c(0, 1, 6, 7)),  # narrow cols
+      list(className = "dt-center", targets = c(4, 6, 7, 8))  # center symbol/units/default/source
+    )
+  )
+) |>
+  DT::formatStyle(
+    "module",
+    fontWeight = "bold"
+  ) |>
+  DT::formatStyle(
+    columns = 1:9,
+    fontSize = "13px"
+  ) |>
+  DT::formatStyle(
+    "default",
+    color = "#2c7bb6",
+    fontWeight = "bold"
+  )
+
+```
+
 
 ---
 
