@@ -388,10 +388,10 @@ standardise_met <- function(met, verbose = TRUE) {
     
     if (isFALSE(flag) || is.null(flag)) {
       # No conversion needed — emit an informational note when verbose
-      if (verbose) {
-        msg <- paste0(var, ": values appear to be in the expected units, no conversion applied.")
-        cli_inform_safe(c("i" = msg))
-      }
+      # if (verbose) {
+      #   msg <- paste0(var, ": values appear to be in the expected units, no conversion applied.")
+      #   cli_inform_safe(c("i" = msg))
+      # }
       next
     }
     

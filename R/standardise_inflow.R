@@ -482,10 +482,10 @@ standardise_inflow <- function(inflow,
     
     if (isFALSE(flag) || is.null(flag) || is.na(flag)) {
       if (verbose) {
-        cli::cli_inform(
-          c("i" = "{.code {var}}: values appear to be in the expected units, no conversion applied."),
-          class = "aeme_inform_inflow_no_conversion"
-        )
+        # cli::cli_inform(
+        #   c("i" = "{.code {var}}: values appear to be in the expected units, no conversion applied."),
+        #   class = "aeme_inform_inflow_no_conversion"
+        # )
       }
       next
     }
