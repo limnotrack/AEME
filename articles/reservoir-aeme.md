@@ -478,26 +478,11 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp6V3DI9\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpkLOM7m\reservoir
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
-#> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_tmpdew: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_radswd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_radlwd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_humrel: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_cldcvr: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prsttn: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prmslp: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prvapr: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wndspd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wnduvu: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
 #> ℹ All columns already match AEME standard inflow variable names, skipping name
 #>   guessing.
-#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
 #> ℹ No water level present. Using constant water level.
 #> ℹ Insufficient lake temperature observations (<10).
 #> ℹ Using Stefan & Preud'homme (2007) method.
@@ -514,10 +499,10 @@ aeme <- build_aeme(
 ``` r
 
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-12 00:11:00]
-#> → GLM-AED running... [2026-05-12 00:11:00]
-#> ✔ GLM-AED run successful! [2026-05-12 00:11:00]
-#> ✔ Model run complete! [2026-05-12 00:11:00]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-13 23:04:36]
+#> → GLM-AED running... [2026-05-13 23:04:36]
+#> ✔ GLM-AED run successful! [2026-05-13 23:04:37]
+#> ✔ Model run complete! [2026-05-13 23:04:37]
 ```
 
 ## View the output

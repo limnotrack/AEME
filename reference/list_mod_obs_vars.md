@@ -42,35 +42,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    ext_elev = 5, use_bgc = TRUE)
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
-#> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_tmpdew: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_radswd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_radlwd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_humrel: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_cldcvr: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prsttn: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prmslp: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prvapr: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wndspd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wnduvu: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
 #> ℹ All columns already match AEME standard inflow variable names, skipping name
 #>   guessing.
-#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `CHM_oxy`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_don`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_pon`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
-#> ℹ `CAR_doc`: values appear to be in the expected units, no conversion applied.
-#> ℹ `CAR_poc`: values appear to be in the expected units, no conversion applied.
-#> ℹ `SIL_rsi`: values appear to be in the expected units, no conversion applied.
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -128,10 +101,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-05-11 23:56:39]
-#> ✔ Model run complete! [2026-05-11 23:56:42]
-#> ℹ Reading models in parallel...[2026-05-11 23:56:42]
-#> ✔ Model reading complete! [2026-05-11 23:56:43]
+#> ℹ Running models in parallel... [2026-05-13 22:49:24]
+#> ✔ Model run complete! [2026-05-13 22:49:27]
+#> ℹ Reading models in parallel...[2026-05-13 22:49:27]
+#> ✔ Model reading complete! [2026-05-13 22:49:29]
 aeme |> 
   list_mod_obs_vars()
 #>              Cyanobacteria           Dissolved oxygen 

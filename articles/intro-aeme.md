@@ -498,29 +498,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ Created missing directory: D:\a\AEME\AEME\vignettes\aeme
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
-#> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_tmpdew: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_radswd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_radlwd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_humrel: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_cldcvr: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prsttn: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prmslp: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prvapr: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wndspd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wnduvu: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
 #> ℹ All columns already match AEME standard inflow variable names, skipping name
 #>   guessing.
-#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
 #> Warning: ! 11 missing state variables in `NZS2038486`:
 #> ✖ `CAR_doc `
 #> ✖ `CAR_poc `
@@ -536,13 +515,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Filled 11 missing variables with default values from `model_controls`.
 #> ℹ All columns already match AEME standard inflow variable names, skipping name
 #>   guessing.
-#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
 #> Warning: ! 11 missing state variables in `NZS2038499`:
 #> ✖ `CAR_doc `
 #> ✖ `CAR_poc `
@@ -558,13 +530,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Filled 11 missing variables with default values from `model_controls`.
 #> ℹ All columns already match AEME standard inflow variable names, skipping name
 #>   guessing.
-#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
 #> Warning: ! 11 missing state variables in `NZS2038500`:
 #> ✖ `CAR_doc `
 #> ✖ `CAR_poc `
@@ -580,13 +545,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Filled 11 missing variables with default values from `model_controls`.
 #> ℹ All columns already match AEME standard inflow variable names, skipping name
 #>   guessing.
-#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
 #> Warning: ! 11 missing state variables in `NZS2038304`:
 #> ✖ `CAR_doc `
 #> ✖ `CAR_poc `
@@ -602,13 +560,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Filled 11 missing variables with default values from `model_controls`.
 #> ℹ All columns already match AEME standard inflow variable names, skipping name
 #>   guessing.
-#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
 #> Warning: ! 11 missing state variables in `lumped`:
 #> ✖ `CAR_doc `
 #> ✖ `CAR_poc `
@@ -624,14 +575,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Filled 11 missing variables with default values from `model_controls`.
 #> ℹ All columns already match AEME standard inflow variable names, skipping name
 #>   guessing.
-#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_don`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
 #> Warning: ! `HYD_flow`: Negative flow values detected.
 #> ℹ Check raw data or unit conversion for this variable.
 #> Warning: ! 10 missing state variables in `precip`:

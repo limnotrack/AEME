@@ -216,6 +216,8 @@ We have a host of vignettes to help you get started with AEME:
   : Calculate TLI secchi component
 - [`catchment_yields`](https://limnotrack.com/reference/catchment_yields.md)
   : Catchment yields
+- [`check_aeme()`](https://limnotrack.com/reference/check_aeme.md) :
+  Check if object is a valid Aeme object
 - [`check_AEME_pkg()`](https://limnotrack.com/reference/check_AEME_pkg.md)
   : Check if the package is working correctly
 - [`check_aeme_vars()`](https://limnotrack.com/reference/check_aeme_vars.md)
