@@ -176,7 +176,6 @@ phyto_file <- system.file(
   package = "AEME"
 )
 aed_phyto_params <- readr::read_csv(phyto_file, show_col_types = FALSE)
-# aed_phyto_pars <- AEME::read_aed_param_csv("inst/extdata/glm_aed/aed_phyto_pars.csv")
 
 param_desc <- aed_phyto_pars |>
   dplyr::select(parameter_name, description) |> 
@@ -185,15 +184,19 @@ param_desc <- aed_phyto_pars |>
 df_wide <- aed_phyto_params |> 
   dplyr::left_join(param_desc, by = c("p_name" = "parameter_name"))
 
+# Get group column names (everything except p_name and description)
+group_cols <- setdiff(names(df_wide), c("p_name", "description"))
+n_groups   <- length(group_cols)
+
 DT::datatable(
-  df_display,
+  df_wide,
   escape    = FALSE,
   rownames  = FALSE,
   filter    = "top",
   extensions = c("Buttons", "FixedHeader", "FixedColumns"),
   options   = list(
     dom        = "Bfrtip",
-    buttons    = c("csv", "excel"),
+    buttons    = c("colvis", "csv", "excel"),
     pageLength = 25,
     lengthMenu = c(10, 25, 50),
     fixedHeader = TRUE,
