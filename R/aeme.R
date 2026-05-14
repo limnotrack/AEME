@@ -1251,119 +1251,145 @@ setReplaceMethod("parameters", "Aeme", function(aeme, value) {
 #' @title Print Aeme object to the console
 #' @param object An Aeme object.
 #' @return prints the Aeme object to the console.
+#' @importFrom cli cli_h1 cli_h2 cli_text cli_bullets col_red col_green col_cyan 
+#' @importFrom cli boxx ansi_columns
+#' @importFrom glue glue
 #' @export
 setMethod("show", "Aeme", function(object) {
-  lke <- lake(object)
+  lke       <- lake(object)
   aeme_time <- time(object)
-  config <- configuration(object)
-  obs <- observations(object)
-  inp <- input(object)
-  inf <- inflows(object)
-  outf <- outflows(object)
-  wbal <- water_balance(object)
-  outp <- output(object)
-  params <- parameters(object)
-  
-  n_dyresm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
-  n_glm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
-  n_gotm <- as.vector(matrix(0, nrow = 1, ncol = outp$n_members))
-  if (outp$n_members > 0) {
-    ens_names <- names(outp)[grepl("ens", names(outp))]
-    for (i in 1:length(ens_names)) {
-      n_dyresm[i] <- ifelse(!is.null(outp[[ens_names[i]]][["dy_cd"]]), 1, 0)
-      n_glm[i] <- ifelse(!is.null(outp[[ens_names[i]]][["glm_aed"]]), 1, 0)
-      n_gotm[i] <- ifelse(!is.null(outp[[ens_names[i]]][["gotm_wet"]]), 1, 0)
-    }
+  config    <- configuration(object)
+  obs       <- observations(object)
+  inp       <- input(object)
+  inf       <- inflows(object)
+  outf      <- outflows(object)
+  wbal      <- water_balance(object)
+  outp      <- output(object)
+  params    <- parameters(object)
+  model     <- list_models(object)
+  path      <- get_aeme_path(object, require = FALSE)
+  if (length(model) == 0) {
+    output_vars <- character(0)
+  } else {
+    output_vars <- get_output_vars(object, model)
   }
   
-  cat(
-    "\t\t\t   AEME ",
-    paste0(
-      "\n-------------------------------------------------------------------\n",
-      "  Lake\n",
-      lke$name, " (ID: ", lke$id), "); Lat: ",
-    round(lke$latitude, 2), "; Lon: ", round(lke$longitude,
-                                             2),
-    "; Elev: ", round(lke$elevation, 2), "m; Depth: ",
-    round(lke$depth, 2), "m;\nArea: ", round(lke$area, 2),
-    " m2",
-    "\n-------------------------------------------------------------------\n",
-    "  Time\n",
-    "Start: ", as.character(aeme_time$start),
-    "; Stop: ", as.character(aeme_time$stop),
-    "; Time step: ", as.character(aeme_time$time_step),
-    "\n\tSpin up (days): GLM: ", aeme_time$spin_up$glm_aed, "; GOTM: ",
-    aeme_time$spin_up$gotm_wet, "; DYRESM: ",
-    aeme_time$spin_up$dy_cd,
-    "\n-------------------------------------------------------------------\n",
-    "  Configuration\n",
-    "    Model controls: ", ifelse(is.null(config[["model_controls"]]),
-                                   "Absent ", "Present"), "\n",
-    "    Use biogeochemical model: ", ifelse(config[["use_bgc"]],
-                                             "Yes ", "No"), "\n",
-    "          Physical   |   Biogeochemical",
-    "\nDY-CD    : ", ifelse(is.null(config[["dy_cd"]][["hydrodynamic"]]),
-                            "Absent ", "Present"), "    |   ",
-    ifelse(is.null(config[["dy_cd"]][["bgc"]]), "Absent ",
-           "Present"),
-    "\nGLM-AED  : ", ifelse(is.null(config[["glm_aed"]][["hydrodynamic"]]),
-                            "Absent ", "Present"), "    |   ",
-    ifelse(is.null(config[["glm_aed"]][["bgc"]]), "Absent ",
-           "Present"),
-    "\nGOTM-WET : ", ifelse(is.null(config[["gotm_wet"]][["hydrodynamic"]]),
-                            "Absent ", "Present"), "    |   ",
-    ifelse(is.null(config[["gotm_wet"]][["bgc"]]),
-           "Absent ", "Present"),
-    "\n-------------------------------------------------------------------\n",
-    "  Observations\n",
-    "Lake: ", ifelse(is.data.frame(obs$lake), "Present",
-                     "Absent"),
-    "; Level: ", ifelse(is.data.frame(obs$level), "Present",
-                        "Absent"),
-    "\n-------------------------------------------------------------------\n",
-    "  Input\n",
-    "Inital profile: ", ifelse(is.data.frame(inp$init_profile),
-                               "Present", "Absent"),
-    "; Inital depth: ", paste0(inp$init_depth, "m"),
-    "; Hypsograph: ", ifelse(is.data.frame(inp$hypsograph),
-                             "Present", "Absent"),
-    ifelse(is.data.frame(inp$hypsograph),
-           paste0(" (n=", nrow(inp$hypsograph), ")"), ""),
-    ";\nMeteo: ", ifelse(is.data.frame(inp$meteo),
-                         "Present", "Absent"),
-    "; Use longwave: ", inp$use_lw,
-    "; Kw: ", inp$Kw,
-    "\n-------------------------------------------------------------------\n",
-    "  Inflows\n",
-    "Data: ", ifelse(length(inf$data) > 0,
-                     "Present", "Absent"),
-    "; Scaling factors: DY-CD: ", round(inf$factor$dy_cd, 2),
-    "; GLM-AED: ", round(inf$factor$glm_aed, 2),
-    "; GOTM-WET: ", round(inf$factor$gotm_wet, 2),
-    "\n-------------------------------------------------------------------\n",
-    "  Outflows\n",
-    "Data: ", ifelse(length(outf$data) > 0,
-                     "Present", "Absent"),
-    "; Scaling factors: DY-CD: ", round(outf$factor$dy_cd, 2),
-    "; GLM-AED: ", round(outf$factor$glm_aed, 2),
-    "; GOTM-WET: ", round(outf$factor$gotm_wet, 2),
-    "\n-------------------------------------------------------------------\n",
-    "  Water balance\n",
-    "Method: ", wbal$method, "; Use: ", wbal$use,"; Modelled: ",
-    ifelse(!is.null(wbal[["data"]][["model"]]),
-           "Present", "Absent"), "; Water balance: ",
-    ifelse(is.data.frame(wbal[["data"]][["wbal"]]),
-           "Present", "Absent"),
-    "\n-------------------------------------------------------------------\n",
-    "  Parameters: ", "\n",
-    "Number of parameters: ", nrow(params),
-    "\n-------------------------------------------------------------------\n",
-    "  Output: ", "\n",
-    "\nDY-CD:    ", paste(n_dyresm, collapse = " "),
-    "\nGLM-AED:  ", paste(n_glm, collapse = " "),
-    "\nGOTM-WET: ", paste(n_gotm, collapse = " "),
-    sep = ""
+  # Helpers
+  present_absent <- function(x) if (is.null(x))     cli::col_red("Absent")  else cli::col_green("Present")
+  is_present     <- function(x) if (is.data.frame(x)) cli::col_green("Present") else cli::col_red("Absent")
+  
+  # Ensemble output counts
+  ens_names <- names(outp)[grepl("ens", names(outp))]
+  n_dyresm  <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["dy_cd"]])),   integer(1))
+  n_glm     <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["glm_aed"]])), integer(1))
+  n_gotm    <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["gotm_wet"]])), integer(1))
+  if (outp$n_members == 0) n_dyresm <- n_glm <- n_gotm <- 0L
+  
+  # Inflow summary
+  n_inflows    <- length(inf$data)
+  inflow_names <- if (n_inflows > 0) paste(names(inf$data), collapse = ", ") else "None"
+  
+  # Hypsograph suffix
+  hyps_n <- if (is.data.frame(inp$hypsograph)) glue::glue(" (n={nrow(inp$hypsograph)})") else ""
+  
+  cli::cli_h1("AEME")
+  
+  cli::cli_h2("Lake")
+  cli::cli_text("{lke$name} (ID: {lke$id})")
+  cli::cli_bullets(c(
+    "*" = "Lat: {round(lke$latitude, 2)}; Lon: {round(lke$longitude, 2)}",
+    "*" = "Elev: {round(lke$elevation, 2)}m; Depth: {round(lke$depth, 2)}m; Area: {round(lke$area, 2)} m2"
+  ))
+  
+  cli::cli_h2("Time")
+  cli::cli_bullets(c(
+    "*" = "Start: {aeme_time$start}; Stop: {aeme_time$stop}; Time step: {aeme_time$time_step}",
+    "*" = "Spin up (days): GLM: {aeme_time$spin_up$glm_aed}; GOTM: {aeme_time$spin_up$gotm_wet}; DYRESM: {aeme_time$spin_up$dy_cd}"
+  ))
+  
+  cli::cli_h2("Configuration")
+  cli::cli_bullets(c(
+    "*" = "Model: {model}", 
+    "*" = "Path: {.path {ifelse(is.null(path), cli::col_red('Not set'), cli::col_green(path))}}",
+    "*" = "Model controls: {present_absent(config[['model_controls']])}",
+    "*" = "Use biogeochemical model: {ifelse(config[['use_bgc']], cli::col_green('Yes'), cli::col_red('No'))}"
+  ))
+  models <- c("DY-CD", "GLM-AED", "GOTM-WET")
+  phys   <- c("dy_cd", "glm_aed", "gotm_wet")
+  
+  header_row <- cli::ansi_columns(
+    c(cli::col_cyan("Model"), cli::col_cyan("Physical"), cli::col_cyan("Biogeochemical")),
+    width = 60, fill = "rows", max_cols = 3, align = "center", sep = "   "
   )
+  
+  data_rows <- cli::ansi_columns(
+    c(rbind(
+      models,
+      sapply(phys, \(m) present_absent(config[[m]][["hydrodynamic"]])),
+      sapply(phys, \(m) present_absent(config[[m]][["bgc"]]))
+    )),
+    width = 60, fill = "rows", max_cols = 3, align = "center", sep = "   "
+  )
+  
+  cli::cli_verbatim(cli::boxx(
+    c(header_row, "---", data_rows),
+    padding = c(0, 1, 0, 1),
+    header = cli::col_cyan("Model Configuration")
+  ))
+  
+  cli::cli_h2("Observations")
+  cli::cli_bullets(c(
+    "*" = "Lake: {is_present(obs$lake)}; Level: {is_present(obs$level)}"
+  ))
+  
+  cli::cli_h2("Input")
+  cli::cli_bullets(c(
+    "*" = "Initial profile: {is_present(inp$init_profile)}; Initial depth: {inp$init_depth}m",
+    "*" = "Hypsograph: {is_present(inp$hypsograph)}{hyps_n}",
+    "*" = "Meteo: {is_present(inp$meteo)}; Use longwave: {inp$use_lw}; Kw: {inp$Kw}"
+  ))
+  
+  cli::cli_h2("Inflows")
+  cli::cli_bullets(c(
+    "*" = "Number of inflows: {n_inflows}; Names: {inflow_names}",
+    "*" = "Scaling factors: DY-CD: {round(inf$factor$dy_cd, 2)}; GLM-AED: {round(inf$factor$glm_aed, 2)}; GOTM-WET: {round(inf$factor$gotm_wet, 2)}"
+  ))
+  
+  cli::cli_h2("Outflows")
+  cli::cli_bullets(c(
+    "*" = "Data: {ifelse(length(outf$data) > 0, cli::col_green('Present'), cli::col_red('Absent'))}",
+    "*" = "Scaling factors: DY-CD: {round(outf$factor$dy_cd, 2)}; GLM-AED: {round(outf$factor$glm_aed, 2)}; GOTM-WET: {round(outf$factor$gotm_wet, 2)}"
+  ))
+  
+  cli::cli_h2("Water Balance")
+  cli::cli_bullets(c(
+    "*" = "Method: {wbal$method}; Use: {wbal$use}",
+    "*" = "Modelled: {present_absent(wbal[['data']][['model']])}; Water balance: {is_present(wbal[['data']][['wbal']])}"
+  ))
+  
+  cli::cli_h2("Parameters")
+  cli::cli_bullets(c(
+    "*" = "Number of parameters: {nrow(params)}"
+  ))
+  
+  cli::cli_h2("Output")
+  cli::cli_bullets(c(
+    "*" = "DY-CD:    {paste(n_dyresm, collapse = ' ')}",
+    "*" = "GLM-AED:  {paste(n_glm,    collapse = ' ')}",
+    "*" = "GOTM-WET: {paste(n_gotm,   collapse = ' ')}",
+    "*" = "Variables: {length(output_vars)}"
+  ))
+  max_vars <- 10
+  var_names <- if (length(output_vars) > 0) names(output_vars) else "None"
+  truncated  <- if (length(var_names) > max_vars) {
+    c(var_names[1:max_vars], glue::glue("... and {length(var_names) - max_vars} more"))
+  } else {
+    var_names
+  }
+  wrapped_vars <- strwrap(paste(truncated, collapse = ", "), width = 60, exdent = 2)
+  
+  cli::cli_text(paste(wrapped_vars, collapse = "\n"))
+
   return(invisible(object))
 })
 
