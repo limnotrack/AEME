@@ -312,11 +312,10 @@ plot_est_wbal <- function(aeme, model,
 #' Plot water balance diagnostics for a single model.
 #'
 #' @param wb        data.frame with columns as in str(wb). Must contain exactly
-#'                  one unique value in the \code{model} column.
-#' @param time_axis one of \code{"daily"}, \code{"monthly"}, \code{"annual"},
-#'                  or \code{"auto"} (default). \code{"auto"} selects resolution
-#'                  by series length: <= 2 yr -> daily, <= 6 yr -> monthly,
-#'                  > 6 yr -> annual.
+#'                  one unique value in the model column.
+#' @param time_axis one of `daily`, `monthly`, `annual`, or `auto` (default). 
+#' `auto` selects resolution by series length: <= 2 yr -> daily, <= 6 yr -> 
+#' monthly, > 6 yr -> annual.
 #'
 #' @return A patchwork object.
 #' @noRd

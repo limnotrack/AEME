@@ -86,9 +86,9 @@ calc_evap <- function(met, altitude,
 
 #' Calculate atmospheric density
 #'
-#' @param atmosPressure [Pa]
-#' @param vapPressure [Pa]
-#' @param AirTemp [Cel]
+#' @param atmosPressure (Pa)
+#' @param vapPressure (Pa)
+#' @param AirTemp (Cel)
 #'
 #' @return vector of atmospheric density
 #' @noRd

@@ -2,22 +2,22 @@
 #'
 #' @description Calculate airsea fluxes using Fairall et al 1996
 #'
-#' @param sst Sea surface temperature [degC]
-#' @param airt Air temperature [degC]
-#' @param u10 Eastward wind speed at 10m [m/s]
-#' @param v10 Northward wind speed at 10m [m/s]
-#' @param airp Air pressure [Pa]
-#' @param hum Relative humidity [%]
-#' @param precip Precipitation rate [m/s]
+#' @param sst Sea surface temperature (degC]
+#' @param airt Air temperature (degC]
+#' @param u10 Eastward wind speed at 10m (m/s]
+#' @param v10 Northward wind speed at 10m (m/s]
+#' @param airp Air pressure (Pa]
+#' @param hum Relative humidity (%]
+#' @param precip Precipitation rate (m/s]
 #' @param rain_impact Logical, should rain impact be included? Default is TRUE
 #' @param calc_evaporation Logical, should evaporation be calculated? Default is TRUE
 #'
 #' @return List with the following elements:
-#' - tau_x - Eastward wind stress [N/m^2]
-#' - tau_y - Northward wind stress [N/m^2]
-#' - h - Sensible heat flux [W/m^2]
-#' - e - Latent heat flux [W/m^2]
-#' - evap - Evaporation rate [m/s]
+#' - tau_x - Eastward wind stress (N/m^2)
+#' - tau_y - Northward wind stress (N/m^2)
+#' - h - Sensible heat flux (W/m^2)
+#' - e - Latent heat flux (W/m^2)
+#' - evap - Evaporation rate (m/s)
 #'
 #' @noRd
 #'

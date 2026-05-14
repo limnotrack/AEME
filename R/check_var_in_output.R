@@ -56,7 +56,7 @@ check_var_in_output <- function(aeme, model, var_sim, ens_n = 1) {
 
 #' Check if a variable is present in a single model output
 #'
-#' @param out_model list; output for a single model (from output(aeme)[[ens_lab]][[model]])
+#' @param out_model list; output for a single model (from `output(aeme)[[ens_lab]][[model]]`)
 #' @param var character; variable name to check
 #' @return logical; TRUE if variable exists and is not all -99
 #' @noRd

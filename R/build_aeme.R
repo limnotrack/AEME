@@ -30,8 +30,8 @@
 #' temperature. Otherwise. it uses the simple estimation
 #'  \eqn{temp_water = 5 + 0.75 * temp_air} from Stefan & Preud'homme, 2007:
 #'  www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
-#' @param hum_type numeric; GOTM humidity metric [1=relative humidity (%),
-#' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
+#' @param hum_type numeric; GOTM humidity metric (1=relative humidity (%),
+#' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg))
 #' Default = 3.
 #' @param est_swr_hr logical; estimate hourly shortwave radiation from daily
 #' values. Default = TRUE.

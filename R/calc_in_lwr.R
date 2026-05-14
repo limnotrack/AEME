@@ -2,9 +2,9 @@
 #'
 #' Calculates incoming LWR using cloud cover, air temperature and relative humidity (or dewpoint temperature). Using formula from: http://www.seao2.info/_TMP/longwave.pdf
 #'
-#' @param cc vector; cloud cover values (Fraction [0-1])
+#' @param cc vector; cloud cover values (Fraction (0-1))
 #' @param airt vector; air temperature values (Celsius)
-#' @param relh vector; relative humidity values (\% [0-100]). Used to calculate dewpoint temperaure if that is not supplied. Defaults to NULL.
+#' @param relh vector; relative humidity values (\% (0-100)). Used to calculate dewpoint temperaure if that is not supplied. Defaults to NULL.
 #' @param dewt vector; dewpoint temperature values (Celsius). Can be used instead of relative humidity, otherise it is calculated from relative humidity and air temperature. Defaults to NULL
 #' @source https://github.com/aemon-j/gotmtools/blob/yaml/R/calc_in_lwr.R
 #' @examples
