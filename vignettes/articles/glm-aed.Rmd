@@ -11,15 +11,16 @@ knitr::opts_chunk$set(
   message   = FALSE,
   warning   = FALSE
 )
+asciicast::init_knitr_engine(
+  startup = quote({
+    library(AEME)
+    set.seed(1)
+  }),
+  echo = TRUE,
+  echo_input = FALSE
+)
 options(AEME.inform = FALSE)
 library(AEME)
-```
-
-```{r}
-#| label: ansi-css
-#| echo: false
-#| results: asis
-AEME::ansi_set_knit_hooks(knitr::knit_hooks)
 ```
 
 <a href="#parameter-library" class="skip-btn">⬇ Skip to Parameter Library</a>
@@ -254,6 +255,13 @@ We will use the example lake dataset bundled with the AEME package throughout
 this vignette.
 
 ```{r load-aeme}
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme     <- readRDS(aeme_file)
+aeme
+```
+
+```{asciicast show-aeme}
+#| echo: FALSE
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme     <- readRDS(aeme_file)
 aeme
