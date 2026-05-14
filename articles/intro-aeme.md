@@ -420,48 +420,71 @@ lke[["name"]] <- "AEME"
 lake(aeme) <- lke
 
 aeme
-#>             AEME 
-#> -------------------------------------------------------------------
-#>   Lake
-#> AEME (ID: LID45819); Lat: -36.89; Lon: 174.47; Elev: 23.2m; Depth: 13.48m;
-#> Area: 153648 m2
-#> -------------------------------------------------------------------
-#>   Time
-#> Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
-#>  Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095
-#> -------------------------------------------------------------------
-#>   Configuration
-#>     Model controls: Present
-#>     Use biogeochemical model: 
-#>           Physical   |   Biogeochemical
-#> DY-CD    : Absent     |   Absent 
-#> GLM-AED  : Present    |   Absent 
-#> GOTM-WET : Present    |   Absent 
-#> -------------------------------------------------------------------
-#>   Observations
-#> Lake: Present; Level: Absent
-#> -------------------------------------------------------------------
-#>   Input
-#> Inital profile: Present; Inital depth: 13.48m; Hypsograph: Present (n=53);
-#> Meteo: Present; Use longwave: TRUE; Kw: 1.214286
-#> -------------------------------------------------------------------
-#>   Inflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Outflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Water balance
-#> Method: 2; Use: obs; Modelled: Absent; Water balance: Present
-#> -------------------------------------------------------------------
-#>   Parameters: 
-#> Number of parameters: 18
-#> -------------------------------------------------------------------
-#>   Output: 
 #> 
-#> DY-CD:    
-#> GLM-AED:  
-#> GOTM-WET:
+#> ── AEME ────────────────────────────────────────────────────────────────────────
+#> 
+#> ── Lake ──
+#> 
+#> AEME (ID: LID45819)
+#> • Lat: -36.89; Lon: 174.47
+#> • Elev: 23.2m; Depth: 13.48m; Area: 153648 m2
+#> 
+#> ── Time ──
+#> 
+#> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
+#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095
+#> 
+#> ── Configuration ──
+#> 
+#> • Model: glm_aed and gotm_wet
+#> • Path: Not set
+#> • Model controls: Present
+#> • Use biogeochemical model:
+#> ┌ Model Configuration ─────────────────────────────────────────┐
+#> │       Model              Physical         Biogeochemical     │
+#> │ ---                                                          │
+#> │       DY-CD               Absent              Absent         │
+#> │      GLM-AED             Present              Absent         │
+#> │      GOTM-WET            Present              Absent         │
+#> └──────────────────────────────────────────────────────────────┘
+#> 
+#> ── Observations ──
+#> 
+#> • Lake: Present; Level: Absent
+#> 
+#> ── Input ──
+#> 
+#> • Initial profile: Present; Initial depth: 13.48m
+#> • Hypsograph: Present (n=53)
+#> • Meteo: Present; Use longwave: TRUE; Kw: 1.21428571428571
+#> 
+#> ── Inflows ──
+#> 
+#> • Number of inflows: 6; Names: NZS2038486, NZS2038499, NZS2038500, NZS2038304,
+#>   lumped, precip
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Outflows ──
+#> 
+#> • Data: Present
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Water Balance ──
+#> 
+#> • Method: 2; Use: obs
+#> • Modelled: Absent; Water balance: Present
+#> 
+#> ── Parameters ──
+#> 
+#> • Number of parameters: 18
+#> 
+#> ── Output ──
+#> 
+#> • DY-CD: 0
+#> • GLM-AED: 0
+#> • GOTM-WET: 0
+#> • Variables: 0
+#> None
 ```
 
 ### Visualisation
@@ -681,48 +704,71 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
 aeme
-#>             AEME 
-#> -------------------------------------------------------------------
-#>   Lake
-#> AEME (ID: LID45819); Lat: -36.89; Lon: 174.47; Elev: 23.2m; Depth: 13.48m;
-#> Area: 153648 m2
-#> -------------------------------------------------------------------
-#>   Time
-#> Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
-#>  Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095
-#> -------------------------------------------------------------------
-#>   Configuration
-#>     Model controls: Present
-#>     Use biogeochemical model: Yes 
-#>           Physical   |   Biogeochemical
-#> DY-CD    : Present    |   Present
-#> GLM-AED  : Present    |   Present
-#> GOTM-WET : Present    |   Present
-#> -------------------------------------------------------------------
-#>   Observations
-#> Lake: Present; Level: Absent
-#> -------------------------------------------------------------------
-#>   Input
-#> Inital profile: Present; Inital depth: 13.48m; Hypsograph: Present (n=53);
-#> Meteo: Present; Use longwave: TRUE; Kw: 1.214286
-#> -------------------------------------------------------------------
-#>   Inflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Outflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Water balance
-#> Method: 2; Use: obs; Modelled: Absent; Water balance: Present
-#> -------------------------------------------------------------------
-#>   Parameters: 
-#> Number of parameters: 18
-#> -------------------------------------------------------------------
-#>   Output: 
 #> 
-#> DY-CD:    
-#> GLM-AED:  
-#> GOTM-WET:
+#> ── AEME ────────────────────────────────────────────────────────────────────────
+#> 
+#> ── Lake ──
+#> 
+#> AEME (ID: LID45819)
+#> • Lat: -36.89; Lon: 174.47
+#> • Elev: 23.2m; Depth: 13.48m; Area: 153648 m2
+#> 
+#> ── Time ──
+#> 
+#> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
+#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095
+#> 
+#> ── Configuration ──
+#> 
+#> • Model: dy_cd, glm_aed, and gotm_wet
+#> • Path: D:\a\AEME\AEME\vignettes\aeme
+#> • Model controls: Present
+#> • Use biogeochemical model: Yes
+#> ┌ Model Configuration ─────────────────────────────────────────┐
+#> │       Model              Physical         Biogeochemical     │
+#> │ ---                                                          │
+#> │       DY-CD              Present             Present         │
+#> │      GLM-AED             Present             Present         │
+#> │      GOTM-WET            Present             Present         │
+#> └──────────────────────────────────────────────────────────────┘
+#> 
+#> ── Observations ──
+#> 
+#> • Lake: Present; Level: Absent
+#> 
+#> ── Input ──
+#> 
+#> • Initial profile: Present; Initial depth: 13.48m
+#> • Hypsograph: Present (n=53)
+#> • Meteo: Present; Use longwave: TRUE; Kw: 1.21428571428571
+#> 
+#> ── Inflows ──
+#> 
+#> • Number of inflows: 6; Names: NZS2038486, NZS2038499, NZS2038500, NZS2038304,
+#>   lumped, precip
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Outflows ──
+#> 
+#> • Data: Present
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Water Balance ──
+#> 
+#> • Method: 2; Use: obs
+#> • Modelled: Absent; Water balance: Present
+#> 
+#> ── Parameters ──
+#> 
+#> • Number of parameters: 18
+#> 
+#> ── Output ──
+#> 
+#> • DY-CD: 0
+#> • GLM-AED: 0
+#> • GOTM-WET: 0
+#> • Variables: 0
+#> None
 ```
 
 ``` r

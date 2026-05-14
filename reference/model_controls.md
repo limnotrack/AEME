@@ -11,7 +11,9 @@ model_controls
 
 ## Format
 
-\## \`model_controls\` A data frame with 65 rows and 6 columns:
+### `model_controls`
+
+A data frame with 65 rows and 6 columns:
 
 - var_aeme:
 

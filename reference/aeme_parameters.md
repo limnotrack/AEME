@@ -10,7 +10,9 @@ aeme_parameters
 
 ## Format
 
-\## \`aeme_parameters\` A data frame with 17 rows and 6 columns:
+### `aeme_parameters`
+
+A data frame with 17 rows and 6 columns:
 
 - model:
 

@@ -19,7 +19,7 @@ read_gotm_flux_output(nc = NULL, file, dates = NULL, date_index = NULL)
 
 - file:
 
-  File path to netCDF file. Only used if \`nc\` is NULL.
+  File path to netCDF file. Only used if `nc` is NULL.
 
 - dates:
 

@@ -11,7 +11,9 @@ catchment_yields
 
 ## Format
 
-\## \`catchment_yields\` A data frame with 4 rows and 4 columns:
+### `catchment_yields`
+
+A data frame with 4 rows and 4 columns:
 
 - Type:
 

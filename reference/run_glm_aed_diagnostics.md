@@ -24,10 +24,13 @@ run_glm_aed_diagnostics(
 
 - groups:
 
-  character vector selecting catalogue entries. Accepts: - catalogue
-  entry names (e.g. "nitrogen_state"), - element codes
-  ("O","N","P","Phy"), - types ("state","process"). Default NULL = all
-  entries.
+  character vector selecting catalogue entries. Accepts:
+
+  - catalogue entry names (e.g. "nitrogen_state"),
+
+  - element codes ("O","N","P","Phy"),
+
+  - types ("state","process"). Default NULL = all entries.
 
 - depth_collapse:
 
@@ -128,10 +131,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 
 aeme <- run_aeme(aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-13 22:50:09]
-#> → GLM-AED running... [2026-05-13 22:50:09]
-#> ✔ GLM-AED run successful! [2026-05-13 22:50:13]
-#> ✔ Model run complete! [2026-05-13 22:50:13]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-14 03:06:11]
+#> → GLM-AED running... [2026-05-14 03:06:11]
+#> ✔ GLM-AED run successful! [2026-05-14 03:06:13]
+#> ✔ Model run complete! [2026-05-14 03:06:13]
 out <- run_glm_aed_diagnostics(aeme = aeme)
 #> Requesting 86 variables from model output...  (sediment zone _Z variables are
 #> optional; missing ones are skipped)

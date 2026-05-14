@@ -36,21 +36,20 @@ renaming.
 
 ## AEME standard variables and units
 
-|                     |              |              |                    |
-|---------------------|--------------|--------------|--------------------|
-| **Variable**        | **Name**     | **Unit**     | **Required**       |
-| Shortwave radiation | `MET_radswd` | W/m²         | Yes                |
-| Air temperature     | `MET_tmpair` | °C           | Yes                |
-| Wind speed          | `MET_wndspd` | m/s          | Yes                |
-| Rainfall            | `MET_pprain` | mm/day       | Yes                |
-| Snowfall            | `MET_ppsnow` | mm/day       | No (defaults to 0) |
-| u wind component    | `MET_wnduvu` | m/s          | No (derivable)     |
-| v wind component    | `MET_wnduvv` | m/s          | No (derivable)     |
-| Sea-level pressure  | `MET_prmslp` | Pa           | No (derivable)     |
-| Station pressure    | `MET_prsttn` | Pa           | No (derivable)     |
-| Cloud cover         | `MET_cldcvr` | 1 (fraction) | No (derivable)     |
-| Longwave radiation  | `MET_radlwd` | W/m²         | No (derivable)     |
-| Dew point temp.     | `MET_tmpdew` | °C           | No (derivable)     |
-| Vapour pressure     | `MET_prvapr` | hPa          | No (derivable)     |
-| Relative humidity   | `MET_humrel` | %            | No (derivable)     |
-| Wind direction      | `MET_wnddir` | degrees      | No (derivable)     |
+|                     |              |                   |                    |
+|---------------------|--------------|-------------------|--------------------|
+| **Variable**        | **Name**     | **Unit**          | **Required**       |
+| Shortwave radiation | `MET_radswd` | W/m²              | Yes                |
+| Air temperature     | `MET_tmpair` | °C                | Yes                |
+| Wind speed          | `MET_wndspd` | m/s               | Yes                |
+| Rainfall            | `MET_pprain` | mm/day            | Yes                |
+| Snowfall            | `MET_ppsnow` | mm/day            | No (defaults to 0) |
+| u wind component    | `MET_wnduvu` | m/s               | No (derivable)     |
+| v wind component    | `MET_wnduvv` | m/s               | No (derivable)     |
+| Sea-level pressure  | `MET_prmslp` | Pa                | No (derivable)     |
+| Station pressure    | `MET_prsttn` | Pa                | No (derivable)     |
+| Cloud cover         | `MET_cldcvr` | 1 (fraction)      | No (derivable)     |
+| Longwave radiation  | `MET_radlwd` | W/m²              | No (derivable)     |
+| Dew point temp.     | `MET_tmpdew` | °C                | No (derivable)     |
+| Vapour pressure     | `MET_prvapr` | hPa               | No (derivable)     |
+| Relative humidity   | `MET_humrel` | \\ Wind direction | `MET_wnddir`       |

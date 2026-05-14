@@ -1,7 +1,7 @@
 # Read water level from model output
 
-\`r lifecycle::badge("stable")\` This function reads water level data
-from the output of supported lake models.
+**\[stable\]** This function reads water level data from the output of
+supported lake models.
 
 ## Usage
 
@@ -29,6 +29,6 @@ read_model_wlev(nc = NULL, lake_dir, model)
 
 A data frame with columns:
 
-- \`Date\`: Date-time of the water level observation (POSIXct, UTC)
+- `Date`: Date-time of the water level observation (POSIXct, UTC)
 
-- \`LKE_lvlwtr\`: Water level (meters)
+- `LKE_lvlwtr`: Water level (meters)

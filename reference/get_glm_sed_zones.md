@@ -22,7 +22,7 @@ get_glm_sed_zones(aeme, path, lake_dir = NULL)
 - lake_dir:
 
   Path to the lake AEME directory. If NULL, it will be computed from
-  \`aeme\` and \`path\`.
+  `aeme` and `path`.
 
 ## Value
 

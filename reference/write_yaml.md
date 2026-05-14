@@ -1,9 +1,9 @@
 # Write a yaml object to file
 
 Write the YAML representation of an R object (list) to a file. Taken
-from the \`yaml\` package but added catch to replace 'yes' with 'true'
-and 'no' with 'false' and '~' with 'null' to make it compatible with
-running the GOTM model.
+from the `yaml` package but added catch to replace 'yes' with 'true' and
+'no' with 'false' and '~' with 'null' to make it compatible with running
+the GOTM model.
 
 ## Usage
 
@@ -37,7 +37,7 @@ write_yaml(x, file, fileEncoding = "UTF-8", ...)
 
 ## Author
 
-Jeremy Stephens \<jeremy.f.stephens@vumc.org\>, Tadhg Moore
+Jeremy Stephens <jeremy.f.stephens@vumc.org>, Tadhg Moore
 
 ## Examples
 

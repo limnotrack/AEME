@@ -16,8 +16,7 @@ assess_model(aeme, model, var_sim)
 
 - model:
 
-  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
-  \`gotm_wet\`.
+  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
 
 - var_sim:
 

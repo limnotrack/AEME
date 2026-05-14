@@ -37,7 +37,7 @@ convert_do(
 
 - altitude:
 
-  altitude (m). Only used if \`baro\` is missing.
+  altitude (m). Only used if `baro` is missing.
 
 - salinity:
 

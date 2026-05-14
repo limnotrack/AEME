@@ -305,48 +305,70 @@ aeme <- aeme_constructor(
 #> ! `time$spin_up` is missing.
 #> ℹ Defaulting to 2 days spin-up for all models.
 aeme
-#>             AEME 
-#> -------------------------------------------------------------------
-#>   Lake
-#> Reservoir (ID: res001); Lat: -37.8; Lon: 176; Elev: 150m; Depth: 25m;
-#> Area: 1200000 m2
-#> -------------------------------------------------------------------
-#>   Time
-#> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#>  Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
-#> -------------------------------------------------------------------
-#>   Configuration
-#>     Model controls: Absent 
-#>     Use biogeochemical model: No
-#>           Physical   |   Biogeochemical
-#> DY-CD    : Absent     |   Absent 
-#> GLM-AED  : Absent     |   Absent 
-#> GOTM-WET : Absent     |   Absent 
-#> -------------------------------------------------------------------
-#>   Observations
-#> Lake: Absent; Level: Absent
-#> -------------------------------------------------------------------
-#>   Input
-#> Inital profile: Absent; Inital depth: 25m; Hypsograph: Present (n=62);
-#> Meteo: Present; Use longwave: TRUE; Kw: 0.5
-#> -------------------------------------------------------------------
-#>   Inflows
-#> Data: Absent; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Outflows
-#> Data: Absent; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Water balance
-#> Method: 2; Use: obs; Modelled: Absent; Water balance: Absent
-#> -------------------------------------------------------------------
-#>   Parameters: 
-#> Number of parameters: 0
-#> -------------------------------------------------------------------
-#>   Output: 
 #> 
-#> DY-CD:    
-#> GLM-AED:  
-#> GOTM-WET:
+#> ── AEME ────────────────────────────────────────────────────────────────────────
+#> 
+#> ── Lake ──
+#> 
+#> Reservoir (ID: res001)
+#> • Lat: -37.8; Lon: 176
+#> • Elev: 150m; Depth: 25m; Area: 1200000 m2
+#> 
+#> ── Time ──
+#> 
+#> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
+#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
+#> 
+#> ── Configuration ──
+#> 
+#> • Model:
+#> • Path: Not set
+#> • Model controls: Absent
+#> • Use biogeochemical model: No
+#> ┌ Model Configuration ─────────────────────────────────────────┐
+#> │       Model              Physical         Biogeochemical     │
+#> │ ---                                                          │
+#> │       DY-CD               Absent              Absent         │
+#> │      GLM-AED              Absent              Absent         │
+#> │      GOTM-WET             Absent              Absent         │
+#> └──────────────────────────────────────────────────────────────┘
+#> 
+#> ── Observations ──
+#> 
+#> • Lake: Absent; Level: Absent
+#> 
+#> ── Input ──
+#> 
+#> • Initial profile: Absent; Initial depth: 25m
+#> • Hypsograph: Present (n=62)
+#> • Meteo: Present; Use longwave: TRUE; Kw: 0.5
+#> 
+#> ── Inflows ──
+#> 
+#> • Number of inflows: 0; Names: None
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Outflows ──
+#> 
+#> • Data: Absent
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Water Balance ──
+#> 
+#> • Method: 2; Use: obs
+#> • Modelled: Absent; Water balance: Absent
+#> 
+#> ── Parameters ──
+#> 
+#> • Number of parameters: 0
+#> 
+#> ── Output ──
+#> 
+#> • DY-CD: 0
+#> • GLM-AED: 0
+#> • GOTM-WET: 0
+#> • Variables: 0
+#> None
 ```
 
 ## Add inflows
@@ -401,48 +423,70 @@ outflows slot:
 ``` r
 
 aeme
-#>             AEME 
-#> -------------------------------------------------------------------
-#>   Lake
-#> Reservoir (ID: res001); Lat: -37.8; Lon: 176; Elev: 150m; Depth: 25m;
-#> Area: 1200000 m2
-#> -------------------------------------------------------------------
-#>   Time
-#> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#>  Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
-#> -------------------------------------------------------------------
-#>   Configuration
-#>     Model controls: Absent 
-#>     Use biogeochemical model: No
-#>           Physical   |   Biogeochemical
-#> DY-CD    : Absent     |   Absent 
-#> GLM-AED  : Absent     |   Absent 
-#> GOTM-WET : Absent     |   Absent 
-#> -------------------------------------------------------------------
-#>   Observations
-#> Lake: Absent; Level: Absent
-#> -------------------------------------------------------------------
-#>   Input
-#> Inital profile: Absent; Inital depth: 25m; Hypsograph: Present (n=62);
-#> Meteo: Present; Use longwave: TRUE; Kw: 0.5
-#> -------------------------------------------------------------------
-#>   Inflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Outflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Water balance
-#> Method: 2; Use: obs; Modelled: Absent; Water balance: Absent
-#> -------------------------------------------------------------------
-#>   Parameters: 
-#> Number of parameters: 0
-#> -------------------------------------------------------------------
-#>   Output: 
 #> 
-#> DY-CD:    
-#> GLM-AED:  
-#> GOTM-WET:
+#> ── AEME ────────────────────────────────────────────────────────────────────────
+#> 
+#> ── Lake ──
+#> 
+#> Reservoir (ID: res001)
+#> • Lat: -37.8; Lon: 176
+#> • Elev: 150m; Depth: 25m; Area: 1200000 m2
+#> 
+#> ── Time ──
+#> 
+#> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
+#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
+#> 
+#> ── Configuration ──
+#> 
+#> • Model:
+#> • Path: Not set
+#> • Model controls: Absent
+#> • Use biogeochemical model: No
+#> ┌ Model Configuration ─────────────────────────────────────────┐
+#> │       Model              Physical         Biogeochemical     │
+#> │ ---                                                          │
+#> │       DY-CD               Absent              Absent         │
+#> │      GLM-AED              Absent              Absent         │
+#> │      GOTM-WET             Absent              Absent         │
+#> └──────────────────────────────────────────────────────────────┘
+#> 
+#> ── Observations ──
+#> 
+#> • Lake: Absent; Level: Absent
+#> 
+#> ── Input ──
+#> 
+#> • Initial profile: Absent; Initial depth: 25m
+#> • Hypsograph: Present (n=62)
+#> • Meteo: Present; Use longwave: TRUE; Kw: 0.5
+#> 
+#> ── Inflows ──
+#> 
+#> • Number of inflows: 1; Names: river
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Outflows ──
+#> 
+#> • Data: Present
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Water Balance ──
+#> 
+#> • Method: 2; Use: obs
+#> • Modelled: Absent; Water balance: Absent
+#> 
+#> ── Parameters ──
+#> 
+#> • Number of parameters: 0
+#> 
+#> ── Output ──
+#> 
+#> • DY-CD: 0
+#> • GLM-AED: 0
+#> • GOTM-WET: 0
+#> • Variables: 0
+#> None
 ```
 
 ## Build model configurations
@@ -478,7 +522,7 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpkLOM7m\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpW6i3mH\reservoir
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
 #> ℹ All columns already match AEME standard inflow variable names, skipping name
@@ -499,10 +543,10 @@ aeme <- build_aeme(
 ``` r
 
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-13 23:04:36]
-#> → GLM-AED running... [2026-05-13 23:04:36]
-#> ✔ GLM-AED run successful! [2026-05-13 23:04:37]
-#> ✔ Model run complete! [2026-05-13 23:04:37]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-14 03:20:36]
+#> → GLM-AED running... [2026-05-14 03:20:36]
+#> ✔ GLM-AED run successful! [2026-05-14 03:20:37]
+#> ✔ Model run complete! [2026-05-14 03:20:37]
 ```
 
 ## View the output

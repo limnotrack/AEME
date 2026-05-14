@@ -2,8 +2,8 @@
 
 All the parameters within the AED.nml file. This includes three
 phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
-group (cladocerans). This has the values in the default file and 25
-ranges for sensitivity analysis.
+group (cladocerans). This has the values in the default file and 25 %
+parameter ranges for sensitivity analysis.
 
 ## Usage
 
@@ -13,7 +13,7 @@ glm_aed_parameters
 
 ## Format
 
-\`glm_aed_parameters\` A data frame with 253 rows and 7 columns:
+`glm_aed_parameters` A data frame with 253 rows and 7 columns:
 
 - model:
 

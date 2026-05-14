@@ -10,7 +10,9 @@ key_naming
 
 ## Format
 
-\## \`key_naming\` A data frame with 127 rows and 13 columns:
+### `key_naming`
+
+A data frame with 127 rows and 13 columns:
 
 - name:
 

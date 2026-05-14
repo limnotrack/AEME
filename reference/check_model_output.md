@@ -16,8 +16,7 @@ check_model_output(aeme, model, path)
 
 - model:
 
-  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
-  \`gotm_wet\`.
+  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
 
 - path:
 

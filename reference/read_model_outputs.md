@@ -64,7 +64,8 @@ read_model_outputs(
 - phyto_pars:
 
   Dataframe of phytoplankton parameters for GLM-AED model. See
-  \`?read_glm_output\` for details. Defaults to NULL.
+  [`?read_glm_output`](https://limnotrack.com/reference/read_glm_output.md)
+  for details. Defaults to NULL.
 
 ## Value
 

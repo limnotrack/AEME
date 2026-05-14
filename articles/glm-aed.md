@@ -1,5 +1,7 @@
 # GLM-AED: The General Lake Model coupled with AED
 
+[⬇ Skip to Parameter Library](#parameter-library)
+
 ### Introduction
 
 #### The General Lake Model (GLM)
@@ -72,11 +74,18 @@ provide a brief overview of the key modules relevant for GLM-AED.
 
 AED biogeochemical modules available in AEME. {.table}
 
-##### References
+#### GLM-AED Parameter Library
 
-Hipsey, M.R., Busch, B., Bruce, L.C., Hamilton, D.P., & Romero, J.R.
-(2013). Aquatic Ecodynamics (AED) Model Library — Science Manual. The
-University of Western Australia Technical Report. Perth, Australia.
+The `glm_aed_parameter_library` dataset provides a comprehensive list of
+all parameters used in the GLM-AED configuration, including their
+default values, units, and typical ranges. This library serves as a
+reference for users to understand the parameters governing the model
+behaviour and to guide parameterisation for specific applications. It
+also includes metadata such as the associated AED module and a brief
+description of each parameter’s role in the model and a web source link
+for further information.
+
+#### AED Phytoplankton Group Parameters
 
 ------------------------------------------------------------------------
 
@@ -97,48 +106,6 @@ throughout this vignette.
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme     <- readRDS(aeme_file)
 aeme
-#>             AEME 
-#> -------------------------------------------------------------------
-#>   Lake
-#> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;
-#> Area: 152343 m2
-#> -------------------------------------------------------------------
-#>   Time
-#> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#>  Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1
-#> -------------------------------------------------------------------
-#>   Configuration
-#>     Model controls: Absent 
-#>     Use biogeochemical model: No
-#>           Physical   |   Biogeochemical
-#> DY-CD    : Absent     |   Absent 
-#> GLM-AED  : Absent     |   Absent 
-#> GOTM-WET : Absent     |   Absent 
-#> -------------------------------------------------------------------
-#>   Observations
-#> Lake: Present; Level: Present
-#> -------------------------------------------------------------------
-#>   Input
-#> Inital profile: Absent; Inital depth: 13.07m; Hypsograph: Present (n=132);
-#> Meteo: Present; Use longwave: TRUE; Kw: 1.31
-#> -------------------------------------------------------------------
-#>   Inflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Outflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Water balance
-#> Method: 2; Use: obs; Modelled: Absent; Water balance: Absent
-#> -------------------------------------------------------------------
-#>   Parameters: 
-#> Number of parameters: 0
-#> -------------------------------------------------------------------
-#>   Output: 
-#> 
-#> DY-CD:    
-#> GLM-AED:  
-#> GOTM-WET:
 ```
 
 ------------------------------------------------------------------------

@@ -10,7 +10,9 @@ aeme_parameters_bgc
 
 ## Format
 
-\## \`aeme_parameters_bgc\` A data frame with 30 rows and 7 columns:
+### `aeme_parameters_bgc`
+
+A data frame with 30 rows and 7 columns:
 
 - model:
 

@@ -192,48 +192,73 @@ output, and model controls. More details can be found
 object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span></span>
-<span><span class="co">#&gt;             AEME </span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Lake</span></span>
-<span><span class="co">#&gt; Rotorua (ID: LID11133); Lat: -38.09; Lon: 176.27; Elev: 284.88m; Depth: 48.15m;</span></span>
-<span><span class="co">#&gt; Area: 80659960 m2</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Time</span></span>
-<span><span class="co">#&gt; Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600</span></span>
-<span><span class="co">#&gt;  Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Configuration</span></span>
-<span><span class="co">#&gt;     Model controls: Present</span></span>
-<span><span class="co">#&gt;     Use biogeochemical model: </span></span>
-<span><span class="co">#&gt;           Physical   |   Biogeochemical</span></span>
-<span><span class="co">#&gt; DY-CD    : Absent     |   Absent </span></span>
-<span><span class="co">#&gt; GLM-AED  : Present    |   Absent </span></span>
-<span><span class="co">#&gt; GOTM-WET : Present    |   Absent </span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Observations</span></span>
-<span><span class="co">#&gt; Lake: Present; Level: Absent</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Input</span></span>
-<span><span class="co">#&gt; Inital profile: Present; Inital depth: 48.148m; Hypsograph: Present (n=95);</span></span>
-<span><span class="co">#&gt; Meteo: Present; Use longwave: TRUE; Kw: 0.5666667</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Inflows</span></span>
-<span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Outflows</span></span>
-<span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Water balance</span></span>
-<span><span class="co">#&gt; Method: 2; Use: obs; Modelled: Absent; Water balance: Present</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Parameters: </span></span>
-<span><span class="co">#&gt; Number of parameters: 18</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Output: </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; DY-CD:    1</span></span>
-<span><span class="co">#&gt; GLM-AED:  1</span></span>
-<span><span class="co">#&gt; GOTM-WET: 1</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">AEME</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Lake</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Rotorua (ID: LID11133)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Lat: -38.09; Lon: 176.27</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Elev: 284.88m; Depth: 48.15m; Area: 80659960 m2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Configuration</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model: glm_aed and gotm_wet</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Path: <span style="color: #BB0000;">Not set</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model controls: <span style="color: #00BB00;">Present</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Use biogeochemical model:</span></span>
+<span><span class="co">#&gt; ┌ <span style="color: #00BBBB;">Model Configuration</span> ─────────────────────────────────────────┐</span></span>
+<span><span class="co">#&gt; │       <span style="color: #00BBBB;">Model</span>              <span style="color: #00BBBB;">Physical</span>         <span style="color: #00BBBB;">Biogeochemical</span>     │</span></span>
+<span><span class="co">#&gt; │ ---                                                          │</span></span>
+<span><span class="co">#&gt; │       DY-CD               <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │      GLM-AED             <span style="color: #00BB00;">Present</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │      GOTM-WET            <span style="color: #00BB00;">Present</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; └──────────────────────────────────────────────────────────────┘</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Observations</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Lake: <span style="color: #00BB00;">Present</span>; Level: <span style="color: #BB0000;">Absent</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Input</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Initial profile: <span style="color: #00BB00;">Present</span>; Initial depth: 48.148m</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Hypsograph: <span style="color: #00BB00;">Present</span> (n=95)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Meteo: <span style="color: #00BB00;">Present</span>; Use longwave: TRUE; Kw: 0.566666666666667</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Inflows</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of inflows: 7; Names: NZS4081641, NZS4083363, NZS4084132, NZS4086165,</span></span>
+<span><span class="co">#&gt;   NZS4084816, lumped, precip</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Outflows</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data: <span style="color: #00BB00;">Present</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Water Balance</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Method: 2; Use: obs</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Modelled: <span style="color: #BB0000;">Absent</span>; Water balance: <span style="color: #00BB00;">Present</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Parameters</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of parameters: 18</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Output</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> DY-CD: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GLM-AED: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Variables: 63</span></span>
+<span><span class="co">#&gt; Water temperature, Thermocline depth, Dissolved oxygen, Total chlorophyll a,</span></span>
+<span><span class="co">#&gt; Total nitrogen, Total phosphorus, Water level, Volume, Change in volume,</span></span>
+<span><span class="co">#&gt; Surface area, ... and 53 more</span></span></code></pre></div>
 <p>This allows for quick inspection of all the different slots within
 the <code>Aeme</code> object. The lake section has the lake metadata,
 the time section has the start, stop and spin-up dates, the
@@ -369,48 +394,73 @@ the models in parallel which can speed up the process.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">aeme</span></span>
-<span><span class="co">#&gt;             AEME </span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Lake</span></span>
-<span><span class="co">#&gt; Rotorua (ID: LID11133); Lat: -38.09; Lon: 176.27; Elev: 284.88m; Depth: 48.15m;</span></span>
-<span><span class="co">#&gt; Area: 80659960 m2</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Time</span></span>
-<span><span class="co">#&gt; Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600</span></span>
-<span><span class="co">#&gt;  Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Configuration</span></span>
-<span><span class="co">#&gt;     Model controls: Present</span></span>
-<span><span class="co">#&gt;     Use biogeochemical model: Yes </span></span>
-<span><span class="co">#&gt;           Physical   |   Biogeochemical</span></span>
-<span><span class="co">#&gt; DY-CD    : Absent     |   Absent </span></span>
-<span><span class="co">#&gt; GLM-AED  : Present    |   Present</span></span>
-<span><span class="co">#&gt; GOTM-WET : Present    |   Present</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Observations</span></span>
-<span><span class="co">#&gt; Lake: Present; Level: Absent</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Input</span></span>
-<span><span class="co">#&gt; Inital profile: Present; Inital depth: 48.148m; Hypsograph: Present (n=95);</span></span>
-<span><span class="co">#&gt; Meteo: Present; Use longwave: TRUE; Kw: 0.5666667</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Inflows</span></span>
-<span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Outflows</span></span>
-<span><span class="co">#&gt; Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Water balance</span></span>
-<span><span class="co">#&gt; Method: 2; Use: obs; Modelled: Absent; Water balance: Present</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Parameters: </span></span>
-<span><span class="co">#&gt; Number of parameters: 18</span></span>
-<span><span class="co">#&gt; -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Output: </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; DY-CD:    0</span></span>
-<span><span class="co">#&gt; GLM-AED:  1</span></span>
-<span><span class="co">#&gt; GOTM-WET: 1</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">AEME</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Lake</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Rotorua (ID: LID11133)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Lat: -38.09; Lon: 176.27</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Elev: 284.88m; Depth: 48.15m; Area: 80659960 m2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Configuration</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model: glm_aed and gotm_wet</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Path: <span style="color: #00BB00;">D:\a\AEME\AEME\vignettes\articles\aeme</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model controls: <span style="color: #00BB00;">Present</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Use biogeochemical model: <span style="color: #00BB00;">Yes</span></span></span>
+<span><span class="co">#&gt; ┌ <span style="color: #00BBBB;">Model Configuration</span> ─────────────────────────────────────────┐</span></span>
+<span><span class="co">#&gt; │       <span style="color: #00BBBB;">Model</span>              <span style="color: #00BBBB;">Physical</span>         <span style="color: #00BBBB;">Biogeochemical</span>     │</span></span>
+<span><span class="co">#&gt; │ ---                                                          │</span></span>
+<span><span class="co">#&gt; │       DY-CD               <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │      GLM-AED             <span style="color: #00BB00;">Present</span>             <span style="color: #00BB00;">Present</span>         │</span></span>
+<span><span class="co">#&gt; │      GOTM-WET            <span style="color: #00BB00;">Present</span>             <span style="color: #00BB00;">Present</span>         │</span></span>
+<span><span class="co">#&gt; └──────────────────────────────────────────────────────────────┘</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Observations</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Lake: <span style="color: #00BB00;">Present</span>; Level: <span style="color: #BB0000;">Absent</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Input</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Initial profile: <span style="color: #00BB00;">Present</span>; Initial depth: 48.148m</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Hypsograph: <span style="color: #00BB00;">Present</span> (n=95)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Meteo: <span style="color: #00BB00;">Present</span>; Use longwave: TRUE; Kw: 0.566666666666667</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Inflows</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of inflows: 7; Names: NZS4081641, NZS4083363, NZS4084132, NZS4086165,</span></span>
+<span><span class="co">#&gt;   NZS4084816, lumped, precip</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Outflows</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Data: <span style="color: #00BB00;">Present</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Water Balance</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Method: 2; Use: obs</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Modelled: <span style="color: #BB0000;">Absent</span>; Water balance: <span style="color: #00BB00;">Present</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Parameters</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of parameters: 18</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Output</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> DY-CD: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GLM-AED: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Variables: 37</span></span>
+<span><span class="co">#&gt; Water temperature, Dissolved oxygen, Total chlorophyll a, Total nitrogen, Total</span></span>
+<span><span class="co">#&gt; phosphorus, Evaporative heat flux, Sensible heat flux, Longwave radiation,</span></span>
+<span><span class="co">#&gt; Shortwave radiation, Volume, ... and 27 more</span></span></code></pre></div>
 <p>In the “Output” section of the <code>Aeme</code> object, the “Number
 of ensembles” is set to 1 indicating that there is now output for each
 model in the <code>Aeme</code> object.</p>

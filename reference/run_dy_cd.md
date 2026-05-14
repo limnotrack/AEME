@@ -41,4 +41,4 @@ run_gotm_wet(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
 
 ## Value
 
-Invisibly returns \`NULL\`.
+Invisibly returns `NULL`.

@@ -52,11 +52,11 @@ set_gotm_grid(
 
 - ddu:
 
-  numeric; Surface zooming \[dimensionless; min=0.0; default=0.0\]
+  numeric; Surface zooming (dimensionless; min=0.0; default=0.0)
 
 - ddl:
 
-  numeric; Bottom zooming \[dimensionless; min=0.0; default=0.0\]
+  numeric; Bottom zooming (dimensionless; min=0.0; default=0.0)
 
 ## Value
 

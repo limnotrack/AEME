@@ -129,12 +129,12 @@ messages describing each detected unit conversion applied.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>The input data frame with column names remapped to AEME standard
-  names, values converted to AEME standard units, missing state variables
-  filled with defaults, time coverage validated, and columns trimmed to
-  <code>pot_inf_vars</code> (when supplied). Columns that could not be matched are
-  retained unchanged with a warning. A warning is also emitted if required
-  variables (<code>flow</code>, <code>temp</code>, <code>salt</code>) are absent after
-  renaming.</p>
+names, values converted to AEME standard units, missing state variables
+filled with defaults, time coverage validated, and columns trimmed to
+<code>pot_inf_vars</code> (when supplied). Columns that could not be matched are
+retained unchanged with a warning. A warning is also emitted if required
+variables (<code>flow</code>, <code>temp</code>, <code>salt</code>) are absent after
+renaming.</p>
     </div>
     <div class="section level2">
     <h2 id="aeme-standard-inflow-variables-and-units">AEME standard inflow variables and units<a class="anchor" aria-label="anchor" href="#aeme-standard-inflow-variables-and-units"></a></h2>
@@ -149,23 +149,23 @@ messages describing each detected unit conversion applied.</p></dd>
 Detection thresholds are based on comparison of observed value ranges
 against the example inflow data distributed with AEME:</p>
 <ul><li><p><strong>N fractions</strong> (<code>NIT_amm</code>, <code>NIT_nit</code>, <code>OGM_don</code>,
-    <code>OGM_pon</code>): mmol/m³ typically 0-10. Median &gt; 20 assumed to be
-    mg/L and divided by the molar mass of N (14.007 g/mol).</p></li>
+<code>OGM_pon</code>): mmol/m³ typically 0-10. Median &gt; 20 assumed to be
+mg/L and divided by the molar mass of N (14.007 g/mol).</p></li>
 <li><p><strong>P fractions</strong> (<code>PHS_frp</code>, <code>OGM_dop</code>, <code>OGM_pop</code>,
-    <code>PHS_frp_ads</code>): mmol/m³ typically 0-5. Median &gt; 10 assumed to be
-    mg/L and divided by the molar mass of P (30.974 g/mol).</p></li>
+<code>PHS_frp_ads</code>): mmol/m³ typically 0-5. Median &gt; 10 assumed to be
+mg/L and divided by the molar mass of P (30.974 g/mol).</p></li>
 <li><p><strong>C fractions</strong> (<code>OGM_doc</code>, <code>OGM_poc</code>): mmol/m³
-    typically 0-100. Median &gt; 100 assumed to be mg/L and divided by the
-    molar mass of C (12.011 g/mol).</p></li>
+typically 0-100. Median &gt; 100 assumed to be mg/L and divided by the
+molar mass of C (12.011 g/mol).</p></li>
 <li><p><strong>Dissolved inorganic C</strong> (<code>CAR_dic</code>): mmol/m³ typically
-    500-1000. Median &gt; 2000 assumed to be mg/L.</p></li>
+500-1000. Median &gt; 2000 assumed to be mg/L.</p></li>
 <li><p><strong>Dissolved oxygen</strong> (<code>OXY_oxy</code>): mmol/m³ typically
-    200-400. Median &lt; 50 assumed to be mg/L and multiplied by 1000/32
-    (molar mass of O2).</p></li>
+200-400. Median &lt; 50 assumed to be mg/L and multiplied by 1000/32
+(molar mass of O2).</p></li>
 <li><p><strong>Silica</strong> (<code>SIL_rsi</code>): mmol/m³ typically 1-50. Median
-    &gt; 100 assumed to be mg/L and divided by molar mass of SiO2 (60.084).</p></li>
+&gt; 100 assumed to be mg/L and divided by molar mass of SiO2 (60.084).</p></li>
 <li><p><strong>Temperature</strong> (<code>temp</code>): °C expected. Median &gt; 100
-    assumed to be Kelvin.</p></li>
+assumed to be Kelvin.</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

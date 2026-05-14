@@ -1,9 +1,10 @@
 # Example dataset of parameters for the GOTM-WET model
 
-All the parameters within the \`gotm.yaml\` and \`fabm.yaml\` file. This
+All the parameters within the `gotm.yaml` and `fabm.yaml` file. This
 includes three phytoplankton groups (greens, cyanobacteria an diatoms),
 one zooplankton group (cladocerans). This has the values in the default
-file and 25
+file and 25 % parameter ranges for sensitivity analysis or model
+calibration.
 
 ## Usage
 

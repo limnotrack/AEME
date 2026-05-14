@@ -1,6 +1,6 @@
 # Insert default aeme list code snippet.
 
-Call this function as an addin to insert a default \`aeme\` list at the
+Call this function as an addin to insert a default `aeme` list at the
 cursor position.
 
 ## Usage

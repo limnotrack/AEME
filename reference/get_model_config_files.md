@@ -16,8 +16,7 @@ get_model_config_files(aeme, model, path, lake_dir = NULL)
 
 - model:
 
-  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
-  \`gotm_wet\`.
+  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
 
 - path:
 
@@ -27,7 +26,7 @@ get_model_config_files(aeme, model, path, lake_dir = NULL)
 - lake_dir:
 
   Path to the lake AEME directory. If NULL, it will be computed from
-  \`aeme\` and \`path\`.
+  `aeme` and `path`.
 
 ## Value
 

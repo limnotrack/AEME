@@ -11,7 +11,7 @@ aed_phyto_pars
 
 ## Format
 
-\`aed_phyto_pars\` A data frame with 564 rows and 5 columns:
+`aed_phyto_pars` A data frame with 564 rows and 5 columns:
 
 - parameter_name:
 

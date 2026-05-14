@@ -1,8 +1,9 @@
 # Example dataset of parameters for the DYRESM-CAEDYM model
 
-This dataset contains all parameters defined in the \`.par\` and
-\`.cfg\` file. The values represent defaults from the standard
-configuration file, with ±25
+This dataset contains all parameters defined in the `.par` and `.cfg`
+file. The values represent defaults from the standard configuration
+file, with ±25% parameter ranges for use in sensitivity analysis or
+model calibration.
 
 ## Usage
 
@@ -46,7 +47,7 @@ A data frame with 253 rows and 9 columns:
 - index:
 
   Index for parameters with multiple values in a vector (e.g.,
-  \`"sediment/sed_temp_mean"\` in GLM-AED)
+  `"sediment/sed_temp_mean"` in GLM-AED)
 
 - module:
 

@@ -16,8 +16,7 @@ check_var_in_output(aeme, model, var_sim, ens_n = 1)
 
 - model:
 
-  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
-  \`gotm_wet\`.
+  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
 
 - var_sim:
 
@@ -30,4 +29,4 @@ check_var_in_output(aeme, model, var_sim, ens_n = 1)
 ## Value
 
 A list with logical matrices indicating if each variable is present per
-model, plus an overall \`all_present\` flag.
+model, plus an overall `all_present` flag.

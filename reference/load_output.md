@@ -25,8 +25,7 @@ load_output(
 
 - model:
 
-  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
-  \`gotm_wet\`.
+  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
 
 - path:
 

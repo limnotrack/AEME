@@ -25,12 +25,23 @@ estimate_surface_temperature(
 - df:
 
   data frame with meteorological and observed surface temperature data.
-  Must include columns: - `Date`: Date of observation - `MET_tmpair`:
-  Air temperature (°C) - `MET_wndspd`: Wind speed (m/s) - `MET_radswd`:
-  Downward shortwave radiation (W/m²) - `MET_radlwd`: Downward longwave
-  radiation (W/m²) - `MET_prvapr`: Vapor pressure (mb) - `HYD_temp`:
-  Observed surface temperature (°C), - `T5avg`: 5-day average air
-  temperature (°C)
+  Must include columns:
+
+  - `Date`: Date of observation
+
+  - `MET_tmpair`: Air temperature (°C)
+
+  - `MET_wndspd`: Wind speed (m/s)
+
+  - `MET_radswd`: Downward shortwave radiation (W/m²)
+
+  - `MET_radlwd`: Downward longwave radiation (W/m²)
+
+  - `MET_prvapr`: Vapor pressure (mb)
+
+  - `HYD_temp`: Observed surface temperature (°C),
+
+  - `T5avg`: 5-day average air temperature (°C)
 
 - depth:
 

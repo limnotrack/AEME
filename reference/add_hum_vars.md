@@ -18,7 +18,7 @@ add_hum_vars(data, hum_method = 1)
 
 - hum_method:
 
-  Method for humidity input: 1 = relative humidity ( 2 = wet bulb
+  Method for humidity input: 1 = relative humidity (%) 2 = wet bulb
   temperature (degC or K) 3 = dew point temperature (degC or K) 4 =
   specific humidity (kg/kg)
 

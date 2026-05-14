@@ -12,7 +12,8 @@ plot_wbal_summaries(wbal)
 
 - wbal:
 
-  Water balance object created with \`get_wbal_components()\`
+  Water balance object created with
+  [`get_wbal_components()`](https://limnotrack.com/reference/get_wbal_components.md)
 
 ## Value
 

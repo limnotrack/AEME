@@ -27,7 +27,7 @@ o2_at_sat(
 
 - altitude:
 
-  altitude (m). Only used if \`baro\` is missing.
+  altitude (m). Only used if `baro` is missing.
 
 - salinity:
 

@@ -50,8 +50,8 @@ generate_hypsograph(
 - z_range:
 
   numeric; 0-1, representing fraction of hypsograph to be used for
-  extrapolation. Default is 0.2, which uses the top 20 for
-  extrapolation.
+  extrapolation. Default is 0.2, which uses the top 20% of the
+  hypsograph for extrapolation.
 
 - ext_elev:
 

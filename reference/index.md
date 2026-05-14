@@ -318,7 +318,7 @@
 - [`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)
   : Read model outputs and format to AEME standard
 - [`read_model_wlev()`](https://limnotrack.com/reference/read_model_wlev.md)
-  : Read water level from model output
+  **\[stable\]** : Read water level from model output
 - [`read_nml()`](https://limnotrack.com/reference/read_nml.md) : read in
   a GLM simulation \*.nml file
 - [`remove_inflow()`](https://limnotrack.com/reference/remove_inflow.md)

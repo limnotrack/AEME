@@ -55,7 +55,7 @@ read_glm_output(
 
 - file:
 
-  File path to netCDF file. Only used if \`nc\` is NULL.
+  File path to netCDF file. Only used if `nc` is NULL.
 
 - phyto_pars:
 

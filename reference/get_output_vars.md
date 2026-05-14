@@ -16,8 +16,7 @@ get_output_vars(aeme, model, ens_n = 1)
 
 - model:
 
-  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
-  \`gotm_wet\`.
+  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
 
 - ens_n:
 
@@ -141,10 +140,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-05-13 22:49:06]
-#> ✔ Model run complete! [2026-05-13 22:49:09]
-#> ℹ Reading models in parallel...[2026-05-13 22:49:09]
-#> ✔ Model reading complete! [2026-05-13 22:49:11]
+#> ℹ Running models in parallel... [2026-05-14 03:05:14]
+#> ✔ Model run complete! [2026-05-14 03:05:17]
+#> ℹ Reading models in parallel...[2026-05-14 03:05:17]
+#> ✔ Model reading complete! [2026-05-14 03:05:20]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 

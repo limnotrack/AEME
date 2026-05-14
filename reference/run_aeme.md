@@ -29,8 +29,7 @@ run_aeme(
 
 - model:
 
-  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
-  \`gotm_wet\`.
+  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
 
 - path:
 
@@ -66,7 +65,7 @@ run_aeme(
 - ncores:
 
   integer; number of cores to use for parallelization. Defaults to
-  \`min(c(detectCores() - 1, length(model)))\`.
+  `min(c(detectCores() - 1, length(model)))`.
 
 - check_output:
 
@@ -74,12 +73,12 @@ run_aeme(
 
 - return:
 
-  logical; return model output within an \`aeme\` object? Defaults to
+  logical; return model output within an `aeme` object? Defaults to
   TRUE.
 
 ## Value
 
-an \`aeme\` object with model output loaded.
+an `aeme` object with model output loaded.
 
 ## Examples
 

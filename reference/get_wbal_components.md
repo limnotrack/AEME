@@ -16,8 +16,7 @@ get_wbal_components(aeme, model, remove_spin_up = TRUE, cumulative = FALSE)
 
 - model:
 
-  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
-  \`gotm_wet\`.
+  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
 
 - remove_spin_up:
 

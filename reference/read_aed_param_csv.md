@@ -24,4 +24,4 @@ write_aed_param_csv(df, file)
 
 ## Value
 
-For \`read_aed_param_csv\`, a data frame read from the CSV file.
+For `read_aed_param_csv`, a data frame read from the CSV file.

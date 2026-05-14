@@ -1,13 +1,13 @@
 # Generate variable mapping code for lake observation data
 
 This function generates R code to create a variable mapping data frame
-(\`var_map\`) used in the
+(`var_map`) used in the
 [`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md)
 function. It takes a data frame of lake observation data and fuzzy
 matches variable names to their corresponding AEME variable names using
-the \`key_naming\` dataset. When inputting the units of your data,
-please ensure they are in the format recognized by the \`units\` package
-(e.g. "m", "m^3", "degC", "mg/L", "g/m^3").
+the `key_naming` dataset. When inputting the units of your data, please
+ensure they are in the format recognized by the `units` package (e.g.
+"m", "m^3", "degC", "mg/L", "g/m^3").
 
 ## Usage
 
@@ -28,9 +28,9 @@ generate_var_map_code(data, var_col_name = "name")
 
 ## Value
 
-A character string containing R code to create the \`var_map\` data
-frame. The code can be copied and pasted into your script and modified
-as needed.
+A character string containing R code to create the `var_map` data frame.
+The code can be copied and pasted into your script and modified as
+needed.
 
 ## Examples
 

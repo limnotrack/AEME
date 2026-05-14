@@ -62,11 +62,11 @@
 
 
 <dl><dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
-<dd><p>directory where aeme.yaml file is located. Can be used instead of `file` argument.</p></dd>
+<dd><p>directory where aeme.yaml file is located. Can be used instead of <code>file</code> argument.</p></dd>
 
 
 <dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
-<dd><p>filepath; to aeme.yaml file. Can be used instead of `path` and `file` arguments.</p></dd>
+<dd><p>filepath; to aeme.yaml file. Can be used instead of <code>path</code> and <code>file</code> arguments.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -79,48 +79,70 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">aeme_yaml</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/lake/aeme.yaml"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">yaml_to_aeme</span><span class="op">(</span>file <span class="op">=</span> <span class="va">aeme_yaml</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 			   AEME </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Lake</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Wainamu (ID: LID45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Area: 152343 m2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Configuration</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Model controls: Absent </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Use biogeochemical model: No</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           Physical   |   Biogeochemical</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DY-CD    : Absent     |   Absent </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GLM-AED  : Absent     |   Absent </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GOTM-WET : Absent     |   Absent </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Observations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Lake: Present; Level: Present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Input</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Inital profile: Absent; Inital depth: 13.07m; Hypsograph: Present (n=132);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Meteo: Present; Use longwave: TRUE; Kw: 1.31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Inflows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Outflows</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Water balance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Method: 2; Use: obs; Modelled: Absent; Water balance: Absent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Parameters: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of parameters: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Output: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DY-CD:    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GLM-AED:  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GOTM-WET: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">AEME</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Lake</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wainamu (ID: LID45819)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Lat: -36.89; Lon: 174.47</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Elev: 23.64m; Depth: 13.07m; Area: 152343 m2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Time</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Configuration</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Model:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Path: <span style="color: #BB0000;">Not set</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Model controls: <span style="color: #BB0000;">Absent</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Use biogeochemical model: <span style="color: #BB0000;">No</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ┌ <span style="color: #00BBBB;">Model Configuration</span> ─────────────────────────────────────────┐</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> │       <span style="color: #00BBBB;">Model</span>              <span style="color: #00BBBB;">Physical</span>         <span style="color: #00BBBB;">Biogeochemical</span>     │</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> │ ---                                                          │</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> │       DY-CD               <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> │      GLM-AED              <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> │      GOTM-WET             <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> └──────────────────────────────────────────────────────────────┘</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Observations</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Lake: <span style="color: #00BB00;">Present</span>; Level: <span style="color: #00BB00;">Present</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Input</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Initial profile: <span style="color: #BB0000;">Absent</span>; Initial depth: 13.07m</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Hypsograph: <span style="color: #00BB00;">Present</span> (n=132)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Meteo: <span style="color: #00BB00;">Present</span>; Use longwave: TRUE; Kw: 1.31</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Inflows</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Number of inflows: 1; Names: FWMT</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Outflows</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Data: <span style="color: #00BB00;">Present</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Water Balance</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Method: 2; Use: obs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Modelled: <span style="color: #BB0000;">Absent</span>; Water balance: <span style="color: #BB0000;">Absent</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Parameters</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Number of parameters: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Output</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> DY-CD: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> GLM-AED: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> GOTM-WET: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Variables: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> None</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

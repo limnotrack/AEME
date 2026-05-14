@@ -79,64 +79,64 @@ file. This includes 452 GLM parameters across 24 namelist blocks (e.g.,
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
     <p>A data frame with 452 rows and 9 variables:</p><dl><dt>module</dt>
 <dd><p>Character. The configuration block (GLM) or module (AED)
-    the parameter belongs to. GLM modules correspond to Fortran namelist
-    blocks in glm3.nml (e.g., <code>"glm_setup"</code>, <code>"mixing"</code>,
-    <code>"morphometry"</code>, <code>"time"</code>, <code>"output"</code>,
-    <code>"init_profiles"</code>, <code>"light"</code>, <code>"bird_model"</code>,
-    <code>"sediment"</code>, <code>"snowice"</code>, <code>"meteorology"</code>,
-    <code>"inflow"</code>, <code>"outflow"</code>, <code>"wq_setup"</code>). AED modules
-    correspond to namelist blocks in aed.nml (e.g., <code>"aed_oxygen"</code>,
-    <code>"aed_nitrogen"</code>, <code>"aed_phosphorus"</code>, <code>"aed_silica"</code>,
-    <code>"aed_phytoplankton"</code>, <code>"aed_sedflux"</code>,
-    <code>"aed_seddiagenesis"</code>).</p></dd>
+the parameter belongs to. GLM modules correspond to Fortran namelist
+blocks in glm3.nml (e.g., <code>"glm_setup"</code>, <code>"mixing"</code>,
+<code>"morphometry"</code>, <code>"time"</code>, <code>"output"</code>,
+<code>"init_profiles"</code>, <code>"light"</code>, <code>"bird_model"</code>,
+<code>"sediment"</code>, <code>"snowice"</code>, <code>"meteorology"</code>,
+<code>"inflow"</code>, <code>"outflow"</code>, <code>"wq_setup"</code>). AED modules
+correspond to namelist blocks in aed.nml (e.g., <code>"aed_oxygen"</code>,
+<code>"aed_nitrogen"</code>, <code>"aed_phosphorus"</code>, <code>"aed_silica"</code>,
+<code>"aed_phytoplankton"</code>, <code>"aed_sedflux"</code>,
+<code>"aed_seddiagenesis"</code>).</p></dd>
 
-  <dt>group</dt>
+<dt>group</dt>
 <dd><p>Character. An optional sub-category grouping related
-    parameters by process or function within a module. For example,
-    <code>"nitrification"</code>, <code>"denitrification"</code>, and
-    <code>"sediment_flux"</code> within the <code>aed_nitrogen</code> module; or
-    <code>"radiation"</code>, <code>"wind"</code>, and <code>"rainfall"</code> within the
-    <code>meteorology</code> module. Empty string (<code>""</code>) where no
-    sub-grouping applies.</p></dd>
+parameters by process or function within a module. For example,
+<code>"nitrification"</code>, <code>"denitrification"</code>, and
+<code>"sediment_flux"</code> within the <code>aed_nitrogen</code> module; or
+<code>"radiation"</code>, <code>"wind"</code>, and <code>"rainfall"</code> within the
+<code>meteorology</code> module. Empty string (<code>""</code>) where no
+sub-grouping applies.</p></dd>
 
-  <dt>parameter</dt>
+<dt>parameter</dt>
 <dd><p>Character. The parameter name as used in the
-    configuration file (e.g., <code>"max_layers"</code>, <code>"Fsed_oxy"</code>,
-    <code>"R_nitrif"</code>).</p></dd>
+configuration file (e.g., <code>"max_layers"</code>, <code>"Fsed_oxy"</code>,
+<code>"R_nitrif"</code>).</p></dd>
 
-  <dt>label</dt>
+<dt>label</dt>
 <dd><p>Character. A short, human-readable label for the parameter
-    (e.g., <code>"Layers"</code>, <code>"Sediment O2 flux"</code>,
-    <code>"Nitrification rate"</code>).</p></dd>
+(e.g., <code>"Layers"</code>, <code>"Sediment O2 flux"</code>,
+<code>"Nitrification rate"</code>).</p></dd>
 
-  <dt>symbol</dt>
+<dt>symbol</dt>
 <dd><p>Character. The mathematical symbol used in the model
-    documentation and equations, rendered as plain text (e.g.,
-    <code>"N_MAX"</code>, <code>"F_sed^oxy"</code>, <code>"theta_nitrif"</code>).
-    Empty string where no symbol is defined.</p></dd>
+documentation and equations, rendered as plain text (e.g.,
+<code>"N_MAX"</code>, <code>"F_sed^oxy"</code>, <code>"theta_nitrif"</code>).
+Empty string where no symbol is defined.</p></dd>
 
-  <dt>description</dt>
+<dt>description</dt>
 <dd><p>Character. A description of the parameter, its role
-    in the model, and any relevant context.</p></dd>
+in the model, and any relevant context.</p></dd>
 
-  <dt>units</dt>
+<dt>units</dt>
 <dd><p>Character. The units of the parameter. Uses <code>"-"</code> for
-    dimensionless quantities, <code>"string"</code> for text parameters, and
-    <code>"boolean"</code> for logical switches. Physical units follow standard
-    abbreviations (e.g., <code>"m"</code>, <code>"mmol O2/m3"</code>,
-    <code>"mmol N/m2/d"</code>, <code>"/d"</code>).</p></dd>
+dimensionless quantities, <code>"string"</code> for text parameters, and
+<code>"boolean"</code> for logical switches. Physical units follow standard
+abbreviations (e.g., <code>"m"</code>, <code>"mmol O2/m3"</code>,
+<code>"mmol N/m2/d"</code>, <code>"/d"</code>).</p></dd>
 
-  <dt>default</dt>
+<dt>default</dt>
 <dd><p>Character. The default value of the parameter as
-    documented, or an empty string (<code>""</code>) where no default is
-    specified in the source documentation.</p></dd>
+documented, or an empty string (<code>""</code>) where no default is
+specified in the source documentation.</p></dd>
 
-  <dt>source</dt>
+<dt>source</dt>
 <dd><p>Character. URL of the documentation page from which the
-    parameter information was extracted. GLM parameters are sourced from
-    <a href="https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html" class="external-link">https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html</a>
-    and AED parameters from individual chapter pages of the AED Science
-    Manual at <a href="https://aquaticecodynamics.github.io/aed-science/" class="external-link">https://aquaticecodynamics.github.io/aed-science/</a>.</p></dd>
+parameter information was extracted. GLM parameters are sourced from
+<a href="https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html" class="external-link">https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html</a>
+and AED parameters from individual chapter pages of the AED Science
+Manual at <a href="https://aquaticecodynamics.github.io/aed-science/" class="external-link">https://aquaticecodynamics.github.io/aed-science/</a>.</p></dd>
 
 
 </dl></div>
@@ -162,7 +162,6 @@ AED modular simulation platform. Zenodo.
 they belong to) and optionally by <code>group</code> (a sub-category describing
 the process context, such as <code>"nitrification"</code>,
 <code>"sediment_flux"</code>, or <code>"radiation"</code>).</p>
-
 <p>The GLM (General Lake Model) parameters configure the hydrodynamic model,
 including layer structure, mixing, morphometry, meteorological forcing,
 boundary conditions (inflows and outflows), light penetration, ice/snow
