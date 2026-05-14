@@ -194,6 +194,8 @@ We have a host of vignettes to help you get started with AEME:
   : Convert AEME model outputs to inflow format
 - [`align_depth_data()`](https://limnotrack.com/reference/align_depth_data.md)
   : Align observation depth data with model data
+- [`ansi_set_knit_hooks()`](https://limnotrack.com/reference/ansi_set_knit_hooks.md)
+  : Set knitr Hooks for ANSI Aware HTML Output
 - [`assess_model()`](https://limnotrack.com/reference/assess_model.md) :
   Assess model performance
 - [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) :
