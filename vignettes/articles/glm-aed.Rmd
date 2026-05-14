@@ -15,6 +15,13 @@ options(AEME.inform = FALSE)
 library(AEME)
 ```
 
+```{r}
+#| label: ansi-css
+#| echo: false
+#| results: asis
+AEME::ansi_set_knit_hooks(knitr::knit_hooks)
+```
+
 <a href="#parameter-library" class="skip-btn">⬇ Skip to Parameter Library</a>
 
 <style>
