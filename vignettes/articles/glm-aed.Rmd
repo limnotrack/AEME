@@ -167,6 +167,68 @@ DT::datatable(
 
 ```
 
+### AED Phytoplankton Group Parameters
+
+```{r aed-phyto-lib, echo=FALSE}
+
+phyto_file <- system.file(
+  "extdata/glm_aed/aed_phyto_pars.csv",
+  package = "AEME"
+)
+aed_phyto_params <- readr::read_csv(phyto_file, show_col_types = FALSE)
+# aed_phyto_pars <- AEME::read_aed_param_csv("inst/extdata/glm_aed/aed_phyto_pars.csv")
+
+param_desc <- aed_phyto_pars |>
+  dplyr::select(parameter_name, description) |> 
+  dplyr::distinct(parameter_name, .keep_all = TRUE)
+
+df_wide <- aed_phyto_params |> 
+  dplyr::left_join(param_desc, by = c("p_name" = "parameter_name"))
+
+DT::datatable(
+  df_display,
+  escape    = FALSE,
+  rownames  = FALSE,
+  filter    = "top",
+  extensions = c("Buttons", "FixedHeader", "FixedColumns"),
+  options   = list(
+    dom        = "Bfrtip",
+    buttons    = c("csv", "excel"),
+    pageLength = 25,
+    lengthMenu = c(10, 25, 50),
+    fixedHeader = TRUE,
+    scrollX    = TRUE,
+    scrollY    = "600px",
+    fixedColumns = list(leftN = 1, rightN = 1),
+    autoWidth  = FALSE,
+    columnDefs = list(
+      list(width = "120px", targets = 0),
+      list(width = "80px",  targets = seq_len(n_groups)),
+      list(width = "300px", targets = n_groups + 1),
+      list(className = "dt-center", targets = seq_len(n_groups))
+    )
+  )
+) |>
+  DT::formatStyle(
+    "p_name",
+    fontWeight = "bold",
+    fontFamily = "monospace"
+  ) |>
+  DT::formatStyle(
+    "description",
+    color    = "grey40",
+    fontSize = "12px"
+  ) |>
+  DT::formatRound(
+    columns = group_cols,
+    digits  = 3
+  ) |>
+  DT::formatStyle(
+    columns   = 1:(n_groups + 2),
+    fontSize  = "13px"
+  )
+
+```
 
 ---
 
