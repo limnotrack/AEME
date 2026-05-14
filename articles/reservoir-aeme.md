@@ -522,7 +522,7 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpyY2KKm\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmpo7MkFJ\reservoir
 #> ℹ All columns already match AEME standard variable names, skipping name
 #>   guessing.
 #> ℹ All columns already match AEME standard inflow variable names, skipping name
@@ -543,10 +543,10 @@ aeme <- build_aeme(
 ``` r
 
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-14 04:05:37]
-#> → GLM-AED running... [2026-05-14 04:05:37]
-#> ✔ GLM-AED run successful! [2026-05-14 04:05:37]
-#> ✔ Model run complete! [2026-05-14 04:05:37]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-14 04:49:17]
+#> → GLM-AED running... [2026-05-14 04:49:17]
+#> ✔ GLM-AED run successful! [2026-05-14 04:49:17]
+#> ✔ Model run complete! [2026-05-14 04:49:17]
 ```
 
 ## View the output
