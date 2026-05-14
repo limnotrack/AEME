@@ -7,49 +7,49 @@
 \format{
 A data frame with 452 rows and 9 variables:
 \describe{
-  \item{module}{Character. The configuration block (GLM) or module (AED)
-    the parameter belongs to. GLM modules correspond to Fortran namelist
-    blocks in glm3.nml (e.g., \code{"glm_setup"}, \code{"mixing"},
-    \code{"morphometry"}, \code{"time"}, \code{"output"},
-    \code{"init_profiles"}, \code{"light"}, \code{"bird_model"},
-    \code{"sediment"}, \code{"snowice"}, \code{"meteorology"},
-    \code{"inflow"}, \code{"outflow"}, \code{"wq_setup"}). AED modules
-    correspond to namelist blocks in aed.nml (e.g., \code{"aed_oxygen"},
-    \code{"aed_nitrogen"}, \code{"aed_phosphorus"}, \code{"aed_silica"},
-    \code{"aed_phytoplankton"}, \code{"aed_sedflux"},
-    \code{"aed_seddiagenesis"}).}
-  \item{group}{Character. An optional sub-category grouping related
-    parameters by process or function within a module. For example,
-    \code{"nitrification"}, \code{"denitrification"}, and
-    \code{"sediment_flux"} within the \code{aed_nitrogen} module; or
-    \code{"radiation"}, \code{"wind"}, and \code{"rainfall"} within the
-    \code{meteorology} module. Empty string (\code{""}) where no
-    sub-grouping applies.}
-  \item{parameter}{Character. The parameter name as used in the
-    configuration file (e.g., \code{"max_layers"}, \code{"Fsed_oxy"},
-    \code{"R_nitrif"}).}
-  \item{label}{Character. A short, human-readable label for the parameter
-    (e.g., \code{"Layers"}, \code{"Sediment O2 flux"},
-    \code{"Nitrification rate"}).}
-  \item{symbol}{Character. The mathematical symbol used in the model
-    documentation and equations, rendered as plain text (e.g.,
-    \code{"N_MAX"}, \code{"F_sed^oxy"}, \code{"theta_nitrif"}).
-    Empty string where no symbol is defined.}
-  \item{description}{Character. A description of the parameter, its role
-    in the model, and any relevant context.}
-  \item{units}{Character. The units of the parameter. Uses \code{"-"} for
-    dimensionless quantities, \code{"string"} for text parameters, and
-    \code{"boolean"} for logical switches. Physical units follow standard
-    abbreviations (e.g., \code{"m"}, \code{"mmol O2/m3"},
-    \code{"mmol N/m2/d"}, \code{"/d"}).}
-  \item{default}{Character. The default value of the parameter as
-    documented, or an empty string (\code{""}) where no default is
-    specified in the source documentation.}
-  \item{source}{Character. URL of the documentation page from which the
-    parameter information was extracted. GLM parameters are sourced from
-    \url{https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html}
-    and AED parameters from individual chapter pages of the AED Science
-    Manual at \url{https://aquaticecodynamics.github.io/aed-science/}.}
+\item{module}{Character. The configuration block (GLM) or module (AED)
+the parameter belongs to. GLM modules correspond to Fortran namelist
+blocks in glm3.nml (e.g., \code{"glm_setup"}, \code{"mixing"},
+\code{"morphometry"}, \code{"time"}, \code{"output"},
+\code{"init_profiles"}, \code{"light"}, \code{"bird_model"},
+\code{"sediment"}, \code{"snowice"}, \code{"meteorology"},
+\code{"inflow"}, \code{"outflow"}, \code{"wq_setup"}). AED modules
+correspond to namelist blocks in aed.nml (e.g., \code{"aed_oxygen"},
+\code{"aed_nitrogen"}, \code{"aed_phosphorus"}, \code{"aed_silica"},
+\code{"aed_phytoplankton"}, \code{"aed_sedflux"},
+\code{"aed_seddiagenesis"}).}
+\item{group}{Character. An optional sub-category grouping related
+parameters by process or function within a module. For example,
+\code{"nitrification"}, \code{"denitrification"}, and
+\code{"sediment_flux"} within the \code{aed_nitrogen} module; or
+\code{"radiation"}, \code{"wind"}, and \code{"rainfall"} within the
+\code{meteorology} module. Empty string (\code{""}) where no
+sub-grouping applies.}
+\item{parameter}{Character. The parameter name as used in the
+configuration file (e.g., \code{"max_layers"}, \code{"Fsed_oxy"},
+\code{"R_nitrif"}).}
+\item{label}{Character. A short, human-readable label for the parameter
+(e.g., \code{"Layers"}, \code{"Sediment O2 flux"},
+\code{"Nitrification rate"}).}
+\item{symbol}{Character. The mathematical symbol used in the model
+documentation and equations, rendered as plain text (e.g.,
+\code{"N_MAX"}, \code{"F_sed^oxy"}, \code{"theta_nitrif"}).
+Empty string where no symbol is defined.}
+\item{description}{Character. A description of the parameter, its role
+in the model, and any relevant context.}
+\item{units}{Character. The units of the parameter. Uses \code{"-"} for
+dimensionless quantities, \code{"string"} for text parameters, and
+\code{"boolean"} for logical switches. Physical units follow standard
+abbreviations (e.g., \code{"m"}, \code{"mmol O2/m3"},
+\code{"mmol N/m2/d"}, \code{"/d"}).}
+\item{default}{Character. The default value of the parameter as
+documented, or an empty string (\code{""}) where no default is
+specified in the source documentation.}
+\item{source}{Character. URL of the documentation page from which the
+parameter information was extracted. GLM parameters are sourced from
+\url{https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html}
+and AED parameters from individual chapter pages of the AED Science
+Manual at \url{https://aquaticecodynamics.github.io/aed-science/}.}
 }
 }
 \source{
@@ -87,7 +87,6 @@ Parameters are organised by \code{module} (the namelist block or AED module
 they belong to) and optionally by \code{group} (a sub-category describing
 the process context, such as \code{"nitrification"},
 \code{"sediment_flux"}, or \code{"radiation"}).
-
 
 The GLM (General Lake Model) parameters configure the hydrodynamic model,
 including layer structure, mixing, morphometry, meteorological forcing,

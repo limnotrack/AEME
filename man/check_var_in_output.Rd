@@ -9,8 +9,8 @@ check_var_in_output(aeme, model, var_sim, ens_n = 1)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
+\code{gotm_wet}.}
 
 \item{var_sim}{string; of variable to plot}
 
@@ -18,7 +18,7 @@ check_var_in_output(aeme, model, var_sim, ens_n = 1)
 }
 \value{
 A list with logical matrices indicating if each variable is present per model,
-  plus an overall `all_present` flag.
+plus an overall \code{all_present} flag.
 }
 \description{
 Check if a variable is present in the model output

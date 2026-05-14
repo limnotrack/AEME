@@ -15,7 +15,7 @@ estimate_zone_fluxes(
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to the current 
+\item{path}{filepath; where input files are located relative to the current
 working directory.}
 
 \item{ref_depth}{Numeric. Reference depth (m) for literature baseline
@@ -30,14 +30,14 @@ Default \code{TRUE}.}
 }
 \value{
 Invisibly, a named list:
-  \describe{
-    \item{fsed_oxy}{Numeric vector, length n_zones (mmol O2/m2/d, negative)}
-    \item{fsed_amm}{Numeric vector, length n_zones (mmol N/m2/d)}
-    \item{fsed_nit}{Numeric vector, length n_zones (mmol N/m2/d)}
-    \item{fsed_frp}{Numeric vector, length n_zones (mmol P/m2/d)}
-    \item{zone_summary}{Data frame of zone geometry and final flux estimates}
-    \item{method}{Character: "baseline_scaled" or "obs_adjusted"}
-  }
+\describe{
+\item{fsed_oxy}{Numeric vector, length n_zones (mmol O2/m2/d, negative)}
+\item{fsed_amm}{Numeric vector, length n_zones (mmol N/m2/d)}
+\item{fsed_nit}{Numeric vector, length n_zones (mmol N/m2/d)}
+\item{fsed_frp}{Numeric vector, length n_zones (mmol P/m2/d)}
+\item{zone_summary}{Data frame of zone geometry and final flux estimates}
+\item{method}{Character: "baseline_scaled" or "obs_adjusted"}
+}
 }
 \description{
 Estimate zone-specific sediment fluxes from hypsograph
@@ -58,8 +58,8 @@ fluxes <- estimate_zone_fluxes(zone_heights, hypsograph,
 }
 \references{
 Beutel (2006) doi:10.1016/j.jhydrol.2006.06.007
-  Müller et al. (2012) doi:10.1007/s10750-011-0932-0
-  Nürnberg (1984) doi:10.4319/lo.1984.29.1.0111
-  Seitzinger (1988) doi:10.4319/lo.1988.33.4part2.0702
-  Sondergaard et al. (2003) doi:10.1046/j.1365-2427.2003.01053.x
+Müller et al. (2012) doi:10.1007/s10750-011-0932-0
+Nürnberg (1984) doi:10.4319/lo.1984.29.1.0111
+Seitzinger (1988) doi:10.4319/lo.1988.33.4part2.0702
+Sondergaard et al. (2003) doi:10.1046/j.1365-2427.2003.01053.x
 }

@@ -18,7 +18,7 @@ o2_at_sat(
 
 \item{baro}{barometric pressure (mb)}
 
-\item{altitude}{altitude (m). Only used if `baro` is missing.}
+\item{altitude}{altitude (m). Only used if \code{baro} is missing.}
 
 \item{salinity}{salinity (ppt).}
 

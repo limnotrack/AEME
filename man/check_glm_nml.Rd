@@ -10,7 +10,7 @@ check_glm_nml(file)
 \item{file}{path to GLM nml file}
 }
 \value{
-Invisibly returns TRUE if no issues found, otherwise aborts with 
+Invisibly returns TRUE if no issues found, otherwise aborts with
 informative messages
 }
 \description{

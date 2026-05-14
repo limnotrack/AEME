@@ -11,7 +11,7 @@ add_met(aeme, met)
 
 \item{met}{data frame with meteorological data. Must include columns "Date",
 "MET_radswd", "MET_radswd", "MET_pprain" and "MET_wndspd" or "MET_wnduvu" and
- "MET_wnduvv".}
+"MET_wnduvv".}
 }
 \value{
 Aeme object with meteorological data added

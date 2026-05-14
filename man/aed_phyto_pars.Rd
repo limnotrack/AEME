@@ -5,22 +5,22 @@
 \alias{aed_phyto_pars}
 \title{Example dataframe of parameters for phytoplankton in the GLM-AED model.}
 \format{
-`aed_phyto_pars`
+\code{aed_phyto_pars}
 A data frame with 564 rows and 5 columns:
 \describe{
-  \item{parameter_name}{Name of the parameter in AED}
-  \item{group}{Phytoplankton group for the parameter}
-  \item{value}{Default value of the parameter}
-  \item{description}{Description of the parameter}
-  \item{var_sim}{AEME variable names associated with the parameter, multiple
-   variables are separated by a '|' symbol}
+\item{parameter_name}{Name of the parameter in AED}
+\item{group}{Phytoplankton group for the parameter}
+\item{value}{Default value of the parameter}
+\item{description}{Description of the parameter}
+\item{var_sim}{AEME variable names associated with the parameter, multiple
+variables are separated by a '|' symbol}
 }
 }
 \usage{
 aed_phyto_pars
 }
 \description{
-This dataset contains all parameters related to phytoplankton in the 
+This dataset contains all parameters related to phytoplankton in the
 aed_phyto_pars.csv file.
 }
 \details{

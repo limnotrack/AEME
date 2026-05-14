@@ -9,8 +9,8 @@ get_wbal_components(aeme, model, remove_spin_up = TRUE, cumulative = FALSE)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
+\code{gotm_wet}.}
 
 \item{remove_spin_up}{logical; remove spin-up period from plot. Default is
 TRUE.}

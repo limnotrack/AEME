@@ -6,27 +6,27 @@
 \title{Example dataframe used for calibrating the biogeochemistry in the GLM-AED
 model.}
 \format{
-`glm_aed_parameters`
+\code{glm_aed_parameters}
 A data frame with 253 rows and 7 columns:
 \describe{
-  \item{model}{Model for the parameter}
-  \item{file}{File in which the parameter is stored}
-  \item{name}{Name of the parameter}
-  \item{value}{Value of the parameter}
-  \item{min}{Minimum range of the parameter}
-  \item{max}{Maximum range of the parameter}
-  \item{group}{Phytoplankton Group for the parameter, only applies to
-  phytoplankton parameters}
-  \item{index}{Index for the parameter in the model file, only used for
-  parameters that have multiple values in a vector such as
-   "sediment/sed_temp_mean" in GLM-AED}
-  \item{module}{Module for the parameter in the model, useful to help
-  identify parameters} 
-  \item{par}{Short name for the parameter}
-  \item{logical}{Logical value if the parameter is boolean}
-  \item{logical_val}{Value if the parameter is boolean}
-  \item{char}{Logical value if the parameter is character}
-  \item{char_val}{Value if the parameter is character}
+\item{model}{Model for the parameter}
+\item{file}{File in which the parameter is stored}
+\item{name}{Name of the parameter}
+\item{value}{Value of the parameter}
+\item{min}{Minimum range of the parameter}
+\item{max}{Maximum range of the parameter}
+\item{group}{Phytoplankton Group for the parameter, only applies to
+phytoplankton parameters}
+\item{index}{Index for the parameter in the model file, only used for
+parameters that have multiple values in a vector such as
+"sediment/sed_temp_mean" in GLM-AED}
+\item{module}{Module for the parameter in the model, useful to help
+identify parameters}
+\item{par}{Short name for the parameter}
+\item{logical}{Logical value if the parameter is boolean}
+\item{logical_val}{Value if the parameter is boolean}
+\item{char}{Logical value if the parameter is character}
+\item{char_val}{Value if the parameter is character}
 }
 }
 \source{
@@ -38,7 +38,7 @@ glm_aed_parameters
 \description{
 All the parameters within the AED.nml file. This includes three
 phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
-group (cladocerans). This has the values in the default file and 25 % parameter
+group (cladocerans). This has the values in the default file and 25 \% parameter
 ranges for sensitivity analysis.
 }
 \keyword{datasets}

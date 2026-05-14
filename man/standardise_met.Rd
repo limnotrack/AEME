@@ -16,11 +16,11 @@ messages describing each detected unit conversion applied. Set to
 }
 \value{
 The input data frame with column names remapped to AEME standard
-  names and values converted to AEME standard units where a conversion
-  was necessary. Columns that could not be matched are retained unchanged
-  with a warning. A warning is also emitted if any required variable
-  (\code{MET_radswd}, \code{MET_tmpair}, \code{MET_wndspd},
-  \code{MET_pprain}) is absent after renaming.
+names and values converted to AEME standard units where a conversion
+was necessary. Columns that could not be matched are retained unchanged
+with a warning. A warning is also emitted if any required variable
+(\code{MET_radswd}, \code{MET_tmpair}, \code{MET_wndspd},
+\code{MET_pprain}) is absent after renaming.
 }
 \description{
 Attempts to match column names in a meteorological data frame to AEME
@@ -31,22 +31,22 @@ units expected by the package.
 \section{AEME standard variables and units}{
 
 \tabular{llll}{
-  \strong{Variable}   \tab \strong{Name}       \tab \strong{Unit} \tab \strong{Required} \cr
-  Shortwave radiation \tab \code{MET_radswd}    \tab W/m²          \tab Yes \cr
-  Air temperature     \tab \code{MET_tmpair}    \tab °C            \tab Yes \cr
-  Wind speed          \tab \code{MET_wndspd}    \tab m/s           \tab Yes \cr
-  Rainfall            \tab \code{MET_pprain}    \tab mm/day         \tab Yes \cr
-  Snowfall            \tab \code{MET_ppsnow}    \tab mm/day         \tab No (defaults to 0) \cr
-  u wind component    \tab \code{MET_wnduvu}    \tab m/s           \tab No (derivable) \cr
-  v wind component    \tab \code{MET_wnduvv}    \tab m/s           \tab No (derivable) \cr
-  Sea-level pressure  \tab \code{MET_prmslp}    \tab Pa            \tab No (derivable) \cr
-  Station pressure    \tab \code{MET_prsttn}    \tab Pa            \tab No (derivable) \cr
-  Cloud cover         \tab \code{MET_cldcvr}    \tab 1 (fraction)  \tab No (derivable) \cr
-  Longwave radiation  \tab \code{MET_radlwd}    \tab W/m²          \tab No (derivable) \cr
-  Dew point temp.     \tab \code{MET_tmpdew}    \tab °C            \tab No (derivable) \cr
-  Vapour pressure     \tab \code{MET_prvapr}    \tab hPa           \tab No (derivable) \cr
-  Relative humidity   \tab \code{MET_humrel}    \tab \%            \tab No (derivable) \cr
-  Wind direction      \tab \code{MET_wnddir}    \tab degrees       \tab No (derivable) \cr
+\strong{Variable}   \tab \strong{Name}       \tab \strong{Unit} \tab \strong{Required} \cr
+Shortwave radiation \tab \code{MET_radswd}    \tab W/m²          \tab Yes \cr
+Air temperature     \tab \code{MET_tmpair}    \tab °C            \tab Yes \cr
+Wind speed          \tab \code{MET_wndspd}    \tab m/s           \tab Yes \cr
+Rainfall            \tab \code{MET_pprain}    \tab mm/day         \tab Yes \cr
+Snowfall            \tab \code{MET_ppsnow}    \tab mm/day         \tab No (defaults to 0) \cr
+u wind component    \tab \code{MET_wnduvu}    \tab m/s           \tab No (derivable) \cr
+v wind component    \tab \code{MET_wnduvv}    \tab m/s           \tab No (derivable) \cr
+Sea-level pressure  \tab \code{MET_prmslp}    \tab Pa            \tab No (derivable) \cr
+Station pressure    \tab \code{MET_prsttn}    \tab Pa            \tab No (derivable) \cr
+Cloud cover         \tab \code{MET_cldcvr}    \tab 1 (fraction)  \tab No (derivable) \cr
+Longwave radiation  \tab \code{MET_radlwd}    \tab W/m²          \tab No (derivable) \cr
+Dew point temp.     \tab \code{MET_tmpdew}    \tab °C            \tab No (derivable) \cr
+Vapour pressure     \tab \code{MET_prvapr}    \tab hPa           \tab No (derivable) \cr
+Relative humidity   \tab \code{MET_humrel}    \tab \\%            \tab No (derivable) \cr
+Wind direction      \tab \code{MET_wnddir}    \tab degrees       \tab No (derivable) \cr
 }
 }
 

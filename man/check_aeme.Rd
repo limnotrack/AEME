@@ -10,7 +10,7 @@ check_aeme(aeme)
 \item{aeme}{object to check}
 }
 \value{
-Invisibly returns the Aeme object if valid, otherwise throws an 
+Invisibly returns the Aeme object if valid, otherwise throws an
 error.
 }
 \description{

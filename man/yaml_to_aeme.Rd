@@ -7,9 +7,9 @@
 yaml_to_aeme(path, file)
 }
 \arguments{
-\item{path}{directory where aeme.yaml file is located. Can be used instead of `file` argument.}
+\item{path}{directory where aeme.yaml file is located. Can be used instead of \code{file} argument.}
 
-\item{file}{filepath; to aeme.yaml file. Can be used instead of `path` and `file` arguments.}
+\item{file}{filepath; to aeme.yaml file. Can be used instead of \code{path} and \code{file} arguments.}
 }
 \value{
 aeme object

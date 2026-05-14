@@ -4,10 +4,14 @@
 \alias{get_aeme_path}
 \title{Get the path to the AEME data}
 \usage{
-get_aeme_path(aeme)
+get_aeme_path(aeme, require = TRUE)
 }
 \arguments{
 \item{aeme}{aeme; object.}
+
+\item{require}{If TRUE, an error is thrown if the AEME object does not contain
+a path to the data. If FALSE, NULL is returned if the AEME object does not
+contain a path to the data.}
 }
 \value{
 Path to the AEME data

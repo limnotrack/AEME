@@ -19,16 +19,18 @@ run_glm_aed_diagnostics(
 
 \item{groups}{character vector selecting catalogue entries.
 Accepts:
-  - catalogue entry names (e.g. "nitrogen_state"),
-  - element codes ("O","N","P","Phy"),
-  - types ("state","process").
-Default NULL = all entries.}
+\itemize{
+\item catalogue entry names (e.g. "nitrogen_state"),
+\item element codes ("O","N","P","Phy"),
+\item types ("state","process").
+Default NULL = all entries.
+}}
 
 \item{depth_collapse}{"mean", "surface" or "max" — reduce 3D variables}
 
 \item{plot}{draw combined plots, grouped by element}
 
-\item{use_bounds}{add dashed lines to plots showing expected bounds 
+\item{use_bounds}{add dashed lines to plots showing expected bounds
 (from catalogue)}
 
 \item{print_table}{print the kable summary}

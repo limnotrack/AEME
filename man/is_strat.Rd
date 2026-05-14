@@ -9,7 +9,7 @@ is_strat(wtr, depths, t_diff = 1)
 \arguments{
 \item{wtr}{numeric vector; water temperature profile}
 
-\item{depths}{numeric vector; depths corresponding to water temperature 
+\item{depths}{numeric vector; depths corresponding to water temperature
 profile}
 
 \item{t_diff}{numeric; minimum temperature difference between surface and

@@ -70,7 +70,7 @@ the bottom (m).
 \item\code{\bold{method}}: integer; Method for calculating water balance.
 1 = none, 2 = outflows, 3 = inflows and outflows.
 \item\code{\bold{use}}: character; Can be 'obs' or 'mod'. Use observations
- or modelled data for water balance.
+or modelled data for water balance.
 \item{\code{data}}: list of dataframe for water balance.
 }}
 

@@ -14,6 +14,6 @@ Aeme object with water balance parameters reset
 }
 \description{
 This function resets the water balance parameters in the Aeme object. This is
-useful if you want to start fresh with a new set of parameters for example 
+useful if you want to start fresh with a new set of parameters for example
 if you add/remove a inflow or change the meteorological data.
 }

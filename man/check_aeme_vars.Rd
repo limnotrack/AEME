@@ -10,7 +10,7 @@ check_aeme_vars(x)
 \item{x}{Character vector of variable names to check.}
 }
 \value{
-Invisibly returns TRUE if all variables are valid, otherwise throws 
+Invisibly returns TRUE if all variables are valid, otherwise throws
 an error.
 }
 \description{

@@ -22,7 +22,7 @@ read_dy_output(
 
 \item{vars_sim}{Variables to extract in the AEME format e.g. "HYD_temp"}
 
-\item{depths}{Depths to extract. If NULL, extract all model layer depths. 
+\item{depths}{Depths to extract. If NULL, extract all model layer depths.
 Defaults to NULL.}
 
 \item{dates}{Dates to extract. If NULL, extract all dates. Defaults to NULL.}
@@ -35,7 +35,7 @@ Defaults to TRUE.}
 
 \item{output_hour}{Hour of the day to extract (0-23). Defaults to 0.}
 
-\item{file}{File path to netCDF file. Only used if `nc` is NULL.}
+\item{file}{File path to netCDF file. Only used if \code{nc} is NULL.}
 }
 \value{
 List with AEME output variables

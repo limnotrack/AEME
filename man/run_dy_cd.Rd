@@ -24,14 +24,14 @@ run_gotm_wet(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
     of seconds are ignored.}
 }
 \value{
-Invisibly returns `NULL`.
+Invisibly returns \code{NULL}.
 }
 \description{
 These functions provide a unified interface for running external
-hydrodynamic or biogeochemical lake models from within R.  
+hydrodynamic or biogeochemical lake models from within R.
 Each function moves into the appropriate simulation directory,
 executes the model's command-line binary, prints progress messages,
-and reports whether the model run completed successfully.  
+and reports whether the model run completed successfully.
 The functions are intended to be called for their side effects:
 they do not return model results directly, but instead produce
 model output files in the simulation folder.

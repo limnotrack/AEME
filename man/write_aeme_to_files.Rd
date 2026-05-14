@@ -9,7 +9,7 @@ write_aeme_to_files(aeme, path, include_output = FALSE)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to the current 
+\item{path}{filepath; where input files are located relative to the current
 working directory.}
 
 \item{include_output}{logical, include output files. Default is FALSE. The

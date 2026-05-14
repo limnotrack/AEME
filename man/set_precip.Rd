@@ -14,15 +14,15 @@ set_precip(
 
 \item{type}{character. Either "met" or "inflow". Default is
 "inflow". If "met", precipitation is treated as a meteorological input
-in mm. If "inflow", precipitation is converted to an inflow volume in m3. 
-It is also possible to use the old argument values "precip_as_met" and 
+in mm. If "inflow", precipitation is converted to an inflow volume in m3.
+It is also possible to use the old argument values "precip_as_met" and
 "precip_as_inflow" for backward compatibility.}
 }
 \value{
 Aeme object with precipitation set as specified
 }
 \description{
-This function allows you to specify whether precipitation should be treated as 
+This function allows you to specify whether precipitation should be treated as
 a meteorological input (in mm) or as an inflow volume (in m3) to the lake.
 When set as an inflow, the function calculates the inflow volume based on the
 lake surface area and the precipitation amount. Conversely, when set as a

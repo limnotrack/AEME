@@ -36,7 +36,7 @@ plots are displayed interactively. Defaults to NULL.}
 }
 \value{
 Invisibly returns a list containing the \code{out} object from
-  read_model_outputs and the assembled ggplot page objects.
+read_model_outputs and the assembled ggplot page objects.
 }
 \description{
 Reads model output using read_model_outputs() and produces a multi-panel

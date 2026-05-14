@@ -28,15 +28,15 @@ fractions, 2=prescribed layer thicknesses}
 
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to the current 
+\item{path}{filepath; where input files are located relative to the current
 working directory.}
 
 \item{thickness_factor}{numeric; factor to multiply the thickness of the
 layers. Default is 1.}
 
-\item{ddu}{numeric; Surface zooming [dimensionless; min=0.0; default=0.0]}
+\item{ddu}{numeric; Surface zooming (dimensionless; min=0.0; default=0.0)}
 
-\item{ddl}{numeric; Bottom zooming [dimensionless; min=0.0; default=0.0]}
+\item{ddl}{numeric; Bottom zooming (dimensionless; min=0.0; default=0.0)}
 }
 \value{
 list; GOTM model configuration

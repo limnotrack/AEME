@@ -20,20 +20,20 @@ glm_sed_params(
 \arguments{
 \item{n_zones}{Number of sediment zones to simulate. Default is 1.}
 
-\item{zone_heights}{Upper height of zone boundarys (m). Length must equal 
+\item{zone_heights}{Upper height of zone boundarys (m). Length must equal
 'n_zones'. 0 is lake bottom. Default is c(10) for n_zones = 1.}
 
 \item{sed_heat_Ksoil}{Heat conductivity of soil/sediment. Default is 0.01.}
 
-\item{sed_temp_depth}{Depth of soil/sediment layer below the lake bottom, 
+\item{sed_temp_depth}{Depth of soil/sediment layer below the lake bottom,
 used for heat flux calculation. Default is 0.2.}
 
 \item{sed_temp_mean}{Annual mean sediment temperature. Default is 12.}
 
-\item{sed_temp_amplitude}{Amplitude of temperature variation experienced in 
+\item{sed_temp_amplitude}{Amplitude of temperature variation experienced in
 the sediment over one year. Default is 8.}
 
-\item{sed_temp_peak_doy}{Day of the year where the sediment temperature 
+\item{sed_temp_peak_doy}{Day of the year where the sediment temperature
 peaks. Default is 30.}
 
 \item{sed_reflectivity}{Sediment reflectivity. Default is 0.01.}
@@ -42,11 +42,11 @@ peaks. Default is 30.}
 
 \item{benthic_mode}{Switch to configure which mode of benthic interaction to
 apply. Options are:
- \itemize{
-  \item 0: Bottom layer only
-  \item 1: Bottom layer & layer flanks
-  \item 2: Sediment zones with individual properties (default)
- }}
+\itemize{
+\item 0: Bottom layer only
+\item 1: Bottom layer & layer flanks
+\item 2: Sediment zones with individual properties (default)
+}}
 }
 \value{
 Data frame of GLM sediment parameters

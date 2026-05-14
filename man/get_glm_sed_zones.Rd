@@ -9,11 +9,11 @@ get_glm_sed_zones(aeme, path, lake_dir = NULL)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to the current 
+\item{path}{filepath; where input files are located relative to the current
 working directory.}
 
 \item{lake_dir}{Path to the lake AEME directory. If NULL, it will be
-computed from `aeme` and `path`.}
+computed from \code{aeme} and \code{path}.}
 }
 \value{
 Number of sediment zones

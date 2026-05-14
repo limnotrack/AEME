@@ -9,10 +9,10 @@ check_path(path, create = FALSE, must_exist = FALSE)
 \arguments{
 \item{path}{Character string specifying the file path to check.}
 
-\item{create}{Logical indicating whether to create the directory if it does 
+\item{create}{Logical indicating whether to create the directory if it does
 not exist. Default is FALSE.}
 
-\item{must_exist}{Logical indicating whether the directory must exist. If 
+\item{must_exist}{Logical indicating whether the directory must exist. If
 TRUE and the directory does not exist, an error is thrown. Default is FALSE.}
 }
 \value{

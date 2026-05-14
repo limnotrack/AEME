@@ -7,7 +7,7 @@
 plot_wbal_summaries(wbal)
 }
 \arguments{
-\item{wbal}{Water balance object created with `get_wbal_components()`}
+\item{wbal}{Water balance object created with \code{get_wbal_components()}}
 }
 \value{
 A ggplot2 object with water balance summaries

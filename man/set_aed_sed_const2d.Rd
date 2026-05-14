@@ -14,7 +14,7 @@ set_aed_sed_const2d(
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to the current 
+\item{path}{filepath; where input files are located relative to the current
 working directory.}
 
 \item{baseline}{Named numeric vector of baseline fluxes at
@@ -23,7 +23,7 @@ working directory.}
 }
 \value{
 Invisible NULL. Updates the aed.nml file in the glm_aed model
- directory.
+directory.
 }
 \description{
 Setup AED aed_sed_const2d sediment model parameters

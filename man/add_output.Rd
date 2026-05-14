@@ -9,7 +9,7 @@ add_output(aeme, out)
 \arguments{
 \item{aeme}{Aeme object}
 
-\item{out}{list with model output loaded with `load_output()`}
+\item{out}{list with model output loaded with \code{load_output()}}
 }
 \value{
 Aeme object with model output added

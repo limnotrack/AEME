@@ -18,7 +18,7 @@ the inflow_id argument is ignored and all inflows are removed.}
 Aeme object with inflow removed
 }
 \description{
-Remove inflow data from an Aeme object. You can specify a particular inflow 
-to remove by providing its identifier, or you can remove all inflows at once. 
+Remove inflow data from an Aeme object. You can specify a particular inflow
+to remove by providing its identifier, or you can remove all inflows at once.
 If you choose to remove all inflows, the inflow_id argument will be ignored.
 }

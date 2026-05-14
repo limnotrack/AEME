@@ -13,17 +13,17 @@ generate_var_map_code(data, var_col_name = "name")
 will attempt to infer it.}
 }
 \value{
-A character string containing R code to create the `var_map` data 
-frame. The code can be copied and pasted into your script and modified as 
+A character string containing R code to create the \code{var_map} data
+frame. The code can be copied and pasted into your script and modified as
 needed.
 }
 \description{
-This function generates R code to create a variable mapping data frame (`var_map`)
-used in the \code{lake_obs_to_aeme()} function. It takes a data frame of 
+This function generates R code to create a variable mapping data frame (\code{var_map})
+used in the \code{lake_obs_to_aeme()} function. It takes a data frame of
 lake observation data and fuzzy matches variable names to their corresponding
-AEME variable names using the `key_naming` dataset.
+AEME variable names using the \code{key_naming} dataset.
 When inputting the units of your data, please ensure they are in the format
-recognized by the `units` package (e.g. "m", "m^3", "degC", "mg/L", "g/m^3").
+recognized by the \code{units} package (e.g. "m", "m^3", "degC", "mg/L", "g/m^3").
 }
 \examples{
 #' # Example data frame with lake observation variable names

@@ -9,24 +9,24 @@ guess_aeme_vars(x, key_filter)
 \arguments{
 \item{x}{Character vector of variable names to check.}
 
-\item{key_filter}{Optional string to filter the AEME variable names by a 
+\item{key_filter}{Optional string to filter the AEME variable names by a
 specific keyword. If provided, only AEME variable names containing this keyword will be
 considered for matching. This can help improve matching accuracy by limiting the
 pool of candidate variable names to those relevant to a particular context
 (e.g., "met" for meteorological variables).}
 }
 \value{
-Character vector of variable names, with invalid names replaced by 
+Character vector of variable names, with invalid names replaced by
 the closest official AEME variable name where possible.
 }
 \description{
-This function takes a character vector of variable names and checks them 
+This function takes a character vector of variable names and checks them
 against the official AEME variable names. If an input variable does not match
-any official name, the function attempts to find the closest match using 
+any official name, the function attempts to find the closest match using
 both exact keyword matching and fuzzy string matching (Levenshtein distance).
-The function returns a character vector of the same length as the input, 
-where each element is either the original variable name (if it was valid) 
-or the best-matching official AEME variable name. If no suitable match is 
+The function returns a character vector of the same length as the input,
+where each element is either the original variable name (if it was valid)
+or the best-matching official AEME variable name. If no suitable match is
 found for an invalid variable, a warning is issued.
 }
 \examples{

@@ -10,7 +10,7 @@ check_gotm_yaml(file)
 \item{file}{Path to GOTM YAML configuration file}
 }
 \value{
-Invisibly returns TRUE if no issues are found; otherwise, throws an 
+Invisibly returns TRUE if no issues are found; otherwise, throws an
 error
 }
 \description{

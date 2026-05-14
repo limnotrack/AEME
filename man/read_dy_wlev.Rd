@@ -11,7 +11,7 @@ read_dy_wlev(nc = NULL, file)
  function \code{\link[ncdf4]{nc_open}}
  or function \code{\link[ncdf4]{nc_create}}), indicating what file to read from.}
 
-\item{file}{File path to netCDF file. Only used if `nc` is NULL.}
+\item{file}{File path to netCDF file. Only used if \code{nc} is NULL.}
 }
 \value{
 Data frame with Date and LKE_lvlwtr columns

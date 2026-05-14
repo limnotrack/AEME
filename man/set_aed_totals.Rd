@@ -9,17 +9,17 @@ set_aed_totals(aeme, path, lake_dir = NULL)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to the current 
+\item{path}{filepath; where input files are located relative to the current
 working directory.}
 }
 \value{
 Aeme object with aed_totals parameters set in the model config
 }
 \description{
-This function sets up the aed_totals parameters in the aed block of the bgc 
-section of the model config for glm_aed. It extracts the necessary 
-information from the aed_phyto_pars and aed blocks to determine which 
-variables to include in the totals for TN, TP and TOC, and their scaling 
-factors. It then updates the model config and writes it back to the aed.nml 
+This function sets up the aed_totals parameters in the aed block of the bgc
+section of the model config for glm_aed. It extracts the necessary
+information from the aed_phyto_pars and aed blocks to determine which
+variables to include in the totals for TN, TP and TOC, and their scaling
+factors. It then updates the model config and writes it back to the aed.nml
 file in the glm_aed model directory.
 }

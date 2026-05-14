@@ -11,7 +11,7 @@ read_gotm_flux_output(nc = NULL, file, dates = NULL, date_index = NULL)
  function \code{\link[ncdf4]{nc_open}}
  or function \code{\link[ncdf4]{nc_create}}), indicating what file to read from.}
 
-\item{file}{File path to netCDF file. Only used if `nc` is NULL.}
+\item{file}{File path to netCDF file. Only used if \code{nc} is NULL.}
 
 \item{dates}{Dates to extract. If NULL, extract all dates. Defaults to NULL.}
 

@@ -9,7 +9,7 @@ add_outflows(aeme, data = NULL, elevation = NULL, factor = NULL)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{data}{named list with data frames for each outflow. Each data frame 
+\item{data}{named list with data frames for each outflow. Each data frame
 must have columns "Date", "outflow". If NULL, no outflows are added.}
 
 \item{elevation}{named list with elevation of each outflow. If NULL, no

@@ -18,11 +18,11 @@ reopening the file multiple times. Defaults to NULL.}
 \value{
 A data frame with columns:
 \itemize{
- \item `Date`: Date-time of the water level observation (POSIXct, UTC)
- \item `LKE_lvlwtr`: Water level (meters)
- }
+\item \code{Date}: Date-time of the water level observation (POSIXct, UTC)
+\item \code{LKE_lvlwtr}: Water level (meters)
+}
 }
 \description{
-`r lifecycle::badge("stable")`
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 This function reads water level data from the output of supported lake models.
 }
