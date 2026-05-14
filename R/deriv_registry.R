@@ -20,7 +20,6 @@
 #' @keywords internal
 #'
 #' @name deriv_registry
-#' @seealso [add_deriv_output()]
 #' @noRd
 NULL
 
