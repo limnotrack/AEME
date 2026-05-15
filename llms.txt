@@ -69,47 +69,72 @@ structure and allows for condensed output to be printed to the console:
 ``` r
 
 aeme
-#>             AEME 
-#> -------------------------------------------------------------------
-#>   Lake
-#> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;
-#> Area: 152343 m2
-#> -------------------------------------------------------------------
-#>   Time
-#> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#>  Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1
-#> -------------------------------------------------------------------
-#>   Configuration
-#>     Model controls: Present
-#>           Physical   |   Biogeochemical
-#> DY-CD    : Present    |   Present
-#> GLM-AED  : Present    |   Present
-#> GOTM-WET : Present    |   Present
-#> -------------------------------------------------------------------
-#>   Observations
-#> Lake: Present; Level: Present
-#> -------------------------------------------------------------------
-#>   Input
-#> Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=44);
-#> Meteo: Present; Use longwave: TRUE; Kw: 1.31
-#> -------------------------------------------------------------------
-#>   Inflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Outflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Water balance
-#> Method: 2; Use: obs; Modelled: Absent; Water balance: Present
-#> -------------------------------------------------------------------
-#>   Parameters: 
-#> Number of parameters: 0
-#> -------------------------------------------------------------------
-#>   Output: 
 #> 
-#> DY-CD:    1
-#> GLM-AED:  1
-#> GOTM-WET: 1
+#> ── AEME ────────────────────────────────────────────────────────────────────────
+#> 
+#> ── Lake ──
+#> 
+#> Wainamu (ID: LID45819)
+#> • Lat: -36.89; Lon: 174.47
+#> • Elev: 23.64m; Depth: 13.07m; Area: 152343 m2
+#> 
+#> ── Time ──
+#> 
+#> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
+#> • Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1
+#> 
+#> ── Configuration ──
+#> 
+#> • Model: dy_cd, glm_aed, and gotm_wet
+#> • Path: 'C:\Users\tadhg\AppData\Local\Temp\RtmpKgBmNH\lake'
+#> • Model controls: Present
+#> • Use biogeochemical model: Yes
+#> ┌ Model Configuration ─────────────────────────────────────────┐
+#> │       Model              Physical         Biogeochemical     │
+#> │ ---                                                          │
+#> │       DY-CD              Present             Present         │
+#> │      GLM-AED             Present             Present         │
+#> │      GOTM-WET            Present             Present         │
+#> └──────────────────────────────────────────────────────────────┘
+#> 
+#> ── Observations ──
+#> 
+#> • Lake: Present; Level: Present
+#> 
+#> ── Input ──
+#> 
+#> • Initial profile: Present; Initial depth: 13.07m
+#> • Hypsograph: Present (n=44)
+#> • Meteo: Present; Use longwave: TRUE; Kw: 1.31
+#> 
+#> ── Inflows ──
+#> 
+#> • Number of inflows: 1; Names: FWMT
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Outflows ──
+#> 
+#> • Data: Present
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Water Balance ──
+#> 
+#> • Method: 2; Use: obs
+#> • Modelled: Absent; Water balance: Present
+#> 
+#> ── Parameters ──
+#> 
+#> • Number of parameters: 0
+#> 
+#> ── Output ──
+#> 
+#> • DY-CD: 1
+#> • GLM-AED: 1
+#> • GOTM-WET: 1
+#> • Variables: 61
+#> Water temperature, Thermocline depth, Dissolved oxygen, Total chlorophyll a,
+#> Total nitrogen, Total phosphorus, Water level, Lake depth, Water density,
+#> Salinity, ... and 51 more
 ```
 
 Model data can be visualised easily using the
