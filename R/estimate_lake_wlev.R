@@ -1,5 +1,10 @@
 #' Estimate Lake Water Levels with Nudging
 #'
+#' @description
+#' This function estimates lake water levels using a hydrological model with nudging
+#' to observed water levels. It optimizes parameters to minimize the error between
+#' simulated and observed levels, applying nudging to guide the simulation towards
+#' observed values.
 #' @param data data frame with columns:
 #'   - Date: Date of observation
 #'   - HYD_flow: Inflow to the lake (m3/day)
@@ -7,11 +12,6 @@
 #'   - evap_m3: Evaporation from the lake surface (m3/day)
 #'   - lvl_obs: Observed lake water level (m)
 #'   - is_obs_lvl: Logical indicating if lvl_obs is an observation (TRUE/FALSE)
-#' @description
-#' This function estimates lake water levels using a hydrological model with nudging
-#' to observed water levels. It optimizes parameters to minimize the error between
-#' simulated and observed levels, applying nudging to guide the simulation towards
-#' observed values.
 #' @param hyps_df data frame with hypsograph data containing columns:
 #'   - elev: Elevation (m)
 #'   - area: Surface area at that elevation (m2)
@@ -23,6 +23,9 @@
 #' @param initial_guess Optional initial guess for optimization parameters:
 #'   - C: Outflow coefficient
 #'   - h_inv: Inversion height for outflow calculation
+#' @param init_elev Numeric; initial lake elevation (m) to start the simulation. 
+#' This should be a reasonable estimate based on the observed levels to ensure 
+#' the optimization converges.
 #' @param verbose Logical indicating whether to print optimization details
 #'
 #' @returns A data frame with original data and additional columns:
@@ -31,8 +34,8 @@
 #' @export
 #'
 
-estimate_lake_wlev <- function(data, hyps_df, model, init_elev,
-                               initial_guess = NULL, verbose = TRUE) {
+estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
+                               initial_guess = NULL, verbose = FALSE) {
   
   # 1. Setup Initial Conditions
   # Find the first non-NA observation for the starting level
@@ -60,38 +63,41 @@ estimate_lake_wlev <- function(data, hyps_df, model, init_elev,
                               model = model, gotm_met = gotm_met)
   level_cost(params = initial_guess, data = data, hyps_df = hyps_df,
              start_lvl = start_lvl, model = model, gotm_met = gotm_met)
-  plot(out$h, type = "l")
-  points(data$lvl_obs, col = "red")
+  # plot(out$h, type = "l")
+  # points(data$lvl_obs, col = "red")
   
   # 2. Run Optimization
   # Uses the 'level_cost' function you defined previously
-  best_fit <- optim(
-    par = initial_guess,
-    fn = level_cost,
-    data = data,
-    hyps_df = hyps_df,
-    start_lvl = start_lvl,
-    model = model,
-    gotm_met = gotm_met,
-    method = "L-BFGS-B",
-    lower = c(0.001, min(hyps_df$elev)),
-    upper = c(10, max(data$lvl_obs, na.rm = TRUE)),
-    control = list(maxit = 2)
-  )
-  
-  if (verbose) {
-    message(paste0("Optimization Complete:"))
-    message(paste0("  Best C: ", round(best_fit$par[1], 4)))
-    message(paste0("  Best h_inv: ", round(best_fit$par[2], 4)))
-    message(paste0("  Final RMSE: ", round(best_fit$value, 4)))
+  if (is.null(params)) {
+    best_fit <- optim(
+      par = initial_guess,
+      fn = level_cost,
+      data = data,
+      hyps_df = hyps_df,
+      start_lvl = start_lvl,
+      model = model,
+      gotm_met = gotm_met,
+      method = "L-BFGS-B",
+      lower = c(0.001, min(hyps_df$elev)),
+      upper = c(10, max(data$lvl_obs, na.rm = TRUE)),
+      control = list(maxit = 2)
+    )
+    if (verbose) {
+      message(paste0("Optimization Complete:"))
+      message(paste0("  Best C: ", round(best_fit$par[1], 4)))
+      message(paste0("  Best h_inv: ", round(best_fit$par[2], 4)))
+      message(paste0("  Final RMSE: ", round(best_fit$value, 4)))
+    }
+    params <- c(best_fit$par[1], best_fit$par[2])
   }
+
   
   # 3. Generate Final Time Series
   # Uses the standard simulate_lake (un-nudged) for the final result
-  final_sim <- simulate_lake_nudged(params = best_fit$par, data = data, 
+  final_sim <- simulate_lake_nudged(params = params, data = data, 
                                     hyps_df = hyps_df,  start_lvl = start_lvl,
                                     model = model, gotm_met = gotm_met)
-  sum(final_sim$residual)
+  # sum(final_sim$residual)
   
   # 4. Append results to dataframe and return
   A_t <- get_hyps_val(depth = final_sim$h, hyps = hyps_df)
@@ -100,23 +106,13 @@ estimate_lake_wlev <- function(data, hyps_df, model, init_elev,
   data$spill_outflow <- final_sim$O
   data$evap_m3 <- final_sim$evap
   data$evap_flux <- final_sim$evap / A_t
+  data$C <- params["C"]
+  data$h_inv <- params["h_inv"]
   
   data$net_balance <- data$HYD_flow + (data$MET_pprain * A_t) - data$evap_m3 - data$spill_outflow
-  plot(data$net_balance, type = "l")
-  abline(h = 0)
-  plot(data$HYD_outflow)
-  plot(data$HYD_flow, type = "l")
-  lines(data$spill_outflow, col = "red")
-
-  plot(cumsum(data$HYD_flow), type = "l")
-  lines(cumsum(data$spill_outflow), col = "red")
-
-  plot(cumsum(data$MET_pprain * A_t), type = "l")
-  lines(cumsum(data$evap_m3), col = "red")
-  
     
-  plot(data$lvl_sim, type = "l")
-  points(data$lvl_obs, col = "red")
+  # plot(data$lvl_sim, type = "l")
+  # points(data$lvl_obs, col = "red")
   return(data)
 }
 
@@ -135,6 +131,7 @@ level_from_volume <- function(V, hyps) {
 #' @noRd
 level_cost <- function(params, data, hyps_df, start_lvl, model,
                        gotm_met = NULL) {
+  # cat("Parameters: C =", round(params[1],4), ", h_inv =", round(params[2],4), "\n")
   # Penalize if h_inv is physically impossible (e.g., above max lake level)
   if(params[2] > max(hyps_df$elev)) return(1e10)
   
@@ -231,7 +228,8 @@ simulate_lake_nudged <- function(params, data, hyps_df, start_lvl,
       alpha_eff <- alpha * min(1, gap_days / 30)
       
       if (data$is_obs_lvl[t + 1]) {
-        V_obs <- calc_V(data$lvl_obs[t + 1], hyps_df)
+        V_obs <-volume_from_level(data$lvl_obs[t + 1], hyps_df)
+        # V_obs <- calc_V(data$lvl_obs[t + 1], hyps_df)
         innovation <- V_obs - V_pred
         V_upd <- V_pred + alpha_eff * innovation
       } else {
@@ -245,6 +243,10 @@ simulate_lake_nudged <- function(params, data, hyps_df, start_lvl,
     
     # 6. Finalize state
     sim_V[t + 1] <- max(min(hyps_df$volume), V_upd)
+    if (is.na(sim_V[t + 1])) {
+      message("NA volume at time ", t + 1)
+      break
+    }
     sim_h[t + 1] <- level_from_volume(sim_V[t + 1], hyps_df)
     
     # 7. C) Mass-balance residual

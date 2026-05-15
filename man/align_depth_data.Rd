@@ -9,8 +9,8 @@ align_depth_data(aeme, model, var_sim, ens_n = 1, return_df = TRUE)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
+\code{gotm_wet}.}
 
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp").}
 
@@ -22,15 +22,15 @@ list. Default is TRUE.}
 \value{
 A data frame with the following columns:
 \itemize{
- \item \code{Date}: Date of observation
- \item \code{depth}: Depth of observation
- \item \code{elev}: Elevation of observation
- \item \code{Model}: Model name
- \item \code{var_sim}: Variable name
- \item \code{value}: Value of the variable
- \item \code{depth_from}: Depth from which the variable is extracted
- \item \code{depth_to}: Depth to which the variable is extracted
- }
+\item \code{Date}: Date of observation
+\item \code{depth}: Depth of observation
+\item \code{elev}: Elevation of observation
+\item \code{Model}: Model name
+\item \code{var_sim}: Variable name
+\item \code{value}: Value of the variable
+\item \code{depth_from}: Depth from which the variable is extracted
+\item \code{depth_to}: Depth to which the variable is extracted
+}
 }
 \description{
 Align observation depth data with model data

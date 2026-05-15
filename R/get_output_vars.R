@@ -62,6 +62,7 @@ get_output_vars <- function(aeme, model, ens_n = 1) {
                 "NIT_tn", "PHS_tp")
 
   nmes <- nmes[order(match(nmes, tgt_vars))]
+  nmes <- nmes[nmes != "Date"]
 
   return(nmes)
 }

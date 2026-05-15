@@ -140,7 +140,8 @@ check_hypsograph <- function(hypsograph, aeme = NULL) {
 #' @returns Invisibly returns the Aeme object if valid, otherwise throws an 
 #' error.
 #' @importFrom cli cli_abort
-#' @noRd
+#' @importFrom methods slotNames
+#' @export
 check_aeme <- function(aeme) {
   if (!inherits(aeme, "Aeme")) {
     cli::cli_abort(
@@ -151,7 +152,7 @@ check_aeme <- function(aeme) {
   
   required_slots <- c("lake", "time", "input", "inflows", "outflows", 
                       "water_balance", "parameters")
-  missing_slots <- setdiff(required_slots, slotNames(aeme))
+  missing_slots <- setdiff(required_slots, methods::slotNames(aeme))
   
   if (length(missing_slots) > 0) {
     cli::cli_abort(
@@ -180,13 +181,13 @@ check_met <- function(met) {
   abort_if_missing_cols(met, c("Date", "MET_radswd", "MET_tmpair", "MET_pprain"), name = "met")
 
   # Check wind columns
-  wind1 <- "MET_wnspd"
+  wind1 <- "MET_wndspd"
   wind2 <- c("MET_wnduvu", "MET_wnduvv")
   if (!wind1 %in% colnames(met) && !all(wind2 %in% colnames(met))) {
     cli::cli_abort(
       c(
         "!" = "{.arg met} must contain either:",
-        "*" = "{.val MET_wnspd}",
+        "*" = "{.val MET_wndspd}",
         "or" = "both {.val MET_wnduvu} and {.val MET_wnduvv}."
       ),
       class = "aeme_error_met_wind"

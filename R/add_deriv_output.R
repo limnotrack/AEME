@@ -2,6 +2,9 @@
 #'
 #' @param out_list list of model output variables
 #' @param hyps data frame with hypsograph data
+#' @param vars_sim character vector of variable names to add. If NULL, all variables
+#' with registered functions will be added. If not NULL, only the specified variables
+#' will be added, but their dependencies will also be added.
 #'
 #' @returns List of model output variables with derived variables added
 #' @export

@@ -7,7 +7,7 @@
 param_colnames(incl_opt = TRUE)
 }
 \arguments{
-\item{incl_opt}{Logical; if TRUE, include optional parameter names. Default 
+\item{incl_opt}{Logical; if TRUE, include optional parameter names. Default
 is TRUE.}
 }
 \value{

@@ -4,7 +4,7 @@
 \alias{get_obs}
 \title{Get observations for a given variable from an Aeme object}
 \usage{
-get_obs(aeme, var_sim, depth_range = NULL)
+get_obs(aeme, var_sim, depth_range = NULL, time_filter = FALSE)
 }
 \arguments{
 \item{aeme}{aeme; object.}
@@ -14,6 +14,9 @@ be a vector. If missing, all variables are returned.}
 
 \item{depth_range}{numeric vector of length 2; depth range (in meters) to
 filter observations. If NULL, all depths are returned.}
+
+\item{time_filter}{logical; if TRUE, filter observations to the time range of
+the Aeme object. If FALSE, all observations are returned regardless of time.}
 }
 \value{
 A data frame with the following columns:

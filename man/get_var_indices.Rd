@@ -19,12 +19,12 @@ get_var_indices(
 \item{nc}{An object of class \code{ncdf4} (as returned by either function
  \code{\link[ncdf4]{nc_open}} or function \code{\link[ncdf4]{nc_create}}.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
+\code{gotm_wet}.}
 
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to the current 
+\item{path}{filepath; where input files are located relative to the current
 working directory.}
 
 \item{vars_sim}{character; vector of AEME variable names to get indices for.}
@@ -38,10 +38,10 @@ data.}
 from the AEME object.}
 }
 \value{
-list; of variable indices. Each list element corresponds to a 
-variable in vars_sim and contains a list with time indices, depth values, and 
-dates. Time indices correspond to the positions in the model output time 
-series that match the Date but are the corresponding index in the model 
+list; of variable indices. Each list element corresponds to a
+variable in vars_sim and contains a list with time indices, depth values, and
+dates. Time indices correspond to the positions in the model output time
+series that match the Date but are the corresponding index in the model
 output.
 }
 \description{

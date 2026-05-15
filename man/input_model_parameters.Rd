@@ -9,14 +9,17 @@ input_model_parameters(aeme, model, param, path)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
+\code{gotm_wet}.}
 
 \item{param}{data.frame; parameters to input into the model
 configuration files}
 
-\item{path}{filepath; where input files are located relative to the current 
+\item{path}{filepath; where input files are located relative to the current
 working directory.}
+}
+\value{
+Aeme object with parameters input into model configuration files
 }
 \description{
 Input model parameters

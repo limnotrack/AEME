@@ -4,16 +4,19 @@
 #' @param include_output logical, include output files. Default is FALSE. The
 #' output files can be large and take up a lot of space.
 #'
-#' @returns NULL
+#' @returns A vector of file paths to the written files
 #' @export
+#' 
+#' @importFrom methods slotNames slot
 #'
 #' @examples
 #' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 #' aeme <- readRDS(aeme_file)
+#' model <- "glm_aed"
 #' path <- "test_write"
 #' model_controls <- get_model_controls()
-#' aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
-#' model_controls = model_controls)
+#' aeme <- build_aeme(path = path, aeme = aeme, model = model,
+#' model_controls = model_controls, ext_elev = 5)
 #' aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
 #' write_aeme_to_files(aeme, path)
 
@@ -30,17 +33,19 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
   }
 
   # Get the names of the slots
-  slot_names <- slotNames(aeme)
+  slot_names <- methods::slotNames(aeme)
+  out_files <- c()
 
   # Iterate over each slot
   for (slot_name in slot_names) {
     # Get the slot content
-    slot_content <- slot(aeme, slot_name)
+    slot_content <- methods::slot(aeme, slot_name)
     if (slot_name %in% c("lake", "time", "parameters")) {
       df <- as.data.frame(slot_content)
       names(df) <- gsub("\\.", "-", names(df))
-      write.csv(df, file.path(lake_dir, paste0(slot_name, ".csv")),
-                row.names = FALSE)
+      fname <- file.path(lake_dir, paste0(slot_name, ".csv"))
+      out_files <- c(out_files, fname)
+      write.csv(df, fname, row.names = FALSE)
       next
     }
 
@@ -53,8 +58,9 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
         write_configuration(model = m, aeme = aeme, path = path)
       }
       df <- slot_content$model_controls
-      write.csv(df, file.path(lake_dir, paste0(slot_name, "_model_controls.csv")),
-                row.names = FALSE)
+      fname <- file.path(lake_dir, paste0(slot_name, "_model_controls.csv"))
+      out_files <- c(out_files, fname)
+      write.csv(df, fname, row.names = FALSE)
       next
     }
 
@@ -69,8 +75,9 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
           df <- data.frame(obs = df)
           names(df) <- obs
         }
-        write.csv(df, file.path(lake_dir, paste0(slot_name, "_", obs, ".csv")),
-                  row.names = FALSE)
+        fname <- file.path(lake_dir, paste0(slot_name, "_", obs, ".csv"))
+        out_files <- c(out_files, fname)
+        write.csv(df, fname, row.names = FALSE)
       }
       next
     }
@@ -82,18 +89,21 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
         if (is.null(df)) {
           next
         }
-        write.csv(df, file.path(lake_dir, paste0(slot_name, "_", inf, ".csv")),
-                  row.names = FALSE)
+        fname <- file.path(lake_dir, paste0(slot_name, "_", inf, ".csv"))
+        out_files <- c(out_files, fname)
+        write.csv(df, fname, row.names = FALSE)
       }
       if (slot_name == "water_balance") {
         df <- data.frame(method = slot_content$method, use = slot_content$use)
-        write.csv(df, file.path(lake_dir, paste0(slot_name, "_method_use.csv")),
-                  row.names = FALSE)
+        fname <- file.path(lake_dir, paste0(slot_name, "_method_use.csv"))
+        out_files <- c(out_files, fname)
+        write.csv(df, fname, row.names = FALSE)
       }
       if (slot_name %in% c("inflows", "outflows")){
         factors <- as.data.frame(slot_content$factor)
-        write.csv(factors, file.path(lake_dir, paste0(slot_name, "_factors.csv")),
-                  row.names = FALSE)
+        fname <- file.path(lake_dir, paste0(slot_name, "_factors.csv")) 
+        out_files <- c(out_files, fname)
+        write.csv(factors, fname, row.names = FALSE)
       }
       next
     }
@@ -124,23 +134,15 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
       ens_df <- lapply(1:n_members, \(ens) {
         out_df <- lapply(out_vars, \(v) {
           out <- AEME::get_var(aeme = aeme, model = model, var_sim = v,
-                               return_df = TRUE, ens_n = ens) |>
-            dplyr::mutate(lyr_top = round(lyr_top, 2),
-                          lyr_thk = round(lyr_thk, 2))
+                               return_df = TRUE, ens_n = ens) 
 
-          if (!all(is.na(out$lyr_top))) {
-            out <- out |>
-              dplyr::group_by(Date, Model, var_sim) |>
-              dplyr::reframe(
-                depth = out_depths,
-                value = approx(lyr_top, value, depth, rule = 2)$y
-              )
-          } else {
+          if (all(is.na(out$depth))) {
             out <- out |>
               dplyr::mutate(depth = NA)
           }
           out <- out |>
-            dplyr::mutate(depth = depth - max(depth), value = round(value, 4),
+            dplyr::mutate(#depth = depth - max(depth), 
+                          value = round(value, 4),
                           model = toggle_models(Model, to = "code")
             ) |>
             dplyr::select(Date, model, var_sim, depth, value) |>
@@ -151,10 +153,12 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
         return(out_df)
       }) |>
         dplyr::bind_rows()
-
-      write.csv(ens_df, file.path(lake_dir, paste0(slot_name, ".csv")),
-                row.names = FALSE)
+      
+      fname <- file.path(lake_dir, paste0(slot_name, ".csv"))
+      out_files <- c(out_files, fname)
+      write.csv(ens_df, fname, row.names = FALSE)
 
     }
   }
+  return(invisible(out_files))
 }

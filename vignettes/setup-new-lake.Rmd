@@ -60,7 +60,7 @@ If you have a shapefile for the lake, you can use the `sf` package to read it
 in. However, if you do not have a shapefile you can download most lake 
 shapefiles from [OpenStreetMap](https://www.openstreetmap.org/) using the [`osmdata`](https://docs.ropensci.org/osmdata/) package. 
 
-```{r get-lake-shapefile}
+```{r get-lake-shapefile, eval=FALSE}
 library(osmdata)
 
 # Get lake shapefile
@@ -72,6 +72,9 @@ osm_data <- opq(bbox = "New Zealand") |>
 lake <- osm_data$osm_multipolygons |> 
   st_make_valid()
 lake
+```
+```{r read-lake-shapefile, echo=FALSE}
+lake <- readRDS(system.file("extdata/lake_shapefile.rds", package = "AEME"))
 ```
 
 Visualise the lake shapefile on a map.
@@ -137,7 +140,12 @@ elevation # in metres above sea level
 
 ```
 ```{r, set-elevation-if-na, include=FALSE}
-elevation <- ifelse(is.na(elevation), 29, elevation)
+if (length(elevation) > 1) {
+if (!elevation[["success"]]) {
+  elevation <- 29
+}
+}
+
 ```
 
 ```{r}
@@ -187,7 +195,7 @@ time <- list(
 
 We will use the `aemetools` package to download the ERA5 meteorological data for
 the location of our lake. This works for all locations around the world. 
-However, it's date range is only from 1900-2021.
+However, its date range is only from 1900-2021.
 
 ```{r get-era5-met}
 # Get ERA5 meteorological data
@@ -309,7 +317,7 @@ aeme <- aeme_constructor(lake = lake,
 ## View AEME object
 
 The AEME object can be inspected by printing it to the console. This will show
-the inputs that have been use to construct the object along with default values
+the inputs that have been used to construct the object along with default values
 for inputs not provided.
 
 ```{r view-aeme-object}
@@ -317,7 +325,7 @@ aeme
 ```
 
 In the configuration section of the output, under "Physical" and 
-"Biogeochemical" for each model are labelle "Absent". This is because the 
+"Biogeochemical" for each model are labelled "Absent". This is because the 
 model configurations have not been built. This is done in the next step.
 
 # Building the AEME ensemble
@@ -364,7 +372,7 @@ path <- "aeme"
 
 # Build ensemble
 aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
-                   use_bgc = F, path = path)
+                   path = path)
 
 print(aeme)
 ```
@@ -389,7 +397,7 @@ reconstruct the object.
 
 ```{r run-ensemble}
 # Run the ensemble
-aeme <- run_aeme(aeme = aeme, model = model, path = path)
+aeme <- run_aeme(aeme = aeme)
 ```
 
 ## View the output
@@ -412,4 +420,31 @@ This will save the object to a file with the `.rds`.
 ```{r save-aeme}
 # Save the AEME object
 saveRDS(aeme, "aeme.rds")
+```
+
+## Using AEME in pipes
+
+The AEME functions can be used in pipes to make the workflow more efficient. For
+example, the `build_aeme` function can be used in a pipe to build the ensemble and
+then the `run_aeme` function can be used in the same pipe to run the ensemble.
+
+This allows for a more streamlined workflow and reduces the amount of code needed to
+build and run the ensemble. This is especially useful when building and running
+multiple ensembles for different lakes or different scenarios.
+
+This approach has been used with the [{targets}](https://books.ropensci.org/targets/) 
+package to build and run multiple ensembles for different lakes and scenarios in
+a reproducible workflow.
+
+```{r pipe-workflow, eval = FALSE}
+# Build and run the ensemble in a pipe
+aeme <- aeme |> 
+  add_obs(lake = lake_obs, level = level_obs) |> 
+  add_hypsograph(hypsograph = hypsograph) |>
+  add_met(met = met) |> 
+  add_inflows(data = inf_data) |> 
+  add_outflows(data = outf_data) |>
+  add_param(param = param) |> 
+  build_aeme(model = model, use_bgc = TRUE, path = path) |> 
+  run_aeme()
 ```

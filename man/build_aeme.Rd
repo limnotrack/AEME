@@ -6,11 +6,11 @@
 \usage{
 build_aeme(
   aeme = NULL,
-  config = NULL,
   model = c("dy_cd", "glm_aed", "gotm_wet"),
+  path = ".",
   model_controls = NULL,
-  inf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
-  outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
+  inf_factor = NULL,
+  outf_factor = NULL,
   ext_elev = 0,
   use_bgc = FALSE,
   calc_wbal = TRUE,
@@ -20,16 +20,17 @@ build_aeme(
   coeffs = NULL,
   hum_type = 3,
   est_swr_hr = TRUE,
-  path = "."
+  config = NULL
 )
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{config}{list; loaded via `config <- yaml::read_yaml("aeme.yaml")`}
+\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
+\code{gotm_wet}.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{path}{filepath; where input files are located relative to the current
+working directory.}
 
 \item{model_controls}{dataframe; of configuration loaded from
 "model_controls.csv".}
@@ -47,8 +48,8 @@ outflows. Needs to be named according to the model.}
 \item{calc_wbal}{logical; calculate water balance. Default = TRUE.}
 
 \item{wb_method}{numeric; method to use for calculating water balance. Must be
-1 (no inflows or outflows) or 2 (outflows calculated) or 3 (Any unexplained 
-gain in lake storage is treated as an effective inflow; any unexplained loss 
+1 (no inflows or outflows) or 2 (outflows calculated) or 3 (Any unexplained
+gain in lake storage is treated as an effective inflow; any unexplained loss
 is treated as an effective outflow). Default = 2}
 
 \item{calc_wlev}{logical; calculate water level.}
@@ -58,42 +59,40 @@ files.}
 
 \item{coeffs}{numeric vector of length two; to be used to estimate surface
 water temperature for estimating evaporation. Defaults to NULL. If water
-temperature observations are included in `aeme` object, then it will use
+temperature observations are included in \code{aeme} object, then it will use
 those to build a linear relationship between air temperature and water
 temperature. Otherwise. it uses the simple estimation
- \eqn{temp_water = 5 + 0.75 * temp_air} from Stefan & Preud'homme, 2007:
- www.doi.org/10.1111/j.1752-1688.1993.tb01502.x}
+\eqn{temp_water = 5 + 0.75 * temp_air} from Stefan & Preud'homme, 2007:
+www.doi.org/10.1111/j.1752-1688.1993.tb01502.x}
 
-\item{hum_type}{numeric; GOTM humidity metric [1=relative humidity (%),
-2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
+\item{hum_type}{numeric; GOTM humidity metric (1=relative humidity (\%),
+2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg))
 Default = 3.}
 
 \item{est_swr_hr}{logical; estimate hourly shortwave radiation from daily
 values. Default = TRUE.}
 
-\item{path}{filepath; where input files are located relative to the current 
-working directory.}
+\item{config}{list; loaded via \code{config <- yaml::read_yaml("aeme.yaml")}}
 }
 \value{
-builds the model ensemble configuration.
-
 aeme object
 }
 \description{
 Configure an ensemble of lake model simulations from basic set of inputs.
 }
 \examples{
-tmpdir <- tempdir()
+# Read in example AEME object and build model configuration files for GLM-AED
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
-# Copy files from package into tempdir
-file.copy(aeme_dir, tmpdir, recursive = TRUE)
-path <- file.path(tmpdir, "lake")
-aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+path <- "aeme" # subdirectory where model configuration files will be written
+aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
 model_controls <- get_model_controls()
-inf_factor = c("glm_aed" = 1)
-outf_factor = c("glm_aed" = 1)
 model <- c("glm_aed")
-build_aeme(path = path, aeme = aeme, model = model,
-               model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-               use_bgc = FALSE)
+aeme <- aeme |> 
+  build_aeme(path = path, model = model, model_controls = model_controls,
+           ext_elev = 5)
+
+# Switch on biogeochemistry and use default model controls
+aeme <- aeme |>
+  build_aeme(path = path, model = model, model_controls = model_controls, 
+              ext_elev = 5, use_bgc = TRUE)
 }

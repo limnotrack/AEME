@@ -2,9 +2,9 @@
 #'
 #' @param df_met data.frame of meteorological variables.
 #' @param path.gotm filepath; to GOTM directory.
-#' @param hum_type numeric; humidity metric [1=relative humidity (%),
+#' @param hum_type numeric; humidity metric (1=relative humidity (%),
 #' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg);
-#'  default=3]
+#'  default=3)
 #' @param return_df Logical; return meteorological dataframe
 #'
 #' @importFrom dplyr mutate select all_of across

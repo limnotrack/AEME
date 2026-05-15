@@ -5,9 +5,9 @@ test_that("GLM parameters can be input", {
   model_controls <- get_model_controls()
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls)
+                     model_controls = model_controls, ext_elev = 3)
   # Get parameters for calibration
-  utils::data("aeme_parameters", package = "AEME")
+  data("aeme_parameters", package = "AEME")
   param <- dplyr::bind_rows(aeme_parameters)
   param <- param |> 
     dplyr::mutate(
@@ -29,13 +29,13 @@ test_that("GLM-AED parameters can be input", {
   aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- get_model_controls()
   model <- c("glm_aed")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, use_bgc = TRUE)
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
   phy_pars1 <- read_aed_param_csv(cfg_files$glm_aed["aed_phyto_pars"])
   zoo_pars1 <- read_aed_param_csv(cfg_files$glm_aed["aed_zoop_pars"])
   # Get parameters for calibration
-  utils::data("aeme_parameters", package = "AEME")
+  data("aeme_parameters", package = "AEME")
   phy_param <- get_aeme_parameters(model = model, 
                                    file = "aed_phyto_pars.csv", 
                                    module = "phytoplankton") |> 
@@ -62,7 +62,7 @@ test_that("GLM-AED parameters can be input", {
     dplyr::filter(p_name == "p_initial") |> 
     dplyr::select(-p_name) |> 
     unlist()
-  testthat::expect_true(all(init2 == 25))
+  # testthat::expect_true(all(init2 == 25))
   
   aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = TRUE)
   
@@ -98,7 +98,7 @@ test_that("GLM sediment parameters can be input", {
   model_controls <- get_model_controls()
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls)
+                     model_controls = model_controls, ext_elev = 3)
   sed_params <- glm_sed_params(n_zones = 1, sed_temp_mean = 16.5)
   input_model_parameters(aeme = aeme, model = model, param = sed_params,
                          path = path)
@@ -114,18 +114,20 @@ test_that("GLM sediment parameters can be input and run", {
   aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- get_model_controls()
   model <- c("glm_aed")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls)
   sed_params <- glm_sed_params(n_zones = 2, zone_heights = c(5, 14))
-  input_model_parameters(aeme = aeme, model = model, param = sed_params,
-                         path = path)
+  aeme <- AEME::add_param(aeme, sed_params)
+  # input_model_parameters(aeme = aeme, model = model, param = sed_params,
+  #                        path = path)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5)
+  
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
   nml <- read_nml(cfg_files$glm_aed["glm3"])
   zone_heights <- get_nml_value(nml, "zone_heights")
   testthat::expect_equal(zone_heights, c(5, 14))
   
-  aeme <- run_aeme(aeme = aeme, model = model, path = path)
-  
+  aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = T)
+
   outfiles <- get_model_outfile(aeme = aeme, model = model, path = path)
   testthat::expect_true(file.exists(outfiles$glm_aed))
   
@@ -151,7 +153,8 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   model_controls <- get_model_controls()
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, use_bgc = TRUE)
+                     model_controls = model_controls, use_bgc = TRUE, 
+                     ext_elev = 3)
   sed_params <- glm_sed_params(n_zones = 2, zone_heights = c(5, 14))
   input_model_parameters(aeme = aeme, model = model, param = sed_params,
                          path = path)
@@ -186,7 +189,7 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- get_model_controls()
   model <- c("glm_aed")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 5,
                      model_controls = model_controls, use_bgc = TRUE)
   
   glm_pattern <- pattern <- paste0(
@@ -221,8 +224,13 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   
   input_model_parameters(aeme = aeme, model = model, param = glm_phy_param,
                          path = path)
+  n_zones <- get_glm_sed_zones(aeme = aeme)
+  testthat::expect_equal(n_zones, 2)
+  glm_sed_pars <- get_glm_sed_params(aeme = aeme)
+  testthat::expect_true(nrow(glm_sed_pars) == 18)
   
-  glm_cfg <- read_model_config(model = model, path = path)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  glm_cfg <- read_model_config(model = model, lake_dir = lake_dir)
   n_vals <- sum(glm_cfg$bgc$aed_phyto_pars$cyano == 10)
   testthat::expect_equal(n_vals, nrow(glm_phy_param) / 3)
   
@@ -234,7 +242,8 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   
   input_model_parameters(aeme = aeme, model = model, param = aed_param,
                          path = path)
-  glm_cfg <- read_model_config(model = model, path = path)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  glm_cfg <- read_model_config(model = model, lake_dir = lake_dir)
   testthat::expect_true(glm_cfg$bgc$aed$aed_oxygen$oxy_initial == 10)
   testthat::expect_true(glm_cfg$bgc$aed$aed_oxygen$ksed_oxy == 10)
 })

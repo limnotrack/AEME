@@ -39,7 +39,12 @@ glm_p <- lapply(names(glm_pars), \(n) {
         ),
         min = default - (0.5 * abs(default)),
         max = default + (0.5 * abs(default)),
-        group = NA_character_
+        group = NA_character_,
+        var_sim = dplyr::case_when(
+          grepl("coef", name) & module == "mixing" ~ "HYD_thmcln",
+          grepl("sed_temp_mean|sed_temp_amplitude|sed_temp_peak_doy", name) ~ "HYD_temp",
+          .default = NA_character_
+        )
       )
   }) |>
     dplyr::bind_rows()
@@ -276,7 +281,17 @@ aed_pars <- lapply(names(aed_nml), function(section) {
         value = value,
         module = gsub("aed_", "", section),
         group = NA,
-        index = NA
+        index = NA,
+        var_sim = dplyr::case_when(
+          grepl("oxy", param, ignore.case = TRUE) ~ "CHM_oxy",
+          grepl("amm", param, ignore.case = TRUE) ~ "NIT_amm|NIT_tn",
+          grepl("nitrogen", param, ignore.case = TRUE) ~ "NIT_tn",
+          grepl("nit", param, ignore.case = TRUE) ~ "NIT_nit|NIT_tn",
+          grepl("n2o", param, ignore.case = TRUE) ~ "NIT_nit|NIT_tn",
+          grepl("frp", param, ignore.case = TRUE) ~ "PHS_frp|PHS_tp",
+          .default = NA
+        )
+        
       )
     }
     if (nrow(df2) > 1) {
@@ -304,6 +319,7 @@ aed_pars <- lapply(names(aed_nml), function(section) {
   return(df)
 })
 aed_pars_df <- dplyr::bind_rows(aed_pars)
+aed_pars_df[grepl("fsed_don", aed_pars_df$name), ]
 aed_pars_df2 <- aed_pars_df |>
   dplyr::filter(is.na(index) | index == 1) |> 
   dplyr::select(model, file, name, value, min, max, module, group, index,
@@ -314,8 +330,22 @@ aed_pars_df2 <- aed_pars_df |>
     ),
     max = dplyr::case_when(
       grepl("theta", name) ~ 1.12, .default = max
+    ),
+    var_sim = dplyr::case_when(
+      grepl("oxy", name, ignore.case = TRUE) ~ "CHM_oxy",
+      grepl("amm", name, ignore.case = TRUE) ~ "NIT_amm|NIT_tn",
+      grepl("nitrogen", name, ignore.case = TRUE) ~ "NIT_tn",
+      grepl("nit", name, ignore.case = TRUE) ~ "NIT_nit|NIT_tn",
+      grepl("n2o", name, ignore.case = TRUE) ~ "NIT_nit|NIT_tn",
+      grepl("frp", name, ignore.case = TRUE) ~ "PHS_frp|PHS_tp",
+      grepl("rsi", name, ignore.case = TRUE) ~ "SIL_rsi",
+      grepl("rsi", name, ignore.case = TRUE) ~ "SIL_rsi",
+      .default = NA
     )
   )
+
+aed_pars_df2 |> 
+  dplyr::select(name, var_sim)
 
 
 # GLM-AED phytoplankton parameters
@@ -333,7 +363,9 @@ phy_long <- phy_param |>
                 ) |> 
   dplyr::select(model, file, name, value, module, group) |> 
   dplyr::mutate(min = value - (0.5 * abs(value)),
-                max = value + (0.5 * abs(value)))
+                max = value + (0.5 * abs(value)),
+                var_sim = paste0("PHY_", group, "|PHY_tchla")
+                )
 
 zoo_csv_file <- basename(aed_nml[["aed_zooplankton"]][["dbase"]])
 zoo_csv_filepath <- file.path(glm_dir, zoo_csv_file)

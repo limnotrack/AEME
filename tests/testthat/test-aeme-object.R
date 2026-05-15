@@ -28,100 +28,20 @@ test_that("aeme object can be read from yaml file", {
   testthat::expect_output(print(aeme))
 })
 
-test_that("aeme object can be constructed from add-in", {
-  
-  # insert_aeme()
-  
-  aeme_list <- list(
-    # Define lake list
-    lake = list(
-      name = character(), # name of the lake
-      id = character(), # id number for the lake
-      latitude = numeric(), # latitude
-      longitude = numeric(), # longitude
-      elevation = numeric(), # elevation of lake surface above sea level [m]
-      depth = numeric(), # depth of the lake [m]
-      area = numeric() # surface area of the lake [m2]
-    ),
-    # Define time list
-    time = list(
-      start = as.POSIXct("2020-01-01 00:00:00"), # start date
-      stop = as.POSIXct("2020-12-31 00:00:00"), # stop date
-      time_step = 3600, # time step in seconds
-      spin_up = list( # spin-up period for each model
-        "dy_cd" = 365,
-        "glm_aed" = 365,
-        "gotm_wet" = 365
-      )
-    ),
-    # Define observations list
-    observations = list(
-      lake = NULL, # dataframe of lake observations in the AEME format
-      level = NULL # dataframe of lake level observations in the AEME format
-    ),
-    # Define input list
-    input = list(
-      init_depth = numeric(), # initial depth of the lake [m]
-      hypsograph = data.frame(), # dataframe of hypsograph data in the AEME format
-      meteo = data.frame(), # dataframe of meteorological data in the AEME format
-      use_lw = TRUE, # Logical use incoming longwave radiation
-      Kw = numeric() # Light attenuation coefficient [m-1]
-    ),
-    # Define inflows list
-    inflows = list(
-      data = list(
-        inflow1 = data.frame() # dataframe of inflow data in the AEME format
-      ),
-      factor = list( # scaling factors for inflows for each model
-        "dy_cd" = 1,
-        "glm_aed" = 1,
-        "gotm_wet" = 1
-      )
-    ),
-    # Define outflows list
-    outflows = list(
-      data = list(
-        outflow1 = data.frame() # dataframe of outflow data in the AEME format
-      ),
-      factor = list( # scaling factor for outflows for each model
-        "dy_cd" = 1,
-        "glm_aed" = 1,
-        "gotm_wet" = 1
-      )
-    ),
-    # Define water balance list
-    water_balance = list(
-      method = 2, # Method for calculating water balance. 1 = none, 2 = outflows, 3 = inflows and outflows
-      use = "mod", # Use observations or modelled data for water balance. Can be 'obs' or 'mod'.
-      data = list(
-        model = data.frame(), # dataframe with modelled water balance data
-        wbal = data.frame() # Calculated water balance with build_aeme()
-      )
-    )
-  )
-  
-  aeme <- aeme_constructor(lake = aeme_list$lake, time = aeme_list$time,
-                           observations = aeme_list$observations,
-                           input = aeme_list$input,
-                           inflows = aeme_list$inflows,
-                           outflows = aeme_list$outflows,
-                           water_balance = aeme_list$water_balance)
-  
-  testthat::expect_s4_class(aeme, "Aeme")
-  
-})
-
 test_that("aeme object can be built with partial information", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme_example <- readRDS(aeme_file)
+  met <- get_met(aeme_example)
   aeme_list <- list(
     # Define lake list
     lake = list(
       name = character(), # name of the lake
       id = character(), # id number for the lake
-      latitude = numeric(), # latitude
-      longitude = numeric(), # longitude
+      latitude = -37, # latitude
+      longitude = 172, # longitude
       elevation = numeric(), # elevation of lake surface above sea level [m]
-      depth = numeric(), # depth of the lake [m]
-      area = numeric() # surface area of the lake [m2]
+      depth = 21, # depth of the lake [m]
+      area = 1200 # surface area of the lake [m2]
     ),
     # Define time list
     time = list(
@@ -132,9 +52,9 @@ test_that("aeme object can be built with partial information", {
     input = list(
       init_depth = numeric(), # initial depth of the lake [m]
       hypsograph = data.frame(), # dataframe of hypsograph data in the AEME format
-      meteo = data.frame(), # dataframe of meteorological data in the AEME format
+      meteo = met, # dataframe of meteorological data in the AEME format
       use_lw = TRUE, # Logical use incoming longwave radiation
-      Kw = numeric() # Light attenuation coefficient [m-1]
+      Kw = 1.7 # Light attenuation coefficient [m-1]
     ),
     # Define water balance list
     water_balance = list(
@@ -212,16 +132,19 @@ test_that("parameters can be added to an aeme object", {
     char_val = NA
   )
   
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme_example <- readRDS(aeme_file)
+  met <- get_met(aeme_example)
   aeme_list <- list(
     # Define lake list
     lake = list(
       name = character(), # name of the lake
       id = character(), # id number for the lake
-      latitude = numeric(), # latitude
-      longitude = numeric(), # longitude
+      latitude = -37, # latitude
+      longitude = 172, # longitude
       elevation = numeric(), # elevation of lake surface above sea level [m]
-      depth = numeric(), # depth of the lake [m]
-      area = numeric() # surface area of the lake [m2]
+      depth = 21, # depth of the lake [m]
+      area = 1200 # surface area of the lake [m2]
     ),
     # Define time list
     time = list(
@@ -232,9 +155,9 @@ test_that("parameters can be added to an aeme object", {
     input = list(
       init_depth = numeric(), # initial depth of the lake [m]
       hypsograph = data.frame(), # dataframe of hypsograph data in the AEME format
-      meteo = data.frame(), # dataframe of meteorological data in the AEME format
+      meteo = met, # dataframe of meteorological data in the AEME format
       use_lw = TRUE, # Logical use incoming longwave radiation
-      Kw = numeric() # Light attenuation coefficient [m-1]
+      Kw = 1.7 # Light attenuation coefficient [m-1]
     ),
     # Define water balance list
     water_balance = list(
@@ -283,6 +206,34 @@ test_that("aeme object inflows can be manipulated", {
   testthat::expect_true(length(inf_chk2) == length(inf))
   testthat::expect_true(all(names(inf_chk2) == c("test")))
   
+  aeme <- remove_inflow(aeme, all = TRUE)
+  inf_chk3 <- get_inflows(aeme)
+  testthat::expect_true(length(inf_chk3) == 0)
+  
+  model_controls <- get_model_controls()
+  aeme2 <- build_aeme(aeme = aeme, model = "glm_aed", path = tempdir(),
+                      model_controls = model_controls, ext_elev = 3)
+  
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  
+  aeme <- set_precip(aeme = aeme, type = "inflow")
+  inf <- get_inflows(aeme)
+  met <- get_met(aeme)
+  status1 <- precip_status(aeme)
+  testthat::expect_true("precip" %in% names(inf))
+  testthat::expect_true(all(met$MET_pprain == 0))
+  
+  aeme <- set_precip(aeme = aeme, type = "met")
+  inf <- get_inflows(aeme)
+  met <- get_met(aeme)
+  status2 <- precip_status(aeme)
+  testthat::expect_true(status2 != status1)
+  testthat::expect_true(!("precip" %in% names(inf)))
+  testthat::expect_true(any(met$MET_pprain > 0))
+
+  
+  # Test deprecated type
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   
@@ -324,7 +275,7 @@ test_that("var_aeme can be checked correctly", {
   chk <- check_aeme_vars(var_sim)
   testthat::expect_true(length(chk) == 1 & chk == var_sim)
   testthat::expect_error({
-    check_aeme_vars("temp")
+    check_aeme_vars("temp789")
   })
 })
 
@@ -503,7 +454,7 @@ test_that("GLM-AED sediment parameters can be added", {
   
   
   aeme <- build_aeme(aeme = aeme, model = model, use_bgc = TRUE,
-                     model_controls = model_controls, path = path)
+                     model_controls = model_controls, path = path, ext_elev = 3)
   
   lake_dir <- get_lake_dir(aeme, path = path)
   glm_nml_file <- file.path(lake_dir, "glm_aed", "glm3.nml")
@@ -515,4 +466,27 @@ test_that("GLM-AED sediment parameters can be added", {
   aeme <- remove_param(aeme)
   param3 <- AEME::parameters(aeme)
   testthat::expect_true(nrow(param3) == 0)
+})
+
+test_that("Aeme can be written and read from files", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- "test_write"
+  model_controls <- get_model_controls()
+  aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed", 
+                     model_controls = model_controls, ext_elev = 3)
+  aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
+  out_files <- write_aeme_to_files(aeme, path, include_output = TRUE)
+  testthat::expect_true(length(out_files) > 0)
+  
+  aeme_path <- get_lake_dir(aeme = aeme, path = path)
+  fils <- list.files(aeme_path, full.names = TRUE, pattern = "*.csv")
+  testthat::expect_true(length(fils) > 15)
+  aeme2 <- read_aeme_from_files(aeme_path)
+  testthat::expect_s4_class(aeme2, "Aeme")
+  lke1 <- lake(aeme)
+  lke2 <- lake(aeme2)
+  for (i in names(lke1)) {
+    testthat::expect_true(all(lke1[[i]] == lke2[[i]]))
+  }
 })

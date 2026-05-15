@@ -12,7 +12,7 @@ add_hum_vars(data, hum_method = 1)
 temperature, degC or K), "airt" (air temperature, degC or K)}
 
 \item{hum_method}{Method for humidity input:
-1 = relative humidity (%)
+1 = relative humidity (\%)
 2 = wet bulb temperature (degC or K)
 3 = dew point temperature (degC or K)
 4 = specific humidity (kg/kg)}

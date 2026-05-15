@@ -123,13 +123,13 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     # Light
     rad <- ncdf4::ncvar_get(nc, "rad")[, date_index]
     efold <- sapply(seq_len(ncol(rad)), \(t) {
-      if (t == 1 | all(rad[, t] == 0)) return(0) # Day 1 is always 0
+      if (t == 1 | all(rad[, t] == 0, na.rm = TRUE)) return(0) # Day 1 is always 0
       if (sum(complete.cases(rad[, t], zi[, t])) < 2) return(NA)
       if (length(unique(rad[complete.cases(rad[, t], zi[, t]), t])) < 2) return(NA)
       zeta[t] - approx(rad[, t], zi[, t], xout = (1/exp(1) * rad[nrow(rad), t]))$y
     })
     euphotic <- sapply(seq_len(ncol(rad)), \(t) {
-      if (t == 1 | all(rad[, t] == 0)) return(0) # Day 1 is always 0
+      if (t == 1 | all(rad[, t] == 0, na.rm = TRUE)) return(0) # Day 1 is always 0
       if (sum(complete.cases(rad[, t], zi[, t])) < 2) return(NA)
       if (length(unique(rad[complete.cases(rad[, t], zi[, t]), t])) < 2) return(NA)
       zeta[t] - approx(rad[, t], zi[, t], xout = (0.01 * rad[nrow(rad), t]))$y
@@ -178,4 +178,51 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
   return(out_list)
+}
+
+#' Read GOTM water level output
+#' 
+#' @inheritParams read_gotm_output
+#' @returns Data frame with Date and LKE_lvlwtr columns
+#' @export
+#' @importFrom ncdf4 ncvar_get ncatt_get nc_close
+read_gotm_wlev <- function(nc = NULL, file) {
+  if (is.null(nc)) {
+    nc <- open_nc_safe(file, model = "gotm_wet")
+    on.exit(ncdf4::nc_close(nc))
+  }
+  out_steps <- ncdf4::ncvar_get(nc, "time")
+  # if (length(out_steps) == 0) {
+  #   cli::cli_abort("No time dimension in GOTM output")
+  # }
+  date_start <- ncdf4::ncatt_get(nc, "time", "units")$value |>
+    gsub("seconds since ", "", x = _) |>
+    as.POSIXct()
+  time_vec <- ncdf4::ncvar_get(nc, "time")
+  gotm_dates <- as.POSIXct(time_vec + date_start) |> 
+    as.Date()
+  
+  zi <- ncdf4::ncvar_get(nc, "zi")
+  zeta <- ncdf4::ncvar_get(nc, "zeta")
+  if (is.null(dim(zi))) {
+    return(empty_wlev_df())
+  }
+  
+  lake_level <- zi[nrow(zi), ] - zi[1, ]
+  lake_level[lake_level <= 0] <- 0
+  zeta[lake_level <= 0] <- NA
+  
+  out_df <- data.frame(Date = gotm_dates,
+                       LKE_lvlwtr = as.vector(lake_level))
+  return(out_df)
+} 
+
+#' Create empty GOTM water level data frame
+#' @returns Data frame with Date and LKE_lvlwtr columns
+#' @noRd
+empty_wlev_df <- function() {
+  data.frame(
+    Date = as.Date(character()),
+    LKE_lvlwtr  = numeric()
+  )
 }

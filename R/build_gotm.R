@@ -1,7 +1,7 @@
 #' Build a GOTM-WET model from generic inputs
 #'
 #' @inheritParams build_aeme
-#' @param nlev
+#' @param nlev number of vertical levels in GOTM. Default is 40.
 #'
 #' @return directory with GOTM configuration.
 #' @noRd

@@ -24,7 +24,7 @@ convert_do(
 
 \item{baro}{barometric pressure (mb)}
 
-\item{altitude}{altitude (m). Only used if `baro` is missing.}
+\item{altitude}{altitude (m). Only used if \code{baro} is missing.}
 
 \item{salinity}{salinity (ppt). Default is 0 for freshwater.}
 

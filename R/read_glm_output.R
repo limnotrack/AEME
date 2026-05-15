@@ -11,6 +11,7 @@
 #' Defaults to TRUE.
 #' @param output_hour Hour of the day to extract (0-23). Defaults to 0.
 #' @param file File path to netCDF file. Only used if `nc` is NULL.
+#' @param phyto_pars Data frame with phytoplankton parameters from AED.
 #'
 #' @returns List with AEME output variables
 #' @export
@@ -21,7 +22,7 @@
 
 read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                             dates = NULL, date_index = NULL, incl_fluxes = TRUE, 
-                            output_hour = 0, file) {
+                            output_hour = 0, file, phyto_pars = NULL) {
   
   if (is.null(nc)) {
     nc <- open_nc_safe(file, model = "glm_aed")
@@ -146,8 +147,20 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     nc_vars <- names(nc$var)
     vars_chk <- data.frame(vars = model_vars_vec,
                            present = model_vars_vec %in% nc_vars,
-                           conv_factor = model_vars$conversion_aed
-    )
+                           conv_factor = model_vars$conversion_aed)
+    
+    if (any(grepl("PHY", model_vars_vec))) {
+      phyto_vars <- model_vars_vec[grepl("PHY", model_vars_vec)]
+      phyto_vars <- phyto_vars[phyto_vars != "PHY_tchla"]
+      phyto_vars <- gsub("PHY_", "", phyto_vars)
+      if (!is.null(phyto_pars)) {
+        Xcc <- phyto_pars |> 
+          dplyr::filter(p_name == "Xcc") 
+        for (pv in phyto_vars) {
+          vars_chk$conv_factor[vars_chk$vars == paste0("PHY_", pv)] <- 12.0 / Xcc[[pv]]
+        }
+      }
+    }
     
     out_vars <- lapply(model_vars_vec, \(v) {
       if(vars_chk$present[vars_chk$vars == v] == FALSE) {
@@ -157,14 +170,55 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       if (is.na(conv_factor)) {
         conv_factor <- 1
       }
-      var <- ncdf4::ncvar_get(nc, v)[, date_index] * conv_factor
-      interp_static_grid(var = var,
-                         midpoints = midpoints,
-                         out_depths = out_depths)
+      var_out <- ncdf4::ncvar_get(nc, v)
+      if (grepl("_Z", v)) {
+        return(var_out)
+      }
+      if (length(dim(var_out)) == 3) {
+        var_out <- var_out[, , date_index, drop = FALSE]
+      } else if (length(dim(var_out)) == 2) {
+        var <- var_out[, date_index, drop = FALSE]  * conv_factor
+        out <- interp_static_grid(var = var,
+                                  midpoints = midpoints,
+                                  out_depths = out_depths)
+        return(out)
+      } else if (length(dim(var_out)) == 1) {
+        var_out <- var_out[date_index] * conv_factor
+        return(var_out)
+      } else {
+        cli::cli_abort(paste("Variable", v, "has unsupported number of dimensions"))
+      }
     })
     
     out_list <- c(out_list, out_vars)
   }
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
   return(out_list)
+}
+
+#' Read GLM lake water level output
+#' 
+#' @inheritParams read_glm_output
+#' @returns Data frame with Date and LKE_lvlwtr columns
+#' @export
+#' @importFrom ncdf4 ncvar_get ncatt_get
+read_glm_wlev <- function(nc = NULL, file) {
+  if (is.null(nc)) {
+    nc <- open_nc_safe(file, model = "glm_aed")
+    on.exit(ncdf4::nc_close(nc))
+  }
+  hours_since  <- ncdf4::ncvar_get(nc, "time")
+  if (length(hours_since) == 0) {
+    cli::cli_abort("No time dimension in GLM output")
+  }
+  date_start <- as.POSIXct(gsub("hours since ", "",
+                                ncdf4::ncatt_get(nc,'time','units')$value))
+  glm_dates <- as.POSIXct(hours_since * 3600 + date_start) |> 
+    as.Date()
+  
+  lake_level <- ncdf4::ncvar_get(nc, "lake_level")
+  
+  out <- data.frame(Date = glm_dates,
+                    LKE_lvlwtr = lake_level)
+  return(out)
 }

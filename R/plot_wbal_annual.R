@@ -13,11 +13,11 @@
 #' @export
 #'
 #' @importFrom dplyr bind_rows case_when  group_by left_join mutate 
-#'  summarise
+#' @importFrom dplyr summarise
 #' @importFrom tidyr pivot_wider
 #' @importFrom lubridate year
 #' @importFrom ggplot2 ggplot geom_bar geom_point position_stack geom_hline
-#'  facet_wrap labs aes
+#' @importFrom ggplot2 facet_wrap labs aes
 
 plot_wbal_annual <- function(aeme, model, lake_frac = FALSE, 
                              remove_spin_up = FALSE) {
@@ -101,6 +101,7 @@ plot_wbal_annual <- function(aeme, model, lake_frac = FALSE,
                                                     color = "black",
                size = 3) +
     ggplot2::geom_hline(yintercept = 0) +
+    ggplot2::scale_x_continuous(breaks = unique(df$year_class)) +
     ggplot2::facet_wrap(~ Model, ncol = 1) +
     ggplot2::labs(
       x = "Year",

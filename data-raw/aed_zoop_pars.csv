@@ -1,0 +1,32 @@
+module,group,parameter,label,symbol,description,units,default,source
+aed_zooplankton,GENERAL,zoop_name,Group name,,Name of zooplankton group,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,GENERAL,zoop_initial,Initial concentration,,Initial concentration of zooplankton,mmol/m3,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,GENERAL,min_zoo,Minimum concentration,,Minimum concentration of zooplankton,mmol/m3,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,GRAZING,Rgrz_zoo,Grazing rate,R_{grz},Zooplankton grazing rate,/day,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,GRAZING,fassim_zoo,Assimilation efficiency,,Assimilation efficiency for zooplankton grazing,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,GRAZING,Kgrz_zoo,Grazing half-saturation constant,K_{grz},Half saturation constant for zooplankton grazing,mmol/m3,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,GRAZING,theta_grz_zoo,Grazing temperature multiplier,,Temperature multiplier for zooplankton grazing,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,GRAZING,Cmin_grz_zoo,Minimum prey concentration,,Minimum prey concentration for grazing by zooplankton,mmol/m3,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,RESPIRATION,Rresp_zoo,Respiration rate,R_{resp},Respiration rate coefficient,/day,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,RESPIRATION,theta_resp_zoo,Respiration temperature multiplier,,Temperature multiplier for zooplankton respiration,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,RESPIRATION,Tstd_zoo,Standard temperature,,Standard temperature for zooplankton respiration temperature dependence,oC,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,RESPIRATION,Topt_zoo,Optimal temperature,,Optimal temperature for zooplankton temperature dependence,oC,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,RESPIRATION,Tmax_zoo,Maximum temperature,,Maximum temperature for zooplankton temperature dependence,oC,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,RESPIRATION,ffecal_zoo,Fecal pellet fraction,,Fecal pellet fraction of respiration,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,RESPIRATION,fexcr_zoo,Excretion fraction,,Excretion fraction of respiration,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,RESPIRATION,ffecal_sed,Fecal pellet sinking fraction,,Fraction of fecal pellets that sink directly to sediments (hard fraction),-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,MORTALITY,Rmort_zoo,Mortality rate,R_{mort},Mortality rate coefficient,/day,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,SALINITY,saltfunc_zoo,Salinity limitation function,,Type of salinity limitation function used in mortality,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,SALINITY,Smin_zoo,Minimum salinity,,Minimum salinity for zooplankton survival,psu,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,SALINITY,Smax_zoo,Maximum salinity,,Maximum salinity for zooplankton survival,psu,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,SALINITY,Sint_zoo,Salinity intercept,,Intercept for salinity = 0,psu,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,STOICHIOMETRY,INC_zoo,Internal N:C ratio,I_{NC},Ratio of internal nitrogen to carbon,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,STOICHIOMETRY,IPC_zoo,Internal P:C ratio,I_{PC},Ratio of internal phosphorus to carbon,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,OXYGEN,DOmin_zoo,Minimum oxygen concentration,,Minimum concentration of oxygen for zooplankton survival,mmolO2/m3,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,PREY,num_prey,Number of prey,,Number of state variables for zooplankton prey,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,PREY,prey(1)%zoop_prey,Prey 1 state variable,,State variable name for zooplankton prey 1,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,PREY,prey(1)%Pzoo_prey,Prey 1 preference factor,,Preference factor for zooplankton predators grazing on prey 1,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,PREY,prey(2)%zoop_prey,Prey 2 state variable,,State variable name for zooplankton prey 2,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,PREY,prey(2)%Pzoo_prey,Prey 2 preference factor,,Preference factor for zooplankton predators grazing on prey 2,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,PREY,prey(3)%zoop_prey,Prey 3 state variable,,State variable name for zooplankton prey 3,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton
+aed_zooplankton,PREY,prey(3)%Pzoo_prey,Prey 3 preference factor,,Preference factor for zooplankton predators grazing on prey 3,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_zooplankton

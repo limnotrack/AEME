@@ -5,26 +5,28 @@
 \alias{key_naming}
 \title{Model variable naming}
 \format{
-## `key_naming`
+\subsection{\code{key_naming}}{
+
 A data frame with 127 rows and 13 columns:
 \describe{
-  \item{name}{AEME variable name}
-  \item{dy_cd}{DYRESM variable name}
-  \item{glm_aed}{GLM variable name}
-  \item{gotm_wet}{GOTM variable name}
-  \item{gotm_fabm}{GOTM-FABM variable name containing key-value names}
-  \item{name_text}{Regular text string variable name}
-  \item{name_full}{String variable name}
-  \item{name_parse}{Variable name for parsing}
-  \item{units}{Units of the variable. As defined using the
-   \href{https://cran.r-project.org/package=units}{\pkg{units}} package.}
-  \item{conversion_aed}{Unit conversion for GLM-AED}
-  \item{default}{Default value for the variable}
-  \item{derived}{Logical value if the variable is derived}
-  \item{derived_from}{Variable name that the variable is derived from}
-  \item{min}{Minimum value for the variable}
-  \item{max}{Maximum value for the variable}
-  \item{keywords}{Keywords associated with the variable}
+\item{name}{AEME variable name}
+\item{dy_cd}{DYRESM variable name}
+\item{glm_aed}{GLM variable name}
+\item{gotm_wet}{GOTM variable name}
+\item{gotm_fabm}{GOTM-FABM variable name containing key-value names}
+\item{name_text}{Regular text string variable name}
+\item{name_full}{String variable name}
+\item{name_parse}{Variable name for parsing}
+\item{units}{Units of the variable. As defined using the
+\href{https://cran.r-project.org/package=units}{\pkg{units}} package.}
+\item{conversion_aed}{Unit conversion for GLM-AED}
+\item{default}{Default value for the variable}
+\item{derived}{Logical value if the variable is derived}
+\item{derived_from}{Variable name that the variable is derived from}
+\item{min}{Minimum value for the variable}
+\item{max}{Maximum value for the variable}
+\item{keywords}{Keywords associated with the variable}
+}
 }
 }
 \source{

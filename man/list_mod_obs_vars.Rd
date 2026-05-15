@@ -9,8 +9,8 @@ list_mod_obs_vars(aeme, model, ens_n = 1)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
+\code{gotm_wet}.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
@@ -35,5 +35,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-list_mod_obs_vars(aeme = aeme, model = model)
+aeme |> 
+  list_mod_obs_vars()
 }

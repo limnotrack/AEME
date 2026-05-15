@@ -1,6 +1,7 @@
 #' Get number of sediment zones in GLM-AED model
 #'
 #' @inheritParams build_aeme
+#' @inheritParams get_model_outfile
 #'
 #' @returns Number of sediment zones
 #' @export
@@ -8,13 +9,16 @@
 
 get_glm_sed_zones <- function(aeme, path, lake_dir = NULL) {
   if (is.null(lake_dir)) {
-    if (missing(aeme) | missing(path)) {
+    if (missing(aeme)) {
       cli::cli_abort("Either {.arg lake_dir} or both {.arg aeme} and
                      {.arg path} must be provided.")
     }
+    if (missing(path)) {
+      path <- get_aeme_path(aeme)
+    }
     lake_dir <- get_lake_dir(aeme = aeme, path = path)
   }
-  model_config <- read_model_config(model = "glm_aed", path = path)
+  model_config <- read_model_config(model = "glm_aed", lake_dir = lake_dir)
   n_zones <- model_config$hydrodynamic$sediment$n_zones
   return(n_zones)
 }

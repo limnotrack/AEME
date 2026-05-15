@@ -9,14 +9,14 @@ get_model_outfile(aeme = NULL, model, path = NULL, lake_dir = NULL)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
+\code{gotm_wet}.}
 
-\item{path}{filepath; where input files are located relative to the current 
+\item{path}{filepath; where input files are located relative to the current
 working directory.}
 
 \item{lake_dir}{Path to the lake AEME directory. If NULL, it will be
-computed from `aeme` and `path`.}
+computed from \code{aeme} and \code{path}.}
 }
 \value{
 list of model output files.

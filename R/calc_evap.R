@@ -23,7 +23,7 @@ calc_evap <- function(met, altitude,
     if (method == "fairall") {
       humid <- calc_humidity_vars(hum_method = 1, hum = met[["hum"]], 
                                   tw = met[["sst"]], ta = met[["airt"]], airp = met[["airp"]])
-      evap <- calc_fairall_vec(sst = met[["sst"]], airt = met[["airt"]],# airp = met[["airp"]],
+      evap <- calc_fairall_vec(sst = met[["sst"]], airt = met[["airt"]],
                                u10 = met[["u10"]], v10 = met[["v10"]],
                                precip = met[["precip"]], qa = humid[["qa"]], 
                                qs = humid[["qs"]], rhoa = humid[["rhoa"]])["evap"] |>
@@ -86,9 +86,9 @@ calc_evap <- function(met, altitude,
 
 #' Calculate atmospheric density
 #'
-#' @param atmosPressure [Pa]
-#' @param vapPressure [Pa]
-#' @param AirTemp [Cel]
+#' @param atmosPressure (Pa)
+#' @param vapPressure (Pa)
+#' @param AirTemp (Cel)
 #'
 #' @return vector of atmospheric density
 #' @noRd

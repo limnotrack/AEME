@@ -19,8 +19,13 @@ Imports:
     cli,
     dplyr,
     ggplot2,
+    glue,
+    jsonlite,
+    knitr,
+    lifecycle,
     lubridate,
     lwgeom,
+    methods,
     ncdf4,
     parallel,
     patchwork,
@@ -29,7 +34,9 @@ Imports:
     RColorBrewer,
     readr,
     rLakeAnalyzer,
+    rlang,
     rstudioapi,
+    scales,
     sf,
     stats,
     stringdist,
@@ -47,7 +54,7 @@ Suggests:
     DT,
     GLM3r (>= 3.1.17),
     GOTMr (>= 0.0.0.10),
-    knitr,
+    htmltools,
     LakeEnsemblR (>= 1.2.9),
     osmdata,
     rmarkdown,
@@ -62,9 +69,13 @@ Remotes:
     github::limnotrack/aemetools
 Config/checklist/communities: limnotrack
 Config/checklist/keywords: ecosystem; modelling
-Config/Needs/website: rmarkdown
+Config/Needs/website:
+    r-lib/asciicast,
+    rmarkdown
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0

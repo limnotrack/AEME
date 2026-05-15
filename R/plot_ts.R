@@ -9,7 +9,7 @@
 #' @param add_obs logical; add observations to the plot. Default is TRUE.
 #'
 #' @importFrom ggplot2 ggplot geom_line guides scale_linewidth_manual
-#' scale_alpha_manual facet_wrap labs geom_point aes
+#' @importFrom ggplot2 scale_alpha_manual facet_wrap labs geom_point aes
 #' @importFrom dplyr filter group_by mutate summarise left_join
 #'
 #' @return A ggplot object
@@ -56,7 +56,6 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
       depth_range <- abs(depth_range)
       df <- df |>
         dplyr::group_by(Date, Model) |>
-        dplyr::mutate(depth = max(lyr_top) - lyr_top) |>
         dplyr::filter(depth >= min(depth_range) & depth <= max(depth_range))
     }
 
@@ -96,7 +95,8 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
     ggplot2::labs(x = "Date", y = y_lab, colour = "Variable")
 
   if (add_obs) {
-    obs <- get_obs(aeme = aeme, var_sim = var_sim, depth_range = depth_range)
+    obs <- get_obs(aeme = aeme, var_sim = var_sim, depth_range = depth_range,
+                   time_filter = TRUE)
     if (nrow(obs) > 0) {
       obs <- obs |>
         dplyr::group_by(Date, var_aeme) |>

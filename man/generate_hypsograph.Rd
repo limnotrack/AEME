@@ -32,7 +32,7 @@ However}
 the same as the maximum depth.}
 
 \item{z_range}{numeric; 0-1, representing fraction of hypsograph to be used
-for extrapolation. Default is 0.2, which uses the top 20% of the hypsograph
+for extrapolation. Default is 0.2, which uses the top 20\% of the hypsograph
 for extrapolation.}
 
 \item{ext_elev}{numeric; metres to extend the hypograph by.}

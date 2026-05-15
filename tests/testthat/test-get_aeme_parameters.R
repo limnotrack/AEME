@@ -1,6 +1,6 @@
 test_that("all parameters can be retrieved", {
   param <- get_aeme_parameters()
-  testthat::expect_true(nrow(param) == 1381)
+  testthat::expect_true(nrow(param) == 1384)
 })
 
 test_that("DYRESM parameters can be retrieved", {

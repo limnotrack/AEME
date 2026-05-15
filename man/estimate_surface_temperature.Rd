@@ -21,14 +21,16 @@ estimate_surface_temperature(
 \arguments{
 \item{df}{data frame with meteorological and observed surface temperature data.
 Must include columns:
-- \code{Date}: Date of observation
-- \code{MET_tmpair}: Air temperature (°C)
-- \code{MET_wndspd}: Wind speed (m/s)
-- \code{MET_radswd}: Downward shortwave radiation (W/m²)
-- \code{MET_radlwd}: Downward longwave radiation (W/m²)
-- \code{MET_prvapr}: Vapor pressure (mb)
-- \code{HYD_temp}: Observed surface temperature (°C),
-- \code{T5avg}: 5-day average air temperature (°C)}
+\itemize{
+\item \code{Date}: Date of observation
+\item \code{MET_tmpair}: Air temperature (°C)
+\item \code{MET_wndspd}: Wind speed (m/s)
+\item \code{MET_radswd}: Downward shortwave radiation (W/m²)
+\item \code{MET_radlwd}: Downward longwave radiation (W/m²)
+\item \code{MET_prvapr}: Vapor pressure (mb)
+\item \code{HYD_temp}: Observed surface temperature (°C),
+\item \code{T5avg}: 5-day average air temperature (°C)
+}}
 
 \item{depth}{Lake depth (m)}
 
@@ -53,7 +55,7 @@ available observation or air temperature.}
 }
 \value{
 Data frame with estimated surface temperature added as column
- \code{sst}
+\code{sst}
 }
 \description{
 Estimate Surface Temperature Using Energy Balance Model

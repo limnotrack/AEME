@@ -7,8 +7,8 @@
 get_aeme_parameters(model, file, module, name, par)
 }
 \arguments{
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
+\code{gotm_wet}.}
 
 \item{file}{character; vector of file names to retrieve.}
 

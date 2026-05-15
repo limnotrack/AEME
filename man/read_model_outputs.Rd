@@ -13,7 +13,8 @@ read_model_outputs(
   dates = NULL,
   date_index = NULL,
   incl_fluxes = TRUE,
-  output_hour = 0
+  output_hour = 0,
+  phyto_pars = NULL
 )
 }
 \arguments{
@@ -27,7 +28,7 @@ reopening the file multiple times. Defaults to NULL.}
 
 \item{vars_sim}{Variables to extract in the AEME format e.g. "HYD_temp"}
 
-\item{depths}{Depths to extract. If NULL, extract all model layer depths. 
+\item{depths}{Depths to extract. If NULL, extract all model layer depths.
 Defaults to NULL.}
 
 \item{dates}{Dates to extract. If NULL, extract all dates. Defaults to NULL.}
@@ -39,6 +40,9 @@ to NULL.}
 Defaults to TRUE.}
 
 \item{output_hour}{Hour of the day to extract (0-23). Defaults to 0.}
+
+\item{phyto_pars}{Dataframe of phytoplankton parameters for GLM-AED model.
+See \code{?read_glm_output} for details. Defaults to NULL.}
 }
 \value{
 List of model outputs in AEME standard format

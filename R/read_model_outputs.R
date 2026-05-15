@@ -14,6 +14,8 @@
 #' @param incl_fluxes Logical indicating whether to include flux variables.
 #' Defaults to TRUE.
 #' @param output_hour Hour of the day to extract (0-23). Defaults to 0.
+#' @param phyto_pars Dataframe of phytoplankton parameters for GLM-AED model. 
+#' See `?read_glm_output` for details. Defaults to NULL.
 #'
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @importFrom withr local_locale local_timezone
@@ -23,12 +25,12 @@
 
 read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL, 
                                depths = NULL, dates = NULL, date_index = NULL,
-                               incl_fluxes = TRUE, output_hour = 0) {
+                               incl_fluxes = TRUE, output_hour = 0, 
+                               phyto_pars = NULL) {
   
   # Set timezone
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
-  
   
   model <- check_model(model)
   if (length(model) != 1) {
@@ -53,7 +55,7 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   }
 
   # Load model hypsograph
-  hyps <- load_model_hypsograph(model = model, lake_dir = lake_dir)
+  hyps <- read_model_hypsograph(model = model, lake_dir = lake_dir)
   
   if (is.null(date_index)) {
     # ---- 1. extract time info for this model
@@ -79,7 +81,8 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                                                    date_index = date_index),
                      "glm_aed"  = read_glm_output(nc, vars_sim, depths = depths,
                                                   incl_fluxes = incl_fluxes, 
-                                                  date_index = date_index),
+                                                  date_index = date_index,
+                                                  phyto_pars = phyto_pars),
                      "dy_cd"    = read_dy_output(nc, vars_sim, depths = depths,
                                                  incl_fluxes = incl_fluxes, 
                                                  date_index = date_index)
@@ -138,6 +141,17 @@ get_model_vars <- function(vars_sim, model) {
   model_vars <- key_naming |> 
     dplyr::filter(name %in% vars_sim & !derived & name != "LKE_lvlwtr") |> 
     dplyr::select(name, dplyr::sym(model), conversion_aed)
+  
+  # If any variables are not in key_naming add them as separate rows
+  if (any(!vars_sim %in% model_vars$name)) {
+    missing_vars <- vars_sim[!vars_sim %in% model_vars$name]
+    missing_df <- data.frame(name = missing_vars,
+                             conversion_aed = 1)
+    missing_df[[model]] <- missing_vars
+    model_vars <- dplyr::bind_rows(model_vars, missing_df) |> 
+      dplyr::arrange(match(name, vars_sim))
+  }
+  
   if ("dy_cd" %in% model) {
     model_vars <- model_vars |>
       dplyr::mutate(dy_cd = paste0("dyresm", dy_cd, "_Var"))
@@ -167,6 +181,17 @@ format_model_vars_vec <- function(vars_sim, model) {
   model_vars <- key_naming |> 
     dplyr::filter(name %in% vars_sim & !derived & name != "LKE_lvlwtr") |> 
     dplyr::select(name, dplyr::sym(model), conversion_aed)
+  
+  # If any variables are not in key_naming add them as separate rows
+  if (any(!vars_sim %in% model_vars$name)) {
+    missing_vars <- vars_sim[!vars_sim %in% model_vars$name]
+    missing_df <- data.frame(name = missing_vars,
+                             conversion_aed = 1)
+    missing_df[[model]] <- missing_vars
+    model_vars <- dplyr::bind_rows(model_vars, missing_df) |> 
+      dplyr::arrange(match(name, vars_sim))
+  }
+  
   if ("dy_cd" %in% model) {
     model_vars <- model_vars |>
       dplyr::mutate(dy_cd = paste0("dyresm", dy_cd, "_Var"))
@@ -255,38 +280,6 @@ load_model_config <- function(model, lake_dir, file) {
     cfg <- readLines(cfg_file)
   }
   return(cfg)
-}
-
-#' Load model hypsograph from configuration
-#' @param lake_dir Directory of lake model outputs
-#' @param model Model name. One of "gotm_wet", "glm_aed", or "dy_cd".
-#' @return Dataframe of hypsograph with columns elev, area, and depth
-#' @keywords internal
-#' @noRd
-load_model_hypsograph <- function(model, lake_dir) {
-  model <- check_model(model)
-  lake_dir <- check_path(lake_dir, must_exist = TRUE)
-  cfg <- load_model_config(model = model, lake_dir = lake_dir)
-  if (model == "gotm_wet") {
-    hyps_filename <- cfg$location$hypsograph
-    hyps_file <- file.path(lake_dir, "gotm_wet", hyps_filename)
-    hyps <- read_gotm_hyps(file = hyps_file) |> 
-      dplyr::mutate(elev = depth)
-  } else if (model == "glm_aed") {
-    lake_btm <- min(cfg$morphometry$H)
-    init_depth <- cfg$init_profiles$lake_depth + lake_btm
-    hyps <- data.frame(elev = cfg$morphometry$H, area = cfg$morphometry$A) |> 
-      dplyr::mutate(depth = elev - init_depth) |> 
-      dplyr::arrange(dplyr::desc(elev))
-  } else if (model == "dy_cd") {
-    stg_file <- get_model_config_files(model = model, 
-                                       lake_dir = lake_dir)[[model]]["stg"]
-    stg <- read_dy_stg(file = stg_file)
-    hyps <- stg$bathymetry |> 
-      dplyr::mutate(depth = elev - stg$surface_elev) |> 
-      dplyr::arrange(dplyr::desc(elev))
-  }
-  return(hyps)
 }
 
 #' Extract model time information

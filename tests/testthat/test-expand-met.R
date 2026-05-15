@@ -12,7 +12,7 @@ test_that("can expand met", {
                        lon = aeme_yaml$lake$longitude,
                        elev = aeme_yaml$lake$elevation)
 
-  testthat::expect_equal(ncol(ex_met), 20)
+  testthat::expect_equal(ncol(ex_met), 16)
 
   met2 <- met |>
     dplyr::mutate(
@@ -24,7 +24,7 @@ test_that("can expand met", {
   ex_met2 <- expand_met(met = met2, lat = aeme_yaml$lake$latitude,
                         lon = aeme_yaml$lake$longitude,
                         elev = aeme_yaml$lake$elevation)
-  testthat::expect_equal(ncol(ex_met2), 20)
+  testthat::expect_equal(ncol(ex_met2), 16)
   testthat::expect_true(all(round(ex_met2$MET_wnduvu, 2) == round(ex_met$MET_wnduvu, 2)))
 
 
@@ -37,7 +37,7 @@ test_that("can expand met", {
   ex_met3 <- expand_met(met = met3, lat = aeme_yaml$lake$latitude,
                         lon = aeme_yaml$lake$longitude,
                         elev = aeme_yaml$lake$elevation)
-  testthat::expect_equal(ncol(ex_met3), 20)
+  testthat::expect_equal(ncol(ex_met3), 16)
   testthat::expect_true(all(round(abs(ex_met3$MET_wnduvu), 2) == round(ex_met$MET_wndspd, 2)))
 
 })

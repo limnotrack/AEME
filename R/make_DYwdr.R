@@ -14,6 +14,7 @@
 #' @importFrom lubridate year
 #' @importFrom stats complete.cases
 #' @importFrom utils write.table
+#' @importFrom rlang := !!
 #'
 
 
@@ -26,6 +27,13 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
         dplyr::filter(model == "dy_cd") |> 
         dplyr::select(-model) |> 
         dplyr::rename(wbal = outflow)
+    }
+    
+    for (flow in names(wdrData)) {
+      if (flow != "wbal") {
+        wdrData[[flow]] <- wdrData[[flow]] |>
+          dplyr::rename(!!flow := HYD_flow)
+      }
     }
     
     wdrData <- Reduce(merge, wdrData) |>

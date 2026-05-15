@@ -39,7 +39,7 @@ test_that("building DYRESM-CAEDYM works", {
   outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls, 
                      ext_elev = 5, use_bgc = TRUE)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   file_chk <- file.exists(file.path(lake_dir, model, "dyresm3p1.par"))
@@ -60,13 +60,25 @@ test_that("building GLM works", {
   list.files(tmpdir, full.names = TRUE, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  
+  wbal <- water_balance(aeme)
+  testthat::expect_true(is.null(wbal$params))
+  
   model_controls <- get_model_controls()
-  inf_factor = c("glm_aed" = 1)
-  outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
+  
+  # Test water balance
+  wbal <- water_balance(aeme)
+  testthat::expect_true(!is.null(wbal$params))
+  
+  aeme <- reset_wbal_param(aeme)
+  wbal2 <- water_balance(aeme)
+  testthat::expect_true(is.null(wbal2$params))
+  
+  
   lke <- lake(aeme)
   testthat::expect_true(is.character(lke$id))
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -109,6 +121,42 @@ test_that("building GLM-AED works", {
   testthat::expect_true(file_chk)
 })
 
+test_that("building GLM with fixed outlets", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  list.files(tmpdir, full.names = TRUE, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls()
+  inf_factor = c("glm_aed" = 1)
+  outf_factor = c("glm_aed" = 1)
+  model <- c("glm_aed")
+  path <- "aeme"
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, 
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme(aeme)
+  cfg <- configuration(aeme)
+  cfg$glm_aed$hydrodynamic$outflow$outl_elvs
+  out_file <- get_model_outfile(aeme = aeme)
+  testthat::expect_true(file.exists(out_file$glm_aed))
+  inp <- input(aeme)
+  
+  outf <- outflows(aeme)
+  outf$elevation$outflow <- 11
+  aeme <- add_outflows(aeme = aeme, elevation = outf$elevation)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, 
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme(aeme)
+  cfg2 <- configuration(aeme)
+  testthat::expect_true(cfg$glm_aed$hydrodynamic$outflow$outl_elvs[1] >
+                         cfg2$glm_aed$hydrodynamic$outflow$outl_elvs[1])
+  
+})
+
 test_that("building GOTM works", {
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
@@ -122,7 +170,7 @@ test_that("building GOTM works", {
   outf_factor = c("gotm_wet" = 1)
   model <- c("gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme, model = model, 
-                     model_controls = model_controls, inf_factor = inf_factor, 
+                     model_controls = model_controls,  
                      ext_elev = 5, use_bgc = FALSE)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -148,7 +196,7 @@ test_that("building GOTM-WET works", {
   model <- c("gotm_wet")
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls, 
                      ext_elev = 5, use_bgc = TRUE, wb_method = 3)
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(lake_dir, model, "fabm.yaml"))
@@ -170,6 +218,57 @@ test_that("building GOTM-WET works", {
   
 })
 
+test_that("building all models with minimum met variables", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  req_met1 <- c("Date", "MET_tmpair", "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", 
+                "MET_pprain", "MET_radswd")
+  inp <- input(aeme)
+  met <- inp$met |> 
+    dplyr::select(dplyr::all_of(req_met1))
+  aeme <- add_met(aeme = aeme, met = met)
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- c("glm_aed")
+  }
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
+                     model_controls = model_controls, use_bgc = FALSE)
+  
+  cfg_upd <- cfg <- configuration(aeme)
+  for (m in model) {
+    cfg_upd[[m]] <- NULL
+  }
+  configuration(aeme) <- cfg_upd
+  cfg2 <- configuration(aeme)
+  testthat::expect_equal(length(cfg2), 10)
+  aeme <- load_configuration(aeme = aeme, model = model, path = path)
+  cfg3 <- configuration(aeme)
+  testthat::expect_equal(names(cfg), names(cfg3))
+  
+  lke <- lake(aeme)
+  exp_met <- met |> 
+    expand_met(lat = lke$latitude, lon = lke$longitude, elev = lke$elev)
+  
+  req_met2 <- c("Date", "MET_tmpair", "MET_humrel", "MET_wndspd", "MET_pprain",
+                "MET_radswd")
+  testthat::expect_true(all(req_met2 %in% colnames(exp_met)))
+  met <- exp_met |> 
+    dplyr::select(dplyr::all_of(req_met2))
+  aeme <- add_met(aeme = aeme, met = met)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
+                     model_controls = model_controls, 
+                     use_bgc = FALSE)
+  inp <- input(aeme)
+  met <- inp$meteo
+  testthat::expect_true(all(req_met2 %in% colnames(met)))
+})
+
 test_that("building all models in a different dir", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
@@ -178,20 +277,18 @@ test_that("building all models in a different dir", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
+                     model_controls = model_controls, 
                      use_bgc = FALSE)
   
   path <- file.path(tmpdir, "lake_new")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
+                     model_controls = model_controls, 
                      use_bgc = FALSE, use_aeme = TRUE)
 })
 
@@ -203,42 +300,31 @@ test_that("building all models with the same hypsograph", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- c("glm_aed")
   }
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
+                     model_controls = model_controls, 
                      use_bgc = FALSE)
   
   inp <- input(aeme)
   lke <- lake(aeme)
   inp$init_depth
-  dy_hyps <- read.delim(file.path(path, paste0(lke$id, "_", lke$name), "dy_cd",
-                                  "wainamu.stg"), skip = 12, sep = "\t",
-                        header = FALSE, col.names = c("elev", "area")) |>
-    dplyr::mutate(depth = round(max(elev) - elev, 2))
-  glm_nml <- read_nml(file.path(path, paste0(lke$id, "_", lke$name), "glm_aed",
-                                "glm3.nml"))
-  glm_hyps <- data.frame(elev = glm_nml$morphometry$H,
-                         area = glm_nml$morphometry$A) |>
-    dplyr::mutate(depth = round(max(elev) - elev, 2))
-  gotm_hyps <- read.delim(file.path(path, paste0(lke$id, "_", lke$name),
-                                    "gotm_wet", "inputs", "hypsograph.dat"),
-                          header = FALSE, skip = 1,
-                          col.names = c("depth", "area")) |>
-    dplyr::mutate(depth = abs(depth))
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  
+  dy_hyps <- read_model_hypsograph(model = "dy_cd", lake_dir = lake_dir)
+  glm_hyps <- read_model_hypsograph(model = "glm_aed", lake_dir = lake_dir)
+  gotm_hyps <- read_model_hypsograph(model = "gotm_wet", lake_dir = lake_dir)
   
   testthat::expect_true(all(gotm_hyps$area %in% glm_hyps$area))
   testthat::expect_true(all(gotm_hyps$area %in% dy_hyps$area))
   testthat::expect_true(all(glm_hyps$area %in% dy_hyps$area))
   
-  testthat::expect_true(all(glm_hyps$depth %in% dy_hyps$depth))
-  testthat::expect_true(all(gotm_hyps$depth %in% dy_hyps$depth))
-  testthat::expect_true(all(round(glm_hyps$depth, 1) %in% round(gotm_hyps$depth, 1)))
+  testthat::expect_true(all.equal(glm_hyps$depth, dy_hyps$depth))
+  testthat::expect_true(all.equal(gotm_hyps$depth, dy_hyps$depth))
+  testthat::expect_true(all.equal(glm_hyps$depth, gotm_hyps$depth))
 })
 
 test_that("can build all models with the generated hypsograph", {
@@ -249,8 +335,6 @@ test_that("can build all models with the generated hypsograph", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
@@ -263,37 +347,18 @@ test_that("can build all models with the generated hypsograph", {
   inp$hypsograph <- hyps
   input(aeme) <- inp
   
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
+                     model_controls = model_controls, 
                      use_bgc = FALSE)
   
   inp <- input(aeme)
   lke <- lake(aeme)
   inp$init_depth
-  dy_init_height <- readLines(file.path(path, paste0(lke$id, "_", lke$name), "dy_cd",
-                                        "wainamu.stg"))[4] |>
-    strsplit("#") |>
-    unlist() |>
-    as.numeric()
-  dy_init_height <- dy_init_height[1]
-  dy_hyps <- read.delim(file.path(path, paste0(lke$id, "_", lke$name), "dy_cd",
-                                  "wainamu.stg"), skip = 12, sep = "\t",
-                        header = FALSE, col.names = c("elev", "area")) |>
-    dplyr::mutate(depth = round(max(elev) - elev, 2),
-                  adj = max(elev) - dy_init_height,
-                  depth = -depth + adj)
-  glm_nml <- read_nml(file.path(path, paste0(lke$id, "_", lke$name), "glm_aed",
-                                "glm3.nml"))
-  glm_hyps <- data.frame(elev = glm_nml$morphometry$H,
-                         area = glm_nml$morphometry$A) |>
-    dplyr::mutate(depth = round(max(elev) - elev, 2),
-                  adj = max(depth) - glm_nml$init_profiles$lake_depth,
-                  depth = -depth + adj)
-  gotm_hyps <- read.delim(file.path(path, paste0(lke$id, "_", lke$name),
-                                    "gotm_wet", "inputs", "hypsograph.dat"),
-                          header = FALSE, skip = 1,
-                          col.names = c("depth", "area")) |>
-    dplyr::mutate(depth = depth)
+  
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  dy_hyps <- read_model_hypsograph(model = "dy_cd", lake_dir = lake_dir)
+  glm_hyps <- read_model_hypsograph(model = "glm_aed", lake_dir = lake_dir)
+  gotm_hyps <- read_model_hypsograph(model = "gotm_wet", lake_dir = lake_dir)
   
   testthat::expect_true(all(gotm_hyps$area %in% glm_hyps$area))
   testthat::expect_true(all(gotm_hyps$area %in% dy_hyps$area))
@@ -319,11 +384,9 @@ test_that("building all models with same initial depth", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
+                     model_controls = model_controls, 
                      use_bgc = FALSE)
   
   inp <- input(aeme)
@@ -346,8 +409,8 @@ test_that("building all models with same initial depth", {
   
   inp$init_depth <- 10
   input(aeme) <- inp
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
+                     model_controls = model_controls, 
                      use_bgc = FALSE)
   
   inp <- input(aeme)
@@ -382,11 +445,9 @@ test_that("building all models and loading to aeme works", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   build_aeme(path = path, aeme = aeme, model = model,
-             model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
+             model_controls = model_controls,  ext_elev = 5,
              use_bgc = TRUE)
   aeme <- load_configuration(model = model, aeme = aeme,
                              model_controls = model_controls, path = path)
@@ -411,11 +472,9 @@ test_that("can build all models and write to new directory", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   build_aeme(path = path, aeme = aeme, model = model,
-             model_controls = model_controls, inf_factor = inf_factor,
+             model_controls = model_controls, 
              ext_elev = 5, use_bgc = TRUE)
   aeme <- load_configuration(model = model, aeme = aeme,
                              path = path)
@@ -490,11 +549,9 @@ test_that("building all models with new parameters works", {
   #   dplyr::filter( model == "glm")
   
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 5,
+                     model_controls = model_controls, 
                      use_bgc = FALSE)
   
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
@@ -517,7 +574,7 @@ test_that("building all models with new parameters works", {
   
   parameters(aeme) <- aeme_parameters
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls, 
                      use_bgc = FALSE)
   
   glm_met <- read.csv(file.path(lake_dir, "glm_aed", "bcs", "meteo_glm.csv"))
@@ -562,11 +619,9 @@ test_that("building models with parameters for only one model", {
   #   dplyr::filter( model == "glm")
   
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 5,
+                     model_controls = model_controls, 
                      use_bgc = FALSE)
   
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
@@ -598,7 +653,7 @@ test_that("derived variables are in aeme object", {
   testthat::expect_true(all(!is.na(thmcln1$value)))
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
   
   obs <- observations(aeme)

@@ -8,12 +8,19 @@
 #' @export
 #'
 
-get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir = NULL) {
-  model <- check_model(model)
-  
+get_model_outfile <- function(aeme = NULL, model, path = NULL, 
+                              lake_dir = NULL) {
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }  
   # --- Resolve lake_dir as needed ---
   if (is.null(lake_dir)) {
     aeme <- check_aeme(aeme)
+    if (missing(path)) {
+      path <- get_aeme_path(aeme)
+    }
     path <- check_path(path = path, must_exist = TRUE)
     lake_dir <- get_lake_dir(path = path, aeme = aeme)
   }

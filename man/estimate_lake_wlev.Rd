@@ -9,39 +9,54 @@ estimate_lake_wlev(
   hyps_df,
   model,
   init_elev,
+  params = NULL,
   initial_guess = NULL,
-  verbose = TRUE
+  verbose = FALSE
 )
 }
 \arguments{
 \item{data}{data frame with columns:
-- Date: Date of observation
-- HYD_flow: Inflow to the lake (m3/day)
-- MET_pprain: Precipitation on the lake surface (m/day)
-- evap_m3: Evaporation from the lake surface (m3/day)
-- lvl_obs: Observed lake water level (m)
-- is_obs_lvl: Logical indicating if lvl_obs is an observation (TRUE/FALSE)}
+\itemize{
+\item Date: Date of observation
+\item HYD_flow: Inflow to the lake (m3/day)
+\item MET_pprain: Precipitation on the lake surface (m/day)
+\item evap_m3: Evaporation from the lake surface (m3/day)
+\item lvl_obs: Observed lake water level (m)
+\item is_obs_lvl: Logical indicating if lvl_obs is an observation (TRUE/FALSE)
+}}
 
 \item{hyps_df}{data frame with hypsograph data containing columns:
-- elev: Elevation (m)
-- area: Surface area at that elevation (m2)
-- volume: Volume at that elevation (m3)}
+\itemize{
+\item elev: Elevation (m)
+\item area: Surface area at that elevation (m2)
+\item volume: Volume at that elevation (m3)
+}}
 
 \item{model}{Character string indicating the evaporation model to use:
-- "dy_cd": DYRESM-CAEDYM dynamic evaporation
-- "glm_aed": GLM-AED dynamic evaporation
-- "gotm_wet": GOTM-WET dynamic evaporation}
+\itemize{
+\item "dy_cd": DYRESM-CAEDYM dynamic evaporation
+\item "glm_aed": GLM-AED dynamic evaporation
+\item "gotm_wet": GOTM-WET dynamic evaporation
+}}
+
+\item{init_elev}{Numeric; initial lake elevation (m) to start the simulation.
+This should be a reasonable estimate based on the observed levels to ensure
+the optimization converges.}
 
 \item{initial_guess}{Optional initial guess for optimization parameters:
-- C: Outflow coefficient
-- h_inv: Inversion height for outflow calculation}
+\itemize{
+\item C: Outflow coefficient
+\item h_inv: Inversion height for outflow calculation
+}}
 
 \item{verbose}{Logical indicating whether to print optimization details}
 }
 \value{
 A data frame with original data and additional columns:
-  - lvl_sim: Simulated lake water level (m)
-  - HYD_outflow_sim: Simulated lake outflow (m3/day)
+\itemize{
+\item lvl_sim: Simulated lake water level (m)
+\item HYD_outflow_sim: Simulated lake outflow (m3/day)
+}
 }
 \description{
 This function estimates lake water levels using a hydrological model with nudging

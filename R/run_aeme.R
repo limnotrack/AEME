@@ -19,7 +19,7 @@
 #' @export
 #'
 #' @importFrom parallel parLapply makeCluster detectCores clusterExport
-#' stopCluster
+#' @importFrom parallel stopCluster
 #' @importFrom stats setNames
 #'
 #' @examples
@@ -29,21 +29,28 @@
 #' model_controls <- get_model_controls()
 #' model <- c("glm_aed")
 #' aeme <- build_aeme(path = path, aeme = aeme, model = model,
-#' model_controls = model_controls, ext_elev = 5)
-#' aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#' plot_output(aeme, model = model)
-run_aeme <- function(aeme, model, 
+#'                    model_controls = model_controls, ext_elev = 5)
+#' \dontrun{
+#' aeme <- run_aeme(aeme)
+#'
+#' # Plot model output - temperature by default
+#' plot_output(aeme)
+#' }
+run_aeme <- function(aeme, model, path, 
                      return_type = c("aeme", "exec_result", "both", "none"),
                      ens_n = 1,
                      model_controls = NULL, verbose = FALSE,
                      debug = FALSE, timeout = Inf, parallel = FALSE, ncores,
-                     check_output = FALSE, path = ".") {
+                     check_output = FALSE) {
   
   aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
   } else {
     model <- check_model(model = model)
+  }
+  if (missing(path)) {
+    path <- get_aeme_path(aeme)
   }
   path <- check_path(path = path, must_exist = TRUE)
   if (is.null(model_controls)) {
@@ -121,7 +128,7 @@ run_aeme <- function(aeme, model,
         args$sim_folder <- args$sim_folder[[m]]
         do.call(model_funs[[m]], args)
       }),
-      model
+      names(model)
     )
     cli_inform_safe(c("v" = paste0("Model run complete! ",
                                    "[", format(Sys.time()), "]")))
@@ -164,7 +171,7 @@ run_aeme <- function(aeme, model,
   
   if ("aeme" %in% return_type | "both" %in% return_type) {
     
-    model_check <- sapply(model, function(m) {
+    model_check <- sapply(names(model), function(m) {
       exec_result[[m]]$status == 0
     })
     model_success <- model[model_check]

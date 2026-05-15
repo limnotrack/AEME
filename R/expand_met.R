@@ -112,26 +112,33 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
 
 
   # if no station pressure
-  if (!is.prsttn) {
-
-    # check that msl pressure is supplied
-    if (!is.prmslp) { stop("prsttn (station level pressure hPa) is not supplied,
-                           therefore, prmslp (mean sea level pressure hPa) is
-                           required, but not present")}
-
+  if (is.prsttn) {
+    prsttn <- met[, which(grepl("prsttn",colnames(met)))]
+  }
+  if (is.prmslp) {
     prmslp <- met[, which(grepl("prmslp",colnames(met)))]
-
+  }
+  if (!is.prsttn & !is.prmslp) {
+    
+    prsttn <- estimate_station_pressure(tmpair = tmpair, humrel = humrel,
+                                        elev = elev, 
+                                        sea_level_pressure_hPa = 1013.25)
+    is.prsttn <- TRUE
+  } else if (!is.prsttn) {
+    prmslp <- met[, which(grepl("prmslp",colnames(met)))]
+  } else if (!is.prmslp) {
+    prsttn <- met[, which(grepl("prsttn",colnames(met)))]
+  }
+  if (!is.prsttn) {
+    prmslp <- met[, which(grepl("prmslp",colnames(met)))]
     # estimate station pressure from sea level pressure
     prsttn <- psychrolib::GetStationPressure(prmslp * 100, Altitude = elev,
                                              tmpair)/100
 
-  } else {
-    prsttn <- met[, which(grepl("prsttn",colnames(met)))]
   }
 
   # if no msl pressure
   if (!is.prmslp) {
-
     # check that msl pressure is supplied
     if (!is.prsttn) {
       stop("prmslp (mean sea level pressure hPa) is not supplied, therefore, prsttn (station level pressure hPa) is required, but not present")
@@ -140,10 +147,7 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
     # estimate station pressure from sea level pressure
     prmslp <- psychrolib::GetSeaLevelPressure(prsttn * 100, Altitude = elev,
                                               tmpair)/100
-  } else {
-    prmslp <- met[, which(grepl("prmslp",colnames(met)))]
   }
-
 
   # if wind speed
   if (is.wndspd) {
@@ -227,29 +231,29 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
 
   # max/min
   if (!is.airmax) {
-    airmax <- 0
+    airmax <- tmpair
   } else {
     airmax <- met[,which(grepl("airmax",colnames(met)))]
   }
   if (!is.airmin) {
-    airmin <- 0
+    airmin <- tmpair
   } else {
     airmin <- met[,which(grepl("airmin",colnames(met)))]
   }
   if (!is.dewmax) {
-    dewmax <- 0
+    dewmax <- tmpdew
   } else {
     dewmax <- met[,which(grepl("dewmax",colnames(met)))]
   }
   if (!is.dewmin) {
-    dewmin <- 0
+    dewmin <- tmpdew
   } else {
     dewmin <- met[,which(grepl("dewmin",colnames(met)))]
   }
 
   out <- data.frame(Date = Date,
                     radswd, radlwd, cldcvr, tmpair,
-                    airmax, airmin, dewmax, dewmin,
+                    # airmax, airmin, dewmax, dewmin,
                     humrel, tmpdew, prvapr,
                     prsttn, prmslp,
                     wndspd, wnddir, wnduvu, wnduvv,
@@ -277,3 +281,36 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
 
 }
 
+#' Estimate station pressure at elevation
+#' @noRd
+estimate_station_pressure <- function(
+    tmpair,
+    humrel,
+    elev,
+    sea_level_pressure_hPa = 1013.25
+) {
+  # Constants
+  g  <- 9.80665        # m s-2
+  Rd <- 287.05         # J kg-1 K-1
+  Rv <- 461.5          # J kg-1 K-1
+  
+  # Convert temperature to Kelvin
+  T_K <- tmpair + 273.15
+  
+  # Saturation vapor pressure (hPa) – Tetens formula
+  es <- 6.112 * exp((17.67 * tmpair) / (tmpair + 243.5))
+  
+  # Actual vapor pressure (hPa)
+  e <- (humrel / 100) * es
+  
+  # Mixing ratio (kg/kg)
+  w <- 0.622 * e / (sea_level_pressure_hPa - e)
+  
+  # Virtual temperature (K)
+  Tv <- T_K * (1 + (Rv / Rd - 1) * w)
+  
+  # Hypsometric equation
+  P <- sea_level_pressure_hPa * exp(-g * elev / (Rd * Tv))
+  
+  return(P)
+}

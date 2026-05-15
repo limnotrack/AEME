@@ -10,6 +10,10 @@ add_deriv_output(out_list, hyps, vars_sim = NULL)
 \item{out_list}{list of model output variables}
 
 \item{hyps}{data frame with hypsograph data}
+
+\item{vars_sim}{character vector of variable names to add. If NULL, all variables
+with registered functions will be added. If not NULL, only the specified variables
+will be added, but their dependencies will also be added.}
 }
 \value{
 List of model output variables with derived variables added

@@ -7,8 +7,8 @@
 #' fractions, 2=prescribed layer thicknesses
 #' @param thickness_factor numeric; factor to multiply the thickness of the
 #' layers. Default is 1.
-#' @param ddu numeric; Surface zooming [dimensionless; min=0.0; default=0.0]
-#' @param ddl numeric; Bottom zooming [dimensionless; min=0.0; default=0.0]
+#' @param ddu numeric; Surface zooming (dimensionless; min=0.0; default=0.0)
+#' @param ddl numeric; Bottom zooming (dimensionless; min=0.0; default=0.0)
 #' @inheritParams build_aeme
 #'
 #' @return list; GOTM model configuration

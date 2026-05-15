@@ -6,7 +6,7 @@
 param_colnames <- function(incl_opt = TRUE) {
   key_names <- c("model", "file", "name", "value", "min", "max", "group",
                  "index")
-  opt_names <- c("module", "par", "logical", "logical_val",
+  opt_names <- c("module", "var_sim", "par", "logical", "logical_val",
                  "char", "char_val")
   if (incl_opt) {
     param_names <- c(key_names, opt_names)

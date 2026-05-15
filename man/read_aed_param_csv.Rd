@@ -18,7 +18,7 @@ write_aed_param_csv(df, file)
 \item{df}{A data frame to be written to CSV.}
 }
 \value{
-For `read_aed_param_csv`, a data frame read from the CSV file.
+For \code{read_aed_param_csv}, a data frame read from the CSV file.
 }
 \description{
 Read and write AED parameter CSV files

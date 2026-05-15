@@ -55,7 +55,7 @@ REservoir Simulation Model (DYRESM), the General Lake Model (GLM), and the
 General Ocean Turbulence Model (GOTM, which has been adapted for closed basins
 for application to lakes and reservoirs). The models can be coupled to their
 corresponding water quality models, the DYRESM-CAEDYM (Computational Aquatic
-Ecosystem Dynamics Model), GLM-AED2 (Aquatic Ecosystem Dynamics Model 2), and
+Ecosystem Dynamics Model), GLM-AED (Aquatic Ecosystem Dynamics Model), and
 GOTM-WET (Water Ecosystem Tool).
 
 Key aspects of the AEME package include:
@@ -132,7 +132,7 @@ contains the following objects:
 -   **start** - Start date of the simulation (character). The start date must be
     in the format `YYYY-MM-DD HH:MM:SS`.
 
--   **end** - End date of the simulation (character). The end date must be in
+-   **stop** - End date of the simulation (character). The end date must be in
     the format `YYYY-MM-DD HH:MM:SS`.
 
 -   **timestep** - Timestep of the simulation (numeric). The timestep must be in
@@ -190,7 +190,8 @@ The `level` observations are stored in a data frame with the following columns:
 -   **Date** - Date of the observation (character). The date must be in the
     format `YYYY-MM-DD HH:MM:SS`.
 
--   **value** - Value of the observation (numeric).
+-   **value** - Value of the observation (numeric). The value must be in metres
+    above sea level and within the range of the hypsograph elevations.
 
 #### Input {#sec-inputs}
 
@@ -249,6 +250,10 @@ The outflows slot is a list that contains the following objects:
     according to each model. However, this can also be passed as a parameter in
     the model_parameters section and calibrated there. This is the preferred
     method for applying scaling factors.
+    
+-   elevation - named list of elevations at which the outflows occur. This is 
+    important that it falls within the elevation range in the hypsograph. Set to 
+    `-1` if the outflow is at the surface.
 
 If no outflows are present then this slot will be empty.
 
@@ -330,20 +335,22 @@ The data.frame has the columns:
 -   initial_wc - numeric; value to use in initialising the model. This will be 
     automatically updated if the variable is present in the `observations` slot.
     
--   initial_sed - numeric; value to use in intialising the sediment module for 
+-   initial_sed - numeric; value to use in initialising the sediment module for 
     the DYRESM-CAEDYM model.
     
 -   conversion_aed - numeric; factor to multiply by to convert to GLM-AED units.
 
-When the model is built the mode
+When the model is built, the `model_controls` data.frame is stored in the
+`configuration` slot of the `aeme` object. It can be retrieved with
+`get_model_controls(aeme = aeme)`.
 
 
 ### Creation
 
-The `aeme` object can be created using the `aeme_constructor()` function. It 
-requires the basic inputs to 
-from a YAML file using the `yaml_to_aeme`
-function. The YAML file contains all the information required to run the model.
+The `aeme` object can be created using the `aeme_constructor()` function. It
+requires at minimum the `lake`, `time`, and `input` list objects. The object can
+also be created from a YAML file using the `yaml_to_aeme()` function. The YAML
+file contains all the information required to run the model.
 
 ```{r warning=FALSE, message=FALSE, eval=FALSE}
 # Define lake list
@@ -430,8 +437,8 @@ model_controls <- get_model_controls()
 model <- c("dy_cd", "glm_aed", "gotm_wet")
 path <- "aeme"
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                            model_controls = model_controls,
-                            ext_elev = 5, use_bgc = TRUE)
+                   model_controls = model_controls,
+                   ext_elev = 5, use_bgc = TRUE)
 aeme
 ```
 

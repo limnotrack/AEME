@@ -24,5 +24,5 @@ ggplot2 object
 \description{
 Calculates and plots annual water balance components including evaporation,
 precipitation, inflow, outflow, and net balance for each model in the Aeme
- object.
+object.
 }

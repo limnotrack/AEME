@@ -44,7 +44,22 @@ test_that("plotting inflows and outflows", {
   aeme <- readRDS(aeme_file)
   p1 <- plot_flows(aeme = aeme)
   testthat::expect_true(ggplot2::is_ggplot(p1))
-  p2 <- plot_flows(aeme = aeme, flow = "inflow", var_sim = "HYD_temp")
+  p2 <- plot_flows(aeme = aeme, flow = "inflow", var_sim = "temp")
+  testthat::expect_true(ggplot2::is_ggplot(p2))
+  testthat::expect_error({
+    p3 <- plot_flows(aeme = aeme, flow = "outflow", var_sim = "HYD_temp")
+  })
+  
+  path <- tempdir()
+  model_controls <- get_model_controls()
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5) |> 
+    run_aeme()
+  
+  p1 <- plot_flows(aeme = aeme)
+  testthat::expect_true(ggplot2::is_ggplot(p1))
+  p2 <- plot_flows(aeme = aeme, flow = "inflow", var_sim = "temp")
   testthat::expect_true(ggplot2::is_ggplot(p2))
   testthat::expect_error({
     p3 <- plot_flows(aeme = aeme, flow = "outflow", var_sim = "HYD_temp")
@@ -56,16 +71,14 @@ test_that("plotting model output works", {
   aeme <- readRDS(aeme_file)
   path <- tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  model <- c("glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
     model <- "glm_aed"
   }
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
-                     ext_elev = 5, use_bgc = TRUE)
+                     model_controls = model_controls,  ext_elev = 5, 
+                     use_bgc = TRUE)
 
   testthat::expect_error({
     p1 <- plot_output(aeme = aeme, model = model,
@@ -98,13 +111,16 @@ test_that("plotting model output works", {
   p1 <- plot(aeme, "output")
   testthat::expect_true(ggplot2::is_ggplot(p1))
 
+  p0 <- plot_output(aeme = aeme, var_sim = "temp")
+  p0 <- plot_output(aeme = aeme, var_sim = "oxy")
+  
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
-                    level = TRUE, print_plots = FALSE,
+                    level = TRUE, print_plots = FALSE, point_size = 1,
                     var_lims = c(0, 30), ylim = c(0, 16), facet = FALSE)
   
   plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
   plot_output(aeme = aeme, model = model, var_sim = "HYD_dens")
-  plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
+  plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy", var_lims = c(0, 14))
   plot_output(aeme = aeme, model = model, var_sim = "PHY_tchla")
   plot_output(aeme = aeme, model = model, var_sim = "PHY_cyano")
   plot_output(aeme = aeme, model = model, var_sim = "PHY_green")
@@ -112,8 +128,7 @@ test_that("plotting model output works", {
   plot_output(aeme = aeme, model = model, var_sim = "PHS_tp")
   testthat::expect_true(is.list(p1))
   testthat::expect_true(all(c(ggplot2::is_ggplot(p1[[1]]),
-                              ggplot2::is_ggplot(p1[[2]]),
-                              ggplot2::is_ggplot(p1[[3]]))))
+                              ggplot2::is_ggplot(p1[[2]]))))
 
   p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_evpflx",
                     print_plots = FALSE, cumulative = TRUE, facet = FALSE)
@@ -269,10 +284,10 @@ test_that("plotting model residuals for 2d and 1d variables", {
                    parallel = TRUE, ncores = 2L)
 
   p1 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_temp")
-  testthat::expect_true(ggplot2::is_ggplot(p1$HYD_temp))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
 
   p2 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_thmcln")
-  testthat::expect_true(ggplot2::is_ggplot(p2$HYD_thmcln))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
 })
 
 test_that("plotting phytoplankton model output works", {
@@ -301,6 +316,10 @@ test_that("plotting phytoplankton model output works", {
 
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1))
+  p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp", 
+                depth_range = c(0, 1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
+  
 
   p2 <- plot_phytos(aeme = aeme, model = model)
   testthat::expect_true(ggplot2::is_ggplot(p2))
@@ -313,4 +332,62 @@ test_that("plotting phytoplankton model output works", {
 
   p5 <- plot_zoops(aeme = aeme, model = model)
   testthat::expect_true(ggplot2::is_ggplot(p5))
+})
+
+test_that("plotting water balance components", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  aeme <- aeme |> 
+    set_time(stop = "2022-06-30")
+  path <- tempdir()
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model_controls <- model_controls |>
+    dplyr::mutate(simulate = dplyr::case_when(
+      var_aeme == "ZOO_zoo1" ~ TRUE,
+      .default = simulate
+    ))
+  model <- c("glm_aed")
+  sys_OS <- AEME:::get_os()
+  if (sys_OS == "osx") {
+    model <- "glm_aed"
+  }
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = FALSE)
+  
+  wbal <- get_wbal_components(aeme = aeme)
+  testthat::expect_true(is.list(wbal))
+  p <- plot_wbal_comp(wbal = wbal)
+  testthat::expect_true(ggplot2::is_ggplot(p))
+  
+  p1 <- plot_est_wbal(aeme = aeme, model = model, time_axis = "month")
+  testthat::expect_true(ggplot2::is_ggplot(p1))
+  
+  p2 <- plot_weir_calibration(aeme = aeme)
+  testthat::expect_true(ggplot2::is_ggplot(p2))
+  
+  # Run models
+  aeme <- run_aeme(aeme = aeme, model = model, path = path,
+                   parallel = TRUE, ncores = 2L)
+  
+  wbal <- get_wbal_components(aeme = aeme)
+  testthat::expect_true(is.list(wbal))
+  p <- plot_wbal_comp(wbal = wbal)
+  testthat::expect_true(ggplot2::is_ggplot(p))
+  
+  p <- plot_wbal_summaries(wbal = wbal)
+  testthat::expect_true(ggplot2::is_ggplot(p))
+  
+  # remove inflows & outflows
+  aeme <- aeme |> 
+    remove_inflow(all = TRUE) |> 
+    remove_outflow(all = TRUE)
+  
+  p1 <- plot_est_wbal(aeme = aeme, model = model, time_axis = "month")
+  testthat::expect_true(ggplot2::is_ggplot(p1))
+  
+  p2 <- plot_weir_calibration(aeme = aeme)
+  testthat::expect_true(ggplot2::is_ggplot(p2))
+  
+  
 })

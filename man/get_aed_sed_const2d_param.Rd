@@ -9,7 +9,7 @@ get_aed_sed_const2d_param(aeme, path, lake_dir = NULL)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to the current 
+\item{path}{filepath; where input files are located relative to the current
 working directory.}
 }
 \value{

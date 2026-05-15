@@ -7,6 +7,7 @@
 run_aeme(
   aeme,
   model,
+  path,
   return_type = c("aeme", "exec_result", "both", "none"),
   ens_n = 1,
   model_controls = NULL,
@@ -15,15 +16,17 @@ run_aeme(
   timeout = Inf,
   parallel = FALSE,
   ncores,
-  check_output = FALSE,
-  path = "."
+  check_output = FALSE
 )
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
+\code{gotm_wet}.}
+
+\item{path}{filepath; where input files are located relative to the current
+working directory.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
@@ -41,19 +44,16 @@ object. If it is not finished before this, it will be killed.}
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
 
 \item{ncores}{integer; number of cores to use for parallelization. Defaults
-to `min(c(detectCores() - 1, length(model)))`.}
+to \code{min(c(detectCores() - 1, length(model)))}.}
 
 \item{check_output}{logical; check model output after running? Defaults to
 FALSE.}
 
-\item{path}{filepath; where input files are located relative to the current 
-working directory.}
-
-\item{return}{logical; return model output within an `aeme` object? Defaults
+\item{return}{logical; return model output within an \code{aeme} object? Defaults
 to TRUE.}
 }
 \value{
-an `aeme` object with model output loaded.
+an \code{aeme} object with model output loaded.
 }
 \description{
 Run aquatic model ensemble
@@ -65,7 +65,11 @@ path <- tempdir()
 model_controls <- get_model_controls()
 model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
-model_controls = model_controls, ext_elev = 5)
-aeme <- run_aeme(aeme = aeme, model = model, path = path)
-plot_output(aeme, model = model)
+                   model_controls = model_controls, ext_elev = 5)
+\dontrun{
+aeme <- run_aeme(aeme)
+
+# Plot model output - temperature by default
+plot_output(aeme)
+}
 }

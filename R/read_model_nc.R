@@ -29,13 +29,21 @@ read_model_nc <- function(aeme, model, path, lake_dir = NULL, vars_sim,
   date_index <- get_date_index(aeme = aeme, model = model,
                                remove_spin_up = remove_spin_up)[[model]]
   
+  cfg <- configuration(aeme)
+  if ("glm_aed" %in% model & cfg$use_bgc) {
+    phyto_pars <- cfg[["glm_aed"]][["bgc"]][["aed_phyto_pars"]]
+  } else {
+    phyto_pars <- NULL
+  }
+  
   out <- read_model_outputs(
     lake_dir   = lake_dir,
     model      = model,
     vars_sim   = vars_sim,
     incl_fluxes = incl_fluxes,
     date_index = date_index,
-    output_hour = output_hour
+    output_hour = output_hour,
+    phyto_pars = phyto_pars
   )
   
   return(out)
