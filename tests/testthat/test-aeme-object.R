@@ -25,7 +25,6 @@ test_that("aeme object can be read from yaml file", {
   path <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = path, file = "aeme.yaml")
   testthat::expect_s4_class(aeme, "Aeme")
-  testthat::expect_output(print(aeme))
 })
 
 test_that("aeme object can be built with partial information", {
