@@ -11,8 +11,8 @@
 #' @noRd
 #'
 
-initialiseGLM <-  function(glm_nml, lvl_bottom, init_depth,
-                           tmpwtr = 10, tbl_obs = NULL, Kw) {
+initialise_glm <-  function(glm_nml, lvl_bottom, init_depth,
+                           tmpwtr = 10, tbl_obs = NULL, Kw, model_controls) {
 
   # define the proTable (intial profiles for T and SAL)
   if (is.null(tbl_obs)) {
