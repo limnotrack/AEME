@@ -1,7 +1,7 @@
 #' Modify the GOTM yaml file for ensemble simulation
 #'
 #' @inheritParams delagrangify
-#' @inheritParams initialiseGLM
+#' @inheritParams initialise_glm
 #' @inheritParams initialiseGOTM
 #' @inheritParams build_dycd
 #' @inheritParams build_aeme

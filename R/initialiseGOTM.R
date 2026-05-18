@@ -2,7 +2,7 @@
 
 #' Write initial temperature profiles for GOTM-WET
 #'
-#' @inheritParams initialiseGLM
+#' @inheritParams initialise_glm
 #' @param start_date Date; of start of simulation
 #' @param path_gotm filepath; to GOTM directory
 #'
