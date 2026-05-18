@@ -164,6 +164,8 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     
     out_vars <- lapply(model_vars_vec, \(v) {
       if(vars_chk$present[vars_chk$vars == v] == FALSE) {
+        # cli::cli_alert_warning("Variable {.val {v}} not found in GLM output.
+        #                        Returning NULL for this variable.")
         return(NULL)
       }
       conv_factor <- vars_chk$conv_factor[vars_chk$vars == v]
