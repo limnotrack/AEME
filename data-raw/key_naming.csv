@@ -1,7 +1,7 @@
 name,dy_cd,glm_aed,glm_aed2,gotm_wet,gotm_fabm,name_text,name_full,name_parse,units,conversion_aed,default,derived,derived_from,min,max,keywords
 Date,Date,time,time,date,,Time,,,,1,,FALSE,NA,,,date|time
 outflow,,,,,,Outflow,Outflow_m3,Outflow~(m^3),m3,1,,FALSE,NA,,,outflow|discharge|flow
-HYD_flow,VOL,flow,flow,flow,,Discharge,Discharge_m3,Discharge~(m^3),m3,1,,FALSE,NA,,,flow|discharge|inflow
+HYD_flow,VOL,flow,flow,flow,,Discharge,Discharge_m3,Discharge~(m^3),m3,1,0,FALSE,NA,,,flow|discharge|inflow
 HYD_temp,TEMPTURE,temp,temp,temp,,Water temperature,Water_temperature_degC,Temperature~(degree~C),degC,1,10,FALSE,NA,-5,40,temperature|temp|water temp|HYD_temp
 HYD_dens,DENSITY,dens,rho,rho,,Water density,Density_kg/m3,Density~(kg~m^-3),kg/m3,1,,FALSE,NA,,,density|HYD_dens|rho
 HYD_strat,,,,,,Stratified,Stratified,Stratified~(1),,1,,TRUE,HYD_temp,0,1,strat|stratifed|stratification|HYD_strat
@@ -45,7 +45,7 @@ RAD_par,PAR,rad,rad,rad,,Photosynthetically active radiation,Photosynthetically_
 RAD_extc,EXTC,extc_coef,extc_coef,,,Light extinction coefficient,Light_extinction_coefficient_/m,Light~extinction~coefficient~(m^-1),m-1,1,,FALSE,NA,0,,light extinction coefficient|extc|RAD_extc
 RAD_secchi,,,,,,Secchi disk depth,Secchi_disk_depth_m,Secchi~disk~depth~m,m,1,,FALSE,NA,0,,secchi disk depth|secchi|RAD_secchi
 CHM_salt,SALINITY,salt,salt,salt,,Salinity,Salinity_PSU,Salinity~(PSU),1,1,0,FALSE,NA,0,,salinity|salt|CHM_salt
-CHM_ph,,,,,,pH,pH,pH,1,1,7,FALSE,NA,,,pH|CHM_ph
+CHM_ph,PH,CAR_pH,CAR_pH,,,,pH,pH,,1,7,FALSE,NA,,,pH|CAR_pH|ph|CHM_ph
 CHM_oxy,DO,OXY_oxy,OXY_oxy,abiotic_water_sO2W,instances/abiotic_water/initialization/sO2W,Dissolved oxygen,Dissolved_oxygen_mg/L,Dissolved~oxygen~(mg~L^-1),mg/L,0.032,10.3,FALSE,NA,0,,dissolved oxygen|DO|CHM_oxy|do|oxy
 CHM_oxysat,,,,,,Dissolved oxygen saturation,Dissolved_oxygen_%,Dissolved~oxygen~(plain('%')),%,1,,TRUE,CHM_oxy,0,,dissolved oxygen percent saturation|DO_SAT|CHM_oxysat|do_sat|oxy_sat
 CHM_oxycln,,,,,,Oxycline depth,Oxycline_depth_m,Oxycline~depth~(m),m,1,,TRUE,CHM_oxy,0,,oxycline depth|CHM_oxycln
@@ -56,26 +56,25 @@ CHM_oxymom,,,,,,Metalimnetic oxygen minima,Metalimnetic_oxygen_minima_mg/L,Metal
 CHM_oxynal,,,,,,Number of anoxic layers,Number_of_anoxic_layers,Number~of~anoxic~layers,1,1,,TRUE,CHM_oxy,0,,anoxic layers|CHM_oxynal
 PHS_frp,PO4,PHS_frp,PHS_frp,abiotic_water_sPO4W,instances/abiotic_water/initialization/sPO4W,Phosphate,Phosphate-P_g/m3,Phosphate-P~(g~m^-3),g/m^3,0.03097376,1.00E-03,FALSE,NA,0,,phosphate|PHS_frp
 PHS_dop,DOPL,OGM_dop,OGM_dop,abiotic_water_sPDOMW,instances/abiotic_water/initialization/sPDOMW,Dissolved organic P,Dissolved_organic_P_g/m3,Dissolved~organic~(g~m^-3),g/m^3,0.03097376,4.00E-05,FALSE,NA,0,,dissolved organic P|PHS_dop
-PHS_dopr,DOPR,,,,,,,,,0.03097376,,FALSE,NA,0,,dissolved organic P residual|PHS_dopr
+PHS_dopr,DOPR,,,,,,,,,0.03097376,0.00001,FALSE,NA,0,,dissolved organic P residual|PHS_dopr
 PHS_pop,POPL,OGM_pop,OGM_pop,abiotic_water_sPPOMW,instances/abiotic_water/initialization/sPPOMW,Particulate organic P,Particulate_organic_P_g/m3,Particulate~organic~(g~m^-3),g/m^3,0.03097376,1.60E-04,FALSE,NA,0,,particulate organic P|PHS_pop
-PHS_popr,POPR,,,,,,,,,0.03097376,,FALSE,NA,0,,particulate organic P residual|PHS_popr
+PHS_popr,POPR,,,,,,,,,0.03097376,0.00004,FALSE,NA,0,,particulate organic P residual|PHS_popr
 PHS_pip,PIP,PHS_frp_ads,PHS_frp_ads,abiotic_water_sPAIMW,instances/abiotic_water/initialization/sPAIMW,Particulate inorganic P,Particulate_inorganic_P_g/m3,Particulate~inorganic~P~(g~m^-3),g/m^3,0.03097376,6.00E-04,FALSE,NA,0,,particulate inorganic P|PHS_pip
-PHS_tp,TP,TOT_tp,TOT_tp,wet_totP_calculator_result,,Total phosphorus,Total_phosphorus_g/m3,Total~phosphorus~(g~m^-3),g/m^3,0.03097376,,FALSE,NA,0,,total phosphorus|total p|tot p|PHS_tp|TP
+PHS_tp,TP,TOT_tp,TOT_tp,wet_totP_calculator_result,,Total phosphorus,Total_phosphorus_g/m3,Total~phosphorus~(g~m^-3),g/m^3,0.03097376,0.02,FALSE,NA,0,,total phosphorus|total p|tot p|PHS_tp|TP
 NIT_amm,NH4,NIT_amm,NIT_amm,abiotic_water_sNH4W,instances/abiotic_water/initialization/sNH4W,Ammoniacal nitrogen,Ammoniacal_nitrogen_g/m3,Ammoniacal~nitrogen~(g~m^-3),g/m^3,0.0140067,0.004,FALSE,NA,0,,ammoniacal nitrogen|NH3|NH4|NIT_amm
 NIT_nit,NO3,NIT_nit,NIT_nit,abiotic_water_sNO3W,instances/abiotic_water/initialization/sNO3W,Nitrate,Nitrate-N_g/m3,Nitrate-N~(g~m^-3),g/m^3,0.0140067,4.10E-04,FALSE,NA,0,,nitrate|NO3|NO2|NIT_nit
 NIT_don,DONL,OGM_don,OGM_don,abiotic_water_sNDOMW,instances/abiotic_water/initialization/sNDOMW,Dissolved organic N,Dissolved_organic_N_g/m3,Dissolved~organic~N~(g~m^-3),g/m^3,0.0140067,4.10E-04,FALSE,NA,0,,dissolved organic N|NIT_don
-NIT_donr,DONR,,,,,,,,,0.0140067,,FALSE,NA,0,,dissolved organic N residual|NIT_donr
+NIT_donr,DONR,,,,,,,,,0.0140067,0.0001,FALSE,NA,0,,dissolved organic N residual|NIT_donr
 NIT_pon,PONL,OGM_pon,OGM_pon,abiotic_water_sNPOMW,instances/abiotic_water/initialization/sNPOMW,Particulate organic N,Particulate_organic_N_g/m3,Particulate~organic~N~(g~m^-3),g/m^3,0.0140067,0.002,FALSE,NA,0,,particulate organic N|NIT_pon
-NIT_ponr,PONR,,,,,,,,,0.0140067,,FALSE,NA,0,,particulate organic N residual|NIT_ponr
-NIT_pin,PIN,,,,,Particulate inorganic N,Particulate_inorganic_N_g/m3,Particulate~inorganic~N~(g~m^-3),g/m^3,0.0140067,,FALSE,NA,0,,particulate inorganic N|NIT_pin
-NIT_tn,TN,TOT_tn,TOT_tn,wet_totN_calculator_result,,Total nitrogen,Total_nitrogen_g/m3,Total~nitrogen~(g~m^-3),g/m^3,0.0140067,,FALSE,NA,0,,total nitrogen|total n|tot n|NIT_tn|TN
-CAR_dic,DIC,CAR_dic,CAR_dic,abiotic_water_sDIMW,instances/abiotic_water/initialization/sDIMW,Dissolved inorganic carbon,Dissolved_inorganic_carbon_g/m3,Dissolved~inorganic~carbon~(g~m^-3),g/m^3,0.012011,,FALSE,NA,0,,dissolved inorganic carbon|CAR_dic
+NIT_ponr,PONR,,,,,,,,,0.0140067,0.0005,FALSE,NA,0,,particulate organic N residual|NIT_ponr
+NIT_pin,PIN,,,,,Particulate inorganic N,Particulate_inorganic_N_g/m3,Particulate~inorganic~N~(g~m^-3),g/m^3,0.0140067,0.001,FALSE,NA,0,,particulate inorganic N|NIT_pin
+NIT_tn,TN,TOT_tn,TOT_tn,wet_totN_calculator_result,,Total nitrogen,Total_nitrogen_g/m3,Total~nitrogen~(g~m^-3),g/m^3,0.0140067,0.5,FALSE,NA,0,,total nitrogen|total n|tot n|NIT_tn|TN
+CAR_dic,DIC,CAR_dic,CAR_dic,abiotic_water_sDIMW,instances/abiotic_water/initialization/sDIMW,Dissolved inorganic carbon,Dissolved_inorganic_carbon_g/m3,Dissolved~inorganic~carbon~(g~m^-3),g/m^3,0.012011,10,FALSE,NA,0,,dissolved inorganic carbon|CAR_dic
 CAR_doc,DOCL,OGM_doc,OGM_doc,abiotic_water_sDDOMW,instances/abiotic_water/initialization/sDDOMW,Dissolved organic carbon,Dissolved_organic_carbon_g/m3,Dissolved~organic~carbon~(g~m^-3),g/m^3,0.012011,0.008,FALSE,NA,0,,dissolved organic carbon|CAR_doc
-CAR_docr,DOCR,,,,,,,,,0.012011,,FALSE,NA,0,,dissolved organic carbon residual|CAR_docr
+CAR_docr,DOCR,,,,,,,,,0.012011,0.002,FALSE,NA,0,,dissolved organic carbon residual|CAR_docr
 CAR_poc,POCL,OGM_poc,OGM_poc,abiotic_water_sDPOMW,instances/abiotic_water/initialization/sDPOMW,Particulate organic carbon,Particulate_organic_carbon_g/m3,Particulate~organic~carbon~(g~m^-3),g/m^3,0.012011,0.01,FALSE,NA,0,,particulate organic carbon|CAR_poc
-CAR_pocr,POCR,,,,,,,,,0.012011,,FALSE,NA,0,,particulate organic carbon residual|CAR_pocr
-CAR_pH,PH,CAR_pH,CAR_pH,,,,pH,pH,,1,7,FALSE,NA,,,pH|CAR_pH|ph
-CAR_ch4,,CAR_ch4,CAR_ch4,,,Carbon CH4,,,,1,,FALSE,NA,0,,carbon CH4|CAR_ch4
+CAR_pocr,POCR,,,,,,,,,0.012011,0.003,FALSE,NA,0,,particulate organic carbon residual|CAR_pocr
+CAR_ch4,,CAR_ch4,CAR_ch4,,,Carbon CH4,,,,1,0,FALSE,NA,0,,carbon CH4|CAR_ch4
 SIL_rsi,SiO2,SIL_rsi,SIL_rsi,abiotic_water_sSiO2W,instances/abiotic_water/initialization/sSiO2W,,Silica,Silica,,1,10,FALSE,NA,0,,silica|SIL_rsi
 BAC_bac,BAC,,,,,,Bacteria,Bacteria,,1,,FALSE,NA,0,,bacteria|BAC_bac
 PHY_dinof,DINOF,PHY_dinof,PHY_dinof,,,,Dinoflagellates_mgchla/m3,Dinoflagellates~(mg~chla~m^-3),mg/m^3,1,,FALSE,NA,0,,dinoflagellates|PHY_dinof
