@@ -20,7 +20,7 @@ initialise_glm <-  function(glm_nml, lvl_bottom, init_depth,
                           c(tmpwtr, tmpwtr),
                           c(0, 0))
   }
-
+  
   arg_list <- list(
     light_mode = 0,
     n_bands = 4,
@@ -33,6 +33,27 @@ initialise_glm <-  function(glm_nml, lvl_bottom, init_depth,
     the_temps = tbl_obs[, 2],
     the_sals = tbl_obs[, 3]
   )
+  
+  # Add initial AED values
+  sim_vars <- model_controls |> 
+    dplyr::filter(simulate, !is.na(initial_wc), 
+                  !var_aeme %in% c("HYD_temp", "CHM_salt"))
+  if (length(sim_vars) > 0) {
+    depths <- tbl_obs[["depth"]]
+    glm_wq_vars <- sim_vars |> 
+      dplyr::mutate(value = initial_wc * conversion_aed) |>
+      dplyr::group_by(var_aeme) |>
+      # Duplicate each row by number of depths
+      dplyr::slice(rep(1:n(), each = length(depths))) 
+    var_names <- glm_wq_vars |> 
+      dplyr::distinct(var_aeme) |>
+      dplyr::pull(var_aeme)
+    arg_list[["wq_names"]] <- rename_modelvars(var_names, type_output = "glm_aed")
+    arg_list[["num_wq_vars"]] <- length(var_names)
+    arg_list[["wq_init_vals"]] <- glm_wq_vars[["value"]]
+  }
+  
+  
 
   glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
   return(glm_nml)
