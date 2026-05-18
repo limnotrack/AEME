@@ -115,9 +115,9 @@ build_glm <- function(lakename, model_controls, date_range,
                          glm_nml = glm_nml, path_glm = path_glm)
   
   # starting water level
-  glm_nml <- initialiseGLM(glm_nml = glm_nml, lvl_bottom = 0.1,
-                           init_depth = init_depth, tbl_obs = init_prof,
-                           Kw = Kw)
+  glm_nml <- initialise_glm(glm_nml = glm_nml, lvl_bottom = 0.1, 
+                            init_depth = init_depth, tbl_obs = init_prof,
+                            Kw = Kw, model_controls = model_controls)
   
   if (use_bgc) {
     initialise_aed(model_controls = model_controls,
