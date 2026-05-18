@@ -202,7 +202,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
            simulate | var_aeme == "NCS_ss2", # must initialise both SSOL groups!?!
            !var_aeme %in% c("Date", "HYD_flow", "HYD_temp", "HYD_dens",
                         "CHM_salt", "RAD_par", "RAD_extc", "RAD_secchi",
-                        "PHS_tp","NIT_tn","PHY_tchla", "CAR_pH", "ZOO_zoo1")) |>
+                        "PHS_tp","NIT_tn","PHY_tchla", "CHM_ph", "ZOO_zoo1")) |>
     dplyr::select(c("var_aeme", "initial_wc", "initial_sed"))
 
   # write the .int file

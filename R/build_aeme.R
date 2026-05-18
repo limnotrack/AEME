@@ -136,7 +136,7 @@ build_aeme <- function(aeme = NULL,
       dplyr::filter(simulate,
                     !is.na(inf_default),
                     !var_aeme %in% c("RAD_extc", "PHS_tp", "NIT_pin", "NIT_tn",
-                                     "PHY_tchla", "CAR_pH")) |>
+                                     "PHY_tchla", "CHM_ph")) |>
       dplyr::pull(var_aeme)
   } else {
     inf_vars <- c("HYD_temp", "CHM_salt")
