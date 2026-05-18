@@ -114,7 +114,7 @@ initialise_aed <- function(model_controls, path_aed) {
       cli_inform_safe(c("i" = "Using default zooplankton initialisation"))
     
       # pH initialisation
-    } else if (grepl("CAR_pH", var_name)) {
+    } else if (grepl("CHM_ph", var_name)) {
       cli_inform_safe(c("i" = "Using default pH initialisation"))
     } else {
       

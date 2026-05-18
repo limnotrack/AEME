@@ -84,7 +84,7 @@ Dissolved inorganic C      \tab \code{CAR_dic}       \tab mmol/m³         \tab 
 Silica                     \tab \code{SIL_rsi}       \tab mmol/m³         \tab No \cr
 Suspended solids 1         \tab \code{NCS_ss1}       \tab g/m³            \tab No \cr
 Suspended solids 2         \tab \code{NCS_ss2}       \tab g/m³            \tab No \cr
-pH                         \tab \code{CAR_pH}        \tab -               \tab No \cr
+pH                         \tab \code{CHM_ph}        \tab -               \tab No \cr
 }
 }
 
