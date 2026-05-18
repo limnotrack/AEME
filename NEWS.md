@@ -1,3 +1,21 @@
+# AEME 0.3.0
+
+## New features
+
+* Added `edit_model_controls()`, an interactive Shiny gadget for editing model
+  controls in a spreadsheet-like interface. Includes filtering by variable name
+  and simulated variables, type-safe editing, and validation on save to warn
+  when simulated variables are missing initial values.
+  
+* Fixed bug for initialising GLM-AED water column with the values from the 
+  model_controls dataframe. This is also added to the GLM .nml file.
+
+## Breaking changes
+
+* `key_naming$name` has been renamed to `key_naming$var_aeme` to align with
+  `model_controls$var_aeme` and simplify joins between the two dataframes.
+  Update any code that references `key_naming$name` directly.
+
 # AEME 0.2.0
 
 ## New functions
