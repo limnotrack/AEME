@@ -35,8 +35,8 @@ lookup_aeme_vars <- function(group = NULL, var_aeme = NULL, name = NULL) {
   data("key_naming", package = "AEME", envir = environment())
   
   df <- key_naming |>
-    dplyr::select(name, name_text, units) |>
-    dplyr::rename(var_aeme = name, text = name_text, units = units)
+    dplyr::select(var_aeme, name_text, units) |>
+    dplyr::rename(text = name_text, units = units)
   
   # If all filters are NULL, return all
   if (is.null(group) && is.null(var_aeme) && is.null(name)) {

@@ -36,7 +36,7 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
   # Load Rdata
   data("key_naming", package = "AEME", envir = environment())
   sub_key_naming <- key_naming |> 
-    dplyr::select(name, units) |> 
+    dplyr::select(var_aeme, units) |> 
     dplyr::rename(aeme_units = units)
   
   # Check data is a data frame
@@ -79,8 +79,8 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
     }
     
     # Check var_aeme in var_map is in sub_key_naming
-    if (!all(var_map$var_aeme %in% sub_key_naming$name)) {
-      wrong_vars <- var_map$var_aeme[!var_map$var_aeme %in% sub_key_naming$name]
+    if (!all(var_map$var_aeme %in% sub_key_naming$var_aeme)) {
+      wrong_vars <- var_map$var_aeme[!var_map$var_aeme %in% sub_key_naming$var_aeme]
       cli::cli_abort("The following var_aeme in var_map are not in key_naming: 
                      {.var {wrong_vars}}.")
     }

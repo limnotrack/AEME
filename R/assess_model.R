@@ -46,7 +46,7 @@ assess_model <- function(aeme, model, var_sim) {
   
   data("key_naming", package = "AEME", envir = environment())
   var_name <- key_naming |> 
-    dplyr::select(name, name_text, name_parse)
+    dplyr::select(var_aeme, name_text, name_parse)
   
   # Extract observations
   obs <- observations(aeme)
@@ -132,7 +132,7 @@ assess_model <- function(aeme, model, var_sim) {
   
   if (nrow(out) > 0) {
     out <- out |> 
-    dplyr::left_join(var_name, by = c("var_sim" = "name"))
+    dplyr::left_join(var_name, by = c("var_sim" = "var_aeme"))
   }
 
   return(out)

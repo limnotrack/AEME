@@ -270,12 +270,9 @@ test_that("building all models with minimum met variables", {
 })
 
 test_that("building all models in a different dir", {
-  tmpdir <- tempdir()
+  path <- file.path(tempdir(), "lake")
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
@@ -285,11 +282,18 @@ test_that("building all models in a different dir", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, 
                      use_bgc = FALSE)
+  files1 <- list.files(path, recursive = TRUE)
+  testthat::expect_true(length(files1) > 0)
   
   path <- file.path(tmpdir, "lake_new")
   aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, 
                      use_bgc = FALSE, use_aeme = TRUE)
+  
+  files2 <- list.files(path, recursive = TRUE)
+  testthat::expect_true(length(files2) > 0)
+  testthat::expect_true(length(files1) >= length(files2))
+  
 })
 
 test_that("building all models with the same hypsograph", {

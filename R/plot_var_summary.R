@@ -18,8 +18,8 @@ plot_var_summary <- function(data, ylim, xlim) {
                     loc == "top" ~ "Surface",
                     loc == "btm" ~ "Bottom",
                     .default = loc)) |>
-    dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
-                     by = c("var_sim" = "name")) |>
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
+                     by = c("var_sim" = "var_aeme")) |>
     dplyr::mutate(loc = factor(loc, levels = c("Surface", "Bottom")))
 
   ggplot2::ggplot() +

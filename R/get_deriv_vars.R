@@ -12,7 +12,7 @@ get_deriv_inputs <- function(vars_sim) {
   vars_sim <- check_aeme_vars(vars_sim)
   
   deriv_vars <- key_naming |> 
-    dplyr::filter(name %in% vars_sim, derived)
+    dplyr::filter(var_aeme %in% vars_sim, derived)
   
   if (nrow(deriv_vars) == 0) {
     return(NULL)
@@ -25,7 +25,7 @@ get_deriv_inputs <- function(vars_sim) {
     
     # Check for double deriatives
     more_deriv <- key_naming |> 
-      dplyr::filter(name %in% deriv, derived) |> 
+      dplyr::filter(var_aeme %in% deriv, derived) |> 
       dplyr::pull(derived_from)
     if (length(more_deriv) > 0) {
       more <- more_deriv |> 
@@ -38,11 +38,11 @@ get_deriv_inputs <- function(vars_sim) {
     
     # Order variables
     ret_vars <- key_naming |>
-      dplyr::filter(name %in% deriv) |>
-      dplyr::mutate(group = sub("_.*$", "", name),
+      dplyr::filter(var_aeme %in% deriv) |>
+      dplyr::mutate(group = sub("_.*$", "", var_aeme),
                     order  = match(group, priority)) |>
       dplyr::arrange(order, derived) |> 
-      dplyr::pull(name)
+      dplyr::pull(var_aeme)
     return(ret_vars)
   }
 }

@@ -31,10 +31,10 @@ guess_aeme_vars <- function(x, key_filter) {
   
   if (!missing(key_filter) && !is.null(key_filter)) {
     key_naming <- key_naming |>
-      dplyr::filter(grepl(key_filter, name, ignore.case = TRUE))  
+      dplyr::filter(grepl(key_filter, var_aeme, ignore.case = TRUE))  
   }
   
-  valid_vars <- key_naming$name
+  valid_vars <- key_naming$var_aeme
   keywords_list <- key_naming$keywords
   
   result <- x

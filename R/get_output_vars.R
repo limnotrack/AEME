@@ -51,7 +51,7 @@ get_output_vars <- function(aeme, model, ens_n = 1) {
   }
   out_vars <- unique(out_vars)
   data("key_naming", package = "AEME")
-  out_var_names <- key_naming$name_text[match(out_vars, key_naming$name)]
+  out_var_names <- key_naming$name_text[match(out_vars, key_naming$var_aeme)]
   nmes <- setNames(out_vars, out_var_names)
   nmes <- nmes[!is.na(nmes)]
   nmes <- nmes[!is.na(names(nmes)) & names(nmes) != ""]

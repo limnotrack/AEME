@@ -14,7 +14,7 @@ initialise_aed <- function(model_controls, path_aed) {
   data("key_naming", package = "AEME", envir = environment())
   deriv_vars <- key_naming |>
     dplyr::filter(derived) |>
-    dplyr::pull(name)
+    dplyr::pull(var_aeme)
   this_ctrls <-  model_controls |>
     dplyr::filter(simulate,
                   !var_aeme %in% deriv_vars,

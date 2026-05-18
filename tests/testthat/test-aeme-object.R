@@ -217,7 +217,7 @@ test_that("aeme object inflows can be manipulated", {
   aeme <- readRDS(aeme_file)
   
   aeme <- set_precip(aeme = aeme, type = "inflow")
-  inf <- get_inflows(aeme)
+  inf <- get_inflows(aeme, return_df = TRUE)
   met <- get_met(aeme)
   status1 <- precip_status(aeme)
   testthat::expect_true("precip" %in% names(inf))

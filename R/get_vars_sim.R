@@ -30,7 +30,7 @@ get_vars_sim <- function(vars_sim, aeme, model_controls) {
   }
   
   deriv_vars <- key_naming |> 
-    dplyr::filter(name %in% vars_sim, derived)
+    dplyr::filter(var_aeme %in% vars_sim, derived)
   
   if (nrow(deriv_vars) == 0) {
     return(vars_sim)
@@ -43,7 +43,7 @@ get_vars_sim <- function(vars_sim, aeme, model_controls) {
     
     # Check for double deriatives
     more_deriv <- key_naming |> 
-      dplyr::filter(name %in% deriv, derived)
+      dplyr::filter(var_aeme %in% deriv, derived)
     if (nrow(more_deriv) > 0) {
       more <- more_deriv |> 
         dplyr::pull(derived_from) |> 
@@ -57,11 +57,11 @@ get_vars_sim <- function(vars_sim, aeme, model_controls) {
     
     # Order variables
     ret_vars <- key_naming |>
-      dplyr::filter(name %in% all_vars) |>
-      dplyr::mutate(group = sub("_.*$", "", name),
+      dplyr::filter(var_aeme %in% all_vars) |>
+      dplyr::mutate(group = sub("_.*$", "", var_aeme),
                     order  = match(group, priority)) |>
       dplyr::arrange(order, derived) |> 
-      dplyr::pull(name)
+      dplyr::pull(var_aeme)
     
     return(ret_vars)
   }

@@ -36,8 +36,8 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
   }
 
   df <- df |>
-    dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
-                     by = c("var_sim" = "name"))
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
+                     by = c("var_sim" = "var_aeme"))
 
   if (!all(is.na(df$depth))) {
     # Plot variables with depth

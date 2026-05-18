@@ -61,8 +61,8 @@ plot_flows <- function(aeme, flow = c("inflow", "outflow"),
   df <- dplyr::bind_rows(inf, outf) |>
     dplyr::select(dplyr::all_of(c("Date", "name", var_sim))) |>
     dplyr::mutate(var_aeme = var_sim) |>
-    dplyr::left_join(key_naming[, c("name", "name_parse")],
-                     by = c("var_aeme" = "name"))
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse")],
+                     by = "var_aeme")
   # Plot
   df |>
     ggplot2::ggplot(ggplot2::aes(x = Date, y = .data[[var_sim]],

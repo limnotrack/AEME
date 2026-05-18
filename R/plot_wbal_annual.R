@@ -38,8 +38,8 @@ plot_wbal_annual <- function(aeme, model, lake_frac = FALSE,
             cumulative = FALSE, remove_spin_up = )
   }) |>
     dplyr::bind_rows() |> 
-    dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
-                     by = c("var_sim" = "name")) |>
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
+                     by = c("var_sim" = "var_aeme")) |>
     dplyr::mutate(
       label = factor(name_text, levels = c("Evaporation",
                                                "Precipitation" ,

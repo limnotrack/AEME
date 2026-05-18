@@ -101,8 +101,8 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   # ---- 4. add derivative outputs
   data("key_naming", package = "AEME", envir = environment())
   deriv_vars <- key_naming |> 
-    dplyr::filter(name %in% vars_sim & derived) |> 
-    dplyr::pull(name)
+    dplyr::filter(var_aeme %in% vars_sim & derived) |> 
+    dplyr::pull(var_aeme)
   if (length(deriv_vars) > 0) {
     out_list <- add_deriv_output(out_list = out_list, hyps = hyps, 
                                  vars_sim = deriv_vars)
@@ -139,17 +139,17 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
 get_model_vars <- function(vars_sim, model) {
   data("key_naming", package = "AEME", envir = environment())
   model_vars <- key_naming |> 
-    dplyr::filter(name %in% vars_sim & !derived & name != "LKE_lvlwtr") |> 
-    dplyr::select(name, dplyr::sym(model), conversion_aed)
+    dplyr::filter(var_aeme %in% vars_sim & !derived & var_aeme != "LKE_lvlwtr") |> 
+    dplyr::select(var_aeme, dplyr::sym(model), conversion_aed)
   
   # If any variables are not in key_naming add them as separate rows
-  if (any(!vars_sim %in% model_vars$name)) {
-    missing_vars <- vars_sim[!vars_sim %in% model_vars$name]
-    missing_df <- data.frame(name = missing_vars,
+  if (any(!vars_sim %in% model_vars$var_aeme)) {
+    missing_vars <- vars_sim[!vars_sim %in% model_vars$var_aeme]
+    missing_df <- data.frame(var_aeme = missing_vars,
                              conversion_aed = 1)
     missing_df[[model]] <- missing_vars
     model_vars <- dplyr::bind_rows(model_vars, missing_df) |> 
-      dplyr::arrange(match(name, vars_sim))
+      dplyr::arrange(match(var_aeme, vars_sim))
   }
   
   if ("dy_cd" %in% model) {
@@ -159,7 +159,7 @@ get_model_vars <- function(vars_sim, model) {
   # Check if any variables in model column are ""
   missing_vars <- model_vars |> 
     dplyr::filter(!!dplyr::sym(model) == "") |> 
-    dplyr::pull(name)
+    dplyr::pull(var_aeme)
   if (length(missing_vars) > 0) {
     msg <- paste0("The following variables are not available in model 
                    ", model, ": ", paste0(missing_vars, collapse = ", "))
@@ -179,17 +179,17 @@ get_model_vars <- function(vars_sim, model) {
 format_model_vars_vec <- function(vars_sim, model) {
   data("key_naming", package = "AEME", envir = environment())
   model_vars <- key_naming |> 
-    dplyr::filter(name %in% vars_sim & !derived & name != "LKE_lvlwtr") |> 
-    dplyr::select(name, dplyr::sym(model), conversion_aed)
+    dplyr::filter(var_aeme %in% vars_sim & !derived & var_aeme != "LKE_lvlwtr") |> 
+    dplyr::select(var_aeme, dplyr::sym(model), conversion_aed)
   
   # If any variables are not in key_naming add them as separate rows
-  if (any(!vars_sim %in% model_vars$name)) {
-    missing_vars <- vars_sim[!vars_sim %in% model_vars$name]
-    missing_df <- data.frame(name = missing_vars,
+  if (any(!vars_sim %in% model_vars$var_aeme)) {
+    missing_vars <- vars_sim[!vars_sim %in% model_vars$var_aeme]
+    missing_df <- data.frame(var_aeme = missing_vars,
                              conversion_aed = 1)
     missing_df[[model]] <- missing_vars
     model_vars <- dplyr::bind_rows(model_vars, missing_df) |> 
-      dplyr::arrange(match(name, vars_sim))
+      dplyr::arrange(match(var_aeme, vars_sim))
   }
   
   if ("dy_cd" %in% model) {
@@ -199,16 +199,16 @@ format_model_vars_vec <- function(vars_sim, model) {
   # Check if any variables in model column are ""
   missing_vars <- model_vars |> 
     dplyr::filter(!!dplyr::sym(model) == "") |> 
-    dplyr::pull(name)
+    dplyr::pull(var_aeme)
   if (length(missing_vars) > 0) {
     msg <- paste0("The following variables are not available in model 
                    ", model, ": ", paste0(missing_vars, collapse = ", "))
     cli_inform_safe(c("!" = msg))
     model_vars <- model_vars |>
-      dplyr::filter(!name %in% missing_vars)
+      dplyr::filter(!var_aeme %in% missing_vars)
   }
   
-  model_vars_vec <- setNames(model_vars[[model]], model_vars$name)
+  model_vars_vec <- setNames(model_vars[[model]], model_vars$var_aeme)
   return(model_vars_vec)
 }
 

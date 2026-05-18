@@ -1482,7 +1482,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
     
     p2 <- inp$meteo |>
       tidyr::pivot_longer(cols = !dplyr::contains("Date")) |>
-      dplyr::left_join(key_naming[, c("name", "name_parse")], by = c("name" = "name")) |>
+      dplyr::left_join(key_naming[, c("var_aeme", "name_parse")], by = c("name" = "var_aeme")) |>
       dplyr::filter(!is.na(name_parse)) |>
       ggplot2::ggplot() +
       ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
@@ -1498,8 +1498,8 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
     if (!is.null(obj$lake) & !is.null(obj$level)) {
       p1 <- obj$lake |>
         dplyr::bind_rows(obj$level) |>
-        dplyr::left_join(key_naming[, c("name", "name_parse")],
-                         by = c("var_aeme" = "name")) |>
+        dplyr::left_join(key_naming[, c("var_aeme", "name_parse")],
+                         by = "var_aeme") |>
         ggplot2::ggplot() +
         ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
         ggplot2::labs(x = "Date", y = "Value") +
@@ -1508,8 +1508,8 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
         ggplot2::theme_bw()
     } else if (!is.null(obj$lake)) {
       p1 <- obj$lake |>
-        dplyr::left_join(key_naming[, c("name", "name_parse")],
-                         by = c("var_aeme" = "name")) |>
+        dplyr::left_join(key_naming[, c("var_aeme", "name_parse")],
+                         by = "var_aeme") |>
         ggplot2::ggplot() +
         ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
         ggplot2::labs(x = "Date", y = "Value") +
@@ -1537,7 +1537,8 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
       dplyr::select(-dplyr::any_of("model"))
     p1 <- df |>
       tidyr::pivot_longer(cols = -c("Date", "flow_name"), names_to = "var_aeme", values_to = "value") |>
-      dplyr::left_join(key_naming[, c("name", "name_parse")], by = c("var_aeme" = "name")) |>
+      dplyr::left_join(key_naming[, c("var_aeme", "name_parse")], 
+                       by = "var_aeme") |>
       ggplot2::ggplot() +
       ggplot2::geom_point(ggplot2::aes(x = Date, y = value)) +
       ggplot2::facet_wrap(~name_parse, scales = "free_y",

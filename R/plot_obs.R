@@ -71,8 +71,8 @@ plot_obs <- function(aeme, var_sim = "HYD_temp", add_line = FALSE) {
     levs <- levels(df$fdepth)
   }
   df <- df |>
-    dplyr::left_join(key_naming[, c("name", "name_parse")],
-                     by = c("var_aeme" = "name"))
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse")],
+                     by = "var_aeme")
 
 
   ggplot2::ggplot(df, ggplot2::aes(x = Date, y = value, color = fdepth)) +

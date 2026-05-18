@@ -2,7 +2,7 @@
 #'
 #' @param input character; vector of variable names to be renamed
 #' @param type_input character; column name in `key_naming` representing the
-#'   input type. Defaults to `"name"`.
+#'   input type. Defaults to `"var_aeme"`.
 #' @param type_output character; column name in `key_naming` representing the
 #'   desired output type. Defaults to `"name_parse"`.
 #' @param verbose logical; if `TRUE`, prints a formatted table of old-to-new
@@ -16,7 +16,7 @@
 #' @noRd
 #' @importFrom cli cli_abort cli_warn cli_bullets cli_text
 rename_modelvars <- function(input,
-                             type_input     = "name",
+                             type_input     = "var_aeme",
                              type_output    = "name_parse",
                              verbose        = FALSE,
                              warn_unmatched = FALSE) {
@@ -37,6 +37,8 @@ rename_modelvars <- function(input,
   if (!is.logical(warn_unmatched) || length(warn_unmatched) != 1L) {
     cli::cli_abort("{.arg warn_unmatched} must be a single logical value.")
   }
+  type_input <- ifelse(type_input == "name", "var_aeme", type_input)
+  type_output <- ifelse(type_output == "name", "var_aeme", type_output)
   
   # --- Load lookup table ------------------------------------------------------
   env <- new.env(parent = emptyenv())

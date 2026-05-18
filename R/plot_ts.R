@@ -75,8 +75,8 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
   # Add key naming
   data("key_naming", package = "AEME", envir = environment())
   out_df <- out_df |>
-    dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
-                     by = c("var_sim" = "name"))
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
+                     by = c("var_sim" = "var_aeme"))
 
   var_lwd <- rep(1, length(var_sim))
   names(var_lwd) <- unique(out_df$name_text)
@@ -101,8 +101,8 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
       obs <- obs |>
         dplyr::group_by(Date, var_aeme) |>
         dplyr::summarise(value = mean(value), .groups = "drop") |>
-        dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
-                         by = c("var_aeme" = "name"))
+        dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
+                         by = "var_aeme")
       p1 <- p1 +
         ggplot2::geom_point(data = obs, ggplot2::aes(x = Date, y = value,
                                                      fill = "Obs",

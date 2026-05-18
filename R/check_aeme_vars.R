@@ -15,7 +15,7 @@
 check_aeme_vars <- function(x) {
   # Load key dataset
   data("key_naming", package = "AEME", envir = environment())
-  valid_vars <- key_naming$name  # column with valid variable names
+  valid_vars <- key_naming$var_aeme  # column with valid variable names
   
   x <- guess_aeme_vars(x)
   

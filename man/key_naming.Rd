@@ -9,7 +9,7 @@
 
 A data frame with 127 rows and 13 columns:
 \describe{
-\item{name}{AEME variable name}
+\item{var_aeme}{AEME variable name}
 \item{dy_cd}{DYRESM variable name}
 \item{glm_aed}{GLM variable name}
 \item{gotm_wet}{GOTM variable name}

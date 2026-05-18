@@ -18,7 +18,7 @@ calc_lake_obs_deriv <- function(aeme) {
   data("key_naming", package = "AEME", envir = environment())
   deriv_vars <- key_naming |>
     dplyr::filter(derived) |>
-    dplyr::pull(name)
+    dplyr::pull(var_aeme)
   
   vars <- c("HYD_temp", "CHM_oxy")
   
