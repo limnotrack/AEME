@@ -74,10 +74,15 @@ test_that("building GLM works", {
   wbal <- water_balance(aeme)
   testthat::expect_true(!is.null(wbal$params))
   
+  wb_params1 <- get_wbal_param(aeme)
+  
   aeme <- reset_wbal_param(aeme)
   wbal2 <- water_balance(aeme)
   testthat::expect_true(is.null(wbal2$params))
   
+  aeme <- set_wbal_param(aeme, params = wb_params1)
+  wbal3 <- water_balance(aeme)
+  testthat::expect_equal(wbal3$params, wb_params1)
   
   lke <- lake(aeme)
   testthat::expect_true(is.character(lke$id))
