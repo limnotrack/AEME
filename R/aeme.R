@@ -211,13 +211,7 @@ aeme_constructor <- function(
   if (missing(lake) & missing(time) & missing(input)) {
     cli::cli_abort("Objects lake, time, and input must be provided.")
   }
-  cfg_dflt <- list(
-    model_controls = NULL,
-    use_bgc = FALSE,
-    dy_cd = NULL,
-    glm_aed = NULL,
-    gotm_wet = NULL
-  )
+  cfg_dflt <- config_defaults()
   if (missing(configuration)) {
     configuration <- cfg_dflt
   } else {
