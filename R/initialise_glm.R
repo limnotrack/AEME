@@ -53,7 +53,13 @@ initialise_glm <-  function(glm_nml, lvl_bottom, init_depth,
     arg_list[["wq_init_vals"]] <- glm_wq_vars[["value"]]
   }
   
-  
+  init_args_req <- c("wq_names", "num_wq_vars", "wq_init_vals")
+  for (arg in init_args_req) {
+    if (!arg %in% glm_nml[["init_profiles"]]) {
+      val <- ifelse(arg == "wq_names", "''", 0)
+      glm_nml[["init_profiles"]][[arg]] <- val
+    }
+  }
 
   glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
   return(glm_nml)
