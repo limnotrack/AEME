@@ -7,10 +7,10 @@
 get_date_index(aeme, model, remove_spin_up = TRUE)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model}{vector; of models to be used. Can be \code{dy_cd}, \code{glm_aed},
-\code{gotm_wet}.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
 
 \item{remove_spin_up}{logical; remove spin-up period from plot. Default is
 TRUE.}

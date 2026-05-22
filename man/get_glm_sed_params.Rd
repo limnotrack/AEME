@@ -7,10 +7,10 @@
 get_glm_sed_params(aeme, path, lake_dir = NULL)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{path}{filepath; where input files are located relative to the current
-working directory.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{lake_dir}{Path to the lake AEME directory. If NULL, it will be
 computed from \code{aeme} and \code{path}.}

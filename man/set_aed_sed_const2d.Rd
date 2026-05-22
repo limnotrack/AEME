@@ -12,10 +12,10 @@ set_aed_sed_const2d(
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{path}{filepath; where input files are located relative to the current
-working directory.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{baseline}{Named numeric vector of baseline fluxes at
 \code{ref_depth}. Must include \code{fsed_oxy}, \code{fsed_amm},

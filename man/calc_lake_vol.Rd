@@ -7,7 +7,7 @@
 calc_lake_vol(aeme = NULL, hyps = NULL, depth = 0)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{hyps}{data.frame with columns 'depth' and 'area'.}
 

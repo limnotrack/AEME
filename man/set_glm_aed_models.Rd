@@ -15,10 +15,10 @@ set_glm_aed_models(
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{path}{filepath; where input files are located relative to the current
-working directory.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{aed_models}{Character vector of GLM-AED models to include. Default includes
 all available AED models: "aed_sedflux", "aed_oxygen", "aed_silica",

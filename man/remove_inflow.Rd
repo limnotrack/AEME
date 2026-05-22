@@ -7,7 +7,7 @@
 remove_inflow(aeme, inflow_id = NULL, all = FALSE)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{inflow_id}{A string specifying the identifier for the inflow.}
 

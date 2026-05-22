@@ -7,10 +7,10 @@
 write_aeme_to_files(aeme, path, include_output = FALSE)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{path}{filepath; where input files are located relative to the current
-working directory.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{include_output}{logical, include output files. Default is FALSE. The
 output files can be large and take up a lot of space.}

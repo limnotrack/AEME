@@ -7,8 +7,8 @@
 set_vars_sim(model_controls, vars_sim, simulate = TRUE, exclusive = FALSE)
 }
 \arguments{
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[=get_model_controls]{get_model_controls()}}.}
 
 \item{vars_sim}{character vector of variable names to set for simulation}
 

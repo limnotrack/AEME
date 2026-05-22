@@ -10,7 +10,7 @@ set_precip(
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{type}{character. Either "met" or "inflow". Default is
 "inflow". If "met", precipitation is treated as a meteorological input

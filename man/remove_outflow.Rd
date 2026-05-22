@@ -7,7 +7,7 @@
 remove_outflow(aeme, outflow_id = NULL, all = FALSE)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{outflow_id}{A string specifying the identifier for the outflow.}
 

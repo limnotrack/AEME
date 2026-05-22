@@ -7,9 +7,9 @@
 get_model_controls(aeme = NULL, use_bgc = FALSE)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{use_bgc}{logical; switch to use the biogeochemical model.}
+\item{use_bgc}{logical; enable the biogeochemical model. Default: \code{FALSE}.}
 }
 \value{
 A data frame of model controls

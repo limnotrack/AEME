@@ -7,7 +7,7 @@
 add_inflow(aeme, inflow, inflow_id)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{inflow}{A data frame containing inflow data. Must include columns "Date",
 "HYD_flow", "HYD_temp", and "CHM_salt".

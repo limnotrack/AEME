@@ -7,7 +7,7 @@
 plot_wlev(aeme, model, facet = FALSE, ...)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{model}{character vector; model(s) to plot. If missing, all models
 in the Aeme object will be plotted.}

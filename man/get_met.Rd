@@ -7,7 +7,7 @@
 get_met(aeme)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 }
 \value{
 Meteorological data frame or NULL if not present.

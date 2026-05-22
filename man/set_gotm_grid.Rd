@@ -26,10 +26,10 @@ set_gotm_grid(
 \item{method}{0=equal by default with optional zooming, 1=prescribed relative
 fractions, 2=prescribed layer thicknesses}
 
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{path}{filepath; where input files are located relative to the current
-working directory.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{thickness_factor}{numeric; factor to multiply the thickness of the
 layers. Default is 1.}

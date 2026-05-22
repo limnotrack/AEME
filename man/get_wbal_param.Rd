@@ -7,7 +7,7 @@
 get_wbal_param(aeme)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 }
 \value{
 A named numeric vector with elements \code{C} (outflow coefficient)

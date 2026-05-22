@@ -7,7 +7,7 @@
 reset_wbal_param(aeme)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 }
 \value{
 Aeme object with water balance parameters reset

@@ -11,10 +11,10 @@ get_vars_sim(vars_sim, aeme, model_controls)
 \item{vars_sim}{vector of variable names to be simulated. If NULL, the
 variables are taken from model_controls where simulate == TRUE.}
 
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[=get_model_controls]{get_model_controls()}}.}
 }
 \value{
 vector of variable names

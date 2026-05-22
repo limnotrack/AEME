@@ -7,7 +7,7 @@
 set_wbal_param(aeme, C, h_inv, params = NULL)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{C}{numeric; outflow coefficient. Scales the magnitude of outflow when
 water level exceeds \code{h_inv}.}

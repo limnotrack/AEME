@@ -7,7 +7,7 @@
 set_inflows(aeme, inflows)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{inflows}{Either a named list of data frames for each inflow, or a
 single data frame containing an "inflow_id" column to identify different

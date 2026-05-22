@@ -7,7 +7,7 @@
 plot_flows(aeme, flow = c("inflow", "outflow"), var_sim = "HYD_flow")
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{flow}{character vector; "inflow", "outflow" or both. Default is both.
 For outflow, var_sim must be "HYD_flow".}

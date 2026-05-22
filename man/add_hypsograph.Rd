@@ -14,7 +14,7 @@ add_hypsograph(
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{hypsograph}{data frame with columns "depth" and "area". Depth should be
 monotonic decreasing and area should be monotonic increasing. If elevation is
@@ -27,7 +27,8 @@ If NULL, a simple hypsograph will be generated using lake depth and area.}
 
 \item{lake_area}{Lake surface area (m2). Required if hypsograph is NULL.}
 
-\item{ext_elev}{numeric; metres to extend the hypograph by.}
+\item{ext_elev}{numeric; elevation (m) to extend the hypsograph to.
+Default: \code{0}.}
 }
 \value{
 Aeme object with hypsograph added

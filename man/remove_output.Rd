@@ -7,10 +7,10 @@
 remove_output(aeme)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 }
 \value{
-aeme object
+An updated \code{aeme} object.
 }
 \description{
 Remove output from AEME object

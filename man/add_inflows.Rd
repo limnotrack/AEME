@@ -7,7 +7,7 @@
 add_inflows(aeme, data)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{data}{list with data frames for each inflow. Each data frame must have
 columns "Date", "HYD_flow", "HYD_temp" and "CHM_salt". If NULL, no inflows
