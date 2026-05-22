@@ -15,7 +15,6 @@
 #'
 #' @export
 #' @return  invisibly, list(summary, plots, data)
-#' @importFrom knitr kable
 #' @importFrom patchwork plot_annotation
 #' @import ggplot2
 #' @import dplyr
@@ -50,6 +49,7 @@ run_glm_aed_diagnostics <- function(aeme,
                                     use_bounds = TRUE,
                                     print_table    = TRUE) {
   
+  aeme <- check_aeme(aeme)
   lake_dir <- get_lake_dir(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
@@ -128,22 +128,7 @@ run_glm_aed_diagnostics <- function(aeme,
   
   # --- output --------------------------------------------------------------
   if (print_table) {
-    cat("\n=== GLM-AED diagnostic summary ===\n")
-    flagged <- dplyr::filter(summary_tbl, flag != "ok")
-    if (nrow(flagged)) {
-      cat("\n** FLAGGED VARIABLES **\n")
-      print(knitr::kable(
-        flagged |>
-          dplyr::select(group, variable, flag, min, max, n_below, n_above),
-        digits = 3))
-    } else {
-      cat("All diagnostics within expected ranges.\n")
-    }
-    cat("\n-- Full summary --\n")
-    print(knitr::kable(
-      summary_tbl |>
-        dplyr::select(group, variable, label, min, median, mean, max, sd, flag),
-      digits = 3))
+    print_glm_summary(summary_tbl)
   }
   
   if (plot) {
@@ -849,3 +834,63 @@ plot_diag_group <- function(data, group, free_y = TRUE, use_bounds = TRUE) {
   }
   p
 }
+
+#' Print a summary table of diagnostics for one catalogue group, with flagged
+#' variables highlighted.
+#' @noRd
+print_glm_summary <- function(summary_tbl) {
+  
+  # --- header ----------------------------------------------------------------
+  cli::cli_rule(left = "GLM-AED diagnostic summary")
+  
+  # --- flagged block ---------------------------------------------------------
+  flagged <- summary_tbl |> dplyr::filter(flag != "ok")
+  
+  if (nrow(flagged) > 0) {
+    cli::cli_alert_warning("{nrow(flagged)} flagged variable{?s}")
+    
+    flagged_tbl <- flagged |>
+      dplyr::mutate(
+        min    = formatC(min,    digits = 3, format = "g"),
+        median = formatC(median, digits = 3, format = "g"),
+        mean   = formatC(mean,   digits = 3, format = "g"),
+        max    = formatC(max,    digits = 3, format = "g"),
+        sd     = formatC(sd,     digits = 3, format = "g")
+      ) |>
+      dplyr::select(group, variable, label, min, median, mean, max, sd, flag) |>
+      as.data.frame()
+    
+    ct <- clitable::cli_table(
+      flagged_tbl,
+      header_style = "bold",
+      hilite_rows  = flagged_tbl$flag != "ok",
+      hilite_style = "bgRed"
+    )
+    cli_table_safe(ct)
+  } else {
+    cli_inform_safe(c("v" = "All diagnostics within expected ranges."))
+  }
+  
+  # --- full summary by group -------------------------------------------------
+  cli::cli_rule(left = "Full summary")
+  
+  tbl <- summary_tbl |>
+    dplyr::mutate(
+      min    = formatC(min,    digits = 3, format = "g"),
+      median = formatC(median, digits = 3, format = "g"),
+      mean   = formatC(mean,   digits = 3, format = "g"),
+      max    = formatC(max,    digits = 3, format = "g"),
+      sd     = formatC(sd,     digits = 3, format = "g")
+    ) |>
+    dplyr::select(group, variable, label, min, median, mean, max, sd, flag)
+  
+  ct <- clitable::cli_table(
+    as.data.frame(tbl),
+    header_style = "bold",
+    hilite_rows  = tbl$flag != "ok",
+    hilite_style = "bgRed"
+  )
+  cli_table_safe(ct)
+  invisible(summary_tbl)
+}
+
