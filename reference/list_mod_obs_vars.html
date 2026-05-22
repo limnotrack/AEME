@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,10 +91,6 @@ model output</p>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>                   model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>                   ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> All columns already match AEME standard variable names, skipping name</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   guessing.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> All columns already match AEME standard inflow variable names, skipping name</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   guessing.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span><span style="color: #BBBB00;">!</span> `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   value.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Check raw data or unit conversion for this variable.</span>
@@ -104,58 +100,41 @@ model output</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using observed water level.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Calculating lake level using lake depth and a sinisoidal function.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED for lake wainamu</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 41.6285 replaced with 41.6285</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using default pH initialisation</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 16.6514 replaced with 16.6514</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 312.5 replaced with 312.5</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 1.4279 replaced with 1.4279</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 21.4183 replaced with 21.4183</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 1.0709 replaced with 1.0709</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 7.1394 replaced with 7.1394</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0.3229 replaced with 0.3229</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0.3229 replaced with 0.3229</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 0.3229 replaced with 0.3229</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_cyano 0.24 replaced with 0.24022</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_diatom 0.3 replaced with 0.300275</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_green 0.3 replaced with 0.300275</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 1 replaced with 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using default zooplankton initialisation</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_totals to: aed_sedflux, aed_oxygen, aed_silica, aed_nitrogen,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_phosphorus, aed_organic_matter, aed_phytoplankton, aed_totals</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting up AED aed_sed_const2d sediment zones: 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tier 2: zone-median summer concentrations used for adjustment:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         oxy   amm   nit   frp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zone1 0.075 0.078 0.010 0.004</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Zone2 7.160 0.005 0.001 0.002</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2 zones, direct FRP)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> === Sediment zone flux estimates (obs_adjusted) ===</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     1           0.00           3.07            10          13.1         11.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     2           3.07          19.00             0          10.0          5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    43957     0.289    -38.8    5.835     -0.4   0.1035</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   108386     0.711    -19.4    0.512      0.1   0.0259</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Lake-wide area-weighted average fluxes (for sanity check):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     oxy     amm     nit     frp </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -25.007   2.050  -0.044   0.048 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Tier 2: zone-median summer concentrations used for adjustment:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ┌─────┬───────────┬────────────┬────────────┬────────────┐</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ zone│ O2 (mg/L) │ NH4 (mg/L) │ NO3 (mg/L) │ FRP (mg/L) │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├─────┼───────────┼────────────┼────────────┼────────────┤</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone1│ 0.075     │ 0.078      │ 0.01       │ 0.004      │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone2│ 7.16      │ 0.005      │ 0.001      │ 0.002      │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └─────┴───────────┴────────────┴────────────┴────────────┘</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   zones, direct FRP)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.83│-0.4│ 0.103│</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│0.512│ 0.1│0.0259│</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ┌──────────────┬───────────────┬───────────────┬───────────────┐</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├──────────────┼───────────────┼───────────────┼───────────────┤</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ -25.007      │ 2.05          │ -0.044        │ 0.048         │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └──────────────┴───────────────┴───────────────┴───────────────┘</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
 <span class="r-in"><span><span class="co"># Run models</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>path <span class="op">=</span> <span class="va">path</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>parallel <span class="op">=</span> <span class="cn">TRUE</span>, ncores <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models in parallel... [2026-05-17 21:37:18]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-05-17 21:37:21]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading models in parallel...[2026-05-17 21:37:21]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model reading complete! [2026-05-17 21:37:22]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models in parallel... [2026-05-22 04:32:04]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-05-22 04:32:07]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading models in parallel...[2026-05-22 04:32:07]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model reading complete! [2026-05-22 04:32:09]</span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">|&gt;</span> </span></span>
 <span class="r-in"><span>  <span class="fu">list_mod_obs_vars</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              Cyanobacteria           Dissolved oxygen </span>

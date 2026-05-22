@@ -519,10 +519,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
 #> ✔ Created missing directory: D:\a\AEME\AEME\vignettes\aeme
-#> ℹ All columns already match AEME standard variable names, skipping name
-#>   guessing.
-#> ℹ All columns already match AEME standard inflow variable names, skipping name
-#>   guessing.
 #> Warning: ! 11 missing state variables in `NZS2038486`:
 #> ✖ `CAR_doc `
 #> ✖ `CAR_poc `
@@ -535,9 +531,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✖ `PHY_green `
 #> ✖ `SIL_rsi `
 #> ✖ `ZOO_zoo1 `
-#> ℹ Filled 11 missing variables with default values from `model_controls`.
-#> ℹ All columns already match AEME standard inflow variable names, skipping name
-#>   guessing.
+#> ℹ Filled 11 missing variables with default values from
+#> `model_controls`.
 #> Warning: ! 11 missing state variables in `NZS2038499`:
 #> ✖ `CAR_doc `
 #> ✖ `CAR_poc `
@@ -550,9 +545,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✖ `PHY_green `
 #> ✖ `SIL_rsi `
 #> ✖ `ZOO_zoo1 `
-#> ℹ Filled 11 missing variables with default values from `model_controls`.
-#> ℹ All columns already match AEME standard inflow variable names, skipping name
-#>   guessing.
+#> ℹ Filled 11 missing variables with default values from
+#> `model_controls`.
 #> Warning: ! 11 missing state variables in `NZS2038500`:
 #> ✖ `CAR_doc `
 #> ✖ `CAR_poc `
@@ -565,9 +559,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✖ `PHY_green `
 #> ✖ `SIL_rsi `
 #> ✖ `ZOO_zoo1 `
-#> ℹ Filled 11 missing variables with default values from `model_controls`.
-#> ℹ All columns already match AEME standard inflow variable names, skipping name
-#>   guessing.
+#> ℹ Filled 11 missing variables with default values from
+#> `model_controls`.
 #> Warning: ! 11 missing state variables in `NZS2038304`:
 #> ✖ `CAR_doc `
 #> ✖ `CAR_poc `
@@ -580,9 +573,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✖ `PHY_green `
 #> ✖ `SIL_rsi `
 #> ✖ `ZOO_zoo1 `
-#> ℹ Filled 11 missing variables with default values from `model_controls`.
-#> ℹ All columns already match AEME standard inflow variable names, skipping name
-#>   guessing.
+#> ℹ Filled 11 missing variables with default values from
+#> `model_controls`.
 #> Warning: ! 11 missing state variables in `lumped`:
 #> ✖ `CAR_doc `
 #> ✖ `CAR_poc `
@@ -595,9 +587,8 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✖ `PHY_green `
 #> ✖ `SIL_rsi `
 #> ✖ `ZOO_zoo1 `
-#> ℹ Filled 11 missing variables with default values from `model_controls`.
-#> ℹ All columns already match AEME standard inflow variable names, skipping name
-#>   guessing.
+#> ℹ Filled 11 missing variables with default values from
+#> `model_controls`.
 #> Warning: ! `HYD_flow`: Negative flow values detected.
 #> ℹ Check raw data or unit conversion for this variable.
 #> Warning: ! 10 missing state variables in `precip`:
@@ -614,7 +605,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Filled 10 missing variables with default values from `model_controls`.
 #> ℹ No water level present. Using constant water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building DYRESM-CAEDYM for lake aeme
 #> ℹ Copied in DYRESM .par file
 #> ℹ Writing DYRESM configuration file
@@ -622,47 +612,51 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Building GLM-AED for lake aeme
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
-#> ℹ 15 replaced with 41.6285
-#> ℹ 15 replaced with 16.6514
-#> ℹ 225 replaced with 312.5
-#> ℹ 2.25 replaced with 1.4279
-#> ℹ 21 replaced with 21.4183
-#> ℹ 6.96 replaced with 1.0709
-#> ℹ 19.8 replaced with 7.1394
-#> ℹ 0.008 replaced with 0.3229
-#> ℹ 0.05 replaced with 0.3229
-#> ℹ 0.05 replaced with 0.3229
-#> ℹ PHY_cyano 10 replaced with 0.24022
-#> ℹ PHY_diatom 8.4 replaced with 0.300275
-#> ℹ PHY_green 0.04 replaced with 0.300275
-#> ℹ 100 replaced with 1
-#> ℹ Using default zooplankton initialisation
+#> ℹ CAR_doc: 15 replaced with 41.6285
+#> ℹ CAR_poc: 15 replaced with 16.6514
+#> ℹ CHM_oxy: 225 replaced with 312.5
+#> ℹ NIT_amm: 2.25 replaced with 1.4279
+#> ℹ NIT_don: 21 replaced with 21.4183
+#> ℹ NIT_nit: 6.96 replaced with 1.0709
+#> ℹ NIT_pon: 19.8 replaced with 7.1394
+#> ℹ PHS_dop: 0.008 replaced with 0.3229
+#> ℹ PHS_frp: 0.05 replaced with 0.3229
+#> ℹ PHS_pop: 0.05 replaced with 0.3229
+#> ℹ PHY_cyano: 10 replaced with 0.24022
+#> ℹ PHY_diatom: 8.4 replaced with 0.300275
+#> ℹ PHY_green: 0.04 replaced with 0.300275
+#> ℹ SIL_rsi: 100 replaced with 1
 #> ✔ Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,
 #>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,
 #>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,
 #>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
 #>   aed_phytoplankton, aed_totals
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
+#> ℹ Tier 2: zone-median summer concentrations used for adjustment:
+#> ┌─────┬───────────┬────────────┬────────────┬────────────┐
+#> │ zone│ O2 (mg/L) │ NH4 (mg/L) │ NO3 (mg/L) │ FRP (mg/L) │
+#> ├─────┼───────────┼────────────┼────────────┼────────────┤
+#> │Zone1│ 0.29      │ 0.064      │   NA       │ 0.012      │
+#> │Zone2│  5.3      │ 0.005      │   NA       │ 0.008      │
+#> └─────┴───────────┴────────────┴────────────┴────────────┘
+#> ℹ Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2
+#>   zones, direct FRP)
+#> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────
 #> 
-#> Tier 2: zone-median summer concentrations used for adjustment:
-#>        oxy   amm nit   frp
-#> Zone1 0.29 0.064  NA 0.012
-#> Zone2 5.30 0.005  NA 0.008
-#> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2 zones, direct FRP)
-#> 
-#> === Sediment zone flux estimates (obs_adjusted) ===
 #> n_zones: 2 | max lake depth: 13.48 m | ref_depth: 5 m
+#> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐
+#> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │
+#> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤
+#> │   1│    0      │ 2.48      │   11      │ 13.5      │ 12.2     │ 3.45e+04│ 0.224   │-38.4│  5.7│-0.4│0.0922│
+#> │   2│ 2.48      │   19      │    0      │   11      │  5.5     │ 1.19e+05│ 0.776   │-21.1│0.558│ 0.1│0.0338│
+#> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘
 #> 
-#>  zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m
-#>     1           0.00           2.48            11          13.5         12.2
-#>     2           2.48          19.00             0          11.0          5.5
-#>  area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp
-#>    34464     0.224    -38.4    5.700     -0.4   0.0922
-#>   119184     0.776    -21.1    0.558      0.1   0.0338
-#> 
-#> Lake-wide area-weighted average fluxes (for sanity check):
-#>     oxy     amm     nit     frp 
-#> -24.993   1.710  -0.012   0.047
+#> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────
+#> ┌──────────────┬───────────────┬───────────────┬───────────────┐
+#> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│
+#> ├──────────────┼───────────────┼───────────────┼───────────────┤
+#> │ -24.993      │ 1.71          │ -0.012        │ 0.047         │
+#> └──────────────┴───────────────┴───────────────┴───────────────┘
 #> ℹ Building GOTM-WET model for lake aeme
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5

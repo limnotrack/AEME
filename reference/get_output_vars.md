@@ -38,10 +38,6 @@ model <- c("glm_aed", "gotm_wet")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
-#> ℹ All columns already match AEME standard variable names, skipping name
-#>   guessing.
-#> ℹ All columns already match AEME standard inflow variable names, skipping name
-#>   guessing.
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -51,52 +47,53 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Using observed water level.
 #> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
-#> ℹ 15 replaced with 41.6285
-#> ℹ Using default pH initialisation
-#> ℹ 15 replaced with 16.6514
-#> ℹ 225 replaced with 312.5
-#> ℹ 2.25 replaced with 1.4279
-#> ℹ 21 replaced with 21.4183
-#> ℹ 6.96 replaced with 1.0709
-#> ℹ 19.8 replaced with 7.1394
-#> ℹ 0.008 replaced with 0.3229
-#> ℹ 0.05 replaced with 0.3229
-#> ℹ 0.05 replaced with 0.3229
-#> ℹ PHY_cyano 10 replaced with 0.24022
-#> ℹ PHY_diatom 8.4 replaced with 0.300275
-#> ℹ PHY_green 0.04 replaced with 0.300275
-#> ℹ 100 replaced with 1
-#> ℹ Using default zooplankton initialisation
+#> ℹ CAR_doc: 15 replaced with 41.6285
+#> ℹ CAR_poc: 15 replaced with 16.6514
+#> ℹ CHM_oxy: 225 replaced with 312.5
+#> ℹ NIT_amm: 2.25 replaced with 1.4279
+#> ℹ NIT_don: 21 replaced with 21.4183
+#> ℹ NIT_nit: 6.96 replaced with 1.0709
+#> ℹ NIT_pon: 19.8 replaced with 7.1394
+#> ℹ PHS_dop: 0.008 replaced with 0.3229
+#> ℹ PHS_frp: 0.05 replaced with 0.3229
+#> ℹ PHS_pop: 0.05 replaced with 0.3229
+#> ℹ PHY_cyano: 10 replaced with 0.24022
+#> ℹ PHY_diatom: 8.4 replaced with 0.300275
+#> ℹ PHY_green: 0.04 replaced with 0.300275
+#> ℹ SIL_rsi: 100 replaced with 1
 #> ✔ Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,
 #>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,
 #>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,
 #>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
 #>   aed_phytoplankton, aed_totals
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
-#> 
-#> Tier 2: zone-median summer concentrations used for adjustment:
-#>         oxy   amm   nit   frp
-#> Zone1 0.075 0.078 0.010 0.004
-#> Zone2 7.160 0.005 0.001 0.002
-#> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2 zones, direct FRP)
-#> 
-#> === Sediment zone flux estimates (obs_adjusted) ===
+#> ℹ Tier 2: zone-median summer concentrations used for adjustment:
+#> ┌─────┬───────────┬────────────┬────────────┬────────────┐
+#> │ zone│ O2 (mg/L) │ NH4 (mg/L) │ NO3 (mg/L) │ FRP (mg/L) │
+#> ├─────┼───────────┼────────────┼────────────┼────────────┤
+#> │Zone1│ 0.075     │ 0.078      │ 0.01       │ 0.004      │
+#> │Zone2│ 7.16      │ 0.005      │ 0.001      │ 0.002      │
+#> └─────┴───────────┴────────────┴────────────┴────────────┘
+#> ℹ Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2
+#>   zones, direct FRP)
+#> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────
 #> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m
+#> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐
+#> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │
+#> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤
+#> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.83│-0.4│ 0.103│
+#> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│0.512│ 0.1│0.0259│
+#> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘
 #> 
-#>  zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m
-#>     1           0.00           3.07            10          13.1         11.5
-#>     2           3.07          19.00             0          10.0          5.0
-#>  area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp
-#>    43957     0.289    -38.8    5.835     -0.4   0.1035
-#>   108386     0.711    -19.4    0.512      0.1   0.0259
-#> 
-#> Lake-wide area-weighted average fluxes (for sanity check):
-#>     oxy     amm     nit     frp 
-#> -25.007   2.050  -0.044   0.048 
+#> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────
+#> ┌──────────────┬───────────────┬───────────────┬───────────────┐
+#> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│
+#> ├──────────────┼───────────────┼───────────────┼───────────────┤
+#> │ -25.007      │ 2.05          │ -0.044        │ 0.048         │
+#> └──────────────┴───────────────┴───────────────┴───────────────┘
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
 #> ℹ instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5
@@ -140,10 +137,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-05-17 21:36:59]
-#> ✔ Model run complete! [2026-05-17 21:37:03]
-#> ℹ Reading models in parallel...[2026-05-17 21:37:03]
-#> ✔ Model reading complete! [2026-05-17 21:37:05]
+#> ℹ Running models in parallel... [2026-05-22 04:31:47]
+#> ✔ Model run complete! [2026-05-22 04:31:50]
+#> ℹ Reading models in parallel...[2026-05-22 04:31:50]
+#> ✔ Model reading complete! [2026-05-22 04:31:52]
 get_output_vars(aeme, model)
 #>                    Water temperature                    Thermocline depth 
 #>                           "HYD_temp"                         "HYD_thmcln" 

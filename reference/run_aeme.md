@@ -90,17 +90,12 @@ model_controls <- get_model_controls()
 model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls, ext_elev = 5)
-#> ℹ All columns already match AEME standard variable names, skipping name
-#>   guessing.
-#> ℹ All columns already match AEME standard inflow variable names, skipping name
-#>   guessing.
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
 #> ℹ Using observed water level.
 #> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED for lake wainamu
 #> ✔ GLM nml validation completed - no issues detected.
 if (FALSE) { # \dontrun{

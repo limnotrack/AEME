@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -244,9 +244,9 @@ locations around the world. However, its date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2026-05-17 21:52:02] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2026-05-17 21:52:02] downloading</span></span>
-<span><span class="co">#&gt; INFO [2026-05-17 21:52:03] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2026-05-22 04:46:52] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2026-05-22 04:46:52] downloading</span></span>
+<span><span class="co">#&gt; INFO [2026-05-22 04:46:53] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -481,45 +481,45 @@ variables.</p>
 <span><span class="co">#&gt; 7   CHM_oxymet     TRUE          NA         NA          NA             NA</span></span>
 <span><span class="co">#&gt; 8   CHM_oxymom     TRUE          NA         NA          NA             NA</span></span>
 <span><span class="co">#&gt; 9   CHM_oxynal     TRUE          NA         NA          NA             NA</span></span>
-<span><span class="co">#&gt; 10    CHM_salt     TRUE        0.00      0.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 11  HYD_ctrbuy     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 12    HYD_dens     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 13  HYD_epidep     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 14  HYD_hypdep     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 15  HYD_schstb     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 16   HYD_strat     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 17    HYD_temp     TRUE       15.00     11.000          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 18  HYD_thmcln     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 19    LKE_tli3     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 20    LKE_tli4     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 21    LKE_tlic     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 22    LKE_tlin     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 23    LKE_tlip     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 24   LKE_tlise     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 25     NCS_ss1     TRUE        5.00      3.000       3e-01     1.00000000</span></span>
-<span><span class="co">#&gt; 26     NIT_amm     TRUE        0.05      0.020       1e+06     0.01400670</span></span>
-<span><span class="co">#&gt; 27     NIT_don     TRUE        0.00      0.300       1e+06     0.01400670</span></span>
-<span><span class="co">#&gt; 28     NIT_nit     TRUE        0.20      0.015       1e+06     0.01400670</span></span>
-<span><span class="co">#&gt; 29     NIT_pon     TRUE        0.00      0.100       1e-03     0.01400670</span></span>
-<span><span class="co">#&gt; 30      NIT_tn     TRUE        0.00         NA          NA     0.01400670</span></span>
-<span><span class="co">#&gt; 31     PHS_dop     TRUE        0.00      0.010       1e+06     0.03097376</span></span>
-<span><span class="co">#&gt; 32     PHS_frp     TRUE        0.00      0.010       1e+06     0.03097376</span></span>
-<span><span class="co">#&gt; 33     PHS_pip     TRUE        0.00      0.002       5e-03     0.03097376</span></span>
-<span><span class="co">#&gt; 34     PHS_pop     TRUE        0.00      0.010       1e-04     0.03097376</span></span>
-<span><span class="co">#&gt; 35      PHS_tp     TRUE        0.00         NA          NA     0.03097376</span></span>
-<span><span class="co">#&gt; 36   PHY_cyano     TRUE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 37  PHY_diatom     TRUE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 38   PHY_green     TRUE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 39   PHY_tchla     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 40    RAD_extc     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 41     RAD_par     TRUE          NA         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 42     SIL_rsi     TRUE        0.00      1.000       1e+07     1.00000000</span></span>
-<span><span class="co">#&gt; 43    ZOO_zoo1     TRUE        0.10      1.000       0e+00     1.00000000</span></span>
-<span><span class="co">#&gt; 44     BAC_bac    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 45     CAR_ch4    FALSE        0.00         NA          NA     1.00000000</span></span>
-<span><span class="co">#&gt; 46     CAR_dic    FALSE       10.00      2.000       1e+06     0.01201100</span></span>
-<span><span class="co">#&gt; 47    CAR_docr    FALSE        0.00         NA       1e+06     0.01201100</span></span>
-<span><span class="co">#&gt; 48      CAR_pH    FALSE        7.00      7.000       7e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 10      CHM_ph     TRUE        7.00      7.000       7e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 11    CHM_salt     TRUE        0.00      0.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 12  HYD_ctrbuy     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 13    HYD_dens     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 14  HYD_epidep     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 15  HYD_hypdep     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 16  HYD_schstb     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 17   HYD_strat     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 18    HYD_temp     TRUE       15.00     11.000          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 19  HYD_thmcln     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 20    LKE_tli3     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 21    LKE_tli4     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 22    LKE_tlic     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 23    LKE_tlin     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 24    LKE_tlip     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 25   LKE_tlise     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 26     NCS_ss1     TRUE        5.00      3.000       3e-01     1.00000000</span></span>
+<span><span class="co">#&gt; 27     NIT_amm     TRUE        0.05      0.020       1e+06     0.01400670</span></span>
+<span><span class="co">#&gt; 28     NIT_don     TRUE        0.00      0.300       1e+06     0.01400670</span></span>
+<span><span class="co">#&gt; 29     NIT_nit     TRUE        0.20      0.015       1e+06     0.01400670</span></span>
+<span><span class="co">#&gt; 30     NIT_pon     TRUE        0.00      0.100       1e-03     0.01400670</span></span>
+<span><span class="co">#&gt; 31      NIT_tn     TRUE        0.00         NA          NA     0.01400670</span></span>
+<span><span class="co">#&gt; 32     PHS_dop     TRUE        0.00      0.010       1e+06     0.03097376</span></span>
+<span><span class="co">#&gt; 33     PHS_frp     TRUE        0.00      0.010       1e+06     0.03097376</span></span>
+<span><span class="co">#&gt; 34     PHS_pip     TRUE        0.00      0.002       5e-03     0.03097376</span></span>
+<span><span class="co">#&gt; 35     PHS_pop     TRUE        0.00      0.010       1e-04     0.03097376</span></span>
+<span><span class="co">#&gt; 36      PHS_tp     TRUE        0.00         NA          NA     0.03097376</span></span>
+<span><span class="co">#&gt; 37   PHY_cyano     TRUE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 38  PHY_diatom     TRUE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 39   PHY_green     TRUE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 40   PHY_tchla     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 41    RAD_extc     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 42     RAD_par     TRUE          NA         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 43     SIL_rsi     TRUE        0.00      1.000       1e+07     1.00000000</span></span>
+<span><span class="co">#&gt; 44    ZOO_zoo1     TRUE        0.10      1.000       0e+00     1.00000000</span></span>
+<span><span class="co">#&gt; 45     BAC_bac    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 46     CAR_ch4    FALSE        0.00         NA          NA     1.00000000</span></span>
+<span><span class="co">#&gt; 47     CAR_dic    FALSE       10.00      2.000       1e+06     0.01201100</span></span>
+<span><span class="co">#&gt; 48    CAR_docr    FALSE        0.00         NA       1e+06     0.01201100</span></span>
 <span><span class="co">#&gt; 49    CAR_pocr    FALSE        0.00         NA          NA     0.01201100</span></span>
 <span><span class="co">#&gt; 50  CHM_oxysat    FALSE          NA         NA          NA             NA</span></span>
 <span><span class="co">#&gt; 51   CLM_clam1    FALSE        0.00         NA          NA     1.00000000</span></span>
@@ -576,14 +576,11 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> All columns already match AEME standard variable names, skipping name</span></span>
-<span><span class="co">#&gt;   guessing.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> `MET_wnduvv`: converted from km/h to m/s.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Insufficient lake temperature observations (&lt;10).</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Using Stefan &amp; Preud'homme (2007) method.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Calculating lake level using lake depth and a sinisoidal function.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building DYRESM-CAEDYM for lake wainamu</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in DYRESM .par file</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Writing DYRESM configuration file</span></span>
@@ -680,16 +677,17 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-05-17 21:52:27]</span></span>
-<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-05-17 21:52:27]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-05-17 21:52:53]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-05-17 21:52:53]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-05-17 21:52:54]</span></span>
-<span><span class="co">#&gt; → GOTM-WET running... [2026-05-17 21:52:54]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-05-17 21:52:54]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-05-17 21:52:54]</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-05-22 04:47:17]</span></span>
+<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-05-22 04:47:17]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-05-22 04:47:44]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2026-05-22 04:47:44]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-05-22 04:47:44]</span></span>
+<span><span class="co">#&gt; → GOTM-WET running... [2026-05-22 04:47:44]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-05-22 04:47:45]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-05-22 04:47:45]</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model dy_cd: CHM_ph, LKE_photic</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: CHM_ph, RAD_extc</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: CHM_ph, RAD_extc</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="view-the-output">View the output<a class="anchor" aria-label="anchor" href="#view-the-output"></a>
@@ -700,7 +698,9 @@ each model. The list contains the output data from the model run.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># View the output</span></span>
 <span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 246 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Variable 'HYD_temp' not in output for model(s): </span></span>
+<span><span class="co">#&gt; dy_cd</span></span>
+<span><span class="co">#&gt; Warning: Removed 164 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="setup-new-lake_files/figure-html/view-output-1.png" class="r-plt" alt="" width="700"></p>
 </div>

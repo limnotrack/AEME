@@ -219,8 +219,6 @@ We have a host of vignettes to help you get started with AEME:
   : Convert AEME model outputs to inflow format
 - [`align_depth_data()`](https://limnotrack.com/reference/align_depth_data.md)
   : Align observation depth data with model data
-- [`ansi_set_knit_hooks()`](https://limnotrack.com/reference/ansi_set_knit_hooks.md)
-  : Set knitr Hooks for ANSI Aware HTML Output
 - [`assess_model()`](https://limnotrack.com/reference/assess_model.md) :
   Assess model performance
 - [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) :
@@ -342,6 +340,8 @@ We have a host of vignettes to help you get started with AEME:
   : Get variable indices
 - [`get_wbal_components()`](https://limnotrack.com/reference/get_wbal_components.md)
   : Get water balance components from AEME object
+- [`get_wbal_param()`](https://limnotrack.com/reference/get_wbal_param.md)
+  : Get water balance parameters
 - [`glm_aed_parameters`](https://limnotrack.com/reference/glm_aed_parameters.md)
   : Example dataframe used for calibrating the biogeochemistry in the
   GLM-AED model.
@@ -542,6 +542,8 @@ We have a host of vignettes to help you get started with AEME:
   time parameters for an Aeme object
 - [`set_vars_sim()`](https://limnotrack.com/reference/set_vars_sim.md) :
   Set simulation variables in model controls
+- [`set_wbal_param()`](https://limnotrack.com/reference/set_wbal_param.md)
+  : Set water balance parameters
 - [`show(`*`<Aeme>`*`)`](https://limnotrack.com/reference/show-aeme-method.md)
   : Print Aeme object to the console
 - [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md)

@@ -14,7 +14,7 @@ key_naming
 
 A data frame with 127 rows and 13 columns:
 
-- name:
+- var_aeme:
 
   AEME variable name
 

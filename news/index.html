@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,192 @@
       <small>Source: <a href="https://github.com/limnotrack/AEME/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="aeme-030">AEME 0.3.0<a class="anchor" aria-label="anchor" href="#aeme-030"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0"></a></h3>
+<ul><li><p>Added <code>edit_model_controls()</code>, an interactive Shiny gadget for editing model controls in a spreadsheet-like interface. Includes filtering by variable name and simulated variables, type-safe editing, and validation on save to warn when simulated variables are missing initial values.</p></li>
+<li><p>Fixed bug for initialising GLM-AED water column with the values from the model_controls dataframe. This is also added to the GLM .nml file.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="breaking-changes-0-3-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h3>
+<ul><li>
+<code>key_naming$name</code> has been renamed to <code>key_naming$var_aeme</code> to align with <code>model_controls$var_aeme</code> and simplify joins between the two dataframes. Update any code that references <code>key_naming$name</code> directly.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="aeme-020">AEME 0.2.0<a class="anchor" aria-label="anchor" href="#aeme-020"></a></h2>
+<div class="section level3">
+<h3 id="new-functions-0-2-0">New functions<a class="anchor" aria-label="anchor" href="#new-functions-0-2-0"></a></h3>
+<ul><li>
+<code><a href="../reference/add_outflows.html">add_outflows()</a></code> — add outflow data to an AEME object.</li>
+<li>
+<code><a href="../reference/add_output.html">add_output()</a></code> — add model output to an AEME object.</li>
+<li>
+<code><a href="../reference/add_deriv_output.html">add_deriv_output()</a></code> — compute and attach derived variables (thermocline depth, stratification, Schmidt stability, TLI components, oxygen metrics) to model output.</li>
+<li>
+<code><a href="../reference/check_model.html">check_model()</a></code> — validate that a model name is supported.</li>
+<li>
+<code><a href="../reference/check_gotm_yaml.html">check_gotm_yaml()</a></code> — validate a GOTM YAML configuration file.</li>
+<li>
+<code><a href="../reference/check_path.html">check_path()</a></code> — helper to verify that a file/directory path exists.</li>
+<li>
+<code>check_utils()</code> — miscellaneous input-checking utilities.</li>
+<li>
+<code><a href="../reference/convert_do.html">convert_do()</a></code> — convert dissolved-oxygen values between units (mg/L ↔︎ % saturation).</li>
+<li>
+<code>deriv_registry()</code> — registry of derived-variable definitions used by <code><a href="../reference/add_deriv_output.html">add_deriv_output()</a></code>.</li>
+<li>
+<code><a href="../reference/estimate_lake_wlev.html">estimate_lake_wlev()</a></code> — estimate lake water level from inflow/outflow data and a hypsograph.</li>
+<li>
+<code><a href="../reference/estimate_sed_zones.html">estimate_sed_zones()</a></code> — estimate sediment zones from a hypsograph.</li>
+<li>
+<code><a href="../reference/estimate_surface_temperature.html">estimate_surface_temperature()</a></code> — estimate lake surface temperature.</li>
+<li>
+<code><a href="../reference/estimate_zone_fluxes.html">estimate_zone_fluxes()</a></code> — estimate sediment-zone fluxes for AED models.</li>
+<li>
+<code><a href="../reference/get_aed_sed_const2d_param.html">get_aed_sed_const2d_param()</a></code> — retrieve 2-D sediment constant parameters from an AED configuration.</li>
+<li>
+<code><a href="../reference/get_aeme_path.html">get_aeme_path()</a></code> — return the path to the AEME package installation.</li>
+<li>
+<code><a href="../reference/get_date_index.html">get_date_index()</a></code> — return time-step indices for a given date range.</li>
+<li>
+<code>get_deriv_vars()</code> — list available derived variables.</li>
+<li>
+<code><a href="../reference/get_glm_sed_params.html">get_glm_sed_params()</a></code> — retrieve GLM sediment parameters.</li>
+<li>
+<code><a href="../reference/get_glm_sed_zones.html">get_glm_sed_zones()</a></code> — retrieve GLM sediment zone definitions.</li>
+<li>
+<code><a href="../reference/get_hm_palette.html">get_hm_palette()</a></code> — return the built-in heat-map colour palette.</li>
+<li>
+<code><a href="../reference/get_vars_sim.html">get_vars_sim()</a></code> — get the list of variables to simulate.</li>
+<li>
+<code><a href="../reference/get_wbal_components.html">get_wbal_components()</a></code> — extract water-balance component data from model output.</li>
+<li>
+<code><a href="../reference/glm_sed_params.html">glm_sed_params()</a></code> — construct a GLM sediment-parameter object.</li>
+<li>
+<code><a href="../reference/glm_to_aeme.html">glm_to_aeme()</a></code> — convert a GLM NML file to an AEME configuration object.</li>
+<li>
+<code><a href="../reference/guess_aeme_vars.html">guess_aeme_vars()</a></code> — auto-detect AEME variable names from a data frame.</li>
+<li>
+<code>initialise_aed()</code> — initialise AED2 configuration (replaces <code>initialiseAED()</code>).</li>
+<li>
+<code><a href="../reference/is_strat.html">is_strat()</a></code> — test whether a water column is stratified.</li>
+<li>
+<code>palettes</code> — built-in colour palettes for AEME plots.</li>
+<li>
+<code><a href="../reference/param_colnames.html">param_colnames()</a></code> — return expected column names for the parameter table.</li>
+<li>
+<code><a href="../reference/plot_est_wbal.html">plot_est_wbal()</a></code> / <code>plot_water_balance()</code> — plot estimated water-balance components.</li>
+<li>
+<code><a href="../reference/plot_glm_config.html">plot_glm_config()</a></code> — plot GLM model configuration diagnostics.</li>
+<li>
+<code><a href="../reference/plot_glm_diagnostics.html">plot_glm_diagnostics()</a></code> — plot GLM-AED diagnostic outputs.</li>
+<li>
+<code><a href="../reference/plot_wbal_comp.html">plot_wbal_comp()</a></code> — plot water-balance component comparison across models.</li>
+<li>
+<code><a href="../reference/plot_wbal_summaries.html">plot_wbal_summaries()</a></code> — plot summarised water-balance results.</li>
+<li>
+<code><a href="../reference/plot_weir_calibration.html">plot_weir_calibration()</a></code> — plot weir calibration results.</li>
+<li>
+<code><a href="../reference/plot_wlev.html">plot_wlev()</a></code> — plot simulated water-level time series.</li>
+<li>
+<code><a href="../reference/read_aed_param_csv.html">read_aed_param_csv()</a></code> — read AED parameter values from a CSV file.</li>
+<li>
+<code><a href="../reference/read_dy_output.html">read_dy_output()</a></code>, <code>read_dy_stg()</code> — read DYRESCD/DY-CD model output and stage files.</li>
+<li>
+<code><a href="../reference/read_glm_output.html">read_glm_output()</a></code> — read GLM model output NetCDF files.</li>
+<li>
+<code><a href="../reference/read_gotm_flux_output.html">read_gotm_flux_output()</a></code>, <code>read_gotm_hyps()</code>, <code><a href="../reference/read_gotm_output.html">read_gotm_output()</a></code> — read GOTM output files.</li>
+<li>
+<code><a href="../reference/read_model_config.html">read_model_config()</a></code> — read a model configuration file.</li>
+<li>
+<code><a href="../reference/read_model_hypsograph.html">read_model_hypsograph()</a></code> — read a hypsograph from a model configuration.</li>
+<li>
+<code>read_model_nc()</code> — low-level reader for model NetCDF files.</li>
+<li>
+<code><a href="../reference/read_model_outputs.html">read_model_outputs()</a></code> — unified reader for all supported model outputs.</li>
+<li>
+<code><a href="../reference/read_model_wlev.html">read_model_wlev()</a></code> — read water-level output from any supported model.</li>
+<li>
+<code><a href="../reference/reset_wbal_param.html">reset_wbal_param()</a></code> — reset water-balance parameters to defaults.</li>
+<li>
+<code>resolve_dependencies()</code> — resolve derived-variable computation dependencies.</li>
+<li>
+<code><a href="../reference/run_glm_aed_diagnostics.html">run_glm_aed_diagnostics()</a></code> — run GLM-AED post-run diagnostics.</li>
+<li>
+<code><a href="../reference/set_aed_sed_const2d.html">set_aed_sed_const2d()</a></code> — set 2-D AED sediment constant parameters.</li>
+<li>
+<code><a href="../reference/set_aed_totals.html">set_aed_totals()</a></code> — set AED total-concentration parameters.</li>
+<li>
+<code><a href="../reference/set_glm_aed_models.html">set_glm_aed_models()</a></code> — configure which AED sub-models are active.</li>
+<li>
+<code><a href="../reference/set_vars_sim.html">set_vars_sim()</a></code> — set the variables to be output by a simulation.</li>
+<li>
+<code><a href="../reference/standardise_inflow.html">standardise_inflow()</a></code> — standardise inflow data columns and units.</li>
+<li>
+<code><a href="../reference/standardise_met.html">standardise_met()</a></code> — standardise meteorological data columns and units.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-and-changes-0-2-0">Improvements and changes<a class="anchor" aria-label="anchor" href="#improvements-and-changes-0-2-0"></a></h3>
+<ul><li>
+<strong>AEME S4 object overhaul</strong> — the <code>Aeme</code> S4 class has been substantially refactored: accessor/replacement generics have been simplified and slot structure updated for consistency.</li>
+<li>
+<strong><code><a href="../reference/build_aeme.html">build_aeme()</a></code></strong> — major refactor; improved handling of precipitation, inflows, outflows, and lake-level initialisation.</li>
+<li>
+<strong><code>calc_fairall()</code></strong> — vectorised and performance-improved implementation of the Fairall bulk aerodynamic algorithm.</li>
+<li>
+<strong><code>calc_water_balance()</code></strong> — refactored water-balance calculation; improved precipitation and evaporation handling.</li>
+<li>
+<strong><code>calc_lake_obs_deriv()</code></strong> — extended to compute additional derived observation variables.</li>
+<li>
+<strong><code><a href="../reference/expand_met.html">expand_met()</a></code></strong> — improved meteorological gap-filling and unit conversion logic.</li>
+<li>
+<strong><code><a href="../reference/load_output.html">load_output()</a></code></strong> — now dispatches to the new unified <code><a href="../reference/read_model_outputs.html">read_model_outputs()</a></code> functions.</li>
+<li>
+<strong><code><a href="../reference/check_aeme_vars.html">check_aeme_vars()</a></code></strong>, <strong><code><a href="../reference/check_glm_nml.html">check_glm_nml()</a></code></strong> — improved validation logic and error messages.</li>
+<li>
+<strong><code>check_time()</code></strong> — more robust time-period validation.</li>
+<li>
+<strong><code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> / <code><a href="https://rdrr.io/r/methods/show.html" class="external-link">show()</a></code> / <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code></strong> — AEME object print methods migrated to use <a href="https://cli.r-lib.org" class="external-link">cli</a> for formatted console output.</li>
+<li>
+<strong>Inflow/outflow handling</strong> — new auto-detection of column names and units via <code><a href="../reference/standardise_inflow.html">standardise_inflow()</a></code> and <code><a href="../reference/guess_aeme_vars.html">guess_aeme_vars()</a></code>; <code><a href="../reference/add_inflows.html">add_inflows()</a></code> and <code><a href="../reference/add_outflows.html">add_outflows()</a></code> updated accordingly.</li>
+<li>
+<strong>Rain and snow units</strong> — standardised to mm/day throughout the package.</li>
+<li>
+<strong>GLM NML helpers</strong> — new tests and improved handling of sediment parameters and zone detection.</li>
+<li>
+<strong>GOTM YAML</strong> — new <code><a href="../reference/check_gotm_yaml.html">check_gotm_yaml()</a></code> validates GOTM configuration before model run.</li>
+<li>
+<strong>AED initialisation</strong> — <code>initialiseAED()</code> replaced by <code>initialise_aed()</code>; library name spelling corrected to “Ecodynamics”.</li>
+<li>
+<strong>GLM binaries</strong> — bundled GLM-AED binaries removed from <code>inst/extbin/</code>; users now provide their own executable or use the <code>glmtools</code> package option.</li>
+<li>
+<strong>Parameter library</strong> — internal parameter library (<code>bc2e234</code>) and <code>get_aeme_params()</code> updated to include new parameters.</li>
+<li>
+<strong>pkgdown site</strong> — favicon assets and extra CSS added; GLM-AED vignette registered.</li>
+<li>Removed deprecated <code>nc_listify()</code> internal helper.</li>
+<li>Updated Roxygen documentation to v8 conventions throughout.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-vignettes-0-2-0">New vignettes<a class="anchor" aria-label="anchor" href="#new-vignettes-0-2-0"></a></h3>
+<ul><li>
+<strong>GLM-AED</strong> (<code>vignettes/articles/glm-aed.Rmd</code>) — end-to-end walkthrough of running GLM coupled with AED2.</li>
+<li>
+<strong>Reservoir AEME</strong> (<code>vignettes/articles/reservoir-aeme.Rmd</code>) — demonstration of AEME on a reservoir.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-2-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h3>
+<ul><li>Fixed phytoplankton group index when building AED configurations (#<code>45559f4</code>).</li>
+<li>Fixed outflow renaming bug in <code><a href="../reference/build_aeme.html">build_aeme()</a></code> (#<code>04838b0</code>).</li>
+<li>Fixed inflow name update logic in <code>build_glm()</code> (#<code>5c0eb58</code>).</li>
+<li>Fixed water-balance weir/outflow handling when only the water-balance outflow is present (#<code>af39204</code>).</li>
+<li>Fixed <code><a href="../reference/guess_aeme_vars.html">guess_aeme_vars()</a></code> guessing logic for edge cases (#<code>9e9e622</code>).</li>
+<li>Fixed phytoplankton defaults in AED initialisation (#<code>c9e78d4</code>).</li>
+<li>Fixed precipitation unit parsing for percentage values (#<code>16bcf0b</code>).</li>
+<li>Corrected air-pressure unit conversion in meteorological processing.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="aeme-011">AEME 0.1.1<a class="anchor" aria-label="anchor" href="#aeme-011"></a></h2>
 <ul><li>Potential first succesful release on Zenodo</li>

@@ -8,6 +8,7 @@
 "CHM_oxymet",TRUE,NA,NA,NA,NA
 "CHM_oxymom",TRUE,NA,NA,NA,NA
 "CHM_oxynal",TRUE,NA,NA,NA,NA
+"CHM_ph",TRUE,7,7,7,1
 "CHM_salt",TRUE,0,0,0,1
 "HYD_ctrbuy",TRUE,NA,NA,NA,1
 "HYD_dens",TRUE,NA,NA,NA,1
@@ -46,7 +47,6 @@
 "CAR_ch4",FALSE,0,NA,NA,1
 "CAR_dic",FALSE,10,2,1e+06,0.012011
 "CAR_docr",FALSE,0,NA,1e+06,0.012011
-"CAR_pH",FALSE,7,7,7,1
 "CAR_pocr",FALSE,0,NA,NA,0.012011
 "CHM_oxysat",FALSE,NA,NA,NA,NA
 "CLM_clam1",FALSE,0,NA,NA,1

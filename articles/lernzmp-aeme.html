@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -359,30 +359,14 @@ building of the AEME models locally.</p>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> `PHY_green `</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> `PHY_diatom `</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> `NCS_ss1 `</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Filled 9 missing variables with default values from</span></span>
-<span><span class="co">#&gt; `model_controls`.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Filled 9 missing variables with default values from `model_controls`.</span></span>
+<span><span class="co">#&gt; ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Tier 2: zone-median summer concentrations used for adjustment:</span></span>
-<span><span class="co">#&gt;          oxy   amm   nit   frp</span></span>
-<span><span class="co">#&gt; Zone1     NA    NA    NA    NA</span></span>
-<span><span class="co">#&gt; Zone2 7.2275 0.036 0.005 0.007</span></span>
-<span><span class="co">#&gt;   &lt; 2 zones with data for this flux — skipping adjustment</span></span>
-<span><span class="co">#&gt;   &lt; 2 zones with data for this flux — skipping adjustment</span></span>
-<span><span class="co">#&gt; Tier 2 adjustments applied: fsed_amm (1 zones, direct NH4); fsed_frp (1 zones, direct FRP)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; === Sediment zone flux estimates (obs_adjusted) ===</span></span>
 <span><span class="co">#&gt; n_zones: 2 | max lake depth: 48.15 m | ref_depth: 5 m</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m</span></span>
-<span><span class="co">#&gt;     1            0.0           21.1            27          48.1         37.6</span></span>
-<span><span class="co">#&gt;     2           21.1           54.0             0          27.0         13.5</span></span>
-<span><span class="co">#&gt;   area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp</span></span>
-<span><span class="co">#&gt;    775169      0.01      -25        2     -0.4     0.05</span></span>
-<span><span class="co">#&gt;  79884791      0.99      -25        2      0.1     0.05</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Lake-wide area-weighted average fluxes (for sanity check):</span></span>
-<span><span class="co">#&gt;     oxy     amm     nit     frp </span></span>
-<span><span class="co">#&gt; -25.000   2.000   0.095   0.050</span></span></code></pre></div>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Lake-wide area-weighted average fluxes ──────────────────────────────────────</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="run-aeme-models">Run AEME models<a class="anchor" aria-label="anchor" href="#run-aeme-models"></a>

@@ -31,7 +31,6 @@
 <url><loc>https://limnotrack.com/reference/aeme_parameters_bgc.html</loc></url>
 <url><loc>https://limnotrack.com/reference/aeme_to_inflow.html</loc></url>
 <url><loc>https://limnotrack.com/reference/align_depth_data.html</loc></url>
-<url><loc>https://limnotrack.com/reference/ansi_set_knit_hooks.html</loc></url>
 <url><loc>https://limnotrack.com/reference/assess_model.html</loc></url>
 <url><loc>https://limnotrack.com/reference/build_aeme.html</loc></url>
 <url><loc>https://limnotrack.com/reference/calc_humidity_vars.html</loc></url>
@@ -91,6 +90,7 @@
 <url><loc>https://limnotrack.com/reference/get_vars_sim.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_var_indices.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_wbal_components.html</loc></url>
+<url><loc>https://limnotrack.com/reference/get_wbal_param.html</loc></url>
 <url><loc>https://limnotrack.com/reference/glm_aed_parameters.html</loc></url>
 <url><loc>https://limnotrack.com/reference/glm_aed_parameter_library.html</loc></url>
 <url><loc>https://limnotrack.com/reference/glm_sed_params.html</loc></url>
@@ -188,6 +188,7 @@
 <url><loc>https://limnotrack.com/reference/set_precip.html</loc></url>
 <url><loc>https://limnotrack.com/reference/set_time.html</loc></url>
 <url><loc>https://limnotrack.com/reference/set_vars_sim.html</loc></url>
+<url><loc>https://limnotrack.com/reference/set_wbal_param.html</loc></url>
 <url><loc>https://limnotrack.com/reference/show-aeme-method.html</loc></url>
 <url><loc>https://limnotrack.com/reference/standardise_inflow.html</loc></url>
 <url><loc>https://limnotrack.com/reference/standardise_met.html</loc></url>

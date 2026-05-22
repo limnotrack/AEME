@@ -102,7 +102,7 @@ variables (`flow`, `temp`, `salt`) are absent after renaming.
 | Silica                  | `SIL_rsi`     | mmol/m³  | No           |
 | Suspended solids 1      | `NCS_ss1`     | g/m³     | No           |
 | Suspended solids 2      | `NCS_ss2`     | g/m³     | No           |
-| pH                      | `CAR_pH`      | \-       | No           |
+| pH                      | `CHM_ph`      | \-       | No           |
 
 ## Unit detection logic
 

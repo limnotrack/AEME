@@ -195,9 +195,9 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-05-17 21:52:02] job submitted
-#> INFO [2026-05-17 21:52:02] downloading
-#> INFO [2026-05-17 21:52:03] extracting
+#> INFO [2026-05-22 04:46:52] job submitted
+#> INFO [2026-05-22 04:46:52] downloading
+#> INFO [2026-05-22 04:46:53] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -455,45 +455,45 @@ model_controls
 #> 7   CHM_oxymet     TRUE          NA         NA          NA             NA
 #> 8   CHM_oxymom     TRUE          NA         NA          NA             NA
 #> 9   CHM_oxynal     TRUE          NA         NA          NA             NA
-#> 10    CHM_salt     TRUE        0.00      0.000       0e+00     1.00000000
-#> 11  HYD_ctrbuy     TRUE          NA         NA          NA     1.00000000
-#> 12    HYD_dens     TRUE          NA         NA          NA     1.00000000
-#> 13  HYD_epidep     TRUE          NA         NA          NA     1.00000000
-#> 14  HYD_hypdep     TRUE          NA         NA          NA     1.00000000
-#> 15  HYD_schstb     TRUE          NA         NA          NA     1.00000000
-#> 16   HYD_strat     TRUE          NA         NA          NA     1.00000000
-#> 17    HYD_temp     TRUE       15.00     11.000          NA     1.00000000
-#> 18  HYD_thmcln     TRUE          NA         NA          NA     1.00000000
-#> 19    LKE_tli3     TRUE          NA         NA          NA     1.00000000
-#> 20    LKE_tli4     TRUE          NA         NA          NA     1.00000000
-#> 21    LKE_tlic     TRUE          NA         NA          NA     1.00000000
-#> 22    LKE_tlin     TRUE          NA         NA          NA     1.00000000
-#> 23    LKE_tlip     TRUE          NA         NA          NA     1.00000000
-#> 24   LKE_tlise     TRUE          NA         NA          NA     1.00000000
-#> 25     NCS_ss1     TRUE        5.00      3.000       3e-01     1.00000000
-#> 26     NIT_amm     TRUE        0.05      0.020       1e+06     0.01400670
-#> 27     NIT_don     TRUE        0.00      0.300       1e+06     0.01400670
-#> 28     NIT_nit     TRUE        0.20      0.015       1e+06     0.01400670
-#> 29     NIT_pon     TRUE        0.00      0.100       1e-03     0.01400670
-#> 30      NIT_tn     TRUE        0.00         NA          NA     0.01400670
-#> 31     PHS_dop     TRUE        0.00      0.010       1e+06     0.03097376
-#> 32     PHS_frp     TRUE        0.00      0.010       1e+06     0.03097376
-#> 33     PHS_pip     TRUE        0.00      0.002       5e-03     0.03097376
-#> 34     PHS_pop     TRUE        0.00      0.010       1e-04     0.03097376
-#> 35      PHS_tp     TRUE        0.00         NA          NA     0.03097376
-#> 36   PHY_cyano     TRUE        0.10      1.000       0e+00     1.00000000
-#> 37  PHY_diatom     TRUE        0.10      1.000       0e+00     1.00000000
-#> 38   PHY_green     TRUE        0.10      1.000       0e+00     1.00000000
-#> 39   PHY_tchla     TRUE          NA         NA          NA     1.00000000
-#> 40    RAD_extc     TRUE          NA         NA          NA     1.00000000
-#> 41     RAD_par     TRUE          NA         NA          NA     1.00000000
-#> 42     SIL_rsi     TRUE        0.00      1.000       1e+07     1.00000000
-#> 43    ZOO_zoo1     TRUE        0.10      1.000       0e+00     1.00000000
-#> 44     BAC_bac    FALSE        0.00         NA          NA     1.00000000
-#> 45     CAR_ch4    FALSE        0.00         NA          NA     1.00000000
-#> 46     CAR_dic    FALSE       10.00      2.000       1e+06     0.01201100
-#> 47    CAR_docr    FALSE        0.00         NA       1e+06     0.01201100
-#> 48      CAR_pH    FALSE        7.00      7.000       7e+00     1.00000000
+#> 10      CHM_ph     TRUE        7.00      7.000       7e+00     1.00000000
+#> 11    CHM_salt     TRUE        0.00      0.000       0e+00     1.00000000
+#> 12  HYD_ctrbuy     TRUE          NA         NA          NA     1.00000000
+#> 13    HYD_dens     TRUE          NA         NA          NA     1.00000000
+#> 14  HYD_epidep     TRUE          NA         NA          NA     1.00000000
+#> 15  HYD_hypdep     TRUE          NA         NA          NA     1.00000000
+#> 16  HYD_schstb     TRUE          NA         NA          NA     1.00000000
+#> 17   HYD_strat     TRUE          NA         NA          NA     1.00000000
+#> 18    HYD_temp     TRUE       15.00     11.000          NA     1.00000000
+#> 19  HYD_thmcln     TRUE          NA         NA          NA     1.00000000
+#> 20    LKE_tli3     TRUE          NA         NA          NA     1.00000000
+#> 21    LKE_tli4     TRUE          NA         NA          NA     1.00000000
+#> 22    LKE_tlic     TRUE          NA         NA          NA     1.00000000
+#> 23    LKE_tlin     TRUE          NA         NA          NA     1.00000000
+#> 24    LKE_tlip     TRUE          NA         NA          NA     1.00000000
+#> 25   LKE_tlise     TRUE          NA         NA          NA     1.00000000
+#> 26     NCS_ss1     TRUE        5.00      3.000       3e-01     1.00000000
+#> 27     NIT_amm     TRUE        0.05      0.020       1e+06     0.01400670
+#> 28     NIT_don     TRUE        0.00      0.300       1e+06     0.01400670
+#> 29     NIT_nit     TRUE        0.20      0.015       1e+06     0.01400670
+#> 30     NIT_pon     TRUE        0.00      0.100       1e-03     0.01400670
+#> 31      NIT_tn     TRUE        0.00         NA          NA     0.01400670
+#> 32     PHS_dop     TRUE        0.00      0.010       1e+06     0.03097376
+#> 33     PHS_frp     TRUE        0.00      0.010       1e+06     0.03097376
+#> 34     PHS_pip     TRUE        0.00      0.002       5e-03     0.03097376
+#> 35     PHS_pop     TRUE        0.00      0.010       1e-04     0.03097376
+#> 36      PHS_tp     TRUE        0.00         NA          NA     0.03097376
+#> 37   PHY_cyano     TRUE        0.10      1.000       0e+00     1.00000000
+#> 38  PHY_diatom     TRUE        0.10      1.000       0e+00     1.00000000
+#> 39   PHY_green     TRUE        0.10      1.000       0e+00     1.00000000
+#> 40   PHY_tchla     TRUE          NA         NA          NA     1.00000000
+#> 41    RAD_extc     TRUE          NA         NA          NA     1.00000000
+#> 42     RAD_par     TRUE          NA         NA          NA     1.00000000
+#> 43     SIL_rsi     TRUE        0.00      1.000       1e+07     1.00000000
+#> 44    ZOO_zoo1     TRUE        0.10      1.000       0e+00     1.00000000
+#> 45     BAC_bac    FALSE        0.00         NA          NA     1.00000000
+#> 46     CAR_ch4    FALSE        0.00         NA          NA     1.00000000
+#> 47     CAR_dic    FALSE       10.00      2.000       1e+06     0.01201100
+#> 48    CAR_docr    FALSE        0.00         NA       1e+06     0.01201100
 #> 49    CAR_pocr    FALSE        0.00         NA          NA     0.01201100
 #> 50  CHM_oxysat    FALSE          NA         NA          NA             NA
 #> 51   CLM_clam1    FALSE        0.00         NA          NA     1.00000000
@@ -554,14 +554,11 @@ path <- "aeme"
 # Build ensemble
 aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
                    path = path)
-#> ℹ All columns already match AEME standard variable names, skipping name
-#>   guessing.
 #> ✔ `MET_wnduvv`: converted from km/h to m/s.
 #> ℹ No water level present. Using constant water level.
 #> ℹ Insufficient lake temperature observations (<10).
 #> ℹ Using Stefan & Preud'homme (2007) method.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building DYRESM-CAEDYM for lake wainamu
 #> ℹ Copied in DYRESM .par file
 #> ℹ Writing DYRESM configuration file
@@ -665,16 +662,17 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-17 21:52:27]
-#> → DYRESM-CAEDYM running... [2026-05-17 21:52:27]
-#> ✔ DYRESM-CAEDYM run successful! [2026-05-17 21:52:53]
-#> → GLM-AED running... [2026-05-17 21:52:53]
-#> ✔ GLM-AED run successful! [2026-05-17 21:52:54]
-#> → GOTM-WET running... [2026-05-17 21:52:54]
-#> ✔ GOTM-WET run successful! [2026-05-17 21:52:54]
-#> ✔ Model run complete! [2026-05-17 21:52:54]
-#> ! The following variables are not available in model gotm_wet: RAD_extc
-#> ! The following variables are not available in model gotm_wet: RAD_extc
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-22 04:47:17]
+#> → DYRESM-CAEDYM running... [2026-05-22 04:47:17]
+#> ✔ DYRESM-CAEDYM run successful! [2026-05-22 04:47:44]
+#> → GLM-AED running... [2026-05-22 04:47:44]
+#> ✔ GLM-AED run successful! [2026-05-22 04:47:44]
+#> → GOTM-WET running... [2026-05-22 04:47:44]
+#> ✔ GOTM-WET run successful! [2026-05-22 04:47:45]
+#> ✔ Model run complete! [2026-05-22 04:47:45]
+#> ! The following variables are not available in model dy_cd: CHM_ph, LKE_photic
+#> ! The following variables are not available in model gotm_wet: CHM_ph, RAD_extc
+#> ! The following variables are not available in model gotm_wet: CHM_ph, RAD_extc
 ```
 
 ### View the output
@@ -687,7 +685,9 @@ contains the output data from the model run.
 
 # View the output
 plot_output(aeme = aeme)
-#> Warning: Removed 246 rows containing missing values or values outside the scale range
+#> ! Variable 'HYD_temp' not in output for model(s): 
+#> dy_cd
+#> Warning: Removed 164 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 ```
 

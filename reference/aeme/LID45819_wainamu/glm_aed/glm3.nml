@@ -53,6 +53,9 @@
    the_depths = 0, 13.07
    the_temps = 10, 10
    the_sals = 0, 0
+   num_wq_vars = 18
+   wq_names = 'OGM_doc','OGM_poc','OXY_oxy','CAR_pH','NCS_ss1','NIT_amm','OGM_don','NIT_nit','OGM_pon','OGM_dop','PHS_frp','PHS_frp_ads','OGM_pop','PHY_cyano','PHY_diatom','PHY_green','SIL_rsi','ZOO_zoo01'
+   wq_init_vals = 0.0060055, 0.0060055, 0.0024022, 0.0024022, 0.32, 0.32, 7, 7, 3, 3, 0.000280134, 0.000280134, 0.00420201, 0.00420201, 0.0002101005, 0.0002101005, 0.00140067, 0.00140067, 0.0003097376, 0.0003097376, 0.0003097376, 0.0003097376, 6.194752e-05, 6.194752e-05, 0.0003097376, 0.0003097376, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 /
 &meteorology
    met_sw = .true.
