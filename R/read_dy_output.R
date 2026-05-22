@@ -96,8 +96,8 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   if (!is.null(vars_sim)) {
     model_vars <- get_model_vars(vars_sim = vars_sim, model = "dy_cd")
-    model_vars_vec <- format_model_vars_vec(vars_sim = vars_sim, 
-                                            model = "dy_cd")
+    model_vars_vec <- model_vars[["dy_cd"]]
+    names(model_vars_vec) <- names(model_vars[["dy_cd"]])
     
     nc_vars <- names(nc$var)
     vars_chk <- data.frame(vars = model_vars_vec,

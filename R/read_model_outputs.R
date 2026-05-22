@@ -151,11 +151,6 @@ get_model_vars <- function(vars_sim, model) {
     model_vars <- dplyr::bind_rows(model_vars, missing_df) |> 
       dplyr::arrange(match(var_aeme, vars_sim))
   }
-  
-  if ("dy_cd" %in% model) {
-    model_vars <- model_vars |>
-      dplyr::mutate(dy_cd = paste0("dyresm", dy_cd, "_Var"))
-  }
   # Check if any variables in model column are ""
   missing_vars <- model_vars |> 
     dplyr::filter(!!dplyr::sym(model) == "") |> 
@@ -164,7 +159,14 @@ get_model_vars <- function(vars_sim, model) {
     msg <- paste0("The following variables are not available in model 
                    ", model, ": ", paste0(missing_vars, collapse = ", "))
     cli_inform_safe(c("!" = msg))
+    model_vars <- model_vars |>
+      dplyr::filter(!var_aeme %in% missing_vars)
+  }  
+  if ("dy_cd" %in% model) {
+    model_vars <- model_vars |>
+      dplyr::mutate(dy_cd = paste0("dyresm", dy_cd, "_Var"))
   }
+
   
   return(model_vars)
 }
