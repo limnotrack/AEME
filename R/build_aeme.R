@@ -1,41 +1,45 @@
 #' Build model configuration directories
 #'
-#' Configure an ensemble of lake model simulations from basic set of inputs.
+#' Configure an ensemble of lake model simulations from a basic set of inputs.
 #'
-#' @param aeme aeme; object.
-#' @param model vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-#'  `gotm_wet`.
-#' @param path filepath; where input files are located relative to the current 
-#' working directory.
-#' @param model_controls dataframe; of configuration loaded from
-#'  "model_controls.csv".
-#' @param inf_factor vector; containing numeric factor to multiple the inflows.
-#'  Needs to be named according to the model.
-#' @param outf_factor vector; containing numeric factor to multiple the
-#'  outflows. Needs to be named according to the model.
-#' @inheritParams generate_hypsograph
-#' @param use_bgc logical; switch to use the biogeochemical model.
-#' @param calc_wbal logical; calculate water balance. Default = TRUE.
-#' @param wb_method numeric; method to use for calculating water balance. Must be
-#' 1 (no inflows or outflows) or 2 (outflows calculated) or 3 (Any unexplained 
-#' gain in lake storage is treated as an effective inflow; any unexplained loss 
-#' is treated as an effective outflow). Default = 2
-#' @param calc_wlev logical; calculate water level.
-#' @param use_aeme logical; use AEME object to generate model confiuration
-#' files.
-#' @param coeffs numeric vector of length two; to be used to estimate surface
-#' water temperature for estimating evaporation. Defaults to NULL. If water
-#' temperature observations are included in `aeme` object, then it will use
-#' those to build a linear relationship between air temperature and water
-#' temperature. Otherwise. it uses the simple estimation
-#'  \eqn{temp_water = 5 + 0.75 * temp_air} from Stefan & Preud'homme, 2007:
-#'  www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
-#' @param hum_type numeric; GOTM humidity metric (1=relative humidity (%),
-#' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg))
-#' Default = 3.
+#' @param aeme Aeme object.
+#' @param model character vector; models to use. One or more of `"dy_cd"`,
+#'   `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in `aeme`.
+#' @param path character; directory where input files are located. Defaults to
+#'   the path stored in `aeme`, or the current working directory if not set.
+#' @param use_bgc logical; enable the biogeochemical model. Default: `FALSE`.
+#' @param ext_elev numeric; elevation (m) to extend the hypsograph to.
+#'   Default: `0`.
+#' @param wb_method integer; water balance method. One of:
+#'   - `1` — no inflows or outflows
+#'   - `2` — outflows calculated (default)
+#'   - `3` — unexplained storage changes treated as effective inflows/outflows
+#' @param model_controls data.frame; model configuration, typically loaded via
+#'   [get_model_controls()].
+#' @param inf_factor named numeric vector; factors to multiply inflows by,
+#'   named by model.
+#' @param outf_factor named numeric vector; factors to multiply outflows by,
+#'   named by model.
+#' @param calc_wbal logical; calculate water balance. Default: `TRUE`.
+#' @param calc_wlev logical; calculate water level. Default: `TRUE`.
+#' @param use_aeme logical; use the `aeme` object to generate model
+#'   configuration files. Default: `FALSE`.
+#' @param coeffs numeric vector of length 2; coefficients for estimating
+#'   surface water temperature when calculating evaporation. If water
+#'   temperature observations are present in `aeme`, a linear model is fitted
+#'   against air temperature. Otherwise defaults to
+#'   \eqn{T_{water} = 5 + 0.75 \times T_{air}} (Stefan & Preud'homme, 1993,
+#'   \doi{10.1111/j.1752-1688.1993.tb01502.x}).
+#' @param hum_type integer; humidity input type for GOTM. One of:
+#'   - `1` — relative humidity (%)
+#'   - `2` — wet-bulb temperature
+#'   - `3` — dew point temperature (default)
+#'   - `4` — specific humidity (kg/kg)
 #' @param est_swr_hr logical; estimate hourly shortwave radiation from daily
-#' values. Default = TRUE.
-#' @param config list; loaded via `config <- yaml::read_yaml("aeme.yaml")`
+#'   values. Default: `TRUE`.
+#' @param config list; AEME configuration, typically loaded via
+#'   `yaml::read_yaml("aeme.yaml")`.
+#' @inheritParams generate_hypsograph
 #'
 #' @importFrom sf sf_use_s2 st_transform st_centroid st_coordinates st_buffer
 #' @importFrom dplyr select filter
@@ -43,41 +47,40 @@
 #' @importFrom withr local_locale local_timezone
 #' @importFrom cli cli_abort
 #'
-#' @return aeme object
-#'
+#' @return An updated `aeme` object.
 #' @export
 #'
 #' @examples
-#' # Read in example AEME object and build model configuration files for GLM-AED
 #' aeme_dir <- system.file("extdata/lake/", package = "AEME")
-#' path <- "aeme" # subdirectory where model configuration files will be written
+#' path <- "aeme"
 #' aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
 #' model_controls <- get_model_controls()
-#' model <- c("glm_aed")
-#' aeme <- aeme |> 
-#'   build_aeme(path = path, model = model, model_controls = model_controls,
-#'            ext_elev = 5)
-#' 
-#' # Switch on biogeochemistry and use default model controls
+#'
+#' # Build configuration for GLM-AED
 #' aeme <- aeme |>
-#'   build_aeme(path = path, model = model, model_controls = model_controls, 
-#'               ext_elev = 5, use_bgc = TRUE)
+#'   build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
+#'              ext_elev = 5)
+#'
+#' # Enable biogeochemistry
+#' aeme <- aeme |>
+#'   build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
+#'              ext_elev = 5, use_bgc = TRUE)
 
 build_aeme <- function(aeme = NULL,
-                       model = c("dy_cd", "glm_aed", "gotm_wet"),
-                       path = ".",
+                       model = NULL,
+                       path = NULL,
+                       use_bgc = NULL,
+                       ext_elev = NULL,
+                       wb_method = NULL,
                        model_controls = NULL,
                        inf_factor = NULL,
                        outf_factor = NULL,
-                       ext_elev = 0,
-                       use_bgc = FALSE,
-                       calc_wbal = TRUE,
-                       wb_method = 2,
-                       calc_wlev = TRUE,
-                       use_aeme = FALSE,
+                       calc_wbal = NULL,
+                       calc_wlev = NULL,
                        coeffs = NULL,
-                       hum_type = 3,
-                       est_swr_hr = TRUE,
+                       hum_type = NULL,
+                       est_swr_hr = NULL,
+                       use_aeme = FALSE,
                        config = NULL
 ) {
   # Set timezone temporarily to UTC
@@ -87,8 +90,35 @@ build_aeme <- function(aeme = NULL,
   if (is.null(aeme) & is.null(config)) {
     stop("Either 'aeme' or 'config' must be supplied.")
   }
+  if (is.null(model)) {
+    model <- list_models(aeme)
+    if (length(model) == 0) {
+      model <- list_models()
+      cli_inform_safe(c("i" = "No models specified. Defaulting to all models:
+                        glm_aed, dy_cd, gotm_wet."))
+    }
+  }
   model <- check_model(model = model)
+  
+  if (is.null(path)) {
+    path <- get_config_value(aeme, key = "path")
+    if (is.null(path)) {
+      path <- getwd()
+      cli::cli_alert_warning("`path` is not specified and could not be extracted
+                             from `aeme`. Defaulting to current working 
+                             directory: {.file {path}}")
+    }
+  }
   path <- check_path(path = path, create = TRUE)
+  
+  # Resolve NULL args from config, falling back to defaults
+  cfg_dflt <- config_defaults()
+  for (key in names(cfg_defaults)) {
+    if (is.null(get(key))) {
+      assign(key, get_config_value(aeme, key))
+    }
+  }
+  
   
   if (!wb_method %in% 1:3) {
     cli::cli_abort(c("`wb_method` must be 1, 2, or 3.",
