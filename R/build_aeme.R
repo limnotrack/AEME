@@ -112,7 +112,7 @@ build_aeme <- function(aeme = NULL,
   path <- check_path(path = path, create = TRUE)
   
   # Resolve NULL args from config, falling back to defaults
-  cfg_dflt <- config_defaults()
+  cfg_defaults <- config_defaults()
   for (key in names(cfg_defaults)) {
     if (is.null(get(key))) {
       assign(key, get_config_value(aeme, key))
