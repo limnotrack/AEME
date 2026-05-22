@@ -418,8 +418,6 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                            factor = aeme_outf[["factor"]])
     
     if (calc_wlev) {
-      cli_inform_safe(c("i" = "Calculating lake level using lake depth
-                            and a sinisoidal function."))
       lvl <- wbal |>
         dplyr::select(Date, value) |>
         dplyr::mutate(var_aeme = "LKE_lvlwtr")

@@ -110,10 +110,10 @@ standardise_met <- function(met, verbose = TRUE) {
   
   if (all(non_date %in% pot_met_vars)) {
     # All columns already match AEME standard names; skip guessing
-    if (verbose) {
-      cli_inform_safe(c("i" = "All columns already match AEME standard variable names,
-        skipping name guessing."))
-    }
+    # if (verbose) {
+    #   cli_inform_safe(c("i" = "All columns already match AEME standard variable names,
+    #     skipping name guessing."))
+    # }
     return(met)
   }
   

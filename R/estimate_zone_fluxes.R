@@ -65,6 +65,10 @@
 #'   Seitzinger (1988) doi:10.4319/lo.1988.33.4part2.0702
 #'   Sondergaard et al. (2003) doi:10.1046/j.1365-2427.2003.01053.x
 #'
+#'
+#' @importFrom dplyr case_match mutate across everything 
+#' @importFrom clitable cli_table
+#' @importFrom cli cli_warn cli_abort cli_rule cli_text 
 #' @export
 estimate_zone_fluxes <- function(aeme, path,
                                  ref_depth = 5,
@@ -201,8 +205,10 @@ estimate_zone_fluxes <- function(aeme, path,
     obs_use$depth_mid <- (obs_use$depth_from + obs_use$depth_to) / 2
     
     if (nrow(obs_use) == 0) {
-      message("No summer observations found for O2/NH4/NO3/FRP — ",
-              "skipping Tier 2 adjustment.")
+      # message("No summer observations found for O2/NH4/NO3/FRP — ",
+      #         "skipping Tier 2 adjustment.")
+      cli_inform_safe(c("!" = "No summer observations found for O2/NH4/NO3/FRP 
+      — skipping Tier 2 adjustment."))
     } else {
       
       # -- Assign each observation to a zone -------------------------------------
@@ -216,8 +222,10 @@ estimate_zone_fluxes <- function(aeme, path,
       obs_use <- obs_use[!is.na(obs_use$zone), ]
       
       if (nrow(obs_use) == 0) {
-        message("Observations do not overlap with zone depth ranges — ",
-                "skipping Tier 2 adjustment.")
+        # message("Observations do not overlap with zone depth ranges — ",
+        #         "skipping Tier 2 adjustment.")
+        cli_inform_safe(c("!" = "Observations do not overlap with zone depth ranges
+        — skipping Tier 2 adjustment."))
       } else {
         
         # -- Zone-median per flux type -------------------------------------------
@@ -236,8 +244,29 @@ estimate_zone_fluxes <- function(aeme, path,
         }
         
         if (verbose) {
-          cat("\nTier 2: zone-median summer concentrations used for adjustment:\n")
-          print(as.data.frame(obs_mat))
+          cli_inform_safe(c("i" = "Tier 2: zone-median summer concentrations 
+                            used for adjustment:"))
+          obs_df <- as.data.frame(obs_mat)
+          
+          # Format values and improve column headers
+          colnames(obs_df) <- dplyr::case_match(
+            colnames(obs_df),
+            "oxy" ~ " O2 (mg/L) ",
+            "amm" ~ " NH4 (mg/L) ",
+            "nit" ~ " NO3 (mg/L) ",
+            "frp" ~ " FRP (mg/L) ",
+            .default = colnames(obs_df)
+          )
+          
+          obs_df <- obs_df |>
+            dplyr::mutate(dplyr::across(dplyr::everything(), \(x) formatC(x, digits = 3, format = "g")))
+          
+          # Add zone as explicit column
+          obs_df <- cbind(zone = rownames(obs_df), obs_df)
+          rownames(obs_df) <- NULL
+          
+          ct <- clitable::cli_table(obs_df)
+          cli_table_safe(ct)
         }
         
         # -- Adjustment multiplier -----------------------------------------------
@@ -250,7 +279,8 @@ estimate_zone_fluxes <- function(aeme, path,
         .adj_mult <- function(vals, inverse = FALSE) {
           n_valid <- sum(!is.na(vals))
           if (n_valid < 2) {
-            message("  < 2 zones with data for this flux — skipping adjustment")
+            # message("  < 2 zones with data for this flux — skipping adjustment")
+            cli_inform_safe(c("i" = "Less than 2 zones with data for this flux — skipping adjustment"))
             return(rep(1, length(vals)))
           }
           med <- median(vals, na.rm = TRUE)
@@ -289,8 +319,10 @@ estimate_zone_fluxes <- function(aeme, path,
         }
         
         if (length(adj_log)) {
-          message("Tier 2 adjustments applied: ",
-                  paste(adj_log, collapse = "; "))
+          # message()
+          msg <- paste0("Tier 2 adjustments applied: ", paste(adj_log, 
+                                                              collapse = "; "))
+          cli_inform_safe(c("i" = msg))
           method <- "obs_adjusted"
         }
       }
@@ -330,13 +362,53 @@ estimate_zone_fluxes <- function(aeme, path,
   
   
   if (verbose) {
-    cat("\n=== Sediment zone flux estimates (", method, ") ===\n", sep = "")
-    cat("n_zones:", n_zones, "| max lake depth:", max_depth, "m",
-        "| ref_depth:", ref_depth, "m\n\n")
-    print(zone_summary, row.names = FALSE, digits = 3)
+    cli::cli_rule(left = paste0("Sediment zone flux estimates (", method, ")"))
+    cli::cli_text("n_zones: {n_zones} | max lake depth: {max_depth} m | ref_depth: {ref_depth} m")
     
-    cat("\nLake-wide area-weighted average fluxes (for sanity check):\n")
-    print(round(lake_avg_fluxes, 3))
+    # --- zone summary table ----------------------------------------------------
+    zone_tbl <- zone_summary |>
+      dplyr::mutate(
+        dplyr::across(dplyr::where(is.numeric), \(x) formatC(x, digits = 3, 
+                                                             format = "g"))) |>
+      as.data.frame()
+    
+    colnames(zone_tbl) <- dplyr::case_match(
+      colnames(zone_tbl),
+      "zone"           ~ "Zone",
+      "height_lower_m" ~ "H lower (m)",
+      "height_upper_m" ~ "H upper (m)",
+      "depth_upper_m"  ~ "D upper (m)",
+      "depth_lower_m"  ~ "D lower (m)",
+      "mean_depth_m"   ~ "Mean D (m)",
+      "area_m2"        ~ "Area (m2)",
+      "area_frac"      ~ "Area frac",
+      "fsed_oxy"       ~ "O2",
+      "fsed_amm"       ~ "NH4",
+      "fsed_nit"       ~ "NO3",
+      "fsed_frp"       ~ "FRP",
+      .default = colnames(zone_tbl)
+    )
+    
+    ct <- clitable::cli_table(zone_tbl)
+    cli_table_safe(ct)
+    
+    # --- lake-wide averages table -----------------------------------------------
+    cli::cli_text("")
+    cli::cli_rule(left = "Lake-wide area-weighted average fluxes")
+    
+    avg_tbl <- as.data.frame(t(round(lake_avg_fluxes, 3)))
+    
+    colnames(avg_tbl) <- dplyr::case_match(
+      colnames(avg_tbl),
+      "oxy" ~ "O2 (mmol/m2/d)",
+      "amm" ~ "NH4 (mmol/m2/d)",
+      "nit" ~ "NO3 (mmol/m2/d)",
+      "frp" ~ "FRP (mmol/m2/d)",
+      .default = colnames(avg_tbl)
+    )
+    
+    ct <- clitable::cli_table(avg_tbl)
+    cli_table_safe(ct)
   }
   
   invisible(list(

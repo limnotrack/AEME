@@ -78,7 +78,10 @@ set_glm_aed_models <- function(aeme, path, aed_models = c("aed_sedflux",
                 paste(old_models, collapse = ", "),
                 " to: ",
                 paste(aed_models, collapse = ", "))
-  cli_inform_safe(c("v" = msg))
+  diff_models <- setdiff(old_models, aed_models)
+  if (length(diff_models) > 0) {
+    cli_inform_safe(c("v" = msg))
+  }
   
   if (write_nml) {
     write_nml(nml, file)

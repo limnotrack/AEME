@@ -105,17 +105,17 @@ initialise_aed <- function(model_controls, path_aed) {
       # mols to grams then div by carbon:chl
       new_val <- this_ctrls$initial_wc[i] * 12.011 / phy_cc[grp_idx]
       phy_vals[row_idx, col_idx] <- new_val
-      msg <- paste0(var_name, " ", paste0(old_val,
-                                          " replaced with ", new_val))
-      cli_inform_safe(c("i" = msg))
+      msg <- paste0(var_name, ": ", paste0(old_val, " replaced with ", new_val))
+      if (round(old_val, 1) != round(new_val, 1)) {
+        cli_inform_safe(c("i" = msg))
+      }
       
       # Zooplankton initialisation
     } else if (grepl("ZOO_", var_name)) {
-      cli_inform_safe(c("i" = "Using default zooplankton initialisation"))
     
       # pH initialisation
     } else if (grepl("CHM_ph", var_name)) {
-      cli_inform_safe(c("i" = "Using default pH initialisation"))
+      # cli_inform_safe(c("i" = "Using default pH initialisation"))
     } else {
       
       nml_param_name <- paste0(gsub("^.*_","", var_name),
@@ -147,8 +147,10 @@ initialise_aed <- function(model_controls, path_aed) {
                          arg_val = new_val)
       
       
-      cli_inform_safe(c("i" = paste0(old_val, " replaced with ", new_val)))
-      
+      msg <- paste0(var_name, ": ", paste0(old_val, " replaced with ", new_val))
+      if (round(old_val, 1) != round(new_val, 1)) {
+        cli_inform_safe(c("i" = msg))
+      }
     }
   }
   

@@ -21,3 +21,13 @@ cli_inform_safe <- function(...) {
     cli::cli_inform(...)
   }
 }
+
+#' Inform messages respecting the global AEME.inform option
+#'
+#' @param ... arguments passed to cli_inform_safe()
+#' @noRd
+cli_table_safe <- function(...) {
+  if (isTRUE(getOption("AEME.inform", TRUE))) {
+    cat(..., sep = "\n")
+  }
+}

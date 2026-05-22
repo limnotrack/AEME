@@ -231,10 +231,10 @@ standardise_inflow <- function(inflow,
   
   if (all(non_time %in% known_inflow_vars)) {
     if (verbose) {
-      cli::cli_inform(
-        c("i" = "All columns already match AEME standard inflow variable names, skipping name guessing."),
-        class = "aeme_inform_inflow_already_standard"
-      )
+      # cli::cli_inform(
+      #   c("i" = "All columns already match AEME standard inflow variable names, skipping name guessing."),
+      #   class = "aeme_inform_inflow_already_standard"
+      # )
     }
     return(inflow)
   }
