@@ -24,12 +24,10 @@ test_that("running DYRESM works", {
   aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
   aeme <- yaml_to_aeme(file = aeme_yaml)
   model_controls <- get_model_controls(use_bgc = F)
-  inf_factor = c("dy_cd" = 1)
-  outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
   path <- tempdir()
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls, 
                      ext_elev = 5, use_bgc = FALSE)
   
   aeme <- run_aeme(aeme = aeme)
@@ -286,21 +284,17 @@ test_that("running DYRESM-CAEDYM works", {
   if (sys_OS == "osx") {
     testthat::skip("Skipping test on macOS")
   }
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1)
-  outf_factor = c("dy_cd" = 1)
   model <- c("dy_cd")
-  path = "aeme2"
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE)
-  aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = FALSE)
+  aeme <- run_aeme(aeme = aeme, verbose = FALSE)
+  
+  outfile <- get_model
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
