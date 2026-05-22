@@ -24,9 +24,9 @@ aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
 data("key_naming", package = "AEME")
 
 met_vars <- key_naming |> 
-  dplyr::filter(grepl("MET", name)) |> 
-  dplyr::select(name_text, name, units) |> 
-  dplyr::rename(Name = name_text, Variable = name, Units = units) |> 
+  dplyr::filter(grepl("MET", var_aeme)) |> 
+  dplyr::select(name_text, var_aeme, units) |> 
+  dplyr::rename(Name = name_text, Variable = var_aeme, Units = units) |> 
   dplyr::mutate(
     Required = dplyr::case_when(
       Variable %in% c("MET_radswd", "MET_tmpair", "MET_wndspd", "MET_pprain") ~ "Yes",
