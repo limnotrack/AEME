@@ -12,7 +12,7 @@ plot_resid(aeme, model, var_sim = "HYD_temp")
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

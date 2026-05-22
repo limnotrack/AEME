@@ -12,11 +12,12 @@ set_model_controls(aeme, model_controls)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model_controls:
 
-  dataframe; of configuration loaded from "model_controls.csv".
+  data.frame; model configuration, typically loaded via
+  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md).
 
 ## Value
 

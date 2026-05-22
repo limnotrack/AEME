@@ -12,12 +12,12 @@ write_aeme_to_files(aeme, path, include_output = FALSE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - path:
 
-  filepath; where input files are located relative to the current
-  working directory.
+  character; directory where input files are located. Defaults to the
+  path stored in `aeme`, or the current working directory if not set.
 
 - include_output:
 
@@ -47,9 +47,9 @@ model_controls = model_controls, ext_elev = 5)
 #> ℹ Building GLM-AED for lake wainamu
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-22 04:33:08]
-#> → GLM-AED running... [2026-05-22 04:33:08]
-#> ✔ GLM-AED run successful! [2026-05-22 04:33:09]
-#> ✔ Model run complete! [2026-05-22 04:33:09]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-22 05:23:55]
+#> → GLM-AED running... [2026-05-22 05:23:55]
+#> ✔ GLM-AED run successful! [2026-05-22 05:23:55]
+#> ✔ Model run complete! [2026-05-22 05:23:55]
 write_aeme_to_files(aeme, path)
 ```

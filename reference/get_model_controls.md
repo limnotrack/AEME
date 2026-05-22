@@ -12,11 +12,11 @@ get_model_controls(aeme = NULL, use_bgc = FALSE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - use_bgc:
 
-  logical; switch to use the biogeochemical model.
+  logical; enable the biogeochemical model. Default: `FALSE`.
 
 ## Value
 

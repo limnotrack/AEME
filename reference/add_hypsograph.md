@@ -19,7 +19,7 @@ add_hypsograph(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - hypsograph:
 
@@ -42,7 +42,7 @@ add_hypsograph(
 
 - ext_elev:
 
-  numeric; metres to extend the hypograph by.
+  numeric; elevation (m) to extend the hypsograph to. Default: `0`.
 
 ## Value
 

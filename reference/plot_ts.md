@@ -20,7 +20,7 @@ plot_ts(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

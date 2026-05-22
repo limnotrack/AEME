@@ -12,7 +12,7 @@ get_hypsograph(aeme)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 ## Value
 

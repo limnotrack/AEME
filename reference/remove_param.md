@@ -12,7 +12,7 @@ remove_param(aeme, name)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - name:
 

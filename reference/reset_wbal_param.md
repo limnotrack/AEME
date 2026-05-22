@@ -15,7 +15,7 @@ reset_wbal_param(aeme)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 ## Value
 

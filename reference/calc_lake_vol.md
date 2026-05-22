@@ -12,7 +12,7 @@ calc_lake_vol(aeme = NULL, hyps = NULL, depth = 0)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - hyps:
 

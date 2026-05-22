@@ -12,8 +12,8 @@ remove_output(aeme)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 ## Value
 
-aeme object
+An updated `aeme` object.

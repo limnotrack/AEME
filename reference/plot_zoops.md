@@ -19,7 +19,7 @@ plot_zoops(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

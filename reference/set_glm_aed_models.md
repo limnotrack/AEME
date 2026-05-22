@@ -21,12 +21,12 @@ set_glm_aed_models(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - path:
 
-  filepath; where input files are located relative to the current
-  working directory.
+  character; directory where input files are located. Defaults to the
+  path stored in `aeme`, or the current working directory if not set.
 
 - aed_models:
 

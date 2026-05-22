@@ -13,7 +13,7 @@ plot_wbal(aeme, model, cumulative = FALSE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

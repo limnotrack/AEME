@@ -12,7 +12,7 @@ plot_wlev(aeme, model, facet = FALSE, ...)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

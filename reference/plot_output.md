@@ -27,7 +27,7 @@ plot_output(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

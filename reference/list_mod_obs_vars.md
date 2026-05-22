@@ -12,11 +12,13 @@ list_mod_obs_vars(aeme, model, ens_n = 1)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 
-  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
+  character vector; models to use. One or more of `"dy_cd"`,
+  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
+  `aeme`.
 
 - ens_n:
 
@@ -79,10 +81,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-05-22 04:32:04]
-#> ✔ Model run complete! [2026-05-22 04:32:07]
-#> ℹ Reading models in parallel...[2026-05-22 04:32:07]
-#> ✔ Model reading complete! [2026-05-22 04:32:09]
+#> ℹ Running models in parallel... [2026-05-22 05:22:40]
+#> ✔ Model run complete! [2026-05-22 05:22:44]
+#> ℹ Reading models in parallel...[2026-05-22 05:22:44]
+#> ✔ Model reading complete! [2026-05-22 05:22:46]
 aeme |> 
   list_mod_obs_vars()
 #>              Cyanobacteria           Dissolved oxygen 

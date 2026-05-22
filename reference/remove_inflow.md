@@ -15,7 +15,7 @@ remove_inflow(aeme, inflow_id = NULL, all = FALSE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - inflow_id:
 

@@ -12,7 +12,7 @@ add_inflows(aeme, data)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - data:
 

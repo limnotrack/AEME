@@ -19,7 +19,7 @@ plot_phytos(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

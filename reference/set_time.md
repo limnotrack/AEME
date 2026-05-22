@@ -12,7 +12,7 @@ set_time(aeme, start, stop, spin_up)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - start, stop:
 

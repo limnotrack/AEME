@@ -27,16 +27,18 @@ get_var_indices(
 
 - model:
 
-  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
+  character vector; models to use. One or more of `"dy_cd"`,
+  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
+  `aeme`.
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - path:
 
-  filepath; where input files are located relative to the current
-  working directory.
+  character; directory where input files are located. Defaults to the
+  path stored in `aeme`, or the current working directory if not set.
 
 - vars_sim:
 

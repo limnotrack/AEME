@@ -62,12 +62,12 @@
 
 
 <dl><dt id="arg-aeme">aeme<a class="anchor" aria-label="anchor" href="#arg-aeme"></a></dt>
-<dd><p>aeme; object.</p></dd>
+<dd><p>Aeme object.</p></dd>
 
 
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
-<dd><p>filepath; where input files are located relative to the current
-working directory.</p></dd>
+<dd><p>character; directory where input files are located. Defaults to
+the path stored in <code>aeme</code>, or the current working directory if not set.</p></dd>
 
 
 <dt id="arg-include-output">include_output<a class="anchor" aria-label="anchor" href="#arg-include-output"></a></dt>
@@ -98,10 +98,10 @@ output files can be large and take up a lot of space.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-05-22 04:33:08]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-05-22 04:33:08]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-05-22 04:33:09]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-05-22 04:33:09]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-05-22 05:23:55]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-05-22 05:23:55]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-05-22 05:23:55]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-05-22 05:23:55]</span>
 <span class="r-in"><span><span class="fu">write_aeme_to_files</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">path</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>

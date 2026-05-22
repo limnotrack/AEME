@@ -12,7 +12,7 @@ get_met(aeme)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 ## Value
 

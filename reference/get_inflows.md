@@ -12,7 +12,7 @@ get_inflows(aeme, return_df = FALSE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - return_df:
 

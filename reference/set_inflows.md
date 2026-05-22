@@ -15,7 +15,7 @@ set_inflows(aeme, inflows)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - inflows:
 

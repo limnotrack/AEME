@@ -19,7 +19,7 @@ plot_nit(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

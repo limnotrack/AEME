@@ -12,7 +12,7 @@ get_aeme_path(aeme, require = TRUE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - require:
 

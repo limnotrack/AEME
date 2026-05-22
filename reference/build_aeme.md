@@ -1,6 +1,6 @@
 # Build model configuration directories
 
-Configure an ensemble of lake model simulations from basic set of
+Configure an ensemble of lake model simulations from a basic set of
 inputs.
 
 ## Usage
@@ -8,20 +8,20 @@ inputs.
 ``` r
 build_aeme(
   aeme = NULL,
-  model = c("dy_cd", "glm_aed", "gotm_wet"),
-  path = ".",
+  model = NULL,
+  path = NULL,
+  use_bgc = NULL,
+  ext_elev = NULL,
+  wb_method = NULL,
   model_controls = NULL,
   inf_factor = NULL,
   outf_factor = NULL,
-  ext_elev = 0,
-  use_bgc = FALSE,
-  calc_wbal = TRUE,
-  wb_method = 2,
-  calc_wlev = TRUE,
-  use_aeme = FALSE,
+  calc_wbal = NULL,
+  calc_wlev = NULL,
   coeffs = NULL,
-  hum_type = 3,
-  est_swr_hr = TRUE,
+  hum_type = NULL,
+  est_swr_hr = NULL,
+  use_aeme = FALSE,
   config = NULL
 )
 ```
@@ -30,99 +30,112 @@ build_aeme(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 
-  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
+  character vector; models to use. One or more of `"dy_cd"`,
+  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
+  `aeme`.
 
 - path:
 
-  filepath; where input files are located relative to the current
-  working directory.
-
-- model_controls:
-
-  dataframe; of configuration loaded from "model_controls.csv".
-
-- inf_factor:
-
-  vector; containing numeric factor to multiple the inflows. Needs to be
-  named according to the model.
-
-- outf_factor:
-
-  vector; containing numeric factor to multiple the outflows. Needs to
-  be named according to the model.
-
-- ext_elev:
-
-  numeric; metres to extend the hypograph by.
+  character; directory where input files are located. Defaults to the
+  path stored in `aeme`, or the current working directory if not set.
 
 - use_bgc:
 
-  logical; switch to use the biogeochemical model.
+  logical; enable the biogeochemical model. Default: `FALSE`.
 
-- calc_wbal:
+- ext_elev:
 
-  logical; calculate water balance. Default = TRUE.
+  numeric; elevation (m) to extend the hypsograph to. Default: `0`.
 
 - wb_method:
 
-  numeric; method to use for calculating water balance. Must be 1 (no
-  inflows or outflows) or 2 (outflows calculated) or 3 (Any unexplained
-  gain in lake storage is treated as an effective inflow; any
-  unexplained loss is treated as an effective outflow). Default = 2
+  integer; water balance method. One of:
+
+  - `1` — no inflows or outflows
+
+  - `2` — outflows calculated (default)
+
+  - `3` — unexplained storage changes treated as effective
+    inflows/outflows
+
+- model_controls:
+
+  data.frame; model configuration, typically loaded via
+  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md).
+
+- inf_factor:
+
+  named numeric vector; factors to multiply inflows by, named by model.
+
+- outf_factor:
+
+  named numeric vector; factors to multiply outflows by, named by model.
+
+- calc_wbal:
+
+  logical; calculate water balance. Default: `TRUE`.
 
 - calc_wlev:
 
-  logical; calculate water level.
-
-- use_aeme:
-
-  logical; use AEME object to generate model confiuration files.
+  logical; calculate water level. Default: `TRUE`.
 
 - coeffs:
 
-  numeric vector of length two; to be used to estimate surface water
-  temperature for estimating evaporation. Defaults to NULL. If water
-  temperature observations are included in `aeme` object, then it will
-  use those to build a linear relationship between air temperature and
-  water temperature. Otherwise. it uses the simple estimation
-  \\temp_water = 5 + 0.75 \* temp_air\\ from Stefan & Preud'homme, 2007:
-  www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
+  numeric vector of length 2; coefficients for estimating surface water
+  temperature when calculating evaporation. If water temperature
+  observations are present in `aeme`, a linear model is fitted against
+  air temperature. Otherwise defaults to \\T\_{water} = 5 + 0.75 \times
+  T\_{air}\\ (Stefan & Preud'homme, 1993,
+  [doi:10.1111/j.1752-1688.1993.tb01502.x](https://doi.org/10.1111/j.1752-1688.1993.tb01502.x)
+  ).
 
 - hum_type:
 
-  numeric; GOTM humidity metric (1=relative humidity (%), 2=wet-bulb
-  temperature, 3=dew point temperature, 4=specific humidity (kg/kg))
-  Default = 3.
+  integer; humidity input type for GOTM. One of:
+
+  - `1` — relative humidity (%)
+
+  - `2` — wet-bulb temperature
+
+  - `3` — dew point temperature (default)
+
+  - `4` — specific humidity (kg/kg)
 
 - est_swr_hr:
 
   logical; estimate hourly shortwave radiation from daily values.
-  Default = TRUE.
+  Default: `TRUE`.
+
+- use_aeme:
+
+  logical; use the `aeme` object to generate model configuration files.
+  Default: `FALSE`.
 
 - config:
 
-  list; loaded via `config <- yaml::read_yaml("aeme.yaml")`
+  list; AEME configuration, typically loaded via
+  `yaml::read_yaml("aeme.yaml")`.
 
 ## Value
 
-aeme object
+An updated `aeme` object.
 
 ## Examples
 
 ``` r
-# Read in example AEME object and build model configuration files for GLM-AED
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
-path <- "aeme" # subdirectory where model configuration files will be written
+path <- "aeme"
 aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
 model_controls <- get_model_controls()
-model <- c("glm_aed")
-aeme <- aeme |> 
-  build_aeme(path = path, model = model, model_controls = model_controls,
-           ext_elev = 5)
+
+# Build configuration for GLM-AED
+aeme <- aeme |>
+  build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
+             ext_elev = 5)
 #> ✔ Created missing directory: D:\a\AEME\AEME\docs\reference\aeme
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
@@ -135,10 +148,10 @@ aeme <- aeme |>
 #> ℹ Copied in AED nml file and supporting files
 #> ✔ GLM nml validation completed - no issues detected.
 
-# Switch on biogeochemistry and use default model controls
+# Enable biogeochemistry
 aeme <- aeme |>
-  build_aeme(path = path, model = model, model_controls = model_controls, 
-              ext_elev = 5, use_bgc = TRUE)
+  build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
+             ext_elev = 5, use_bgc = TRUE)
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.

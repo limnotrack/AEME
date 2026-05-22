@@ -14,7 +14,7 @@ plot_wbal_annual(aeme, model, lake_frac = FALSE, remove_spin_up = FALSE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

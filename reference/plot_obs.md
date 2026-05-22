@@ -12,7 +12,7 @@ plot_obs(aeme, var_sim = "HYD_temp", add_line = FALSE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - var_sim:
 

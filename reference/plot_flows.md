@@ -12,7 +12,7 @@ plot_flows(aeme, flow = c("inflow", "outflow"), var_sim = "HYD_flow")
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - flow:
 

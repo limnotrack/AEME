@@ -12,7 +12,7 @@ list_models(aeme = NULL)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 ## Value
 

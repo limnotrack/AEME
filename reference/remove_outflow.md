@@ -12,7 +12,7 @@ remove_outflow(aeme, outflow_id = NULL, all = FALSE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - outflow_id:
 

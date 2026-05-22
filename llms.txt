@@ -293,6 +293,9 @@ We have a host of vignettes to help you get started with AEME:
   : Make parameters dataframe for AEME
 - [`get_aeme_path()`](https://limnotrack.com/reference/get_aeme_path.md)
   : Get the path to the AEME data
+- [`get_config_value()`](https://limnotrack.com/reference/get_config_value.md)
+  : Get a configuration value from the aeme object. If the key is not
+  present, return the default value.
 - [`get_date_index()`](https://limnotrack.com/reference/get_date_index.md)
   : Get date index for each model in the AEME object
 - [`get_deriv_inputs()`](https://limnotrack.com/reference/get_deriv_inputs.md)

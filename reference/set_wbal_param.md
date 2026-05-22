@@ -13,7 +13,7 @@ set_wbal_param(aeme, C, h_inv, params = NULL)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - C:
 

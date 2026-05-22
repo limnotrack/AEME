@@ -12,7 +12,7 @@ plot_met_tile(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - var_inp:
 

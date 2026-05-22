@@ -12,7 +12,7 @@ add_obs(aeme, lake = NULL, level = NULL)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - lake:
 

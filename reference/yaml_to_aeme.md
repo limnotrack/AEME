@@ -47,7 +47,7 @@ aeme
 #> ── Configuration ──
 #> 
 #> • Model:
-#> • Path: Not set
+#> • Path: D:/a/AEME/AEME/docs/reference
 #> • Model controls: Absent
 #> • Use biogeochemical model: No
 #> ┌ Model Configuration ─────────────────────────────────────────┐

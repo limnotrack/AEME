@@ -12,7 +12,7 @@ add_outflows(aeme, data = NULL, elevation = NULL, factor = NULL)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - data:
 

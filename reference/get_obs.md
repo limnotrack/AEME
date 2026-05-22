@@ -12,7 +12,7 @@ get_obs(aeme, var_sim, depth_range = NULL, time_filter = FALSE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - var_sim:
 

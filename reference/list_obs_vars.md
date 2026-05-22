@@ -12,7 +12,7 @@ list_obs_vars(aeme)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 ## Value
 

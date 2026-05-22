@@ -12,7 +12,7 @@ aeme_to_inflow(aeme)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 ## Value
 

@@ -12,7 +12,7 @@ plot_hyps(aeme, y = "elev", add_surface = FALSE, incl_ext_elev = FALSE)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - y:
 

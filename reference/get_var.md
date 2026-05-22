@@ -22,11 +22,13 @@ get_var(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 
-  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
+  character vector; models to use. One or more of `"dy_cd"`,
+  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
+  `aeme`.
 
 - var_sim:
 

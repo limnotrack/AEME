@@ -23,7 +23,7 @@ set_precip(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - type:
 

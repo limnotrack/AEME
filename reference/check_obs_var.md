@@ -13,7 +13,7 @@ check_obs_var(aeme, var_sim)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - var_sim:
 

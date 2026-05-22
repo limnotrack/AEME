@@ -19,7 +19,7 @@ plot_phs(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

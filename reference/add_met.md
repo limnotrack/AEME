@@ -12,7 +12,7 @@ add_met(aeme, met)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - met:
 

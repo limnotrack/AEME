@@ -12,7 +12,7 @@ add_param(aeme, param)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - param:
 

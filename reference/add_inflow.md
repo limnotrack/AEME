@@ -16,7 +16,7 @@ add_inflow(aeme, inflow, inflow_id)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - inflow:
 

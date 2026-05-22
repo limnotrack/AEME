@@ -26,68 +26,82 @@ load_configuration(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 
-  vector; of models to be used. Can be `dy_cd`, `glm_aed`, `gotm_wet`.
+  character vector; models to use. One or more of `"dy_cd"`,
+  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
+  `aeme`.
 
 - path:
 
-  filepath; where input files are located relative to the current
-  working directory.
+  character; directory where input files are located. Defaults to the
+  path stored in `aeme`, or the current working directory if not set.
 
 - model_controls:
 
-  dataframe; of configuration loaded from "model_controls.csv".
+  data.frame; model configuration, typically loaded via
+  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md).
 
 - use_bgc:
 
-  logical; switch to use the biogeochemical model.
+  logical; enable the biogeochemical model. Default: `FALSE`.
 
 - ext_elev:
 
-  numeric; metres to extend the hypograph by.
+  numeric; elevation (m) to extend the hypsograph to. Default: `0`.
 
 - calc_wbal:
 
-  logical; calculate water balance. Default = TRUE.
+  logical; calculate water balance. Default: `TRUE`.
 
 - wb_method:
 
-  numeric; method to use for calculating water balance. Must be 1 (no
-  inflows or outflows) or 2 (outflows calculated) or 3 (Any unexplained
-  gain in lake storage is treated as an effective inflow; any
-  unexplained loss is treated as an effective outflow). Default = 2
+  integer; water balance method. One of:
+
+  - `1` — no inflows or outflows
+
+  - `2` — outflows calculated (default)
+
+  - `3` — unexplained storage changes treated as effective
+    inflows/outflows
 
 - calc_wlev:
 
-  logical; calculate water level.
+  logical; calculate water level. Default: `TRUE`.
 
 - use_aeme:
 
-  logical; use AEME object to generate model confiuration files.
+  logical; use the `aeme` object to generate model configuration files.
+  Default: `FALSE`.
 
 - coeffs:
 
-  numeric vector of length two; to be used to estimate surface water
-  temperature for estimating evaporation. Defaults to NULL. If water
-  temperature observations are included in `aeme` object, then it will
-  use those to build a linear relationship between air temperature and
-  water temperature. Otherwise. it uses the simple estimation
-  \\temp_water = 5 + 0.75 \* temp_air\\ from Stefan & Preud'homme, 2007:
-  www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
+  numeric vector of length 2; coefficients for estimating surface water
+  temperature when calculating evaporation. If water temperature
+  observations are present in `aeme`, a linear model is fitted against
+  air temperature. Otherwise defaults to \\T\_{water} = 5 + 0.75 \times
+  T\_{air}\\ (Stefan & Preud'homme, 1993,
+  [doi:10.1111/j.1752-1688.1993.tb01502.x](https://doi.org/10.1111/j.1752-1688.1993.tb01502.x)
+  ).
 
 - hum_type:
 
-  numeric; GOTM humidity metric (1=relative humidity (%), 2=wet-bulb
-  temperature, 3=dew point temperature, 4=specific humidity (kg/kg))
-  Default = 3.
+  integer; humidity input type for GOTM. One of:
+
+  - `1` — relative humidity (%)
+
+  - `2` — wet-bulb temperature
+
+  - `3` — dew point temperature (default)
+
+  - `4` — specific humidity (kg/kg)
 
 - est_swr_hr:
 
   logical; estimate hourly shortwave radiation from daily values.
-  Default = TRUE.
+  Default: `TRUE`.
 
 ## Value
 

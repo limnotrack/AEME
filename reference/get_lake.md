@@ -12,7 +12,7 @@ get_lake(aeme)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 ## Value
 

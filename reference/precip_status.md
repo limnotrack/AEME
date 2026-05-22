@@ -15,7 +15,7 @@ precip_status(aeme)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 ## Value
 

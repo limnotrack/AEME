@@ -35,7 +35,7 @@ plot_var(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 
