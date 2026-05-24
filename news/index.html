@@ -44,9 +44,43 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/limnotrack/AEME/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-news-file/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.1" id="aeme-031">AEME 0.3.1<a class="anchor" aria-label="anchor" href="#aeme-031"></a></h2>
+<div class="section level3">
+<h3 id="new-functions-0-3-1">New functions<a class="anchor" aria-label="anchor" href="#new-functions-0-3-1"></a></h3>
+<ul><li>
+<code><a href="../reference/get_config_value.html">get_config_value()</a></code> — retrieve a configuration value from an <code>Aeme</code> object, falling back to package defaults when not set.</li>
+<li>
+<code><a href="../reference/get_wbal_param.html">get_wbal_param()</a></code> — retrieve the fitted water-balance outflow parameters (<code>C</code> and <code>h_inv</code>) stored in an <code>Aeme</code> object.</li>
+<li>
+<code><a href="../reference/set_wbal_param.html">set_wbal_param()</a></code> — store water-balance outflow parameters in an <code>Aeme</code> object for use in subsequent <code><a href="../reference/build_aeme.html">build_aeme()</a></code> calls.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-3-1">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-3-1"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/build_aeme.html">build_aeme()</a></code></strong> — <code>model</code> and <code>path</code> are now resolved from the <code>Aeme</code> configuration when not supplied as arguments. All other <code><a href="../reference/build_aeme.html">build_aeme()</a></code> arguments default through <code>config_defaults()</code> if not specified.</li>
+<li>
+<strong><code><a href="../reference/estimate_zone_fluxes.html">estimate_zone_fluxes()</a></code></strong> — output table now rendered using <code>clitable</code> for cleaner formatted console display; messaging improved throughout.</li>
+<li>
+<strong><code>initialise_aed()</code></strong> — informative message now only shown when an initialisation value differs meaningfully from the replaced default.</li>
+<li>
+<strong><code>initialise_glm()</code></strong> — added guard for required <code>init_profiles</code> fields (<code>wq_names</code>, <code>num_wq_vars</code>, <code>wq_init_vals</code>) that may be absent from older NML files.</li>
+<li>
+<strong><code><a href="../reference/set_glm_aed_models.html">set_glm_aed_models()</a></code></strong> — messaging improved when AED sub-models are removed.</li>
+<li>
+<strong><code>clitable</code></strong> moved from <code>Suggests</code> to <code>Imports</code>; <code>knitr</code> moved from <code>Imports</code> to <code>Suggests</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-1"></a></h3>
+<ul><li>Fixed variable naming for DY-CD model output (<code><a href="../reference/read_dy_output.html">read_dy_output()</a></code>, <code><a href="../reference/read_model_outputs.html">read_model_outputs()</a></code>).</li>
+<li>Removed pH from default model controls (<code><a href="../reference/get_model_controls.html">get_model_controls()</a></code>).</li>
+<li>Simplified and corrected variable-name look-ups in <code><a href="../reference/lake_obs_to_aeme.html">lake_obs_to_aeme()</a></code>, <code><a href="../reference/read_dy_output.html">read_dy_output()</a></code>, <code><a href="../reference/read_glm_output.html">read_glm_output()</a></code>, <code><a href="../reference/read_gotm_output.html">read_gotm_output()</a></code>, and <code><a href="../reference/read_model_outputs.html">read_model_outputs()</a></code> to use the updated <code>key_naming$var_aeme</code> column.</li>
+<li>Removed a now-redundant internal helper <code>format_model_vars_vec()</code>; its behaviour is folded into <code>get_model_vars(as_vector = TRUE)</code>.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="aeme-030">AEME 0.3.0<a class="anchor" aria-label="anchor" href="#aeme-030"></a></h2>
 <div class="section level3">

@@ -1,5 +1,59 @@
 # Changelog
 
+## AEME 0.3.1
+
+### New functions
+
+- [`get_config_value()`](https://limnotrack.com/reference/get_config_value.md)
+  — retrieve a configuration value from an `Aeme` object, falling back
+  to package defaults when not set.
+- [`get_wbal_param()`](https://limnotrack.com/reference/get_wbal_param.md)
+  — retrieve the fitted water-balance outflow parameters (`C` and
+  `h_inv`) stored in an `Aeme` object.
+- [`set_wbal_param()`](https://limnotrack.com/reference/set_wbal_param.md)
+  — store water-balance outflow parameters in an `Aeme` object for use
+  in subsequent
+  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+  calls.
+
+### Improvements
+
+- **[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)** —
+  `model` and `path` are now resolved from the `Aeme` configuration when
+  not supplied as arguments. All other
+  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+  arguments default through `config_defaults()` if not specified.
+- **[`estimate_zone_fluxes()`](https://limnotrack.com/reference/estimate_zone_fluxes.md)**
+  — output table now rendered using `clitable` for cleaner formatted
+  console display; messaging improved throughout.
+- **`initialise_aed()`** — informative message now only shown when an
+  initialisation value differs meaningfully from the replaced default.
+- **`initialise_glm()`** — added guard for required `init_profiles`
+  fields (`wq_names`, `num_wq_vars`, `wq_init_vals`) that may be absent
+  from older NML files.
+- **[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)**
+  — messaging improved when AED sub-models are removed.
+- **`clitable`** moved from `Suggests` to `Imports`; `knitr` moved from
+  `Imports` to `Suggests`.
+
+### Bug fixes
+
+- Fixed variable naming for DY-CD model output
+  ([`read_dy_output()`](https://limnotrack.com/reference/read_dy_output.md),
+  [`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)).
+- Removed pH from default model controls
+  ([`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md)).
+- Simplified and corrected variable-name look-ups in
+  [`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md),
+  [`read_dy_output()`](https://limnotrack.com/reference/read_dy_output.md),
+  [`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md),
+  [`read_gotm_output()`](https://limnotrack.com/reference/read_gotm_output.md),
+  and
+  [`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)
+  to use the updated `key_naming$var_aeme` column.
+- Removed a now-redundant internal helper `format_model_vars_vec()`; its
+  behaviour is folded into `get_model_vars(as_vector = TRUE)`.
+
 ## AEME 0.3.0
 
 ### New features
