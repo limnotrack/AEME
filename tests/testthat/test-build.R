@@ -275,7 +275,8 @@ test_that("building all models with minimum met variables", {
 })
 
 test_that("building all models in a different dir", {
-  path <- file.path(tempdir(), "lake")
+  tmpdir <- tempdir()
+  path <- file.path(tmpdir, "lake")
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)

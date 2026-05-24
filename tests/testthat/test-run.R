@@ -91,7 +91,7 @@ test_that("running GLM works", {
                               vars_sim = vars_sim)
   testthat::expect_true(is.list(outp1))
   testthat::expect_true(nrow(outp1$HYD_temp) == 42)
-  testthat::expect_true(length(outp1) == 53)
+  testthat::expect_true(length(outp1) == 52)
   
   outp2 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model,  
                               vars_sim = "HYD_temp", incl_fluxes = FALSE)
@@ -294,11 +294,8 @@ test_that("running DYRESM-CAEDYM works", {
                      ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, verbose = FALSE)
   
-  outfile <- get_model
-  lke <- lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "DYsim.nc"))
+  outfile <- get_model_outfile(aeme = aeme)
+  file_chk <- file.exists(outfile[["dy_cd"]])
   testthat::expect_true(file_chk)
   
   outp <- output(aeme)
