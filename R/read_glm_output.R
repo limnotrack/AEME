@@ -142,12 +142,16 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   if (!is.null(vars_sim)) {
     model_vars <- get_model_vars(vars_sim = vars_sim, model = "glm_aed")
-    model_vars_vec <- format_model_vars_vec(vars_sim = vars_sim, 
-                                            model = "glm_aed")
+    model_vars_vec <- get_model_vars(vars_sim = vars_sim, model = "glm_aed", 
+                                     as_vector = TRUE)
+    
     nc_vars <- names(nc$var)
-    vars_chk <- data.frame(vars = model_vars_vec,
-                           present = model_vars_vec %in% nc_vars,
-                           conv_factor = model_vars$conversion_aed)
+    vars_chk <- data.frame(
+      vars = model_vars_vec,
+      present = model_vars_vec %in% nc_vars
+      ) |> 
+      dplyr::left_join(model_vars, by = c("vars" = "glm_aed")) |> 
+      dplyr::rename(conv_factor = conversion_aed)
     
     if (any(grepl("PHY", model_vars_vec))) {
       phyto_vars <- model_vars_vec[grepl("PHY", model_vars_vec)]

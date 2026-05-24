@@ -142,9 +142,9 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   
   if (!is.null(vars_sim)) {
-    model_vars <- get_model_vars(vars_sim = vars_sim, model = "gotm_wet")
-    model_vars_vec <- format_model_vars_vec(vars_sim = vars_sim, 
-                                            model = "gotm_wet")
+    model_vars_vec <- get_model_vars(vars_sim = vars_sim, model = "gotm_wet", 
+                                     as_vector = TRUE)
+    
     nc_vars <- names(nc$var)
     vars_chk <- data.frame(vars = model_vars_vec,
                            present = model_vars_vec %in% nc_vars)

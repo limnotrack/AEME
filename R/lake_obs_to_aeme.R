@@ -212,8 +212,9 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
                   var = dplyr::all_of(var_col_name),
                   value = dplyr::all_of(value_col_name),
                   lake_id = dplyr::all_of(lake_id_col)) |> 
-    dplyr::left_join(var_map, by = c("var" = "name")) |> 
-    dplyr::left_join(sub_key_naming, by = c("var_aeme" = "name")) |>
+    dplyr::left_join(var_map, by = c("var" = "var_aeme")) |> 
+    dplyr::left_join(sub_key_naming, by = c("var" = "var_aeme")) |>
+    dplyr::rename(var_aeme = var) |> 
     dplyr::filter(!is.na(var_aeme), !is.na(unit)) |>
     dplyr::mutate(Date = as.Date(datetime),
                   depth_to = depth_from) 

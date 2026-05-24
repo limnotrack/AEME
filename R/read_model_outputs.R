@@ -133,10 +133,13 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
 #' Get model variable names and conversion factors for AEME variables
 #' @param vars_sim Variables to extract in the AEME format e.g. "HYD_temp"
 #' @param model Model name. One of "gotm_wet", "glm_aed", or "dy_cd".
-#' @return Dataframe of model variable names and conversion factors
+#' @param as_vector Logical; if TRUE returns a named vector of model variable
+#'   names, if FALSE returns a dataframe with conversion factors. Default FALSE.
+#' @return Dataframe of model variable names and conversion factors, or a named
+#'   vector of model variable names if \code{as_vector = TRUE}.
 #' @keywords internal
 #' @noRd
-get_model_vars <- function(vars_sim, model) {
+get_model_vars <- function(vars_sim, model, as_vector = FALSE) {
   data("key_naming", package = "AEME", envir = environment())
   model_vars <- key_naming |> 
     dplyr::filter(var_aeme %in% vars_sim & !derived & var_aeme != "LKE_lvlwtr") |> 
@@ -166,52 +169,11 @@ get_model_vars <- function(vars_sim, model) {
     model_vars <- model_vars |>
       dplyr::mutate(dy_cd = paste0("dyresm", dy_cd, "_Var"))
   }
-
   
+  if (as_vector) {
+    return(setNames(model_vars[[model]], model_vars$var_aeme))
+  }
   return(model_vars)
-}
-
-#' Get model variable names and conversion factors for AEME variables as named 
-#' vector
-#' @param vars_sim Variables to extract in the AEME format e.g. "HYD_temp"
-#' @param model Model name. One of "gotm_wet", "glm_aed", or "dy_cd".
-#' @return Named vector of model variable names
-#' @keywords internal
-#' @noRd
-format_model_vars_vec <- function(vars_sim, model) {
-  data("key_naming", package = "AEME", envir = environment())
-  model_vars <- key_naming |> 
-    dplyr::filter(var_aeme %in% vars_sim & !derived & var_aeme != "LKE_lvlwtr") |> 
-    dplyr::select(var_aeme, dplyr::sym(model), conversion_aed)
-  
-  # If any variables are not in key_naming add them as separate rows
-  if (any(!vars_sim %in% model_vars$var_aeme)) {
-    missing_vars <- vars_sim[!vars_sim %in% model_vars$var_aeme]
-    missing_df <- data.frame(var_aeme = missing_vars,
-                             conversion_aed = 1)
-    missing_df[[model]] <- missing_vars
-    model_vars <- dplyr::bind_rows(model_vars, missing_df) |> 
-      dplyr::arrange(match(var_aeme, vars_sim))
-  }
-  
-  if ("dy_cd" %in% model) {
-    model_vars <- model_vars |>
-      dplyr::mutate(dy_cd = paste0("dyresm", dy_cd, "_Var"))
-  }
-  # Check if any variables in model column are ""
-  missing_vars <- model_vars |> 
-    dplyr::filter(!!dplyr::sym(model) == "") |> 
-    dplyr::pull(var_aeme)
-  if (length(missing_vars) > 0) {
-    msg <- paste0("The following variables are not available in model 
-                   ", model, ": ", paste0(missing_vars, collapse = ", "))
-    cli_inform_safe(c("!" = msg))
-    model_vars <- model_vars |>
-      dplyr::filter(!var_aeme %in% missing_vars)
-  }
-  
-  model_vars_vec <- setNames(model_vars[[model]], model_vars$var_aeme)
-  return(model_vars_vec)
 }
 
 # ' Extract model layer depths up to lake depth
