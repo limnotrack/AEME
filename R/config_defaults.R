@@ -8,6 +8,7 @@ config_defaults <- function() {
   cfg_dflt <- list(
     use_bgc        = FALSE,
     path           = getwd(),
+    model_controls = get_model_controls(),
     ext_elev       = 0,
     calc_wbal      = TRUE,
     wb_method      = 2L,
