@@ -39,7 +39,6 @@
 #'   values. Default: `TRUE`.
 #' @param config list; AEME configuration, typically loaded via
 #'   `yaml::read_yaml("aeme.yaml")`.
-#' @inheritParams generate_hypsograph
 #'
 #' @importFrom sf sf_use_s2 st_transform st_centroid st_coordinates st_buffer
 #' @importFrom dplyr select filter
