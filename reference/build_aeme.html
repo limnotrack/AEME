@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -190,7 +190,7 @@ configuration files. Default: <code>FALSE</code>.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in AED nml file and supporting files</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rename_modelvars(var_names, type_output = "glm_aed"):</span> `input` must be a non-empty character vector.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Enable biogeochemistry</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="va">aeme</span> <span class="op">|&gt;</span></span></span>
@@ -199,58 +199,11 @@ configuration files. Default: <code>FALSE</code>.</p></dd>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span><span style="color: #BBBB00;">!</span> `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   value.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Check raw data or unit conversion for this variable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span><span style="color: #BBBB00;">!</span> 1 missing state variable in `FWMT`:</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> `ZOO_zoo1 `</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Filled 1 missing variable with default value from `model_controls`.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using observed water level.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED for lake wainamu</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> CAR_doc: 15 replaced with 41.6285</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> CAR_poc: 15 replaced with 16.6514</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> CHM_oxy: 225 replaced with 312.5</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> NIT_amm: 2.25 replaced with 1.4279</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> NIT_don: 21 replaced with 21.4183</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> NIT_nit: 6.96 replaced with 1.0709</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> NIT_pon: 19.8 replaced with 7.1394</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHS_dop: 0.008 replaced with 0.3229</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHS_frp: 0.05 replaced with 0.3229</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHS_pop: 0.05 replaced with 0.3229</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_cyano: 10 replaced with 0.24022</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_diatom: 8.4 replaced with 0.300275</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_green: 0.04 replaced with 0.300275</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> SIL_rsi: 100 replaced with 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_phytoplankton, aed_totals</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting up AED aed_sed_const2d sediment zones: 2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Tier 2: zone-median summer concentrations used for adjustment:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ┌─────┬───────────┬────────────┬────────────┬────────────┐</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ zone│ O2 (mg/L) │ NH4 (mg/L) │ NO3 (mg/L) │ FRP (mg/L) │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├─────┼───────────┼────────────┼────────────┼────────────┤</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone1│ 0.075     │ 0.078      │ 0.01       │ 0.004      │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone2│ 7.16      │ 0.005      │ 0.001      │ 0.002      │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └─────┴───────────┴────────────┴────────────┴────────────┘</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   zones, direct FRP)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.83│-0.4│ 0.103│</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│0.512│ 0.1│0.0259│</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ┌──────────────┬───────────────┬───────────────┬───────────────┐</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├──────────────┼───────────────┼───────────────┼───────────────┤</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ -25.007      │ 2.05          │ -0.044        │ 0.048         │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └──────────────┴───────────────┴───────────────┴───────────────┘</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rename_modelvars(var_names, type_output = "glm_aed"):</span> `input` must be a non-empty character vector.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

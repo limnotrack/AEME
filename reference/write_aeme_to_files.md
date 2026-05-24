@@ -45,11 +45,8 @@ model_controls = model_controls, ext_elev = 5)
 #> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Building GLM-AED for lake wainamu
-#> ✔ GLM nml validation completed - no issues detected.
+#> Error in rename_modelvars(var_names, type_output = "glm_aed"): `input` must be a non-empty character vector.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-22 05:23:55]
-#> → GLM-AED running... [2026-05-22 05:23:55]
-#> ✔ GLM-AED run successful! [2026-05-22 05:23:55]
-#> ✔ Model run complete! [2026-05-22 05:23:55]
+#> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): ✖ `model_controls` need to be provided to load model output.
 write_aeme_to_files(aeme, path)
 ```

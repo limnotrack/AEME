@@ -100,7 +100,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Building GLM-AED for lake wainamu
-#> ✔ GLM nml validation completed - no issues detected.
+#> Error in rename_modelvars(var_names, type_output = "glm_aed"): `input` must be a non-empty character vector.
 if (FALSE) { # \dontrun{
 aeme <- run_aeme(aeme)
 

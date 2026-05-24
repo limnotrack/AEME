@@ -189,13 +189,13 @@ the full suite of water-quality variables.
 
 model_controls <- get_model_controls(use_bgc = TRUE)
 head(model_controls)
-#>     var_aeme simulate inf_default initial_wc initial_sed conversion_aed
-#> 1    CAR_doc     TRUE           0        0.5       1e+06       0.012011
-#> 2    CAR_poc     TRUE           0        0.2       1e-01       0.012011
-#> 3    CHM_oxy     TRUE          10       10.0       1e+01       0.032000
-#> 4 CHM_oxycln     TRUE          NA         NA          NA             NA
-#> 5 CHM_oxyepi     TRUE          NA         NA          NA             NA
-#> 6 CHM_oxyhyp     TRUE          NA         NA          NA             NA
+#>    var_aeme simulate inf_default initial_wc initial_sed conversion_aed
+#> 1   CAR_doc     TRUE           0        0.5       1e+06       0.012011
+#> 2   CAR_poc     TRUE           0        0.2       1e-01       0.012011
+#> 3   CHM_oxy     TRUE          10       10.0       1e+01       0.032000
+#> 4  CHM_salt     TRUE           0        0.0       0e+00       1.000000
+#> 5  HYD_dens     TRUE          NA         NA          NA       1.000000
+#> 6 HYD_strat     TRUE          NA         NA          NA       1.000000
 ```
 
 You can narrow the set of simulated variables using
@@ -643,55 +643,55 @@ for each simulated variable:
 skill <- assess_model(aeme = aeme, model = model)
 skill
 #>      Model    var_sim   bias    mae   rmse    nmae         nse    d2      r
-#> 1  GLM-AED CHM_oxyepi  0.542  0.863  0.920   0.107       0.356 0.283  0.935
-#> 2  GLM-AED CHM_oxymet  2.343  2.410  3.223   0.561      -0.163 0.218  0.679
-#> 3  GLM-AED CHM_oxymom  1.003  1.530  2.400  -3.766      -0.669 0.304  0.003
-#> 4  GLM-AED HYD_epidep -2.247  2.709  4.011   0.397      -3.326 0.478  0.004
-#> 5  GLM-AED HYD_hypdep -3.307  3.307  4.519   0.349      -2.136 0.355  0.351
-#> 6  GLM-AED   LKE_tli3 -0.447  1.095  1.250   0.303     -33.611 3.145 -0.599
-#> 7  GLM-AED   LKE_tli4 -0.450  0.946  1.094   0.247     -16.206 1.988 -0.734
-#> 8  GLM-AED    CAR_doc -2.704  2.704  2.745   0.994     -33.014 0.764 -0.476
-#> 9  GLM-AED HYD_ctrbuy -1.218  1.749  2.098   0.271      -0.077 0.312  0.648
-#> 10 GLM-AED HYD_schstb -7.006 30.955 39.987   0.487       0.430 0.271  0.697
+#> 1  GLM-AED CHM_oxyepi  0.532  0.850  0.905   0.106       0.377 0.278  0.945
+#> 2  GLM-AED CHM_oxymet  2.341  2.404  3.194   0.560      -0.142 0.217  0.691
+#> 3  GLM-AED CHM_oxymom  1.001  1.507  2.366  -3.708      -0.622 0.296  0.004
+#> 4  GLM-AED HYD_epidep -2.250  2.717  3.997   0.398      -3.295 0.480  0.033
+#> 5  GLM-AED HYD_hypdep -3.220  3.220  4.426   0.340      -2.007 0.347  0.368
+#> 6  GLM-AED   LKE_tli3  0.014  1.162  1.330   0.337      -7.008 5.874 -0.588
+#> 7  GLM-AED   LKE_tli4 -0.084  0.985  1.123   0.267      -5.673 3.968 -0.717
+#> 8  GLM-AED    CAR_doc -2.703  2.703  2.745   0.994     -32.998 0.764 -0.471
+#> 9  GLM-AED HYD_ctrbuy -1.216  1.714  2.085   0.266      -0.063 0.300  0.657
+#> 10 GLM-AED HYD_schstb -6.906 31.105 40.125   0.490       0.426 0.274  0.695
 #> 11 GLM-AED  HYD_strat  0.100  0.100  0.316   0.143       0.524 0.033  0.764
-#> 12 GLM-AED HYD_thmcln -2.686  2.988  4.378   0.311      -1.198 0.308  0.507
-#> 13 GLM-AED  PHY_cyano -0.019  0.039  0.067   1.051      -0.508 0.319 -0.173
-#> 14 GLM-AED  PHY_tchla -1.414  4.859  5.723   0.672      -2.027 1.164  0.092
-#> 15 GLM-AED    NIT_amm -0.002  0.013  0.029   1.136      -1.283 0.430  0.799
-#> 16 GLM-AED    NIT_nit  1.434  1.434  1.577 896.316 -647837.977 0.999  0.057
-#> 17 GLM-AED     NIT_tn  1.294  1.294  1.468   6.831   -2947.161 0.969 -0.277
-#> 18 GLM-AED    PHS_frp  0.000  0.003  0.005   1.411     -29.655 4.313  0.663
-#> 19 GLM-AED     PHS_tp -0.007  0.008  0.010   0.734      -2.493 0.530  0.364
-#> 20 GLM-AED CHM_oxycln  1.299  2.046  2.726   0.236      -0.120 0.297  0.493
-#> 21 GLM-AED CHM_oxynal  1.000  1.200  1.897   0.222       0.846 0.043  0.976
-#> 22 GLM-AED    CHM_oxy  0.640  0.961  1.387   0.139       0.811 0.068  0.926
+#> 12 GLM-AED HYD_thmcln -2.704  3.016  4.422   0.314      -1.242 0.312  0.511
+#> 13 GLM-AED  PHY_cyano -0.021  0.037  0.065   0.987      -0.407 0.267 -0.196
+#> 14 GLM-AED  PHY_tchla -0.812  5.054  5.902   0.699      -2.218 1.620  0.075
+#> 15 GLM-AED    NIT_amm -0.002  0.014  0.030   1.163      -1.468 0.458  0.799
+#> 16 GLM-AED    NIT_nit  1.459  1.459  1.604 911.622 -670120.155 0.999  0.060
+#> 17 GLM-AED     NIT_tn  1.323  1.323  1.498   6.980   -3068.970 0.969 -0.303
+#> 18 GLM-AED    PHS_frp  0.000  0.003  0.005   1.403     -29.318 4.294  0.663
+#> 19 GLM-AED     PHS_tp -0.007  0.008  0.009   0.676      -2.066 0.452  0.353
+#> 20 GLM-AED CHM_oxycln  1.344  2.062  2.750   0.238      -0.140 0.295  0.491
+#> 21 GLM-AED CHM_oxynal  0.900  1.100  1.703   0.204       0.876 0.038  0.979
+#> 22 GLM-AED    CHM_oxy  0.653  0.974  1.415   0.141       0.804 0.069  0.922
 #> 23 GLM-AED   CHM_salt -0.117  0.117  0.117   0.999    -328.602 0.914  0.592
-#> 24 GLM-AED   HYD_temp -0.504  0.805  1.060   0.045       0.884 0.051  0.954
+#> 24 GLM-AED   HYD_temp -0.511  0.810  1.066   0.045       0.883 0.052  0.954
 #>        rs    r2     B   n obs_na sim_na                  name_text
-#> 1   0.929 0.875 0.532   7      0      0         Epilimnetic oxygen
-#> 2   0.750 0.460 0.213   7      0      0         Metalimnetic oygen
-#> 3  -0.036 0.000 0.000   7      0      0 Metalimnetic oxygen minima
-#> 4   0.143 0.000 0.000   7      0      0           Epilimnion depth
-#> 5   0.334 0.123 0.030   7      0      0          Hypolimnion depth
-#> 6  -0.714 0.359 0.010   7      0      0      Trophic Level Index 3
-#> 7  -0.821 0.539 0.030   7      0      0      Trophic Level Index 4
-#> 8  -0.329 0.226 0.006  10      0      0   Dissolved organic carbon
-#> 9   0.564 0.420 0.202  10      0      0         Centre of buoyancy
-#> 10  0.794 0.486 0.310  10      0      0          Schmidt stability
+#> 1   0.964 0.893 0.550   7      0      0         Epilimnetic oxygen
+#> 2   0.750 0.477 0.223   7      0      0         Metalimnetic oygen
+#> 3  -0.107 0.000 0.000   7      0      0 Metalimnetic oxygen minima
+#> 4   0.143 0.001 0.000   7      0      0           Epilimnion depth
+#> 5   0.334 0.135 0.034   7      0      0          Hypolimnion depth
+#> 6  -0.643 0.346 0.038   8      0      0      Trophic Level Index 3
+#> 7  -0.738 0.514 0.067   8      0      0      Trophic Level Index 4
+#> 8  -0.306 0.222 0.006  10      0      0   Dissolved organic carbon
+#> 9   0.564 0.432 0.210  10      0      0         Centre of buoyancy
+#> 10  0.794 0.484 0.307  10      0      0          Schmidt stability
 #> 11  0.764 0.583 0.395  10      0      0                 Stratified
-#> 12  0.388 0.257 0.080  10      0      0          Thermocline depth
-#> 13 -0.124 0.030 0.012  10      0      0              Cyanobacteria
-#> 14 -0.139 0.009 0.002  10      0      0        Total chlorophyll a
-#> 15  0.817 0.639 0.195  20      0      0        Ammoniacal nitrogen
-#> 16 -0.030 0.003 0.000  20      0      0                    Nitrate
-#> 17 -0.400 0.077 0.000  20      0      0             Total nitrogen
-#> 18  0.453 0.440 0.014  20      0      0                  Phosphate
-#> 19 -0.187 0.132 0.029  20      0      0           Total phosphorus
-#> 20  0.607 0.244 0.115  30      0      0             Oxycline depth
-#> 21  0.958 0.952 0.825  30      0      0    Number of anoxic layers
-#> 22  0.938 0.857 0.721 125      0      0           Dissolved oxygen
+#> 12  0.437 0.261 0.080  10      0      0          Thermocline depth
+#> 13 -0.065 0.038 0.016  10      0      0              Cyanobacteria
+#> 14 -0.139 0.006 0.001  10      0      0        Total chlorophyll a
+#> 15  0.817 0.638 0.184  20      0      0        Ammoniacal nitrogen
+#> 16 -0.030 0.004 0.000  20      0      0                    Nitrate
+#> 17 -0.369 0.092 0.000  20      0      0             Total nitrogen
+#> 18  0.461 0.440 0.014  20      0      0                  Phosphate
+#> 19 -0.200 0.124 0.031  20      0      0           Total phosphorus
+#> 20  0.607 0.241 0.113  30      0      0             Oxycline depth
+#> 21  0.958 0.959 0.853  30      0      0    Number of anoxic layers
+#> 22  0.937 0.851 0.711 125      0      0           Dissolved oxygen
 #> 23  0.670 0.351 0.001 125      0      0                   Salinity
-#> 24  0.946 0.910 0.816 125      0      0          Water temperature
+#> 24  0.946 0.910 0.814 125      0      0          Water temperature
 #>                              name_parse
 #> 1          Epilimnetic~oxygen~(mg~L^-1)
 #> 2         Metalimnetic~oxygen~(mg~L^-1)

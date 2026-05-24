@@ -44,9 +44,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
-#> Warning: ! 1 missing state variable in `FWMT`:
-#> ✖ `ZOO_zoo1 `
-#> ℹ Filled 1 missing variable with default value from `model_controls`.
 #> ℹ Using observed water level.
 #> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
@@ -81,34 +78,20 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-05-22 05:22:40]
-#> ✔ Model run complete! [2026-05-22 05:22:44]
-#> ℹ Reading models in parallel...[2026-05-22 05:22:44]
-#> ✔ Model reading complete! [2026-05-22 05:22:46]
+#> ℹ Running models in parallel... [2026-05-24 22:17:57]
+#> ✔ Model run complete! [2026-05-24 22:17:59]
+#> ℹ Reading models in parallel...[2026-05-24 22:17:59]
+#> ✔ Model reading complete! [2026-05-24 22:18:00]
 aeme |> 
   list_mod_obs_vars()
-#>              Cyanobacteria           Dissolved oxygen 
-#>                "PHY_cyano"                  "CHM_oxy" 
-#>                   Salinity          Water temperature 
-#>                 "CHM_salt"                 "HYD_temp" 
-#>        Total chlorophyll a   Dissolved organic carbon 
-#>                "PHY_tchla"                  "CAR_doc" 
-#>                  Phosphate        Ammoniacal nitrogen 
-#>                  "PHS_frp"                  "NIT_amm" 
-#>                    Nitrate             Total nitrogen 
-#>                  "NIT_nit"                   "NIT_tn" 
-#>           Total phosphorus          Thermocline depth 
-#>                   "PHS_tp"               "HYD_thmcln" 
-#>                 Stratified         Centre of buoyancy 
-#>                "HYD_strat"               "HYD_ctrbuy" 
-#>           Epilimnion depth          Hypolimnion depth 
-#>               "HYD_epidep"               "HYD_hypdep" 
-#>          Schmidt stability             Oxycline depth 
-#>               "HYD_schstb"               "CHM_oxycln" 
-#>         Epilimnetic oxygen         Metalimnetic oygen 
-#>               "CHM_oxyepi"               "CHM_oxymet" 
-#> Metalimnetic oxygen minima    Number of anoxic layers 
-#>               "CHM_oxymom"               "CHM_oxynal" 
-#>      Trophic Level Index 3      Trophic Level Index 4 
-#>                 "LKE_tli3"                 "LKE_tli4" 
+#>            Cyanobacteria         Dissolved oxygen                 Salinity 
+#>              "PHY_cyano"                "CHM_oxy"               "CHM_salt" 
+#>        Water temperature      Total chlorophyll a Dissolved organic carbon 
+#>               "HYD_temp"              "PHY_tchla"                "CAR_doc" 
+#>                Phosphate      Ammoniacal nitrogen                  Nitrate 
+#>                "PHS_frp"                "NIT_amm"                "NIT_nit" 
+#>           Total nitrogen         Total phosphorus        Thermocline depth 
+#>                 "NIT_tn"                 "PHS_tp"             "HYD_thmcln" 
+#>               Stratified 
+#>              "HYD_strat" 
 ```

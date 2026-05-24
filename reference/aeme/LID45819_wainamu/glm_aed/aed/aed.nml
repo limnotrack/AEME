@@ -1,19 +1,19 @@
 &aed_models
-   models = 'aed_sedflux','aed_oxygen','aed_silica','aed_nitrogen','aed_phosphorus','aed_organic_matter','aed_phytoplankton','aed_totals'
+   models = 'aed_sedflux','aed_oxygen','aed_silica','aed_nitrogen','aed_phosphorus','aed_organic_matter','aed_phytoplankton','aed_zooplankton','aed_macrophyte','aed_totals'
 /
 &aed_sedflux
    sedflux_model = 'Constant2d'
 /
 &aed_sed_const2d
-   n_zones = 2
-   active_zones = 1, 2
-   fsed_oxy = -38.8, -19.4
-   fsed_amm = 5.835, 0.512
-   fsed_nit = -0.4, 0.1
-   fsed_frp = 0.1035, 0.0259
+   n_zones = 3
+   active_zones = 1, 2, 3
+   fsed_oxy = -25, -4, -1
+   fsed_amm = 2, 1, 0
+   fsed_nit = -0.2, -0.1, 0
+   fsed_frp = 0.05, 0.05, 0.01
 /
 &aed_oxygen
-   oxy_initial = 312.5
+   oxy_initial = 225
    fsed_oxy = -10
    ksed_oxy = 25
    theta_sed_oxy = 1.08
@@ -22,15 +22,15 @@
    oxy_max = 500
 /
 &aed_silica
-   rsi_initial = 1
+   rsi_initial = 100
    fsed_rsi = 1.001876
    ksed_rsi = 1.002457
    theta_sed_rsi = 1.037413
    silica_reactant_variable = 'OXY_oxy'
 /
 &aed_nitrogen
-   amm_initial = 1.4279
-   nit_initial = 1.0709
+   amm_initial = 2.25
+   nit_initial = 6.96
    n2o_initial = 0.1
    no2_initial = 0.404
    rnitrif = 0.2
@@ -68,7 +68,7 @@
    fsed_nit_variable = 'SDF_Fsed_nit'
 /
 &aed_phosphorus
-   frp_initial = 0.3229
+   frp_initial = 0.05
    ksed_frp = 6.907107
    theta_sed_frp = 1.06609
    phosphorus_reactant_variable = 'OXY_oxy'
@@ -84,12 +84,12 @@
    w_po4ads = -9999
 /
 &aed_organic_matter
-   poc_initial = 16.6514
-   doc_initial = 41.6285
-   pon_initial = 7.1394
-   don_initial = 21.4183
-   pop_initial = 0.3229
-   dop_initial = 0.3229
+   poc_initial = 15
+   doc_initial = 15
+   pon_initial = 19.8
+   don_initial = 21
+   pop_initial = 0.05
+   dop_initial = 0.008
    docr_initial = 150
    donr_initial = 9
    dopr_initial = 0.15
@@ -186,10 +186,12 @@
    dbase = 'aed/aed_macrophyte_pars.csv'
 /
 &aed_totals
-   TN_vars = 'NIT_nit','NIT_amm','OGM_don','OGM_pon','PHY_cyano_IN','PHY_green_IN','PHY_diatom_IN'
-   TN_varscale = 1, 1, 1, 1, 1, 1, 1
-   TP_vars = 'PHS_frp','OGM_dop','OGM_pop','PHY_cyano_IP','PHY_green_IP','PHY_diatom_IP'
-   TP_varscale = 1, 1, 1, 1, 1, 1
-   TOC_vars = 'OGM_doc','OGM_poc','PHY_cyano','PHY_green','PHY_diatom'
-   TOC_varscale = 1, 1, 1, 1, 1
+   TN_vars =  'NIT_nit','NIT_amm','OGM_don','OGM_pon','PHY_green_IN'
+   TN_varscale = 1.0, 1.0, 1.0, 1.0, 0.15
+   TP_vars =  'PHS_frp','OGM_dop','OGM_pop','PHY_green_IP'
+   TP_varscale = 1.0, 1.0, 1.0, 0.01
+   TOC_vars = 'OGM_doc','OGM_poc','PHY_green','PHY_diatom' !,'PHY_crypto'
+   TOC_varscale = 1.0, 1.0, 1.0, 1.0, 1.0
+!  TSS_vars = 'NCS_ss1','PHY_green' !, ....
+!  TSS_varscale = 0.1,0.1           !,  <vector same length as TSS names>
 /
