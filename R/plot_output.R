@@ -25,6 +25,8 @@
 #' plot each model in a separate facet. If \code{FALSE}, plot each model as a
 #' separate line and return a plot.
 #' This only applies to variables without a depth component.
+#' @param backend character; plotting backend to use. Options are "ggplot2" and
+#' "base". Default is "ggplot2".
 #'
 #' @return list of plots for z-dimensional variables or a ggplot2 object for 1-d
 #' variables.
@@ -71,11 +73,13 @@
 plot_output <- function(aeme, model, var_sim = "HYD_temp", point_size = 2,
                         ens_n = 1, add_obs = TRUE, level = FALSE,
                         remove_spin_up = TRUE, print_plots = FALSE, 
-                        var_lims = NULL, ylim = NULL, cumulative = FALSE, facet = TRUE) {
+                        var_lims = NULL, ylim = NULL, cumulative = FALSE, 
+                        facet = TRUE, backend = c("ggplot2", "base")) {
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
+  backend <- rlang::arg_match(backend)
 
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
@@ -111,21 +115,44 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", point_size = 2,
   ens_lab <- format_ens_label(ens_n = ens_n)
 
   # Check if var_sim is in output
-  chk <- sapply(model, \(m){
-    if (var_sim %in% names(outp[[ens_lab]][[m]])) {
-      !is.null(outp[[ens_lab]][[m]][[var_sim]])
-    } else {
-      FALSE
-    }
+  chk <- sapply(model, \(m) {
+    sapply(var_sim, \(v) {
+      if (v %in% names(outp[[ens_lab]][[m]])) {
+        !is.null(outp[[ens_lab]][[m]][[v]])
+      } else {
+        FALSE
+      }
+    })
   })
-  if (any(!chk)) {
-    if (all(!chk)) {
-      cli::cli_abort("Variable '{var_sim}' not in output for model(s):
-                     {paste0(model[!chk], collapse = ', ')}")
-    }
-    cli::cli_alert_warning("Variable '{var_sim}' not in output for model(s): 
-                           {paste0(model[!chk], collapse = ', ')}")
-    model <- model[chk]
+  # Force to var_sim x model matrix regardless of lengths
+  chk <- matrix(chk, nrow = length(var_sim), ncol = length(model),
+                dimnames = list(var_sim, model))
+  
+  if (all(!chk)) {
+    cli::cli_abort("Variable(s) '{paste0(var_sim, collapse = ', ')}' not in 
+                   output for model(s): {paste0(model, collapse = ', ')}")
+  }
+  
+  # Warn and drop models where ALL vars are missing
+  bad_models <- colnames(chk)[!colSums(chk) > 0]
+  if (length(bad_models) > 0) {
+    cli::cli_alert_warning("All variables missing from model(s): 
+                           {paste0(bad_models, collapse = ', ')}")
+    model <- model[!model %in% bad_models]
+  }
+  
+  # Warn and drop vars missing from ALL models
+  bad_vars <- rownames(chk)[!rowSums(chk) > 0]
+  if (length(bad_vars) > 0) {
+    cli::cli_alert_warning("Variable(s) missing from all models: 
+                           {paste0(bad_vars, collapse = ', ')}")
+    var_sim <- var_sim[!var_sim %in% bad_vars]
+  }
+  
+  if (backend == "base") {
+    plot_output_base(aeme = aeme, model = model, var_sim = var_sim, 
+                     ens_n = ens_n, var_lims = var_lims, ylim = ylim)
+    return(invisible(NULL))
   }
 
   # Date lims

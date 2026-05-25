@@ -17,7 +17,8 @@ plot_output(
   var_lims = NULL,
   ylim = NULL,
   cumulative = FALSE,
-  facet = TRUE
+  facet = TRUE,
+  backend = c("ggplot2", "base")
 )
 }
 \arguments{
@@ -53,6 +54,9 @@ plot and return a list of plots. If \code{TRUE}, for variables without depth,
 plot each model in a separate facet. If \code{FALSE}, plot each model as a
 separate line and return a plot.
 This only applies to variables without a depth component.}
+
+\item{backend}{character; plotting backend to use. Options are "ggplot2" and
+"base". Default is "ggplot2".}
 }
 \value{
 list of plots for z-dimensional variables or a ggplot2 object for 1-d
