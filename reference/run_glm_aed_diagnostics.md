@@ -78,6 +78,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Building GLM-AED for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
+#> ℹ Copied in GLM plots nml file
 #> ℹ CAR_doc: 15 replaced with 41.6285
 #> ℹ CAR_poc: 15 replaced with 16.6514
 #> ℹ CHM_oxy: 225 replaced with 312.5
@@ -125,10 +126,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 
 aeme <- run_aeme(aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-24 22:31:40]
-#> → GLM-AED running... [2026-05-24 22:31:40]
-#> ✔ GLM-AED run successful! [2026-05-24 22:31:43]
-#> ✔ Model run complete! [2026-05-24 22:31:43]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-25 03:53:41]
+#> → GLM-AED running... [2026-05-25 03:53:41]
+#> ✔ GLM-AED run successful! [2026-05-25 03:53:43]
+#> ✔ Model run complete! [2026-05-25 03:53:43]
 out <- run_glm_aed_diagnostics(aeme = aeme)
 #> Requesting 86 variables from model output...  (sediment zone _Z variables are
 #> optional; missing ones are skipped)

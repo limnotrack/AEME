@@ -1,6 +1,7 @@
 # Estimate zone-specific sediment fluxes from hypsograph
 
-Estimate zone-specific sediment fluxes from hypsograph
+Estimates zone-specific sediment fluxes for `aed_sed_const2d` using up
+to two tiers of adjustment:
 
 ## Usage
 
@@ -42,39 +43,81 @@ estimate_zone_fluxes(
 
 ## Value
 
-Invisibly, a named list:
+Invisibly returns a named list with the following elements:
 
-- fsed_oxy:
+- `fsed_oxy`:
 
-  Numeric vector, length n_zones (mmol O2/m2/d, negative)
+  Numeric vector of length `n_zones`. Sediment oxygen demand flux (mmol
+  O2/m2/d, negative).
 
-- fsed_amm:
+- `fsed_amm`:
 
-  Numeric vector, length n_zones (mmol N/m2/d)
+  Numeric vector of length `n_zones`. Ammonium flux (mmol N/m2/d).
 
-- fsed_nit:
+- `fsed_nit`:
 
-  Numeric vector, length n_zones (mmol N/m2/d)
+  Numeric vector of length `n_zones`. Nitrate flux (mmol N/m2/d).
 
-- fsed_frp:
+- `fsed_frp`:
 
-  Numeric vector, length n_zones (mmol P/m2/d)
+  Numeric vector of length `n_zones`. Filterable reactive phosphorus
+  flux (mmol P/m2/d).
 
-- zone_summary:
+- `zone_summary`:
 
-  Data frame of zone geometry and final flux estimates
+  Data frame of zone geometry and final flux estimates.
 
-- method:
+- `method`:
 
-  Character: "baseline_scaled" or "obs_adjusted"
+  Character string; either `"baseline_scaled"` or `"obs_adjusted"`.
+
+## Details
+
+**Tier 1 (always)** — area-weighted depth scaling. Each zone's flux is
+scaled from literature baseline values according to its mean depth and
+fractional bed area. Deep zones receive higher SOD and nutrient fluxes
+reflecting greater organic matter accumulation and more persistent
+anoxia.
+
+**Tier 2 (optional, when `obs` supplied)** — observed data adjustment.
+Near-bed summer concentrations of O2, NH4, NO3, and FRP are used to
+adjust the relative difference in fluxes between zones. Only inter-zone
+ratios are adjusted, not absolute magnitude, so the lake-wide total is
+preserved.
+
+Literature baselines at reference depth 5 m (temperate lakes):
+
+- `fsed_oxy`: -25 mmol O2/m2/d (Müller et al. 2012; Sondergaard et al.
+  2003)
+
+- `fsed_amm`: 2 mmol N/m2/d (Andersen 1982; Beutel 2006)
+
+- `fsed_nit`: 0.2 mmol N/m2/d (Seitzinger 1988)
+
+- `fsed_frp`: 0.05 mmol P/m2/d (Nürnberg 1984)
+
+Depth scaling (Beutel 2006; Müller et al. 2012): SOD and NH4/FRP fluxes
+scale approximately linearly with mean zone depth divided by
+`ref_depth`. NO3 flux transitions from small positive values (shallow,
+oxic) to negative values (deep, anoxic denitrification) at approximately
+`0.5 * max_depth`.
 
 ## References
 
-Beutel (2006) doi:10.1016/j.jhydrol.2006.06.007 Müller et al. (2012)
-doi:10.1007/s10750-011-0932-0 Nürnberg (1984)
-doi:10.4319/lo.1984.29.1.0111 Seitzinger (1988)
-doi:10.4319/lo.1988.33.4part2.0702 Sondergaard et al. (2003)
-doi:10.1046/j.1365-2427.2003.01053.x
+Beutel, M.W. (2006).
+[doi:10.1016/j.ecoleng.2006.05.009](https://doi.org/10.1016/j.ecoleng.2006.05.009)
+
+Müller, B., et al. (2012).
+[doi:10.1021/es301422r](https://doi.org/10.1021/es301422r)
+
+Nürnberg, G.K. (1984).
+[doi:10.4319/lo.1984.29.1.0111](https://doi.org/10.4319/lo.1984.29.1.0111)
+
+Seitzinger, S.P. (1988).
+[doi:10.4319/lo.1988.33.4part2.0702](https://doi.org/10.4319/lo.1988.33.4part2.0702)
+
+Sondergaard, M., et al. (2003).
+[doi:10.1023/B:HYDR.0000008611.12704.dd](https://doi.org/10.1023/B%3AHYDR.0000008611.12704.dd)
 
 ## Examples
 
@@ -86,8 +129,11 @@ zone_heights <- estimate_sed_zones(hypsograph)
 fluxes <- estimate_zone_fluxes(zone_heights, hypsograph)
 
 # Tier 2 with observations (Southern Hemisphere)
-fluxes <- estimate_zone_fluxes(zone_heights, hypsograph,
-                               obs = obs_df, lat = -38)
-
+fluxes <- estimate_zone_fluxes(
+  zone_heights,
+  hypsograph,
+  obs = obs_df,
+  lat = -38
+)
 } # }
 ```

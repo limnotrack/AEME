@@ -263,6 +263,8 @@
   observations
 - [`plot_output()`](https://limnotrack.com/reference/plot_output.md) :
   Plot AEME output
+- [`plot_output_base()`](https://limnotrack.com/reference/plot_output_base.md)
+  : Base plotting function for AEME output
 - [`plot_phs()`](https://limnotrack.com/reference/plot_phs.md) : Plot
   phytoplankton variables
 - [`plot_phytos()`](https://limnotrack.com/reference/plot_phytos.md) :

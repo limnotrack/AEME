@@ -19,7 +19,8 @@ plot_output(
   var_lims = NULL,
   ylim = NULL,
   cumulative = FALSE,
-  facet = TRUE
+  facet = TRUE,
+  backend = c("ggplot2", "base")
 )
 ```
 
@@ -80,6 +81,11 @@ plot_output(
   each model in a separate facet. If `FALSE`, plot each model as a
   separate line and return a plot. This only applies to variables
   without a depth component.
+
+- backend:
+
+  character; plotting backend to use. Options are "ggplot2" and "base".
+  Default is "ggplot2".
 
 ## Value
 

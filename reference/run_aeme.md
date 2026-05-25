@@ -9,6 +9,7 @@ run_aeme(
   aeme,
   model,
   path,
+  args = character(),
   return_type = c("aeme", "exec_result", "both", "none"),
   ens_n = 1,
   model_controls = NULL,
@@ -37,6 +38,10 @@ run_aeme(
 
   character; directory where input files are located. Defaults to the
   path stored in `aeme`, or the current working directory if not set.
+
+- args:
+
+  Character vector, arguments to the command.
 
 - ens_n:
 

@@ -612,6 +612,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Building GLM-AED for lake aeme
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
+#> ℹ Copied in GLM plots nml file
 #> ℹ CHM_oxy: 225 replaced with 312.5
 #> ℹ PHS_frp: 0.05 replaced with 0.3229
 #> ℹ PHS_dop: 0.008 replaced with 0.3229

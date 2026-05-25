@@ -44,7 +44,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Run aquatic model ensemble</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-news-file/R/run_aeme.R" class="external-link"><code>R/run_aeme.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/R/run_aeme.R" class="external-link"><code>R/run_aeme.R</code></a></small>
       <div class="d-none name"><code>run_aeme.Rd</code></div>
     </div>
 
@@ -58,6 +58,7 @@
 <span>  <span class="va">aeme</span>,</span>
 <span>  <span class="va">model</span>,</span>
 <span>  <span class="va">path</span>,</span>
+<span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  return_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"aeme"</span>, <span class="st">"exec_result"</span>, <span class="st">"both"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  ens_n <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  model_controls <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -86,6 +87,10 @@
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
 <dd><p>character; directory where input files are located. Defaults to
 the path stored in <code>aeme</code>, or the current working directory if not set.</p></dd>
+
+
+<dt id="arg-args">args<a class="anchor" aria-label="anchor" href="#arg-args"></a></dt>
+<dd><p>Character vector, arguments to the command.</p></dd>
 
 
 <dt id="arg-ens-n">ens_n<a class="anchor" aria-label="anchor" href="#arg-ens-n"></a></dt>

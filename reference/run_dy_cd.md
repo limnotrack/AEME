@@ -12,11 +12,29 @@ folder.
 ## Usage
 
 ``` r
-run_dy_cd(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
+run_dy_cd(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  args = character(),
+  timeout = Inf
+)
 
-run_glm_aed(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
+run_glm_aed(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  args = character(),
+  timeout = Inf
+)
 
-run_gotm_wet(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
+run_gotm_wet(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  args = character(),
+  timeout = Inf
+)
 ```
 
 ## Arguments
@@ -32,6 +50,12 @@ run_gotm_wet(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
 - debug:
 
   Logical; save debug file. DYRESM only.
+
+- args:
+
+  character vector of additional command-line arguments to pass to the
+  model executable. Currently only used for GLM-AED. Options are:
+  "–xdisp" to plot the model output using the plots.nml settings.
 
 - timeout:
 

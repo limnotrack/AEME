@@ -44,7 +44,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-news-file/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/limnotrack/AEME/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
@@ -57,13 +57,21 @@
 <code><a href="../reference/get_wbal_param.html">get_wbal_param()</a></code> — retrieve the fitted water-balance outflow parameters (<code>C</code> and <code>h_inv</code>) stored in an <code>Aeme</code> object.</li>
 <li>
 <code><a href="../reference/set_wbal_param.html">set_wbal_param()</a></code> — store water-balance outflow parameters in an <code>Aeme</code> object for use in subsequent <code><a href="../reference/build_aeme.html">build_aeme()</a></code> calls.</li>
+<li>
+<code><a href="../reference/plot_output_base.html">plot_output_base()</a></code> — new base-R plotting function for AEME model output, producing heatmap-style depth–time plots without any <code>ggplot2</code> dependency. Can also be invoked via <code>plot_output(..., backend = "base")</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-0-3-1">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-3-1"></a></h3>
 <ul><li>
+<strong><code><a href="../reference/plot_output.html">plot_output()</a></code></strong> — new <code>backend</code> argument (<code>"ggplot2"</code> or <code>"base"</code>) selects the plotting engine. Also improved variable/model availability checks: models or variables missing from all output are now warned and dropped gracefully rather than erroring.</li>
+<li>
+<strong><code><a href="../reference/run_aeme.html">run_aeme()</a></code> / <code><a href="../reference/run_dy_cd.html">run_glm_aed()</a></code></strong> — new <code>args</code> parameter passes additional command-line arguments to the model executable (e.g. <code>"--xdisp"</code> to display GLM plots using the <code>plots.nml</code> settings during a run).</li>
+<li>
+<strong><code>build_glm()</code></strong> — automatically copies the bundled <code>plots.nml</code> template into the GLM simulation directory when one is not already present.</li>
+<li>
 <strong><code><a href="../reference/build_aeme.html">build_aeme()</a></code></strong> — <code>model</code> and <code>path</code> are now resolved from the <code>Aeme</code> configuration when not supplied as arguments. All other <code><a href="../reference/build_aeme.html">build_aeme()</a></code> arguments default through <code>config_defaults()</code> if not specified.</li>
 <li>
-<strong><code><a href="../reference/estimate_zone_fluxes.html">estimate_zone_fluxes()</a></code></strong> — output table now rendered using <code>clitable</code> for cleaner formatted console display; messaging improved throughout.</li>
+<strong><code><a href="../reference/estimate_zone_fluxes.html">estimate_zone_fluxes()</a></code></strong> — output table now rendered using <code>clitable</code> for cleaner formatted console display; documentation expanded with method description, depth-scaling references, and a full description of the return value.</li>
 <li>
 <strong><code>initialise_aed()</code></strong> — informative message now only shown when an initialisation value differs meaningfully from the replaced default.</li>
 <li>

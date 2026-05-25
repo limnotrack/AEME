@@ -49,6 +49,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ Building GLM-AED for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
+#> ℹ Copied in GLM plots nml file
 #> ℹ CAR_doc: 15 replaced with 41.6285
 #> ℹ CAR_poc: 15 replaced with 16.6514
 #> ℹ CHM_oxy: 225 replaced with 312.5
@@ -131,10 +132,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-05-24 22:30:49]
-#> ✔ Model run complete! [2026-05-24 22:30:52]
-#> ℹ Reading models in parallel...[2026-05-24 22:30:52]
-#> ✔ Model reading complete! [2026-05-24 22:30:53]
+#> ℹ Running models in parallel... [2026-05-25 03:53:01]
+#> ✔ Model run complete! [2026-05-25 03:53:04]
+#> ℹ Reading models in parallel...[2026-05-25 03:53:04]
+#> ✔ Model reading complete! [2026-05-25 03:53:05]
 get_output_vars(aeme, model)
 #>                   Water temperature                   Thermocline depth 
 #>                          "HYD_temp"                        "HYD_thmcln" 

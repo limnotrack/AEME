@@ -58,7 +58,7 @@ model output files in the simulation folder."><meta property="og:image" content=
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Run AEME models</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-news-file/R/run_aeme.R" class="external-link"><code>R/run_aeme.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/R/run_aeme.R" class="external-link"><code>R/run_aeme.R</code></a></small>
       <div class="d-none name"><code>run_dy_cd.Rd</code></div>
     </div>
 
@@ -75,11 +75,29 @@ model output files in the simulation folder.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_dy_cd</span><span class="op">(</span><span class="va">sim_folder</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, debug <span class="op">=</span> <span class="cn">FALSE</span>, timeout <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_dy_cd</span><span class="op">(</span></span>
+<span>  <span class="va">sim_folder</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="cn">Inf</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">run_glm_aed</span><span class="op">(</span><span class="va">sim_folder</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, debug <span class="op">=</span> <span class="cn">FALSE</span>, timeout <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
+<span><span class="fu">run_glm_aed</span><span class="op">(</span></span>
+<span>  <span class="va">sim_folder</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="cn">Inf</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">run_gotm_wet</span><span class="op">(</span><span class="va">sim_folder</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, debug <span class="op">=</span> <span class="cn">FALSE</span>, timeout <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">run_gotm_wet</span><span class="op">(</span></span>
+<span>  <span class="va">sim_folder</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="cn">Inf</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -96,6 +114,12 @@ model output files in the simulation folder.</p>
 
 <dt id="arg-debug">debug<a class="anchor" aria-label="anchor" href="#arg-debug"></a></dt>
 <dd><p>Logical; save debug file. DYRESM only.</p></dd>
+
+
+<dt id="arg-args">args<a class="anchor" aria-label="anchor" href="#arg-args"></a></dt>
+<dd><p>character vector of additional command-line arguments to pass to
+the model executable. Currently only used for GLM-AED. Options are:
+"–xdisp" to plot the model output using the plots.nml settings.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>

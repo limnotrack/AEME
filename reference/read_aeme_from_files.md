@@ -37,6 +37,7 @@ model_controls = model_controls, ext_elev = 3)
 #> ℹ Building GLM-AED for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
+#> ℹ Copied in GLM plots nml file
 #> Error in rename_modelvars(var_names, type_output = "glm_aed"): `input` must be a non-empty character vector.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
 #> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): ✖ `model_controls` need to be provided to load model output.

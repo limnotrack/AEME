@@ -15,9 +15,26 @@
   in subsequent
   [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
   calls.
+- [`plot_output_base()`](https://limnotrack.com/reference/plot_output_base.md)
+  — new base-R plotting function for AEME model output, producing
+  heatmap-style depth–time plots without any `ggplot2` dependency. Can
+  also be invoked via `plot_output(..., backend = "base")`.
 
 ### Improvements
 
+- **[`plot_output()`](https://limnotrack.com/reference/plot_output.md)**
+  — new `backend` argument (`"ggplot2"` or `"base"`) selects the
+  plotting engine. Also improved variable/model availability checks:
+  models or variables missing from all output are now warned and dropped
+  gracefully rather than erroring.
+- **[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) /
+  [`run_glm_aed()`](https://limnotrack.com/reference/run_dy_cd.md)** —
+  new `args` parameter passes additional command-line arguments to the
+  model executable (e.g. `"--xdisp"` to display GLM plots using the
+  `plots.nml` settings during a run).
+- **`build_glm()`** — automatically copies the bundled `plots.nml`
+  template into the GLM simulation directory when one is not already
+  present.
 - **[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)** —
   `model` and `path` are now resolved from the `Aeme` configuration when
   not supplied as arguments. All other
@@ -25,7 +42,8 @@
   arguments default through `config_defaults()` if not specified.
 - **[`estimate_zone_fluxes()`](https://limnotrack.com/reference/estimate_zone_fluxes.md)**
   — output table now rendered using `clitable` for cleaner formatted
-  console display; messaging improved throughout.
+  console display; documentation expanded with method description,
+  depth-scaling references, and a full description of the return value.
 - **`initialise_aed()`** — informative message now only shown when an
   initialisation value differs meaningfully from the replaced default.
 - **`initialise_glm()`** — added guard for required `init_profiles`

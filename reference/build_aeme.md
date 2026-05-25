@@ -146,6 +146,7 @@ aeme <- aeme |>
 #> ℹ Building GLM-AED for lake wainamu
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
+#> ℹ Copied in GLM plots nml file
 #> Error in rename_modelvars(var_names, type_output = "glm_aed"): `input` must be a non-empty character vector.
 
 # Enable biogeochemistry
