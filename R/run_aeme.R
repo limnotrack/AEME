@@ -36,7 +36,7 @@
 #' # Plot model output - temperature by default
 #' plot_output(aeme)
 #' }
-run_aeme <- function(aeme, model, path, 
+run_aeme <- function(aeme, model, path, args = character(),
                      return_type = c("aeme", "exec_result", "both", "none"),
                      ens_n = 1,
                      model_controls = NULL, verbose = FALSE,
@@ -105,7 +105,7 @@ run_aeme <- function(aeme, model, path,
   )
   
   run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
-                         debug = debug, timeout = timeout)
+                         debug = debug, args = args, timeout = timeout)
   
   cl <- NULL # Initialize cluster object
   if (parallel) {
@@ -218,13 +218,16 @@ run_aeme <- function(aeme, model, path,
 #' @param sim_folder the directory where simulation files are contained
 #' @param verbose Logical: Should output of model be shown
 #' @param debug Logical; save debug file. DYRESM only.
+#' @param args character vector of additional command-line arguments to pass to
+#'  the model executable. Currently only used for GLM-AED. Options are: 
+#'  "--xdisp" to plot the model output using the plots.nml settings.
 #' @inheritParams base::system2
 #'
 #' @return Invisibly returns `NULL`.
 #' @export
 
 run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
-                      timeout = Inf) {
+                      args = character(), timeout = Inf) {
   
   oldwd <- getwd()
   on.exit({
@@ -390,7 +393,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @export
 #' @importFrom processx run
 run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
-                        timeout = Inf) {
+                        args = character(), timeout = Inf) {
   
   oldwd <- getwd()
   on.exit({
@@ -418,7 +421,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     # Stream stdout directly to console (similar to stdout = "")
     p <- processx::run(
       command = bin_exec,
-      args = character(),
+      args = args,
       wd = sim_folder,
       echo = TRUE,               # print output live (closest to stdout="")
       error_on_status = FALSE,
@@ -431,7 +434,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     # Capture stdout/stderr (similar to stdout=TRUE, stderr=TRUE)
     p <- processx::run(
       command = bin_exec,
-      args = character(),
+      args = args,
       wd = sim_folder,
       spinner = TRUE,
       echo = FALSE,
@@ -468,7 +471,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @rdname run_dy_cd
 #' @export
 run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
-                         timeout = Inf) {
+                         args = character(), timeout = Inf) {
   
   oldwd <- getwd()
   on.exit({

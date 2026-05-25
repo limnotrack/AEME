@@ -8,6 +8,7 @@ run_aeme(
   aeme,
   model,
   path,
+  args = character(),
   return_type = c("aeme", "exec_result", "both", "none"),
   ens_n = 1,
   model_controls = NULL,
@@ -27,6 +28,8 @@ run_aeme(
 
 \item{path}{character; directory where input files are located. Defaults to
 the path stored in \code{aeme}, or the current working directory if not set.}
+
+\item{args}{Character vector, arguments to the command.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}

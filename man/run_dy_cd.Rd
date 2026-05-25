@@ -6,11 +6,29 @@
 \alias{run_gotm_wet}
 \title{Run AEME models}
 \usage{
-run_dy_cd(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
+run_dy_cd(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  args = character(),
+  timeout = Inf
+)
 
-run_glm_aed(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
+run_glm_aed(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  args = character(),
+  timeout = Inf
+)
 
-run_gotm_wet(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
+run_gotm_wet(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  args = character(),
+  timeout = Inf
+)
 }
 \arguments{
 \item{sim_folder}{the directory where simulation files are contained}
@@ -18,6 +36,10 @@ run_gotm_wet(sim_folder, verbose = FALSE, debug = FALSE, timeout = Inf)
 \item{verbose}{Logical: Should output of model be shown}
 
 \item{debug}{Logical; save debug file. DYRESM only.}
+
+\item{args}{character vector of additional command-line arguments to pass to
+the model executable. Currently only used for GLM-AED. Options are:
+"--xdisp" to plot the model output using the plots.nml settings.}
 
 \item{timeout}{timeout in seconds, ignored if 0.  This is a limit for the
     elapsed time running \code{command} in a separate process.   Fractions

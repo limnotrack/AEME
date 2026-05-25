@@ -48,6 +48,12 @@ build_glm <- function(lakename, model_controls, date_range,
     file.copy(aed_files, aed_path)
     cli_inform_safe(c("i" = "Copied in AED nml file and supporting files"))
   }
+  plots_file <- file.path(path_glm, "plots.nml")
+  if (!file.exists(plots_file)) {
+    plots_file <- system.file("extdata/glm_aed/plots.nml", package = "AEME")
+    file.copy(plots_file, file.path(path_glm, "plots.nml"))
+    cli_inform_safe(c("i" = "Copied in GLM plots nml file"))
+  }
   
   # Remove output files
   paste0(path_glm, c("/bcs", "/output")) |>
