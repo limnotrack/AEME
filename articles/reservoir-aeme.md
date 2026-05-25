@@ -522,7 +522,7 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpaauxqM\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpU32PAr\reservoir
 #> ℹ No water level present. Using constant water level.
 #> ℹ Insufficient lake temperature observations (<10).
 #> ℹ Using Stefan & Preud'homme (2007) method.
@@ -539,10 +539,10 @@ aeme <- build_aeme(
 ``` r
 
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-25 04:03:56]
-#> → GLM-AED running... [2026-05-25 04:03:56]
-#> ✔ GLM-AED run successful! [2026-05-25 04:03:56]
-#> ✔ Model run complete! [2026-05-25 04:03:56]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-25 04:06:48]
+#> → GLM-AED running... [2026-05-25 04:06:48]
+#> ✔ GLM-AED run successful! [2026-05-25 04:06:48]
+#> ✔ Model run complete! [2026-05-25 04:06:48]
 ```
 
 ## View the output
