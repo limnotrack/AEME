@@ -319,9 +319,14 @@ test_that("running GLM-AED works", {
   path = "aeme"
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
-                     ext_elev = 5, use_bgc = TRUE)
+                     ext_elev = 5, use_bgc = TRUE) |> 
+    run_aeme()
   
-  aeme <- run_aeme(aeme)
+  plot_output_base(aeme)
+  plot_output_base(aeme, var_sim = c("evap"))
+  plot_output_base(aeme, var_sim = c("qh"))
+  plot_output(aeme, var_sim = c("temp", "oxy", "tp", "tn", "frp", "amm"), backend = "base")
+  # aeme <- run_aeme(aeme, args = "--xdisp")
   html_file <- plot_glm_config(aeme = aeme)
   testthat::expect_true(file.exists(html_file))
   html_widget <- plot_glm_config(aeme = aeme, return_widget = TRUE)
@@ -878,6 +883,8 @@ test_that("can build all models, run and write to new directory & re-run", {
   
   aeme <- run_aeme(aeme = aeme, model = model, parallel = TRUE, ncores = 2,
                    model_controls = model_controls, path = path)
+  
+  plot_output_base(aeme, var_sim = "qe")
   
   path2 <- file.path(tmpdir, "lake-rewrite")
   aeme <- write_configuration(aeme = aeme, model = model, path = path2)
