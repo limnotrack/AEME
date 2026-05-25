@@ -1,3 +1,56 @@
+# AEME 0.3.1
+
+## New functions
+
+* `get_config_value()` — retrieve a configuration value from an `Aeme` object,
+  falling back to package defaults when not set.
+* `get_wbal_param()` — retrieve the fitted water-balance outflow parameters
+  (`C` and `h_inv`) stored in an `Aeme` object.
+* `set_wbal_param()` — store water-balance outflow parameters in an `Aeme`
+  object for use in subsequent `build_aeme()` calls.
+* `plot_output_base()` — new base-R plotting function for AEME model output,
+  producing heatmap-style depth–time plots without any `ggplot2` dependency.
+  Can also be invoked via `plot_output(..., backend = "base")`.
+
+## Improvements
+
+* **`plot_output()`** — new `backend` argument (`"ggplot2"` or `"base"`)
+  selects the plotting engine. Also improved variable/model availability checks:
+  models or variables missing from all output are now warned and dropped
+  gracefully rather than erroring.
+* **`run_aeme()` / `run_glm_aed()`** — new `args` parameter passes additional
+  command-line arguments to the model executable (e.g. `"--xdisp"` to display
+  GLM plots using the `plots.nml` settings during a run).
+* **`build_glm()`** — automatically copies the bundled `plots.nml` template
+  into the GLM simulation directory when one is not already present.
+* **`build_aeme()`** — `model` and `path` are now resolved from the `Aeme`
+  configuration when not supplied as arguments. All other `build_aeme()`
+  arguments default through `config_defaults()` if not specified.
+* **`estimate_zone_fluxes()`** — output table now rendered using `clitable`
+  for cleaner formatted console display; documentation expanded with method
+  description, depth-scaling references, and a full description of the return
+  value.
+* **`initialise_aed()`** — informative message now only shown when an
+  initialisation value differs meaningfully from the replaced default.
+* **`initialise_glm()`** — added guard for required `init_profiles` fields
+  (`wq_names`, `num_wq_vars`, `wq_init_vals`) that may be absent from older
+  NML files.
+* **`set_glm_aed_models()`** — messaging improved when AED sub-models are
+  removed.
+* **`clitable`** moved from `Suggests` to `Imports`; `knitr` moved from
+  `Imports` to `Suggests`.
+
+## Bug fixes
+
+* Fixed variable naming for DY-CD model output (`read_dy_output()`,
+  `read_model_outputs()`).
+* Removed pH from default model controls (`get_model_controls()`).
+* Simplified and corrected variable-name look-ups in `lake_obs_to_aeme()`,
+  `read_dy_output()`, `read_glm_output()`, `read_gotm_output()`, and
+  `read_model_outputs()` to use the updated `key_naming$var_aeme` column.
+* Removed a now-redundant internal helper `format_model_vars_vec()`; its
+  behaviour is folded into `get_model_vars(as_vector = TRUE)`.
+
 # AEME 0.3.0
 
 ## New features
