@@ -140,14 +140,18 @@ aeme <- aeme |>
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
-#> ℹ Using observed water level.
-#> ! Missing values in observed water level.
-#> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Building GLM-AED for lake wainamu
-#> ℹ Copied in GLM nml file
-#> ℹ Copied in AED nml file and supporting files
-#> ℹ Copied in GLM plots nml file
-#> Error in rename_modelvars(var_names, type_output = "glm_aed"): `input` must be a non-empty character vector.
+#> 
+#> ── Calculating water balance ──
+#> 
+#> Resolving water level
+#>   ℹ Using observed water level
+#> ! Missing values in observed water level
+#> ℹ Estimating surface water temperature
+#> ✔ Estimating surface water temperature [9ms]
+#> 
+#> Error in "lapply(text, glue_cmd, .envir = .envir)": ! Could not evaluate cli `{}` expression: `model`.
+#> Caused by error in `eval(expr, envir = envir)`:
+#> ! object 'model' not found
 
 # Enable biogeochemistry
 aeme <- aeme |>
@@ -156,9 +160,16 @@ aeme <- aeme |>
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
-#> ℹ Using observed water level.
-#> ! Missing values in observed water level.
-#> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Building GLM-AED for lake wainamu
-#> Error in rename_modelvars(var_names, type_output = "glm_aed"): `input` must be a non-empty character vector.
+#> 
+#> ── Calculating water balance ──
+#> 
+#> Resolving water level
+#>   ℹ Using observed water level
+#> ! Missing values in observed water level
+#> ℹ Estimating surface water temperature
+#> ✔ Estimating surface water temperature [7ms]
+#> 
+#> Error in "lapply(text, glue_cmd, .envir = .envir)": ! Could not evaluate cli `{}` expression: `model`.
+#> Caused by error in `eval(expr, envir = envir)`:
+#> ! object 'model' not found
 ```

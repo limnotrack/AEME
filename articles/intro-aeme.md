@@ -519,97 +519,76 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
 #> ✔ Created missing directory: D:\a\AEME\AEME\vignettes\aeme
-#> Warning: ! 11 missing state variables in `NZS2038486`:
-#> ✖ `CHM_oxy `
-#> ✖ `NIT_don `
-#> ✖ `NIT_pon `
-#> ✖ `CAR_doc `
-#> ✖ `CAR_poc `
-#> ✖ `SIL_rsi `
-#> ✖ `PHY_cyano `
-#> ✖ `PHY_green `
-#> ✖ `PHY_diatom `
-#> ✖ `NCS_ss1 `
-#> ✖ `ZOO_zoo1 `
-#> ℹ Filled 11 missing variables with default values from
-#> `model_controls`.
-#> Warning: ! 11 missing state variables in `NZS2038499`:
-#> ✖ `CHM_oxy `
-#> ✖ `NIT_don `
-#> ✖ `NIT_pon `
-#> ✖ `CAR_doc `
-#> ✖ `CAR_poc `
-#> ✖ `SIL_rsi `
-#> ✖ `PHY_cyano `
-#> ✖ `PHY_green `
-#> ✖ `PHY_diatom `
-#> ✖ `NCS_ss1 `
-#> ✖ `ZOO_zoo1 `
-#> ℹ Filled 11 missing variables with default values from
-#> `model_controls`.
-#> Warning: ! 11 missing state variables in `NZS2038500`:
-#> ✖ `CHM_oxy `
-#> ✖ `NIT_don `
-#> ✖ `NIT_pon `
-#> ✖ `CAR_doc `
-#> ✖ `CAR_poc `
-#> ✖ `SIL_rsi `
-#> ✖ `PHY_cyano `
-#> ✖ `PHY_green `
-#> ✖ `PHY_diatom `
-#> ✖ `NCS_ss1 `
-#> ✖ `ZOO_zoo1 `
-#> ℹ Filled 11 missing variables with default values from
-#> `model_controls`.
-#> Warning: ! 11 missing state variables in `NZS2038304`:
-#> ✖ `CHM_oxy `
-#> ✖ `NIT_don `
-#> ✖ `NIT_pon `
-#> ✖ `CAR_doc `
-#> ✖ `CAR_poc `
-#> ✖ `SIL_rsi `
-#> ✖ `PHY_cyano `
-#> ✖ `PHY_green `
-#> ✖ `PHY_diatom `
-#> ✖ `NCS_ss1 `
-#> ✖ `ZOO_zoo1 `
-#> ℹ Filled 11 missing variables with default values from
-#> `model_controls`.
-#> Warning: ! 11 missing state variables in `lumped`:
-#> ✖ `CHM_oxy `
-#> ✖ `NIT_don `
-#> ✖ `NIT_pon `
-#> ✖ `CAR_doc `
-#> ✖ `CAR_poc `
-#> ✖ `SIL_rsi `
-#> ✖ `PHY_cyano `
-#> ✖ `PHY_green `
-#> ✖ `PHY_diatom `
-#> ✖ `NCS_ss1 `
-#> ✖ `ZOO_zoo1 `
-#> ℹ Filled 11 missing variables with default values from
-#> `model_controls`.
+#> ! Filled missing variable(s) in inflow NZS2038486 with default value(s) from
+#>   model_controls: CHM_oxy = 10; NIT_don = 0; NIT_pon = 0; CAR_doc = 0; CAR_poc
+#>   = 0; SIL_rsi = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1
+#>   = 5; ZOO_zoo1 = 0.1
+#> ! Filled missing variable(s) in inflow NZS2038499 with default value(s) from
+#>   model_controls: CHM_oxy = 10; NIT_don = 0; NIT_pon = 0; CAR_doc = 0; CAR_poc
+#>   = 0; SIL_rsi = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1
+#>   = 5; ZOO_zoo1 = 0.1
+#> ! Filled missing variable(s) in inflow NZS2038500 with default value(s) from
+#>   model_controls: CHM_oxy = 10; NIT_don = 0; NIT_pon = 0; CAR_doc = 0; CAR_poc
+#>   = 0; SIL_rsi = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1
+#>   = 5; ZOO_zoo1 = 0.1
+#> ! Filled missing variable(s) in inflow NZS2038304 with default value(s) from
+#>   model_controls: CHM_oxy = 10; NIT_don = 0; NIT_pon = 0; CAR_doc = 0; CAR_poc
+#>   = 0; SIL_rsi = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1
+#>   = 5; ZOO_zoo1 = 0.1
+#> ! Filled missing variable(s) in inflow lumped with default value(s) from
+#>   model_controls: CHM_oxy = 10; NIT_don = 0; NIT_pon = 0; CAR_doc = 0; CAR_poc
+#>   = 0; SIL_rsi = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1
+#>   = 5; ZOO_zoo1 = 0.1
 #> Warning: ! `HYD_flow`: Negative flow values detected.
 #> ℹ Check raw data or unit conversion for this variable.
-#> Warning: ! 10 missing state variables in `precip`:
-#> ✖ `CHM_oxy `
-#> ✖ `NIT_pon `
-#> ✖ `CAR_doc `
-#> ✖ `CAR_poc `
-#> ✖ `SIL_rsi `
-#> ✖ `PHY_cyano `
-#> ✖ `PHY_green `
-#> ✖ `PHY_diatom `
-#> ✖ `NCS_ss1 `
-#> ✖ `ZOO_zoo1 `
-#> ℹ Filled 10 missing variables with default values from `model_controls`.
-#> ℹ No water level present. Using constant water level.
+#> ! Filled missing variable(s) in inflow precip with default value(s) from
+#>   model_controls: CHM_oxy = 10; NIT_pon = 0; CAR_doc = 0; CAR_poc = 0; SIL_rsi
+#>   = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1 = 5;
+#>   ZOO_zoo1 = 0.1
+#> 
+#> 
+#> ── Calculating water balance ──
+#> 
+#> 
+#> 
+#> Resolving water level
+#> 
+#>   ℹ No water level present. Using constant water level.
+#> ℹ Estimating surface water temperature
+#> 
+#> ✔ Estimating surface water temperature [14ms]
+#> 
+#> 
+#> 
+#> Estimating lake water levels for dy_cd, glm_aed, and gotm_wet
+#> 
+#>   ℹ Optimizing parameters for water balance
+#> 
+#>   ✔ Optimization Complete: C = 0.5008, h_inv = 22.787, Final RMSE = 0.0349
+#> 
+#> Estimating lake water levels for dy_cd, glm_aed, and gotm_wet
+#> 
+#>   ℹ Optimizing parameters for water balance
+#> 
+#>   ✔ Optimization Complete: C = 0.5008, h_inv = 22.787, Final RMSE = 0.0349
+#> 
+#> Estimating lake water levels for dy_cd, glm_aed, and gotm_wet
+#> 
+#>   ℹ Optimizing parameters for water balance
+#> 
+#>   ✔ Optimization Complete: C = 0.5004, h_inv = 22.7863, Final RMSE = 0.0349
+#> 
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Building DYRESM-CAEDYM for lake aeme
 #> ℹ Copied in DYRESM .par file
 #> ℹ Writing DYRESM configuration file
 #> ℹ Writing DYRESM-CAEDYM control file
-#> ℹ Building GLM-AED for lake aeme
+#> 
+#> 
+#> ── Building GLM-AED for lake aeme ──
+#> 
+#> 
+#> 
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
 #> ℹ Copied in GLM plots nml file

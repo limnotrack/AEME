@@ -44,54 +44,25 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
-#> ℹ Using observed water level.
-#> ! Missing values in observed water level.
-#> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Building GLM-AED for lake wainamu
-#> ℹ Setting up AED aed_sed_const2d sediment zones: 2
-#> ℹ Tier 2: zone-median summer concentrations used for adjustment:
-#> ┌─────┬───────────┬────────────┬────────────┬────────────┐
-#> │ zone│ O2 (mg/L) │ NH4 (mg/L) │ NO3 (mg/L) │ FRP (mg/L) │
-#> ├─────┼───────────┼────────────┼────────────┼────────────┤
-#> │Zone1│ 0.075     │ 0.078      │ 0.01       │ 0.004      │
-#> │Zone2│ 7.16      │ 0.005      │ 0.001      │ 0.002      │
-#> └─────┴───────────┴────────────┴────────────┴────────────┘
-#> ℹ Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2
-#>   zones, direct FRP)
-#> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────
-#> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m
-#> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐
-#> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │
-#> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤
-#> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.83│-0.4│ 0.103│
-#> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│0.512│ 0.1│0.0259│
-#> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘
 #> 
-#> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────
-#> ┌──────────────┬───────────────┬───────────────┬───────────────┐
-#> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│
-#> ├──────────────┼───────────────┼───────────────┼───────────────┤
-#> │ -25.007      │ 2.05          │ -0.044        │ 0.048         │
-#> └──────────────┴───────────────┴───────────────┴───────────────┘
-#> ✔ GLM nml validation completed - no issues detected.
+#> ── Calculating water balance ──
+#> 
+#> Resolving water level
+#>   ℹ Using observed water level
+#> ! Missing values in observed water level
+#> ℹ Estimating surface water temperature
+#> ✔ Estimating surface water temperature [7ms]
+#> 
+#> Error in "lapply(text, glue_cmd, .envir = .envir)": ! Could not evaluate cli `{}` expression: `model`.
+#> Caused by error in `eval(expr, envir = envir)`:
+#> ! object 'model' not found
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-05-25 03:51:38]
-#> ✔ Model run complete! [2026-05-25 03:51:41]
-#> ℹ Reading models in parallel...[2026-05-25 03:51:41]
-#> ✔ Model reading complete! [2026-05-25 03:51:42]
+#> Error in run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,     model_controls = model_controls, parallel = TRUE, ncores = 2L): ✖ Simulation folder does not exist
+#>   C:\Users\runneradmin\AppData\Local\Temp\RtmpMLOrZH/45819_wainamu
 aeme |> 
   list_mod_obs_vars()
-#>            Cyanobacteria         Dissolved oxygen                 Salinity 
-#>              "PHY_cyano"                "CHM_oxy"               "CHM_salt" 
-#>        Water temperature      Total chlorophyll a Dissolved organic carbon 
-#>               "HYD_temp"              "PHY_tchla"                "CAR_doc" 
-#>                Phosphate      Ammoniacal nitrogen                  Nitrate 
-#>                "PHS_frp"                "NIT_amm"                "NIT_nit" 
-#>           Total nitrogen         Total phosphorus        Thermocline depth 
-#>                 "NIT_tn"                 "PHS_tp"             "HYD_thmcln" 
-#>               Stratified 
-#>              "HYD_strat" 
+#> Error in check_model(model = model): `model` must be provided and not be empty.
 ```

@@ -94,56 +94,27 @@ model output</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span><span style="color: #BBBB00;">!</span> `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   value.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Check raw data or unit conversion for this variable.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using observed water level.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED for lake wainamu</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting up AED aed_sed_const2d sediment zones: 2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Tier 2: zone-median summer concentrations used for adjustment:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ┌─────┬───────────┬────────────┬────────────┬────────────┐</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ zone│ O2 (mg/L) │ NH4 (mg/L) │ NO3 (mg/L) │ FRP (mg/L) │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├─────┼───────────┼────────────┼────────────┼────────────┤</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone1│ 0.075     │ 0.078      │ 0.01       │ 0.004      │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone2│ 7.16      │ 0.005      │ 0.001      │ 0.002      │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └─────┴───────────┴────────────┴────────────┴────────────┘</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   zones, direct FRP)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.83│-0.4│ 0.103│</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│0.512│ 0.1│0.0259│</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ┌──────────────┬───────────────┬───────────────┬───────────────┐</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├──────────────┼───────────────┼───────────────┼───────────────┤</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ -25.007      │ 2.05          │ -0.044        │ 0.048         │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └──────────────┴───────────────┴───────────────┴───────────────┘</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Calculating water balance</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Resolving water level</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[7ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in "lapply(text, glue_cmd, .envir = .envir)":</span> <span style="color: #BBBB00;">!</span> Could not evaluate cli `{}` expression: `model`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error</span> in `eval(expr, envir = envir)`:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> object 'model' not found</span>
 <span class="r-in"><span><span class="co"># Run models</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>path <span class="op">=</span> <span class="va">path</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>parallel <span class="op">=</span> <span class="cn">TRUE</span>, ncores <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models in parallel... [2026-05-25 03:51:38]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-05-25 03:51:41]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading models in parallel...[2026-05-25 03:51:41]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model reading complete! [2026-05-25 03:51:42]</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,     model_controls = model_controls, parallel = TRUE, ncores = 2L):</span> <span style="color: #BB0000;">✖</span> Simulation folder does not exist</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB;">C:\Users\runneradmin\AppData\Local\Temp\RtmpMLOrZH/45819_wainamu</span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">|&gt;</span> </span></span>
 <span class="r-in"><span>  <span class="fu">list_mod_obs_vars</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Cyanobacteria         Dissolved oxygen                 Salinity </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              "PHY_cyano"                "CHM_oxy"               "CHM_salt" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        Water temperature      Total chlorophyll a Dissolved organic carbon </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               "HYD_temp"              "PHY_tchla"                "CAR_doc" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Phosphate      Ammoniacal nitrogen                  Nitrate </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                "PHS_frp"                "NIT_amm"                "NIT_nit" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           Total nitrogen         Total phosphorus        Thermocline depth </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 "NIT_tn"                 "PHS_tp"             "HYD_thmcln" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               Stratified </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              "HYD_strat" </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in check_model(model = model):</span> `model` must be provided and not be empty.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

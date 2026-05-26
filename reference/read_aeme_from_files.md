@@ -31,18 +31,22 @@ model_controls = model_controls, ext_elev = 3)
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
-#> ℹ Using observed water level.
-#> ! Missing values in observed water level.
-#> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Building GLM-AED for lake wainamu
-#> ℹ Copied in GLM nml file
-#> ℹ Copied in AED nml file and supporting files
-#> ℹ Copied in GLM plots nml file
-#> Error in rename_modelvars(var_names, type_output = "glm_aed"): `input` must be a non-empty character vector.
+#> 
+#> ── Calculating water balance ──
+#> 
+#> Resolving water level
+#>   ℹ Using observed water level
+#> ! Missing values in observed water level
+#> ℹ Estimating surface water temperature
+#> ✔ Estimating surface water temperature [7ms]
+#> 
+#> Error in "lapply(text, glue_cmd, .envir = .envir)": ! Could not evaluate cli `{}` expression: `model`.
+#> Caused by error in `eval(expr, envir = envir)`:
+#> ! object 'model' not found
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
 #> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): ✖ `model_controls` need to be provided to load model output.
 write_aeme_to_files(aeme, path)
 aeme_path <- get_lake_dir(aeme = aeme, path = path)
 aeme2 <- read_aeme_from_files(aeme_path)
-#> Error in read.table(file = file, header = header, sep = sep, quote = quote,     dec = dec, fill = fill, comment.char = comment.char, ...): first five rows are empty: giving up
+#> Error in check_model(model = model): `model` must be provided and not be empty.
 ```
