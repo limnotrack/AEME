@@ -37,6 +37,7 @@
 estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
                                initial_guess = NULL, verbose = FALSE) {
   
+  cli_safe("Estimating lake water levels for {model} ", indent = FALSE)
   # 1. Setup Initial Conditions
   # Find the first non-NA observation for the starting level
   # first_obs_idx <- which(!is.na(data$lvl_obs))[1]
@@ -69,6 +70,7 @@ estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
   # 2. Run Optimization
   # Uses the 'level_cost' function you defined previously
   if (is.null(params)) {
+    cli_safe(c("i" = "Optimizing parameters for water balance"))
     best_fit <- optim(
       par = initial_guess,
       fn = level_cost,
@@ -82,12 +84,16 @@ estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
       upper = c(10, max(data$lvl_obs, na.rm = TRUE)),
       control = list(maxit = 2)
     )
-    if (verbose) {
-      message(paste0("Optimization Complete:"))
-      message(paste0("  Best C: ", round(best_fit$par[1], 4)))
-      message(paste0("  Best h_inv: ", round(best_fit$par[2], 4)))
-      message(paste0("  Final RMSE: ", round(best_fit$value, 4)))
-    }
+    # if (verbose) {
+    #   message(paste0("Optimization Complete:"))
+    #   message(paste0("  Best C: ", round(best_fit$par[1], 4)))
+    #   message(paste0("  Best h_inv: ", round(best_fit$par[2], 4)))
+    #   message(paste0("  Final RMSE: ", round(best_fit$value, 4)))
+    # }
+    msg <- paste0("Optimization Complete: C = ", round(best_fit$par[1], 4),
+                  ", h_inv = ", round(best_fit$par[2], 4), 
+                  ", Final RMSE = ", round(best_fit$value, 4))
+    cli_safe(c("v" = msg))
     params <- c(best_fit$par[1], best_fit$par[2])
   }
 
@@ -109,7 +115,8 @@ estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
   data$C <- params["C"]
   data$h_inv <- params["h_inv"]
   
-  data$net_balance <- data$HYD_flow + (data$MET_pprain * A_t) - data$evap_m3 - data$spill_outflow
+  data$net_balance <- data$HYD_flow + (data$MET_pprain * A_t) - 
+                        data$evap_m3 - data$spill_outflow
     
   # plot(data$lvl_sim, type = "l")
   # points(data$lvl_obs, col = "red")

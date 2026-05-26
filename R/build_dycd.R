@@ -213,6 +213,5 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
                verCD,
                filePath = path.dy)
 
-
-
+  return(invisible())
 }

@@ -20,7 +20,8 @@ build_glm <- function(lakename, model_controls, date_range,
                       Kw, use_bgc, use_lw, overwrite_nml = TRUE) {
   
   msg <- paste0("Building GLM-AED for lake ", lakename)
-  cli_inform_safe(c("i" = msg))
+  # cli_inform_safe(c("i" = msg))
+  cli_safe(msg, FUN = cli::cli_h2)
   
   path_glm <- file.path(lake_dir, "glm_aed")
   

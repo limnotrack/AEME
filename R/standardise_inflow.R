@@ -168,19 +168,22 @@ standardise_inflow <- function(inflow,
   if (!is.null(model_controls) && !is.null(inf_vars)) {
     missing_state <- setdiff(inf_vars, names(inflow))
     if (length(missing_state) > 0) {
-      cli::cli_warn(
-        c("!" = "{length(missing_state)} missing state variable{?s} in {.code {inflow_name}}:",
-          setNames(paste("{.code", missing_state, "}"), rep("x", length(missing_state)))),
-        class = "aeme_warn_inflow_missing_state"
-      )
+      # make message without cli mark up
+      msg <- paste0(length(missing_state), " missing state variable(s) in inflow ", inflow_name, ": ",
+                    paste(missing_state, collapse = ", "))
+      
+      # cli_inform_safe(c("!" = msg))
       for (v in missing_state) {
         default_val <- model_controls$inf_default[match(v, model_controls$var_aeme)]
         inflow[[v]] <- default_val
       }
-      cli::cli_inform(
-        c("i" = "Filled {length(missing_state)} missing variable{?s} with default value{?s} from {.arg model_controls}."),
-        class = "aeme_inform_inflow_defaults_applied"
-      )
+      msg <- paste0("Filled missing variable(s) in inflow ", inflow_name,
+                    " with default value(s) from model_controls: ",
+                    paste(paste0(missing_state, " = ", 
+                                 model_controls$inf_default[match(missing_state,
+                                                                  model_controls$var_aeme)]),
+                          collapse = "; "))
+      cli_inform_safe(c("!" = msg))
     }
   }
   

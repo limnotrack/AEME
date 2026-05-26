@@ -27,6 +27,8 @@
 #' @importFrom ggplot2 ggplot aes geom_point geom_smooth theme_bw labs
 #' @importFrom stats lm optim
 #' @importFrom zoo rollmean
+#' @importFrom cli cli_abort cli_inform cli_progress_step cli_progress_update
+#' @importFrom cli cli_progress_done
 #'
 #' @return list with:
 #' - `wb`: data frame of water balance components (Date, model, value,
@@ -45,6 +47,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
+  cli_safe("Calculating water balance", FUN = cli::cli_h2)
   
   model <- check_model(model = model)
   
@@ -193,13 +196,18 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   )
 }
 
-
-# ---- Helpers extracted from calc_water_balance ----
-
 #' Resolve observed or modelled water level into a common data frame
 #' @noRd
+#' @importFrom cli cli_abort cli_inform cli_progress_step cli_progress_update 
+#' @importFrom cli cli_div cli_end
 resolve_water_level <- function(use, level, obs_met, hyps, surf,
                                 spin_start, date_stop) {
+  
+  FUN = cli::cli_inform
+  cli_safe("Resolving water level", indent = FALSE)
+  # on.exit({
+  #   if (!is.null(pb_id)) cli::cli_progress_done(id = pb_id)
+  # })  
   if (use == "mod") {
     date_vector <- seq.Date(as.Date(spin_start), as.Date(date_stop), by = 1)
     mod_lvl <- dplyr::filter(level, Date >= spin_start & Date <= date_stop)
@@ -214,14 +222,13 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
   
   # use == "obs"
   if (!is.null(level)) {
-    cli_inform_safe(c("i" = "Using observed water level."))
+    cli_safe(c("i" = "Using observed water level"), FUN = FUN)
     
     lvl_range  <- range(level$value, na.rm = TRUE)
     elev_range <- range(hyps$elev,   na.rm = TRUE)
     if (lvl_range[1] < elev_range[1] | lvl_range[2] > elev_range[2]) {
       cli::cli_abort(c(
-        "!" = "Observed water level values are outside the hypsograph elevation
-        range.",
+        "!" = "Observed water level values are outside the hypsograph elevation range.",
         "i" = "Observed range: {lvl_range[1]} to {lvl_range[2]}.",
         "i" = "Hypsograph range: {elev_range[1]} to {elev_range[2]}."
       ))
@@ -234,7 +241,6 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
       dplyr::mutate(is_obs_lvl = !is.na(lvl_obs)) |>
       dplyr::filter(Date >= spin_start & Date <= date_stop)
     
-    # If no observations fall in the period, seed with surface elevation
     if (all(is.na(mod_lvl$lvl_obs))) {
       mod_lvl <- dplyr::mutate(
         mod_lvl,
@@ -244,19 +250,20 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
     }
     
     if (any(duplicated(mod_lvl$Date))) {
-      cli::cli_warn("Duplicate dates in observed water level - keeping first 
-                    occurrence.")
+      cli::cli_warn("Duplicate dates in observed water level - keeping first occurrence.")
       mod_lvl <- dplyr::distinct(mod_lvl, Date, .keep_all = TRUE)
     }
     
     if (all(!is.na(mod_lvl$lvl_obs))) {
-      cli_inform_safe(c("i" = "No missing values in observed water level."))
+      cli_safe(c("v" = "No missing values in observed water level"),
+               FUN = FUN)
     } else {
-      cli_inform_safe(c("!" = "Missing values in observed water level."))
+      cli_safe("Missing values in observed water level", FUN = cli::cli_alert_warning)
     }
     
   } else {
-    cli_inform_safe(c("i" = "No water level present. Using constant water level."))
+    cli_safe(c("i" = "No water level present. Using constant water level."), 
+             FUN = FUN)
     mod_lvl <- data.frame(Date = obs_met$Date) |>
       dplyr::mutate(
         lvl_obs    = rep(c(surf, rep(NA, 3)), length.out = dplyr::n()),
@@ -287,7 +294,8 @@ add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
         dplyr::rename(HYD_temp = value)
     }
   } else if (!is.null(coeffs)) {
-    cli_inform_safe(c("i" = "Using supplied coefficients for estimating lake surface temperature."))
+    cli_inform_safe(c("i" = "Using supplied coefficients for estimating lake 
+                      surface temperature."))
     obs_met$HYD_temp <- coeffs[1] + coeffs[2] * obs_met$T5avg
   } else {
     obs_met$HYD_temp <- NA
@@ -298,7 +306,8 @@ add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
   if (n_obs < 10) {
     cli_inform_safe(c(
       "i" = "Insufficient lake temperature observations (<10).",
-      "i" = "Using Stefan & Preud'homme (2007) method."
+      "i" = "Using Stefan & Preud'homme (2007) method to estimate surface 
+      temperature."
     ))
     coeffs <- c(5, 0.75)
     obs_met$HYD_temp <- coeffs[1] + coeffs[2] * obs_met$T5avg

@@ -43,6 +43,12 @@ estimate_surface_temperature <- function(
     relax_tau = 3 * 86400 # relaxation timescale to obs (s)
 ) {
   
+  pb_id <- cli_safe("Estimating surface water temperature",
+                    FUN = cli::cli_progress_step, indent = FALSE)
+  on.exit({
+    if (!is.null(pb_id)) cli::cli_progress_done(id = pb_id)
+  })  
+  
   if (depth <= 0) {
     cli::cli_abort("Lake depth {.val {depth}} must be positive.")
   } else {
