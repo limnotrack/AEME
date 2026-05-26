@@ -22,16 +22,24 @@ initialise_FABM <- function(path_gotm, model_controls) {
                                    "PHS_pip", "NIT_pin",
                                    "PHS_tp","NIT_tn","PHY_tchla")
     )
+  if (nrow(this_ctrls) == 0) {
+    cli_inform_safe(c("v" = "No variables to initialise for FABM"))
+    return(invisible())
+  }
 
   nme_chk <- rename_modelvars(input = this_ctrls$var_aeme,
                               type_output = "gotm_fabm")
   # Remove columns with no name - not necessary for GLM
   this_ctrls <- this_ctrls[nme_chk != "", ]
+  if (nrow(this_ctrls) == 0) {
+    cli_inform_safe(c("v" = "No variables to initialise for FABM"))
+    return(invisible())
+  }
   params <- rename_modelvars(input = this_ctrls$var_aeme,
                              type_output = "gotm_fabm")
 
   if (sum(is.na(this_ctrls$initial_wc)) > 0) {
-    stop("incomplete initialisation, please check your key file")
+    cli::cli_abort("incomplete initialisation, please check your key file")
   }
 
   # iterate through the state variables
@@ -110,4 +118,5 @@ initialise_FABM <- function(path_gotm, model_controls) {
 
   # write the file
   write_yaml(fabm, file.path(path_gotm, "fabm.yaml"))
+  return(invisible())
 }

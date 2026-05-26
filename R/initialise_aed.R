@@ -26,6 +26,10 @@ initialise_aed <- function(model_controls, path_aed) {
                                    "PHS_pip", "NIT_pin",
                                    "PHS_tp","NIT_tn","PHY_tchla")
     )
+  if (nrow(this_ctrls) == 0) {
+    cli_inform_safe(c("i" = "No variables to initialise in AED"))
+    return(invisible())
+  } 
   nme_chk <- rename_modelvars(input = this_ctrls$var_aeme, 
                               type_output = "glm_aed")
   # Remove columns with no name - not necessary for GLM
@@ -158,6 +162,7 @@ initialise_aed <- function(model_controls, path_aed) {
   write_nml(aed_nml, file.path(path_aed, "aed.nml"))
   readr::write_csv(phy_vals, phy_csv_filepath)
   readr::write_csv(zoo_vals, zoo_csv_filepath)
+  return(invisible())
 }
 
 #' Get line numbers in aed.nml files

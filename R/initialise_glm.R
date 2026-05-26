@@ -48,9 +48,18 @@ initialise_glm <-  function(glm_nml, lvl_bottom, init_depth,
     var_names <- glm_wq_vars |> 
       dplyr::distinct(var_aeme) |>
       dplyr::pull(var_aeme)
-    arg_list[["wq_names"]] <- rename_modelvars(var_names, type_output = "glm_aed")
-    arg_list[["num_wq_vars"]] <- length(var_names)
-    arg_list[["wq_init_vals"]] <- glm_wq_vars[["value"]]
+    if (length(var_names) > 0) {
+      wq_names <- rename_modelvars(var_names, type_output = "glm_aed")
+      num_wq_vars <- length(var_names)
+      wq_init_vals <- glm_wq_vars[["value"]]
+    } else {
+      wq_names <- "''"
+      num_wq_vars <- 0
+      wq_init_vals <- 0
+    }
+    arg_list[["wq_names"]] <- wq_names
+    arg_list[["num_wq_vars"]] <- num_wq_vars
+    arg_list[["wq_init_vals"]] <- wq_init_vals
   }
   
   init_args_req <- c("wq_names", "num_wq_vars", "wq_init_vals")
