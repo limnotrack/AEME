@@ -37,7 +37,8 @@
 estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
                                initial_guess = NULL, verbose = FALSE) {
   
-  cli_safe("Estimating lake water levels for {model} ", indent = FALSE)
+  msg <- paste0("Estimating lake water levels for ", model)
+  cli_safe(msg, indent = FALSE)
   # 1. Setup Initial Conditions
   # Find the first non-NA observation for the starting level
   # first_obs_idx <- which(!is.na(data$lvl_obs))[1]
