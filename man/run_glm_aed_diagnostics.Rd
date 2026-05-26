@@ -9,7 +9,7 @@ run_glm_aed_diagnostics(
   model,
   groups = NULL,
   depth_collapse = "mean",
-  plot = TRUE,
+  plot = FALSE,
   use_bounds = TRUE,
   print_table = TRUE
 )
