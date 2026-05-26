@@ -114,9 +114,6 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   write_yaml(yaml, file.path(path, "aeme_simple.yaml"))
   
   aeme <- yaml_to_aeme(path = path, "aeme_simple.yaml")
-  model_controls <- get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   sys_OS <- AEME:::get_os()
   if (sys_OS == "osx") {
@@ -124,14 +121,12 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   }
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE)
   inp <- input(aeme)
   
   testthat::expect_true(is.data.frame(inp$hypsograph))
   
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE,
-                   model_controls = model_controls, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model)
   
   tgt_vars <- list_mod_obs_vars(aeme, model = model)
   testthat::expect_true(is.null(tgt_vars))
