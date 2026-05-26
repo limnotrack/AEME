@@ -77,6 +77,7 @@
 <url><loc>https://limnotrack.com/reference/get_inflows.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_lake.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_lake_dir.html</loc></url>
+<url><loc>https://limnotrack.com/reference/get_mean_sea_level_pressure.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_met.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_model_config_files.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_model_controls.html</loc></url>
@@ -87,6 +88,7 @@
 <url><loc>https://limnotrack.com/reference/get_obs.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_obs_column_names.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_output_vars.html</loc></url>
+<url><loc>https://limnotrack.com/reference/get_station_pressure.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_var.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_vars_sim.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_var_indices.html</loc></url>

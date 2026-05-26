@@ -10,7 +10,7 @@ run_glm_aed_diagnostics(
   model,
   groups = NULL,
   depth_collapse = "mean",
-  plot = TRUE,
+  plot = FALSE,
   use_bounds = TRUE,
   print_table = TRUE
 )
@@ -79,7 +79,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [18ms]
+#> ✔ Estimating surface water temperature [16ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -138,10 +138,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 
 aeme <- run_aeme(aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-26 05:22:22]
-#> → GLM-AED running... [2026-05-26 05:22:22]
-#> ✔ GLM-AED run successful! [2026-05-26 05:22:24]
-#> ✔ Model run complete! [2026-05-26 05:22:24]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-26 22:18:48]
+#> → GLM-AED running... [2026-05-26 22:18:48]
+#> ✔ GLM-AED run successful! [2026-05-26 22:18:51]
+#> ✔ Model run complete! [2026-05-26 22:18:51]
 out <- run_glm_aed_diagnostics(aeme = aeme)
 #> Requesting 86 variables from model output...  (sediment zone _Z variables are
 #> optional; missing ones are skipped)
@@ -244,8 +244,4 @@ out <- run_glm_aed_diagnostics(aeme = aeme)
 #> │ sedflux_organic_Z      │PHY_phy_swi_p_Z│ Phyto SWI P (per zone)    │ -0.0219│-0.00394│-0.00588│-0.000999│ 0.00506│ ok         │
 #> │ sedflux_silica_Z       │ SIL_dsf_rsi_Z │ Si SWI flux (per zone)    │ 0.00233│ 0.00421│ 0.0435 │ 0.755   │ 0.104  │ ok         │
 #> └────────────────────────┴───────────────┴───────────────────────────┴────────┴────────┴────────┴─────────┴────────┴────────────┘
-
-
-
-
 ```

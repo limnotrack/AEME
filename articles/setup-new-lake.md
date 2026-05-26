@@ -195,9 +195,9 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-05-26 05:36:27] job submitted
-#> INFO [2026-05-26 05:36:27] downloading
-#> INFO [2026-05-26 05:36:29] extracting
+#> INFO [2026-05-26 22:33:24] job submitted
+#> INFO [2026-05-26 22:33:24] downloading
+#> INFO [2026-05-26 22:33:25] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -700,14 +700,14 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-26 05:36:52]
-#> → DYRESM-CAEDYM running... [2026-05-26 05:36:52]
-#> ✔ DYRESM-CAEDYM run successful! [2026-05-26 05:37:22]
-#> → GLM-AED running... [2026-05-26 05:37:22]
-#> ✔ GLM-AED run successful! [2026-05-26 05:37:22]
-#> → GOTM-WET running... [2026-05-26 05:37:22]
-#> ✔ GOTM-WET run successful! [2026-05-26 05:37:23]
-#> ✔ Model run complete! [2026-05-26 05:37:23]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-26 22:33:51]
+#> → DYRESM-CAEDYM running... [2026-05-26 22:33:51]
+#> ✔ DYRESM-CAEDYM run successful! [2026-05-26 22:34:19]
+#> → GLM-AED running... [2026-05-26 22:34:19]
+#> ✔ GLM-AED run successful! [2026-05-26 22:34:19]
+#> → GOTM-WET running... [2026-05-26 22:34:19]
+#> ✔ GOTM-WET run successful! [2026-05-26 22:34:20]
+#> ✔ Model run complete! [2026-05-26 22:34:20]
 #> ! The following variables are not available in model dy_cd: CHM_ph, LKE_photic
 #> ! The following variables are not available in model gotm_wet: CHM_ph
 ```

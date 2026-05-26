@@ -175,7 +175,7 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [13ms]
+#> ✔ Estimating surface water temperature [14ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #> ℹ Correcting water balance using estimated outflows (method = 2).

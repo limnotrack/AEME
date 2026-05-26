@@ -133,6 +133,9 @@
   lake data from Aeme object
 - [`get_lake_dir()`](https://limnotrack.com/reference/get_lake_dir.md) :
   Get the directory of the lake model setup
+- [`get_mean_sea_level_pressure()`](https://limnotrack.com/reference/get_mean_sea_level_pressure.md)
+  : Return mean sea level pressure given air temperature, elevation and
+  station pressure.
 - [`get_met()`](https://limnotrack.com/reference/get_met.md) : Get
   meteorological data from Aeme object
 - [`get_model_config_files()`](https://limnotrack.com/reference/get_model_config_files.md)
@@ -153,6 +156,8 @@
   : Get column names for the observational data frame
 - [`get_output_vars()`](https://limnotrack.com/reference/get_output_vars.md)
   : Get the output variables from an AEME object
+- [`get_station_pressure()`](https://limnotrack.com/reference/get_station_pressure.md)
+  : Return station pressure from mean sea level pressure.
 - [`get_var()`](https://limnotrack.com/reference/get_var.md) : Get
   variable from aeme
 - [`get_vars_sim()`](https://limnotrack.com/reference/get_vars_sim.md) :
