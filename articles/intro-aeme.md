@@ -556,23 +556,23 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [14ms]
+#> ✔ Estimating surface water temperature [20ms]
 #> 
 #> 
 #> 
-#> Estimating lake water levels for dy_cd, glm_aed, and gotm_wet
-#> 
-#>   ℹ Optimizing parameters for water balance
-#> 
-#>   ✔ Optimization Complete: C = 0.5008, h_inv = 22.787, Final RMSE = 0.0349
-#> 
-#> Estimating lake water levels for dy_cd, glm_aed, and gotm_wet
+#> Estimating lake water levels for dy_cd
 #> 
 #>   ℹ Optimizing parameters for water balance
 #> 
 #>   ✔ Optimization Complete: C = 0.5008, h_inv = 22.787, Final RMSE = 0.0349
 #> 
-#> Estimating lake water levels for dy_cd, glm_aed, and gotm_wet
+#> Estimating lake water levels for glm_aed
+#> 
+#>   ℹ Optimizing parameters for water balance
+#> 
+#>   ✔ Optimization Complete: C = 0.5008, h_inv = 22.787, Final RMSE = 0.0349
+#> 
+#> Estimating lake water levels for gotm_wet
 #> 
 #>   ℹ Optimizing parameters for water balance
 #> 

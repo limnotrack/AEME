@@ -38,15 +38,25 @@ model_controls = model_controls, ext_elev = 3)
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [8ms]
 #> 
-#> Error in "lapply(text, glue_cmd, .envir = .envir)": ! Could not evaluate cli `{}` expression: `model`.
-#> Caused by error in `eval(expr, envir = envir)`:
-#> ! object 'model' not found
+#> Estimating lake water levels for glm_aed
+#>   ℹ Optimizing parameters for water balance
+#>   ✔ Optimization Complete: C = 0.3423, h_inv = 23.4843, Final RMSE = 0.145
+#> ℹ Correcting water balance using estimated outflows (method = 2).
+#> 
+#> ── Building GLM-AED for lake wainamu ──
+#> 
+#> ℹ Copied in GLM nml file
+#> ℹ Copied in AED nml file and supporting files
+#> ℹ Copied in GLM plots nml file
+#> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> Error in run_aeme(aeme = aeme, model = "glm_aed", path = path): ✖ `model_controls` need to be provided to load model output.
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-26 05:22:07]
+#> → GLM-AED running... [2026-05-26 05:22:07]
+#> ✔ GLM-AED run successful! [2026-05-26 05:22:07]
+#> ✔ Model run complete! [2026-05-26 05:22:07]
 write_aeme_to_files(aeme, path)
 aeme_path <- get_lake_dir(aeme = aeme, path = path)
 aeme2 <- read_aeme_from_files(aeme_path)
-#> Error in check_model(model = model): `model` must be provided and not be empty.
 ```
