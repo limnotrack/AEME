@@ -30,7 +30,6 @@ Imports:
     parallel,
     patchwork,
     processx,
-    psychrolib,
     RColorBrewer,
     readr,
     rLakeAnalyzer,

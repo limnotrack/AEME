@@ -217,3 +217,55 @@ check_met <- function(met) {
 format_ens_label <- function(ens_n) {
   paste0("ens_", sprintf("%03d", ens_n))
 }
+
+#' Return mean sea level pressure given air temperature, elevation and station pressure.
+#'
+#' @param MET_prsttn A numeric vector of observed station pressure in Pa
+#' @param elevation A numeric vector of elevation in m
+#' @param MET_tmpair A numeric vector of air temperature in degC
+#'
+#' @return A numeric vector of mean sea level pressure in Pa
+#'
+#' @references
+#' Hess SL, Introduction to theoretical meteorology, Holt Rinehart and Winston, NY 1959,
+#' ch. 6.5; Stull RB, Meteorology for scientists and engineers, 2nd edition,
+#' Brooks/Cole 2000, ch. 1.
+#'
+#' @note
+#' The standard procedure for the US is to use for MET_tmpair the average
+#' of the current station temperature and the station temperature from 12 hours ago.
+#'
+#' @examples
+#' get_mean_sea_level_pressure(101226.5, 105:205, 17.19)
+#'
+#' @export
+get_mean_sea_level_pressure <- function(prsttn, elevation, tmpair) {
+  # Calculate average temperature in column of air, assuming a lapse rate
+  # of 6.5 degC/km
+  t_column <- tmpair + 0.0065 * elevation / 2
+  # Determine the scale height
+  h <- 287.055 * (t_column + 273.15) / 9.807
+  # Calculate the mean sea level pressure
+  prsttn * exp(elevation / h)
+}
+
+#' Return station pressure from mean sea level pressure.
+#'
+#' @param prmslp A numeric vector of mean sea level pressure in Pa
+#' @param elevation A numeric vector of elevation in m
+#' @param tmpair A numeric vector of air temperature in degC
+#'
+#' @return A numeric vector of station pressure in Pa
+#'
+#' @references See \code{\link{get_mean_sea_level_pressure}}.
+#'
+#' @note
+#' This function is just the inverse of \code{\link{get_mean_sea_level_pressure}}.
+#'
+#' @examples
+#' get_station_pressure(101226.5, 105:205, 17.19)
+#'
+#' @export
+get_station_pressure <- function(prmslp, elevation, tmpair) {
+  prmslp / get_mean_sea_level_pressure(1, elevation, tmpair)
+}
