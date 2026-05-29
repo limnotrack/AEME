@@ -556,7 +556,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [14ms]
+#> ✔ Estimating surface water temperature [9ms]
 #> 
 #> 
 #> 
