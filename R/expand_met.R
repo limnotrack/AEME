@@ -8,7 +8,6 @@
 #' @param print.plot logical; print the plot
 #'
 #'
-#' @importFrom psychrolib SetUnitSystem GetStationPressure GetSeaLevelPressure
 #' @importFrom tidyr pivot_longer
 #' @importFrom ggplot2 ggplot geom_line aes facet_wrap labs theme_bw
 #' @importFrom withr local_locale local_timezone
