@@ -79,7 +79,7 @@
 #'
 #' Sondergaard, M., et al. (2003). \doi{10.1023/B:HYDR.0000008611.12704.dd}
 #'
-#' @importFrom dplyr case_match mutate across everything
+#' @importFrom dplyr mutate across everything
 #' @importFrom clitable cli_table
 #' @importFrom cli cli_warn cli_abort cli_rule cli_text
 #' @export
@@ -262,13 +262,12 @@ estimate_zone_fluxes <- function(aeme, path,
           obs_df <- as.data.frame(obs_mat)
           
           # Format values and improve column headers
-          colnames(obs_df) <- dplyr::case_match(
+          colnames(obs_df) <- dplyr::recode(
             colnames(obs_df),
-            "oxy" ~ " O2 (mg/L) ",
-            "amm" ~ " NH4 (mg/L) ",
-            "nit" ~ " NO3 (mg/L) ",
-            "frp" ~ " FRP (mg/L) ",
-            .default = colnames(obs_df)
+            "oxy" = " O2 (mg/L) ",
+            "amm" = " NH4 (mg/L) ",
+            "nit" = " NO3 (mg/L) ",
+            "frp" = " FRP (mg/L) "
           )
           
           obs_df <- obs_df |>
@@ -385,21 +384,20 @@ estimate_zone_fluxes <- function(aeme, path,
                                                              format = "g"))) |>
       as.data.frame()
     
-    colnames(zone_tbl) <- dplyr::case_match(
+    olnames(zone_tbl) <- dplyr::recode(
       colnames(zone_tbl),
-      "zone"           ~ "Zone",
-      "height_lower_m" ~ "H lower (m)",
-      "height_upper_m" ~ "H upper (m)",
-      "depth_upper_m"  ~ "D upper (m)",
-      "depth_lower_m"  ~ "D lower (m)",
-      "mean_depth_m"   ~ "Mean D (m)",
-      "area_m2"        ~ "Area (m2)",
-      "area_frac"      ~ "Area frac",
-      "fsed_oxy"       ~ "O2",
-      "fsed_amm"       ~ "NH4",
-      "fsed_nit"       ~ "NO3",
-      "fsed_frp"       ~ "FRP",
-      .default = colnames(zone_tbl)
+      "zone"           = "Zone",
+      "height_lower_m" = "H lower (m)",
+      "height_upper_m" = "H upper (m)",
+      "depth_upper_m"  = "D upper (m)",
+      "depth_lower_m"  = "D lower (m)",
+      "mean_depth_m"   = "Mean D (m)",
+      "area_m2"        = "Area (m2)",
+      "area_frac"      = "Area frac",
+      "fsed_oxy"       = "O2",
+      "fsed_amm"       = "NH4",
+      "fsed_nit"       = "NO3",
+      "fsed_frp"       = "FRP"
     )
     
     ct <- clitable::cli_table(zone_tbl)
@@ -411,13 +409,12 @@ estimate_zone_fluxes <- function(aeme, path,
     
     avg_tbl <- as.data.frame(t(round(lake_avg_fluxes, 3)))
     
-    colnames(avg_tbl) <- dplyr::case_match(
+    colnames(avg_tbl) <- dplyr::recode(
       colnames(avg_tbl),
-      "oxy" ~ "O2 (mmol/m2/d)",
-      "amm" ~ "NH4 (mmol/m2/d)",
-      "nit" ~ "NO3 (mmol/m2/d)",
-      "frp" ~ "FRP (mmol/m2/d)",
-      .default = colnames(avg_tbl)
+      "oxy" = "O2 (mmol/m2/d)",
+      "amm" = "NH4 (mmol/m2/d)",
+      "nit" = "NO3 (mmol/m2/d)",
+      "frp" = "FRP (mmol/m2/d)"
     )
     
     ct <- clitable::cli_table(avg_tbl)
