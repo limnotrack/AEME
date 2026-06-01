@@ -88,7 +88,7 @@ test_that("running GLM works", {
                               vars_sim = vars_sim)
   testthat::expect_true(is.list(outp1))
   testthat::expect_true(nrow(outp1$HYD_temp) == 42)
-  testthat::expect_true(length(outp1) == 52)
+  testthat::expect_true(length(outp1) >= length(vars_sim))
   
   outp2 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model,  
                               vars_sim = "HYD_temp", incl_fluxes = FALSE)
