@@ -5,6 +5,7 @@
 
 <!-- badges: start -->
 
+![version](https://img.shields.io/github/r-package/v/limnotrack/AEME)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml)
@@ -96,7 +97,7 @@ aeme
 #> ── Configuration ──
 #> 
 #> • Model: dy_cd, glm_aed, and gotm_wet
-#> • Path: 'C:\Users\tadhg\AppData\Local\Temp\RtmpKgBmNH\lake'
+#> • Path: 'C:\Users\mooret\AppData\Local\Temp\RtmpopDlmQ\lake'
 #> • Model controls: Present
 #> • Use biogeochemical model: Yes
 #> ┌ Model Configuration ─────────────────────────────────────────┐
@@ -141,10 +142,10 @@ aeme
 #> • DY-CD: 1
 #> • GLM-AED: 1
 #> • GOTM-WET: 1
-#> • Variables: 61
+#> • Variables: 42
 #> Water temperature, Thermocline depth, Dissolved oxygen, Total chlorophyll a,
 #> Total nitrogen, Total phosphorus, Water level, Lake depth, Water density,
-#> Salinity, ... and 51 more
+#> Stratified, ... and 32 more
 ```
 
 Model data can be visualised easily using the `plot_output()` function:
@@ -154,7 +155,7 @@ p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 p1
 ```
 
-<img src="man/figures/README-plot_output-HYD_temp-1.png" width="100%" />
+<img src="man/figures/README-plot_output-HYD_temp-1.png" alt="" width="100%" />
 
 Also, visualising lake level plots.
 
@@ -164,7 +165,7 @@ p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
 p2
 ```
 
-<img src="man/figures/README-plot-output-HYD_wlev-1.png" width="100%" />
+<img src="man/figures/README-plot-output-HYD_wlev-1.png" alt="" width="100%" />
 
 ## Documentation
 
