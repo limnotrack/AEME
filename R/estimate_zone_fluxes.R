@@ -384,7 +384,7 @@ estimate_zone_fluxes <- function(aeme, path,
                                                              format = "g"))) |>
       as.data.frame()
     
-    olnames(zone_tbl) <- dplyr::recode(
+    colnames(zone_tbl) <- dplyr::recode(
       colnames(zone_tbl),
       "zone"           = "Zone",
       "height_lower_m" = "H lower (m)",
