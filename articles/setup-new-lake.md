@@ -195,45 +195,9 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-05-29 03:10:31] job submitted
-#> INFO [2026-05-29 03:10:35] job updated
-#> INFO [2026-05-29 03:10:39] job updated
-#> INFO [2026-05-29 03:10:43] job updated
-#> INFO [2026-05-29 03:10:48] job updated
-#> INFO [2026-05-29 03:10:52] job updated
-#> INFO [2026-05-29 03:10:56] job updated
-#> INFO [2026-05-29 03:11:00] job updated
-#> INFO [2026-05-29 03:11:05] job updated
-#> INFO [2026-05-29 03:11:09] job updated
-#> INFO [2026-05-29 03:11:13] job updated
-#> INFO [2026-05-29 03:11:17] job updated
-#> INFO [2026-05-29 03:11:21] job updated
-#> INFO [2026-05-29 03:11:25] job updated
-#> INFO [2026-05-29 03:11:30] job updated
-#> INFO [2026-05-29 03:11:34] job updated
-#> INFO [2026-05-29 03:11:38] job updated
-#> INFO [2026-05-29 03:11:42] job updated
-#> INFO [2026-05-29 03:11:46] job updated
-#> INFO [2026-05-29 03:11:51] job updated
-#> INFO [2026-05-29 03:11:55] job updated
-#> INFO [2026-05-29 03:11:59] job updated
-#> INFO [2026-05-29 03:12:03] job updated
-#> INFO [2026-05-29 03:12:07] job updated
-#> INFO [2026-05-29 03:12:11] job updated
-#> INFO [2026-05-29 03:12:15] job updated
-#> INFO [2026-05-29 03:12:20] job updated
-#> INFO [2026-05-29 03:12:24] job updated
-#> INFO [2026-05-29 03:12:28] job updated
-#> INFO [2026-05-29 03:12:32] job updated
-#> INFO [2026-05-29 03:12:36] job updated
-#> INFO [2026-05-29 03:12:40] job updated
-#> INFO [2026-05-29 03:12:45] job updated
-#> INFO [2026-05-29 03:12:49] job updated
-#> INFO [2026-05-29 03:12:53] job updated
-#> INFO [2026-05-29 03:12:57] job updated
-#> INFO [2026-05-29 03:13:01] job updated
-#> INFO [2026-05-29 03:13:01] downloading
-#> INFO [2026-05-29 03:13:03] extracting
+#> INFO [2026-06-01 22:18:06] job submitted
+#> INFO [2026-06-01 22:18:06] downloading
+#> INFO [2026-06-01 22:18:07] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -736,14 +700,14 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-29 03:13:28]
-#> → DYRESM-CAEDYM running... [2026-05-29 03:13:28]
-#> ✔ DYRESM-CAEDYM run successful! [2026-05-29 03:13:56]
-#> → GLM-AED running... [2026-05-29 03:13:56]
-#> ✔ GLM-AED run successful! [2026-05-29 03:13:56]
-#> → GOTM-WET running... [2026-05-29 03:13:56]
-#> ✔ GOTM-WET run successful! [2026-05-29 03:13:57]
-#> ✔ Model run complete! [2026-05-29 03:13:57]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-01 22:18:32]
+#> → DYRESM-CAEDYM running... [2026-06-01 22:18:32]
+#> ✔ DYRESM-CAEDYM run successful! [2026-06-01 22:19:01]
+#> → GLM-AED running... [2026-06-01 22:19:01]
+#> ✔ GLM-AED run successful! [2026-06-01 22:19:01]
+#> → GOTM-WET running... [2026-06-01 22:19:01]
+#> ✔ GOTM-WET run successful! [2026-06-01 22:19:02]
+#> ✔ Model run complete! [2026-06-01 22:19:02]
 #> ! The following variables are not available in model dy_cd: CHM_ph, LKE_photic
 #> ! The following variables are not available in model gotm_wet: CHM_ph
 ```

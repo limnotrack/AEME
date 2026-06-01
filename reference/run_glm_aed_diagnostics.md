@@ -138,10 +138,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 
 aeme <- run_aeme(aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-29 02:56:13]
-#> → GLM-AED running... [2026-05-29 02:56:13]
-#> ✔ GLM-AED run successful! [2026-05-29 02:56:16]
-#> ✔ Model run complete! [2026-05-29 02:56:16]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-01 22:03:42]
+#> → GLM-AED running... [2026-06-01 22:03:42]
+#> ✔ GLM-AED run successful! [2026-06-01 22:03:44]
+#> ✔ Model run complete! [2026-06-01 22:03:44]
 out <- run_glm_aed_diagnostics(aeme = aeme)
 #> Requesting 86 variables from model output...  (sediment zone _Z variables are
 #> optional; missing ones are skipped)

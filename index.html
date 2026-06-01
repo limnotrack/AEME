@@ -143,7 +143,7 @@
 <span><span class="co">#&gt; ── Configuration ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; • Model: dy_cd, glm_aed, and gotm_wet</span></span>
-<span><span class="co">#&gt; • Path: 'C:\Users\tadhg\AppData\Local\Temp\RtmpKgBmNH\lake'</span></span>
+<span><span class="co">#&gt; • Path: 'C:\Users\mooret\AppData\Local\Temp\RtmpopDlmQ\lake'</span></span>
 <span><span class="co">#&gt; • Model controls: Present</span></span>
 <span><span class="co">#&gt; • Use biogeochemical model: Yes</span></span>
 <span><span class="co">#&gt; ┌ Model Configuration ─────────────────────────────────────────┐</span></span>
@@ -188,21 +188,21 @@
 <span><span class="co">#&gt; • DY-CD: 1</span></span>
 <span><span class="co">#&gt; • GLM-AED: 1</span></span>
 <span><span class="co">#&gt; • GOTM-WET: 1</span></span>
-<span><span class="co">#&gt; • Variables: 61</span></span>
+<span><span class="co">#&gt; • Variables: 42</span></span>
 <span><span class="co">#&gt; Water temperature, Thermocline depth, Dissolved oxygen, Total chlorophyll a,</span></span>
 <span><span class="co">#&gt; Total nitrogen, Total phosphorus, Water level, Lake depth, Water density,</span></span>
-<span><span class="co">#&gt; Salinity, ... and 51 more</span></span></code></pre></div>
+<span><span class="co">#&gt; Stratified, ... and 32 more</span></span></code></pre></div>
 <p>Model data can be visualised easily using the <code><a href="reference/plot_output.html">plot_output()</a></code> function:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
 <span><span class="va">p1</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot_output-HYD_temp-1.png" width="100%"></p>
+<p><img src="reference/figures/README-plot_output-HYD_temp-1.png" alt="" width="100%"></p>
 <p>Also, visualising lake level plots.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"LKE_lvlwtr"</span>,</span>
 <span>                  facet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">p2</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot-output-HYD_wlev-1.png" width="100%"></p>
+<p><img src="reference/figures/README-plot-output-HYD_wlev-1.png" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
