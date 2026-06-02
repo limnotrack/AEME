@@ -1283,6 +1283,11 @@ setMethod("show", "Aeme", function(object) {
   n_inflows    <- length(inf$data)
   inflow_names <- if (n_inflows > 0) paste(names(inf$data), collapse = ", ") else "None"
   
+  # Outflow summary
+  n_outflows    <- length(outf$data)
+  outflow_names <- if (n_outflows > 0) paste(names(outf$data), collapse = ", ") else "None"
+  outflow_elevs  <- if (n_outflows > 0) paste0(unlist(outf$elevation), collapse = ", ") else "N/A"
+  
   # Hypsograph suffix
   hyps_n <- if (is.data.frame(inp$hypsograph)) glue::glue(" (n={nrow(inp$hypsograph)})") else ""
   
@@ -1351,7 +1356,7 @@ setMethod("show", "Aeme", function(object) {
   
   cli::cli_h2("Outflows")
   cli::cli_bullets(c(
-    "*" = "Data: {ifelse(length(outf$data) > 0, cli::col_green('Present'), cli::col_red('Absent'))}",
+    "*" = "Number of outflows: {n_outflows}; Names: {outflow_names}; Elevations: {outflow_elevs}",
     "*" = "Scaling factors: DY-CD: {round(outf$factor$dy_cd, 2)}; GLM-AED: {round(outf$factor$glm_aed, 2)}; GOTM-WET: {round(outf$factor$gotm_wet, 2)}"
   ))
   
