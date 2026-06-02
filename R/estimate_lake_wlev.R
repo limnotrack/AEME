@@ -252,7 +252,7 @@ simulate_lake_nudged <- function(params, data, hyps_df, start_lvl,
     # 6. Finalize state
     sim_V[t + 1] <- max(min(hyps_df$volume), V_upd)
     if (is.na(sim_V[t + 1])) {
-      message("NA volume at time ", t + 1)
+      # message("NA volume at time ", t + 1)
       break
     }
     sim_h[t + 1] <- level_from_volume(sim_V[t + 1], hyps_df)
