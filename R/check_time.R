@@ -4,6 +4,8 @@
 #' @param model character; model name
 #' @param aeme_time list; a list of start, stop and spin-up period for each
 #' model from aeme object
+#' @param name character; name of the data frame being checked (for error 
+#' messages)
 #'
 #' @importFrom lubridate ddays
 #'
