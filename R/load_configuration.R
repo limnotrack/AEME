@@ -37,9 +37,7 @@ load_configuration <- function(aeme,
            lake_dir = lake_dir),
     model
   )
-  
-  use_bgc <- all(sapply(model_config, \(x) !is.null(x[["bgc"]])))
-  
+
   out <- list(model_controls = model_controls,
               use_bgc = use_bgc,
               path = path,
