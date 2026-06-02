@@ -11,6 +11,10 @@
 * `plot_output_base()` — new base-R plotting function for AEME model output,
   producing heatmap-style depth–time plots without any `ggplot2` dependency.
   Can also be invoked via `plot_output(..., backend = "base")`.
+* `get_mean_sea_level_pressure()` — utility function to convert station
+  pressure to mean sea level pressure given air temperature and elevation.
+* `get_station_pressure()` — inverse of `get_mean_sea_level_pressure()`;
+  converts mean sea level pressure back to station pressure.
 
 ## Improvements
 
@@ -37,8 +41,12 @@
   NML files.
 * **`set_glm_aed_models()`** — messaging improved when AED sub-models are
   removed.
+* **`run_glm_aed_diagnostics()`** — `plot` argument now defaults to `FALSE`.
+* **`calc_water_balance()` / `estimate_lake_wlev()` / `estimate_surface_temperature()` / `standardise_inflow()` / `build_glm()`** — console messaging overhauled using the new `cli_safe()` internal helper, which respects the `AEME.inform` option and supports indented output.  Missing inflow state variables are now reported with their filled default values rather than a generic warning.
 * **`clitable`** moved from `Suggests` to `Imports`; `knitr` moved from
-  `Imports` to `Suggests`.
+  `Imports` to `Suggests`; `psychrolib` removed from `Imports` (psychrometric
+  calculations now handled internally via `get_mean_sea_level_pressure()` /
+  `get_station_pressure()`).
 
 ## Bug fixes
 
@@ -50,6 +58,12 @@
   `read_model_outputs()` to use the updated `key_naming$var_aeme` column.
 * Removed a now-redundant internal helper `format_model_vars_vec()`; its
   behaviour is folded into `get_model_vars(as_vector = TRUE)`.
+* Fixed initialisation guard in `initialise_FABM()`, `initialise_aed()`, and
+  `initialise_glm()` — empty model-controls tables now return early with an
+  informative message rather than erroring.
+* Fixed a CLI bug in `estimate_lake_wlev()`.
+* Fixed a typo bug in `estimate_zone_fluxes()` column-renaming step
+  (`dplyr::case_match` replaced with `dplyr::recode` for compatibility).
 
 # AEME 0.3.0
 
