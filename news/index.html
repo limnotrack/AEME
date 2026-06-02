@@ -59,6 +59,10 @@
 <code><a href="../reference/set_wbal_param.html">set_wbal_param()</a></code> — store water-balance outflow parameters in an <code>Aeme</code> object for use in subsequent <code><a href="../reference/build_aeme.html">build_aeme()</a></code> calls.</li>
 <li>
 <code><a href="../reference/plot_output_base.html">plot_output_base()</a></code> — new base-R plotting function for AEME model output, producing heatmap-style depth–time plots without any <code>ggplot2</code> dependency. Can also be invoked via <code>plot_output(..., backend = "base")</code>.</li>
+<li>
+<code><a href="../reference/get_mean_sea_level_pressure.html">get_mean_sea_level_pressure()</a></code> — utility function to convert station pressure to mean sea level pressure given air temperature and elevation.</li>
+<li>
+<code><a href="../reference/get_station_pressure.html">get_station_pressure()</a></code> — inverse of <code><a href="../reference/get_mean_sea_level_pressure.html">get_mean_sea_level_pressure()</a></code>; converts mean sea level pressure back to station pressure.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-0-3-1">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-3-1"></a></h3>
@@ -81,7 +85,9 @@
 <li>
 <strong><code><a href="../reference/run_glm_aed_diagnostics.html">run_glm_aed_diagnostics()</a></code></strong> — <code>plot</code> argument now defaults to <code>FALSE</code>.</li>
 <li>
-<strong><code>clitable</code></strong> moved from <code>Suggests</code> to <code>Imports</code>; <code>knitr</code> moved from <code>Imports</code> to <code>Suggests</code>; <code>psychrolib</code> removed from <code>Imports</code> (psychrometric calculations now handled internally).</li>
+<strong><code>calc_water_balance()</code> / <code><a href="../reference/estimate_lake_wlev.html">estimate_lake_wlev()</a></code> / <code><a href="../reference/estimate_surface_temperature.html">estimate_surface_temperature()</a></code> / <code><a href="../reference/standardise_inflow.html">standardise_inflow()</a></code> / <code>build_glm()</code></strong> — console messaging overhauled using the new <code>cli_safe()</code> internal helper, which respects the <code>AEME.inform</code> option and supports indented output. Missing inflow state variables are now reported with their filled default values rather than a generic warning.</li>
+<li>
+<strong><code>clitable</code></strong> moved from <code>Suggests</code> to <code>Imports</code>; <code>knitr</code> moved from <code>Imports</code> to <code>Suggests</code>; <code>psychrolib</code> removed from <code>Imports</code> (psychrometric calculations now handled internally via <code><a href="../reference/get_mean_sea_level_pressure.html">get_mean_sea_level_pressure()</a></code> / <code><a href="../reference/get_station_pressure.html">get_station_pressure()</a></code>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-3-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-1"></a></h3>

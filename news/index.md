@@ -19,6 +19,13 @@
   — new base-R plotting function for AEME model output, producing
   heatmap-style depth–time plots without any `ggplot2` dependency. Can
   also be invoked via `plot_output(..., backend = "base")`.
+- [`get_mean_sea_level_pressure()`](https://limnotrack.com/reference/get_mean_sea_level_pressure.md)
+  — utility function to convert station pressure to mean sea level
+  pressure given air temperature and elevation.
+- [`get_station_pressure()`](https://limnotrack.com/reference/get_station_pressure.md)
+  — inverse of
+  [`get_mean_sea_level_pressure()`](https://limnotrack.com/reference/get_mean_sea_level_pressure.md);
+  converts mean sea level pressure back to station pressure.
 
 ### Improvements
 
@@ -53,9 +60,23 @@
   — messaging improved when AED sub-models are removed.
 - **[`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)**
   — `plot` argument now defaults to `FALSE`.
+- **`calc_water_balance()` /
+  [`estimate_lake_wlev()`](https://limnotrack.com/reference/estimate_lake_wlev.md)
+  /
+  [`estimate_surface_temperature()`](https://limnotrack.com/reference/estimate_surface_temperature.md)
+  /
+  [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md)
+  / `build_glm()`** — console messaging overhauled using the new
+  `cli_safe()` internal helper, which respects the `AEME.inform` option
+  and supports indented output. Missing inflow state variables are now
+  reported with their filled default values rather than a generic
+  warning.
 - **`clitable`** moved from `Suggests` to `Imports`; `knitr` moved from
   `Imports` to `Suggests`; `psychrolib` removed from `Imports`
-  (psychrometric calculations now handled internally).
+  (psychrometric calculations now handled internally via
+  [`get_mean_sea_level_pressure()`](https://limnotrack.com/reference/get_mean_sea_level_pressure.md)
+  /
+  [`get_station_pressure()`](https://limnotrack.com/reference/get_station_pressure.md)).
 
 ### Bug fixes
 
