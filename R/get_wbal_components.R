@@ -9,7 +9,7 @@
 get_wbal_components <- function(
     aeme,
     model,
-    remove_spin_up = TRUE,
+    remove_spin_up = FALSE,
     cumulative = FALSE
 ) {
   
