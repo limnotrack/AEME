@@ -485,6 +485,9 @@ test_that("running models with wbal method = 1", {
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
                      wb_method = 1, calc_wlev = F)
+  
+  plot_est_wbal(aeme, model = "glm_aed", time_axis = "monthly")
+  
   inp <- input(aeme)
   met <- inp$meteo
   aeme <- run_aeme(aeme = aeme, verbose = FALSE,
