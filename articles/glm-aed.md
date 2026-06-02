@@ -154,7 +154,7 @@ aeme
     #>                                                                                 
     #> ── Outflows ──                                                                  
     #>                                                                                 
-    #> • Data: Present                                                                 
+    #> • Number of outflows: 1; Names: outflow; Elevations: -1                         
     #> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1                            
     #>                                                                                 
     #> ── Water Balance ──                                                             

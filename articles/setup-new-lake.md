@@ -195,9 +195,9 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-06-02 04:57:31] job submitted
-#> INFO [2026-06-02 04:57:31] downloading
-#> INFO [2026-06-02 04:57:32] extracting
+#> INFO [2026-06-02 05:49:58] job submitted
+#> INFO [2026-06-02 05:49:58] downloading
+#> INFO [2026-06-02 05:50:00] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -395,7 +395,7 @@ aeme
 #> 
 #> ── Outflows ──
 #> 
-#> • Data: Absent
+#> • Number of outflows: 0; Names: None; Elevations: N/A
 #> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
 #> 
 #> ── Water Balance ──
@@ -566,7 +566,7 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [8ms]
 #> 
 #> 
 #> 
@@ -629,7 +629,7 @@ print(aeme)
 #> • Model: dy_cd, glm_aed, and gotm_wet
 #> • Path: D:\a\AEME\AEME\vignettes\aeme
 #> • Model controls: Present
-#> • Use biogeochemical model: Yes
+#> • Use biogeochemical model: No
 #> ┌ Model Configuration ─────────────────────────────────────────┐
 #> │       Model              Physical         Biogeochemical     │
 #> │ ---                                                          │
@@ -655,7 +655,7 @@ print(aeme)
 #> 
 #> ── Outflows ──
 #> 
-#> • Data: Present
+#> • Number of outflows: 1; Names: wbal; Elevations: -1, -1
 #> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
 #> 
 #> ── Water Balance ──
@@ -700,14 +700,14 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-02 04:57:57]
-#> → DYRESM-CAEDYM running... [2026-06-02 04:57:57]
-#> ✔ DYRESM-CAEDYM run successful! [2026-06-02 04:58:23]
-#> → GLM-AED running... [2026-06-02 04:58:23]
-#> ✔ GLM-AED run successful! [2026-06-02 04:58:24]
-#> → GOTM-WET running... [2026-06-02 04:58:24]
-#> ✔ GOTM-WET run successful! [2026-06-02 04:58:24]
-#> ✔ Model run complete! [2026-06-02 04:58:24]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-02 05:50:24]
+#> → DYRESM-CAEDYM running... [2026-06-02 05:50:24]
+#> ✔ DYRESM-CAEDYM run successful! [2026-06-02 05:50:51]
+#> → GLM-AED running... [2026-06-02 05:50:51]
+#> ✔ GLM-AED run successful! [2026-06-02 05:50:51]
+#> → GOTM-WET running... [2026-06-02 05:50:51]
+#> ✔ GOTM-WET run successful! [2026-06-02 05:50:52]
+#> ✔ Model run complete! [2026-06-02 05:50:52]
 #> ! The following variables are not available in model dy_cd: CHM_ph, LKE_photic
 #> ! The following variables are not available in model gotm_wet: CHM_ph
 ```

@@ -112,12 +112,6 @@
 
 ### New features
 
-- Added `edit_model_controls()`, an interactive Shiny gadget for editing
-  model controls in a spreadsheet-like interface. Includes filtering by
-  variable name and simulated variables, type-safe editing, and
-  validation on save to warn when simulated variables are missing
-  initial values.
-
 - Fixed bug for initialising GLM-AED water column with the values from
   the model_controls dataframe. This is also added to the GLM .nml file.
 
