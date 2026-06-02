@@ -91,13 +91,17 @@ estimate_zone_fluxes <- function(aeme, path,
                                                fsed_frp =  0.05),
                                  verbose   = TRUE) {
   aeme <- check_aeme(aeme)
+  if (missing(path)) {
+    path <- get_aeme_path(aeme)
+  }
   path <- check_path(path)
   lake_dir <- get_lake_dir(aeme, path)
   hypsograph <- get_hypsograph(aeme)
   lke <- get_lake(aeme)
   lat <- lke$latitude
   cfg <- read_model_config(model = "glm_aed", lake_dir = lake_dir)
-  obs <- get_obs(aeme = aeme, var_sim = c("CHM_oxy", "NIT_amm", "NIT_nit", "PHS_frp"))
+  obs <- get_obs(aeme = aeme, var_sim = c("CHM_oxy", "NIT_amm", "NIT_nit",
+                                          "PHS_frp"))
   # ---------------------------------------------------------------------------
   # 0. Input checks
   # ---------------------------------------------------------------------------
@@ -199,7 +203,7 @@ estimate_zone_fluxes <- function(aeme, path,
                NIT_nit = "nit",
                PHS_frp = "frp")
   
-  if (!is.null(obs)) {
+  if (!is.null(obs) && nrow(obs) > 0) {
     
     # -- Validate ---------------------------------------------------------------
     req_cols <- c("Date", "var_aeme", "depth_from", "depth_to", "value")

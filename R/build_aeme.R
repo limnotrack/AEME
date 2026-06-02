@@ -627,7 +627,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                                           "aed_phosphorus",
                                           "aed_organic_matter",
                                           "aed_phytoplankton", "aed_totals")) |> 
-        set_aed_sed_const2d(path = path)
+        set_aed_sed_const2d()
     }
     # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }

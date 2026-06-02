@@ -31,7 +31,7 @@ set_aed_sed_const2d <- function(aeme, path, lake_dir = NULL,
   cli_inform_safe(c("i" = paste0("Setting up AED aed_sed_const2d sediment
                                  zones: ", n_zones)))
   
-  fluxes <- estimate_zone_fluxes(aeme = aeme, path = path, baseline = baseline)
+  fluxes <- estimate_zone_fluxes(aeme = aeme, baseline = baseline)
   
   # Update aed_sed_const2d parameters in aed.nml
   model_config$bgc$aed$aed_sed_const2d$n_zones <- n_zones
