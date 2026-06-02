@@ -309,16 +309,33 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       aeme_outf[["elevation"]] <- elevation_list
     }
     
+    outf_combined <- NULL
     if (length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
+        
+        if (names(aeme_outf[["data"]])[i] == "wbal" & calc_wbal & wb_method == 1) next
+        
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
-        
-        if (names(aeme_outf[["data"]])[i] == "wbal" & calc_wbal) next
-        
         check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
                    aeme_time = aeme_time,
                    name = paste0("outflow-", names(aeme_outf[["data"]])[i]))
       }
+      outflow_names <- names(outf)
+      # Select names not set to "wbal"
+      outflow_names <- outflow_names[!outflow_names %in% "wbal"]
+      
+      # If 1 or more outflows present, combine and sum
+      if (length(outflow_names) > 1) {
+        # Bind together and then group by Date and sum outflows
+        outf_combined <- dplyr::bind_rows(outf[outflow_names], .id = "outflow_name") |>
+          dplyr::group_by(Date) |>
+          dplyr::summarise(HYD_flow = sum(HYD_flow, na.rm = TRUE),
+                           .groups = "drop")
+        
+      } else {
+        outf_combined <- outf[[outflow_names]]
+      }
+      
     }
     
     outf_factor <- aeme_outf[["factor"]]
@@ -376,7 +393,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                                       use = w_bal$use,
                                       hyps = hyps,
                                       inf = inf,
-                                      outf = outf[["outflow"]],
+                                      outf = outf_combined,
                                       level = level,
                                       init_elev = init_elev,
                                       init_temp = init_temp,
