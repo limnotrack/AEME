@@ -313,7 +313,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     if (length(aeme_outf[["data"]]) > 0) {
       for (i in 1:length(aeme_outf[["data"]])) {
         
-        if (names(aeme_outf[["data"]])[i] == "wbal" & calc_wbal & wb_method == 1) next
+        if (names(aeme_outf[["data"]])[i] == "wbal" & calc_wbal) next
         
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
         check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
@@ -332,10 +332,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
           dplyr::summarise(HYD_flow = sum(HYD_flow, na.rm = TRUE),
                            .groups = "drop")
         
-      } else {
+      } else if (length(outflow_names) == 1) {
         outf_combined <- outf[[outflow_names]]
       }
-      
     }
     
     outf_factor <- aeme_outf[["factor"]]
