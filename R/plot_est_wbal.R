@@ -141,8 +141,31 @@ plot_est_wbal <- function(aeme, model,
   col_deltaV  <- "#762a83"
   col_net     <- "#1b7837"
   
+  # Offset inputs left and losses right by half a bar-gap
+  bar_width  <- switch(period, daily = 0.4,  monthly = 10,  annual = 120)
+  bar_offset <- switch(period, daily = 0.25, monthly = 6.5, annual = 70)
+  
+  inputs <- df |>
+    dplyr::select(Date, Inflow = inflow, Rain = rain) |>
+    tidyr::pivot_longer(-Date, names_to = "Component", values_to = "flux_m3") |>
+    dplyr::mutate(
+      Component  = factor(Component, levels = c("Rain", "Inflow")),
+      Date_dodge = Date - bar_offset   # shift left
+    )
+  
+  losses <- df |>
+    dplyr::select(Date, Evaporation = evap_m3,
+                  Outflow = HYD_outflow, Spill = spill_outflow) |>
+    tidyr::pivot_longer(-Date, names_to = "Component", values_to = "flux_m3") |>
+    dplyr::mutate(
+      Component  = factor(Component, levels = c("Spill", "Outflow", "Evaporation")),
+      Date_dodge = Date + bar_offset   # shift right
+    )
+  
+  
   # Shared x scale — break density scales with resolution
-  x_limits <- range(df$Date)
+  x_limits <- range(c(inputs$Date_dodge, losses$Date_dodge, df$Date))
+  x_limits <- x_limits + c(-1, 1) * (bar_width / 2 + 5) 
   x_scale <- switch(
     period,
     daily = ggplot2::scale_x_date(
@@ -207,27 +230,6 @@ plot_est_wbal <- function(aeme, model,
     Outflow     = col_outflow,
     Spill       = col_spill
   )
-  
-  # Offset inputs left and losses right by half a bar-gap
-  bar_width  <- switch(period, daily = 0.4,  monthly = 10,  annual = 120)
-  bar_offset <- switch(period, daily = 0.25, monthly = 6.5, annual = 80)
-  
-  inputs <- df |>
-    dplyr::select(Date, Inflow = inflow, Rain = rain) |>
-    tidyr::pivot_longer(-Date, names_to = "Component", values_to = "flux_m3") |>
-    dplyr::mutate(
-      Component  = factor(Component, levels = c("Rain", "Inflow")),
-      Date_dodge = Date - bar_offset   # shift left
-    )
-  
-  losses <- df |>
-    dplyr::select(Date, Evaporation = evap_m3,
-                  Outflow = HYD_outflow, Spill = spill_outflow) |>
-    tidyr::pivot_longer(-Date, names_to = "Component", values_to = "flux_m3") |>
-    dplyr::mutate(
-      Component  = factor(Component, levels = c("Spill", "Outflow", "Evaporation")),
-      Date_dodge = Date + bar_offset   # shift right
-    )
   
   y_lab_flux <- switch(
     period,

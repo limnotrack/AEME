@@ -4,7 +4,7 @@
 \alias{get_wbal_components}
 \title{Get water balance components from AEME object}
 \usage{
-get_wbal_components(aeme, model, remove_spin_up = TRUE, cumulative = FALSE)
+get_wbal_components(aeme, model, remove_spin_up = FALSE, cumulative = FALSE)
 }
 \arguments{
 \item{aeme}{Aeme object.}
