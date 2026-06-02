@@ -11,6 +11,10 @@
 * `plot_output_base()` — new base-R plotting function for AEME model output,
   producing heatmap-style depth–time plots without any `ggplot2` dependency.
   Can also be invoked via `plot_output(..., backend = "base")`.
+* `get_mean_sea_level_pressure()` — utility function to convert station
+  pressure to mean sea level pressure given air temperature and elevation.
+* `get_station_pressure()` — inverse of `get_mean_sea_level_pressure()`;
+  converts mean sea level pressure back to station pressure.
 
 ## Improvements
 
@@ -38,9 +42,11 @@
 * **`set_glm_aed_models()`** — messaging improved when AED sub-models are
   removed.
 * **`run_glm_aed_diagnostics()`** — `plot` argument now defaults to `FALSE`.
+* **`calc_water_balance()` / `estimate_lake_wlev()` / `estimate_surface_temperature()` / `standardise_inflow()` / `build_glm()`** — console messaging overhauled using the new `cli_safe()` internal helper, which respects the `AEME.inform` option and supports indented output.  Missing inflow state variables are now reported with their filled default values rather than a generic warning.
 * **`clitable`** moved from `Suggests` to `Imports`; `knitr` moved from
   `Imports` to `Suggests`; `psychrolib` removed from `Imports` (psychrometric
-  calculations now handled internally).
+  calculations now handled internally via `get_mean_sea_level_pressure()` /
+  `get_station_pressure()`).
 
 ## Bug fixes
 
