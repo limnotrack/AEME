@@ -556,16 +556,12 @@ sat_vapour_pressure <- function(Ts) {
 #' @param Lv      Numeric. Latent heat of vaporisation (J/kg). Default 2453000.
 #'
 #' @return Numeric. Latent heat flux (W/m²), <= 0.
-#'
-#' @seealso [sat_vapour_pressure()], [flux_to_evap()]
+#' 
+#' @noRd
 #'
 #' @examples
 #' latent_heat_flux(Ts = 20, wndspd = 3, prvapr = 10)
 #'
-#' # Vectorised over a data frame
-#' latent_heat_flux(Ts     = data$sst,
-#'                  wndspd = data$MET_wndspd,
-#'                  prvapr = data$MET_prvapr)
 latent_heat_flux <- function(Ts, wndspd, prvapr,
                              prsttn = 981.9, Ce = 0.0013,
                              rho_air = 1.168, Lv = 2453000) {
@@ -586,14 +582,12 @@ latent_heat_flux <- function(Ts, wndspd, prvapr,
 #'
 #' @return Numeric. Evaporation rate (m/day), <= 0.
 #'
-#' @seealso [latent_heat_flux()]
+#' @noRd
 #'
 #' @examples
 #' flux_to_evap(-50)
 #'
-#' # Full pipeline
-#' Qlh  <- latent_heat_flux(Ts = data$sst, wndspd = data$MET_wndspd, prvapr = data$MET_prvapr)
-#' evap <- flux_to_evap(Qlh)
+
 flux_to_evap <- function(Qlh, Lv = 2453000, rho_water = 1000) {
   (Qlh / Lv) * (86400 / rho_water)
 }
