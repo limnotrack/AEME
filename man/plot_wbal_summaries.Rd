@@ -4,10 +4,11 @@
 \alias{plot_wbal_summaries}
 \title{Plot Water Balance Summaries}
 \usage{
-plot_wbal_summaries(wbal)
+plot_wbal_summaries(aeme)
 }
 \arguments{
-\item{wbal}{Water balance object created with \code{get_wbal_components()}}
+\item{aeme}{Aeme object with model output and observations added. Must have
+model output \code{run_aeme()}}
 }
 \value{
 A ggplot2 object with water balance summaries

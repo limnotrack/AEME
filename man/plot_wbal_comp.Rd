@@ -4,10 +4,11 @@
 \alias{plot_wbal_comp}
 \title{Plot Water Balance Comparison}
 \usage{
-plot_wbal_comp(wbal)
+plot_wbal_comp(aeme)
 }
 \arguments{
-\item{wbal}{Water balance object created with \code{get_wbal_components()}}
+\item{aeme}{Aeme object with model output and observations added. Must have
+model output \code{run_aeme()}}
 }
 \value{
 ggplot object

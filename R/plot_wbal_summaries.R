@@ -1,11 +1,14 @@
 #' Plot Water Balance Summaries
 #'
-#' @param wbal Water balance object created with `get_wbal_components()`
+#' @param aeme Aeme object with model output and observations added. Must have 
+#' model output `run_aeme()`
 #'
 #' @returns A ggplot2 object with water balance summaries
 #' @export
 #'
-plot_wbal_summaries <- function(wbal) {
+plot_wbal_summaries <- function(aeme) {
+  
+  wbal <- get_wbal_components(aeme)
   
   wb      <- wbal$wb
   wb_sum  <- wbal$wb_sum

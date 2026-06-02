@@ -5,7 +5,9 @@
 #' @returns ggplot object
 #' @export
 #'
-plot_wbal_comp <- function(wbal) {
+plot_wbal_comp <- function(aeme) {
+  
+  wbal <- get_wbal_components(aeme)
   
   wb      <- wbal$wb
   mod     <- wbal$mod
