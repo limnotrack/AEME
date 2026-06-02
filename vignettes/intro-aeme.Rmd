@@ -432,7 +432,7 @@ plot(aeme, "input")
 
 ## Build Model Ensemble
 
-```{r}
+```{r build-aeme, warning=FALSE, message=FALSE}
 model_controls <- get_model_controls()
 model <- c("dy_cd", "glm_aed", "gotm_wet")
 path <- "aeme"
