@@ -518,231 +518,24 @@ path <- "aeme"
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
-#> ✔ Created missing directory: D:\a\AEME\AEME\vignettes\aeme
-#> ! Filled missing variable(s) in inflow NZS2038486 with default value(s) from
-#>   model_controls: CHM_oxy = 10; NIT_don = 0; NIT_pon = 0; CAR_doc = 0; CAR_poc
-#>   = 0; SIL_rsi = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1
-#>   = 5; ZOO_zoo1 = 0.1
-#> ! Filled missing variable(s) in inflow NZS2038499 with default value(s) from
-#>   model_controls: CHM_oxy = 10; NIT_don = 0; NIT_pon = 0; CAR_doc = 0; CAR_poc
-#>   = 0; SIL_rsi = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1
-#>   = 5; ZOO_zoo1 = 0.1
-#> ! Filled missing variable(s) in inflow NZS2038500 with default value(s) from
-#>   model_controls: CHM_oxy = 10; NIT_don = 0; NIT_pon = 0; CAR_doc = 0; CAR_poc
-#>   = 0; SIL_rsi = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1
-#>   = 5; ZOO_zoo1 = 0.1
-#> ! Filled missing variable(s) in inflow NZS2038304 with default value(s) from
-#>   model_controls: CHM_oxy = 10; NIT_don = 0; NIT_pon = 0; CAR_doc = 0; CAR_poc
-#>   = 0; SIL_rsi = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1
-#>   = 5; ZOO_zoo1 = 0.1
-#> ! Filled missing variable(s) in inflow lumped with default value(s) from
-#>   model_controls: CHM_oxy = 10; NIT_don = 0; NIT_pon = 0; CAR_doc = 0; CAR_poc
-#>   = 0; SIL_rsi = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1
-#>   = 5; ZOO_zoo1 = 0.1
-#> Warning: ! `HYD_flow`: Negative flow values detected.
-#> ℹ Check raw data or unit conversion for this variable.
-#> ! Filled missing variable(s) in inflow precip with default value(s) from
-#>   model_controls: CHM_oxy = 10; NIT_pon = 0; CAR_doc = 0; CAR_poc = 0; SIL_rsi
-#>   = 0; PHY_cyano = 0.1; PHY_green = 0.1; PHY_diatom = 0.1; NCS_ss1 = 5;
-#>   ZOO_zoo1 = 0.1
-#> 
-#> 
-#> ── Calculating water balance ──
-#> 
-#> 
-#> 
-#> Resolving water level
-#> 
-#>   ℹ No water level present. Using constant water level.
-#> ℹ Estimating surface water temperature
-#> 
-#> ✔ Estimating surface water temperature [9ms]
-#> 
-#> 
-#> 
-#> Estimating lake water levels for dy_cd
-#> 
-#>   ℹ Optimizing parameters for water balance
-#> 
-#>   ✔ Optimization Complete: C = 0.5008, h_inv = 22.787, Final RMSE = 0.0349
-#> 
-#> Estimating lake water levels for glm_aed
-#> 
-#>   ℹ Optimizing parameters for water balance
-#> 
-#>   ✔ Optimization Complete: C = 0.5008, h_inv = 22.787, Final RMSE = 0.0349
-#> 
-#> Estimating lake water levels for gotm_wet
-#> 
-#>   ℹ Optimizing parameters for water balance
-#> 
-#>   ✔ Optimization Complete: C = 0.5004, h_inv = 22.7863, Final RMSE = 0.0349
-#> 
-#> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Building DYRESM-CAEDYM for lake aeme
-#> ℹ Copied in DYRESM .par file
-#> ℹ Writing DYRESM configuration file
-#> ℹ Writing DYRESM-CAEDYM control file
-#> 
-#> 
-#> ── Building GLM-AED for lake aeme ──
-#> 
-#> 
-#> 
-#> ℹ Copied in GLM nml file
-#> ℹ Copied in AED nml file and supporting files
-#> ℹ Copied in GLM plots nml file
-#> ℹ CHM_oxy: 225 replaced with 312.5
-#> ℹ PHS_frp: 0.05 replaced with 0.3229
-#> ℹ PHS_dop: 0.008 replaced with 0.3229
-#> ℹ PHS_pop: 0.05 replaced with 0.3229
-#> ℹ NIT_amm: 2.25 replaced with 1.4279
-#> ℹ NIT_nit: 6.96 replaced with 1.0709
-#> ℹ NIT_don: 21 replaced with 21.4183
-#> ℹ NIT_pon: 19.8 replaced with 7.1394
-#> ℹ CAR_doc: 15 replaced with 41.6285
-#> ℹ CAR_poc: 15 replaced with 16.6514
-#> ℹ SIL_rsi: 100 replaced with 1
-#> ℹ PHY_cyano: 10 replaced with 0.24022
-#> ℹ PHY_green: 0.04 replaced with 0.300275
-#> ℹ PHY_diatom: 8.4 replaced with 0.300275
-#> ✔ Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,
-#>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,
-#>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,
-#>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
-#>   aed_phytoplankton, aed_totals
-#> ℹ Setting up AED aed_sed_const2d sediment zones: 2
-#> ℹ Tier 2: zone-median summer concentrations used for adjustment:
 #> ┌─────┬───────────┬────────────┬────────────┬────────────┐
 #> │ zone│ O2 (mg/L) │ NH4 (mg/L) │ NO3 (mg/L) │ FRP (mg/L) │
 #> ├─────┼───────────┼────────────┼────────────┼────────────┤
 #> │Zone1│ 0.29      │ 0.064      │   NA       │ 0.012      │
 #> │Zone2│  5.3      │ 0.005      │   NA       │ 0.008      │
 #> └─────┴───────────┴────────────┴────────────┴────────────┘
-#> ℹ Tier 2 adjustments applied: fsed_amm (2 zones, direct NH4); fsed_frp (2
-#>   zones, direct FRP)
-#> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────
-#> 
-#> n_zones: 2 | max lake depth: 13.48 m | ref_depth: 5 m
 #> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐
 #> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │
 #> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤
 #> │   1│    0      │ 2.48      │   11      │ 13.5      │ 12.2     │ 3.45e+04│ 0.224   │-38.4│  5.7│-0.4│0.0922│
 #> │   2│ 2.48      │   19      │    0      │   11      │  5.5     │ 1.19e+05│ 0.776   │-21.1│0.558│ 0.1│0.0338│
 #> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘
-#> 
-#> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────
 #> ┌──────────────┬───────────────┬───────────────┬───────────────┐
 #> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│
 #> ├──────────────┼───────────────┼───────────────┼───────────────┤
 #> │ -24.993      │ 1.71          │ -0.012        │ 0.047         │
 #> └──────────────┴───────────────┴───────────────┴───────────────┘
-#> ℹ Building GOTM-WET model for lake aeme
-#> ℹ Copied in GOTM configuration files
-#> ℹ instances/abiotic_water/initialization/sO2W 13 replaced with 10
-#> ℹ instances/abiotic_water/initialization/sPO4W 0.1 replaced with 0.01
-#> ℹ instances/abiotic_water/initialization/sPDOMW 0.001 replaced with 0.01
-#> ℹ instances/abiotic_water/initialization/sPPOMW 0.001 replaced with 0.01
-#> ℹ instances/abiotic_water/initialization/sNH4W 0.05 replaced with 0.02
-#> ℹ instances/abiotic_water/initialization/sNO3W 0.5 replaced with 0.015
-#> ℹ instances/abiotic_water/initialization/sNDOMW 0.01 replaced with 0.3
-#> ℹ instances/abiotic_water/initialization/sNPOMW 0.01 replaced with 0.1
-#> ℹ instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5
-#> ℹ instances/abiotic_water/initialization/sDPOMW 0.1 replaced with 0.2
-#> ℹ instances/abiotic_water/initialization/sSiO2W 3.5 replaced with 1
-#> ℹ Setting initial condition for instances/cyanobacteria/initialization/sDW: 0.1
-#>   replaced with 0.2
-#> ℹ Setting initial condition for instances/cyanobacteria/initialization/sNW:
-#>   0.03 replaced with 0.03
-#> ℹ Setting initial condition for instances/cyanobacteria/initialization/sPW:
-#>   0.003 replaced with 0.0019
-#> ℹ Setting initial condition for instances/greens/initialization/sDW: 0.1
-#>   replaced with 0.1
-#> ℹ Setting initial condition for instances/greens/initialization/sNW: 0.05
-#>   replaced with 0.015
-#> ℹ Setting initial condition for instances/greens/initialization/sPW: 0.001
-#>   replaced with 0.00094
-#> ℹ Setting initial condition for instances/diatoms/initialization/sDW: 0.2
-#>   replaced with 0.25
-#> ℹ Setting initial condition for instances/diatoms/initialization/sNW: 0.05
-#>   replaced with 0.038
-#> ℹ Setting initial condition for instances/diatoms/initialization/sPW: 0.005
-#>   replaced with 0.0024
-#> ℹ instances/abiotic_water/initialization/sDIMW 4 replaced with 3
-#> ℹ instances/cladocerans/initialization/sD 0.05 replaced with 1
-#> ℹ Setting initial condition forinstances/cladocerans/initialization/sN: 0.0035
-#>   replaced with 0.07
-#> ℹ Setting initial condition forinstances/cladocerans/initialization/sP: 5e-04
-#>   replaced with 0.01
-#> Warning: No parameters in 'param' for dy_cd.
-#> ✔ GOTM YAML validation completed - no issues detected.
-#> ✔ GLM nml validation completed - no issues detected.
 aeme
-#> 
-#> ── AEME ────────────────────────────────────────────────────────────────────────
-#> 
-#> ── Lake ──
-#> 
-#> AEME (ID: LID45819)
-#> • Lat: -36.89; Lon: 174.47
-#> • Elev: 23.2m; Depth: 13.48m; Area: 153648 m2
-#> 
-#> ── Time ──
-#> 
-#> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
-#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095
-#> 
-#> ── Configuration ──
-#> 
-#> • Model: dy_cd, glm_aed, and gotm_wet
-#> • Path: D:\a\AEME\AEME\vignettes\aeme
-#> • Model controls: Present
-#> • Use biogeochemical model: Yes
-#> ┌ Model Configuration ─────────────────────────────────────────┐
-#> │       Model              Physical         Biogeochemical     │
-#> │ ---                                                          │
-#> │       DY-CD              Present             Present         │
-#> │      GLM-AED             Present             Present         │
-#> │      GOTM-WET            Present             Present         │
-#> └──────────────────────────────────────────────────────────────┘
-#> 
-#> ── Observations ──
-#> 
-#> • Lake: Present; Level: Absent
-#> 
-#> ── Input ──
-#> 
-#> • Initial profile: Present; Initial depth: 13.48m
-#> • Hypsograph: Present (n=53)
-#> • Meteo: Present; Use longwave: TRUE; Kw: 1.21428571428571
-#> 
-#> ── Inflows ──
-#> 
-#> • Number of inflows: 6; Names: NZS2038486, NZS2038499, NZS2038500, NZS2038304,
-#>   lumped, precip
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> 
-#> ── Outflows ──
-#> 
-#> • Data: Present
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> 
-#> ── Water Balance ──
-#> 
-#> • Method: 2; Use: obs
-#> • Modelled: Absent; Water balance: Present
-#> 
-#> ── Parameters ──
-#> 
-#> • Number of parameters: 18
-#> 
-#> ── Output ──
-#> 
-#> • DY-CD: 0
-#> • GLM-AED: 0
-#> • GOTM-WET: 0
-#> • Variables: 0
-#> None
 ```
 
 ``` r

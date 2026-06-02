@@ -147,11 +147,11 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [8ms]
+#> ✔ Estimating surface water temperature [9ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
-#>   ✔ Optimization Complete: C = 0.3419, h_inv = 23.4817, Final RMSE = 0.1437
+#>   ✔ Optimization Complete: C = 0.3343, h_inv = 23.4915, Final RMSE = 0.1431
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> 
 #> ── Building GLM-AED for lake wainamu ──
@@ -175,7 +175,7 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [6ms]
+#> ✔ Estimating surface water temperature [8ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #> ℹ Correcting water balance using estimated outflows (method = 2).

@@ -5,15 +5,15 @@ Plot Water Balance Summaries
 ## Usage
 
 ``` r
-plot_wbal_summaries(wbal)
+plot_wbal_summaries(aeme)
 ```
 
 ## Arguments
 
-- wbal:
+- aeme:
 
-  Water balance object created with
-  [`get_wbal_components()`](https://limnotrack.com/reference/get_wbal_components.md)
+  Aeme object with model output and observations added. Must have model
+  output [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)
 
 ## Value
 

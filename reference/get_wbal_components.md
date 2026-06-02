@@ -5,7 +5,7 @@ Get water balance components from AEME object
 ## Usage
 
 ``` r
-get_wbal_components(aeme, model, remove_spin_up = TRUE, cumulative = FALSE)
+get_wbal_components(aeme, model, remove_spin_up = FALSE, cumulative = FALSE)
 ```
 
 ## Arguments

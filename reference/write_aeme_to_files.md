@@ -52,16 +52,16 @@ model_controls = model_controls, ext_elev = 5)
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
-#>   ✔ Optimization Complete: C = 0.3419, h_inv = 23.4817, Final RMSE = 0.1437
+#>   ✔ Optimization Complete: C = 0.3343, h_inv = 23.4915, Final RMSE = 0.1431
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> 
 #> ── Building GLM-AED for lake wainamu ──
 #> 
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-02 03:59:48]
-#> → GLM-AED running... [2026-06-02 03:59:48]
-#> ✔ GLM-AED run successful! [2026-06-02 03:59:48]
-#> ✔ Model run complete! [2026-06-02 03:59:48]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-02 04:43:34]
+#> → GLM-AED running... [2026-06-02 04:43:34]
+#> ✔ GLM-AED run successful! [2026-06-02 04:43:34]
+#> ✔ Model run complete! [2026-06-02 04:43:34]
 write_aeme_to_files(aeme, path)
 ```

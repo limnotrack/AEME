@@ -54,10 +54,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
-#>   ✔ Optimization Complete: C = 0.3419, h_inv = 23.4817, Final RMSE = 0.1437
+#>   ✔ Optimization Complete: C = 0.3343, h_inv = 23.4915, Final RMSE = 0.1431
 #> Estimating lake water levels for gotm_wet
 #>   ℹ Optimizing parameters for water balance
-#>   ✔ Optimization Complete: C = 0.3344, h_inv = 23.491, Final RMSE = 0.1466
+#>   ✔ Optimization Complete: C = 0.334, h_inv = 23.4829, Final RMSE = 0.1472
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> 
 #> ── Building GLM-AED for lake wainamu ──
@@ -147,10 +147,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-06-02 03:58:39]
-#> ✔ Model run complete! [2026-06-02 03:58:42]
-#> ℹ Reading models in parallel...[2026-06-02 03:58:42]
-#> ✔ Model reading complete! [2026-06-02 03:58:43]
+#> ℹ Running models in parallel... [2026-06-02 04:42:15]
+#> ✔ Model run complete! [2026-06-02 04:42:19]
+#> ℹ Reading models in parallel...[2026-06-02 04:42:19]
+#> ✔ Model reading complete! [2026-06-02 04:42:20]
 get_output_vars(aeme, model)
 #>                   Water temperature                   Thermocline depth 
 #>                          "HYD_temp"                        "HYD_thmcln" 

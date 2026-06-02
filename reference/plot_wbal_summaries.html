@@ -44,7 +44,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Plot Water Balance Summaries</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/add-updates-to-news/R/plot_wbal_summaries.R" class="external-link"><code>R/plot_wbal_summaries.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/R/plot_wbal_summaries.R" class="external-link"><code>R/plot_wbal_summaries.R</code></a></small>
       <div class="d-none name"><code>plot_wbal_summaries.Rd</code></div>
     </div>
 
@@ -54,15 +54,16 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_wbal_summaries</span><span class="op">(</span><span class="va">wbal</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_wbal_summaries</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-wbal">wbal<a class="anchor" aria-label="anchor" href="#arg-wbal"></a></dt>
-<dd><p>Water balance object created with <code><a href="get_wbal_components.html">get_wbal_components()</a></code></p></dd>
+<dl><dt id="arg-aeme">aeme<a class="anchor" aria-label="anchor" href="#arg-aeme"></a></dt>
+<dd><p>Aeme object with model output and observations added. Must have
+model output <code><a href="run_aeme.html">run_aeme()</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
