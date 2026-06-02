@@ -187,7 +187,8 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
       area     = area_from_level(h = value, hyps = hyps),
       V        = volume_from_level(h = value, hyps = hyps),
       deltaV   = c(0, diff(V)),
-      rain     = MET_pprain * area
+      rain     = MET_pprain * area,
+      evap_m3  = abs(evap_m3)
     ) |>
     dplyr::select(dplyr::any_of(sel_cols))
   
