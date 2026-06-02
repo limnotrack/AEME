@@ -470,18 +470,21 @@ test_that("GLM-AED sediment parameters can be added", {
 test_that("Aeme can be written and read from files", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
-  path <- "test_write"
+  path <- tempdir()
   model_controls <- get_model_controls()
   aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed", 
-                     model_controls = model_controls, ext_elev = 3) |> 
+                     model_controls = model_controls, ext_elev = 3) |>
     run_aeme()
-  out_files <- write_aeme_to_files(aeme, path, include_output = TRUE)
+  
+  write_path <- "test_write"
+  out_files <- write_aeme_to_files(aeme = aeme, path = write_path,
+                                   include_output = TRUE)
   testthat::expect_true(length(out_files) > 0)
   
-  aeme_path <- get_lake_dir(aeme = aeme, path = path)
-  fils <- list.files(aeme_path, full.names = TRUE, pattern = "*.csv")
+  fils <- list.files(write_path, full.names = TRUE, pattern = "*.csv",
+                     recursive = TRUE)
   testthat::expect_true(length(fils) > 15)
-  aeme2 <- read_aeme_from_files(aeme_path)
+  aeme2 <- read_aeme_from_files(path = write_path)
   testthat::expect_s4_class(aeme2, "Aeme")
   lke1 <- lake(aeme)
   lke2 <- lake(aeme2)
