@@ -51,8 +51,11 @@
   from older NML files.
 - **[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)**
   — messaging improved when AED sub-models are removed.
+- **[`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)**
+  — `plot` argument now defaults to `FALSE`.
 - **`clitable`** moved from `Suggests` to `Imports`; `knitr` moved from
-  `Imports` to `Suggests`.
+  `Imports` to `Suggests`; `psychrolib` removed from `Imports`
+  (psychrometric calculations now handled internally).
 
 ### Bug fixes
 
@@ -71,6 +74,18 @@
   to use the updated `key_naming$var_aeme` column.
 - Removed a now-redundant internal helper `format_model_vars_vec()`; its
   behaviour is folded into `get_model_vars(as_vector = TRUE)`.
+- Fixed initialisation guard in `initialise_FABM()`, `initialise_aed()`,
+  and `initialise_glm()` — empty model-controls tables now return early
+  with an informative message rather than erroring.
+- Fixed a CLI bug in
+  [`estimate_lake_wlev()`](https://limnotrack.com/reference/estimate_lake_wlev.md).
+- Fixed a typo bug in
+  [`estimate_zone_fluxes()`](https://limnotrack.com/reference/estimate_zone_fluxes.md)
+  column-renaming step
+  ([`dplyr::case_match`](https://dplyr.tidyverse.org/reference/case_match.html)
+  replaced with
+  [`dplyr::recode`](https://dplyr.tidyverse.org/reference/recode.html)
+  for compatibility).
 
 ## AEME 0.3.0
 

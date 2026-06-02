@@ -44,7 +44,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/limnotrack/AEME/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/add-updates-to-news/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
@@ -79,7 +79,9 @@
 <li>
 <strong><code><a href="../reference/set_glm_aed_models.html">set_glm_aed_models()</a></code></strong> — messaging improved when AED sub-models are removed.</li>
 <li>
-<strong><code>clitable</code></strong> moved from <code>Suggests</code> to <code>Imports</code>; <code>knitr</code> moved from <code>Imports</code> to <code>Suggests</code>.</li>
+<strong><code><a href="../reference/run_glm_aed_diagnostics.html">run_glm_aed_diagnostics()</a></code></strong> — <code>plot</code> argument now defaults to <code>FALSE</code>.</li>
+<li>
+<strong><code>clitable</code></strong> moved from <code>Suggests</code> to <code>Imports</code>; <code>knitr</code> moved from <code>Imports</code> to <code>Suggests</code>; <code>psychrolib</code> removed from <code>Imports</code> (psychrometric calculations now handled internally).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-3-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-1"></a></h3>
@@ -87,6 +89,9 @@
 <li>Removed pH from default model controls (<code><a href="../reference/get_model_controls.html">get_model_controls()</a></code>).</li>
 <li>Simplified and corrected variable-name look-ups in <code><a href="../reference/lake_obs_to_aeme.html">lake_obs_to_aeme()</a></code>, <code><a href="../reference/read_dy_output.html">read_dy_output()</a></code>, <code><a href="../reference/read_glm_output.html">read_glm_output()</a></code>, <code><a href="../reference/read_gotm_output.html">read_gotm_output()</a></code>, and <code><a href="../reference/read_model_outputs.html">read_model_outputs()</a></code> to use the updated <code>key_naming$var_aeme</code> column.</li>
 <li>Removed a now-redundant internal helper <code>format_model_vars_vec()</code>; its behaviour is folded into <code>get_model_vars(as_vector = TRUE)</code>.</li>
+<li>Fixed initialisation guard in <code>initialise_FABM()</code>, <code>initialise_aed()</code>, and <code>initialise_glm()</code> — empty model-controls tables now return early with an informative message rather than erroring.</li>
+<li>Fixed a CLI bug in <code><a href="../reference/estimate_lake_wlev.html">estimate_lake_wlev()</a></code>.</li>
+<li>Fixed a typo bug in <code><a href="../reference/estimate_zone_fluxes.html">estimate_zone_fluxes()</a></code> column-renaming step (<code><a href="https://dplyr.tidyverse.org/reference/case_match.html" class="external-link">dplyr::case_match</a></code> replaced with <code><a href="https://dplyr.tidyverse.org/reference/recode.html" class="external-link">dplyr::recode</a></code> for compatibility).</li>
 </ul></div>
 </div>
     <div class="section level2">
