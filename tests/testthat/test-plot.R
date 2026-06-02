@@ -357,7 +357,7 @@ test_that("plotting water balance components", {
   
   wbal <- get_wbal_components(aeme = aeme)
   testthat::expect_true(is.list(wbal))
-  p <- plot_wbal_comp(wbal = wbal)
+  p <- plot_wbal_comp(aeme = aeme)
   testthat::expect_true(ggplot2::is_ggplot(p))
   
   p1 <- plot_est_wbal(aeme = aeme, model = model, time_axis = "month")
@@ -372,10 +372,10 @@ test_that("plotting water balance components", {
   
   wbal <- get_wbal_components(aeme = aeme)
   testthat::expect_true(is.list(wbal))
-  p <- plot_wbal_comp(wbal = wbal)
+  p <- plot_wbal_comp(aeme = aeme)
   testthat::expect_true(ggplot2::is_ggplot(p))
   
-  p <- plot_wbal_summaries(wbal = wbal)
+  p <- plot_wbal_summaries(aeme = aeme)
   testthat::expect_true(ggplot2::is_ggplot(p))
   
   # remove inflows & outflows
