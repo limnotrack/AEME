@@ -37,8 +37,10 @@
   NML files.
 * **`set_glm_aed_models()`** — messaging improved when AED sub-models are
   removed.
+* **`run_glm_aed_diagnostics()`** — `plot` argument now defaults to `FALSE`.
 * **`clitable`** moved from `Suggests` to `Imports`; `knitr` moved from
-  `Imports` to `Suggests`.
+  `Imports` to `Suggests`; `psychrolib` removed from `Imports` (psychrometric
+  calculations now handled internally).
 
 ## Bug fixes
 
@@ -50,6 +52,12 @@
   `read_model_outputs()` to use the updated `key_naming$var_aeme` column.
 * Removed a now-redundant internal helper `format_model_vars_vec()`; its
   behaviour is folded into `get_model_vars(as_vector = TRUE)`.
+* Fixed initialisation guard in `initialise_FABM()`, `initialise_aed()`, and
+  `initialise_glm()` — empty model-controls tables now return early with an
+  informative message rather than erroring.
+* Fixed a CLI bug in `estimate_lake_wlev()`.
+* Fixed a typo bug in `estimate_zone_fluxes()` column-renaming step
+  (`dplyr::case_match` replaced with `dplyr::recode` for compatibility).
 
 # AEME 0.3.0
 
