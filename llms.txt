@@ -283,8 +283,6 @@ We have a host of vignettes to help you get started with AEME:
   variables suitable for all models
 - [`extrap_hyps()`](https://limnotrack.com/reference/extrap_hyps.md) :
   Extend hypsometry to a greater elevation using linear extrapolation
-- [`flux_to_evap()`](https://limnotrack.com/reference/flux_to_evap.md) :
-  Convert latent heat flux to evaporation depth
 - [`generate_hypsograph()`](https://limnotrack.com/reference/generate_hypsograph.md)
   : Generate a hypsograph curve
 - [`generate_var_map_code()`](https://limnotrack.com/reference/generate_var_map_code.md)
@@ -389,8 +387,6 @@ We have a host of vignettes to help you get started with AEME:
   slot of an Aeme object
 - [`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md)
   : Format lake observation data to AEME format
-- [`latent_heat_flux()`](https://limnotrack.com/reference/latent_heat_flux.md)
-  : Latent heat flux
 - [`list_models()`](https://limnotrack.com/reference/list_models.md) :
   Get a vector of available models
 - [`list_mod_obs_vars()`](https://limnotrack.com/reference/list_mod_obs_vars.md)
