@@ -53,7 +53,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   
   # ---- Date range ----
   max_spin  <- max(unlist(aeme_time[["spin_up"]])[model])
-  spin_start <- aeme_time[["start"]] - lubridate::ddays(max_spin + 6)
+  spin_start <- aeme_time[["start"]] - lubridate::ddays(max_spin + 1)
   date_stop  <- aeme_time[["stop"]]  + lubridate::ddays(1)
   surf       <- elevation
   
@@ -107,13 +107,14 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
     wbal_init |>
       dplyr::mutate(
         model = m,
-        T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE, align = "right"),
+        T5avg = zoo::rollmean(MET_tmpair, 5, fill = NA, align = "right"),
         Ts    = sst,
         es    = exp(2.3026 * ((7.5 * Ts) / (Ts + 237.3) + 0.7858)),
         Qlh   = (0.622 / 981.9) * 0.0013 * 1.168 * 2453000 *
           MET_wndspd * (MET_prvapr - es),
         Qlh   = dplyr::if_else(Qlh > 0, 0, Qlh)
-      )
+      ) |> 
+      tidyr::fill(T5avg, .direction = "up")
   }) |>
     dplyr::bind_rows()
   
@@ -132,9 +133,13 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   
   # ---- Assemble water balance per model ----
   wb <- lapply(model, \(m) {
+    mod_inflow <- vol_inflow  |> 
+      dplyr::filter(model == m) |> 
+      dplyr::select(Date, HYD_flow) 
     wb_m <- obs_met |>
       dplyr::select(Date) |>
-      dplyr::left_join(vol_inflow  |> dplyr::filter(model == m), by = "Date") |>
+      dplyr::mutate(model = m) |> 
+      dplyr::left_join(mod_inflow, by = "Date") |>
       dplyr::left_join(vol_outflow, by = "Date") |>
       dplyr::left_join(wbal        |> dplyr::filter(model == m),
                        by = c("Date", "model")) |>
@@ -376,8 +381,24 @@ aggregate_outflows <- function(outf, obs_met) {
 #' @noRd
 apply_wb_method <- function(wb, method, hyps) {
   if (method == 1) {
-    dplyr::mutate(wb, lvl_sim = NA, spill_outflow = 0, inflow = 0)
-    
+    lake_surf <- hyps |> 
+      dplyr::filter(depth == 0) 
+    wb |>
+      dplyr::rename(
+        inflow = HYD_flow
+      ) |> 
+      dplyr::mutate(
+        lvl_sim = lake_surf$elev,
+        spill_outflow = 0,
+        area = area_from_level(h = lvl_sim, hyps = hyps),
+        Qlh_t = latent_heat_flux(Ts = Ts, wndspd = MET_wndspd, 
+                                 prvapr = MET_prvapr,
+                                 prsttn = (MET_prsttn / 100)),
+        evap_flux = flux_to_evap(Qlh = Qlh_t),
+        evap_m3 = evap_flux * area,
+        rain = MET_pprain * area,
+        net = (inflow + rain - evap_m3 - HYD_outflow - spill_outflow)
+      )
   } else if (method == 2) {
     dplyr::mutate(wb, inflow = HYD_flow)
     
@@ -503,3 +524,77 @@ optim_lvl_params <- function(parameters, mod_lvl, surf) {
                        offset = parameters[2])
   sum((predicted - mod_lvl$value)^2, na.rm = TRUE)
 }
+
+#' Saturation vapour pressure
+#'
+#' Calculates saturation vapour pressure at the water surface using the
+#' Magnus formula.
+#'
+#' @param Ts Numeric. Water surface temperature (°C).
+#'
+#' @return Numeric. Saturation vapour pressure (hPa).
+#'
+#' @examples
+#' sat_vapour_pressure(20)
+#' sat_vapour_pressure(c(15, 20, 25))
+sat_vapour_pressure <- function(Ts) {
+  exp(2.3026 * ((7.5 * Ts) / (Ts + 237.3) + 0.7858))
+}
+
+
+#' Latent heat flux
+#'
+#' Calculates latent heat flux from a lake surface using the bulk aerodynamic
+#' method. Flux is capped at zero — only heat loss from the water is retained.
+#'
+#' @param Ts      Numeric. Water surface temperature (°C).
+#' @param wndspd  Numeric. Wind speed (m/s).
+#' @param prvapr  Numeric. Air vapour pressure (hPa).
+#' @param P       Numeric. Atmospheric pressure (hPa). Default 981.9.
+#' @param Ce      Numeric. Bulk transfer coefficient (Dalton number). Default 0.0013.
+#' @param rho_air Numeric. Air density (kg/m³). Default 1.168.
+#' @param Lv      Numeric. Latent heat of vaporisation (J/kg). Default 2453000.
+#'
+#' @return Numeric. Latent heat flux (W/m²), <= 0.
+#'
+#' @seealso [sat_vapour_pressure()], [flux_to_evap()]
+#'
+#' @examples
+#' latent_heat_flux(Ts = 20, wndspd = 3, prvapr = 10)
+#'
+#' # Vectorised over a data frame
+#' latent_heat_flux(Ts     = data$sst,
+#'                  wndspd = data$MET_wndspd,
+#'                  prvapr = data$MET_prvapr)
+latent_heat_flux <- function(Ts, wndspd, prvapr,
+                             prsttn = 981.9, Ce = 0.0013,
+                             rho_air = 1.168, Lv = 2453000) {
+  es  <- sat_vapour_pressure(Ts)
+  Qlh <- (0.622 / prsttn) * Ce * rho_air * Lv * wndspd * (prvapr - es)
+  pmin(Qlh, 0)
+}
+
+
+#' Convert latent heat flux to evaporation depth
+#'
+#' Converts latent heat flux (W/m²) to an evaporation rate in metres per day,
+#' suitable for lake water balance calculations.
+#'
+#' @param Qlh       Numeric. Latent heat flux (W/m²), should be <= 0.
+#' @param Lv        Numeric. Latent heat of vaporisation (J/kg). Default 2453000.
+#' @param rho_water Numeric. Water density (kg/m³). Default 1000.
+#'
+#' @return Numeric. Evaporation rate (m/day), <= 0.
+#'
+#' @seealso [latent_heat_flux()]
+#'
+#' @examples
+#' flux_to_evap(-50)
+#'
+#' # Full pipeline
+#' Qlh  <- latent_heat_flux(Ts = data$sst, wndspd = data$MET_wndspd, prvapr = data$MET_prvapr)
+#' evap <- flux_to_evap(Qlh)
+flux_to_evap <- function(Qlh, Lv = 2453000, rho_water = 1000) {
+  (Qlh / Lv) * (86400 / rho_water)
+}
+
