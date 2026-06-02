@@ -29,8 +29,8 @@ plot_wbal_comp <- function(aeme) {
     ggplot2::theme_bw()
   ## --- Total inflow ---
   comp <- wb |> 
-    dplyr::select(Date, model, HYD_flow) |>
-    dplyr::rename(est = HYD_flow) |>
+    dplyr::select(Date, model, inflow) |>
+    dplyr::rename(est = inflow) |>
     dplyr::left_join(mod$inflow, by = c("Date", "model")) |> 
     dplyr::mutate(Model = toggle_models(model)) |> 
     dplyr::filter(est > 0 & value > 0)
@@ -53,8 +53,9 @@ plot_wbal_comp <- function(aeme) {
   
   ## --- Total outflow ---
   comp <- wb |> 
-    dplyr::select(Date, model, spill_outflow) |>
-    dplyr::rename(est = spill_outflow) |>
+    dplyr::select(Date, HYD_outflow, model, spill_outflow) |>
+    dplyr::mutate(est = HYD_outflow + spill_outflow) |>
+    # dplyr::rename(est = spill_outflow) |>
     dplyr::left_join(mod$outflow, by = c("Date", "model")) |> 
     dplyr::mutate(Model = toggle_models(model)) |> 
     dplyr::filter(est > 0 & value > 0)
