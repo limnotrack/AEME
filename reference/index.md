@@ -351,8 +351,6 @@
   Run AEME models
 - [`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)
   : Run GLM-AED diagnostics
-- [`sat_vapour_pressure()`](https://limnotrack.com/reference/sat_vapour_pressure.md)
-  : Saturation vapour pressure
 - [`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
   : Setup AED aed_sed_const2d sediment model parameters
 - [`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md)
