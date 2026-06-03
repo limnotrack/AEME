@@ -124,13 +124,17 @@ test_that("running GLM works", {
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
   
-  v <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp", depth = 0)
-  v2 <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp", depth = 0,
+  v <- get_var(aeme = aeme, var_sim = "HYD_temp", depth = 0)
+  v2 <- get_var(aeme = aeme, var_sim = "HYD_temp", depth = 0, 
                 depth_ref = "bottom")
+  lake_level <- get_var(aeme = aeme, var_sim = "LKE_lvlwtr")
+  max_depth <- max(lake_level$value, na.rm = TRUE)
   testthat::expect_true(is.data.frame(v))
   testthat::expect_true(is.data.frame(v2))
-  testthat::expect_error(get_var(aeme = aeme, model = model, var_sim = "HYD_temp",
-                                 depth = 20))
+  testthat::expect_error({
+    get_var(aeme = aeme, model = model, var_sim = "HYD_temp", 
+            depth = max_depth + 1)
+  })
 })
 
 test_that("running GLM with different exec works", {
