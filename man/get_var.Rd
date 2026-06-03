@@ -9,6 +9,7 @@ get_var(
   model,
   var_sim,
   depth = NULL,
+  depth_ref = c("surface", "bottom"),
   return_df = TRUE,
   ens_n = 1,
   use_obs = FALSE,
@@ -26,6 +27,9 @@ get_var(
 
 \item{depth}{numeric; depth of the variable to extract. Default is NULL. If
 NULL, the variable profiles are extracted.}
+
+\item{depth_ref}{character; reference depth for extracting variable profiles.
+Options are "surface" (default) or "bottom".}
 
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.}

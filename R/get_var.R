@@ -6,6 +6,8 @@
 #' @param use_obs logical; if TRUE, use observations to extract the variable at
 #' time and depth of observations. Default is FALSE. Use this option if you
 #' want to compare model output to observations.
+#' @param depth_ref character; reference depth for extracting variable profiles.
+#'  Options are "surface" (default) or "bottom".
 #' @param return_df logical; if TRUE, return a dataframe; if FALSE, return a
 #' list. Default is TRUE.
 #' @param depth numeric; depth of the variable to extract. Default is NULL. If
@@ -18,7 +20,8 @@
 #' @return dataframe or list
 #' @export
 
-get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
+get_var <- function(aeme, model, var_sim, depth = NULL, 
+                    depth_ref = c("surface", "bottom"), return_df = TRUE,
                     ens_n = 1, use_obs = FALSE, remove_spin_up = TRUE,
                     cumulative = FALSE) {
   
@@ -29,6 +32,8 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
     model <- check_model(model = model)
   }
   var_sim <- check_aeme_vars(var_sim)
+  depth_ref <- rlang::arg_match(depth_ref)
+  
   # Extract output from aeme ----
   inp <- input(aeme)
   bathy <- inp$hypsograph |>
@@ -220,10 +225,18 @@ get_var <- function(aeme, model, var_sim, depth = NULL, return_df = TRUE,
         min_depth <- 0
         max_depth <- round(max(lake_level), 2)
         if (depth > max_depth | depth < min_depth) {
-          stop(strwrap(paste0("Depth is outside the range of the modelled lake
-                              levels [", min_depth, ", ", max_depth, "m]")))
+          cli::cli_abort("Depth is outside the range of the modelled lake levels [{min_depth}, {max_depth} m].",
+                         class = "aeme_error_depth_out_of_range")
+          # stop(strwrap(paste0("Depth is outside the range of the modelled lake
+          #                     levels [", min_depth, ", ", max_depth, "m]")))
         }
-        out_depths <- matrix(depth, nrow = 1, ncol = ncol(variable))
+        # Convert surface-referenced depth to bottom-referenced
+        out_depths <- if (depth_ref == "surface") {
+          matrix(depth, nrow = 1, ncol = ncol(variable))
+        } else {
+          matrix(max_dep - depth, nrow = 1, ncol = ncol(variable))
+        }
+        # out_depths <- matrix(depth, nrow = 1, ncol = ncol(variable))
         value <- interp_static_grid(var = variable, midpoints = depths,
                                     out_depths = out_depths)
         df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],

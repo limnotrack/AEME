@@ -125,9 +125,12 @@ test_that("running GLM works", {
   testthat::expect_true(file_chk)
   
   v <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp", depth = 0)
+  v2 <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp", depth = 0,
+                depth_ref = "bottom")
   testthat::expect_true(is.data.frame(v))
+  testthat::expect_true(is.data.frame(v2))
   testthat::expect_error(get_var(aeme = aeme, model = model, var_sim = "HYD_temp",
-                                 depth = 15))
+                                 depth = 20))
 })
 
 test_that("running GLM with different exec works", {
