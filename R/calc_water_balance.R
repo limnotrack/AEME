@@ -534,6 +534,8 @@ optim_lvl_params <- function(parameters, mod_lvl, surf) {
 #' @param Ts Numeric. Water surface temperature (°C).
 #'
 #' @return Numeric. Saturation vapour pressure (hPa).
+#' 
+#' @noRd
 #'
 #' @examples
 #' sat_vapour_pressure(20)
