@@ -10,6 +10,7 @@ get_var(
   model,
   var_sim,
   depth = NULL,
+  depth_ref = c("surface", "bottom"),
   return_df = TRUE,
   ens_n = 1,
   use_obs = FALSE,
@@ -38,6 +39,11 @@ get_var(
 
   numeric; depth of the variable to extract. Default is NULL. If NULL,
   the variable profiles are extracted.
+
+- depth_ref:
+
+  character; reference depth for extracting variable profiles. Options
+  are "surface" (default) or "bottom".
 
 - return_df:
 
