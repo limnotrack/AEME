@@ -35,10 +35,12 @@ plot_wbal <- function(aeme, model, cumulative = FALSE) {
     dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
                      by = c("var_sim" = "var_aeme")) |>
     dplyr::mutate(
-      name_text = factor(name_text, levels = c("Evaporation",
-                                               "Precipitation" ,
-                                               "Inflow",
-                                               "Outflow"))
+      name_text = dplyr::if_else(name_text == "Total outflow", "Outflow", 
+                                 name_text),
+      label = factor(name_text, levels = c("Evaporation",
+                                           "Precipitation" ,
+                                           "Inflow",
+                                           "Outflow"))
     )
 
   y_lab <- eval(parse(text = "Volume~(m^3)"))
