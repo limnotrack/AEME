@@ -195,44 +195,9 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-06-07 22:35:24] job submitted
-#> INFO [2026-06-07 22:35:28] job updated
-#> INFO [2026-06-07 22:35:33] job updated
-#> INFO [2026-06-07 22:35:37] job updated
-#> INFO [2026-06-07 22:35:41] job updated
-#> INFO [2026-06-07 22:35:45] job updated
-#> INFO [2026-06-07 22:35:49] job updated
-#> INFO [2026-06-07 22:35:54] job updated
-#> INFO [2026-06-07 22:35:58] job updated
-#> INFO [2026-06-07 22:36:02] job updated
-#> INFO [2026-06-07 22:36:06] job updated
-#> INFO [2026-06-07 22:36:10] job updated
-#> INFO [2026-06-07 22:36:14] job updated
-#> INFO [2026-06-07 22:36:19] job updated
-#> INFO [2026-06-07 22:36:23] job updated
-#> INFO [2026-06-07 22:36:27] job updated
-#> INFO [2026-06-07 22:36:31] job updated
-#> INFO [2026-06-07 22:36:35] job updated
-#> INFO [2026-06-07 22:36:39] job updated
-#> INFO [2026-06-07 22:36:43] job updated
-#> INFO [2026-06-07 22:36:48] job updated
-#> INFO [2026-06-07 22:36:52] job updated
-#> INFO [2026-06-07 22:36:56] job updated
-#> INFO [2026-06-07 22:37:00] job updated
-#> INFO [2026-06-07 22:37:04] job updated
-#> INFO [2026-06-07 22:37:08] job updated
-#> INFO [2026-06-07 22:37:12] job updated
-#> INFO [2026-06-07 22:37:16] job updated
-#> INFO [2026-06-07 22:37:21] job updated
-#> INFO [2026-06-07 22:37:25] job updated
-#> INFO [2026-06-07 22:37:29] job updated
-#> INFO [2026-06-07 22:37:33] job updated
-#> INFO [2026-06-07 22:37:37] job updated
-#> INFO [2026-06-07 22:37:41] job updated
-#> INFO [2026-06-07 22:37:46] job updated
-#> INFO [2026-06-07 22:37:50] job updated
-#> INFO [2026-06-07 22:37:50] downloading
-#> INFO [2026-06-07 22:37:51] extracting
+#> INFO [2026-06-07 23:45:25] job submitted
+#> INFO [2026-06-07 23:45:25] downloading
+#> INFO [2026-06-07 23:45:27] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -601,7 +566,7 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [5ms]
 #> 
 #> 
 #> 
@@ -735,15 +700,15 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-07 22:38:13]
-#> → DYRESM-CAEDYM running... [2026-06-07 22:38:13]
-#> ✔ DYRESM-CAEDYM run successful! [2026-06-07 22:38:43]
-#> → GLM-AED running... [2026-06-07 22:38:43]
-#> ✔ GLM-AED run successful! [2026-06-07 22:38:43]
-#> → GOTM-WET running... [2026-06-07 22:38:44]
-#> ✔ GOTM-WET run successful! [2026-06-07 22:38:44]
-#> ✔ Model run complete! [2026-06-07 22:38:44]
-#> ! The following variables are not available in model dy_cd: CHM_ph, LKE_photic
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-07 23:45:40]
+#> → DYRESM-CAEDYM running... [2026-06-07 23:45:40]
+#> ✔ DYRESM-CAEDYM run successful! [2026-06-07 23:45:56]
+#> → GLM-AED running... [2026-06-07 23:45:56]
+#> ✔ GLM-AED run successful! [2026-06-07 23:45:56]
+#> → GOTM-WET running... [2026-06-07 23:45:56]
+#> ✔ GOTM-WET run successful! [2026-06-07 23:45:57]
+#> ✔ Model run complete! [2026-06-07 23:45:57]
+#> ! The following variables are not available in model dy_cd: LKE_photic
 #> ! The following variables are not available in model gotm_wet: CHM_ph
 ```
 

@@ -295,10 +295,10 @@ aeme
 #> • DY-CD: 0
 #> • GLM-AED: 1
 #> • GOTM-WET: 1
-#> • Variables: 37
+#> • Variables: 39
 #> Water temperature, Dissolved oxygen, Total chlorophyll a, Total nitrogen, Total
 #> phosphorus, Evaporative heat flux, Sensible heat flux, Longwave radiation,
-#> Shortwave radiation, Volume, ... and 27 more
+#> Shortwave radiation, Volume, ... and 29 more
 ```
 
 In the “Output” section of the `Aeme` object, the “Number of ensembles”
