@@ -194,8 +194,13 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       outflow <- Ts * 0
     }
     
-    out_list[["LKE_outflow"]] <- outflow +
-      ncdf4::ncvar_get(nc, "overflow_VOL_Var")[idx]
+    overflow <- ncdf4::ncvar_get(nc, "overflow_VOL_Var")[idx]
+    outftot <- outflow + overflow
+    
+    out_list[["LKE_overflow"]] <- overflow 
+    out_list[["LKE_outflow"]] <- outflow
+    out_list[["LKE_outftot"]] <- outftot
+      
     precip <- ncdf4::ncvar_get(nc, "met_RAIN")[idx]
     
     out_list[["LKE_A0"]] <- sapply(1:length(lake_level), function(d) approx((H - min(H)), A,

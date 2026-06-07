@@ -84,7 +84,7 @@ get_wbal_components <- function(
   mod <- list(
     level   = get_mod("LKE_lvlwtr"),
     inflow  = get_mod("LKE_inflow", cumulative),
-    outflow = get_mod("LKE_outflow", cumulative),
+    outflow = get_mod("LKE_outftot", cumulative),
     rain    = get_mod("LKE_pcpvol", cumulative),
     evap    = get_mod("LKE_evpvol", cumulative),
     ts      = get_mod("HYD_surft")

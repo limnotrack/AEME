@@ -102,8 +102,11 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     out_list[["LKE_evprte"]] <- abs(out_list[["LKE_evpvol"]] / 
                                       out_list[["LKE_A0"]])
     out_list[["LKE_inflow"]] <- ncdf4::ncvar_get(nc, "tot_inflow_vol")[date_index] # / A0
-    out_list[["LKE_outflow"]] <- (ncdf4::ncvar_get(nc, "tot_outflow_vol")[date_index] +
-                                    ncdf4::ncvar_get(nc, "overflow_vol")[date_index]) # / A0
+    overflow <- ncdf4::ncvar_get(nc, "overflow_vol")[date_index]
+    out_list[["LKE_overflow"]] <- overflow
+    tot_outflow <- ncdf4::ncvar_get(nc, "tot_outflow_vol")[date_index]
+    out_list[["LKE_outflow"]] <- tot_outflow
+    out_list[["LKE_outftot"]] <- tot_outflow + overflow
     out_list[["LKE_precip"]] <- ncdf4::ncvar_get(nc, "precipitation")[date_index]
     out_list[["LKE_pcpvol"]] <- out_list[["LKE_precip"]] * out_list[["LKE_A0"]]
     out_list[["HYD_surft"]] <- ncdf4::ncvar_get(nc, "surface_temp")[date_index]

@@ -32,7 +32,7 @@ plot_wbal_annual <- function(aeme, model, lake_frac = FALSE,
     model <- check_model(model = model)
   }
   
-  vars <- c("LKE_evpvol", "LKE_pcpvol", "LKE_inflow", "LKE_outflow")
+  vars <- c("LKE_evpvol", "LKE_pcpvol", "LKE_inflow", "LKE_outftot")
   df <- lapply(vars, \(v) {
     get_var(aeme, model = model, var_sim = v, return_df = TRUE,
             cumulative = FALSE, remove_spin_up = )

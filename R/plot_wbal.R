@@ -18,7 +18,7 @@ plot_wbal <- function(aeme, model, cumulative = FALSE) {
 
   data("key_naming", package = "AEME", envir = environment())
 
-  vars <- c("LKE_evpvol", "LKE_pcpvol", "LKE_inflow", "LKE_outflow")
+  vars <- c("LKE_evpvol", "LKE_pcpvol", "LKE_inflow", "LKE_outftot")
   aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
