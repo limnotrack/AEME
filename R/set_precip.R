@@ -10,15 +10,37 @@
 #' thermal structure.
 #'
 #' @inheritParams build_aeme
-#' @param type character. Either "precip_as_met" or "precip_as_inflow". Default is
-#' "precip_as_inflow". If "precip_as_met", precipitation is treated as a meteorological input
-#' in mm. If "precip_as_inflow", precipitation is converted to an inflow volume in m3.
+#' @param type character. Either "met" or "inflow". Default is
+#' "inflow". If "met", precipitation is treated as a meteorological input
+#' in mm. If "inflow", precipitation is converted to an inflow volume in m3. 
+#' It is also possible to use the old argument values "precip_as_met" and 
+#' "precip_as_inflow" for backward compatibility.
 #'
 #' @returns Aeme object with precipitation set as specified
 #' @export
+#' 
+#' @importFrom dplyr mutate select left_join filter case_when
+#' @importFrom zoo rollmean na.locf
+#' @importFrom rlang arg_match
 #'
 
-set_precip <- function(aeme, type = "precip_as_inflow") {
+set_precip <- function(aeme, type = c("inflow", "met", "precip_as_inflow",
+                                      "precip_as_met")) {
+  
+  # 1. Match the argument (this allows "inf", "met", or the full old strings)
+  type <- rlang::arg_match(type)
+  
+  # 2. Map old names to new names for internal consistency
+  if (type == "precip_as_inflow") {
+    cli::cli_warn("The argument value 'precip_as_inflow' is deprecated. Please 
+                  use 'inflow' instead.")
+    type <- "inflow"
+  }
+  if (type == "precip_as_met") {
+    cli::cli_warn("The argument value 'precip_as_met' is deprecated. Please use 
+                  'met' instead.")
+    type <- "met"
+  }
   
   aeme <- check_aeme(aeme)
   met <- get_met(aeme)
@@ -30,15 +52,45 @@ set_precip <- function(aeme, type = "precip_as_inflow") {
     return(aeme)
   }
   
+  hyps <- get_hypsograph(aeme)
   if (is.null(lake_area)) {
-    lake_area <- get_hypsograph(aeme) |> 
+    lake_area <- hyps |> 
       dplyr::filter(depth == 0) |>
       dplyr::pull(area)
   }
   
-  if (type == "precip_as_inflow") {
-    # Convert precip to inflow volume (m3)
-    precip_vol <- ((met[["MET_pprain"]] + met[["MET_ppsnow"]]) / 1000) * lake_area
+  precip <- met |> 
+    dplyr::mutate(precip_m = MET_pprain + MET_ppsnow, 
+                  precip_mm = precip_m * 1000) |> 
+    dplyr::select(Date, precip_mm, precip_m)
+  
+  if (type == "inflow") {
+    
+    # Check if water level observations are present
+    obs <- get_obs(aeme, var_sim = "LKE_lvlwtr")
+    if (nrow(obs) > 0) {
+      full_date <- met |> 
+        dplyr::select(Date)
+      obs <- obs |> 
+        dplyr::select(Date, value) |> 
+        dplyr::right_join(full_date, by = "Date") |>
+        # Fill NAs in value
+        dplyr::mutate(value = zoo::na.locf(value, na.rm = FALSE)) |> 
+        dplyr::mutate(area = area_from_level(h = value, hyps = hyps))
+      
+      precip <- precip |> 
+        # dplyr::filter(Date >= date_range[1] & Date <= date_range[2]) |> 
+        dplyr::left_join(obs, by = "Date") |> 
+        dplyr::mutate(precip_vol = precip_m * area) |> 
+        dplyr::select(Date, precip_mm, precip_m, area, precip_vol)
+      # Fill NA
+      
+    } else {
+      precip <- precip |>  #((met[["MET_pprain"]] + met[["MET_ppsnow"]]) / 1000) * lake_area
+        dplyr::mutate(precip_vol = precip_m * lake_area)
+    }
+    
+    precip_vol <- precip[["precip_vol"]]
     
     # Set precip to 0
     met[["MET_pprain"]] <- 0
@@ -62,7 +114,7 @@ set_precip <- function(aeme, type = "precip_as_inflow") {
       ))
     
     aeme <- add_inflow(aeme = aeme, inflow = inf_precip)
-  } else if (type == "precip_as_met") {
+  } else if (type == "met") {
     inf <- get_inflows(aeme)
     inf_names <- names(inf)
     if ("precip" %in% inf_names) {
@@ -88,6 +140,8 @@ set_precip <- function(aeme, type = "precip_as_inflow") {
     } else {
       stop("No 'precip' inflow found to convert to meteorological input")
     }
+  } else {
+    cli::cli_abort("Invalid type specified. Must be either 'inflow' or 'met'.")
   }
   return(aeme)
 }

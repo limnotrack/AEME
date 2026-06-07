@@ -16,11 +16,14 @@
 
 plot_wbal <- function(aeme, model, cumulative = FALSE) {
 
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   vars <- c("LKE_evpvol", "LKE_pcpvol", "LKE_inflow", "LKE_outflow")
+  aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
   }
   df <- lapply(vars, \(v) {
     get_var(aeme, model = model, var_sim = v, return_df = TRUE,
@@ -29,8 +32,8 @@ plot_wbal <- function(aeme, model, cumulative = FALSE) {
     dplyr::bind_rows()
 
   df <- df |>
-    dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
-                     by = c("var_sim" = "name")) |>
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
+                     by = c("var_sim" = "var_aeme")) |>
     dplyr::mutate(
       name_text = factor(name_text, levels = c("Evaporation",
                                                "Precipitation" ,

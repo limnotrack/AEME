@@ -31,7 +31,7 @@ plot_met_tile <- function(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE) {
   aeme <- check_aeme(aeme)
   
   # Load Rdata
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   # Load lake data for hydrological year
   lke <- lake(aeme)
@@ -50,8 +50,8 @@ plot_met_tile <- function(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE) {
   df <- inp$meteo |>
     tidyr::pivot_longer(cols = !dplyr::contains("Date")) |>
     dplyr::filter(name %in% var_inp) |>
-    dplyr::left_join(key_naming[, c("name", "name_parse")]
-                     , by = c("name" = "name"))
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse")]
+                     , by = c("name" = "var_aeme"))
 
   plot_tile(df = df, lat = lat, use_hydro_year = use_hydro_year)
 

@@ -1,7 +1,7 @@
 #' Set the simulation duration for glm
 #'
 #' @param date_range date vector of length 2
-#' @param glm_nml
+#' @param glm_nml GLM nml list object
 #'
 #' @return GLM nml list object with updated dates
 #' @noRd

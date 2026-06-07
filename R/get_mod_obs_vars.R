@@ -11,9 +11,12 @@
 #'
 
 get_mod_obs_vars <- function(aeme, model) {
+  aeme <- check_aeme(aeme)
   tme <- time(aeme)
   if (missing(model)) {
-    model <- list_models(aeme)
+    model <- list_models()
+  } else {
+    model <- check_model(model = model)
   }
   out_vars <- get_output_vars(aeme = aeme, model = model)
   if (is.null(out_vars)) {
@@ -24,8 +27,7 @@ get_mod_obs_vars <- function(aeme, model) {
         dplyr::pull(var_aeme)
     }
   }
-  obs <- get_obs(aeme) |> 
-    dplyr::filter(Date >= as.Date(tme$start) & Date <= as.Date(tme$stop)) |> 
+  obs <- get_obs(aeme, time_filter = TRUE) |> 
     dplyr::mutate(depth_mid = (depth_from + depth_to) / 2) |> 
     dplyr::group_by(var_aeme) |>
     dplyr::summarise(
@@ -33,7 +35,8 @@ get_mod_obs_vars <- function(aeme, model) {
       n_depth = length(unique(depth_mid)),
       n_dates = length(unique(Date)),
       .groups = "drop"
-    )
+    ) |> 
+    dplyr::arrange(n, var_aeme)
   
   if (!is.null(out_vars)) {
     obs <- obs |>

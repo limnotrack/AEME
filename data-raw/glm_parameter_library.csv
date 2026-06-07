@@ -1,0 +1,157 @@
+module,group,parameter,label,symbol,description,units,default,source
+glm_setup,,sim_name,Run name,,Title of simulation,string,lake,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+glm_setup,,max_layers,Layers,N_MAX,Maximum number of layers,-,500,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+glm_setup,,min_layer_vol,Min layer volume,Delta_V_min,Minimum layer volume,m3,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+glm_setup,,min_layer_thick,Min layer thickness,Delta_z_min,Minimum thickness of a layer,m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+glm_setup,,max_layer_thick,Max layer thickness,Delta_z_max,Maximum thickness of a layer,m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+glm_setup,,density_model,Density model,Theta_rho,Switch to set the density equation,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+glm_setup,,non_avg,Non-averaged,Theta_bc,Switch to configure flow boundary condition temporal interpolation,-,.true.,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+mixing,,surface_mixing,Surface mixing,Theta_mix,Switch to select the options of the surface mixing model,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+mixing,,coef_mix_conv,Convective mixing,C_K,Mixing efficiency - convective overturn,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+mixing,,coef_wind_stir,Wind stirring,C_W,Mixing efficiency - wind stirring,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+mixing,,coef_mix_shear,Shear mixing,C_S,Mixing efficiency - shear production,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+mixing,,coef_mix_turb,Turbulence mixing,C_T,Mixing efficiency - unsteady turbulence effects,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+mixing,,coef_mix_KH,KH mixing,C_KH,Mixing efficiency - Kelvin-Helmholtz billowing,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+mixing,,deep_mixing,Deep mixing,Theta_deep,Switch to select the options of the deep (hypolimnetic) mixing model,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+mixing,,coef_mix_hyp,Hypolimnetic mixing,C_HYP,Mixing efficiency - hypolimnetic turbulence,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+mixing,,diff,Diffusivity,D_epsilon,Background (molecular) diffusivity in the hypolimnion,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+wq_setup,,wq_lib,WQ library,Theta_wq,Water quality model selection,string,AED2,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+wq_setup,,wq_nml_file,WQ config file,,Filename of WQ configuration file,string,./aed2.nml,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+wq_setup,,bioshade_feedback,Bioshade feedback,Theta_kw,Switch to enable K_w to be updated by the WQ model,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+wq_setup,,mobility_off,Mobility off,,Switch to enable settling within the WQ model,-,.false.,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+wq_setup,,ode_method,ODE method,Theta_ode,Method to use for ODE solution of water quality module,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+wq_setup,,split_factor,Split factor,,Factor weighting implicit vs explicit numerical solution of the WQ model,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+wq_setup,,repair_state,Repair state,Theta_repair,Switch to correct negative or out of range WQ variables,-,.true.,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+morphometry,,lake_name,Lake name,,Site name,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+morphometry,,latitude,Latitude,Lat,"Latitude, positive North",degN,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+morphometry,,longitude,Longitude,Long,"Longitude, positive East",degE,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+morphometry,,base_elev,Base elevation,H_0,Elevation of the bottom-most point of the lake,m above datum,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+morphometry,,crest_elev,Crest elevation,H_crest,"Elevation of a weir crest, where overflow begins",m above datum,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+morphometry,,bsn_len,Basin length,L_crest,"Length of the lake basin, at crest height",m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+morphometry,,bsn_wid,Basin width,W_crest,"Width of the lake basin, at crest height",m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+morphometry,,bsn_vals,Basin values,N_BSN,Number of points being provided to describe the hypsographic details,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+morphometry,,H,Elevations,H[b],Comma-separated list of lake elevations,m above datum,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+morphometry,,A,Areas,A[b],Comma-separated list of lake areas,m2,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+time,,timefmt,Time format,Theta_time,Time configuration switch,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+time,,start,Start,t_0,Start time/date of simulation,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+time,,stop,Stop,t_N,End time/date of simulation,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+time,,dt,Timestep,Delta_t,Time step,s,3600,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+time,,num_days,Number of days,N_d,Number of days to simulate,days,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+time,,timezone,Timezone,TZ,UTC time zone,hours,+0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,out_dir,Output directory,,Directory to write the output files,string,./,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,out_fn,Output filename,,Filename of the main NetCDF output file,string,output,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,nsave,Save frequency,,Frequency to write to the NetCDF and CSV point files,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_lake_fname,Lake CSV filename,,Filename for the daily summary file,string,lake,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_point_nlevs,Point levels,,Number of specific level/depth csv files to be created,-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_point_fname,Point filename,,Name to be appended to specified depth CSV files,string,WQ_,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_point_frombot,Point from bottom,,Whether each output point is relative to the bottom or surface,-,.true.,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_point_at,Point depths,,Height or Depth of points to output at (comma separated list),m,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_point_nvars,Point variables count,,Number of variables to output into the csv files,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_point_vars,Point variables,,Comma separated list of variable names,string,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_outlet_allinone,Outlet all-in-one,,Switch to create an optional outlet file combining all outlets,-,.false.,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_outlet_fname,Outlet filename,,Name to be appended to each of the outlet CSV files,string,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_outlet_nvars,Outlet variables count,,Number of variables to be written into the outlet file(s),-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_outlet_vars,Outlet variables,,Comma separated list of variable names for outlet file(s),string,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+output,,csv_ovrflw_fname,Overflow filename,,Filename to be used for recording the overflow details,string,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+init_profiles,,lake_depth,Lake depth,h_S_t0,Initial lake height/depth,m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+init_profiles,,num_depths,Number of depths,,Number of depths provided for initial profiles,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+init_profiles,,the_depths,Depths,,The depths of the initial profile points (comma-separated list),m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+init_profiles,,the_temps,Temperatures,T_t0_z,The temperature at each of the initial profile points,degC,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+init_profiles,,the_sals,Salinities,S_t0_z,The salinity at each of the initial profile points,ppt,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+init_profiles,,num_wq_vars,WQ variables count,,Number of non-GLM variables to be initialised,-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+init_profiles,,wq_names,WQ names,,Names of non-GLM variables to be initialised,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+init_profiles,,wq_init_vals,WQ initial values,C_t0_z,Array of WQ variable initial data (rows=vars; cols=depths),-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+light,,light_mode,Light mode,Theta_light,Switch to configure the approach to light penetration,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+light,,Kw,Light extinction,K_w,Light extinction coefficient,m-1,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+light,,Kw_file,Kw file,,Name of file with Kw time-series included,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+light,,n_bands,Number of bands,N_SW,Number of light bandwidths to simulate,-,4,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+light,,light_extc,Light extinction coefficients,K_w_l,Comma-separated list of light extinction coefficients for each waveband,m-1,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+light,,energy_frac,Energy fractions,f_l,Comma-separated list of energy fraction captured by each waveband,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+light,,Benthic_Imin,Benthic min light,f_BEN_crit,Critical fraction of incident light reaching the benthos,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+bird_model,,AP,Atmospheric pressure,p,Atmospheric pressure,hPa,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+bird_model,,Oz,Ozone,Oz,Ozone concentration,atm-cm,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+bird_model,,WatVap,Water vapour,W,Total Precipitable water vapor,atm-cm,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+bird_model,,AOD500,AOD 500nm,AOD_500,Dimensionless Aerosol Optical Depth at wavelength 500 nm,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+bird_model,,AOD380,AOD 380nm,AOD_380,Dimensionless Aerosol Optical Depth at wavelength 380 nm,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+bird_model,,Albedo,Albedo,alpha_SW,Albedo of the surface used for Bird Model insolation calculation,-,0.2,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+sediment,,sed_heat_Ksoil,Soil conductivity,K_soil,Heat conductivity of soil/sediment,W/m/K,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+sediment,,sed_temp_depth,Sediment depth,delta_z_soil,Depth of soil/sediment layer below the lake bottom,m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+sediment,,sed_temp_mean,Mean sediment temp,T_z_mean,Annual mean sediment temperature,degC,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+sediment,,sed_temp_amplitude,Sediment temp amplitude,delta_T_z,Amplitude of temperature variation in the sediment over one year,degC,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+sediment,,sed_temp_peak_doy,Sediment temp peak DOY,d_T_z,Day of the year where the sediment temperature peaks,day,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+sediment,,benthic_mode,Benthic mode,Theta_benthic,Switch to configure which mode of benthic interaction to apply,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+sediment,,n_zones,Number of zones,N_SZ,Number of sediment zones to simulate,-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+sediment,,zone_heights,Zone heights,h_z,Upper height of zone boundary,m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+sediment,,sed_reflectivity,Sediment reflectivity,alpha_sed,Sediment reflectivity,-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+sediment,,sed_roughness,Sediment roughness,d_SS_z,Sediment roughness,m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+snowice,,snow_albedo_factor,Snow albedo factor,f_alpha,Scaling factor to scale the snow/ice albedo estimate,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+snowice,,snow_rho_min,Min snow density,rho_s_min,Minimum snow density allowable,kg/m3,50,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+snowice,,snow_rho_max,Max snow density,rho_s_max,Maximum snow density allowable,kg/m3,300,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,met_config,met_sw,Met surface heating,Theta_met,Switch to enable the surface heating module,-,.true.,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,met_input,meteo_fl,Met file,,Filename of the meteorological file,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,met_input,subdaily,Subdaily,Theta_subdaily,Switch to indicate the met data is provided with sub-daily resolution,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,met_input,time_fmt,Time format,,Time format of the 1st column in the met file,string,YYYY-MM-DD hh:mm:ss,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,radiation,rad_mode,Radiation mode,Theta_rad,Switch to configure which incoming radiation option to use,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,radiation,albedo_mode,Albedo mode,Theta_alpha,Switch to configure which albedo calculation option is used,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,radiation,sw_factor,SW factor,f_SW,Scaling factor to adjust the shortwave radiation data,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,radiation,lw_type,LW type,Theta_lw,Switch to configure which input approach is used for longwave/cloud data,string,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,radiation,cloud_mode,Cloud mode,Theta_cloud,Switch to configure which atmospheric emissivity calculation option is used,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,radiation,lw_factor,LW factor,f_LW,Scaling factor to adjust the longwave (or cloud) data,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,sensible_latent,atm_stab,Atmospheric stability,Theta_atmstab,Switch to configure which approach to atmospheric stability is used,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,sensible_latent,rh_factor,RH factor,f_RH,Scaling factor to adjust the relative humidity data,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,sensible_latent,at_factor,AT factor,f_AT,Scaling factor to adjust the air temperature data,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,sensible_latent,ce,Latent heat coef,C_E,Bulk aerodynamic transfer coefficient for latent heat flux,-,0.0013,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,sensible_latent,ch,Sensible heat coef,C_H,Bulk aerodynamic transfer coefficient for sensible heat flux,-,0.0013,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,rainfall,rain_sw,Rain switch,Theta_rain,Switch to configure rainfall input concentrations,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,rainfall,rain_factor,Rain factor,f_R,Scaling factor to adjust the rainfall data,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,rainfall,catchrain,Catchment rain,Theta_runin,Switch that configures runoff from exposed banks of lake area,-,.false.,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,rainfall,rain_threshold,Rain threshold,R_L,Daily rainfall amount required before runoff from exposed banks occurs,m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,rainfall,runoff_coef,Runoff coefficient,f_ro,Conversion fraction of infiltration excess rainfall to runoff,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,wind,cd,Drag coefficient,C_D,Bulk aerodynamic transfer coefficient for momentum,-,0.0013,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,wind,wind_factor,Wind factor,f_U,Scaling factor to adjust the windspeed data,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,fetch,fetch_mode,Fetch mode,Theta_fetch,Switch to configure which wind-sheltering/fetch option to use,-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,fetch,Aws,Wind sheltering area,A_WS,Area-based wind sheltering coefficient,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,fetch,Xws,Wind sheltering length,x_WS,Length-scale wind sheltering coefficient,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,fetch,num_dir,Number of directions,,Number of wind direction reference points being read in,-,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,fetch,wind_dir,Wind directions,Phi_wind,Wind directions used for wind-sheltering effects,deg,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+meteorology,fetch,fetch_scale,Fetch scale,f_WS,Direction specific wind-sheltering scaling factors,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,num_inflows,Number of inflows,N_INF,Number of inflows to be simulated,-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,names_of_strms,Stream names,,Names of each inflow,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,subm_flag,Submerged flag,Theta_subm_I,Switch indicating if the inflow is entering as a submerged input,-,.false.,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,strm_hf_angle,Half angle,alpha_inf,Angle describing the width of an inflow river channel (half angle),deg,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,strmbd_slope,Streambed slope,Phi_inf,Slope of the streambed / river thalweg for each river,deg,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,strmbd_drag,Streambed drag,C_D_inf,Drag coefficient of the river inflow thalweg,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,coef_inf_entrain,Entrainment coef,C_entrain,Entrainment coefficient for inflows,-,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,inflow_factor,Inflow factor,f_inf_I,Scaling factor for inflow data,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,inflow_fl,Inflow file,,Filename(s) of the inflow CSV boundary condition files,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,inflow_varnum,Inflow var count,,Number of variables in the columns of inflow file,-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,inflow_vars,Inflow variables,,Names of the variables in the inflow file,string,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+inflow,,time_fmt,Time format,,Time format of the 1st column in the inflow file,string,YYYY-MM-DD hh:mm:ss,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,,num_outlet,Number of outlets,N_OUTF,Number of outflows to be included in this simulation,-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,,outflow_fl,Outflow file,,Filename of the file containing the outflow time-series,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,,time_fmt,Time format,,Time format of the 1st column in the outflow file,string,YYYY-MM-DD hh:mm:ss,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,,outflow_factor,Outflow factor,f_outf,Scaling factor used as a multiplier for outflows,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,,outflow_thick_limit,Outflow thick limit,delta_outf_max,Maximum vertical limit of withdrawal entrainment,m,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,,single_layer_draw,Single layer draw,Theta_outf_single,Switch to force outflows from layer at the outlet elevation height,-,.false.,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,,flt_off_sw,Floating offtake,Theta_flt_O,Switch to indicate if the outflows are floating offtakes,-,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,,outlet_type,Outlet type,Theta_outf,Switch to configure approach of each withdrawal,-,1,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,normal_withdrawal,outl_elvs,Outlet elevations,h_outf_O,Outlet elevations,m,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,normal_withdrawal,bsn_len_outl,Basin length at outlet,L_outf_O,Basin length at the outlet height(s),m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,normal_withdrawal,bsn_wid_outl,Basin width at outlet,W_outf_O,Basin width at the outlet heights,m,,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,crit_O2,Critical O2,,Critical oxygen threshold,-,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,crit_O2_dep,Critical O2 depth,,Critical oxygen depth,-,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,crit_O2_days,Critical O2 days,,Critical oxygen days,-,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,outlet_crit,Outlet criteria,,Outlet criteria,-,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,O2name,O2 name,,Oxygen variable name,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,O2idx,O2 index,,Oxygen variable index,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,target_temp,Target temperature,,Target temperature for adaptive withdrawal,degC,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,min_lake_temp,Min lake temperature,,Minimum lake temperature,degC,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,fac_range_upper,Upper range factor,,Upper range factor for adaptive withdrawal,-,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,fac_range_lower,Lower range factor,,Lower range factor for adaptive withdrawal,-,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,mix_withdraw,Mix withdraw,,Mix withdrawal switch,-,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,coupl_oxy_sw,Coupled oxygen switch,,Coupled oxygen switch,-,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,adaptive_withdrawal,withdrTemp_fl,Withdrawal temp file,,Filename with temperature time-series for adaptive withdrawal,string,-,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,seepage,seepage,Seepage,Theta_seep,Switch to enable seepage of water from the lake bottom,-,.false.,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,seepage,seepage_rate,Seepage rate,G or K_seep,Seepage rate of water or soil hydraulic conductivity,m/day,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,overflow,crest_width,Crest width,W_weir,Width of weir where lake overflows,m,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html
+outflow,overflow,crest_factor,Crest factor,C_D_weir,Drag coefficient associated with the weir crest,-,0,https://aquatic.science.uwa.edu.au/research/models/GLM/configuration.html

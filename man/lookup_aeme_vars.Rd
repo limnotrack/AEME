@@ -10,8 +10,8 @@ lookup_aeme_vars(group = NULL, var_aeme = NULL, name = NULL)
 \item{group}{character string to filter variables by group. Default is NULL.
 Options include "HYD" (hydrodynamic), "LKE" (Lake), "RAD" (Radiation),
 "CHM" (Chemistry), "PHS" (Phosphorus), "NIT" (Nitrogen), "CAR" (Carbon),
- "SIL" (Silica), "MET" (Meteorologica), "ZOO" (Zooplankton),
- "PHY" (Phytoplankton),
+"SIL" (Silica), "MET" (Meteorologica), "ZOO" (Zooplankton),
+"PHY" (Phytoplankton),
 "MAC" (Macrophytes), "NCS" (Non-conservative substances).}
 
 \item{var_aeme}{character vector of exact AEME variable names to filter by

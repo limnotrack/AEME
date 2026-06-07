@@ -3,134 +3,80 @@
 #' @inheritParams build_aeme
 #' @inheritParams run_aeme
 #' @inheritParams parallel::stopCluster
-#' @param nlev numeric; number of levels to return in model output. If NULL,
-#' calculates number of levels based on the `model_layer_structure`.
 #'
 #' @return Updated aeme object with model output
 #' @export
 #'
 #' @importFrom dplyr filter pull case_when
-#' @importFrom ncdf4 nc_open nc_close
 #' @importFrom parallel clusterExport parLapply stopCluster detectCores
-#' makeCluster
+#' @importFrom parallel makeCluster
 #'
 #'
 
-load_output <- function(model, aeme, path, model_controls, parallel = FALSE,
-                        cl = NULL, nlev = NULL, ens_n = 1) {
-
-  if (is.null(nlev)) {
-    # inp <- input(aeme)
-    # hyps <- inp$hypsograph
-    # depth <- max(hyps$elev) - min(hyps$elev)
-    # lake_dir <- get_lake_dir(aeme = aeme, path = path)
-    lke <- lake(aeme)
-    depth <- lke$depth
-    sub_layers <- get_model_layers(depth = depth)
-    nlev <- nrow(sub_layers)
+load_output <- function(aeme, model, path = NULL, lake_dir = NULL, model_controls, 
+                        parallel = FALSE, cl = NULL, ens_n = 1) {
+  
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
   }
+  if (missing(model_controls)) {
+    model_controls <- get_model_controls(aeme)
+    if (is.null(model_controls)) {
+      model_controls <- get_model_controls()
+    }
+  }
+  # path <- check_path(path = path, must_exist = TRUE)
   outp <- output(aeme)
   aeme_time <- time(aeme)
   output_hour <- 0
   spin_up <- aeme_time$spin_up
   # start_date <- as.Date(aeme_time$start)
-  vars_sim <- model_controls |>
-    dplyr::filter(simulate) |>
-    dplyr::pull(var_aeme)
-  lake_dir <- get_lake_dir(aeme = aeme, path = path)
-
+  vars_sim <- get_vars_sim(model_controls = model_controls)
+  
   # Extract model output fron netCDF files and return as a list
   if (parallel) {
-
+    
     if (is.null(cl)) {
       ncores <- min(c(parallel::detectCores() - 1, length(model)))
       cl <- parallel::makeCluster(ncores)
       on.exit({
         parallel::stopCluster(cl)
-      })
+      }, add = TRUE)
     }
-    parallel::clusterExport(cl, varlist = list("lake_dir", "vars_sim",
-                                               "aeme", "nlev"),
+    parallel::clusterExport(cl, varlist = list("aeme", "path", "vars_sim",  
+                                               "lake_dir", "output_hour"),
                             envir = environment())
-    message("Reading models in parallel... ", paste0("[", format(Sys.time()), "]"))
+    # message("Reading models in parallel... ", paste0("[", format(Sys.time()), "]"))
+    cli_inform_safe(c("i" = paste0("Reading models in parallel...",
+                                   "[", format(Sys.time()), "]")))
     mods <- parallel::parLapply(cl = cl, model, \(m) {
-      out_file <- dplyr::case_when(m == "dy_cd" ~ file.path(lake_dir, m,
-                                                            "DYsim.nc"),
-                                   m == "glm_aed" ~ file.path(lake_dir, m,
-                                                              "output",
-                                                              "output.nc"),
-                                   m == "gotm_wet" ~ file.path(lake_dir, m,
-                                                               "output",
-                                                               "output.nc")
-      )
-
-      if (!file.exists(out_file)) {
-        message("No ", out_file, " present.")
-        return(NULL)
-      }
-
-      nc <- ncdf4::nc_open(out_file, return_on_error = TRUE)
-      if (nc$error) {
-        stop("Could not open netCDF file: ", out_file)
-      }
-      on.exit({
-        ncdf4::nc_close(nc)
-      })
-      nc_listify(nc = nc, model = m,
-                 vars_sim = vars_sim,
-                 aeme = aeme,
-                 nlev = nlev,
-                 output_hour = output_hour,
-                 path = path)
+      
+      read_model_nc(aeme = aeme, model = m, path = path, lake_dir = lake_dir,
+                    vars_sim = vars_sim, incl_fluxes = TRUE, 
+                    output_hour = output_hour)
     })
-
-    message("Model reading complete!", paste0("[", format(Sys.time()), "]"))
-
+    cli_inform_safe(c("v" = paste0("Model reading complete! ",
+                                   "[", format(Sys.time()), "]")))
+    
   } else {
     mods <- lapply(model, \(m) {
-      out_file <- dplyr::case_when(m == "dy_cd" ~ file.path(lake_dir, m,
-                                                            "DYsim.nc"),
-                                   m == "glm_aed" ~ file.path(lake_dir, m,
-                                                              "output",
-                                                              "output.nc"),
-                                   m == "gotm_wet" ~ file.path(lake_dir, m,
-                                                               "output",
-                                                               "output.nc")
-      )
-
-      if (!file.exists(out_file)) {
-        message("No ", out_file, " present.")
-        return(NULL)
-      }
-
-      nc <- ncdf4::nc_open(out_file, return_on_error = TRUE)
-      if (nc$error) {
-        stop("Could not open netCDF file: ", out_file)
-      }
-      on.exit({
-        ncdf4::nc_close(nc)
-      })
-      nc_listify(nc = nc, model = m,
-                 vars_sim = vars_sim,
-                 aeme = aeme,
-                 nlev = nlev,
-                 output_hour = output_hour,
-                 path = path)
+      read_model_nc(aeme = aeme, model = m, path = path, lake_dir = lake_dir,
+                    vars_sim = vars_sim, incl_fluxes = TRUE, 
+                    output_hour = output_hour)
     })
   }
   names(mods) <- model
-  # lapply(mods, \(x) head(x$Date))
-  # lapply(mods, \(x) tail(x$Date))
-  # lapply(mods, \(x) x$HYD_temp[, 500])
-  # lapply(mods, \(x) x$LKE_layers[, 10])
 
   ens_lab <- format_ens_label(ens_n = ens_n)
-
+  
   outp[[ens_lab]] <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
                           gotm_wet = mods[["gotm_wet"]])
   outp$n_members <- sum(grepl("ens", names(outp)))
-
+  
   output(aeme) <- outp
-
+  
   return(aeme)
 }

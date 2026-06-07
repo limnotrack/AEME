@@ -10,8 +10,7 @@
 #' area (m^2)
 #' @param inf list of inflow data frames
 #' @param outf list of outflow data frames. Default = NULL
-#' @param level data frame of lake water level observations.. cols = Date,
-#'  value
+#' @param level data frame of lake water level observations. cols = Date, value
 #' @param obs_lake data frame of lake observations in ensemble standard format
 #' @param obs_met data frame of meteorology, must include MET_tmpair, MET_wndspd
 #'  & MET_prvapr, continuous Date, extent defines output extent
@@ -23,612 +22,452 @@
 #' @importFrom lubridate ddays
 #' @importFrom withr local_locale local_timezone
 #' @importFrom dplyr filter left_join mutate distinct group_by summarise
-#' bind_rows
+#' @importFrom dplyr bind_rows
 #' @importFrom tidyr pivot_longer
 #' @importFrom ggplot2 ggplot aes geom_point geom_smooth theme_bw labs
 #' @importFrom stats lm optim
 #' @importFrom zoo rollmean
+#' @importFrom cli cli_abort cli_inform cli_progress_step cli_progress_update
+#' @importFrom cli cli_progress_done
 #'
-#' @return data frame of water balance components which are:
-#' - Date
-#' - model
-#' - value
-#' - HYD_flow
-#' - HYD_outflow
-#' - area
-#' - Ts
-#' - T5avg
-#' - evap_flux
-#' - evap_m3
-#' - rain
-#' - deltaV
-#' - ToT_inflow
-#' - outflow
-#'  
+#' @return list with:
+#' - `wb`: data frame of water balance components (Date, model, value,
+#'   HYD_flow, HYD_outflow, area, Ts, T5avg, evap_flux, evap_m3, rain,
+#'   deltaV, inflow, spill_outflow, net)
+#' - `wbal_params`: named numeric vector of fitted parameters (C, h_inv),
+#'   or NULL for method 1
 #'
 #' @noRd
-#'
 
 calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
-                               outf = NULL, level = NULL, obs_lake = NULL,
-                               obs_met, elevation,
-                               print_plots = FALSE, coeffs = NULL,
-                               print = TRUE) {
+                               outf = NULL, level = NULL, init_elev, init_temp,
+                               obs_lake = NULL, obs_met, elevation,
+                               print_plots = FALSE, params = NULL,
+                               coeffs = NULL) {
   
-  # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
+  cli_safe("Calculating water balance", FUN = cli::cli_h2)
   
-  # Get dates to use for calculating the water balance
-  max_spin <- max(unlist(aeme_time[["spin_up"]])[model])
-  spin_start <- aeme_time[["start"]] - lubridate::ddays(max_spin + 6)
-  date_stop <- aeme_time[["stop"]] + lubridate::ddays(1)
-  date_vector <- seq.Date(from = as.Date(spin_start), to = as.Date(date_stop),
-                          by = 1)
-  surf <- elevation
+  model <- check_model(model = model)
   
-  # If observations of level..
-  if (use == "obs") {
-    # if (is.null(level)) {
-    #   stop("No observations of lake level provided")
-    # }
-    if (!is.null(level)) {
-      if (print) {
-        message("Using observed water level")
-      }
-      # placeholder.. add optimised sin model here..!
-      ampl <- ((quantile(level$value, 0.9) -
-                  quantile(level$value, 0.1)) / 2) |>
-        as.numeric()
-      level <- level |>
-        dplyr::select(Date, value)
-      offset <- 0
-      mod.lvl <- data.frame(Date = obs_met$Date) |>
-        dplyr::left_join(level, by = "Date", keep = FALSE) |>
-        dplyr::filter(Date >= spin_start & Date <= date_stop) |>
-        dplyr::mutate(var_aeme = "LKE_lvlwtr")
-      
-      if (any(duplicated(mod.lvl$Date))) {
-        warning(strwrap("Duplicate dates in observed water level data.\n
-                        Only the first occurrence will be used."))
-        mod.lvl <- mod.lvl |>
-          dplyr::distinct(Date, .keep_all = TRUE)
-      }
-      
-      if (all(!is.na(mod.lvl$value))) {
-        if (print) {
-          message(strwrap("No missing values in observed water level.
-                      Using observed water level"))
-        }
-      } else {
-        if (print) {
-          message("Missing values in observed water level")
-        }
-        # Number of observations
-        n_lvl <- sum(!is.na(mod.lvl$value))
-        
-        # If there are greater than or equal to 9 observations, use the
-        # optimisation function
-        if (n_lvl >= 9) {
-          if (print) {
-            message("Using optimisation function")
-          }
-          # Initial parameter values
-          initial_parameters <- c(ampl = ampl, offset = offset)
-          # optim_lvl_params(initial_parameters, mod.lvl = mod.lvl, surf = surf)
-          
-          # Optimize the parameters
-          optimized_parameters <- stats::optim(par = initial_parameters,
-                                               fn = optim_lvl_params,
-                                               mod.lvl = mod.lvl, surf = surf,
-                                               method = "L-BFGS-B")
-          ampl <- optimized_parameters$par["ampl"]
-          offset <- optimized_parameters$par["offset"]
-        } else {
-          # Use constant water level
-          if (print) {
-            message("Using constant water level")
-          }
-          ampl <- 0
-          offset <- 0
-        }
-        
-        # Calculate the modelled water level
-        mod.lvl <- mod.lvl |>
-          dplyr::mutate(
-            value = mod_lvl(Date, surf = surf,
-                            ampl = ampl,
-                            offset = offset)
-          )
-      }
-    } else {
-      # Use constant water level
-      if (print) {
-        message("No water level present. Using constant water level.")
-      }
-      ampl <- 0
-      offset <- 0
-      # Calculate the modelled water level
-      mod.lvl <- data.frame(Date = date_vector)
-      mod.lvl <- mod.lvl |>
-        dplyr::mutate(
-          value = mod_lvl(Date, surf = surf,
-                          ampl = ampl,
-                          offset = offset)
-        )
-    }
-  } else if (use == "mod") {
-    mod.lvl <- level |>
-      dplyr::filter(Date >= spin_start & Date <= date_stop)
-    
-    if (any(!mod.lvl$Date %in% date_vector)) {
-      stop(strwrap(paste0("Modelled water level date range does not cover the
-                          simulation period (", spin_start, " to ", date_stop,
-                          "). ")))
-    }
-  }
+  # ---- Date range ----
+  max_spin  <- max(unlist(aeme_time[["spin_up"]])[model])
+  spin_start <- aeme_time[["start"]] - lubridate::ddays(max_spin + 1)
+  date_stop  <- aeme_time[["stop"]]  + lubridate::ddays(1)
+  surf       <- elevation
   
-  # Prepare met data ----
+  # ---- Resolve water level ----
+  mod_lvl <- resolve_water_level(
+    use        = use,
+    level      = level,
+    obs_met    = obs_met,
+    hyps       = hyps,
+    surf       = surf,
+    spin_start = spin_start,
+    date_stop  = date_stop
+  )
+  
+  # ---- Prepare met data ----
   obs_met <- obs_met |>
-    dplyr::mutate(MET_pprain = MET_pprain / 1000,
-                  MET_ppsnow = MET_ppsnow / 1000) |> # convert to m
-    dplyr::mutate(T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE,
-                                        align = c("right")))
+    dplyr::mutate(
+      MET_pprain = MET_pprain / 1000,  # mm -> m
+      MET_ppsnow = MET_ppsnow / 1000,
+      T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE, align = "right")
+    )
   
-  # Evaporation ----
-  evap <- obs_met |>
-    dplyr::select(c("Date","MET_tmpair", "MET_prvapr","MET_wndspd")) |>
-    dplyr::mutate(T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE,
-                                        align = c("right")))
+  # ---- Estimate lake surface temperature ----
+  obs_met <- obs_met |>
+    add_surface_temperature(obs_lake = obs_lake, coeffs = coeffs) |>
+    estimate_surface_temperature(depth = abs(min(hyps$depth)))
   
-  # If lake observations, use them to for evaporation estimations
-  if (!is.null(obs_lake)) {
-    sub <- obs_lake |>
-      dplyr::filter(
-        var_aeme == "HYD_temp",
-        depth_from < 1,
-        Date %in% evap$Date) |>
-      dplyr::filter(!duplicated(Date)) |>
-      dplyr::select(c("Date","value"))
-    
-    if (nrow(sub) == 0) {
-      obs_lake <- NULL
-    } else {
-      evap <- evap |>
-        dplyr::left_join(sub, by = "Date")
-    }
-  } else {
-    if (!is.null(coeffs)) {
-      if (print) {
-        message("Estimating temperature using supplied coefficients...")
-      }
-      evap$value <- coeffs[1] + coeffs[2] * evap$T5avg #
-    }
-  }
+  if (print_plots) print_sst_plot(obs_met)
   
-  # if less than 10 measurements
-  if (sum(!is.na(evap[["value"]])) < 10 & is.null(coeffs)) {
-    if (print) {
-      message("Estimating temperature using Stefan & Preud'homme (2007)...")
-    }
-    coeffs <- c(5, 0.75)
-    evap$value <- coeffs[1] + coeffs[2] * evap$T5avg # (Stefan & Preud'homme, 2007) www.doi.org/10.1111/j.1752-1688.1993.tb01502.x
-  } else {
-    fit <- stats::lm(value ~ T5avg, data = evap)
-    coeffs <- coefficients(fit)
-  }
+  # ---- Prepare GOTM met ----
+  gotm_met <- prep_gotm_met(obs_met, spin_start, date_stop)
   
-  if (print_plots) {
-    (ggplot2::ggplot(evap, ggplot2::aes(T5avg, value)) +
-       ggplot2::geom_point() +
-       ggplot2::geom_smooth(span = 0.1, na.rm = TRUE, method = "lm") +
-       ggplot2::theme_bw() + # theme(panel.border=element_blank(), axis.line=element_line()) +
-       ggplot2::labs(x = NULL, y = NULL, colour = NULL) +
-       ggplot2::theme(legend.position = 'none')) |>
-      print()
-  }
+  # ---- Add hypsograph volumes ----
+  hyps <- hyps |>
+    dplyr::mutate(volume = calc_V(depth = elev, hyps = hyps))
   
-  if ("sst" %in% names(obs_met)) {
-    col_select <- c("Date", "MET_wnduvu", "MET_wnduvv", "MET_tmpair",
-                    "MET_humrel", "MET_prsttn", "MET_pprain", "sst")
-  } else {
-    col_select <- c("Date", "MET_wnduvu", "MET_wnduvv", "MET_tmpair",
-                    "MET_humrel", "MET_prsttn", "MET_pprain")
-  }
-  
-  gotm_met <- obs_met |>
-    dplyr::select(all_of(col_select)) |>
-    dplyr::rename(u10 = MET_wnduvu, v10 = MET_wnduvv, airt = MET_tmpair,
-                  hum = MET_humrel, airp = MET_prsttn, precip = MET_pprain) |>
-    dplyr::mutate(precip = precip / 86400, airp = airp) #|>
-  
-  # Estimate lake surface temperature (use sea surface temperature abbrev 'sst')
-  if (!("sst" %in% names(obs_met))) {
-    gotm_met <- gotm_met |>
-      dplyr::mutate(sst = airt * coeffs[2] + coeffs[1])
-    obs_met <- obs_met |>
-      dplyr::mutate(sst = T5avg * coeffs[2] + coeffs[1])
-  }
-  
-  # gotm_evap <- calc_evap(met = gotm_met, model ="gotm_wet")
-  # glm_evap <- calc_evap(met = gotm_met, elevation = elevation,
-  #                       model = "glm_aed")
-  
-  gotm_met <- gotm_met |>
-    dplyr::filter(Date >= spin_start & Date <= date_stop) # filter dates
-  dates <- seq.Date(gotm_met$Date[1], gotm_met$Date[nrow(gotm_met)], by = 1)
-  length(dates) == nrow(gotm_met)
-  
-  # Set constants ----
-  rho0 <- 1e3 # kg/m3
-  Latent_Heat_Evap = 2.453E+6 # J/kg
-  
-  # Calculate the fluctuating surface area
+  # ---- Build initial water balance frame ----
   wbal_init <- obs_met |>
-    dplyr::left_join(mod.lvl, by = "Date", keep = FALSE) |>
+    dplyr::left_join(mod_lvl, by = "Date", keep = FALSE) |>
     dplyr::filter(Date >= spin_start & Date <= date_stop)
-  # nrow(wbal) == length(dates)
+  
   if (any(duplicated(wbal_init$Date))) {
-    stop("Duplicated dates in the water balance data")
+    cli::cli_abort(c(
+      "!" = "Duplicate dates in the water balance data.",
+      "i" = "Please check the input data for duplicates."
+    ))
   }
+  
+  # ---- Compute evaporation fluxes per model ----
   wbal <- lapply(model, \(m) {
-    wbal_init |> 
+    wbal_init |>
       dplyr::mutate(
-        model = m
+        model = m,
+        T5avg = zoo::rollmean(MET_tmpair, 5, fill = NA, align = "right"),
+        Ts    = sst,
+        es    = exp(2.3026 * ((7.5 * Ts) / (Ts + 237.3) + 0.7858)),
+        Qlh   = (0.622 / 981.9) * 0.0013 * 1.168 * 2453000 *
+          MET_wndspd * (MET_prvapr - es),
+        Qlh   = dplyr::if_else(Qlh > 0, 0, Qlh)
       ) |> 
-      dplyr::mutate(
-        area = get_hyps_val(depth = value, hyps = hyps),
-        # Calculate 5-day average water temperature
-        T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE, align = c("right")),
-        # apply the model to predict surface temperature
-        Ts = sst,
-        #saturation vapor pressure
-        es = exp(2.3026 * (((7.5 * Ts) / (Ts + 237.3) + 0.7858))),
-        #evaporative heat flux
-        Qlh = (0.622/981.9) *         #constant/mean station pressure
-          0.0013 *               #latent heat transfer coefficient
-          1.168 *                #density of air
-          2453000 *              #latent heat of evaporation of water
-          MET_wndspd *           #wind speed in m/s
-          (MET_prvapr - es),
-        Qlh = dplyr::case_when(
-          Qlh > 0 ~ 0,
-          .default = Qlh
-        ),
-        #change in mass of surface layer
-        deltaM = ((-1 * Qlh) * area) / 2258000,
-        #total evaporative loss
-        evap = deltaM * 86400 / 1000,
-        # Evaporation rate
-        evap_flux = dplyr::case_when(
-          model == "dy_cd" ~ -(evap / area) / 86400,
-          model == "gotm_wet" ~ calc_evap(met = gotm_met, model = "gotm_wet",
-                                          method = "fairall"),
-          model == "glm_aed" ~ -(evap / area) / 86400,
-          .default = 0
-        ),
-        evap_m3 = -evap_flux * area * 86400,
-        # dy_cd_evap_flux = -(evap / area) / 86400,
-        # gotm_wet_evap_flux = calc_evap(met = gotm_met, model = "gotm_wet",
-        #                                method = "fairall"),
-        # glm_aed_evap_flux = dy_cd_evap_flux,
-        # glm_aed_evap_flux = calc_evap(met = gotm_met, elevation = elevation,
-        #                               model = "glm_aed"),
-        # dy_cd_evap_m3 = -dy_cd_evap_flux * area * 86400,
-        # gotm_wet_evap_m3 = -gotm_wet_evap_flux * area * 86400,
-        # glm_aed_evap_m3 = -glm_aed_evap_flux * area * 86400,
-        V = calc_V(depth = value, hyps = hyps, h = 0.01),
-        evap_rate2 = Qlh / Latent_Heat_Evap / rho0,
-        evap_rate3 = Qlh / Latent_Heat_Evap / wtr_density(Ts)
-      )
-  }) |> 
+      tidyr::fill(T5avg, .direction = "up")
+  }) |>
     dplyr::bind_rows()
-  
-  # wbal <- wbal |> # filter dates
-  #   # calculate the fluctuating surface area
-  #   # dplyr::mutate(lvlwtr2 = mod_lvl(Date, surf = max(hyps[,1]), ampl = ampl,
-  #   #                                 offset = offset)) |>
-  #   dplyr::mutate(
-  #     area = get_hyps_val(depth = value, hyps = hyps),
-  #     # Calculate 5-day average water temperature
-  #     T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE, align = c("right")),
-  #     # apply the model to predict surface temperature
-  #     Ts = sst,
-  #     #saturation vapor pressure
-  #     es = exp(2.3026 * (((7.5 * Ts) / (Ts + 237.3) + 0.7858))),
-  #     #evaporative heat flux
-  #     Qlh = (0.622/981.9) *         #constant/mean station pressure
-  #       0.0013 *               #latent heat transfer coefficient
-  #       1.168 *                #density of air
-  #       2453000 *              #latent heat of evaporation of water
-  #       MET_wndspd *           #wind speed in m/s
-  #       (MET_prvapr - es),
-  #     #change in mass of surface layer
-  #     deltaM = ((-1 * Qlh) * area) / 2258000,
-  #     #total evaporative loss
-  #     evap = deltaM * 86400 / 1000,
-  #     # Evaporation rate
-  #     dy_cd_evap_flux = -(evap / area) / 86400,
-  #     gotm_wet_evap_flux = calc_evap(met = gotm_met, model = "gotm_wet",
-  #                                    method = "fairall"),
-  #     glm_aed_evap_flux = dy_cd_evap_flux,
-  #     # glm_aed_evap_flux = calc_evap(met = gotm_met, elevation = elevation,
-  #     #                               model = "glm_aed"),
-  #     dy_cd_evap_m3 = -dy_cd_evap_flux * area * 86400,
-  #     gotm_wet_evap_m3 = -gotm_wet_evap_flux * area * 86400,
-  #     glm_aed_evap_m3 = -glm_aed_evap_flux * area * 86400,
-  #     V = calc_V(depth = value, hyps = hyps, h = 0.01),
-  #     evap_rate2 = Qlh / Latent_Heat_Evap / rho0,
-  #     evap_rate3 = Qlh / Latent_Heat_Evap / wtr_density(Ts)
-  #   ) |>
-  #   dplyr::mutate(Qlh = dplyr::case_when(
-  #     Qlh > 0 ~ 0,
-  #     .default = Qlh
-  #   ))
-  # apply the functions
-  
-  # V = calc_V(depth = evap$value, hyps = hyps)
   
   if (any(is.na(wbal$area))) {
-    stop(strwrap("NA's in area. Most likely due to the hypsograph being too
-                 small.\nConsider extending the elevation of the hypsograph with
-                 the function `extrap_hyps(..., ext_elev = 5).` "))
+    cli::cli_abort(c(
+      "!" = "NAs in area - hypsograph may be too small.",
+      "i" = "Consider extending elevation with `extrap_hyps(..., ext_elev = 5)`."
+    ))
   }
   
-  # get total inflow discharge
-  if (is.null(inf) | length(inf) == 0) {
-    vol.inflow <- lapply(model, \(m) {
-      data.frame(Date = obs_met$Date, HYD_flow = 0, model = m)
-    }) |> 
-      dplyr::bind_rows()
-  } else {
-    vol.inflow <- lapply(model, \(m) {
-      df <- inf |>
-        dplyr::bind_rows()
-      if ((!"model" %in% names(df))) {
-        df$model <- NA
-      }
-      df |> 
-        dplyr::filter(model == m | is.na(model)) |>
-        dplyr::select(c("Date", "HYD_flow")) |>
-        dplyr::group_by(Date) |>
-        dplyr::summarise(HYD_flow = sum(HYD_flow)) |> 
-        dplyr::mutate(model = m)
-    }) |> 
-      dplyr::bind_rows()
-  }
+  # ---- Aggregate inflows and outflows ----
+  vol_inflow  <- aggregate_inflows(inf, model, obs_met)
+  vol_outflow <- aggregate_outflows(outf, obs_met)
   
-  # get total outflow discharge
-  if (is.null(outf) | length(outf) == 0) {
-    vol.outflow <- data.frame(Date = obs_met$Date, HYD_outflow = 0)
-  } else {
-    vol.outflow <- outf |>
-      dplyr::bind_rows() |>
-      dplyr::select(c("Date","outflow")) |>
-      dplyr::group_by(Date) |>
-      dplyr::summarise(HYD_outflow = sum(outflow))
-  }
+  obs_rain <- dplyr::select(obs_met, Date, MET_pprain)
   
-  # water balance ----
-  wb_sub <- wbal |> 
-    dplyr::select(c("Date", "model", "evap_m3", "evap_flux",
-                    "T5avg", "Ts", "area", "value", "V"))
-  obs_rain <- obs_met |> 
-    dplyr::select(c("Date","MET_pprain"))
-  
+  # ---- Assemble water balance per model ----
   wb <- lapply(model, \(m) {
-    wb <- obs_met |>
-      dplyr::select(Date) |>
-      
-      # add inflow discharge from fwmt model
-      dplyr::left_join(vol.inflow, by = "Date") |>
+    mod_inflow <- vol_inflow  |> 
       dplyr::filter(model == m) |> 
-      dplyr::left_join(vol.outflow, by = "Date") |>
-      
-      # add evaporation estimation above
-      dplyr::left_join(wb_sub, by = c("Date", "model")) |>
-      dplyr::left_join(obs_rain, by = "Date") |> 
-      dplyr::filter(Date >= spin_start & Date <= date_stop) |>
-      # rainfall direct to surface of lake
-      dplyr::mutate(rain = MET_pprain * area,
-                    # calculate outflow by difference
-                    deltaV = c(0, diff(value)) * area,
-                    ToT_inflow = HYD_flow + rain,
-                    outflow = ((HYD_flow + rain) -
-                                 (HYD_outflow + evap_m3 + deltaV))
-                    # outflow_dy_cd = ((HYD_flow + rain) -
-                    #                    (HYD_outflow + dy_cd_evap_m3 + deltaV)),
-                    # outflow_glm_aed = ((HYD_flow + rain) -
-                    #                      (HYD_outflow + glm_aed_evap_m3 + deltaV)),
-                    # outflow_gotm_wet = ((HYD_flow + rain) -
-                    #                       (HYD_outflow + gotm_wet_evap_m3 + deltaV)),
-                    # sum_gotm_wet = HYD_flow + rain
-      )
-    # wb[wb$Date == "2020-07-24", ]
+      dplyr::select(Date, HYD_flow) 
+    wb_m <- obs_met |>
+      dplyr::select(Date) |>
+      dplyr::mutate(model = m) |> 
+      dplyr::left_join(mod_inflow, by = "Date") |>
+      dplyr::left_join(vol_outflow, by = "Date") |>
+      dplyr::left_join(wbal        |> dplyr::filter(model == m),
+                       by = c("Date", "model")) |>
+      dplyr::filter(Date >= spin_start & Date <= date_stop)
     
-    # wb <- wb[complete.cases(wb$outflow), ]
-    # wb <- wb[complete.cases(wb$outflow_dy_cd), ]
-    # wb <- wb[complete.cases(wb$outflow_glm_aed), ]
-    # wb <- wb[complete.cases(wb$outflow_gotm_wet), ]
-    return(wb)
-  }) |> 
+    if (method %in% c(2, 3)) {
+      wb_m <- wb_m |>
+        estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev,
+                           params = params)
+    }
+    wb_m
+  }) |>
     dplyr::bind_rows()
   
+  # ---- Apply method-specific inflow/outflow logic ----
+  wb <- apply_wb_method(wb, method, hyps)
   
-  # wb <- obs_met |>
-  #   dplyr::select(Date) |>
-  # 
-  #   # add inflow discharge from fwmt model
-  #   merge(vol.inflow, by = "Date") |>
-  #   merge(vol.outflow, by = "Date") |>
-  # 
-  #   # add evaporation estimation above
-  #   merge(dplyr::select(wbal, c("Date", "dy_cd_evap_m3", "gotm_wet_evap_m3",
-  #                               "glm_aed_evap_m3", "dy_cd_evap_flux",
-  #                               "gotm_wet_evap_flux", "glm_aed_evap_flux",
-  #                               "T5avg", "Ts", "area", "value", "V")),
-  #         by = "Date") |>
-  #   merge(dplyr::select(obs_met, c("Date","MET_pprain"))) |>
-  #   # rainfall direct to surface of lake
-  #   dplyr::mutate(rain = MET_pprain * area,
-  #                 # calculate outflow by difference
-  #                 deltaV = c(0, diff(value)) * area,
-  #                 ToT_inflow = HYD_flow + rain,
-  #                 outflow_dy_cd = ((HYD_flow + rain) -
-  #                                    (HYD_outflow + dy_cd_evap_m3 + deltaV)),
-  #                 outflow_glm_aed = ((HYD_flow + rain) -
-  #                                      (HYD_outflow + glm_aed_evap_m3 + deltaV)),
-  #                 outflow_gotm_wet = ((HYD_flow + rain) -
-  #                                       (HYD_outflow + gotm_wet_evap_m3 + deltaV)),
-  #                 sum_gotm_wet = HYD_flow + rain)
-  # wb <- wb[complete.cases(wb$outflow_dy_cd), ]
-  # wb <- wb[complete.cases(wb$outflow_glm_aed), ]
-  # wb <- wb[complete.cases(wb$outflow_gotm_wet), ]
+  # ---- Extract fitted parameters ----
+  wbal_params <- if (method %in% c(2, 3)) {
+    dplyr::summarise(wb, C = mean(C), h_inv = mean(h_inv))
+  } else {
+    NULL
+  }
   
-  # plot(wb$Date, wb$outflow_gotm_wet)
-  # ggplot(wb) +
-  #   geom_hline(yintercept = 0) +
-  #   geom_point(aes(Date, outflow_gotm_wet))
+  if (print_plots) print_wb_plot(wb)
   
-  # Method 1 - No inflows or outflows
-  if (method == 1) {
-    wb <- wb |>
-      dplyr::mutate(
-        outflow = 0,
-        inflow = 0
-      )
-    # dplyr::mutate(outflow_dy_cd = 0,
-    #               outflow_glm_aed = 0,
-    #               outflow_gotm_wet = 0,
-    #               inflow_dy_cd = 0,
-    #               inflow_glm_aed = 0,
-    #               inflow_gotm_wet = 0)
-    # Method 2 - Outflows
-  } else if (method == 2) {
-    # pass negative outflows onto subsequent days
-    wb <- wb |>
-      split(wb$model) |>
-      lapply(\(df) {
-        for (j in 2:nrow(df)) {
-          if (df$outflow[j - 1] < 0) {
-            df$outflow[j] <- df$outflow[j] + df$outflow[j - 1]
-          }
-        }
-        df
-      }) |>
-      dplyr::bind_rows()
-    
-    # Smooth outflow by 5 days ----
-    wb <- wb |>
-      dplyr::group_by(model) |>
-      dplyr::mutate(
-        outflow = zoo::rollmean(outflow, 5, na.pad = FALSE, fill = 0,
-                                align = c("right")),
-        # outflow_dy_cd = zoo::rollmean(wb$outflow_dy_cd, 5, na.pad = TRUE,
-        #                               align = c("right")),
-        # outflow_glm_aed = zoo::rollmean(wb$outflow_glm_aed, 5, na.pad = TRUE,
-        #                                 align = c("right")),
-        # outflow_gotm_wet = zoo::rollmean(wb$outflow_gotm_wet, 5, na.pad = TRUE,
-        #                                  align = c("right"))
-      ) |>
-      # remove the negatives that have been added to other days
-      dplyr::mutate(
-        outflow = dplyr::case_when(
-          outflow < 0 ~ 0, .default = outflow
-        ),
-        inflow = 0
-        # outflow_dy_cd = dplyr::case_when(
-        #   outflow_dy_cd < 0 ~ 0, .default = outflow_dy_cd
-        # ),
-        # outflow_glm_aed = dplyr::case_when(
-        #   outflow_glm_aed < 0 ~ 0, .default = outflow_glm_aed
-        # ),
-        # outflow_gotm_wet = dplyr::case_when(
-        #   outflow_gotm_wet < 0 ~ 0, .default = outflow_gotm_wet
-        # ),
-        # inflow_dy_cd = 0,
-        # inflow_glm_aed = 0,
-        # inflow_gotm_wet = 0
-      ) |> 
-      dplyr::ungroup()
-    # Method 3 - Inflows and outflows
-  } else  if (method == 3) {
-    # Separate negative into inflows and positive into outflows
-    wb <- wb |>
-      dplyr::group_by(model) |>
-      # Smooth outflow by 5 days ----
+  # ---- Final column selection and output ----
+  sel_cols <- c("Date", "model", "value",
+                "inflow", "HYD_flow", "CHM_salt", "rain",
+                "evap_m3", "evap_flux",
+                "deltaV", "V",
+                "Ts", "area",
+                "HYD_outflow", "spill_outflow", "net")
+  
+  wb <- if ("lvl_sim" %in% names(wb)) {
+    dplyr::rename(wb, value = lvl_sim)
+  } else {
+    dplyr::mutate(wb, value = init_elev)
+  }
+  
+  wb_out <- wb |>
     dplyr::mutate(
-      outflow = zoo::rollmean(outflow, 5, na.pad = FALSE, fill = 0,
-                              align = c("right"))
-      # outflow_dy_cd = zoo::rollmean(wb$outflow_dy_cd, 5, na.pad = TRUE,
-      #                               align = c("right")),
-      # outflow_glm_aed = zoo::rollmean(wb$outflow_glm_aed, 5, na.pad = TRUE,
-      #                                 align = c("right")),
-      # outflow_gotm_wet = zoo::rollmean(wb$outflow_gotm_wet, 5, na.pad = TRUE,
-      #                                  align = c("right"))
+      HYD_temp = Ts,
+      CHM_salt = 0,
+      area     = area_from_level(h = value, hyps = hyps),
+      V        = volume_from_level(h = value, hyps = hyps),
+      deltaV   = c(0, diff(V)),
+      rain     = MET_pprain * area,
+      evap_m3  = abs(evap_m3)
     ) |>
+    dplyr::select(dplyr::any_of(sel_cols))
+  
+  # Fill any missing expected columns with NA
+  missing_cols <- setdiff(sel_cols, names(wb_out))
+  for (col in missing_cols) wb_out[[col]] <- NA
+  
+  list(
+    wb          = wb_out,
+    wbal_params = c("C" = wbal_params$C, "h_inv" = wbal_params$h_inv)
+  )
+}
+
+#' Resolve observed or modelled water level into a common data frame
+#' @noRd
+#' @importFrom cli cli_abort cli_inform cli_progress_step cli_progress_update 
+#' @importFrom cli cli_div cli_end
+resolve_water_level <- function(use, level, obs_met, hyps, surf,
+                                spin_start, date_stop) {
+  
+  FUN = cli::cli_inform
+  cli_safe("Resolving water level", indent = FALSE)
+  # on.exit({
+  #   if (!is.null(pb_id)) cli::cli_progress_done(id = pb_id)
+  # })  
+  if (use == "mod") {
+    date_vector <- seq.Date(as.Date(spin_start), as.Date(date_stop), by = 1)
+    mod_lvl <- dplyr::filter(level, Date >= spin_start & Date <= date_stop)
+    if (any(!mod_lvl$Date %in% date_vector)) {
+      cli::cli_abort(c(
+        "!" = "Modelled water level date range does not cover the simulation period.",
+        "i" = "Expected range: {spin_start} to {date_stop}."
+      ))
+    }
+    return(mod_lvl)
+  }
+  
+  # use == "obs"
+  if (!is.null(level)) {
+    cli_safe(c("i" = "Using observed water level"), FUN = FUN)
+    
+    lvl_range  <- range(level$value, na.rm = TRUE)
+    elev_range <- range(hyps$elev,   na.rm = TRUE)
+    if (lvl_range[1] < elev_range[1] | lvl_range[2] > elev_range[2]) {
+      cli::cli_abort(c(
+        "!" = "Observed water level values are outside the hypsograph elevation range.",
+        "i" = "Observed range: {lvl_range[1]} to {lvl_range[2]}.",
+        "i" = "Hypsograph range: {elev_range[1]} to {elev_range[2]}."
+      ))
+    }
+    
+    mod_lvl <- data.frame(Date = obs_met$Date) |>
+      dplyr::left_join(dplyr::select(dplyr::rename(level, lvl_obs = value),
+                                     Date, lvl_obs),
+                       by = "Date") |>
+      dplyr::mutate(is_obs_lvl = !is.na(lvl_obs)) |>
+      dplyr::filter(Date >= spin_start & Date <= date_stop)
+    
+    if (all(is.na(mod_lvl$lvl_obs))) {
+      mod_lvl <- dplyr::mutate(
+        mod_lvl,
+        lvl_obs    = rep(c(surf, rep(NA, 3)), length.out = dplyr::n()),
+        is_obs_lvl = !is.na(lvl_obs)
+      )
+    }
+    
+    if (any(duplicated(mod_lvl$Date))) {
+      cli::cli_warn("Duplicate dates in observed water level - keeping first occurrence.")
+      mod_lvl <- dplyr::distinct(mod_lvl, Date, .keep_all = TRUE)
+    }
+    
+    if (all(!is.na(mod_lvl$lvl_obs))) {
+      cli_safe(c("v" = "No missing values in observed water level"),
+               FUN = FUN)
+    } else {
+      cli_safe("Missing values in observed water level", FUN = cli::cli_alert_warning)
+    }
+    
+  } else {
+    cli_safe(c("i" = "No water level present. Using constant water level."), 
+             FUN = FUN)
+    mod_lvl <- data.frame(Date = obs_met$Date) |>
       dplyr::mutate(
-        inflow = dplyr::case_when(
-          outflow < 0 ~ abs(outflow),
-          .default = 0
-        ),
-        # inflow_dy_cd = dplyr::case_when(
-        #   outflow_dy_cd < 0 ~ abs(outflow_dy_cd),
-        #   .default = 0
-        # ),
-        # inflow_glm_aed = dplyr::case_when(
-        #   outflow_glm_aed < 0 ~ abs(outflow_glm_aed),
-        #   .default = 0
-        # ),
-        # inflow_gotm_wet = dplyr::case_when(
-        #   outflow_gotm_wet < 0 ~ abs(outflow_gotm_wet),
-        #   .default = 0
-        # ),
+        lvl_obs    = rep(c(surf, rep(NA, 3)), length.out = dplyr::n()),
+        is_obs_lvl = !is.na(lvl_obs)
       ) |>
-      dplyr::mutate(
-        outflow = dplyr::case_when(
-          outflow < 0 ~ 0, .default = outflow
-        )
-        # outflow_dy_cd = dplyr::case_when(
-        #   outflow_dy_cd < 0 ~ 0, .default = outflow_dy_cd
-        # ),
-        # outflow_glm_aed = dplyr::case_when(
-        #   outflow_glm_aed < 0 ~ 0, .default = outflow_glm_aed
-        # ),
-        # outflow_gotm_wet = dplyr::case_when(
-        #   outflow_gotm_wet < 0 ~ 0, .default = outflow_gotm_wet
-        # )
+      dplyr::filter(Date >= spin_start & Date <= date_stop)
+  }
+  
+  mod_lvl
+}
+
+
+#' Add HYD_temp column to obs_met from lake obs or coefficients
+#' @noRd
+add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
+  if (!is.null(obs_lake)) {
+    sub <- obs_lake |>
+      dplyr::filter(var_aeme == "HYD_temp", depth_from < 1,
+                    Date %in% obs_met$Date) |>
+      dplyr::filter(!duplicated(Date)) |>
+      dplyr::select(Date, value)
+    
+    if (nrow(sub) == 0) {
+      obs_met$HYD_temp <- NA
+    } else {
+      obs_met <- obs_met |>
+        dplyr::left_join(sub, by = "Date") |>
+        dplyr::rename(HYD_temp = value)
+    }
+  } else if (!is.null(coeffs)) {
+    cli_inform_safe(c("i" = "Using supplied coefficients for estimating lake 
+                      surface temperature."))
+    obs_met$HYD_temp <- coeffs[1] + coeffs[2] * obs_met$T5avg
+  } else {
+    obs_met$HYD_temp <- NA
+  }
+  
+  # Fall back to Stefan & Preud'homme if fewer than 10 valid observations
+  n_obs <- sum(!is.na(obs_met$HYD_temp))
+  if (n_obs < 10) {
+    cli_inform_safe(c(
+      "i" = "Insufficient lake temperature observations (<10).",
+      "i" = "Using Stefan & Preud'homme (2007) method to estimate surface 
+      temperature."
+    ))
+    coeffs <- c(5, 0.75)
+    obs_met$HYD_temp <- coeffs[1] + coeffs[2] * obs_met$T5avg
+  } else {
+    fit    <- lm(HYD_temp ~ T5avg, data = obs_met)
+    coeffs <- stats::coefficients(fit)  # nolint - used for side-effect doc only
+  }
+  
+  obs_met
+}
+
+
+#' Prepare GOTM-formatted met data frame
+#' @noRd
+prep_gotm_met <- function(obs_met, spin_start, date_stop) {
+  col_select <- c("Date", "MET_wnduvu", "MET_wnduvv", "MET_tmpair",
+                  "MET_humrel", "MET_prsttn", "MET_pprain",
+                  if ("sst" %in% names(obs_met)) "sst")
+  
+  obs_met |>
+    dplyr::select(dplyr::all_of(col_select)) |>
+    dplyr::rename(u10 = MET_wnduvu, v10 = MET_wnduvv, airt = MET_tmpair,
+                  hum  = MET_humrel, airp = MET_prsttn, precip = MET_pprain) |>
+    dplyr::mutate(precip = precip / 86400) |>
+    dplyr::filter(Date >= spin_start & Date <= date_stop)
+}
+
+
+#' Aggregate inflows across tributaries per model
+#' @noRd
+aggregate_inflows <- function(inf, model, obs_met) {
+  if (is.null(inf) || length(inf) == 0) {
+    lapply(model, \(m) data.frame(Date = obs_met$Date, HYD_flow = 0, model = m)) |>
+      dplyr::bind_rows()
+  } else {
+    lapply(model, \(m) {
+      df <- dplyr::bind_rows(inf)
+      if (!"model" %in% names(df)) df$model <- NA
+      df |>
+        dplyr::filter(model == m | is.na(model)) |>
+        dplyr::select(Date, HYD_flow) |>
+        dplyr::group_by(Date) |>
+        dplyr::summarise(HYD_flow = sum(HYD_flow), .groups = "drop") |>
+        dplyr::mutate(model = m)
+    }) |>
+      dplyr::bind_rows()
+  }
+}
+
+
+#' Aggregate outflows across outlets
+#' @noRd
+aggregate_outflows <- function(outf, obs_met) {
+  if (is.null(outf) || length(outf) == 0) {
+    data.frame(Date = obs_met$Date, HYD_outflow = 0)
+  } else {
+    dplyr::bind_rows(outf) |>
+      dplyr::select(Date, HYD_flow) |>
+      dplyr::group_by(Date) |>
+      dplyr::summarise(HYD_outflow = sum(HYD_flow), .groups = "drop")
+  }
+}
+
+
+#' Apply water balance method to wb data frame
+#' @noRd
+apply_wb_method <- function(wb, method, hyps) {
+  if (method == 1) {
+    lake_surf <- hyps |> 
+      dplyr::filter(depth == 0) 
+    wb |>
+      dplyr::rename(
+        inflow = HYD_flow
       ) |> 
+      dplyr::mutate(
+        lvl_sim = lake_surf$elev,
+        spill_outflow = 0,
+        area = area_from_level(h = lvl_sim, hyps = hyps),
+        Qlh_t = latent_heat_flux(Ts = Ts, wndspd = MET_wndspd, 
+                                 prvapr = MET_prvapr,
+                                 prsttn = (MET_prsttn / 100)),
+        evap_flux = flux_to_evap(Qlh = Qlh_t),
+        evap_m3 = evap_flux * area,
+        rain = MET_pprain * area,
+        net = (inflow + rain - evap_m3 - HYD_outflow - spill_outflow)
+      )
+  } else if (method == 2) {
+    dplyr::mutate(wb, inflow = HYD_flow)
+    
+  } else if (method == 3) {
+    wb |>
+      dplyr::group_by(model) |>
+      dplyr::arrange(Date) |>
+      dplyr::mutate(
+        V            = volume_from_level(h = lvl_sim, hyps = hyps),
+        A_t          = area_from_level(h = lvl_sim, hyps = hyps),
+        dV           = dplyr::coalesce(V - dplyr::lag(V), 0),
+        expected_flux = HYD_flow + MET_pprain * A_t - evap_m3 -
+          HYD_outflow - spill_outflow,
+        residual     = dV - expected_flux,
+        inflow       = dplyr::if_else(residual > 0,  residual,  0),
+        spill_outflow = dplyr::if_else(residual < 0, -residual, 0)
+      ) |>
+      dplyr::select(-V, -A_t, -dV, -expected_flux, -residual) |>
       dplyr::ungroup()
   }
-  
-  
-  if (print_plots) {
-    wb |>
-      tidyr::pivot_longer(cols = !contains(c("Date", "model")), names_to = "var",
-                          values_to = "value") |>
-      # gather(var,value,2:ncol(.)) |>
-      ggplot2::ggplot(ggplot2::aes(x = Date, y = value, colour = model)) +
-      ggplot2::geom_hline(yintercept = 0) +
-      ggplot2::geom_line() +
-      ggplot2::ylab(bquote('Volume ('~m^-3~d^-1~')')) +
-      ggplot2::xlab("Date") +
-      ggplot2::theme_bw() +
-      ggplot2::facet_wrap(~var, scales = 'free_y')
-  }
-  
-  wb |>
-    dplyr::mutate(HYD_temp = Ts, CHM_salt = 0) |>
-    dplyr::select(c("Date", "model", "value", "HYD_flow", "rain",
-                    evap_m3, evap_flux,
-                    # "dy_cd_evap_m3", "gotm_wet_evap_m3", "glm_aed_evap_m3",
-                    "deltaV", "V",
-                    # "dy_cd_evap_flux", "gotm_wet_evap_flux", "glm_aed_evap_flux",
-                    "Ts", "area", "CHM_salt", "HYD_temp",
-                    "inflow", "outflow"
-                    # "inflow_dy_cd", "inflow_glm_aed", "inflow_gotm_wet",
-                    # "outflow_dy_cd", "outflow_glm_aed", "outflow_gotm_wet"
-                    ))
+}
+
+
+#' Print SST vs T5avg diagnostic plot
+#' @noRd
+print_sst_plot <- function(obs_met) {
+  p <- ggplot2::ggplot(obs_met, ggplot2::aes(T5avg, sst)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_smooth(span = 0.1, na.rm = TRUE, method = "lm") +
+    ggplot2::theme_bw() +
+    ggplot2::labs(x = NULL, y = NULL, colour = NULL) +
+    ggplot2::theme(legend.position = "none")
+  print(p)
+}
+
+
+#' Print water balance time series plot
+#' @noRd
+print_wb_plot <- function(wb) {
+  p <- wb |>
+    tidyr::pivot_longer(
+      cols      = !dplyr::contains(c("Date", "model")),
+      names_to  = "var",
+      values_to = "value"
+    ) |>
+    ggplot2::ggplot(ggplot2::aes(x = Date, y = value, colour = model)) +
+    ggplot2::geom_hline(yintercept = 0) +
+    ggplot2::geom_line() +
+    ggplot2::ylab(bquote("Volume (" ~ m^-3 ~ d^-1 ~ ")")) +
+    ggplot2::xlab("Date") +
+    ggplot2::theme_bw() +
+    ggplot2::facet_wrap(~var, scales = "free_y")
+  print(p)
+}
+
+
+# ---- Utility functions ----
+
+level_from_volume <- function(V, hyps) {
+  approx(hyps$volume, hyps$elev, V, rule = 2)$y
+}
+
+volume_from_level <- function(h, hyps) {
+  approx(hyps$elev, hyps$volume, h, rule = 2)$y
+}
+
+area_from_level <- function(h, hyps) {
+  approx(hyps$elev, hyps$area, h, rule = 2)$y
 }
 
 #' Calculate actual surface area at a specific depth
@@ -636,73 +475,123 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
 #' @inheritParams build_dycd
 #' @noRd
 get_hyps_val <- function(depth, hyps) {
-  sapply(depth, function(l) approx(hyps[["elev"]], hyps[["area"]], xout = l)$y)
+  sapply(depth, \(l) approx(hyps[["elev"]], hyps[["area"]], xout = l, rule = 1)$y)
 }
 
-#' Calculate volume of a lake
-#'
+#' Calculate volume of a lake using frustum method
 #' @param depth numeric; depth of the lake (m)
 #' @inheritParams build_dycd
-#' @param h numeric; depth intervals at which to calculate volume (m).
+#' @param h numeric; depth intervals at which to calculate volume (m)
 #' @noRd
 calc_V <- function(depth, hyps, h = 0.1) {
   sapply(depth, \(d) {
     depths <- seq(min(hyps$elev), d, h)
-    if (tail(depths, 1) != d) {
-      depths <- c(depths, d)
-    }
+    if (tail(depths, 1) != d) depths <- c(depths, d)
     areas <- approx(hyps[["elev"]], hyps[["area"]], depths)$y
-    r <- sqrt((c(areas[-length(areas)]) / pi))
-    R <- sqrt((areas[-1] / pi))
-    V <- ((pi * h) / 3) * (R*R + R*r + r*r)
-    # V <- numeric(length(areas) - 1)
-    # for (i in 1:(length(areas) - 1)) {
-    #   depth_diff <- depths[i + 1] - depths[i]
-    #   area_avg <- (areas[i + 1] + areas[i]) / 2
-    #   V[i] <- depth_diff * area_avg
-    # }
-    sum(V)
+    r <- sqrt(areas[-length(areas)] / pi)
+    R <- sqrt(areas[-1] / pi)
+    sum((pi * h / 3) * (R^2 + R * r + r^2))
   })
 }
 
-#' Generate a sinusoidal water level for the lake
+#' Generate a sinusoidal water level time series
 #' @param dates vector of dates
-#' @param surf numeric; heightof the surface of the lake
-#' @param ampl numeric; amplitude of the variation (m)
-#' @param offset numeric; offset for the sinusoidal water level
-#'
+#' @param surf numeric; height of the lake surface (m)
+#' @param ampl numeric; amplitude of variation (m)
+#' @param offset numeric; phase offset for the sinusoidal curve
 #' @importFrom lubridate year
-#'
 #' @noRd
 mod_lvl <- function(dates, surf, ampl, offset) {
-  daysinyear <- ifelse(as.numeric(strftime(dates, format = "%Y")) %% 4 == 0,
-                       366, 365)
-  DOY <- as.numeric(strftime(dates, format = "%j"))
-  
-  surf + ampl *(sin( ( (DOY * 2 * pi / daysinyear) + (offset))))
+  days_in_year <- ifelse(as.numeric(strftime(dates, "%Y")) %% 4 == 0, 366, 365)
+  doy <- as.numeric(strftime(dates, "%j"))
+  surf + ampl * sin(doy * 2 * pi / days_in_year + offset)
 }
 
-#' Calculate water density
-#' @param wtr numeric vector of water temperature
+#' Calculate water density from temperature
+#' @param wtr numeric vector of water temperature (degC)
 #' @noRd
 wtr_density <- function(wtr) {
-  (1000 * (1 - (wtr + 288.9414) * (wtr - 3.9863)^2/(508929.2 *
-                                                      (wtr + 68.12963))))
+  1000 * (1 - (wtr + 288.9414) * (wtr - 3.9863)^2 / (508929.2 * (wtr + 68.12963)))
 }
 
-#' Optimise mod_lvl function
-#' @param parameters numeric vector of two parameters to optimise; ampl and offset
-#' @param mod.lvl data.frame; data.frame with Date and value columns
+#' Optimise sinusoidal water level parameters
+#' @param parameters numeric vector of length 2; (ampl, offset)
+#' @param mod_lvl data.frame; with Date and value columns
+#' @param surf numeric; surface elevation
 #' @noRd
-optim_lvl_params <- function(parameters, mod.lvl, surf) {
-  ampl <- parameters[1]
-  offset <- parameters[2]
-  
-  # Call mod_lvl with the current ampl and offset values
-  # Calculate the goodness of fit with your data
-  predicted_values <- mod_lvl(mod.lvl$Date, surf = surf, ampl = ampl, offset = offset)
-  residuals <- predicted_values - mod.lvl$value
-  sum_of_squares <- sum(residuals^2, na.rm = TRUE)  # You can use a different error metric
-  
-  return(sum_of_squares)
+optim_lvl_params <- function(parameters, mod_lvl, surf) {
+  predicted <- mod_lvl(mod_lvl$Date, surf = surf,
+                       ampl   = parameters[1],
+                       offset = parameters[2])
+  sum((predicted - mod_lvl$value)^2, na.rm = TRUE)
 }
+
+#' Saturation vapour pressure
+#'
+#' Calculates saturation vapour pressure at the water surface using the
+#' Magnus formula.
+#'
+#' @param Ts Numeric. Water surface temperature (°C).
+#'
+#' @return Numeric. Saturation vapour pressure (hPa).
+#' 
+#' @noRd
+#'
+#' @examples
+#' sat_vapour_pressure(20)
+#' sat_vapour_pressure(c(15, 20, 25))
+sat_vapour_pressure <- function(Ts) {
+  exp(2.3026 * ((7.5 * Ts) / (Ts + 237.3) + 0.7858))
+}
+
+
+#' Latent heat flux
+#'
+#' Calculates latent heat flux from a lake surface using the bulk aerodynamic
+#' method. Flux is capped at zero — only heat loss from the water is retained.
+#'
+#' @param Ts      Numeric. Water surface temperature (°C).
+#' @param wndspd  Numeric. Wind speed (m/s).
+#' @param prvapr  Numeric. Air vapour pressure (hPa).
+#' @param P       Numeric. Atmospheric pressure (hPa). Default 981.9.
+#' @param Ce      Numeric. Bulk transfer coefficient (Dalton number). Default 0.0013.
+#' @param rho_air Numeric. Air density (kg/m³). Default 1.168.
+#' @param Lv      Numeric. Latent heat of vaporisation (J/kg). Default 2453000.
+#'
+#' @return Numeric. Latent heat flux (W/m²), <= 0.
+#' 
+#' @noRd
+#'
+#' @examples
+#' latent_heat_flux(Ts = 20, wndspd = 3, prvapr = 10)
+#'
+latent_heat_flux <- function(Ts, wndspd, prvapr,
+                             prsttn = 981.9, Ce = 0.0013,
+                             rho_air = 1.168, Lv = 2453000) {
+  es  <- sat_vapour_pressure(Ts)
+  Qlh <- (0.622 / prsttn) * Ce * rho_air * Lv * wndspd * (prvapr - es)
+  pmin(Qlh, 0)
+}
+
+
+#' Convert latent heat flux to evaporation depth
+#'
+#' Converts latent heat flux (W/m²) to an evaporation rate in metres per day,
+#' suitable for lake water balance calculations.
+#'
+#' @param Qlh       Numeric. Latent heat flux (W/m²), should be <= 0.
+#' @param Lv        Numeric. Latent heat of vaporisation (J/kg). Default 2453000.
+#' @param rho_water Numeric. Water density (kg/m³). Default 1000.
+#'
+#' @return Numeric. Evaporation rate (m/day), <= 0.
+#'
+#' @noRd
+#'
+#' @examples
+#' flux_to_evap(-50)
+#'
+
+flux_to_evap <- function(Qlh, Lv = 2453000, rho_water = 1000) {
+  (Qlh / Lv) * (86400 / rho_water)
+}
+

@@ -1,3 +1,4 @@
+library(AEME)
 # Read DYRESM parameter file
 lines <- readLines("inst/extdata/dy_cd/dyresm3p1.par")
 
@@ -113,13 +114,16 @@ cfg_df <- cfg_params |>
   dplyr::select(model, file, name, value, par) |> 
   dplyr::slice(c(5:7))
 
+param_colnames <- param_colnames()
 dy_cd_parameters <- dplyr::bind_rows(params, cfg_df) |> 
   dplyr::mutate(
     min = 0.5 * value,
     max = 1.5 * value,
+    index = NA_integer_,
     module = "hydrodynamic",
     group = NA_character_
   ) |>
-  dplyr::select(model, file, name, value, min, max, module, group, par)
+  dplyr::select(dplyr::any_of(param_colnames)) |> 
+  tibble::as_tibble()
 
 usethis::use_data(dy_cd_parameters, overwrite = TRUE)

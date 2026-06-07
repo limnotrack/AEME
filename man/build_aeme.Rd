@@ -6,95 +6,100 @@
 \usage{
 build_aeme(
   aeme = NULL,
-  config = NULL,
-  model = c("dy_cd", "glm_aed", "gotm_wet"),
+  model = NULL,
+  path = NULL,
+  use_bgc = NULL,
+  ext_elev = NULL,
+  wb_method = NULL,
   model_controls = NULL,
-  inf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
-  outf_factor = c(glm_aed = 1, dy_cd = 1, gotm_wet = 1),
-  ext_elev = 0,
-  use_bgc = FALSE,
-  print = TRUE,
-  calc_wbal = TRUE,
-  wb_method = 2,
-  calc_wlev = TRUE,
-  use_aeme = FALSE,
+  inf_factor = NULL,
+  outf_factor = NULL,
+  calc_wbal = NULL,
+  calc_wlev = NULL,
   coeffs = NULL,
-  hum_type = 3,
-  est_swr_hr = TRUE,
-  path = "."
+  hum_type = NULL,
+  est_swr_hr = NULL,
+  use_aeme = FALSE,
+  config = NULL
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{config}{list; loaded via `config <- yaml::read_yaml("aeme.yaml")`}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{use_bgc}{logical; enable the biogeochemical model. Default: \code{FALSE}.}
 
-\item{inf_factor}{vector; containing numeric factor to multiple the inflows.
-Needs to be named according to the model.}
+\item{ext_elev}{numeric; elevation (m) to extend the hypsograph to.
+Default: \code{0}.}
 
-\item{outf_factor}{vector; containing numeric factor to multiple the
-outflows. Needs to be named according to the model.}
+\item{wb_method}{integer; water balance method. One of:
+\itemize{
+\item \code{1} — no inflows or outflows
+\item \code{2} — outflows calculated (default)
+\item \code{3} — unexplained storage changes treated as effective inflows/outflows
+}}
 
-\item{ext_elev}{numeric; metres to extend the hypograph by.}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[=get_model_controls]{get_model_controls()}}.}
 
-\item{use_bgc}{logical; switch to use the biogeochemical model.}
+\item{inf_factor}{named numeric vector; factors to multiply inflows by,
+named by model.}
 
-\item{print}{logical; print messages. Default = TRUE.}
+\item{outf_factor}{named numeric vector; factors to multiply outflows by,
+named by model.}
 
-\item{calc_wbal}{logical; calculate water balance. Default = TRUE.}
+\item{calc_wbal}{logical; calculate water balance. Default: \code{TRUE}.}
 
-\item{wb_method}{numeric; method to use for calculating water balance. Must be
-1 (no inflows or outflows) or 2 (outflows calculated) or 3 (inflows and
-outflows calculated). Default = 2}
+\item{calc_wlev}{logical; calculate water level. Default: \code{TRUE}.}
 
-\item{calc_wlev}{logical; calculate water level.}
+\item{coeffs}{numeric vector of length 2; coefficients for estimating
+surface water temperature when calculating evaporation. If water
+temperature observations are present in \code{aeme}, a linear model is fitted
+against air temperature. Otherwise defaults to
+\eqn{T_{water} = 5 + 0.75 \times T_{air}} (Stefan & Preud'homme, 1993,
+\doi{10.1111/j.1752-1688.1993.tb01502.x}).}
 
-\item{use_aeme}{logical; use AEME object to generate model confiuration
-files.}
-
-\item{coeffs}{numeric vector of length two; to be used to estimate surface
-water temperature for estimating evaporation. Defaults to NULL. If water
-temperature observations are included in `aeme` object, then it will use
-those to build a linear relationship between air temperature and water
-temperature. Otherwise. it uses the simple estimation
- \eqn{temp_water = 5 + 0.75 * temp_air} from Stefan & Preud'homme, 2007:
- www.doi.org/10.1111/j.1752-1688.1993.tb01502.x}
-
-\item{hum_type}{numeric; GOTM humidity metric [1=relative humidity (%),
-2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg)]
-Default = 3.}
+\item{hum_type}{integer; humidity input type for GOTM. One of:
+\itemize{
+\item \code{1} — relative humidity (\%)
+\item \code{2} — wet-bulb temperature
+\item \code{3} — dew point temperature (default)
+\item \code{4} — specific humidity (kg/kg)
+}}
 
 \item{est_swr_hr}{logical; estimate hourly shortwave radiation from daily
-values. Default = TRUE.}
+values. Default: \code{TRUE}.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{use_aeme}{logical; use the \code{aeme} object to generate model
+configuration files. Default: \code{FALSE}.}
+
+\item{config}{list; AEME configuration, typically loaded via
+\code{yaml::read_yaml("aeme.yaml")}.}
 }
 \value{
-builds the model ensemble configuration.
-
-aeme object
+An updated \code{aeme} object.
 }
 \description{
-Configure an ensemble of lake model simulations from basic set of inputs.
+Configure an ensemble of lake model simulations from a basic set of inputs.
 }
 \examples{
-tmpdir <- tempdir()
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
-# Copy files from package into tempdir
-file.copy(aeme_dir, tmpdir, recursive = TRUE)
-path <- file.path(tmpdir, "lake")
-aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+path <- "aeme"
+aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
 model_controls <- get_model_controls()
-inf_factor = c("glm_aed" = 1)
-outf_factor = c("glm_aed" = 1)
-model <- c("glm_aed")
-build_aeme(path = path, aeme = aeme, model = model,
-               model_controls = model_controls, inf_factor = inf_factor, ext_elev = 5,
-               use_bgc = FALSE)
+
+# Build configuration for GLM-AED
+aeme <- aeme |>
+  build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
+             ext_elev = 5)
+
+# Enable biogeochemistry
+aeme <- aeme |>
+  build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
+             ext_elev = 5, use_bgc = TRUE)
 }

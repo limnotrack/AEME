@@ -1,3 +1,4 @@
+url: https://limnotrack.com
 template:
   bootstrap: 5
   bootswatch: cosmo
@@ -25,3 +26,16 @@ home:
   title: AEME - Aquatic Ecosytem Model Ensemble
   sidebar:
     structure: [links, license, community, citation, authors, dev, toc]
+articles:
+- title: Getting started
+  navbar: ~
+  contents:
+  - intro-aeme
+  - aeme-inputs
+  - setup-new-lake
+- title: Use cases
+  navbar: Use cases
+  contents:
+  - articles/reservoir-aeme
+  - articles/lernzmp-aeme
+  - articles/glm-aed

@@ -9,14 +9,14 @@ toggle_models(model = NULL, to = NULL)
 \arguments{
 \item{model}{Model name to be toggled.}
 
-\item{to}{Target format: either "display" for user-friendly names or "code" 
+\item{to}{Target format: either "display" for user-friendly names or "code"
 for backend codes. If NULL, the function will toggle to the opposite format.}
 }
 \value{
 The model name in the desired format.
 }
 \description{
-A helper function to switch between user-friendly model names and their 
+A helper function to switch between user-friendly model names and their
 corresponding codes used in the backend.
 }
 \examples{

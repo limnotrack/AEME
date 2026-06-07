@@ -7,13 +7,13 @@
 get_mod_obs_vars(aeme, model)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
 }
 \value{
-Data frame with modeled observation variables and summary 
+Data frame with modeled observation variables and summary
 statistics.
 }
 \description{

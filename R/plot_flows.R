@@ -31,7 +31,7 @@ plot_flows <- function(aeme, flow = c("inflow", "outflow"),
   }
 
   # Load key_naming
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   inf <- list()
   outf <- list()
@@ -54,16 +54,15 @@ plot_flows <- function(aeme, flow = c("inflow", "outflow"),
         dplyr::mutate(name = n)
     }) |>
       dplyr::bind_rows() |>
-      dplyr::mutate(HYD_flow = .data[["outflow"]])
+      dplyr::mutate(outflow = HYD_flow)
     outf <- df
   }
-
 
   df <- dplyr::bind_rows(inf, outf) |>
     dplyr::select(dplyr::all_of(c("Date", "name", var_sim))) |>
     dplyr::mutate(var_aeme = var_sim) |>
-    dplyr::left_join(key_naming[, c("name", "name_parse")],
-                     by = c("var_aeme" = "name"))
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse")],
+                     by = "var_aeme")
   # Plot
   df |>
     ggplot2::ggplot(ggplot2::aes(x = Date, y = .data[[var_sim]],

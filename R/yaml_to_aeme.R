@@ -1,7 +1,7 @@
 #' Convert aeme.yaml file to list
 #'
-#' @inheritParams build_aeme
-#' @param file filepath; to aeme.yaml file
+#' @param file filepath; to aeme.yaml file. Can be used instead of `path` and `file` arguments.
+#' @param path directory where aeme.yaml file is located. Can be used instead of `file` argument.
 #'
 #' @return aeme object
 #' @export
@@ -10,14 +10,33 @@
 #' @importFrom sf st_read
 #' @importFrom dplyr mutate
 #' @importFrom withr local_locale local_timezone
+#' @importFrom cli cli_abort
 #'
+#' @examples
+#' aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
+#' aeme <- yaml_to_aeme(file = aeme_yaml)
+#' aeme
+
 
 yaml_to_aeme <- function(path, file) {
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
-
+  if (missing(path)) {
+    path <- dirname(file)
+    file <- basename(file)
+  } else if (missing(file)) {
+    file <- list.files(path, pattern = "*.yaml", full.names = FALSE)
+    if (length(file) == 0) {
+      cli::cli_abort("No yaml file found in {.file {path}}")
+    } else if (length(file) > 1) {
+      cli::cli_abort("Multiple .yaml files found in {.file {path}}. Please 
+                     specify the file name.")
+    }
+  }
+  path <- check_path(path = path, must_exist = TRUE)
+  
   yaml <- yaml::read_yaml(file.path(path, file))
   # if (!is.null(yaml$lake$shape)) {
   #   invisible(capture.output({

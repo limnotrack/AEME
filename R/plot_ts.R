@@ -9,7 +9,7 @@
 #' @param add_obs logical; add observations to the plot. Default is TRUE.
 #'
 #' @importFrom ggplot2 ggplot geom_line guides scale_linewidth_manual
-#' scale_alpha_manual facet_wrap labs geom_point aes
+#' @importFrom ggplot2 scale_alpha_manual facet_wrap labs geom_point aes
 #' @importFrom dplyr filter group_by mutate summarise left_join
 #'
 #' @return A ggplot object
@@ -19,14 +19,17 @@
 plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
                     add_obs = TRUE, depth_range = NULL, ens_n = 1) {
 
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
   var_sim <- check_aeme_vars(var_sim)
   # Get model controls
   model_controls <- get_model_controls(aeme)
   if (is.null(model_controls)) {
     stop("No model controls found")
-  }
-  if (missing(model)) {
-    model <- list_models(aeme)
   }
 
   sim_vars <- model_controls |>
@@ -53,7 +56,6 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
       depth_range <- abs(depth_range)
       df <- df |>
         dplyr::group_by(Date, Model) |>
-        dplyr::mutate(depth = max(lyr_top) - lyr_top) |>
         dplyr::filter(depth >= min(depth_range) & depth <= max(depth_range))
     }
 
@@ -71,10 +73,10 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
     dplyr::bind_rows()
 
   # Add key naming
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
   out_df <- out_df |>
-    dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
-                     by = c("var_sim" = "name"))
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
+                     by = c("var_sim" = "var_aeme"))
 
   var_lwd <- rep(1, length(var_sim))
   names(var_lwd) <- unique(out_df$name_text)
@@ -93,13 +95,14 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
     ggplot2::labs(x = "Date", y = y_lab, colour = "Variable")
 
   if (add_obs) {
-    obs <- get_obs(aeme = aeme, var_sim = var_sim, depth_range = depth_range)
+    obs <- get_obs(aeme = aeme, var_sim = var_sim, depth_range = depth_range,
+                   time_filter = TRUE)
     if (nrow(obs) > 0) {
       obs <- obs |>
         dplyr::group_by(Date, var_aeme) |>
         dplyr::summarise(value = mean(value), .groups = "drop") |>
-        dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
-                         by = c("var_aeme" = "name"))
+        dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
+                         by = "var_aeme")
       p1 <- p1 +
         ggplot2::geom_point(data = obs, ggplot2::aes(x = Date, y = value,
                                                      fill = "Obs",

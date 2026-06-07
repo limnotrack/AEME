@@ -5,33 +5,31 @@
 \title{Load AEME output to the aeme object}
 \usage{
 load_output(
-  model,
   aeme,
-  path,
+  model,
+  path = NULL,
+  lake_dir = NULL,
   model_controls,
   parallel = FALSE,
   cl = NULL,
-  nlev = NULL,
   ens_n = 1
 )
 }
 \arguments{
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{aeme}{Aeme object.}
 
-\item{aeme}{aeme; object.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[=get_model_controls]{get_model_controls()}}.}
 
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
 
 \item{cl}{an object of class \code{"cluster"}.}
-
-\item{nlev}{numeric; number of levels to return in model output. If NULL,
-calculates number of levels based on the `model_layer_structure`.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}

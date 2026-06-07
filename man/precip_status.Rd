@@ -7,7 +7,7 @@
 precip_status(aeme)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 }
 \value{
 character. Either "precip_as_met", "precip_as_inflow" or "no_precip"

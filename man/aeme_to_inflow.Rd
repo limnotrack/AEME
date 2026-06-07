@@ -7,7 +7,7 @@
 aeme_to_inflow(aeme)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 }
 \value{
 List of data frames with inflow variables for each model

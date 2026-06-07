@@ -11,19 +11,21 @@ get_var_indices(
   path,
   vars_sim,
   month = NULL,
-  depth_range = NULL
+  depth_range = NULL,
+  use_obs = TRUE
 )
 }
 \arguments{
 \item{nc}{An object of class \code{ncdf4} (as returned by either function
  \code{\link[ncdf4]{nc_open}} or function \code{\link[ncdf4]{nc_create}}.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
 
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{vars_sim}{character; vector of AEME variable names to get indices for.}
 
@@ -31,9 +33,16 @@ get_var_indices(
 
 \item{depth_range}{numeric; vector of depth ranges, length two to subset the
 data.}
+
+\item{use_obs}{logical; if TRUE, use the observation months and depth ranges
+from the AEME object.}
 }
 \value{
-list; of variable indices.
+list; of variable indices. Each list element corresponds to a
+variable in vars_sim and contains a list with time indices, depth values, and
+dates. Time indices correspond to the positions in the model output time
+series that match the Date but are the corresponding index in the model
+output.
 }
 \description{
 Get variable indices for an AEME variable.

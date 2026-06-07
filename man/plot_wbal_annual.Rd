@@ -7,7 +7,7 @@
 plot_wbal_annual(aeme, model, lake_frac = FALSE, remove_spin_up = FALSE)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{model}{character vector; model(s) to plot. If missing, all models
 in the Aeme object will be plotted.}
@@ -24,5 +24,5 @@ ggplot2 object
 \description{
 Calculates and plots annual water balance components including evaporation,
 precipitation, inflow, outflow, and net balance for each model in the Aeme
- object.
+object.
 }

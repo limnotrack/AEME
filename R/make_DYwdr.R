@@ -14,6 +14,7 @@
 #' @importFrom lubridate year
 #' @importFrom stats complete.cases
 #' @importFrom utils write.table
+#' @importFrom rlang := !!
 #'
 
 
@@ -26,6 +27,13 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
         dplyr::filter(model == "dy_cd") |> 
         dplyr::select(-model) |> 
         dplyr::rename(wbal = outflow)
+    }
+    
+    for (flow in names(wdrData)) {
+      if (flow != "wbal") {
+        wdrData[[flow]] <- wdrData[[flow]] |>
+          dplyr::rename(!!flow := HYD_flow)
+      }
     }
     
     wdrData <- Reduce(merge, wdrData) |>
@@ -43,7 +51,7 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
     #     dplyr::rename(outflow = outflow_dy_cd)
     # }
   }
-  wdrData <- wdrData[stats::complete.cases(wdrData), ] |>
+  wdrData <- wdrData[complete.cases(wdrData), ] |>
     # round discharge data
     dplyr::mutate(dplyr::across(2:ncol(wdrData), \(x) x * outf_factor),
                   dplyr::across(2:ncol(wdrData), \(x) round(x, digits = 3)),
@@ -67,7 +75,7 @@ make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
                     "                                  # Number of outflows"),f)
 
   #add data
-  utils::write.table(wdrData, f, sep = "\t", quote = FALSE, row.names = FALSE)
+  write.table(wdrData, f, sep = "\t", quote = FALSE, row.names = FALSE)
 
   # close and write file
   close(f)

@@ -11,25 +11,35 @@
 #' @export
 
 plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
-                     var_lims, obs = NULL, add_obs = TRUE, level = FALSE,
-                     facet = FALSE, cumulative = FALSE, print_plots = FALSE) {
+                     var_lims = NULL, obs = NULL, add_obs = TRUE, point_size = 2,
+                     level = FALSE, facet = FALSE, cumulative = FALSE,
+                     print_plots = FALSE) {
 
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   if (is.null(df)) {
+    aeme <- check_aeme(aeme)
+    if (missing(model)) {
+      model <- list_models(aeme)
+    } else {
+      model <- check_model(model = model)
+    }
     df <- get_var(aeme = aeme, model = model, var_sim = var_sim,
                   return_df = TRUE, cumulative = cumulative)
   } else {
     var_sim <- unique(df$var_sim)
-    var_lims <- range(df$value, na.rm = TRUE)
     xlim <- range(df$Date)
+  }
+  
+  if (is.null(var_lims)) {
+    var_lims <- range(df$value, na.rm = TRUE)
   }
 
   df <- df |>
-    dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
-                     by = c("var_sim" = "name"))
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
+                     by = c("var_sim" = "var_aeme"))
 
-  if (!all(is.na(df$lyr_thk))) {
+  if (!all(is.na(df$depth))) {
     # Plot variables with depth
     if (all(is.na(df$value))) {
       p <- ggplot2::ggplot() +
@@ -39,7 +49,9 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
     }
 
     if (facet) {
-      p <- plot_var_depth(df, obs, ylim, xlim, var_lims, add_obs)
+      p <- plot_var_depth(df = df, obs = obs, ylim = ylim, xlim = xlim,
+                          var_lims = var_lims, add_obs = add_obs,
+                          point_size = point_size, print_plots = print_plots)
       if (print_plots) print(p)
       return(p)
     } else {
@@ -56,7 +68,7 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
         }
         plot_var_depth(df = df2, obs = obs2, ylim = ylim, xlim = xlim,
                        var_lims = var_lims, add_obs = add_obs,
-                       print_plots = print_plots)
+                       point_size = point_size, print_plots = print_plots)
       })
       return(lst)
     }
@@ -79,7 +91,8 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
       if (add_obs & nrow(obs_lvl) > 0) {
         p <- p +
           ggplot2::geom_point(data = obs_lvl,
-                              ggplot2::aes(Date, lvl_adj, fill = "Obs")) +
+                              ggplot2::aes(Date, lvl_adj, fill = "Obs"), 
+                              size = point_size) +
           ggplot2::labs(fill = "")
       }
     }
@@ -106,6 +119,7 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
       p <- p +
         ggplot2::geom_point(data = obs_sub,
                             ggplot2::aes(Date, value, fill = "Obs"),
+                            size = point_size,
                             colour = "black") +
         ggplot2::labs(fill = "")
     }
@@ -117,19 +131,39 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
 
 #' Plot variable with depth component
 #' @noRd
-plot_var_depth <- function(df, obs, ylim, xlim, var_lims, add_obs,
+plot_var_depth <- function(df, obs, ylim, xlim, var_lims, point_size, add_obs,
                            print_plots = FALSE) {
 
-  my_cols <- RColorBrewer::brewer.pal(11, "Spectral")
+  sel_var <- df$var_sim[1]
+  n <- 11
+  my_cols <- get_hm_palette(var = sel_var, n = n)
   fill_lab <- eval(parse(text = df$name_parse[1]))
+  df <- df |> 
+    dplyr::group_by(Date, Model) |> 
+    dplyr::arrange(depth, .by_group = TRUE) |> 
+    dplyr::mutate(
+      # internal boundaries
+      mid_next = dplyr::lead(depth),
+      mid_prev = dplyr::lag(depth),
+      # boundaries: surface = 0, then central midpoints, bottom extrapolated
+      upper = dplyr::if_else(dplyr::row_number() == 1, 
+                      0,                               # surface
+                      (depth + mid_prev) / 2),
+      lower = dplyr::if_else(dplyr::row_number() == n(), 
+                      depth + (depth - mid_prev) / 2,  # bottom extrapolated
+                      (depth + mid_next) / 2)
+    ) |> 
+    dplyr::mutate(lyr_thk = lower - upper) |> 
+    dplyr::arrange(Date, dplyr::desc(depth)) 
 
   p <- ggplot2::ggplot() +
     ggplot2::geom_col(data = df, ggplot2::aes(x = Date, y = lyr_thk,
                                               fill = value),
                       position = 'stack', width = 1) +
-    ggplot2::scale_fill_gradientn(colors = rev(my_cols),
-                                  # name = bquote(.(df$name_parse[1])),
-                                  limits = var_lims) +
+    ggplot2::scale_fill_gradientn(
+      colours = my_cols,
+      limits  = var_lims
+    ) +
     {if(!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim)} +
     ggplot2::labs(fill = bquote(.(fill_lab))) +
     ggplot2::facet_grid(Model ~ name_text) +
@@ -142,10 +176,13 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, add_obs,
 
     p <- p +
       ggplot2::geom_point(data = obs$lake_adj,
-                          ggplot2::aes(Date, elev, fill = value,
-                                       size = "Obs"), shape = 21,
+                          ggplot2::aes(Date, elev, fill = value, shape = "Obs"),
+                          size = point_size,
                           colour = "black") +
-      ggplot2::labs(size = "")
+      ggplot2::scale_shape_manual(
+        name = NULL,      # or "Data"
+        values = c(Obs = 21)
+      )
   }
 
   if (!is.null(obs[["level_adj"]])) {

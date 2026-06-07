@@ -45,20 +45,20 @@ make_infGOTM <- function(inf_list, inf_factor = 1, path_gotm, gotm = NULL,
                       flow = (flow * inf_factor) / 86400) |>
         dplyr::select(c("date", "time", everything()))
 
-      utils::write.table(df[, c("date", "time", "flow")],
+      write.table(df[, c("date", "time", "flow")],
                          file.path(path_gotm, "inputs",
                                    paste0("inf_flow_", names_inf[f],".dat")),
                          row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",
                          sep = "\t")
 
       ## write the temperature file
-      utils::write.table(df[, c("date", "time", "temp")],
+      write.table(df[, c("date", "time", "temp")],
                          file.path(path_gotm, "inputs",
                                    paste0("inf_temp_", names_inf[f],".dat")),
                          row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",
                          sep = "\t")
       ## write the salinity file
-      utils::write.table(df[, c("date", "time", "salt")],
+      write.table(df[, c("date", "time", "salt")],
                          file.path(path_gotm, "inputs",
                                    paste0("inf_salt_", names_inf[f],".dat")),
                          row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",
@@ -95,7 +95,7 @@ make_infGOTM <- function(inf_list, inf_factor = 1, path_gotm, gotm = NULL,
         df.chem <- df.chem |>
           dplyr::mutate(dplyr::across(3:ncol(df.chem), \(x) round(x, 4)))
 
-        utils::write.table(df.chem,
+        write.table(df.chem,
                            file.path(path_gotm, "inputs",
                                      paste0("inf_chem_", names_inf[f],".dat")),
                            row.names = FALSE, col.names = FALSE, quote = FALSE, na = "",

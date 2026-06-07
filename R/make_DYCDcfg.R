@@ -71,8 +71,6 @@ make_DYCDcfg <-  function(lakename = "unknown",
     # collapse simVars for cfg input
     simVars <- paste(simVars, collapse = " ")
 
-    print(simVars)
-
   } else {
     runCD <- ".FALSE."
     simVars <- c("TEMPTURE", "DENSITY", "SALINITY")

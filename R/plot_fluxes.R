@@ -4,7 +4,7 @@
 #' shortwave radiation, net longwave radiation, evaporative heat flux, and
 #' sensible heat flux.
 #'
-#' @param aeme AEME data object
+#' @inheritParams build_aeme
 #' @param cumulative logical; if \code{TRUE}, plot cumulative fluxes. If
 #' \code{FALSE}, plot instantaneous fluxes.
 #'
@@ -17,9 +17,15 @@
 #' @importFrom utils data
 #'
 
-plot_fluxes <- function(aeme, cumulative = FALSE) {
+plot_fluxes <- function(aeme, model, cumulative = FALSE) {
 
-  utils::data("key_naming", package = "AEME", envir = environment())
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
+  data("key_naming", package = "AEME", envir = environment())
 
   vars <- c("LKE_Qsw", "LKE_Qlw", "LKE_Qe", "LKE_Qh")
   df <- lapply(vars, \(v) {
@@ -29,8 +35,8 @@ plot_fluxes <- function(aeme, cumulative = FALSE) {
     dplyr::bind_rows()
 
   df <- df |>
-    dplyr::left_join(key_naming[, c("name", "name_parse", "name_text")],
-                     by = c("var_sim" = "name")) |>
+    dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
+                     by = c("var_sim" = "var_aeme")) |>
     dplyr::mutate(
       name_text = factor(name_text, levels = c("Shortwave radiation",
                                                "Longwave radiation" ,

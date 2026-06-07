@@ -56,7 +56,7 @@ make_metGLM <-  function(obs_met, path_glm = "", infRain = FALSE,
   f <- file(file.path(path_glm, "bcs/meteo_glm.csv"), "w")
 
   writeLines(paste0(col.names, collapse = ","), f)
-  utils::write.table(metVals, f, sep = ",", quote = FALSE, row.names = FALSE,
+  write.table(metVals, f, sep = ",", quote = FALSE, row.names = FALSE,
               col.names = FALSE)
 
   close(f)

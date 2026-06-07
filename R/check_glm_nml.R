@@ -1,14 +1,15 @@
 #' Check GLM nml for common issues
 #' 
-#'
 #' @param file path to GLM nml file
-#'
-#' @returns TRUE if no issues found, FALSE otherwise
+#' @returns Invisibly returns TRUE if no issues found, otherwise aborts with 
+#' informative messages
+#' @importFrom cli cli_abort
 #' @export
-#'
-
 check_glm_nml <- function(file) {
-  nml <- read_nml(file)
+  nml <- tryCatch(read_nml(file), error = function(e) {
+    cli::cli_abort(c("!" = "Failed to read GLM nml file {.file {file}}.",
+                     "x" = e$message))
+  })
   base_path <- dirname(file)
   issues <- character()
   
@@ -17,24 +18,20 @@ check_glm_nml <- function(file) {
     full <- file.path(base_path, path)
     file.exists(full)
   }
+  is_monotonic_increasing <- function(x) all(diff(x) >= 0)
   
-  is_monotonic_increasing <- function(x) {
-    all(diff(x) >= 0)
-  }
-  
-  # --- Check required sections ---
-  required_sections <- c(
-    "glm_setup", "morphometry", "time", "meteorology",
-    "light", "sediment"
-  )
+  # --- Required sections ---
+  required_sections <- c("glm_setup", "morphometry", "time", "meteorology",
+                         "light", "sediment")
   missing_sections <- setdiff(required_sections, names(nml))
   if (length(missing_sections) > 0) {
-    issues <- c(issues, paste("Missing sections:", paste(missing_sections, collapse = ", ")))
+    issues <- c(issues, paste("Missing sections:",
+                              paste(missing_sections, collapse = ", ")))
   }
   
   # --- File existence checks ---
   if (!is.null(nml$inflow)) {
-    inflow_files <- strsplit(nml$inflow$inflow_fl, ",")[[1]]
+    inflow_files  <- strsplit(nml$inflow$inflow_fl, ",")[[1]]
   } else {
     inflow_files <- NULL
   }
@@ -43,20 +40,20 @@ check_glm_nml <- function(file) {
   } else {
     outflow_files <- NULL
   }
+  
   file_paths <- c(
     nml$meteorology$meteo_fl,
     inflow_files,
     outflow_files,
-    # nml$output$out_dir,
     nml$wq_setup$wq_nml_file
   )
   
-  file_paths <- unlist(file_paths)
-  file_paths <- file_paths[!is.na(file_paths)]
-  
+  file_paths <- na.omit(unlist(file_paths))
   missing_files <- file_paths[!vapply(file_paths, check_file, logical(1))]
   if (length(missing_files) > 0) {
-    issues <- c(issues, paste("Missing input files:", paste(missing_files, collapse = ", ")))
+    issues <- c(issues,
+                paste("Missing input files:", paste(missing_files, 
+                                                    collapse = ", ")))
   }
   
   # --- Morphometry checks ---
@@ -64,11 +61,12 @@ check_glm_nml <- function(file) {
   if (!is.null(morpho)) {
     H <- as.numeric(morpho$H)
     A <- as.numeric(morpho$A)
+    bsn_vals <- as.numeric(morpho$bsn_vals)
     
-    if (length(H) != morpho$bsn_vals) {
+    if (length(H) != bsn_vals) {
       issues <- c(issues, "Number of H values does not match bsn_vals")
     }
-    if (length(A) != morpho$bsn_vals) {
+    if (length(A) != bsn_vals) {
       issues <- c(issues, "Number of A values does not match bsn_vals")
     }
     
@@ -99,10 +97,9 @@ check_glm_nml <- function(file) {
   }
   
   # --- Sediment checks ---
-  if (!is.null(nml$sediment)) {
-    sed <- nml$sediment
+  sed <- nml$sediment
+  if (!is.null(sed)) {
     n_zones <- as.numeric(sed$n_zones)
-    # Check parameter lengths are consistent with n_zones
     pars <- c("sed_heat_Ksoil", "sed_temp_depth", "sed_temp_mean",
               "sed_temp_amplitude", "sed_temp_peak_doy", "zone_heights", 
               "sed_reflectivity", "sed_roughness")
@@ -116,8 +113,8 @@ check_glm_nml <- function(file) {
   }
   
   # --- Light checks ---
-  if (!is.null(nml$light)) {
-    light <- nml$light
+  light <- nml$light
+  if (!is.null(light)) {
     n_bands <- as.numeric(light$n_bands)
     if (length(as.numeric(light$light_extc)) != n_bands) {
       issues <- c(issues, "Number of light_extc values does not match n_bands")
@@ -128,23 +125,28 @@ check_glm_nml <- function(file) {
   }
   
   # --- Mixing parameter ranges ---
-  if (!is.null(nml$mixing)) {
-    mix <- nml$mixing
+  mix <- nml$mixing
+  if (!is.null(mix)) {
     for (nm in names(mix)) {
       val <- suppressWarnings(as.numeric(mix[[nm]]))
-      if (!is.na(val) && val < 0) {
-        issues <- c(issues, paste("Mixing parameter", nm, "is negative"))
-      }
+      if (!is.na(val) && val < 0) issues <- c(issues,
+                                              paste("Mixing parameter", nm,
+                                                    "is negative"))
     }
   }
   
-  # --- Output summary ---
+  # --- Output ---
   if (length(issues) == 0) {
-    message("GLM nml checks passed with no issues.")
+    cli_inform_safe(
+      c("v" = "GLM nml validation completed - no issues detected.")
+    )
     return(invisible(TRUE))
   } else {
-    cat("Issues found in GLM nml:\n")
-    cat(paste0(" - ", issues), sep = "\n")
-    return(invisible(FALSE))
+    cli::cli_abort(
+      c("!" = "Issues found in GLM nml file {.file {file}}:",
+        setNames(issues, rep("x", length(issues)))
+        ),
+      class = "aeme_error_glm_nml"
+    )
   }
 }

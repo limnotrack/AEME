@@ -7,57 +7,56 @@
 run_aeme(
   aeme,
   model,
-  return = TRUE,
+  path,
+  args = character(),
+  return_type = c("aeme", "exec_result", "both", "none"),
   ens_n = 1,
   model_controls = NULL,
-  nlev = NULL,
   verbose = FALSE,
   debug = FALSE,
-  timeout = 0,
+  timeout = Inf,
   parallel = FALSE,
   ncores,
-  check_output = FALSE,
-  path = "."
+  check_output = FALSE
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
 
-\item{return}{logical; return model output within an `aeme` object? Defaults
-to TRUE.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
+
+\item{args}{Character vector, arguments to the command.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
 
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
-
-\item{nlev}{numeric; number of levels to return in model output. If NULL,
-calculates number of levels based on the `model_layer_structure`.}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[=get_model_controls]{get_model_controls()}}.}
 
 \item{verbose}{logical; print model output to console. Defaults to FALSE.}
 
 \item{debug}{logical; write debug log (Only DYRESM). Defaults to FALSE.}
 
-\item{timeout}{timeout in seconds, ignored if 0.  This is a limit for the
-    elapsed time running \code{command} in a separate process.   Fractions
-    of seconds are ignored.}
+\item{timeout}{Timeout for the process, in seconds, or as a \code{difftime}
+object. If it is not finished before this, it will be killed.}
 
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
 
 \item{ncores}{integer; number of cores to use for parallelization. Defaults
-to `min(c(detectCores() - 1, length(model)))`.}
+to \code{min(c(detectCores() - 1, length(model)))}.}
 
 \item{check_output}{logical; check model output after running? Defaults to
 FALSE.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{return}{logical; return model output within an \code{aeme} object? Defaults
+to TRUE.}
 }
 \value{
-an `aeme` object with model output loaded.
+an \code{aeme} object with model output loaded.
 }
 \description{
 Run aquatic model ensemble
@@ -69,7 +68,11 @@ path <- tempdir()
 model_controls <- get_model_controls()
 model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
-model_controls = model_controls, ext_elev = 5)
-aeme <- run_aeme(aeme = aeme, model = model, path = path)
-plot_output(aeme, model = model)
+                   model_controls = model_controls, ext_elev = 5)
+\dontrun{
+aeme <- run_aeme(aeme)
+
+# Plot model output - temperature by default
+plot_output(aeme)
+}
 }

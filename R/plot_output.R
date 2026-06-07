@@ -25,6 +25,8 @@
 #' plot each model in a separate facet. If \code{FALSE}, plot each model as a
 #' separate line and return a plot.
 #' This only applies to variables without a depth component.
+#' @param backend character; plotting backend to use. Options are "ggplot2" and
+#' "base". Default is "ggplot2".
 #'
 #' @return list of plots for z-dimensional variables or a ggplot2 object for 1-d
 #' variables.
@@ -32,7 +34,7 @@
 #'
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom ggplot2 ggplot geom_col aes scale_fill_gradientn coord_cartesian
-#' xlab ylab labs ggtitle theme_bw
+#' @importFrom ggplot2  xlab ylab labs ggtitle theme_bw
 #' @importFrom withr local_locale local_timezone
 #'
 #' @examples
@@ -68,17 +70,24 @@
 #' }
 #'
 
-plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
-                        add_obs = TRUE, level = FALSE, remove_spin_up = TRUE,
-                        print_plots = FALSE, var_lims = NULL, ylim = NULL,
-                        cumulative = FALSE, facet = TRUE) {
+plot_output <- function(aeme, model, var_sim = "HYD_temp", point_size = 2,
+                        ens_n = 1, add_obs = TRUE, level = FALSE,
+                        remove_spin_up = TRUE, print_plots = FALSE, 
+                        var_lims = NULL, ylim = NULL, cumulative = FALSE, 
+                        facet = TRUE, backend = c("ggplot2", "base")) {
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
+  backend <- rlang::arg_match(backend)
 
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
   var_sim <- check_aeme_vars(var_sim)
   if (missing(model)) {
     model <- list_models(aeme)
@@ -106,25 +115,52 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
   ens_lab <- format_ens_label(ens_n = ens_n)
 
   # Check if var_sim is in output
-  chk <- sapply(model, \(m){
-    var_sim %in% names(outp[[ens_lab]][[m]])
+  chk <- sapply(model, \(m) {
+    sapply(var_sim, \(v) {
+      if (v %in% names(outp[[ens_lab]][[m]])) {
+        !is.null(outp[[ens_lab]][[m]][[v]])
+      } else {
+        FALSE
+      }
+    })
   })
-  if (any(!chk)) {
-    if (all(!chk)) {
-      stop(paste0("Variable '", var_sim, "' not in output for model(s) ",
-                  paste0(model, collapse = ", ")))
-    }
-    warning(paste0("Variable '", var_sim, "' not in output for model(s) ",
-                   paste0(model[!chk], collapse = ", ")))
-    model <- model[chk]
+  # Force to var_sim x model matrix regardless of lengths
+  chk <- matrix(chk, nrow = length(var_sim), ncol = length(model),
+                dimnames = list(var_sim, model))
+  
+  if (all(!chk)) {
+    cli::cli_abort("Variable(s) '{paste0(var_sim, collapse = ', ')}' not in 
+                   output for model(s): {paste0(model, collapse = ', ')}")
+  }
+  
+  # Warn and drop models where ALL vars are missing
+  bad_models <- colnames(chk)[!colSums(chk) > 0]
+  if (length(bad_models) > 0) {
+    cli::cli_alert_warning("All variables missing from model(s): 
+                           {paste0(bad_models, collapse = ', ')}")
+    model <- model[!model %in% bad_models]
+  }
+  
+  # Warn and drop vars missing from ALL models
+  bad_vars <- rownames(chk)[!rowSums(chk) > 0]
+  if (length(bad_vars) > 0) {
+    cli::cli_alert_warning("Variable(s) missing from all models: 
+                           {paste0(bad_vars, collapse = ', ')}")
+    var_sim <- var_sim[!var_sim %in% bad_vars]
+  }
+  
+  if (backend == "base") {
+    plot_output_base(aeme = aeme, model = model, var_sim = var_sim, 
+                     ens_n = ens_n, var_lims = var_lims, ylim = ylim)
+    return(invisible(NULL))
   }
 
   # Date lims
   # Find date range and have output in Date format
-  this.list <- sapply(model, \(m){
+  all_dates <- sapply(model, \(m){
     "[["(outp[[ens_lab]][[m]], "Date")
   })
-  xlim <- as.Date(range(this.list, na.rm = TRUE))
+  xlim <- as.Date(range(all_dates, na.rm = TRUE))
   if (remove_spin_up) {
     xlim <- c(as.Date(tme$start), as.Date(tme$stop))
   }
@@ -139,10 +175,10 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
 
   # colour lims
   if (is.null(var_lims)) {
-    this.list <- sapply(model, \(m){
+    all_vals <- sapply(model, \(m){
       "[["(outp[[ens_lab]][[m]], var_sim)
     })
-    vect <- unlist(this.list)
+    vect <- unlist(all_vals)
     if (add_obs) {
       var_lims <- range(c(vect, obs_lake[["value"]]), na.rm = TRUE)
     } else {
@@ -175,7 +211,7 @@ plot_output <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
 
 
     plot_var(df = df, ylim = ylim, xlim = xlim, var_lims = var_lims, obs = obs,
-             add_obs = add_obs, level = level, facet = facet,
-             print_plots = print_plots)
+             add_obs = add_obs, level = level, facet = facet, 
+             point_size = point_size, print_plots = print_plots)
   }
 }

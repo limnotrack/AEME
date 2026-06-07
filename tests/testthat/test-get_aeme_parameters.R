@@ -1,6 +1,6 @@
 test_that("all parameters can be retrieved", {
   param <- get_aeme_parameters()
-  testthat::expect_true(nrow(param) == 965)
+  testthat::expect_true(nrow(param) == 1384)
 })
 
 test_that("DYRESM parameters can be retrieved", {
@@ -38,7 +38,7 @@ test_that("all oxygen module parameters can be retrieved", {
   testthat::expect_true(length(unique(param$model)) == 2)
 })
 
-test_that("all oxygen module parameters can be retrieved", {
+test_that("all oxygen & light module parameters can be retrieved", {
   param <- get_aeme_parameters(model = "glm_aed", module = c("oxygen", "light"))
   testthat::expect_true(length(unique(param$module)) == 2)
 })

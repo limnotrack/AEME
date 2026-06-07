@@ -2,7 +2,7 @@
 
 #' Write initial temperature profiles for GOTM-WET
 #'
-#' @inheritParams initialiseGLM
+#' @inheritParams initialise_glm
 #' @param start_date Date; of start of simulation
 #' @param path_gotm filepath; to GOTM directory
 #'
@@ -13,8 +13,7 @@
 initialiseGOTM <-  function(gotm, lvl_bottom, lvl_surf,
                             tmpwtr = 10, start_date,
                             tbl_obs = NULL,
-                            path_gotm = "", use_bgc = FALSE, model_controls,
-                            print = TRUE) {
+                            path_gotm = "", use_bgc = FALSE, model_controls) {
 
   # define the proTable (intial profiles for T and SAL)
   if (is.null(tbl_obs)) {
@@ -22,7 +21,7 @@ initialiseGOTM <-  function(gotm, lvl_bottom, lvl_surf,
                           c(tmpwtr, tmpwtr),
                           c(0, 0))
   }
-
+  
   ndeps <- nrow(tbl_obs)
   df <- matrix(NA, nrow = 1 + nrow(tbl_obs), ncol = 2)
   df[1, 1] <- paste(start_date, "00:00:00")
@@ -31,29 +30,28 @@ initialiseGOTM <-  function(gotm, lvl_bottom, lvl_surf,
   df[(2):(1 + ndeps), 2] <- as.numeric(tbl_obs[["temperature"]])
   write.table(df, file.path(path_gotm, "inputs", "t_prof_file.dat"),
               quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
-
+  
   # salinity initial
   df[(2):(1 + ndeps), 2] <- tbl_obs[["salt"]]
   write.table(df, file.path(path_gotm, "inputs", "s_prof_file.dat"),
               quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
-
+  
   if (use_bgc) {
-    initialise_FABM(path_gotm = path_gotm, model_controls = model_controls,
-                    print = print)
+    initialise_FABM(path_gotm = path_gotm, model_controls = model_controls)
   }
-
-
+  
+  
   #-------- Update the yaml file! ---------
-
+  
   gotm$surface$sst$constant_value <- tmpwtr
-
+  
   gotm$temperature$method <- 2
   gotm$temperature$file <- "inputs/t_prof_file.dat"
   gotm$temperature$column <- 1
-
+  
   gotm$salinity$method <- 2
   gotm$salinity$file <- "inputs/s_prof_file.dat"
   gotm$salinity$column <- 1
-
+  
   gotm
 }

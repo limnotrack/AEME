@@ -1,4 +1,5 @@
-gotm_dir <- system.file("extdata/gotm_wet/", package = "AEME")
+library(AEME)
+gotm_dir <- "inst/extdata/gotm_wet/"
 
 gotm_file <- file.path(gotm_dir, "gotm.yaml")
 
@@ -92,7 +93,8 @@ gotm_pars <- lapply(names(gotm), \(n) {
         .default = default
       ),
       min = default - (0.25 * abs(default)),
-      max = default + (0.25 * abs(default))
+      max = default + (0.25 * abs(default)),
+      index = NA_integer_
     )
 }) |>
   dplyr::bind_rows() |>
@@ -702,9 +704,10 @@ gotm_wet_parameters <- dplyr::bind_rows(gotm_pars, gotm_wet_parameters)
 summary(gotm_wet_parameters)
 # View(gotm_wet_parameters)
 
-param_names <- AEME:::get_param_names()
+param_names <- param_colnames()
 gotm_wet_parameters <- gotm_wet_parameters |>
-  dplyr::select(dplyr::all_of(param_names))
+  dplyr::select(dplyr::any_of(param_names)) |> 
+  tibble::as_tibble()
 head(gotm_wet_parameters)
 dim(gotm_wet_parameters)
 tail(gotm_wet_parameters)

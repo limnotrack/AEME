@@ -7,7 +7,7 @@
 plot_hyps(aeme, y = "elev", add_surface = FALSE, incl_ext_elev = FALSE)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{y}{Character; column name in hypsograph data to plot on y-axis. Can
 be either 'elev' or 'depth'.}

@@ -4,12 +4,13 @@
 \alias{get_lake_dir}
 \title{Get the directory of the lake model setup}
 \usage{
-get_lake_dir(aeme, path = getwd())
+get_lake_dir(aeme, path)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 }
 \value{
 character; the directory of the lake model setup

@@ -2,9 +2,9 @@
 #'
 #' @param df_met data.frame of meteorological variables.
 #' @param path.gotm filepath; to GOTM directory.
-#' @param hum_type numeric; humidity metric [1=relative humidity (%),
+#' @param hum_type numeric; humidity metric (1=relative humidity (%),
 #' 2=wet-bulb temperature, 3=dew point temperature, 4=specific humidity (kg/kg);
-#'  default=3]
+#'  default=3)
 #' @param return_df Logical; return meteorological dataframe
 #'
 #' @importFrom dplyr mutate select all_of across
@@ -52,7 +52,7 @@ make_metGOTM <- function(df_met, path.gotm, hum_type = 3, lat, lon,
   }
 
 
-  utils::write.table(met_swr, file.path(path.gotm, "inputs", "meteo_swr.dat"),
+  write.table(met_swr, file.path(path.gotm, "inputs", "meteo_swr.dat"),
                      row.names = FALSE, col.names = FALSE, quote = FALSE,
                      na = "", sep = "\t")
 
@@ -67,7 +67,7 @@ make_metGOTM <- function(df_met, path.gotm, hum_type = 3, lat, lon,
                   dplyr::across(3:ncol(met_main), \(x) format(x, nsmall = 4,
                                                               width = 12)))
 
-  utils::write.table(met_main, file.path(path.gotm, "inputs", "meteo.dat"),
+  write.table(met_main, file.path(path.gotm, "inputs", "meteo.dat"),
                      row.names = FALSE, col.names = FALSE, quote = FALSE,
                      na = "", sep = "\t")
 

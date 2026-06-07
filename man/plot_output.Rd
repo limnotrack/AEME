@@ -8,6 +8,7 @@ plot_output(
   aeme,
   model,
   var_sim = "HYD_temp",
+  point_size = 2,
   ens_n = 1,
   add_obs = TRUE,
   level = FALSE,
@@ -16,11 +17,12 @@ plot_output(
   var_lims = NULL,
   ylim = NULL,
   cumulative = FALSE,
-  facet = TRUE
+  facet = TRUE,
+  backend = c("ggplot2", "base")
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{model}{character vector; model(s) to plot. If missing, all models
 in the Aeme object will be plotted.}
@@ -52,6 +54,9 @@ plot and return a list of plots. If \code{TRUE}, for variables without depth,
 plot each model in a separate facet. If \code{FALSE}, plot each model as a
 separate line and return a plot.
 This only applies to variables without a depth component.}
+
+\item{backend}{character; plotting backend to use. Options are "ggplot2" and
+"base". Default is "ggplot2".}
 }
 \value{
 list of plots for z-dimensional variables or a ggplot2 object for 1-d

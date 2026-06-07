@@ -96,7 +96,7 @@ make_DYmet <-  function(lakename = "unknown",
                paste0(wndType,"  ", round(metHeight, 2),"   # sensor type (FLOATING, FIXED_HT), height in metres (above water surface, above lake bottom)"),
                paste0(col.names, collapse = "\t")), f)
 
-  utils::write.table(metVals, f, sep = "\t", quote = FALSE, row.names = FALSE,
+  write.table(metVals, f, sep = "\t", quote = FALSE, row.names = FALSE,
               col.names = FALSE)
 
   close(f)

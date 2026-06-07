@@ -7,7 +7,7 @@
 plot_met_tile(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{var_inp}{Character. Variable to plot. Can be one of:
 \itemize{

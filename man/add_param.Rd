@@ -7,7 +7,7 @@
 add_param(aeme, param)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{param}{data frame with columns "model", "file", "name", "value", "min",
 "max", "module" and "group.}

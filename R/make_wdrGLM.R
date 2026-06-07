@@ -14,7 +14,8 @@
 #' @importFrom utils write.csv
 #' @importFrom dplyr mutate bind_rows
 
-make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
+make_wdrGLM <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy, 
+                        dims_lake, wdr_factor = 1,
                         update_nml = TRUE, glm_nml, path_glm) {
 
 
@@ -22,17 +23,28 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 
 
   if (length(outf) > 0) {
-
+    if ("wbal" %in% names(outf)) {
+      outf[["wbal"]] <- outf[["wbal"]] |>
+        dplyr::filter(model == "glm_aed") |> 
+        dplyr::select(-model) |> 
+        dplyr::rename(wbal = outflow)
+    }
+    
     if (length(outf) > 1) {
-      if ("wbal" %in% names(outf)) {
-        outf[["wbal"]] <- outf[["wbal"]] |>
-          dplyr::filter(model == "glm_aed") |> 
-          dplyr::select(-model) |> 
-          dplyr::rename(wbal = outflow)
+      # Rename the outflow column to match the outflow name
+      for (n in names(outf)) {
+        if ("HYD_flow" %in% colnames(outf[[n]])) {
+          outf[[n]] <- outf[[n]] |>
+            dplyr::rename(!!n := HYD_flow)
+        }
       }
-      df_wdr <- Reduce(function(x, y) dplyr::full_join(x, y, by = "Date"),
-                       outf)
+      df_wdr <- Reduce(function(x, y) dplyr::full_join(x, y, by = "Date"), outf)
     } else if (length(outf) == 1){
+      if ("HYD_flow" %in% colnames(outf[[1]])) {
+        wdr_name <- names(outf)[1]
+        outf[[1]] <- outf[[1]] |>
+          dplyr::rename(!!wdr_name := HYD_flow)
+      }
       df_wdr <- outf[[1]]
     }
     
@@ -42,7 +54,7 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
         dplyr::select(-model)
     }
     
-    df_wdr <- df_wdr[stats::complete.cases(df_wdr), ]
+    df_wdr <- df_wdr[complete.cases(df_wdr), ]
 
     df_wdr <- df_wdr |>
       # convert discharge values to cumecs
@@ -55,16 +67,25 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
       # get the inflow attributes
       names_wdr <- names(df_wdr)[2:ncol(df_wdr)]
       n_wdr <- length(names_wdr)
-
+      # heights_wdr <- unlist(heights_wdr)
+      # Reorder to match column order
+      heights_wdr <- heights_wdr[names_wdr]
+      outlet_type <- outlet_type[names_wdr]
+      flt_off_sw <- flt_off_sw[names_wdr]
+      
       # default to outflow = 3 m below crest if not supplied
       if (missing(heights_wdr)) {
         heights_wdr <- rep(crest - 3, length(names_wdr))
       }
 
       # get the glm outlet elevations (neg depths)
-      heights_wdr.glm <- heights_wdr# - crest
+      dim_heights <- heights_wdr# - crest
+      min_elev <- min(bathy$elev)
+      if (any(dim_heights < min_elev)) {
+        dim_heights[dim_heights < min_elev] <- heights_wdr[dim_heights < min_elev] + min_elev
+      }
 
-      dims_outf <- lapply((heights_wdr + min(bathy$elev)), FUN = elipse_dims,
+      dims_outf <- lapply(dim_heights, FUN = elipse_dims,
                           bathy = bathy, dims_lake = dims_lake)  |>
         dplyr::bind_rows()
 
@@ -79,9 +100,9 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 
       outflow <- list(
         num_outlet = n_wdr,
-        outlet_type = rep(2, n_wdr),
-        flt_off_sw = rep(TRUE, n_wdr),
-        outl_elvs = rep(round(heights_wdr, 2), n_wdr),
+        outlet_type = as.vector(outlet_type),
+        flt_off_sw = as.vector(flt_off_sw),
+        outl_elvs = as.vector(heights_wdr),
         bsn_len_outl = round(lengths, 2),
         bsn_wid_outl = round(widths, 2),
         outflow_fl = outflow_fl,
@@ -100,7 +121,7 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 
       this.name <- paste0("outflow_", colnames(df_wdr)[i], ".csv")
 
-      utils::write.csv(this.out, file.path(path_glm, "bcs", this.name),
+      write.csv(this.out, file.path(path_glm, "bcs", this.name), 
                 row.names = FALSE, quote = FALSE)
 
     }
@@ -128,7 +149,7 @@ make_wdrGLM <- function(outf, heights_wdr, bathy, dims_lake, wdr_factor = 1,
 elipse_dims <- function(bathy, height, dims_lake) {
 
   # planar area of the lake at outflow elevation
-  a.wdr <- stats::approx(bathy[["elev"]], bathy[["area"]], xout = height)[2] |>
+  a.wdr <- approx(bathy[["elev"]], bathy[["area"]], xout = height)[2] |>
     as.numeric() |>
     round()
 

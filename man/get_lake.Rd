@@ -7,7 +7,7 @@
 get_lake(aeme)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 }
 \value{
 Lake data frame or NULL if not present.

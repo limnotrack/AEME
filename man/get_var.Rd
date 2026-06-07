@@ -9,6 +9,7 @@ get_var(
   model,
   var_sim,
   depth = NULL,
+  depth_ref = c("surface", "bottom"),
   return_df = TRUE,
   ens_n = 1,
   use_obs = FALSE,
@@ -17,15 +18,18 @@ get_var(
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
 
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp").}
 
 \item{depth}{numeric; depth of the variable to extract. Default is NULL. If
 NULL, the variable profiles are extracted.}
+
+\item{depth_ref}{character; reference depth for extracting variable profiles.
+Options are "surface" (default) or "bottom".}
 
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.}
