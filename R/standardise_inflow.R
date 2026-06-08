@@ -134,6 +134,7 @@ standardise_inflow <- function(inflow,
     }
   }
   
+  inflow <- .rename_date_column(inflow, verbose = verbose, arg_name = "inflow")
   time_col <- intersect(c("time", "Date", "date"), names(inflow))
   if (length(time_col) == 0) {
     cli::cli_abort(
