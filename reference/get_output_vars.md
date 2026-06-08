@@ -40,6 +40,8 @@ model <- c("glm_aed", "gotm_wet")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
+#> ℹ Detected regular timestep: 1 day(s).
+#> ℹ Detected regular timestep: 1 day(s).
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -50,7 +52,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [4ms]
+#> ✔ Estimating surface water temperature [7ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -147,10 +149,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-06-07 23:37:37]
-#> ✔ Model run complete! [2026-06-07 23:37:39]
-#> ℹ Reading models in parallel...[2026-06-07 23:37:39]
-#> ✔ Model reading complete! [2026-06-07 23:37:40]
+#> ℹ Running models in parallel... [2026-06-08 23:42:14]
+#> ✔ Model run complete! [2026-06-08 23:42:17]
+#> ℹ Reading models in parallel...[2026-06-08 23:42:17]
+#> ✔ Model reading complete! [2026-06-08 23:42:18]
 get_output_vars(aeme, model)
 #>                   Water temperature                   Thermocline depth 
 #>                          "HYD_temp"                        "HYD_thmcln" 

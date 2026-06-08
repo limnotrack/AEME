@@ -138,6 +138,8 @@
   station pressure.
 - [`get_met()`](https://limnotrack.com/reference/get_met.md) : Get
   meteorological data from Aeme object
+- [`get_met_vars()`](https://limnotrack.com/reference/get_met_vars.md) :
+  Get the column names for the meteorological variables
 - [`get_model_config_files()`](https://limnotrack.com/reference/get_model_config_files.md)
   : Get model configuration files paths
 - [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md)

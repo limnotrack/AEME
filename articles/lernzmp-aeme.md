@@ -211,6 +211,7 @@ path <- "aeme" # directory in which the model configuration will be built
 
 aeme <- build_aeme(aeme = aeme, model = model, path = path,
                    use_bgc = TRUE)
+#> ℹ Detected regular timestep: 1 day(s).
 #> ✔ `MET_pprain`: converted from m/day to mm/day.
 #> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────
 #> 

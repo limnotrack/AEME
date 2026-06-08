@@ -41,6 +41,8 @@ model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
+#> ℹ Detected regular timestep: 1 day(s).
+#> ℹ Detected regular timestep: 1 day(s).
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -51,7 +53,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [6ms]
+#> ✔ Estimating surface water temperature [7ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -90,10 +92,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-06-07 23:37:49]
-#> ✔ Model run complete! [2026-06-07 23:37:51]
-#> ℹ Reading models in parallel...[2026-06-07 23:37:51]
-#> ✔ Model reading complete! [2026-06-07 23:37:51]
+#> ℹ Running models in parallel... [2026-06-08 23:42:31]
+#> ✔ Model run complete! [2026-06-08 23:42:34]
+#> ℹ Reading models in parallel...[2026-06-08 23:42:34]
+#> ✔ Model reading complete! [2026-06-08 23:42:35]
 aeme |> 
   list_mod_obs_vars()
 #>            Cyanobacteria         Dissolved oxygen                 Salinity 
