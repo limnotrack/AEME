@@ -42,7 +42,7 @@ test_that("can expand met", {
 
 })
 
-test_that({
+test_that("can get met vars", {
   met_vars <- get_met_vars()
   testthat::expect_true(nrow(met_vars) >= 16)
   met_vars_vec <- get_met_vars(as_vector = TRUE)
