@@ -522,7 +522,7 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpovDZaT\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp0kfQRU\reservoir
 #> ℹ Detected regular timestep: 1 day(s).
 #> ℹ Detected regular timestep: 1 day(s).
 #> 
@@ -560,10 +560,10 @@ aeme <- build_aeme(
 ``` r
 
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-08 23:56:39]
-#> → GLM-AED running... [2026-06-08 23:56:39]
-#> ✔ GLM-AED run successful! [2026-06-08 23:56:39]
-#> ✔ Model run complete! [2026-06-08 23:56:39]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-09 04:28:24]
+#> → GLM-AED running... [2026-06-09 04:28:24]
+#> ✔ GLM-AED run successful! [2026-06-09 04:28:24]
+#> ✔ Model run complete! [2026-06-09 04:28:24]
 ```
 
 ## View the output

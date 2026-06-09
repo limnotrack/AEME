@@ -1,6 +1,6 @@
-# Get the column names for the meteorological variables
+# Get the names and units for the meteorological variables
 
-Get the column names for the meteorological variables
+Get the names and units for the meteorological variables
 
 ## Usage
 
@@ -43,4 +43,7 @@ get_met_vars()
 #> 14 MET_wnduvv            v wind speed    m/s
 #> 15 MET_pprain                    Rain     mm
 #> 16 MET_ppsnow                    Snow     mm
+
+# Get the column names for the meteorological variables as a named vector
+met_cols <- get_met_vars(as_vector = TRUE)
 ```
