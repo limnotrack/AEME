@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_met_vars.R
 \name{get_met_vars}
 \alias{get_met_vars}
-\title{Get the column names for the meteorological variables}
+\title{Get the names and units for the meteorological variables}
 \usage{
 get_met_vars(as_vector = FALSE)
 }
@@ -17,9 +17,12 @@ The names of the vector are the variable names in the Aeme object and the
 values are the corresponding column names in the input data frame.
 }
 \description{
-Get the column names for the meteorological variables
+Get the names and units for the meteorological variables
 }
 \examples{
 get_met_vars()
+
+# Get the column names for the meteorological variables as a named vector
+met_cols <- get_met_vars(as_vector = TRUE)
 
 }
