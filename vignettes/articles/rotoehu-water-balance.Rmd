@@ -18,7 +18,7 @@ This article demonstrates how to work with Lake Rotoehu (ID: 40188) to:
 1. Set up an AEME model using data from the `aemetools` package
 2. Understand the three water balance approaches and when to use each
 3. Understand how lake surface temperature is estimated (and the role of
-   observations)
+observations)
 4. Learn how evaporation is estimated from bulk aerodynamic theory
 5. Extract and visualise evaporation output
 
@@ -47,6 +47,23 @@ Zealand lakes via the Limnotrack API. Use the lake's numeric ID to retrieve it:
 
 ```{r load-lake, eval=TRUE}
 aeme <- aemetools::get_aeme(id = 40188)
+```
+
+```{r}
+#| label: aeme-set-config
+#| echo: FALSE
+#| include: FALSE
+#| message: FALSE
+
+aeme <- aeme |> 
+  set_time(start = "2010-06-01", spin_up = 365) |>
+  set_precip(type = "met")
+  
+```
+
+View Aeme object:
+
+```{r view-aeme}
 aeme
 ```
 
@@ -59,7 +76,7 @@ and evaporation calculations. Let's inspect what was loaded:
 hyps <- get_hypsograph(aeme)
 
 orig_hyps <- hyps |>
-  dplyr::filter(depth <= 0)
+dplyr::filter(depth <= 0)
 
 ggplot(orig_hyps, aes(x = area, y = depth)) +
   geom_line(colour = "#0065a9", linewidth = 0.8) +
@@ -68,12 +85,15 @@ ggplot(orig_hyps, aes(x = area, y = depth)) +
   theme_bw()
 ```
 
-This does not look right — the area values suggest the stored hypsograph may be
-based on a coarse contour or estimated shape. We can generate a better
+This does not look right — the max depth is too deep and there is about 8m from
+the surface to the first contour. We can improve this by building a new
 hypsograph from bathymetric contours available on the Limnotrack API:
 
 ```{r get-contours}
-shoreline <- aemetools::get_lake_shape(id = 40188)
+# Lake Rotoehy lake id is 40188
+shoreline <- aemetools::get_lake_shape(id = 40188) # lake shoreline shapefile
+
+# Get lake depth contours
 contours  <- aemetools::lt_fetch(
   "lake_contours",
   filter = aemetools::lt_filter(lernzmp_id == "LID40188")
@@ -81,7 +101,7 @@ contours  <- aemetools::lt_fetch(
   dplyr::mutate(depth = depth_m)
 ```
 
-```{r plot-contours}
+```{r plot-contours, message=FALSE}
 tm_shape(contours) +
   tm_lines(col = "depth", scale = tm_scale("-brewer.blues")) +
   tm_shape(shoreline) +
@@ -100,7 +120,7 @@ bathy_raster <- rasterise_bathy(shoreline = shoreline,
 
 ```{r hypsograph-from-raster}
 lake_elev <- max(contours$elevation_m)
-upd_hyps  <- bathytools::bathy_to_hypso(bathy_raster) |>
+upd_hyps  <- bathy_to_hypso(bathy_raster) |>
   dplyr::mutate(elev = lake_elev + depth)
 
 ggplot(orig_hyps, aes(x = area, y = depth)) +
@@ -125,9 +145,9 @@ available. The table below summarises when to use each:
 
 | Method | `wb_method` | Requires | When to use |
 |--------|-------------|----------|-------------|
-| Closed lake | 1 | Meteorology only | No inflow/outflow data; short-term or remote lakes; sensitivity testing |
-| Outflow fitted | 2 | Met + observed water levels | Lake level observations available; want to fit a realistic outflow rating curve |
-| Inflow + outflow residual | 3 | Met + obs. levels + some inflow data | Gauged or estimated inflows; want to account for unexplained storage changes |
+| Closed lake | 1 | Meteorology only | No inflow/outflow data; short-term simulations; sensitivity testing |
+| Outflow fitted | 2 | Met + inflow data | Fit a realistic outflow rating curve using inflow data; use observed lake level if available; |
+| Inflow + outflow residual | 3 | Met + obs. levels + some inflow data | Gauged or estimated inflows; want to account for unexplained storage changes e.g. groundwater |
 
 ## Method 1 — Closed lake (no inflows or outflows)
 
@@ -146,15 +166,25 @@ or when you only want to estimate the evaporation component. It will
 under-represent evaporation if significant inflows keep the lake warmer than it
 would otherwise be, or over-predict it if the lake gains volume from groundwater.
 
-```{r wb-method-1}
+```{r wb-method-1, message=FALSE}
 model <- "glm_aed"
 path1 <- file.path(tempdir(), "rotoehu_wb1")
 
+# Build and run model with Method 1 (closed lake)
 aeme_wb1 <- aeme |>
-  set_time(start = "2010-06-01", spin_up = 365) |>
-  build_aeme(model = model, path = path1, use_bgc = FALSE, wb_method = 1) |>
+  build_aeme(model = model, path = path1, wb_method = 1) |>
   run_aeme(model = model, path = path1)
+
+# Plot water level
+aeme_wb1 |> 
+  plot_wbal_annual()
+
 ```
+
+When using the GLM-AED model, there is a default "spillway" if the lake level 
+exceeds the maximum elevation in the hypsograph. To improve the closed-lake 
+assumption, it would be useful to merge the bathymetry with the surrounding DEM 
+to get an extended hypsograph. See this [bathytools article for a example](https://limnotrack.com/bathytools/articles/merge-bathy-dem.html).
 
 ## Method 2 — Outflow fitted from observed water levels
 
@@ -170,6 +200,9 @@ outflow is zero — and $C$ is an outflow coefficient. Both $C$ and $h_{inv}$
 are fitted by minimising the RMSE between simulated and observed water levels
 using `estimate_lake_wlev()`.
 
+If lake-level observations are not available, the same method can be used to fit 
+the outflow parameters against a constant lake level at the initial lake depth.
+
 Once calibrated, the fitted parameters can be retrieved with `get_wbal_param()`
 and transferred to a different (e.g. ungauged) period with `set_wbal_param()`.
 
@@ -178,13 +211,17 @@ It simultaneously constrains the water balance *and* provides a physically
 meaningful outflow estimate. If the lake has a well-defined spillway or outlet,
 the fitted $h_{inv}$ often corresponds closely to the known sill elevation.
 
-```{r wb-method-2}
+```{r wb-method-2, message=FALSE}
 path2 <- file.path(tempdir(), "rotoehu_wb2")
 
 aeme_wb2 <- aeme |>
   set_time(start = "2010-06-01", spin_up = 365) |>
   build_aeme(model = model, path = path2, use_bgc = FALSE, wb_method = 2) |>
   run_aeme(model = model, path = path2)
+
+# Plot weir calibration results
+aeme_wb2 |> 
+  plot_wlev()
 ```
 
 ## Method 3 — Inflow and outflow as residuals
@@ -250,15 +287,15 @@ $$T_s(t+1) = T_s^{pred} + \frac{\Delta t}{\tau_{relax}}\left(T_s^{obs} - T_s^{pr
 The behaviour depends on observation frequency:
 
 - **Frequent observations (weekly or better):** the simulated surface
-  temperature closely tracks the lake. Evaporation is observation-constrained
-  and reflects the actual thermal state.
+temperature closely tracks the lake. Evaporation is observation-constrained
+and reflects the actual thermal state.
 - **Sparse observations (monthly or seasonal):** the model fills gaps using the
-  energy balance, relaxing toward each observation as it becomes available.
-  Evaporation estimates between observations carry more uncertainty.
+energy balance, relaxing toward each observation as it becomes available.
+Evaporation estimates between observations carry more uncertainty.
 - **No observations:** the energy balance runs freely from an air-temperature
-  seed. A fall-back linear regression
-  $T_s = 5 + 0.75\,\overline{T}_{air,5\text{d}}$
-  (Stefan & Preud'homme, 1993) provides the initial condition.
+seed. A fall-back linear regression
+$T_s = 5 + 0.75\,\overline{T}_{air,5\text{d}}$
+(Stefan & Preud'homme, 1993) provides the initial condition.
 
 You can inspect the estimated surface temperature as a model output variable:
 
@@ -407,29 +444,29 @@ plot_wbal(aeme_wb1, model = model)
 This article demonstrated how to:
 
 1. **Load and refine lake data** for Lake Rotoehu using `aemetools` and
-   `bathytools`.
+`bathytools`.
 2. **Choose a water balance method**:
-   - Method 1 (closed lake): meteorology only; estimates evaporation as the
-     residual between precipitation and volume change.
-   - Method 2 (fitted outflow): optimises a weir-type rating curve
-     ($O_t = C \cdot (h_t - h_{inv})^{1.5}$) against observed water levels;
-     the preferred method when a gauge record is available.
-   - Method 3 (inflow + outflow residual): partitions unexplained storage
-     changes into effective inflows or spill outflows; useful when gauged
-     inflows are known but the budget still does not close.
+- Method 1 (closed lake): meteorology only; estimates evaporation as the
+residual between precipitation and volume change.
+- Method 2 (fitted outflow): optimises a weir-type rating curve
+($O_t = C \cdot (h_t - h_{inv})^{1.5}$) against observed water levels;
+the preferred method when a gauge record is available.
+- Method 3 (inflow + outflow residual): partitions unexplained storage
+changes into effective inflows or spill outflows; useful when gauged
+inflows are known but the budget still does not close.
 3. **Understand surface temperature estimation**: an energy-balance model
-   integrates forward in time and is nudged toward observations via a
-   relaxation scheme (default $\tau = 3\,\text{days}$). Without observations
-   a linear air-temperature regression seeds the initial condition.
+integrates forward in time and is nudged toward observations via a
+relaxation scheme (default $\tau = 3\,\text{days}$). Without observations
+a linear air-temperature regression seeds the initial condition.
 4. **Trace the evaporation calculation** through three exported functions —
-   `sat_vapour_pressure()`, `latent_heat_flux()`, and `flux_to_evap()` — each
-   corresponding to a step in the bulk aerodynamic method.
+`sat_vapour_pressure()`, `latent_heat_flux()`, and `flux_to_evap()` — each
+corresponding to a step in the bulk aerodynamic method.
 5. **Visualise and summarise evaporation** using `plot_output()` (variable
-   `"LKE_evprte"`), `plot_est_wbal()`, `plot_wbal()`, and `get_var()`.
+`"LKE_evprte"`), `plot_est_wbal()`, `plot_wbal()`, and `get_var()`.
 
 # References
 
 - Stefan, H. G., & Preud'homme, E. B. (1993). Stream temperature estimation
-  from air temperature. *JAWRA Journal of the American Water Resources
-  Association*, 29(1), 27–45.
-  <https://doi.org/10.1111/j.1752-1688.1993.tb01502.x>
+from air temperature. *JAWRA Journal of the American Water Resources
+Association*, 29(1), 27–45.
+<https://doi.org/10.1111/j.1752-1688.1993.tb01502.x>
