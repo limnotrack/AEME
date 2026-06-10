@@ -19,13 +19,15 @@ Numeric. Evaporation rate (m/day), \eqn{\leq 0}.
 \description{
 Converts latent heat flux (W/m²) to an evaporation rate in metres per day,
 suitable for lake water balance calculations.
-
+}
+\details{
 The conversion is:
 \deqn{E = \frac{Q_{lh}}{L_v\,\rho_w} \times 86400}
 }
-\seealso{
-\code{\link{latent_heat_flux}}
-}
 \examples{
 flux_to_evap(-50)
+
+}
+\seealso{
+\code{\link{latent_heat_flux}}
 }

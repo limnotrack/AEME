@@ -4,8 +4,15 @@
 \alias{latent_heat_flux}
 \title{Latent heat flux from a lake surface}
 \usage{
-latent_heat_flux(Ts, wndspd, prvapr, prsttn = 981.9, Ce = 0.0013,
-  rho_air = 1.168, Lv = 2453000)
+latent_heat_flux(
+  Ts,
+  wndspd,
+  prvapr,
+  prsttn = 981.9,
+  Ce = 0.0013,
+  rho_air = 1.168,
+  Lv = 2453000
+)
 }
 \arguments{
 \item{Ts}{Numeric. Water surface temperature (°C).}
@@ -29,16 +36,18 @@ Numeric. Latent heat flux (W/m²), \eqn{\leq 0}.
 Calculates latent heat flux from a lake surface using the bulk aerodynamic
 method. Flux is capped at zero — only evaporative loss from the water is
 retained (condensation is excluded).
-
+}
+\details{
 The flux is calculated as:
 \deqn{Q_{lh} = \min\!\left(\frac{0.622}{P}\,C_e\,\rho_{air}\,L_v\,U\,(e_a - e_s),\ 0\right)}
 
 where \eqn{e_s} is the saturation vapour pressure at the water surface
 computed by \code{\link{sat_vapour_pressure}}.
 }
-\seealso{
-\code{\link{sat_vapour_pressure}}, \code{\link{flux_to_evap}}
-}
 \examples{
 latent_heat_flux(Ts = 20, wndspd = 3, prvapr = 10)
+
+}
+\seealso{
+\code{\link{sat_vapour_pressure}}, \code{\link{flux_to_evap}}
 }
