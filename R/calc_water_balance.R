@@ -534,8 +534,8 @@ optim_lvl_params <- function(parameters, mod_lvl, surf) {
 #' @param Ts Numeric. Water surface temperature (°C).
 #'
 #' @return Numeric. Saturation vapour pressure (hPa).
-#' 
-#' @noRd
+#'
+#' @export
 #'
 #' @examples
 #' sat_vapour_pressure(20)
@@ -545,22 +545,30 @@ sat_vapour_pressure <- function(Ts) {
 }
 
 
-#' Latent heat flux
+#' Latent heat flux from a lake surface
 #'
 #' Calculates latent heat flux from a lake surface using the bulk aerodynamic
-#' method. Flux is capped at zero — only heat loss from the water is retained.
+#' method. Flux is capped at zero — only evaporative loss from the water is
+#' retained (condensation is excluded).
+#'
+#' The flux is calculated as:
+#' \deqn{Q_{lh} = \min\!\left(\frac{0.622}{P}\,C_e\,\rho_{air}\,L_v\,U\,(e_a - e_s),\ 0\right)}
+#'
+#' where \eqn{e_s} is the saturation vapour pressure at the water surface
+#' computed by \code{\link{sat_vapour_pressure}}.
 #'
 #' @param Ts      Numeric. Water surface temperature (°C).
 #' @param wndspd  Numeric. Wind speed (m/s).
 #' @param prvapr  Numeric. Air vapour pressure (hPa).
-#' @param P       Numeric. Atmospheric pressure (hPa). Default 981.9.
+#' @param prsttn  Numeric. Atmospheric pressure (hPa). Default 981.9.
 #' @param Ce      Numeric. Bulk transfer coefficient (Dalton number). Default 0.0013.
 #' @param rho_air Numeric. Air density (kg/m³). Default 1.168.
 #' @param Lv      Numeric. Latent heat of vaporisation (J/kg). Default 2453000.
 #'
-#' @return Numeric. Latent heat flux (W/m²), <= 0.
-#' 
-#' @noRd
+#' @return Numeric. Latent heat flux (W/m²), \eqn{\leq 0}.
+#'
+#' @export
+#' @seealso \code{\link{sat_vapour_pressure}}, \code{\link{flux_to_evap}}
 #'
 #' @examples
 #' latent_heat_flux(Ts = 20, wndspd = 3, prvapr = 10)
@@ -579,18 +587,21 @@ latent_heat_flux <- function(Ts, wndspd, prvapr,
 #' Converts latent heat flux (W/m²) to an evaporation rate in metres per day,
 #' suitable for lake water balance calculations.
 #'
-#' @param Qlh       Numeric. Latent heat flux (W/m²), should be <= 0.
+#' The conversion is:
+#' \deqn{E = \frac{Q_{lh}}{L_v\,\rho_w} \times 86400}
+#'
+#' @param Qlh       Numeric. Latent heat flux (W/m²), should be \eqn{\leq 0}.
 #' @param Lv        Numeric. Latent heat of vaporisation (J/kg). Default 2453000.
 #' @param rho_water Numeric. Water density (kg/m³). Default 1000.
 #'
-#' @return Numeric. Evaporation rate (m/day), <= 0.
+#' @return Numeric. Evaporation rate (m/day), \eqn{\leq 0}.
 #'
-#' @noRd
+#' @export
+#' @seealso \code{\link{latent_heat_flux}}
 #'
 #' @examples
 #' flux_to_evap(-50)
 #'
-
 flux_to_evap <- function(Qlh, Lv = 2453000, rho_water = 1000) {
   (Qlh / Lv) * (86400 / rho_water)
 }
