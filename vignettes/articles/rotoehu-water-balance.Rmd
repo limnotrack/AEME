@@ -15,17 +15,19 @@ knitr::opts_chunk$set(
 
 This article demonstrates how to work with Lake Rotoehu (ID: 40188) to:
 
-1. Set up an AEME model using data from the aemetools package
-2. Explore different water balance approaches
-3. Calibrate lake surface temperature
-4. Extract and analyze evaporation data
+1. Set up an AEME model using data from the `aemetools` package
+2. Understand the three water balance approaches and when to use each
+3. Understand how lake surface temperature is estimated (and the role of
+   observations)
+4. Learn how evaporation is estimated from bulk aerodynamic theory
+5. Extract and visualise evaporation output
 
-Lake Rotoehu is a small lake in the Rotorua region of New Zealand's North Island. 
-It has a surface area of approximately 8 km² and a maximum depth of around 13 m.
+Lake Rotoehu is a small, shallow lake in the Rotorua region of New Zealand's
+North Island (~8 km² surface area, ~13 m maximum depth). It is eutrophic,
+thermally stratifies in summer, and has no permanent gauged inflow — making a
+water-balance approach particularly useful for constraining its hydrology.
 
 # Setup
-
-First, load the required packages:
 
 ```{r setup, message=FALSE}
 library(AEME)
@@ -40,56 +42,44 @@ tmap_mode("view")
 
 # Load Lake Rotoehu data
 
-The `aemetools` package provides access to pre-configured AEME objects for New 
-Zealand lakes. We can load Lake Rotoehu using its ID (40188):
+The `aemetools` package provides access to pre-configured AEME objects for New
+Zealand lakes via the Limnotrack API. Use the lake's numeric ID to retrieve it:
 
 ```{r load-lake, eval=TRUE}
-# Install aemetools if needed
-# remotes::install_github("limnotrack/aemetools")
-
-# Load Lake Rotoehu
 aeme <- aemetools::get_aeme(id = 40188)
 aeme
 ```
 
-# View hypsograph
+# View and update the hypsograph
 
-For this demonstration, we'll generate a hypsograph based on Lake Rotoehu's 
-known characteristics:
+The hypsograph encodes the depth–area relationship and is central to all volume
+and evaporation calculations. Let's inspect what was loaded:
 
 ```{r hypsograph}
 hyps <- get_hypsograph(aeme)
 
-orig_hyps <- hyps |> 
+orig_hyps <- hyps |>
   dplyr::filter(depth <= 0)
 
 ggplot(orig_hyps, aes(x = area, y = depth)) +
   geom_line(colour = "#0065a9", linewidth = 0.8) +
-  labs(
-    x = "Area (km²)",
-    y = "Depth (m)",
-    title = "Original Hypsograph for Lake Rotoehu"
-  ) +
+  labs(x = "Area (m²)", y = "Depth (m)",
+       title = "Original Hypsograph for Lake Rotoehu") +
   theme_bw()
-
 ```
 
-
-Uh oh!
-
-This does not look right. We will update the hypsograph using contours available on the Limnotrack API.
+This does not look right — the area values suggest the stored hypsograph may be
+based on a coarse contour or estimated shape. We can generate a better
+hypsograph from bathymetric contours available on the Limnotrack API:
 
 ```{r get-contours}
 shoreline <- aemetools::get_lake_shape(id = 40188)
-# contours <- aemetools::get_depth_contours(id = 40188)
-contours <- aemetools::lt_fetch("lake_contours",
-                                filter = aemetools::lt_filter(lernzmp_id == "LID40188")) |> 
+contours  <- aemetools::lt_fetch(
+  "lake_contours",
+  filter = aemetools::lt_filter(lernzmp_id == "LID40188")
+) |>
   dplyr::mutate(depth = depth_m)
-
-
 ```
-
-Let's have a look what these contours look like:
 
 ```{r plot-contours}
 tm_shape(contours) +
@@ -97,323 +87,349 @@ tm_shape(contours) +
   tm_shape(shoreline) +
   tm_borders(col = "black") +
   tm_title("Lake Rotoehu Depth Contours")
-
 ```
 
-Use `bathytools` package to rasterise the contours and generate an updated
+Use the `bathytools` package to rasterise the contours and compute the updated
 hypsograph:
 
 ```{r rasterise-contours, warning=FALSE}
 bathy_raster <- rasterise_bathy(shoreline = shoreline,
-                                contours = contours,
+                                contours  = contours,
                                 res = 8, crs = 2193)
 ```
 
-Calculate the hypsograph from this raster:
-
 ```{r hypsograph-from-raster}
 lake_elev <- max(contours$elevation_m)
-upd_hyps <- bathytools::bathy_to_hypso(bathy_raster) |> 
-  dplyr::mutate(elev = lake_elev + depth) 
+upd_hyps  <- bathytools::bathy_to_hypso(bathy_raster) |>
+  dplyr::mutate(elev = lake_elev + depth)
 
 ggplot(orig_hyps, aes(x = area, y = depth)) +
   geom_line(colour = "#0065a9", linewidth = 0.8) +
-  geom_line(data = upd_hyps, aes(x = area, y = depth), colour = "#d73027", 
-            linewidth = 0.8) +
-  labs(
-    x = "Area (km²)",
-    y = "Depth (m)",
-    title = "Updated Hypsograph for Lake Rotoehu"
-  ) +
+  geom_line(data = upd_hyps, aes(x = area, y = depth),
+            colour = "#d73027", linewidth = 0.8) +
+  labs(x = "Area (m²)", y = "Depth (m)",
+       title = "Hypsograph for Lake Rotoehu",
+       subtitle = "Blue = original; Red = updated from bathymetric contours") +
   theme_bw()
 ```
-```{r}
+
+```{r update-hypsograph}
 aeme <- add_hypsograph(aeme, hypsograph = upd_hyps)
 ```
 
-
-
-
 # Water balance approaches
 
-AEME supports three different water balance methods:
+`build_aeme()` supports three water balance methods, selected via `wb_method`.
+The right choice depends on what forcing data and observations you have
+available. The table below summarises when to use each:
 
-## Method 1: No inflows or outflows
+| Method | `wb_method` | Requires | When to use |
+|--------|-------------|----------|-------------|
+| Closed lake | 1 | Meteorology only | No inflow/outflow data; short-term or remote lakes; sensitivity testing |
+| Outflow fitted | 2 | Met + observed water levels | Lake level observations available; want to fit a realistic outflow rating curve |
+| Inflow + outflow residual | 3 | Met + obs. levels + some inflow data | Gauged or estimated inflows; want to account for unexplained storage changes |
 
-This method assumes a closed lake with no inflows or outflows. Water balance 
-is determined only by precipitation and evaporation.
+## Method 1 — Closed lake (no inflows or outflows)
+
+The simplest assumption is that the lake is hydrologically isolated: volume
+changes are driven only by direct precipitation on the lake surface and
+evaporation from it.
+
+$$\Delta V_t = P_t \cdot A_t - E_t \cdot A_t$$
+
+where $\Delta V_t$ is the change in lake volume (m³/day), $P_t$ is
+precipitation depth (m/day), $E_t$ is evaporation depth (m/day), and $A_t$ is
+the lake surface area (m²) at time $t$.
+
+**When to use:** Good for initial exploration, for lakes without inflow gauges,
+or when you only want to estimate the evaporation component. It will
+under-represent evaporation if significant inflows keep the lake warmer than it
+would otherwise be, or over-predict it if the lake gains volume from groundwater.
 
 ```{r wb-method-1}
-model <- c("glm_aed")
-path <- file.path(tempdir(), "rotoehu_wb1")
+model <- "glm_aed"
+path1 <- file.path(tempdir(), "rotoehu_wb1")
 
-# Build with water balance method 1
 aeme_wb1 <- aeme |>
-  set_time(start = "2010-06-01", spin_up = 365) |> 
-  build_aeme(
-    aeme = ,
-    model = model,
-    path = path,
-    use_bgc = FALSE,
-    wb_method = 1
-  ) |> 
-  run_aeme()
+  set_time(start = "2010-06-01", spin_up = 365) |>
+  build_aeme(model = model, path = path1, use_bgc = FALSE, wb_method = 1) |>
+  run_aeme(model = model, path = path1)
 ```
 
-```{r}
-plot_output_base(aeme_wb1)
-```
+## Method 2 — Outflow fitted from observed water levels
 
+When lake-level observations are available, AEME can optimise a simple
+weir-type outflow rating curve so that the simulated water level matches
+observations. The outflow equation is:
 
-```{r}
-plot_output(aeme_wb1, var_sim = "surft")
-```
+$$O_t = C \cdot \max\!\left(h_t - h_{inv},\ 0\right)^{1.5} \times 86400$$
 
-```{r}
-plot_output(aeme_wb1, var_sim = "evap_rate")
-```
-```{r}
-ann_summ_evap <- aeme_wb1 |> 
-  get_var(var_sim = "evap_rate") |> 
-  dplyr::mutate(year = lubridate::year(Date)) |>
-  dplyr::group_by(year) |>
-  dplyr::summarise(ann_evap_mm = sum(value, na.rm = TRUE) * 1000)
-ann_summ_evap
+where $O_t$ is outflow (m³/day), $h_t$ is the simulated water level (m above
+sea level), $h_{inv}$ is the *inversion height* (m) — the level below which
+outflow is zero — and $C$ is an outflow coefficient. Both $C$ and $h_{inv}$
+are fitted by minimising the RMSE between simulated and observed water levels
+using `estimate_lake_wlev()`.
 
-```
+Once calibrated, the fitted parameters can be retrieved with `get_wbal_param()`
+and transferred to a different (e.g. ungauged) period with `set_wbal_param()`.
 
-
-## Method 2: Outflows calculated
-
-This method calculates outflows based on the water balance, assuming precipitation 
-and evaporation are known.
+**When to use:** The preferred method when a water-level gauge record exists.
+It simultaneously constrains the water balance *and* provides a physically
+meaningful outflow estimate. If the lake has a well-defined spillway or outlet,
+the fitted $h_{inv}$ often corresponds closely to the known sill elevation.
 
 ```{r wb-method-2}
 path2 <- file.path(tempdir(), "rotoehu_wb2")
 
-aeme_wb2 <- build_aeme(
-  aeme = aeme,
-  model = model,
-  path = path2,
-  use_bgc = FALSE,
-  wb_method = 2
-)
+aeme_wb2 <- aeme |>
+  set_time(start = "2010-06-01", spin_up = 365) |>
+  build_aeme(model = model, path = path2, use_bgc = FALSE, wb_method = 2) |>
+  run_aeme(model = model, path = path2)
 ```
 
-## Method 3: Inflows and outflows calculated
+## Method 3 — Inflow and outflow as residuals
 
-This method estimates both inflows and outflows from the water balance.
+When both inflow and water-level observations are available (or when inflows
+have been estimated), Method 3 closes the water balance by partitioning the
+daily residual into an effective inflow or a spill outflow:
+
+$$\text{residual}_t = \Delta V_t - \left(Q_{in,t} + P_t A_t - E_t A_t - O_t - S_t\right)$$
+
+A positive residual (the lake gains more volume than the known fluxes explain)
+is attributed to an unexplained inflow; a negative residual is attributed to
+additional spill outflow.
+
+**When to use:** When gauged inflows are available but the water balance still
+does not close — for example when significant groundwater exchange or ungauged
+catchment runoff is suspected. Comparing the residual time series across seasons
+or flow events can help identify the likely source of the discrepancy.
 
 ```{r wb-method-3}
 path3 <- file.path(tempdir(), "rotoehu_wb3")
 
-aeme_wb3 <- build_aeme(
-  aeme = aeme,
-  model = model,
-  path = path3,
-  use_bgc = FALSE,
-  wb_method = 3
-)
+aeme_wb3 <- aeme |>
+  set_time(start = "2010-06-01", spin_up = 365) |>
+  build_aeme(model = model, path = path3, use_bgc = FALSE, wb_method = 3) |>
+  run_aeme(model = model, path = path3)
 ```
 
-# Run models
+# Lake surface temperature
 
-Now we'll run the models with different water balance methods:
+Evaporation depends strongly on the vapour pressure deficit between the water
+surface and the overlying air, which in turn depends on the lake surface
+temperature ($T_s$). AEME therefore estimates $T_s$ before computing
+evaporation.
 
-```{r run-models}
-# Run method 1
-aeme_wb1 <- run_aeme(aeme = aeme_wb1)
+## Energy-balance model (`estimate_surface_temperature`)
 
-# Run method 2
-aeme_wb2 <- run_aeme(aeme = aeme_wb2)
+The exported function `estimate_surface_temperature()` integrates an
+energy-balance model forward in daily time steps:
 
-# Run method 3
-aeme_wb3 <- run_aeme(aeme = aeme_wb3)
+$$\frac{dT_s}{dt} = \frac{Q_{sw} + Q_{lw} + Q_h + Q_e}{\rho_w\, c_p\, h_{mix}}$$
+
+| Term | Formula | Description |
+|------|---------|-------------|
+| $Q_{sw}$ | $(1 - \alpha)\,SW_\downarrow$ | Net shortwave radiation (W/m²) |
+| $Q_{lw}$ | $LW_\downarrow - \sigma\,(T_s + 273.15)^4$ | Net longwave radiation (W/m²) |
+| $Q_h$ | $\rho_a\, c_{p,a}\, C_h\, U\,(T_a - T_s)$ | Sensible heat flux (W/m²) |
+| $Q_e$ | $\rho_a\, L_v\, C_e\, U\,(e_a - e_s) / P$ | Latent heat flux (W/m²) |
+| $h_{mix}$ | $\max(2,\ f_{mix} \times d)$ | Active mixing depth (m) |
+
+Default parameters: shortwave albedo $\alpha = 0.07$; bulk sensible/latent
+heat coefficients $C_h = C_e = 1.3 \times 10^{-3}$; mixing fraction
+$f_{mix} = 0.2$; relaxation timescale $\tau_{relax} = 3\,\text{days}$.
+
+## Role of observed surface temperatures
+
+When measured surface temperatures (`HYD_temp`) are present in the lake
+observations, the predicted temperature at each observed timestep is nudged
+toward the observation using a relaxation scheme:
+
+$$T_s(t+1) = T_s^{pred} + \frac{\Delta t}{\tau_{relax}}\left(T_s^{obs} - T_s^{pred}\right)$$
+
+The behaviour depends on observation frequency:
+
+- **Frequent observations (weekly or better):** the simulated surface
+  temperature closely tracks the lake. Evaporation is observation-constrained
+  and reflects the actual thermal state.
+- **Sparse observations (monthly or seasonal):** the model fills gaps using the
+  energy balance, relaxing toward each observation as it becomes available.
+  Evaporation estimates between observations carry more uncertainty.
+- **No observations:** the energy balance runs freely from an air-temperature
+  seed. A fall-back linear regression
+  $T_s = 5 + 0.75\,\overline{T}_{air,5\text{d}}$
+  (Stefan & Preud'homme, 1993) provides the initial condition.
+
+You can inspect the estimated surface temperature as a model output variable:
+
+```{r plot-surface-temp}
+plot_output(aeme_wb1, model = model, var_sim = "HYD_surft")
 ```
 
-# Calibrating lake surface temperature
+# How AEME estimates evaporation
 
-Lake surface temperature is a critical variable for calculating evaporation. 
-AEME uses a regression approach to estimate surface temperature from air 
-temperature when observations are limited.
+AEME uses a **bulk aerodynamic latent heat** approach. Three now-exported
+functions implement the physics step by step, making it easy to inspect or
+reproduce each calculation independently.
 
-The relationship follows the Stefan & Preud'homme (2007) approach:
+## Step 1 — Saturation vapour pressure
 
-$$T_s = a + b \times T_{air,5day}$$
+The saturation vapour pressure at the water surface is computed from the
+Magnus formula:
 
-where $T_s$ is the lake surface temperature, $T_{air,5day}$ is the 5-day 
-moving average of air temperature, and $a$ and $b$ are calibration coefficients.
+$$e_s(T_s) = \exp\!\left(2.3026 \times \left(\frac{7.5\,T_s}{T_s + 237.3} + 0.7858\right)\right) \quad \text{[hPa]}$$
 
-```{r surface-temp-calibration}
-# Extract water balance data
-wb1 <- water_balance(aeme_wb1)
-
-# Plot surface temperature vs air temperature
-wb_data <- wb1$data$wbal
-
-ggplot(wb_data, aes(x = Date, y = Ts)) +
-  geom_line(colour = "#0065a9", linewidth = 0.8) +
-  labs(
-    x = "Date",
-    y = "Surface Temperature (°C)",
-    title = "Estimated Lake Surface Temperature",
-    subtitle = "Based on air temperature regression"
-  ) +
-  theme_bw()
+```{r sat-vapour-pressure}
+Ts_vals <- seq(0, 30, by = 5)
+es_vals <- sat_vapour_pressure(Ts_vals)
+data.frame(Ts_degC = Ts_vals, es_hPa = round(es_vals, 2))
 ```
 
-You can also visualize the relationship between air and surface temperature:
+The exponential increase with temperature is why warm lakes evaporate
+substantially more than cold ones even at the same wind speed.
 
-```{r temp-relationship}
-# Create a plot showing the calibration relationship
-met_with_ts <- met |>
-  left_join(wb_data |> select(Date, Ts), by = "Date") |>
-  mutate(T5avg = zoo::rollmean(MET_tmpair, 5, na.pad = TRUE, align = "right"))
+## Step 2 — Latent heat flux
 
-ggplot(met_with_ts, aes(x = T5avg, y = Ts)) +
-  geom_point(alpha = 0.3, colour = "#0065a9") +
-  geom_smooth(method = "lm", colour = "#d73027", se = TRUE) +
-  labs(
-    x = "5-day Average Air Temperature (°C)",
-    y = "Surface Temperature (°C)",
-    title = "Lake Surface Temperature Calibration"
-  ) +
-  theme_bw()
+The latent heat flux (W/m²) is computed using the bulk aerodynamic formula.
+Only evaporative heat loss is retained (the result is capped at zero so that
+condensation does not add water to the lake):
+
+$$Q_{lh} = \min\!\left(\frac{0.622}{P}\,C_e\,\rho_{air}\,L_v\,U\,(e_a - e_s),\ 0\right)$$
+
+| Symbol | Default | Description |
+|--------|---------|-------------|
+| $P$ | 981.9 hPa | Atmospheric pressure |
+| $C_e$ | $1.3 \times 10^{-3}$ | Bulk transfer coefficient (Dalton number) |
+| $\rho_{air}$ | 1.168 kg/m³ | Air density |
+| $L_v$ | 2,453,000 J/kg | Latent heat of vaporisation |
+| $U$ | — | Wind speed (m/s) |
+| $e_a$ | — | Air vapour pressure (hPa) |
+| $e_s$ | — | Saturation vapour pressure at the surface (hPa) |
+
+The vapour pressure deficit $(e_a - e_s)$ drives evaporation. A warm surface
+raises $e_s$, increasing the deficit and the evaporative flux. High winds
+increase turbulent moisture transport.
+
+```{r latent-heat-example}
+# Example: 20 °C lake, 15 °C air, ~60 % relative humidity, 3 m/s wind
+Ts <- 20;  Ta <- 15;  U <- 3
+ea <- 0.60 * sat_vapour_pressure(Ta)   # ~60 % RH
+Qlh <- latent_heat_flux(Ts = Ts, wndspd = U, prvapr = ea)
+cat(sprintf("Latent heat flux: %.1f W/m²\n", Qlh))
 ```
 
-# Extracting evaporation
+## Step 3 — Convert to evaporation depth
 
-One of the key outputs from the water balance is evaporation. AEME calculates 
-evaporation using bulk aerodynamic methods that account for wind speed, air 
-temperature, humidity, and lake surface temperature.
+The heat flux is converted to an evaporation *rate* in metres per day:
 
-## Extract evaporation data
+$$E = \frac{Q_{lh}}{L_v\,\rho_w} \times 86400 \quad \text{[m/day]}$$
 
-```{r extract-evaporation}
-# Get evaporation from water balance
-evap_data <- wb_data |>
-  select(Date, evap_flux, evap_m3, area, Ts) |>
-  mutate(
-    evap_mm = abs(evap_flux) * 1000,  # Convert m to mm
-    evap_m3_day = abs(evap_m3)        # Daily evaporation volume
+```{r flux-to-evap-example}
+E_m_day <- flux_to_evap(Qlh)
+cat(sprintf("Evaporation rate: %.4f m/day  (%.1f mm/day)\n",
+            E_m_day, E_m_day * 1000))
+```
+
+## Sensitivity to wind speed and surface temperature
+
+The combined influence of wind speed and lake surface temperature illustrates
+why both variables must be well constrained:
+
+```{r evap-sensitivity, fig.height=4}
+grid <- expand.grid(
+  Ts = seq(10, 30, by = 5),
+  U  = seq(1, 6,  by = 1)
+) |>
+  dplyr::mutate(
+    ea   = 0.60 * sat_vapour_pressure(15),   # fixed air conditions
+    Qlh  = latent_heat_flux(Ts = Ts, wndspd = U, prvapr = ea),
+    E_mm = abs(flux_to_evap(Qlh)) * 1000
   )
 
-head(evap_data)
-```
-
-## Visualize evaporation
-
-```{r plot-evaporation}
-# Plot evaporation flux over time
-ggplot(evap_data, aes(x = Date, y = evap_mm)) +
-  geom_line(colour = "#0065a9", linewidth = 0.8) +
-  labs(
-    x = "Date",
-    y = "Evaporation (mm/day)",
-    title = "Daily Evaporation from Lake Rotoehu"
-  ) +
+ggplot(grid, aes(x = U, y = E_mm, colour = factor(Ts))) +
+  geom_line(linewidth = 0.9) +
+  scale_colour_brewer(palette = "RdYlBu", direction = -1) +
+  labs(x = "Wind speed (m/s)",
+       y = "Evaporation (mm/day)",
+       colour = "Surface\ntemp. (°C)",
+       title = "Evaporation sensitivity to wind speed and surface temperature",
+       subtitle = "Fixed air conditions: Ta = 15 °C, RH = 60 %") +
   theme_bw()
 ```
 
-## Evaporation vs temperature
+# Extract and visualise model evaporation output
 
-Evaporation rates are strongly influenced by surface temperature:
+After running the model, evaporation is accessible as a standard output
+variable. The correct variable names are:
 
-```{r evap-vs-temp}
-ggplot(evap_data, aes(x = Ts, y = evap_mm)) +
-  geom_point(alpha = 0.3, colour = "#0065a9") +
-  geom_smooth(method = "loess", colour = "#d73027") +
-  labs(
-    x = "Surface Temperature (°C)",
-    y = "Evaporation (mm/day)",
-    title = "Evaporation vs Surface Temperature"
-  ) +
-  theme_bw()
+| Variable | Description |
+|----------|-------------|
+| `LKE_evprte` | Evaporation rate (m/day) |
+| `LKE_evpvol` | Evaporation volume (m³/day) |
+| `LKE_evpflx` | Evaporation flux (kg/m²/s) |
+| `HYD_surft` | Simulated lake surface temperature (°C) |
+
+```{r plot-evap-rate}
+plot_output(aeme_wb1, model = model, var_sim = "LKE_evprte")
 ```
 
-## Annual evaporation totals
+The `plot_est_wbal()` function produces a four-panel diagnostic showing lake
+level, volume, all daily flux components (inputs on the left bar, losses on the
+right), and the residual between modelled $\Delta V$ and the estimated net flux:
 
-Calculate total annual evaporation:
-
-```{r annual-evaporation}
-# Calculate total annual evaporation
-annual_evap <- evap_data |>
-  summarise(
-    total_evap_mm = sum(evap_mm, na.rm = TRUE),
-    total_evap_m3 = sum(evap_m3_day, na.rm = TRUE),
-    mean_daily_evap_mm = mean(evap_mm, na.rm = TRUE)
-  )
-
-# Display results
-cat("Annual Evaporation Summary:\n")
-cat(sprintf("  Total evaporation: %.1f mm/year\n", annual_evap$total_evap_mm))
-cat(sprintf("  Total volume: %.0f m³/year\n", annual_evap$total_evap_m3))
-cat(sprintf("  Mean daily evaporation: %.2f mm/day\n", 
-            annual_evap$mean_daily_evap_mm))
+```{r plot-est-wbal}
+plot_est_wbal(aeme_wb1, model = model)
 ```
 
-## Compare water balance components
+## Annual evaporation summary
 
-Finally, let's visualize all water balance components together:
+```{r annual-evap}
+ann_evap <- aeme_wb1 |>
+  get_var(model = model, var_sim = "LKE_evprte") |>
+  dplyr::mutate(year = lubridate::year(Date)) |>
+  dplyr::group_by(year) |>
+  dplyr::summarise(ann_evap_mm = sum(value, na.rm = TRUE) * 1000,
+                   .groups = "drop")
+ann_evap
+```
 
-```{r water-balance-components}
-# Prepare data for plotting
-wb_components <- wb_data |>
-  select(Date, rain, evap_m3, HYD_flow, HYD_outflow) |>
-  mutate(
-    evap_m3 = abs(evap_m3)
-  ) |>
-  tidyr::pivot_longer(
-    cols = c(rain, evap_m3, HYD_flow, HYD_outflow),
-    names_to = "Component",
-    values_to = "Volume"
-  ) |>
-  mutate(
-    Component = factor(Component, 
-                       levels = c("rain", "HYD_flow", "evap_m3", "HYD_outflow"),
-                       labels = c("Precipitation", "Inflow", "Evaporation", 
-                                  "Outflow"))
-  )
+## All water balance components
 
-ggplot(wb_components, aes(x = Date, y = Volume / 1e3, colour = Component)) +
-  geom_line(linewidth = 0.8) +
-  scale_colour_manual(
-    values = c("Precipitation" = "#4dac26",
-               "Inflow" = "#0065a9",
-               "Evaporation" = "#d73027",
-               "Outflow" = "#f4a582")
-  ) +
-  labs(
-    x = "Date",
-    y = expression("Volume (×10"^3 * " m"^3 * " day"^{-1} * ")"),
-    title = "Water Balance Components - Lake Rotoehu",
-    colour = "Component"
-  ) +
-  theme_bw() +
-  theme(legend.position = "bottom")
+The `plot_wbal()` function overlays all four modelled flux components
+(evaporation, precipitation, inflow, outflow) in a single panel:
+
+```{r plot-wbal}
+plot_wbal(aeme_wb1, model = model)
 ```
 
 # Summary
 
 This article demonstrated how to:
 
-1. **Load Lake Rotoehu data** using the lake ID (40188) with the aemetools package
-2. **Build an AEME model** with appropriate inputs and hypsograph
-3. **Explore three water balance methods**:
-- Method 1: No inflows/outflows (closed lake)
-- Method 2: Calculated outflows
-- Method 3: Calculated inflows and outflows
-4. **Calibrate lake surface temperature** using the Stefan & Preud'homme 
-regression approach
-5. **Extract evaporation data** from the water balance calculations
-6. **Visualize evaporation patterns** and relationships with temperature
-
-The water balance approach in AEME provides a flexible framework for 
-understanding lake hydrology and estimating critical variables like evaporation, 
-even when direct measurements are not available.
+1. **Load and refine lake data** for Lake Rotoehu using `aemetools` and
+   `bathytools`.
+2. **Choose a water balance method**:
+   - Method 1 (closed lake): meteorology only; estimates evaporation as the
+     residual between precipitation and volume change.
+   - Method 2 (fitted outflow): optimises a weir-type rating curve
+     ($O_t = C \cdot (h_t - h_{inv})^{1.5}$) against observed water levels;
+     the preferred method when a gauge record is available.
+   - Method 3 (inflow + outflow residual): partitions unexplained storage
+     changes into effective inflows or spill outflows; useful when gauged
+     inflows are known but the budget still does not close.
+3. **Understand surface temperature estimation**: an energy-balance model
+   integrates forward in time and is nudged toward observations via a
+   relaxation scheme (default $\tau = 3\,\text{days}$). Without observations
+   a linear air-temperature regression seeds the initial condition.
+4. **Trace the evaporation calculation** through three exported functions —
+   `sat_vapour_pressure()`, `latent_heat_flux()`, and `flux_to_evap()` — each
+   corresponding to a step in the bulk aerodynamic method.
+5. **Visualise and summarise evaporation** using `plot_output()` (variable
+   `"LKE_evprte"`), `plot_est_wbal()`, `plot_wbal()`, and `get_var()`.
 
 # References
 
-- Stefan, H. G., & Preud'homme, E. B. (2007). Stream temperature estimation 
-from air temperature. *JAWRA Journal of the American Water Resources 
-Association*, 29(1), 27-45.
+- Stefan, H. G., & Preud'homme, E. B. (1993). Stream temperature estimation
+  from air temperature. *JAWRA Journal of the American Water Resources
+  Association*, 29(1), 27–45.
+  <https://doi.org/10.1111/j.1752-1688.1993.tb01502.x>
