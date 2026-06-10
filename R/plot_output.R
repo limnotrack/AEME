@@ -70,7 +70,7 @@
 #' }
 #'
 
-plot_output <- function(aeme, model, var_sim = "HYD_temp", point_size = 2,
+plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
                         ens_n = 1, add_obs = TRUE, level = FALSE,
                         remove_spin_up = TRUE, print_plots = FALSE, 
                         var_lims = NULL, ylim = NULL, cumulative = FALSE, 
