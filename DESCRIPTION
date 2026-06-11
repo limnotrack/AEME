@@ -67,7 +67,7 @@ Remotes:
     github::aemon-j/GLM3r,
     github::aemon-j/GOTMr,
     github::aemon-j/LakeEnsemblR,
-    github::limnotrack/aemetools,
+    github::limnotrack/aemetools@dev,
     github::limnotrack/bathytools
 Config/checklist/communities: limnotrack
 Config/checklist/keywords: ecosystem; modelling
