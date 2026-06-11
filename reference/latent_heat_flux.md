@@ -1,8 +1,8 @@
-# Latent heat flux
+# Latent heat flux from a lake surface
 
 Calculates latent heat flux from a lake surface using the bulk
-aerodynamic method. Flux is capped at zero — only heat loss from the
-water is retained.
+aerodynamic method. Flux is capped at zero — only evaporative loss from
+the water is retained (condensation is excluded).
 
 ## Usage
 
@@ -32,6 +32,10 @@ latent_heat_flux(
 
   Numeric. Air vapour pressure (hPa).
 
+- prsttn:
+
+  Numeric. Atmospheric pressure (hPa). Default 981.9.
+
 - Ce:
 
   Numeric. Bulk transfer coefficient (Dalton number). Default 0.0013.
@@ -44,28 +48,28 @@ latent_heat_flux(
 
   Numeric. Latent heat of vaporisation (J/kg). Default 2453000.
 
-- P:
-
-  Numeric. Atmospheric pressure (hPa). Default 981.9.
-
 ## Value
 
-Numeric. Latent heat flux (W/m²), \<= 0.
+Numeric. Latent heat flux (W/m²), \\\leq 0\\.
+
+## Details
+
+The flux is calculated as: \$\$Q\_{lh} =
+\min\\\left(\frac{0.622}{P}\\C_e\\\rho\_{air}\\L_v\\U\\(e_a - e_s),\\
+0\right)\$\$
+
+where \\e_s\\ is the saturation vapour pressure at the water surface
+computed by
+[`sat_vapour_pressure`](https://limnotrack.com/reference/sat_vapour_pressure.md).
 
 ## See also
 
-[`sat_vapour_pressure()`](https://limnotrack.com/reference/sat_vapour_pressure.md),
-[`flux_to_evap()`](https://limnotrack.com/reference/flux_to_evap.md)
+[`sat_vapour_pressure`](https://limnotrack.com/reference/sat_vapour_pressure.md),
+[`flux_to_evap`](https://limnotrack.com/reference/flux_to_evap.md)
 
 ## Examples
 
 ``` r
 latent_heat_flux(Ts = 20, wndspd = 3, prvapr = 10)
-#> Error in latent_heat_flux(Ts = 20, wndspd = 3, prvapr = 10): could not find function "latent_heat_flux"
-
-# Vectorised over a data frame
-latent_heat_flux(Ts     = data$sst,
-                 wndspd = data$MET_wndspd,
-                 prvapr = data$MET_prvapr)
-#> Error in latent_heat_flux(Ts = data$sst, wndspd = data$MET_wndspd, prvapr = data$MET_prvapr): could not find function "latent_heat_flux"
+#> [1] -94.68515
 ```

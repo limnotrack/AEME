@@ -38,8 +38,6 @@ path <- "test_write"
 model_controls <- get_model_controls()
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
 model_controls = model_controls, ext_elev = 5)
-#> ℹ Detected regular timestep: 1 day(s).
-#> ℹ Detected regular timestep: 1 day(s).
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -50,7 +48,7 @@ model_controls = model_controls, ext_elev = 5)
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [4ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -61,9 +59,9 @@ model_controls = model_controls, ext_elev = 5)
 #> 
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-09 04:13:59]
-#> → GLM-AED running... [2026-06-09 04:13:59]
-#> ✔ GLM-AED run successful! [2026-06-09 04:14:00]
-#> ✔ Model run complete! [2026-06-09 04:14:00]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-11 04:34:10]
+#> → GLM-AED running... [2026-06-11 04:34:10]
+#> ✔ GLM-AED run successful! [2026-06-11 04:34:10]
+#> ✔ Model run complete! [2026-06-11 04:34:10]
 write_aeme_to_files(aeme, path)
 ```

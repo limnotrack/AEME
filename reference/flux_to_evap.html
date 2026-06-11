@@ -27,6 +27,7 @@ suitable for lake water balance calculations."><meta property="og:image" content
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
+    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -46,7 +47,7 @@ suitable for lake water balance calculations."><meta property="og:image" content
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Convert latent heat flux to evaporation depth</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/R/calc_water_balance.R" class="external-link"><code>R/calc_water_balance.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/40188-water-balance-approaches/R/calc_water_balance.R" class="external-link"><code>R/calc_water_balance.R</code></a></small>
       <div class="d-none name"><code>flux_to_evap.Rd</code></div>
     </div>
 
@@ -65,7 +66,7 @@ suitable for lake water balance calculations.</p>
 
 
 <dl><dt id="arg-qlh">Qlh<a class="anchor" aria-label="anchor" href="#arg-qlh"></a></dt>
-<dd><p>Numeric. Latent heat flux (W/m²), should be &lt;= 0.</p></dd>
+<dd><p>Numeric. Latent heat flux (W/m²), should be \(\leq 0\).</p></dd>
 
 
 <dt id="arg-lv">Lv<a class="anchor" aria-label="anchor" href="#arg-lv"></a></dt>
@@ -78,23 +79,23 @@ suitable for lake water balance calculations.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Numeric. Evaporation rate (m/day), &lt;= 0.</p>
+    <p>Numeric. Evaporation rate (m/day), \(\leq 0\).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The conversion is:
+$$E = \frac{Q_{lh}}{L_v\,\rho_w} \times 86400$$</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="latent_heat_flux.html">latent_heat_flux()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="latent_heat_flux.html">latent_heat_flux</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">flux_to_evap</span><span class="op">(</span><span class="op">-</span><span class="fl">50</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in flux_to_evap(-50):</span> could not find function "flux_to_evap"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.001761109</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Full pipeline</span></span></span>
-<span class="r-in"><span><span class="va">Qlh</span>  <span class="op">&lt;-</span> <span class="fu"><a href="latent_heat_flux.html">latent_heat_flux</a></span><span class="op">(</span>Ts <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">sst</span>, wndspd <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">MET_wndspd</span>, prvapr <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">MET_prvapr</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in latent_heat_flux(Ts = data$sst, wndspd = data$MET_wndspd, prvapr = data$MET_prvapr):</span> could not find function "latent_heat_flux"</span>
-<span class="r-in"><span><span class="va">evap</span> <span class="op">&lt;-</span> <span class="fu">flux_to_evap</span><span class="op">(</span><span class="va">Qlh</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in flux_to_evap(Qlh):</span> could not find function "flux_to_evap"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

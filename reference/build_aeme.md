@@ -137,8 +137,6 @@ aeme <- aeme |>
   build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
              ext_elev = 5)
 #> ✔ Created missing directory: D:\a\AEME\AEME\docs\reference\aeme
-#> ℹ Detected regular timestep: 1 day(s).
-#> ℹ Detected regular timestep: 1 day(s).
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -149,7 +147,7 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [6ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -167,8 +165,6 @@ aeme <- aeme |>
 aeme <- aeme |>
   build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
              ext_elev = 5, use_bgc = TRUE)
-#> ℹ Detected regular timestep: 1 day(s).
-#> ℹ Detected regular timestep: 1 day(s).
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -179,7 +175,7 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [10ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #> ℹ Correcting water balance using estimated outflows (method = 2).

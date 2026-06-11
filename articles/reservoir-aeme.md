@@ -522,9 +522,7 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp0kfQRU\reservoir
-#> ℹ Detected regular timestep: 1 day(s).
-#> ℹ Detected regular timestep: 1 day(s).
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpS84p5q\reservoir
 #> 
 #> 
 #> ── Calculating water balance ──
@@ -536,7 +534,7 @@ aeme <- build_aeme(
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [5ms]
 #> 
 #> 
 #> 
@@ -560,10 +558,10 @@ aeme <- build_aeme(
 ``` r
 
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-09 04:28:24]
-#> → GLM-AED running... [2026-06-09 04:28:24]
-#> ✔ GLM-AED run successful! [2026-06-09 04:28:24]
-#> ✔ Model run complete! [2026-06-09 04:28:24]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-11 04:41:13]
+#> → GLM-AED running... [2026-06-11 04:41:13]
+#> ✔ GLM-AED run successful! [2026-06-11 04:41:14]
+#> ✔ Model run complete! [2026-06-11 04:41:14]
 ```
 
 ## View the output

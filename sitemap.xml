@@ -6,6 +6,7 @@
 <url><loc>https://limnotrack.com/articles/intro-aeme.html</loc></url>
 <url><loc>https://limnotrack.com/articles/lernzmp-aeme.html</loc></url>
 <url><loc>https://limnotrack.com/articles/reservoir-aeme.html</loc></url>
+<url><loc>https://limnotrack.com/articles/rotoehu-water-balance.html</loc></url>
 <url><loc>https://limnotrack.com/articles/setup-new-lake.html</loc></url>
 <url><loc>https://limnotrack.com/authors.html</loc></url>
 <url><loc>https://limnotrack.com/CODE_OF_CONDUCT.html</loc></url>
@@ -62,6 +63,7 @@
 <url><loc>https://limnotrack.com/reference/estimate_zone_fluxes.html</loc></url>
 <url><loc>https://limnotrack.com/reference/expand_met.html</loc></url>
 <url><loc>https://limnotrack.com/reference/extrap_hyps.html</loc></url>
+<url><loc>https://limnotrack.com/reference/flux_to_evap.html</loc></url>
 <url><loc>https://limnotrack.com/reference/generate_hypsograph.html</loc></url>
 <url><loc>https://limnotrack.com/reference/generate_var_map_code.html</loc></url>
 <url><loc>https://limnotrack.com/reference/get_aed_sed_const2d_param.html</loc></url>
@@ -114,6 +116,7 @@
 <url><loc>https://limnotrack.com/reference/lake-set.html</loc></url>
 <url><loc>https://limnotrack.com/reference/lake.html</loc></url>
 <url><loc>https://limnotrack.com/reference/lake_obs_to_aeme.html</loc></url>
+<url><loc>https://limnotrack.com/reference/latent_heat_flux.html</loc></url>
 <url><loc>https://limnotrack.com/reference/list_models.html</loc></url>
 <url><loc>https://limnotrack.com/reference/list_mod_obs_vars.html</loc></url>
 <url><loc>https://limnotrack.com/reference/list_obs_vars.html</loc></url>
@@ -155,6 +158,7 @@
 <url><loc>https://limnotrack.com/reference/plot_wbal_annual.html</loc></url>
 <url><loc>https://limnotrack.com/reference/plot_wbal_comp.html</loc></url>
 <url><loc>https://limnotrack.com/reference/plot_wbal_summaries.html</loc></url>
+<url><loc>https://limnotrack.com/reference/plot_wbal_ts.html</loc></url>
 <url><loc>https://limnotrack.com/reference/plot_weir_calibration.html</loc></url>
 <url><loc>https://limnotrack.com/reference/plot_wlev.html</loc></url>
 <url><loc>https://limnotrack.com/reference/plot_zoops.html</loc></url>
@@ -183,6 +187,7 @@
 <url><loc>https://limnotrack.com/reference/run_aeme.html</loc></url>
 <url><loc>https://limnotrack.com/reference/run_dy_cd.html</loc></url>
 <url><loc>https://limnotrack.com/reference/run_glm_aed_diagnostics.html</loc></url>
+<url><loc>https://limnotrack.com/reference/sat_vapour_pressure.html</loc></url>
 <url><loc>https://limnotrack.com/reference/set_aed_sed_const2d.html</loc></url>
 <url><loc>https://limnotrack.com/reference/set_aed_totals.html</loc></url>
 <url><loc>https://limnotrack.com/reference/set_glm_aed_models.html</loc></url>

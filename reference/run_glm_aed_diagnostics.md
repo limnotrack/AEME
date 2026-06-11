@@ -69,8 +69,6 @@ model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
-#> ℹ Detected regular timestep: 1 day(s).
-#> ℹ Detected regular timestep: 1 day(s).
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -81,7 +79,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [11ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -140,10 +138,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 
 aeme <- run_aeme(aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-09 04:13:40]
-#> → GLM-AED running... [2026-06-09 04:13:40]
-#> ✔ GLM-AED run successful! [2026-06-09 04:13:43]
-#> ✔ Model run complete! [2026-06-09 04:13:43]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-11 04:33:58]
+#> → GLM-AED running... [2026-06-11 04:33:58]
+#> ✔ GLM-AED run successful! [2026-06-11 04:34:00]
+#> ✔ Model run complete! [2026-06-11 04:34:00]
 out <- run_glm_aed_diagnostics(aeme = aeme)
 #> Requesting 86 variables from model output...  (sediment zone _Z variables are
 #> optional; missing ones are skipped)

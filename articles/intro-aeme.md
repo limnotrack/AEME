@@ -264,15 +264,15 @@ The columns for the parameters data.frame are:
 - value - Value of the parameter.
 
 - min - Minimum range of the parameter. This is used in the
-  [`aemetools::calib_aeme()`](https://limnotrack.github.io/aemetools/reference/calib_aeme.html)
+  [`aemetools::calib_aeme()`](https://limnotrack.com/aemetools/reference/calib_aeme.html)
   and
-  [`aemetools::sa_aeme()`](https://limnotrack.github.io/aemetools/reference/sa_aeme.html)
+  [`aemetools::sa_aeme()`](https://limnotrack.com/aemetools/reference/sa_aeme.html)
   function.
 
 - max - Maximum range of the parameter. This is used in the
-  [`aemetools::calib_aeme()`](https://limnotrack.github.io/aemetools/reference/calib_aeme.html)
+  [`aemetools::calib_aeme()`](https://limnotrack.com/aemetools/reference/calib_aeme.html)
   and
-  [`aemetools::sa_aeme()`](https://limnotrack.github.io/aemetools/reference/sa_aeme.html)
+  [`aemetools::sa_aeme()`](https://limnotrack.com/aemetools/reference/sa_aeme.html)
   function.
 
 - group - Phytoplankton group. This is only used for GOTM-WET

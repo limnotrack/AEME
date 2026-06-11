@@ -102,6 +102,8 @@
   variables suitable for all models
 - [`extrap_hyps()`](https://limnotrack.com/reference/extrap_hyps.md) :
   Extend hypsometry to a greater elevation using linear extrapolation
+- [`flux_to_evap()`](https://limnotrack.com/reference/flux_to_evap.md) :
+  Convert latent heat flux to evaporation depth
 - [`generate_hypsograph()`](https://limnotrack.com/reference/generate_hypsograph.md)
   : Generate a hypsograph curve
 - [`generate_var_map_code()`](https://limnotrack.com/reference/generate_var_map_code.md)
@@ -208,6 +210,8 @@
   slot of an Aeme object
 - [`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md)
   : Format lake observation data to AEME format
+- [`latent_heat_flux()`](https://limnotrack.com/reference/latent_heat_flux.md)
+  : Latent heat flux from a lake surface
 - [`list_models()`](https://limnotrack.com/reference/list_models.md) :
   Get a vector of available models
 - [`list_mod_obs_vars()`](https://limnotrack.com/reference/list_mod_obs_vars.md)
@@ -287,9 +291,11 @@
 - [`plot_wbal_annual()`](https://limnotrack.com/reference/plot_wbal_annual.md)
   : Plot annual water balance components
 - [`plot_wbal_comp()`](https://limnotrack.com/reference/plot_wbal_comp.md)
-  : Plot Water Balance Comparison
+  : Plot Water Balance Components
 - [`plot_wbal_summaries()`](https://limnotrack.com/reference/plot_wbal_summaries.md)
   : Plot Water Balance Summaries
+- [`plot_wbal_ts()`](https://limnotrack.com/reference/plot_wbal_ts.md) :
+  Plot Water Balance Components as Timeseries
 - [`plot_weir_calibration()`](https://limnotrack.com/reference/plot_weir_calibration.md)
   : Visualise calibrated weir parameters (C, h_inv) from
   calc_water_balance().
@@ -353,6 +359,8 @@
   Run AEME models
 - [`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)
   : Run GLM-AED diagnostics
+- [`sat_vapour_pressure()`](https://limnotrack.com/reference/sat_vapour_pressure.md)
+  : Saturation vapour pressure
 - [`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
   : Setup AED aed_sed_const2d sediment model parameters
 - [`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md)

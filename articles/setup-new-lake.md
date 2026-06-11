@@ -195,9 +195,9 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-06-09 04:28:41] job submitted
-#> INFO [2026-06-09 04:28:41] downloading
-#> INFO [2026-06-09 04:28:43] extracting
+#> INFO [2026-06-11 04:42:54] job submitted
+#> INFO [2026-06-11 04:42:54] downloading
+#> INFO [2026-06-11 04:42:55] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -554,7 +554,6 @@ path <- "aeme"
 # Build ensemble
 aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
                    path = path)
-#> ℹ Detected regular timestep: 1 day(s).
 #> ✔ `MET_wnduvv`: converted from km/h to m/s.
 #> 
 #> 
@@ -567,7 +566,7 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [10ms]
+#> ✔ Estimating surface water temperature [7ms]
 #> 
 #> 
 #> 
@@ -701,14 +700,14 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-09 04:29:08]
-#> → DYRESM-CAEDYM running... [2026-06-09 04:29:08]
-#> ✔ DYRESM-CAEDYM run successful! [2026-06-09 04:29:35]
-#> → GLM-AED running... [2026-06-09 04:29:35]
-#> ✔ GLM-AED run successful! [2026-06-09 04:29:35]
-#> → GOTM-WET running... [2026-06-09 04:29:35]
-#> ✔ GOTM-WET run successful! [2026-06-09 04:29:36]
-#> ✔ Model run complete! [2026-06-09 04:29:36]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-11 04:43:09]
+#> → DYRESM-CAEDYM running... [2026-06-11 04:43:09]
+#> ✔ DYRESM-CAEDYM run successful! [2026-06-11 04:43:24]
+#> → GLM-AED running... [2026-06-11 04:43:24]
+#> ✔ GLM-AED run successful! [2026-06-11 04:43:24]
+#> → GOTM-WET running... [2026-06-11 04:43:24]
+#> ✔ GOTM-WET run successful! [2026-06-11 04:43:24]
+#> ✔ Model run complete! [2026-06-11 04:43:24]
 #> ! The following variables are not available in model dy_cd: LKE_photic
 #> ! The following variables are not available in model gotm_wet: CHM_ph
 ```

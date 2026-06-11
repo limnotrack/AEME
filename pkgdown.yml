@@ -7,8 +7,9 @@ articles:
   intro-aeme: intro-aeme.html
   articles/lernzmp-aeme: lernzmp-aeme.html
   articles/reservoir-aeme: reservoir-aeme.html
+  articles/rotoehu-water-balance: rotoehu-water-balance.html
   setup-new-lake: setup-new-lake.html
-last_built: 2026-06-09T04:11Z
+last_built: 2026-06-11T04:32Z
 urls:
   reference: https://limnotrack.com/reference
   article: https://limnotrack.com/articles

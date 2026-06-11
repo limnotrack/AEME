@@ -23,7 +23,7 @@ Numeric. Saturation vapour pressure (hPa).
 
 ``` r
 sat_vapour_pressure(20)
-#> Error in sat_vapour_pressure(20): could not find function "sat_vapour_pressure"
+#> [1] 23.37685
 sat_vapour_pressure(c(15, 20, 25))
-#> Error in sat_vapour_pressure(c(15, 20, 25)): could not find function "sat_vapour_pressure"
+#> [1] 17.04927 23.37685 31.66942
 ```
