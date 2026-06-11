@@ -25,7 +25,7 @@ add_hypsograph <- function(aeme = NULL, hypsograph = NULL,
   
   if (!is.null(aeme)) {
     # Check if aeme is a Aeme object
-    aeme <- check_aeme(aeme)
+    check_aeme(aeme)
     
     lke <- lake(aeme)
     inp <- input(aeme)

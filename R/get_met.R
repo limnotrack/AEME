@@ -6,8 +6,8 @@
 #' @export
 
 get_met <- function(aeme) {
+  check_aeme(aeme)
   inp <- aeme |> 
-    check_aeme() |> 
     input()
   met <- inp[["meteo"]]
   if (is.null(met)) {

@@ -15,8 +15,8 @@
 
 remove_inflow <- function(aeme, inflow_id = NULL, all = FALSE) {
   # Check that aeme is an Aeme object
+  check_aeme(aeme)
   inf <- aeme |>
-    check_aeme() |>
     inflows()
   
   if (all && !is.null(inflow_id)) {

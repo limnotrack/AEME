@@ -23,8 +23,8 @@
 #' @export
 
 set_wbal_param <- function(aeme, C, h_inv, params = NULL) {
+  check_aeme(aeme)
   wbal <- aeme |> 
-    check_aeme() |>
     water_balance()
   
   if (!is.null(params)) {
