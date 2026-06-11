@@ -121,7 +121,8 @@ bathy_raster <- rasterise_bathy(shoreline = shoreline,
 ```{r hypsograph-from-raster}
 lake_elev <- max(contours$elevation_m)
 upd_hyps  <- bathy_to_hypso(bathy_raster) |>
-  dplyr::mutate(elev = lake_elev + depth)
+  dplyr::mutate(elev = lake_elev + depth) |> 
+  extrap_hyps(z_range = 0.05, ext_elev = 3)
 
 ggplot(orig_hyps, aes(x = area, y = depth)) +
   geom_line(colour = "#0065a9", linewidth = 0.8) +
@@ -211,17 +212,19 @@ It simultaneously constrains the water balance *and* provides a physically
 meaningful outflow estimate. If the lake has a well-defined spillway or outlet,
 the fitted $h_{inv}$ often corresponds closely to the known sill elevation.
 
-```{r wb-method-2, message=FALSE}
+```{r}
+#| label: wb-method-2
+#| message: FALSE
+#| height: 8
 path2 <- file.path(tempdir(), "rotoehu_wb2")
 
 aeme_wb2 <- aeme |>
-  set_time(start = "2010-06-01", spin_up = 365) |>
-  build_aeme(model = model, path = path2, use_bgc = FALSE, wb_method = 2) |>
-  run_aeme(model = model, path = path2)
+  build_aeme(model = model, path = path2, wb_method = 2) |>
+  run_aeme()
 
 # Plot weir calibration results
 aeme_wb2 |> 
-  plot_wlev()
+  plot_weir_calibration()
 ```
 
 ## Method 3 — Inflow and outflow as residuals
@@ -241,13 +244,15 @@ does not close — for example when significant groundwater exchange or ungauged
 catchment runoff is suspected. Comparing the residual time series across seasons
 or flow events can help identify the likely source of the discrepancy.
 
-```{r wb-method-3}
+```{r}
+#| label: wb-method-3
+#| message: FALSE
+#| height: 8
 path3 <- file.path(tempdir(), "rotoehu_wb3")
 
 aeme_wb3 <- aeme |>
-  set_time(start = "2010-06-01", spin_up = 365) |>
-  build_aeme(model = model, path = path3, use_bgc = FALSE, wb_method = 3) |>
-  run_aeme(model = model, path = path3)
+  build_aeme(model = model, path = path3, wb_method = 3) |>
+  run_aeme()
 ```
 
 # Lake surface temperature
