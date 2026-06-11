@@ -112,13 +112,15 @@ add_hypsograph <- function(aeme = NULL, hypsograph = NULL,
     lke$depth <- init_depth
     lke$elevation <- surface$elev
     
-    init_prof <- inp$init_profile |> 
-      dplyr::filter(depth <= init_depth) 
-    if (nrow(init_prof) <= 1) {
-      init_prof <- data.frame(depth = c(0, init_depth),
-                              temperature = c(10, 10),
-                              salt = c(0, 0))
-      inp$init_profile <- init_prof
+    if (!is.null(inp[["init_profile"]])) {
+      init_prof <- inp[["init_profile"]] |> 
+        dplyr::filter(depth <= init_depth) 
+      if (nrow(init_prof) <= 1) {
+        init_prof <- data.frame(depth = c(0, init_depth),
+                                temperature = c(10, 10),
+                                salt = c(0, 0))
+        inp[["init_profile"]] <- init_prof
+      }
     }
     lake(aeme) <- lke
     input(aeme) <- inp
