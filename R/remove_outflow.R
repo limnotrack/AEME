@@ -12,8 +12,8 @@
 
 remove_outflow <- function(aeme, outflow_id = NULL, all = FALSE) {
   # Check that aeme is an Aeme object
+  check_aeme(aeme)
   outf <- aeme |>
-    check_aeme() |>
     outflows()
   
   if (all && !is.null(outflow_id)) {

@@ -10,8 +10,8 @@
 #'
 
 add_met <- function(aeme, met) {
+  check_aeme(aeme)
   inp <- aeme |> 
-    check_aeme() |> 
     input()
   
   met <- check_met(met)

@@ -50,7 +50,8 @@ get_wbal_components <- function(
     wb <- wb |>
       dplyr::mutate(
         HYD_flow = cumsum(HYD_flow),
-        outflow  = cumsum(outflow),
+        spill_outflow = cumsum(spill_outflow),
+        HYD_outflow = cumsum(HYD_outflow),
         rain     = cumsum(rain),
         evap_m3  = cumsum(evap_m3),
         evap_flux = cumsum(evap_flux)

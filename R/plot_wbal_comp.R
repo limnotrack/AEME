@@ -1,4 +1,4 @@
-#' Plot Water Balance Comparison
+#' Plot Water Balance Components
 #'
 #' @inheritParams plot_wbal_summaries
 #'

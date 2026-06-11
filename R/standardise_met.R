@@ -127,10 +127,10 @@ standardise_met <- function(met, verbose = TRUE) {
       class = "aeme_inform_met_timestep"
     )
   } else {
-    cli::cli_inform(
-      c("i" = "Detected regular timestep: {timestep_label}."),
-      class = "aeme_inform_met_timestep"
-    )
+    # cli::cli_inform(
+    #   c("i" = "Detected regular timestep: {timestep_label}."),
+    #   class = "aeme_inform_met_timestep"
+    # )
   }
 }
 

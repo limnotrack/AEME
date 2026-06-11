@@ -476,7 +476,7 @@ test_that("Aeme can be written and read from files", {
                      model_controls = model_controls, ext_elev = 3) |>
     run_aeme()
   
-  write_path <- "test_write"
+  write_path <- file.path(tempdir(), "test_write")
   out_files <- write_aeme_to_files(aeme = aeme, path = write_path,
                                    include_output = TRUE)
   testthat::expect_true(length(out_files) > 0)

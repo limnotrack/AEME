@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_wbal_comp.R
 \name{plot_wbal_comp}
 \alias{plot_wbal_comp}
-\title{Plot Water Balance Comparison}
+\title{Plot Water Balance Components}
 \usage{
 plot_wbal_comp(aeme)
 }
@@ -14,5 +14,5 @@ model output \code{run_aeme()}}
 ggplot object
 }
 \description{
-Plot Water Balance Comparison
+Plot Water Balance Components
 }

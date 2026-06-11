@@ -22,7 +22,7 @@
 #' plot_output(aeme, backend = "base")
 #' }
 
-plot_output_base <- function(aeme, model, var_sim = "HYD_temp", ens_n = 1,
+plot_output_base <- function(aeme, var_sim = "HYD_temp", model, ens_n = 1,
                              var_lims = NULL, ylim = NULL,
                              plot_width = 400, plot_height = 200,
                              bar_width = 0.08) {

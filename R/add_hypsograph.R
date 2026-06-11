@@ -25,7 +25,7 @@ add_hypsograph <- function(aeme = NULL, hypsograph = NULL,
   
   if (!is.null(aeme)) {
     # Check if aeme is a Aeme object
-    aeme <- check_aeme(aeme)
+    check_aeme(aeme)
     
     lke <- lake(aeme)
     inp <- input(aeme)
@@ -101,7 +101,28 @@ add_hypsograph <- function(aeme = NULL, hypsograph = NULL,
     return(hypsograph)
   } else {
     # Add hypsograph to input
+    init_depth <- abs(min(hypsograph[["depth"]]))
+    
+    surface <- hypsograph |> 
+      dplyr::filter(depth == 0) 
+    
     inp$hypsograph <- hypsograph
+    inp$init_depth <- init_depth
+    lke$area <- surface$area
+    lke$depth <- init_depth
+    lke$elevation <- surface$elev
+    
+    if (!is.null(inp[["init_profile"]])) {
+      init_prof <- inp[["init_profile"]] |> 
+        dplyr::filter(depth <= init_depth) 
+      if (nrow(init_prof) <= 1) {
+        init_prof <- data.frame(depth = c(0, init_depth),
+                                temperature = c(10, 10),
+                                salt = c(0, 0))
+        inp[["init_profile"]] <- init_prof
+      }
+    }
+    lake(aeme) <- lke
     input(aeme) <- inp
     return(aeme)
   }

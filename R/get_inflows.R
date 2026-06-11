@@ -12,8 +12,8 @@
 #' @export
 
 get_inflows <- function(aeme, return_df = FALSE) {
+  check_aeme(aeme)
   inf <- aeme |> 
-    check_aeme() |> 
     inflows() 
   inf_list <- inf[["data"]]
   if (!return_df) {
