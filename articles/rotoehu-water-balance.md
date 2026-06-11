@@ -171,12 +171,12 @@ updated hypsograph:
 bathy_raster <- rasterise_bathy(shoreline = shoreline,
                                 contours  = contours,
                                 res = 8, crs = 2193)
-#> Generating depth points... [2026-06-11 04:41:31]
+#> Generating depth points... [2026-06-11 21:52:35]
 #> Warning: large number of points for interpolation (76516)
-#> Finished! [2026-06-11 04:41:34]
-#> Interpolating to raster... [2026-06-11 04:41:34]
+#> Finished! [2026-06-11 21:52:41]
+#> Interpolating to raster... [2026-06-11 21:52:41]
 #> Adjusting depths >= 0 to  -0.4 m
-#> Finished! [2026-06-11 04:41:42]
+#> Finished! [2026-06-11 21:52:52]
 ```
 
 ![](rotoehu-water-balance_files/figure-html/rasterise-contours-1.png)
@@ -337,7 +337,6 @@ path3 <- file.path(tempdir(), "rotoehu_wb3")
 aeme_wb3 <- aeme |>
   build_aeme(model = model, path = path3, wb_method = 3) |>
   run_aeme()
-#> Warning: ! No model output loaded as all model runs failed.
 ```
 
 ## Lake surface temperature
