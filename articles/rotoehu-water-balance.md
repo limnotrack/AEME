@@ -171,12 +171,12 @@ updated hypsograph:
 bathy_raster <- rasterise_bathy(shoreline = shoreline,
                                 contours  = contours,
                                 res = 8, crs = 2193)
-#> Generating depth points... [2026-06-11 23:33:03]
+#> Generating depth points... [2026-06-12 02:58:59]
 #> Warning: large number of points for interpolation (76516)
-#> Finished! [2026-06-11 23:33:09]
-#> Interpolating to raster... [2026-06-11 23:33:09]
+#> Finished! [2026-06-12 02:59:05]
+#> Interpolating to raster... [2026-06-12 02:59:05]
 #> Adjusting depths >= 0 to  -0.4 m
-#> Finished! [2026-06-11 23:33:21]
+#> Finished! [2026-06-12 02:59:16]
 ```
 
 ![](rotoehu-water-balance_files/figure-html/rasterise-contours-1.png)
