@@ -475,6 +475,8 @@ test_that("Aeme can be written and read from files", {
   aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed", 
                      model_controls = model_controls, ext_elev = 3) |>
     run_aeme()
+  Sys.sleep(1)
+  aeme <- run_aeme(aeme)
   
   write_path <- file.path(tempdir(), "test_write")
   out_files <- write_aeme_to_files(aeme = aeme, path = write_path,
