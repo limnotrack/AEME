@@ -35,7 +35,7 @@ output for the selected lake(s) as ".rds" files and a lake metadata file
 # Using LERNZmp output with AEME
 
 Once you have downloaded the LERNZmp model output and unzipped the folder, you
-should a similar file structure to the following:
+should have a similar file structure to the following:
 
 ```{r}
 #| label: lernzmp-file-structure
