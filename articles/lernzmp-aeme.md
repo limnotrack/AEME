@@ -19,7 +19,7 @@ a lake metadata file “LERNZmp_lake_metadata.csv”.
 ## Using LERNZmp output with AEME
 
 Once you have downloaded the LERNZmp model output and unzipped the
-folder, you should a similar file structure to the following:
+folder, you should have a similar file structure to the following:
 
 ``` r
 

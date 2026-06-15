@@ -138,10 +138,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 
 aeme <- run_aeme(aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-12 02:45:05]
-#> → GLM-AED running... [2026-06-12 02:45:05]
-#> ✔ GLM-AED run successful! [2026-06-12 02:45:08]
-#> ✔ Model run complete! [2026-06-12 02:45:08]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-15 21:19:38]
+#> → GLM-AED running... [2026-06-15 21:19:38]
+#> ✔ GLM-AED run successful! [2026-06-15 21:19:41]
+#> ✔ Model run complete! [2026-06-15 21:19:41]
 out <- run_glm_aed_diagnostics(aeme = aeme)
 #> Requesting 86 variables from model output...  (sediment zone _Z variables are
 #> optional; missing ones are skipped)
@@ -169,7 +169,7 @@ out <- run_glm_aed_diagnostics(aeme = aeme)
 #> │ nitrogen_state         │ NIT_no2       │ NO2 (mmol N/m3)           │    0   │ 0.0196 │ 0.0401 │ 0.141   │ 0.0413 │ ok         │
 #> │ nitrogen_organic       │ OGM_don       │ DON (mmol N/m3)           │ 0.00485│ 0.0865 │ 0.127  │ 0.283   │ 0.0754 │ ok         │
 #> │ nitrogen_organic       │ OGM_donr      │ Refractory DON            │ 0.528  │ 1.32   │ 1.79   │ 8.95    │ 1.53   │ ok         │
-#> │ nitrogen_organic       │ OGM_pon       │ PON (mmol N/m3)           │ 0.00273│ 0.592  │ 0.945  │ 2.58    │ 0.867  │ ok         │
+#> │ nitrogen_organic       │ OGM_pon       │ PON (mmol N/m3)           │ 0.00273│ 0.592  │ 0.946  │ 2.58    │ 0.868  │ ok         │
 #> │nitrogen_transformations│ NIT_anammox   │ Anammox                   │    0   │ 5e-05  │0.000957│ 0.00497 │ 0.00135│ ok         │
 #> │nitrogen_transformations│ NIT_denit     │ Denitrification           │    0   │    0   │    0   │    0    │    0   │ ok         │
 #> │nitrogen_transformations│ NIT_dnra      │ DNRA                      │    0   │    0   │    0   │    0    │    0   │ ok         │
@@ -195,15 +195,15 @@ out <- run_glm_aed_diagnostics(aeme = aeme)
 #> │ phyto_biomass          │ PHY_tchla     │ Total chl-a (ug/L)        │ 0.524  │ 3.46   │ 5.05   │ 14.9    │ 4.19   │ ok         │
 #> │ phyto_biomass          │ PHY_tphy      │ Total phyto (mmol C/m3)   │ 1.85   │ 11.5   │ 16.8   │ 49.8    │   14   │ ok         │
 #> │ phyto_stoichiometry    │ PHY_cyano_NtoP│ Cyano N:P                 │ 26.2   │ 49.4   │ 50.6   │ 99.5    │  9.5   │ ok         │
-#> │ phyto_stoichiometry    │PHY_diatom_NtoP│ Diatom N:P                │ 29.9   │ 54.9   │ 54.1   │ 82.8    │ 8.25   │ ok         │
+#> │ phyto_stoichiometry    │PHY_diatom_NtoP│ Diatom N:P                │ 30.1   │   55   │ 54.2   │ 82.8    │ 8.22   │ ok         │
 #> │ phyto_stoichiometry    │ PHY_green_NtoP│ Green N:P                 │ 27.9   │ 45.7   │   47   │  109    │   10   │OUT OF RANGE│
 #> │ phyto_limitation       │ PHY_cyano_fI  │ Cyano fI                  │ 0.011  │ 0.248  │ 0.237  │ 0.342   │ 0.0626 │ ok         │
 #> │ phyto_limitation       │ PHY_cyano_fNit│ Cyano fN                  │    0   │ 0.961  │ 0.936  │ 0.998   │ 0.0909 │ ok         │
-#> │ phyto_limitation       │ PHY_cyano_fPho│ Cyano fP                  │    0   │ 0.223  │ 0.21   │ 0.615   │ 0.154  │ ok         │
+#> │ phyto_limitation       │ PHY_cyano_fPho│ Cyano fP                  │    0   │ 0.222  │ 0.21   │ 0.615   │ 0.154  │ ok         │
 #> │ phyto_limitation       │ PHY_cyano_fT  │ Cyano fT                  │ 0.462  │ 0.866  │ 0.828  │ 1.06    │ 0.157  │ ok         │
 #> │ phyto_limitation       │ PHY_diatom_fI │ Diatom fI                 │ 0.0263 │ 0.325  │ 0.314  │ 0.425   │ 0.0677 │ ok         │
 #> │ phyto_limitation       │PHY_diatom_fNit│ Diatom fN                 │ 0.00811│ 0.948  │ 0.927  │ 0.998   │ 0.0766 │ ok         │
-#> │ phyto_limitation       │PHY_diatom_fPho│ Diatom fP                 │    0   │ 0.124  │ 0.125  │ 0.586   │ 0.121  │ ok         │
+#> │ phyto_limitation       │PHY_diatom_fPho│ Diatom fP                 │    0   │ 0.126  │ 0.125  │ 0.586   │ 0.122  │ ok         │
 #> │ phyto_limitation       │ PHY_diatom_fT │ Diatom fT                 │ 0.664  │    1   │ 0.96   │    1    │ 0.0572 │ ok         │
 #> │ phyto_limitation       │ PHY_green_fI  │ Green fI                  │ 0.011  │ 0.248  │ 0.237  │ 0.342   │ 0.0626 │ ok         │
 #> │ phyto_limitation       │ PHY_green_fNit│ Green fN                  │ 0.0142 │ 0.992  │ 0.952  │    1    │ 0.079  │ ok         │
@@ -212,7 +212,7 @@ out <- run_glm_aed_diagnostics(aeme = aeme)
 #> │ phyto_fluxes           │ PHY_gpp       │ GPP                       │    0   │ 0.571  │ 0.849  │ 4.24    │ 0.786  │ ok         │
 #> │ phyto_fluxes           │ PHY_ncp       │ NCP                       │ -0.0659│ 0.459  │ 0.735  │    4    │ 0.737  │ ok         │
 #> │ phyto_fluxes           │ PHY_set       │ Sedimentation             │ -1.71  │ -0.376 │ -0.563 │ -0.147  │ 0.425  │ ok         │
-#> │ phyto_fluxes           │ PHY_upt_nh4   │ NH4 uptake                │ 0.00536│ 0.0226 │ 0.0335 │ 0.16    │ 0.0306 │ ok         │
+#> │ phyto_fluxes           │ PHY_upt_nh4   │ NH4 uptake                │ 0.00537│ 0.0226 │ 0.0335 │ 0.16    │ 0.0305 │ ok         │
 #> │ phyto_fluxes           │ PHY_upt_no3   │ NO3 uptake                │    0   │    0   │7.11e-09│ 2.38e-06│ 1.3e-07│ ok         │
 #> │ phyto_fluxes           │ PHY_upt_po4   │ PO4 uptake                │    0   │ 0.00026│0.000389│ 0.00614 │0.000568│ ok         │
 #> │ sedflux_oxygen_Z       │ OXY_oxy_atm_Z │ Atm O2 flux (per zone)    │    0   │    0   │    0   │    0    │    0   │ ok         │
@@ -229,7 +229,7 @@ out <- run_glm_aed_diagnostics(aeme = aeme)
 #> │ sedflux_phosphorus_Z   │ OGM_don_swi_Z │ DON SWI flux (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │
 #> │ sedflux_phosphorus_Z   │ OGM_dop_swi_Z │ DOP SWI flux (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │
 #> │ sedflux_phosphorus_Z   │ OGM_poc_swi_Z │ POC SWI flux (per zone)   │ -6.15  │ -0.642 │ -1.27  │ -0.00444│ 1.44   │ ok         │
-#> │ sedflux_phosphorus_Z   │ OGM_pon_swi_Z │ PON SWI flux (per zone)   │ -0.985 │ -0.0925│ -0.193 │-0.000271│ 0.231  │ ok         │
+#> │ sedflux_phosphorus_Z   │ OGM_pon_swi_Z │ PON SWI flux (per zone)   │ -0.985 │ -0.0926│ -0.193 │-0.000271│ 0.231  │ ok         │
 #> │ sedflux_phosphorus_Z   │ OGM_pop_swi_Z │ POP SWI flux (per zone)   │ -0.0236│-0.00288│-0.00517│-3.74e-05│ 0.00559│ ok         │
 #> │ sedflux_phosphorus_Z   │ PHS_frp_dsf_Z │ FRP SWI flux (per zone)   │0.000325│ 0.00116│ 0.0111 │ 0.0824  │ 0.021  │ ok         │
 #> │ sedflux_phosphorus_Z   │ SDF_Fsed_frp_Z│ SDF FRP flux (per zone)   │ 0.0259 │ 0.0647 │ 0.0647 │ 0.103   │ 0.0388 │ ok         │
@@ -240,8 +240,8 @@ out <- run_glm_aed_diagnostics(aeme = aeme)
 #> │ sedflux_organic_Z      │ OGM_ton_sed_Z │ TON sed mass (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │
 #> │ sedflux_organic_Z      │ OGM_top_sed_Z │ TOP sed mass (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │
 #> │ sedflux_organic_Z      │PHY_phy_swi_c_Z│ Phyto SWI C (per zone)    │ -18.1  │ -2.45  │ -3.83  │ -0.308  │ 4.21   │ ok         │
-#> │ sedflux_organic_Z      │PHY_phy_swi_n_Z│ Phyto SWI N (per zone)    │ -1.26  │ -0.17  │ -0.266 │ -0.0215 │ 0.293  │ ok         │
+#> │ sedflux_organic_Z      │PHY_phy_swi_n_Z│ Phyto SWI N (per zone)    │ -1.26  │ -0.17  │ -0.266 │ -0.0216 │ 0.293  │ ok         │
 #> │ sedflux_organic_Z      │PHY_phy_swi_p_Z│ Phyto SWI P (per zone)    │ -0.0228│-0.00402│-0.00584│-0.000991│ 0.00502│ ok         │
-#> │ sedflux_silica_Z       │ SIL_dsf_rsi_Z │ Si SWI flux (per zone)    │ 0.00233│ 0.00423│ 0.0418 │ 0.593   │ 0.0978 │ ok         │
+#> │ sedflux_silica_Z       │ SIL_dsf_rsi_Z │ Si SWI flux (per zone)    │ 0.00233│ 0.00423│ 0.0418 │ 0.594   │ 0.0978 │ ok         │
 #> └────────────────────────┴───────────────┴───────────────────────────┴────────┴────────┴────────┴─────────┴────────┴────────────┘
 ```

@@ -195,9 +195,189 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-06-12 03:01:27] job submitted
-#> INFO [2026-06-12 03:01:27] downloading
-#> INFO [2026-06-12 03:01:29] extracting
+#> INFO [2026-06-15 21:34:33] job submitted
+#> INFO [2026-06-15 21:34:37] job updated
+#> INFO [2026-06-15 21:34:41] job updated
+#> INFO [2026-06-15 21:34:46] job updated
+#> INFO [2026-06-15 21:34:50] job updated
+#> INFO [2026-06-15 21:34:55] job updated
+#> INFO [2026-06-15 21:34:59] job updated
+#> INFO [2026-06-15 21:35:03] job updated
+#> INFO [2026-06-15 21:35:08] job updated
+#> INFO [2026-06-15 21:35:12] job updated
+#> INFO [2026-06-15 21:35:17] job updated
+#> INFO [2026-06-15 21:35:21] job updated
+#> INFO [2026-06-15 21:35:25] job updated
+#> INFO [2026-06-15 21:35:29] job updated
+#> INFO [2026-06-15 21:35:34] job updated
+#> INFO [2026-06-15 21:35:38] job updated
+#> INFO [2026-06-15 21:35:43] job updated
+#> INFO [2026-06-15 21:35:47] job updated
+#> INFO [2026-06-15 21:35:52] job updated
+#> INFO [2026-06-15 21:35:56] job updated
+#> INFO [2026-06-15 21:36:00] job updated
+#> INFO [2026-06-15 21:36:04] job updated
+#> INFO [2026-06-15 21:36:09] job updated
+#> INFO [2026-06-15 21:36:13] job updated
+#> INFO [2026-06-15 21:36:17] job updated
+#> INFO [2026-06-15 21:36:22] job updated
+#> INFO [2026-06-15 21:36:26] job updated
+#> INFO [2026-06-15 21:36:30] job updated
+#> INFO [2026-06-15 21:36:35] job updated
+#> INFO [2026-06-15 21:36:39] job updated
+#> INFO [2026-06-15 21:36:43] job updated
+#> INFO [2026-06-15 21:36:47] job updated
+#> INFO [2026-06-15 21:36:52] job updated
+#> INFO [2026-06-15 21:36:56] job updated
+#> INFO [2026-06-15 21:37:00] job updated
+#> INFO [2026-06-15 21:37:04] job updated
+#> INFO [2026-06-15 21:37:09] job updated
+#> INFO [2026-06-15 21:37:13] job updated
+#> INFO [2026-06-15 21:37:17] job updated
+#> INFO [2026-06-15 21:37:21] job updated
+#> INFO [2026-06-15 21:37:26] job updated
+#> INFO [2026-06-15 21:37:30] job updated
+#> INFO [2026-06-15 21:37:34] job updated
+#> INFO [2026-06-15 21:37:38] job updated
+#> INFO [2026-06-15 21:37:42] job updated
+#> INFO [2026-06-15 21:37:47] job updated
+#> INFO [2026-06-15 21:37:51] job updated
+#> INFO [2026-06-15 21:37:55] job updated
+#> INFO [2026-06-15 21:37:59] job updated
+#> INFO [2026-06-15 21:38:04] job updated
+#> INFO [2026-06-15 21:38:08] job updated
+#> INFO [2026-06-15 21:38:12] job updated
+#> INFO [2026-06-15 21:38:16] job updated
+#> INFO [2026-06-15 21:38:20] job updated
+#> INFO [2026-06-15 21:38:25] job updated
+#> INFO [2026-06-15 21:38:29] job updated
+#> INFO [2026-06-15 21:38:34] job updated
+#> INFO [2026-06-15 21:38:38] job updated
+#> INFO [2026-06-15 21:38:42] job updated
+#> INFO [2026-06-15 21:38:46] job updated
+#> INFO [2026-06-15 21:38:51] job updated
+#> INFO [2026-06-15 21:38:55] job updated
+#> INFO [2026-06-15 21:39:00] job updated
+#> INFO [2026-06-15 21:39:04] job updated
+#> INFO [2026-06-15 21:39:09] job updated
+#> INFO [2026-06-15 21:39:13] job updated
+#> INFO [2026-06-15 21:39:17] job updated
+#> INFO [2026-06-15 21:39:22] job updated
+#> INFO [2026-06-15 21:39:26] job updated
+#> INFO [2026-06-15 21:39:30] job updated
+#> INFO [2026-06-15 21:39:35] job updated
+#> INFO [2026-06-15 21:39:39] job updated
+#> INFO [2026-06-15 21:39:43] job updated
+#> INFO [2026-06-15 21:39:47] job updated
+#> INFO [2026-06-15 21:39:51] job updated
+#> INFO [2026-06-15 21:39:56] job updated
+#> INFO [2026-06-15 21:40:00] job updated
+#> INFO [2026-06-15 21:40:04] job updated
+#> INFO [2026-06-15 21:40:08] job updated
+#> INFO [2026-06-15 21:40:13] job updated
+#> INFO [2026-06-15 21:40:17] job updated
+#> INFO [2026-06-15 21:40:21] job updated
+#> INFO [2026-06-15 21:40:25] job updated
+#> INFO [2026-06-15 21:40:30] job updated
+#> INFO [2026-06-15 21:40:34] job updated
+#> INFO [2026-06-15 21:40:38] job updated
+#> INFO [2026-06-15 21:40:43] job updated
+#> INFO [2026-06-15 21:40:47] job updated
+#> INFO [2026-06-15 21:40:51] job updated
+#> INFO [2026-06-15 21:40:55] job updated
+#> INFO [2026-06-15 21:41:00] job updated
+#> INFO [2026-06-15 21:41:04] job updated
+#> INFO [2026-06-15 21:41:08] job updated
+#> INFO [2026-06-15 21:41:12] job updated
+#> INFO [2026-06-15 21:41:16] job updated
+#> INFO [2026-06-15 21:41:21] job updated
+#> INFO [2026-06-15 21:41:25] job updated
+#> INFO [2026-06-15 21:41:29] job updated
+#> INFO [2026-06-15 21:41:34] job updated
+#> INFO [2026-06-15 21:41:38] job updated
+#> INFO [2026-06-15 21:41:42] job updated
+#> INFO [2026-06-15 21:41:47] job updated
+#> INFO [2026-06-15 21:41:51] job updated
+#> INFO [2026-06-15 21:41:55] job updated
+#> INFO [2026-06-15 21:42:00] job updated
+#> INFO [2026-06-15 21:42:04] job updated
+#> INFO [2026-06-15 21:42:08] job updated
+#> INFO [2026-06-15 21:42:13] job updated
+#> INFO [2026-06-15 21:42:17] job updated
+#> INFO [2026-06-15 21:42:21] job updated
+#> INFO [2026-06-15 21:42:25] job updated
+#> INFO [2026-06-15 21:42:30] job updated
+#> INFO [2026-06-15 21:42:34] job updated
+#> INFO [2026-06-15 21:42:38] job updated
+#> INFO [2026-06-15 21:42:43] job updated
+#> INFO [2026-06-15 21:42:47] job updated
+#> INFO [2026-06-15 21:42:51] job updated
+#> INFO [2026-06-15 21:42:55] job updated
+#> INFO [2026-06-15 21:43:00] job updated
+#> INFO [2026-06-15 21:43:04] job updated
+#> INFO [2026-06-15 21:43:08] job updated
+#> INFO [2026-06-15 21:43:13] job updated
+#> INFO [2026-06-15 21:43:17] job updated
+#> INFO [2026-06-15 21:43:21] job updated
+#> INFO [2026-06-15 21:43:25] job updated
+#> INFO [2026-06-15 21:43:30] job updated
+#> INFO [2026-06-15 21:43:34] job updated
+#> INFO [2026-06-15 21:43:38] job updated
+#> INFO [2026-06-15 21:43:42] job updated
+#> INFO [2026-06-15 21:43:47] job updated
+#> INFO [2026-06-15 21:43:51] job updated
+#> INFO [2026-06-15 21:43:55] job updated
+#> INFO [2026-06-15 21:44:00] job updated
+#> INFO [2026-06-15 21:44:04] job updated
+#> INFO [2026-06-15 21:44:08] job updated
+#> INFO [2026-06-15 21:44:12] job updated
+#> INFO [2026-06-15 21:44:16] job updated
+#> INFO [2026-06-15 21:44:21] job updated
+#> INFO [2026-06-15 21:44:25] job updated
+#> INFO [2026-06-15 21:44:29] job updated
+#> INFO [2026-06-15 21:44:33] job updated
+#> INFO [2026-06-15 21:44:38] job updated
+#> INFO [2026-06-15 21:44:42] job updated
+#> INFO [2026-06-15 21:44:46] job updated
+#> INFO [2026-06-15 21:44:50] job updated
+#> INFO [2026-06-15 21:44:54] job updated
+#> INFO [2026-06-15 21:44:59] job updated
+#> INFO [2026-06-15 21:45:03] job updated
+#> INFO [2026-06-15 21:45:07] job updated
+#> INFO [2026-06-15 21:45:12] job updated
+#> INFO [2026-06-15 21:45:16] job updated
+#> INFO [2026-06-15 21:45:20] job updated
+#> INFO [2026-06-15 21:45:24] job updated
+#> INFO [2026-06-15 21:45:29] job updated
+#> INFO [2026-06-15 21:45:33] job updated
+#> INFO [2026-06-15 21:45:37] job updated
+#> INFO [2026-06-15 21:45:41] job updated
+#> INFO [2026-06-15 21:45:46] job updated
+#> INFO [2026-06-15 21:45:50] job updated
+#> INFO [2026-06-15 21:45:54] job updated
+#> INFO [2026-06-15 21:45:59] job updated
+#> INFO [2026-06-15 21:46:03] job updated
+#> INFO [2026-06-15 21:46:07] job updated
+#> INFO [2026-06-15 21:46:12] job updated
+#> INFO [2026-06-15 21:46:16] job updated
+#> INFO [2026-06-15 21:46:20] job updated
+#> INFO [2026-06-15 21:46:24] job updated
+#> INFO [2026-06-15 21:46:29] job updated
+#> INFO [2026-06-15 21:46:33] job updated
+#> INFO [2026-06-15 21:46:37] job updated
+#> INFO [2026-06-15 21:46:41] job updated
+#> INFO [2026-06-15 21:46:46] job updated
+#> INFO [2026-06-15 21:46:50] job updated
+#> INFO [2026-06-15 21:46:54] job updated
+#> INFO [2026-06-15 21:46:58] job updated
+#> INFO [2026-06-15 21:47:02] job updated
+#> INFO [2026-06-15 21:47:06] job updated
+#> INFO [2026-06-15 21:47:11] job updated
+#> INFO [2026-06-15 21:47:15] job updated
+#> INFO [2026-06-15 21:47:19] job updated
+#> INFO [2026-06-15 21:47:24] job updated
+#> INFO [2026-06-15 21:47:24] downloading
+#> INFO [2026-06-15 21:47:26] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -566,7 +746,7 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [10ms]
 #> 
 #> 
 #> 
@@ -700,14 +880,14 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-12 03:01:54]
-#> → DYRESM-CAEDYM running... [2026-06-12 03:01:54]
-#> ✔ DYRESM-CAEDYM run successful! [2026-06-12 03:02:20]
-#> → GLM-AED running... [2026-06-12 03:02:20]
-#> ✔ GLM-AED run successful! [2026-06-12 03:02:21]
-#> → GOTM-WET running... [2026-06-12 03:02:21]
-#> ✔ GOTM-WET run successful! [2026-06-12 03:02:21]
-#> ✔ Model run complete! [2026-06-12 03:02:21]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-15 21:47:48]
+#> → DYRESM-CAEDYM running... [2026-06-15 21:47:48]
+#> ✔ DYRESM-CAEDYM run successful! [2026-06-15 21:48:08]
+#> → GLM-AED running... [2026-06-15 21:48:08]
+#> ✔ GLM-AED run successful! [2026-06-15 21:48:08]
+#> → GOTM-WET running... [2026-06-15 21:48:08]
+#> ✔ GOTM-WET run successful! [2026-06-15 21:48:09]
+#> ✔ Model run complete! [2026-06-15 21:48:09]
 #> ! The following variables are not available in model dy_cd: LKE_photic
 #> ! The following variables are not available in model gotm_wet: CHM_ph
 ```

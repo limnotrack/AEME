@@ -90,10 +90,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-06-12 02:44:27]
-#> ✔ Model run complete! [2026-06-12 02:44:30]
-#> ℹ Reading models in parallel...[2026-06-12 02:44:30]
-#> ✔ Model reading complete! [2026-06-12 02:44:31]
+#> ℹ Running models in parallel... [2026-06-15 21:19:03]
+#> ✔ Model run complete! [2026-06-15 21:19:06]
+#> ℹ Reading models in parallel...[2026-06-15 21:19:06]
+#> ✔ Model reading complete! [2026-06-15 21:19:07]
 aeme |> 
   list_mod_obs_vars()
 #>            Cyanobacteria         Dissolved oxygen                 Salinity 
