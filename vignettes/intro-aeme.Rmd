@@ -227,14 +227,14 @@ The following table summarizes key differences between the three models:
 
 | Feature | DYRESM-CAEDYM | GLM-AED | GOTM-WET |
 |---------|---------------|---------|----------|
-| **Approach** | Lagrangian layers | Dynamic Eulerian | Fixed Eulerian |
+| **Approach** | Lagrangian layers | Lagrangian layers | Fixed Eulerian |
 | **Layer structure** | Variable (moves with water) | Variable thickness | Fixed grid |
-| **Vertical resolution** | 5-50 layers | 20-100 layers | 50-200 layers |
-| **Timestep** | Adaptive (30-60 min) | Fixed (1 hr typical) | Fixed (< 1 hr) |
-| **Turbulence** | Mixed-layer model | k-ε or Henderson-Sellers | Multiple schemes |
+| **Vertical resolution** | 5-50 layers | 2-500 layers (user defined) | 2-500 layers (user defined) |
+| **Timestep** | Fixed (1 hr typical) | Fixed (1 hr typical) | Fixed (1 hr typical) |
+| **Turbulence** | Mixed-layer model | k-ε or Henderson-Sellers | Multiple schemes (k-ε typical) |
 | **Configuration** | Text files | Namelists (NML) | YAML files |
 | **Best for** | Reservoirs, withdrawals | Natural lakes, ensembles | Deep lakes, research |
-| **Computational speed** | Moderate | Fast | Slower |
+| **Computational speed** | Slow | Fast | Fast |
 | **BGC complexity** | High (CAEDYM) | High (AED2) | High (FABM/WET) |
 
 **When to use each model:**
@@ -243,7 +243,7 @@ The following table summarizes key differences between the three models:
   management, operational forecasting
 - **GLM-AED**: Natural lakes, multi-lake studies, ensemble uncertainty analysis, 
   real-time applications
-- **GOTM-WET**: Deep stratified lakes, detailed turbulence studies, research 
+- **GOTM-WET**: Stratified lakes, detailed turbulence studies, research 
   applications, process investigations
 
 ## The Ensemble Approach {#ensemble-approach}
@@ -314,9 +314,6 @@ uncertainty is significant.
 # Compare model predictions
 plot_output(aeme = aeme, var_sim = "HYD_temp", model = c("dy_cd", "glm_aed", "gotm_wet"))
 
-# Calculate ensemble statistics
-ensemble_mean <- calculate_ensemble_mean(aeme)
-ensemble_range <- calculate_ensemble_range(aeme)
 ```
 
 **Performance Metrics**
@@ -540,7 +537,7 @@ requires at minimum the `lake`, `time`, and `input` list objects. The object can
 also be created from a YAML file using the `yaml_to_aeme()` function. The YAML
 file contains all the information required to run the model.
 
-```{r warning=FALSE, message=FALSE, eval=FALSE}
+```{r warning=FALSE, message=FALSE, eval=TRUE}
 # Define lake list
 lat <- -36.88921
 lon <- 174.4669
@@ -550,7 +547,8 @@ area <- 153648
 lake <- list(
     latitude = lat,
     longitude = lon,
-    # elevation = elevation,
+    name = "lake",
+    id = "123",
     depth = depth,
     area = area
   )
@@ -630,6 +628,3 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme
 ```
 
-```{r}
-cfg <- configuration(aeme)
-```

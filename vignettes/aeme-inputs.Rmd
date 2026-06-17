@@ -70,12 +70,12 @@ input data or model configuration:
 1. **lake** - Lake metadata (location, dimensions, identification)
 2. **time** - Temporal simulation settings (start, stop, timestep, spin-up)
 3. **configuration** - Model configurations and controls
-4. **observations** - Observational data for validation and initialization
-5. **input** - Core inputs (meteorology, hypsograph, light extinction)
-6. **inflows** - Stream inflow data and scaling factors
-7. **outflows** - Outlet data, elevations, and scaling factors
-8. **water_balance** - Water balance configuration and calculations
-9. **parameters** - Model parameter values for calibration
+4. **parameters** - Model parameter values for calibration
+5. **observations** - Observational data for validation and initialization
+6. **input** - Core inputs (meteorology, hypsograph, light extinction)
+7. **inflows** - Stream inflow data and scaling factors
+8. **outflows** - Outlet data, elevations, and scaling factors
+9. **water_balance** - Water balance configuration and calculations
 10. **output** - Model output (populated after running models)
 
 Each of these slots is described in detail below.
@@ -138,7 +138,7 @@ of the simulation. It also specifies spin-up periods for model initialization.
 |-------|------|----------|-------------|
 | **`start`** | character/POSIXct | Yes | Start date and time of simulation |
 | **`stop`** | character/POSIXct | Yes | End date and time of simulation |
-| `timestep` | numeric | No | Timestep in seconds (default: 3600) |
+| `timestep` | numeric | No | Model integration timestep in seconds (default: 3600) |
 | `spin_up` | list | No | Named list of spin-up days for each model |
 
 ### Date Format
@@ -297,9 +297,6 @@ If you don't have measured values, estimate from Secchi depth:
 
 Kw ≈ 1.7 / Secchi_depth
 
-Or from chlorophyll-a (Chl; µg/L):
-
-Kw ≈ 0.2 + 0.02 × Chl
 
 ### Longwave Radiation (`use_lw`)
 
@@ -765,11 +762,11 @@ params <- data.frame(
 physical_params <- data.frame(
   model = c("glm_aed", "glm_aed", "gotm_wet"),
   file  = c("glm3.nml", "glm3.nml", "gotm.yaml"),
-  name  = c("light/Kw", "mixing/coef_mix_hyp", "turbulence/k_min"),
+  name  = c("light/Kw", "mixing/coef_mix_hyp", "turbulence/turb_param/k_min"),
   value = c(1.2, 0.5, 5e-6),
   min   = c(0.5, 0.1, 1e-6),
   max   = c(3.0, 2.0, 1e-5),
-  module = c("Light", "Mixing", "Turbulence")
+  module = c("hydrodynamic", "hydrodynamic", "hydrodynamic")
 )
 ```
 
@@ -778,12 +775,12 @@ physical_params <- data.frame(
 ```{r params-bgc, eval=FALSE}
 bgc_params <- data.frame(
   model = c("glm_aed", "glm_aed"),
-  file  = c("aed2.nml", "aed2.nml"),
-  name  = c("organic_matter/Rdom_minerl", "nitrogen/Rnitrif"),
-  value = c(0.001, 0.05),
-  min   = c(0.0001, 0.01),
-  max   = c(0.01, 0.2),
-  module = c("Organic Matter", "Nitrogen")
+  file  = c("aed.nml", "aed.nml"),
+  name  = c("aed_oxygen/fsed_oxy", "aed_nitrogen/rnitrif"),
+  value = c(-10, 0.05),
+  min   = c(-50, 0.01),
+  max   = c(-5, 0.2),
+  module = c("oxygen", "nitrogen")
 )
 ```
 
@@ -806,7 +803,7 @@ met_params <- data.frame(
 hydro_params <- data.frame(
   model = c("glm_aed", "glm_aed"),
   file  = c("inf", "wdr"),
-  name  = c("HYD_flow", "HYD_flow"),
+  name  = c("inflow", "outflow"),
   value = c(1.0, 1.0),
   min   = c(0.5, 0.5),
   max   = c(2.0, 2.0)
@@ -859,12 +856,10 @@ The `min` and `max` columns define parameter ranges for calibration using the
 library(aemetools)
 
 # Calibrate using parameters in aeme object
-calib_results <- calib_aeme(
+calib <- calib_aeme(
   aeme = aeme,
   model = "glm_aed",
-  path = "calibration",
-  vars = c("HYD_temp", "CHM_oxy"),
-  method = "DE"  # Differential Evolution
+  vars_sim = c("HYD_temp", "CHM_oxy")
 )
 ```
 
