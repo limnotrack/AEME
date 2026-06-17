@@ -544,15 +544,15 @@ library(aemetools)
 # Calibrate GLM-AED
 calib_result <- calib_aeme(
   aeme = aeme,
+  param = param,
   model = "glm_aed",
-  vars = c("HYD_temp", "CHM_oxy"),
-  method = "DE",  # Differential Evolution
-  path = "calibration"
+  vars_sim = c("HYD_temp", "CHM_oxy")
 )
 
 # Sensitivity analysis
 sa_result <- sa_aeme(
   aeme = aeme,
+  param = param,
   model = "glm_aed",
   method = "sobol"
 )
