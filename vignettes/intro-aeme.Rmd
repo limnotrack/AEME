@@ -616,8 +616,6 @@ plot_met_tile(aeme, var_aeme = "MET_tmpair")
 
 ```
 
-## Build Model Ensemble
-
 ```{r build-aeme, warning=FALSE, message=FALSE}
 plot_hyps(aeme)
 ```
