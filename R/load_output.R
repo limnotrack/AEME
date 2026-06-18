@@ -49,6 +49,9 @@ load_output <- function(aeme, model, path = NULL, lake_dir = NULL, model_control
     parallel::clusterExport(cl, varlist = list("aeme", "path", "vars_sim",  
                                                "lake_dir", "output_hour"),
                             envir = environment())
+    parallel::clusterEvalQ(cl, {
+      library(AEME)
+    })
     # message("Reading models in parallel... ", paste0("[", format(Sys.time()), "]"))
     cli_inform_safe(c("i" = paste0("Reading models in parallel...",
                                    "[", format(Sys.time()), "]")))
