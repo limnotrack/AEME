@@ -616,7 +616,7 @@ plot_met_tile(aeme, var_aeme = "MET_tmpair")
 
 ```
 
-```{r build-aeme, warning=FALSE, message=FALSE}
+```{r plot-hypsograph, warning=FALSE, message=FALSE}
 plot_hyps(aeme)
 ```
 
