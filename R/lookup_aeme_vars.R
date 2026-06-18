@@ -31,9 +31,7 @@
 #' lookup_aeme_vars(group = "NIT", var_aeme = "HYD_temp", name = "phosphate")
 
 lookup_aeme_vars <- function(group = NULL, var_aeme = NULL, name = NULL) {
-  # Load dataset
-  data("key_naming", package = "AEME", envir = environment())
-  
+
   df <- key_naming |>
     dplyr::select(var_aeme, name_text, units) |>
     dplyr::rename(text = name_text, units = units)

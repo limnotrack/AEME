@@ -42,7 +42,6 @@ rename_modelvars <- function(input,
   
   # --- Load lookup table ------------------------------------------------------
   env <- new.env(parent = emptyenv())
-  data("key_naming", package = "AEME", envir = env)
   key <- env$key_naming
   
   if (!is.data.frame(key)) {

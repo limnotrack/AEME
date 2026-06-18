@@ -30,9 +30,6 @@ plot_flows <- function(aeme, flow = c("inflow", "outflow"),
     stop("var_sim must be 'HYD_flow' for outflow")
   }
 
-  # Load key_naming
-  data("key_naming", package = "AEME", envir = environment())
-
   inf <- list()
   outf <- list()
   if ("inflow" %in% flow) {

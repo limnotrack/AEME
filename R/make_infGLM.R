@@ -15,8 +15,6 @@
 make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                         inf_factor = 1, update_nml = TRUE) {
 
-  # Load Rdata
-  data("key_naming", package = "AEME", envir = environment())
 
   # get the inflow attributes
   names_inf <- names(list_inf)

@@ -21,8 +21,6 @@ path <- tempdir()
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
 aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
 
-data("key_naming", package = "AEME")
-
 met_vars <- key_naming |> 
   dplyr::filter(grepl("MET", var_aeme)) |> 
   dplyr::select(name_text, var_aeme, units) |> 

@@ -27,8 +27,6 @@
 
 generate_var_map_code <- function(data, var_col_name = "name") {
   
-  data("key_naming", package = "AEME", envir = environment())
-  
   # Check is data a data frame
   if (!is.data.frame(data)) {
     stop("Input 'data' must be a data frame.")
@@ -78,7 +76,6 @@ generate_var_map_code <- function(data, var_col_name = "name") {
 #' @noRd
 guess_var_aeme <- function(var_names, maxDist = 8) {
   
-  data("key_naming", package = "AEME", envir = environment())
   key_naming_sub <- key_naming |> 
     dplyr::filter(grepl("HYD|LKE_lvlwtr|RAD_secchi|CHM|PHS|NIT|CAR|PHY", 
                         var_aeme))

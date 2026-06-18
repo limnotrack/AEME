@@ -13,8 +13,7 @@
 #' get_vars_sim(model_controls)
 #' get_vars_sim("HYD_thmcln")
 get_vars_sim <- function(vars_sim, aeme, model_controls) {
-  data("key_naming", package = "AEME", envir = environment())
-  
+
   if (missing(vars_sim)) {
     if (!missing(aeme)) {
       model_controls <- get_model_controls(aeme)

@@ -8,7 +8,6 @@
 #' @examples
 #' get_deriv_inputs(vars_sim  = c("HYD_thmcln", "HYD_epidep", "CHM_oxyepi", "LKE_tli4"))
 get_deriv_inputs <- function(vars_sim) {
-  data("key_naming", package = "AEME", envir = environment())
   vars_sim <- check_aeme_vars(vars_sim)
   
   deriv_vars <- key_naming |> 

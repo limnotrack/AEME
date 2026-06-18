@@ -1477,10 +1477,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
   }
   
   if (y == "input") {
-    
-    # Load Rdata
-    data("key_naming", package = "AEME", envir = environment())
-    
+
     inp <- input(x)
     p1 <- ggplot2::ggplot() +
       ggplot2::geom_line(data = inp$hypsograph, ggplot2::aes(x = area, y = elev)) +

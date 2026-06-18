@@ -26,9 +26,7 @@
 #' guess_aeme_vars(c("temp", "swr", "lwr", "wind", "precip"), key_filter = "MET")
 
 guess_aeme_vars <- function(x, key_filter) {
-  # 1. Load key dataset
-  data("key_naming", package = "AEME", envir = environment())
-  
+
   if (!missing(key_filter) && !is.null(key_filter)) {
     key_naming <- key_naming |>
       dplyr::filter(grepl(key_filter, var_aeme, ignore.case = TRUE))  
