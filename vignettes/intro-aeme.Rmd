@@ -622,3 +622,35 @@ plot_met_tile(aeme, var_aeme = "MET_tmpair")
 plot_hyps(aeme)
 ```
 
+## Next Steps
+
+Now that you understand the basics of AEME, you can explore more advanced topics
+and practical applications in our other vignettes:
+
+### Getting Started with AEME
+
+- **[Set up AEME for a new lake](setup-new-lake.html)** - A practical tutorial 
+  that walks you through setting up the model for a new lake, including how to 
+  obtain and prepare input data.
+
+- **[AEME Inputs](aeme-inputs.html)** - Comprehensive reference documentation on 
+  the input requirements and S4 structure of the AEME object.
+
+### Advanced Applications
+
+- **[Using LERNZmp with AEME](../articles/lernzmp-aeme.html)** - Learn how to use 
+  the Lake Ecosystem Research New Zealand Model Platform (LERNZmp) web interface 
+  with AEME.
+
+- **[Reservoir Simulation with Multiple Outlets](../articles/reservoir-aeme.html)** - 
+  Demonstrates how to model reservoirs with regulated water levels and multiple 
+  outlets at different depths.
+
+- **[GLM-AED: The General Lake Model coupled with AED](../articles/glm-aed.html)** - 
+  Detailed guide on using the GLM-AED model within the AEME framework, including 
+  parameter libraries and configuration.
+
+- **[Lake Rotoehu Water Balance and Evaporation](../articles/rotoehu-water-balance.html)** - 
+  A case study demonstrating water balance approaches and evaporation estimation 
+  for a shallow lake with ungauged inflows.
+
