@@ -41,8 +41,7 @@ rename_modelvars <- function(input,
   type_output <- ifelse(type_output == "name", "var_aeme", type_output)
   
   # --- Load lookup table ------------------------------------------------------
-  env <- new.env(parent = emptyenv())
-  key <- env$key_naming
+  key <- key_naming
   
   if (!is.data.frame(key)) {
     cli::cli_abort(
