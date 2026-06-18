@@ -143,8 +143,8 @@ is set to `TRUE` to run the models in parallel which can speed up the process.
 
 ```{r}
 #| label: lernzmp-run-aeme
-aeme <- run_aeme(aeme = aeme, model = model, path = path, parallel = TRUE)
-aeme
+aeme <- aeme |> 
+  run_aeme(parallel = TRUE)
 ```
 
 In the "Output" section of the `Aeme` object, the "Number of ensembles" is set to
