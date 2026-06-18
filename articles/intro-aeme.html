@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Introduction to AEME</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/vignettes/intro-aeme.Rmd" class="external-link"><code>vignettes/intro-aeme.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-aeme-introduction-and-inputs/vignettes/intro-aeme.Rmd" class="external-link"><code>vignettes/intro-aeme.Rmd</code></a></small>
       <div class="d-none name"><code>intro-aeme.Rmd</code></div>
     </div>
 
@@ -103,6 +103,414 @@ Tool).</p>
 inputs</p></li>
 <li><p>Standardised calibration, manipulation and visualisation</p></li>
 </ul>
+<p>This vignette provides an overview of the AEME framework, the three
+models, and the ensemble approach. For detailed information on data
+inputs and the S4 structure, see the <a href="aeme-inputs.html">AEME
+Inputs</a> vignette. For a practical tutorial, see <a href="setup-new-lake.html">Setting up AEME for a new lake</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="three-models">The Three Models<a class="anchor" aria-label="anchor" href="#three-models"></a>
+</h2>
+<p>AEME integrates three well-established one-dimensional (1D) lake
+models, each with distinct computational approaches and strengths.
+Understanding the differences helps in selecting appropriate models and
+interpreting ensemble results.</p>
+<div class="section level3">
+<h3 id="dyresm-caedym">DYRESM-CAEDYM<a class="anchor" aria-label="anchor" href="#dyresm-caedym"></a>
+</h3>
+<p><strong>DYnamic REservoir Simulation Model - Computational Aquatic
+Ecosystem DYnamics Model</strong></p>
+<p><strong>History and Development</strong></p>
+<p>DYRESM was developed in the 1980s at the University of Western
+Australia and Centre for Water Research. It pioneered the Lagrangian
+layer approach for lake modeling. CAEDYM was later developed to add
+comprehensive biogeochemical capabilities.</p>
+<p><strong>Physics and Computational Approach</strong></p>
+<ul>
+<li>
+<strong>Lagrangian layers</strong>: Water parcels move vertically
+through the water column</li>
+<li>
+<strong>Variable layer thickness</strong>: Layers can split or merge
+based on stratification</li>
+<li>
+<strong>Layer-following approach</strong>: Particularly effective
+for tracking water masses in reservoirs</li>
+<li>
+<strong>Time-step</strong>: Adaptive, typically 30-60 minutes</li>
+</ul>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Excellent representation of selective withdrawals in reservoirs</li>
+<li>Detailed tracking of water quality through inflows and
+withdrawals</li>
+<li>Comprehensive biogeochemical modules (nutrients, phytoplankton,
+zooplankton, sediments)</li>
+<li>Established in reservoir management applications</li>
+</ul>
+<p><strong>Typical Applications</strong></p>
+<ul>
+<li>Drinking water reservoirs with complex withdrawal strategies</li>
+<li>Multi-level outlet management</li>
+<li>Water quality forecasting in stratified systems</li>
+<li>Long-term climate change impact studies</li>
+</ul>
+<p><strong>References</strong></p>
+<ul>
+<li>Imberger, J., &amp; Patterson, J. C. (1981). A dynamic reservoir
+simulation model
+<ul>
+<li>DYRESM: 5. <em>Transport Models for Inland and Coastal Waters</em>,
+310-361.</li>
+</ul>
+</li>
+<li>Hamilton, D. P., &amp; Schladow, S. G. (1997). Prediction of water
+quality in lakes and reservoirs. Part I - Model description.
+<em>Ecological Modelling</em>, 96(1-3), 91-110.</li>
+<li>Burger, D. F., Hamilton, D. P., &amp; Pilditch, C. A. (2008).
+Modelling the relative importance of internal and external nutrient
+loads on water column nutrient concentrations and phytoplankton biomass
+in a shallow polymictic lake. <em>Ecological Modelling</em>, 211(3-4),
+411-423.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="glm-aed">GLM-AED<a class="anchor" aria-label="anchor" href="#glm-aed"></a>
+</h3>
+<p><strong>General Lake Model - Aquatic EcoDynamics model</strong></p>
+<p><strong>History and Development</strong></p>
+<p>GLM was developed in the 2010s through an international collaboration
+led by the University of Western Australia. It modernizes 1D lake
+modeling with a flexible framework compatible with contemporary
+ecosystem models. AED is the latest generation of water quality models,
+building on AED+ and earlier frameworks.</p>
+<p><strong>Physics and Computational Approach</strong></p>
+<ul>
+<li>
+<strong>Dynamic Eulerian layers</strong>: Fixed spatial grid with
+variable layer thickness</li>
+<li>
+<strong>Flexible vertical resolution</strong>: Automatically adjusts
+layers based on stratification</li>
+<li>
+<strong>Efficient computations</strong>: Optimized for ensemble
+applications and uncertainty analysis</li>
+<li>
+<strong>Time-step</strong>: Hourly to daily, depending on
+application</li>
+</ul>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Modular biogeochemical framework (AED2)</li>
+<li>Easy configuration through namelists (NML files)</li>
+<li>Extensive validation across diverse lake types</li>
+<li>Active development community and regular updates</li>
+<li>Integration with lake ensemble frameworks</li>
+</ul>
+<p><strong>Typical Applications</strong></p>
+<ul>
+<li>Natural lakes of varying trophic status</li>
+<li>Multi-lake regional studies</li>
+<li>Climate change scenarios</li>
+<li>Coupled catchment-lake modeling</li>
+<li>Real-time forecasting systems</li>
+</ul>
+<p><strong>References</strong></p>
+<ul>
+<li>Hipsey, M. R., Bruce, L. C., Boon, C., Busch, B., Carey, C. C.,
+Hamilton, D. P., … &amp; Winslow, L. A. (2019). A General Lake Model
+(GLM 3.0) for linking with high-frequency sensor data from the Global
+Lake Ecological Observatory Network (GLEON). <em>Geoscientific Model
+Development</em>, 12(1), 473-523.</li>
+<li>Bruce, L. C., Frassl, M. A., Arhonditsis, G. B., Gal, G., Hamilton,
+D. P., Hanson, P. C., … &amp; Trolle, D. (2018). A multi-lake
+comparative analysis of the General Lake Model (GLM): Stress-testing
+across a global observatory network. <em>Environmental Modelling &amp;
+Software</em>, 102, 274-291.</li>
+<li>Hipsey, M. R., Bruce, L. C., &amp; Hamilton, D. P. (2014). <em>GLM -
+General Lake Model: Model overview and user information</em>. AED Report
+#26, The University of Western Australia, Perth, Australia.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="gotm-wet">GOTM-WET<a class="anchor" aria-label="anchor" href="#gotm-wet"></a>
+</h3>
+<p><strong>General Ocean Turbulence Model - Water Ecosystem
+Tool</strong></p>
+<p><strong>History and Development</strong></p>
+<p>GOTM was originally developed for ocean modeling in the 1990s and
+later adapted for lakes and estuaries. WET (Water Ecosystem Tool) is a
+comprehensive biogeochemical model developed by WaterITech specifically
+for integration with GOTM and application to lakes and reservoirs.</p>
+<p><strong>Physics and Computational Approach</strong></p>
+<ul>
+<li>
+<strong>Fixed Eulerian grid</strong>: Regular vertical spacing
+throughout simulation</li>
+<li>
+<strong>Advanced turbulence closure</strong>: Multiple turbulence
+schemes (k-ε, k-ω, etc.)</li>
+<li>
+<strong>High vertical resolution</strong>: Typically 0.5-1 m
+spacing</li>
+<li>
+<strong>YAML configuration</strong>: Modern configuration
+approach</li>
+<li>
+<strong>Time-step</strong>: Sub-hourly for stability</li>
+</ul>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Sophisticated turbulence modeling</li>
+<li>High-resolution vertical mixing representation</li>
+<li>Framework for Aquatic Biogeochemical Models (FABM) integration</li>
+<li>Detailed surface and bottom boundary layers</li>
+<li>Coupling with atmospheric models</li>
+</ul>
+<p><strong>Typical Applications</strong></p>
+<ul>
+<li>Deep stratified lakes</li>
+<li>Systems with complex mixing dynamics</li>
+<li>Research applications requiring detailed turbulence</li>
+<li>Lakes with significant benthic-pelagic coupling</li>
+<li>Process studies and model development</li>
+</ul>
+<p><strong>References</strong></p>
+<ul>
+<li>Burchard, H., Bolding, K., &amp; Villarreal, M. R. (1999). <em>GOTM,
+a general ocean turbulence model. Theory, implementation and test
+cases</em>. Tech. Rep.  EUR-18745-EN, European Commission.</li>
+<li>Bruggeman, J., &amp; Bolding, K. (2014). A general framework for
+aquatic biogeochemical models. <em>Environmental Modelling &amp;
+Software</em>, 61, 249-265.</li>
+<li>Bolding, K., Bruggeman, J., Brüchert, V., Grimm, H., Holtermann, P.,
+Hu, T., … &amp; Umlauf, L. (2020). <em>GETM and GOTM - a general
+estuarine and lake model. Status and perspectives.</em> Report,
+2020.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="model-comparison">Model Comparison<a class="anchor" aria-label="anchor" href="#model-comparison"></a>
+</h3>
+<p>The following table summarizes key differences between the three
+models:</p>
+<table class="table">
+<colgroup>
+<col width="20%">
+<col width="34%">
+<col width="20%">
+<col width="23%">
+</colgroup>
+<thead><tr class="header">
+<th>Feature</th>
+<th>DYRESM-CAEDYM</th>
+<th>GLM-AED</th>
+<th>GOTM-WET</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><strong>Approach</strong></td>
+<td>Lagrangian layers</td>
+<td>Lagrangian layers</td>
+<td>Fixed Eulerian</td>
+</tr>
+<tr class="even">
+<td><strong>Layer structure</strong></td>
+<td>Variable (moves with water)</td>
+<td>Variable thickness</td>
+<td>Fixed grid</td>
+</tr>
+<tr class="odd">
+<td><strong>Vertical resolution</strong></td>
+<td>5-50 layers</td>
+<td>2-500 layers (user defined)</td>
+<td>2-500 layers (user defined)</td>
+</tr>
+<tr class="even">
+<td><strong>Timestep</strong></td>
+<td>Fixed (1 hr typical)</td>
+<td>Fixed (1 hr typical)</td>
+<td>Fixed (1 hr typical)</td>
+</tr>
+<tr class="odd">
+<td><strong>Turbulence</strong></td>
+<td>Mixed-layer model</td>
+<td>k-ε or Henderson-Sellers</td>
+<td>Multiple schemes (k-ε typical)</td>
+</tr>
+<tr class="even">
+<td><strong>Configuration</strong></td>
+<td>Text files</td>
+<td>Namelists (NML)</td>
+<td>YAML files</td>
+</tr>
+<tr class="odd">
+<td><strong>Best for</strong></td>
+<td>Reservoirs, withdrawals</td>
+<td>Natural lakes, ensembles</td>
+<td>Deep lakes, research</td>
+</tr>
+<tr class="even">
+<td><strong>Computational speed</strong></td>
+<td>Slow</td>
+<td>Fast</td>
+<td>Fast</td>
+</tr>
+<tr class="odd">
+<td><strong>BGC complexity</strong></td>
+<td>High (CAEDYM)</td>
+<td>High (AED2)</td>
+<td>High (FABM/WET)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>When to use each model:</strong></p>
+<ul>
+<li>
+<strong>DYRESM-CAEDYM</strong>: Reservoirs with selective
+withdrawals, water quality management, operational forecasting</li>
+<li>
+<strong>GLM-AED</strong>: Natural lakes, multi-lake studies,
+ensemble uncertainty analysis, real-time applications</li>
+<li>
+<strong>GOTM-WET</strong>: Stratified lakes, detailed turbulence
+studies, research applications, process investigations</li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="ensemble-approach">The Ensemble Approach<a class="anchor" aria-label="anchor" href="#ensemble-approach"></a>
+</h2>
+<p>AEME’s primary innovation is the standardization of inputs and
+outputs across three fundamentally different lake models, enabling true
+ensemble modeling of aquatic ecosystems.</p>
+<div class="section level3">
+<h3 id="why-use-multiple-models">Why Use Multiple Models?<a class="anchor" aria-label="anchor" href="#why-use-multiple-models"></a>
+</h3>
+<p><strong>1. Structural Uncertainty</strong></p>
+<p>Each model makes different assumptions about physics and
+biogeochemistry. No single model is universally “best” - performance
+varies by: - Lake type (reservoir vs. natural) - Stratification dynamics
+- Available calibration data - Spatial and temporal scales - Management
+questions</p>
+<p>Using multiple models quantifies structural uncertainty - differences
+arising from model formulation rather than parameter uncertainty.</p>
+<p><strong>2. Ensemble Predictions</strong></p>
+<p>Ensemble means and medians often outperform individual models by: -
+Averaging out model-specific biases - Providing probabilistic forecasts
+- Identifying robust predictions (model agreement) - Highlighting
+uncertain predictions (model divergence)</p>
+<p><strong>3. Model Complementarity</strong></p>
+<p>Different models excel at different aspects: - DYRESM-CAEDYM:
+tracking water parcels in reservoirs - GLM-AED: computational efficiency
+for ensembles - GOTM-WET: detailed vertical mixing processes</p>
+</div>
+<div class="section level3">
+<h3 id="how-aeme-standardizes-inputs-and-outputs">How AEME Standardizes Inputs and Outputs<a class="anchor" aria-label="anchor" href="#how-aeme-standardizes-inputs-and-outputs"></a>
+</h3>
+<p><strong>Input Standardization</strong></p>
+<p>AEME translates common inputs into model-specific formats:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Meteorology</strong>: Same data → model-specific forcing
+files</li>
+<li>
+<strong>Hypsography</strong>: Single hypsograph → adjusted for each
+model’s grid</li>
+<li>
+<strong>Inflows/Outflows</strong>: Unified format → model-specific
+boundary conditions</li>
+<li>
+<strong>Parameters</strong>: Common parameter table → model
+configuration files</li>
+</ol>
+<p>This ensures models simulate the <em>same lake</em> with
+<em>comparable forcings</em>.</p>
+<p><strong>Output Standardization</strong></p>
+<p>All models output to a common format: - Variable names mapped to AEME
+conventions (<code>key_naming</code>) - Consistent spatial interpolation
+to comparable depths - Synchronized temporal resolution - Standard
+quality control and gap filling</p>
+</div>
+<div class="section level3">
+<h3 id="ensemble-evaluation">Ensemble Evaluation<a class="anchor" aria-label="anchor" href="#ensemble-evaluation"></a>
+</h3>
+<p><strong>Model Agreement</strong></p>
+<p>When models agree, confidence is high. When models diverge,
+structural uncertainty is significant.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Compare model predictions</span></span>
+<span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>, model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Performance Metrics</strong></p>
+<p>Use <code><a href="../reference/assess_model.html">assess_model()</a></code> to compare model performance against
+observations:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">performance</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assess_model.html">assess_model</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">performance</span><span class="op">)</span></span>
+<span><span class="co"># Shows RMSE, NSE, R² for each model</span></span></code></pre></div>
+<p><strong>Weighted Ensembles</strong></p>
+<p>Models can be weighted by past performance:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Weight by NSE scores</span></span>
+<span><span class="va">weights</span> <span class="op">&lt;-</span> <span class="va">performance</span><span class="op">$</span><span class="va">NSE</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">performance</span><span class="op">$</span><span class="va">NSE</span><span class="op">)</span></span>
+<span><span class="va">weighted_mean</span> <span class="op">&lt;-</span> <span class="fu">calculate_weighted_ensemble</span><span class="op">(</span><span class="va">aeme</span>, weights <span class="op">=</span> <span class="va">weights</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="interpretation-guidelines">Interpretation Guidelines<a class="anchor" aria-label="anchor" href="#interpretation-guidelines"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>
+<strong>When models agree</strong>: High confidence in
+predictions</li>
+<li>
+<strong>When models disagree systematically</strong>: Check inputs
+and observations</li>
+<li>
+<strong>When one model consistently outperforms</strong>: Consider
+lake-specific physics</li>
+<li>
+<strong>When all models fail</strong>: Likely data quality or
+missing processes</li>
+</ol>
+</div>
+</div>
+<div class="section level2">
+<h2 id="applications">Model Applications and Case Studies<a class="anchor" aria-label="anchor" href="#applications"></a>
+</h2>
+<p>AEME has been applied to diverse aquatic systems across New Zealand
+and internationally.</p>
+<div class="section level3">
+<h3 id="example-applications">Example Applications<a class="anchor" aria-label="anchor" href="#example-applications"></a>
+</h3>
+<p><strong>1. Drinking Water Reservoirs</strong></p>
+<p>See <code>vignette("reservoir-aeme")</code> for a detailed example of
+applying AEME to a reservoir with multiple outlets and water quality
+management.</p>
+<p><strong>2. Natural Lakes</strong></p>
+<p>The LERNZmp (Lake Ecosystem Research New Zealand Modelling Platform)
+uses AEME for 100+ New Zealand lakes. See
+<code>vignette("lernzmp-aeme")</code> for details.</p>
+<p><strong>3. Water Balance Studies</strong></p>
+<p>AEME can estimate unknown inflows/outflows from water level
+observations. See <code>vignette("rotoehu-water-balance")</code> for a
+worked example.</p>
+<p><strong>4. Single Model Applications</strong></p>
+<p>While AEME is designed for ensembles, individual models can be run
+for specific applications. See <code>vignette("glm-aed")</code> for
+GLM-AED specific examples.</p>
+</div>
+<div class="section level3">
+<h3 id="key-references-for-aeme">Key References for AEME<a class="anchor" aria-label="anchor" href="#key-references-for-aeme"></a>
+</h3>
+<ul>
+<li>Moore, T. N., Mesman, J. P., Ladwig, R., Feldbauer, J., Olsson, F.,
+Pilla, R. M., … &amp; Hipsey, M. R. (2021). LakeEnsemblR: An R package
+that facilitates ensemble modelling of lakes. <em>Environmental
+Modelling &amp; Software</em>, 143, 105101.</li>
+</ul>
+<p>Future AEME-specific publications will be listed here as they become
+available.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="sec-aeme-object">AEME object<a class="anchor" aria-label="anchor" href="#sec-aeme-object"></a>
@@ -115,314 +523,139 @@ It is an S4 class that contains all the information required to run a
 model. The <code>aeme</code> object contains the following slots:</p>
 <ul>
 <li>
-<a href="#sec-lake"><strong>lake</strong></a> - a list object
-containing information about the lake (name, id, latitude, longitude,
-elevation, depth, area)</li>
+<a href="#sec-lake"><strong>lake</strong></a> - Lake metadata
+(location, dimensions) (name, id, latitude, longitude, elevation, depth,
+area)</li>
 <li>
-<a href="#sec-time"><strong>time</strong></a> - a list object
-containing information about the time (start, stop, spin_up,
-time_step)</li>
+<a href="#sec-time"><strong>time</strong></a> - Simulation period
+and temporal settings (start, stop, spin_up, time_step)</li>
 <li>
-<a href="#sec-configuration"><strong>configuration</strong></a> - a
-list object containing information about the configuration
-(model_controls, dy_cd, glm_aed, gotm_wet)</li>
+<a href="#sec-configuration"><strong>configuration</strong></a> -
+Model configurations and controls (model_controls, dy_cd, glm_aed,
+gotm_wet)</li>
 <li>
-<a href="#sec-observations"><strong>observations</strong></a> - a
-list object containing information about the observations (lake,
-level)</li>
+<a href="#sec-observations"><strong>observations</strong></a> -
+Observational data for validation (lake, level)</li>
 <li>
-<a href="#sec-inputs"><strong>inputs</strong></a> - a list object
-containing information about the inputs (init_profile, init_depth,
-hypsograph, meteo, use_lw, Kw)</li>
+<a href="#sec-inputs"><strong>inputs</strong></a> - Core physical
+inputs (meteorology, hypsograph) (init_profile, init_depth, hypsograph,
+meteo, use_lw, Kw)</li>
 <li>
-<a href="#sec-inflows"><strong>inflows</strong></a> - a list object
-containing information about the inflows (data, factor)</li>
+<a href="#sec-inflows"><strong>inflows</strong></a> - Stream inflow
+data (data, factor)</li>
 <li>
-<a href="#sec-outflows"><strong>outflows</strong></a> - a list
-object containing information about the outflows (data, outflow_lvl,
-factor)</li>
+<a href="#sec-outflows"><strong>outflows</strong></a> - Outlet data
+and configurations (data, outflow_lvl, factor)</li>
 <li>
-<a href="#sec-water_balance"><strong>water_balance</strong></a> - a
-list object containing information about the water balance configuration
-(use, method, data)</li>
+<a href="#sec-water_balance"><strong>water_balance</strong></a> -
+Water balance settings and calculations (use, method, data)</li>
 <li>
-<a href="#sec-parameters"><strong>parameters</strong></a> - a
-data.frame describing the parameters to be input with column names
-(model, file, name, value, min, max, module, group)</li>
+<a href="#sec-parameters"><strong>parameters</strong></a> - Model
+parameter values for calibration (model, file, name, value, min, max,
+module, group)</li>
 <li>
-<a href="#sec-output"><strong>output</strong></a> - a list object
-containing information about the outputs (n_members)</li>
+<a href="#sec-output"><strong>output</strong></a> - Model output
+(populated after simulation) (n_members)</li>
 </ul>
+<p>For comprehensive details on each slot including structure, required
+fields, and usage examples, see the <a href="aeme-inputs.html">AEME
+Inputs vignette</a>.</p>
 <div class="section level4">
 <h4 id="sec-lake">Lake<a class="anchor" aria-label="anchor" href="#sec-lake"></a>
 </h4>
-<p>The <code>lake</code> slot contains information about the lake. It is
-a list object that contains the following objects:</p>
-<ul>
-<li><p>name - Name of the lake (character).</p></li>
-<li><p>id - Lake ID (character or numeric).</p></li>
-<li><p><strong>latitude</strong> - Latitude of the lake (numeric). If
-not provided, the latitude will be calculated from the centroid of the
-shape.</p></li>
-<li><p><strong>longitude</strong> - Longitude of the lake (numeric). If
-not provided, the longitude will be calculated from the centroid of the
-shape.</p></li>
-<li><p><strong>elevation</strong> - Elevation of the lake
-(numeric).</p></li>
-<li><p>shape - Shape of the lake (sf object). The shape of the lake can
-be represented as a polygon. The centroid of the polygon will be used to
-calculate the latitude and longitude of the lake.</p></li>
-<li><p><strong>depth</strong> - Max depth of the lake (m) (numeric).
-Depth and area are used to generate a simple hypsographic curve if none
-is provided in the <code>inputs</code> slot.</p></li>
-<li><p><strong>area</strong> - Surface area of the lake (m2)
-(numeric)</p></li>
-</ul>
-<p>Objects in <strong>bold</strong> are required for building and
-running the model.</p>
+<p>The <code>lake</code> slot contains metadata about the waterbody
+including name, location, dimensions, and optional spatial
+information.</p>
+<p><strong>Required fields</strong>: name, id, latitude, longitude,
+elevation, depth, area</p>
+<p>See <a href="aeme-inputs.html#lake-slot">Lake Slot</a> in the AEME
+Inputs vignette for complete details.</p>
 </div>
 <div class="section level4">
 <h4 id="sec-time">Time<a class="anchor" aria-label="anchor" href="#sec-time"></a>
 </h4>
-<p>The <code>time</code> slot contains information about the time. It is
-a list object that contains the following objects:</p>
-<ul>
-<li><p><strong>start</strong> - Start date of the simulation
-(character). The start date must be in the format
-<code>YYYY-MM-DD HH:MM:SS</code>.</p></li>
-<li><p><strong>stop</strong> - End date of the simulation (character).
-The end date must be in the format
-<code>YYYY-MM-DD HH:MM:SS</code>.</p></li>
-<li><p><strong>timestep</strong> - Timestep of the simulation (numeric).
-The timestep must be in seconds.</p></li>
-<li><p><strong>spin_up</strong> - List of spin up periods of the
-simulation for each model (numeric). The spin up period must be in days.
-The spin up period is the period of time that the model is run before
-the simulation period. The spin up period is used to initialise the
-model which is then discarded when examining the simulation
-period.</p></li>
-</ul>
+<p>The <code>time</code> slot defines the simulation period, temporal
+resolution, and spin-up periods for model initialization.</p>
+<p><strong>Required fields</strong>: start, stop</p>
+<p><strong>Optional fields</strong>: timestep, spin_up</p>
+<p>See <a href="aeme-inputs.html#time-slot">Time Slot</a> in the AEME
+Inputs vignette for complete details.</p>
 </div>
 <div class="section level4">
 <h4 id="sec-configuration">Configuration<a class="anchor" aria-label="anchor" href="#sec-configuration"></a>
 </h4>
-<p>The <code>configuration</code> slot is a list that contains each of
-the model configurations. This includes the configurations files for the
-hydrodynamic components as well as the aquatic ecosystem model
-components:</p>
-<table class="table">
-<caption>Files for hydrodynamic and ecosystem models.</caption>
-<colgroup>
-<col width="25%">
-<col width="33%">
-<col width="41%">
-</colgroup>
-<thead><tr class="header">
-<th>Model</th>
-<th>Hyrodynamic</th>
-<th>Ecosystem</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>DYRESM-CAEDYM</td>
-<td>
-<em>.cfg</em> file and <em>.par</em> file</td>
-<td>
-<em>.con</em>, <em>caedym3p1.bio, caedym3p1.chm</em> and
-<em>caedym3p1.sed</em> files</td>
-</tr>
-<tr class="even">
-<td>GLM-AED</td>
-<td>
-<em>glm3.nml</em> file</td>
-<td>
-<em>aed2.nml</em>, <em>phytos.nml</em>, <em>zoops.nml</em>
-files</td>
-</tr>
-<tr class="odd">
-<td>GOTM-WET</td>
-<td>
-<em>gotm.yaml</em> and <em>output.yaml</em> files</td>
-<td>
-<em>fabm.yaml</em> file</td>
-</tr>
-</tbody>
-</table>
-<p>When <code><a href="../reference/build_aeme.html">build_aeme()</a></code> is ran, the
-<code>model_controls</code> data.frame that is passed to the function as
-an argument is added to the <code>configuration</code> slot.</p>
-<p>For more details on the <code>model_controls</code>, see it’s section
-<a href="#sec-model_controls">below</a>.</p>
+<p>The <code>configuration</code> slot stores model-specific
+configuration files and the <code>model_controls</code> data frame. This
+slot is populated by <code><a href="../reference/build_aeme.html">build_aeme()</a></code>.</p>
+<p>See <a href="aeme-inputs.html#configuration-slot">Configuration
+Slot</a> in the AEME Inputs vignette for complete details.</p>
 </div>
 <div class="section level4">
 <h4 id="sec-observations">Observations<a class="anchor" aria-label="anchor" href="#sec-observations"></a>
 </h4>
-<p>The <code>observations</code> slot is a list that contains
-observations of in-lake (<code>lake</code>) variables (e.g. water
-temperature, chlorophyll-a, dissolved oxygen etc.) and water level
-(<code>level</code>). The observations are used to assess model
-performance using the function and also to calibrate the model using the
-<a href="https://github.com/limnotrack/aemetools" class="external-link">aemetools</a>
-package.</p>
-<p>The <code>lake</code> observations are stored in a data frame with
-the following columns:</p>
-<ul>
-<li><p><strong>Date</strong> - Date of the observation (character). The
-date must be in the format <code>YYYY-MM-DD HH:MM:SS</code>.</p></li>
-<li><p><strong>depth</strong> - Depth of the observation (m) (numeric).
-The depth must be in metres.</p></li>
-<li><p><strong>var</strong> - Variable name of the observation
-(character). The variable names an input preparation are designed in the
-<a href="aeme-inputs.html">AEME inputs article</a>.</p></li>
-<li><p><strong>value</strong> - Value of the observation
-(numeric).</p></li>
-</ul>
-<p>The <code>level</code> observations are stored in a data frame with
-the following columns:</p>
-<ul>
-<li><p><strong>Date</strong> - Date of the observation (character). The
-date must be in the format <code>YYYY-MM-DD HH:MM:SS</code>.</p></li>
-<li><p><strong>value</strong> - Value of the observation (numeric). The
-value must be in metres above sea level and within the range of the
-hypsograph elevations.</p></li>
-</ul>
+<p>The <code>observations</code> slot contains observational data for
+model validation, calibration, and initialization. It includes in-lake
+profiles (<code>lake</code>) and water level time series
+(<code>level</code>).</p>
+<p>See <a href="aeme-inputs.html#observations-slot">Observations
+Slot</a> in the AEME Inputs vignette for complete details.</p>
 </div>
 <div class="section level4">
 <h4 id="sec-inputs">Input<a class="anchor" aria-label="anchor" href="#sec-inputs"></a>
 </h4>
-<p>The <code>input</code> slot is a list that contains the following
-objects:</p>
-<ul>
-<li><p>init_profile - profile to initialise the lake simulation
-(data.frame). It has the columns: “depth”, “temperature” and “salt”. If
-this is not provided, it is automatically generated using the values in
-the <a href="#sec-model_controls"><code>model_controls</code></a>.</p></li>
-<li><p>init_depth - depth of the lake when initialising the model
-(vector), If not provided, will assume the depth from the
-<code>hypsograph</code>.</p></li>
-<li><p><strong>hypsograph</strong> - the lake hypsograph. This is a
-data.frame with the columns “elev”, “depth” and “area”. If you do not
-have this data, you can generate one using the
-<code><a href="../reference/generate_hypsograph.html">generate_hypsograph()</a></code> function.</p></li>
-<li><p><strong>meteo</strong> - the meteorological data. A data.frame
-which at a minimum must contain the columns date (“Date”), air
-temperature (“MET_tmpair), wind speed (”MET_wndspd”) and shortwave
-radiation (“MET_radswd”). See <a href="https://limnotrack.github.io/AEME/articles/aeme-inputs.html#meteorological-data" class="external-link">AEME
-Inputs</a></p></li>
-<li><p>use_lw - Logical switch to use longwave radiation. Defaults to
-TRUE.</p></li>
-<li><p><strong>Kw</strong> - the light extinction coefficient
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>m</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">m^{-1}</annotation></semantics></math>).</p></li>
-</ul>
+<p>The <code>input</code> slot contains core physical inputs required by
+all models: meteorological forcing, lake bathymetry (hypsograph), light
+extinction, and initial conditions.</p>
+<p><strong>Required fields</strong>: hypsograph, meteo, Kw</p>
+<p><strong>Optional fields</strong>: init_profile, init_depth,
+use_lw</p>
+<p>See <a href="aeme-inputs.html#input-slot">Input Slot</a> in the AEME
+Inputs vignette for complete details.</p>
 </div>
 <div class="section level4">
 <h4 id="sec-inflows">Inflows<a class="anchor" aria-label="anchor" href="#sec-inflows"></a>
 </h4>
-<p>The inflows slot is a list that contains the following objects:</p>
-<ul>
-<li><p>data - named list of data.frames which contain the columns date
-(“Date”), flow (“HYD_flow”;
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>m</mi><mn>3</mn></msup><mi>d</mi><mi>a</mi><msup><mi>y</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m^3 day^{-1}</annotation></semantics></math>).
-Temperature can also be provided (“HYD_temp”), however if not provided
-then it will be estimated using air temperature. The name for the list
-will be used as the stream identifier in each model. If
-<code>method</code> in the water_balance section is set
-to<code>3</code>, then “wbal” will be added to the data, this contains a
-separate inflow for each model, estimated using the different
-evaporation functions inside each model.</p></li>
-<li><p>factor - list of scaling factors to be applied to the inflows.
-Named according to each model.</p></li>
-</ul>
-<p>If no inflows are present then this slot will be empty.</p>
+<p>The <code>inflows</code> slot contains stream inflow data as named
+lists of data frames, plus optional scaling factors for each model.</p>
+<p>See <a href="aeme-inputs.html#inflows-slot">Inflows Slot</a> in the
+AEME Inputs vignette for complete details.</p>
 </div>
 <div class="section level4">
 <h4 id="sec-outflows">Outflows<a class="anchor" aria-label="anchor" href="#sec-outflows"></a>
 </h4>
-<p>The outflows slot is a list that contains the following objects:</p>
-<ul>
-<li><p>data - named list of data.frames which contain the columns date
-(“Date”), flow (“HYD_flow”;
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>m</mi><mn>3</mn></msup><mi>d</mi><mi>a</mi><msup><mi>y</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m^3 day^{-1}</annotation></semantics></math>).
-If <code>method</code> in the water_balance section is set to
-<code>2</code> or <code>3</code>, then “wbal” will be added to the data,
-this contains a separate outflow for each model, estimated using the
-different evaporation functions inside each model.</p></li>
-<li><p>factor - list of scaling factors to be applied to the outflows.
-Named according to each model. However, this can also be passed as a
-parameter in the model_parameters section and calibrated there. This is
-the preferred method for applying scaling factors.</p></li>
-<li><p>elevation - named list of elevations at which the outflows occur.
-This is important that it falls within the elevation range in the
-hypsograph. Set to <code>-1</code> if the outflow is at the
-surface.</p></li>
-</ul>
-<p>If no outflows are present then this slot will be empty.</p>
+<p>The <code>outflows</code> slot contains outlet data, outlet
+elevations, and optional scaling factors.</p>
+<p>See <a href="aeme-inputs.html#outflows-slot">Outflows Slot</a> in the
+AEME Inputs vignette for complete details.</p>
 </div>
 <div class="section level4">
 <h4 id="sec-water_balance">Water balance<a class="anchor" aria-label="anchor" href="#sec-water_balance"></a>
 </h4>
-<p>The water balance slot is generated internally when the
-<code><a href="../reference/build_aeme.html">build_aeme()</a></code> function is called and the
-<code>wb_method</code> is set to <code>2</code> or <code>3</code>. The
-slot contains:</p>
-<ul>
-<li><p>use: define which lake level to use. Can either be observed
-(“obs”) or modelled (“mod”) lake level. Default = “obs”.</p></li>
-<li><p>method: This can be <code>1</code> (no inflows or outflows) or
-<code>2</code> (outflows calculated) or <code>3</code> (inflows and
-outflows calculated). The default is <code>2</code> .</p></li>
-<li><p>data: list of two data.frames. “wbal” which contains the
-diagnostics for estimating evaporation and water balance for each model
-and “model” which contains the modelled lake water level if
-<code>use</code> is “mod”.</p></li>
-</ul>
+<p>The <code>water_balance</code> slot is generated internally by
+<code><a href="../reference/build_aeme.html">build_aeme()</a></code> when inflows or outflows need to be estimated
+from water level changes.</p>
+<p><strong>Fields</strong>: method (1, 2, or 3), use (“obs” or “mod”),
+data</p>
+<p>See <a href="aeme-inputs.html#water-balance-slot">Water Balance
+Slot</a> in the AEME Inputs vignette for complete details.</p>
 </div>
 <div class="section level4">
 <h4 id="sec-parameters">Parameters<a class="anchor" aria-label="anchor" href="#sec-parameters"></a>
 </h4>
-<p>The parameters slot contains a data.frame of parameters which are
-used when building the model. These will update the default model
-parameters or scale the meteorological or scale the inflows and outflows
-for each model.</p>
-<p>The columns for the parameters data.frame are:</p>
-<ul>
-<li><p>model - Either “dy_cd”, “glm_aed” and “gotm_wet”.</p></li>
-<li><p>file - Either the name of the file e.g. “glm3.nml” for model
-specific files or “met” for meteorological variables or “inf” for inflow
-or “wdr” for outflows. (Outflows were initiallly referred to as
-withdrawals, hence the “wdr” notation, this will probably be updated to
-reflect the current outflows slot soon…).</p></li>
-<li><p>name - Name of the parameter. If the name of the parameter is
-nested in a nml/yaml file, then the whole hierarchy needs to be provide
-with each level separated by a “/” e.g. “light/Kw” for Kw in
-GLM-AED.</p></li>
-<li><p>value - Value of the parameter.</p></li>
-<li><p>min - Minimum range of the parameter. This is used in the
-<code><a href="https://limnotrack.com/aemetools/reference/calib_aeme.html">aemetools::calib_aeme()</a></code> and
-<code><a href="https://limnotrack.com/aemetools/reference/sa_aeme.html">aemetools::sa_aeme()</a></code> function.</p></li>
-<li><p>max - Maximum range of the parameter. This is used in the
-<code><a href="https://limnotrack.com/aemetools/reference/calib_aeme.html">aemetools::calib_aeme()</a></code> and
-<code><a href="https://limnotrack.com/aemetools/reference/sa_aeme.html">aemetools::sa_aeme()</a></code> function.</p></li>
-<li><p>group - Phytoplankton group. This is only used for GOTM-WET
-phytoplankton parameters.</p></li>
-<li><p>index - Index of the parameter. This is only used for GLM-AED
-parameters that are vectors e.g. sediment parameters
-(“sed_temp_mean”).</p></li>
-<li><p>module - Module that the parameter is in. Not necessary, but is
-helpful for identifying which parameters are in which module for GLM-AED
-and GOTM-WET.</p></li>
-</ul>
-<p>There is a function <code><a href="../reference/get_aeme_parameters.html">get_aeme_parameters()</a></code> which allows
-you to select parameters based on model and module. See
-<code>?get_aeme_parameters()</code> for more details.</p>
+<p>The <code>parameters</code> slot contains a data frame of model
+parameter values for calibration, sensitivity analysis, and model
+configuration.</p>
+<p>See <a href="aeme-inputs.html#parameters-slot">Parameters Slot</a> in
+the AEME Inputs vignette for complete details.</p>
 </div>
 <div class="section level4">
 <h4 id="sec-output">Output<a class="anchor" aria-label="anchor" href="#sec-output"></a>
 </h4>
-<p>The output slot is a list that is updated when
-<code><a href="../reference/run_aeme.html">run_aeme()</a></code> is executed. Each time it is executed, variable
-outputs designated in the <code>model_controls</code> will be added to
-the <code>Aeme</code> object.</p>
+<p>The <code>output</code> slot stores model results after running
+<code><a href="../reference/run_aeme.html">run_aeme()</a></code>. Initially empty, it is populated with
+time-series data for each model and variable.</p>
+<p>See <a href="aeme-inputs.html#output-slot">Output Slot</a> in the
+AEME Inputs vignette for complete details.</p>
 </div>
 </div>
 <div class="section level3">
@@ -460,7 +693,7 @@ is stored in the <code>configuration</code> slot of the
 objects. The object can also be created from a YAML file using the
 <code><a href="../reference/yaml_to_aeme.html">yaml_to_aeme()</a></code> function. The YAML file contains all the
 information required to run the model.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define lake list</span></span>
 <span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">36.88921</span></span>
 <span><span class="va">lon</span> <span class="op">&lt;-</span> <span class="fl">174.4669</span></span>
@@ -470,7 +703,8 @@ information required to run the model.</p>
 <span><span class="va">lake</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    latitude <span class="op">=</span> <span class="va">lat</span>,</span>
 <span>    longitude <span class="op">=</span> <span class="va">lon</span>,</span>
-<span>    <span class="co"># elevation = elevation,</span></span>
+<span>    name <span class="op">=</span> <span class="st">"lake"</span>,</span>
+<span>    id <span class="op">=</span> <span class="st">"123"</span>,</span>
 <span>    depth <span class="op">=</span> <span class="va">depth</span>,</span>
 <span>    area <span class="op">=</span> <span class="va">area</span></span>
 <span>  <span class="op">)</span></span>
@@ -493,7 +727,7 @@ information required to run the model.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aeme_constructor.html">aeme_constructor</a></span><span class="op">(</span>lake <span class="op">=</span> <span class="va">lake</span>, time <span class="op">=</span> <span class="va">time</span>, input <span class="op">=</span> <span class="va">input</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">slotNames</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "lake"          "time"          "configuration" "observations" </span></span>
 <span><span class="co">#&gt;  [5] "input"         "inflows"       "outflows"      "water_balance"</span></span>
@@ -508,31 +742,31 @@ information required to run the model.</p>
 slot names of the <code>aeme</code> object. For example, the
 <code>lake</code> slot can be manipulated using the <code>lake</code>
 function.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load lake data</span></span>
 <span><span class="va">lke</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lake.html">lake</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="co"># Print lake data to console</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lke</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $name</span></span>
-<span><span class="co">#&gt; [1] "Wainamu"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $id</span></span>
-<span><span class="co">#&gt; [1] "LID45819"</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $latitude</span></span>
 <span><span class="co">#&gt; [1] -36.88921</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $longitude</span></span>
 <span><span class="co">#&gt; [1] 174.4669</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $elevation</span></span>
-<span><span class="co">#&gt; [1] 23.2</span></span>
+<span><span class="co">#&gt; $name</span></span>
+<span><span class="co">#&gt; [1] "lake"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $id</span></span>
+<span><span class="co">#&gt; [1] "123"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $depth</span></span>
-<span><span class="co">#&gt; [1] 13.48</span></span>
+<span><span class="co">#&gt; [1] 13.08</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $area</span></span>
 <span><span class="co">#&gt; [1] 153648</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $elevation</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
 <span><span class="co"># Change lake name</span></span>
 <span><span class="va">lke</span><span class="op">[[</span><span class="st">"name"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"AEME"</span></span>
@@ -546,58 +780,57 @@ function.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Lake</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; AEME (ID: LID45819)</span></span>
+<span><span class="co">#&gt; AEME (ID: 123)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Lat: -36.89; Lon: 174.47</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Elev: 23.2m; Depth: 13.48m; Area: 153648 m2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Elev: 0m; Depth: 13.08m; Area: 153648 m2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2020-07-01; Stop: 2022-06-30; Time step: 3600</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Configuration</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model: glm_aed and gotm_wet</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Path: <span style="color: #BB0000;">Not set</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Path: <span style="color: #00BB00;">D:/a/AEME/AEME/vignettes</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model controls: <span style="color: #00BB00;">Present</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Use biogeochemical model:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Use biogeochemical model: <span style="color: #BB0000;">No</span></span></span>
 <span><span class="co">#&gt; ┌ <span style="color: #00BBBB;">Model Configuration</span> ─────────────────────────────────────────┐</span></span>
 <span><span class="co">#&gt; │       <span style="color: #00BBBB;">Model</span>              <span style="color: #00BBBB;">Physical</span>         <span style="color: #00BBBB;">Biogeochemical</span>     │</span></span>
 <span><span class="co">#&gt; │ ---                                                          │</span></span>
 <span><span class="co">#&gt; │       DY-CD               <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
-<span><span class="co">#&gt; │      GLM-AED             <span style="color: #00BB00;">Present</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
-<span><span class="co">#&gt; │      GOTM-WET            <span style="color: #00BB00;">Present</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │      GLM-AED              <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │      GOTM-WET             <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; └──────────────────────────────────────────────────────────────┘</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Observations</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Lake: <span style="color: #00BB00;">Present</span>; Level: <span style="color: #BB0000;">Absent</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Lake: <span style="color: #BB0000;">Absent</span>; Level: <span style="color: #BB0000;">Absent</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Input</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Initial profile: <span style="color: #00BB00;">Present</span>; Initial depth: 13.48m</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Hypsograph: <span style="color: #00BB00;">Present</span> (n=53)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Meteo: <span style="color: #00BB00;">Present</span>; Use longwave: TRUE; Kw: 1.21428571428571</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Initial profile: <span style="color: #BB0000;">Absent</span>; Initial depth: 13.08m</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Hypsograph: <span style="color: #00BB00;">Present</span> (n=43)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Meteo: <span style="color: #00BB00;">Present</span>; Use longwave: TRUE; Kw: 1.21</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Inflows</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of inflows: 6; Names: NZS2038486, NZS2038499, NZS2038500, NZS2038304,</span></span>
-<span><span class="co">#&gt;   lumped, precip</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of inflows: 0; Names: None</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Outflows</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of outflows: 1; Names: wbal; Elevations:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of outflows: 0; Names: None; Elevations: N/A</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Water Balance</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Method: 2; Use: obs</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Modelled: <span style="color: #BB0000;">Absent</span>; Water balance: <span style="color: #00BB00;">Present</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Modelled: <span style="color: #BB0000;">Absent</span>; Water balance: <span style="color: #BB0000;">Absent</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Parameters</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of parameters: 18</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of parameters: 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Output</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -614,44 +847,56 @@ function.</p>
 applied to the different slots of the <code>aeme</code> object. For
 example, the <code>lake</code> slot can be visualised using the
 <code>plot</code> function.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"lake"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro-aeme_files/figure-html/aeme-visualisation-lake-1.png" class="r-plt" alt="" width="672"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="st">"input"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_met_tile.html">plot_met_tile</a></span><span class="op">(</span><span class="va">aeme</span>, var_aeme <span class="op">=</span> <span class="st">"MET_tmpair"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro-aeme_files/figure-html/aeme-visualisation-input-1.png" class="r-plt" alt="" width="672"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_hyps.html">plot_hyps</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
+<p><img src="intro-aeme_files/figure-html/plot-hypsograph-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="build-model-ensemble">Build Model Ensemble<a class="anchor" aria-label="anchor" href="#build-model-ensemble"></a>
+<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span>
-<span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"aeme"</span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
-<span>                   model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
-<span>                   ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ┌─────┬───────────┬────────────┬────────────┬────────────┐</span></span>
-<span><span class="co">#&gt; │ zone│ O2 (mg/L) │ NH4 (mg/L) │ NO3 (mg/L) │ FRP (mg/L) │</span></span>
-<span><span class="co">#&gt; ├─────┼───────────┼────────────┼────────────┼────────────┤</span></span>
-<span><span class="co">#&gt; │Zone1│ 0.29      │ 0.064      │   NA       │ 0.012      │</span></span>
-<span><span class="co">#&gt; │Zone2│  5.3      │ 0.005      │   NA       │ 0.008      │</span></span>
-<span><span class="co">#&gt; └─────┴───────────┴────────────┴────────────┴────────────┘</span></span>
-<span><span class="co">#&gt; ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐</span></span>
-<span><span class="co">#&gt; │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │</span></span>
-<span><span class="co">#&gt; ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤</span></span>
-<span><span class="co">#&gt; │   1│    0      │ 2.48      │   11      │ 13.5      │ 12.2     │ 3.45e+04│ 0.224   │-38.4│  5.7│-0.4│0.0922│</span></span>
-<span><span class="co">#&gt; │   2│ 2.48      │   19      │    0      │   11      │  5.5     │ 1.19e+05│ 0.776   │-21.1│0.558│ 0.1│0.0338│</span></span>
-<span><span class="co">#&gt; └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘</span></span>
-<span><span class="co">#&gt; ┌──────────────┬───────────────┬───────────────┬───────────────┐</span></span>
-<span><span class="co">#&gt; │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│</span></span>
-<span><span class="co">#&gt; ├──────────────┼───────────────┼───────────────┼───────────────┤</span></span>
-<span><span class="co">#&gt; │ -24.993      │ 1.71          │ -0.012        │ 0.047         │</span></span>
-<span><span class="co">#&gt; └──────────────┴───────────────┴───────────────┴───────────────┘</span></span>
-<span><span class="va">aeme</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
+<p>Now that you understand the basics of AEME, you can explore more
+advanced topics and practical applications in our other vignettes:</p>
+<div class="section level3">
+<h3 id="getting-started-with-aeme">Getting Started with AEME<a class="anchor" aria-label="anchor" href="#getting-started-with-aeme"></a>
+</h3>
+<ul>
+<li><p><strong><a href="setup-new-lake.html">Set up AEME for a new
+lake</a></strong> - A practical tutorial that walks you through setting
+up the model for a new lake, including how to obtain and prepare input
+data.</p></li>
+<li><p><strong><a href="aeme-inputs.html">AEME Inputs</a></strong> -
+Comprehensive reference documentation on the input requirements and S4
+structure of the AEME object.</p></li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="advanced-applications">Advanced Applications<a class="anchor" aria-label="anchor" href="#advanced-applications"></a>
+</h3>
+<ul>
+<li><p><strong><a href="../articles/lernzmp-aeme.html">Using LERNZmp
+with AEME</a></strong> - Learn how to use the Lake Ecosystem Research
+New Zealand Model Platform (LERNZmp) web interface with AEME.</p></li>
+<li><p><strong><a href="../articles/reservoir-aeme.html">Reservoir
+Simulation with Multiple Outlets</a></strong> - Demonstrates how to
+model reservoirs with regulated water levels and multiple outlets at
+different depths.</p></li>
+<li><p><strong><a href="../articles/glm-aed.html">GLM-AED: The General
+Lake Model coupled with AED</a></strong> - Detailed guide on using the
+GLM-AED model within the AEME framework, including parameter libraries
+and configuration.</p></li>
+<li><p><strong><a href="../articles/rotoehu-water-balance.html">Lake
+Rotoehu Water Balance and Evaporation</a></strong> - A case study
+demonstrating water balance approaches and evaporation estimation for a
+shallow lake with ungauged inflows.</p></li>
+</ul>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

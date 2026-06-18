@@ -5,7 +5,7 @@ Plot a tile plot of meteorological data
 ## Usage
 
 ``` r
-plot_met_tile(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE)
+plot_met_tile(aeme, var_aeme = "MET_tmpair", use_hydro_year = TRUE, var_inp)
 ```
 
 ## Arguments
@@ -14,7 +14,7 @@ plot_met_tile(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE)
 
   Aeme object.
 
-- var_inp:
+- var_aeme:
 
   Character. Variable to plot. Can be one of:
 
@@ -38,7 +38,13 @@ plot_met_tile(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE)
 
 - use_hydro_year:
 
-  Logical. If `TRUE`, the hydrological year is used.
+  Logical. If `TRUE`, the hydrological year is used. The hydrological
+  year starts in October for the northern hemisphere and in July for the
+  southern hemisphere. If `FALSE`, the calendar year is used.
+
+- var_inp:
+
+  Character. **\[deprecated\]** Use `var_aeme` instead.
 
 ## Value
 

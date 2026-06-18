@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,65 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/limnotrack/AEME/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-aeme-introduction-and-inputs/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.2" id="aeme-032">AEME 0.3.2<a class="anchor" aria-label="anchor" href="#aeme-032"></a></h2>
+<div class="section level3">
+<h3 id="new-functions-0-3-2">New functions<a class="anchor" aria-label="anchor" href="#new-functions-0-3-2"></a></h3>
+<ul><li>
+<code><a href="../reference/get_met_vars.html">get_met_vars()</a></code> — get the names and units for meteorological variables used in AEME. Returns a data frame or named vector of variable names and their corresponding column names and units.</li>
+<li>
+<code><a href="../reference/plot_wbal_ts.html">plot_wbal_ts()</a></code> — plot water balance components as a time series, with optional overlay of model output on estimated components.</li>
+<li>
+<code><a href="../reference/sat_vapour_pressure.html">sat_vapour_pressure()</a></code> — calculate saturation vapour pressure (exported for use in <code>aemetools</code> package).</li>
+<li>
+<code><a href="../reference/latent_heat_flux.html">latent_heat_flux()</a></code> — calculate latent heat flux from bulk aerodynamic theory (exported for use in <code>aemetools</code> package).</li>
+<li>
+<code><a href="../reference/flux_to_evap.html">flux_to_evap()</a></code> — convert energy flux to evaporation rate (exported for use in <code>aemetools</code> package).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-3-2">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-3-2"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/plot_met_tile.html">plot_met_tile()</a></code></strong> — renamed parameter <code>var_inp</code> to <code>var_aeme</code> for consistency with other functions. The old parameter name is deprecated but still supported with a soft deprecation warning.</li>
+<li>
+<strong><code><a href="../reference/plot_output.html">plot_output()</a></code></strong> / <strong><code><a href="../reference/plot_output_base.html">plot_output_base()</a></code></strong> — reordered function arguments to place <code>var_sim</code> before <code>model</code> for improved consistency and usability.</li>
+<li>
+<strong><code><a href="../reference/get_var.html">get_var()</a></code></strong> — added <code>depth_ref</code> parameter to specify whether depth should be referenced from surface or bottom.</li>
+<li>
+<strong><code><a href="../reference/standardise_met.html">standardise_met()</a></code></strong> — improved meteorological data standardisation with better handling of date columns and time step checks.</li>
+<li>
+<strong>Hypsograph extrapolation</strong> — added support for hypsograph extrapolation using <code>bathytools</code> package functions.</li>
+<li>
+<strong>Water balance calculations</strong> — improved handling of overflow components and outflow printing; better support for cases with only one outflow component.</li>
+<li>
+<strong>Exported internal utilities</strong> — <code><a href="../reference/cli_safe.html">cli_safe()</a></code> and other utility functions now exported for use in <code>aemetools</code> package.</li>
+<li>
+<strong>Documentation</strong> — comprehensive updates to vignettes:
+<ul><li>Expanded Introduction to AEME vignette with model details, ensemble approach, and cross-references to other vignettes.</li>
+<li>Comprehensive update to AEME Inputs vignette with detailed S4 object structure and input requirements.</li>
+<li>Enhanced Set up AEME for a new lake vignette with cross-references, troubleshooting tips, and next steps.</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-vignettes-0-3-2">New vignettes<a class="anchor" aria-label="anchor" href="#new-vignettes-0-3-2"></a></h3>
+<ul><li>
+<strong>Lake Rotoehu Water Balance and Evaporation</strong> (<code>vignettes/articles/rotoehu-water-balance.Rmd</code>) — case study demonstrating water balance approaches, evaporation estimation from bulk aerodynamic theory, and surface temperature estimation for a shallow lake with ungauged inflows.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="dependencies-0-3-2">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies-0-3-2"></a></h3>
+<ul><li>Added <code>bathytools</code> to Suggests for hypsograph extrapolation functionality.</li>
+<li>Added <code>lifecycle</code> to Imports for managing deprecations.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-2"></a></h3>
+<ul><li>Fixed pathing bugs in water balance calculations.</li>
+<li>Improved error handling in water balance tests.</li>
+<li>Fixed column name handling in various output reading functions.</li>
+<li>Ensured evaporation values are always positive in water balance calculations.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="aeme-031">AEME 0.3.1<a class="anchor" aria-label="anchor" href="#aeme-031"></a></h2>
 <div class="section level3">
@@ -86,7 +142,7 @@
 <li>
 <strong><code><a href="../reference/run_glm_aed_diagnostics.html">run_glm_aed_diagnostics()</a></code></strong> — <code>plot</code> argument now defaults to <code>FALSE</code>.</li>
 <li>
-<strong><code>calc_water_balance()</code> / <code><a href="../reference/estimate_lake_wlev.html">estimate_lake_wlev()</a></code> / <code><a href="../reference/estimate_surface_temperature.html">estimate_surface_temperature()</a></code> / <code><a href="../reference/standardise_inflow.html">standardise_inflow()</a></code> / <code>build_glm()</code></strong> — console messaging overhauled using the new <code>cli_safe()</code> internal helper, which respects the <code>AEME.inform</code> option and supports indented output. Missing inflow state variables are now reported with their filled default values rather than a generic warning.</li>
+<strong><code>calc_water_balance()</code> / <code><a href="../reference/estimate_lake_wlev.html">estimate_lake_wlev()</a></code> / <code><a href="../reference/estimate_surface_temperature.html">estimate_surface_temperature()</a></code> / <code><a href="../reference/standardise_inflow.html">standardise_inflow()</a></code> / <code>build_glm()</code></strong> — console messaging overhauled using the new <code><a href="../reference/cli_safe.html">cli_safe()</a></code> internal helper, which respects the <code>AEME.inform</code> option and supports indented output. Missing inflow state variables are now reported with their filled default values rather than a generic warning.</li>
 <li>
 <strong><code>clitable</code></strong> moved from <code>Suggests</code> to <code>Imports</code>; <code>knitr</code> moved from <code>Imports</code> to <code>Suggests</code>; <code>psychrolib</code> removed from <code>Imports</code> (psychrometric calculations now handled internally via <code><a href="../reference/get_mean_sea_level_pressure.html">get_mean_sea_level_pressure()</a></code> / <code><a href="../reference/get_station_pressure.html">get_station_pressure()</a></code>).</li>
 </ul></div>

@@ -1,5 +1,81 @@
 # Changelog
 
+## AEME 0.3.2
+
+### New functions
+
+- [`get_met_vars()`](https://limnotrack.com/reference/get_met_vars.md) —
+  get the names and units for meteorological variables used in AEME.
+  Returns a data frame or named vector of variable names and their
+  corresponding column names and units.
+- [`plot_wbal_ts()`](https://limnotrack.com/reference/plot_wbal_ts.md) —
+  plot water balance components as a time series, with optional overlay
+  of model output on estimated components.
+- [`sat_vapour_pressure()`](https://limnotrack.com/reference/sat_vapour_pressure.md)
+  — calculate saturation vapour pressure (exported for use in
+  `aemetools` package).
+- [`latent_heat_flux()`](https://limnotrack.com/reference/latent_heat_flux.md)
+  — calculate latent heat flux from bulk aerodynamic theory (exported
+  for use in `aemetools` package).
+- [`flux_to_evap()`](https://limnotrack.com/reference/flux_to_evap.md) —
+  convert energy flux to evaporation rate (exported for use in
+  `aemetools` package).
+
+### Improvements
+
+- **[`plot_met_tile()`](https://limnotrack.com/reference/plot_met_tile.md)**
+  — renamed parameter `var_inp` to `var_aeme` for consistency with other
+  functions. The old parameter name is deprecated but still supported
+  with a soft deprecation warning.
+- **[`plot_output()`](https://limnotrack.com/reference/plot_output.md)**
+  /
+  **[`plot_output_base()`](https://limnotrack.com/reference/plot_output_base.md)**
+  — reordered function arguments to place `var_sim` before `model` for
+  improved consistency and usability.
+- **[`get_var()`](https://limnotrack.com/reference/get_var.md)** — added
+  `depth_ref` parameter to specify whether depth should be referenced
+  from surface or bottom.
+- **[`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)**
+  — improved meteorological data standardisation with better handling of
+  date columns and time step checks.
+- **Hypsograph extrapolation** — added support for hypsograph
+  extrapolation using `bathytools` package functions.
+- **Water balance calculations** — improved handling of overflow
+  components and outflow printing; better support for cases with only
+  one outflow component.
+- **Exported internal utilities** —
+  [`cli_safe()`](https://limnotrack.com/reference/cli_safe.md) and other
+  utility functions now exported for use in `aemetools` package.
+- **Documentation** — comprehensive updates to vignettes:
+  - Expanded Introduction to AEME vignette with model details, ensemble
+    approach, and cross-references to other vignettes.
+  - Comprehensive update to AEME Inputs vignette with detailed S4 object
+    structure and input requirements.
+  - Enhanced Set up AEME for a new lake vignette with cross-references,
+    troubleshooting tips, and next steps.
+
+### New vignettes
+
+- **Lake Rotoehu Water Balance and Evaporation**
+  (`vignettes/articles/rotoehu-water-balance.Rmd`) — case study
+  demonstrating water balance approaches, evaporation estimation from
+  bulk aerodynamic theory, and surface temperature estimation for a
+  shallow lake with ungauged inflows.
+
+### Dependencies
+
+- Added `bathytools` to Suggests for hypsograph extrapolation
+  functionality.
+- Added `lifecycle` to Imports for managing deprecations.
+
+### Bug fixes
+
+- Fixed pathing bugs in water balance calculations.
+- Improved error handling in water balance tests.
+- Fixed column name handling in various output reading functions.
+- Ensured evaporation values are always positive in water balance
+  calculations.
+
 ## AEME 0.3.1
 
 ### New functions
@@ -67,10 +143,10 @@
   /
   [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md)
   / `build_glm()`** — console messaging overhauled using the new
-  `cli_safe()` internal helper, which respects the `AEME.inform` option
-  and supports indented output. Missing inflow state variables are now
-  reported with their filled default values rather than a generic
-  warning.
+  [`cli_safe()`](https://limnotrack.com/reference/cli_safe.md) internal
+  helper, which respects the `AEME.inform` option and supports indented
+  output. Missing inflow state variables are now reported with their
+  filled default values rather than a generic warning.
 - **`clitable`** moved from `Suggests` to `Imports`; `knitr` moved from
   `Imports` to `Suggests`; `psychrolib` removed from `Imports`
   (psychrometric calculations now handled internally via

@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,7 +83,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>AEME Inputs</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/vignettes/aeme-inputs.Rmd" class="external-link"><code>vignettes/aeme-inputs.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-aeme-introduction-and-inputs/vignettes/aeme-inputs.Rmd" class="external-link"><code>vignettes/aeme-inputs.Rmd</code></a></small>
       <div class="d-none name"><code>aeme-inputs.Rmd</code></div>
     </div>
 
@@ -96,60 +96,444 @@
 with most lake ecosystem modelling frameworks. All variable names are
 defined in the <code>key_naming</code> data frame, which maps
 human-readable names to AEME variable codes and their units.</p>
+<p>This vignette provides a comprehensive reference for all AEME inputs,
+organized by the slots of the S4 <code>Aeme</code> object. Understanding
+this structure is essential for preparing data and configuring models.
+For a high-level overview of AEME and the ensemble approach, see the <a href="intro-aeme.html">Introduction to AEME</a> vignette. For a
+practical tutorial on setting up a new lake, see <a href="setup-new-lake.html">Setting up AEME for a new lake</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="lake">Lake<a class="anchor" aria-label="anchor" href="#lake"></a>
+<h2 id="aeme-s4-structure">AEME S4 Structure<a class="anchor" aria-label="anchor" href="#aeme-s4-structure"></a>
 </h2>
-<p>The <code>lake</code> list object provides physical and geographic
-metadata about the waterbody. Required fields are:</p>
+<p>The <code>Aeme</code> object is an S4 class that contains all
+information required to run the model ensemble. The object has ten
+slots, each containing specific types of input data or model
+configuration:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>lake</strong> - Lake metadata (location, dimensions,
+identification)</li>
+<li>
+<strong>time</strong> - Temporal simulation settings (start, stop,
+timestep, spin-up)</li>
+<li>
+<strong>configuration</strong> - Model configurations and
+controls</li>
+<li>
+<strong>parameters</strong> - Model parameter values for
+calibration</li>
+<li>
+<strong>observations</strong> - Observational data for validation
+and initialization</li>
+<li>
+<strong>input</strong> - Core inputs (meteorology, hypsograph, light
+extinction)</li>
+<li>
+<strong>inflows</strong> - Stream inflow data and scaling
+factors</li>
+<li>
+<strong>outflows</strong> - Outlet data, elevations, and scaling
+factors</li>
+<li>
+<strong>water_balance</strong> - Water balance configuration and
+calculations</li>
+<li>
+<strong>output</strong> - Model output (populated after running
+models)</li>
+</ol>
+<p>Each of these slots is described in detail below.</p>
+</div>
+<div class="section level2">
+<h2 id="lake-slot">Lake Slot<a class="anchor" aria-label="anchor" href="#lake-slot"></a>
+</h2>
+<p>The <code>lake</code> slot is a list object that provides physical
+and geographic metadata about the waterbody. This information is used
+for model initialization, spatial calculations (e.g., solar radiation),
+and metadata tracking.</p>
+<div class="section level3">
+<h3 id="required-fields">Required Fields<a class="anchor" aria-label="anchor" href="#required-fields"></a>
+</h3>
+<p>All fields marked with <strong>bold</strong> are required:</p>
 <table class="table">
+<colgroup>
+<col width="19%">
+<col width="16%">
+<col width="27%">
+<col width="36%">
+</colgroup>
 <thead><tr class="header">
 <th>Field</th>
 <th>Type</th>
+<th>Required</th>
 <th>Description</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>name</code></td>
+<td><strong><code>name</code></strong></td>
 <td>character</td>
+<td>Yes</td>
 <td>Name of the lake or reservoir</td>
 </tr>
 <tr class="even">
-<td><code>id</code></td>
-<td>character / numeric</td>
-<td>Unique identifier</td>
+<td><strong><code>id</code></strong></td>
+<td>character/numeric</td>
+<td>Yes</td>
+<td>Unique identifier (e.g., database ID)</td>
 </tr>
 <tr class="odd">
-<td><code>latitude</code></td>
+<td><strong><code>latitude</code></strong></td>
 <td>numeric</td>
-<td>Latitude (degrees North)</td>
+<td>Yes</td>
+<td>Latitude in decimal degrees (North positive)</td>
 </tr>
 <tr class="even">
-<td><code>longitude</code></td>
+<td><strong><code>longitude</code></strong></td>
 <td>numeric</td>
-<td>Longitude (degrees East)</td>
+<td>Yes</td>
+<td>Longitude in decimal degrees (East positive)</td>
 </tr>
 <tr class="odd">
-<td><code>elevation</code></td>
+<td><strong><code>elevation</code></strong></td>
 <td>numeric</td>
+<td>Yes</td>
 <td>Surface elevation above sea level (m)</td>
 </tr>
 <tr class="even">
-<td><code>depth</code></td>
+<td><strong><code>depth</code></strong></td>
 <td>numeric</td>
+<td>Yes</td>
 <td>Maximum water depth (m)</td>
 </tr>
 <tr class="odd">
-<td><code>area</code></td>
+<td><strong><code>area</code></strong></td>
 <td>numeric</td>
-<td>Surface area at maximum depth (m²)</td>
+<td>Yes</td>
+<td>Surface area at full depth (m²)</td>
+</tr>
+<tr class="even">
+<td><code>shape</code></td>
+<td>sf object</td>
+<td>No</td>
+<td>Lake polygon (used to calculate lat/lon if not provided)</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section level3">
+<h3 id="how-to-obtain-lake-data">How to Obtain Lake Data<a class="anchor" aria-label="anchor" href="#how-to-obtain-lake-data"></a>
+</h3>
+<ul>
+<li>
+<strong>Location (lat/lon)</strong>: GPS measurements, online map
+tools, or centroid of shapefile</li>
+<li>
+<strong>Elevation</strong>: Digital elevation models (DEM),
+topographic maps, or lake databases. In New Zealand, use the LINZ DEM
+(see <a href="setup-new-lake.html#elevation-data">setup
+vignette</a>)</li>
+<li>
+<strong>Depth</strong>: Bathymetric surveys, lake databases, or
+published literature</li>
+<li>
+<strong>Area</strong>: Calculated from shapefile using
+<code><a href="https://r-spatial.github.io/sf/reference/geos_measures.html" class="external-link">sf::st_area()</a></code>, satellite imagery, or lake databases</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="validation">Validation<a class="anchor" aria-label="anchor" href="#validation"></a>
+</h3>
+<p>The <code><a href="../reference/aeme_constructor.html">aeme_constructor()</a></code> function validates that: -
+Latitude is between -90 and 90 degrees - Longitude is between -180 and
+180 degrees<br>
+- Depth and area are positive numbers - Elevation is numeric</p>
+</div>
+<div class="section level3">
+<h3 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
+</h3>
 <p>The <code>depth</code> and <code>area</code> fields are used to
 generate a simple cone-shaped hypsograph if none is provided in the
-<code>input</code> slot. For more accurate simulations it is strongly
-recommended to supply a measured hypsograph.</p>
+<code>input</code> slot. For more accurate simulations it is
+<strong>strongly recommended</strong> to supply a measured hypsograph
+(see <a href="#input-slot">Input Slot</a>).</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="time-slot">Time Slot<a class="anchor" aria-label="anchor" href="#time-slot"></a>
+</h2>
+<p>The <code>time</code> slot is a list object that defines the temporal
+extent and resolution of the simulation. It also specifies spin-up
+periods for model initialization.</p>
+<div class="section level3">
+<h3 id="required-fields-1">Required Fields<a class="anchor" aria-label="anchor" href="#required-fields-1"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="19%">
+<col width="16%">
+<col width="27%">
+<col width="36%">
+</colgroup>
+<thead><tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><strong><code>start</code></strong></td>
+<td>character/POSIXct</td>
+<td>Yes</td>
+<td>Start date and time of simulation</td>
+</tr>
+<tr class="even">
+<td><strong><code>stop</code></strong></td>
+<td>character/POSIXct</td>
+<td>Yes</td>
+<td>End date and time of simulation</td>
+</tr>
+<tr class="odd">
+<td><code>timestep</code></td>
+<td>numeric</td>
+<td>No</td>
+<td>Model integration timestep in seconds (default: 3600)</td>
+</tr>
+<tr class="even">
+<td><code>spin_up</code></td>
+<td>list</td>
+<td>No</td>
+<td>Named list of spin-up days for each model</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="date-format">Date Format<a class="anchor" aria-label="anchor" href="#date-format"></a>
+</h3>
+<p>Dates must be provided in the format <code>YYYY-MM-DD HH:MM:SS</code>
+(e.g., <code>"2020-01-01 00:00:00"</code>). If only the date is
+provided, the time defaults to midnight (00:00:00).</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  start <span class="op">=</span> <span class="st">"2020-01-01 00:00:00"</span>,</span>
+<span>  stop  <span class="op">=</span> <span class="st">"2021-12-31 23:00:00"</span>,</span>
+<span>  timestep <span class="op">=</span> <span class="fl">3600</span>  <span class="co"># 1 hour in seconds</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="spin-up-period">Spin-up Period<a class="anchor" aria-label="anchor" href="#spin-up-period"></a>
+</h3>
+<p>The spin-up period allows models to initialize and reach equilibrium
+before the main simulation period. During spin-up, models run but output
+is discarded. This is especially important for water quality models.</p>
+<p>Spin-up is specified as a named list with the number of days for each
+model:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  start <span class="op">=</span> <span class="st">"2020-01-01 00:00:00"</span>,</span>
+<span>  stop  <span class="op">=</span> <span class="st">"2021-12-31 23:00:00"</span>,</span>
+<span>  spin_up <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    dy_cd <span class="op">=</span> <span class="fl">30</span>,      <span class="co"># DYRESM-CAEDYM: 30 days</span></span>
+<span>    glm_aed <span class="op">=</span> <span class="fl">30</span>,    <span class="co"># GLM-AED: 30 days</span></span>
+<span>    gotm_wet <span class="op">=</span> <span class="fl">10</span>    <span class="co"># GOTM-WET: 10 days</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>If spin-up is not specified, default values are used (typically 0-2
+days).</p>
+</div>
+<div class="section level3">
+<h3 id="timestep">Timestep<a class="anchor" aria-label="anchor" href="#timestep"></a>
+</h3>
+<p>The <code>timestep</code> defines the temporal resolution of the
+simulation in seconds: - <strong>3600</strong> (1 hour) - Standard for
+most applications - <strong>1800</strong> (30 minutes) - Higher
+resolution for short-term dynamics - <strong>86400</strong> (1 day) -
+Coarser resolution for long-term simulations</p>
+<p>Note that each model may internally adjust the timestep based on
+stability requirements.</p>
+</div>
+<div class="section level3">
+<h3 id="time-zones">Time Zones<a class="anchor" aria-label="anchor" href="#time-zones"></a>
+</h3>
+<p>All dates should be in the local time zone of the lake. The models do
+not explicitly handle time zones but use solar position calculations
+based on latitude and longitude.</p>
+</div>
+<div class="section level3">
+<h3 id="time-zones-1">Time Zones<a class="anchor" aria-label="anchor" href="#time-zones-1"></a>
+</h3>
+<p>All dates should be in the local time zone of the lake. The models do
+not explicitly handle time zones but use solar position calculations
+based on latitude and longitude.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="input-slot">Input Slot<a class="anchor" aria-label="anchor" href="#input-slot"></a>
+</h2>
+<p>The <code>input</code> slot is a list containing the core physical
+inputs required by all models: meteorological forcing, lake hypsography,
+light extinction, and initial conditions.</p>
+<div class="section level3">
+<h3 id="required-fields-2">Required Fields<a class="anchor" aria-label="anchor" href="#required-fields-2"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="19%">
+<col width="16%">
+<col width="27%">
+<col width="36%">
+</colgroup>
+<thead><tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><strong><code>hypsograph</code></strong></td>
+<td>data.frame</td>
+<td>Yes</td>
+<td>Elevation-area-depth relationship</td>
+</tr>
+<tr class="even">
+<td><strong><code>meteo</code></strong></td>
+<td>data.frame</td>
+<td>Yes</td>
+<td>Meteorological forcing data</td>
+</tr>
+<tr class="odd">
+<td><strong><code>Kw</code></strong></td>
+<td>numeric</td>
+<td>Yes</td>
+<td>Light extinction coefficient (m⁻¹)</td>
+</tr>
+<tr class="even">
+<td><code>init_profile</code></td>
+<td>data.frame</td>
+<td>No</td>
+<td>Initial temperature and salinity profile</td>
+</tr>
+<tr class="odd">
+<td><code>init_depth</code></td>
+<td>numeric</td>
+<td>No</td>
+<td>Initial water depth (m; defaults to max depth)</td>
+</tr>
+<tr class="even">
+<td><code>use_lw</code></td>
+<td>logical</td>
+<td>No</td>
+<td>Use longwave radiation (default: TRUE)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="hypsograph">Hypsograph<a class="anchor" aria-label="anchor" href="#hypsograph"></a>
+</h3>
+<p>The hypsograph defines the lake bathymetry as a relationship between
+elevation, depth, and surface area. It <strong>must</strong> contain
+three columns:</p>
+<table class="table">
+<thead><tr class="header">
+<th>Column</th>
+<th>Units</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>elev</code></td>
+<td>m</td>
+<td>Elevation above sea level</td>
+</tr>
+<tr class="even">
+<td><code>depth</code></td>
+<td>m</td>
+<td>Depth below surface (negative values)</td>
+</tr>
+<tr class="odd">
+<td><code>area</code></td>
+<td>m²</td>
+<td>Horizontal surface area at this elevation</td>
+</tr>
+</tbody>
+</table>
+<p>The hypsograph must span from the lake bottom to above the maximum
+expected water level.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example hypsograph for a 10m deep lake at 100m elevation</span></span>
+<span><span class="va">hypsograph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  elev  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">105</span>, <span class="fl">100</span>, <span class="fl">95</span>, <span class="fl">90</span><span class="op">)</span>,       <span class="co"># Surface to bottom</span></span>
+<span>  depth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">0</span>, <span class="op">-</span><span class="fl">5</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span>,          <span class="co"># Depths (negative below surface)</span></span>
+<span>  area  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200000</span>, <span class="fl">150000</span>, <span class="fl">80000</span>, <span class="fl">0</span><span class="op">)</span>  <span class="co"># Areas (m²)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>If you don’t have measured bathymetry, you can generate an idealized
+hypsograph using <code><a href="../reference/generate_hypsograph.html">generate_hypsograph()</a></code>:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hypsograph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_hypsograph.html">generate_hypsograph</a></span><span class="op">(</span></span>
+<span>  max_depth <span class="op">=</span> <span class="fl">10</span>,              <span class="co"># Maximum depth (m)</span></span>
+<span>  surface_area <span class="op">=</span> <span class="fl">150000</span>,       <span class="co"># Surface area (m²)</span></span>
+<span>  elev <span class="op">=</span> <span class="fl">100</span>,                  <span class="co"># Surface elevation (m)</span></span>
+<span>  volume_development <span class="op">=</span> <span class="fl">1.0</span>,    <span class="co"># Shape factor (1.0 = cone)</span></span>
+<span>  ext_elev <span class="op">=</span> <span class="fl">5</span>                 <span class="co"># Extend above surface (m)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The <code>volume_development</code> parameter controls the hypsograph
+shape: - <strong>&lt; 1.0</strong>: Concave (bowl-shaped) - <strong>=
+1.0</strong>: Linear (cone-shaped)<br>
+- <strong>&gt; 1.0</strong>: Convex (saucer-shaped)</p>
+</div>
+<div class="section level3">
+<h3 id="initial-conditions">Initial Conditions<a class="anchor" aria-label="anchor" href="#initial-conditions"></a>
+</h3>
+<p><strong>Initial Temperature and Salinity Profile
+(<code>init_profile</code>)</strong></p>
+<p>If provided, must be a data frame with columns <code>depth</code>,
+<code>temperature</code>, and <code>salt</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">init_profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  depth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>,         <span class="co"># Depth below surface (m)</span></span>
+<span>  temperature <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">15</span>, <span class="fl">10</span><span class="op">)</span>, <span class="co"># Temperature (°C)</span></span>
+<span>  salt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>            <span class="co"># Salinity (PSU; 0 for freshwater)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>If <code>init_profile</code> is not provided, AEME automatically
+generates one using: 1. Observations from the <code>observations</code>
+slot (if available) 2. Default values from <code>model_controls</code>
+(see <a href="#configuration-slot">Configuration Slot</a>)</p>
+<p><strong>Initial Water Depth (<code>init_depth</code>)</strong></p>
+<p>The initial water level relative to the lake bottom. If not provided,
+defaults to the maximum depth from the hypsograph. This should
+correspond to an elevation within the hypsograph range.</p>
+</div>
+<div class="section level3">
+<h3 id="light-extinction-coefficient-kw">Light Extinction Coefficient (<code>Kw</code>)<a class="anchor" aria-label="anchor" href="#light-extinction-coefficient-kw"></a>
+</h3>
+<p>The light extinction coefficient (m⁻¹) determines how quickly light
+attenuates with depth. Typical values:</p>
+<ul>
+<li>
+<strong>0.1 - 0.5</strong>: Very clear oligotrophic lakes</li>
+<li>
+<strong>0.5 - 2.0</strong>: Mesotrophic lakes (moderate
+clarity)<br>
+</li>
+<li>
+<strong>2.0 - 10</strong>: Eutrophic lakes (high algae or dissolved
+organic matter)</li>
+<li>
+<strong>&gt; 10</strong>: Highly turbid or dystrophic systems</li>
+</ul>
+<p>If you don’t have measured values, estimate from Secchi depth:</p>
+<p>Kw ≈ 1.7 / Secchi_depth</p>
+</div>
+<div class="section level3">
+<h3 id="longwave-radiation-use_lw">Longwave Radiation (<code>use_lw</code>)<a class="anchor" aria-label="anchor" href="#longwave-radiation-use_lw"></a>
+</h3>
+<p>If <code>use_lw = TRUE</code> (default), the models use longwave
+radiation from the meteorological data or estimate it if not provided.
+If <code>use_lw = FALSE</code>, longwave is estimated entirely from
+cloud cover and air temperature.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="meteorological-data">Meteorological Data<a class="anchor" aria-label="anchor" href="#meteorological-data"></a>
@@ -179,7 +563,7 @@ variables are <strong>required</strong> for AEME:</p>
 <script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"filter":"none","vertical":false,"data":[["Shortwave radiation","Air temperature","Wind speed","Rain","Snow","u wind speed","v wind speed","Mean sea level pressure","Station pressure","Cloud cover","Longwave radiation","Dewpoint temperature","Vapour pressure","Relative humidity","Wind direction"],["MET_radswd","MET_tmpair","MET_wndspd","MET_pprain","MET_ppsnow","MET_wnduvu","MET_wnduvv","MET_prmslp","MET_prsttn","MET_cldcvr","MET_radlwd","MET_tmpdew","MET_prvapr","MET_humrel","MET_wnddir"],["W/m2","degC","m/s","mm","mm","m/s","m/s","Pa","Pa","1","W/m2","degC","hPa","%","degree"],["Yes","Yes","Yes","Yes","Defaults to 0 if not provided","Can be derived from wind speed and direction","Can be derived from wind speed and direction","Can be derived from station pressure","Can be derived from mean sea level pressure","Can be derived from date, air temperature, relative humiity, shortwave radiation, latitude, longitude and elevation","Can be derived from cloud cover, air temperature and relative humidity","Can be derived from air temperature and relative humidity","Can be derived from air temperature and relative humidity","Can be derived from air temperature and dew point temperature","Can be derived"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Name<\/th>\n      <th>Variable<\/th>\n      <th>Units<\/th>\n      <th>Required<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"name":"Name","targets":0},{"name":"Variable","targets":1},{"name":"Units","targets":2},{"name":"Required","targets":3}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="section level2">
-<h2 id="inflows-and-outflows">Inflows and Outflows<a class="anchor" aria-label="anchor" href="#inflows-and-outflows"></a>
+<h2 id="inflows-slot">Inflows Slot<a class="anchor" aria-label="anchor" href="#inflows-slot"></a>
 </h2>
 <div class="section level3">
 <h3 id="inflows">Inflows<a class="anchor" aria-label="anchor" href="#inflows"></a>
@@ -229,7 +613,7 @@ absent)</td>
 <code>PHS_frp</code>, <code>NIT_amm</code>) can be included if the
 ecosystem model is being used. All variable names must match those in
 the <code>key_naming</code> data frame.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example: two inflows</span></span>
 <span><span class="va">inf_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  stream_north <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -247,7 +631,30 @@ the <code>key_naming</code> data frame.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_inflows.html">add_inflows</a></span><span class="op">(</span><span class="va">aeme</span>, data <span class="op">=</span> <span class="va">inf_data</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Inflow Factors</strong></p>
+<p>The <code>inflows</code> slot also includes a <code>factor</code>
+component for model-specific scaling:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Different scaling for each model</span></span>
+<span><span class="va">inf_factors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  dy_cd <span class="op">=</span> <span class="fl">1.2</span>,     <span class="co"># Increase DYRESM inflows by 20%</span></span>
+<span>  glm_aed <span class="op">=</span> <span class="fl">1.0</span>,   <span class="co"># No change for GLM</span></span>
+<span>  gotm_wet <span class="op">=</span> <span class="fl">0.9</span>   <span class="co"># Decrease GOTM inflows by 10%</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_inflows.html">add_inflows</a></span><span class="op">(</span><span class="va">aeme</span>, data <span class="op">=</span> <span class="va">inf_data</span>, factor <span class="op">=</span> <span class="va">inf_factors</span><span class="op">)</span></span></code></pre></div>
+<p>Factors can also be specified in the <code>parameters</code> slot for
+calibration.</p>
+<p><strong>Water Balance Integration</strong></p>
+<p>When <code>water_balance$method = 3</code>, calculated inflows are
+added to the <code>inflows</code> slot as <code>"wbal"</code>. These are
+model-specific estimates based on water level change, evaporation, and
+outflows.</p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="outflows-slot">Outflows Slot<a class="anchor" aria-label="anchor" href="#outflows-slot"></a>
+</h2>
 <div class="section level3">
 <h3 id="outflows">Outflows<a class="anchor" aria-label="anchor" href="#outflows"></a>
 </h3>
@@ -289,7 +696,7 @@ level (m)</strong> for a <strong>fixed-depth outlet</strong> (e.g. a dam
 penstock or selective withdrawal). The value must fall within the
 elevation range of the hypsograph.</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Single surface outlet</span></span>
 <span><span class="va">outf_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  outlet <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -310,7 +717,7 @@ elevation range of the hypsograph.</li>
 <p>Reservoirs commonly have several outlets at different depths. Provide
 one entry per outlet in both <code>data</code> and
 <code>elevation</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Reservoir with a surface spillway and a deep penstock</span></span>
 <span><span class="va">outf_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  spillway <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -338,20 +745,702 @@ one entry per outlet in both <code>data</code> and
 </div>
 </div>
 <div class="section level2">
-<h2 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
+<h2 id="observations-slot">Observations Slot<a class="anchor" aria-label="anchor" href="#observations-slot"></a>
 </h2>
-<p>Being able to specify the parameters of the model is crucial for the
-simulation. Parameters can be stored in a data frame within the
-<code>aeme</code> object. The parameters in this data frame are used to
-update the model configuration files and/or update the meteorological
-data (e.g. scaling wind factor) and/or update the inflow/outflow data
-(e.g. scaling inflow factor).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"aeme_parameters"</span><span class="op">)</span></span>
-<span><span class="va">aeme_parameters</span></span></code></pre></div>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-e5c8c404fe174e4c81bd" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-e5c8c404fe174e4c81bd">{"x":{"filter":"none","vertical":false,"data":[["glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","glm_aed","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","gotm_wet","dy_cd","dy_cd","dy_cd","dy_cd","dy_cd","dy_cd"],["glm3.nml","met","met","glm3.nml","glm3.nml","glm3.nml","glm3.nml","glm3.nml","wdr","inf","gotm.yaml","gotm.yaml","gotm.yaml","gotm.yaml","met","met","wdr","inf","cfg","dyresm3p1.par","met","met","wdr","inf"],["light/Kw","MET_wndspd","MET_radswd","mixing/coef_mix_conv","mixing/coef_wind_stir","mixing/coef_mix_shear","mixing/coef_mix_turb","mixing/coef_mix_hyp","outflow","inflow","turbulence/turb_param/k_min","light_extinction/A/constant_value","light_extinction/g1/constant_value","light_extinction/g2/constant_value","MET_wndspd","MET_radswd","outflow","inflow","light_extinction_coefficient/7","vert_mix_coeff/15","MET_wndspd","MET_radswd","outflow","inflow"],[0.58,1,1,0.14,0.21,0.14,0.5600000000000001,0.74,1,1,6.32e-07,0.55,0.59,0.2,1,1,1,1,0.9,200,1,1,1,1],[0.1,0.7,0.7,0.1,0.2,0.1,0.2,0.4,0.5,0.5,1e-09,0.395,0.44,0.05,0.7,0.7,0.5,0.5,0.1,50,0.7,0.7,0.5,0.5],[5.52,1.3,1.3,0.2,0.3,0.2,0.7,0.8,2.5,2.5,1e-05,0.659,0.74,2.7,1.3,1.3,2.5,2.5,1.4,750,1.3,1.3,2.5,2.5],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],["hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic","hydrodynamic"],["HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp","HYD_thmcln","HYD_thmcln","HYD_thmcln","HYD_thmcln","HYD_thmcln","LKE_lvlwtr","LKE_lvlwtr","HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp","LKE_lvlwtr","LKE_lvlwtr","HYD_temp|HYD_thmcln","HYD_thmcln","HYD_temp|HYD_thmcln","HYD_temp","LKE_lvlwtr","LKE_lvlwtr"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>model<\/th>\n      <th>file<\/th>\n      <th>name<\/th>\n      <th>value<\/th>\n      <th>min<\/th>\n      <th>max<\/th>\n      <th>group<\/th>\n      <th>index<\/th>\n      <th>module<\/th>\n      <th>var_sim<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5]},{"name":"model","targets":0},{"name":"file","targets":1},{"name":"name","targets":2},{"name":"value","targets":3},{"name":"min","targets":4},{"name":"max","targets":5},{"name":"group","targets":6},{"name":"index","targets":7},{"name":"module","targets":8},{"name":"var_sim","targets":9}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/parameters.html">parameters</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">aeme_parameters</span></span></code></pre></div>
+<p>The <code>observations</code> slot is a list containing observational
+data used for model validation, calibration, and initialization. It has
+two components: <code>lake</code> (in-lake observations) and
+<code>level</code> (water level observations).</p>
+<div class="section level3">
+<h3 id="lake-observations-observationslake">Lake Observations (<code>observations$lake</code>)<a class="anchor" aria-label="anchor" href="#lake-observations-observationslake"></a>
+</h3>
+<p>In-lake observations are stored as a data frame with the following
+structure:</p>
+<table class="table">
+<colgroup>
+<col width="29%">
+<col width="22%">
+<col width="48%">
+</colgroup>
+<thead><tr class="header">
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>Date</code></td>
+<td>character/POSIXct</td>
+<td>Observation date and time (<code>YYYY-MM-DD HH:MM:SS</code>)</td>
+</tr>
+<tr class="even">
+<td><code>depth</code></td>
+<td>numeric</td>
+<td>Depth below surface (m)</td>
+</tr>
+<tr class="odd">
+<td><code>var</code></td>
+<td>character</td>
+<td>Variable name (must match <code>key_naming$var_aeme</code>)</td>
+</tr>
+<tr class="even">
+<td><code>value</code></td>
+<td>numeric</td>
+<td>Observed value</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lake_obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  Date  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2020-06-15 10:00:00"</span>, <span class="st">"2020-06-15 10:00:00"</span>, <span class="st">"2020-06-15 10:00:00"</span><span class="op">)</span>,</span>
+<span>  depth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  var   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span>, <span class="st">"HYD_temp"</span>, <span class="st">"HYD_temp"</span><span class="op">)</span>,</span>
+<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18.5</span>, <span class="fl">15.2</span>, <span class="fl">10.8</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><strong>Variable Names</strong></p>
+<p>All variable names must match those defined in the
+<code>key_naming</code> data frame. Common variables include:</p>
+<ul>
+<li>
+<code>HYD_temp</code>: Water temperature (°C)</li>
+<li>
+<code>CHM_oxy</code>: Dissolved oxygen (mg/L or mmol/m³)</li>
+<li>
+<code>PHY_tchla</code>: Total chlorophyll-a (µg/L)</li>
+<li>
+<code>NIT_tn</code>: Total nitrogen (mg/L)</li>
+<li>
+<code>PHS_tp</code>: Total phosphorus (mg/L)</li>
+</ul>
+<p>View all available variables:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"key_naming"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">key_naming</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="water-level-observations-observationslevel">Water Level Observations (<code>observations$level</code>)<a class="anchor" aria-label="anchor" href="#water-level-observations-observationslevel"></a>
+</h3>
+<p>Water level observations are stored as a data frame:</p>
+<table class="table">
+<thead><tr class="header">
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>Date</code></td>
+<td>character/POSIXct</td>
+<td>Observation date and time</td>
+</tr>
+<tr class="even">
+<td><code>value</code></td>
+<td>numeric</td>
+<td>Water level elevation (m above sea level)</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">level_obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  Date  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-12-31"</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"day"</span><span class="op">)</span>,</span>
+<span>  value <span class="op">=</span> <span class="fl">100</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">366</span>, mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>  <span class="co"># Around 100m elevation</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><strong>Important</strong>: Water level values must be: - In metres
+above sea level - Within the range of the hypsograph elevations</p>
+</div>
+<div class="section level3">
+<h3 id="how-observations-are-used">How Observations Are Used<a class="anchor" aria-label="anchor" href="#how-observations-are-used"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li><p><strong>Model Validation</strong>: The
+<code><a href="../reference/assess_model.html">assess_model()</a></code> function compares model output to
+observations and calculates performance metrics (RMSE, NSE,
+etc.)</p></li>
+<li><p><strong>Calibration</strong>: The <a href="https://github.com/limnotrack/aemetools" class="external-link">aemetools</a> package
+uses observations as targets for automated calibration</p></li>
+<li><p><strong>Initialization</strong>: If <code>init_profile</code> is
+not provided in the <code>input</code> slot, AEME uses lake observations
+near the start date to initialize temperature and water quality</p></li>
+<li><p><strong>Water Balance</strong>: Water level observations are used
+to calculate inflows and outflows when <code>water_balance$method</code>
+is 2 or 3 (see <a href="#water-balance-slot">Water Balance
+Slot</a>)</p></li>
+</ol>
+</div>
+</div>
+<div class="section level2">
+<h2 id="water-balance-slot">Water Balance Slot<a class="anchor" aria-label="anchor" href="#water-balance-slot"></a>
+</h2>
+<p>The <code>water_balance</code> slot is generated internally by
+<code><a href="../reference/build_aeme.html">build_aeme()</a></code> when the <code>wb_method</code> argument is
+set to 2 or 3. It stores configuration and calculated water balance
+components.</p>
+<div class="section level3">
+<h3 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a>
+</h3>
+<table class="table">
+<thead><tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>method</code></td>
+<td>integer</td>
+<td>Water balance method (1, 2, or 3)</td>
+</tr>
+<tr class="even">
+<td><code>use</code></td>
+<td>character</td>
+<td>Data source: <code>"obs"</code> or <code>"mod"</code>
+</td>
+</tr>
+<tr class="odd">
+<td><code>data</code></td>
+<td>list</td>
+<td>Calculated water balance components</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="water-balance-methods">Water Balance Methods<a class="anchor" aria-label="anchor" href="#water-balance-methods"></a>
+</h3>
+<p><strong>Method 1: No Water Balance</strong> - Inflows and outflows
+are provided directly by the user - No automatic calculations - Use when
+you have complete inflow/outflow data</p>
+<p><strong>Method 2: Calculate Outflows</strong> - Inflows are provided
+by the user - Outflows are calculated from water level change,
+evaporation, and inflows - Requires water level observations
+(<code>observations$level</code>) - Use for natural lakes with ungauged
+outflows</p>
+<p><strong>Method 3: Calculate Both Inflows and Outflows</strong><br>
+- Both inflows and outflows are calculated from water balance - Requires
+water level observations - Use for closed basins or when both inflow and
+outflow are unknown</p>
+</div>
+<div class="section level3">
+<h3 id="data-source-use">Data Source (<code>use</code>)<a class="anchor" aria-label="anchor" href="#data-source-use"></a>
+</h3>
+<ul>
+<li>
+<strong><code>"obs"</code></strong>: Use observed water levels for
+calculations (recommended)</li>
+<li>
+<strong><code>"mod"</code></strong>: Use modeled water levels (can
+lead to circular dependencies)</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="calculated-components-data">Calculated Components (<code>data</code>)<a class="anchor" aria-label="anchor" href="#calculated-components-data"></a>
+</h3>
+<p>When <code><a href="../reference/build_aeme.html">build_aeme()</a></code> runs with <code>wb_method = 2</code>
+or <code>3</code>, it populates <code>data</code> with:</p>
+<ul>
+<li>
+<code>wbal</code>: Data frame with water balance diagnostics for
+each model
+<ul>
+<li>Evaporation (calculated differently by each model)</li>
+<li>Water level change</li>
+<li>Estimated inflows/outflows</li>
+</ul>
+</li>
+<li>
+<code>model</code>: Modeled water level (if
+<code>use = "mod"</code>)</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h3>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span></span>
+<span>  aeme <span class="op">=</span> <span class="va">aeme</span>,</span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span>,</span>
+<span>  model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"my_lake"</span>,</span>
+<span>  wb_method <span class="op">=</span> <span class="fl">2</span>,  <span class="co"># Calculate outflows</span></span>
+<span>  use_wbal <span class="op">=</span> <span class="st">"obs"</span>  <span class="co"># Use observed water levels</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Access water balance data</span></span>
+<span><span class="va">wbal_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/water_balance.html">water_balance</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">wbal_data</span><span class="op">)</span></span></code></pre></div>
+<p>For a detailed example, see
+<code>vignette("rotoehu-water-balance")</code>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="configuration-slot">Configuration Slot<a class="anchor" aria-label="anchor" href="#configuration-slot"></a>
+</h2>
+<p>The <code>configuration</code> slot stores model-specific
+configuration files and the <code>model_controls</code> data frame. This
+slot is populated when you run <code><a href="../reference/build_aeme.html">build_aeme()</a></code>.</p>
+<div class="section level3">
+<h3 id="structure-1">Structure<a class="anchor" aria-label="anchor" href="#structure-1"></a>
+</h3>
+<p>The <code>configuration</code> slot contains:</p>
+<ul>
+<li>
+<code>model_controls</code>: Data frame defining which variables to
+simulate</li>
+<li>
+<code>dy_cd</code>: List of DYRESM-CAEDYM configuration files</li>
+<li>
+<code>glm_aed</code>: List of GLM-AED configuration files<br>
+</li>
+<li>
+<code>gotm_wet</code>: List of GOTM-WET configuration files</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="model-controls">Model Controls<a class="anchor" aria-label="anchor" href="#model-controls"></a>
+</h3>
+<p>The <code>model_controls</code> data frame defines which variables to
+simulate and their default values. Generate it using:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># For hydrodynamics only</span></span>
+<span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span>use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># For hydrodynamics + biogeochemistry</span></span>
+<span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span>use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Columns in <code>model_controls</code></strong>:</p>
+<table class="table">
+<thead><tr class="header">
+<th>Column</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>var_aeme</code></td>
+<td>AEME variable name</td>
+</tr>
+<tr class="even">
+<td><code>simulate</code></td>
+<td>Logical; simulate this variable?</td>
+</tr>
+<tr class="odd">
+<td><code>inf_default</code></td>
+<td>Default value in inflows if not provided</td>
+</tr>
+<tr class="even">
+<td><code>initial_wc</code></td>
+<td>Initial value for water column</td>
+</tr>
+<tr class="odd">
+<td><code>initial_sed</code></td>
+<td>Initial value for sediments (DYRESM-CAEDYM only)</td>
+</tr>
+<tr class="even">
+<td><code>conversion_aed</code></td>
+<td>Unit conversion factor for GLM-AED</td>
+</tr>
+</tbody>
+</table>
+<p>You can customize <code>model_controls</code> to add/remove
+variables:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load default controls</span></span>
+<span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span>use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Remove a variable from simulation</span></span>
+<span><span class="va">model_controls</span><span class="op">$</span><span class="va">simulate</span><span class="op">[</span><span class="va">model_controls</span><span class="op">$</span><span class="va">var_aeme</span> <span class="op">==</span> <span class="st">"PHY_green"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span></span>
+<span><span class="co"># Change default inflow concentration</span></span>
+<span><span class="va">model_controls</span><span class="op">$</span><span class="va">inf_default</span><span class="op">[</span><span class="va">model_controls</span><span class="op">$</span><span class="va">var_aeme</span> <span class="op">==</span> <span class="st">"NIT_nit"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.05</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="model-configuration-files">Model Configuration Files<a class="anchor" aria-label="anchor" href="#model-configuration-files"></a>
+</h3>
+<p>When <code><a href="../reference/build_aeme.html">build_aeme()</a></code> runs, it creates model-specific
+configuration files based on the AEME inputs:</p>
+<p><strong>DYRESM-CAEDYM</strong> - Hydrodynamic: <code>*.cfg</code>,
+<code>*.par</code> - Ecosystem: <code>*.con</code>,
+<code>caedym3p1.bio</code>, <code>caedym3p1.chm</code>,
+<code>caedym3p1.sed</code></p>
+<p><strong>GLM-AED</strong> - Hydrodynamic: <code>glm3.nml</code> -
+Ecosystem: <code>aed2.nml</code>, <code>phytos.nml</code>,
+<code>zoops.nml</code></p>
+<p><strong>GOTM-WET</strong> - Hydrodynamic: <code>gotm.yaml</code>,
+<code>output.yaml</code> - Ecosystem: <code>fabm.yaml</code></p>
+<p>These files are stored as text in the <code>configuration</code> slot
+and can be extracted:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get configuration</span></span>
+<span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Extract GLM configuration</span></span>
+<span><span class="va">glm_nml</span> <span class="op">&lt;-</span> <span class="va">cfg</span><span class="op">$</span><span class="va">glm_aed</span><span class="op">$</span><span class="va">glm3.nml</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">glm_nml</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Modify and replace</span></span>
+<span><span class="co"># ... (advanced users only)</span></span>
+<span><span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span><span class="op">$</span><span class="va">glm_aed</span><span class="op">$</span><span class="va">glm3.nml</span> <span class="op">&lt;-</span> <span class="va">modified_nml</span></span></code></pre></div>
+<p>For most users, it’s better to modify inputs in the AEME object
+rather than directly editing configuration files.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="parameters-slot">Parameters Slot<a class="anchor" aria-label="anchor" href="#parameters-slot"></a>
+</h2>
+<p>The <code>parameters</code> slot is a data frame containing model
+parameter values. This is crucial for model calibration, sensitivity
+analysis, and ensemble configuration. Parameters can modify model
+physics, biogeochemistry, or scale meteorological and hydrological
+inputs.</p>
+<div class="section level3">
+<h3 id="structure-2">Structure<a class="anchor" aria-label="anchor" href="#structure-2"></a>
+</h3>
+<p>The parameters data frame has the following columns:</p>
+<table class="table">
+<colgroup>
+<col width="21%">
+<col width="16%">
+<col width="27%">
+<col width="35%">
+</colgroup>
+<thead><tr class="header">
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>model</code></td>
+<td>character</td>
+<td>Yes</td>
+<td>Model name: <code>"dy_cd"</code>, <code>"glm_aed"</code>, or
+<code>"gotm_wet"</code>
+</td>
+</tr>
+<tr class="even">
+<td><code>file</code></td>
+<td>character</td>
+<td>Yes</td>
+<td>Configuration file or input type</td>
+</tr>
+<tr class="odd">
+<td><code>name</code></td>
+<td>character</td>
+<td>Yes</td>
+<td>Parameter name (with path for nested parameters)</td>
+</tr>
+<tr class="even">
+<td><code>value</code></td>
+<td>numeric</td>
+<td>Yes</td>
+<td>Parameter value</td>
+</tr>
+<tr class="odd">
+<td><code>min</code></td>
+<td>numeric</td>
+<td>No</td>
+<td>Minimum value for calibration</td>
+</tr>
+<tr class="even">
+<td><code>max</code></td>
+<td>numeric</td>
+<td>No</td>
+<td>Maximum value for calibration</td>
+</tr>
+<tr class="odd">
+<td><code>group</code></td>
+<td>character</td>
+<td>No</td>
+<td>Phytoplankton group (GOTM-WET only)</td>
+</tr>
+<tr class="even">
+<td><code>index</code></td>
+<td>integer</td>
+<td>No</td>
+<td>Vector index (GLM-AED only)</td>
+</tr>
+<tr class="odd">
+<td><code>module</code></td>
+<td>character</td>
+<td>No</td>
+<td>Model module name (for organization)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="file-types">File Types<a class="anchor" aria-label="anchor" href="#file-types"></a>
+</h3>
+<p>The <code>file</code> column specifies where the parameter is
+applied:</p>
+<ul>
+<li>
+<strong>Model-specific files</strong>: <code>"glm3.nml"</code>,
+<code>"gotm.yaml"</code>, <code>"*.cfg"</code>, <code>"aed2.nml"</code>,
+<code>"fabm.yaml"</code>, etc.</li>
+<li>
+<strong><code>"met"</code></strong>: Meteorological scaling (e.g.,
+wind speed multiplier)</li>
+<li>
+<strong><code>"inf"</code></strong>: Inflow scaling (e.g., flow
+multiplier)</li>
+<li>
+<strong><code>"wdr"</code></strong>: Outflow/withdrawal scaling</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="parameter-names">Parameter Names<a class="anchor" aria-label="anchor" href="#parameter-names"></a>
+</h3>
+<p>For parameters nested in configuration files, use <code>/</code> to
+separate hierarchy levels:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># GLM-AED example</span></span>
+<span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"glm_aed"</span>,</span>
+<span>  file  <span class="op">=</span> <span class="st">"glm3.nml"</span>,</span>
+<span>  name  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"light/Kw"</span>, <span class="st">"mixing/coef_mix_hyp"</span><span class="op">)</span>,</span>
+<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  min   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>  max   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5.0</span>, <span class="fl">2.0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h3>
+<p><strong>1. Physical Parameters</strong></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">physical_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span>,</span>
+<span>  file  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm3.nml"</span>, <span class="st">"glm3.nml"</span>, <span class="st">"gotm.yaml"</span><span class="op">)</span>,</span>
+<span>  name  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"light/Kw"</span>, <span class="st">"mixing/coef_mix_hyp"</span>, <span class="st">"turbulence/turb_param/k_min"</span><span class="op">)</span>,</span>
+<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="fl">0.5</span>, <span class="fl">5e-6</span><span class="op">)</span>,</span>
+<span>  min   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.1</span>, <span class="fl">1e-6</span><span class="op">)</span>,</span>
+<span>  max   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.0</span>, <span class="fl">2.0</span>, <span class="fl">1e-5</span><span class="op">)</span>,</span>
+<span>  module <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hydrodynamic"</span>, <span class="st">"hydrodynamic"</span>, <span class="st">"hydrodynamic"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><strong>2. Biogeochemical Parameters</strong></p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bgc_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="st">"glm_aed"</span><span class="op">)</span>,</span>
+<span>  file  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"aed.nml"</span>, <span class="st">"aed.nml"</span><span class="op">)</span>,</span>
+<span>  name  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"aed_oxygen/fsed_oxy"</span>, <span class="st">"aed_nitrogen/rnitrif"</span><span class="op">)</span>,</span>
+<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">0.05</span><span class="op">)</span>,</span>
+<span>  min   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>  max   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">0.2</span><span class="op">)</span>,</span>
+<span>  module <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"oxygen"</span>, <span class="st">"nitrogen"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><strong>3. Meteorological Scaling</strong></p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">met_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="st">"dy_cd"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span>,</span>
+<span>  file  <span class="op">=</span> <span class="st">"met"</span>,</span>
+<span>  name  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MET_wndspd"</span>, <span class="st">"MET_wndspd"</span>, <span class="st">"MET_wndspd"</span><span class="op">)</span>,</span>
+<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="fl">1.2</span><span class="op">)</span>,  <span class="co"># 20% increase in wind speed</span></span>
+<span>  min   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span><span class="op">)</span>,</span>
+<span>  max   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">1.5</span>, <span class="fl">1.5</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><strong>4. Inflow/Outflow Scaling</strong></p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hydro_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="st">"glm_aed"</span><span class="op">)</span>,</span>
+<span>  file  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"inf"</span>, <span class="st">"wdr"</span><span class="op">)</span>,</span>
+<span>  name  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"inflow"</span>, <span class="st">"outflow"</span><span class="op">)</span>,</span>
+<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">1.0</span><span class="op">)</span>,</span>
+<span>  min   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  max   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.0</span>, <span class="fl">2.0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="using-parameters">Using Parameters<a class="anchor" aria-label="anchor" href="#using-parameters"></a>
+</h3>
+<p>Add parameters to an AEME object:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load example parameters</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"aeme_parameters"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add to AEME object</span></span>
+<span><span class="fu"><a href="../reference/parameters.html">parameters</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">aeme_parameters</span></span>
+<span></span>
+<span><span class="co"># Or build with parameters</span></span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span></span>
+<span>  aeme <span class="op">=</span> <span class="va">aeme</span>,</span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span>,</span>
+<span>  model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"my_lake"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># Then add parameters</span></span>
+<span><span class="fu"><a href="../reference/parameters.html">parameters</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">my_params</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="retrieving-parameters">Retrieving Parameters<a class="anchor" aria-label="anchor" href="#retrieving-parameters"></a>
+</h3>
+<p>Use <code><a href="../reference/get_aeme_parameters.html">get_aeme_parameters()</a></code> to extract parameters by model
+or module:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get all parameters</span></span>
+<span><span class="va">all_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_aeme_parameters.html">get_aeme_parameters</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get GLM-AED parameters only</span></span>
+<span><span class="va">glm_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_aeme_parameters.html">get_aeme_parameters</a></span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get parameters for specific module</span></span>
+<span><span class="va">mixing_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_aeme_parameters.html">get_aeme_parameters</a></span><span class="op">(</span><span class="va">aeme</span>, module <span class="op">=</span> <span class="st">"Mixing"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="integration-with-calibration">Integration with Calibration<a class="anchor" aria-label="anchor" href="#integration-with-calibration"></a>
+</h3>
+<p>The <code>min</code> and <code>max</code> columns define parameter
+ranges for calibration using the <a href="https://github.com/limnotrack/aemetools" class="external-link">aemetools</a>
+package:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://limnotrack.com/aemetools/">aemetools</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Calibrate using parameters in aeme object</span></span>
+<span><span class="va">calib</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.com/aemetools/reference/calib_aeme.html">calib_aeme</a></span><span class="op">(</span></span>
+<span>  aeme <span class="op">=</span> <span class="va">aeme</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"glm_aed"</span>,</span>
+<span>  vars_sim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span>, <span class="st">"CHM_oxy"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>See the <a href="https://limnotrack.github.io/aemetools/" class="external-link">aemetools
+documentation</a> for details on calibration and sensitivity
+analysis.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="output-slot">Output Slot<a class="anchor" aria-label="anchor" href="#output-slot"></a>
+</h2>
+<p>The <code>output</code> slot stores model results after running
+<code><a href="../reference/run_aeme.html">run_aeme()</a></code>. Initially empty, it is populated with
+time-series data for each model and variable.</p>
+<div class="section level3">
+<h3 id="structure-3">Structure<a class="anchor" aria-label="anchor" href="#structure-3"></a>
+</h3>
+<p>The <code>output</code> slot is a list with one element per
+model:</p>
+<ul>
+<li>
+<code>dy_cd</code>: DYRESM-CAEDYM output</li>
+<li>
+<code>glm_aed</code>: GLM-AED output</li>
+<li>
+<code>gotm_wet</code>: GOTM-WET output</li>
+</ul>
+<p>Each model element is itself a list containing data frames for each
+simulated variable.</p>
+</div>
+<div class="section level3">
+<h3 id="running-models">Running Models<a class="anchor" aria-label="anchor" href="#running-models"></a>
+</h3>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run all models in the ensemble</span></span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run specific model(s)</span></span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="accessing-output">Accessing Output<a class="anchor" aria-label="anchor" href="#accessing-output"></a>
+</h3>
+<p>Extract output using the <code><a href="../reference/output.html">output()</a></code> function:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get all output</span></span>
+<span><span class="va">all_output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/output.html">output</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get output for specific model</span></span>
+<span><span class="va">glm_output</span> <span class="op">&lt;-</span> <span class="va">all_output</span><span class="op">$</span><span class="va">glm_aed</span></span>
+<span></span>
+<span><span class="co"># Get specific variable</span></span>
+<span><span class="va">temp_data</span> <span class="op">&lt;-</span> <span class="va">glm_output</span><span class="op">$</span><span class="va">HYD_temp</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">temp_data</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="output-structure">Output Structure<a class="anchor" aria-label="anchor" href="#output-structure"></a>
+</h3>
+<p>Each variable’s output is a data frame in long format:</p>
+<table class="table">
+<thead><tr class="header">
+<th>Column</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>Date</code></td>
+<td>Date and time</td>
+</tr>
+<tr class="even">
+<td><code>depth</code></td>
+<td>Depth below surface (m)</td>
+</tr>
+<tr class="odd">
+<td><code>value</code></td>
+<td>Variable value</td>
+</tr>
+<tr class="even">
+<td><code>model</code></td>
+<td>Model name</td>
+</tr>
+<tr class="odd">
+<td><code>var</code></td>
+<td>Variable name</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example temperature output</span></span>
+<span><span class="co">#         Date  depth value    model      var</span></span>
+<span><span class="co"># 1 2020-01-01   0.0  18.5  glm_aed  HYD_temp</span></span>
+<span><span class="co"># 2 2020-01-01   1.0  18.3  glm_aed  HYD_temp</span></span>
+<span><span class="co"># 3 2020-01-01   2.0  17.9  glm_aed  HYD_temp</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="visualizing-output">Visualizing Output<a class="anchor" aria-label="anchor" href="#visualizing-output"></a>
+</h3>
+<p>Use <code><a href="../reference/plot_output.html">plot_output()</a></code> to visualize results:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Plot temperature from all models</span></span>
+<span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot specific model</span></span>
+<span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot multiple variables</span></span>
+<span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, var_sim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span>, <span class="st">"CHM_oxy"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Compare with observations</span></span>
+<span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>, add_obs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="model-comparison">Model Comparison<a class="anchor" aria-label="anchor" href="#model-comparison"></a>
+</h3>
+<p>Compare model performance using <code><a href="../reference/assess_model.html">assess_model()</a></code>:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Compare all models to observations</span></span>
+<span><span class="va">assessment</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assess_model.html">assess_model</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">assessment</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Metrics include:</span></span>
+<span><span class="co"># - RMSE: Root Mean Square Error</span></span>
+<span><span class="co"># - NSE: Nash-Sutcliffe Efficiency  </span></span>
+<span><span class="co"># - R²: Coefficient of determination</span></span>
+<span><span class="co"># - Bias: Mean bias</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="output-variables">Output Variables<a class="anchor" aria-label="anchor" href="#output-variables"></a>
+</h3>
+<p>The variables in the output depend on <code>model_controls</code>.
+Common variables include:</p>
+<p><strong>Hydrodynamic</strong>: - <code>HYD_temp</code>: Water
+temperature (°C) - <code>LKE_lvlwtr</code>: Water level (m) -
+<code>HYD_dens</code>: Water density (kg/m³)</p>
+<p><strong>Water Quality</strong>: - <code>CHM_oxy</code>: Dissolved
+oxygen (mg/L) - <code>PHY_tchla</code>: Total chlorophyll-a (µg/L) -
+<code>NIT_tn</code>: Total nitrogen (mg/L) - <code>PHS_tp</code>: Total
+phosphorus (mg/L)</p>
+<p>View all simulated variables:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
+<span><span class="va">vars_simulated</span> <span class="op">&lt;-</span> <span class="va">cfg</span><span class="op">$</span><span class="va">model_controls</span><span class="op">$</span><span class="va">var_aeme</span><span class="op">[</span><span class="va">cfg</span><span class="op">$</span><span class="va">model_controls</span><span class="op">$</span><span class="va">simulate</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vars_simulated</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

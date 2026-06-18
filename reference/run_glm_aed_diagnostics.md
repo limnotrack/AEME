@@ -79,7 +79,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [16ms]
+#> ✔ Estimating surface water temperature [27ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -138,10 +138,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 
 aeme <- run_aeme(aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-15 21:19:38]
-#> → GLM-AED running... [2026-06-15 21:19:38]
-#> ✔ GLM-AED run successful! [2026-06-15 21:19:41]
-#> ✔ Model run complete! [2026-06-15 21:19:41]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-18 02:40:53]
+#> → GLM-AED running... [2026-06-18 02:40:53]
+#> ✔ GLM-AED run successful! [2026-06-18 02:40:56]
+#> ✔ Model run complete! [2026-06-18 02:40:56]
 out <- run_glm_aed_diagnostics(aeme = aeme)
 #> Requesting 86 variables from model output...  (sediment zone _Z variables are
 #> optional; missing ones are skipped)

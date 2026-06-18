@@ -51,7 +51,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [26ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -90,10 +90,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-06-15 21:19:03]
-#> ✔ Model run complete! [2026-06-15 21:19:06]
-#> ℹ Reading models in parallel...[2026-06-15 21:19:06]
-#> ✔ Model reading complete! [2026-06-15 21:19:07]
+#> ℹ Running models in parallel... [2026-06-18 02:40:15]
+#> ✔ Model run complete! [2026-06-18 02:40:18]
+#> ℹ Reading models in parallel...[2026-06-18 02:40:18]
+#> ✔ Model reading complete! [2026-06-18 02:40:19]
 aeme |> 
   list_mod_obs_vars()
 #>            Cyanobacteria         Dissolved oxygen                 Salinity 

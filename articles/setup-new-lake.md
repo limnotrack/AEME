@@ -1,8 +1,14 @@
 # Set up AEME for a new lake
 
-Setting up the Aquatic Ecosystem Model Ensemble is straight forward and
+Setting up the Aquatic Ecosystem Model Ensemble is straightforward and
 can be done in a few steps. This vignette will guide you through the
 process of setting up the model for a lake in New Zealand.
+
+This is a **practical tutorial** focused on workflow. For detailed
+information on the AEME models and ensemble approach, see [Introduction
+to AEME](https://limnotrack.com/articles/intro-aeme.md). For
+comprehensive reference on inputs and the S4 structure, see [AEME
+Inputs](https://limnotrack.com/articles/aeme-inputs.md).
 
 ``` r
 
@@ -26,6 +32,9 @@ tmap_options(basemap.server = "OpenStreetMap") # Set the basemap to OpenStreetMa
 
 The first step is to define the lake data. This includes the location of
 the lake, the depth and area of the lake, and the elevation of the lake.
+See [Lake
+Slot](https://limnotrack.com/articles/aeme-inputs.html#lake-slot) for
+complete field requirements.
 
 ``` r
 
@@ -166,8 +175,9 @@ lake <- list(
 
 ## Time data
 
-The time data is required for the model. This includes the start and
-stop times for the model run.
+The time data defines the simulation period. See [Time
+Slot](https://limnotrack.com/articles/aeme-inputs.html#time-slot) for
+details on date formats and spin-up configuration.
 
 ``` r
 
@@ -183,6 +193,11 @@ time <- list(
 
 ## Input data
 
+The AEME `input` slot requires meteorological data, a hypsograph, and
+the light extinction coefficient. See [Input
+Slot](https://limnotrack.com/articles/aeme-inputs.html#input-slot) for
+detailed requirements.
+
 ### Meteorological data
 
 #### Download ERA5 data
@@ -195,189 +210,9 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-06-15 21:34:33] job submitted
-#> INFO [2026-06-15 21:34:37] job updated
-#> INFO [2026-06-15 21:34:41] job updated
-#> INFO [2026-06-15 21:34:46] job updated
-#> INFO [2026-06-15 21:34:50] job updated
-#> INFO [2026-06-15 21:34:55] job updated
-#> INFO [2026-06-15 21:34:59] job updated
-#> INFO [2026-06-15 21:35:03] job updated
-#> INFO [2026-06-15 21:35:08] job updated
-#> INFO [2026-06-15 21:35:12] job updated
-#> INFO [2026-06-15 21:35:17] job updated
-#> INFO [2026-06-15 21:35:21] job updated
-#> INFO [2026-06-15 21:35:25] job updated
-#> INFO [2026-06-15 21:35:29] job updated
-#> INFO [2026-06-15 21:35:34] job updated
-#> INFO [2026-06-15 21:35:38] job updated
-#> INFO [2026-06-15 21:35:43] job updated
-#> INFO [2026-06-15 21:35:47] job updated
-#> INFO [2026-06-15 21:35:52] job updated
-#> INFO [2026-06-15 21:35:56] job updated
-#> INFO [2026-06-15 21:36:00] job updated
-#> INFO [2026-06-15 21:36:04] job updated
-#> INFO [2026-06-15 21:36:09] job updated
-#> INFO [2026-06-15 21:36:13] job updated
-#> INFO [2026-06-15 21:36:17] job updated
-#> INFO [2026-06-15 21:36:22] job updated
-#> INFO [2026-06-15 21:36:26] job updated
-#> INFO [2026-06-15 21:36:30] job updated
-#> INFO [2026-06-15 21:36:35] job updated
-#> INFO [2026-06-15 21:36:39] job updated
-#> INFO [2026-06-15 21:36:43] job updated
-#> INFO [2026-06-15 21:36:47] job updated
-#> INFO [2026-06-15 21:36:52] job updated
-#> INFO [2026-06-15 21:36:56] job updated
-#> INFO [2026-06-15 21:37:00] job updated
-#> INFO [2026-06-15 21:37:04] job updated
-#> INFO [2026-06-15 21:37:09] job updated
-#> INFO [2026-06-15 21:37:13] job updated
-#> INFO [2026-06-15 21:37:17] job updated
-#> INFO [2026-06-15 21:37:21] job updated
-#> INFO [2026-06-15 21:37:26] job updated
-#> INFO [2026-06-15 21:37:30] job updated
-#> INFO [2026-06-15 21:37:34] job updated
-#> INFO [2026-06-15 21:37:38] job updated
-#> INFO [2026-06-15 21:37:42] job updated
-#> INFO [2026-06-15 21:37:47] job updated
-#> INFO [2026-06-15 21:37:51] job updated
-#> INFO [2026-06-15 21:37:55] job updated
-#> INFO [2026-06-15 21:37:59] job updated
-#> INFO [2026-06-15 21:38:04] job updated
-#> INFO [2026-06-15 21:38:08] job updated
-#> INFO [2026-06-15 21:38:12] job updated
-#> INFO [2026-06-15 21:38:16] job updated
-#> INFO [2026-06-15 21:38:20] job updated
-#> INFO [2026-06-15 21:38:25] job updated
-#> INFO [2026-06-15 21:38:29] job updated
-#> INFO [2026-06-15 21:38:34] job updated
-#> INFO [2026-06-15 21:38:38] job updated
-#> INFO [2026-06-15 21:38:42] job updated
-#> INFO [2026-06-15 21:38:46] job updated
-#> INFO [2026-06-15 21:38:51] job updated
-#> INFO [2026-06-15 21:38:55] job updated
-#> INFO [2026-06-15 21:39:00] job updated
-#> INFO [2026-06-15 21:39:04] job updated
-#> INFO [2026-06-15 21:39:09] job updated
-#> INFO [2026-06-15 21:39:13] job updated
-#> INFO [2026-06-15 21:39:17] job updated
-#> INFO [2026-06-15 21:39:22] job updated
-#> INFO [2026-06-15 21:39:26] job updated
-#> INFO [2026-06-15 21:39:30] job updated
-#> INFO [2026-06-15 21:39:35] job updated
-#> INFO [2026-06-15 21:39:39] job updated
-#> INFO [2026-06-15 21:39:43] job updated
-#> INFO [2026-06-15 21:39:47] job updated
-#> INFO [2026-06-15 21:39:51] job updated
-#> INFO [2026-06-15 21:39:56] job updated
-#> INFO [2026-06-15 21:40:00] job updated
-#> INFO [2026-06-15 21:40:04] job updated
-#> INFO [2026-06-15 21:40:08] job updated
-#> INFO [2026-06-15 21:40:13] job updated
-#> INFO [2026-06-15 21:40:17] job updated
-#> INFO [2026-06-15 21:40:21] job updated
-#> INFO [2026-06-15 21:40:25] job updated
-#> INFO [2026-06-15 21:40:30] job updated
-#> INFO [2026-06-15 21:40:34] job updated
-#> INFO [2026-06-15 21:40:38] job updated
-#> INFO [2026-06-15 21:40:43] job updated
-#> INFO [2026-06-15 21:40:47] job updated
-#> INFO [2026-06-15 21:40:51] job updated
-#> INFO [2026-06-15 21:40:55] job updated
-#> INFO [2026-06-15 21:41:00] job updated
-#> INFO [2026-06-15 21:41:04] job updated
-#> INFO [2026-06-15 21:41:08] job updated
-#> INFO [2026-06-15 21:41:12] job updated
-#> INFO [2026-06-15 21:41:16] job updated
-#> INFO [2026-06-15 21:41:21] job updated
-#> INFO [2026-06-15 21:41:25] job updated
-#> INFO [2026-06-15 21:41:29] job updated
-#> INFO [2026-06-15 21:41:34] job updated
-#> INFO [2026-06-15 21:41:38] job updated
-#> INFO [2026-06-15 21:41:42] job updated
-#> INFO [2026-06-15 21:41:47] job updated
-#> INFO [2026-06-15 21:41:51] job updated
-#> INFO [2026-06-15 21:41:55] job updated
-#> INFO [2026-06-15 21:42:00] job updated
-#> INFO [2026-06-15 21:42:04] job updated
-#> INFO [2026-06-15 21:42:08] job updated
-#> INFO [2026-06-15 21:42:13] job updated
-#> INFO [2026-06-15 21:42:17] job updated
-#> INFO [2026-06-15 21:42:21] job updated
-#> INFO [2026-06-15 21:42:25] job updated
-#> INFO [2026-06-15 21:42:30] job updated
-#> INFO [2026-06-15 21:42:34] job updated
-#> INFO [2026-06-15 21:42:38] job updated
-#> INFO [2026-06-15 21:42:43] job updated
-#> INFO [2026-06-15 21:42:47] job updated
-#> INFO [2026-06-15 21:42:51] job updated
-#> INFO [2026-06-15 21:42:55] job updated
-#> INFO [2026-06-15 21:43:00] job updated
-#> INFO [2026-06-15 21:43:04] job updated
-#> INFO [2026-06-15 21:43:08] job updated
-#> INFO [2026-06-15 21:43:13] job updated
-#> INFO [2026-06-15 21:43:17] job updated
-#> INFO [2026-06-15 21:43:21] job updated
-#> INFO [2026-06-15 21:43:25] job updated
-#> INFO [2026-06-15 21:43:30] job updated
-#> INFO [2026-06-15 21:43:34] job updated
-#> INFO [2026-06-15 21:43:38] job updated
-#> INFO [2026-06-15 21:43:42] job updated
-#> INFO [2026-06-15 21:43:47] job updated
-#> INFO [2026-06-15 21:43:51] job updated
-#> INFO [2026-06-15 21:43:55] job updated
-#> INFO [2026-06-15 21:44:00] job updated
-#> INFO [2026-06-15 21:44:04] job updated
-#> INFO [2026-06-15 21:44:08] job updated
-#> INFO [2026-06-15 21:44:12] job updated
-#> INFO [2026-06-15 21:44:16] job updated
-#> INFO [2026-06-15 21:44:21] job updated
-#> INFO [2026-06-15 21:44:25] job updated
-#> INFO [2026-06-15 21:44:29] job updated
-#> INFO [2026-06-15 21:44:33] job updated
-#> INFO [2026-06-15 21:44:38] job updated
-#> INFO [2026-06-15 21:44:42] job updated
-#> INFO [2026-06-15 21:44:46] job updated
-#> INFO [2026-06-15 21:44:50] job updated
-#> INFO [2026-06-15 21:44:54] job updated
-#> INFO [2026-06-15 21:44:59] job updated
-#> INFO [2026-06-15 21:45:03] job updated
-#> INFO [2026-06-15 21:45:07] job updated
-#> INFO [2026-06-15 21:45:12] job updated
-#> INFO [2026-06-15 21:45:16] job updated
-#> INFO [2026-06-15 21:45:20] job updated
-#> INFO [2026-06-15 21:45:24] job updated
-#> INFO [2026-06-15 21:45:29] job updated
-#> INFO [2026-06-15 21:45:33] job updated
-#> INFO [2026-06-15 21:45:37] job updated
-#> INFO [2026-06-15 21:45:41] job updated
-#> INFO [2026-06-15 21:45:46] job updated
-#> INFO [2026-06-15 21:45:50] job updated
-#> INFO [2026-06-15 21:45:54] job updated
-#> INFO [2026-06-15 21:45:59] job updated
-#> INFO [2026-06-15 21:46:03] job updated
-#> INFO [2026-06-15 21:46:07] job updated
-#> INFO [2026-06-15 21:46:12] job updated
-#> INFO [2026-06-15 21:46:16] job updated
-#> INFO [2026-06-15 21:46:20] job updated
-#> INFO [2026-06-15 21:46:24] job updated
-#> INFO [2026-06-15 21:46:29] job updated
-#> INFO [2026-06-15 21:46:33] job updated
-#> INFO [2026-06-15 21:46:37] job updated
-#> INFO [2026-06-15 21:46:41] job updated
-#> INFO [2026-06-15 21:46:46] job updated
-#> INFO [2026-06-15 21:46:50] job updated
-#> INFO [2026-06-15 21:46:54] job updated
-#> INFO [2026-06-15 21:46:58] job updated
-#> INFO [2026-06-15 21:47:02] job updated
-#> INFO [2026-06-15 21:47:06] job updated
-#> INFO [2026-06-15 21:47:11] job updated
-#> INFO [2026-06-15 21:47:15] job updated
-#> INFO [2026-06-15 21:47:19] job updated
-#> INFO [2026-06-15 21:47:24] job updated
-#> INFO [2026-06-15 21:47:24] downloading
-#> INFO [2026-06-15 21:47:26] extracting
+#> INFO [2026-06-18 02:51:05] job submitted
+#> INFO [2026-06-18 02:51:05] downloading
+#> INFO [2026-06-18 02:51:07] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -403,6 +238,10 @@ summary(met)
 #>  Max.   :383.9   Max.   :103515   Max.   :419.3   Max.   :95.49
 ```
 
+For details on meteorological variables and derived fields, see
+[Meteorological
+Data](https://limnotrack.com/articles/aeme-inputs.html#meteorological-data).
+
 The depth of this lake is 13.07 m, the area is 152343 m2, and the light
 extinction coefficient (Kw) is 1.31 m-1.
 
@@ -421,6 +260,10 @@ relationship between the lake area and the lake elevation.
 However, if you do not have hypsograph data, the model will use a simple
 cone-shaped hypsograph based on the lake depth and area. This is not
 ideal, but it will work for this example.
+
+For complete details on hypsograph requirements and generation, see
+[Input Slot -
+Hypsograph](https://limnotrack.com/articles/aeme-inputs.html#input-slot).
 
 Required column names for the hypsograph data are `area`, `elev`, and
 `depth`.
@@ -605,12 +448,9 @@ step.
 
 ### Model controls
 
-The model controls are the settings for the AEME ensemble. These are
-read in from a CSV file. The default CSV file is stored within the
-package and can be accessed using the `get_model_controls` function. It
-has the argument `use_bgc` which is a logical value to indicate whether
-to simulate the default biogeochemical variables with the hydrodynamic
-variables or just the hydrodynamic variables.
+The model controls define which variables to simulate. For details on
+the structure and customization, see [Configuration
+Slot](https://limnotrack.com/articles/aeme-inputs.html#configuration-slot).
 
 The model controls has the following columns:
 
@@ -714,10 +554,13 @@ model_controls
 
 ### Build the ensemble
 
-The `build_aeme` function will take the AEME object and the model
-controls and build the ensemble. The `model` argument is a character
-vector of the models to include in the ensemble. The models available
-are `dy_cd`, `glm_aed`, and `gotm_wet`.
+The `build_aeme` function creates model configurations from the AEME
+object. For background on the three models, see [The Three
+Models](https://limnotrack.com/articles/intro-aeme.html#three-models).
+
+The `model` argument is a character vector of the models to include in
+the ensemble. The models available are `dy_cd`, `glm_aed`, and
+`gotm_wet`.
 
 ``` r
 
@@ -734,6 +577,7 @@ path <- "aeme"
 # Build ensemble
 aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
                    path = path)
+#> ✔ Created missing directory: D:\a\AEME\AEME\vignettes\aeme
 #> ✔ `MET_wnduvv`: converted from km/h to m/s.
 #> 
 #> 
@@ -746,12 +590,12 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [10ms]
-#> 
-#> 
-#> 
 #> ℹ Insufficient lake temperature observations (<10).
 #> ℹ Using Stefan & Preud'homme (2007) method to estimate surface temperature.
+#> ✔ Estimating surface water temperature [51ms]
+#> 
+#> 
+#> 
 #> Estimating lake water levels for dy_cd
 #> 
 #>   ℹ Optimizing parameters for water balance
@@ -880,14 +724,14 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-15 21:47:48]
-#> → DYRESM-CAEDYM running... [2026-06-15 21:47:48]
-#> ✔ DYRESM-CAEDYM run successful! [2026-06-15 21:48:08]
-#> → GLM-AED running... [2026-06-15 21:48:08]
-#> ✔ GLM-AED run successful! [2026-06-15 21:48:08]
-#> → GOTM-WET running... [2026-06-15 21:48:08]
-#> ✔ GOTM-WET run successful! [2026-06-15 21:48:09]
-#> ✔ Model run complete! [2026-06-15 21:48:09]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-18 02:51:30]
+#> → DYRESM-CAEDYM running... [2026-06-18 02:51:30]
+#> ✔ DYRESM-CAEDYM run successful! [2026-06-18 02:51:49]
+#> → GLM-AED running... [2026-06-18 02:51:49]
+#> ✔ GLM-AED run successful! [2026-06-18 02:51:50]
+#> → GOTM-WET running... [2026-06-18 02:51:50]
+#> ✔ GOTM-WET run successful! [2026-06-18 02:51:50]
+#> ✔ Model run complete! [2026-06-18 02:51:50]
 #> ! The following variables are not available in model dy_cd: LKE_photic
 #> ! The following variables are not available in model gotm_wet: CHM_ph
 ```
@@ -949,3 +793,205 @@ aeme <- aeme |>
   build_aeme(model = model, use_bgc = TRUE, path = path) |> 
   run_aeme()
 ```
+
+## Troubleshooting
+
+Common issues and solutions when setting up AEME:
+
+### Model Build Errors
+
+**Error: “Hypsograph elevation range does not include initial depth”**
+
+- **Solution**: Ensure your hypsograph spans from below the lake bottom
+  to above the maximum expected water level. Use `ext_elev` parameter in
+  [`generate_hypsograph()`](https://limnotrack.com/reference/generate_hypsograph.md)
+  or add rows to your hypsograph.
+
+**Error: “Missing required meteorological variables”**
+
+- **Solution**: Check your meteorological data has the required columns:
+  `Date`, `MET_tmpair`, `MET_wndspd`, `MET_radswd`. See [Meteorological
+  Data](https://limnotrack.com/articles/aeme-inputs.html#meteorological-data)
+  for details.
+
+**Error: “Outflow elevation outside hypsograph range”**
+
+- **Solution**: Verify outlet elevations fall within your hypsograph
+  elevation range. Use `-1` for surface outlets.
+
+### Model Run Errors
+
+**Error: “Model failed to run”**
+
+- **Check**: Timestep may be too large for stability
+- **Check**: Initial conditions may be unrealistic  
+- **Check**: Meteorological data has no gaps or unrealistic values
+- **Solution**: Run with `verbose = TRUE` to see detailed error messages
+
+**Warning: “Simulated water level outside hypsograph range”**
+
+- **Solution**: Extend hypsograph range using `ext_elev` parameter or
+  check water balance inputs
+
+### Data Quality Issues
+
+**Unrealistic model output**
+
+- **Check**: Light extinction coefficient (Kw) is appropriate for lake
+  type
+- **Check**: Hypsograph is realistic (not just a simple cone)
+- **Check**: Meteorological data units are correct
+- **Check**: Inflow/outflow magnitudes are reasonable
+
+**Models diverge significantly**
+
+- **Expected**: Some divergence is normal due to different physics (see
+  [Ensemble
+  Approach](https://limnotrack.com/articles/intro-aeme.html#ensemble-approach))
+- **Check**: Ensure all models use the same inputs
+- **Consider**: Different models may be appropriate for different lake
+  types
+
+### Getting Help
+
+If you encounter issues not covered here:
+
+1.  Check the [AEME GitHub
+    Issues](https://github.com/limnotrack/AEME/issues)
+2.  Review the comprehensive [AEME
+    Inputs](https://limnotrack.com/articles/aeme-inputs.md) reference
+3.  Open a new issue with a reproducible example
+
+## Next Steps
+
+Now that you have a working AEME ensemble, consider these extensions:
+
+### Model Calibration and Sensitivity Analysis
+
+Use the [aemetools](https://github.com/limnotrack/aemetools) package
+for:
+
+- **Automated calibration**: Optimize parameters against observations
+- **Sensitivity analysis**: Identify influential parameters
+- **Uncertainty quantification**: Ensemble-based uncertainty estimates
+
+``` r
+
+library(aemetools)
+
+# Calibrate GLM-AED
+calib_result <- calib_aeme(
+  aeme = aeme,
+  param = param,
+  model = "glm_aed",
+  vars_sim = c("HYD_temp", "CHM_oxy")
+)
+
+# Sensitivity analysis
+sa_result <- sa_aeme(
+  aeme = aeme,
+  param = param,
+  model = "glm_aed",
+  method = "sobol"
+)
+```
+
+See the [aemetools
+documentation](https://limnotrack.github.io/aemetools/) for details.
+
+### Advanced Applications
+
+Explore additional AEME features:
+
+#### Water Balance Estimation
+
+Estimate unknown inflows/outflows from water level observations:
+
+``` r
+
+aeme <- build_aeme(
+  aeme = aeme,
+  model = model,
+  model_controls = model_controls,
+  path = path,
+  wb_method = 2,  # Estimate outflows
+  use_wbal = "obs"
+)
+```
+
+See `vignette("rotoehu-water-balance")` for a complete example.
+
+#### Reservoir Applications
+
+For reservoirs with multiple outlets and selective withdrawal:
+
+``` r
+
+# Add multiple outlets at different depths
+aeme <- add_outflows(
+  aeme,
+  data = list(
+    spillway = spillway_data,
+    penstock = penstock_data
+  ),
+  elevation = list(
+    spillway = -1,      # Surface
+    penstock = 130      # Deep outlet
+  )
+)
+```
+
+See `vignette("reservoir-aeme")` for details.
+
+#### Scenario Analysis
+
+Test management scenarios by modifying inputs:
+
+``` r
+
+# Scenario 1: Increased nutrient loading
+aeme_scenario1 <- aeme
+inf_data_enriched <- inf_data
+inf_data_enriched$stream$PHS_frp <- inf_data$stream$PHS_frp * 2
+aeme_scenario1 <- add_inflows(aeme_scenario1, data = inf_data_enriched)
+
+# Scenario 2: Climate change (+2°C)
+met_future <- met
+met_future$MET_tmpair <- met_future$MET_tmpair + 2
+aeme_scenario2 <- aeme
+input(aeme_scenario2)$meteo <- met_future
+
+# Run scenarios
+aeme_scenario1 <- run_aeme(aeme_scenario1)
+aeme_scenario2 <- run_aeme(aeme_scenario2)
+
+# Compare results
+plot_output(aeme_scenario1, var_sim = "PHY_tchla")
+plot_output(aeme_scenario2, var_sim = "HYD_temp")
+```
+
+### Related Vignettes
+
+- [Introduction to
+  AEME](https://limnotrack.com/articles/intro-aeme.md) - Models,
+  ensemble approach, and theory
+- [AEME Inputs](https://limnotrack.com/articles/aeme-inputs.md) -
+  Comprehensive reference for all inputs
+- [Reservoir
+  Example](https://limnotrack.com/articles/articles/reservoir-aeme.md) -
+  Multi-outlet reservoir
+- [Water
+  Balance](https://limnotrack.com/articles/articles/rotoehu-water-balance.md) -
+  Estimating unknown flows
+- [LERNZmp
+  Application](https://limnotrack.com/articles/articles/lernzmp-aeme.md) -
+  Multi-lake ensemble modeling
+
+### Additional Resources
+
+- [AEME GitHub](https://github.com/limnotrack/AEME)
+- [aemetools package](https://github.com/limnotrack/aemetools)
+- [GLM-AED
+  documentation](https://aquatic.science.uwa.edu.au/research/models/GLM/)
+- [GOTM documentation](https://gotm.net/)
+- [LERNZmp platform](https://limnotrack.shinyapps.io/LERNZmp/)

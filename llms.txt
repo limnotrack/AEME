@@ -262,6 +262,8 @@ We have a host of vignettes to help you get started with AEME:
   Check and manage file paths
 - [`check_var_in_output()`](https://limnotrack.com/reference/check_var_in_output.md)
   : Check if a variable is present in the model output
+- [`cli_safe()`](https://limnotrack.com/reference/cli_safe.md) : Inform
+  messages respecting the global AEME.inform option
 - [`` `configuration<-`() ``](https://limnotrack.com/reference/configuration-set.md)
   : Set the configuration slot of an Aeme object
 - [`configuration()`](https://limnotrack.com/reference/configuration.md)

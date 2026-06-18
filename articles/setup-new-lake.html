@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,15 +82,19 @@
       <img src="../logo.png" class="logo" alt=""><h1>Set up AEME for a new lake</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/vignettes/setup-new-lake.Rmd" class="external-link"><code>vignettes/setup-new-lake.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-aeme-introduction-and-inputs/vignettes/setup-new-lake.Rmd" class="external-link"><code>vignettes/setup-new-lake.Rmd</code></a></small>
       <div class="d-none name"><code>setup-new-lake.Rmd</code></div>
     </div>
 
     
     
-<p>Setting up the Aquatic Ecosystem Model Ensemble is straight forward
+<p>Setting up the Aquatic Ecosystem Model Ensemble is straightforward
 and can be done in a few steps. This vignette will guide you through the
 process of setting up the model for a lake in New Zealand.</p>
+<p>This is a <strong>practical tutorial</strong> focused on workflow.
+For detailed information on the AEME models and ensemble approach, see
+<a href="intro-aeme.html">Introduction to AEME</a>. For comprehensive
+reference on inputs and the S4 structure, see <a href="aeme-inputs.html">AEME Inputs</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/limnotrack/AEME" class="external-link">AEME</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -111,7 +115,8 @@ process of setting up the model for a lake in New Zealand.</p>
 </h2>
 <p>The first step is to define the lake data. This includes the location
 of the lake, the depth and area of the lake, and the elevation of the
-lake.</p>
+lake. See <a href="aeme-inputs.html#lake-slot">Lake Slot</a> for
+complete field requirements.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define the location of the lake</span></span>
 <span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">36.8898</span></span>
@@ -217,8 +222,8 @@ construct the AEME object.</p>
 <div class="section level2">
 <h2 id="time-data">Time data<a class="anchor" aria-label="anchor" href="#time-data"></a>
 </h2>
-<p>The time data is required for the model. This includes the start and
-stop times for the model run.</p>
+<p>The time data defines the simulation period. See <a href="aeme-inputs.html#time-slot">Time Slot</a> for details on date
+formats and spin-up configuration.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define start and stop times</span></span>
 <span><span class="va">start</span> <span class="op">&lt;-</span> <span class="st">"2020-08-01 00:00:00"</span></span>
@@ -232,6 +237,9 @@ stop times for the model run.</p>
 <div class="section level2">
 <h2 id="input-data">Input data<a class="anchor" aria-label="anchor" href="#input-data"></a>
 </h2>
+<p>The AEME <code>input</code> slot requires meteorological data, a
+hypsograph, and the light extinction coefficient. See <a href="aeme-inputs.html#input-slot">Input Slot</a> for detailed
+requirements.</p>
 <div class="section level3">
 <h3 id="meteorological-data">Meteorological data<a class="anchor" aria-label="anchor" href="#meteorological-data"></a>
 </h3>
@@ -245,189 +253,9 @@ locations around the world. However, its date range is only from
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/aemetools/reference/get_era5_isimip_point.html">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:34:33] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:34:37] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:34:41] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:34:46] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:34:50] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:34:55] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:34:59] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:03] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:08] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:12] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:17] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:21] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:25] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:29] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:34] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:38] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:43] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:47] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:52] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:35:56] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:00] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:04] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:09] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:13] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:17] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:22] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:26] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:30] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:35] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:39] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:43] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:47] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:52] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:36:56] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:00] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:04] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:09] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:13] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:17] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:21] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:26] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:30] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:34] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:38] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:42] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:47] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:51] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:55] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:37:59] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:04] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:08] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:12] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:16] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:20] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:25] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:29] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:34] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:38] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:42] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:46] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:51] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:38:55] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:00] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:04] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:09] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:13] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:17] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:22] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:26] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:30] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:35] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:39] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:43] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:47] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:51] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:39:56] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:00] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:04] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:08] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:13] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:17] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:21] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:25] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:30] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:34] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:38] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:43] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:47] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:51] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:40:55] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:00] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:04] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:08] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:12] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:16] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:21] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:25] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:29] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:34] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:38] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:42] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:47] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:51] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:41:55] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:00] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:04] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:08] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:13] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:17] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:21] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:25] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:30] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:34] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:38] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:43] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:47] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:51] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:42:55] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:00] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:04] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:08] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:13] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:17] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:21] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:25] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:30] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:34] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:38] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:42] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:47] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:51] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:43:55] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:00] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:04] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:08] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:12] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:16] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:21] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:25] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:29] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:33] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:38] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:42] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:46] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:50] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:54] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:44:59] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:03] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:07] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:12] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:16] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:20] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:24] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:29] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:33] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:37] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:41] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:46] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:50] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:54] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:45:59] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:03] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:07] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:12] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:16] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:20] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:24] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:29] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:33] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:37] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:41] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:46] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:50] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:54] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:46:58] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:47:02] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:47:06] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:47:11] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:47:15] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:47:19] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:47:24] job updated</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:47:24] downloading</span></span>
-<span><span class="co">#&gt; INFO [2026-06-15 21:47:26] extracting</span></span></code></pre></div>
+<span><span class="co">#&gt; INFO [2026-06-18 02:51:05] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2026-06-18 02:51:05] downloading</span></span>
+<span><span class="co">#&gt; INFO [2026-06-18 02:51:07] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -447,6 +275,7 @@ converted to more common units used in aquatic ecosystem modelling.</p>
 <span><span class="co">#&gt;  Mean   :187.3   Mean   :101421   Mean   :335.9   Mean   :77.05  </span></span>
 <span><span class="co">#&gt;  3rd Qu.:258.5   3rd Qu.:101927   3rd Qu.:352.8   3rd Qu.:82.67  </span></span>
 <span><span class="co">#&gt;  Max.   :383.9   Max.   :103515   Max.   :419.3   Max.   :95.49</span></span></code></pre></div>
+<p>For details on meteorological variables and derived fields, see <a href="aeme-inputs.html#meteorological-data">Meteorological Data</a>.</p>
 <p>The depth of this lake is 13.07 m, the area is 152343 m2, and the
 light extinction coefficient (Kw) is 1.31 m-1.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -463,6 +292,8 @@ relationship between the lake area and the lake elevation.</p>
 <p>However, if you do not have hypsograph data, the model will use a
 simple cone-shaped hypsograph based on the lake depth and area. This is
 not ideal, but it will work for this example.</p>
+<p>For complete details on hypsograph requirements and generation, see
+<a href="aeme-inputs.html#input-slot">Input Slot - Hypsograph</a>.</p>
 <p>Required column names for the hypsograph data are <code>area</code>,
 <code>elev</code>, and <code>depth</code>.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -628,13 +459,8 @@ step.</p>
 <div class="section level3">
 <h3 id="model-controls">Model controls<a class="anchor" aria-label="anchor" href="#model-controls"></a>
 </h3>
-<p>The model controls are the settings for the AEME ensemble. These are
-read in from a CSV file. The default CSV file is stored within the
-package and can be accessed using the <code>get_model_controls</code>
-function. It has the argument <code>use_bgc</code> which is a logical
-value to indicate whether to simulate the default biogeochemical
-variables with the hydrodynamic variables or just the hydrodynamic
-variables.</p>
+<p>The model controls define which variables to simulate. For details on
+the structure and customization, see <a href="aeme-inputs.html#configuration-slot">Configuration Slot</a>.</p>
 <p>The model controls has the following columns:</p>
 <ul>
 <li>
@@ -741,11 +567,11 @@ variables.</p>
 <div class="section level3">
 <h3 id="build-the-ensemble">Build the ensemble<a class="anchor" aria-label="anchor" href="#build-the-ensemble"></a>
 </h3>
-<p>The <code>build_aeme</code> function will take the AEME object and
-the model controls and build the ensemble. The <code>model</code>
-argument is a character vector of the models to include in the ensemble.
-The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
-<code>gotm_wet</code>.</p>
+<p>The <code>build_aeme</code> function creates model configurations
+from the AEME object. For background on the three models, see <a href="intro-aeme.html#three-models">The Three Models</a>.</p>
+<p>The <code>model</code> argument is a character vector of the models
+to include in the ensemble. The models available are <code>dy_cd</code>,
+<code>glm_aed</code>, and <code>gotm_wet</code>.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select models</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span>, <span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span></code></pre></div>
@@ -757,6 +583,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co"># Build ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>, </span>
 <span>                   path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Created missing directory: D:\a\AEME\AEME\vignettes\aeme</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> `MET_wnduvv`: converted from km/h to m/s.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -769,12 +596,12 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt;   <span style="color: #00BBBB;">ℹ</span> No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[10ms]</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Insufficient lake temperature observations (&lt;10).</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Using Stefan &amp; Preud'homme (2007) method to estimate surface temperature.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[51ms]</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Estimating lake water levels for dy_cd</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   <span style="color: #00BBBB;">ℹ</span> Optimizing parameters for water balance</span></span>
@@ -896,14 +723,14 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-06-15 21:47:48]</span></span>
-<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-06-15 21:47:48]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-06-15 21:48:08]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-06-15 21:48:08]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-06-15 21:48:08]</span></span>
-<span><span class="co">#&gt; → GOTM-WET running... [2026-06-15 21:48:08]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-06-15 21:48:09]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-06-15 21:48:09]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-06-18 02:51:30]</span></span>
+<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-06-18 02:51:30]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-06-18 02:51:49]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2026-06-18 02:51:49]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-06-18 02:51:50]</span></span>
+<span><span class="co">#&gt; → GOTM-WET running... [2026-06-18 02:51:50]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-06-18 02:51:50]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-06-18 02:51:50]</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model dy_cd: LKE_photic</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: CHM_ph</span></span></code></pre></div>
 </div>
@@ -955,6 +782,251 @@ reproducible workflow.</p>
 <span>  <span class="fu"><a href="../reference/add_param.html">add_param</a></span><span class="op">(</span>param <span class="op">=</span> <span class="va">param</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
+</h2>
+<p>Common issues and solutions when setting up AEME:</p>
+<div class="section level3">
+<h3 id="model-build-errors">Model Build Errors<a class="anchor" aria-label="anchor" href="#model-build-errors"></a>
+</h3>
+<p><strong>Error: “Hypsograph elevation range does not include initial
+depth”</strong></p>
+<ul>
+<li>
+<strong>Solution</strong>: Ensure your hypsograph spans from below
+the lake bottom to above the maximum expected water level. Use
+<code>ext_elev</code> parameter in <code><a href="../reference/generate_hypsograph.html">generate_hypsograph()</a></code> or
+add rows to your hypsograph.</li>
+</ul>
+<p><strong>Error: “Missing required meteorological
+variables”</strong></p>
+<ul>
+<li>
+<strong>Solution</strong>: Check your meteorological data has the
+required columns: <code>Date</code>, <code>MET_tmpair</code>,
+<code>MET_wndspd</code>, <code>MET_radswd</code>. See <a href="aeme-inputs.html#meteorological-data">Meteorological Data</a> for
+details.</li>
+</ul>
+<p><strong>Error: “Outflow elevation outside hypsograph
+range”</strong></p>
+<ul>
+<li>
+<strong>Solution</strong>: Verify outlet elevations fall within your
+hypsograph elevation range. Use <code>-1</code> for surface
+outlets.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="model-run-errors">Model Run Errors<a class="anchor" aria-label="anchor" href="#model-run-errors"></a>
+</h3>
+<p><strong>Error: “Model failed to run”</strong></p>
+<ul>
+<li>
+<strong>Check</strong>: Timestep may be too large for stability</li>
+<li>
+<strong>Check</strong>: Initial conditions may be unrealistic<br>
+</li>
+<li>
+<strong>Check</strong>: Meteorological data has no gaps or
+unrealistic values</li>
+<li>
+<strong>Solution</strong>: Run with <code>verbose = TRUE</code> to
+see detailed error messages</li>
+</ul>
+<p><strong>Warning: “Simulated water level outside hypsograph
+range”</strong></p>
+<ul>
+<li>
+<strong>Solution</strong>: Extend hypsograph range using
+<code>ext_elev</code> parameter or check water balance inputs</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="data-quality-issues">Data Quality Issues<a class="anchor" aria-label="anchor" href="#data-quality-issues"></a>
+</h3>
+<p><strong>Unrealistic model output</strong></p>
+<ul>
+<li>
+<strong>Check</strong>: Light extinction coefficient (Kw) is
+appropriate for lake type</li>
+<li>
+<strong>Check</strong>: Hypsograph is realistic (not just a simple
+cone)</li>
+<li>
+<strong>Check</strong>: Meteorological data units are correct</li>
+<li>
+<strong>Check</strong>: Inflow/outflow magnitudes are
+reasonable</li>
+</ul>
+<p><strong>Models diverge significantly</strong></p>
+<ul>
+<li>
+<strong>Expected</strong>: Some divergence is normal due to
+different physics (see <a href="intro-aeme.html#ensemble-approach">Ensemble Approach</a>)</li>
+<li>
+<strong>Check</strong>: Ensure all models use the same inputs</li>
+<li>
+<strong>Consider</strong>: Different models may be appropriate for
+different lake types</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+</h3>
+<p>If you encounter issues not covered here:</p>
+<ol style="list-style-type: decimal">
+<li>Check the <a href="https://github.com/limnotrack/AEME/issues" class="external-link">AEME
+GitHub Issues</a>
+</li>
+<li>Review the comprehensive <a href="aeme-inputs.html">AEME Inputs</a>
+reference</li>
+<li>Open a new issue with a reproducible example</li>
+</ol>
+</div>
+</div>
+<div class="section level2">
+<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+</h2>
+<p>Now that you have a working AEME ensemble, consider these
+extensions:</p>
+<div class="section level3">
+<h3 id="model-calibration-and-sensitivity-analysis">Model Calibration and Sensitivity Analysis<a class="anchor" aria-label="anchor" href="#model-calibration-and-sensitivity-analysis"></a>
+</h3>
+<p>Use the <a href="https://github.com/limnotrack/aemetools" class="external-link">aemetools</a> package
+for:</p>
+<ul>
+<li>
+<strong>Automated calibration</strong>: Optimize parameters against
+observations</li>
+<li>
+<strong>Sensitivity analysis</strong>: Identify influential
+parameters</li>
+<li>
+<strong>Uncertainty quantification</strong>: Ensemble-based
+uncertainty estimates</li>
+</ul>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://limnotrack.com/aemetools/">aemetools</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Calibrate GLM-AED</span></span>
+<span><span class="va">calib_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.com/aemetools/reference/calib_aeme.html">calib_aeme</a></span><span class="op">(</span></span>
+<span>  aeme <span class="op">=</span> <span class="va">aeme</span>,</span>
+<span>  param <span class="op">=</span> <span class="va">param</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"glm_aed"</span>,</span>
+<span>  vars_sim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span>, <span class="st">"CHM_oxy"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Sensitivity analysis</span></span>
+<span><span class="va">sa_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.com/aemetools/reference/sa_aeme.html">sa_aeme</a></span><span class="op">(</span></span>
+<span>  aeme <span class="op">=</span> <span class="va">aeme</span>,</span>
+<span>  param <span class="op">=</span> <span class="va">param</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"glm_aed"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"sobol"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>See the <a href="https://limnotrack.github.io/aemetools/" class="external-link">aemetools
+documentation</a> for details.</p>
+</div>
+<div class="section level3">
+<h3 id="advanced-applications">Advanced Applications<a class="anchor" aria-label="anchor" href="#advanced-applications"></a>
+</h3>
+<p>Explore additional AEME features:</p>
+<div class="section level4">
+<h4 id="water-balance-estimation">Water Balance Estimation<a class="anchor" aria-label="anchor" href="#water-balance-estimation"></a>
+</h4>
+<p>Estimate unknown inflows/outflows from water level observations:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span></span>
+<span>  aeme <span class="op">=</span> <span class="va">aeme</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
+<span>  path <span class="op">=</span> <span class="va">path</span>,</span>
+<span>  wb_method <span class="op">=</span> <span class="fl">2</span>,  <span class="co"># Estimate outflows</span></span>
+<span>  use_wbal <span class="op">=</span> <span class="st">"obs"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>See <code>vignette("rotoehu-water-balance")</code> for a complete
+example.</p>
+</div>
+<div class="section level4">
+<h4 id="reservoir-applications">Reservoir Applications<a class="anchor" aria-label="anchor" href="#reservoir-applications"></a>
+</h4>
+<p>For reservoirs with multiple outlets and selective withdrawal:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Add multiple outlets at different depths</span></span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_outflows.html">add_outflows</a></span><span class="op">(</span></span>
+<span>  <span class="va">aeme</span>,</span>
+<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    spillway <span class="op">=</span> <span class="va">spillway_data</span>,</span>
+<span>    penstock <span class="op">=</span> <span class="va">penstock_data</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  elevation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    spillway <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,      <span class="co"># Surface</span></span>
+<span>    penstock <span class="op">=</span> <span class="fl">130</span>      <span class="co"># Deep outlet</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>See <code>vignette("reservoir-aeme")</code> for details.</p>
+</div>
+<div class="section level4">
+<h4 id="scenario-analysis">Scenario Analysis<a class="anchor" aria-label="anchor" href="#scenario-analysis"></a>
+</h4>
+<p>Test management scenarios by modifying inputs:</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Scenario 1: Increased nutrient loading</span></span>
+<span><span class="va">aeme_scenario1</span> <span class="op">&lt;-</span> <span class="va">aeme</span></span>
+<span><span class="va">inf_data_enriched</span> <span class="op">&lt;-</span> <span class="va">inf_data</span></span>
+<span><span class="va">inf_data_enriched</span><span class="op">$</span><span class="va">stream</span><span class="op">$</span><span class="va">PHS_frp</span> <span class="op">&lt;-</span> <span class="va">inf_data</span><span class="op">$</span><span class="va">stream</span><span class="op">$</span><span class="va">PHS_frp</span> <span class="op">*</span> <span class="fl">2</span></span>
+<span><span class="va">aeme_scenario1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_inflows.html">add_inflows</a></span><span class="op">(</span><span class="va">aeme_scenario1</span>, data <span class="op">=</span> <span class="va">inf_data_enriched</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Scenario 2: Climate change (+2°C)</span></span>
+<span><span class="va">met_future</span> <span class="op">&lt;-</span> <span class="va">met</span></span>
+<span><span class="va">met_future</span><span class="op">$</span><span class="va">MET_tmpair</span> <span class="op">&lt;-</span> <span class="va">met_future</span><span class="op">$</span><span class="va">MET_tmpair</span> <span class="op">+</span> <span class="fl">2</span></span>
+<span><span class="va">aeme_scenario2</span> <span class="op">&lt;-</span> <span class="va">aeme</span></span>
+<span><span class="fu"><a href="../reference/input.html">input</a></span><span class="op">(</span><span class="va">aeme_scenario2</span><span class="op">)</span><span class="op">$</span><span class="va">meteo</span> <span class="op">&lt;-</span> <span class="va">met_future</span></span>
+<span></span>
+<span><span class="co"># Run scenarios</span></span>
+<span><span class="va">aeme_scenario1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span><span class="va">aeme_scenario1</span><span class="op">)</span></span>
+<span><span class="va">aeme_scenario2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span><span class="va">aeme_scenario2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Compare results</span></span>
+<span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span><span class="va">aeme_scenario1</span>, var_sim <span class="op">=</span> <span class="st">"PHY_tchla"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span><span class="va">aeme_scenario2</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="related-vignettes">Related Vignettes<a class="anchor" aria-label="anchor" href="#related-vignettes"></a>
+</h3>
+<ul>
+<li>
+<a href="intro-aeme.html">Introduction to AEME</a> - Models,
+ensemble approach, and theory</li>
+<li>
+<a href="aeme-inputs.html">AEME Inputs</a> - Comprehensive reference
+for all inputs</li>
+<li>
+<a href="articles/reservoir-aeme.html">Reservoir Example</a> -
+Multi-outlet reservoir</li>
+<li>
+<a href="articles/rotoehu-water-balance.html">Water Balance</a> -
+Estimating unknown flows</li>
+<li>
+<a href="articles/lernzmp-aeme.html">LERNZmp Application</a> -
+Multi-lake ensemble modeling</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="additional-resources">Additional Resources<a class="anchor" aria-label="anchor" href="#additional-resources"></a>
+</h3>
+<ul>
+<li><a href="https://github.com/limnotrack/AEME" class="external-link">AEME GitHub</a></li>
+<li><a href="https://github.com/limnotrack/aemetools" class="external-link">aemetools
+package</a></li>
+<li><a href="https://aquatic.science.uwa.edu.au/research/models/GLM/" class="external-link">GLM-AED
+documentation</a></li>
+<li><a href="https://gotm.net/" class="external-link">GOTM documentation</a></li>
+<li><a href="https://limnotrack.shinyapps.io/LERNZmp/" class="external-link">LERNZmp
+platform</a></li>
+</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
