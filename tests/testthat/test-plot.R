@@ -4,9 +4,9 @@ test_that("plotting model met tile", {
   p1 <- plot_met_tile(aeme = aeme)
   testthat::expect_true(ggplot2::is_ggplot(p1))
 
-  p2 <- plot_met_tile(aeme = aeme, var_inp = c("MET_tmpair", "MET_pprain"))
+  p2 <- plot_met_tile(aeme = aeme, var_aeme = c("MET_tmpair", "MET_pprain"))
   testthat::expect_true(ggplot2::is_ggplot(p2))
-  p3 <- plot_met_tile(aeme = aeme, var_inp = c("MET_pprain"),
+  p3 <- plot_met_tile(aeme = aeme, var_aeme = c("MET_pprain"),
                       use_hydro_year = FALSE)
   testthat::expect_true(ggplot2::is_ggplot(p3))
 
