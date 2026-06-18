@@ -228,10 +228,8 @@ standardise_inflow <- function(inflow,
   }
   
   # Known AEME inflow variable names — drawn from key_naming$var_aeme
-  env <- new.env(parent = emptyenv())
-  data("key_naming", package = "AEME", envir = env)
-  known_inflow_vars <- c("HYD_flow", "HYD_temp", "CHM_salt",
-                         env$key_naming$var_aeme)
+  known_inflow_vars <- c("HYD_flow", "HYD_temp", "CHM_salt", 
+                         key_naming$var_aeme)
   
   if (all(non_time %in% known_inflow_vars)) {
     if (verbose) {

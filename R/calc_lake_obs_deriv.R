@@ -14,8 +14,7 @@
 
 calc_lake_obs_deriv <- function(aeme) {
   
-  # Load Rdata
-  data("key_naming", package = "AEME", envir = environment())
+  # Use Rdata
   deriv_vars <- key_naming |>
     dplyr::filter(derived) |>
     dplyr::pull(var_aeme)

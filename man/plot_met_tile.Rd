@@ -4,12 +4,12 @@
 \alias{plot_met_tile}
 \title{Plot a tile plot of meteorological data}
 \usage{
-plot_met_tile(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE)
+plot_met_tile(aeme, var_aeme = "MET_tmpair", use_hydro_year = TRUE, var_inp)
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
-\item{var_inp}{Character. Variable to plot. Can be one of:
+\item{var_aeme}{Character. Variable to plot. Can be one of:
 \itemize{
 \item \code{"MET_tmpair"}: Air temperature
 \item \code{"MET_pprain"}: Rainfall
@@ -22,7 +22,12 @@ plot_met_tile(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE)
 \item \code{"MET_wnddir"}: Wind direction
 }}
 
-\item{use_hydro_year}{Logical. If \code{TRUE}, the hydrological year is used.}
+\item{use_hydro_year}{Logical. If \code{TRUE}, the hydrological year is used.
+The hydrological year starts in October for the northern hemisphere and in
+July for the southern hemisphere. If \code{FALSE}, the calendar year is used.}
+
+\item{var_inp}{Character. \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use
+\code{var_aeme} instead.}
 }
 \value{
 A ggplot object

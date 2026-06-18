@@ -1,7 +1,7 @@
 #' Plot a tile plot of meteorological data
 #'
 #' @inheritParams build_aeme
-#' @param var_inp Character. Variable to plot. Can be one of:
+#' @param var_aeme Character. Variable to plot. Can be one of:
 #' \itemize{
 #' \item \code{"MET_tmpair"}: Air temperature
 #' \item \code{"MET_pprain"}: Rainfall
@@ -14,24 +14,36 @@
 #' \item \code{"MET_wnddir"}: Wind direction
 #' }
 #' @param use_hydro_year Logical. If \code{TRUE}, the hydrological year is used.
+#' The hydrological year starts in October for the northern hemisphere and in 
+#' July for the southern hemisphere. If \code{FALSE}, the calendar year is used.
+#' @param var_inp Character. `r lifecycle::badge("deprecated")` Use 
+#' \code{var_aeme} instead.
 #'
 #' @importFrom ggplot2 geom_tile facet_wrap labs scale_fill_viridis_c
 #' @importFrom dplyr case_when left_join filter mutate group_by summarise
 #' @importFrom tidyr pivot_longer
 #' @importFrom lubridate year month yday
 #' @importFrom patchwork wrap_plots
+#' @importFrom lifecycle deprecate_soft
 #'
 #' @return A ggplot object
 #' @export
 #'
 
-plot_met_tile <- function(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE) {
+plot_met_tile <- function(aeme, var_aeme = "MET_tmpair", use_hydro_year = TRUE, 
+                          var_inp) {
 
+  if (!missing(var_inp)) {
+    var_aeme <- var_inp
+    lifecycle::deprecate_soft(
+      when = "0.3.2",
+      what = "plot_met_tile(var_inp)",
+      with = "plot_met_tile(var_aeme)"
+    )
+  }
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
-  
-  # Load Rdata
-  data("key_naming", package = "AEME", envir = environment())
+  var_aeme <- check_aeme_vars(var_aeme)
 
   # Load lake data for hydrological year
   lke <- lake(aeme)
@@ -43,13 +55,13 @@ plot_met_tile <- function(aeme, var_inp = "MET_tmpair", use_hydro_year = TRUE) {
     stop("No meteo data found in input slot")
   }
 
-  if (!all(var_inp %in% names(inp$meteo))) {
+  if (!all(var_aeme %in% names(inp$meteo))) {
     stop("Variable not found in meteo data")
   }
 
   df <- inp$meteo |>
     tidyr::pivot_longer(cols = !dplyr::contains("Date")) |>
-    dplyr::filter(name %in% var_inp) |>
+    dplyr::filter(name %in% var_aeme) |>
     dplyr::left_join(key_naming[, c("var_aeme", "name_parse")]
                      , by = c("name" = "var_aeme"))
 

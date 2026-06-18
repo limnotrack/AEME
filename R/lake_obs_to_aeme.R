@@ -33,8 +33,7 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
                              var_col_name, value_col_name, lake_id_col, 
                              var_map) {
   
-  # Load Rdata
-  data("key_naming", package = "AEME", envir = environment())
+  # Use Rdata
   sub_key_naming <- key_naming |> 
     dplyr::select(var_aeme, units) |> 
     dplyr::rename(aeme_units = units)

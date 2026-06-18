@@ -16,9 +16,14 @@ knitr::opts_chunk$set(
 ```
 
 
-Setting up the Aquatic Ecosystem Model Ensemble is straight forward and can be
+Setting up the Aquatic Ecosystem Model Ensemble is straightforward and can be
 done in a few steps. This vignette will guide you through the process of setting
 up the model for a lake in New Zealand.
+
+This is a **practical tutorial** focused on workflow. For detailed information 
+on the AEME models and ensemble approach, see [Introduction to 
+AEME](intro-aeme.html). For comprehensive reference on inputs and the S4 
+structure, see [AEME Inputs](aeme-inputs.html).
 
 ```{r setup}
 library(AEME)
@@ -33,7 +38,8 @@ tmap_options(basemap.server = "OpenStreetMap") # Set the basemap to OpenStreetMa
 # Lake data
 
 The first step is to define the lake data. This includes the location of the
-lake, the depth and area of the lake, and the elevation of the lake.
+lake, the depth and area of the lake, and the elevation of the lake. See [Lake 
+Slot](aeme-inputs.html#lake-slot) for complete field requirements.
 
 
 ```{r lake-location}
@@ -171,8 +177,9 @@ lake <- list(
 
 # Time data
 
-The time data is required for the model. This includes the start and stop times
-for the model run. 
+The time data defines the simulation period. See [Time 
+Slot](aeme-inputs.html#time-slot) for details on date formats and spin-up 
+configuration.
 
 ```{r time-data}
 # Define start and stop times
@@ -188,6 +195,10 @@ time <- list(
 
 
 # Input data
+
+The AEME `input` slot requires meteorological data, a hypsograph, and the light 
+extinction coefficient. See [Input Slot](aeme-inputs.html#input-slot) for 
+detailed requirements.
 
 ## Meteorological data
 
@@ -211,6 +222,9 @@ more common units used in aquatic ecosystem modelling.
 summary(met)
 ```
 
+For details on meteorological variables and derived fields, see [Meteorological 
+Data](aeme-inputs.html#meteorological-data).
+
 The depth of this lake is 13.07 m, the area is 152343 m2, and the light 
 extinction coefficient (Kw) is 1.31 m-1.
 
@@ -230,6 +244,9 @@ the lake area and the lake elevation.
 However, if you do not have hypsograph data, the model will use a simple
 cone-shaped hypsograph based on the lake depth and area. This is not ideal, but
 it will work for this example.
+
+For complete details on hypsograph requirements and generation, see [Input 
+Slot - Hypsograph](aeme-inputs.html#input-slot).
 
 Required column names for the hypsograph data are `area`, `elev`, and `depth`.
 
@@ -332,12 +349,9 @@ model configurations have not been built. This is done in the next step.
 
 ## Model controls
 
-The model controls are the settings for the AEME ensemble. These are
-read in from a CSV file. The default CSV file is stored within the package
-and can be accessed using the `get_model_controls` function. It has the 
-argument  `use_bgc` which is a logical value to indicate whether to simulate the
-default biogeochemical variables with the hydrodynamic variables or just the
-hydrodynamic variables.
+The model controls define which variables to simulate. For details on the 
+structure and customization, see [Configuration 
+Slot](aeme-inputs.html#configuration-slot).
 
 The model controls has the following columns:
 
@@ -355,8 +369,10 @@ model_controls
 
 ## Build the ensemble
 
-The `build_aeme` function will take the AEME object and the model controls
-and build the ensemble. The `model` argument is a character vector of the models
+The `build_aeme` function creates model configurations from the AEME object. For 
+background on the three models, see [The Three Models](intro-aeme.html#three-models).
+
+The `model` argument is a character vector of the models
 to include in the ensemble. The models available are `dy_cd`, `glm_aed`, and
 `gotm_wet`.
 
@@ -448,3 +464,186 @@ aeme <- aeme |>
   build_aeme(model = model, use_bgc = TRUE, path = path) |> 
   run_aeme()
 ```
+
+# Troubleshooting {#troubleshooting}
+
+Common issues and solutions when setting up AEME:
+
+## Model Build Errors
+
+**Error: "Hypsograph elevation range does not include initial depth"**
+
+- **Solution**: Ensure your hypsograph spans from below the lake bottom to above 
+  the maximum expected water level. Use `ext_elev` parameter in 
+  `generate_hypsograph()` or add rows to your hypsograph.
+
+**Error: "Missing required meteorological variables"**
+
+- **Solution**: Check your meteorological data has the required columns: `Date`, 
+  `MET_tmpair`, `MET_wndspd`, `MET_radswd`. See [Meteorological 
+  Data](aeme-inputs.html#meteorological-data) for details.
+
+**Error: "Outflow elevation outside hypsograph range"**
+
+- **Solution**: Verify outlet elevations fall within your hypsograph elevation 
+  range. Use `-1` for surface outlets.
+
+## Model Run Errors
+
+**Error: "Model failed to run"**
+
+- **Check**: Timestep may be too large for stability
+- **Check**: Initial conditions may be unrealistic  
+- **Check**: Meteorological data has no gaps or unrealistic values
+- **Solution**: Run with `verbose = TRUE` to see detailed error messages
+
+**Warning: "Simulated water level outside hypsograph range"**
+
+- **Solution**: Extend hypsograph range using `ext_elev` parameter or check 
+  water balance inputs
+
+## Data Quality Issues
+
+**Unrealistic model output**
+
+- **Check**: Light extinction coefficient (Kw) is appropriate for lake type
+- **Check**: Hypsograph is realistic (not just a simple cone)
+- **Check**: Meteorological data units are correct
+- **Check**: Inflow/outflow magnitudes are reasonable
+
+**Models diverge significantly**
+
+- **Expected**: Some divergence is normal due to different physics (see 
+  [Ensemble Approach](intro-aeme.html#ensemble-approach))
+- **Check**: Ensure all models use the same inputs
+- **Consider**: Different models may be appropriate for different lake types
+
+## Getting Help
+
+If you encounter issues not covered here:
+
+1. Check the [AEME GitHub Issues](https://github.com/limnotrack/AEME/issues)
+2. Review the comprehensive [AEME Inputs](aeme-inputs.html) reference
+3. Open a new issue with a reproducible example
+
+# Next Steps {#next-steps}
+
+Now that you have a working AEME ensemble, consider these extensions:
+
+## Model Calibration and Sensitivity Analysis
+
+Use the [aemetools](https://github.com/limnotrack/aemetools) package for:
+
+- **Automated calibration**: Optimize parameters against observations
+- **Sensitivity analysis**: Identify influential parameters
+- **Uncertainty quantification**: Ensemble-based uncertainty estimates
+
+```{r aemetools-example, eval=FALSE}
+library(aemetools)
+
+# Calibrate GLM-AED
+calib_result <- calib_aeme(
+  aeme = aeme,
+  param = param,
+  model = "glm_aed",
+  vars_sim = c("HYD_temp", "CHM_oxy")
+)
+
+# Sensitivity analysis
+sa_result <- sa_aeme(
+  aeme = aeme,
+  param = param,
+  model = "glm_aed",
+  method = "sobol"
+)
+```
+
+See the [aemetools documentation](https://limnotrack.github.io/aemetools/) for 
+details.
+
+## Advanced Applications
+
+Explore additional AEME features:
+
+### Water Balance Estimation
+
+Estimate unknown inflows/outflows from water level observations:
+
+```{r water-balance-example, eval=FALSE}
+aeme <- build_aeme(
+  aeme = aeme,
+  model = model,
+  model_controls = model_controls,
+  path = path,
+  wb_method = 2,  # Estimate outflows
+  use_wbal = "obs"
+)
+```
+
+See `vignette("rotoehu-water-balance")` for a complete example.
+
+### Reservoir Applications
+
+For reservoirs with multiple outlets and selective withdrawal:
+
+```{r reservoir-example, eval=FALSE}
+# Add multiple outlets at different depths
+aeme <- add_outflows(
+  aeme,
+  data = list(
+    spillway = spillway_data,
+    penstock = penstock_data
+  ),
+  elevation = list(
+    spillway = -1,      # Surface
+    penstock = 130      # Deep outlet
+  )
+)
+```
+
+See `vignette("reservoir-aeme")` for details.
+
+### Scenario Analysis
+
+Test management scenarios by modifying inputs:
+
+```{r scenario-example, eval=FALSE}
+# Scenario 1: Increased nutrient loading
+aeme_scenario1 <- aeme
+inf_data_enriched <- inf_data
+inf_data_enriched$stream$PHS_frp <- inf_data$stream$PHS_frp * 2
+aeme_scenario1 <- add_inflows(aeme_scenario1, data = inf_data_enriched)
+
+# Scenario 2: Climate change (+2°C)
+met_future <- met
+met_future$MET_tmpair <- met_future$MET_tmpair + 2
+aeme_scenario2 <- aeme
+input(aeme_scenario2)$meteo <- met_future
+
+# Run scenarios
+aeme_scenario1 <- run_aeme(aeme_scenario1)
+aeme_scenario2 <- run_aeme(aeme_scenario2)
+
+# Compare results
+plot_output(aeme_scenario1, var_sim = "PHY_tchla")
+plot_output(aeme_scenario2, var_sim = "HYD_temp")
+```
+
+## Related Vignettes
+
+- [Introduction to AEME](intro-aeme.html) - Models, ensemble approach, and 
+  theory
+- [AEME Inputs](aeme-inputs.html) - Comprehensive reference for all inputs
+- [Reservoir Example](articles/reservoir-aeme.html) - Multi-outlet reservoir
+- [Water Balance](articles/rotoehu-water-balance.html) - Estimating unknown 
+  flows
+- [LERNZmp Application](articles/lernzmp-aeme.html) - Multi-lake ensemble 
+  modeling
+
+## Additional Resources
+
+- [AEME GitHub](https://github.com/limnotrack/AEME)
+- [aemetools package](https://github.com/limnotrack/aemetools)
+- [GLM-AED documentation](https://aquatic.science.uwa.edu.au/research/models/GLM/)
+- [GOTM documentation](https://gotm.net/)
+- [LERNZmp platform](https://limnotrack.shinyapps.io/LERNZmp/)

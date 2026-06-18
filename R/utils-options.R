@@ -26,14 +26,16 @@ cli_inform_safe <- function(...) {
 #' @param ... arguments passed to cli_inform_safe()
 #' @param FUN function to use for messaging, default is cli::cli_inform
 #' @param indent logical, whether to indent the message, default is FALSE
-#' @noRd
-cli_safe <- function(..., FUN = cli::cli_bullets, indent = TRUE) {
+#' @inheritParams cli::cli_abort
+#' @export
+cli_safe <- function(..., FUN = cli::cli_bullets, indent = TRUE,
+                     .envir = parent.frame()) {
   if (isTRUE(getOption("AEME.inform", TRUE))) {
     if (indent) {
       d <- cli::cli_div(theme = list(".bullet" = list("margin-left" = 2)))
       on.exit(cli::cli_end(d))
     }
-    FUN(...)
+    FUN(..., .envir = .envir)
   }
 }
 

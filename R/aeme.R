@@ -386,6 +386,11 @@ aeme_constructor <- function(
       class = "aeme_warn_longitude"
     )
   }
+  if (is.null(lake$elevation)) {
+    cli_safe(c("!" = "{.arg lake$elevation} is missing; defaulting to 0 m."),
+             FUN = cli::cli_warn, indent = FALSE)
+    lake$elevation <- 0
+  }
   if (!is.numeric(lake$elevation)) {
     cli::cli_abort(
       c("{.arg lake$elevation} must be {.cls numeric}.",
@@ -578,6 +583,11 @@ aeme_constructor <- function(
       class = "aeme_error_input"
     )
   }
+  if (is.null(input$init_depth)) {
+    input$init_depth <- lake$depth
+    cli_safe(c("!" = "{.arg input$init_depth} is missing; defaulting to lake depth ({.val {lake$depth}} m)."),
+             FUN = cli::cli_inform, indent = FALSE)
+  }
   if (!is.numeric(input$init_depth)) {
     cli::cli_abort(
       c("{.arg input$init_depth} must be {.cls numeric}.",
@@ -769,13 +779,13 @@ aeme_constructor <- function(
       # catchment = catchment,
       time = time,
       configuration = configuration,
+      parameters = parameters,
       observations = observations,
       input = input,
       inflows = inflows,
       outflows = outflows,
       water_balance = water_balance,
-      output = output,
-      parameters = parameters
+      output = output
   )
 }
 
@@ -1467,10 +1477,7 @@ setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
   }
   
   if (y == "input") {
-    
-    # Load Rdata
-    data("key_naming", package = "AEME", envir = environment())
-    
+
     inp <- input(x)
     p1 <- ggplot2::ggplot() +
       ggplot2::geom_line(data = inp$hypsograph, ggplot2::aes(x = area, y = elev)) +
