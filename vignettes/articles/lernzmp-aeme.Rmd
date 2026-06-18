@@ -117,6 +117,19 @@ It can be printed to the console to see the contents of the object.
 #| label: lernzmp-print-aeme
 aeme
 ```
+The Aeme object can also be downloaded using the `aemetools::get_aeme()`
+function which will download the AEME object for a given lake ID. This is a 
+programmatic way to access the AEME objects for the lakes in the LERNZmp platform,
+however, it requires an API key which can be obtained by contacting the LERNZmp
+team at [data@limnotrack.com](mailto:data@limnotrack.com).
+
+
+```{r}
+#| label: lernzmp-download-aeme
+#| eval: FALSE
+aeme <- aemetools::get_aeme(id = "LID11133", 
+                            api_key = Sys.getenv("LERNZMP_KEY"))
+```
 
 This allows for quick inspection of all the different slots within the `Aeme`
 object. The lake section has the lake metadata, the time section has the start, 
