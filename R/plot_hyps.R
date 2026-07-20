@@ -8,9 +8,8 @@
 #' @param incl_ext_elev Logical; if TRUE, include the external elevation in the
 #' hypsograph plot. Default is FALSE.
 #'
-#'
 #' @importFrom ggplot2 ggplot aes scale_linetype_manual guides geom_line
-#' geom_point labs geom_hline
+#' @importFrom ggplot2  geom_point labs geom_hline
 #'
 #' @return ggplot object
 #' @export

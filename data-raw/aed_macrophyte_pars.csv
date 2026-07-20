@@ -1,0 +1,28 @@
+module,group,parameter,label,symbol,description,units,default,source
+aed_macrophyte,GENERAL,m_name,Group name,,Name of macrophyte group,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GENERAL,m0,Minimum above-ground density,,Minimum above ground density of macrophyte,mmol C/m2,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GENERAL,K_CD,Drag coefficient constant,,Constant relating macrophyte density to drag coefficient,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GENERAL,f_bg,Below-ground biomass fraction,,Fraction of primary production apportioned to below-ground biomass,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GENERAL,k_omega,Plant density-coverage constant,,Omega constant relating plant density to effective area of coverage,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GENERAL,Xcc,Carbon to chlorophyll ratio,X_{cc},Internal C:Chl-a ratio of the plant leaves,mg C/mg chla,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GROWTH,R_growth,Max growth rate,R_{growth},Macrophyte max growth rate @20C,/day,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GROWTH,fT_Method,Temperature limitation method,,"Specifies temperature limitation function of growth (0 = no temperature limitation, 1 = CAEDYM style)",-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GROWTH,theta_growth,Growth temperature scaling,theta_{growth},Arrhenius temperature scaling for growth function,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GROWTH,T_std,Standard temperature,T_{std},Standard temperature,deg C,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GROWTH,T_opt,Optimum temperature,T_{opt},Optimum temperature,deg C,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,GROWTH,T_max,Maximum temperature,T_{max},Maximum temperature,deg C,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,LIGHT,lightModel,Light model,,"Type of light response function (0 = no photoinhibition, 1 = photoinhibition)",-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,LIGHT,I_K,Light half-saturation constant,I_K,Half saturation constant for light limitation of growth (used if lightModel=0),microE/m2/s,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,LIGHT,I_S,Saturating light intensity,I_S,Saturating light intensity (used if lightModel=1),microE/m2/s,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,LIGHT,KeMAC,Specific attenuation coefficient,Ke_{MAC},Specific attenuation coefficient,(mmol C m2-1)-1 m-1,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,RESPIRATION,f_pr,Exudation fraction,f_{pr},Fraction of primary production lost to exudation,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,RESPIRATION,R_resp,Respiration rate,R_{resp},Respiration/metabolic loss rate @20 degC,/day,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,RESPIRATION,theta_resp,Respiration temperature scaling,theta_{resp},Arrhenius temperature scaling factor for respiration,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,SALINITY,salTol,Salinity tolerance function,,Type of salinity limitation function,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,SALINITY,S_bep,Salinity limitation at S_maxsp,S_{bep},Salinity limitation value at maximum salinity S_maxsp,-,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,SALINITY,S_maxsp,Maximum salinity,S_{maxsp},Maximum salinity,g/kg,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,SALINITY,S_opt,Optimal salinity,S_{opt},Optimal salinity,g/kg,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,NITROGEN,K_N,N half-saturation constant,K_N,Half-saturation concentration of nitrogen,mmol N/m3,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,NITROGEN,X_ncon,Constant internal N,X_{ncon},Constant internal nitrogen concentration,mmol N/mmol C,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,PHOSPHORUS,K_P,P half-saturation constant,K_P,Half-saturation concentration of phosphorus,mmol P/m3,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte
+aed_macrophyte,PHOSPHORUS,X_pcon,Constant internal P,X_{pcon},Constant internal phosphorus concentration,mmol P/mmol C,,https://aed.see.uwa.edu.au/research/models/AED/aed_dbase/db_edit.php?table=aed_macrophyte

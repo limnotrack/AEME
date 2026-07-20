@@ -16,7 +16,7 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                         inf_factor = 1, update_nml = TRUE) {
 
   # Load Rdata
-  utils::data("key_naming", package = "AEME", envir = environment())
+  data("key_naming", package = "AEME", envir = environment())
 
   # get the inflow attributes
   names_inf <- names(list_inf)
@@ -75,7 +75,7 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
       }
     }
     # write the files
-    mapply(list_inf, FUN = utils::write.csv, file = file.path(path_glm,
+    mapply(list_inf, FUN = write.csv, file = file.path(path_glm,
                                                        paste0("bcs/inflow_",
                                                        names_inf, ".csv")),
            row.names = FALSE, quote = FALSE)
@@ -97,8 +97,7 @@ make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                      strmbd_slope = rep(0.5, 1),
                      strmbd_drag = rep(0.016, 1),
                      inflow_factor = rep(1, 1),
-                     inflow_fl = paste0("bcs/inflow_", "none",
-                                        ".csv", collapse = ", "),
+                     inflow_fl = "",
                      inflow_varnum = 3,
                      inflow_vars = c("flow", "temp", "salt"),
                      coef_inf_entrain = 0

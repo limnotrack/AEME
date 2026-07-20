@@ -7,7 +7,7 @@
 list_obs_vars(aeme)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 }
 \value{
 Observation variable names vector

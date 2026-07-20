@@ -49,7 +49,7 @@ read_nml  <-	function(nml_file){
       textLine	<-	paste(carryover,
                         gsub("\t", "", gsub(" ", "", fileLines[j])), sep = '')
 
-      if(substr(textLine, 1, 1) != '!'){
+      if (substr(textLine, 1, 1) != '!') {
         # Add a check here, sometimes, if there is a hanging comma,
         #and only sometimes that means add next row
         if(substr(textLine, nchar(textLine), nchar(textLine)) == ',' &&

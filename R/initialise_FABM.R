@@ -10,7 +10,7 @@
 #' @noRd
 #'
 
-initialise_FABM <- function(path_gotm, model_controls, print = TRUE) {
+initialise_FABM <- function(path_gotm, model_controls) {
 
   fabm <- yaml::read_yaml(file.path(path_gotm, "fabm.yaml"))
 
@@ -22,16 +22,24 @@ initialise_FABM <- function(path_gotm, model_controls, print = TRUE) {
                                    "PHS_pip", "NIT_pin",
                                    "PHS_tp","NIT_tn","PHY_tchla")
     )
+  if (nrow(this_ctrls) == 0) {
+    cli_inform_safe(c("v" = "No variables to initialise for FABM"))
+    return(invisible())
+  }
 
   nme_chk <- rename_modelvars(input = this_ctrls$var_aeme,
                               type_output = "gotm_fabm")
   # Remove columns with no name - not necessary for GLM
   this_ctrls <- this_ctrls[nme_chk != "", ]
+  if (nrow(this_ctrls) == 0) {
+    cli_inform_safe(c("v" = "No variables to initialise for FABM"))
+    return(invisible())
+  }
   params <- rename_modelvars(input = this_ctrls$var_aeme,
                              type_output = "gotm_fabm")
 
   if (sum(is.na(this_ctrls$initial_wc)) > 0) {
-    stop("incomplete initialisation, please check your key file")
+    cli::cli_abort("incomplete initialisation, please check your key file")
   }
 
   # iterate through the state variables
@@ -51,24 +59,24 @@ initialise_FABM <- function(path_gotm, model_controls, print = TRUE) {
       sPW <- signif(sDW * (1 / 106), 2)
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sDW"]]
-      if (print) {
-        message(paste0(paste0(key[1:3], collapse = "/"), "/sDW ",
-                       paste0(old_val, " replaced with ", sDW)))
-      }
+      msg <- paste0("Setting initial condition for ", 
+                    paste0(key[1:3], collapse = '/'), 
+                    "/sDW: ", old_val, " replaced with ", sDW)
+      cli_inform_safe(c("i" = msg))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sDW"]] <- sDW
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sNW"]]
-      if (print) {
-        message(paste0(paste0(key[1:3], collapse = "/"), "/sNW ",
-                       paste0(old_val, " replaced with ", sNW)))
-      }
+      msg <- paste0("Setting initial condition for ", 
+                    paste0(key[1:3], collapse = '/'), 
+                    "/sNW: ", old_val, " replaced with ", sNW)
+      cli_inform_safe(c("i" = msg))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sNW"]] <- sNW
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sPW"]]
-      if (print) {
-        message(paste0(paste0(key[1:3], collapse = "/"), "/sPW ",
-                       paste0(old_val, " replaced with ", sPW)))
-      }
+      msg <- paste0("Setting initial condition for ", 
+                    paste0(key[1:3], collapse = '/'), 
+                    "/sPW: ", old_val, " replaced with ", sPW)
+      cli_inform_safe(c("i" = msg))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sPW"]] <- sPW
 
     } else if (key[2] %in% c("cladocerans")) {
@@ -79,24 +87,23 @@ initialise_FABM <- function(path_gotm, model_controls, print = TRUE) {
       sP <- cPDZooRef * sD
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sD"]]
-      if (print) {
-        message(paste0(paste0(key[1:3], collapse = "/"), "/sD ",
-                       paste0(old_val, " replaced with ", sD)))
-      }
+      msg <- paste0(paste0(key[1:3], collapse = "/"), "/sD ",
+                    paste0(old_val, " replaced with ", sD))
+      cli_inform_safe(c("i" = msg))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sD"]] <- sD
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sN"]]
-      if (print) {
-        message(paste0(paste0(key[1:3], collapse = "/"), "/sN ",
-                       paste0(old_val, " replaced with ", sN)))
-      }
+      msg <- paste0("Setting initial condition for", 
+                    paste0(key[1:3], collapse = '/'), 
+                    "/sN: ", old_val, " replaced with ", sN)
+      cli_inform_safe(c("i" = msg))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sN"]] <- sN
 
       old_val <- fabm[[key[1]]][[key[2]]][[key[3]]][["sP"]]
-      if (print) {
-        message(paste0(paste0(key[1:3], collapse = "/"), "/sP ",
-                       paste0(old_val, " replaced with ", sP)))
-      }
+      msg <- paste0("Setting initial condition for", 
+                    paste0(key[1:3], collapse = '/'), 
+                    "/sP: ", old_val, " replaced with ", sP)
+      cli_inform_safe(c("i" = msg))
       fabm[[key[1]]][[key[2]]][[key[3]]][["sP"]] <- sP
     } else {
       if (length(key) == 4) {
@@ -104,13 +111,12 @@ initialise_FABM <- function(path_gotm, model_controls, print = TRUE) {
         new_val <- this_ctrls$initial_wc[i]
         fabm[[key[1]]][[key[2]]][[key[3]]][[key[4]]] <- this_ctrls$initial_wc[i]
       }
-      if (print) {
-        message(paste0(params[i], " ", paste0(old_val,
-                                              " replaced with ", new_val)))
-      }
+      cli_inform_safe(c("i" = paste0(params[i], " ", 
+                                     paste0(old_val, " replaced with ", new_val))))
     }
   }
 
   # write the file
   write_yaml(fabm, file.path(path_gotm, "fabm.yaml"))
+  return(invisible())
 }

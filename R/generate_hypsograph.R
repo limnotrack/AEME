@@ -31,7 +31,7 @@ generate_hypsograph <- function(aeme = NULL, max_depth, surface_area,
                                 mean_depth, volume_development = NULL,
                                 elev = NULL, z_range = 0.2, ext_elev = 0) {
 
-  utils::data("model_layer_structure", package = "AEME", envir = environment())
+  data("model_layer_structure", package = "AEME", envir = environment())
 
   if (!is.null(aeme)) {
     max_depth <- lake(aeme)$depth
@@ -77,7 +77,8 @@ generate_hypsograph <- function(aeme = NULL, max_depth, surface_area,
     dplyr::select(elev, area, depth)
 
   if (ext_elev > 0) {
-    hyps <- extrap_hyps(hyps = hyps, ext_elev = ext_elev)
+    hyps <- extrap_hyps(hypsograph = hyps, ext_elev = ext_elev,
+                        z_range = z_range)
   }
 
   return(hyps)

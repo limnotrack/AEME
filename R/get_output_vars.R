@@ -23,6 +23,12 @@
 
 get_output_vars <- function(aeme, model, ens_n = 1) {
 
+  aeme <- check_aeme(aeme)
+  if (missing(model)) {
+    model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
+  }
   outp <- output(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
@@ -44,8 +50,8 @@ get_output_vars <- function(aeme, model, ens_n = 1) {
     }
   }
   out_vars <- unique(out_vars)
-  utils::data("key_naming", package = "AEME")
-  out_var_names <- key_naming$name_text[match(out_vars, key_naming$name)]
+  data("key_naming", package = "AEME")
+  out_var_names <- key_naming$name_text[match(out_vars, key_naming$var_aeme)]
   nmes <- setNames(out_vars, out_var_names)
   nmes <- nmes[!is.na(nmes)]
   nmes <- nmes[!is.na(names(nmes)) & names(nmes) != ""]
@@ -56,6 +62,7 @@ get_output_vars <- function(aeme, model, ens_n = 1) {
                 "NIT_tn", "PHS_tp")
 
   nmes <- nmes[order(match(nmes, tgt_vars))]
+  nmes <- nmes[nmes != "Date"]
 
   return(nmes)
 }

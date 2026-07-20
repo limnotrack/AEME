@@ -20,29 +20,49 @@
 #' }
 #'
 #' @importFrom dplyr group_by summarise mutate n case_when where across
-#' relocate filter left_join select last_col bind_rows case_when
+#' @importFrom dplyr relocate filter left_join select last_col bind_rows 
+#' @importFrom dplyr case_when
 #' @importFrom stats cor cor.test lm
 #'
 #' @export
 #'
 
-assess_model <- function(aeme, model, var_sim = "HYD_temp") {
+assess_model <- function(aeme, model, var_sim) {
 
   # Check aeme is Aeme object
   aeme <- check_aeme(aeme)
+  # Check model is valid
+  if (missing(model)) {
+    model <- list_models(aeme = aeme)
+  } else {
+    model <- check_model(model = model)
+  }
+  if (missing(var_sim)) {
+    var_sim <- get_mod_obs_vars(aeme = aeme, model = model) |> 
+      dplyr::pull(var_aeme)
+  }
   # Check model is in aeme
   var_sim <- check_aeme_vars(var_sim)
+  
+  data("key_naming", package = "AEME", envir = environment())
+  var_name <- key_naming |> 
+    dplyr::select(var_aeme, name_text, name_parse)
   
   # Extract observations
   obs <- observations(aeme)
 
   # Loop through variables, extract model statistics, bind to dataframe and
   # return
-  lst <- lapply(var_sim, \(v) {
+  out <- lapply(var_sim, \(v) {
 
     # Extract variable from aeme
-    df <- get_var(aeme = aeme, model = model, var_sim = v,
-                  use_obs = TRUE)
+    df <- get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE)
+    if (nrow(df) > 0) {
+      df <- df |> 
+        dplyr::filter(!is.na(sim), !is.infinite(sim))
+    } else if (nrow(df) == 0) {
+      return(NULL)
+    }
 
     model_names <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
                               Model = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
@@ -53,7 +73,7 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
       sub_df <- df |>
         dplyr::filter(Model == model_names$Model[model_names$model == m])
       if (!all(is.na(sub_df$sim))) {
-        fit <- stats::lm(obs ~ sim,
+        fit <- lm(obs ~ sim,
                          data = sub_df)
         r2 <- summary(fit)$r.squared
       }
@@ -78,9 +98,9 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
                        d2 = mae^2 / mean((abs(mean(sim -
                                                      mean(obs, na.rm = TRUE))) +
                                             abs(obs - mean(obs, na.rm = TRUE)))^2),
-                       r = ifelse(all(is.na(sim)), NA, tryCatch(stats::cor(sim, obs, use = "complete.obs"), error = function(e) NA)),
+                       r = ifelse(all(is.na(sim)), NA, tryCatch(cor(sim, obs, use = "complete.obs"), error = function(e) NA)),
                        rs = ifelse(all(is.na(sim)), NA, suppressWarnings({
-                         tryCatch(stats::cor.test(sim, obs, method = "spearman")$estimate, error = function(e) NA)
+                         tryCatch(cor.test(sim, obs, method = "spearman")$estimate, error = function(e) NA)
                        })),
                        n = dplyr::n(),
                        obs_na = sum(is.na(obs)),
@@ -108,7 +128,12 @@ assess_model <- function(aeme, model, var_sim = "HYD_temp") {
       dplyr::relocate(c(n, obs_na, sim_na), .after = dplyr::last_col())
 
   }) |>
-    dplyr::bind_rows() # Bind list of data frames into one data frame and return
+    dplyr::bind_rows()  # Bind list of data frames into one data frame and return
+  
+  if (nrow(out) > 0) {
+    out <- out |> 
+    dplyr::left_join(var_name, by = c("var_sim" = "var_aeme"))
+  }
 
-  lst
+  return(out)
 }

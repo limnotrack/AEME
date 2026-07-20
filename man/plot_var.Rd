@@ -11,9 +11,10 @@ plot_var(
   var_sim,
   ylim = NULL,
   xlim,
-  var_lims,
+  var_lims = NULL,
   obs = NULL,
   add_obs = TRUE,
+  point_size = 2,
   level = FALSE,
   facet = FALSE,
   cumulative = FALSE,
@@ -25,7 +26,7 @@ plot_var(
 \code{\link{get_var}} will be called and \code{var_sim} will be used to
 extract the variable of interest from \code{aeme} for each model.}
 
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{model}{character vector; model(s) to plot. If missing, all models
 in the Aeme object will be plotted.}

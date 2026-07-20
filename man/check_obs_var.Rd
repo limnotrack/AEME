@@ -7,7 +7,7 @@
 check_obs_var(aeme, var_sim)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp").}
 }

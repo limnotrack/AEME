@@ -7,7 +7,7 @@
 list_models(aeme = NULL)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 }
 \value{
 vector of available models

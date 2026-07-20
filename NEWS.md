@@ -1,3 +1,181 @@
+# AEME 0.3.1
+
+## New functions
+
+* `get_config_value()` — retrieve a configuration value from an `Aeme` object,
+  falling back to package defaults when not set.
+* `get_wbal_param()` — retrieve the fitted water-balance outflow parameters
+  (`C` and `h_inv`) stored in an `Aeme` object.
+* `set_wbal_param()` — store water-balance outflow parameters in an `Aeme`
+  object for use in subsequent `build_aeme()` calls.
+* `plot_output_base()` — new base-R plotting function for AEME model output,
+  producing heatmap-style depth–time plots without any `ggplot2` dependency.
+  Can also be invoked via `plot_output(..., backend = "base")`.
+* `get_mean_sea_level_pressure()` — utility function to convert station
+  pressure to mean sea level pressure given air temperature and elevation.
+* `get_station_pressure()` — inverse of `get_mean_sea_level_pressure()`;
+  converts mean sea level pressure back to station pressure.
+
+## Improvements
+
+* **`plot_output()`** — new `backend` argument (`"ggplot2"` or `"base"`)
+  selects the plotting engine. Also improved variable/model availability checks:
+  models or variables missing from all output are now warned and dropped
+  gracefully rather than erroring.
+* **`run_aeme()` / `run_glm_aed()`** — new `args` parameter passes additional
+  command-line arguments to the model executable (e.g. `"--xdisp"` to display
+  GLM plots using the `plots.nml` settings during a run).
+* **`build_glm()`** — automatically copies the bundled `plots.nml` template
+  into the GLM simulation directory when one is not already present.
+* **`build_aeme()`** — `model` and `path` are now resolved from the `Aeme`
+  configuration when not supplied as arguments. All other `build_aeme()`
+  arguments default through `config_defaults()` if not specified.
+* **`estimate_zone_fluxes()`** — output table now rendered using `clitable`
+  for cleaner formatted console display; documentation expanded with method
+  description, depth-scaling references, and a full description of the return
+  value.
+* **`initialise_aed()`** — informative message now only shown when an
+  initialisation value differs meaningfully from the replaced default.
+* **`initialise_glm()`** — added guard for required `init_profiles` fields
+  (`wq_names`, `num_wq_vars`, `wq_init_vals`) that may be absent from older
+  NML files.
+* **`set_glm_aed_models()`** — messaging improved when AED sub-models are
+  removed.
+* **`run_glm_aed_diagnostics()`** — `plot` argument now defaults to `FALSE`.
+* **`calc_water_balance()` / `estimate_lake_wlev()` / `estimate_surface_temperature()` / `standardise_inflow()` / `build_glm()`** — console messaging overhauled using the new `cli_safe()` internal helper, which respects the `AEME.inform` option and supports indented output.  Missing inflow state variables are now reported with their filled default values rather than a generic warning.
+* **`clitable`** moved from `Suggests` to `Imports`; `knitr` moved from
+  `Imports` to `Suggests`; `psychrolib` removed from `Imports` (psychrometric
+  calculations now handled internally via `get_mean_sea_level_pressure()` /
+  `get_station_pressure()`).
+
+## Bug fixes
+
+* Fixed variable naming for DY-CD model output (`read_dy_output()`,
+  `read_model_outputs()`).
+* Removed pH from default model controls (`get_model_controls()`).
+* Simplified and corrected variable-name look-ups in `lake_obs_to_aeme()`,
+  `read_dy_output()`, `read_glm_output()`, `read_gotm_output()`, and
+  `read_model_outputs()` to use the updated `key_naming$var_aeme` column.
+* Removed a now-redundant internal helper `format_model_vars_vec()`; its
+  behaviour is folded into `get_model_vars(as_vector = TRUE)`.
+* Fixed initialisation guard in `initialise_FABM()`, `initialise_aed()`, and
+  `initialise_glm()` — empty model-controls tables now return early with an
+  informative message rather than erroring.
+* Fixed a CLI bug in `estimate_lake_wlev()`.
+* Fixed a typo bug in `estimate_zone_fluxes()` column-renaming step
+  (`dplyr::case_match` replaced with `dplyr::recode` for compatibility).
+
+# AEME 0.3.0
+
+## New features
+
+* Fixed bug for initialising GLM-AED water column with the values from the 
+  model_controls dataframe. This is also added to the GLM .nml file.
+
+## Breaking changes
+
+* `key_naming$name` has been renamed to `key_naming$var_aeme` to align with
+  `model_controls$var_aeme` and simplify joins between the two dataframes.
+  Update any code that references `key_naming$name` directly.
+
+# AEME 0.2.0
+
+## New functions
+
+* `add_outflows()` — add outflow data to an AEME object.
+* `add_output()` — add model output to an AEME object.
+* `add_deriv_output()` — compute and attach derived variables (thermocline depth, stratification, Schmidt stability, TLI components, oxygen metrics) to model output.
+* `check_model()` — validate that a model name is supported.
+* `check_gotm_yaml()` — validate a GOTM YAML configuration file.
+* `check_path()` — helper to verify that a file/directory path exists.
+* `check_utils()` — miscellaneous input-checking utilities.
+* `convert_do()` — convert dissolved-oxygen values between units (mg/L ↔ % saturation).
+* `deriv_registry()` — registry of derived-variable definitions used by `add_deriv_output()`.
+* `estimate_lake_wlev()` — estimate lake water level from inflow/outflow data and a hypsograph.
+* `estimate_sed_zones()` — estimate sediment zones from a hypsograph.
+* `estimate_surface_temperature()` — estimate lake surface temperature.
+* `estimate_zone_fluxes()` — estimate sediment-zone fluxes for AED models.
+* `get_aed_sed_const2d_param()` — retrieve 2-D sediment constant parameters from an AED configuration.
+* `get_aeme_path()` — return the path to the AEME package installation.
+* `get_date_index()` — return time-step indices for a given date range.
+* `get_deriv_vars()` — list available derived variables.
+* `get_glm_sed_params()` — retrieve GLM sediment parameters.
+* `get_glm_sed_zones()` — retrieve GLM sediment zone definitions.
+* `get_hm_palette()` — return the built-in heat-map colour palette.
+* `get_vars_sim()` — get the list of variables to simulate.
+* `get_wbal_components()` — extract water-balance component data from model output.
+* `glm_sed_params()` — construct a GLM sediment-parameter object.
+* `glm_to_aeme()` — convert a GLM NML file to an AEME configuration object.
+* `guess_aeme_vars()` — auto-detect AEME variable names from a data frame.
+* `initialise_aed()` — initialise AED2 configuration (replaces `initialiseAED()`).
+* `is_strat()` — test whether a water column is stratified.
+* `palettes` — built-in colour palettes for AEME plots.
+* `param_colnames()` — return expected column names for the parameter table.
+* `plot_est_wbal()` / `plot_water_balance()` — plot estimated water-balance components.
+* `plot_glm_config()` — plot GLM model configuration diagnostics.
+* `plot_glm_diagnostics()` — plot GLM-AED diagnostic outputs.
+* `plot_wbal_comp()` — plot water-balance component comparison across models.
+* `plot_wbal_summaries()` — plot summarised water-balance results.
+* `plot_weir_calibration()` — plot weir calibration results.
+* `plot_wlev()` — plot simulated water-level time series.
+* `read_aed_param_csv()` — read AED parameter values from a CSV file.
+* `read_dy_output()`, `read_dy_stg()` — read DYRESCD/DY-CD model output and stage files.
+* `read_glm_output()` — read GLM model output NetCDF files.
+* `read_gotm_flux_output()`, `read_gotm_hyps()`, `read_gotm_output()` — read GOTM output files.
+* `read_model_config()` — read a model configuration file.
+* `read_model_hypsograph()` — read a hypsograph from a model configuration.
+* `read_model_nc()` — low-level reader for model NetCDF files.
+* `read_model_outputs()` — unified reader for all supported model outputs.
+* `read_model_wlev()` — read water-level output from any supported model.
+* `reset_wbal_param()` — reset water-balance parameters to defaults.
+* `resolve_dependencies()` — resolve derived-variable computation dependencies.
+* `run_glm_aed_diagnostics()` — run GLM-AED post-run diagnostics.
+* `set_aed_sed_const2d()` — set 2-D AED sediment constant parameters.
+* `set_aed_totals()` — set AED total-concentration parameters.
+* `set_glm_aed_models()` — configure which AED sub-models are active.
+* `set_vars_sim()` — set the variables to be output by a simulation.
+* `standardise_inflow()` — standardise inflow data columns and units.
+* `standardise_met()` — standardise meteorological data columns and units.
+
+## Improvements and changes
+
+* **AEME S4 object overhaul** — the `Aeme` S4 class has been substantially refactored: accessor/replacement generics have been simplified and slot structure updated for consistency.
+* **`build_aeme()`** — major refactor; improved handling of precipitation, inflows, outflows, and lake-level initialisation.
+* **`calc_fairall()`** — vectorised and performance-improved implementation of the Fairall bulk aerodynamic algorithm.
+* **`calc_water_balance()`** — refactored water-balance calculation; improved precipitation and evaporation handling.
+* **`calc_lake_obs_deriv()`** — extended to compute additional derived observation variables.
+* **`expand_met()`** — improved meteorological gap-filling and unit conversion logic.
+* **`load_output()`** — now dispatches to the new unified `read_model_outputs()` functions.
+* **`check_aeme_vars()`**, **`check_glm_nml()`** — improved validation logic and error messages.
+* **`check_time()`** — more robust time-period validation.
+* **`print()` / `show()` / `summary()`** — AEME object print methods migrated to use `{cli}` for formatted console output.
+* **Inflow/outflow handling** — new auto-detection of column names and units via `standardise_inflow()` and `guess_aeme_vars()`; `add_inflows()` and `add_outflows()` updated accordingly.
+* **Rain and snow units** — standardised to mm/day throughout the package.
+* **GLM NML helpers** — new tests and improved handling of sediment parameters and zone detection.
+* **GOTM YAML** — new `check_gotm_yaml()` validates GOTM configuration before model run.
+* **AED initialisation** — `initialiseAED()` replaced by `initialise_aed()`; library name spelling corrected to "Ecodynamics".
+* **GLM binaries** — bundled GLM-AED binaries removed from `inst/extbin/`; users now provide their own executable or use the `glmtools` package option.
+* **Parameter library** — internal parameter library (`bc2e234`) and `get_aeme_params()` updated to include new parameters.
+* **pkgdown site** — favicon assets and extra CSS added; GLM-AED vignette registered.
+* Removed deprecated `nc_listify()` internal helper.
+* Updated Roxygen documentation to v8 conventions throughout.
+
+## New vignettes
+
+* **GLM-AED** (`vignettes/articles/glm-aed.Rmd`) — end-to-end walkthrough of running GLM coupled with AED2.
+* **Reservoir AEME** (`vignettes/articles/reservoir-aeme.Rmd`) — demonstration of AEME on a reservoir.
+
+## Bug fixes
+
+* Fixed phytoplankton group index when building AED configurations (#`45559f4`).
+* Fixed outflow renaming bug in `build_aeme()` (#`04838b0`).
+* Fixed inflow name update logic in `build_glm()` (#`5c0eb58`).
+* Fixed water-balance weir/outflow handling when only the water-balance outflow is present (#`af39204`).
+* Fixed `guess_aeme_vars()` guessing logic for edge cases (#`9e9e622`).
+* Fixed phytoplankton defaults in AED initialisation (#`c9e78d4`).
+* Fixed precipitation unit parsing for percentage values (#`16bcf0b`).
+* Corrected air-pressure unit conversion in meteorological processing.
+
 # AEME 0.1.1
 
 * Potential first succesful release on Zenodo

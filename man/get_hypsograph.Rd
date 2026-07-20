@@ -7,7 +7,7 @@
 get_hypsograph(aeme)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 }
 \value{
 Hypsograph data frame or NULL if not present

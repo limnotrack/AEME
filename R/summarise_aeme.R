@@ -12,16 +12,16 @@
 #'
 
 summarise_aeme <- function(aeme, ens_n = 1) {
-
+  aeme <- check_aeme(aeme)
   # Observation summary ----
   # obs <- observations(aeme)
   # if (!is.null(obs$lake)) {
   #   lake_summ <- obs$lake |>
   #     dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
   #                   adj_Date = Date - lubridate::dmonths(5),
-  #                   depth_mid = (depth_from + depth_to) / 2,
+  #                   depth = (depth_from + depth_to) / 2,
   #                   adj_doy = lubridate::yday(adj_Date)) |>
-  #     dplyr::group_by(var_aeme, adj_doy, depth_mid) |>
+  #     dplyr::group_by(var_aeme, adj_doy, depth) |>
   #     dplyr::summarise(
   #       doy = doy[1], month = month[1],
   #       mean = mean(value, na.rm = TRUE), sd = sd(value, na.rm = TRUE),
@@ -34,7 +34,7 @@ summarise_aeme <- function(aeme, ens_n = 1) {
   #   level_summ <- obs$level |>
   #     dplyr::mutate(doy = lubridate::yday(Date), month = lubridate::month(Date),
   #                   adj_Date = Date - lubridate::dmonths(5),
-  #                   # depth_mid = (depth_from + depth_to) / 2,
+  #                   # depth = (depth_from + depth_to) / 2,
   #                   adj_doy = lubridate::yday(adj_Date)) |>
   #     dplyr::group_by(var_aeme, adj_doy) |>
   #     dplyr::summarise(
@@ -136,7 +136,7 @@ summarise_aeme <- function(aeme, ens_n = 1) {
       get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE)
     }) |>
       dplyr::bind_rows() |>
-      dplyr::select(Date, Model, var_aeme, depth_mid, obs, sim)
+      dplyr::select(Date, Model, var_aeme, depth, obs, sim)
     outp$model_obs_df <- model_obs_df
   }
   aeme_time <- time(aeme)

@@ -12,8 +12,11 @@
 plot_nit <- function(aeme, model, add_obs = TRUE, depth_range = NULL,
                      remove_spin_up = TRUE, ens_n = 1) {
 
+  aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
   }
   # Set colours for Nitrogen variables
   nit_cols <- c("Ammoniacal nitrogen" = "#1b9e77",

@@ -1,7 +1,7 @@
 #' Modify the GOTM yaml file for ensemble simulation
 #'
 #' @inheritParams delagrangify
-#' @inheritParams initialiseGLM
+#' @inheritParams initialise_glm
 #' @inheritParams initialiseGOTM
 #' @inheritParams build_dycd
 #' @inheritParams build_aeme
@@ -61,7 +61,7 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
 
 
   # write the hypso file
-  utils::write.table(hyps, file.path(path_gotm, "inputs/hypsograph.dat"),
+  write.table(hyps, file.path(path_gotm, "inputs/hypsograph.dat"),
                      sep = "\t", row.names = FALSE, quote = FALSE,
                      col.names = FALSE)
 

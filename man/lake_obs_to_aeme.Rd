@@ -17,7 +17,7 @@ lake_obs_to_aeme(
 \arguments{
 \item{data}{data frame containing lake observations}
 
-\item{depth_col_name}{column name for depth (m). If missing, the function 
+\item{depth_col_name}{column name for depth (m). If missing, the function
 will attempt to infer it.}
 
 \item{datetime_col_name}{column name for date/time. If missing, the function
@@ -26,7 +26,7 @@ will attempt to infer it.}
 \item{var_col_name}{column name for variable names. If missing, the function
 will attempt to infer it.}
 
-\item{value_col_name}{column name for variable values. If missing, the 
+\item{value_col_name}{column name for variable values. If missing, the
 function will attempt to infer it.}
 
 \item{lake_id_col}{column name for lake identifier. If missing, the function
@@ -43,7 +43,7 @@ A data frame formatted for AEME with columns "Date", "var_aeme",
 }
 \description{
 Converts a data frame of lake observations into the format required for AEME.
-The function maps variable names and units to AEME standards using provided 
-lookup tables. It also ensures that required columns are present and 
+The function maps variable names and units to AEME standards using provided
+lookup tables. It also ensures that required columns are present and
 correctly named.
 }

@@ -56,7 +56,7 @@ add_hypsograph <- function(aeme = NULL, hypsograph = NULL,
   }
   
   # Extend & arrange hypsograph
-  utils::data("model_layer_structure", package = "AEME", envir = environment())
+  data("model_layer_structure", package = "AEME", envir = environment())
   # Generate a sequence of depths from 0 to the maximum depth
   if (is.null(surf_elev)) {
     surf_elev <- hypsograph |>

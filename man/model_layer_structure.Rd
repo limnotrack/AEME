@@ -5,12 +5,13 @@
 \alias{model_layer_structure}
 \title{Reference data frame for model layer structure.}
 \format{
-## `model_layer_structure`
+\code{model_layer_structure}
 A data frame with 191 rows and 3 columns:
 \describe{
-  \item{zi}{Interface depth (m)}
-  \item{h}{Layer thickness (m)}
-  \item{z}{Layer depth (m)}
+\item{zi}{Interface depth (m)}
+\item{h}{Layer thickness (m)}
+\item{z}{Layer depth (m)}
+\item{n}{Layer number}
 }
 }
 \source{

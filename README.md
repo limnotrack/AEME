@@ -5,6 +5,7 @@
 
 <!-- badges: start -->
 
+![version](https://img.shields.io/github/r-package/v/limnotrack/AEME)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml)
@@ -79,47 +80,72 @@ structure and allows for condensed output to be printed to the console:
 
 ``` r
 aeme
-#>             AEME 
-#> -------------------------------------------------------------------
-#>   Lake
-#> Wainamu (ID: 45819); Lat: -36.89; Lon: 174.47; Elev: 23.64m; Depth: 13.07m;
-#> Area: 152343 m2
-#> -------------------------------------------------------------------
-#>   Time
-#> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#>  Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1
-#> -------------------------------------------------------------------
-#>   Configuration
-#>     Model controls: Present
-#>           Physical   |   Biogeochemical
-#> DY-CD    : Present    |   Present
-#> GLM-AED  : Present    |   Present
-#> GOTM-WET : Present    |   Present
-#> -------------------------------------------------------------------
-#>   Observations
-#> Lake: Present; Level: Present
-#> -------------------------------------------------------------------
-#>   Input
-#> Inital profile: Present; Inital depth: 13.07m; Hypsograph: Present (n=44);
-#> Meteo: Present; Use longwave: TRUE; Kw: 1.31
-#> -------------------------------------------------------------------
-#>   Inflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Outflows
-#> Data: Present; Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
-#> -------------------------------------------------------------------
-#>   Water balance
-#> Method: 2; Use: obs; Modelled: Absent; Water balance: Present
-#> -------------------------------------------------------------------
-#>   Parameters: 
-#> Number of parameters: 0
-#> -------------------------------------------------------------------
-#>   Output: 
 #> 
-#> DY-CD:    1
-#> GLM-AED:  1
-#> GOTM-WET: 1
+#> ── AEME ────────────────────────────────────────────────────────────────────────
+#> 
+#> ── Lake ──
+#> 
+#> Wainamu (ID: LID45819)
+#> • Lat: -36.89; Lon: 174.47
+#> • Elev: 23.64m; Depth: 13.07m; Area: 152343 m2
+#> 
+#> ── Time ──
+#> 
+#> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
+#> • Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1
+#> 
+#> ── Configuration ──
+#> 
+#> • Model: dy_cd, glm_aed, and gotm_wet
+#> • Path: 'C:\Users\mooret\AppData\Local\Temp\RtmpopDlmQ\lake'
+#> • Model controls: Present
+#> • Use biogeochemical model: Yes
+#> ┌ Model Configuration ─────────────────────────────────────────┐
+#> │       Model              Physical         Biogeochemical     │
+#> │ ---                                                          │
+#> │       DY-CD              Present             Present         │
+#> │      GLM-AED             Present             Present         │
+#> │      GOTM-WET            Present             Present         │
+#> └──────────────────────────────────────────────────────────────┘
+#> 
+#> ── Observations ──
+#> 
+#> • Lake: Present; Level: Present
+#> 
+#> ── Input ──
+#> 
+#> • Initial profile: Present; Initial depth: 13.07m
+#> • Hypsograph: Present (n=44)
+#> • Meteo: Present; Use longwave: TRUE; Kw: 1.31
+#> 
+#> ── Inflows ──
+#> 
+#> • Number of inflows: 1; Names: FWMT
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Outflows ──
+#> 
+#> • Data: Present
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Water Balance ──
+#> 
+#> • Method: 2; Use: obs
+#> • Modelled: Absent; Water balance: Present
+#> 
+#> ── Parameters ──
+#> 
+#> • Number of parameters: 0
+#> 
+#> ── Output ──
+#> 
+#> • DY-CD: 1
+#> • GLM-AED: 1
+#> • GOTM-WET: 1
+#> • Variables: 42
+#> Water temperature, Thermocline depth, Dissolved oxygen, Total chlorophyll a,
+#> Total nitrogen, Total phosphorus, Water level, Lake depth, Water density,
+#> Stratified, ... and 32 more
 ```
 
 Model data can be visualised easily using the `plot_output()` function:
@@ -129,7 +155,7 @@ p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 p1
 ```
 
-<img src="man/figures/README-plot_output-HYD_temp-1.png" width="100%" />
+<img src="man/figures/README-plot_output-HYD_temp-1.png" alt="" width="100%" />
 
 Also, visualising lake level plots.
 
@@ -139,7 +165,7 @@ p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
 p2
 ```
 
-<img src="man/figures/README-plot-output-HYD_wlev-1.png" width="100%" />
+<img src="man/figures/README-plot-output-HYD_wlev-1.png" alt="" width="100%" />
 
 ## Documentation
 

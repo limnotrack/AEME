@@ -4,20 +4,70 @@
 \alias{load_configuration}
 \title{Load model configuration to the aeme object}
 \usage{
-load_configuration(model, aeme, model_controls = NULL, use_bgc = FALSE, path)
+load_configuration(
+  aeme,
+  model,
+  path = ".",
+  model_controls = NULL,
+  use_bgc = FALSE,
+  ext_elev = 0,
+  calc_wbal = TRUE,
+  wb_method = 2,
+  calc_wlev = TRUE,
+  use_aeme = FALSE,
+  coeffs = NULL,
+  hum_type = 3,
+  est_swr_hr = TRUE
+)
 }
 \arguments{
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{aeme}{Aeme object.}
 
-\item{aeme}{aeme; object.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
 
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
-\item{use_bgc}{logical; switch to use the biogeochemical model.}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[=get_model_controls]{get_model_controls()}}.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{use_bgc}{logical; enable the biogeochemical model. Default: \code{FALSE}.}
+
+\item{ext_elev}{numeric; elevation (m) to extend the hypsograph to.
+Default: \code{0}.}
+
+\item{calc_wbal}{logical; calculate water balance. Default: \code{TRUE}.}
+
+\item{wb_method}{integer; water balance method. One of:
+\itemize{
+\item \code{1} — no inflows or outflows
+\item \code{2} — outflows calculated (default)
+\item \code{3} — unexplained storage changes treated as effective inflows/outflows
+}}
+
+\item{calc_wlev}{logical; calculate water level. Default: \code{TRUE}.}
+
+\item{use_aeme}{logical; use the \code{aeme} object to generate model
+configuration files. Default: \code{FALSE}.}
+
+\item{coeffs}{numeric vector of length 2; coefficients for estimating
+surface water temperature when calculating evaporation. If water
+temperature observations are present in \code{aeme}, a linear model is fitted
+against air temperature. Otherwise defaults to
+\eqn{T_{water} = 5 + 0.75 \times T_{air}} (Stefan & Preud'homme, 1993,
+\doi{10.1111/j.1752-1688.1993.tb01502.x}).}
+
+\item{hum_type}{integer; humidity input type for GOTM. One of:
+\itemize{
+\item \code{1} — relative humidity (\%)
+\item \code{2} — wet-bulb temperature
+\item \code{3} — dew point temperature (default)
+\item \code{4} — specific humidity (kg/kg)
+}}
+
+\item{est_swr_hr}{logical; estimate hourly shortwave radiation from daily
+values. Default: \code{TRUE}.}
 }
 \value{
 Updated aeme object with model configuration

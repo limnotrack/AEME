@@ -1,7 +1,7 @@
 Type: Package
 Package: AEME
 Title: Aquatic Ecosystem Model Ensemble
-Version: 0.1.1
+Version: 0.3.1
 Authors@R: c(
     person("Tadhg", "Moore", , "tadhg@limnotrack.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3834-8868")),
@@ -16,17 +16,26 @@ URL: https://github.com/limnotrack/AEME, https://limnotrack.com/AEME
 Depends: 
     R (>= 4.2.0)
 Imports: 
+    cli,
+    clitable,
     dplyr,
     ggplot2,
+    glue,
+    jsonlite,
+    lifecycle,
     lubridate,
     lwgeom,
+    methods,
     ncdf4,
     parallel,
     patchwork,
-    psychrolib,
+    processx,
     RColorBrewer,
+    readr,
     rLakeAnalyzer,
+    rlang,
     rstudioapi,
+    scales,
     sf,
     stats,
     stringdist,
@@ -44,11 +53,11 @@ Suggests:
     DT,
     GLM3r (>= 3.1.17),
     GOTMr (>= 0.0.0.10),
+    htmltools,
     knitr,
     LakeEnsemblR (>= 1.2.9),
     osmdata,
     rmarkdown,
-    sf,
     testthat (>= 3.0.0),
     tmap
 VignetteBuilder: 
@@ -60,9 +69,13 @@ Remotes:
     github::limnotrack/aemetools
 Config/checklist/communities: limnotrack
 Config/checklist/keywords: ecosystem; modelling
-Config/Needs/website: rmarkdown
+Config/Needs/website:
+    r-lib/asciicast,
+    rmarkdown
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0

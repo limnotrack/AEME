@@ -5,13 +5,15 @@
 \alias{catchment_yields}
 \title{Catchment yields}
 \format{
-## `catchment_yields`
+\subsection{\code{catchment_yields}}{
+
 A data frame with 4 rows and 4 columns:
 \describe{
-  \item{Type}{Type of catchment}
-  \item{TN_kg/ha/y}{Total nitrogen yield per hectare per year.}
-  \item{TP_kg/ha/y}{Total phosphorus yield per hectare per year.}
-  \item{TSS_kg/ha/y}{Total suspended sediment yield per hectare per year.}
+\item{Type}{Type of catchment}
+\item{TN_kg/ha/y}{Total nitrogen yield per hectare per year.}
+\item{TP_kg/ha/y}{Total phosphorus yield per hectare per year.}
+\item{TSS_kg/ha/y}{Total suspended sediment yield per hectare per year.}
+}
 }
 }
 \source{

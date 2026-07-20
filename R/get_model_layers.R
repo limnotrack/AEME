@@ -7,7 +7,7 @@
 #' @noRd
 
 get_model_layers <- function(depth, thickness_factor = 1) {
-  utils::data("model_layer_structure", package = "AEME", envir = environment())
+  data("model_layer_structure", package = "AEME", envir = environment())
 
   mod_layers <- model_layer_structure |>
     dplyr::mutate(h = h * thickness_factor,

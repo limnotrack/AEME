@@ -23,6 +23,8 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
                              return_df = TRUE) {
   if (missing(model)) {
     model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
   }
   outp <- output(aeme)
   obs <- observations(aeme)

@@ -14,12 +14,13 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+
 ```
 
 # AEME <a href="https://limnotrack.github.io/AEME/"><img src="man/figures/logo.png" align="right" height="120" alt="AEME website" /></a>
 
 <!-- badges: start -->
-
+![version](https://img.shields.io/github/r-package/v/limnotrack/AEME)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/limnotrack/AEME/actions/workflows/pkgdown.yaml)
@@ -77,16 +78,17 @@ class `aeme`. This allows for the standardisation and generalisation of
 functions for this class alongside ensuring integrity and validity to
 it's structure.
 
-```{r}
+```{r aeme-class}
 class(aeme)
 ```
 
 This allows for easier handling of the model output data within our
 structure and allows for condensed output to be printed to the console:
 
-```{r}
+```{r aeme}
 aeme
 ```
+
 
 Model data can be visualised easily using the `plot_output()` function:
 

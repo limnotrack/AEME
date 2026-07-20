@@ -9,6 +9,8 @@ model_layer_structure <- data.frame(
 ) |>
   dplyr::filter(!duplicated(zi)) |>
   dplyr::mutate(h = diff(c(zi, max(zi) + 10)),
-                z = zi + (diff(c(zi, NA))) / 2)
+                z = zi + (diff(c(zi, NA))) / 2,
+                n = 1:dplyr::n()
+                )
 
 usethis::use_data(model_layer_structure, overwrite = TRUE)

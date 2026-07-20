@@ -7,10 +7,10 @@
 update_init(aeme, model_controls = NULL)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[=get_model_controls]{get_model_controls()}}.}
 }
 \value{
 Aeme object with updated initial conditions

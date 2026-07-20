@@ -44,12 +44,7 @@ make_stgGLM <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
   glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
 
   if (update_sediment) {
-    depth <- bathy$elev[(nrow(bathy)-1)] - min(bathy$elev)
-    if(depth < 5) {
-      sed_zones <- c(depth)
-    } else {
-      sed_zones <- c(round(depth / 2, 2), depth)
-    }
+    sed_zones <- estimate_sed_zones(hypsograph = bathy)
 
     sediment <- list(
       sed_heat_Ksoil = rep(1.2, length(sed_zones)),

@@ -7,7 +7,7 @@
 plot_obs(aeme, var_sim = "HYD_temp", add_line = FALSE)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{var_sim}{string; of variable to plot}
 

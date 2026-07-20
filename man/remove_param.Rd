@@ -7,7 +7,7 @@
 remove_param(aeme, name)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{name}{character vector with names of parameters to remove. If missing,
 all parameters are removed.}

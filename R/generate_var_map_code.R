@@ -47,7 +47,7 @@ generate_var_map_code <- function(data, var_col_name = "name") {
   skeleton <- tibble::tibble(
     var_aeme = aeme_vars,
     name = var_names,
-    unit = key_naming$units[match(aeme_vars, key_naming$name)]
+    unit = key_naming$units[match(aeme_vars, key_naming$var_aeme)]
   ) |> 
     dplyr::arrange(var_aeme)
   
@@ -80,7 +80,8 @@ guess_var_aeme <- function(var_names, maxDist = 8) {
   
   data("key_naming", package = "AEME", envir = environment())
   key_naming_sub <- key_naming |> 
-    dplyr::filter(grepl("HYD|LKE_lvlwtr|RAD_secchi|CHM|PHS|NIT|CAR|PHY", name))
+    dplyr::filter(grepl("HYD|LKE_lvlwtr|RAD_secchi|CHM|PHS|NIT|CAR|PHY", 
+                        var_aeme))
   
   var_names_clean <- sanitise_string(var_names)
 
@@ -88,7 +89,7 @@ guess_var_aeme <- function(var_names, maxDist = 8) {
   aeme_vars <- sapply(var_names_clean, function(v) {
     idx <- closest_keyword_index(v, key_naming_sub$keywords, maxDist = maxDist)
     if (is.na(idx)) return(NA)
-    return(key_naming_sub$name[idx])
+    return(key_naming_sub$var_aeme[idx])
     
   })
   names(aeme_vars) <- var_names

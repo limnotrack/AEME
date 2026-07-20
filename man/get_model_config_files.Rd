@@ -4,18 +4,22 @@
 \alias{get_model_config_files}
 \title{Get model configuration files paths}
 \usage{
-get_model_config_files(aeme, model, path)
+get_model_config_files(aeme, model, path, lake_dir = NULL)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
+
+\item{lake_dir}{Path to the lake AEME directory. If NULL, it will be
+computed from \code{aeme} and \code{path}.}
 }
 \value{
-A named vector with paths to model configuration files
+A list with model configuration files paths
 }
 \description{
 Get model configuration files paths

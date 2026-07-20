@@ -12,8 +12,11 @@
 plot_zoops <- function(aeme, model, add_obs = TRUE, depth_range = NULL,
                        remove_spin_up = TRUE, ens_n = 1) {
 
+  aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
+  } else {
+    model <- check_model(model = model)
   }
   zoop_vars <- model_controls |>
     dplyr::filter(grepl("ZOO", var_aeme) & simulate) |>

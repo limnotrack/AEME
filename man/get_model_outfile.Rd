@@ -4,15 +4,19 @@
 \alias{get_model_outfile}
 \title{Get model output file}
 \usage{
-get_model_outfile(aeme, model, path)
+get_model_outfile(aeme = NULL, model, path = NULL, lake_dir = NULL)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
+
+\item{lake_dir}{Path to the lake AEME directory. If NULL, it will be
+computed from \code{aeme} and \code{path}.}
 }
 \value{
 list of model output files.

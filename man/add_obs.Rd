@@ -7,7 +7,7 @@
 add_obs(aeme, lake = NULL, level = NULL)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{lake}{data frame with columns "Date", "var_aeme", "depth_from",
 "depth_to" and "value". If NULL, no observations are added.}

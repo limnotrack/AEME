@@ -15,12 +15,9 @@ precip_status <- function(aeme) {
   inf_names <- names(inf)
   if (all(met[["MET_pprain"]] == 0) & all(met[["MET_ppsnow"]] == 0) &
       ("precip" %in% inf_names)) {
-    return("precip_as_inflow")
-  # } else if (all(met[["MET_pprain"]] == 0) & all(met[["MET_ppsnow"]] == 0) &
-  #            !("precip" %in% inf_names)) {
-  #   return("no_precip")
+    return("inflow")
   } else if (any(met[["MET_pprain"]] > 0) | any(met[["MET_ppsnow"]] > 0) &
              !("precip" %in% inf_names)) {
-    return("precip_as_met")
+    return("met")
   }
 }
