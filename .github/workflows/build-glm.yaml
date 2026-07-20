@@ -8,7 +8,7 @@ on:
         required: true
         default: "v4alpha"
       package_version:
-        description: "AEME package version to attach binaries to (must match an existing or intended GitHub release tag, e.g. 0.4.0)"
+        description: "AEME package version to attach binaries to (must match an existing or intended GitHub release tag, e.g. v0.4.0)"
         required: true
 
 permissions:
@@ -26,13 +26,13 @@ env:
   # Treat this block as GLM's de facto lockfile: bump entries deliberately
   # (via PR, after re-validating the build) rather than letting them float.
   # ----------------------------------------------------------------------
-  AED_TOOLS_REF: main          # TODO: pin to a tag/SHA validated against glm_ref
-  LIBAED_WATER_REF: main       # TODO: pin to a tag/SHA validated against glm_ref
-  LIBAED_BENTHIC_REF: main     # TODO: pin to a tag/SHA validated against glm_ref
-  LIBAED_DEMO_REF: main        # TODO: pin to a tag/SHA validated against glm_ref
+  AED_TOOLS_REF: master          # TODO: pin to a tag/SHA validated against glm_ref
+  LIBAED_WATER_REF: master       # TODO: pin to a tag/SHA validated against glm_ref
+  LIBAED_BENTHIC_REF: master     # TODO: pin to a tag/SHA validated against glm_ref
+  LIBAED_DEMO_REF: master        # TODO: pin to a tag/SHA validated against glm_ref
   LIBAED_API_REF: main         # TODO: pin to a tag/SHA validated against glm_ref
-  LIBUTIL_REF: main            # TODO: pin to a tag/SHA validated against glm_ref
-  LIBPLOT_REF: main            # TODO: pin to a tag/SHA validated against glm_ref
+  LIBUTIL_REF: master            # TODO: pin to a tag/SHA validated against glm_ref
+  LIBPLOT_REF: master            # TODO: pin to a tag/SHA validated against glm_ref
 
 jobs:
   # ==========================================================================
