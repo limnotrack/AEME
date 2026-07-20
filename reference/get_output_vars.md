@@ -50,7 +50,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [27ms]
+#> ✔ Estimating surface water temperature [13ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -147,10 +147,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-06-18 03:20:24]
-#> ✔ Model run complete! [2026-06-18 03:20:27]
-#> ℹ Reading models in parallel...[2026-06-18 03:20:27]
-#> ✔ Model reading complete! [2026-06-18 03:20:28]
+#> ℹ Running models in parallel... [2026-07-20 22:46:01]
+#> ✔ Model run complete! [2026-07-20 22:46:04]
+#> ℹ Reading models in parallel...[2026-07-20 22:46:04]
+#> ✔ Model reading complete! [2026-07-20 22:46:05]
 get_output_vars(aeme, model)
 #>                   Water temperature                   Thermocline depth 
 #>                          "HYD_temp"                        "HYD_thmcln" 
@@ -168,11 +168,9 @@ get_output_vars(aeme, model)
 #>                        "LKE_evpflx"                            "LKE_A0" 
 #>                         Evaporation                              Inflow 
 #>                        "LKE_evprte"                        "LKE_inflow" 
-#>                            Overflow                             Outflow 
-#>                      "LKE_overflow"                       "LKE_outflow" 
-#>                       Total outflow                       Precipitation 
-#>                       "LKE_outftot"                        "LKE_precip" 
-#>                       Precipitation                 Surface temperature 
+#>                             Outflow                       Precipitation 
+#>                       "LKE_outflow"                        "LKE_precip" 
+#>                       Precipitation      Remote sensed skin temperature 
 #>                        "LKE_pcpvol"                         "HYD_surft" 
 #>                          Lake depth                       Water density 
 #>                        "LKE_depths"                          "HYD_dens" 

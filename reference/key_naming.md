@@ -12,7 +12,7 @@ key_naming
 
 ### `key_naming`
 
-A data frame with 129 rows and 17 columns:
+A data frame with 127 rows and 13 columns:
 
 - var_aeme:
 

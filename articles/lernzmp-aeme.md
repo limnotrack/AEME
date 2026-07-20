@@ -19,7 +19,7 @@ a lake metadata file “LERNZmp_lake_metadata.csv”.
 ## Using LERNZmp output with AEME
 
 Once you have downloaded the LERNZmp model output and unzipped the
-folder, you should have a similar file structure to the following:
+folder, you should a similar file structure to the following:
 
 ``` r
 
@@ -198,19 +198,6 @@ aeme
 #> Surface area, ... and 53 more
 ```
 
-The Aeme object can also be downloaded using the
-[`aemetools::get_aeme()`](https://limnotrack.com/aemetools/reference/get_aeme.html)
-function which will download the AEME object for a given lake ID. This
-is a programmatic way to access the AEME objects for the lakes in the
-LERNZmp platform, however, it requires an API key which can be obtained
-by contacting the LERNZmp team at <data@limnotrack.com>.
-
-``` r
-
-aeme <- aemetools::get_aeme(id = "LID11133", 
-                            api_key = Sys.getenv("LERNZMP_KEY"))
-```
-
 This allows for quick inspection of all the different slots within the
 `Aeme` object. The lake section has the lake metadata, the time section
 has the start, stop and spin-up dates, the configuration section has the
@@ -243,8 +230,75 @@ can speed up the process.
 
 ``` r
 
-aeme <- aeme |> 
-  run_aeme(parallel = TRUE)
+aeme <- run_aeme(aeme = aeme, model = model, path = path, parallel = TRUE)
+aeme
+#> 
+#> ── AEME ────────────────────────────────────────────────────────────────────────
+#> 
+#> ── Lake ──
+#> 
+#> Rotorua (ID: LID11133)
+#> • Lat: -38.09; Lon: 176.27
+#> • Elev: 284.88m; Depth: 48.15m; Area: 80659960 m2
+#> 
+#> ── Time ──
+#> 
+#> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
+#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095
+#> 
+#> ── Configuration ──
+#> 
+#> • Model: glm_aed and gotm_wet
+#> • Path: D:\a\AEME\AEME\vignettes\articles\aeme
+#> • Model controls: Present
+#> • Use biogeochemical model: Yes
+#> ┌ Model Configuration ─────────────────────────────────────────┐
+#> │       Model              Physical         Biogeochemical     │
+#> │ ---                                                          │
+#> │       DY-CD               Absent              Absent         │
+#> │      GLM-AED             Present             Present         │
+#> │      GOTM-WET            Present             Present         │
+#> └──────────────────────────────────────────────────────────────┘
+#> 
+#> ── Observations ──
+#> 
+#> • Lake: Present; Level: Absent
+#> 
+#> ── Input ──
+#> 
+#> • Initial profile: Present; Initial depth: 48.148m
+#> • Hypsograph: Present (n=95)
+#> • Meteo: Present; Use longwave: TRUE; Kw: 0.566666666666667
+#> 
+#> ── Inflows ──
+#> 
+#> • Number of inflows: 7; Names: NZS4081641, NZS4083363, NZS4084132, NZS4086165,
+#>   NZS4084816, lumped, precip
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Outflows ──
+#> 
+#> • Number of outflows: 1; Names: wbal; Elevations: -1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> 
+#> ── Water Balance ──
+#> 
+#> • Method: 2; Use: obs
+#> • Modelled: Absent; Water balance: Present
+#> 
+#> ── Parameters ──
+#> 
+#> • Number of parameters: 18
+#> 
+#> ── Output ──
+#> 
+#> • DY-CD: 0
+#> • GLM-AED: 1
+#> • GOTM-WET: 1
+#> • Variables: 37
+#> Water temperature, Dissolved oxygen, Total chlorophyll a, Total nitrogen, Total
+#> phosphorus, Evaporative heat flux, Sensible heat flux, Longwave radiation,
+#> Shortwave radiation, Volume, ... and 27 more
 ```
 
 In the “Output” section of the `Aeme` object, the “Number of ensembles”

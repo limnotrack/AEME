@@ -23,12 +23,11 @@ An AEME object populated with data from the files.
 ``` r
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme <- readRDS(aeme_file)
-path <- file.path(tempdir(), "test_write")
+path <- "test_write"
 model_controls <- get_model_controls()
 aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
 model_controls = model_controls, ext_elev = 3)
-#> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpacofxG\test_write
+#> ✔ Created missing directory: D:\a\AEME\AEME\docs\reference\test_write
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -39,7 +38,7 @@ model_controls = model_controls, ext_elev = 3)
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [27ms]
+#> ✔ Estimating surface water temperature [7ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -53,10 +52,10 @@ model_controls = model_controls, ext_elev = 3)
 #> ℹ Copied in GLM plots nml file
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-18 03:21:04]
-#> → GLM-AED running... [2026-06-18 03:21:04]
-#> ✔ GLM-AED run successful! [2026-06-18 03:21:04]
-#> ✔ Model run complete! [2026-06-18 03:21:04]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-20 22:46:37]
+#> → GLM-AED running... [2026-07-20 22:46:37]
+#> ✔ GLM-AED run successful! [2026-07-20 22:46:38]
+#> ✔ Model run complete! [2026-07-20 22:46:38]
 write_aeme_to_files(aeme, path)
 aeme_path <- get_lake_dir(aeme = aeme, path = path)
 aeme2 <- read_aeme_from_files(aeme_path)

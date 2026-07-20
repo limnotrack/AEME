@@ -7,8 +7,8 @@ Base plotting function for AEME output
 ``` r
 plot_output_base(
   aeme,
-  var_sim = "HYD_temp",
   model,
+  var_sim = "HYD_temp",
   ens_n = 1,
   var_lims = NULL,
   ylim = NULL,
@@ -24,14 +24,14 @@ plot_output_base(
 
   Aeme object.
 
-- var_sim:
-
-  string; of variable to plot
-
 - model:
 
   character vector; model(s) to plot. If missing, all models in the Aeme
   object will be plotted.
+
+- var_sim:
+
+  string; of variable to plot
 
 - ens_n:
 

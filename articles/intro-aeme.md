@@ -18,337 +18,6 @@ Key aspects of the AEME package include:
 
 - Standardised calibration, manipulation and visualisation
 
-This vignette provides an overview of the AEME framework, the three
-models, and the ensemble approach. For detailed information on data
-inputs and the S4 structure, see the [AEME
-Inputs](https://limnotrack.com/articles/aeme-inputs.md) vignette. For a
-practical tutorial, see [Setting up AEME for a new
-lake](https://limnotrack.com/articles/setup-new-lake.md).
-
-## The Three Models
-
-AEME integrates three well-established one-dimensional (1D) lake models,
-each with distinct computational approaches and strengths. Understanding
-the differences helps in selecting appropriate models and interpreting
-ensemble results.
-
-### DYRESM-CAEDYM
-
-**DYnamic REservoir Simulation Model - Computational Aquatic Ecosystem
-DYnamics Model**
-
-**History and Development**
-
-DYRESM was developed in the 1980s at the University of Western Australia
-and Centre for Water Research. It pioneered the Lagrangian layer
-approach for lake modeling. CAEDYM was later developed to add
-comprehensive biogeochemical capabilities.
-
-**Physics and Computational Approach**
-
-- **Lagrangian layers**: Water parcels move vertically through the water
-  column
-- **Variable layer thickness**: Layers can split or merge based on
-  stratification
-- **Layer-following approach**: Particularly effective for tracking
-  water masses in reservoirs
-- **Time-step**: Adaptive, typically 30-60 minutes
-
-**Key Features**
-
-- Excellent representation of selective withdrawals in reservoirs
-- Detailed tracking of water quality through inflows and withdrawals
-- Comprehensive biogeochemical modules (nutrients, phytoplankton,
-  zooplankton, sediments)
-- Established in reservoir management applications
-
-**Typical Applications**
-
-- Drinking water reservoirs with complex withdrawal strategies
-- Multi-level outlet management
-- Water quality forecasting in stratified systems
-- Long-term climate change impact studies
-
-**References**
-
-- Imberger, J., & Patterson, J. C. (1981). A dynamic reservoir
-  simulation model
-  - DYRESM: 5. *Transport Models for Inland and Coastal Waters*,
-    310-361.
-- Hamilton, D. P., & Schladow, S. G. (1997). Prediction of water quality
-  in lakes and reservoirs. Part I - Model description. *Ecological
-  Modelling*, 96(1-3), 91-110.
-- Burger, D. F., Hamilton, D. P., & Pilditch, C. A. (2008). Modelling
-  the relative importance of internal and external nutrient loads on
-  water column nutrient concentrations and phytoplankton biomass in a
-  shallow polymictic lake. *Ecological Modelling*, 211(3-4), 411-423.
-
-### GLM-AED
-
-**General Lake Model - Aquatic EcoDynamics model**
-
-**History and Development**
-
-GLM was developed in the 2010s through an international collaboration
-led by the University of Western Australia. It modernizes 1D lake
-modeling with a flexible framework compatible with contemporary
-ecosystem models. AED is the latest generation of water quality models,
-building on AED+ and earlier frameworks.
-
-**Physics and Computational Approach**
-
-- **Dynamic Eulerian layers**: Fixed spatial grid with variable layer
-  thickness
-- **Flexible vertical resolution**: Automatically adjusts layers based
-  on stratification
-- **Efficient computations**: Optimized for ensemble applications and
-  uncertainty analysis
-- **Time-step**: Hourly to daily, depending on application
-
-**Key Features**
-
-- Modular biogeochemical framework (AED2)
-- Easy configuration through namelists (NML files)
-- Extensive validation across diverse lake types
-- Active development community and regular updates
-- Integration with lake ensemble frameworks
-
-**Typical Applications**
-
-- Natural lakes of varying trophic status
-- Multi-lake regional studies
-- Climate change scenarios
-- Coupled catchment-lake modeling
-- Real-time forecasting systems
-
-**References**
-
-- Hipsey, M. R., Bruce, L. C., Boon, C., Busch, B., Carey, C. C.,
-  Hamilton, D. P., … & Winslow, L. A. (2019). A General Lake Model (GLM
-  3.0) for linking with high-frequency sensor data from the Global Lake
-  Ecological Observatory Network (GLEON). *Geoscientific Model
-  Development*, 12(1), 473-523.
-- Bruce, L. C., Frassl, M. A., Arhonditsis, G. B., Gal, G., Hamilton, D.
-  P., Hanson, P. C., … & Trolle, D. (2018). A multi-lake comparative
-  analysis of the General Lake Model (GLM): Stress-testing across a
-  global observatory network. *Environmental Modelling & Software*, 102,
-  274-291.
-- Hipsey, M. R., Bruce, L. C., & Hamilton, D. P. (2014). *GLM - General
-  Lake Model: Model overview and user information*. AED Report \#26, The
-  University of Western Australia, Perth, Australia.
-
-### GOTM-WET
-
-**General Ocean Turbulence Model - Water Ecosystem Tool**
-
-**History and Development**
-
-GOTM was originally developed for ocean modeling in the 1990s and later
-adapted for lakes and estuaries. WET (Water Ecosystem Tool) is a
-comprehensive biogeochemical model developed by WaterITech specifically
-for integration with GOTM and application to lakes and reservoirs.
-
-**Physics and Computational Approach**
-
-- **Fixed Eulerian grid**: Regular vertical spacing throughout
-  simulation
-- **Advanced turbulence closure**: Multiple turbulence schemes (k-ε,
-  k-ω, etc.)
-- **High vertical resolution**: Typically 0.5-1 m spacing
-- **YAML configuration**: Modern configuration approach
-- **Time-step**: Sub-hourly for stability
-
-**Key Features**
-
-- Sophisticated turbulence modeling
-- High-resolution vertical mixing representation
-- Framework for Aquatic Biogeochemical Models (FABM) integration
-- Detailed surface and bottom boundary layers
-- Coupling with atmospheric models
-
-**Typical Applications**
-
-- Deep stratified lakes
-- Systems with complex mixing dynamics
-- Research applications requiring detailed turbulence
-- Lakes with significant benthic-pelagic coupling
-- Process studies and model development
-
-**References**
-
-- Burchard, H., Bolding, K., & Villarreal, M. R. (1999). *GOTM, a
-  general ocean turbulence model. Theory, implementation and test
-  cases*. Tech. Rep.  EUR-18745-EN, European Commission.
-- Bruggeman, J., & Bolding, K. (2014). A general framework for aquatic
-  biogeochemical models. *Environmental Modelling & Software*, 61,
-  249-265.
-- Bolding, K., Bruggeman, J., Brüchert, V., Grimm, H., Holtermann, P.,
-  Hu, T., … & Umlauf, L. (2020). *GETM and GOTM - a general estuarine
-  and lake model. Status and perspectives.* Report, 2020.
-
-### Model Comparison
-
-The following table summarizes key differences between the three models:
-
-| Feature | DYRESM-CAEDYM | GLM-AED | GOTM-WET |
-|----|----|----|----|
-| **Approach** | Lagrangian layers | Lagrangian layers | Fixed Eulerian |
-| **Layer structure** | Variable (moves with water) | Variable thickness | Fixed grid |
-| **Vertical resolution** | 5-50 layers | 2-500 layers (user defined) | 2-500 layers (user defined) |
-| **Timestep** | Fixed (1 hr typical) | Fixed (1 hr typical) | Fixed (1 hr typical) |
-| **Turbulence** | Mixed-layer model | k-ε or Henderson-Sellers | Multiple schemes (k-ε typical) |
-| **Configuration** | Text files | Namelists (NML) | YAML files |
-| **Best for** | Reservoirs, withdrawals | Natural lakes, ensembles | Deep lakes, research |
-| **Computational speed** | Slow | Fast | Fast |
-| **BGC complexity** | High (CAEDYM) | High (AED2) | High (FABM/WET) |
-
-**When to use each model:**
-
-- **DYRESM-CAEDYM**: Reservoirs with selective withdrawals, water
-  quality management, operational forecasting
-- **GLM-AED**: Natural lakes, multi-lake studies, ensemble uncertainty
-  analysis, real-time applications
-- **GOTM-WET**: Stratified lakes, detailed turbulence studies, research
-  applications, process investigations
-
-## The Ensemble Approach
-
-AEME’s primary innovation is the standardization of inputs and outputs
-across three fundamentally different lake models, enabling true ensemble
-modeling of aquatic ecosystems.
-
-### Why Use Multiple Models?
-
-**1. Structural Uncertainty**
-
-Each model makes different assumptions about physics and
-biogeochemistry. No single model is universally “best” - performance
-varies by: - Lake type (reservoir vs. natural) - Stratification
-dynamics - Available calibration data - Spatial and temporal scales -
-Management questions
-
-Using multiple models quantifies structural uncertainty - differences
-arising from model formulation rather than parameter uncertainty.
-
-**2. Ensemble Predictions**
-
-Ensemble means and medians often outperform individual models by: -
-Averaging out model-specific biases - Providing probabilistic
-forecasts - Identifying robust predictions (model agreement) -
-Highlighting uncertain predictions (model divergence)
-
-**3. Model Complementarity**
-
-Different models excel at different aspects: - DYRESM-CAEDYM: tracking
-water parcels in reservoirs - GLM-AED: computational efficiency for
-ensembles - GOTM-WET: detailed vertical mixing processes
-
-### How AEME Standardizes Inputs and Outputs
-
-**Input Standardization**
-
-AEME translates common inputs into model-specific formats:
-
-1.  **Meteorology**: Same data → model-specific forcing files
-2.  **Hypsography**: Single hypsograph → adjusted for each model’s grid
-3.  **Inflows/Outflows**: Unified format → model-specific boundary
-    conditions
-4.  **Parameters**: Common parameter table → model configuration files
-
-This ensures models simulate the *same lake* with *comparable forcings*.
-
-**Output Standardization**
-
-All models output to a common format: - Variable names mapped to AEME
-conventions (`key_naming`) - Consistent spatial interpolation to
-comparable depths - Synchronized temporal resolution - Standard quality
-control and gap filling
-
-### Ensemble Evaluation
-
-**Model Agreement**
-
-When models agree, confidence is high. When models diverge, structural
-uncertainty is significant.
-
-``` r
-
-# Compare model predictions
-plot_output(aeme = aeme, var_sim = "HYD_temp", model = c("dy_cd", "glm_aed", "gotm_wet"))
-```
-
-**Performance Metrics**
-
-Use [`assess_model()`](https://limnotrack.com/reference/assess_model.md)
-to compare model performance against observations:
-
-``` r
-
-performance <- assess_model(aeme = aeme)
-print(performance)
-# Shows RMSE, NSE, R² for each model
-```
-
-**Weighted Ensembles**
-
-Models can be weighted by past performance:
-
-``` r
-
-# Weight by NSE scores
-weights <- performance$NSE / sum(performance$NSE)
-weighted_mean <- calculate_weighted_ensemble(aeme, weights = weights)
-```
-
-### Interpretation Guidelines
-
-1.  **When models agree**: High confidence in predictions
-2.  **When models disagree systematically**: Check inputs and
-    observations
-3.  **When one model consistently outperforms**: Consider lake-specific
-    physics
-4.  **When all models fail**: Likely data quality or missing processes
-
-## Model Applications and Case Studies
-
-AEME has been applied to diverse aquatic systems across New Zealand and
-internationally.
-
-### Example Applications
-
-**1. Drinking Water Reservoirs**
-
-See `vignette("reservoir-aeme")` for a detailed example of applying AEME
-to a reservoir with multiple outlets and water quality management.
-
-**2. Natural Lakes**
-
-The LERNZmp (Lake Ecosystem Research New Zealand Modelling Platform)
-uses AEME for 100+ New Zealand lakes. See `vignette("lernzmp-aeme")` for
-details.
-
-**3. Water Balance Studies**
-
-AEME can estimate unknown inflows/outflows from water level
-observations. See `vignette("rotoehu-water-balance")` for a worked
-example.
-
-**4. Single Model Applications**
-
-While AEME is designed for ensembles, individual models can be run for
-specific applications. See `vignette("glm-aed")` for GLM-AED specific
-examples.
-
-### Key References for AEME
-
-- Moore, T. N., Mesman, J. P., Ladwig, R., Feldbauer, J., Olsson, F.,
-  Pilla, R. M., … & Hipsey, M. R. (2021). LakeEnsemblR: An R package
-  that facilitates ensemble modelling of lakes. *Environmental Modelling
-  & Software*, 143, 105101.
-
-Future AEME-specific publications will be listed here as they become
-available.
-
 ## AEME object
 
 ### Description
@@ -357,138 +26,277 @@ The `aeme` object is the main object in the AEME package. It is an S4
 class that contains all the information required to run a model. The
 `aeme` object contains the following slots:
 
-- [**lake**](#sec-lake) - Lake metadata (location, dimensions) (name,
-  id, latitude, longitude, elevation, depth, area)
-- [**time**](#sec-time) - Simulation period and temporal settings
-  (start, stop, spin_up, time_step)
-- [**configuration**](#sec-configuration) - Model configurations and
-  controls (model_controls, dy_cd, glm_aed, gotm_wet)
-- [**observations**](#sec-observations) - Observational data for
-  validation (lake, level)
-- [**inputs**](#sec-inputs) - Core physical inputs (meteorology,
-  hypsograph) (init_profile, init_depth, hypsograph, meteo, use_lw, Kw)
-- [**inflows**](#sec-inflows) - Stream inflow data (data, factor)
-- [**outflows**](#sec-outflows) - Outlet data and configurations (data,
-  outflow_lvl, factor)
-- [**water_balance**](#sec-water_balance) - Water balance settings and
-  calculations (use, method, data)
-- [**parameters**](#sec-parameters) - Model parameter values for
-  calibration (model, file, name, value, min, max, module, group)
-- [**output**](#sec-output) - Model output (populated after simulation)
-  (n_members)
-
-For comprehensive details on each slot including structure, required
-fields, and usage examples, see the [AEME Inputs
-vignette](https://limnotrack.com/articles/aeme-inputs.md).
+- [**lake**](#sec-lake) - a list object containing information about the
+  lake (name, id, latitude, longitude, elevation, depth, area)
+- [**time**](#sec-time) - a list object containing information about the
+  time (start, stop, spin_up, time_step)
+- [**configuration**](#sec-configuration) - a list object containing
+  information about the configuration (model_controls, dy_cd, glm_aed,
+  gotm_wet)
+- [**observations**](#sec-observations) - a list object containing
+  information about the observations (lake, level)
+- [**inputs**](#sec-inputs) - a list object containing information about
+  the inputs (init_profile, init_depth, hypsograph, meteo, use_lw, Kw)
+- [**inflows**](#sec-inflows) - a list object containing information
+  about the inflows (data, factor)
+- [**outflows**](#sec-outflows) - a list object containing information
+  about the outflows (data, outflow_lvl, factor)
+- [**water_balance**](#sec-water_balance) - a list object containing
+  information about the water balance configuration (use, method, data)
+- [**parameters**](#sec-parameters) - a data.frame describing the
+  parameters to be input with column names (model, file, name, value,
+  min, max, module, group)
+- [**output**](#sec-output) - a list object containing information about
+  the outputs (n_members)
 
 #### Lake
 
-The `lake` slot contains metadata about the waterbody including name,
-location, dimensions, and optional spatial information.
+The `lake` slot contains information about the lake. It is a list object
+that contains the following objects:
 
-**Required fields**: name, id, latitude, longitude, elevation, depth,
-area
+- name - Name of the lake (character).
 
-See [Lake
-Slot](https://limnotrack.com/articles/aeme-inputs.html#lake-slot) in the
-AEME Inputs vignette for complete details.
+- id - Lake ID (character or numeric).
+
+- **latitude** - Latitude of the lake (numeric). If not provided, the
+  latitude will be calculated from the centroid of the shape.
+
+- **longitude** - Longitude of the lake (numeric). If not provided, the
+  longitude will be calculated from the centroid of the shape.
+
+- **elevation** - Elevation of the lake (numeric).
+
+- shape - Shape of the lake (sf object). The shape of the lake can be
+  represented as a polygon. The centroid of the polygon will be used to
+  calculate the latitude and longitude of the lake.
+
+- **depth** - Max depth of the lake (m) (numeric). Depth and area are
+  used to generate a simple hypsographic curve if none is provided in
+  the `inputs` slot.
+
+- **area** - Surface area of the lake (m2) (numeric)
+
+Objects in **bold** are required for building and running the model.
 
 #### Time
 
-The `time` slot defines the simulation period, temporal resolution, and
-spin-up periods for model initialization.
+The `time` slot contains information about the time. It is a list object
+that contains the following objects:
 
-**Required fields**: start, stop
+- **start** - Start date of the simulation (character). The start date
+  must be in the format `YYYY-MM-DD HH:MM:SS`.
 
-**Optional fields**: timestep, spin_up
+- **stop** - End date of the simulation (character). The end date must
+  be in the format `YYYY-MM-DD HH:MM:SS`.
 
-See [Time
-Slot](https://limnotrack.com/articles/aeme-inputs.html#time-slot) in the
-AEME Inputs vignette for complete details.
+- **timestep** - Timestep of the simulation (numeric). The timestep must
+  be in seconds.
+
+- **spin_up** - List of spin up periods of the simulation for each model
+  (numeric). The spin up period must be in days. The spin up period is
+  the period of time that the model is run before the simulation period.
+  The spin up period is used to initialise the model which is then
+  discarded when examining the simulation period.
 
 #### Configuration
 
-The `configuration` slot stores model-specific configuration files and
-the `model_controls` data frame. This slot is populated by
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md).
+The `configuration` slot is a list that contains each of the model
+configurations. This includes the configurations files for the
+hydrodynamic components as well as the aquatic ecosystem model
+components:
 
-See [Configuration
-Slot](https://limnotrack.com/articles/aeme-inputs.html#configuration-slot)
-in the AEME Inputs vignette for complete details.
+| Model | Hyrodynamic | Ecosystem |
+|----|----|----|
+| DYRESM-CAEDYM | *.cfg* file and *.par* file | *.con*, *caedym3p1.bio, caedym3p1.chm* and *caedym3p1.sed* files |
+| GLM-AED | *glm3.nml* file | *aed2.nml*, *phytos.nml*, *zoops.nml* files |
+| GOTM-WET | *gotm.yaml* and *output.yaml* files | *fabm.yaml* file |
+
+Files for hydrodynamic and ecosystem models. {.table}
+
+When [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) is
+ran, the `model_controls` data.frame that is passed to the function as
+an argument is added to the `configuration` slot.
+
+For more details on the `model_controls`, see it’s section
+[below](#sec-model_controls).
 
 #### Observations
 
-The `observations` slot contains observational data for model
-validation, calibration, and initialization. It includes in-lake
-profiles (`lake`) and water level time series (`level`).
+The `observations` slot is a list that contains observations of in-lake
+(`lake`) variables (e.g. water temperature, chlorophyll-a, dissolved
+oxygen etc.) and water level (`level`). The observations are used to
+assess model performance using the function and also to calibrate the
+model using the [aemetools](https://github.com/limnotrack/aemetools)
+package.
 
-See [Observations
-Slot](https://limnotrack.com/articles/aeme-inputs.html#observations-slot)
-in the AEME Inputs vignette for complete details.
+The `lake` observations are stored in a data frame with the following
+columns:
+
+- **Date** - Date of the observation (character). The date must be in
+  the format `YYYY-MM-DD HH:MM:SS`.
+
+- **depth** - Depth of the observation (m) (numeric). The depth must be
+  in metres.
+
+- **var** - Variable name of the observation (character). The variable
+  names an input preparation are designed in the [AEME inputs
+  article](https://limnotrack.com/articles/aeme-inputs.md).
+
+- **value** - Value of the observation (numeric).
+
+The `level` observations are stored in a data frame with the following
+columns:
+
+- **Date** - Date of the observation (character). The date must be in
+  the format `YYYY-MM-DD HH:MM:SS`.
+
+- **value** - Value of the observation (numeric). The value must be in
+  metres above sea level and within the range of the hypsograph
+  elevations.
 
 #### Input
 
-The `input` slot contains core physical inputs required by all models:
-meteorological forcing, lake bathymetry (hypsograph), light extinction,
-and initial conditions.
+The `input` slot is a list that contains the following objects:
 
-**Required fields**: hypsograph, meteo, Kw
+- init_profile - profile to initialise the lake simulation (data.frame).
+  It has the columns: “depth”, “temperature” and “salt”. If this is not
+  provided, it is automatically generated using the values in the
+  [`model_controls`](#sec-model_controls).
 
-**Optional fields**: init_profile, init_depth, use_lw
+- init_depth - depth of the lake when initialising the model (vector),
+  If not provided, will assume the depth from the `hypsograph`.
 
-See [Input
-Slot](https://limnotrack.com/articles/aeme-inputs.html#input-slot) in
-the AEME Inputs vignette for complete details.
+- **hypsograph** - the lake hypsograph. This is a data.frame with the
+  columns “elev”, “depth” and “area”. If you do not have this data, you
+  can generate one using the
+  [`generate_hypsograph()`](https://limnotrack.com/reference/generate_hypsograph.md)
+  function.
+
+- **meteo** - the meteorological data. A data.frame which at a minimum
+  must contain the columns date (“Date”), air temperature (“MET_tmpair),
+  wind speed (”MET_wndspd”) and shortwave radiation (“MET_radswd”). See
+  [AEME
+  Inputs](https://limnotrack.github.io/AEME/articles/aeme-inputs.html#meteorological-data)
+
+- use_lw - Logical switch to use longwave radiation. Defaults to TRUE.
+
+- **Kw** - the light extinction coefficient ($`m^{-1}`$).
 
 #### Inflows
 
-The `inflows` slot contains stream inflow data as named lists of data
-frames, plus optional scaling factors for each model.
+The inflows slot is a list that contains the following objects:
 
-See [Inflows
-Slot](https://limnotrack.com/articles/aeme-inputs.html#inflows-slot) in
-the AEME Inputs vignette for complete details.
+- data - named list of data.frames which contain the columns date
+  (“Date”), flow (“HYD_flow”; $`m^3 day^{-1}`$). Temperature can also be
+  provided (“HYD_temp”), however if not provided then it will be
+  estimated using air temperature. The name for the list will be used as
+  the stream identifier in each model. If `method` in the water_balance
+  section is set to`3`, then “wbal” will be added to the data, this
+  contains a separate inflow for each model, estimated using the
+  different evaporation functions inside each model.
+
+- factor - list of scaling factors to be applied to the inflows. Named
+  according to each model.
+
+If no inflows are present then this slot will be empty.
 
 #### Outflows
 
-The `outflows` slot contains outlet data, outlet elevations, and
-optional scaling factors.
+The outflows slot is a list that contains the following objects:
 
-See [Outflows
-Slot](https://limnotrack.com/articles/aeme-inputs.html#outflows-slot) in
-the AEME Inputs vignette for complete details.
+- data - named list of data.frames which contain the columns date
+  (“Date”), flow (“HYD_flow”; $`m^3 day^{-1}`$). If `method` in the
+  water_balance section is set to `2` or `3`, then “wbal” will be added
+  to the data, this contains a separate outflow for each model,
+  estimated using the different evaporation functions inside each model.
+
+- factor - list of scaling factors to be applied to the outflows. Named
+  according to each model. However, this can also be passed as a
+  parameter in the model_parameters section and calibrated there. This
+  is the preferred method for applying scaling factors.
+
+- elevation - named list of elevations at which the outflows occur. This
+  is important that it falls within the elevation range in the
+  hypsograph. Set to `-1` if the outflow is at the surface.
+
+If no outflows are present then this slot will be empty.
 
 #### Water balance
 
-The `water_balance` slot is generated internally by
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) when
-inflows or outflows need to be estimated from water level changes.
+The water balance slot is generated internally when the
+[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+function is called and the `wb_method` is set to `2` or `3`. The slot
+contains:
 
-**Fields**: method (1, 2, or 3), use (“obs” or “mod”), data
+- use: define which lake level to use. Can either be observed (“obs”) or
+  modelled (“mod”) lake level. Default = “obs”.
 
-See [Water Balance
-Slot](https://limnotrack.com/articles/aeme-inputs.html#water-balance-slot)
-in the AEME Inputs vignette for complete details.
+- method: This can be `1` (no inflows or outflows) or `2` (outflows
+  calculated) or `3` (inflows and outflows calculated). The default is
+  `2` .
+
+- data: list of two data.frames. “wbal” which contains the diagnostics
+  for estimating evaporation and water balance for each model and
+  “model” which contains the modelled lake water level if `use` is
+  “mod”.
 
 #### Parameters
 
-The `parameters` slot contains a data frame of model parameter values
-for calibration, sensitivity analysis, and model configuration.
+The parameters slot contains a data.frame of parameters which are used
+when building the model. These will update the default model parameters
+or scale the meteorological or scale the inflows and outflows for each
+model.
 
-See [Parameters
-Slot](https://limnotrack.com/articles/aeme-inputs.html#parameters-slot)
-in the AEME Inputs vignette for complete details.
+The columns for the parameters data.frame are:
+
+- model - Either “dy_cd”, “glm_aed” and “gotm_wet”.
+
+- file - Either the name of the file e.g. “glm3.nml” for model specific
+  files or “met” for meteorological variables or “inf” for inflow or
+  “wdr” for outflows. (Outflows were initiallly referred to as
+  withdrawals, hence the “wdr” notation, this will probably be updated
+  to reflect the current outflows slot soon…).
+
+- name - Name of the parameter. If the name of the parameter is nested
+  in a nml/yaml file, then the whole hierarchy needs to be provide with
+  each level separated by a “/” e.g. “light/Kw” for Kw in GLM-AED.
+
+- value - Value of the parameter.
+
+- min - Minimum range of the parameter. This is used in the
+  [`aemetools::calib_aeme()`](https://limnotrack.github.io/aemetools/reference/calib_aeme.html)
+  and
+  [`aemetools::sa_aeme()`](https://limnotrack.github.io/aemetools/reference/sa_aeme.html)
+  function.
+
+- max - Maximum range of the parameter. This is used in the
+  [`aemetools::calib_aeme()`](https://limnotrack.github.io/aemetools/reference/calib_aeme.html)
+  and
+  [`aemetools::sa_aeme()`](https://limnotrack.github.io/aemetools/reference/sa_aeme.html)
+  function.
+
+- group - Phytoplankton group. This is only used for GOTM-WET
+  phytoplankton parameters.
+
+- index - Index of the parameter. This is only used for GLM-AED
+  parameters that are vectors e.g. sediment parameters
+  (“sed_temp_mean”).
+
+- module - Module that the parameter is in. Not necessary, but is
+  helpful for identifying which parameters are in which module for
+  GLM-AED and GOTM-WET.
+
+There is a function
+[`get_aeme_parameters()`](https://limnotrack.com/reference/get_aeme_parameters.md)
+which allows you to select parameters based on model and module. See
+`?get_aeme_parameters()` for more details.
 
 #### Output
 
-The `output` slot stores model results after running
-[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md). Initially
-empty, it is populated with time-series data for each model and
-variable.
-
-See [Output
-Slot](https://limnotrack.com/articles/aeme-inputs.html#output-slot) in
-the AEME Inputs vignette for complete details.
+The output slot is a list that is updated when
+[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) is
+executed. Each time it is executed, variable outputs designated in the
+`model_controls` will be added to the `Aeme` object.
 
 ### Model controls
 
@@ -539,8 +347,7 @@ area <- 153648
 lake <- list(
     latitude = lat,
     longitude = lon,
-    name = "lake",
-    id = "123",
+    # elevation = elevation,
     depth = depth,
     area = area
   )
@@ -585,26 +392,26 @@ example, the `lake` slot can be manipulated using the `lake` function.
 lke <- lake(aeme)
 # Print lake data to console
 print(lke)
+#> $name
+#> [1] "Wainamu"
+#> 
+#> $id
+#> [1] "LID45819"
+#> 
 #> $latitude
 #> [1] -36.88921
 #> 
 #> $longitude
 #> [1] 174.4669
 #> 
-#> $name
-#> [1] "lake"
-#> 
-#> $id
-#> [1] "123"
+#> $elevation
+#> [1] 23.2
 #> 
 #> $depth
-#> [1] 13.08
+#> [1] 13.48
 #> 
 #> $area
 #> [1] 153648
-#> 
-#> $elevation
-#> [1] 0
 
 # Change lake name
 lke[["name"]] <- "AEME"
@@ -618,57 +425,58 @@ aeme
 #> 
 #> ── Lake ──
 #> 
-#> AEME (ID: 123)
+#> AEME (ID: LID45819)
 #> • Lat: -36.89; Lon: 174.47
-#> • Elev: 0m; Depth: 13.08m; Area: 153648 m2
+#> • Elev: 23.2m; Depth: 13.48m; Area: 153648 m2
 #> 
 #> ── Time ──
 #> 
-#> • Start: 2020-07-01; Stop: 2022-06-30; Time step: 3600
-#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
+#> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
+#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095
 #> 
 #> ── Configuration ──
 #> 
-#> • Model:
-#> • Path: D:/a/AEME/AEME/vignettes
+#> • Model: glm_aed and gotm_wet
+#> • Path: Not set
 #> • Model controls: Present
-#> • Use biogeochemical model: No
+#> • Use biogeochemical model:
 #> ┌ Model Configuration ─────────────────────────────────────────┐
 #> │       Model              Physical         Biogeochemical     │
 #> │ ---                                                          │
 #> │       DY-CD               Absent              Absent         │
-#> │      GLM-AED              Absent              Absent         │
-#> │      GOTM-WET             Absent              Absent         │
+#> │      GLM-AED             Present              Absent         │
+#> │      GOTM-WET            Present              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
 #> 
-#> • Lake: Absent; Level: Absent
+#> • Lake: Present; Level: Absent
 #> 
 #> ── Input ──
 #> 
-#> • Initial profile: Absent; Initial depth: 13.08m
-#> • Hypsograph: Present (n=43)
-#> • Meteo: Present; Use longwave: TRUE; Kw: 1.21
+#> • Initial profile: Present; Initial depth: 13.48m
+#> • Hypsograph: Present (n=53)
+#> • Meteo: Present; Use longwave: TRUE; Kw: 1.21428571428571
 #> 
 #> ── Inflows ──
 #> 
-#> • Number of inflows: 0; Names: None
+#> • Number of inflows: 6; Names: NZS2038486, NZS2038499, NZS2038500, NZS2038304,
+#>   lumped, precip
 #> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
 #> 
 #> ── Outflows ──
 #> 
-#> • Number of outflows: 0; Names: None; Elevations: N/A
+#> • Number of outflows: 1; Names: wbal; Elevations:
 #> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
 #> 
 #> ── Water Balance ──
 #> 
 #> • Method: 2; Use: obs
-#> • Modelled: Absent; Water balance: Absent
+#> • Modelled: Absent; Water balance: Present
 #> 
 #> ── Parameters ──
 #> 
-#> • Number of parameters: 0
+#> • Number of parameters: 18
 #> 
 #> ── Output ──
 #> 
@@ -695,52 +503,42 @@ plot(aeme, "lake")
 
 ``` r
 
-plot_met_tile(aeme, var_aeme = "MET_tmpair")
+plot(aeme, "input")
 ```
 
 ![](intro-aeme_files/figure-html/aeme-visualisation-input-1.png)
 
+## Build Model Ensemble
+
 ``` r
 
-plot_hyps(aeme)
+model_controls <- get_model_controls()
+model <- c("dy_cd", "glm_aed", "gotm_wet")
+path <- "aeme"
+aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                   model_controls = model_controls,
+                   ext_elev = 5, use_bgc = TRUE)
+#> ┌─────┬───────────┬────────────┬────────────┬────────────┐
+#> │ zone│ O2 (mg/L) │ NH4 (mg/L) │ NO3 (mg/L) │ FRP (mg/L) │
+#> ├─────┼───────────┼────────────┼────────────┼────────────┤
+#> │Zone1│ 0.29      │ 0.064      │   NA       │ 0.012      │
+#> │Zone2│  5.3      │ 0.005      │   NA       │ 0.008      │
+#> └─────┴───────────┴────────────┴────────────┴────────────┘
+#> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐
+#> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │
+#> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤
+#> │   1│    0      │ 2.48      │   11      │ 13.5      │ 12.2     │ 3.45e+04│ 0.224   │-38.4│  5.7│-0.4│0.0922│
+#> │   2│ 2.48      │   19      │    0      │   11      │  5.5     │ 1.19e+05│ 0.776   │-21.1│0.558│ 0.1│0.0338│
+#> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘
+#> ┌──────────────┬───────────────┬───────────────┬───────────────┐
+#> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│
+#> ├──────────────┼───────────────┼───────────────┼───────────────┤
+#> │ -24.993      │ 1.71          │ -0.012        │ 0.047         │
+#> └──────────────┴───────────────┴───────────────┴───────────────┘
+aeme
 ```
 
-![](intro-aeme_files/figure-html/plot-hypsograph-1.png)
+``` r
 
-## Next Steps
-
-Now that you understand the basics of AEME, you can explore more
-advanced topics and practical applications in our other vignettes:
-
-### Getting Started with AEME
-
-- **[Set up AEME for a new
-  lake](https://limnotrack.com/articles/setup-new-lake.md)** - A
-  practical tutorial that walks you through setting up the model for a
-  new lake, including how to obtain and prepare input data.
-
-- **[AEME Inputs](https://limnotrack.com/articles/aeme-inputs.md)** -
-  Comprehensive reference documentation on the input requirements and S4
-  structure of the AEME object.
-
-### Advanced Applications
-
-- **[Using LERNZmp with
-  AEME](https://limnotrack.com/articles/lernzmp-aeme.md)** - Learn how
-  to use the Lake Ecosystem Research New Zealand Model Platform
-  (LERNZmp) web interface with AEME.
-
-- **[Reservoir Simulation with Multiple
-  Outlets](https://limnotrack.com/articles/reservoir-aeme.md)** -
-  Demonstrates how to model reservoirs with regulated water levels and
-  multiple outlets at different depths.
-
-- **[GLM-AED: The General Lake Model coupled with
-  AED](https://limnotrack.com/articles/glm-aed.md)** - Detailed guide on
-  using the GLM-AED model within the AEME framework, including parameter
-  libraries and configuration.
-
-- **[Lake Rotoehu Water Balance and
-  Evaporation](https://limnotrack.com/articles/rotoehu-water-balance.md)** -
-  A case study demonstrating water balance approaches and evaporation
-  estimation for a shallow lake with ungauged inflows.
+cfg <- configuration(aeme)
+```

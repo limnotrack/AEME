@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,6 @@
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
   </ul>
 </li>
@@ -79,7 +78,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Reservoir Simulation with Multiple Outlets</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-aeme-introduction-and-inputs/vignettes/articles/reservoir-aeme.Rmd" class="external-link"><code>vignettes/articles/reservoir-aeme.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/main/vignettes/articles/reservoir-aeme.Rmd" class="external-link"><code>vignettes/articles/reservoir-aeme.Rmd</code></a></small>
       <div class="d-none name"><code>reservoir-aeme.Rmd</code></div>
     </div>
 
@@ -610,7 +609,7 @@ outlets in the header.</li>
 <span>  wb_method <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Created missing directory:</span></span>
-<span><span class="co">#&gt;   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpIv5Klz\reservoir</span></span>
+<span><span class="co">#&gt;   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpqAHfwp\reservoir</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Calculating water balance</span> ──</span></span>
@@ -622,12 +621,12 @@ outlets in the header.</li>
 <span><span class="co">#&gt;   <span style="color: #00BBBB;">ℹ</span> No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[8ms]</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Insufficient lake temperature observations (&lt;10).</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Using Stefan &amp; Preud'homme (2007) method to estimate surface temperature.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[32ms]</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No water balance correction applied (method = 1).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -645,10 +644,10 @@ outlets in the header.</li>
 </h2>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-06-18 03:29:30]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-06-18 03:29:30]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-06-18 03:29:30]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-06-18 03:29:30]</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-07-20 22:59:51]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2026-07-20 22:59:51]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-07-20 22:59:51]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-07-20 22:59:52]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="view-the-output">View the output<a class="anchor" aria-label="anchor" href="#view-the-output"></a>
@@ -700,7 +699,7 @@ independently.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

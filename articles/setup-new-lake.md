@@ -1,14 +1,8 @@
 # Set up AEME for a new lake
 
-Setting up the Aquatic Ecosystem Model Ensemble is straightforward and
+Setting up the Aquatic Ecosystem Model Ensemble is straight forward and
 can be done in a few steps. This vignette will guide you through the
 process of setting up the model for a lake in New Zealand.
-
-This is a **practical tutorial** focused on workflow. For detailed
-information on the AEME models and ensemble approach, see [Introduction
-to AEME](https://limnotrack.com/articles/intro-aeme.md). For
-comprehensive reference on inputs and the S4 structure, see [AEME
-Inputs](https://limnotrack.com/articles/aeme-inputs.md).
 
 ``` r
 
@@ -32,9 +26,6 @@ tmap_options(basemap.server = "OpenStreetMap") # Set the basemap to OpenStreetMa
 
 The first step is to define the lake data. This includes the location of
 the lake, the depth and area of the lake, and the elevation of the lake.
-See [Lake
-Slot](https://limnotrack.com/articles/aeme-inputs.html#lake-slot) for
-complete field requirements.
 
 ``` r
 
@@ -175,9 +166,8 @@ lake <- list(
 
 ## Time data
 
-The time data defines the simulation period. See [Time
-Slot](https://limnotrack.com/articles/aeme-inputs.html#time-slot) for
-details on date formats and spin-up configuration.
+The time data is required for the model. This includes the start and
+stop times for the model run.
 
 ``` r
 
@@ -193,11 +183,6 @@ time <- list(
 
 ## Input data
 
-The AEME `input` slot requires meteorological data, a hypsograph, and
-the light extinction coefficient. See [Input
-Slot](https://limnotrack.com/articles/aeme-inputs.html#input-slot) for
-detailed requirements.
-
 ### Meteorological data
 
 #### Download ERA5 data
@@ -210,9 +195,46 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-06-18 03:32:24] job submitted
-#> INFO [2026-06-18 03:32:24] downloading
-#> INFO [2026-06-18 03:32:25] extracting
+#> INFO [2026-07-20 23:00:09] job submitted
+#> INFO [2026-07-20 23:00:13] job updated
+#> INFO [2026-07-20 23:00:17] job updated
+#> INFO [2026-07-20 23:00:22] job updated
+#> INFO [2026-07-20 23:00:26] job updated
+#> INFO [2026-07-20 23:00:30] job updated
+#> INFO [2026-07-20 23:00:34] job updated
+#> INFO [2026-07-20 23:00:38] job updated
+#> INFO [2026-07-20 23:00:42] job updated
+#> INFO [2026-07-20 23:00:47] job updated
+#> INFO [2026-07-20 23:00:51] job updated
+#> INFO [2026-07-20 23:00:55] job updated
+#> INFO [2026-07-20 23:00:59] job updated
+#> INFO [2026-07-20 23:01:03] job updated
+#> INFO [2026-07-20 23:01:07] job updated
+#> INFO [2026-07-20 23:01:12] job updated
+#> INFO [2026-07-20 23:01:16] job updated
+#> INFO [2026-07-20 23:01:20] job updated
+#> INFO [2026-07-20 23:01:24] job updated
+#> INFO [2026-07-20 23:01:28] job updated
+#> INFO [2026-07-20 23:01:32] job updated
+#> INFO [2026-07-20 23:01:37] job updated
+#> INFO [2026-07-20 23:01:41] job updated
+#> INFO [2026-07-20 23:01:45] job updated
+#> INFO [2026-07-20 23:01:49] job updated
+#> INFO [2026-07-20 23:01:53] job updated
+#> INFO [2026-07-20 23:01:57] job updated
+#> INFO [2026-07-20 23:02:02] job updated
+#> INFO [2026-07-20 23:02:06] job updated
+#> INFO [2026-07-20 23:02:10] job updated
+#> INFO [2026-07-20 23:02:14] job updated
+#> INFO [2026-07-20 23:02:18] job updated
+#> INFO [2026-07-20 23:02:23] job updated
+#> INFO [2026-07-20 23:02:27] job updated
+#> INFO [2026-07-20 23:02:31] job updated
+#> INFO [2026-07-20 23:02:35] job updated
+#> INFO [2026-07-20 23:02:39] job updated
+#> INFO [2026-07-20 23:02:44] job updated
+#> INFO [2026-07-20 23:02:44] downloading
+#> INFO [2026-07-20 23:02:45] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -238,10 +260,6 @@ summary(met)
 #>  Max.   :383.9   Max.   :103515   Max.   :419.3   Max.   :95.49
 ```
 
-For details on meteorological variables and derived fields, see
-[Meteorological
-Data](https://limnotrack.com/articles/aeme-inputs.html#meteorological-data).
-
 The depth of this lake is 13.07 m, the area is 152343 m2, and the light
 extinction coefficient (Kw) is 1.31 m-1.
 
@@ -260,10 +278,6 @@ relationship between the lake area and the lake elevation.
 However, if you do not have hypsograph data, the model will use a simple
 cone-shaped hypsograph based on the lake depth and area. This is not
 ideal, but it will work for this example.
-
-For complete details on hypsograph requirements and generation, see
-[Input Slot -
-Hypsograph](https://limnotrack.com/articles/aeme-inputs.html#input-slot).
 
 Required column names for the hypsograph data are `area`, `elev`, and
 `depth`.
@@ -448,9 +462,12 @@ step.
 
 ### Model controls
 
-The model controls define which variables to simulate. For details on
-the structure and customization, see [Configuration
-Slot](https://limnotrack.com/articles/aeme-inputs.html#configuration-slot).
+The model controls are the settings for the AEME ensemble. These are
+read in from a CSV file. The default CSV file is stored within the
+package and can be accessed using the `get_model_controls` function. It
+has the argument `use_bgc` which is a logical value to indicate whether
+to simulate the default biogeochemical variables with the hydrodynamic
+variables or just the hydrodynamic variables.
 
 The model controls has the following columns:
 
@@ -554,13 +571,10 @@ model_controls
 
 ### Build the ensemble
 
-The `build_aeme` function creates model configurations from the AEME
-object. For background on the three models, see [The Three
-Models](https://limnotrack.com/articles/intro-aeme.html#three-models).
-
-The `model` argument is a character vector of the models to include in
-the ensemble. The models available are `dy_cd`, `glm_aed`, and
-`gotm_wet`.
+The `build_aeme` function will take the AEME object and the model
+controls and build the ensemble. The `model` argument is a character
+vector of the models to include in the ensemble. The models available
+are `dy_cd`, `glm_aed`, and `gotm_wet`.
 
 ``` r
 
@@ -577,7 +591,6 @@ path <- "aeme"
 # Build ensemble
 aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls, 
                    path = path)
-#> ✔ Created missing directory: D:\a\AEME\AEME\vignettes\aeme
 #> ✔ `MET_wnduvv`: converted from km/h to m/s.
 #> 
 #> 
@@ -590,12 +603,12 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
+#> ✔ Estimating surface water temperature [9ms]
+#> 
+#> 
+#> 
 #> ℹ Insufficient lake temperature observations (<10).
 #> ℹ Using Stefan & Preud'homme (2007) method to estimate surface temperature.
-#> ✔ Estimating surface water temperature [54ms]
-#> 
-#> 
-#> 
 #> Estimating lake water levels for dy_cd
 #> 
 #>   ℹ Optimizing parameters for water balance
@@ -724,15 +737,15 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-06-18 03:32:50]
-#> → DYRESM-CAEDYM running... [2026-06-18 03:32:50]
-#> ✔ DYRESM-CAEDYM run successful! [2026-06-18 03:33:17]
-#> → GLM-AED running... [2026-06-18 03:33:17]
-#> ✔ GLM-AED run successful! [2026-06-18 03:33:17]
-#> → GOTM-WET running... [2026-06-18 03:33:17]
-#> ✔ GOTM-WET run successful! [2026-06-18 03:33:18]
-#> ✔ Model run complete! [2026-06-18 03:33:18]
-#> ! The following variables are not available in model dy_cd: LKE_photic
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-20 23:03:08]
+#> → DYRESM-CAEDYM running... [2026-07-20 23:03:08]
+#> ✔ DYRESM-CAEDYM run successful! [2026-07-20 23:03:38]
+#> → GLM-AED running... [2026-07-20 23:03:38]
+#> ✔ GLM-AED run successful! [2026-07-20 23:03:38]
+#> → GOTM-WET running... [2026-07-20 23:03:38]
+#> ✔ GOTM-WET run successful! [2026-07-20 23:03:39]
+#> ✔ Model run complete! [2026-07-20 23:03:39]
+#> ! The following variables are not available in model dy_cd: CHM_ph, LKE_photic
 #> ! The following variables are not available in model gotm_wet: CHM_ph
 ```
 
@@ -793,205 +806,3 @@ aeme <- aeme |>
   build_aeme(model = model, use_bgc = TRUE, path = path) |> 
   run_aeme()
 ```
-
-## Troubleshooting
-
-Common issues and solutions when setting up AEME:
-
-### Model Build Errors
-
-**Error: “Hypsograph elevation range does not include initial depth”**
-
-- **Solution**: Ensure your hypsograph spans from below the lake bottom
-  to above the maximum expected water level. Use `ext_elev` parameter in
-  [`generate_hypsograph()`](https://limnotrack.com/reference/generate_hypsograph.md)
-  or add rows to your hypsograph.
-
-**Error: “Missing required meteorological variables”**
-
-- **Solution**: Check your meteorological data has the required columns:
-  `Date`, `MET_tmpair`, `MET_wndspd`, `MET_radswd`. See [Meteorological
-  Data](https://limnotrack.com/articles/aeme-inputs.html#meteorological-data)
-  for details.
-
-**Error: “Outflow elevation outside hypsograph range”**
-
-- **Solution**: Verify outlet elevations fall within your hypsograph
-  elevation range. Use `-1` for surface outlets.
-
-### Model Run Errors
-
-**Error: “Model failed to run”**
-
-- **Check**: Timestep may be too large for stability
-- **Check**: Initial conditions may be unrealistic  
-- **Check**: Meteorological data has no gaps or unrealistic values
-- **Solution**: Run with `verbose = TRUE` to see detailed error messages
-
-**Warning: “Simulated water level outside hypsograph range”**
-
-- **Solution**: Extend hypsograph range using `ext_elev` parameter or
-  check water balance inputs
-
-### Data Quality Issues
-
-**Unrealistic model output**
-
-- **Check**: Light extinction coefficient (Kw) is appropriate for lake
-  type
-- **Check**: Hypsograph is realistic (not just a simple cone)
-- **Check**: Meteorological data units are correct
-- **Check**: Inflow/outflow magnitudes are reasonable
-
-**Models diverge significantly**
-
-- **Expected**: Some divergence is normal due to different physics (see
-  [Ensemble
-  Approach](https://limnotrack.com/articles/intro-aeme.html#ensemble-approach))
-- **Check**: Ensure all models use the same inputs
-- **Consider**: Different models may be appropriate for different lake
-  types
-
-### Getting Help
-
-If you encounter issues not covered here:
-
-1.  Check the [AEME GitHub
-    Issues](https://github.com/limnotrack/AEME/issues)
-2.  Review the comprehensive [AEME
-    Inputs](https://limnotrack.com/articles/aeme-inputs.md) reference
-3.  Open a new issue with a reproducible example
-
-## Next Steps
-
-Now that you have a working AEME ensemble, consider these extensions:
-
-### Model Calibration and Sensitivity Analysis
-
-Use the [aemetools](https://github.com/limnotrack/aemetools) package
-for:
-
-- **Automated calibration**: Optimize parameters against observations
-- **Sensitivity analysis**: Identify influential parameters
-- **Uncertainty quantification**: Ensemble-based uncertainty estimates
-
-``` r
-
-library(aemetools)
-
-# Calibrate GLM-AED
-calib_result <- calib_aeme(
-  aeme = aeme,
-  param = param,
-  model = "glm_aed",
-  vars_sim = c("HYD_temp", "CHM_oxy")
-)
-
-# Sensitivity analysis
-sa_result <- sa_aeme(
-  aeme = aeme,
-  param = param,
-  model = "glm_aed",
-  method = "sobol"
-)
-```
-
-See the [aemetools
-documentation](https://limnotrack.github.io/aemetools/) for details.
-
-### Advanced Applications
-
-Explore additional AEME features:
-
-#### Water Balance Estimation
-
-Estimate unknown inflows/outflows from water level observations:
-
-``` r
-
-aeme <- build_aeme(
-  aeme = aeme,
-  model = model,
-  model_controls = model_controls,
-  path = path,
-  wb_method = 2,  # Estimate outflows
-  use_wbal = "obs"
-)
-```
-
-See `vignette("rotoehu-water-balance")` for a complete example.
-
-#### Reservoir Applications
-
-For reservoirs with multiple outlets and selective withdrawal:
-
-``` r
-
-# Add multiple outlets at different depths
-aeme <- add_outflows(
-  aeme,
-  data = list(
-    spillway = spillway_data,
-    penstock = penstock_data
-  ),
-  elevation = list(
-    spillway = -1,      # Surface
-    penstock = 130      # Deep outlet
-  )
-)
-```
-
-See `vignette("reservoir-aeme")` for details.
-
-#### Scenario Analysis
-
-Test management scenarios by modifying inputs:
-
-``` r
-
-# Scenario 1: Increased nutrient loading
-aeme_scenario1 <- aeme
-inf_data_enriched <- inf_data
-inf_data_enriched$stream$PHS_frp <- inf_data$stream$PHS_frp * 2
-aeme_scenario1 <- add_inflows(aeme_scenario1, data = inf_data_enriched)
-
-# Scenario 2: Climate change (+2°C)
-met_future <- met
-met_future$MET_tmpair <- met_future$MET_tmpair + 2
-aeme_scenario2 <- aeme
-input(aeme_scenario2)$meteo <- met_future
-
-# Run scenarios
-aeme_scenario1 <- run_aeme(aeme_scenario1)
-aeme_scenario2 <- run_aeme(aeme_scenario2)
-
-# Compare results
-plot_output(aeme_scenario1, var_sim = "PHY_tchla")
-plot_output(aeme_scenario2, var_sim = "HYD_temp")
-```
-
-### Related Vignettes
-
-- [Introduction to
-  AEME](https://limnotrack.com/articles/intro-aeme.md) - Models,
-  ensemble approach, and theory
-- [AEME Inputs](https://limnotrack.com/articles/aeme-inputs.md) -
-  Comprehensive reference for all inputs
-- [Reservoir
-  Example](https://limnotrack.com/articles/articles/reservoir-aeme.md) -
-  Multi-outlet reservoir
-- [Water
-  Balance](https://limnotrack.com/articles/articles/rotoehu-water-balance.md) -
-  Estimating unknown flows
-- [LERNZmp
-  Application](https://limnotrack.com/articles/articles/lernzmp-aeme.md) -
-  Multi-lake ensemble modeling
-
-### Additional Resources
-
-- [AEME GitHub](https://github.com/limnotrack/AEME)
-- [aemetools package](https://github.com/limnotrack/aemetools)
-- [GLM-AED
-  documentation](https://aquatic.science.uwa.edu.au/research/models/GLM/)
-- [GOTM documentation](https://gotm.net/)
-- [LERNZmp platform](https://limnotrack.shinyapps.io/LERNZmp/)

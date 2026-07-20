@@ -1,6 +1,6 @@
-# Plot Water Balance Components
+# Plot Water Balance Comparison
 
-Plot Water Balance Components
+Plot Water Balance Comparison
 
 ## Usage
 

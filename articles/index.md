@@ -13,7 +13,5 @@
   Outlets](https://limnotrack.com/articles/reservoir-aeme.md):
 - [Using LERNZmp with
   AEME](https://limnotrack.com/articles/lernzmp-aeme.md):
-- [Lake Rotoehu Water Balance and
-  Evaporation](https://limnotrack.com/articles/rotoehu-water-balance.md):
 - [GLM-AED: The General Lake Model coupled with
   AED](https://limnotrack.com/articles/glm-aed.md):

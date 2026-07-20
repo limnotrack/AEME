@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,7 +25,6 @@
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -45,7 +44,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Plot a tile plot of meteorological data</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/copilot/update-aeme-introduction-and-inputs/R/plot_met_tile.R" class="external-link"><code>R/plot_met_tile.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/main/R/plot_met_tile.R" class="external-link"><code>R/plot_met_tile.R</code></a></small>
       <div class="d-none name"><code>plot_met_tile.Rd</code></div>
     </div>
 
@@ -55,7 +54,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_met_tile</span><span class="op">(</span><span class="va">aeme</span>, var_aeme <span class="op">=</span> <span class="st">"MET_tmpair"</span>, use_hydro_year <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">var_inp</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_met_tile</span><span class="op">(</span><span class="va">aeme</span>, var_inp <span class="op">=</span> <span class="st">"MET_tmpair"</span>, use_hydro_year <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,7 +65,7 @@
 <dd><p>Aeme object.</p></dd>
 
 
-<dt id="arg-var-aeme">var_aeme<a class="anchor" aria-label="anchor" href="#arg-var-aeme"></a></dt>
+<dt id="arg-var-inp">var_inp<a class="anchor" aria-label="anchor" href="#arg-var-inp"></a></dt>
 <dd><p>Character. Variable to plot. Can be one of:</p><ul><li><p><code>"MET_tmpair"</code>: Air temperature</p></li>
 <li><p><code>"MET_pprain"</code>: Rainfall</p></li>
 <li><p><code>"MET_wndspd"</code>: Wind speed</p></li>
@@ -80,14 +79,7 @@
 
 
 <dt id="arg-use-hydro-year">use_hydro_year<a class="anchor" aria-label="anchor" href="#arg-use-hydro-year"></a></dt>
-<dd><p>Logical. If <code>TRUE</code>, the hydrological year is used.
-The hydrological year starts in October for the northern hemisphere and in
-July for the southern hemisphere. If <code>FALSE</code>, the calendar year is used.</p></dd>
-
-
-<dt id="arg-var-inp">var_inp<a class="anchor" aria-label="anchor" href="#arg-var-inp"></a></dt>
-<dd><p>Character. <a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use
-<code>var_aeme</code> instead.</p></dd>
+<dd><p>Logical. If <code>TRUE</code>, the hydrological year is used.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -104,7 +96,7 @@ July for the southern hemisphere. If <code>FALSE</code>, the calendar year is us
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

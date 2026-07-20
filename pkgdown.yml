@@ -1,5 +1,5 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   aeme-inputs: aeme-inputs.html
@@ -7,9 +7,8 @@ articles:
   intro-aeme: intro-aeme.html
   articles/lernzmp-aeme: lernzmp-aeme.html
   articles/reservoir-aeme: reservoir-aeme.html
-  articles/rotoehu-water-balance: rotoehu-water-balance.html
   setup-new-lake: setup-new-lake.html
-last_built: 2026-06-18T03:19Z
+last_built: 2026-07-20T22:45Z
 urls:
   reference: https://limnotrack.com/reference
   article: https://limnotrack.com/articles

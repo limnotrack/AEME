@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/limnotrack/AEME/blob/copilot/update-aeme-introduction-and-inputs/inst/CITATION)
+[`inst/CITATION`](https://github.com/limnotrack/AEME/blob/main/inst/CITATION)
 
 Moore, Tadhg; McBride, Christopher (2025) AEME: Aquatic Ecosystem Model
 Ensemble. Version 0.1.0. https://limnotrack.com/AEME
