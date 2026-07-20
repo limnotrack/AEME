@@ -48,7 +48,7 @@ model_controls = model_controls, ext_elev = 5)
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [6ms]
+#> ✔ Estimating surface water temperature [8ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -59,9 +59,9 @@ model_controls = model_controls, ext_elev = 5)
 #> 
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-07-20 23:35:00]
-#> → GLM-AED running... [2026-07-20 23:35:00]
-#> ✔ GLM-AED run successful! [2026-07-20 23:35:01]
-#> ✔ Model run complete! [2026-07-20 23:35:01]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-20 23:42:01]
+#> → GLM-AED running... [2026-07-20 23:42:01]
+#> ✔ GLM-AED run successful! [2026-07-20 23:42:01]
+#> ✔ Model run complete! [2026-07-20 23:42:01]
 write_aeme_to_files(aeme, path)
 ```
