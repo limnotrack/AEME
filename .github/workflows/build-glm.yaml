@@ -11,7 +11,6 @@ jobs:
         shell: bash
     env:
       # Everything below is checked out/built as siblings under this folder,
-      # matching the layout build_glm.sh expects (GLM, ancillary, libaed-*,
       # libutil, libplot all next to each other).
       ROOT: ${{ github.workspace }}
 
@@ -47,7 +46,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AquaticEcoDynamics/GLM
-          ref: 9fac22cbf9401ac08ee840c6239b6c992debd6aa
+          ref: v4alpha
           path: GLM
 
       - name: Checkout AED_Tools and sibling libraries
@@ -223,7 +222,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AquaticEcoDynamics/GLM
-          ref: 9fac22cbf9401ac08ee840c6239b6c992debd6aa
+          ref: v4alpha
           path: GLM
 
       - name: Checkout AED_Tools and sibling libraries
@@ -293,7 +292,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AquaticEcoDynamics/GLM
-          ref: 9fac22cbf9401ac08ee840c6239b6c992debd6aa
+          ref: v4alpha
           path: GLM
 
       - name: Checkout AED_Tools and sibling libraries
