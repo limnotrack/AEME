@@ -222,12 +222,19 @@ run_aeme <- function(aeme, model, path, args = character(),
 #'  the model executable. Currently only used for GLM-AED. Options are: 
 #'  "--xdisp" to plot the model output using the plots.nml settings.
 #' @inheritParams base::system2
+#' @param version character; specific version of the model to run. If not 
+#' provided, the default version bundled with the package will be used. For 
+#' GLM-AED and GOTM-WET, this can also be set via the `AEME.glm_version` or 
+#' `AEME.gotm_version` options, respectively. For DYRESM-CAEDYM, use 
+#' `AEME.dyresm_version`. Currently, only GLM-AED support version selection; 
+#' GOTM-WET and DYRESM-CAEDYM always uses the bundled version.
 #'
 #' @return Invisibly returns `NULL`.
 #' @export
 
 run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
-                      args = character(), timeout = Inf) {
+                      args = character(), timeout = Inf,
+                      version = getOption("AEME.dyresm_version", default = NULL)) {
   
   oldwd <- getwd()
   on.exit({
@@ -389,11 +396,50 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   return(p)
 }
 
+#' Resolve which GLM executable to run
+#'
+#' Picks the GLM binary to use, in priority order: an explicit
+#' `AEME.glm_exec` option (unchanged, always wins), a specific downloaded
+#' version (`version` argument or `AEME.glm_version` option, resolved via
+#' [glm_exe_path()]), or - if neither is set - the exe bundled with the
+#' package install, exactly as before.
+#'
+#' @keywords internal
+#' @noRd
+.resolve_glm_exec <- function(version = NULL) {
+  # 1. Explicit low-level override always wins, unchanged from before.
+  bin_exec <- getOption("AEME.glm_exec", default = NULL)
+  if (!is.null(bin_exec)) {
+    if (!file.exists(bin_exec)) {
+      cli::cli_abort(
+        "{.envvar AEME.glm_exec} points to {.path {bin_exec}}, but that file doesn't exist."
+      )
+    }
+    return(bin_exec)
+  }
+  
+  sys_OS <- get_os()
+  # 2. A specific downloaded GLM version was requested.
+  if (!is.null(version)) {
+    return(glm_exe_path(version, os = sys_OS))
+  }
+  
+  # 3. Nothing requested - fall back to the exe bundled with the package
+  #    install. This is unchanged from the original function, so anyone who
+  #    never calls install_glm_aed() sees no behavior change at all.
+  bin_path <- system.file('extbin/', package = "AEME")
+  switch(sys_OS,
+         "windows" = file.path(bin_path, "glm_aed", "windows", "glm.exe"),
+         "osx"     = file.path(bin_path, "glm_aed", "macos", "glm"),
+         "linux"   = file.path(bin_path, "glm_aed", "linux", "glm"))
+}
+
 #' @rdname run_dy_cd
 #' @export
 #' @importFrom processx run
 run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
-                        args = character(), timeout = Inf) {
+                        args = character(), timeout = Inf,
+                        version = getOption("AEME.glm_version", default = NULL)) {
   
   oldwd <- getwd()
   on.exit({
@@ -403,49 +449,30 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
   cli_inform_safe(c(">" = paste0("GLM-AED running... ", "[",
                                  format(Sys.time()), "]")))
   
-  # Allow user-specified executable path
-  bin_exec <- getOption("AEME.glm_exec", default = NULL)
-  if (is.null(bin_exec)) {
-    bin_path <- system.file('extbin/', package = "AEME")
-    sys_OS <- get_os()
-    
-    bin_exec <- switch(sys_OS,
-                       "windows" = file.path(bin_path, "glm_aed", "windows", 
-                                             "glm.exe"),
-                       "osx" = file.path(bin_path, "glm_aed", "macos", "glm"),
-                       "linux" = file.path(bin_path, "glm_aed", "linux", "glm")
-    )
-  }
+  bin_exec <- .resolve_glm_exec(version)
   
   if (verbose) {
-    # Stream stdout directly to console (similar to stdout = "")
     p <- processx::run(
       command = bin_exec,
       args = args,
       wd = sim_folder,
-      echo = TRUE,               # print output live (closest to stdout="")
+      echo = TRUE,
       error_on_status = FALSE,
       timeout = timeout
     )
-    # system2(bin_exec,
-    #         wait = TRUE, stdout = "",
-    #         stderr = "", timeout = timeout)
   } else {
-    # Capture stdout/stderr (similar to stdout=TRUE, stderr=TRUE)
     p <- processx::run(
       command = bin_exec,
       args = args,
       wd = sim_folder,
       spinner = TRUE,
       echo = FALSE,
-      error_on_status = FALSE,  # so non-zero exit doesn't stop execution
+      error_on_status = FALSE,
       timeout = timeout
     )
-    # p$stdout contains full captured output
     out <- unlist(strsplit(p$stdout, "\n", fixed = TRUE))
     success <- sum(grepl("Model Run Complete", out)) == 1
     if (success) {
-      # message("GLM-AED run successful! [", format(Sys.time()), "]")
       cli_inform_safe(c("v" = paste0("GLM-AED run successful! ",
                                      "[", format(Sys.time()), "]")))
     } else {
@@ -455,13 +482,8 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
           "[", format(Sys.time()), "]"
         )
       ))
-      
-      # Emit raw stderr safely (no cli wrapping)
       msg <- paste(tail(out, 10), collapse = "\n")
-      
-      # Strip ANSI just in case
       msg <- gsub("\033\\[[0-9;]*m", "", msg)
-      
       message(msg)
     }
   }
@@ -471,7 +493,8 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @rdname run_dy_cd
 #' @export
 run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
-                         args = character(), timeout = Inf) {
+                         args = character(), timeout = Inf,
+                         version = getOption("AEME.gotm_version", default = NULL)) {
   
   oldwd <- getwd()
   on.exit({
@@ -536,11 +559,11 @@ get_os <- function() {
   if (!is.null(sysinf)){
     os <- sysinf['sysname']
     if (os == 'Darwin')
-      os <- "osx"
+      os <- "macos"
   } else { ## mystery machine
     os <- .Platform$OS.type
     if (grepl("^darwin", R.version$os))
-      os <- "osx"
+      os <- "macos"
     if (grepl("linux-gnu", R.version$os))
       os <- "linux"
   }
@@ -549,31 +572,33 @@ get_os <- function() {
 
 #' Get GLM-AED model version
 #' @return version string
+#' @importFrom processx run
 #' @noRd
-get_glm_aed_version <- function() {
-  
+get_glm_aed_version <- function(version = NULL) {
   # Allow user-specified executable path
-  bin_exec <- getOption("AEME.glm_exec", default = NULL)
-  if (is.null(bin_exec)) {
-    bin_path <- system.file('extbin/', package = "AEME")
-    bin_exec <- file.path(bin_path, "glm_aed", get_os(), "glm")
-    bin_exec <- ifelse(get_os() == "windows",
-                       file.path(bin_path, "glm_aed", "windows", "glm.exe"),
-                       bin_exec)
-  }
-  vers <- system2(bin_exec, args = "--version", stdout = TRUE)
+  bin_exec <- .resolve_glm_exec(version)
+  vers <- processx::run(
+    command = bin_exec,
+    args = "--version"
+  )$stdout
+  cat(vers)
   return(vers)
 }
 
 #' Get GOTM-WET model version
 #' @return version string
+#' @importFrom processx run
 #' @noRd
 get_gotm_wet_version <- function() {
   bin_path <- system.file('extbin/', package = "AEME")
   gotm_exec <- ifelse(get_os() == "windows",
                       file.path(bin_path, "gotm_wet", "gotm.exe"),
                       file.path(bin_path, "gotm_wet", "gotm"))
-  vers <- system2(gotm_exec, args = "--version", stdout = TRUE)
+  vers <- processx::run(
+    command = gotm_exec,
+    args = "-v"
+  )$stderr
+  cat(vers)
   return(vers)
 }
 
@@ -584,6 +609,7 @@ get_dy_cd_version <- function() {
   bin_path <- system.file('extbin/', package = "AEME")
   dycd_readme <- file.path(bin_path, "dy_cd", "README_DY3p1p0-CD3p1p0.txt")
   vers <- readLines(dycd_readme, n = 9)
+  cat(vers)
   return(vers)
 }
 
