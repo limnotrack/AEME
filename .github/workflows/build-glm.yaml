@@ -188,7 +188,18 @@ jobs:
           # whether a pinned ref above is a tag, branch, or raw commit SHA.
           checkout_repo () {
             local repo="$1" ref="$2"
-            git clone "https://github.com/AquaticEcoDynamics/${repo}.git"
+            local org="AquaticEcoDynamics"
+            # AED_Tools comes from limnotrack's fork, not upstream: it
+            # carries fixes (netcdf-c/netcdf-fortran -fpermissive, commit
+            # 5a9a1ff; HDF5 FLT16_MAX gap, commit 9f2f902) not yet merged
+            # into AquaticEcoDynamics/AED_Tools. Switch this back once that
+            # PR lands upstream - and note the *_AED_TOOLS_REF pins above
+            # resolve against limnotrack/AED_Tools, not upstream, for as
+            # long as this override is in place.
+            if [ "$repo" = "AED_Tools" ]; then
+              org="limnotrack"
+            fi
+            git clone "https://github.com/${org}/${repo}.git"
             git -C "$repo" checkout "$ref"
           }
 
@@ -238,21 +249,6 @@ jobs:
           cp AED_Tools/build_aedlibs.inc .
           cp -r AED_Tools/ancillary .
 
-      # (a) build_glm.sh checks for "ancillary/windows/lib" and cd's into
-      #     "ancillary/windows", but the ancillary/ pipeline above produces
-      #     a flat ancillary/lib, ancillary/include, ancillary/bin layout
-      #     with no "windows" subfolder. Point it at the right path. This
-      #     runs every time (GLM itself isn't cached, unlike ancillary/).
-      #     Windows-only: it's a no-op elsewhere since build_glm.sh only
-      #     invokes the ancillary/ pipeline on Msys in the first place.
-      - name: "Patch: build_glm.sh ancillary path (Windows only)"
-        if: matrix.os == 'windows-latest'
-        run: |
-          sed -i \
-            -e 's#ancillary/windows/lib#ancillary/lib#' \
-            -e 's#cd ancillary/windows#cd ancillary#' \
-            "$ROOT/GLM/build_glm.sh"
-
       # ------------------------------------------------------------------
       # 4. Build the ancillary C/Fortran dependency chain: zlib, libaec,
       #    curl, hdf5, netcdf-c, netcdf-fortran, jpeg, libpng, freetype,
@@ -277,55 +273,6 @@ jobs:
           # Bump the trailing version suffix if you change any of the
           # patches below, or if ancillary/sources/versions.inc changes.
           key: glm-ancillary-windows-v1-${{ hashFiles('ancillary/sources/versions.inc') }}
-
-      # (b) HDF5 1.14.x's _Float16 conversion code references FLT16_MAX,
-      #     which mingw-w64's headers don't define for this GCC version
-      #     (GCC does provide the value via the builtin __FLT16_MAX__).
-      - name: "Patch: HDF5 FLT16_MAX gap (Windows only)"
-        if: matrix.os == 'windows-latest' && steps.ancillary-cache.outputs.cache-hit != 'true'
-        run: |
-          sed -i \
-            's#-DCMAKE_C_FLAGS="-I${FINALDIR}/include"#-DCMAKE_C_FLAGS="-I${FINALDIR}/include -DFLT16_MAX=__FLT16_MAX__"#' \
-            "$ROOT/ancillary/sources/scripts/build_extras.inc"
-
-      # (c) netcdf-c 4.9.2 fails a pointer-type check that GCC 14+ turned
-      #     into a hard error by default (mismatched struct stat / struct
-      #     _stat64 in dpathmgr.c, from newer mingw-w64 headers).
-      - name: "Patch: netcdf-c/netcdf-fortran strict pointer-type errors (Windows only)"
-        if: matrix.os == 'windows-latest' && steps.ancillary-cache.outputs.cache-hit != 'true'
-        run: |
-          # (sed's /pattern/a\text form breaks here: a backslash sitting right
-          # against the closing delimiter - both in the address and in a
-          # trailing continuation backslash in the appended text - gets
-          # parsed as escaping the delimiter/newline instead of being taken
-          # literally, so sed either errors ("unterminated address regex") or
-          # silently drops the line's trailing "\", corrupting the multi-line
-          # cmake command it's inserted into. awk has no such delimiter to
-          # collide with, so it's used here instead.)
-          for f in "$ROOT/ancillary/sources/scripts/build_netcdf_c.inc" \
-                   "$ROOT/ancillary/sources/scripts/build_netcdf_f.inc"; do
-            awk '{print} /-DCMAKE_BUILD_TYPE:STRING=Release/{print "           -DCMAKE_C_FLAGS:STRING=-fpermissive \\"}' \
-              "$f" > "$f.tmp" && mv "$f.tmp" "$f"
-            grep -q -- '-fpermissive' "$f" || { echo "::error::netcdf patch did not apply to $f"; exit 1; }
-          done
-
-      # (d) The DKRZ gitlab mirror for libaec is prone to rate-limiting
-      #     anonymous/CI IPs (HTTP 429). Pre-fetch it from the GitHub
-      #     mirror instead and repackage it under the archive name/top
-      #     level directory name (libaec-v1.1.4) that build_extras.inc
-      #     expects, so the pipeline's own fetch step just finds it
-      #     already there and skips downloading it.
-      - name: "Workaround: pre-fetch libaec from GitHub mirror (Windows only)"
-        if: matrix.os == 'windows-latest' && steps.ancillary-cache.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p "$ROOT/ancillary/sources"
-          cd "$ROOT/ancillary/sources"
-          curl -sSL -o libaec.tmp.tar.gz \
-            "https://github.com/MathisRosenhauer/libaec/archive/refs/tags/v1.1.4.tar.gz"
-          tar xzf libaec.tmp.tar.gz
-          mv libaec-1.1.4 libaec-v1.1.4
-          tar czf libaec-v1.1.4.tar.gz libaec-v1.1.4
-          rm -rf libaec-v1.1.4 libaec.tmp.tar.gz
 
       - name: Build ancillary dependencies (Windows only)
         if: matrix.os == 'windows-latest' && steps.ancillary-cache.outputs.cache-hit != 'true'
