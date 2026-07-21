@@ -77,10 +77,7 @@ testthat::test_that("can build AEME with simple set of inputs", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(model)
   
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
@@ -115,10 +112,7 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   
   aeme <- yaml_to_aeme(path = path, "aeme_simple.yaml")
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- "glm_aed"
-  }
+  model <- filter_platform_models(model)
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      ext_elev = 5, use_bgc = FALSE)
