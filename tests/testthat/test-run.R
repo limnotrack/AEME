@@ -125,6 +125,10 @@ test_that("running GLM works", {
 })
 
 test_that("running GLM with different exec works", {
+  # Skip if not on Windows
+  if (.Platform$OS.type != "windows") {
+    testthat::skip("Skipping test on non-Windows OS")
+  }
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   path <- tempdir()
