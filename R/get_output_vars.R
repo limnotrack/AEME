@@ -11,14 +11,13 @@
 #' aeme <- readRDS(aeme_file)
 #' path <- tempdir()
 #' model_controls <- get_model_controls(use_bgc = TRUE)
-#' model <- c("glm_aed", "gotm_wet")
+#' model <- c("glm_aed")
 #' aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #'                    model_controls = model_controls,
 #'                    ext_elev = 5, use_bgc = TRUE)
 #' # Run models
 #' aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-#' path = path, model_controls = model_controls,
-#' parallel = TRUE, ncores = 2L)
+#' path = path, model_controls = model_controls)
 #' get_output_vars(aeme, model)
 
 get_output_vars <- function(aeme, model, ens_n = 1) {
