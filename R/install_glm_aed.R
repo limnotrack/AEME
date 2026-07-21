@@ -80,6 +80,7 @@ os}}.",
     }
     # Extract latest version
     version <- versions[order(numeric_version(versions), decreasing = TRUE)][1]
+    options(AEME.glm_version = version)
     cli::cli_alert_info("Resolved {.val latest} to GLM version {.val {version}} 
                         for {.field {os}}.")
   }
