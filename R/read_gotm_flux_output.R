@@ -78,6 +78,8 @@ read_gotm_flux_output <- function(nc = NULL, file, dates = NULL,
   } else {
     outflow <- A0 * 0
   }
+  overflow <- 0
+  outftot <- outflow + overflow
   precip <- ncdf4::ncvar_get(nc, "precip")[date_index] * 86400
   precip_vol <- precip * A0
   Ts <- ncdf4::ncvar_get(nc, "temp")[, date_index]
@@ -98,7 +100,9 @@ read_gotm_flux_output <- function(nc = NULL, file, dates = NULL,
     LKE_precip = as.vector(precip),
     LKE_pcpvol = as.vector(precip_vol),
     LKE_inflow = as.vector(inflow),
+    LKE_overflow = as.vector(overflow),
     LKE_outflow = as.vector(outflow),
+    LKE_outftot = as.vector(outftot),
     HYD_surft = as.vector(Ts),
     MET_tmpair = as.vector(MET_tmpair),
     HYD_atdiff = as.vector(Ts - MET_tmpair)

@@ -74,6 +74,7 @@ jobs:
         shell: bash
     env:
       # Everything below is checked out/built as siblings under this folder,
+      # matching the layout build_glm.sh expects (GLM, ancillary, libaed-*,
       # libutil, libplot all next to each other).
       ROOT: ${{ github.workspace }}
 

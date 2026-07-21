@@ -39,7 +39,7 @@ aeme_to_inflow <- function(aeme) {
   }
   
   inflow_vars <- c(
-    "LKE_outflow",
+    "LKE_outftot",
     "HYD_temp", "CHM_salt", "CHM_oxy",
     "NIT_tn", "NIT_nit", "NIT_amm", #"NIT_din",
     "PHS_tp", "PHS_frp",# "NCS_tss", "NCS_ss1",
@@ -66,7 +66,7 @@ aeme_to_inflow <- function(aeme) {
                                 var_sim = var,
                                 value = mean_value)
       dat <- dplyr::bind_rows(dat_missing, dat)
-      if (var == "LKE_outflow") {
+      if (var == "LKE_outftot") {
         dat <- dat |> 
           dplyr::mutate(value = value * outflow_factor[m])
       }
@@ -84,7 +84,7 @@ aeme_to_inflow <- function(aeme) {
       dplyr::select(Date, var_sim, value)
     df_wid <- df |> 
       tidyr::pivot_wider(names_from = var_sim, values_from = value) |> 
-      dplyr::rename(HYD_flow = LKE_outflow) |>
+      dplyr::rename(HYD_flow = LKE_outftot) |>
       dplyr::mutate(model = m)
     return(df_wid)
   }) |> 

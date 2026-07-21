@@ -6,8 +6,8 @@
 \usage{
 plot_output(
   aeme,
-  model,
   var_sim = "HYD_temp",
+  model,
   point_size = 2,
   ens_n = 1,
   add_obs = TRUE,
@@ -24,10 +24,10 @@ plot_output(
 \arguments{
 \item{aeme}{Aeme object.}
 
+\item{var_sim}{string; of variable to plot}
+
 \item{model}{character vector; model(s) to plot. If missing, all models
 in the Aeme object will be plotted.}
-
-\item{var_sim}{string; of variable to plot}
 
 \item{ens_n}{integer; ensemble number to plot. Default is 1.}
 

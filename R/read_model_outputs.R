@@ -109,8 +109,10 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   }
   
   # ---- 5. convert all 1 dimension variables to vectors
-  vars_1d <- c("LKE_lvlwtr", "HYD_surft", "LKE_Qe", "LKE_Qh", "LKE_Qlw", 
-               "LKE_Qsw", "LKE_inflow", "LKE_outflow", "LKE_A0", "LKE_V",
+  vars_1d <- c("LKE_lvlwtr", "HYD_surft", 
+               "LKE_Qe", "LKE_Qh", "LKE_Qlw", "LKE_Qsw", 
+               "LKE_inflow", "LKE_outflow", "LKE_overflow", "LKE_outftot",
+               "LKE_A0", "LKE_V",
                "LKE_evpflx", "LKE_evpvol", "LKE_pcpvol",
                # Derived vars
                "HYD_thmcln", "HYD_strat", "HYD_ctrbuy", "HYD_epidep", 

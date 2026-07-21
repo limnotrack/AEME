@@ -58,6 +58,7 @@ standardise_met <- function(met, verbose = TRUE) {
       class = "aeme_error_met_empty"
     )
   }
+  met <- .rename_date_column(met, verbose = verbose, arg_name = "met")
   if (!"Date" %in% names(met)) {
     cli::cli_abort(
       c("{.arg met} must contain a {.code Date} column.",
@@ -92,6 +93,112 @@ standardise_met <- function(met, verbose = TRUE) {
 
 
 # ── Internal: column renaming ─────────────────────────────────────────────────
+
+#' @noRd
+.report_timestep <- function(dates) {
+  
+  if (length(dates) < 2) {
+    cli::cli_inform(
+      c("i" = "Only one timestamp present; cannot determine timestep."),
+      class = "aeme_inform_met_timestep"
+    )
+    return(invisible(NULL))
+  }
+  
+  # Differences in seconds
+  diffs_secs <- as.numeric(diff(as.POSIXct(dates)), units = "secs")
+  median_secs <- stats::median(diffs_secs, na.rm = TRUE)
+  
+  timestep_label <- dplyr::case_when(
+    median_secs < 60                  ~ paste(round(median_secs), "second(s)"),
+    median_secs < 3600                ~ paste(round(median_secs / 60), "minute(s)"),
+    median_secs < 86400               ~ paste(round(median_secs / 3600), "hour(s)"),
+    median_secs < 86400 * 7           ~ paste(round(median_secs / 86400), "day(s)"),
+    median_secs < 86400 * 31         ~ paste(round(median_secs / (86400 * 7)), "week(s)"),
+    TRUE                              ~ paste(round(median_secs / (86400 * 30.44)), "month(s)")
+  )
+  
+  irregular <- (stats::sd(diffs_secs, na.rm = TRUE) / median_secs) > 0.05
+  
+  if (irregular) {
+    cli::cli_inform(
+      c("i" = "Detected irregular timestep (median: {timestep_label}).",
+        "!" = "Gaps or irregular intervals were found in the date/time column."),
+      class = "aeme_inform_met_timestep"
+    )
+  } else {
+    # cli::cli_inform(
+    #   c("i" = "Detected regular timestep: {timestep_label}."),
+    #   class = "aeme_inform_met_timestep"
+    # )
+  }
+}
+
+#' @noRd
+.rename_date_column <- function(data, verbose, arg_name = "data") {
+  
+  # If "Date" column already exists, just report timestep and return
+  if ("Date" %in% names(data)) {
+    if (verbose) .report_timestep(data$Date)
+    return(data)
+  }
+  
+  # Try to find a date/time column among the column names
+  keywords <- c("date", "time", "datetime", "timestamp", "dt")
+  col_match <- names(data)[tolower(names(data)) %in% keywords]
+  
+  # Broader keyword search if no exact match
+  if (length(col_match) == 0) {
+    col_match <- names(data)[grepl("date|time", names(data), ignore.case = TRUE)]
+  }
+  
+  if (length(col_match) == 0) {
+    cli::cli_abort(
+      c("!" = "No date/time column found in {.arg {arg_name}}.",
+        "i" = "Expected a column named {.val Date} or containing {.val date} or {.val time}."),
+      class = "aeme_error_no_date"
+    )
+  }
+  
+  if (length(col_match) > 1) {
+    cli::cli_warn(
+      c("!" = "Multiple potential date/time columns found in {.arg {arg_name}}: {.val {col_match}}.",
+        "i" = "Using the first match: {.val {col_match[1]}}."),
+      class = "aeme_warn_multiple_date"
+    )
+  }
+  
+  date_col <- col_match[1]
+  
+  # Attempt to parse the column as a date/time if not already
+  date_vals <- data[[date_col]]
+  if (!inherits(date_vals, c("Date", "POSIXct", "POSIXlt"))) {
+    date_vals <- tryCatch(
+      as.POSIXct(date_vals),
+      error = function(e) {
+        cli::cli_abort(
+          c("!" = "Could not parse column {.val {date_col}} in {.arg {arg_name}} as a date/time.",
+            "x" = conditionMessage(e)),
+          class = "aeme_error_date_parse"
+        )
+      }
+    )
+    data[[date_col]] <- date_vals
+  }
+  
+  if (verbose) {
+    cli::cli_inform(
+      c("i" = "Renaming date/time column in {.arg {arg_name}}: {.val {date_col}} \u2192 {.val Date}"),
+      class = "aeme_inform_date_rename"
+    )
+  }
+  
+  names(data)[names(data) == date_col] <- "Date"
+  
+  if (verbose) .report_timestep(data$Date)
+  
+  data
+}
 
 #' @noRd
 .rename_met_columns <- function(met, verbose) {

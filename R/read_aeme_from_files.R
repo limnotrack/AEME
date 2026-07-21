@@ -10,7 +10,7 @@
 #' @examples
 #' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 #' aeme <- readRDS(aeme_file)
-#' path <- "test_write"
+#' path <- file.path(tempdir(), "test_write")
 #' model_controls <- get_model_controls()
 #' aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
 #' model_controls = model_controls, ext_elev = 3)
@@ -45,7 +45,7 @@ read_aeme_from_files <- function(path) {
   
   # Iterate over each slot
   for (slot_name in slot_names) {
-    if (slot_name %in% c("lake","parameters")) {
+    if (slot_name %in% c("lake", "parameters")) {
       # Read CSV files for simple slots
       file_path <- file.path(lake_dir, paste0(slot_name, ".csv"))
       if (file.exists(file_path)) {
@@ -154,8 +154,7 @@ read_aeme_from_files <- function(path) {
           
           ens_lab <- format_ens_label(ens_n = ens_n)
           
-          outp[[ens_lab]] <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
-                                  gotm_wet = mods[["gotm_wet"]])
+          outp[[ens_lab]] <- mods
         }
         
         outp$n_members <- sum(grepl("ens", names(outp)))
@@ -181,6 +180,7 @@ read_aeme_from_files <- function(path) {
 #' Help function to find the model directory in a given path
 #' @noRd
 find_lake_dir <- function(path) {
+  path <- normalizePath(path, mustWork = FALSE)
   sub_dirs <- list.dirs(path)
   
   # Match dirs of the form [digits]_[name] (direct children only, no further nesting)

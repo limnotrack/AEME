@@ -18,7 +18,7 @@ Read an AEME object from files
 \examples{
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme <- readRDS(aeme_file)
-path <- "test_write"
+path <- file.path(tempdir(), "test_write")
 model_controls <- get_model_controls()
 aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
 model_controls = model_controls, ext_elev = 3)

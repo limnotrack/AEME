@@ -41,3 +41,11 @@ test_that("can expand met", {
   testthat::expect_true(all(round(abs(ex_met3$MET_wnduvu), 2) == round(ex_met$MET_wndspd, 2)))
 
 })
+
+test_that("can get met vars", {
+  met_vars <- get_met_vars()
+  testthat::expect_true(nrow(met_vars) >= 16)
+  met_vars_vec <- get_met_vars(as_vector = TRUE)
+  testthat::expect_true(all(c("MET_wndspd", "MET_wnddir") %in% met_vars_vec))
+  testthat::expect_equal(length(met_vars_vec), nrow(met_vars))
+})

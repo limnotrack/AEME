@@ -34,8 +34,8 @@ add_inflow <- function(aeme, inflow, inflow_id) {
       stop("inflow_id is required")
     }
   }
+  check_aeme(aeme)
   inf <- aeme |> 
-    check_aeme() |> 
     inflows() 
   inf_list <- inf[["data"]]
   curr_names <- names(inf_list)

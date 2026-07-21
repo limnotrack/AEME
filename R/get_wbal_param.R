@@ -28,8 +28,8 @@
 #' @export
 
 get_wbal_param <- function(aeme) {
+  check_aeme(aeme)
   wbal <- aeme |> 
-    check_aeme() |>
     water_balance()
   
   params <- wbal[["params"]]

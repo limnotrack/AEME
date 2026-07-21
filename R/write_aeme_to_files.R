@@ -13,7 +13,7 @@
 #' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 #' aeme <- readRDS(aeme_file)
 #' model <- "glm_aed"
-#' path <- "test_write"
+#' path <- file.path(tempdir(), "test_write")
 #' model_controls <- get_model_controls()
 #' aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #' model_controls = model_controls, ext_elev = 5)
@@ -71,10 +71,10 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
         if (is.null(obs)) {
           next
         }
-        if (is.data.frame(df)) {
-          df <- data.frame(obs = df)
-          names(df) <- obs
-        }
+        # if (is.data.frame(df)) {
+        #   df <- data.frame(obs = df)
+        #   names(df) <- obs
+        # }
         fname <- file.path(lake_dir, paste0(slot_name, "_", obs, ".csv"))
         out_files <- c(out_files, fname)
         write.csv(df, fname, row.names = FALSE)
@@ -117,7 +117,6 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
 
       lke <- lake(aeme)
       max_depth <- lke$depth
-      data("model_layer_structure", package = "AEME", envir = environment())
       h <- model_layer_structure |>
         dplyr::filter(zi <= max_depth) |>
         dplyr::pull(h)
