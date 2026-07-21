@@ -415,23 +415,39 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
         "{.envvar AEME.glm_exec} points to {.path {bin_exec}}, but that file doesn't exist."
       )
     }
-    return(bin_exec)
+    return(.ensure_executable(bin_exec))
   }
   
   sys_OS <- get_os()
   # 2. A specific downloaded GLM version was requested.
   if (!is.null(version)) {
-    return(glm_exe_path(version, os = sys_OS))
+    return(.ensure_executable(glm_exe_path(version, os = sys_OS)))
   }
   
   # 3. Nothing requested - fall back to the exe bundled with the package
   #    install. This is unchanged from the original function, so anyone who
   #    never calls install_glm_aed() sees no behavior change at all.
   bin_path <- system.file('extbin/', package = "AEME")
-  switch(sys_OS,
-         "windows" = file.path(bin_path, "glm_aed", "windows", "glm.exe"),
-         "osx"     = file.path(bin_path, "glm_aed", "macos", "glm"),
-         "linux"   = file.path(bin_path, "glm_aed", "linux", "glm"))
+  bundled <- switch(sys_OS,
+                    "windows" = file.path(bin_path, "glm_aed", "windows", "glm.exe"),
+                    "osx"     = file.path(bin_path, "glm_aed", "macos", "glm"),
+                    "linux"   = file.path(bin_path, "glm_aed", "linux", "glm"))
+  .ensure_executable(bundled)
+}
+
+#' Make sure a resolved GLM binary is actually executable
+#'
+#' Don't trust git/tar/R CMD build to have preserved the executable bit
+#' through packaging - set it explicitly right before use, for every
+#' source (bundled, downloaded, or user-supplied via AEME.glm_exec). A
+#' no-op if it's already executable.
+#' @keywords internal
+#' @noRd
+.ensure_executable <- function(path) {
+  if (get_os() != "windows" && file.exists(path)) {
+    Sys.chmod(path, mode = "0755")
+  }
+  path
 }
 
 #' @rdname run_dy_cd
