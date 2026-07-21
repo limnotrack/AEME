@@ -5,7 +5,7 @@
 \title{Install a GLM executable for AEME}
 \usage{
 install_glm_aed(
-  version,
+  version = "latest",
   os = NULL,
   repo = "limnotrack/AEME",
   force = FALSE,

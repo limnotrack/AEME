@@ -4,7 +4,7 @@
 \alias{glm_exe_path}
 \title{Locate an installed GLM executable}
 \usage{
-glm_exe_path(version, os = NULL)
+glm_exe_path(version = getOption("AEME.glm_version", NULL), os = NULL)
 }
 \arguments{
 \item{version}{Character. The GLM version to locate, e.g. \code{"3.9.108"}.}

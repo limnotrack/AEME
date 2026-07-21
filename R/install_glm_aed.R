@@ -54,17 +54,39 @@
 #' }
 #' 
 #' @importFrom digest digest
+#' @importFrom gh gh
+#' @importFrom cli cli_abort cli_alert_info cli_alert_success cli_alert_warning
+#' @importFrom rlang arg_match
 #'
 #' @export
-install_glm_aed <- function(version,
+install_glm_aed <- function(version = "latest",
                             os = NULL,
                             repo = "limnotrack/AEME",
                             force = FALSE,
                             quiet = FALSE) {
-  if (missing(version) || !is.character(version) || length(version) != 1L) {
-    cli::cli_abort("{.arg version} must be a single character string, e.g. {.val 3.9.108}.")
+  if (is.null(os)) {
+    os <- .glm_detect_os()  
+  } else {
+    os <- rlang::arg_match(os, c("windows", "macos", "linux"))
   }
-  os <- if (is.null(os)) .glm_detect_os() else match.arg(os, c("windows", "macos", "linux"))
+  if (version == "latest") {
+    versions <- list_glm_versions(repo = repo, os = os)$glm_version
+    if (length(versions) == 0L) {
+      cli::cli_abort(c(
+        "No GLM binaries found in releases of {.val {repo}} for {.field {
+os}}.",
+        "i" = "Use {.fn list_glm_versions} to see what's available."
+      ))
+    }
+    # Extract latest version
+    version <- versions[order(numeric_version(versions), decreasing = TRUE)][1]
+    cli::cli_alert_info("Resolved {.val latest} to GLM version {.val {version}} 
+                        for {.field {os}}.")
+  }
+  if (missing(version) || !is.character(version) || length(version) != 1L) {
+    cli::cli_abort("{.arg version} must be a single character string, e.g. 
+                   {.val 3.9.108}.")
+  }
   
   exe_name <- if (os == "windows") "glm.exe" else "glm"
   install_dir <- file.path(.glm_cache_dir(), os, version)
@@ -256,10 +278,14 @@ list_glm_versions <- function(repo = "limnotrack/AEME", os = NULL) {
 #' }
 #'
 #' @export
-glm_exe_path <- function(version, os = NULL) {
-  os <- if (is.null(os)) .glm_detect_os() else match.arg(os, c("windows", "macos", "linux"))
-  exe_name <- if (os == "windows") "glm.exe" else "glm"
-  path <- file.path(.glm_cache_dir(), os, version, exe_name)
+glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NULL) {
+  if (is.null(version)) {
+    path <- .resolve_glm_exec()
+  } else {
+    os <- if (is.null(os)) .glm_detect_os() else match.arg(os, c("windows", "macos", "linux"))
+    exe_name <- if (os == "windows") "glm.exe" else "glm"
+    path <- file.path(.glm_cache_dir(), os, version, exe_name)
+  }
   
   if (!file.exists(path)) {
     cli::cli_abort(c(
@@ -299,7 +325,7 @@ glm_exe_path <- function(version, os = NULL) {
 #' @keywords internal
 #' @noRd
 #' @importFrom gh gh
-.glm_list_releases <- function(repo) {
+.glm_list_releases <- function(repo = "limnotrack/AEME") {
   parts <- strsplit(repo, "/", fixed = TRUE)[[1]]
   if (length(parts) != 2L) {
     cli::cli_abort("{.arg repo} must be in the form {.val owner/repo}, got: {.val {repo}}")
