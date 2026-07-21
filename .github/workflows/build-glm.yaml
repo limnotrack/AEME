@@ -2,9 +2,72 @@ name: Build GLM
 
 on:
   workflow_dispatch:
+    inputs:
+      glm_ref:
+        description: "GLM branch, tag, or SHA to build"
+        required: true
+        default: "v4alpha"
+      package_version:
+        description: "AEME package version to attach binaries to (must match an existing or intended GitHub release tag, e.g. v0.4.0)"
+        required: true
+
+permissions:
+  contents: write   # required for the release-creation/upload steps below
+
+env:
+  # ----------------------------------------------------------------------
+  # Pin every sibling repo to an explicit tag or commit SHA that is known
+  # to build successfully against GLM's `${{ inputs.glm_ref }}`. Using a
+  # floating branch (e.g. "main") here is what currently makes builds
+  # non-reproducible: any of these 7 repos can change independently and
+  # silently change what glm.exe you get out - or break the build - without
+  # glm_ref ever changing.
+  #
+  # Treat this block as GLM's de facto lockfile: bump entries deliberately
+  # (via PR, after re-validating the build) rather than letting them float.
+  # ----------------------------------------------------------------------
+  AED_TOOLS_REF: master          # TODO: pin to a tag/SHA validated against glm_ref
+  LIBAED_WATER_REF: master       # TODO: pin to a tag/SHA validated against glm_ref
+  LIBAED_BENTHIC_REF: master     # TODO: pin to a tag/SHA validated against glm_ref
+  LIBAED_DEMO_REF: master        # TODO: pin to a tag/SHA validated against glm_ref
+  LIBAED_API_REF: main         # TODO: pin to a tag/SHA validated against glm_ref
+  LIBUTIL_REF: master            # TODO: pin to a tag/SHA validated against glm_ref
+  LIBPLOT_REF: master            # TODO: pin to a tag/SHA validated against glm_ref
 
 jobs:
+  # ==========================================================================
+  # NOTE ON VERSIONING: binaries are attached as assets to the AEME package's
+  # own release (tag = package_version, e.g. "0.4.0") rather than a release
+  # tagged with GLM's version number. The GLM version (parsed from `glm
+  # --version` after compiling) instead becomes part of the asset filename,
+  # e.g. glm-windows-3.9.108.zip attached to the 0.4.0 release.
+  #
+  # package_version is known up front (it's an input), so - unlike the
+  # previous GLM-version-tagged approach - the release can be created/ensured
+  # once before any platform builds, and each platform job just uploads its
+  # own assets to it independently.
+  #
+  # `gh release upload --clobber` is used instead of an action that recreates
+  # the release, specifically so re-running this workflow for the same
+  # package_version never overwrites release notes you (or a separate
+  # package-release workflow) wrote for that tag - it only adds/replaces the
+  # binary assets.
+  # ==========================================================================
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure release exists for package version ${{ inputs.package_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "${{ inputs.package_version }}" --repo "${{ github.repository }}" \
+            || gh release create "${{ inputs.package_version }}" \
+                 --repo "${{ github.repository }}" \
+                 --title "AEME ${{ inputs.package_version }}" \
+                 --notes "GLM binaries built from \`${{ inputs.glm_ref }}\` are attached to this release."
+
   build-windows:
+    needs: create-release
     runs-on: windows-latest
     defaults:
       run:
@@ -39,23 +102,35 @@ jobs:
           cmake --version | head -1
 
       # ------------------------------------------------------------------
-      # 2. Checkout GLM at the chosen ref, plus the sibling repos it needs.
+      # 2. Checkout GLM at the chosen ref, plus the sibling repos it needs,
+      #    each pinned to the ref recorded in the env block above.
       #    build_glm.sh assumes GLM sits next to AED_Tools/libaed-*/libutil/
       #    libplot in one common parent directory (this workspace root).
       # ------------------------------------------------------------------
       - name: Checkout GLM
         uses: actions/checkout@v4
         with:
-          repository: AquaticEcoDynamics/GLM
-          ref: 9fac22cbf9401ac08ee840c6239b6c992debd6aa
+          repository: limnotrack/GLM
+          ref: ${{ inputs.glm_ref }}
           path: GLM
 
-      - name: Checkout AED_Tools and sibling libraries
+      - name: Checkout AED_Tools and sibling libraries (pinned refs)
         run: |
           cd "$ROOT"
-          for repo in AED_Tools libaed-water libaed-benthic libaed-demo libaed-api libutil libplot; do
-            git clone --depth 1 "https://github.com/AquaticEcoDynamics/${repo}.git"
-          done
+          # Full clone + checkout (not --depth 1 --branch) so this works
+          # whether the pinned ref above is a tag, branch, or raw commit SHA.
+          checkout_repo () {
+            local repo="$1" ref="$2"
+            git clone "https://github.com/AquaticEcoDynamics/${repo}.git"
+            git -C "$repo" checkout "$ref"
+          }
+          checkout_repo AED_Tools        "$AED_TOOLS_REF"
+          checkout_repo libaed-water     "$LIBAED_WATER_REF"
+          checkout_repo libaed-benthic   "$LIBAED_BENTHIC_REF"
+          checkout_repo libaed-demo      "$LIBAED_DEMO_REF"
+          checkout_repo libaed-api       "$LIBAED_API_REF"
+          checkout_repo libutil          "$LIBUTIL_REF"
+          checkout_repo libplot          "$LIBPLOT_REF"
 
       # ------------------------------------------------------------------
       # 3. Stage the files build_glm.sh needs but that GLM's own repo does
@@ -163,13 +238,16 @@ jobs:
           ./build_glm.sh
 
       - name: Verify glm.exe runs
+        id: verify
         run: |
           cd "$ROOT/GLM"
           PATH="$ROOT/ancillary/bin:$PATH" ./glm.exe --version
+          VER=$(PATH="$ROOT/ancillary/bin:$PATH" ./glm.exe --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          echo "glm_version=$VER" >> "$GITHUB_OUTPUT"
 
       # ------------------------------------------------------------------
       # 6. Package glm.exe with the DLLs it needs at runtime so the
-      #    artifact is self-contained (no PATH setup required).
+      #    asset is self-contained (no PATH setup required).
       # ------------------------------------------------------------------
       - name: Assemble distributable folder
         run: |
@@ -182,11 +260,26 @@ jobs:
           cp "C:/ProgramData/mingw64/mingw64/bin/libgcc_s_seh-1.dll" "$ROOT/glm_dist/"
           cp "C:/ProgramData/mingw64/mingw64/bin/libwinpthread-1.dll" "$ROOT/glm_dist/"
 
-      - name: Upload glm_dist artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: glm-windows-${{ inputs.glm_ref }}
-          path: glm_dist
+      - name: Zip distributable folder
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "$env:ROOT\glm_dist\*" -DestinationPath "$env:ROOT\glm-windows-${{ steps.verify.outputs.glm_version }}.zip"
+
+      - name: Compute SHA256 checksum
+        run: |
+          cd "$ROOT"
+          ZIP="glm-windows-${{ steps.verify.outputs.glm_version }}.zip"
+          sha256sum "$ZIP" > "$ZIP.sha256"
+          cat "$ZIP.sha256"
+
+      - name: Upload zip + checksum to release ${{ inputs.package_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd "$ROOT"
+          ZIP="glm-windows-${{ steps.verify.outputs.glm_version }}.zip"
+          gh release upload "${{ inputs.package_version }}" "$ZIP" "$ZIP.sha256" \
+            --repo "${{ github.repository }}" --clobber
 
   # ==========================================================================
   # Linux and macOS don't use the ancillary/ from-source pipeline at all -
@@ -203,6 +296,7 @@ jobs:
   # ==========================================================================
 
   build-linux:
+    needs: create-release
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -222,16 +316,25 @@ jobs:
       - name: Checkout GLM
         uses: actions/checkout@v4
         with:
-          repository: AquaticEcoDynamics/GLM
-          ref: 9fac22cbf9401ac08ee840c6239b6c992debd6aa
+          repository: limnotrack/GLM
+          ref: ${{ inputs.glm_ref }}
           path: GLM
 
-      - name: Checkout AED_Tools and sibling libraries
+      - name: Checkout AED_Tools and sibling libraries (pinned refs)
         run: |
           cd "$ROOT"
-          for repo in AED_Tools libaed-water libaed-benthic libaed-demo libaed-api libutil libplot; do
-            git clone --depth 1 "https://github.com/AquaticEcoDynamics/${repo}.git"
-          done
+          checkout_repo () {
+            local repo="$1" ref="$2"
+            git clone "https://github.com/AquaticEcoDynamics/${repo}.git"
+            git -C "$repo" checkout "$ref"
+          }
+          checkout_repo AED_Tools        "$AED_TOOLS_REF"
+          checkout_repo libaed-water     "$LIBAED_WATER_REF"
+          checkout_repo libaed-benthic   "$LIBAED_BENTHIC_REF"
+          checkout_repo libaed-demo      "$LIBAED_DEMO_REF"
+          checkout_repo libaed-api       "$LIBAED_API_REF"
+          checkout_repo libutil          "$LIBUTIL_REF"
+          checkout_repo libplot          "$LIBPLOT_REF"
 
       - name: Stage build_env.inc, build_aedlibs.inc and ancillary/ (fallback only)
         run: |
@@ -246,9 +349,12 @@ jobs:
           ./build_glm.sh
 
       - name: Verify glm runs
+        id: verify
         run: |
           cd "$ROOT/GLM"
           ./glm --version
+          VER=$(./glm --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          echo "glm_version=$VER" >> "$GITHUB_OUTPUT"
 
       - name: Assemble distributable folder
         run: |
@@ -260,13 +366,29 @@ jobs:
           # actually needs at runtime for reference.
           ldd "$ROOT/GLM/glm" > "$ROOT/glm_dist/ldd-dependencies.txt" || true
 
-      - name: Upload glm_dist artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: glm-linux-${{ inputs.glm_ref }}
-          path: glm_dist
+      - name: Zip distributable folder
+        run: |
+          cd "$ROOT/glm_dist"
+          zip -r "$ROOT/glm-linux-${{ steps.verify.outputs.glm_version }}.zip" .
+
+      - name: Compute SHA256 checksum
+        run: |
+          cd "$ROOT"
+          ZIP="glm-linux-${{ steps.verify.outputs.glm_version }}.zip"
+          sha256sum "$ZIP" > "$ZIP.sha256"
+          cat "$ZIP.sha256"
+
+      - name: Upload zip + checksum to release ${{ inputs.package_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd "$ROOT"
+          ZIP="glm-linux-${{ steps.verify.outputs.glm_version }}.zip"
+          gh release upload "${{ inputs.package_version }}" "$ZIP" "$ZIP.sha256" \
+            --repo "${{ github.repository }}" --clobber
 
   build-macos:
+    needs: create-release
     runs-on: macos-latest
     defaults:
       run:
@@ -292,16 +414,25 @@ jobs:
       - name: Checkout GLM
         uses: actions/checkout@v4
         with:
-          repository: AquaticEcoDynamics/GLM
-          ref: 9fac22cbf9401ac08ee840c6239b6c992debd6aa
+          repository: limnotrack/GLM
+          ref: ${{ inputs.glm_ref }}
           path: GLM
 
-      - name: Checkout AED_Tools and sibling libraries
+      - name: Checkout AED_Tools and sibling libraries (pinned refs)
         run: |
           cd "$ROOT"
-          for repo in AED_Tools libaed-water libaed-benthic libaed-demo libaed-api libutil libplot; do
-            git clone --depth 1 "https://github.com/AquaticEcoDynamics/${repo}.git"
-          done
+          checkout_repo () {
+            local repo="$1" ref="$2"
+            git clone "https://github.com/AquaticEcoDynamics/${repo}.git"
+            git -C "$repo" checkout "$ref"
+          }
+          checkout_repo AED_Tools        "$AED_TOOLS_REF"
+          checkout_repo libaed-water     "$LIBAED_WATER_REF"
+          checkout_repo libaed-benthic   "$LIBAED_BENTHIC_REF"
+          checkout_repo libaed-demo      "$LIBAED_DEMO_REF"
+          checkout_repo libaed-api       "$LIBAED_API_REF"
+          checkout_repo libutil          "$LIBUTIL_REF"
+          checkout_repo libplot          "$LIBPLOT_REF"
 
       - name: Stage build_env.inc, build_aedlibs.inc and ancillary/ (fallback only)
         run: |
@@ -331,9 +462,12 @@ jobs:
           ./build_glm.sh
 
       - name: Verify glm runs
+        id: verify
         run: |
           cd "$ROOT/GLM"
           ./glm --version
+          VER=$(./glm --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          echo "glm_version=$VER" >> "$GITHUB_OUTPUT"
 
       - name: Assemble distributable folder
         run: |
@@ -345,9 +479,25 @@ jobs:
           # this job doesn't do yet).
           otool -L "$ROOT/GLM/glm" > "$ROOT/glm_dist/otool-dependencies.txt" || true
 
-      - name: Upload glm_dist artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: glm-macos-${{ inputs.glm_ref }}
-          path: glm_dist
-          
+      - name: Zip distributable folder
+        run: |
+          cd "$ROOT/glm_dist"
+          zip -r "$ROOT/glm-macos-${{ steps.verify.outputs.glm_version }}.zip" .
+
+      - name: Compute SHA256 checksum
+        run: |
+          cd "$ROOT"
+          ZIP="glm-macos-${{ steps.verify.outputs.glm_version }}.zip"
+          # macOS runners ship `shasum`, not GNU `sha256sum` - same output format.
+          shasum -a 256 "$ZIP" > "$ZIP.sha256"
+          cat "$ZIP.sha256"
+
+      - name: Upload zip + checksum to release ${{ inputs.package_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd "$ROOT"
+          ZIP="glm-macos-${{ steps.verify.outputs.glm_version }}.zip"
+          gh release upload "${{ inputs.package_version }}" "$ZIP" "$ZIP.sha256" \
+            --repo "${{ github.repository }}" --clobber
+            
