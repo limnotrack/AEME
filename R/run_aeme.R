@@ -593,12 +593,21 @@ get_os <- function() {
 get_glm_aed_version <- function(version = NULL) {
   # Allow user-specified executable path
   bin_exec <- .resolve_glm_exec(version)
-  vers <- processx::run(
+  res <- processx::run(
     command = bin_exec,
-    args = "--version"
-  )$stdout
-  cat(vers)
-  return(vers)
+    args = "--version",
+    error_on_status = FALSE
+  )
+  if (res$status != 0) {
+    cli::cli_abort(c(
+      "GLM exited with status {res$status} when run with {.code --version}.",
+      "i" = "command: {.path {bin_exec}}",
+      "i" = "stdout: {res$stdout}",
+      "i" = "stderr: {res$stderr}"
+    ))
+  }
+  cat(res$stdout)
+  return(res$stdout)
 }
 
 #' Get GOTM-WET model version
@@ -610,12 +619,21 @@ get_gotm_wet_version <- function() {
   gotm_exec <- ifelse(get_os() == "windows",
                       file.path(bin_path, "gotm_wet", "gotm.exe"),
                       file.path(bin_path, "gotm_wet", "gotm"))
-  vers <- processx::run(
+  res <- processx::run(
     command = gotm_exec,
-    args = "-v"
-  )$stderr
-  cat(vers)
-  return(vers)
+    args = "--version",
+    error_on_status = FALSE
+  )
+  if (res$status != 0) {
+    cli::cli_abort(c(
+      "GOTM exited with status {res$status} when run with {.code --version}.",
+      "i" = "command: {.path {gotm_exec}}",
+      "i" = "stdout: {res$stdout}",
+      "i" = "stderr: {res$stderr}"
+    ))
+  }
+  cat(res$stderr)
+  return(res$stderr)
 }
 
 #' Get DYRESM-CAEDYM model version
