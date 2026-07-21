@@ -52,7 +52,7 @@ test_that("running GLM works", {
   obs <- get_obs(aeme)
   mod_obs_vars <- get_mod_obs_vars(aeme)
   testthat::expect_true(all(mod_obs_vars$var_aeme %in% obs$var_aeme))
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
   # plot_wlev(aeme)
   # plot_wbal(aeme)
   lake_dir <- get_lake_dir(aeme = aeme)
@@ -300,7 +300,7 @@ test_that("running GLM-AED works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE) |> 
-    run_aeme()
+    run_aeme(verbose = T)
   
   plot_output_base(aeme)
   plot_output_base(aeme, var_sim = c("evap"))

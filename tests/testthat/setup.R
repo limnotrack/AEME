@@ -8,7 +8,7 @@
 # test still handle that correctly and skip individually - this file's job
 # is only to warm the cache once, not to gate the whole suite.
 tryCatch(
-  invisible(install_glm_aed(version = getOption("AEME.glm_version", "3.9.108"), quiet = TRUE)),
+  invisible(install_glm_aed(version = getOption("AEME.glm_version", "3.9.108"))),
   error = function(e) {
     message(
       "Could not pre-install GLM at test setup (", conditionMessage(e), ") - ",
@@ -16,3 +16,5 @@ tryCatch(
     )
   }
 )
+
+vers <- get_model_version("glm_aed")
