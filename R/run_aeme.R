@@ -432,11 +432,14 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   # 3. Nothing requested - fall back to the exe bundled with the package
   #    install. This is unchanged from the original function, so anyone who
   #    never calls install_glm_aed() sees no behavior change at all.
+  if (sys_OS != "windows") {
+    cli::cli_abort(c(
+      "x" = "No GLM-AED binary found for {.field {sys_OS}}. Please install a 
+      GLM-AED binary using {.code install_glm_aed()}."
+    ))
+  }
   bin_path <- system.file('extbin/', package = "AEME")
-  bundled <- switch(sys_OS,
-                    "windows" = file.path(bin_path, "glm_aed", "windows", "glm.exe"),
-                    "osx"     = file.path(bin_path, "glm_aed", "macos", "glm"),
-                    "linux"   = file.path(bin_path, "glm_aed", "linux", "glm"))
+  bundled <- file.path(bin_path, "glm_aed", "windows", "glm.exe")
   .ensure_executable(bundled)
 }
 
