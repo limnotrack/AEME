@@ -46,9 +46,8 @@ run_aeme <- function(aeme, model, path, args = character(),
   aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
-  } else {
-    model <- check_model(model = model)
   }
+  model <- check_model(model = model)
   if (missing(path)) {
     path <- get_aeme_path(aeme)
   }

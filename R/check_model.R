@@ -4,7 +4,7 @@
 #'  "DYRESM-CAEDYM", "GLM-AED", "GOTM-WET" or their corresponding codes
 #'  "dy_cd", "glm_aed", "gotm_wet".
 #'  
-#'  @importFrom cli cli_abort
+#' @importFrom cli cli_abort cli_alert_info
 #'
 #' @returns Character vector of standardized model codes.
 #' @export
@@ -13,13 +13,14 @@
 #' check_model(c("GLM-AED", "gotm_wet"))
 
 check_model <- function(model) {
-  valid_models <- c(
+  
+  all_models <- c(
     "DYRESM-CAEDYM" = "dy_cd",
     "GLM-AED"       = "glm_aed",
     "GOTM-WET"      = "gotm_wet"
   )
   
-  valid_names <- c(names(valid_models), unname(valid_models))
+  valid_names <- c(names(all_models), unname(all_models))
   
   # Check that model is provided and valid
   if (missing(model) || is.null(model) || !length(model)) {
@@ -37,6 +38,20 @@ check_model <- function(model) {
       class = "aeme_error_model_invalid"
     )
   }
+  
+  # OS Check
+  os <- .detect_os()
+  
+  windows_only <- c("dy_cd", "gotm_wet")
+  
+  os_valid_models <- if (os == "windows") {
+    all_models
+  } else {
+    cli::cli_alert_info("DYRESM-CAEDYM and GOTM-WET are only available on Windows. Defaulting to GLM-AED for {.field {os}} OS.")
+    all_models[!all_models %in% windows_only]
+  }
+  os_valid_names <- c(names(os_valid_models), unname(os_valid_models))
+  model <- model[model %in% os_valid_names]
   
   # ---- Canonical named output ----
   
