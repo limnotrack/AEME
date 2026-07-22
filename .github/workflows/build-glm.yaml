@@ -360,6 +360,54 @@ jobs:
         run: |
           Compress-Archive -Path "$env:ROOT\glm_dist\*" -DestinationPath "$env:ROOT\glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
 
+- name: "Install dylibbundler (macOS only)"
+        if: matrix.os == 'macos-latest'
+        run: brew install dylibbundler
+
+      # dylibbundler walks the binary's dependency tree (recursively, via
+      # -b), copies every non-system dylib it finds into glm_dist/libs/,
+      # and rewrites the binary's own load commands to point at those
+      # copies via @executable_path instead of the absolute Homebrew paths
+      # (/opt/homebrew/opt/netcdf/lib/...) that only exist on a machine
+      # with the exact same Homebrew packages installed - which is
+      # precisely what broke on the runner that had no netcdf installed.
+      - name: "Bundle runtime dylibs into distributable folder (macOS only)"
+        if: matrix.os == 'macos-latest'
+        run: |
+          mkdir -p "$ROOT/glm_dist/libs"
+          dylibbundler -od -b \
+            -x "$ROOT/glm_dist/glm" \
+            -d "$ROOT/glm_dist/libs" \
+            -p "@executable_path/libs/"
+
+      # install_name_tool (used internally by dylibbundler to rewrite load
+      # commands) invalidates whatever signature the binary had. Apple
+      # Silicon refuses to execute an unsigned binary at all (unlike
+      # Intel Macs, where this was often just a Gatekeeper warning) - an
+      # ad-hoc signature (no certificate, no notarization) is enough to
+      # run locally/in CI, though see the caveat below for what it does
+      # NOT solve.
+      - name: "Re-sign bundled binary (macOS only)"
+        if: matrix.os == 'macos-latest'
+        run: codesign --force --deep -s - "$ROOT/glm_dist/glm"
+
+      # Fail loudly here rather than silently ship a half-bundled binary:
+      # if anything still resolves to an external Homebrew/local path,
+      # dylibbundler missed a dependency (e.g. a dependency-of-a-dependency
+      # it didn't recurse into for some reason) and this exact bug would
+      # resurface for every user, not just this CI runner.
+      - name: "Verify no external Homebrew dependencies remain (macOS only)"
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd "$ROOT/glm_dist"
+          if otool -L glm | grep -qE '/opt/homebrew|/usr/local/opt'; then
+            echo "::error::glm still references external Homebrew paths - bundling incomplete"
+            otool -L glm
+            exit 1
+          fi
+          echo "glm dependencies (should all be @executable_path/libs/... or system frameworks):"
+          otool -L glm
+
       - name: "Zip distributable folder (Linux/macOS)"
         if: matrix.os != 'windows-latest'
         run: |
