@@ -120,6 +120,11 @@ run_aeme <- function(aeme, model, path, args = character(),
                             varlist = c("model_funs", "run_model_args"),
                             envir = environment()
     )
+    glm_version <- getOption("AEME.glm_version", default = NULL)
+    if (!is.null(glm_version)) {
+      parallel::clusterCall(cl, function(v) options(AEME.glm_version = v),
+                            glm_version)
+    }
     cli_inform_safe(c("i" = paste0("Running models in parallel... ", 
                                    "[", format(Sys.time()), "]")))
     exec_result <- setNames(
