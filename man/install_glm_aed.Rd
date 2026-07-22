@@ -14,7 +14,9 @@ install_glm_aed(
 }
 \arguments{
 \item{version}{Character. The GLM version to install, e.g. \code{"3.9.108"}.
-Use \code{\link[=list_glm_versions]{list_glm_versions()}} to see what's available.}
+Use \code{\link[=list_glm_versions]{list_glm_versions()}} to see what's available. Defaults to \code{"latest"},
+which resolves to the highest version number available for the current
+platform.}
 
 \item{os}{Character. One of \code{"windows"}, \code{"macos"}, or \code{"linux"}.
 Defaults to the platform R is currently running on; you shouldn't

@@ -10,7 +10,9 @@
 #' has the requested version's asset attached.
 #'
 #' @param version Character. The GLM version to install, e.g. `"3.9.108"`.
-#'   Use [list_glm_versions()] to see what's available.
+#'   Use [list_glm_versions()] to see what's available. Defaults to `"latest"`,
+#'    which resolves to the highest version number available for the current 
+#'    platform.
 #' @param os Character. One of `"windows"`, `"macos"`, or `"linux"`.
 #'   Defaults to the platform R is currently running on; you shouldn't
 #'   normally need to set this.
@@ -64,11 +66,17 @@ install_glm_aed <- function(version = "latest",
                             repo = "limnotrack/AEME",
                             force = FALSE,
                             quiet = FALSE) {
+  
+  if (!is.character(version) || length(version) != 1L) {
+    cli::cli_abort("{.arg version} must be a single character string, e.g. {.val 3.9.108} or {.val latest}.")
+  }
+  
   if (is.null(os)) {
-    os <- .glm_detect_os()  
+    os <- .glm_detect_os()
   } else {
     os <- rlang::arg_match(os, c("windows", "macos", "linux"))
   }
+  
   if (version == "latest") {
     versions <- list_glm_versions(repo = repo, os = os)$glm_version
     if (length(versions) == 0L) {
@@ -80,7 +88,6 @@ os}}.",
     }
     # Extract latest version
     version <- versions[order(numeric_version(versions), decreasing = TRUE)][1]
-    options(AEME.glm_version = version)
     cli::cli_alert_info("Resolved {.val latest} to GLM version {.val {version}} 
                         for {.field {os}}.")
   }
@@ -100,7 +107,7 @@ os}}.",
          Use {.code force = TRUE} to reinstall."
       )
     }
-    options(AEME.glm_version = version, AEME.glm_exec = exe_path)
+    options(AEME.glm_version = version)
     return(invisible(exe_path))
   }
   
@@ -181,7 +188,7 @@ os}}.",
   if (os != "windows") {
     Sys.chmod(exe_path, mode = "0755")
   }
-  options(AEME.glm_exec = exe_path)
+  options(AEME.glm_version = version)
   if (!quiet) {
     cli::cli_alert_success("GLM {.val {version}} installed at {.path {install_dir}}")
     # Alert that it is now the default for this R session
