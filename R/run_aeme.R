@@ -423,7 +423,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
     return(.ensure_executable(bin_exec))
   }
   
-  sys_OS <- get_os()
+  sys_OS <- .detect_os()
   
   # 2. A specific version was requested (explicit argument, or via a
   #    caller's own AEME.glm_version default, when that happens to be set).
