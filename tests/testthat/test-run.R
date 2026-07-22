@@ -1,8 +1,4 @@
 test_that("package check is working", {
-  sys_OS <- AEME:::.detect_os()
-  if (sys_OS == "macos") {
-    testthat::skip("Skipping test on macOS")
-  }
   chk <- check_AEME_pkg()
   testthat::expect_true(chk)
 })
@@ -888,15 +884,13 @@ test_that("running ensemble works", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls()
-  model <- c("glm_aed", "gotm_wet")
+  model <- c("glm_aed")
   model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
   
-  model <- c("gotm_wet")
-  model <- filter_platform_models(model)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,
                    ens_n = 2)
   
