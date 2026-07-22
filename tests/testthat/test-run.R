@@ -991,7 +991,7 @@ test_that("can get variable indices after running the model", {
   inf_factor <- c("gotm_wet" = 1)
   outf_factor <- c("gotm_wet" = 1)
   model <- c("gotm_wet")
-  model <- filter_platform_models(model)
+  skip_if_models_unavailable(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
