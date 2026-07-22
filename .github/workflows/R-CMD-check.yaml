@@ -50,8 +50,6 @@ jobs:
         shell: bash
 
       - uses: r-lib/actions/check-r-package@v2
-        # ... your existing check step
-      - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
           error-on: '"error"'
