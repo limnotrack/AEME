@@ -17,7 +17,13 @@ check_AEME_pkg <- function() {
   
   lke <- lake(aeme)
   model_controls <- get_model_controls(use_bgc = FALSE)
-  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  os <- .detect_os()
+  if (os != "windows") {
+    model <- c("glm_aed")
+    cli::cli_inform(c("i" = "GLM-AED is the only model available on {.field {os}}"))
+  } else {
+    model <- c("dy_cd", "glm_aed", "gotm_wet")
+  }  
   
   cli::cli_progress_step("Building AEME model ensemble configuration", 
                          msg_done = "AEME model ensemble configuration built")
@@ -26,21 +32,15 @@ check_AEME_pkg <- function() {
                        model_controls = model_controls, ext_elev = 2)
   ))
   
-  os <- .detect_os()
-  if (os != "windows") {
-    model <- c("glm_aed")
-    cli::cli_inform(c("i" = "GLM-AED is the only model available on {.field {os}}"))
-  }
-  
   cli::cli_progress_step("Running AEME model ensemble",
                          msg_done = "AEME model ensemble run complete")
   suppressWarnings(suppressMessages(
     aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                     model_controls = model_controls, path = path,
-                     parallel = TRUE, ncores = 2)
+                     model_controls = model_controls, path = path)
   ))
   
-  model_outfiles <- get_model_outfile(aeme) |> unlist()
+  model_outfiles <- get_model_outfile(aeme) |>
+    unlist()
   output_present <- any(file.exists(model_outfiles))
   
   cli::cli_progress_step("Checking AEME model output")
