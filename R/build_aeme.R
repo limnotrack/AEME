@@ -98,6 +98,7 @@ build_aeme <- function(aeme = NULL,
     }
   }
   model <- check_model(model = model)
+  aeme <- set_model(aeme = aeme, model = model)
   
   if (is.null(path)) {
     path <- get_config_value(aeme, key = "path")
