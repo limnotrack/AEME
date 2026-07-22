@@ -48,6 +48,8 @@ check_model <- function(model) {
     all_models
   } else {
     cli::cli_alert_info("DYRESM-CAEDYM and GOTM-WET are only available on Windows. Defaulting to GLM-AED for {.field {os}} OS.")
+    # Check for exe
+    exe <- .resolve_glm_exec()
     all_models[!all_models %in% windows_only]
   }
   os_valid_names <- c(names(os_valid_models), unname(os_valid_models))
@@ -57,15 +59,15 @@ check_model <- function(model) {
   
   # Step 1: map everything to short codes
   short_codes <- ifelse(
-    model %in% names(valid_models),
-    valid_models[model],
+    model %in% names(all_models),
+    all_models[model],
     model
   )
   
   # Step 2: rebuild named vector (full name -> short code)
   mapped <- setNames(
     short_codes,
-    names(valid_models)[match(short_codes, valid_models)]
+    names(all_models)[match(short_codes, all_models)]
   )
   
   return(mapped)
