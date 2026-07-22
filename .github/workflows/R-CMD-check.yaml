@@ -43,6 +43,14 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: Pre-install GLM (linux/macos only)
+        if: runner.os != 'Windows'
+        run: |
+          Rscript -e 'AEME::install_glm_aed(version = "3.9.108")'
+        shell: bash
+
+      - uses: r-lib/actions/check-r-package@v2
+        # ... your existing check step
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
