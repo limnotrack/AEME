@@ -17,10 +17,10 @@
 #' @param model Character vector of model names this test requires.
 skip_if_models_unavailable <- function(model) {
   needs_windows <- any(model %in% .windows_only_models)
-  if (needs_windows && AEME:::get_os() != "windows") {
+  if (needs_windows && AEME:::.detect_os() != "windows") {
     testthat::skip(paste0(
       "Model(s) ", paste(intersect(model, .windows_only_models), collapse = ", "),
-      " only supported on Windows (platform: ", AEME:::get_os(), ")"
+      " only supported on Windows (platform: ", AEME:::.detect_os(), ")"
     ))
   }
   if ("glm_aed" %in% model) {
@@ -40,7 +40,7 @@ skip_if_models_unavailable <- function(model) {
 #' @param model Character vector of model names.
 #' @return The subset of `model` that's runnable on this platform.
 filter_platform_models <- function(model) {
-  if (AEME:::get_os() != "windows") {
+  if (AEME:::.detect_os() != "windows") {
     model <- setdiff(model, .windows_only_models)
   }
   model

@@ -1,5 +1,5 @@
 test_that("package check is working", {
-  sys_OS <- AEME:::get_os()
+  sys_OS <- AEME:::.detect_os()
   if (sys_OS == "macos") {
     testthat::skip("Skipping test on macOS")
   }
