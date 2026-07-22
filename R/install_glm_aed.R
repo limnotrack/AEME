@@ -100,7 +100,7 @@ os}}.",
          Use {.code force = TRUE} to reinstall."
       )
     }
-    options(AEME.glm_version = version)
+    options(AEME.glm_version = version, AEME.glm_exec = exe_path)
     return(invisible(exe_path))
   }
   
@@ -284,7 +284,7 @@ glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NUL
   if (is.null(version)) {
     path <- .resolve_glm_exec()
   } else {
-    os <- if (is.null(os)) .glm_detect_os() else match.arg(os, c("windows", "macos", "linux"))
+    os <- if (is.null(os)) .detect_os() else match.arg(os, c("windows", "macos", "linux"))
     exe_name <- if (os == "windows") "glm.exe" else "glm"
     path <- file.path(.glm_cache_dir(), os, version, exe_name)
   }
@@ -301,22 +301,6 @@ glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NUL
 # ---------------------------------------------------------------------------
 # Internal helpers (not exported)
 # ---------------------------------------------------------------------------
-
-#' @keywords internal
-#' @noRd
-.glm_detect_os <- function() {
-  sysname <- Sys.info()[["sysname"]]
-  switch(
-    sysname,
-    Windows = "windows",
-    Darwin  = "macos",
-    Linux   = "linux",
-    cli::cli_abort(
-      "Unsupported platform: {.val {sysname}}. GLM binaries are only
-       published for windows, macos, and linux."
-    )
-  )
-}
 
 #' @keywords internal
 #' @noRd
@@ -362,4 +346,27 @@ glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NUL
     cli::cli_abort("Could not parse a checksum from {.path {sha_path}}.")
   }
   tolower(hash)
+}
+
+#' List locally installed GLM versions for a given platform
+#' @keywords internal
+#' @noRd
+.glm_installed_versions <- function(os = .detect_os()) {
+  os_dir <- file.path(.glm_cache_dir(), os)
+  if (!dir.exists(os_dir)) return(character(0))
+  versions <- list.dirs(os_dir, recursive = FALSE, full.names = FALSE)
+  exe_name <- if (os == "windows") "glm.exe" else "glm"
+  # Only count a version as "installed" if the executable is actually
+  # present - not just a leftover/partial directory from an interrupted
+  # or failed install.
+  versions[file.exists(file.path(os_dir, versions, exe_name))]
+}
+
+#' Latest locally installed GLM version for a given platform
+#' @keywords internal
+#' @noRd
+.glm_latest_installed_version <- function(os = .detect_os()) {
+  versions <- .glm_installed_versions(os)
+  if (length(versions) == 0) return(NULL)
+  as.character(max(numeric_version(versions)))
 }

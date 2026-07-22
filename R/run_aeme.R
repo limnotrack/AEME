@@ -412,7 +412,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @keywords internal
 #' @noRd
 .resolve_glm_exec <- function(version = NULL) {
-  # 1. Explicit low-level override always wins, unchanged from before.
+  # 1. Explicit low-level override always wins.
   bin_exec <- getOption("AEME.glm_exec", default = NULL)
   if (!is.null(bin_exec)) {
     if (!file.exists(bin_exec)) {
@@ -424,23 +424,37 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   }
   
   sys_OS <- get_os()
-  # 2. A specific downloaded GLM version was requested.
+  
+  # 2. A specific version was requested (explicit argument, or via a
+  #    caller's own AEME.glm_version default, when that happens to be set).
   if (!is.null(version)) {
     return(.ensure_executable(glm_exe_path(version, os = sys_OS)))
   }
   
-  # 3. Nothing requested - fall back to the exe bundled with the package
-  #    install. This is unchanged from the original function, so anyone who
-  #    never calls install_glm_aed() sees no behavior change at all.
-  if (sys_OS != "windows") {
-    cli::cli_abort(c(
-      "x" = "No GLM-AED binary found for {.field {sys_OS}}. Please install a 
-      GLM-AED binary using {.code install_glm_aed()}."
-    ))
+  # 3. Nothing requested. Don't depend on some earlier call having correctly
+  #    set AEME.glm_version in *this* process/session - that's proven
+  #    fragile across parallel workers, cache-hit install paths, and
+  #    callers with their own hardcoded NULL defaults. Instead, check what's
+  #    actually installed on disk, which is authoritative regardless of
+  #    session state.
+  if (sys_OS == "windows") {
+    bin_path <- system.file('extbin/', package = "AEME")
+    bundled <- file.path(bin_path, "glm_aed", "windows", "glm.exe")
+    if (file.exists(bundled)) {
+      return(.ensure_executable(bundled))
+    }
   }
-  bin_path <- system.file('extbin/', package = "AEME")
-  bundled <- file.path(bin_path, "glm_aed", "windows", "glm.exe")
-  .ensure_executable(bundled)
+  
+  latest <- .glm_latest_installed_version(sys_OS)
+  if (!is.null(latest)) {
+    options(AEME.glm_version = latest)  # sync session state for next time
+    return(.ensure_executable(glm_exe_path(latest, os = sys_OS)))
+  }
+  
+  cli::cli_abort(c(
+    "x" = "No GLM-AED binary found for {.field {sys_OS}}.",
+    "i" = "Install one with {.run install_glm_aed(version = \"3.9.108\")}."
+  ))
 }
 
 #' Make sure a resolved GLM binary is actually executable
@@ -452,7 +466,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @keywords internal
 #' @noRd
 .ensure_executable <- function(path) {
-  if (get_os() != "windows" && file.exists(path)) {
+  if (.detect_os() != "windows" && file.exists(path)) {
     Sys.chmod(path, mode = "0755")
   }
   path
@@ -578,7 +592,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
 
 #' Check model output
 #' @noRd
-get_os <- function() {
+.detect_os <- function() {
   sysinf <- Sys.info()
   if (!is.null(sysinf)){
     os <- sysinf['sysname']
@@ -624,7 +638,7 @@ get_glm_aed_version <- function(version = NULL) {
 #' @noRd
 get_gotm_wet_version <- function() {
   bin_path <- system.file('extbin/', package = "AEME")
-  gotm_exec <- ifelse(get_os() == "windows",
+  gotm_exec <- ifelse(.detect_os() == "windows",
                       file.path(bin_path, "gotm_wet", "gotm.exe"),
                       file.path(bin_path, "gotm_wet", "gotm"))
   res <- processx::run(
