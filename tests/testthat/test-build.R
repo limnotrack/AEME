@@ -226,7 +226,7 @@ test_that("building all models with minimum met variables", {
   aeme <- add_met(aeme = aeme, met = met)
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  model <- filter_platform_models(model)
+  skip_if_models_unavailable(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, use_bgc = FALSE)
   
@@ -293,7 +293,7 @@ test_that("building all models with the same hypsograph", {
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  model <- filter_platform_models(model)
+  skip_if_models_unavailable(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, 
                      use_bgc = FALSE)
@@ -640,7 +640,7 @@ test_that("can update initial profile with obs", {
   aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- get_model_controls()
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  model <- filter_platform_models(model)
+  skip_if_models_unavailable(model)
   
   inp <- input(aeme)
   

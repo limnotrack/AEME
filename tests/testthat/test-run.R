@@ -454,7 +454,7 @@ test_that("running models with wbal method = 1", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  model <- filter_platform_models(model)
+  skip_if_models_unavailable(model)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   # Delete all files in lake_dir
   unlink(list.files(lake_dir, full.names = TRUE), recursive = TRUE)
@@ -516,7 +516,7 @@ test_that("running models with wbal method = 3", {
   lke <- lake(aeme)
   model_controls <- get_model_controls()
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  model <- filter_platform_models(model)
+  skip_if_models_unavailable(model)
   
   infl <- inflows(aeme)
   infl$data <- NULL
@@ -618,14 +618,7 @@ test_that("running models with no wbal/outflows calculated", {
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
   
-  lke <- lake(aeme)
-  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[1], "DYsim.nc")),
-                  file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[2:3], "output", "output.nc")))
-  testthat::expect_true(file_chk)
+  testthat::expect_true(check_all_model_outfiles(aeme))
 })
 
 test_that("running models in parallel with no wbal & no wlev calculated", {
@@ -657,14 +650,7 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
   plot_output(aeme = aeme, model = model, var_sim = "LKE_outflow",
               add_obs = F)
   
-  lke <- lake(aeme)
-  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[1], "DYsim.nc")),
-                  file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[2:3], "output", "output.nc")))
-  testthat::expect_true(file_chk)
+  testthat::expect_true(check_all_model_outfiles(aeme))
 })
 
 test_that("getting model output works", {
@@ -826,6 +812,7 @@ test_that("can build all models, run and write to new directory & re-run", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  skip_if_models_unavailable(model)
   model <- filter_platform_models(model)
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
@@ -926,12 +913,7 @@ test_that("running ensemble works", {
   
   
   outp <- output(aeme)
-  lke <- lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
-  
+  testthat::expect_true(check_all_model_outfiles(aeme))
   testthat::expect_true(outp$n_members > 1)
 })
 
@@ -1078,7 +1060,7 @@ test_that("summarise multi-year output", {
   
 })
 
-test_that("can run with generated hypsgraph", {
+test_that("can run with generated hypsograph", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -1104,13 +1086,7 @@ test_that("can run with generated hypsgraph", {
                    model_controls = model_controls, path = path,
                    parallel = FALSE)
   
-  lake_dir <- get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(lake_dir, model[1], "DYsim.nc"))
-  testthat::expect_true(file_chk)
-  
-  file_chk <- all(file.exists(file.path(lake_dir, model[-1], "output",
-                                        "output.nc")))
-  testthat::expect_true(file_chk)
+  testthat::expect_true(check_all_model_outfiles(aeme))
   
 })
 

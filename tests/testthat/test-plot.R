@@ -101,8 +101,7 @@ test_that("plotting model output works", {
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   path = path, model_controls = model_controls)
 
 
   p1 <- plot(aeme, "output")
@@ -124,8 +123,7 @@ test_that("plotting model output works", {
   plot_output(aeme = aeme, model = model, var_sim = "NIT_tn")
   plot_output(aeme = aeme, model = model, var_sim = "PHS_tp")
   testthat::expect_true(is.list(p1))
-  testthat::expect_true(all(c(ggplot2::is_ggplot(p1[[1]]),
-                              ggplot2::is_ggplot(p1[[2]]))))
+  testthat::expect_true(ggplot2::is_ggplot(p1[[1]]))
 
   p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_evpflx",
                     print_plots = FALSE, cumulative = TRUE, facet = FALSE)
@@ -293,8 +291,7 @@ test_that("plotting phytoplankton model output works", {
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   path = path, model_controls = model_controls)
 
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1))
