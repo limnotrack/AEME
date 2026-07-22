@@ -376,21 +376,28 @@ jobs:
         run: |
           mkdir -p "$ROOT/glm_dist/libs"
 
-          # Idempotency guard: dylibbundler adds this rpath unconditionally
-          # every time it runs, with no check for whether it's already
-          # present. If this step ever runs twice against the same binary
-          # (re-run, wrong step ordering, bundling applied before AND after
-          # the copy into glm_dist/) the result is a hard dyld load error,
-          # not a harmless no-op - strip first so re-running this step is
-          # always safe.
-          while otool -l "$ROOT/glm_dist/glm" | grep -q "@executable_path/libs/"; do
-            install_name_tool -delete_rpath "@executable_path/libs/" "$ROOT/glm_dist/glm"
-          done
+          echo "--- rpaths before cleanup ---"
+          otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
+
+          # More robust than matching one hardcoded string: parse every
+          # LC_RPATH actually present and remove each one, so this is safe
+          # regardless of how many duplicates exist or what path they hold.
+          otool -l "$ROOT/glm_dist/glm" \
+            | awk '/LC_RPATH/{getline; getline; print $2}' \
+            | while read -r rp; do
+                install_name_tool -delete_rpath "$rp" "$ROOT/glm_dist/glm" || true
+              done
+
+          echo "--- rpaths after cleanup, before dylibbundler ---"
+          otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
 
           dylibbundler -od -b \
             -x "$ROOT/glm_dist/glm" \
             -d "$ROOT/glm_dist/libs" \
             -p "@executable_path/libs/"
+
+          echo "--- rpaths after dylibbundler (final) ---"
+          otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
 
       # install_name_tool (used internally by dylibbundler to rewrite load
       # commands) invalidates whatever signature the binary had. Apple
