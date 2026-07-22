@@ -360,7 +360,7 @@ jobs:
         run: |
           Compress-Archive -Path "$env:ROOT\glm_dist\*" -DestinationPath "$env:ROOT\glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
 
-- name: "Install dylibbundler (macOS only)"
+      - name: "Install dylibbundler (macOS only)"
         if: matrix.os == 'macos-latest'
         run: brew install dylibbundler
 
