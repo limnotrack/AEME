@@ -100,6 +100,7 @@ os}}.",
          Use {.code force = TRUE} to reinstall."
       )
     }
+    options(AEME.glm_version = version)
     return(invisible(exe_path))
   }
   
