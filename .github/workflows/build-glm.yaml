@@ -375,6 +375,18 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           mkdir -p "$ROOT/glm_dist/libs"
+
+          # Idempotency guard: dylibbundler adds this rpath unconditionally
+          # every time it runs, with no check for whether it's already
+          # present. If this step ever runs twice against the same binary
+          # (re-run, wrong step ordering, bundling applied before AND after
+          # the copy into glm_dist/) the result is a hard dyld load error,
+          # not a harmless no-op - strip first so re-running this step is
+          # always safe.
+          while otool -l "$ROOT/glm_dist/glm" | grep -q "@executable_path/libs/"; do
+            install_name_tool -delete_rpath "@executable_path/libs/" "$ROOT/glm_dist/glm"
+          done
+
           dylibbundler -od -b \
             -x "$ROOT/glm_dist/glm" \
             -d "$ROOT/glm_dist/libs" \
