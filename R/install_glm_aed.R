@@ -72,7 +72,7 @@ install_glm_aed <- function(version = "latest",
   }
   
   if (is.null(os)) {
-    os <- .glm_detect_os()
+    os <- .detect_os()
   } else {
     os <- rlang::arg_match(os, c("windows", "macos", "linux"))
   }
