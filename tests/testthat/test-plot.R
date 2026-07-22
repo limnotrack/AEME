@@ -309,6 +309,7 @@ test_that("plotting phytoplankton model output works", {
   p4 <- plot_phs(aeme = aeme, model = model)
   testthat::expect_true(ggplot2::is_ggplot(p4))
 
+  skip_if_models_unavailable(model)
   p5 <- plot_zoops(aeme = aeme, model = model)
   testthat::expect_true(ggplot2::is_ggplot(p5))
 })

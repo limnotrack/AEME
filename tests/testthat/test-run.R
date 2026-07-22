@@ -424,16 +424,7 @@ test_that("running models in parallel works", {
                    model_controls = model_controls, path = path,
                    parallel = TRUE, ncores = 2)
   
-  lke <- lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model[1], "DYsim.nc"))
-  testthat::expect_true(file_chk)
-  
-  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[-1], "output", "output.nc")))
-  testthat::expect_true(file_chk)
+  testthat::expect_true(check_all_model_outfiles(aeme))
   
   var_sim <- c("LKE_lvlwtr", "HYD_temp")
   
@@ -897,12 +888,10 @@ test_that("running ensemble works", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls()
-  inf_factor <- c("glm_aed" = 1)
-  outf_factor <- c("glm_aed" = 1)
   model <- c("glm_aed", "gotm_wet")
   model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
   
@@ -942,24 +931,14 @@ test_that("running all models with new parameters works", {
   #   dplyr::filter( model == "glm")
   
   model_controls <- get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
   model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls,
                      use_bgc = FALSE, ext_elev = 5)
   
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
-  
-  lake_dir <- get_lake_dir(aeme = aeme, path = path)
-  
-  file_chk <- file.exists(file.path(lake_dir, model[1], "DYsim.nc"))
-  testthat::expect_true(file_chk)
-  
-  file_chk <- all(file.exists(file.path(lake_dir, model[-1], "output",
-                                        "output.nc")))
-  testthat::expect_true(file_chk)
+  testthat::expect_true(check_all_model_outfiles(aeme))
 })
 
 test_that("can get variable indices after running the model", {
