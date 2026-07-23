@@ -151,15 +151,18 @@ jobs:
         id: verify
         working-directory: Simstrat/build
         run: |
+          # Run in a subshell so the non-zero exit from missing .par file
+          # doesn't propagate even under -o pipefail.
           if [ "${{ runner.os }}" = "Windows" ]; then
-            output=$(./simstrat.exe 2>&1 || true)
+            output=$(set +e; ./simstrat.exe 2>&1; true)
           else
-            output=$(./simstrat 2>&1 || true)
+            output=$(set +e; ./simstrat 2>&1; true)
           fi
           echo "$output"
           VER=$(echo "$output" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
           # Fall back to the tag name (strip leading 'v') if the banner parse fails
-          echo "simstrat_version=${VER:-${{ matrix.simstrat_tag }}}" >> "$GITHUB_OUTPUT"
+          FALLBACK="${{ matrix.simstrat_tag }}"
+          echo "simstrat_version=${VER:-${FALLBACK#v}}" >> "$GITHUB_OUTPUT"
 
       # ------------------------------------------------------------------
       # Package. Windows bundles runtime DLLs for a self-contained exe.
