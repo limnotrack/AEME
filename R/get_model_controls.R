@@ -17,7 +17,6 @@ get_model_controls <- function(aeme = NULL, use_bgc = FALSE) {
     config <- configuration(aeme)
     model_controls <- config$model_controls
   } else {
-    data("model_controls", package = "AEME")
     hyd_vars <- c("HYD_temp", "HYD_dens", "HYD_thmcln", "HYD_strat", "CHM_salt")
     light_vars <- c("RAD_par", "RAD_extc")
     bgc_vars <- c(

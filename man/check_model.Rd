@@ -4,12 +4,15 @@
 \alias{check_model}
 \title{Check model name and return standardized code}
 \usage{
-check_model(model)
+check_model(model, os_valid = FALSE)
 }
 \arguments{
 \item{model}{Character vector of model names. Valid options are:
 "DYRESM-CAEDYM", "GLM-AED", "GOTM-WET" or their corresponding codes
 "dy_cd", "glm_aed", "gotm_wet".}
+
+\item{os_valid}{Logical. If TRUE, checks if the model is valid for the
+current operating system.}
 }
 \value{
 Character vector of standardized model codes.

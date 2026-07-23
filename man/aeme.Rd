@@ -16,20 +16,20 @@ are required to run the models.
 
 \describe{
 \item{\code{lake}}{A list representing lake information. \itemize{
-\item \code{\bold{name}}: character; lake name.
-\item \code{\bold{id}}: character; lake identifier.
-\item \code{\bold{latitude}}: numeric; lake latitude.
-\item \code{\bold{longitude}}: numeric; lake longitude.
-\item \code{\bold{elevation}}: numeric; lake elevation.
-\item \code{\bold{depth}}: numeric; lake depth.
-\item \code{\bold{area}}: numeric; lake area.
+\item \strong{\code{name}}: character; lake name.
+\item \strong{\code{id}}: character; lake identifier.
+\item \strong{\code{latitude}}: numeric; lake latitude.
+\item \strong{\code{longitude}}: numeric; lake longitude.
+\item \strong{\code{elevation}}: numeric; lake elevation.
+\item \strong{\code{depth}}: numeric; lake depth.
+\item \strong{\code{area}}: numeric; lake area.
 }}
 
 \item{\code{time}}{A list representing time information. \itemize{
-\item \code{\bold{start}}: character; start date.
-\item \code{\bold{stop}}: character; end date.
-\item \code{\bold{timestep}}: numeric; time step.
-\item \code{\bold{spin_up}}: list; spin up information for each model
+\item \strong{\code{start}}: character; start date.
+\item \strong{\code{stop}}: character; end date.
+\item \strong{\code{timestep}}: numeric; time step.
+\item \strong{\code{spin_up}}: list; spin up information for each model
 }}
 
 \item{\code{configuration}}{A list representing each model's configuration. \itemize{
@@ -47,12 +47,12 @@ are required to run the models.
 \item{\code{input}}{A list representing input information. \itemize{
 \item \code{init_profile}: dataframe; initial temperature profile (if none
 use NULL or leave empty; if empty/NULL, the observations file will be used).
-\item \code{\bold{init_depth}}: numeric; initial height of lake surface relative to
+\item \strong{\code{init_depth}}: numeric; initial height of lake surface relative to
 the bottom (m).
-\item \code{\bold{hypsograph}}: dataframe; hypsograph.
-\item \code{\bold{meteo}}: dataframe; meteorological data.
-\item \code{\bold{use_lw}}: logical; use longwave radiation.
-\item \code{\bold{Kw}}: numeric; light extinction coefficient (m-1).
+\item \strong{\code{hypsograph}}: dataframe; hypsograph.
+\item \strong{\code{meteo}}: dataframe; meteorological data.
+\item \strong{\code{use_lw}}: logical; use longwave radiation.
+\item \strong{\code{Kw}}: numeric; light extinction coefficient (m-1).
 }}
 
 \item{\code{inflows}}{A list representing inflows information. \itemize{
@@ -67,9 +67,9 @@ the bottom (m).
 }}
 
 \item{\code{water_balance}}{A list representing water balance information. \itemize{
-\item\code{\bold{method}}: integer; Method for calculating water balance.
+\item\strong{\code{method}}: integer; Method for calculating water balance.
 1 = none, 2 = outflows, 3 = inflows and outflows.
-\item\code{\bold{use}}: character; Can be 'obs' or 'mod'. Use observations
+\item\strong{\code{use}}: character; Can be 'obs' or 'mod'. Use observations
 or modelled data for water balance.
 \item{\code{data}}: list of dataframe for water balance.
 }}

@@ -3,6 +3,8 @@
 #' @param model Character vector of model names. Valid options are:
 #'  "DYRESM-CAEDYM", "GLM-AED", "GOTM-WET" or their corresponding codes
 #'  "dy_cd", "glm_aed", "gotm_wet".
+#' @param os_valid Logical. If TRUE, checks if the model is valid for the
+#'  current operating system.
 #'  
 #' @importFrom cli cli_abort cli_alert_info
 #'
