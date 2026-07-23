@@ -150,13 +150,15 @@ jobs:
       - name: Extract Simstrat version
         id: verify
         working-directory: Simstrat/build
+        # Simstrat exits non-zero without a .par config file even though it prints
+        # its version banner first. Disable errexit for this step so that expected
+        # non-zero exit doesn't fail the job.
+        shell: bash --noprofile --norc -o pipefail {0}
         run: |
-          # Run in a subshell so the non-zero exit from missing .par file
-          # doesn't propagate even under -o pipefail.
           if [ "${{ runner.os }}" = "Windows" ]; then
-            output=$(set +e; ./simstrat.exe 2>&1; true)
+            output=$(./simstrat.exe 2>&1) || true
           else
-            output=$(set +e; ./simstrat 2>&1; true)
+            output=$(./simstrat 2>&1) || true
           fi
           echo "$output"
           VER=$(echo "$output" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
