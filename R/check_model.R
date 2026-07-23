@@ -12,7 +12,7 @@
 #' @examples
 #' check_model(c("GLM-AED", "gotm_wet"))
 
-check_model <- function(model) {
+check_model <- function(model, os_valid = FALSE) {
   
   all_models <- c(
     "DYRESM-CAEDYM" = "dy_cd",
@@ -40,17 +40,21 @@ check_model <- function(model) {
   }
   
   # OS Check
-  os <- .detect_os()
-  
-  windows_only <- c("dy_cd", "gotm_wet")
-  
-  os_valid_models <- if (os == "windows") {
-    all_models
+  if (os_valid) {
+    os <- .detect_os()
+    
+    windows_only <- c("dy_cd", "gotm_wet")
+    
+    os_valid_models <- if (os == "windows") {
+      all_models
+    } else {
+      cli::cli_alert_info("DYRESM-CAEDYM and GOTM-WET are only available on Windows. Defaulting to GLM-AED for {.field {os}} OS.")
+      # Check for exe
+      exe <- .resolve_glm_exec()
+      all_models[!all_models %in% windows_only]
+    }
   } else {
-    cli::cli_alert_info("DYRESM-CAEDYM and GOTM-WET are only available on Windows. Defaulting to GLM-AED for {.field {os}} OS.")
-    # Check for exe
-    exe <- .resolve_glm_exec()
-    all_models[!all_models %in% windows_only]
+    os_valid_models <- all_models
   }
   os_valid_names <- c(names(os_valid_models), unname(os_valid_models))
   model <- model[model %in% os_valid_names]
