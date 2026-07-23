@@ -75,17 +75,21 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   
   # ---- 3. dispatch to model-specific extractor
   out_list <- switch(model,
-                     "gotm_wet" = read_gotm_output(nc, vars_sim, 
+                     "gotm_wet" = read_gotm_output(nc, vars_sim,
                                                    depths = depths,
-                                                   incl_fluxes = incl_fluxes, 
+                                                   incl_fluxes = incl_fluxes,
                                                    date_index = date_index),
                      "glm_aed"  = read_glm_output(nc, vars_sim, depths = depths,
-                                                  incl_fluxes = incl_fluxes, 
+                                                  incl_fluxes = incl_fluxes,
                                                   date_index = date_index,
                                                   phyto_pars = phyto_pars),
                      "dy_cd"    = read_dy_output(nc, vars_sim, depths = depths,
-                                                 incl_fluxes = incl_fluxes, 
-                                                 date_index = date_index)
+                                                 incl_fluxes = incl_fluxes,
+                                                 date_index = date_index),
+                     "simstrat_aed2" = read_simstrat_output(nc, vars_sim,
+                                                            depths = depths,
+                                                            incl_fluxes = incl_fluxes,
+                                                            date_index = date_index)
   )
   
   if (model == "gotm_wet" & !incl_fluxes & read_gotm_daily) {
@@ -209,6 +213,9 @@ extract_model_depth <- function(model, lake_dir) {
     depth <- cfg$init_profiles$lake_depth
   } else if (model == "dy_cd") {
     depth <- cfg$lake_depth_m
+  } else if (model == "simstrat_aed2") {
+    hyps <- read_model_hypsograph(model = model, lake_dir = lake_dir)
+    depth <- max(hyps$elev) - min(hyps$elev)
   }
   return(depth)
 }
@@ -227,11 +234,12 @@ load_model_config <- function(model, lake_dir, file) {
     file <- switch(model,
                    "gotm_wet" = "gotm",
                    "glm_aed"  = "glm3",
-                   "dy_cd"    = "stg")
+                   "dy_cd"    = "stg",
+                   "simstrat_aed2" = "simstrat")
   }
   model <- check_model(model)
   lake_dir <- check_path(lake_dir, must_exist = TRUE)
-  cfg_files <- get_model_config_files(model = model, 
+  cfg_files <- get_model_config_files(model = model,
                                       lake_dir = lake_dir)[[model]]
   if (file %in% names(cfg_files)) {
     cfg_file <- cfg_files[[file]]
@@ -244,6 +252,8 @@ load_model_config <- function(model, lake_dir, file) {
     cfg <- read_nml(cfg_file)
   } else if (model == "dy_cd") {
     cfg <- readLines(cfg_file)
+  } else if (model == "simstrat_aed2") {
+    cfg <- jsonlite::fromJSON(cfg_file, simplifyVector = FALSE)
   }
   return(cfg)
 }
@@ -271,9 +281,15 @@ extract_model_time <- function(nc, model) {
   } else if (model == "dy_cd") {
     dt <- as.POSIXct((ncdf4::ncvar_get(nc, "dyresmTime") - 2415018.5) *
                        86400, origin = "1899-12-30")
-    
+
+  } else if (model == "simstrat_aed2") {
+    units_prefix <- "seconds since "
+    t <- ncdf4::ncvar_get(nc, "time")
+    origin <- gsub(units_prefix, "", ncdf4::ncatt_get(nc, "time", "units")$value)
+    dt <- as.POSIXct(t, origin = origin, tz = "UTC")
+
   }
-  
+
   list(
     datetime = dt,
     dates = as.Date(dt)

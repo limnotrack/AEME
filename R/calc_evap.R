@@ -41,7 +41,7 @@ calc_evap <- function(met, altitude,
                    precip = met[["precip"]][n])
       })
     }
-  } else if(model == "glm_aed") {
+  } else if (model %in% c("glm_aed", "simstrat_aed2")) {
     
     # Source: https://github.com/AquaticEcoDynamics/GLM/blob/d18630994ef935fac8d9405ff0018b26c83ce271/src/glm_surface.c
     # Constants

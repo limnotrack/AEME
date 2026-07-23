@@ -8,8 +8,8 @@
 
 list_models <- function(aeme = NULL) {
   all_models <- c("DYRESM-CAEDYM" = "dy_cd", "GLM-AED" = "glm_aed",
-                  "GOTM-WET" = "gotm_wet")
-  
+                  "GOTM-WET" = "gotm_wet", "SIMSTRAT-AED2" = "simstrat_aed2")
+
   if (!is.null(aeme)) {
     cfg <- configuration(aeme)
     models <- cfg[["model"]]

@@ -8,8 +8,8 @@ check_model(model, os_valid = FALSE)
 }
 \arguments{
 \item{model}{Character vector of model names. Valid options are:
-"DYRESM-CAEDYM", "GLM-AED", "GOTM-WET" or their corresponding codes
-"dy_cd", "glm_aed", "gotm_wet".}
+"DYRESM-CAEDYM", "GLM-AED", "GOTM-WET", "SIMSTRAT-AED2" or their
+corresponding codes "dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2".}
 
 \item{os_valid}{Logical. If TRUE, checks if the model is valid for the
 current operating system.}

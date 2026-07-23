@@ -32,7 +32,8 @@ get_model_outfile <- function(aeme = NULL, model, path = NULL,
   resolvers <- list(
     dy_cd = resolve_dy_cd,
     glm_aed = resolve_glm_aed,
-    gotm_wet = resolve_gotm_wet
+    gotm_wet = resolve_gotm_wet,
+    simstrat_aed2 = resolve_simstrat_aed2
   )
   
   # Loop over models and resolve paths
@@ -78,6 +79,20 @@ resolve_dy_cd <- function(lake_dir, cfg) {
     files <- file.path(lake_dir, "dy_cd", "DYsim.nc")
   }
   names(files) <- "DYsim"
+  files
+}
+
+#' Model-specific resolvers
+#' @noRd
+resolve_simstrat_aed2 <- function(lake_dir, cfg) {
+  model_dir <- dirname(cfg[["simstrat"]])
+  files <- list.files(
+    path = model_dir,
+    pattern = "^output\\.nc$",
+    full.names = TRUE,
+    recursive = TRUE
+  )
+  names(files) <- tools::file_path_sans_ext(basename(files))
   files
 }
 

@@ -101,7 +101,8 @@ run_aeme <- function(aeme, model, path, args = character(),
   model_funs <- list(
     dy_cd      = run_dy_cd,
     glm_aed    = run_glm_aed,
-    gotm_wet   = run_gotm_wet
+    gotm_wet   = run_gotm_wet,
+    simstrat_aed2 = run_simstrat_aed2
   )
   
   run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
@@ -590,6 +591,92 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
   return(p)
 }
 
+#' @rdname run_dy_cd
+#' @export
+run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
+                              args = character(), timeout = Inf) {
+
+  oldwd <- getwd()
+  on.exit({
+    setwd(oldwd)
+  })
+  setwd(sim_folder)
+  cli_inform_safe(c(">" = paste0("Simstrat-AED2 running... ",
+                                 "[", format(Sys.time()), "]")))
+
+  bin_exec <- getOption("AEME.simstrat_exec", default = NULL)
+  if (is.null(bin_exec)) {
+    bin_path <- system.file('extbin/', package = "AEME")
+    bin_exec <- switch(.detect_os(),
+                       "windows" = file.path(bin_path, "simstrat_aed2", "simstrat.exe"),
+                       "macos" = file.path(bin_path, "simstrat_aed2", "simstrat"),
+                       "linux" = file.path(bin_path, "simstrat_aed2", "simstrat")
+    )
+  }
+
+  if (verbose) {
+    p <- processx::run(
+      command = bin_exec,
+      args = c("simstrat.par", args),
+      wd = sim_folder,
+      echo = TRUE,
+      error_on_status = FALSE,
+      timeout = timeout
+    )
+  } else {
+    p <- processx::run(
+      command = bin_exec,
+      args = c("simstrat.par", args),
+      wd = sim_folder,
+      spinner = TRUE,
+      echo = FALSE,
+      error_on_status = FALSE,
+      timeout = timeout
+    )
+  }
+  out <- unlist(strsplit(c(p$stdout, p$stderr), "\n", fixed = TRUE))
+  # Success is judged by exit status, not by the "SIMULATION COMPLETED"
+  # banner -- that banner is only printed when Simulation.DisplaySimulation
+  # != 0 in simstrat.par (see strat_outputfile.f90::log_close()), so it
+  # cannot be relied on unconditionally.
+  success <- isTRUE(p$status == 0)
+  if (success) {
+    # Occasionally (observed intermittently, cause not isolated -- possibly
+    # antivirus/file-system interference with the freshly-written config
+    # directory) the process exits with status 0 in ~1 second without
+    # producing any output at all, instead of the ~15-25s a real run takes.
+    # Treat that as a failure rather than let it cascade into a confusing
+    # netCDF error downstream in load_output().
+    nc_file <- tryCatch(
+      write_simstrat_nc(sim_folder = sim_folder),
+      error = function(e) {
+        cli::cli_warn(c("!" = "Simstrat-AED2 ran successfully but converting
+                        output to netCDF failed: {conditionMessage(e)}"))
+        NULL
+      }
+    )
+    if (is.null(nc_file)) {
+      success <- FALSE
+      p$status <- 1L
+    } else {
+      cli_inform_safe(c("v" = paste0("Simstrat-AED2 run successful! ",
+                                     "[", format(Sys.time()), "]")))
+    }
+  }
+  if (!success) {
+    cli_inform_safe(c(
+      "!" = paste0(
+        "Simstrat-AED2 run FAILED! ",
+        "[", format(Sys.time()), "]"
+      )
+    ))
+    msg <- paste(utils::tail(out, 10), collapse = "\n")
+    msg <- gsub("\033\\[[0-9;]*m", "", msg)
+    message(msg)
+  }
+  return(p)
+}
+
 #' Check model output
 #' @noRd
 .detect_os <- function() {
@@ -656,6 +743,21 @@ get_gotm_wet_version <- function() {
   }
   cat(res$stderr)
   return(res$stderr)
+}
+
+#' Get Simstrat-AED2 model version
+#' @return version string
+#' @noRd
+get_simstrat_aed2_version <- function() {
+  bin_exec <- getOption("AEME.simstrat_exec", default = NULL)
+  if (is.null(bin_exec)) {
+    bin_path <- system.file('extbin/', package = "AEME")
+    bin_exec <- ifelse(.detect_os() == "windows",
+                       file.path(bin_path, "simstrat_aed2", "simstrat.exe"),
+                       file.path(bin_path, "simstrat_aed2", "simstrat"))
+  }
+  vers <- system2(bin_exec, stdout = TRUE)
+  vers[grepl("Simstrat version", vers)]
 }
 
 #' Get DYRESM-CAEDYM model version

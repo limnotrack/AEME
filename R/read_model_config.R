@@ -28,11 +28,13 @@ read_model_config <- function(model, lake_dir) {
       read_aed_param_csv(f)
     } else if (file_type == "yaml") {
       yaml::read_yaml(file = f)
+    } else if (file_type == "par") {
+      jsonlite::fromJSON(f, simplifyVector = FALSE)
     } else {
       readLines(f)
     }
   })
-  
+
   if (model == "dy_cd") {
     out$hydrodynamic <- list(par = cfg$par, cfg = cfg$cfg)
     # Remove par and cfg from list
@@ -48,6 +50,10 @@ read_model_config <- function(model, lake_dir) {
     # Remove gotm and output from list
     cfg[["gotm"]] <- NULL
     cfg[["output"]] <- NULL
+  } else if (model == "simstrat_aed2") {
+    out$hydrodynamic <- cfg[["simstrat"]]
+    # Remove simstrat from list
+    cfg[["simstrat"]] <- NULL
   }
   if (length(cfg) > 0) {
     out$bgc <- cfg
