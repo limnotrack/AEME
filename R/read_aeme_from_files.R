@@ -58,15 +58,20 @@ read_aeme_from_files <- function(path) {
       file_path <- file.path(lake_dir, paste0(slot_name, ".csv"))
       if (file.exists(file_path)) {
         df <- read.csv(file_path, stringsAsFactors = FALSE)
+        # A time.csv written before a model existed (e.g. simstrat_aed2) has
+        # no matching column -- default to 2 (matching aeme_constructor())
+        # rather than numeric(0), which breaks downstream date arithmetic.
+        get_spin_up <- function(model) {
+          val <- as.numeric(df[1, grepl(model, names(df))])
+          if (length(val) == 0 || is.na(val)) 2 else val
+        }
         inp <- list(
           start = as.POSIXct(df$start, tz = "UTC"),
           stop = as.POSIXct(df$stop, tz = "UTC"),
           time_step = as.numeric(df$time_step),
-          spin_up = list(
-            dy_cd = as.numeric(df[1, grepl("dy_cd", names(df))]),
-            glm_aed = as.numeric(df[1, grepl("glm_aed", names(df))]),
-            gotm_wet = as.numeric(df[1, grepl("gotm_wet", names(df))]),
-            simstrat_aed2 = as.numeric(df[1, grepl("simstrat_aed2", names(df))])
+          spin_up = stats::setNames(
+            lapply(unname(list_models()), get_spin_up),
+            unname(list_models())
           )
         )
         methods::slot(aeme, slot_name) <- inp
