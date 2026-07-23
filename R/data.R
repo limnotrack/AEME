@@ -3,11 +3,13 @@
 #' A reference table for variable names between the models in AEME.
 #'
 #' @format ## `key_naming`
-#' A data frame with 129 rows and 17 columns:
+#' A data frame with 129 rows and 18 columns:
 #' \describe{
 #'   \item{var_aeme}{AEME variable name}
 #'   \item{dy_cd}{DYRESM variable name}
 #'   \item{glm_aed}{GLM variable name}
+#'   \item{glm_aed2}{GLM-AED2 variable name}
+#'   \item{simstrat_aed2}{Simstrat-AED2 variable name}
 #'   \item{gotm_wet}{GOTM variable name}
 #'   \item{gotm_fabm}{GOTM-FABM variable name containing key-value names}
 #'   \item{name_text}{Regular text string variable name}
@@ -200,6 +202,30 @@
 #' }
 #' @source Package development.
 "glm_aed_parameters"
+
+#' Example dataframe used for calibrating the Simstrat-AED2 model.
+#'
+#' Physical (hydrodynamic) parameters from the Simstrat `.par` file and a
+#' subset of biogeochemical initial-concentration parameters from the
+#' `aed2.nml` file (oxygen, carbon, silica, nitrogen, phosphorus, and organic
+#' matter modules). This has the values in the default template files and
+#' 50 % parameter ranges for sensitivity analysis.
+#'
+#' @format `simstrat_aed2_parameters`
+#' A data frame with columns:
+#' \describe{
+#'   \item{model}{Model for the parameter}
+#'   \item{file}{File in which the parameter is stored}
+#'   \item{name}{Name of the parameter}
+#'   \item{value}{Value of the parameter}
+#'   \item{min}{Minimum range of the parameter}
+#'   \item{max}{Maximum range of the parameter}
+#'   \item{module}{Whether the parameter belongs to the "hydrodynamic" or
+#'   "bgc" (biogeochemical) part of the model}
+#'   \item{par}{Short parameter name}
+#' }
+#' @source Package development.
+"simstrat_aed2_parameters"
 
 #' Reference data frame for model layer structure.
 #'

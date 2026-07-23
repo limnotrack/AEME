@@ -1,9 +1,9 @@
 #' Check model name and return standardized code
 #'
 #' @param model Character vector of model names. Valid options are:
-#'  "DYRESM-CAEDYM", "GLM-AED", "GOTM-WET" or their corresponding codes
-#'  "dy_cd", "glm_aed", "gotm_wet".
-#'  
+#'  "DYRESM-CAEDYM", "GLM-AED", "GOTM-WET", "SIMSTRAT-AED2" or their
+#'  corresponding codes "dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2".
+#'
 #'  @importFrom cli cli_abort
 #'
 #' @returns Character vector of standardized model codes.
@@ -14,9 +14,10 @@
 
 check_model <- function(model) {
   valid_models <- c(
-    "DYRESM-CAEDYM" = "dy_cd",
-    "GLM-AED"       = "glm_aed",
-    "GOTM-WET"      = "gotm_wet"
+    "DYRESM-CAEDYM"  = "dy_cd",
+    "GLM-AED"        = "glm_aed",
+    "GOTM-WET"       = "gotm_wet",
+    "SIMSTRAT-AED2"  = "simstrat_aed2"
   )
   
   valid_names <- c(names(valid_models), unname(valid_models))

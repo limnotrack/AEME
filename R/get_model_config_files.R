@@ -70,7 +70,18 @@ get_model_config_files <- function(aeme, model, path, lake_dir = NULL) {
     names(dycd_files) <- tools::file_ext(basename(dycd_files))
     out$dy_cd <- dycd_files
   }
-  
+
+  if ("simstrat_aed2" %in% model) {
+    simstrat_files <- list.files(
+      path = file.path(lake_dir, "simstrat_aed2"),
+      pattern = "\\.(par|nml)$",
+      full.names = TRUE,
+      recursive = FALSE
+    )
+    names(simstrat_files) <- basename(tools::file_path_sans_ext(simstrat_files))
+    out$simstrat_aed2 <- simstrat_files
+  }
+
   return(out)
 }
 

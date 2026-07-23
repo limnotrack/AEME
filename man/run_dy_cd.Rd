@@ -4,6 +4,7 @@
 \alias{run_dy_cd}
 \alias{run_glm_aed}
 \alias{run_gotm_wet}
+\alias{run_simstrat_aed2}
 \title{Run AEME models}
 \usage{
 run_dy_cd(
@@ -23,6 +24,14 @@ run_glm_aed(
 )
 
 run_gotm_wet(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  args = character(),
+  timeout = Inf
+)
+
+run_simstrat_aed2(
   sim_folder,
   verbose = FALSE,
   debug = FALSE,

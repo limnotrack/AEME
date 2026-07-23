@@ -8,8 +8,8 @@ check_model(model)
 }
 \arguments{
 \item{model}{Character vector of model names. Valid options are:
-"DYRESM-CAEDYM", "GLM-AED", "GOTM-WET" or their corresponding codes
-"dy_cd", "glm_aed", "gotm_wet".
+"DYRESM-CAEDYM", "GLM-AED", "GOTM-WET", "SIMSTRAT-AED2" or their
+corresponding codes "dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2".
 
 @importFrom cli cli_abort}
 }

@@ -10,7 +10,8 @@ align_depth_data(aeme, model, var_sim, ens_n = 1, return_df = TRUE)
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp").}
 

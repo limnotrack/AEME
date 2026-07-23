@@ -196,7 +196,7 @@ simulate_lake_nudged <- function(params, data, hyps_df, start_lvl,
     evap_m_day <- 0 # Default
     V_min <- min(hyps_df$volume)
     
-    if (model %in% c("dy_cd", "glm_aed")) {
+    if (model %in% c("dy_cd", "glm_aed", "simstrat_aed2")) {
       # Physics for DYRESM-CAEDYM / GLM
       Ts_t <- data$sst[t]
       es_t <- exp(2.3026 * (((7.5 * Ts_t) / (Ts_t + 237.3) + 0.7858)))
@@ -269,7 +269,7 @@ simulate_lake_nudged <- function(params, data, hyps_df, start_lvl,
   t <- n_days
   A_t <- get_hyps_val(depth = sim_h[t], hyps = hyps_df)
   
-  if (model %in% c("dy_cd", "glm_aed")) {
+  if (model %in% c("dy_cd", "glm_aed", "simstrat_aed2")) {
     # Physics for DYRESM-CAEDYM / GLM
     Ts_t <- data$sst[t]
     es_t <- exp(2.3026 * (((7.5 * Ts_t) / (Ts_t + 237.3) + 0.7858)))

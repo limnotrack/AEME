@@ -65,7 +65,8 @@ read_aeme_from_files <- function(path) {
           spin_up = list(
             dy_cd = as.numeric(df[1, grepl("dy_cd", names(df))]),
             glm_aed = as.numeric(df[1, grepl("glm_aed", names(df))]),
-            gotm_wet = as.numeric(df[1, grepl("gotm_wet", names(df))])
+            gotm_wet = as.numeric(df[1, grepl("gotm_wet", names(df))]),
+            simstrat_aed2 = as.numeric(df[1, grepl("simstrat_aed2", names(df))])
           )
         )
         methods::slot(aeme, slot_name) <- inp
