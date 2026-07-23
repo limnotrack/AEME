@@ -1272,6 +1272,7 @@ setReplaceMethod("parameters", "Aeme", function(aeme, value) {
 #' @importFrom glue glue
 #' @export
 setMethod("show", "Aeme", function(object) {
+  object    <- migrate_aeme(object)
   lke       <- lake(object)
   aeme_time <- time(object)
   config    <- configuration(object)
@@ -1453,11 +1454,13 @@ setMethod("summary", "Aeme", function(object) {
 #' @return A ggplot object, or prints to the active graphics device.
 #' @export
 setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
-  
+
+  x <- migrate_aeme(x)
+
   if (missing(y)) {
     y <- "output"
   }
-  
+
   valid_slots <- methods::slotNames(x)
   if (!y %in% valid_slots) {
     cli::cli_abort(
