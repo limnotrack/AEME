@@ -34,11 +34,11 @@ A vector of file paths to the written files
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme <- readRDS(aeme_file)
 model <- "glm_aed"
-path <- "test_write"
+path <- file.path(tempdir(), "test_write")
 model_controls <- get_model_controls()
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
 model_controls = model_controls, ext_elev = 5)
-#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
+#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows -- this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
 #> 
@@ -48,7 +48,7 @@ model_controls = model_controls, ext_elev = 5)
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [8ms]
+#> ✔ Estimating surface water temperature [6ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -59,9 +59,9 @@ model_controls = model_controls, ext_elev = 5)
 #> 
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-07-20 23:42:01]
-#> → GLM-AED running... [2026-07-20 23:42:01]
-#> ✔ GLM-AED run successful! [2026-07-20 23:42:01]
-#> ✔ Model run complete! [2026-07-20 23:42:01]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-24 04:13:23]
+#> → GLM-AED running... [2026-07-24 04:13:23]
+#> ✔ GLM-AED run successful! [2026-07-24 04:13:23]
+#> ✔ Model run complete! [2026-07-24 04:13:23]
 write_aeme_to_files(aeme, path)
 ```

@@ -7,11 +7,20 @@
 - [Set up AEME for a new
   lake](https://limnotrack.com/articles/setup-new-lake.md):
 
+### Model descriptions
+
+- [GLM-AED: The General Lake Model coupled with
+  AED](https://limnotrack.com/articles/glm-aed.md):
+- [Simstrat-AED2: The 1-D k-epsilon lake model coupled with
+  AED2](https://limnotrack.com/articles/simstrat-aed2.md):
+
 ### Use cases
 
 - [Reservoir Simulation with Multiple
   Outlets](https://limnotrack.com/articles/reservoir-aeme.md):
 - [Using LERNZmp with
   AEME](https://limnotrack.com/articles/lernzmp-aeme.md):
-- [GLM-AED: The General Lake Model coupled with
-  AED](https://limnotrack.com/articles/glm-aed.md):
+- [Lake Rotoehu Water Balance and
+  Evaporation](https://limnotrack.com/articles/rotoehu-water-balance.md):
+- [Set up AEME for a new
+  lake](https://limnotrack.com/articles/setup-new-lake.md):

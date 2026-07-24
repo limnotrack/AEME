@@ -17,8 +17,8 @@ list_mod_obs_vars(aeme, model, ens_n = 1)
 - model:
 
   character vector; models to use. One or more of `"dy_cd"`,
-  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
-  `aeme`.
+  `"glm_aed"`, `"gotm_wet"`, `"simstrat_aed2"`. Defaults to all models
+  if not found in `aeme`.
 
 - ens_n:
 
@@ -41,7 +41,7 @@ model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
-#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
+#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows -- this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
 #> 
@@ -51,7 +51,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [6ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -90,10 +90,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-07-20 23:41:01]
-#> ✔ Model run complete! [2026-07-20 23:41:03]
-#> ℹ Reading models in parallel...[2026-07-20 23:41:04]
-#> ✔ Model reading complete! [2026-07-20 23:41:05]
+#> ℹ Running models in parallel... [2026-07-24 04:12:35]
+#> ✔ Model run complete! [2026-07-24 04:12:38]
+#> ℹ Reading models in parallel...[2026-07-24 04:12:38]
+#> ✔ Model reading complete! [2026-07-24 04:12:39]
 aeme |> 
   list_mod_obs_vars()
 #>            Cyanobacteria         Dissolved oxygen                 Salinity 

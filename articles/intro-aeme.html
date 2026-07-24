@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,10 +43,15 @@
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
     <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
+    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2: The 1-D k-epsilon lake model coupled with AED2</a></li>
+    <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
+    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -78,7 +83,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Introduction to AEME</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/main/vignettes/intro-aeme.Rmd" class="external-link"><code>vignettes/intro-aeme.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/glm-dev/vignettes/intro-aeme.Rmd" class="external-link"><code>vignettes/intro-aeme.Rmd</code></a></small>
       <div class="d-none name"><code>intro-aeme.Rmd</code></div>
     </div>
 
@@ -397,11 +402,11 @@ with each level separated by a “/” e.g. “light/Kw” for Kw in
 GLM-AED.</p></li>
 <li><p>value - Value of the parameter.</p></li>
 <li><p>min - Minimum range of the parameter. This is used in the
-<code><a href="https://limnotrack.github.io/aemetools/reference/calib_aeme.html" class="external-link">aemetools::calib_aeme()</a></code> and
-<code><a href="https://limnotrack.github.io/aemetools/reference/sa_aeme.html" class="external-link">aemetools::sa_aeme()</a></code> function.</p></li>
+<code><a href="https://limnotrack.com/aemetools/reference/calib_aeme.html">aemetools::calib_aeme()</a></code> and
+<code><a href="https://limnotrack.com/aemetools/reference/sa_aeme.html">aemetools::sa_aeme()</a></code> function.</p></li>
 <li><p>max - Maximum range of the parameter. This is used in the
-<code><a href="https://limnotrack.github.io/aemetools/reference/calib_aeme.html" class="external-link">aemetools::calib_aeme()</a></code> and
-<code><a href="https://limnotrack.github.io/aemetools/reference/sa_aeme.html" class="external-link">aemetools::sa_aeme()</a></code> function.</p></li>
+<code><a href="https://limnotrack.com/aemetools/reference/calib_aeme.html">aemetools::calib_aeme()</a></code> and
+<code><a href="https://limnotrack.com/aemetools/reference/sa_aeme.html">aemetools::sa_aeme()</a></code> function.</p></li>
 <li><p>group - Phytoplankton group. This is only used for GOTM-WET
 phytoplankton parameters.</p></li>
 <li><p>index - Index of the parameter. This is only used for GLM-AED
@@ -481,7 +486,7 @@ information required to run the model.</p>
 <span><span class="va">hypsograph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_hypsograph.html">generate_hypsograph</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="va">depth</span>, surface_area <span class="op">=</span> <span class="va">area</span>,</span>
 <span>                                  volume_development <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_land_point_nz.html" class="external-link">get_era5_land_point_nz</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>,</span>
+<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/aemetools/reference/get_era5_land_point_nz.html">get_era5_land_point_nz</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>,</span>
 <span>                                         years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2022</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#' Define input list</span></span>
@@ -552,7 +557,7 @@ function.</p>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095; Simstrat: 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Configuration</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -566,6 +571,7 @@ function.</p>
 <span><span class="co">#&gt; │       DY-CD               <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │      GLM-AED             <span style="color: #00BB00;">Present</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │      GOTM-WET            <span style="color: #00BB00;">Present</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │   SIMSTRAT-AED2           <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; └──────────────────────────────────────────────────────────────┘</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Observations</span> ──</span></span>
@@ -582,12 +588,12 @@ function.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of inflows: 6; Names: NZS2038486, NZS2038499, NZS2038500, NZS2038304,</span></span>
 <span><span class="co">#&gt;   lumped, precip</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Outflows</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of outflows: 1; Names: wbal; Elevations:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Water Balance</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -603,6 +609,7 @@ function.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> DY-CD: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GLM-AED: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GOTM-WET: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> SIMSTRAT-AED2: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Variables: 0</span></span>
 <span><span class="co">#&gt; None</span></span></code></pre></div>
 <div class="section level3">

@@ -51,6 +51,8 @@ bold are required to run the models.
 
   - `gotm_wet`: list; GOTM-WET configuration.
 
+  - `simstrat_aed2`: list; Simstrat-AED2 configuration.
+
 - `observations`:
 
   A list representing observation information.
@@ -117,6 +119,8 @@ bold are required to run the models.
   - `glm_aed`: list; GLM-AED output.
 
   - `gotm_wet`: list; GOTM-WET output.
+
+  - `simstrat_aed2`: list; Simstrat-AED2 output.
 
 - `parameters`:
 

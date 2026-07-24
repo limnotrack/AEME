@@ -79,6 +79,8 @@
   time period
 - [`check_path()`](https://limnotrack.com/reference/check_path.md) :
   Check and manage file paths
+- [`check_simstrat_par()`](https://limnotrack.com/reference/check_simstrat_par.md)
+  : Check Simstrat par file for common issues
 - [`check_var_in_output()`](https://limnotrack.com/reference/check_var_in_output.md)
   : Check if a variable is present in the model output
 - [`` `configuration<-`() ``](https://limnotrack.com/reference/configuration-set.md)
@@ -87,6 +89,8 @@
   : Access the configuration slot of an Aeme object
 - [`convert_do()`](https://limnotrack.com/reference/convert_do.md) :
   Convert dissolved oxygen between mg/L and percent saturation
+- [`dy_cd_exe_path()`](https://limnotrack.com/reference/dy_cd_exe_path.md)
+  : Locate an installed DYRESM-CAEDYM executable
 - [`dy_cd_parameters`](https://limnotrack.com/reference/dy_cd_parameters.md)
   : Example dataset of parameters for the DYRESM-CAEDYM model
 - [`estimate_lake_wlev()`](https://limnotrack.com/reference/estimate_lake_wlev.md)
@@ -102,6 +106,8 @@
   variables suitable for all models
 - [`extrap_hyps()`](https://limnotrack.com/reference/extrap_hyps.md) :
   Extend hypsometry to a greater elevation using linear extrapolation
+- [`flux_to_evap()`](https://limnotrack.com/reference/flux_to_evap.md) :
+  Convert latent heat flux to evaporation depth
 - [`generate_hypsograph()`](https://limnotrack.com/reference/generate_hypsograph.md)
   : Generate a hypsograph curve
 - [`generate_var_map_code()`](https://limnotrack.com/reference/generate_var_map_code.md)
@@ -138,6 +144,8 @@
   station pressure.
 - [`get_met()`](https://limnotrack.com/reference/get_met.md) : Get
   meteorological data from Aeme object
+- [`get_met_vars()`](https://limnotrack.com/reference/get_met_vars.md) :
+  Get the names and units for the meteorological variables
 - [`get_model_config_files()`](https://limnotrack.com/reference/get_model_config_files.md)
   : Get model configuration files paths
 - [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md)
@@ -174,10 +182,14 @@
   GLM-AED model.
 - [`glm_aed_parameter_library`](https://limnotrack.com/reference/glm_aed_parameter_library.md)
   : Parameter library for the GLM-AED model.
+- [`glm_exe_path()`](https://limnotrack.com/reference/glm_exe_path.md) :
+  Locate an installed GLM executable
 - [`glm_sed_params()`](https://limnotrack.com/reference/glm_sed_params.md)
   : Generate GLM Sediment Parameters
 - [`glm_to_aeme()`](https://limnotrack.com/reference/glm_to_aeme.md) :
   Load a GLM nml file and convert to aeme object
+- [`gotm_wet_exe_path()`](https://limnotrack.com/reference/gotm_wet_exe_path.md)
+  : Locate an installed GOTM-WET executable
 - [`gotm_wet_parameters`](https://limnotrack.com/reference/gotm_wet_parameters.md)
   : Example dataset of parameters for the GOTM-WET model
 - [`guess_aeme_vars()`](https://limnotrack.com/reference/guess_aeme_vars.md)
@@ -194,6 +206,16 @@
   : Input model parameters
 - [`insert_aeme()`](https://limnotrack.com/reference/insert_aeme.md) :
   Insert default aeme list code snippet.
+- [`install_dy_cd()`](https://limnotrack.com/reference/install_dy_cd.md)
+  : Install DYRESM-CAEDYM executables for AEME
+- [`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md)
+  : Install a GLM executable for AEME
+- [`install_gotm_wet()`](https://limnotrack.com/reference/install_gotm_wet.md)
+  : Install a GOTM-WET executable for AEME
+- [`install_models()`](https://limnotrack.com/reference/install_models.md)
+  : Install the latest available binary for every AEME model
+- [`install_simstrat_aed2()`](https://limnotrack.com/reference/install_simstrat_aed2.md)
+  : Install a Simstrat-AED2 executable for AEME
 - [`is_model_error()`](https://limnotrack.com/reference/is_model_error.md)
   : Check if object is a model output error
 - [`is_strat()`](https://limnotrack.com/reference/is_strat.md) : Check
@@ -206,12 +228,22 @@
   slot of an Aeme object
 - [`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md)
   : Format lake observation data to AEME format
+- [`latent_heat_flux()`](https://limnotrack.com/reference/latent_heat_flux.md)
+  : Latent heat flux from a lake surface
+- [`list_dy_cd_versions()`](https://limnotrack.com/reference/list_dy_cd_versions.md)
+  : List available DYRESM-CAEDYM versions
+- [`list_glm_versions()`](https://limnotrack.com/reference/list_glm_versions.md)
+  : List available GLM versions
+- [`list_gotm_wet_versions()`](https://limnotrack.com/reference/list_gotm_wet_versions.md)
+  : List available GOTM-WET versions
 - [`list_models()`](https://limnotrack.com/reference/list_models.md) :
   Get a vector of available models
 - [`list_mod_obs_vars()`](https://limnotrack.com/reference/list_mod_obs_vars.md)
   : Get the variables that are both in the observation and model output
 - [`list_obs_vars()`](https://limnotrack.com/reference/list_obs_vars.md)
   : Get observation variable names
+- [`list_simstrat_aed2_versions()`](https://limnotrack.com/reference/list_simstrat_aed2_versions.md)
+  : List available Simstrat-AED2 versions
 - [`load_configuration()`](https://limnotrack.com/reference/load_configuration.md)
   : Load model configuration to the aeme object
 - [`load_output()`](https://limnotrack.com/reference/load_output.md) :
@@ -285,9 +317,11 @@
 - [`plot_wbal_annual()`](https://limnotrack.com/reference/plot_wbal_annual.md)
   : Plot annual water balance components
 - [`plot_wbal_comp()`](https://limnotrack.com/reference/plot_wbal_comp.md)
-  : Plot Water Balance Comparison
+  : Plot Water Balance Components
 - [`plot_wbal_summaries()`](https://limnotrack.com/reference/plot_wbal_summaries.md)
   : Plot Water Balance Summaries
+- [`plot_wbal_ts()`](https://limnotrack.com/reference/plot_wbal_ts.md) :
+  Plot Water Balance Components as Timeseries
 - [`plot_weir_calibration()`](https://limnotrack.com/reference/plot_weir_calibration.md)
   : Visualise calibrated weir parameters (C, h_inv) from
   calc_water_balance().
@@ -333,6 +367,10 @@
   **\[stable\]** : Read water level from model output
 - [`read_nml()`](https://limnotrack.com/reference/read_nml.md) : read in
   a GLM simulation \*.nml file
+- [`read_simstrat_output()`](https://limnotrack.com/reference/read_simstrat_output.md)
+  : Read Simstrat-AED2 netCDF output
+- [`read_simstrat_wlev()`](https://limnotrack.com/reference/read_simstrat_wlev.md)
+  : Read Simstrat-AED2 lake water level output
 - [`remove_inflow()`](https://limnotrack.com/reference/remove_inflow.md)
   : Remove inflow data from Aeme object
 - [`remove_outflow()`](https://limnotrack.com/reference/remove_outflow.md)
@@ -347,10 +385,13 @@
   aquatic model ensemble
 - [`run_dy_cd()`](https://limnotrack.com/reference/run_dy_cd.md)
   [`run_glm_aed()`](https://limnotrack.com/reference/run_dy_cd.md)
-  [`run_gotm_wet()`](https://limnotrack.com/reference/run_dy_cd.md) :
-  Run AEME models
+  [`run_gotm_wet()`](https://limnotrack.com/reference/run_dy_cd.md)
+  [`run_simstrat_aed2()`](https://limnotrack.com/reference/run_dy_cd.md)
+  : Run AEME models
 - [`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)
   : Run GLM-AED diagnostics
+- [`sat_vapour_pressure()`](https://limnotrack.com/reference/sat_vapour_pressure.md)
+  : Saturation vapour pressure
 - [`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
   : Setup AED aed_sed_const2d sediment model parameters
 - [`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md)
@@ -375,6 +416,12 @@
   : Set water balance parameters
 - [`show(`*`<Aeme>`*`)`](https://limnotrack.com/reference/show-aeme-method.md)
   : Print Aeme object to the console
+- [`simstrat_aed2_exe_path()`](https://limnotrack.com/reference/simstrat_aed2_exe_path.md)
+  : Locate an installed Simstrat-AED2 executable
+- [`simstrat_aed2_parameters`](https://limnotrack.com/reference/simstrat_aed2_parameters.md)
+  : Example dataframe used for calibrating the Simstrat-AED2 model.
+- [`simstrat_aed2_parameter_library`](https://limnotrack.com/reference/simstrat_aed2_parameter_library.md)
+  : Simstrat-AED2 parameter library
 - [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md)
   : Standardise inflow variable names and units for AEME
 - [`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)
@@ -401,6 +448,8 @@
   : Write model configuration from the aeme object
 - [`write_nml()`](https://limnotrack.com/reference/write_nml.md) : write
   GLM .nml for a GLM simulation
+- [`write_simstrat_nc()`](https://limnotrack.com/reference/write_simstrat_nc.md)
+  : Consolidate Simstrat-AED2 text output into a single netCDF file
 - [`write_yaml()`](https://limnotrack.com/reference/write_yaml.md) :
   Write a yaml object to file
 - [`yaml_to_aeme()`](https://limnotrack.com/reference/yaml_to_aeme.md) :

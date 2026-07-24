@@ -19,8 +19,8 @@ plot_fluxes(aeme, model, cumulative = FALSE)
 - model:
 
   character vector; models to use. One or more of `"dy_cd"`,
-  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
-  `aeme`.
+  `"glm_aed"`, `"gotm_wet"`, `"simstrat_aed2"`. Defaults to all models
+  if not found in `aeme`.
 
 - cumulative:
 

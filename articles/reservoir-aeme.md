@@ -317,11 +317,11 @@ aeme
 #> ── Time ──
 #> 
 #> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
+#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2; Simstrat: 2
 #> 
 #> ── Configuration ──
 #> 
-#> • Model:
+#> • Model: glm_aed
 #> • Path: D:/a/AEME/AEME/vignettes/articles
 #> • Model controls: Present
 #> • Use biogeochemical model: No
@@ -331,6 +331,7 @@ aeme
 #> │       DY-CD               Absent              Absent         │
 #> │      GLM-AED              Absent              Absent         │
 #> │      GOTM-WET             Absent              Absent         │
+#> │   SIMSTRAT-AED2           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -346,12 +347,12 @@ aeme
 #> ── Inflows ──
 #> 
 #> • Number of inflows: 0; Names: None
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Outflows ──
 #> 
 #> • Number of outflows: 0; Names: None; Elevations: N/A
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
 #> 
@@ -367,6 +368,7 @@ aeme
 #> • DY-CD: 0
 #> • GLM-AED: 0
 #> • GOTM-WET: 0
+#> • SIMSTRAT-AED2: 0
 #> • Variables: 0
 #> None
 ```
@@ -435,11 +437,11 @@ aeme
 #> ── Time ──
 #> 
 #> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
+#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2; Simstrat: 2
 #> 
 #> ── Configuration ──
 #> 
-#> • Model:
+#> • Model: glm_aed
 #> • Path: D:/a/AEME/AEME/vignettes/articles
 #> • Model controls: Present
 #> • Use biogeochemical model: No
@@ -449,6 +451,7 @@ aeme
 #> │       DY-CD               Absent              Absent         │
 #> │      GLM-AED              Absent              Absent         │
 #> │      GOTM-WET             Absent              Absent         │
+#> │   SIMSTRAT-AED2           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -464,12 +467,12 @@ aeme
 #> ── Inflows ──
 #> 
 #> • Number of inflows: 1; Names: river
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Outflows ──
 #> 
 #> • Number of outflows: 2; Names: penstock, spillway; Elevations: 130, -1
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
 #> 
@@ -485,6 +488,7 @@ aeme
 #> • DY-CD: 0
 #> • GLM-AED: 0
 #> • GOTM-WET: 0
+#> • SIMSTRAT-AED2: 0
 #> • Variables: 0
 #> None
 ```
@@ -522,7 +526,7 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp4445fs\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpqefVsK\reservoir
 #> 
 #> 
 #> ── Calculating water balance ──
@@ -534,7 +538,7 @@ aeme <- build_aeme(
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [8ms]
+#> ✔ Estimating surface water temperature [7ms]
 #> 
 #> 
 #> 
@@ -558,10 +562,10 @@ aeme <- build_aeme(
 ``` r
 
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-07-20 23:56:24]
-#> → GLM-AED running... [2026-07-20 23:56:24]
-#> ✔ GLM-AED run successful! [2026-07-20 23:56:25]
-#> ✔ Model run complete! [2026-07-20 23:56:25]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-24 04:23:22]
+#> → GLM-AED running... [2026-07-24 04:23:22]
+#> ✔ GLM-AED run successful! [2026-07-24 04:23:23]
+#> ✔ Model run complete! [2026-07-24 04:23:23]
 ```
 
 ## View the output

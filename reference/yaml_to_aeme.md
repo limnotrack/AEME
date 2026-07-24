@@ -42,11 +42,11 @@ aeme
 #> ── Time ──
 #> 
 #> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#> • Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1
+#> • Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1; Simstrat: 2
 #> 
 #> ── Configuration ──
 #> 
-#> • Model:
+#> • Model: glm_aed
 #> • Path: D:/a/AEME/AEME/docs/reference
 #> • Model controls: Present
 #> • Use biogeochemical model: No
@@ -56,6 +56,7 @@ aeme
 #> │       DY-CD               Absent              Absent         │
 #> │      GLM-AED              Absent              Absent         │
 #> │      GOTM-WET             Absent              Absent         │
+#> │   SIMSTRAT-AED2           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -71,12 +72,12 @@ aeme
 #> ── Inflows ──
 #> 
 #> • Number of inflows: 1; Names: FWMT
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Outflows ──
 #> 
 #> • Number of outflows: 1; Names: outflow; Elevations: -1
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
 #> 
@@ -92,6 +93,7 @@ aeme
 #> • DY-CD: 0
 #> • GLM-AED: 0
 #> • GOTM-WET: 0
+#> • SIMSTRAT-AED2: 0
 #> • Variables: 0
 #> None
 ```

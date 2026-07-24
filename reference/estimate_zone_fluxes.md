@@ -73,13 +73,13 @@ Invisibly returns a named list with the following elements:
 
 ## Details
 
-**Tier 1 (always)** — area-weighted depth scaling. Each zone's flux is
+**Tier 1 (always)** – area-weighted depth scaling. Each zone's flux is
 scaled from literature baseline values according to its mean depth and
 fractional bed area. Deep zones receive higher SOD and nutrient fluxes
 reflecting greater organic matter accumulation and more persistent
 anoxia.
 
-**Tier 2 (optional, when `obs` supplied)** — observed data adjustment.
+**Tier 2 (optional, when `obs` supplied)** – observed data adjustment.
 Near-bed summer concentrations of O2, NH4, NO3, and FRP are used to
 adjust the relative difference in fluxes between zones. Only inter-zone
 ratios are adjusted, not absolute magnitude, so the lake-wide total is
@@ -87,16 +87,16 @@ preserved.
 
 Literature baselines at reference depth 5 m (temperate lakes):
 
-- `fsed_oxy`: -25 mmol O2/m2/d (Müller et al. 2012; Sondergaard et al.
+- `fsed_oxy`: -25 mmol O2/m2/d (Muller et al. 2012; Sondergaard et al.
   2003)
 
 - `fsed_amm`: 2 mmol N/m2/d (Andersen 1982; Beutel 2006)
 
 - `fsed_nit`: 0.2 mmol N/m2/d (Seitzinger 1988)
 
-- `fsed_frp`: 0.05 mmol P/m2/d (Nürnberg 1984)
+- `fsed_frp`: 0.05 mmol P/m2/d (Nurnberg 1984)
 
-Depth scaling (Beutel 2006; Müller et al. 2012): SOD and NH4/FRP fluxes
+Depth scaling (Beutel 2006; Muller et al. 2012): SOD and NH4/FRP fluxes
 scale approximately linearly with mean zone depth divided by
 `ref_depth`. NO3 flux transitions from small positive values (shallow,
 oxic) to negative values (deep, anoxic denitrification) at approximately
@@ -107,10 +107,10 @@ oxic) to negative values (deep, anoxic denitrification) at approximately
 Beutel, M.W. (2006).
 [doi:10.1016/j.ecoleng.2006.05.009](https://doi.org/10.1016/j.ecoleng.2006.05.009)
 
-Müller, B., et al. (2012).
+Muller, B., et al. (2012).
 [doi:10.1021/es301422r](https://doi.org/10.1021/es301422r)
 
-Nürnberg, G.K. (1984).
+Nurnberg, G.K. (1984).
 [doi:10.4319/lo.1984.29.1.0111](https://doi.org/10.4319/lo.1984.29.1.0111)
 
 Seitzinger, S.P. (1988).

@@ -46,7 +46,7 @@ generate_var_map_code(obs_data, var_col_name = "name")
 #> var_map <- tibble::tribble(
 #>   ~var_aeme, ~name, ~unit,
 #>   "CHM_oxy", "DO (mg/L)", "mg/L",
-#>   "CHM_ph", "pH", "1",
+#>   "CHM_ph", "pH", "",
 #>   "HYD_temp", "Water Temp (°C)", "degC",
 #>   "PHY_tchla", "Chlorophyll-a (µg/L)", "mg/m^3",
 #> )

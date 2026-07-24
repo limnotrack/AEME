@@ -19,7 +19,7 @@ a lake metadata file “LERNZmp_lake_metadata.csv”.
 ## Using LERNZmp output with AEME
 
 Once you have downloaded the LERNZmp model output and unzipped the
-folder, you should a similar file structure to the following:
+folder, you should have a similar file structure to the following:
 
 ``` r
 
@@ -141,7 +141,7 @@ aeme
 #> ── Time ──
 #> 
 #> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
-#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095
+#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095; Simstrat: 2
 #> 
 #> ── Configuration ──
 #> 
@@ -155,6 +155,7 @@ aeme
 #> │       DY-CD               Absent              Absent         │
 #> │      GLM-AED             Present              Absent         │
 #> │      GOTM-WET            Present              Absent         │
+#> │   SIMSTRAT-AED2           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -171,12 +172,12 @@ aeme
 #> 
 #> • Number of inflows: 7; Names: NZS4081641, NZS4083363, NZS4084132, NZS4086165,
 #>   NZS4084816, lumped, precip
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Outflows ──
 #> 
 #> • Number of outflows: 1; Names: wbal; Elevations:
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
 #> 
@@ -192,6 +193,7 @@ aeme
 #> • DY-CD: 1
 #> • GLM-AED: 1
 #> • GOTM-WET: 1
+#> • SIMSTRAT-AED2: 0
 #> • Variables: 63
 #> Water temperature, Thermocline depth, Dissolved oxygen, Total chlorophyll a,
 #> Total nitrogen, Total phosphorus, Water level, Volume, Change in volume,
@@ -244,7 +246,7 @@ aeme
 #> ── Time ──
 #> 
 #> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
-#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095
+#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095; Simstrat: 2
 #> 
 #> ── Configuration ──
 #> 
@@ -258,6 +260,7 @@ aeme
 #> │       DY-CD               Absent              Absent         │
 #> │      GLM-AED             Present             Present         │
 #> │      GOTM-WET            Present             Present         │
+#> │   SIMSTRAT-AED2           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -274,12 +277,12 @@ aeme
 #> 
 #> • Number of inflows: 7; Names: NZS4081641, NZS4083363, NZS4084132, NZS4086165,
 #>   NZS4084816, lumped, precip
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Outflows ──
 #> 
 #> • Number of outflows: 1; Names: wbal; Elevations: -1
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
 #> 
@@ -295,10 +298,11 @@ aeme
 #> • DY-CD: 0
 #> • GLM-AED: 1
 #> • GOTM-WET: 1
-#> • Variables: 37
+#> • SIMSTRAT-AED2: 0
+#> • Variables: 39
 #> Water temperature, Dissolved oxygen, Total chlorophyll a, Total nitrogen, Total
 #> phosphorus, Evaporative heat flux, Sensible heat flux, Longwave radiation,
-#> Shortwave radiation, Volume, ... and 27 more
+#> Shortwave radiation, Volume, ... and 29 more
 ```
 
 In the “Output” section of the `Aeme` object, the “Number of ensembles”

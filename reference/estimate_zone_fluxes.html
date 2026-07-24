@@ -9,7 +9,7 @@ to two tiers of adjustment:"><meta property="og:image" content="https://limnotra
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,10 +24,15 @@ to two tiers of adjustment:"><meta property="og:image" content="https://limnotra
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
     <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
+    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2: The 1-D k-epsilon lake model coupled with AED2</a></li>
+    <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
+    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -46,7 +51,7 @@ to two tiers of adjustment:"><meta property="og:image" content="https://limnotra
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Estimate zone-specific sediment fluxes from hypsograph</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/main/R/estimate_zone_fluxes.R" class="external-link"><code>R/estimate_zone_fluxes.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/glm-dev/R/estimate_zone_fluxes.R" class="external-link"><code>R/estimate_zone_fluxes.R</code></a></small>
       <div class="d-none name"><code>estimate_zone_fluxes.Rd</code></div>
     </div>
 
@@ -125,21 +130,21 @@ estimates.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><strong>Tier 1 (always)</strong> — area-weighted depth scaling. Each zone's flux is
+    <p><strong>Tier 1 (always)</strong> – area-weighted depth scaling. Each zone's flux is
 scaled from literature baseline values according to its mean depth and
 fractional bed area. Deep zones receive higher SOD and nutrient fluxes
 reflecting greater organic matter accumulation and more persistent anoxia.</p>
-<p><strong>Tier 2 (optional, when <code>obs</code> supplied)</strong> — observed data
+<p><strong>Tier 2 (optional, when <code>obs</code> supplied)</strong> – observed data
 adjustment. Near-bed summer concentrations of O2, NH4, NO3, and FRP are used
 to adjust the relative difference in fluxes between zones. Only inter-zone
 ratios are adjusted, not absolute magnitude, so the lake-wide total is
 preserved.</p>
-<p>Literature baselines at reference depth 5 m (temperate lakes):</p><ul><li><p><code>fsed_oxy</code>: -25 mmol O2/m2/d (Müller et al. 2012; Sondergaard
+<p>Literature baselines at reference depth 5 m (temperate lakes):</p><ul><li><p><code>fsed_oxy</code>: -25 mmol O2/m2/d (Muller et al. 2012; Sondergaard
 et al. 2003)</p></li>
 <li><p><code>fsed_amm</code>: 2 mmol N/m2/d (Andersen 1982; Beutel 2006)</p></li>
 <li><p><code>fsed_nit</code>: 0.2 mmol N/m2/d (Seitzinger 1988)</p></li>
-<li><p><code>fsed_frp</code>: 0.05 mmol P/m2/d (Nürnberg 1984)</p></li>
-</ul><p>Depth scaling (Beutel 2006; Müller et al. 2012): SOD and NH4/FRP fluxes
+<li><p><code>fsed_frp</code>: 0.05 mmol P/m2/d (Nurnberg 1984)</p></li>
+</ul><p>Depth scaling (Beutel 2006; Muller et al. 2012): SOD and NH4/FRP fluxes
 scale approximately linearly with mean zone depth divided by
 <code>ref_depth</code>. NO3 flux transitions from small positive values (shallow,
 oxic) to negative values (deep, anoxic denitrification) at approximately
@@ -148,8 +153,8 @@ oxic) to negative values (deep, anoxic denitrification) at approximately
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Beutel, M.W. (2006). <a href="https://doi.org/10.1016/j.ecoleng.2006.05.009" class="external-link">doi:10.1016/j.ecoleng.2006.05.009</a></p>
-<p>Müller, B., et al. (2012). <a href="https://doi.org/10.1021/es301422r" class="external-link">doi:10.1021/es301422r</a></p>
-<p>Nürnberg, G.K. (1984). <a href="https://doi.org/10.4319/lo.1984.29.1.0111" class="external-link">doi:10.4319/lo.1984.29.1.0111</a></p>
+<p>Muller, B., et al. (2012). <a href="https://doi.org/10.1021/es301422r" class="external-link">doi:10.1021/es301422r</a></p>
+<p>Nurnberg, G.K. (1984). <a href="https://doi.org/10.4319/lo.1984.29.1.0111" class="external-link">doi:10.4319/lo.1984.29.1.0111</a></p>
 <p>Seitzinger, S.P. (1988). <a href="https://doi.org/10.4319/lo.1988.33.4part2.0702" class="external-link">doi:10.4319/lo.1988.33.4part2.0702</a></p>
 <p>Sondergaard, M., et al. (2003). <a href="https://doi.org/10.1023/B%3AHYDR.0000008611.12704.dd" class="external-link">doi:10.1023/B:HYDR.0000008611.12704.dd</a></p>
     </div>

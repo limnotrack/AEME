@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,10 +43,15 @@
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
     <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
+    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2: The 1-D k-epsilon lake model coupled with AED2</a></li>
+    <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
+    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -78,7 +83,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Reservoir Simulation with Multiple Outlets</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/main/vignettes/articles/reservoir-aeme.Rmd" class="external-link"><code>vignettes/articles/reservoir-aeme.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/glm-dev/vignettes/articles/reservoir-aeme.Rmd" class="external-link"><code>vignettes/articles/reservoir-aeme.Rmd</code></a></small>
       <div class="d-none name"><code>reservoir-aeme.Rmd</code></div>
     </div>
 
@@ -406,11 +411,11 @@ meteorological data, and light extinction coefficient
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2; Simstrat: 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Configuration</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model: glm_aed</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Path: <span style="color: #00BB00;">D:/a/AEME/AEME/vignettes/articles</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model controls: <span style="color: #00BB00;">Present</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Use biogeochemical model: <span style="color: #BB0000;">No</span></span></span>
@@ -420,6 +425,7 @@ meteorological data, and light extinction coefficient
 <span><span class="co">#&gt; │       DY-CD               <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │      GLM-AED              <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │      GOTM-WET             <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │   SIMSTRAT-AED2           <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; └──────────────────────────────────────────────────────────────┘</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Observations</span> ──</span></span>
@@ -435,12 +441,12 @@ meteorological data, and light extinction coefficient
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Inflows</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of inflows: 0; Names: None</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Outflows</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of outflows: 0; Names: None; Elevations: N/A</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Water Balance</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -456,6 +462,7 @@ meteorological data, and light extinction coefficient
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> DY-CD: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GLM-AED: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GOTM-WET: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> SIMSTRAT-AED2: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Variables: 0</span></span>
 <span><span class="co">#&gt; None</span></span></code></pre></div>
 </div>
@@ -520,11 +527,11 @@ registered in the outflows slot:</p>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2; Simstrat: 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Configuration</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model: glm_aed</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Path: <span style="color: #00BB00;">D:/a/AEME/AEME/vignettes/articles</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Model controls: <span style="color: #00BB00;">Present</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Use biogeochemical model: <span style="color: #BB0000;">No</span></span></span>
@@ -534,6 +541,7 @@ registered in the outflows slot:</p>
 <span><span class="co">#&gt; │       DY-CD               <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │      GLM-AED              <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │      GOTM-WET             <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │   SIMSTRAT-AED2           <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; └──────────────────────────────────────────────────────────────┘</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Observations</span> ──</span></span>
@@ -549,12 +557,12 @@ registered in the outflows slot:</p>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Inflows</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of inflows: 1; Names: river</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Outflows</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of outflows: 2; Names: penstock, spillway; Elevations: 130, -1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Water Balance</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -570,6 +578,7 @@ registered in the outflows slot:</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> DY-CD: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GLM-AED: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GOTM-WET: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> SIMSTRAT-AED2: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Variables: 0</span></span>
 <span><span class="co">#&gt; None</span></span></code></pre></div>
 </div>
@@ -609,7 +618,7 @@ outlets in the header.</li>
 <span>  wb_method <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Created missing directory:</span></span>
-<span><span class="co">#&gt;   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp4445fs\reservoir</span></span>
+<span><span class="co">#&gt;   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpqefVsK\reservoir</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Calculating water balance</span> ──</span></span>
@@ -621,7 +630,7 @@ outlets in the header.</li>
 <span><span class="co">#&gt;   <span style="color: #00BBBB;">ℹ</span> No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[8ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[7ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -644,10 +653,10 @@ outlets in the header.</li>
 </h2>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-07-20 23:56:24]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-07-20 23:56:24]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-07-20 23:56:25]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-07-20 23:56:25]</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-07-24 04:23:22]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2026-07-24 04:23:22]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-07-24 04:23:23]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-07-24 04:23:23]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="view-the-output">View the output<a class="anchor" aria-label="anchor" href="#view-the-output"></a>

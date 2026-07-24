@@ -264,15 +264,15 @@ The columns for the parameters data.frame are:
 - value - Value of the parameter.
 
 - min - Minimum range of the parameter. This is used in the
-  [`aemetools::calib_aeme()`](https://limnotrack.github.io/aemetools/reference/calib_aeme.html)
+  [`aemetools::calib_aeme()`](https://limnotrack.com/aemetools/reference/calib_aeme.html)
   and
-  [`aemetools::sa_aeme()`](https://limnotrack.github.io/aemetools/reference/sa_aeme.html)
+  [`aemetools::sa_aeme()`](https://limnotrack.com/aemetools/reference/sa_aeme.html)
   function.
 
 - max - Maximum range of the parameter. This is used in the
-  [`aemetools::calib_aeme()`](https://limnotrack.github.io/aemetools/reference/calib_aeme.html)
+  [`aemetools::calib_aeme()`](https://limnotrack.com/aemetools/reference/calib_aeme.html)
   and
-  [`aemetools::sa_aeme()`](https://limnotrack.github.io/aemetools/reference/sa_aeme.html)
+  [`aemetools::sa_aeme()`](https://limnotrack.com/aemetools/reference/sa_aeme.html)
   function.
 
 - group - Phytoplankton group. This is only used for GOTM-WET
@@ -432,7 +432,7 @@ aeme
 #> ── Time ──
 #> 
 #> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
-#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095
+#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095; Simstrat: 2
 #> 
 #> ── Configuration ──
 #> 
@@ -446,6 +446,7 @@ aeme
 #> │       DY-CD               Absent              Absent         │
 #> │      GLM-AED             Present              Absent         │
 #> │      GOTM-WET            Present              Absent         │
+#> │   SIMSTRAT-AED2           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -462,12 +463,12 @@ aeme
 #> 
 #> • Number of inflows: 6; Names: NZS2038486, NZS2038499, NZS2038500, NZS2038304,
 #>   lumped, precip
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Outflows ──
 #> 
 #> • Number of outflows: 1; Names: wbal; Elevations:
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
 #> 
@@ -483,6 +484,7 @@ aeme
 #> • DY-CD: 0
 #> • GLM-AED: 0
 #> • GOTM-WET: 0
+#> • SIMSTRAT-AED2: 0
 #> • Variables: 0
 #> None
 ```

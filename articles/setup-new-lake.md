@@ -138,13 +138,13 @@ metres above sea level.
 key <- Sys.getenv("LINZ_KEY")
 elevation <- aemetools::get_dem_value(lat = lat, lon = lon, key = key)
 elevation # in metres above sea level
-#> [1] 29
+#> [1] 23.296
 ```
 
 ``` r
 
 elevation
-#> [1] 29
+#> [1] 23.296
 ```
 
 We will now create a list of the lake data. This will be used to
@@ -195,9 +195,9 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-07-20 23:56:43] job submitted
-#> INFO [2026-07-20 23:56:43] downloading
-#> INFO [2026-07-20 23:56:44] extracting
+#> INFO [2026-07-24 04:25:47] job submitted
+#> INFO [2026-07-24 04:25:47] downloading
+#> INFO [2026-07-24 04:25:48] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -252,9 +252,9 @@ hypsograph_simple <- data.frame(area = c(area, 0),
                          elev = c(elevation, elevation - depth),
                          depth = c(0, -depth))
 hypsograph_simple
-#>       area  elev  depth
-#> 1 151938.6 29.00   0.00
-#> 2      0.0 15.93 -13.07
+#>       area   elev  depth
+#> 1 151938.6 23.296   0.00
+#> 2      0.0 10.226 -13.07
 ```
 
 ``` r
@@ -357,16 +357,16 @@ aeme
 #> 
 #> Wainamu (ID: 45819)
 #> • Lat: -36.89; Lon: 174.47
-#> • Elev: 29m; Depth: 13.07m; Area: 151938.62 m2
+#> • Elev: 23.3m; Depth: 13.07m; Area: 151938.62 m2
 #> 
 #> ── Time ──
 #> 
 #> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
+#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2; Simstrat: 2
 #> 
 #> ── Configuration ──
 #> 
-#> • Model:
+#> • Model: glm_aed
 #> • Path: D:/a/AEME/AEME/vignettes
 #> • Model controls: Present
 #> • Use biogeochemical model: No
@@ -376,6 +376,7 @@ aeme
 #> │       DY-CD               Absent              Absent         │
 #> │      GLM-AED              Absent              Absent         │
 #> │      GOTM-WET             Absent              Absent         │
+#> │   SIMSTRAT-AED2           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -391,12 +392,12 @@ aeme
 #> ── Inflows ──
 #> 
 #> • Number of inflows: 0; Names: None
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Outflows ──
 #> 
 #> • Number of outflows: 0; Names: None; Elevations: N/A
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
 #> 
@@ -412,6 +413,7 @@ aeme
 #> • DY-CD: 0
 #> • GLM-AED: 0
 #> • GOTM-WET: 0
+#> • SIMSTRAT-AED2: 0
 #> • Variables: 0
 #> None
 ```
@@ -566,7 +568,7 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [7ms]
 #> 
 #> 
 #> 
@@ -576,19 +578,19 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #> 
 #>   ℹ Optimizing parameters for water balance
 #> 
-#>   ✔ Optimization Complete: C = 0.001, h_inv = 29, Final RMSE = 0.0675
+#>   ✔ Optimization Complete: C = 0.001, h_inv = 23.3, Final RMSE = 0.0675
 #> 
 #> Estimating lake water levels for glm_aed
 #> 
 #>   ℹ Optimizing parameters for water balance
 #> 
-#>   ✔ Optimization Complete: C = 0.001, h_inv = 29, Final RMSE = 0.0675
+#>   ✔ Optimization Complete: C = 0.001, h_inv = 23.3, Final RMSE = 0.0675
 #> 
 #> Estimating lake water levels for gotm_wet
 #> 
 #>   ℹ Optimizing parameters for water balance
 #> 
-#>   ✔ Optimization Complete: C = 0.001, h_inv = 29, Final RMSE = 0.0551
+#>   ✔ Optimization Complete: C = 0.001, h_inv = 23.3, Final RMSE = 0.0551
 #> 
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Building DYRESM-CAEDYM for lake wainamu
@@ -617,12 +619,12 @@ print(aeme)
 #> 
 #> Wainamu (ID: 45819)
 #> • Lat: -36.89; Lon: 174.47
-#> • Elev: 29m; Depth: 13.07m; Area: 151938.62 m2
+#> • Elev: 23.3m; Depth: 13.07m; Area: 151938.62 m2
 #> 
 #> ── Time ──
 #> 
 #> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2
+#> • Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2; Simstrat: 2
 #> 
 #> ── Configuration ──
 #> 
@@ -636,6 +638,7 @@ print(aeme)
 #> │       DY-CD              Present             Present         │
 #> │      GLM-AED             Present             Present         │
 #> │      GOTM-WET            Present             Present         │
+#> │   SIMSTRAT-AED2           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -651,12 +654,12 @@ print(aeme)
 #> ── Inflows ──
 #> 
 #> • Number of inflows: 0; Names: None
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Outflows ──
 #> 
 #> • Number of outflows: 1; Names: wbal; Elevations: -1, -1
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
 #> 
@@ -672,6 +675,7 @@ print(aeme)
 #> • DY-CD: 0
 #> • GLM-AED: 0
 #> • GOTM-WET: 0
+#> • SIMSTRAT-AED2: 0
 #> • Variables: 0
 #> None
 ```
@@ -700,16 +704,15 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-07-20 23:57:10]
-#> → DYRESM-CAEDYM running... [2026-07-20 23:57:10]
-#> ✔ DYRESM-CAEDYM run successful! [2026-07-20 23:57:39]
-#> → GLM-AED running... [2026-07-20 23:57:39]
-#> ✔ GLM-AED run successful! [2026-07-20 23:57:39]
-#> → GOTM-WET running... [2026-07-20 23:57:39]
-#> ✔ GOTM-WET run successful! [2026-07-20 23:57:40]
-#> ✔ Model run complete! [2026-07-20 23:57:40]
-#> ! The following variables are not available in model dy_cd: CHM_ph, LKE_photic
-#> ! The following variables are not available in model gotm_wet: CHM_ph
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-24 04:26:08]
+#> → DYRESM-CAEDYM running... [2026-07-24 04:26:08]
+#> ✔ DYRESM-CAEDYM run successful! [2026-07-24 04:26:28]
+#> → GLM-AED running... [2026-07-24 04:26:28]
+#> ✔ GLM-AED run successful! [2026-07-24 04:26:28]
+#> → GOTM-WET running... [2026-07-24 04:26:28]
+#> ✔ GOTM-WET run successful! [2026-07-24 04:26:29]
+#> ✔ Model run complete! [2026-07-24 04:26:29]
+#> ! The following variables are not available in model gotm_wet: RAD_extc
 ```
 
 ### View the output

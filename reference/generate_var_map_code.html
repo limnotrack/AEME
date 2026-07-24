@@ -17,7 +17,7 @@ recognized by the units package (e.g. "m", "m^3", "degC", "mg/L", "g/m^3").'><me
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,10 +32,15 @@ recognized by the units package (e.g. "m", "m^3", "degC", "mg/L", "g/m^3").'><me
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
     <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
+    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2: The 1-D k-epsilon lake model coupled with AED2</a></li>
+    <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
+    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -54,7 +59,7 @@ recognized by the units package (e.g. "m", "m^3", "degC", "mg/L", "g/m^3").'><me
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Generate variable mapping code for lake observation data</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/main/R/generate_var_map_code.R" class="external-link"><code>R/generate_var_map_code.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/glm-dev/R/generate_var_map_code.R" class="external-link"><code>R/generate_var_map_code.R</code></a></small>
       <div class="d-none name"><code>generate_var_map_code.Rd</code></div>
     </div>
 
@@ -105,7 +110,7 @@ needed.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> var_map &lt;- tibble::tribble(</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ~var_aeme, ~name, ~unit,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "CHM_oxy", "DO (mg/L)", "mg/L",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   "CHM_ph", "pH", "1",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   "CHM_ph", "pH", "",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "HYD_temp", "Water Temp (°C)", "degC",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "PHY_tchla", "Chlorophyll-a (µg/L)", "mg/m^3",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> )</span>

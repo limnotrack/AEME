@@ -59,7 +59,7 @@ aeme
 #> ── Time ──
 #> 
 #> • Start: 2010-06-01; Stop: 2023-06-30; Time step: 3600
-#> • Spin up (days): GLM: 365; GOTM: 365; DYRESM: 365
+#> • Spin up (days): GLM: 365; GOTM: 365; DYRESM: 365; Simstrat: 365
 #> 
 #> ── Configuration ──
 #> 
@@ -73,6 +73,7 @@ aeme
 #> │       DY-CD               Absent              Absent         │
 #> │      GLM-AED             Present              Absent         │
 #> │      GOTM-WET            Present              Absent         │
+#> │   SIMSTRAT-AED2           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -88,12 +89,12 @@ aeme
 #> ── Inflows ──
 #> 
 #> • Number of inflows: 3; Names: NZS4079511, NZS4081174, lumped
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Outflows ──
 #> 
 #> • Number of outflows: 1; Names: wbal; Elevations:
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
 #> 
@@ -109,6 +110,7 @@ aeme
 #> • DY-CD: 1
 #> • GLM-AED: 1
 #> • GOTM-WET: 1
+#> • SIMSTRAT-AED2: 0
 #> • Variables: 63
 #> Water temperature, Thermocline depth, Dissolved oxygen, Total chlorophyll a,
 #> Total nitrogen, Total phosphorus, Water level, Volume, Change in volume,
@@ -147,9 +149,9 @@ Limnotrack API:
 shoreline <- aemetools::get_lake_shape(id = 40188) # lake shoreline shapefile
 
 # Get lake depth contours
-contours  <- aemetools::lt_fetch(
+contours  <- ltapi::lt_fetch(
   "lake_contours",
-  filter = aemetools::lt_filter(lernzmp_id == "LID40188")
+  filter = ltapi::lt_filter(lernzmp_id == "LID40188")
 ) |>
   dplyr::mutate(depth = depth_m)
 ```
@@ -171,21 +173,19 @@ updated hypsograph:
 bathy_raster <- rasterise_bathy(shoreline = shoreline,
                                 contours  = contours,
                                 res = 8, crs = 2193)
+#> No islands found.
 #> ℹ Generating depth points for interpolation
-#> Generating depth points... [2026-06-18 03:29:58]
-#> Warning: large number of points for interpolation (76516)
-#> Finished! [2026-06-18 03:30:04]
-#> ✔ Generating depth points for interpolation [5.7s]
+#> Warning: large number of points for interpolation (95645)
+#> ✔ Generating depth points for interpolation [5.3s]
 #> 
 #> ℹ Interpolating depth points to raster
-#> Adjusting depths >= 0 to  -0.4 m
-#> Finished! [2026-06-18 03:30:15]
+#> ℹ Adjusting depths >= 0 to -0.4m
+#> ℹ Interpolating depth points to raster
 ```
 
 ![](rotoehu-water-balance_files/figure-html/rasterise-contours-1.png)
 
-    #> ✔ Interpolating depth points to raster [11.6s]
-    #> 
+    #> ✔ Interpolating depth points to raster [1.1s]
 
 ``` r
 
@@ -343,7 +343,6 @@ path3 <- file.path(tempdir(), "rotoehu_wb3")
 aeme_wb3 <- aeme |>
   build_aeme(model = model, path = path3, wb_method = 3) |>
   run_aeme()
-#> Warning: ! No model output loaded as all model runs failed.
 ```
 
 ## Lake surface temperature
@@ -570,20 +569,20 @@ ann_evap
 #> # A tibble: 14 × 2
 #>     year ann_evap_mm
 #>    <dbl>       <dbl>
-#>  1  2010        188.
-#>  2  2011        398.
-#>  3  2012        398.
-#>  4  2013        412.
-#>  5  2014        423.
-#>  6  2015        414.
-#>  7  2016        403.
-#>  8  2017        398.
-#>  9  2018        373.
-#> 10  2019        427.
-#> 11  2020        417.
-#> 12  2021        374.
-#> 13  2022        383.
-#> 14  2023        198.
+#>  1  2010        189.
+#>  2  2011        404.
+#>  3  2012        403.
+#>  4  2013        417.
+#>  5  2014        429.
+#>  6  2015        419.
+#>  7  2016        410.
+#>  8  2017        403.
+#>  9  2018        380.
+#> 10  2019        432.
+#> 11  2020        423.
+#> 12  2021        379.
+#> 13  2022        388.
+#> 14  2023        202.
 ```
 
 ### All water balance components

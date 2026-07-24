@@ -1,5 +1,154 @@
 # Changelog
 
+## AEME 0.4.0
+
+### New model
+
+- Added **Simstrat-AED2** (`"simstrat_aed2"`) as a fourth supported
+  model, alongside DYRESM-CAEDYM, GLM-AED, and GOTM-WET, with the full
+  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)/[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)/output-reading
+  pipeline: `build_simstrat()`,
+  [`run_simstrat_aed2()`](https://limnotrack.com/reference/run_dy_cd.md),
+  [`read_simstrat_output()`](https://limnotrack.com/reference/read_simstrat_output.md),
+  [`check_simstrat_par()`](https://limnotrack.com/reference/check_simstrat_par.md),
+  [`write_simstrat_nc()`](https://limnotrack.com/reference/write_simstrat_nc.md),
+  and AED2 biogeochemistry support via `initialise_aed2()`.
+
+### Model binaries moved out of the package
+
+Model executables are no longer bundled inside the package - they’re now
+downloaded on demand from GitHub release assets into a persistent local
+cache, verified against a published SHA256 checksum before use. This
+keeps the installed package small and lets binaries be updated
+independently of the R package version.
+
+- [`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md),
+  [`install_gotm_wet()`](https://limnotrack.com/reference/install_gotm_wet.md),
+  [`install_dy_cd()`](https://limnotrack.com/reference/install_dy_cd.md),
+  [`install_simstrat_aed2()`](https://limnotrack.com/reference/install_simstrat_aed2.md)
+  — download and verify a specific (or the `"latest"`) model executable
+  version for the current platform. Paired `list_*_versions()` (what’s
+  published, per platform) and `*_exe_path()` (locate an
+  already-installed executable) helpers for each model.
+  [`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md)
+  supports Windows, macOS, and Linux (including bundled dylibs on
+  macOS); GOTM-WET, DYRESM-CAEDYM, and Simstrat-AED2 are currently
+  Windows-only, matching the platforms binaries have actually been built
+  for.
+- [`install_models()`](https://limnotrack.com/reference/install_models.md)
+  — convenience wrapper installing the latest available version of every
+  model (or a chosen subset) in one call; models with no published
+  binary for the current platform (or no release published yet) are
+  reported and skipped rather than blocking the others.
+- [`run_gotm_wet()`](https://limnotrack.com/reference/run_dy_cd.md) and
+  [`run_dy_cd()`](https://limnotrack.com/reference/run_dy_cd.md) now
+  resolve their executable the same way
+  [`run_glm_aed()`](https://limnotrack.com/reference/run_dy_cd.md)
+  already did: an explicit `AEME.gotm_exec`/ `AEME.dyresm_exec` option,
+  then a requested/previously installed version, with a clear error
+  pointing at
+  [`install_gotm_wet()`](https://limnotrack.com/reference/install_gotm_wet.md)/[`install_dy_cd()`](https://limnotrack.com/reference/install_dy_cd.md)
+  if nothing is found. `get_gotm_wet_version()` and
+  `get_dy_cd_version()` updated to match.
+- `inst/extbin/gotm_wet/` and `inst/extbin/dy_cd/` removed from version
+  control (still used locally if present - see `.gitignore`).
+- GLM version handling reworked to support multiple installed versions
+  side by side (switch between them via
+  [`glm_exe_path()`](https://limnotrack.com/reference/glm_exe_path.md)/`AEME.glm_version`
+  without re-downloading), with corrected OS detection and a GLM version
+  passed through correctly to parallel workers in
+  `run_aeme(parallel = TRUE)`.
+
+### OS-aware model selection
+
+- [`check_model()`](https://limnotrack.com/reference/check_model.md)
+  gained an `os_valid` argument: when `TRUE`, restricts the requested
+  models to ones actually runnable on the current platform
+  (DYRESM-CAEDYM, GOTM-WET, and Simstrat-AED2 need Windows; GLM-AED runs
+  everywhere), falling back to GLM-AED with an informative message
+  rather than failing outright.
+  [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) now
+  applies this automatically.
+- An `Aeme` object now remembers which model(s) it was last configured
+  for (`configuration(aeme)$model`, defaulting to `"glm_aed"`), so
+  `list_models(aeme)` reflects the actual configured model set instead
+  of always listing every model AEME supports.
+
+### New functions
+
+- `migrate_aeme()` — backfills defaults for any model missing from an
+  `Aeme` object’s `time$spin_up`, `inflows$factor`, `outflows$factor`,
+  or `configuration` slots (e.g. objects created before `simstrat_aed2`
+  existed). Called automatically by
+  [`check_aeme()`](https://limnotrack.com/reference/check_aeme.md),
+  [`show()`](https://rdrr.io/r/methods/show.html), and
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) so older
+  saved objects keep working without needing to be rebuilt.
+
+### Bug fixes
+
+- [`read_model_config()`](https://limnotrack.com/reference/read_model_config.md)
+  assumed any `.par` configuration file was Simstrat’s JSON format, but
+  DYRESM-CAEDYM’s `dyresm3p1.par` shares that extension and is plain
+  text - `read_model_config(model = "dy_cd", ...)` failed on any lake
+  with a DYRESM-CAEDYM configuration. Now scoped to
+  `model == "simstrat_aed2"` only.
+- Fixed a lake-level inversion bug affecting every Simstrat-AED2
+  simulation with non-trivial inflows/outflows:
+  `.write_simstrat_grid_file()` wrote the two-point depth header used to
+  force a non-zero trapezoidal integration in descending order, but
+  Simstrat’s `Integrate()` computes `dx = x(i) - x(i-1)` directly from
+  the file’s own (unreordered) depth values. A descending header
+  therefore silently negated every flux this writer produces - inflow,
+  outflow, temperature, salinity, and AED2 inflow concentrations alike -
+  which is why simulated lake level for Simstrat-AED2 tracked in the
+  opposite direction to the other three models. Fixed by writing the
+  depths in ascending order; verified by comparing Simstrat’s own
+  `Qvert` output variable against the expected net inflow/outflow signal
+  (now matching almost exactly, correlation 0.9986, vs. an exact
+  sign-flip before the fix).
+- `calc_evap()` gained a dedicated `model == "simstrat_aed2"` branch
+  implementing Simstrat’s own evaporation formula (a Livingstone &
+  Imboden wind function with a Gill (1992) saturation vapour pressure,
+  from `strat_forcing.f90`), used by
+  [`estimate_lake_wlev()`](https://limnotrack.com/reference/estimate_lake_wlev.md)
+  when fitting the water balance for Simstrat-AED2. It previously shared
+  GLM-AED’s simpler bulk-aerodynamic formula.
+- [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) did
+  not call `migrate_aeme()`, so an `Aeme` object saved before
+  `simstrat_aed2` existed (missing `time$spin_up[["simstrat_aed2"]]`)
+  would crash inside `check_time()`’s `compute_spinup_dates()` the first
+  time it was built with a newer AEME version.
+  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) now
+  migrates the object on entry, matching
+  [`check_aeme()`](https://limnotrack.com/reference/check_aeme.md)/[`show()`](https://rdrr.io/r/methods/show.html)/[`plot()`](https://rdrr.io/r/graphics/plot.default.html).
+
+### New data
+
+- `simstrat_aed2_parameter_library` — a comprehensive reference table of
+  Simstrat-AED2 parameters (physical parameters from the Simstrat User
+  Manual, plus AED2 biogeochemical parameters shared with
+  `glm_aed_parameter_library`), mirroring the existing
+  `glm_aed_parameter_library` dataset.
+
+### Documentation
+
+- Added the `simstrat-aed2` article
+  (`vignettes/articles/simstrat-aed2.Rmd`), covering Simstrat-AED2’s
+  model description, AED2 module coupling, the new parameter library,
+  model-specific features (automatic AED2 module selection, inflow
+  modes, ice/snow, water balance fitting), and calibration (the
+  `simstrat_aed2_parameters` dataset and Simstrat’s native PEST-based
+  workflow), mirroring the existing `glm-aed` article.
+
+### Testing
+
+- Added `tests/testthat/helper-glm.R` and `setup.R` with shared helpers
+  for skipping/filtering tests by platform availability
+  (`skip_if_models_unavailable()`, `filter_platform_models()`,
+  `skip_if_no_glm()`) and CI coverage extended to macOS and Ubuntu, in
+  addition to Windows.
+
 ## AEME 0.3.1
 
 ### New functions

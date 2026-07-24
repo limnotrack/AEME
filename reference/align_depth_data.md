@@ -17,8 +17,8 @@ align_depth_data(aeme, model, var_sim, ens_n = 1, return_df = TRUE)
 - model:
 
   character vector; models to use. One or more of `"dy_cd"`,
-  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
-  `aeme`.
+  `"glm_aed"`, `"gotm_wet"`, `"simstrat_aed2"`. Defaults to all models
+  if not found in `aeme`.
 
 - var_sim:
 

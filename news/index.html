@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,10 +22,15 @@
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
     <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
+    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2: The 1-D k-epsilon lake model coupled with AED2</a></li>
+    <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
+    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -44,9 +49,63 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/limnotrack/AEME/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/limnotrack/AEME/blob/glm-dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="aeme-040">AEME 0.4.0<a class="anchor" aria-label="anchor" href="#aeme-040"></a></h2>
+<div class="section level3">
+<h3 id="new-model-0-4-0">New model<a class="anchor" aria-label="anchor" href="#new-model-0-4-0"></a></h3>
+<ul><li>Added <strong>Simstrat-AED2</strong> (<code>"simstrat_aed2"</code>) as a fourth supported model, alongside DYRESM-CAEDYM, GLM-AED, and GOTM-WET, with the full <code><a href="../reference/build_aeme.html">build_aeme()</a></code>/<code><a href="../reference/run_aeme.html">run_aeme()</a></code>/output-reading pipeline: <code>build_simstrat()</code>, <code><a href="../reference/run_dy_cd.html">run_simstrat_aed2()</a></code>, <code><a href="../reference/read_simstrat_output.html">read_simstrat_output()</a></code>, <code><a href="../reference/check_simstrat_par.html">check_simstrat_par()</a></code>, <code><a href="../reference/write_simstrat_nc.html">write_simstrat_nc()</a></code>, and AED2 biogeochemistry support via <code>initialise_aed2()</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="model-binaries-moved-out-of-the-package-0-4-0">Model binaries moved out of the package<a class="anchor" aria-label="anchor" href="#model-binaries-moved-out-of-the-package-0-4-0"></a></h3>
+<p>Model executables are no longer bundled inside the package - they’re now downloaded on demand from GitHub release assets into a persistent local cache, verified against a published SHA256 checksum before use. This keeps the installed package small and lets binaries be updated independently of the R package version.</p>
+<ul><li>
+<code><a href="../reference/install_glm_aed.html">install_glm_aed()</a></code>, <code><a href="../reference/install_gotm_wet.html">install_gotm_wet()</a></code>, <code><a href="../reference/install_dy_cd.html">install_dy_cd()</a></code>, <code><a href="../reference/install_simstrat_aed2.html">install_simstrat_aed2()</a></code> — download and verify a specific (or the <code>"latest"</code>) model executable version for the current platform. Paired <code>list_*_versions()</code> (what’s published, per platform) and <code>*_exe_path()</code> (locate an already-installed executable) helpers for each model. <code><a href="../reference/install_glm_aed.html">install_glm_aed()</a></code> supports Windows, macOS, and Linux (including bundled dylibs on macOS); GOTM-WET, DYRESM-CAEDYM, and Simstrat-AED2 are currently Windows-only, matching the platforms binaries have actually been built for.</li>
+<li>
+<code><a href="../reference/install_models.html">install_models()</a></code> — convenience wrapper installing the latest available version of every model (or a chosen subset) in one call; models with no published binary for the current platform (or no release published yet) are reported and skipped rather than blocking the others.</li>
+<li>
+<code><a href="../reference/run_dy_cd.html">run_gotm_wet()</a></code> and <code><a href="../reference/run_dy_cd.html">run_dy_cd()</a></code> now resolve their executable the same way <code><a href="../reference/run_dy_cd.html">run_glm_aed()</a></code> already did: an explicit <code>AEME.gotm_exec</code>/ <code>AEME.dyresm_exec</code> option, then a requested/previously installed version, with a clear error pointing at <code><a href="../reference/install_gotm_wet.html">install_gotm_wet()</a></code>/<code><a href="../reference/install_dy_cd.html">install_dy_cd()</a></code> if nothing is found. <code>get_gotm_wet_version()</code> and <code>get_dy_cd_version()</code> updated to match.</li>
+<li>
+<code>inst/extbin/gotm_wet/</code> and <code>inst/extbin/dy_cd/</code> removed from version control (still used locally if present - see <code>.gitignore</code>).</li>
+<li>GLM version handling reworked to support multiple installed versions side by side (switch between them via <code><a href="../reference/glm_exe_path.html">glm_exe_path()</a></code>/<code>AEME.glm_version</code> without re-downloading), with corrected OS detection and a GLM version passed through correctly to parallel workers in <code>run_aeme(parallel = TRUE)</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="os-aware-model-selection-0-4-0">OS-aware model selection<a class="anchor" aria-label="anchor" href="#os-aware-model-selection-0-4-0"></a></h3>
+<ul><li>
+<code><a href="../reference/check_model.html">check_model()</a></code> gained an <code>os_valid</code> argument: when <code>TRUE</code>, restricts the requested models to ones actually runnable on the current platform (DYRESM-CAEDYM, GOTM-WET, and Simstrat-AED2 need Windows; GLM-AED runs everywhere), falling back to GLM-AED with an informative message rather than failing outright. <code><a href="../reference/run_aeme.html">run_aeme()</a></code> now applies this automatically.</li>
+<li>An <code>Aeme</code> object now remembers which model(s) it was last configured for (<code>configuration(aeme)$model</code>, defaulting to <code>"glm_aed"</code>), so <code>list_models(aeme)</code> reflects the actual configured model set instead of always listing every model AEME supports.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-functions-0-4-0">New functions<a class="anchor" aria-label="anchor" href="#new-functions-0-4-0"></a></h3>
+<ul><li>
+<code>migrate_aeme()</code> — backfills defaults for any model missing from an <code>Aeme</code> object’s <code>time$spin_up</code>, <code>inflows$factor</code>, <code>outflows$factor</code>, or <code>configuration</code> slots (e.g. objects created before <code>simstrat_aed2</code> existed). Called automatically by <code><a href="../reference/check_aeme.html">check_aeme()</a></code>, <code><a href="https://rdrr.io/r/methods/show.html" class="external-link">show()</a></code>, and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> so older saved objects keep working without needing to be rebuilt.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-4-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-0"></a></h3>
+<ul><li>
+<code><a href="../reference/read_model_config.html">read_model_config()</a></code> assumed any <code>.par</code> configuration file was Simstrat’s JSON format, but DYRESM-CAEDYM’s <code>dyresm3p1.par</code> shares that extension and is plain text - <code>read_model_config(model = "dy_cd", ...)</code> failed on any lake with a DYRESM-CAEDYM configuration. Now scoped to <code>model == "simstrat_aed2"</code> only.</li>
+<li>Fixed a lake-level inversion bug affecting every Simstrat-AED2 simulation with non-trivial inflows/outflows: <code>.write_simstrat_grid_file()</code> wrote the two-point depth header used to force a non-zero trapezoidal integration in descending order, but Simstrat’s <code>Integrate()</code> computes <code>dx = x(i) - x(i-1)</code> directly from the file’s own (unreordered) depth values. A descending header therefore silently negated every flux this writer produces - inflow, outflow, temperature, salinity, and AED2 inflow concentrations alike - which is why simulated lake level for Simstrat-AED2 tracked in the opposite direction to the other three models. Fixed by writing the depths in ascending order; verified by comparing Simstrat’s own <code>Qvert</code> output variable against the expected net inflow/outflow signal (now matching almost exactly, correlation 0.9986, vs. an exact sign-flip before the fix).</li>
+<li>
+<code>calc_evap()</code> gained a dedicated <code>model == "simstrat_aed2"</code> branch implementing Simstrat’s own evaporation formula (a Livingstone &amp; Imboden wind function with a Gill (1992) saturation vapour pressure, from <code>strat_forcing.f90</code>), used by <code><a href="../reference/estimate_lake_wlev.html">estimate_lake_wlev()</a></code> when fitting the water balance for Simstrat-AED2. It previously shared GLM-AED’s simpler bulk-aerodynamic formula.</li>
+<li>
+<code><a href="../reference/build_aeme.html">build_aeme()</a></code> did not call <code>migrate_aeme()</code>, so an <code>Aeme</code> object saved before <code>simstrat_aed2</code> existed (missing <code>time$spin_up[["simstrat_aed2"]]</code>) would crash inside <code>check_time()</code>’s <code>compute_spinup_dates()</code> the first time it was built with a newer AEME version. <code><a href="../reference/build_aeme.html">build_aeme()</a></code> now migrates the object on entry, matching <code><a href="../reference/check_aeme.html">check_aeme()</a></code>/<code><a href="https://rdrr.io/r/methods/show.html" class="external-link">show()</a></code>/<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-data-0-4-0">New data<a class="anchor" aria-label="anchor" href="#new-data-0-4-0"></a></h3>
+<ul><li>
+<code>simstrat_aed2_parameter_library</code> — a comprehensive reference table of Simstrat-AED2 parameters (physical parameters from the Simstrat User Manual, plus AED2 biogeochemical parameters shared with <code>glm_aed_parameter_library</code>), mirroring the existing <code>glm_aed_parameter_library</code> dataset.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-4-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-4-0"></a></h3>
+<ul><li>Added the <code>simstrat-aed2</code> article (<code>vignettes/articles/simstrat-aed2.Rmd</code>), covering Simstrat-AED2’s model description, AED2 module coupling, the new parameter library, model-specific features (automatic AED2 module selection, inflow modes, ice/snow, water balance fitting), and calibration (the <code>simstrat_aed2_parameters</code> dataset and Simstrat’s native PEST-based workflow), mirroring the existing <code>glm-aed</code> article.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="testing-0-4-0">Testing<a class="anchor" aria-label="anchor" href="#testing-0-4-0"></a></h3>
+<ul><li>Added <code>tests/testthat/helper-glm.R</code> and <code>setup.R</code> with shared helpers for skipping/filtering tests by platform availability (<code>skip_if_models_unavailable()</code>, <code>filter_platform_models()</code>, <code>skip_if_no_glm()</code>) and CI coverage extended to macOS and Ubuntu, in addition to Windows.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="aeme-031">AEME 0.3.1<a class="anchor" aria-label="anchor" href="#aeme-031"></a></h2>
 <div class="section level3">

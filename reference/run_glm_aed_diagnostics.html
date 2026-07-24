@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,10 +22,15 @@
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
     <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
+    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2: The 1-D k-epsilon lake model coupled with AED2</a></li>
+    <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
+    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -44,7 +49,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Run GLM-AED diagnostics</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/main/R/run_glm_aed_diagnostics.R" class="external-link"><code>R/run_glm_aed_diagnostics.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/glm-dev/R/run_glm_aed_diagnostics.R" class="external-link"><code>R/run_glm_aed_diagnostics.R</code></a></small>
       <div class="d-none name"><code>run_glm_aed_diagnostics.Rd</code></div>
     </div>
 
@@ -83,7 +88,7 @@ Default NULL = all entries.</p></li>
 
 
 <dt id="arg-depth-collapse">depth_collapse<a class="anchor" aria-label="anchor" href="#arg-depth-collapse"></a></dt>
-<dd><p>"mean", "surface" or "max" — reduce 3D variables</p></dd>
+<dd><p>"mean", "surface" or "max" – reduce 3D variables</p></dd>
 
 
 <dt id="arg-plot">plot<a class="anchor" aria-label="anchor" href="#arg-plot"></a></dt>
@@ -120,7 +125,7 @@ Default NULL = all entries.</p></li>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>                   model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>                   ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span><span style="color: #BBBB00;">!</span> `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span><span style="color: #BBBB00;">!</span> `SIL_rsi`: SIL_rsi is constant across all rows -- this may be a placeholder</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   value.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Check raw data or unit conversion for this variable.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -130,7 +135,7 @@ Default NULL = all entries.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[17ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[6ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating lake water levels for glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Optimizing parameters for water balance</span>
@@ -189,10 +194,10 @@ Default NULL = all entries.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-07-20 23:41:41]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-07-20 23:41:41]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-07-20 23:41:44]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-07-20 23:41:44]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-07-24 04:13:07]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-07-24 04:13:07]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-07-24 04:13:09]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-07-24 04:13:09]</span>
 <span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">run_glm_aed_diagnostics</span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting 86 variables from model output... <span style="color: #555555;"> (sediment zone _Z variables are</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">optional; missing ones are skipped)</span></span>
@@ -220,7 +225,7 @@ Default NULL = all entries.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ nitrogen_state         │ NIT_no2       │ NO2 (mmol N/m3)           │    0   │ 0.0196 │ 0.0401 │ 0.141   │ 0.0413 │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ nitrogen_organic       │ OGM_don       │ DON (mmol N/m3)           │ 0.00485│ 0.0865 │ 0.127  │ 0.283   │ 0.0754 │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ nitrogen_organic       │ OGM_donr      │ Refractory DON            │ 0.528  │ 1.32   │ 1.79   │ 8.95    │ 1.53   │ ok         │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ nitrogen_organic       │ OGM_pon       │ PON (mmol N/m3)           │ 0.00273│ 0.592  │ 0.945  │ 2.58    │ 0.867  │ ok         │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ nitrogen_organic       │ OGM_pon       │ PON (mmol N/m3)           │ 0.00273│ 0.592  │ 0.946  │ 2.58    │ 0.868  │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │nitrogen_transformations│ NIT_anammox   │ Anammox                   │    0   │ 5e-05  │0.000957│ 0.00497 │ 0.00135│ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │nitrogen_transformations│ NIT_denit     │ Denitrification           │    0   │    0   │    0   │    0    │    0   │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │nitrogen_transformations│ NIT_dnra      │ DNRA                      │    0   │    0   │    0   │    0    │    0   │ ok         │</span>
@@ -246,15 +251,15 @@ Default NULL = all entries.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_biomass          │ PHY_tchla     │ Total chl-a (ug/L)        │ 0.524  │ 3.46   │ 5.05   │ 14.9    │ 4.19   │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_biomass          │ PHY_tphy      │ Total phyto (mmol C/m3)   │ 1.85   │ 11.5   │ 16.8   │ 49.8    │   14   │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_stoichiometry    │ PHY_cyano_NtoP│ Cyano N:P                 │ 26.2   │ 49.4   │ 50.6   │ 99.5    │  9.5   │ ok         │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_stoichiometry    │PHY_diatom_NtoP│ Diatom N:P                │ 29.9   │ 54.9   │ 54.1   │ 82.8    │ 8.25   │ ok         │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_stoichiometry    │PHY_diatom_NtoP│ Diatom N:P                │ 30.1   │   55   │ 54.2   │ 82.8    │ 8.22   │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="background-color: #BB0000;">│ phyto_stoichiometry    │ PHY_green_NtoP│ Green N:P                 │ 27.9   │ 45.7   │   47   │  109    │   10   │OUT OF RANGE│</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │ PHY_cyano_fI  │ Cyano fI                  │ 0.011  │ 0.248  │ 0.237  │ 0.342   │ 0.0626 │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │ PHY_cyano_fNit│ Cyano fN                  │    0   │ 0.961  │ 0.936  │ 0.998   │ 0.0909 │ ok         │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │ PHY_cyano_fPho│ Cyano fP                  │    0   │ 0.223  │ 0.21   │ 0.615   │ 0.154  │ ok         │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │ PHY_cyano_fPho│ Cyano fP                  │    0   │ 0.222  │ 0.21   │ 0.615   │ 0.154  │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │ PHY_cyano_fT  │ Cyano fT                  │ 0.462  │ 0.866  │ 0.828  │ 1.06    │ 0.157  │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │ PHY_diatom_fI │ Diatom fI                 │ 0.0263 │ 0.325  │ 0.314  │ 0.425   │ 0.0677 │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │PHY_diatom_fNit│ Diatom fN                 │ 0.00811│ 0.948  │ 0.927  │ 0.998   │ 0.0766 │ ok         │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │PHY_diatom_fPho│ Diatom fP                 │    0   │ 0.124  │ 0.125  │ 0.586   │ 0.121  │ ok         │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │PHY_diatom_fPho│ Diatom fP                 │    0   │ 0.126  │ 0.125  │ 0.586   │ 0.122  │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │ PHY_diatom_fT │ Diatom fT                 │ 0.664  │    1   │ 0.96   │    1    │ 0.0572 │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │ PHY_green_fI  │ Green fI                  │ 0.011  │ 0.248  │ 0.237  │ 0.342   │ 0.0626 │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_limitation       │ PHY_green_fNit│ Green fN                  │ 0.0142 │ 0.992  │ 0.952  │    1    │ 0.079  │ ok         │</span>
@@ -263,7 +268,7 @@ Default NULL = all entries.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_fluxes           │ PHY_gpp       │ GPP                       │    0   │ 0.571  │ 0.849  │ 4.24    │ 0.786  │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_fluxes           │ PHY_ncp       │ NCP                       │ -0.0659│ 0.459  │ 0.735  │    4    │ 0.737  │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_fluxes           │ PHY_set       │ Sedimentation             │ -1.71  │ -0.376 │ -0.563 │ -0.147  │ 0.425  │ ok         │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_fluxes           │ PHY_upt_nh4   │ NH4 uptake                │ 0.00536│ 0.0226 │ 0.0335 │ 0.16    │ 0.0306 │ ok         │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_fluxes           │ PHY_upt_nh4   │ NH4 uptake                │ 0.00537│ 0.0226 │ 0.0335 │ 0.16    │ 0.0305 │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_fluxes           │ PHY_upt_no3   │ NO3 uptake                │    0   │    0   │7.11e-09│ 2.38e-06│ 1.3e-07│ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ phyto_fluxes           │ PHY_upt_po4   │ PO4 uptake                │    0   │ 0.00026│0.000389│ 0.00614 │0.000568│ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_oxygen_Z       │ OXY_oxy_atm_Z │ Atm O2 flux (per zone)    │    0   │    0   │    0   │    0    │    0   │ ok         │</span>
@@ -280,7 +285,7 @@ Default NULL = all entries.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_phosphorus_Z   │ OGM_don_swi_Z │ DON SWI flux (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_phosphorus_Z   │ OGM_dop_swi_Z │ DOP SWI flux (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_phosphorus_Z   │ OGM_poc_swi_Z │ POC SWI flux (per zone)   │ -6.15  │ -0.642 │ -1.27  │ -0.00444│ 1.44   │ ok         │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_phosphorus_Z   │ OGM_pon_swi_Z │ PON SWI flux (per zone)   │ -0.985 │ -0.0925│ -0.193 │-0.000271│ 0.231  │ ok         │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_phosphorus_Z   │ OGM_pon_swi_Z │ PON SWI flux (per zone)   │ -0.985 │ -0.0926│ -0.193 │-0.000271│ 0.231  │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_phosphorus_Z   │ OGM_pop_swi_Z │ POP SWI flux (per zone)   │ -0.0236│-0.00288│-0.00517│-3.74e-05│ 0.00559│ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_phosphorus_Z   │ PHS_frp_dsf_Z │ FRP SWI flux (per zone)   │0.000325│ 0.00116│ 0.0111 │ 0.0824  │ 0.021  │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_phosphorus_Z   │ SDF_Fsed_frp_Z│ SDF FRP flux (per zone)   │ 0.0259 │ 0.0647 │ 0.0647 │ 0.103   │ 0.0388 │ ok         │</span>
@@ -291,9 +296,9 @@ Default NULL = all entries.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_organic_Z      │ OGM_ton_sed_Z │ TON sed mass (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_organic_Z      │ OGM_top_sed_Z │ TOP sed mass (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_organic_Z      │PHY_phy_swi_c_Z│ Phyto SWI C (per zone)    │ -18.1  │ -2.45  │ -3.83  │ -0.308  │ 4.21   │ ok         │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_organic_Z      │PHY_phy_swi_n_Z│ Phyto SWI N (per zone)    │ -1.26  │ -0.17  │ -0.266 │ -0.0215 │ 0.293  │ ok         │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_organic_Z      │PHY_phy_swi_n_Z│ Phyto SWI N (per zone)    │ -1.26  │ -0.17  │ -0.266 │ -0.0216 │ 0.293  │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_organic_Z      │PHY_phy_swi_p_Z│ Phyto SWI P (per zone)    │ -0.0228│-0.00402│-0.00584│-0.000991│ 0.00502│ ok         │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_silica_Z       │ SIL_dsf_rsi_Z │ Si SWI flux (per zone)    │ 0.00233│ 0.00423│ 0.0418 │ 0.593   │ 0.0978 │ ok         │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ sedflux_silica_Z       │ SIL_dsf_rsi_Z │ Si SWI flux (per zone)    │ 0.00233│ 0.00423│ 0.0418 │ 0.594   │ 0.0978 │ ok         │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └────────────────────────┴───────────────┴───────────────────────────┴────────┴────────┴────────┴─────────┴────────┴────────────┘</span>
 </code></pre></div>
     </div>

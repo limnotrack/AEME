@@ -17,8 +17,8 @@ get_output_vars(aeme, model, ens_n = 1)
 - model:
 
   character vector; models to use. One or more of `"dy_cd"`,
-  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
-  `aeme`.
+  `"glm_aed"`, `"gotm_wet"`, `"simstrat_aed2"`. Defaults to all models
+  if not found in `aeme`.
 
 - ens_n:
 
@@ -36,11 +36,11 @@ aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme <- readRDS(aeme_file)
 path <- tempdir()
 model_controls <- get_model_controls(use_bgc = TRUE)
-model <- c("glm_aed", "gotm_wet")
+model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
-#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
+#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows -- this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
 #> 
@@ -50,14 +50,11 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [21ms]
+#> ✔ Estimating surface water temperature [8ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
 #>   ✔ Optimization Complete: C = 0.3343, h_inv = 23.4915, Final RMSE = 0.1431
-#> Estimating lake water levels for gotm_wet
-#>   ℹ Optimizing parameters for water balance
-#>   ✔ Optimization Complete: C = 0.334, h_inv = 23.4829, Final RMSE = 0.1472
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> 
 #> ── Building GLM-AED for lake wainamu ──
@@ -109,89 +106,51 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ├──────────────┼───────────────┼───────────────┼───────────────┤
 #> │ -25.007      │ 2.05          │ -0.044        │ 0.048         │
 #> └──────────────┴───────────────┴───────────────┴───────────────┘
-#> ℹ Building GOTM-WET model for lake wainamu
-#> ℹ Copied in GOTM configuration files
-#> ℹ instances/abiotic_water/initialization/sDDOMW 2.5 replaced with 0.5
-#> ℹ instances/abiotic_water/initialization/sDPOMW 0.1 replaced with 0.2
-#> ℹ instances/abiotic_water/initialization/sO2W 13 replaced with 10
-#> ℹ instances/abiotic_water/initialization/sDIMW 4 replaced with 3
-#> ℹ instances/abiotic_water/initialization/sNH4W 0.05 replaced with 0.02
-#> ℹ instances/abiotic_water/initialization/sNDOMW 0.01 replaced with 0.3
-#> ℹ instances/abiotic_water/initialization/sNO3W 0.5 replaced with 0.015
-#> ℹ instances/abiotic_water/initialization/sNPOMW 0.01 replaced with 0.1
-#> ℹ instances/abiotic_water/initialization/sPDOMW 0.001 replaced with 0.01
-#> ℹ instances/abiotic_water/initialization/sPO4W 0.1 replaced with 0.01
-#> ℹ instances/abiotic_water/initialization/sPPOMW 0.001 replaced with 0.01
-#> ℹ Setting initial condition for instances/cyanobacteria/initialization/sDW: 0.1
-#>   replaced with 0.2
-#> ℹ Setting initial condition for instances/cyanobacteria/initialization/sNW:
-#>   0.03 replaced with 0.03
-#> ℹ Setting initial condition for instances/cyanobacteria/initialization/sPW:
-#>   0.003 replaced with 0.0019
-#> ℹ Setting initial condition for instances/diatoms/initialization/sDW: 0.2
-#>   replaced with 0.25
-#> ℹ Setting initial condition for instances/diatoms/initialization/sNW: 0.05
-#>   replaced with 0.038
-#> ℹ Setting initial condition for instances/diatoms/initialization/sPW: 0.005
-#>   replaced with 0.0024
-#> ℹ Setting initial condition for instances/greens/initialization/sDW: 0.1
-#>   replaced with 0.1
-#> ℹ Setting initial condition for instances/greens/initialization/sNW: 0.05
-#>   replaced with 0.015
-#> ℹ Setting initial condition for instances/greens/initialization/sPW: 0.001
-#>   replaced with 0.00094
-#> ℹ instances/abiotic_water/initialization/sSiO2W 3.5 replaced with 1
-#> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-path = path, model_controls = model_controls,
-parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-07-20 23:40:41]
-#> ✔ Model run complete! [2026-07-20 23:40:44]
-#> ℹ Reading models in parallel...[2026-07-20 23:40:44]
-#> ✔ Model reading complete! [2026-07-20 23:40:46]
+path = path, model_controls = model_controls)
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-24 04:11:58]
+#> → GLM-AED running... [2026-07-24 04:11:58]
+#> ✔ GLM-AED run successful! [2026-07-24 04:12:01]
+#> ✔ Model run complete! [2026-07-24 04:12:01]
 get_output_vars(aeme, model)
-#>                   Water temperature                   Thermocline depth 
-#>                          "HYD_temp"                        "HYD_thmcln" 
-#>                    Dissolved oxygen                 Total chlorophyll a 
-#>                           "CHM_oxy"                         "PHY_tchla" 
-#>                      Total nitrogen                    Total phosphorus 
-#>                            "NIT_tn"                            "PHS_tp" 
-#>               Evaporative heat flux                  Sensible heat flux 
-#>                            "LKE_Qe"                            "LKE_Qh" 
-#>                  Longwave radiation                 Shortwave radiation 
-#>                           "LKE_Qlw"                           "LKE_Qsw" 
-#>                              Volume                         Evaporation 
-#>                             "LKE_V"                        "LKE_evpvol" 
-#>                         Evaporation                        Surface area 
-#>                        "LKE_evpflx"                            "LKE_A0" 
-#>                         Evaporation                              Inflow 
-#>                        "LKE_evprte"                        "LKE_inflow" 
-#>                             Outflow                       Precipitation 
-#>                       "LKE_outflow"                        "LKE_precip" 
-#>                       Precipitation      Remote sensed skin temperature 
-#>                        "LKE_pcpvol"                         "HYD_surft" 
-#>                          Lake depth                       Water density 
-#>                        "LKE_depths"                          "HYD_dens" 
-#>                          Stratified                            Salinity 
-#>                         "HYD_strat"                          "CHM_salt" 
-#>                           Phosphate                 Dissolved organic P 
-#>                           "PHS_frp"                           "PHS_dop" 
-#>               Particulate organic P                 Ammoniacal nitrogen 
-#>                           "PHS_pop"                           "NIT_amm" 
-#>                             Nitrate                 Dissolved organic N 
-#>                           "NIT_nit"                           "NIT_don" 
-#>               Particulate organic N            Dissolved organic carbon 
-#>                           "NIT_pon"                           "CAR_doc" 
-#>          Particulate organic carbon                       Cyanobacteria 
-#>                           "CAR_poc"                         "PHY_cyano" 
-#>                         Green algae                  Diatoms freshwater 
-#>                         "PHY_green"                        "PHY_diatom" 
-#> Photosynthetically active radiation             Particulate inorganic P 
-#>                           "RAD_par"                           "PHS_pip" 
-#>                    Suspended solids                     Air temperature 
-#>                           "NCS_ss1"                        "MET_tmpair" 
-#>    Water-air temperature difference 
-#>                        "HYD_atdiff" 
+#>          Water temperature          Thermocline depth 
+#>                 "HYD_temp"               "HYD_thmcln" 
+#>           Dissolved oxygen        Total chlorophyll a 
+#>                  "CHM_oxy"                "PHY_tchla" 
+#>             Total nitrogen           Total phosphorus 
+#>                   "NIT_tn"                   "PHS_tp" 
+#>      Evaporative heat flux         Sensible heat flux 
+#>                   "LKE_Qe"                   "LKE_Qh" 
+#>         Longwave radiation        Shortwave radiation 
+#>                  "LKE_Qlw"                  "LKE_Qsw" 
+#>                     Volume                Evaporation 
+#>                    "LKE_V"               "LKE_evpvol" 
+#>                Evaporation               Surface area 
+#>               "LKE_evpflx"                   "LKE_A0" 
+#>                Evaporation                     Inflow 
+#>               "LKE_evprte"               "LKE_inflow" 
+#>                   Overflow                    Outflow 
+#>             "LKE_overflow"              "LKE_outflow" 
+#>              Total outflow              Precipitation 
+#>              "LKE_outftot"               "LKE_precip" 
+#>              Precipitation        Surface temperature 
+#>               "LKE_pcpvol"                "HYD_surft" 
+#>                 Lake depth              Water density 
+#>               "LKE_depths"                 "HYD_dens" 
+#>                 Stratified                   Salinity 
+#>                "HYD_strat"                 "CHM_salt" 
+#>                  Phosphate        Dissolved organic P 
+#>                  "PHS_frp"                  "PHS_dop" 
+#>      Particulate organic P        Ammoniacal nitrogen 
+#>                  "PHS_pop"                  "NIT_amm" 
+#>                    Nitrate        Dissolved organic N 
+#>                  "NIT_nit"                  "NIT_don" 
+#>      Particulate organic N   Dissolved organic carbon 
+#>                  "NIT_pon"                  "CAR_doc" 
+#> Particulate organic carbon              Cyanobacteria 
+#>                  "CAR_poc"                "PHY_cyano" 
+#>                Green algae         Diatoms freshwater 
+#>                "PHY_green"               "PHY_diatom" 
 ```

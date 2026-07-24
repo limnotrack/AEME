@@ -17,7 +17,8 @@ run_dy_cd(
   verbose = FALSE,
   debug = FALSE,
   args = character(),
-  timeout = Inf
+  timeout = Inf,
+  version = getOption("AEME.dyresm_version", default = NULL)
 )
 
 run_glm_aed(
@@ -25,10 +26,20 @@ run_glm_aed(
   verbose = FALSE,
   debug = FALSE,
   args = character(),
-  timeout = Inf
+  timeout = Inf,
+  version = getOption("AEME.glm_version", default = NULL)
 )
 
 run_gotm_wet(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  args = character(),
+  timeout = Inf,
+  version = getOption("AEME.gotm_version", default = NULL)
+)
+
+run_simstrat_aed2(
   sim_folder,
   verbose = FALSE,
   debug = FALSE,
@@ -62,6 +73,15 @@ run_gotm_wet(
   timeout in seconds, ignored if 0. This is a limit for the elapsed time
   running `command` in a separate process. Fractions of seconds are
   ignored.
+
+- version:
+
+  character; specific version of the model to run. If not provided, the
+  default version bundled with the package will be used. For GLM-AED and
+  GOTM-WET, this can also be set via the `AEME.glm_version` or
+  `AEME.gotm_version` options, respectively. For DYRESM-CAEDYM, use
+  `AEME.dyresm_version`. Currently, only GLM-AED support version
+  selection; GOTM-WET and DYRESM-CAEDYM always uses the bundled version.
 
 ## Value
 

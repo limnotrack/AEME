@@ -17,8 +17,8 @@ get_mod_obs_vars(aeme, model)
 - model:
 
   character vector; models to use. One or more of `"dy_cd"`,
-  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
-  `aeme`.
+  `"glm_aed"`, `"gotm_wet"`, `"simstrat_aed2"`. Defaults to all models
+  if not found in `aeme`.
 
 ## Value
 

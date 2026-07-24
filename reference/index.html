@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,10 +22,15 @@
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
     <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
+    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2: The 1-D k-epsilon lake model coupled with AED2</a></li>
+    <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
+    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
+    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -317,6 +322,13 @@
 
         <dt>
 
+          <code><a href="check_simstrat_par.html">check_simstrat_par()</a></code>
+
+        </dt>
+        <dd>Check Simstrat par file for common issues</dd>
+
+        <dt>
+
           <code><a href="check_var_in_output.html">check_var_in_output()</a></code>
 
         </dt>
@@ -342,6 +354,13 @@
 
         </dt>
         <dd>Convert dissolved oxygen between mg/L and percent saturation</dd>
+
+        <dt>
+
+          <code><a href="dy_cd_exe_path.html">dy_cd_exe_path()</a></code>
+
+        </dt>
+        <dd>Locate an installed DYRESM-CAEDYM executable</dd>
 
         <dt>
 
@@ -391,6 +410,13 @@
 
         </dt>
         <dd>Extend hypsometry to a greater elevation using linear extrapolation</dd>
+
+        <dt>
+
+          <code><a href="flux_to_evap.html">flux_to_evap()</a></code>
+
+        </dt>
+        <dd>Convert latent heat flux to evaporation depth</dd>
 
         <dt>
 
@@ -513,6 +539,13 @@
 
         <dt>
 
+          <code><a href="get_met_vars.html">get_met_vars()</a></code>
+
+        </dt>
+        <dd>Get the names and units for the meteorological variables</dd>
+
+        <dt>
+
           <code><a href="get_model_config_files.html">get_model_config_files()</a></code>
 
         </dt>
@@ -632,6 +665,13 @@
 
         <dt>
 
+          <code><a href="glm_exe_path.html">glm_exe_path()</a></code>
+
+        </dt>
+        <dd>Locate an installed GLM executable</dd>
+
+        <dt>
+
           <code><a href="glm_sed_params.html">glm_sed_params()</a></code>
 
         </dt>
@@ -643,6 +683,13 @@
 
         </dt>
         <dd>Load a GLM nml file and convert to aeme object</dd>
+
+        <dt>
+
+          <code><a href="gotm_wet_exe_path.html">gotm_wet_exe_path()</a></code>
+
+        </dt>
+        <dd>Locate an installed GOTM-WET executable</dd>
 
         <dt>
 
@@ -702,6 +749,41 @@
 
         <dt>
 
+          <code><a href="install_dy_cd.html">install_dy_cd()</a></code>
+
+        </dt>
+        <dd>Install DYRESM-CAEDYM executables for AEME</dd>
+
+        <dt>
+
+          <code><a href="install_glm_aed.html">install_glm_aed()</a></code>
+
+        </dt>
+        <dd>Install a GLM executable for AEME</dd>
+
+        <dt>
+
+          <code><a href="install_gotm_wet.html">install_gotm_wet()</a></code>
+
+        </dt>
+        <dd>Install a GOTM-WET executable for AEME</dd>
+
+        <dt>
+
+          <code><a href="install_models.html">install_models()</a></code>
+
+        </dt>
+        <dd>Install the latest available binary for every AEME model</dd>
+
+        <dt>
+
+          <code><a href="install_simstrat_aed2.html">install_simstrat_aed2()</a></code>
+
+        </dt>
+        <dd>Install a Simstrat-AED2 executable for AEME</dd>
+
+        <dt>
+
           <code><a href="is_model_error.html">is_model_error()</a></code>
 
         </dt>
@@ -744,6 +826,34 @@
 
         <dt>
 
+          <code><a href="latent_heat_flux.html">latent_heat_flux()</a></code>
+
+        </dt>
+        <dd>Latent heat flux from a lake surface</dd>
+
+        <dt>
+
+          <code><a href="list_dy_cd_versions.html">list_dy_cd_versions()</a></code>
+
+        </dt>
+        <dd>List available DYRESM-CAEDYM versions</dd>
+
+        <dt>
+
+          <code><a href="list_glm_versions.html">list_glm_versions()</a></code>
+
+        </dt>
+        <dd>List available GLM versions</dd>
+
+        <dt>
+
+          <code><a href="list_gotm_wet_versions.html">list_gotm_wet_versions()</a></code>
+
+        </dt>
+        <dd>List available GOTM-WET versions</dd>
+
+        <dt>
+
           <code><a href="list_models.html">list_models()</a></code>
 
         </dt>
@@ -762,6 +872,13 @@
 
         </dt>
         <dd>Get observation variable names</dd>
+
+        <dt>
+
+          <code><a href="list_simstrat_aed2_versions.html">list_simstrat_aed2_versions()</a></code>
+
+        </dt>
+        <dd>List available Simstrat-AED2 versions</dd>
 
         <dt>
 
@@ -1020,7 +1137,7 @@
           <code><a href="plot_wbal_comp.html">plot_wbal_comp()</a></code>
 
         </dt>
-        <dd>Plot Water Balance Comparison</dd>
+        <dd>Plot Water Balance Components</dd>
 
         <dt>
 
@@ -1028,6 +1145,13 @@
 
         </dt>
         <dd>Plot Water Balance Summaries</dd>
+
+        <dt>
+
+          <code><a href="plot_wbal_ts.html">plot_wbal_ts()</a></code>
+
+        </dt>
+        <dd>Plot Water Balance Components as Timeseries</dd>
 
         <dt>
 
@@ -1171,6 +1295,20 @@
 
         <dt>
 
+          <code><a href="read_simstrat_output.html">read_simstrat_output()</a></code>
+
+        </dt>
+        <dd>Read Simstrat-AED2 netCDF output</dd>
+
+        <dt>
+
+          <code><a href="read_simstrat_wlev.html">read_simstrat_wlev()</a></code>
+
+        </dt>
+        <dd>Read Simstrat-AED2 lake water level output</dd>
+
+        <dt>
+
           <code><a href="remove_inflow.html">remove_inflow()</a></code>
 
         </dt>
@@ -1213,7 +1351,7 @@
 
         <dt>
 
-          <code><a href="run_dy_cd.html">run_dy_cd()</a></code> <code><a href="run_dy_cd.html">run_glm_aed()</a></code> <code><a href="run_dy_cd.html">run_gotm_wet()</a></code>
+          <code><a href="run_dy_cd.html">run_dy_cd()</a></code> <code><a href="run_dy_cd.html">run_glm_aed()</a></code> <code><a href="run_dy_cd.html">run_gotm_wet()</a></code> <code><a href="run_dy_cd.html">run_simstrat_aed2()</a></code>
 
         </dt>
         <dd>Run AEME models</dd>
@@ -1224,6 +1362,13 @@
 
         </dt>
         <dd>Run GLM-AED diagnostics</dd>
+
+        <dt>
+
+          <code><a href="sat_vapour_pressure.html">sat_vapour_pressure()</a></code>
+
+        </dt>
+        <dd>Saturation vapour pressure</dd>
 
         <dt>
 
@@ -1308,6 +1453,27 @@
 
         </dt>
         <dd>Print Aeme object to the console</dd>
+
+        <dt>
+
+          <code><a href="simstrat_aed2_exe_path.html">simstrat_aed2_exe_path()</a></code>
+
+        </dt>
+        <dd>Locate an installed Simstrat-AED2 executable</dd>
+
+        <dt>
+
+          <code><a href="simstrat_aed2_parameters.html">simstrat_aed2_parameters</a></code>
+
+        </dt>
+        <dd>Example dataframe used for calibrating the Simstrat-AED2 model.</dd>
+
+        <dt>
+
+          <code><a href="simstrat_aed2_parameter_library.html">simstrat_aed2_parameter_library</a></code>
+
+        </dt>
+        <dd>Simstrat-AED2 parameter library</dd>
 
         <dt>
 
@@ -1399,6 +1565,13 @@
 
         </dt>
         <dd>write GLM .nml for a GLM simulation</dd>
+
+        <dt>
+
+          <code><a href="write_simstrat_nc.html">write_simstrat_nc()</a></code>
+
+        </dt>
+        <dd>Consolidate Simstrat-AED2 text output into a single netCDF file</dd>
 
         <dt>
 

@@ -12,7 +12,7 @@ key_naming
 
 ### `key_naming`
 
-A data frame with 127 rows and 13 columns:
+A data frame with 129 rows and 18 columns:
 
 - var_aeme:
 
@@ -25,6 +25,14 @@ A data frame with 127 rows and 13 columns:
 - glm_aed:
 
   GLM variable name
+
+- glm_aed2:
+
+  GLM-AED2 variable name
+
+- simstrat_aed2:
+
+  Simstrat-AED2 variable name
 
 - gotm_wet:
 
