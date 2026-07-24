@@ -90,6 +90,7 @@ build_aeme <- function(aeme = NULL,
   if (is.null(aeme) & is.null(config)) {
     stop("Either 'aeme' or 'config' must be supplied.")
   }
+  aeme <- migrate_aeme(aeme)
   if (is.null(model)) {
     model <- list_models(aeme)
     if (length(model) == 0) {
