@@ -411,10 +411,9 @@ test_that("running models in parallel works", {
                      model_controls = model_controls, 
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
                      calc_wlev = FALSE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
-
+  aeme <- run_aeme(aeme = aeme, parallel = TRUE, ncores = 2)
+  plot_wlev(aeme)
+  
   testthat::expect_true(check_all_model_outfiles(aeme))
   
   var_sim <- c("LKE_lvlwtr", "HYD_temp")
