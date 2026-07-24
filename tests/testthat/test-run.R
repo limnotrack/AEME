@@ -405,21 +405,17 @@ test_that("running models in parallel works", {
   path <- tempdir()
   aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("dy_cd", "glm_aed", "gotm_wet")
+  model <- c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2")
   model <- filter_platform_models(model)
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls, 
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
                      calc_wlev = FALSE)
-  inp <- input(aeme)
-  met <- inp$meteo
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
                    parallel = TRUE, ncores = 2)
-  
+
   testthat::expect_true(check_all_model_outfiles(aeme))
   
   var_sim <- c("LKE_lvlwtr", "HYD_temp")
