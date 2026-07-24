@@ -29,7 +29,7 @@ make_met_simstrat <- function(met, path_simstrat, ref_year) {
                                                                  width = 10)))
 
   lines <- c(
-    "  Time [d]     u [m/s]  v [m/s] Tair [°C] sol [W/m2] vap [mbar] cloud [-] rain [m/hr]",
+    "  Time [d]     u [m/s]  v [m/s] Tair [degC] sol [W/m2] vap [mbar] cloud [-] rain [m/hr]",
     apply(met_out, 1, paste, collapse = " ")
   )
   writeLines(lines, file.path(path_simstrat, "MeteoForcing.dat"))

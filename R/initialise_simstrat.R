@@ -17,7 +17,7 @@ initialise_simstrat <- function(init_prof, path_simstrat, surface_elev) {
                   k = 3.0e-06, eps = 5.0e-10)
 
   lines <- c(
-    "Depth [m]    U [m/s]    V [m/s]    T [°C]    S [‰]    k [J/kg]    eps [W/kg]",
+    "Depth [m]    U [m/s]    V [m/s]    T [degC]    S [ppt]    k [J/kg]    eps [W/kg]",
     paste(
       format(prof$depth, nsmall = 2),
       format(prof$U, nsmall = 3),
