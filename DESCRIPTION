@@ -59,18 +59,20 @@ Suggests:
     htmltools,
     knitr,
     LakeEnsemblR (>= 1.2.9),
+    ltapi (>= 0.0.0.9000),
     osmdata,
     rmarkdown,
     testthat (>= 3.0.0),
     tmap
 VignetteBuilder: 
     knitr
-Remotes: 
+Remotes:  
     github::aemon-j/GLM3r,
     github::aemon-j/GOTMr,
     github::aemon-j/LakeEnsemblR,
     github::limnotrack/aemetools@dev,
-    github::limnotrack/bathytools
+    github::limnotrack/bathytools,
+    github::limnotrack/ltapi
 Config/checklist/communities: limnotrack
 Config/checklist/keywords: ecosystem; modelling
 Config/Needs/website:
