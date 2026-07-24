@@ -211,12 +211,9 @@ test_that("building GOTM-WET works", {
 })
 
 test_that("building all models with minimum met variables", {
-  tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+  path <- tempdir()
   req_met1 <- c("Date", "MET_tmpair", "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", 
                 "MET_pprain", "MET_radswd")
   inp <- input(aeme)
@@ -230,7 +227,8 @@ test_that("building all models with minimum met variables", {
                      model_controls = model_controls, use_bgc = FALSE)
   
   cfg_upd <- cfg <- configuration(aeme)
-  for (m in model) {
+  all_models <- list_models()
+  for (m in all_models) {
     cfg_upd[[m]] <- NULL
   }
   configuration(aeme) <- cfg_upd
