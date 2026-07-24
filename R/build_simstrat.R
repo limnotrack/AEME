@@ -231,10 +231,16 @@ simstrat_day_to_date <- function(day, ref_year) {
   day <- date_to_simstrat_day(df$Date, ref_year)
 
   if (integrate) {
+    # Depth header must be ascending (Simstrat's Integrate() computes
+    # x(i) - x(i-1) with no reordering of the file's own depth values -- see
+    # strat_lateral.f90's z_Inp read and utilities.f90::Integrate()). Writing
+    # depth points in descending order flips the sign of dx, and therefore
+    # the sign of every integrated flux (inflow, outflow, temperature,
+    # salinity, AED2 inflow concentrations) that goes through this writer.
     lines <- c(
       comment,
       "0 2",
-      paste("-1", format(depth, nsmall = 2), format(depth - 1, nsmall = 2)),
+      paste("-1", format(depth - 1, nsmall = 2), format(depth, nsmall = 2)),
       paste(format(day, nsmall = 4), format(df$value, nsmall = 4),
             format(df$value, nsmall = 4))
     )
