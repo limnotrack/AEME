@@ -378,7 +378,7 @@ cfg[["simstrat_aed2"]]$hydrodynamic$ModelConfig[c("InflowMode", "IceModel",
 
 ---
 
-## Simstrat-AED2 specific features
+## Simstrat-AED2 specific features {#simstrat-features}
 
 ### Automatic water balance fitting
 
@@ -426,6 +426,22 @@ This is most relevant for seasonally-ice-covered lakes; the `freez_temp`,
 `snow_temp`, `wat_albedo`, and `p_sw_ice` parameters in the parameter
 library above configure it.
 
+### The `simstrat.par` template is copied once, not re-applied
+
+`build_simstrat()` only copies AEME's bundled `simstrat.par` template into a
+lake's `simstrat_aed2/` directory the *first* time that lake is built —
+every subsequent `build_aeme()` call reads back and rewrites that same
+per-lake file (updating only the specific fields `build_aeme()` itself
+manages, like file paths, `Simulation` dates, and `lat`/`p_air`). This
+keeps any manual edits you make to a lake's own `simstrat.par` from being
+silently discarded on rebuild, but it also means a change to the *package
+template* (e.g. `AED2Config.OutputDiagnosticVars`, or any `ModelParameters`
+default) only takes effect for lakes built *after* the change — an
+already-built lake directory keeps whatever it already had. To pick up a
+template change on an existing lake, either delete that lake's
+`simstrat_aed2/` directory and rebuild, or edit the per-lake `simstrat.par`
+directly (as shown for `OutputDiagnosticVars` below).
+
 ---
 
 ## Running Simstrat-AED2
@@ -460,12 +476,19 @@ plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
 plot_output(aeme = aeme, model = model, var_sim = "NIT_nit")
 ```
 
-Note that not every variable available for GLM-AED is necessarily available
-for Simstrat-AED2 — for example `PHY_tchla` (total chlorophyll-*a*) is a
-native GLM/AED diagnostic that the AED2 `aed2_totals` module (as bundled
-with Simstrat) does not compute, so it is not available to plot here. Use
-`assess_model()` (below) to see which requested variables actually produced
-output for a given model.
+`PHY_tchla` (total chlorophyll-*a*) also plots without any extra setup:
+
+```{r plot-tchla, fig.cap="Simulated total chlorophyll-a (ug/L) profiles."}
+plot_output(aeme = aeme, model = model, var_sim = "PHY_tchla")
+```
+
+`PHY_tchla` is not itself an AED2 *state* variable — it is a *diagnostic*
+variable, computed internally by `aed2_phytoplankton` from the active
+phytoplankton groups' biomass. It only reaches `output.nc` because AEME's
+bundled `simstrat.par` template sets `AED2Config.OutputDiagnosticVars` to
+`true`. See the [AED2 diagnostic variables](#aed2-diagnostic-variables)
+section below for what that switch controls, why it matters, and how to
+interpret the wider set of diagnostics it unlocks.
 
 ---
 
@@ -479,6 +502,177 @@ simulated variable:
 skill <- assess_model(aeme = aeme, model = model)
 skill
 ```
+
+---
+
+## AED2 diagnostic variables {#aed2-diagnostic-variables}
+
+### State variables vs. diagnostic variables
+
+Every AED2 module tracks two kinds of quantities:
+
+- **State variables** (`OXY_oxy`, `NIT_amm`, `NIT_nit`, `PHS_frp`,
+  `CAR_dic`, `OGM_doc`, `PHY_<group>`, ...) are the variables AED2 actually
+  integrates forward in time — mass-balance pools with their own initial
+  condition, inflow loading, and (where applicable) sediment exchange.
+  Simstrat writes these to `output.nc` unconditionally whenever the owning
+  module is active — that's why `CHM_oxy`/`NIT_nit` above needed no extra
+  configuration.
+- **Diagnostic variables** (`PHY_TCHLA`, `PHY_GPP`, `OXY_atm_oxy_flux`,
+  `NIT_nitrif`, ...) are quantities *computed from* the state variables at
+  each timestep — reaction rates, fluxes across an interface, or derived
+  aggregates — but not themselves part of the mass balance. They exist
+  purely for interpretation and diagnosis of *why* the state variables are
+  behaving the way they are.
+
+Because there can be dozens of these per module, Simstrat gates all AED2
+diagnostics behind a single switch, `AED2Config.OutputDiagnosticVars` in
+`simstrat.par`. AEME's bundled template now sets this to `true` (it
+defaulted to `false` in earlier package versions), so diagnostics are
+available out of the box — as demonstrated by `PHY_tchla` above. You can
+confirm the setting for a built lake with:
+
+```{r check-diag-switch, eval=TRUE}
+sim_dir <- file.path(get_lake_dir(aeme, path), model)
+par <- jsonlite::fromJSON(file.path(sim_dir, "simstrat.par"), simplifyVector = FALSE)
+par$AED2Config$OutputDiagnosticVars
+```
+
+If you build on top of a lake directory that was created with an older
+version of the template (`OutputDiagnosticVars = false` already written to
+its own `simstrat.par`), the switch will *not* update automatically — see
+[Simstrat-AED2 specific features](#simstrat-features) above for why `build_aeme()` only copies
+the template into directories that don't already have a `simstrat.par`. Flip
+it manually and re-run in that case, exactly as shown for `sim_dir`/`par`
+above but setting `par$AED2Config$OutputDiagnosticVars <- TRUE` before
+writing it back out.
+
+### What's available, and how to interpret it
+
+Diagnostics fall into a few interpretable categories. Units and
+descriptions below are taken directly from the AED2 source
+(`aed2_oxygen.F90`, `aed2_carbon.F90`, `aed2_nitrogen.F90`,
+`aed2_phosphorus.F90`, `aed2_silica.F90`, `aed2_organic_matter.F90`,
+`aed2_phytoplankton.F90`):
+
+**Interface exchange fluxes** — mass crossing the atmosphere-water or
+sediment-water interface. Verified from source (`aed2_oxygen.F90`'s
+`aed2_calculate_surface_oxygen`/`aed2_calculate_benthic_oxygen`): **positive
+means flux *into* the water column** (a source to the pelagic), negative
+means *out of* the water column (a sink), consistently for both interface
+types.
+
+| Variable | Units | Description |
+|----------|-------|-------------|
+| `OXY_atm_oxy_flux` | mmol/m2/d | O~2~ exchange across the atm/water interface |
+| `OXY_sed_oxy` | mmol/m2/d | O~2~ exchange across the sediment/water interface (sediment oxygen demand, when negative) |
+| `CAR_atm_co2_flux` | mmol/m2/d | CO~2~ exchange across the atm/water interface |
+| `CAR_atm_ch4_flux` | mmol/m2/d | CH~4~ exchange across the atm/water interface |
+| `CAR_sed_dic` | mmol/m2/d | DIC sediment flux |
+| `CAR_sed_ch4` | mmol/m2/d | CH~4~ sediment flux |
+| `SIL_sed_rsi` | mmol/m2/d | Reactive silica sediment flux |
+| `NIT_sed_amm` / `NIT_sed_nit` | mmol/m2/d | Ammonium / nitrate sediment flux |
+| `NIT_atm_din_flux` | mmol/m2/d | Dissolved inorganic nitrogen atmospheric deposition flux |
+| `PHS_sed_frp` | mmol/m2/d | Phosphate (FRP) sediment flux |
+| `PHS_atm_dip_flux` | mmol/m2/d | Particulate inorganic P dry deposition flux |
+| `OGM_Psed_poc`/`Psed_pon`/`Psed_pop` | mmol/m2/s | POC/PON/POP settling flux to the sediment |
+| `PHY_Psed_phy` | mmol/m2/s | Phytoplankton settling flux to the sediment |
+
+**Internal reaction rates** — volumetric transformation rates within the
+water column (mmol/m3/d); always non-negative (a rate of zero simply means
+the process isn't occurring, e.g. no oxygen for nitrification):
+
+| Variable | Description |
+|----------|-------------|
+| `NIT_nitrif` | Nitrification rate (NH~4~ -> NO~3~) |
+| `NIT_denit` | De-nitrification rate (NO~3~ -> N~2~) |
+| `NIT_anammox` | Anammox rate (NH~4~ + NO~2~ -> N~2~) |
+| `NIT_dnra` | Dissimilatory nitrate reduction to ammonium (DNRA) rate |
+| `CAR_ch4ox` | Methane oxidation rate |
+
+**Water-column state diagnostics** — derived quantities describing the
+current state, not fluxes:
+
+| Variable | Units | Description |
+|----------|-------|-------------|
+| `OXY_sat` | % | Oxygen saturation |
+| `CAR_pCO2` | atm | Partial pressure of CO~2~ |
+| `CAR_CO2` | mmol/m3 | Dissolved (aqueous) CO~2~ concentration |
+| `OGM_CDOM` | /m | Chromophoric dissolved organic matter (a light-absorption proxy) |
+
+**Phytoplankton production and nutrient uptake** — from `aed2_phytoplankton`,
+computed whenever that module is active:
+
+| Variable | Units | Description |
+|----------|-------|-------------|
+| `PHY_TCHLA` | ug/L | Total chlorophyll-*a*, summed across active groups |
+| `PHY_GPP` | mmol/m3/d | Gross primary production |
+| `PHY_NCP` | mmol/m3/d | Net community production (GPP less respiration/losses) |
+| `PHY_NUP_no3` / `PHY_NUP_nh4` | mmol/m3/d | Nitrogen uptake, as nitrate / ammonium |
+| `PHY_PUP` | mmol/m3/d | Phosphorus uptake |
+| `PHY_CUP` | mmol/m3/d | Carbon uptake |
+| `PHY_IN` / `PHY_IP` | mmol/m3 | Total phytoplankton internal nitrogen / phosphorus |
+| `PHY_<group>_IN` / `_IP` / `_NtoP` | mmol/m3, mmol/m3, - | Per-group internal N, internal P, and N:P ratio (one set per active phytoplankton group, e.g. `PHY_diatom_IN`) |
+
+A few additional per-group diagnostics (`_fI`, `_fNit`, `_fPho`, `_fSil`,
+`_fT`, `_fSal` limitation factors 0-1, `PPR`/`NPR` production ratios, `PAR`)
+and an organic-matter photolysis rate are gated behind a further
+`extra_diag = true` switch in `aed2.nml` (`false` in the bundled template,
+since they roughly double the number of output variables for detail most
+users won't need day-to-day).
+
+### Example: production and gas exchange
+
+`PHY_tchla` above plots through `plot_output()` because it already has a
+`var_aeme` entry in AEME's `key_naming` catalog, mapped to Simstrat-AED2's
+`PHY_TCHLA`. Most of the diagnostics tabulated above (`PHY_GPP`,
+`OXY_atm_oxy_flux`, `OXY_sat`, ...) do **not** have a `var_aeme` entry yet —
+AEME hasn't adopted every AED2 diagnostic into its standardised variable
+catalog. `plot_output()`/`assess_model()` only recognise `var_aeme` names,
+and passing an unregistered one through can silently resolve to the *wrong*
+variable via `guess_aeme_vars()`'s fuzzy keyword matching rather than
+failing loudly (`"PHY_GPP"`, for instance, fuzzy-matches to `"PHY_green"` —
+a phytoplankton group's biomass, not gross primary production — since
+neither name is registered). Until these diagnostics get their own
+`var_aeme` entries, read them straight from `output.nc` instead:
+
+```{r read-diagnostics-nc}
+outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+nc <- ncdf4::nc_open(outfile$simstrat_aed2)
+
+time_sec <- ncdf4::ncvar_get(nc, "time")
+origin <- gsub("seconds since ", "", ncdf4::ncatt_get(nc, "time", "units")$value)
+dates <- as.Date(as.POSIXct(time_sec, origin = origin, tz = "UTC"))
+
+# PHY_GPP is depth-resolved (z, time); take the near-surface layer (z[1] = 0 m,
+# since Output.OutputDepthReference = "surface")
+gpp_surf <- ncdf4::ncvar_get(nc, "PHY_GPP")[1, ]
+
+# OXY_atm_oxy_flux is a surface-only "sheet" diagnostic (time only, no depth)
+atm_oxy_flux <- ncdf4::ncvar_get(nc, "OXY_atm_oxy_flux")
+
+ncdf4::nc_close(nc)
+
+diag_df <- data.frame(Date = dates, GPP = gpp_surf, atm_oxy_flux = atm_oxy_flux)
+head(diag_df)
+```
+
+```{r plot-diagnostics-nc, fig.cap="Near-surface gross primary production and atmospheric oxygen exchange flux."}
+ggplot(diag_df, aes(x = Date)) +
+  geom_line(aes(y = GPP, colour = "Near-surface GPP (mmol C m-3 d-1)")) +
+  geom_line(aes(y = atm_oxy_flux, colour = "Atm. O2 flux (mmol O2 m-2 d-1)")) +
+  labs(y = NULL, colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+A sustained positive `OXY_atm_oxy_flux` indicates the lake surface is
+undersaturated and drawing oxygen in from the atmosphere (e.g. following a
+period of high respiration or low photosynthesis); a sustained negative
+flux indicates supersaturation venting oxygen to the atmosphere (typically
+during a strong phytoplankton bloom). Compare its timing against `PHY_GPP`
+and `OXY_sat` to build a physical picture of the oxygen budget, rather than
+reading `CHM_oxy` in isolation.
 
 ---
 
