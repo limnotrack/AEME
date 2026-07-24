@@ -36,7 +36,7 @@
 
 estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
                                initial_guess = NULL, verbose = FALSE) {
-  
+
   msg <- paste0("Estimating lake water levels for ", model)
   cli_safe(msg, indent = FALSE)
   # 1. Setup Initial Conditions
@@ -54,17 +54,30 @@ estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
     gotm_met <- data |>
       dplyr::rename(u10 = MET_wnduvu, v10 = MET_wnduvv, airt = MET_tmpair,
                     hum = MET_humrel, airp = MET_prsttn, precip = MET_pprain) |>
-      dplyr::mutate(precip = precip / 86400, airp = airp) |> 
+      dplyr::mutate(precip = precip / 86400, airp = airp) |>
       add_hum_vars(hum_method = 1)
   } else {
     gotm_met <- NULL
   }
-  
-  out <- simulate_lake_nudged(params = initial_guess, data = data, 
+  if (model == "simstrat_aed2") {
+    # Simstrat's own evaporation formula (see calc_evap()'s simstrat_aed2
+    # branch) needs actual vapour pressure directly, exactly as fed to
+    # Simstrat itself via MeteoForcing.dat, rather than derived from
+    # relative humidity with a different saturation-vapour formula.
+    simstrat_met <- data |>
+      dplyr::rename(u10 = MET_wnduvu, v10 = MET_wnduvv, airt = MET_tmpair,
+                    airp = MET_prsttn, vap = MET_prvapr)
+  } else {
+    simstrat_met <- NULL
+  }
+
+  out <- simulate_lake_nudged(params = initial_guess, data = data,
                               hyps_df = hyps_df,  start_lvl = start_lvl,
-                              model = model, gotm_met = gotm_met)
+                              model = model, gotm_met = gotm_met,
+                              simstrat_met = simstrat_met)
   level_cost(params = initial_guess, data = data, hyps_df = hyps_df,
-             start_lvl = start_lvl, model = model, gotm_met = gotm_met)
+             start_lvl = start_lvl, model = model, gotm_met = gotm_met,
+             simstrat_met = simstrat_met)
   # plot(out$h, type = "l")
   # points(data$lvl_obs, col = "red")
   
@@ -80,6 +93,7 @@ estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
       start_lvl = start_lvl,
       model = model,
       gotm_met = gotm_met,
+      simstrat_met = simstrat_met,
       method = "L-BFGS-B",
       lower = c(0.001, min(hyps_df$elev)),
       upper = c(10, max(data$lvl_obs, na.rm = TRUE)),
@@ -101,9 +115,10 @@ estimate_lake_wlev <- function(data, hyps_df, model, init_elev, params = NULL,
   
   # 3. Generate Final Time Series
   # Uses the standard simulate_lake (un-nudged) for the final result
-  final_sim <- simulate_lake_nudged(params = params, data = data, 
+  final_sim <- simulate_lake_nudged(params = params, data = data,
                                     hyps_df = hyps_df,  start_lvl = start_lvl,
-                                    model = model, gotm_met = gotm_met)
+                                    model = model, gotm_met = gotm_met,
+                                    simstrat_met = simstrat_met)
   # sum(final_sim$residual)
   
   # 4. Append results to dataframe and return
@@ -138,12 +153,13 @@ level_from_volume <- function(V, hyps) {
 #' Calculate cost for lake level simulation
 #' @noRd
 level_cost <- function(params, data, hyps_df, start_lvl, model,
-                       gotm_met = NULL) {
+                       gotm_met = NULL, simstrat_met = NULL) {
   # cat("Parameters: C =", round(params[1],4), ", h_inv =", round(params[2],4), "\n")
   # Penalize if h_inv is physically impossible (e.g., above max lake level)
   if(params[2] > max(hyps_df$elev)) return(1e10)
-  
-  res <- simulate_lake_nudged(params, data, hyps_df, start_lvl, model, gotm_met)
+
+  res <- simulate_lake_nudged(params, data, hyps_df, start_lvl, model, gotm_met,
+                              simstrat_met)
   
   # Compare only on days where we have an observation (is_obs_lvl == TRUE)
   obs_idx <- which(data$is_obs_lvl)
@@ -158,8 +174,9 @@ level_cost <- function(params, data, hyps_df, start_lvl, model,
 
 #' Simulate lake levels with nudging to observations
 #' @noRd
-simulate_lake_nudged <- function(params, data, hyps_df, start_lvl, 
-                                 model = "dy_cd", gotm_met = NULL) {
+simulate_lake_nudged <- function(params, data, hyps_df, start_lvl,
+                                 model = "dy_cd", gotm_met = NULL,
+                                 simstrat_met = NULL) {
   C <- params[1]
   h_inv <- params[2]
   alpha <- 0
@@ -196,30 +213,35 @@ simulate_lake_nudged <- function(params, data, hyps_df, start_lvl,
     evap_m_day <- 0 # Default
     V_min <- min(hyps_df$volume)
     
-    if (model %in% c("dy_cd", "glm_aed", "simstrat_aed2")) {
+    if (model %in% c("dy_cd", "glm_aed")) {
       # Physics for DYRESM-CAEDYM / GLM
       Ts_t <- data$sst[t]
       es_t <- exp(2.3026 * (((7.5 * Ts_t) / (Ts_t + 237.3) + 0.7858)))
       Qlh_t <- (0.622/981.9) * 0.0013 * 1.168 * 2453000 * data$MET_wndspd[t] * (data$MET_prvapr[t] - es_t)
       if(Qlh_t > 0) Qlh_t <- 0
-      
+
       # Convert heat flux to depth (m/day)
       # formula: (mass loss / density) / area -> becomes depth
       evap_m_day <- ((Qlh_t) / 2258000) * (86400 / 1000)
-      
+
     } else if (model == "gotm_wet") {
       # For GOTM, we call your existing calc_evap function
       # We pass the row of data for time t
 
       evap_m_day <- calc_evap(met = gotm_met[t, ], model = "gotm_wet",
                               method = "fairall") * 86400
+    } else if (model == "simstrat_aed2") {
+      # Simstrat's own wind-function evaporation formula (see calc_evap()'s
+      # simstrat_aed2 branch) rather than the GLM-style bulk formula, since
+      # Simstrat integrates this one directly.
+      evap_m_day <- calc_evap(met = simstrat_met[t, ], model = "simstrat_aed2") * 86400
     }
-    
+
     evap_m_day <- abs(evap_m_day)
-    
+
     evap_vol_t <- evap_m_day * A_t
     sim_evap[t] <- evap_vol_t
-    
+
     # 4. Water Balance
     rain_vol_t <- data$MET_pprain[t] * A_t
     net_flux <- data$HYD_flow[t] + rain_vol_t - evap_vol_t - sim_O[t] - 
@@ -269,22 +291,24 @@ simulate_lake_nudged <- function(params, data, hyps_df, start_lvl,
   t <- n_days
   A_t <- get_hyps_val(depth = sim_h[t], hyps = hyps_df)
   
-  if (model %in% c("dy_cd", "glm_aed", "simstrat_aed2")) {
+  if (model %in% c("dy_cd", "glm_aed")) {
     # Physics for DYRESM-CAEDYM / GLM
     Ts_t <- data$sst[t]
     es_t <- exp(2.3026 * (((7.5 * Ts_t) / (Ts_t + 237.3) + 0.7858)))
     Qlh_t <- (0.622/981.9) * 0.0013 * 1.168 * 2453000 * data$MET_wndspd[t] * (data$MET_prvapr[t] - es_t)
     if(Qlh_t > 0) Qlh_t <- 0
-    
+
     # Convert heat flux to depth (m/day)
     # formula: (mass loss / density) / area -> becomes depth
     evap_m_day <- ((Qlh_t) / 2258000) * (86400 / 1000)
-    
+
   } else if (model == "gotm_wet") {
     # For GOTM, we call your existing calc_evap function
     # We pass the row of data for time t
     evap_m_day <- calc_evap(met = gotm_met[t, ], model = "gotm_wet",
                             method = "fairall") * 86400
+  } else if (model == "simstrat_aed2") {
+    evap_m_day <- calc_evap(met = simstrat_met[t, ], model = "simstrat_aed2") * 86400
   }
   evap_m_day <- abs(evap_m_day)
   
