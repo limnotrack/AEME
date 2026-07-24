@@ -64,8 +64,9 @@ assess_model <- function(aeme, model, var_sim) {
       return(NULL)
     }
 
-    model_names <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
-                              Model = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
+    all_models <- list_models()
+    model_names <- data.frame(model = all_models,
+                              Model = names(all_models))
 
     # Fit linear model for each model
     fit <- lapply(model, \(m) {
