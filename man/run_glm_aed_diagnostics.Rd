@@ -26,7 +26,7 @@ Accepts:
 Default NULL = all entries.
 }}
 
-\item{depth_collapse}{"mean", "surface" or "max" — reduce 3D variables}
+\item{depth_collapse}{"mean", "surface" or "max" -- reduce 3D variables}
 
 \item{plot}{draw combined plots, grouped by element}
 
