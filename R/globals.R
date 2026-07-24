@@ -15,9 +15,13 @@ utils::globalVariables(c(
   "HYD_temp",
   "Inflow",
   "LKE_outflow",
+  "LKE_outftot",
   "LKE_tli3",
   "LKE_tli4",
-  
+  "Qlh_t",
+  "wbal",
+  "weir_Q_check",
+
   # Meteorological variables
   "MET_humrel",
   "MET_pprain",
