@@ -70,6 +70,47 @@ the R package version.
   extension and is plain text - `read_model_config(model = "dy_cd", ...)`
   failed on any lake with a DYRESM-CAEDYM configuration. Now scoped to
   `model == "simstrat_aed2"` only.
+* Fixed a lake-level inversion bug affecting every Simstrat-AED2
+  simulation with non-trivial inflows/outflows: `.write_simstrat_grid_file()`
+  wrote the two-point depth header used to force a non-zero trapezoidal
+  integration in descending order, but Simstrat's `Integrate()` computes
+  `dx = x(i) - x(i-1)` directly from the file's own (unreordered) depth
+  values. A descending header therefore silently negated every flux this
+  writer produces - inflow, outflow, temperature, salinity, and AED2 inflow
+  concentrations alike - which is why simulated lake level for
+  Simstrat-AED2 tracked in the opposite direction to the other three
+  models. Fixed by writing the depths in ascending order; verified by
+  comparing Simstrat's own `Qvert` output variable against the expected
+  net inflow/outflow signal (now matching almost exactly, correlation
+  0.9986, vs. an exact sign-flip before the fix).
+* `calc_evap()` gained a dedicated `model == "simstrat_aed2"` branch
+  implementing Simstrat's own evaporation formula (a Livingstone & Imboden
+  wind function with a Gill (1992) saturation vapour pressure, from
+  `strat_forcing.f90`), used by `estimate_lake_wlev()` when fitting the
+  water balance for Simstrat-AED2. It previously shared GLM-AED's simpler
+  bulk-aerodynamic formula.
+* `build_aeme()` did not call `migrate_aeme()`, so an `Aeme` object saved
+  before `simstrat_aed2` existed (missing `time$spin_up[["simstrat_aed2"]]`)
+  would crash inside `check_time()`'s `compute_spinup_dates()` the first
+  time it was built with a newer AEME version. `build_aeme()` now migrates
+  the object on entry, matching `check_aeme()`/`show()`/`plot()`.
+
+## New data
+
+* `simstrat_aed2_parameter_library` — a comprehensive reference table of
+  Simstrat-AED2 parameters (physical parameters from the Simstrat User
+  Manual, plus AED2 biogeochemical parameters shared with
+  `glm_aed_parameter_library`), mirroring the existing
+  `glm_aed_parameter_library` dataset.
+
+## Documentation
+
+* Added the `simstrat-aed2` article (`vignettes/articles/simstrat-aed2.Rmd`),
+  covering Simstrat-AED2's model description, AED2 module coupling, the new
+  parameter library, model-specific features (automatic AED2 module
+  selection, inflow modes, ice/snow, water balance fitting), and
+  calibration (the `simstrat_aed2_parameters` dataset and Simstrat's native
+  PEST-based workflow), mirroring the existing `glm-aed` article.
 
 ## Testing
 
