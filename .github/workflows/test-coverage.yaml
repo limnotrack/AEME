@@ -28,6 +28,11 @@ jobs:
           extra-packages: any::covr
           needs: coverage
 
+      - name: Pre-install Models
+        run: |
+          Rscript -e 'AEME::install_models()'
+        shell: bash
+
       - name: Test coverage
         run: |
           covr::codecov(
