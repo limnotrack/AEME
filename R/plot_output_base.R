@@ -1,8 +1,10 @@
 #' Base plotting function for AEME output
-#' 
+#'
 #' @inheritParams plot_output
 #' @export
 #' @return A list of matrices with the plotted output, invisibly.
+#' @importFrom graphics axis box image layout legend lines mtext par
+#' @importFrom grDevices dev.new dev.size
 #' @examples
 #' \dontrun{
 #' tmpdir <- tempdir()
