@@ -1,6 +1,12 @@
 #' Base plotting function for AEME output
 #'
 #' @inheritParams plot_output
+#' @param plot_width numeric; width in pixels of each panel, used to size the
+#' plotting device. Default is 400.
+#' @param plot_height numeric; height in pixels of each panel, used to size
+#' the plotting device. Default is 200.
+#' @param bar_width numeric; width of the colour bar as a fraction of
+#' `plot_width`. Default is 0.08.
 #' @export
 #' @return A list of matrices with the plotted output, invisibly.
 #' @importFrom graphics axis box image layout legend lines mtext par

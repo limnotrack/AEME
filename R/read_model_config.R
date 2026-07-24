@@ -2,7 +2,8 @@
 #'
 #' @param model character; model name ("dy_cd", "glm_aed", "gotm_wet"). Only
 #'  one model at a time.
-#' @param path character; directory which contains the model configuration files.
+#' @param lake_dir character; directory which contains the model configuration
+#' files.
 #'
 #' @returns List with model configuration components. This includes a 'hydrodynamic'
 #' list with hydrodynamic model configuration and a 'bgc' list with biogeochemistry

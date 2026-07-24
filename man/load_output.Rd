@@ -25,6 +25,9 @@ not found in \code{aeme}.}
 \item{path}{character; directory where input files are located. Defaults to
 the path stored in \code{aeme}, or the current working directory if not set.}
 
+\item{lake_dir}{Path to the lake AEME directory. If \code{NULL}, it is derived
+from \code{aeme}/\code{path}.}
+
 \item{model_controls}{data.frame; model configuration, typically loaded via
 \code{\link[=get_model_controls]{get_model_controls()}}.}
 

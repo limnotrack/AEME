@@ -3,6 +3,8 @@
 #' @inheritParams build_aeme
 #' @inheritParams run_aeme
 #' @inheritParams parallel::stopCluster
+#' @param lake_dir Path to the lake AEME directory. If `NULL`, it is derived
+#' from `aeme`/`path`.
 #'
 #' @return Updated aeme object with model output
 #' @export

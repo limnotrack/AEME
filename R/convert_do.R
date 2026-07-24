@@ -32,6 +32,8 @@ convert_do <- function(value, depth, temp, baro, altitude = 0, salinity = 0,
 #' Estimate oxygen saturation concentration
 #'
 #' @param temp water temperature (°C)
+#' @param depth depth (m) at which the DO measurement was made; adds a
+#' hydrostatic pressure correction.
 #' @param baro barometric pressure (mb)
 #' @param altitude altitude (m). Only used if `baro` is missing.
 #' @param salinity salinity (ppt).

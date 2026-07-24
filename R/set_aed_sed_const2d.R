@@ -1,6 +1,8 @@
 #' Setup AED aed_sed_const2d sediment model parameters
 #'
 #' @inheritParams build_aeme
+#' @param lake_dir Path to the lake AEME directory. If `NULL`, it is derived
+#' from `aeme`/`path`.
 #' @param baseline     Named numeric vector of baseline fluxes at
 #'   \code{ref_depth}. Must include \code{fsed_oxy}, \code{fsed_amm},
 #'   \code{fsed_nit}, \code{fsed_frp}.
