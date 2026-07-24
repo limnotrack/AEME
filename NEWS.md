@@ -1,3 +1,84 @@
+# AEME 0.4.0
+
+## New model
+
+* Added **Simstrat-AED2** (`"simstrat_aed2"`) as a fourth supported model,
+  alongside DYRESM-CAEDYM, GLM-AED, and GOTM-WET, with the full
+  `build_aeme()`/`run_aeme()`/output-reading pipeline: `build_simstrat()`,
+  `run_simstrat_aed2()`, `read_simstrat_output()`, `check_simstrat_par()`,
+  `write_simstrat_nc()`, and AED2 biogeochemistry support via
+  `initialise_aed2()`.
+
+## Model binaries moved out of the package
+
+Model executables are no longer bundled inside the package - they're now
+downloaded on demand from GitHub release assets into a persistent local
+cache, verified against a published SHA256 checksum before use. This keeps
+the installed package small and lets binaries be updated independently of
+the R package version.
+
+* `install_glm_aed()`, `install_gotm_wet()`, `install_dy_cd()`,
+  `install_simstrat_aed2()` — download and verify a specific (or the
+  `"latest"`) model executable version for the current platform. Paired
+  `list_*_versions()` (what's published, per platform) and `*_exe_path()`
+  (locate an already-installed executable) helpers for each model.
+  `install_glm_aed()` supports Windows, macOS, and Linux (including bundled
+  dylibs on macOS); GOTM-WET, DYRESM-CAEDYM, and Simstrat-AED2 are
+  currently Windows-only, matching the platforms binaries have actually
+  been built for.
+* `install_models()` — convenience wrapper installing the latest available
+  version of every model (or a chosen subset) in one call; models with no
+  published binary for the current platform (or no release published yet)
+  are reported and skipped rather than blocking the others.
+* `run_gotm_wet()` and `run_dy_cd()` now resolve their executable the same
+  way `run_glm_aed()` already did: an explicit `AEME.gotm_exec`/
+  `AEME.dyresm_exec` option, then a requested/previously installed version,
+  with a clear error pointing at `install_gotm_wet()`/`install_dy_cd()` if
+  nothing is found. `get_gotm_wet_version()` and `get_dy_cd_version()`
+  updated to match.
+* `inst/extbin/gotm_wet/` and `inst/extbin/dy_cd/` removed from version
+  control (still used locally if present - see `.gitignore`).
+* GLM version handling reworked to support multiple installed versions side
+  by side (switch between them via `glm_exe_path()`/`AEME.glm_version`
+  without re-downloading), with corrected OS detection and a GLM version
+  passed through correctly to parallel workers in `run_aeme(parallel = TRUE)`.
+
+## OS-aware model selection
+
+* `check_model()` gained an `os_valid` argument: when `TRUE`, restricts the
+  requested models to ones actually runnable on the current platform
+  (DYRESM-CAEDYM, GOTM-WET, and Simstrat-AED2 need Windows; GLM-AED runs
+  everywhere), falling back to GLM-AED with an informative message rather
+  than failing outright. `run_aeme()` now applies this automatically.
+* An `Aeme` object now remembers which model(s) it was last configured
+  for (`configuration(aeme)$model`, defaulting to `"glm_aed"`), so
+  `list_models(aeme)` reflects the actual configured model set instead of
+  always listing every model AEME supports.
+
+## New functions
+
+* `migrate_aeme()` — backfills defaults for any model missing from an
+  `Aeme` object's `time$spin_up`, `inflows$factor`, `outflows$factor`, or
+  `configuration` slots (e.g. objects created before `simstrat_aed2`
+  existed). Called automatically by `check_aeme()`, `show()`, and `plot()`
+  so older saved objects keep working without needing to be rebuilt.
+
+## Bug fixes
+
+* `read_model_config()` assumed any `.par` configuration file was
+  Simstrat's JSON format, but DYRESM-CAEDYM's `dyresm3p1.par` shares that
+  extension and is plain text - `read_model_config(model = "dy_cd", ...)`
+  failed on any lake with a DYRESM-CAEDYM configuration. Now scoped to
+  `model == "simstrat_aed2"` only.
+
+## Testing
+
+* Added `tests/testthat/helper-glm.R` and `setup.R` with shared helpers for
+  skipping/filtering tests by platform availability
+  (`skip_if_models_unavailable()`, `filter_platform_models()`,
+  `skip_if_no_glm()`) and CI coverage extended to macOS and Ubuntu, in
+  addition to Windows.
+
 # AEME 0.3.1
 
 ## New functions
