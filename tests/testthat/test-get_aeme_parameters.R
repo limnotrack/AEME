@@ -1,25 +1,25 @@
 test_that("all parameters can be retrieved", {
   param <- get_aeme_parameters()
-  testthat::expect_true(nrow(param) == 1384)
+  testthat::expect_equal(nrow(param), 1411)
 })
 
 test_that("DYRESM parameters can be retrieved", {
   param <- get_aeme_parameters(model = "dy_cd")
-  testthat::expect_true(length(unique(param$model)) == 1)
-  testthat::expect_true(nrow(param) == 16)
+  testthat::expect_equal(length(unique(param$model)), 1)
+  testthat::expect_equal(nrow(param), 16)
   param <- get_aeme_parameters(name = "vert_mix_coeff/15")
-  
+  testthat::expect_equal(nrow(param), 1)
 })
 
 test_that("GLM Kw parameter can be retrieved", {
   param <- get_aeme_parameters(par = "Kw")
-  testthat::expect_true(nrow(param) == 1)
+  testthat::expect_equal(nrow(param), 1)
   testthat::expect_true(param$model == "glm_aed")
 })
 
 test_that("GOTM k_min parameter can be retrieved", {
   param <- get_aeme_parameters(par = "k_min")
-  testthat::expect_true(nrow(param) == 1)
+  testthat::expect_equal(nrow(param), 1)
   testthat::expect_true(param$model == "gotm_wet")
 })
 
@@ -48,5 +48,13 @@ test_that("multiple GOTM parameters can be retrieved", {
   param1 <- get_aeme_parameters(name = tgt_names)
   param2 <- get_aeme_parameters(par = "k_min")
   param <- rbind(param1, param2)
+  testthat::expect_equal(length(unique(param$model)), 1)
+})
+
+test_that("Simstrat parameters can be retrieved", {
+  param <- get_aeme_parameters(model = "simstrat_aed2")
   testthat::expect_true(length(unique(param$model)) == 1)
+  testthat::expect_equal(nrow(param), 27)
+  param <- get_aeme_parameters(name = "ModelParameters/a_seiche")
+  testthat::expect_equal(nrow(param), 2)
 })
