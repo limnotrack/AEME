@@ -246,10 +246,10 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   on.exit({
     setwd(oldwd)
   })
-  bin_path <- system.file('extbin/', package = "AEME")
-  
+  bin_path <- dirname(.resolve_dy_cd_exec(version))
+
   arg <- ifelse(debug, "> dycd.log", "")
-  
+
   dy.prefix <- gsub(".stg", "", list.files(sim_folder, pattern = "stg"))
   
   setwd(sim_folder)
@@ -269,7 +269,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   cli_inform_safe(c(">" = paste0("DYRESM-CAEDYM running... ",
                                  "[", format(Sys.time()), "]")))
   # Create reference netcdf
-  bin_exec <- file.path(bin_path, "dy_cd", "createDYref.exe")
+  bin_exec <- file.path(bin_path, "createDYref.exe")
   if (verbose) {
     p <- processx::run(
       command = bin_exec,
@@ -297,7 +297,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   }
   
   # Create simulation file ----
-  bin_exec <- file.path(bin_path, "dy_cd", "createDYsim.exe")
+  bin_exec <- file.path(bin_path, "createDYsim.exe")
   if (verbose) {
     p <- processx::run(
       command = bin_exec,
@@ -326,7 +326,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   }
   
   # Extract DYRESM info file ----
-  bin_exec <- file.path(bin_path, "dy_cd", "extractDYinfo.exe")
+  bin_exec <- file.path(bin_path, "extractDYinfo.exe")
   if (verbose) {
     p <- processx::run(
       command = bin_exec,
@@ -354,7 +354,7 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
     }
   }
   
-  bin_exec <- file.path(bin_path, "dy_cd", "dycd.exe")
+  bin_exec <- file.path(bin_path, "dycd.exe")
   if (verbose) {
     p <- processx::run(
       command = bin_exec,
@@ -473,6 +473,91 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   path
 }
 
+#' Resolve which GOTM-WET executable to run
+#'
+#' Picks the GOTM-WET binary to use, in priority order: an explicit
+#' `AEME.gotm_exec` option (always wins), a specific installed version
+#' (`version` argument or `AEME.gotm_version` option, resolved via
+#' [gotm_wet_exe_path()]), or - if neither is set - whatever version is
+#' already installed on disk (checked directly rather than trusting session
+#' state). Unlike GLM, there
+#' is no bundled fallback - GOTM-WET binaries are only ever obtained via
+#' [install_gotm_wet()].
+#'
+#' @keywords internal
+#' @noRd
+.resolve_gotm_exec <- function(version = NULL) {
+  bin_exec <- getOption("AEME.gotm_exec", default = NULL)
+  if (!is.null(bin_exec)) {
+    if (!file.exists(bin_exec)) {
+      cli::cli_abort(
+        "{.envvar AEME.gotm_exec} points to {.path {bin_exec}}, but that file doesn't exist."
+      )
+    }
+    return(.ensure_executable(bin_exec))
+  }
+
+  sys_OS <- .detect_os()
+
+  if (!is.null(version)) {
+    return(.ensure_executable(gotm_wet_exe_path(version, os = sys_OS)))
+  }
+
+  latest <- .gotm_latest_installed_version(sys_OS)
+  if (!is.null(latest)) {
+    options(AEME.gotm_version = latest)  # sync session state for next time
+    return(.ensure_executable(gotm_wet_exe_path(latest, os = sys_OS)))
+  }
+
+  cli::cli_abort(c(
+    "x" = "No GOTM-WET binary found for {.field {sys_OS}}.",
+    "i" = "Install one with {.run install_gotm_wet()}."
+  ))
+}
+
+#' Resolve which DYRESM-CAEDYM executable directory to run
+#'
+#' Picks the DYRESM-CAEDYM install to use, in priority order: an explicit
+#' `AEME.dyresm_exec` option (pointing at `dycd.exe`, always wins), a
+#' specific installed version (`version` argument or `AEME.dyresm_version`
+#' option, resolved via [dy_cd_exe_path()]), or - if neither is set -
+#' whatever version is already installed on disk. Unlike GLM, there is no
+#' bundled fallback - DYRESM-CAEDYM binaries are only ever obtained via
+#' [install_dy_cd()]. Returns the path to `dycd.exe`; its three companion
+#' tools (`createDYref.exe`, `createDYsim.exe`, `extractDYinfo.exe`) sit
+#' alongside it in the same directory.
+#'
+#' @keywords internal
+#' @noRd
+.resolve_dy_cd_exec <- function(version = NULL) {
+  bin_exec <- getOption("AEME.dyresm_exec", default = NULL)
+  if (!is.null(bin_exec)) {
+    if (!file.exists(bin_exec)) {
+      cli::cli_abort(
+        "{.envvar AEME.dyresm_exec} points to {.path {bin_exec}}, but that file doesn't exist."
+      )
+    }
+    return(.ensure_executable(bin_exec))
+  }
+
+  sys_OS <- .detect_os()
+
+  if (!is.null(version)) {
+    return(.ensure_executable(dy_cd_exe_path(version, os = sys_OS)))
+  }
+
+  latest <- .dy_cd_latest_installed_version(sys_OS)
+  if (!is.null(latest)) {
+    options(AEME.dyresm_version = latest)  # sync session state for next time
+    return(.ensure_executable(dy_cd_exe_path(latest, os = sys_OS)))
+  }
+
+  cli::cli_abort(c(
+    "x" = "No DYRESM-CAEDYM binary found for {.field {sys_OS}}.",
+    "i" = "Install one with {.run install_dy_cd()}."
+  ))
+}
+
 #' @rdname run_dy_cd
 #' @export
 #' @importFrom processx run
@@ -539,12 +624,11 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
   on.exit({
     setwd(oldwd)
   })
-  bin_path <- system.file('extbin/', package = "AEME")
   setwd(sim_folder)
   dir.create("output", showWarnings = FALSE)
   cli_inform_safe(c(">" = paste0("GOTM-WET running... ",
                                  "[", format(Sys.time()), "]")))
-  bin_exec <- file.path(bin_path, "gotm_wet", "gotm.exe")
+  bin_exec <- .resolve_gotm_exec(version)
   if (verbose) {
     p <- processx::run(
       command = bin_exec,
@@ -724,10 +808,7 @@ get_glm_aed_version <- function(version = NULL) {
 #' @importFrom processx run
 #' @noRd
 get_gotm_wet_version <- function() {
-  bin_path <- system.file('extbin/', package = "AEME")
-  gotm_exec <- ifelse(.detect_os() == "windows",
-                      file.path(bin_path, "gotm_wet", "gotm.exe"),
-                      file.path(bin_path, "gotm_wet", "gotm"))
+  gotm_exec <- .resolve_gotm_exec()
   res <- processx::run(
     command = gotm_exec,
     args = "--version",
@@ -757,15 +838,20 @@ get_simstrat_aed2_version <- function() {
                        file.path(bin_path, "simstrat_aed2", "simstrat"))
   }
   vers <- system2(bin_exec, stdout = TRUE)
-  vers[grepl("Simstrat version", vers)]
+  return(trimws(vers[grepl("Simstrat version", vers)]))
 }
 
 #' Get DYRESM-CAEDYM model version
 #' @return version string
 #' @noRd
 get_dy_cd_version <- function() {
-  bin_path <- system.file('extbin/', package = "AEME")
-  dycd_readme <- file.path(bin_path, "dy_cd", "README_DY3p1p0-CD3p1p0.txt")
+  bin_path <- dirname(.resolve_dy_cd_exec())
+  dycd_readme <- file.path(bin_path, "README_DY3p1p0-CD3p1p0.txt")
+  if (!file.exists(dycd_readme)) {
+    vers <- getOption("AEME.dyresm_version", default = NA_character_)
+    cat(vers)
+    return(vers)
+  }
   vers <- readLines(dycd_readme, n = 9)
   cat(vers)
   return(vers)
@@ -787,8 +873,11 @@ get_model_version <- function(model) {
     vers <- get_gotm_wet_version()
   } else if (model == "dy_cd") {
     vers <- get_dy_cd_version()
+  } else if (model == "simstrat_aed2") {
+    vers <- get_simstrat_aed2_version()
   } else {
-    vers <- NA
+    cli::cli_abort(c("x" = "Model {.field {model}} is not supported for version
+                     checking."))
   }
   return(vers)
 }
