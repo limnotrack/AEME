@@ -106,16 +106,11 @@ calc_evap <- function(met, altitude,
     evap <- H_V / (latent_heat_vap * Density) # m/s
 
   } else {
-    Ts <- wtemp
-    #saturation vapor pressure
-    es <- exp(2.3026 *(((7.5*Ts)/(Ts+237.3)+0.7858)))
-    #evaporative heat flux
-    Qlh <- -((0.622/981.9) *         #constant/mean station pressure
-               0.0013 *               #latent heat transfer coefficient
-               1.168 *                #density of air
-               2453000 *              #latent heat of evaporation of water
-               wndspd *           #wind speed in m/s
-               (prvapr - es))
+    cli::cli_abort(
+      "Unsupported {.arg model} value {.val {model}} -- must be one of
+      {.val gotm_wet}, {.val glm_aed}, or {.val simstrat_aed2}.",
+      class = "aeme_error_calc_evap_model"
+    )
   }
   return(evap)
 }
