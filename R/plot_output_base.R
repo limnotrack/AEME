@@ -266,7 +266,7 @@ get_level <- function(aeme, model, ens_lab, date_idx) {
     axis(4, las = 1, cex.axis = 1)
     mtext(label, side = 4, line = right_mar - 0.5, cex = 0.7)
   }, error = \(e) {
-    cli::cli_alert_warning("Colour bar too narrow — try increasing {.arg plot_width}")
+    cli::cli_alert_warning("Colour bar too narrow -- try increasing {.arg plot_width}")
   })
 }
 
