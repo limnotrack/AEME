@@ -132,9 +132,8 @@ test_that("building GLM with fixed outlets", {
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
-  path <- "aeme"
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, 
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme)
   cfg <- configuration(aeme)
