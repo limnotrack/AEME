@@ -1,6 +1,7 @@
 #' Run GLM-AED diagnostics
 #'
 #' @inheritParams read_model_outputs
+#' @param aeme Aeme object.
 #' @param groups         character vector selecting catalogue entries.
 #'                       Accepts:
 #'                         - catalogue entry names (e.g. "nitrogen_state"),

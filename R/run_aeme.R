@@ -2,8 +2,12 @@
 #'
 #' @inheritParams build_aeme
 #' @inheritParams processx::run
-#' @param return logical; return model output within an `aeme` object? Defaults
-#' to TRUE.
+#' @param return_type character; one of `"aeme"` (default), `"exec_result"`,
+#' `"both"`, or `"none"`. `"aeme"` returns the `aeme` object with model output
+#' loaded; `"exec_result"` returns the raw `processx::run()` result(s) for
+#' each model; `"both"` returns a list with both `aeme` and `exec_result`
+#' elements; `"none"` returns `NULL` invisibly (useful when only the model
+#' run's side effects, i.e. the output files, are wanted).
 #' @inheritParams load_output
 #' @param verbose logical; print model output to console. Defaults to FALSE.
 #' @param debug logical; write debug log (Only DYRESM). Defaults to FALSE.
@@ -15,7 +19,9 @@
 #' @param ens_n numeric; ensemble number to allocate to model output which is
 #' loaded. Defaults to 1.
 #'
-#' @return an `aeme` object with model output loaded.
+#' @return Depends on `return_type` -- an `aeme` object with model output
+#' loaded (`"aeme"`), the raw `processx::run()` result(s) (`"exec_result"`),
+#' a list with both (`"both"`), or `NULL` invisibly (`"none"`).
 #' @export
 #'
 #' @importFrom parallel parLapply makeCluster detectCores clusterExport

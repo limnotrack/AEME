@@ -15,6 +15,8 @@ run_glm_aed_diagnostics(
 )
 }
 \arguments{
+\item{aeme}{Aeme object.}
+
 \item{model}{Model name. One of "gotm_wet", "glm_aed", or "dy_cd".}
 
 \item{groups}{character vector selecting catalogue entries.

@@ -32,6 +32,13 @@ the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{args}{Character vector, arguments to the command.}
 
+\item{return_type}{character; one of \code{"aeme"} (default), \code{"exec_result"},
+\code{"both"}, or \code{"none"}. \code{"aeme"} returns the \code{aeme} object with model output
+loaded; \code{"exec_result"} returns the raw \code{processx::run()} result(s) for
+each model; \code{"both"} returns a list with both \code{aeme} and \code{exec_result}
+elements; \code{"none"} returns \code{NULL} invisibly (useful when only the model
+run's side effects, i.e. the output files, are wanted).}
+
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
 
@@ -52,12 +59,11 @@ to \code{min(c(detectCores() - 1, length(model)))}.}
 
 \item{check_output}{logical; check model output after running? Defaults to
 FALSE.}
-
-\item{return}{logical; return model output within an \code{aeme} object? Defaults
-to TRUE.}
 }
 \value{
-an \code{aeme} object with model output loaded.
+Depends on \code{return_type} -- an \code{aeme} object with model output
+loaded (\code{"aeme"}), the raw \code{processx::run()} result(s) (\code{"exec_result"}),
+a list with both (\code{"both"}), or \code{NULL} invisibly (\code{"none"}).
 }
 \description{
 Run aquatic model ensemble
