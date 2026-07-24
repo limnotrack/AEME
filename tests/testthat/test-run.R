@@ -296,10 +296,9 @@ test_that("running GLM-AED works", {
   model_controls <- set_vars_sim(model_controls = model_controls,
                                  vars_sim = vars_sim)
   model <- c("glm_aed")
-  path = "aeme"
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
-                     ext_elev = 5, use_bgc = TRUE) |> 
+                     ext_elev = 5, use_bgc = TRUE) |>
     run_aeme(verbose = T)
   
   plot_output_base(aeme)
@@ -1112,8 +1111,8 @@ test_that("running GLM-AED with multiple aed models", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   yaml_path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = yaml_path, "aeme.yaml")
-  path <- "aeme"
-  vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb", 
+  path <- file.path(tmpdir, "aeme")
+  vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb",
                 "CHM_oxycln", "CHM_oxynal")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model_controls <- set_vars_sim(model_controls = model_controls,
