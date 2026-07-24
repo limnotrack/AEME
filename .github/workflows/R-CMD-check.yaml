@@ -43,10 +43,9 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: Pre-install GLM (linux/macos only)
-        if: runner.os != 'Windows'
+      - name: Pre-install Models
         run: |
-          Rscript -e 'AEME::install_glm_aed(version = "3.9.108")'
+          Rscript -e 'AEME::install_models()'
         shell: bash
 
       - uses: r-lib/actions/check-r-package@v2
