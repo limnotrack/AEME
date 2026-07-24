@@ -276,9 +276,9 @@ format_ens_label <- function(ens_n) {
 
 #' Return mean sea level pressure given air temperature, elevation and station pressure.
 #'
-#' @param MET_prsttn A numeric vector of observed station pressure in Pa
+#' @param prsttn A numeric vector of observed station pressure in Pa
 #' @param elevation A numeric vector of elevation in m
-#' @param MET_tmpair A numeric vector of air temperature in degC
+#' @param tmpair A numeric vector of air temperature in degC
 #'
 #' @return A numeric vector of mean sea level pressure in Pa
 #'
