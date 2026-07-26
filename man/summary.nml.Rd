@@ -4,7 +4,7 @@
 \alias{summary.nml}
 \title{Summarise an nml object}
 \usage{
-summary.nml(object, ...)
+\method{summary}{nml}(object, ...)
 }
 \arguments{
 \item{object}{An nml object.}

@@ -410,6 +410,7 @@ print.nml <- function(x, ...) {
 #' @param object An nml object.
 #' @param ... Further arguments passed to \code{print.nml}.
 #' @return \code{object}, invisibly.
+#' @method summary nml
 #' @export
 summary.nml <- function(object, ...) {
   print(object, ...)

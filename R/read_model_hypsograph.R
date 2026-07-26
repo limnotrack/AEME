@@ -1,6 +1,9 @@
 #' Load model hypsograph from configuration
 #' @param lake_dir Directory of lake model outputs
 #' @param model Model name. One of "gotm_wet", "glm_aed", or "dy_cd".
+#' @param file Optional; path directly to the model's hypsograph/
+#' configuration file, bypassing the `lake_dir`-based lookup. Defaults to
+#' `NULL`.
 #' @return Dataframe of hypsograph with columns elev, area, and depth
 #' @export
 read_model_hypsograph <- function(model, lake_dir, file = NULL) {
