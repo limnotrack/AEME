@@ -20,6 +20,11 @@
 #'   - "dy_cd": DYRESM-CAEDYM dynamic evaporation
 #'   - "glm_aed": GLM-AED dynamic evaporation
 #'   - "gotm_wet": GOTM-WET dynamic evaporation
+#' @param params Optional named numeric vector `c(C, h_inv)` of already-fitted
+#' outflow parameters (see \code{\link{get_wbal_param}}). If supplied, the
+#' optimisation step is skipped and these values are used directly to
+#' generate the final simulated time series. Defaults to `NULL`, which fits
+#' `C`/`h_inv` via \code{\link[stats]{optim}}.
 #' @param initial_guess Optional initial guess for optimization parameters:
 #'   - C: Outflow coefficient
 #'   - h_inv: Inversion height for outflow calculation
