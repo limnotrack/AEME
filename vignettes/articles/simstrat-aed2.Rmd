@@ -21,6 +21,7 @@ asciicast::init_knitr_engine(
 )
 options(AEME.inform = FALSE)
 library(AEME)
+install_simstrat_aed2()
 ```
 
 <a href="#parameter-library" class="skip-btn">&#8681; Skip to Parameter Library</a>
