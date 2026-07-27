@@ -8,7 +8,50 @@
   # Only set options that are not already defined
   toset <- !(names(op.AEME) %in% names(op))
   if (any(toset)) options(op.AEME[toset])
-  
+
+  invisible()
+}
+
+.onAttach <- function(libname, pkgname) {
+  # No model binaries are bundled with the package any more -- nudge users
+  # towards install_models() the first time they load AEME with nothing
+  # installed yet. Silent if at least one model is already installed, or
+  # if AEME.inform has been turned off.
+  if (!isTRUE(getOption("AEME.inform", TRUE))) return(invisible())
+
+  tryCatch({
+    os <- .detect_os()
+
+    # GLM-AED ships cross-platform binaries; DYRESM-CAEDYM, GOTM-WET, and
+    # Simstrat-AED2 only ever have Windows binaries published as release
+    # assets (mirrors check_model(os_valid = TRUE)'s windows_only list) --
+    # don't check for, or suggest installing, binaries that can never exist
+    # on this platform.
+    glm_installed <- length(.glm_installed_versions(os)) > 0
+    windows_only_installed <- os == "windows" && (
+      length(.gotm_installed_versions(os)) > 0 ||
+        length(.dy_cd_installed_versions(os)) > 0 ||
+        length(.simstrat_installed_versions(os)) > 0
+    )
+
+    if (!glm_installed && !windows_only_installed) {
+      if (os == "windows") {
+        packageStartupMessage(
+          "No AEME model binaries are installed yet. Run install_models() to ",
+          "download the ones you need (see ?install_models), or install_glm_aed()/",
+          "install_gotm_wet()/install_dy_cd()/install_simstrat_aed2() individually."
+        )
+      } else {
+        packageStartupMessage(
+          "No AEME model binaries are installed yet. Run install_glm_aed() to ",
+          "install GLM-AED (see ?install_glm_aed) -- the only model with ",
+          "binaries published for this platform; DYRESM-CAEDYM, GOTM-WET, ",
+          "and Simstrat-AED2 are Windows-only."
+        )
+      }
+    }
+  }, error = function(e) invisible())  # never block attach on a check failure
+
   invisible()
 }
 
