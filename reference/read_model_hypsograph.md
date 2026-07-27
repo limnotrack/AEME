@@ -18,6 +18,11 @@ read_model_hypsograph(model, lake_dir, file = NULL)
 
   Directory of lake model outputs
 
+- file:
+
+  Optional; path directly to the model's hypsograph/ configuration file,
+  bypassing the `lake_dir`-based lookup. Defaults to `NULL`.
+
 ## Value
 
 Dataframe of hypsograph with columns elev, area, and depth

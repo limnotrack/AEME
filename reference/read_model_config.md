@@ -15,7 +15,7 @@ read_model_config(model, lake_dir)
   character; model name ("dy_cd", "glm_aed", "gotm_wet"). Only one model
   at a time.
 
-- path:
+- lake_dir:
 
   character; directory which contains the model configuration files.
 

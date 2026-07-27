@@ -36,10 +36,10 @@ install_simstrat_aed2(
 
   Character. One of `"windows"`, `"macos"`, or `"linux"`. Defaults to
   the platform R is currently running on; you shouldn't normally need to
-  set this. Note that only a Windows build is currently bundled with the
-  package (`inst/extbin/simstrat_aed2/simstrat.exe`) – `macos`/`linux`
-  release assets don't exist yet, so those platforms will report no
-  versions available until binaries are published.
+  set this. Note that only a Windows build is currently published as a
+  release asset – `macos`/`linux` release assets don't exist yet, so
+  those platforms will report no versions available until binaries are
+  published.
 
 - repo:
 

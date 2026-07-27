@@ -113,6 +113,14 @@ This should be a reasonable estimate based on the observed levels to ensure
 the optimization converges.</p></dd>
 
 
+<dt id="arg-params">params<a class="anchor" aria-label="anchor" href="#arg-params"></a></dt>
+<dd><p>Optional named numeric vector <code>c(C, h_inv)</code> of already-fitted
+outflow parameters (see <code><a href="get_wbal_param.html">get_wbal_param</a></code>). If supplied, the
+optimisation step is skipped and these values are used directly to
+generate the final simulated time series. Defaults to <code>NULL</code>, which fits
+<code>C</code>/<code>h_inv</code> via <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code>.</p></dd>
+
+
 <dt id="arg-initial-guess">initial_guess<a class="anchor" aria-label="anchor" href="#arg-initial-guess"></a></dt>
 <dd><p>Optional initial guess for optimization parameters:</p><ul><li><p>C: Outflow coefficient</p></li>
 <li><p>h_inv: Inversion height for outflow calculation</p></li>

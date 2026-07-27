@@ -476,25 +476,25 @@ for each simulated variable:
 skill <- assess_model(aeme = aeme, model = model)
 skill
 #>            Model    var_sim   bias    mae   rmse  nmae      nse    d2      r
-#> 1  SIMSTRAT-AED2    CAR_doc -1.402  1.448  1.656 0.532  -11.371 0.647 -0.289
+#> 1  SIMSTRAT-AED2    CAR_doc -1.539  1.539  1.719 0.566  -12.341 0.632 -0.217
 #> 2  SIMSTRAT-AED2  HYD_strat -0.700  0.700  0.837 1.000   -2.333 0.380     NA
 #> 3  SIMSTRAT-AED2 HYD_thmcln  6.466  6.466  7.109 0.673   -4.794 0.510     NA
-#> 4  SIMSTRAT-AED2  PHY_tchla 37.320 37.320 41.816 5.162 -160.573 0.870  0.056
-#> 5  SIMSTRAT-AED2    NIT_amm -0.007  0.008  0.021 0.684   -0.159 0.109 -0.033
-#> 6  SIMSTRAT-AED2    NIT_nit  0.000  0.002  0.003 1.062   -1.254 0.579 -0.187
-#> 7  SIMSTRAT-AED2    PHS_frp -0.001  0.001  0.001 0.447   -0.834 0.252  0.175
-#> 8  SIMSTRAT-AED2    CHM_oxy  2.540  2.577  3.823 0.374   -0.431 0.232  0.571
+#> 4  SIMSTRAT-AED2  PHY_tchla 19.482 20.407 27.288 2.823  -67.808 0.845  0.176
+#> 5  SIMSTRAT-AED2    NIT_amm -0.006  0.009  0.021 0.744   -0.158 0.142 -0.145
+#> 6  SIMSTRAT-AED2    NIT_nit  0.002  0.004  0.007 2.384  -10.315 1.165 -0.185
+#> 7  SIMSTRAT-AED2    PHS_frp -0.001  0.001  0.001 0.422   -0.541 0.266  0.224
+#> 8  SIMSTRAT-AED2    CHM_oxy  2.488  2.539  3.787 0.368   -0.404 0.229  0.576
 #> 9  SIMSTRAT-AED2   CHM_salt -0.117  0.117  0.117 1.000 -328.984 0.914     NA
 #> 10 SIMSTRAT-AED2   HYD_temp  0.735  1.777  2.415 0.099    0.398 0.221  0.862
 #>        rs    r2     B   n obs_na sim_na                name_text
-#> 1  -0.294 0.084 0.006  10      0      0 Dissolved organic carbon
+#> 1  -0.294 0.047 0.003  10      0      0 Dissolved organic carbon
 #> 2      NA 0.000 0.000  10      0      0               Stratified
 #> 3      NA 0.000 0.000  10      0      0        Thermocline depth
-#> 4   0.006 0.003 0.000  10      0      0      Total chlorophyll a
-#> 5   0.298 0.001 0.001  20      0      0      Ammoniacal nitrogen
-#> 6  -0.539 0.035 0.011  20      0      0                  Nitrate
-#> 7   0.212 0.031 0.011  20      0      0                Phosphate
-#> 8   0.647 0.326 0.134 125      0      0         Dissolved oxygen
+#> 4   0.067 0.031 0.000  10      0      0      Total chlorophyll a
+#> 5   0.102 0.021 0.010  20      0      0      Ammoniacal nitrogen
+#> 6  -0.345 0.034 0.003  20      0      0                  Nitrate
+#> 7   0.322 0.050 0.020  20      0      0                Phosphate
+#> 8   0.714 0.331 0.138 125      0      0         Dissolved oxygen
 #> 9      NA 0.000 0.000 125      0      0                 Salinity
 #> 10  0.856 0.742 0.463 125      0      0        Water temperature
 #>                           name_parse
@@ -671,13 +671,13 @@ ncdf4::nc_close(nc)
 
 diag_df <- data.frame(Date = dates, GPP = gpp_surf, atm_oxy_flux = atm_oxy_flux)
 head(diag_df)
-#>         Date      GPP atm_oxy_flux
-#> 1 2020-07-30   0.0000       0.0000
-#> 2 2020-07-31  -9.6646      79.8400
-#> 3 2020-08-01 -10.3050      -2.2248
-#> 4 2020-08-02 -11.6130     -20.4630
-#> 5 2020-08-03 -12.3000       1.2404
-#> 6 2020-08-04 -12.6210       1.5756
+#>         Date     GPP atm_oxy_flux
+#> 1 2020-07-30   0.000       0.0000
+#> 2 2020-07-31 -18.438     119.4500
+#> 3 2020-08-01 -18.912      42.3440
+#> 4 2020-08-02 -20.959      13.5150
+#> 5 2020-08-03 -22.407      19.7130
+#> 6 2020-08-04 -23.978       6.2134
 ```
 
 ``` r

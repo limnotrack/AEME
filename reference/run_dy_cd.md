@@ -44,7 +44,8 @@ run_simstrat_aed2(
   verbose = FALSE,
   debug = FALSE,
   args = character(),
-  timeout = Inf
+  timeout = Inf,
+  version = getOption("AEME.simstrat_version", default = NULL)
 )
 ```
 

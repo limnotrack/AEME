@@ -39,6 +39,11 @@ plot_output(
   character vector; model(s) to plot. If missing, all models in the Aeme
   object will be plotted.
 
+- point_size:
+
+  numeric; size of observation points added to the plot when `add_obs`
+  is `TRUE`. Default is 2.
+
 - ens_n:
 
   integer; ensemble number to plot. Default is 1.

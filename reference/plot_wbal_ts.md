@@ -20,16 +20,16 @@ plot_wbal_ts(
   Aeme object with model output and observations added. Must have model
   output [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)
 
+- var_aeme:
+
+  character vector of AEME variable names to plot. Options are
+  `"LKE_lvlwtr"`, `"LKE_inflow"`, `"LKE_outflow"`, `"LKE_pcpvol"`,
+  `"LKE_Qe"`, `"HYD_surft"`. Defaults to all.
+
 - add_model:
 
   logical; whether to overlay model output on the estimated components.
   Defaults to TRUE.
-
-- vars:
-
-  character vector of AEME variable names to plot. Options are
-  `"LKE_lvlwtr"`, `"LKE_inflow"`, `"LKE_outflow"`, `"LKE_Qe"`,
-  `"HYD_surft"`. Defaults to all.
 
 ## Value
 

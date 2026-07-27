@@ -6,7 +6,8 @@ Currently delegates to
 ## Usage
 
 ``` r
-summary.nml(object, ...)
+# S3 method for class 'nml'
+summary(object, ...)
 ```
 
 ## Arguments

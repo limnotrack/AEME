@@ -428,8 +428,8 @@
   : Standardise meteorological variable names and units for AEME
 - [`summary(`*`<Aeme>`*`)`](https://limnotrack.com/reference/summary-aeme-method.md)
   : Summarise an Aeme object
-- [`summary.nml()`](https://limnotrack.com/reference/summary.nml.md) :
-  Summarise an nml object
+- [`summary(`*`<nml>`*`)`](https://limnotrack.com/reference/summary.nml.md)
+  : Summarise an nml object
 - [`` `time<-`() ``](https://limnotrack.com/reference/time-set.md) : Set
   the time slot of an Aeme object
 - [`time()`](https://limnotrack.com/reference/time.md) : Access the time

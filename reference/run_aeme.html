@@ -99,6 +99,15 @@ the path stored in <code>aeme</code>, or the current working directory if not se
 <dd><p>Character vector, arguments to the command.</p></dd>
 
 
+<dt id="arg-return-type">return_type<a class="anchor" aria-label="anchor" href="#arg-return-type"></a></dt>
+<dd><p>character; one of <code>"aeme"</code> (default), <code>"exec_result"</code>,
+<code>"both"</code>, or <code>"none"</code>. <code>"aeme"</code> returns the <code>aeme</code> object with model output
+loaded; <code>"exec_result"</code> returns the raw <code><a href="http://processx.r-lib.org/reference/run.html" class="external-link">processx::run()</a></code> result(s) for
+each model; <code>"both"</code> returns a list with both <code>aeme</code> and <code>exec_result</code>
+elements; <code>"none"</code> returns <code>NULL</code> invisibly (useful when only the model
+run's side effects, i.e. the output files, are wanted).</p></dd>
+
+
 <dt id="arg-ens-n">ens_n<a class="anchor" aria-label="anchor" href="#arg-ens-n"></a></dt>
 <dd><p>numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.</p></dd>
@@ -135,15 +144,12 @@ to <code>min(c(detectCores() - 1, length(model)))</code>.</p></dd>
 <dd><p>logical; check model output after running? Defaults to
 FALSE.</p></dd>
 
-
-<dt id="arg-return">return<a class="anchor" aria-label="anchor" href="#arg-return"></a></dt>
-<dd><p>logical; return model output within an <code>aeme</code> object? Defaults
-to TRUE.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>an <code>aeme</code> object with model output loaded.</p>
+    <p>Depends on <code>return_type</code> – an <code>aeme</code> object with model output
+loaded (<code>"aeme"</code>), the raw <code><a href="http://processx.r-lib.org/reference/run.html" class="external-link">processx::run()</a></code> result(s) (<code>"exec_result"</code>),
+a list with both (<code>"both"</code>), or <code>NULL</code> invisibly (<code>"none"</code>).</p>
     </div>
 
     <div class="section level2">
@@ -165,7 +171,7 @@ to TRUE.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[6ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[7ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating lake water levels for glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Optimizing parameters for water balance</span>

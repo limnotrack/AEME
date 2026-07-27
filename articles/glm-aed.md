@@ -645,35 +645,35 @@ for each simulated variable:
 skill <- assess_model(aeme = aeme, model = model)
 skill
 #>      Model    var_sim   bias   mae  rmse    nmae         nse    d2      r
-#> 1  GLM-AED    CAR_doc -2.706 2.706 2.747   0.995     -33.064 0.764 -0.539
+#> 1  GLM-AED    CAR_doc -2.706 2.706 2.747   0.995     -33.064 0.764 -0.532
 #> 2  GLM-AED  HYD_strat  0.100 0.100 0.316   0.143       0.524 0.033  0.764
-#> 3  GLM-AED HYD_thmcln -2.669 2.987 4.361   0.311      -1.181 0.310  0.517
+#> 3  GLM-AED HYD_thmcln -2.723 3.030 4.401   0.316      -1.220 0.313  0.520
 #> 4  GLM-AED  PHY_cyano -0.021 0.037 0.065   0.982      -0.401 0.261 -0.190
-#> 5  GLM-AED  PHY_tchla -1.438 4.813 5.695   0.666      -1.997 1.131  0.082
-#> 6  GLM-AED    NIT_amm -0.002 0.013 0.027   1.098      -1.006 0.389  0.800
-#> 7  GLM-AED    NIT_nit  1.449 1.449 1.590 905.647 -658389.379 0.999  0.073
-#> 8  GLM-AED     NIT_tn  1.299 1.299 1.470   6.856   -2951.882 0.969 -0.293
-#> 9  GLM-AED    PHS_frp  0.000 0.003 0.005   1.394     -28.179 4.407  0.662
-#> 10 GLM-AED     PHS_tp -0.007 0.008 0.009   0.710      -2.253 0.456  0.374
-#> 11 GLM-AED CHM_oxycln  1.350 2.056 2.741   0.237      -0.133 0.292  0.496
-#> 12 GLM-AED    CHM_oxy  0.643 0.976 1.410   0.142       0.805 0.070  0.922
-#> 13 GLM-AED   CHM_salt -0.117 0.117 0.117   0.999    -328.602 0.914  0.592
-#> 14 GLM-AED   HYD_temp -0.507 0.809 1.066   0.045       0.883 0.051  0.954
+#> 5  GLM-AED  PHY_tchla -1.490 4.777 5.642   0.661      -1.941 1.092  0.094
+#> 6  GLM-AED    NIT_amm -0.002 0.014 0.031   1.168      -1.519 0.465  0.800
+#> 7  GLM-AED    NIT_nit  1.441 1.441 1.584 900.650 -653469.853 0.999  0.067
+#> 8  GLM-AED     NIT_tn  1.298 1.298 1.473   6.850   -2964.415 0.969 -0.299
+#> 9  GLM-AED    PHS_frp  0.000 0.003 0.005   1.417     -30.046 4.157  0.662
+#> 10 GLM-AED     PHS_tp -0.007 0.008 0.009   0.711      -2.255 0.460  0.376
+#> 11 GLM-AED CHM_oxycln  1.316 2.066 2.743   0.238      -0.134 0.300  0.489
+#> 12 GLM-AED    CHM_oxy  0.655 0.986 1.414   0.143       0.804 0.071  0.923
+#> 13 GLM-AED   CHM_salt -0.117 0.117 0.117   1.000    -328.984 0.914     NA
+#> 14 GLM-AED   HYD_temp -0.509 0.808 1.066   0.045       0.883 0.051  0.954
 #>        rs    r2     B   n obs_na sim_na                name_text
-#> 1  -0.350 0.291 0.008  10      0      0 Dissolved organic carbon
+#> 1  -0.350 0.283 0.008  10      0      0 Dissolved organic carbon
 #> 2   0.764 0.583 0.395  10      0      0               Stratified
-#> 3   0.437 0.267 0.084  10      0      0        Thermocline depth
+#> 3   0.437 0.270 0.084  10      0      0        Thermocline depth
 #> 4  -0.124 0.036 0.015  10      0      0            Cyanobacteria
-#> 5  -0.139 0.007 0.002  10      0      0      Total chlorophyll a
-#> 6   0.817 0.641 0.213  20      0      0      Ammoniacal nitrogen
+#> 5  -0.139 0.009 0.002  10      0      0      Total chlorophyll a
+#> 6   0.767 0.640 0.182  20      0      0      Ammoniacal nitrogen
 #> 7   0.015 0.005 0.000  20      0      0                  Nitrate
-#> 8  -0.390 0.086 0.000  20      0      0           Total nitrogen
-#> 9   0.453 0.438 0.015  20      0      0                Phosphate
-#> 10 -0.199 0.140 0.033  20      0      0         Total phosphorus
-#> 11  0.607 0.246 0.115  30      0      0           Oxycline depth
-#> 12  0.938 0.850 0.712 125      0      0         Dissolved oxygen
-#> 13  0.670 0.351 0.001 125      0      0                 Salinity
-#> 14  0.946 0.909 0.814 125      0      0        Water temperature
+#> 8  -0.390 0.089 0.000  20      0      0           Total nitrogen
+#> 9   0.453 0.439 0.014  20      0      0                Phosphate
+#> 10 -0.192 0.142 0.033  20      0      0         Total phosphorus
+#> 11  0.607 0.239 0.112  30      0      0           Oxycline depth
+#> 12  0.934 0.851 0.712 125      0      0         Dissolved oxygen
+#> 13     NA 0.000 0.000 125      0      0                 Salinity
+#> 14  0.946 0.910 0.814 125      0      0        Water temperature
 #>                           name_parse
 #> 1  Dissolved~organic~carbon~(g~m^-3)
 #> 2                     Stratified~(1)

@@ -176,7 +176,7 @@ bathy_raster <- rasterise_bathy(shoreline = shoreline,
 #> No islands found.
 #> ℹ Generating depth points for interpolation
 #> Warning: large number of points for interpolation (95645)
-#> ✔ Generating depth points for interpolation [5.3s]
+#> ✔ Generating depth points for interpolation [6.4s]
 #> 
 #> ℹ Interpolating depth points to raster
 #> ℹ Adjusting depths >= 0 to -0.4m
@@ -185,7 +185,7 @@ bathy_raster <- rasterise_bathy(shoreline = shoreline,
 
 ![](rotoehu-water-balance_files/figure-html/rasterise-contours-1.png)
 
-    #> ✔ Interpolating depth points to raster [1.1s]
+    #> ✔ Interpolating depth points to raster [1.4s]
 
 ``` r
 
@@ -569,18 +569,18 @@ ann_evap
 #> # A tibble: 14 × 2
 #>     year ann_evap_mm
 #>    <dbl>       <dbl>
-#>  1  2010        189.
-#>  2  2011        404.
+#>  1  2010        191.
+#>  2  2011        402.
 #>  3  2012        403.
 #>  4  2013        417.
 #>  5  2014        429.
-#>  6  2015        419.
-#>  7  2016        410.
+#>  6  2015        420.
+#>  7  2016        409.
 #>  8  2017        403.
-#>  9  2018        380.
+#>  9  2018        379.
 #> 10  2019        432.
-#> 11  2020        423.
-#> 12  2021        379.
+#> 11  2020        424.
+#> 12  2021        378.
 #> 13  2022        388.
 #> 14  2023        202.
 ```

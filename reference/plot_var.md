@@ -69,6 +69,11 @@ plot_var(
 
   logical; add observations to plot
 
+- point_size:
+
+  numeric; size of observation points added to the plot when `add_obs`
+  is `TRUE`. Default is 2.
+
 - level:
 
   logical; include lake level. Only applies for contour plots.

@@ -43,6 +43,16 @@ run_aeme(
 
   Character vector, arguments to the command.
 
+- return_type:
+
+  character; one of `"aeme"` (default), `"exec_result"`, `"both"`, or
+  `"none"`. `"aeme"` returns the `aeme` object with model output loaded;
+  `"exec_result"` returns the raw
+  [`processx::run()`](http://processx.r-lib.org/reference/run.md)
+  result(s) for each model; `"both"` returns a list with both `aeme` and
+  `exec_result` elements; `"none"` returns `NULL` invisibly (useful when
+  only the model run's side effects, i.e. the output files, are wanted).
+
 - ens_n:
 
   numeric; ensemble number to allocate to model output which is loaded.
@@ -79,14 +89,13 @@ run_aeme(
 
   logical; check model output after running? Defaults to FALSE.
 
-- return:
-
-  logical; return model output within an `aeme` object? Defaults to
-  TRUE.
-
 ## Value
 
-an `aeme` object with model output loaded.
+Depends on `return_type` – an `aeme` object with model output loaded
+(`"aeme"`), the raw
+[`processx::run()`](http://processx.r-lib.org/reference/run.md)
+result(s) (`"exec_result"`), a list with both (`"both"`), or `NULL`
+invisibly (`"none"`).
 
 ## Examples
 
@@ -108,7 +117,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [6ms]
+#> ✔ Estimating surface water temperature [7ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance

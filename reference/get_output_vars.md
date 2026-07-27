@@ -50,7 +50,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [8ms]
+#> ✔ Estimating surface water temperature [9ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -110,10 +110,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-07-24 04:11:58]
-#> → GLM-AED running... [2026-07-24 04:11:58]
-#> ✔ GLM-AED run successful! [2026-07-24 04:12:01]
-#> ✔ Model run complete! [2026-07-24 04:12:01]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-27 00:39:57]
+#> → GLM-AED running... [2026-07-27 00:39:57]
+#> ✔ GLM-AED run successful! [2026-07-27 00:39:59]
+#> ✔ Model run complete! [2026-07-27 00:39:59]
 get_output_vars(aeme, model)
 #>          Water temperature          Thermocline depth 
 #>                 "HYD_temp"               "HYD_thmcln" 

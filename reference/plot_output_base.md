@@ -47,6 +47,21 @@ plot_output_base(
   numeric vector of length 2; limits for the y-axis. Defaults to NULL
   and calculates this based on the data to be plotted.
 
+- plot_width:
+
+  numeric; width in pixels of each panel, used to size the plotting
+  device. Default is 400.
+
+- plot_height:
+
+  numeric; height in pixels of each panel, used to size the plotting
+  device. Default is 200.
+
+- bar_width:
+
+  numeric; width of the colour bar as a fraction of `plot_width`.
+  Default is 0.08.
+
 ## Value
 
 A list of matrices with the plotted output, invisibly.

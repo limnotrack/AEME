@@ -24,6 +24,11 @@ set_aed_sed_const2d(
   character; directory where input files are located. Defaults to the
   path stored in `aeme`, or the current working directory if not set.
 
+- lake_dir:
+
+  Path to the lake AEME directory. If `NULL`, it is derived from
+  `aeme`/`path`.
+
 - baseline:
 
   Named numeric vector of baseline fluxes at `ref_depth`. Must include

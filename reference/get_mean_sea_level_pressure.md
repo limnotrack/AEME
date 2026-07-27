@@ -11,15 +11,15 @@ get_mean_sea_level_pressure(prsttn, elevation, tmpair)
 
 ## Arguments
 
+- prsttn:
+
+  A numeric vector of observed station pressure in Pa
+
 - elevation:
 
   A numeric vector of elevation in m
 
-- MET_prsttn:
-
-  A numeric vector of observed station pressure in Pa
-
-- MET_tmpair:
+- tmpair:
 
   A numeric vector of air temperature in degC
 

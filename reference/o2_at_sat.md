@@ -21,6 +21,11 @@ o2_at_sat(
 
   water temperature (°C)
 
+- depth:
+
+  depth (m) at which the DO measurement was made; adds a hydrostatic
+  pressure correction.
+
 - baro:
 
   barometric pressure (mb)

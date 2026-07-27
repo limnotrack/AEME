@@ -64,6 +64,16 @@ estimate_lake_wlev(
   should be a reasonable estimate based on the observed levels to ensure
   the optimization converges.
 
+- params:
+
+  Optional named numeric vector `c(C, h_inv)` of already-fitted outflow
+  parameters (see
+  [`get_wbal_param`](https://limnotrack.com/reference/get_wbal_param.md)).
+  If supplied, the optimisation step is skipped and these values are
+  used directly to generate the final simulated time series. Defaults to
+  `NULL`, which fits `C`/`h_inv` via
+  [`optim`](https://rdrr.io/r/stats/optim.html).
+
 - initial_guess:
 
   Optional initial guess for optimization parameters:

@@ -24,6 +24,11 @@ set_aed_totals(aeme, path, lake_dir = NULL)
   character; directory where input files are located. Defaults to the
   path stored in `aeme`, or the current working directory if not set.
 
+- lake_dir:
+
+  Path to the lake AEME directory. If `NULL`, it is derived from
+  `aeme`/`path`.
+
 ## Value
 
 Aeme object with aed_totals parameters set in the model config
