@@ -28,7 +28,7 @@ model_controls <- get_model_controls()
 aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
 model_controls = model_controls, ext_elev = 3)
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp0kBipe\test_write
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpIpjwuY\test_write
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows -- this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -53,10 +53,10 @@ model_controls = model_controls, ext_elev = 3)
 #> ℹ Copied in GLM plots nml file
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- run_aeme(aeme = aeme, model = "glm_aed", path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-07-27 00:40:38]
-#> → GLM-AED running... [2026-07-27 00:40:38]
-#> ✔ GLM-AED run successful! [2026-07-27 00:40:38]
-#> ✔ Model run complete! [2026-07-27 00:40:38]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-27 03:11:16]
+#> → GLM-AED running... [2026-07-27 03:11:16]
+#> ✔ GLM-AED run successful! [2026-07-27 03:11:16]
+#> ✔ Model run complete! [2026-07-27 03:11:16]
 write_aeme_to_files(aeme, path)
 aeme_path <- get_lake_dir(aeme = aeme, path = path)
 aeme2 <- read_aeme_from_files(aeme_path)
