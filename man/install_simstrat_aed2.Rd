@@ -21,9 +21,9 @@ available for the current platform.}
 \item{os}{Character. One of \code{"windows"}, \code{"macos"}, or \code{"linux"}.
 Defaults to the platform R is currently running on; you shouldn't
 normally need to set this. Note that only a Windows build is currently
-bundled with the package (\code{inst/extbin/simstrat_aed2/simstrat.exe}) --
-\code{macos}/\code{linux} release assets don't exist yet, so those platforms will
-report no versions available until binaries are published.}
+published as a release asset -- \code{macos}/\code{linux} release assets don't
+exist yet, so those platforms will report no versions available until
+binaries are published.}
 
 \item{repo}{Character. The \code{"owner/repo"} GitHub repository that Simstrat
 binaries are attached to. Defaults to \code{"limnotrack/AEME"}.}

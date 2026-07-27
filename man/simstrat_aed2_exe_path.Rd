@@ -11,8 +11,9 @@ simstrat_aed2_exe_path(
 }
 \arguments{
 \item{version}{Character. The Simstrat-AED2 version to locate, e.g.
-\code{"3.0.4"}. If \code{NULL} (the default), returns the binary bundled with the
-package instead of one installed via \code{\link[=install_simstrat_aed2]{install_simstrat_aed2()}}.}
+\code{"3.0.4"}. If \code{NULL} (the default), resolves to whichever version is
+currently installed (see \code{\link[=install_simstrat_aed2]{install_simstrat_aed2()}}), following the same
+resolution order \code{\link[=run_aeme]{run_aeme()}} itself uses.}
 
 \item{os}{Character. One of \code{"windows"}, \code{"macos"}, or \code{"linux"}.
 Defaults to the current platform.}
@@ -24,10 +25,9 @@ executable.
 \description{
 Returns the path to a Simstrat-AED2 executable previously installed with
 \code{\link[=install_simstrat_aed2]{install_simstrat_aed2()}}. Errors if that version isn't installed for
-this platform yet. Mirrors \code{\link[=glm_exe_path]{glm_exe_path()}}; unlike GLM, if no \code{version}
-is given this falls back to the binary bundled with the package (see
-\verb{inst/extbin/simstrat_aed2/}) rather than an installed-version lookup,
-since that's what \code{\link[=run_aeme]{run_aeme()}} itself resolves to by default.
+this platform yet. Mirrors \code{\link[=glm_exe_path]{glm_exe_path()}}; there is no bundled
+fallback -- Simstrat-AED2 binaries are only ever obtained via
+\code{\link[=install_simstrat_aed2]{install_simstrat_aed2()}}.
 }
 \examples{
 \dontrun{

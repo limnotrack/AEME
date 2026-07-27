@@ -97,7 +97,7 @@ os}}.",
   }
   
   exe_name <- if (os == "windows") "glm.exe" else "glm"
-  install_dir <- file.path(.glm_cache_dir(), os, version)
+  install_dir <- file.path(.model_cache_dir(), os, version)
   exe_path <- file.path(install_dir, exe_name)
   
   if (file.exists(exe_path) && !force) {
@@ -127,7 +127,7 @@ os}}.",
   asset_name <- sprintf("glm-%s-%s.zip", os, version)
   sha_name <- paste0(asset_name, ".sha256")
   
-  hit <- .glm_find_release_asset(repo, asset_name)
+  hit <- .model_find_release_asset(repo, asset_name)
   if (is.null(hit)) {
     cli::cli_abort(c(
       "Could not find a GLM {.val {version}} build for {.field {os}}
@@ -136,7 +136,7 @@ os}}.",
     ))
   }
   
-  sha_hit <- .glm_find_release_asset(repo, sha_name)
+  sha_hit <- .model_find_release_asset(repo, sha_name)
   if (is.null(sha_hit)) {
     cli::cli_abort(c(
       "Found {.file {asset_name}} in release {.val {hit$release_tag}} but no
@@ -162,7 +162,7 @@ os}}.",
   utils::download.file(sha_hit$asset$browser_download_url, sha_path,
                        mode = "wb", quiet = TRUE)
   
-  expected <- .glm_read_checksum(sha_path)
+  expected <- .model_read_checksum(sha_path)
   actual <- tolower(digest::digest(zip_path, algo = "sha256", file = TRUE))
   
   if (!identical(actual, expected)) {
@@ -234,7 +234,7 @@ list_glm_versions <- function(repo = "limnotrack/AEME", os = NULL) {
   }
   os <- if (is.null(os)) NULL else match.arg(os, c("windows", "macos", "linux"))
   
-  releases <- .glm_list_releases(repo)
+  releases <- .model_list_releases(repo)
   pattern <- if (is.null(os)) {
     "^glm-(windows|macos|linux)-(.+)\\.zip$"
   } else {
@@ -293,7 +293,7 @@ glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NUL
   } else {
     os <- if (is.null(os)) .detect_os() else match.arg(os, c("windows", "macos", "linux"))
     exe_name <- if (os == "windows") "glm.exe" else "glm"
-    path <- file.path(.glm_cache_dir(), os, version, exe_name)
+    path <- file.path(.model_cache_dir(), os, version, exe_name)
   }
   
   if (!file.exists(path)) {
@@ -311,14 +311,14 @@ glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NUL
 
 #' @keywords internal
 #' @noRd
-.glm_cache_dir <- function() {
+.model_cache_dir <- function() {
   tools::R_user_dir("AEME", which = "data")
 }
 
 #' @keywords internal
 #' @noRd
 #' @importFrom gh gh
-.glm_list_releases <- function(repo = "limnotrack/AEME") {
+.model_list_releases <- function(repo = "limnotrack/AEME") {
   parts <- strsplit(repo, "/", fixed = TRUE)[[1]]
   if (length(parts) != 2L) {
     cli::cli_abort("{.arg repo} must be in the form {.val owner/repo}, got: {.val {repo}}")
@@ -330,8 +330,8 @@ glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NUL
 #' Find the release (if any) that has a given asset name attached
 #' @keywords internal
 #' @noRd
-.glm_find_release_asset <- function(repo, asset_name) {
-  releases <- .glm_list_releases(repo)
+.model_find_release_asset <- function(repo, asset_name) {
+  releases <- .model_list_releases(repo)
   for (rel in releases) {
     asset_names <- vapply(rel$assets, function(a) a$name, character(1))
     idx <- match(asset_name, asset_names)
@@ -346,7 +346,7 @@ glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NUL
 #' (format: "<hash>  <filename>")
 #' @keywords internal
 #' @noRd
-.glm_read_checksum <- function(sha_path) {
+.model_read_checksum <- function(sha_path) {
   line <- readLines(sha_path, n = 1L, warn = FALSE)
   hash <- strsplit(trimws(line), "\\s+")[[1]][1]
   if (is.na(hash) || !nzchar(hash)) {
@@ -359,7 +359,7 @@ glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NUL
 #' @keywords internal
 #' @noRd
 .glm_installed_versions <- function(os = .detect_os()) {
-  os_dir <- file.path(.glm_cache_dir(), os)
+  os_dir <- file.path(.model_cache_dir(), os)
   if (!dir.exists(os_dir)) return(character(0))
   versions <- list.dirs(os_dir, recursive = FALSE, full.names = FALSE)
   exe_name <- if (os == "windows") "glm.exe" else "glm"
@@ -375,5 +375,5 @@ glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NUL
 .glm_latest_installed_version <- function(os = .detect_os()) {
   versions <- .glm_installed_versions(os)
   if (length(versions) == 0) return(NULL)
-  as.character(max(numeric_version(versions)))
+  versions[order(numeric_version(versions), decreasing = TRUE)][1]
 }

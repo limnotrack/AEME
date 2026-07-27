@@ -100,7 +100,7 @@ install_dy_cd <- function(version = "latest",
   }
 
   exe_name <- if (os == "windows") "dycd.exe" else "dycd"
-  install_dir <- file.path(.glm_cache_dir(), os, version)
+  install_dir <- file.path(.model_cache_dir(), os, version)
   exe_path <- file.path(install_dir, exe_name)
 
   if (file.exists(exe_path) && !force) {
@@ -130,7 +130,7 @@ install_dy_cd <- function(version = "latest",
   asset_name <- sprintf("dycd-%s-%s.zip", os, version)
   sha_name <- paste0(asset_name, ".sha256")
 
-  hit <- .glm_find_release_asset(repo, asset_name)
+  hit <- .model_find_release_asset(repo, asset_name)
   if (is.null(hit)) {
     cli::cli_abort(c(
       "Could not find a DYRESM-CAEDYM {.val {version}} build for {.field {os}}
@@ -139,7 +139,7 @@ install_dy_cd <- function(version = "latest",
     ))
   }
 
-  sha_hit <- .glm_find_release_asset(repo, sha_name)
+  sha_hit <- .model_find_release_asset(repo, sha_name)
   if (is.null(sha_hit)) {
     cli::cli_abort(c(
       "Found {.file {asset_name}} in release {.val {hit$release_tag}} but no
@@ -165,7 +165,7 @@ install_dy_cd <- function(version = "latest",
   utils::download.file(sha_hit$asset$browser_download_url, sha_path,
                        mode = "wb", quiet = TRUE)
 
-  expected <- .glm_read_checksum(sha_path)
+  expected <- .model_read_checksum(sha_path)
   actual <- tolower(digest::digest(zip_path, algo = "sha256", file = TRUE))
 
   if (!identical(actual, expected)) {
@@ -241,7 +241,7 @@ list_dy_cd_versions <- function(repo = "limnotrack/AEME", os = NULL) {
   }
   os <- if (is.null(os)) NULL else match.arg(os, c("windows", "macos", "linux"))
 
-  releases <- .glm_list_releases(repo)
+  releases <- .model_list_releases(repo)
   pattern <- if (is.null(os)) {
     "^dycd-(windows|macos|linux)-(.+)\\.zip$"
   } else {
@@ -303,7 +303,7 @@ dy_cd_exe_path <- function(version = getOption("AEME.dyresm_version", NULL), os 
   } else {
     os <- if (is.null(os)) .detect_os() else match.arg(os, c("windows", "macos", "linux"))
     exe_name <- if (os == "windows") "dycd.exe" else "dycd"
-    path <- file.path(.glm_cache_dir(), os, version, exe_name)
+    path <- file.path(.model_cache_dir(), os, version, exe_name)
   }
 
   if (!file.exists(path)) {
@@ -319,7 +319,7 @@ dy_cd_exe_path <- function(version = getOption("AEME.dyresm_version", NULL), os 
 #' @keywords internal
 #' @noRd
 .dy_cd_installed_versions <- function(os = .detect_os()) {
-  os_dir <- file.path(.glm_cache_dir(), os)
+  os_dir <- file.path(.model_cache_dir(), os)
   if (!dir.exists(os_dir)) return(character(0))
   versions <- list.dirs(os_dir, recursive = FALSE, full.names = FALSE)
   exe_name <- if (os == "windows") "dycd.exe" else "dycd"
@@ -332,5 +332,5 @@ dy_cd_exe_path <- function(version = getOption("AEME.dyresm_version", NULL), os 
 .dy_cd_latest_installed_version <- function(os = .detect_os()) {
   versions <- .dy_cd_installed_versions(os)
   if (length(versions) == 0) return(NULL)
-  as.character(max(numeric_version(versions)))
+  versions[order(numeric_version(versions), decreasing = TRUE)][1]
 }

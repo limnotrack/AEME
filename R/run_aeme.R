@@ -413,8 +413,10 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' Picks the GLM binary to use, in priority order: an explicit
 #' `AEME.glm_exec` option (unchanged, always wins), a specific downloaded
 #' version (`version` argument or `AEME.glm_version` option, resolved via
-#' [glm_exe_path()]), or - if neither is set - the exe bundled with the
-#' package install, exactly as before.
+#' [glm_exe_path()]), or - if neither is set - whatever version is already
+#' installed on disk (checked directly rather than trusting session state).
+#' There is no bundled fallback - GLM-AED binaries are only ever obtained
+#' via [install_glm_aed()].
 #'
 #' @keywords internal
 #' @noRd
@@ -429,35 +431,27 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
     }
     return(.ensure_executable(bin_exec))
   }
-  
+
   sys_OS <- .detect_os()
-  
+
   # 2. A specific version was requested (explicit argument, or via a
   #    caller's own AEME.glm_version default, when that happens to be set).
   if (!is.null(version)) {
     return(.ensure_executable(glm_exe_path(version, os = sys_OS)))
   }
-  
+
   # 3. Nothing requested. Don't depend on some earlier call having correctly
   #    set AEME.glm_version in *this* process/session - that's proven
   #    fragile across parallel workers, cache-hit install paths, and
   #    callers with their own hardcoded NULL defaults. Instead, check what's
   #    actually installed on disk, which is authoritative regardless of
   #    session state.
-  if (sys_OS == "windows") {
-    bin_path <- system.file('extbin/', package = "AEME")
-    bundled <- file.path(bin_path, "glm_aed", "windows", "glm.exe")
-    if (file.exists(bundled)) {
-      return(.ensure_executable(bundled))
-    }
-  }
-  
   latest <- .glm_latest_installed_version(sys_OS)
   if (!is.null(latest)) {
     options(AEME.glm_version = latest)  # sync session state for next time
     return(.ensure_executable(glm_exe_path(latest, os = sys_OS)))
   }
-  
+
   cli::cli_abort(c(
     "x" = "No GLM-AED binary found for {.field {sys_OS}}.",
     "i" = "Install one with {.run install_glm_aed(version = \"3.9.108\")}."
@@ -561,6 +555,47 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   cli::cli_abort(c(
     "x" = "No DYRESM-CAEDYM binary found for {.field {sys_OS}}.",
     "i" = "Install one with {.run install_dy_cd()}."
+  ))
+}
+
+#' Resolve which Simstrat-AED2 executable to run
+#'
+#' Picks the Simstrat-AED2 binary to use, in priority order: an explicit
+#' `AEME.simstrat_exec` option (always wins), a specific installed version
+#' (`version` argument or `AEME.simstrat_version` option, resolved via
+#' [simstrat_aed2_exe_path()]), or - if neither is set - whatever version is
+#' already installed on disk. Unlike GLM, there is no bundled fallback -
+#' Simstrat-AED2 binaries are only ever obtained via
+#' [install_simstrat_aed2()].
+#'
+#' @keywords internal
+#' @noRd
+.resolve_simstrat_aed2_exec <- function(version = NULL) {
+  bin_exec <- getOption("AEME.simstrat_exec", default = NULL)
+  if (!is.null(bin_exec)) {
+    if (!file.exists(bin_exec)) {
+      cli::cli_abort(
+        "{.envvar AEME.simstrat_exec} points to {.path {bin_exec}}, but that file doesn't exist."
+      )
+    }
+    return(.ensure_executable(bin_exec))
+  }
+
+  sys_OS <- .detect_os()
+
+  if (!is.null(version)) {
+    return(.ensure_executable(simstrat_aed2_exe_path(version, os = sys_OS)))
+  }
+
+  latest <- .simstrat_latest_installed_version(sys_OS)
+  if (!is.null(latest)) {
+    options(AEME.simstrat_version = latest)  # sync session state for next time
+    return(.ensure_executable(simstrat_aed2_exe_path(latest, os = sys_OS)))
+  }
+
+  cli::cli_abort(c(
+    "x" = "No Simstrat-AED2 binary found for {.field {sys_OS}}.",
+    "i" = "Install one with {.run install_simstrat_aed2()}."
   ))
 }
 
@@ -684,7 +719,8 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @rdname run_dy_cd
 #' @export
 run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
-                              args = character(), timeout = Inf) {
+                              args = character(), timeout = Inf,
+                              version = getOption("AEME.simstrat_version", default = NULL)) {
 
   oldwd <- getwd()
   on.exit({
@@ -694,15 +730,7 @@ run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
   cli_inform_safe(c(">" = paste0("Simstrat-AED2 running... ",
                                  "[", format(Sys.time()), "]")))
 
-  bin_exec <- getOption("AEME.simstrat_exec", default = NULL)
-  if (is.null(bin_exec)) {
-    bin_path <- system.file('extbin/', package = "AEME")
-    bin_exec <- switch(.detect_os(),
-                       "windows" = file.path(bin_path, "simstrat_aed2", "simstrat.exe"),
-                       "macos" = file.path(bin_path, "simstrat_aed2", "simstrat"),
-                       "linux" = file.path(bin_path, "simstrat_aed2", "simstrat")
-    )
-  }
+  bin_exec <- .resolve_simstrat_aed2_exec(version)
 
   if (verbose) {
     p <- processx::run(
@@ -836,13 +864,7 @@ get_gotm_wet_version <- function() {
 #' @return version string
 #' @noRd
 get_simstrat_aed2_version <- function() {
-  bin_exec <- getOption("AEME.simstrat_exec", default = NULL)
-  if (is.null(bin_exec)) {
-    bin_path <- system.file('extbin/', package = "AEME")
-    bin_exec <- ifelse(.detect_os() == "windows",
-                       file.path(bin_path, "simstrat_aed2", "simstrat.exe"),
-                       file.path(bin_path, "simstrat_aed2", "simstrat"))
-  }
+  bin_exec <- .resolve_simstrat_aed2_exec()
   vers <- system2(bin_exec, stdout = TRUE)
   return(trimws(vers[grepl("Simstrat version", vers)]))
 }

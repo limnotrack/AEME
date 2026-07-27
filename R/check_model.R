@@ -46,8 +46,9 @@ check_model <- function(model, os_valid = FALSE) {
   if (os_valid) {
     os <- .detect_os()
 
-    # DYRESM-CAEDYM, GOTM-WET, and Simstrat-AED2 are only bundled as Windows
-    # binaries (see inst/extbin/); GLM-AED ships cross-platform builds.
+    # DYRESM-CAEDYM, GOTM-WET, and Simstrat-AED2 only have Windows binaries
+    # published as release assets (see install_dy_cd()/install_gotm_wet()/
+    # install_simstrat_aed2()); GLM-AED ships cross-platform builds.
     windows_only <- c("dy_cd", "gotm_wet", "simstrat_aed2")
 
     os_valid_models <- if (os == "windows") {

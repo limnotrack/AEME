@@ -16,9 +16,9 @@
 #' @param os Character. One of `"windows"`, `"macos"`, or `"linux"`.
 #'   Defaults to the platform R is currently running on; you shouldn't
 #'   normally need to set this. Note that only a Windows build is currently
-#'   bundled with the package (`inst/extbin/simstrat_aed2/simstrat.exe`) --
-#'   `macos`/`linux` release assets don't exist yet, so those platforms will
-#'   report no versions available until binaries are published.
+#'   published as a release asset -- `macos`/`linux` release assets don't
+#'   exist yet, so those platforms will report no versions available until
+#'   binaries are published.
 #' @param repo Character. The `"owner/repo"` GitHub repository that Simstrat
 #'   binaries are attached to. Defaults to `"limnotrack/AEME"`.
 #' @param force Logical. If `FALSE` (the default) and this version is
@@ -100,7 +100,7 @@ install_simstrat_aed2 <- function(version = "latest",
   }
 
   exe_name <- if (os == "windows") "simstrat.exe" else "simstrat"
-  install_dir <- file.path(.glm_cache_dir(), os, version)
+  install_dir <- file.path(.model_cache_dir(), os, version)
   exe_path <- file.path(install_dir, exe_name)
 
   if (file.exists(exe_path) && !force) {
@@ -130,7 +130,7 @@ install_simstrat_aed2 <- function(version = "latest",
   asset_name <- sprintf("simstrat-%s-%s.zip", os, version)
   sha_name <- paste0(asset_name, ".sha256")
 
-  hit <- .glm_find_release_asset(repo, asset_name)
+  hit <- .model_find_release_asset(repo, asset_name)
   if (is.null(hit)) {
     cli::cli_abort(c(
       "Could not find a Simstrat-AED2 {.val {version}} build for {.field {os}}
@@ -139,7 +139,7 @@ install_simstrat_aed2 <- function(version = "latest",
     ))
   }
 
-  sha_hit <- .glm_find_release_asset(repo, sha_name)
+  sha_hit <- .model_find_release_asset(repo, sha_name)
   if (is.null(sha_hit)) {
     cli::cli_abort(c(
       "Found {.file {asset_name}} in release {.val {hit$release_tag}} but no
@@ -165,7 +165,7 @@ install_simstrat_aed2 <- function(version = "latest",
   utils::download.file(sha_hit$asset$browser_download_url, sha_path,
                        mode = "wb", quiet = TRUE)
 
-  expected <- .glm_read_checksum(sha_path)
+  expected <- .model_read_checksum(sha_path)
   actual <- tolower(digest::digest(zip_path, algo = "sha256", file = TRUE))
 
   if (!identical(actual, expected)) {
@@ -237,7 +237,7 @@ list_simstrat_aed2_versions <- function(repo = "limnotrack/AEME", os = NULL) {
   }
   os <- if (is.null(os)) NULL else match.arg(os, c("windows", "macos", "linux"))
 
-  releases <- .glm_list_releases(repo)
+  releases <- .model_list_releases(repo)
   pattern <- if (is.null(os)) {
     "^simstrat-(windows|macos|linux)-(.+)\\.zip$"
   } else {
@@ -275,14 +275,14 @@ list_simstrat_aed2_versions <- function(repo = "limnotrack/AEME", os = NULL) {
 #'
 #' Returns the path to a Simstrat-AED2 executable previously installed with
 #' [install_simstrat_aed2()]. Errors if that version isn't installed for
-#' this platform yet. Mirrors [glm_exe_path()]; unlike GLM, if no `version`
-#' is given this falls back to the binary bundled with the package (see
-#' `inst/extbin/simstrat_aed2/`) rather than an installed-version lookup,
-#' since that's what [run_aeme()] itself resolves to by default.
+#' this platform yet. Mirrors [glm_exe_path()]; there is no bundled
+#' fallback -- Simstrat-AED2 binaries are only ever obtained via
+#' [install_simstrat_aed2()].
 #'
 #' @param version Character. The Simstrat-AED2 version to locate, e.g.
-#'   `"3.0.4"`. If `NULL` (the default), returns the binary bundled with the
-#'   package instead of one installed via [install_simstrat_aed2()].
+#'   `"3.0.4"`. If `NULL` (the default), resolves to whichever version is
+#'   currently installed (see [install_simstrat_aed2()]), following the same
+#'   resolution order [run_aeme()] itself uses.
 #' @param os Character. One of `"windows"`, `"macos"`, or `"linux"`.
 #'   Defaults to the current platform.
 #'
@@ -298,24 +298,39 @@ list_simstrat_aed2_versions <- function(repo = "limnotrack/AEME", os = NULL) {
 #' @export
 simstrat_aed2_exe_path <- function(version = getOption("AEME.simstrat_version", NULL),
                                    os = NULL) {
-  os <- if (is.null(os)) .detect_os() else match.arg(os, c("windows", "macos", "linux"))
-  exe_name <- if (os == "windows") "simstrat.exe" else "simstrat"
-
   if (is.null(version)) {
-    path <- file.path(system.file("extbin", "simstrat_aed2", package = "AEME"), exe_name)
+    path <- .resolve_simstrat_aed2_exec()
   } else {
-    path <- file.path(.glm_cache_dir(), os, version, exe_name)
+    os <- if (is.null(os)) .detect_os() else match.arg(os, c("windows", "macos", "linux"))
+    exe_name <- if (os == "windows") "simstrat.exe" else "simstrat"
+    path <- file.path(.model_cache_dir(), os, version, exe_name)
   }
 
   if (!file.exists(path)) {
     cli::cli_abort(c(
-      "Simstrat-AED2 {.val {version %||% 'bundled'}} is not available for {.field {os}} at {.path {path}}.",
-      "i" = if (is.null(version)) {
-        "The package's bundled binary is missing for this platform."
-      } else {
-        "Run {.run install_simstrat_aed2(version = \"{version}\")} first."
-      }
+      "Simstrat-AED2 {.val {version}} is not installed for {.field {os}}.",
+      "i" = "Run {.run install_simstrat_aed2(version = \"{version}\")} first."
     ))
   }
   path
+}
+
+#' List locally installed Simstrat-AED2 versions for a given platform
+#' @keywords internal
+#' @noRd
+.simstrat_installed_versions <- function(os = .detect_os()) {
+  os_dir <- file.path(.model_cache_dir(), os)
+  if (!dir.exists(os_dir)) return(character(0))
+  versions <- list.dirs(os_dir, recursive = FALSE, full.names = FALSE)
+  exe_name <- if (os == "windows") "simstrat.exe" else "simstrat"
+  versions[file.exists(file.path(os_dir, versions, exe_name))]
+}
+
+#' Latest locally installed Simstrat-AED2 version for a given platform
+#' @keywords internal
+#' @noRd
+.simstrat_latest_installed_version <- function(os = .detect_os()) {
+  versions <- .simstrat_installed_versions(os)
+  if (length(versions) == 0) return(NULL)
+  versions[order(numeric_version(versions), decreasing = TRUE)][1]
 }
