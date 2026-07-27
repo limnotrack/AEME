@@ -16,15 +16,17 @@
 #' toggle_models("GLM-AED")  # Returns "glm_aed"
 #' toggle_models("gotm_wet", to = "display")  # Returns "GOTM-WET"
 #' toggle_models("GOTM-WET", to = "code")  # Returns "gotm_wet"
+#' toggle_models("simstrat_aed2", to = "display")  # Returns "SIMSTRAT-AED2"
 #' df <- data.frame(model = rep(c("dy_cd", "glm_aed"), 50))
 #' df <- df |>
 #'         dplyr::mutate(Model = toggle_models(model, to = "display"))
 
 toggle_models <-   function(model = NULL, to = NULL) {
   models <- c(
-    "DYRESM-CAEDYM" = "dy_cd",
-    "GLM-AED"       = "glm_aed",
-    "GOTM-WET"      = "gotm_wet"
+    "DYRESM-CAEDYM"  = "dy_cd",
+    "GLM-AED"        = "glm_aed",
+    "GOTM-WET"       = "gotm_wet",
+    "SIMSTRAT-AED2"  = "simstrat_aed2"
   )
   
   if (all(model %in% names(models))) {

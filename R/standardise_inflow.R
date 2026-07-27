@@ -8,50 +8,50 @@
 #' @section AEME standard inflow variables and units:
 #' \tabular{llll}{
 #'   \strong{Variable}          \tab \strong{Name}       \tab \strong{Unit}   \tab \strong{Required} \cr
-#'   Flow                       \tab \code{flow}          \tab m³/day          \tab Yes \cr
-#'   Water temperature          \tab \code{temp}          \tab °C              \tab Yes \cr
+#'   Flow                       \tab \code{flow}          \tab m3/day          \tab Yes \cr
+#'   Water temperature          \tab \code{temp}          \tab degC              \tab Yes \cr
 #'   Salinity                   \tab \code{salt}          \tab PSU             \tab Yes \cr
-#'   Dissolved oxygen           \tab \code{OXY_oxy}       \tab mmol/m³         \tab No \cr
-#'   Phosphate-P                \tab \code{PHS_frp}       \tab mmol/m³         \tab No \cr
-#'   Dissolved organic P        \tab \code{OGM_dop}       \tab mmol/m³         \tab No \cr
-#'   Particulate organic P      \tab \code{OGM_pop}       \tab mmol/m³         \tab No \cr
-#'   Particulate inorganic P    \tab \code{PHS_frp_ads}   \tab mmol/m³         \tab No \cr
-#'   Ammoniacal nitrogen        \tab \code{NIT_amm}       \tab mmol/m³         \tab No \cr
-#'   Nitrate-N                  \tab \code{NIT_nit}       \tab mmol/m³         \tab No \cr
-#'   Dissolved organic N        \tab \code{OGM_don}       \tab mmol/m³         \tab No \cr
-#'   Particulate organic N      \tab \code{OGM_pon}       \tab mmol/m³         \tab No \cr
-#'   Dissolved organic C        \tab \code{OGM_doc}       \tab mmol/m³         \tab No \cr
-#'   Particulate organic C      \tab \code{OGM_poc}       \tab mmol/m³         \tab No \cr
-#'   Dissolved inorganic C      \tab \code{CAR_dic}       \tab mmol/m³         \tab No \cr
-#'   Silica                     \tab \code{SIL_rsi}       \tab mmol/m³         \tab No \cr
-#'   Suspended solids 1         \tab \code{NCS_ss1}       \tab g/m³            \tab No \cr
-#'   Suspended solids 2         \tab \code{NCS_ss2}       \tab g/m³            \tab No \cr
+#'   Dissolved oxygen           \tab \code{OXY_oxy}       \tab mmol/m3         \tab No \cr
+#'   Phosphate-P                \tab \code{PHS_frp}       \tab mmol/m3         \tab No \cr
+#'   Dissolved organic P        \tab \code{OGM_dop}       \tab mmol/m3         \tab No \cr
+#'   Particulate organic P      \tab \code{OGM_pop}       \tab mmol/m3         \tab No \cr
+#'   Particulate inorganic P    \tab \code{PHS_frp_ads}   \tab mmol/m3         \tab No \cr
+#'   Ammoniacal nitrogen        \tab \code{NIT_amm}       \tab mmol/m3         \tab No \cr
+#'   Nitrate-N                  \tab \code{NIT_nit}       \tab mmol/m3         \tab No \cr
+#'   Dissolved organic N        \tab \code{OGM_don}       \tab mmol/m3         \tab No \cr
+#'   Particulate organic N      \tab \code{OGM_pon}       \tab mmol/m3         \tab No \cr
+#'   Dissolved organic C        \tab \code{OGM_doc}       \tab mmol/m3         \tab No \cr
+#'   Particulate organic C      \tab \code{OGM_poc}       \tab mmol/m3         \tab No \cr
+#'   Dissolved inorganic C      \tab \code{CAR_dic}       \tab mmol/m3         \tab No \cr
+#'   Silica                     \tab \code{SIL_rsi}       \tab mmol/m3         \tab No \cr
+#'   Suspended solids 1         \tab \code{NCS_ss1}       \tab g/m3            \tab No \cr
+#'   Suspended solids 2         \tab \code{NCS_ss2}       \tab g/m3            \tab No \cr
 #'   pH                         \tab \code{CHM_ph}        \tab -               \tab No \cr
 #' }
 #'
 #' @section Unit detection logic:
-#' Nutrient concentrations (N, P, C fractions) are expected in mmol/m³.
+#' Nutrient concentrations (N, P, C fractions) are expected in mmol/m3.
 #' Detection thresholds are based on comparison of observed value ranges
 #' against the example inflow data distributed with AEME:
 #'
 #' \itemize{
 #'   \item \strong{N fractions} (\code{NIT_amm}, \code{NIT_nit}, \code{OGM_don},
-#'     \code{OGM_pon}): mmol/m³ typically 0-10. Median > 20 assumed to be
+#'     \code{OGM_pon}): mmol/m3 typically 0-10. Median > 20 assumed to be
 #'     mg/L and divided by the molar mass of N (14.007 g/mol).
 #'   \item \strong{P fractions} (\code{PHS_frp}, \code{OGM_dop}, \code{OGM_pop},
-#'     \code{PHS_frp_ads}): mmol/m³ typically 0-5. Median > 10 assumed to be
+#'     \code{PHS_frp_ads}): mmol/m3 typically 0-5. Median > 10 assumed to be
 #'     mg/L and divided by the molar mass of P (30.974 g/mol).
-#'   \item \strong{C fractions} (\code{OGM_doc}, \code{OGM_poc}): mmol/m³
+#'   \item \strong{C fractions} (\code{OGM_doc}, \code{OGM_poc}): mmol/m3
 #'     typically 0-100. Median > 100 assumed to be mg/L and divided by the
 #'     molar mass of C (12.011 g/mol).
-#'   \item \strong{Dissolved inorganic C} (\code{CAR_dic}): mmol/m³ typically
+#'   \item \strong{Dissolved inorganic C} (\code{CAR_dic}): mmol/m3 typically
 #'     500-1000. Median > 2000 assumed to be mg/L.
-#'   \item \strong{Dissolved oxygen} (\code{OXY_oxy}): mmol/m³ typically
+#'   \item \strong{Dissolved oxygen} (\code{OXY_oxy}): mmol/m3 typically
 #'     200-400. Median < 50 assumed to be mg/L and multiplied by 1000/32
 #'     (molar mass of O2).
-#'   \item \strong{Silica} (\code{SIL_rsi}): mmol/m³ typically 1-50. Median
+#'   \item \strong{Silica} (\code{SIL_rsi}): mmol/m3 typically 1-50. Median
 #'     > 100 assumed to be mg/L and divided by molar mass of SiO2 (60.084).
-#'   \item \strong{Temperature} (\code{temp}): °C expected. Median > 100
+#'   \item \strong{Temperature} (\code{temp}): degC expected. Median > 100
 #'     assumed to be Kelvin.
 #' }
 #'
@@ -99,7 +99,7 @@ standardise_inflow <- function(inflow,
                                pot_inf_vars   = NULL,
                                verbose        = TRUE) {
   
-  # ── Input validation ────────────────────────────────────────────────────────
+  # -- Input validation --------------------------------------------------------
   
   if (!is.data.frame(inflow)) {
     cli::cli_abort(
@@ -144,11 +144,11 @@ standardise_inflow <- function(inflow,
     )
   }
 
-  # ── Step 1: remap column names ──────────────────────────────────────────────
+  # -- Step 1: remap column names ----------------------------------------------
   
   inflow <- .rename_inflow_columns(inflow, verbose = verbose)
   
-  # ── Step 2: warn if required variables are missing ──────────────────────────
+  # -- Step 2: warn if required variables are missing --------------------------
   
   required <- c("HYD_flow", "HYD_temp", "CHM_salt")
   missing_required <- setdiff(required, names(inflow))
@@ -160,11 +160,11 @@ standardise_inflow <- function(inflow,
     )
   }
   
-  # ── Step 3: detect units and convert ────────────────────────────────────────
+  # -- Step 3: detect units and convert ----------------------------------------
   
   inflow <- .convert_inflow_units(inflow, verbose = verbose)
   
-  # ── Step 4: fill missing state variables with defaults ──────────────────────
+  # -- Step 4: fill missing state variables with defaults ----------------------
   
   if (!is.null(model_controls) && !is.null(inf_vars)) {
     missing_state <- setdiff(inf_vars, names(inflow))
@@ -188,7 +188,7 @@ standardise_inflow <- function(inflow,
     }
   }
   
-  # ── Step 5: check time coverage ─────────────────────────────────────────────
+  # -- Step 5: check time coverage ---------------------------------------------
   
   if (!is.null(aeme_time)) {
     check_time(
@@ -199,7 +199,7 @@ standardise_inflow <- function(inflow,
     )
   }
   
-  # ── Step 6: select allowlisted columns ──────────────────────────────────────
+  # -- Step 6: select allowlisted columns --------------------------------------
   
   if (!is.null(pot_inf_vars)) {
     inflow <- dplyr::select(inflow, dplyr::any_of(c(time_col, pot_inf_vars)))
@@ -209,7 +209,7 @@ standardise_inflow <- function(inflow,
 }
 
 
-# ── Internal: column renaming ─────────────────────────────────────────────────
+# -- Internal: column renaming -------------------------------------------------
 
 #' @noRd
 .rename_inflow_columns <- function(inflow, verbose) {
@@ -227,7 +227,7 @@ standardise_inflow <- function(inflow,
     return(inflow)
   }
   
-  # Known AEME inflow variable names — drawn from key_naming$var_aeme
+  # Known AEME inflow variable names -- drawn from key_naming$var_aeme
   env <- new.env(parent = emptyenv())
   data("key_naming", package = "AEME", envir = env)
   known_inflow_vars <- c("HYD_flow", "HYD_temp", "CHM_salt",
@@ -291,23 +291,23 @@ standardise_inflow <- function(inflow,
   inflow
 }
 
-# ── Internal: unit detection and conversion ────────────────────────────────────
+# -- Internal: unit detection and conversion ------------------------------------
 #
 # Target units are taken directly from key_naming$units:
-#   HYD_temp  : degC       — detect Kelvin (median > 100)
-#   CHM_oxy   : mg/L       — detect mmol/m³ (median > 50 → divide by 31.25)
-#   NIT_*     : g/m^3      — detect mmol/m³ (median < 5  → multiply by 0.014007)
-#   PHS_*     : g/m^3      — detect mmol/m³ (median < 1  → multiply by 0.030974)
-#   CAR_doc/poc/dic : g/m^3 — detect mmol/m³ (median < thresholds → multiply by 0.012011)
-#   SIL_rsi   : g/m^3(?)  — detect mmol/m³ (median < 10 → multiply by 0.060084)
-#   CAR_ch4   : g/m^3      — detect mmol/m³ (median < 10 → multiply by 0.016043)
+#   HYD_temp  : degC       -- detect Kelvin (median > 100)
+#   CHM_oxy   : mg/L       -- detect mmol/m3 (median > 50 -> divide by 31.25)
+#   NIT_*     : g/m^3      -- detect mmol/m3 (median < 5  -> multiply by 0.014007)
+#   PHS_*     : g/m^3      -- detect mmol/m3 (median < 1  -> multiply by 0.030974)
+#   CAR_doc/poc/dic : g/m^3 -- detect mmol/m3 (median < thresholds -> multiply by 0.012011)
+#   SIL_rsi   : g/m^3(?)  -- detect mmol/m3 (median < 10 -> multiply by 0.060084)
+#   CAR_ch4   : g/m^3      -- detect mmol/m3 (median < 10 -> multiply by 0.016043)
 #
-# Thresholds are derived from the ex_inf reference data (known mmol/m³) vs
+# Thresholds are derived from the ex_inf reference data (known mmol/m3) vs
 # the g/m^3 target values expected by key_naming.
 
 .inflow_conversion_table <- list(
   
-  # ── Temperature (degC expected; detect Kelvin) ────────────────────────────
+  # -- Temperature (degC expected; detect Kelvin) ----------------------------
   HYD_temp = list(
     detect  = function(x) .nz_median(x) > 100,
     convert = function(x) x - 273.15,
@@ -315,9 +315,9 @@ standardise_inflow <- function(inflow,
     to      = "degC"
   ),
   
-  # ── Dissolved oxygen (mg/L expected; detect mmol/m³ ~200-400) ────────────
-  # mmol/m³ × 32/1000 = mg/L  (molar mass O₂ = 32 g/mol)
-  # mg/L typical ~8-14; mmol/m³ typical ~200-400 → unambiguous above 50
+  # -- Dissolved oxygen (mg/L expected; detect mmol/m3 ~200-400) ------------
+  # mmol/m3 x 32/1000 = mg/L  (molar mass O2 = 32 g/mol)
+  # mg/L typical ~8-14; mmol/m3 typical ~200-400 -> unambiguous above 50
   CHM_oxy = list(
     detect  = function(x) .nz_median(x) > 50,
     convert = function(x) x * 32 / 1000,
@@ -325,10 +325,10 @@ standardise_inflow <- function(inflow,
     to      = "mg/L"
   ),
   
-  # ── Nitrogen fractions (g/m³ expected; detect mmol/m³ → divide by molar mass N) ─
-  # g/m³ typical: NIT_amm 0-2, NIT_nit 0-5, DON/PON 0-5
-  # mmol/m³ would be ~70x higher (÷ 0.014007 g/mmol)
-  # Threshold > 20: safely above any real g/m³ value
+  # -- Nitrogen fractions (g/m3 expected; detect mmol/m3 -> divide by molar mass N) -
+  # g/m3 typical: NIT_amm 0-2, NIT_nit 0-5, DON/PON 0-5
+  # mmol/m3 would be ~70x higher (/ 0.014007 g/mmol)
+  # Threshold > 20: safely above any real g/m3 value
   NIT_amm = list(
     detect  = function(x) .nz_median(x) > 20,
     convert = function(x) x / 0.014007,
@@ -366,10 +366,10 @@ standardise_inflow <- function(inflow,
     to      = "g/m^3"
   ),
   
-  # ── Phosphorus fractions (g/m³ expected; detect mmol/m³ → divide by molar mass P) ─
-  # g/m³ typical: PHS_frp 0-5, others 0-1
-  # mmol/m³ would be ~30x higher (÷ 0.030974 g/mmol)
-  # Threshold > 10: safely above any real g/m³ P value
+  # -- Phosphorus fractions (g/m3 expected; detect mmol/m3 -> divide by molar mass P) -
+  # g/m3 typical: PHS_frp 0-5, others 0-1
+  # mmol/m3 would be ~30x higher (/ 0.030974 g/mmol)
+  # Threshold > 10: safely above any real g/m3 P value
   PHS_frp = list(
     detect  = function(x) .nz_median(x) > 10,
     convert = function(x) x / 0.030974,
@@ -407,10 +407,10 @@ standardise_inflow <- function(inflow,
     to      = "g/m^3"
   ),
   
-  # ── Carbon fractions (g/m³ expected; detect mmol/m³ → divide by molar mass C) ──
-  # g/m³ typical: CAR_doc 0-100, CAR_poc 0-50
-  # mmol/m³ would be ~80x higher (÷ 0.012011 g/mmol)
-  # Threshold > 500: safely above any real g/m³ DOC value
+  # -- Carbon fractions (g/m3 expected; detect mmol/m3 -> divide by molar mass C) --
+  # g/m3 typical: CAR_doc 0-100, CAR_poc 0-50
+  # mmol/m3 would be ~80x higher (/ 0.012011 g/mmol)
+  # Threshold > 500: safely above any real g/m3 DOC value
   CAR_doc = list(
     detect  = function(x) .nz_median(x) > 500,
     convert = function(x) x / 0.012011,
@@ -435,14 +435,14 @@ standardise_inflow <- function(inflow,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
-  # CAR_dic: g/m³ ~10; mmol/m³ ~832 → unambiguous above 100
+  # CAR_dic: g/m3 ~10; mmol/m3 ~832 -> unambiguous above 100
   CAR_dic = list(
     detect  = function(x) .nz_median(x) > 100,
     convert = function(x) x / 0.012011,
     from    = "mmol/m\u00b3",
     to      = "g/m^3"
   ),
-  # CAR_ch4: g/m³ typically trace; mmol/m³ > 10 is safely non-g/m³
+  # CAR_ch4: g/m3 typically trace; mmol/m3 > 10 is safely non-g/m3
   CAR_ch4 = list(
     detect  = function(x) .has_nonzero(x) && .nz_median(x) > 10,
     convert = function(x) x / 0.016043,
@@ -450,9 +450,9 @@ standardise_inflow <- function(inflow,
     to      = "g/m^3"
   ),
   
-  # ── Silica (g/m³ expected; detect mmol/m³ → divide by molar mass SiO₂) ──
-  # g/m³ typical: 1-30; mmol/m³ typical: 1-50 (SiO₂ 60.084 g/mol)
-  # These ranges genuinely overlap — use > 100 as a conservative threshold
+  # -- Silica (g/m3 expected; detect mmol/m3 -> divide by molar mass SiO2) --
+  # g/m3 typical: 1-30; mmol/m3 typical: 1-50 (SiO2 60.084 g/mol)
+  # These ranges genuinely overlap -- use > 100 as a conservative threshold
   SIL_rsi = list(
     detect  = function(x) .nz_median(x) > 100,
     convert = function(x) x / 0.060084,
@@ -505,7 +505,7 @@ standardise_inflow <- function(inflow,
     }
   }
   
-  # ── Post-conversion sanity checks ──────────────────────────────────────────
+  # -- Post-conversion sanity checks ------------------------------------------
   
   inflow <- .sanity_check_inflow(inflow)
   
@@ -513,7 +513,7 @@ standardise_inflow <- function(inflow,
 }
 
 
-# ── Internal: post-conversion sanity checks ────────────────────────────────────
+# -- Internal: post-conversion sanity checks ------------------------------------
 
 #' @noRd
 .sanity_check_inflow <- function(inflow) {
@@ -579,7 +579,7 @@ standardise_inflow <- function(inflow,
         vals <- x[!is.na(x)]
         length(vals) > 1 && var(vals) == 0
       },
-      msg   = "CAR_dic is constant across all rows — this may be a hardcoded placeholder rather than real data.",
+      msg   = "CAR_dic is constant across all rows -- this may be a hardcoded placeholder rather than real data.",
       class = "aeme_warn_inflow_sanity_dic_constant"
     ),
     list(
@@ -588,7 +588,7 @@ standardise_inflow <- function(inflow,
         vals <- x[!is.na(x)]
         length(vals) > 1 && var(vals) == 0
       },
-      msg   = "SIL_rsi is constant across all rows — this may be a placeholder value.",
+      msg   = "SIL_rsi is constant across all rows -- this may be a placeholder value.",
       class = "aeme_warn_inflow_sanity_sil_constant"
     )
   )

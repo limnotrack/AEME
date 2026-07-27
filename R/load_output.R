@@ -3,6 +3,8 @@
 #' @inheritParams build_aeme
 #' @inheritParams run_aeme
 #' @inheritParams parallel::stopCluster
+#' @param lake_dir Path to the lake AEME directory. If `NULL`, it is derived
+#' from `aeme`/`path`.
 #'
 #' @return Updated aeme object with model output
 #' @export
@@ -73,7 +75,8 @@ load_output <- function(aeme, model, path = NULL, lake_dir = NULL, model_control
   ens_lab <- format_ens_label(ens_n = ens_n)
   
   outp[[ens_lab]] <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
-                          gotm_wet = mods[["gotm_wet"]])
+                          gotm_wet = mods[["gotm_wet"]],
+                          simstrat_aed2 = mods[["simstrat_aed2"]])
   outp$n_members <- sum(grepl("ens", names(outp)))
   
   output(aeme) <- outp

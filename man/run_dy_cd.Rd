@@ -4,6 +4,7 @@
 \alias{run_dy_cd}
 \alias{run_glm_aed}
 \alias{run_gotm_wet}
+\alias{run_simstrat_aed2}
 \title{Run AEME models}
 \usage{
 run_dy_cd(
@@ -11,7 +12,8 @@ run_dy_cd(
   verbose = FALSE,
   debug = FALSE,
   args = character(),
-  timeout = Inf
+  timeout = Inf,
+  version = getOption("AEME.dyresm_version", default = NULL)
 )
 
 run_glm_aed(
@@ -19,7 +21,8 @@ run_glm_aed(
   verbose = FALSE,
   debug = FALSE,
   args = character(),
-  timeout = Inf
+  timeout = Inf,
+  version = getOption("AEME.glm_version", default = NULL)
 )
 
 run_gotm_wet(
@@ -27,7 +30,17 @@ run_gotm_wet(
   verbose = FALSE,
   debug = FALSE,
   args = character(),
-  timeout = Inf
+  timeout = Inf,
+  version = getOption("AEME.gotm_version", default = NULL)
+)
+
+run_simstrat_aed2(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  args = character(),
+  timeout = Inf,
+  version = getOption("AEME.simstrat_version", default = NULL)
 )
 }
 \arguments{
@@ -44,6 +57,13 @@ the model executable. Currently only used for GLM-AED. Options are:
 \item{timeout}{timeout in seconds, ignored if 0.  This is a limit for the
     elapsed time running \code{command} in a separate process.   Fractions
     of seconds are ignored.}
+
+\item{version}{character; specific version of the model to run. If not
+provided, the default version bundled with the package will be used. For
+GLM-AED and GOTM-WET, this can also be set via the \code{AEME.glm_version} or
+\code{AEME.gotm_version} options, respectively. For DYRESM-CAEDYM, use
+\code{AEME.dyresm_version}. Currently, only GLM-AED support version selection;
+GOTM-WET and DYRESM-CAEDYM always uses the bundled version.}
 }
 \value{
 Invisibly returns \code{NULL}.

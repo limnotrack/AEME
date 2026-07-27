@@ -15,7 +15,6 @@
 #' list_obs_vars(aeme)
 
 list_obs_vars <- function(aeme) {
-  data("key_naming", package = "AEME")
   aeme_time <- AEME::time(aeme)
 
   obs_vars <- AEME::observations(aeme) |>

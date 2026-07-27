@@ -29,6 +29,9 @@ plot_output(
 \item{model}{character vector; model(s) to plot. If missing, all models
 in the Aeme object will be plotted.}
 
+\item{point_size}{numeric; size of observation points added to the plot
+when \code{add_obs} is \code{TRUE}. Default is 2.}
+
 \item{ens_n}{integer; ensemble number to plot. Default is 1.}
 
 \item{add_obs}{logical; add observations to plot}

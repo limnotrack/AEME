@@ -16,6 +16,9 @@ o2_at_sat(
 \arguments{
 \item{temp}{water temperature (°C)}
 
+\item{depth}{depth (m) at which the DO measurement was made; adds a
+hydrostatic pressure correction.}
+
 \item{baro}{barometric pressure (mb)}
 
 \item{altitude}{altitude (m). Only used if \code{baro} is missing.}

@@ -15,9 +15,13 @@ utils::globalVariables(c(
   "HYD_temp",
   "Inflow",
   "LKE_outflow",
+  "LKE_outftot",
   "LKE_tli3",
   "LKE_tli4",
-  
+  "Qlh_t",
+  "wbal",
+  "weir_Q_check",
+
   # Meteorological variables
   "MET_humrel",
   "MET_pprain",
@@ -101,6 +105,8 @@ utils::globalVariables(c(
   "glm_aed_parameter_library",
   "glm_aed_parameters",
   "gotm_wet_parameters",
+  "simstrat_aed2_parameters",
+  "simstrat_aed2_parameter_library",
   "group",
   
   # Physical/numerical

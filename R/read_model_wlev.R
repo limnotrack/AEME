@@ -31,19 +31,20 @@ read_model_wlev <- function(nc = NULL, lake_dir, model) {
     # Read in model netCDF file
     nc_files <- get_model_outfile(model = model, lake_dir = lake_dir)[[model]]
     if (model == "gotm_wet") {
-      nc_file <- nc_files["output"]  
+      nc_file <- nc_files["output"]
     } else {
       nc_file <- nc_files
     }
     nc <- open_nc_safe(file = nc_file, model = model)
     on.exit(ncdf4::nc_close(nc), add = TRUE)
   }
-  
+
   # ---- 3. dispatch to model-specific extractor
   wlev <- switch(model,
                      "gotm_wet" = read_gotm_wlev(nc),
                      "glm_aed" = read_glm_wlev(nc),
-                     "dy_cd" = read_dy_wlev(nc)
+                     "dy_cd" = read_dy_wlev(nc),
+                     "simstrat_aed2" = read_simstrat_wlev(nc)
   )
   return(wlev)
 }

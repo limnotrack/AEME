@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# AEME <a href="https://limnotrack.github.io/AEME/"><img src="man/figures/logo.png" align="right" height="120" alt="AEME website" /></a>
+# AEME <a href="https://limnotrack.com/AEME/"><img src="man/figures/logo.png" align="right" height="120" alt="AEME website" /></a>
 
 <!-- badges: start -->
 
@@ -38,7 +38,22 @@ You can install AEME from [GitHub](https://github.com/) with:
 devtools::install_github("limnotrack/AEME")
 ```
 
-Currently, AEME is only available for Windows users.
+Model executables are no longer bundled with the AEME package. You will
+need to install the models after downloading.
+
+``` r
+library(AEME)
+install_models()
+```
+
+Model availability by operating system:
+
+| Model         | Windows | MacOS | Linux |
+|---------------|---------|-------|-------|
+| DYRESM-CAEDYM | ✅      | ❌    | ❌    |
+| GLM-AED       | ✅      | ✅    | ✅    |
+| GOTM-WET      | ✅      | ❌    | ❌    |
+| Simstrat-AED2 | ✅      | ✅    | ✅    |
 
 ## Example
 
@@ -55,7 +70,7 @@ file.copy(aeme_dir, tmpdir, recursive = TRUE)
 path <- file.path(tmpdir, "lake")
 aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 model_controls <- get_model_controls(use_bgc = TRUE)
-model <- c("dy_cd", "glm_aed", "gotm_wet")
+model <- c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                             model_controls = model_controls,
                             ext_elev = 5, use_bgc = TRUE)
@@ -92,12 +107,12 @@ aeme
 #> ── Time ──
 #> 
 #> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
-#> • Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1
+#> • Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1; Simstrat: 2
 #> 
 #> ── Configuration ──
 #> 
-#> • Model: dy_cd, glm_aed, and gotm_wet
-#> • Path: 'C:\Users\mooret\AppData\Local\Temp\RtmpopDlmQ\lake'
+#> • Model: dy_cd, glm_aed, gotm_wet, and simstrat_aed2
+#> • Path: 'C:\Users\mooret\AppData\Local\Temp\RtmpCYtUii\lake'
 #> • Model controls: Present
 #> • Use biogeochemical model: Yes
 #> ┌ Model Configuration ─────────────────────────────────────────┐
@@ -106,6 +121,7 @@ aeme
 #> │       DY-CD              Present             Present         │
 #> │      GLM-AED             Present             Present         │
 #> │      GOTM-WET            Present             Present         │
+#> │   SIMSTRAT-AED2          Present             Present         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -121,12 +137,12 @@ aeme
 #> ── Inflows ──
 #> 
 #> • Number of inflows: 1; Names: FWMT
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Outflows ──
 #> 
-#> • Data: Present
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1
+#> • Number of outflows: 2; Names: outflow, wbal; Elevations: -1, -1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
 #> 
@@ -142,16 +158,17 @@ aeme
 #> • DY-CD: 1
 #> • GLM-AED: 1
 #> • GOTM-WET: 1
-#> • Variables: 42
+#> • SIMSTRAT-AED2: 1
+#> • Variables: 44
 #> Water temperature, Thermocline depth, Dissolved oxygen, Total chlorophyll a,
 #> Total nitrogen, Total phosphorus, Water level, Lake depth, Water density,
-#> Stratified, ... and 32 more
+#> Stratified, ... and 34 more
 ```
 
 Model data can be visualised easily using the `plot_output()` function:
 
 ``` r
-p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
+p1 <- plot_output(aeme = aeme, var_sim = "HYD_temp")
 p1
 ```
 
@@ -160,8 +177,7 @@ p1
 Also, visualising lake level plots.
 
 ``` r
-p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
-                  facet = FALSE)
+p2 <- plot_wlev(aeme = aeme)
 p2
 ```
 
@@ -172,16 +188,15 @@ p2
 We have a host of vignettes to help you get started with AEME:
 
 - [Introduction to
-  AEME](https://limnotrack.github.io/AEME/articles/intro-aeme.html)
+  AEME](https://limnotrack.com/AEME/articles/intro-aeme.html)
 - [Set up for your own
-  lake](https://limnotrack.github.io/AEME/articles/getting-started.html)
+  lake](https://limnotrack.com/AEME/articles/getting-started.html)
 - [Description of model
-  inputs](https://limnotrack.github.io/AEME/articles/aeme-inputs.html)
+  inputs](https://limnotrack.com/AEME/articles/aeme-inputs.html)
 
 ## Extension
 
-- [aemetools](https://limnotrack.github.io/AEME/articles/aeme-inputs.html) -
-  For downloading meteorological data, calibration and sensitivity
-  analysis.
-- [bathytools](https://limnotrack.github.io/bathytools/) - For
-  processing lake bathymetry data.
+- [aemetools](https://limnotrack.com/aemetools/) - For downloading
+  meteorological data, calibration and sensitivity analysis.
+- [bathytools](https://limnotrack.com//bathytools/) - For processing
+  lake bathymetry data.

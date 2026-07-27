@@ -94,9 +94,9 @@ hypsograph from bathymetric contours available on the Limnotrack API:
 shoreline <- aemetools::get_lake_shape(id = 40188) # lake shoreline shapefile
 
 # Get lake depth contours
-contours  <- aemetools::lt_fetch(
+contours  <- ltapi::lt_fetch(
   "lake_contours",
-  filter = aemetools::lt_filter(lernzmp_id == "LID40188")
+  filter = ltapi::lt_filter(lernzmp_id == "LID40188")
 ) |>
   dplyr::mutate(depth = depth_m)
 ```

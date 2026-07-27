@@ -1,8 +1,5 @@
 test_that("building DYRESM works", {
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(c("dy_cd"))
   path <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
@@ -27,10 +24,7 @@ test_that("building DYRESM works", {
 })
 
 test_that("building DYRESM-CAEDYM works", {
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(c("dy_cd"))
   path <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
@@ -138,9 +132,8 @@ test_that("building GLM with fixed outlets", {
   inf_factor = c("glm_aed" = 1)
   outf_factor = c("glm_aed" = 1)
   model <- c("glm_aed")
-  path <- "aeme"
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, 
+                     model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme(aeme)
   cfg <- configuration(aeme)
@@ -163,10 +156,7 @@ test_that("building GLM with fixed outlets", {
 })
 
 test_that("building GOTM works", {
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(c("gotm_wet"))
   path <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
@@ -185,10 +175,7 @@ test_that("building GOTM works", {
 })
 
 test_that("building GOTM-WET works", {
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(c("gotm_wet"))
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -224,12 +211,9 @@ test_that("building GOTM-WET works", {
 })
 
 test_that("building all models with minimum met variables", {
-  tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+  path <- tempdir()
   req_met1 <- c("Date", "MET_tmpair", "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", 
                 "MET_pprain", "MET_radswd")
   inp <- input(aeme)
@@ -238,15 +222,13 @@ test_that("building all models with minimum met variables", {
   aeme <- add_met(aeme = aeme, met = met)
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- c("glm_aed")
-  }
+  skip_if_models_unavailable(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, use_bgc = FALSE)
   
   cfg_upd <- cfg <- configuration(aeme)
-  for (m in model) {
+  all_models <- list_models()
+  for (m in all_models) {
     cfg_upd[[m]] <- NULL
   }
   configuration(aeme) <- cfg_upd
@@ -281,10 +263,7 @@ test_that("building all models in a different dir", {
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- c("glm_aed")
-  }
+  model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, 
                      use_bgc = FALSE)
@@ -311,10 +290,7 @@ test_that("building all models with the same hypsograph", {
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- c("glm_aed")
-  }
+  skip_if_models_unavailable(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
                      model_controls = model_controls, 
                      use_bgc = FALSE)
@@ -346,10 +322,7 @@ test_that("can build all models with the generated hypsograph", {
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(model)
   
   hyps <- generate_hypsograph(aeme = aeme, ext_elev = 5,
                               volume_development = 1.2)
@@ -383,10 +356,7 @@ test_that("can build all models with the generated hypsograph", {
 })
 
 test_that("building all models with same initial depth", {
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(c("dy_cd", "glm_aed", "gotm_wet"))
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -444,10 +414,7 @@ test_that("building all models with same initial depth", {
 })
 
 test_that("building all models and loading to aeme works", {
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(c("dy_cd", "glm_aed", "gotm_wet"))
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -471,10 +438,7 @@ test_that("building all models and loading to aeme works", {
 })
 
 test_that("can build all models and write to new directory", {
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(c("dy_cd", "glm_aed", "gotm_wet"))
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -531,10 +495,7 @@ test_that("can build all models and write to new directory", {
 })
 
 test_that("building all models with new parameters works", {
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(c("dy_cd", "glm_aed", "gotm_wet"))
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -600,10 +561,7 @@ test_that("building all models with new parameters works", {
 })
 
 test_that("building models with parameters for only one model", {
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(c("dy_cd", "glm_aed", "gotm_wet"))
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -679,6 +637,7 @@ test_that("can update initial profile with obs", {
   aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- get_model_controls()
   model <- c("dy_cd", "glm_aed", "gotm_wet")
+  skip_if_models_unavailable(model)
   
   inp <- input(aeme)
   

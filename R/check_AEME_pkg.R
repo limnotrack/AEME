@@ -2,54 +2,53 @@
 #'
 #' @returns TRUE if the package is working correctly
 #' @export
-
+#' @importFrom cli cli_progress_step cli_inform cli_warn
+#' 
 check_AEME_pkg <- function() {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  suppressWarnings({
-    suppressMessages({
+  
+  cli::cli_progress_step("Loading AEME object")
+  suppressWarnings(suppressMessages(
     aeme <- yaml_to_aeme(path = path, "aeme.yaml")
-    })
-  })
-  cli::cli_inform(c("v" = paste0("Loading Aeme object complete! [",
-                                 format(Sys.time()), "]")))
+  ))
+  
   lke <- lake(aeme)
   model_controls <- get_model_controls(use_bgc = FALSE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("dy_cd", "glm_aed", "gotm_wet")
-  suppressWarnings({
-    suppressMessages({
-      aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                         model_controls = model_controls, ext_elev = 2)
-    })
-  })
-  cli::cli_inform(c("v" = paste0("Build Aeme model ensemble configuration complete! [",
-          format(Sys.time()), "]")))
-
-  suppressWarnings({
-    suppressMessages({
-      aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
-    })
-  })
-  cli::cli_inform(c("v" = paste0("Run Aeme model ensemble complete! [",
-                                 format(Sys.time()), "]")))
-
-  dy_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model[1], "DYsim.nc"))
-
-  mod_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[-1], "output", "output.nc")))
+  os <- .detect_os()
+  if (os != "windows") {
+    model <- c("glm_aed")
+    cli::cli_inform(c("i" = "GLM-AED is the only model available on {.field {os}}"))
+  } else {
+    model <- c("dy_cd", "glm_aed", "gotm_wet")
+  }  
   
-  cli::cli_inform(c("v" = paste0("Aeme model output present complete! [",
-                                 format(Sys.time()), "]")))
-
-  all(c(dy_chk, mod_chk))
+  cli::cli_progress_step("Building AEME model ensemble configuration", 
+                         msg_done = "AEME model ensemble configuration built")
+  suppressWarnings(suppressMessages(
+    aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                       model_controls = model_controls, ext_elev = 2)
+  ))
+  
+  cli::cli_progress_step("Running AEME model ensemble",
+                         msg_done = "AEME model ensemble run complete")
+  suppressWarnings(suppressMessages(
+    aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
+                     model_controls = model_controls, path = path)
+  ))
+  
+  model_outfiles <- get_model_outfile(aeme) |>
+    unlist()
+  output_present <- any(file.exists(model_outfiles))
+  
+  cli::cli_progress_step("Checking AEME model output")
+  if (output_present) {
+    cli::cli_inform(c("v" = "AEME model output present"))
+  } else {
+    cli::cli_warn(c("!" = "AEME model output not present"))
+  }
+  
+  all(file.exists(model_outfiles))
 }
