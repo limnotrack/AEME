@@ -7,7 +7,7 @@
 #' @return value with comment after it
 #' @noRd
 
-txtComment <- function(value, width, comment) {
+txt_comment <- function(value, width, comment) {
 
   # expand the value, if a vector
   value <- paste0(value, collapse = " ")
