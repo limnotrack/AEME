@@ -6,7 +6,7 @@
 #' @return GLM nml list object with updated dates
 #' @noRd
 
-daterange_GLM <-  function(date_range, glm_nml) {
+daterange_glm <-  function(date_range, glm_nml) {
 
   arg_list <- list(timefmt = 2, start = paste0(date_range[1]," 00:00:00"),
                    stop = paste0(date_range[2]," 00:00:00"))
