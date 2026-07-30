@@ -183,11 +183,6 @@ aeme <- aeme |>
 #> ── Building GLM-AED for lake wainamu ──
 #> 
 #> ℹ No variables to initialise in AED
-#> ✔ Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,
-#>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,
-#>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,
-#>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
-#>   aed_phytoplankton, aed_totals
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
 #> ℹ Tier 2: zone-median summer concentrations used for adjustment:
 #> ┌─────┬───────────┬────────────┬────────────┬────────────┐

@@ -132,11 +132,6 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_diatom: 8.4 replaced with 0.300275</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> PHY_green: 0.04 replaced with 0.300275</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> SIL_rsi: 100 replaced with 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   aed_phytoplankton, aed_totals</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting up AED aed_sed_const2d sediment zones: 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Tier 2: zone-median summer concentrations used for adjustment:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ┌─────┬───────────┬────────────┬────────────┬────────────┐</span>
@@ -166,17 +161,15 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-in"><span><span class="co"># Run models</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>path <span class="op">=</span> <span class="va">path</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-07-27 04:24:42]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-07-27 04:24:42]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-07-27 04:24:44]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-07-27 04:24:44]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-07-30 02:24:49]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-07-30 02:24:49]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-07-30 02:24:51]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-07-30 02:24:51]</span>
 <span class="r-in"><span><span class="fu">get_output_vars</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Water temperature          Thermocline depth </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 "HYD_temp"               "HYD_thmcln" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Dissolved oxygen        Total chlorophyll a </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  "CHM_oxy"                "PHY_tchla" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             Total nitrogen           Total phosphorus </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   "NIT_tn"                   "PHS_tp" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      Evaporative heat flux         Sensible heat flux </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   "LKE_Qe"                   "LKE_Qh" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Longwave radiation        Shortwave radiation </span>

@@ -1,5 +1,5 @@
 &aed_models
-   models = 'aed_sedflux','aed_oxygen','aed_silica','aed_nitrogen','aed_phosphorus','aed_organic_matter','aed_phytoplankton','aed_totals'
+   models = 'aed_sedflux','aed_oxygen','aed_silica','aed_nitrogen','aed_phosphorus','aed_organic_matter','aed_phytoplankton','aed_zooplankton','aed_macrophyte','aed_totals'
 /
 &aed_sedflux
    sedflux_model = 'Constant2d'

@@ -83,7 +83,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [8ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -109,11 +109,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ PHY_diatom: 8.4 replaced with 0.300275
 #> ℹ PHY_green: 0.04 replaced with 0.300275
 #> ℹ SIL_rsi: 100 replaced with 1
-#> ✔ Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,
-#>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,
-#>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,
-#>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
-#>   aed_phytoplankton, aed_totals
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
 #> ℹ Tier 2: zone-median summer concentrations used for adjustment:
 #> ┌─────┬───────────┬────────────┬────────────┬────────────┐
@@ -142,10 +137,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 
 aeme <- run_aeme(aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-07-27 04:25:50]
-#> → GLM-AED running... [2026-07-27 04:25:50]
-#> ✔ GLM-AED run successful! [2026-07-27 04:25:53]
-#> ✔ Model run complete! [2026-07-27 04:25:53]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-30 02:25:47]
+#> → GLM-AED running... [2026-07-30 02:25:47]
+#> ✔ GLM-AED run successful! [2026-07-30 02:25:49]
+#> ✔ Model run complete! [2026-07-30 02:25:49]
 out <- run_glm_aed_diagnostics(aeme = aeme)
 #> Requesting 86 variables from model output...  (sediment zone _Z variables are
 #> optional; missing ones are skipped)

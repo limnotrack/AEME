@@ -652,13 +652,11 @@ skill
 #> 5  GLM-AED  PHY_tchla -1.490 4.777 5.642   0.661      -1.941 1.092  0.094
 #> 6  GLM-AED    NIT_amm -0.002 0.014 0.031   1.168      -1.519 0.465  0.800
 #> 7  GLM-AED    NIT_nit  1.441 1.441 1.584 900.650 -653469.853 0.999  0.067
-#> 8  GLM-AED     NIT_tn  1.298 1.298 1.473   6.850   -2964.415 0.969 -0.299
-#> 9  GLM-AED    PHS_frp  0.000 0.003 0.005   1.417     -30.046 4.157  0.662
-#> 10 GLM-AED     PHS_tp -0.007 0.008 0.009   0.711      -2.255 0.460  0.376
-#> 11 GLM-AED CHM_oxycln  1.316 2.066 2.743   0.238      -0.134 0.300  0.489
-#> 12 GLM-AED    CHM_oxy  0.655 0.986 1.414   0.143       0.804 0.071  0.923
-#> 13 GLM-AED   CHM_salt -0.117 0.117 0.117   1.000    -328.984 0.914     NA
-#> 14 GLM-AED   HYD_temp -0.509 0.808 1.066   0.045       0.883 0.051  0.954
+#> 8  GLM-AED    PHS_frp  0.000 0.003 0.005   1.417     -30.046 4.157  0.662
+#> 9  GLM-AED CHM_oxycln  1.316 2.066 2.743   0.238      -0.134 0.300  0.489
+#> 10 GLM-AED    CHM_oxy  0.655 0.986 1.414   0.143       0.804 0.071  0.923
+#> 11 GLM-AED   CHM_salt -0.117 0.117 0.117   1.000    -328.984 0.914     NA
+#> 12 GLM-AED   HYD_temp -0.509 0.808 1.066   0.045       0.883 0.051  0.954
 #>        rs    r2     B   n obs_na sim_na                name_text
 #> 1  -0.350 0.283 0.008  10      0      0 Dissolved organic carbon
 #> 2   0.764 0.583 0.395  10      0      0               Stratified
@@ -667,13 +665,11 @@ skill
 #> 5  -0.139 0.009 0.002  10      0      0      Total chlorophyll a
 #> 6   0.767 0.640 0.182  20      0      0      Ammoniacal nitrogen
 #> 7   0.015 0.005 0.000  20      0      0                  Nitrate
-#> 8  -0.390 0.089 0.000  20      0      0           Total nitrogen
-#> 9   0.453 0.439 0.014  20      0      0                Phosphate
-#> 10 -0.192 0.142 0.033  20      0      0         Total phosphorus
-#> 11  0.607 0.239 0.112  30      0      0           Oxycline depth
-#> 12  0.934 0.851 0.712 125      0      0         Dissolved oxygen
-#> 13     NA 0.000 0.000 125      0      0                 Salinity
-#> 14  0.946 0.910 0.814 125      0      0        Water temperature
+#> 8   0.453 0.439 0.014  20      0      0                Phosphate
+#> 9   0.607 0.239 0.112  30      0      0           Oxycline depth
+#> 10  0.934 0.851 0.712 125      0      0         Dissolved oxygen
+#> 11     NA 0.000 0.000 125      0      0                 Salinity
+#> 12  0.946 0.910 0.814 125      0      0        Water temperature
 #>                           name_parse
 #> 1  Dissolved~organic~carbon~(g~m^-3)
 #> 2                     Stratified~(1)
@@ -682,13 +678,11 @@ skill
 #> 5      Total~chlorophyll~a~(mg~m^-3)
 #> 6       Ammoniacal~nitrogen~(g~m^-3)
 #> 7                 Nitrate-N~(g~m^-3)
-#> 8            Total~nitrogen~(g~m^-3)
-#> 9               Phosphate-P~(g~m^-3)
-#> 10         Total~phosphorus~(g~m^-3)
-#> 11                Oxycline~depth~(m)
-#> 12        Dissolved~oxygen~(mg~L^-1)
-#> 13                    Salinity~(PSU)
-#> 14            Temperature~(degree~C)
+#> 8               Phosphate-P~(g~m^-3)
+#> 9                 Oxycline~depth~(m)
+#> 10        Dissolved~oxygen~(mg~L^-1)
+#> 11                    Salinity~(PSU)
+#> 12            Temperature~(degree~C)
 ```
 
 ------------------------------------------------------------------------

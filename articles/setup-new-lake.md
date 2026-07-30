@@ -195,9 +195,235 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-07-27 04:40:04] job submitted
-#> INFO [2026-07-27 04:40:04] downloading
-#> INFO [2026-07-27 04:40:06] extracting
+#> INFO [2026-07-30 02:42:18] job submitted
+#> INFO [2026-07-30 02:42:22] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:42:27] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:42:31] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:42:35] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:42:39] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:42:43] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:42:48] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:42:52] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:42:56] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:00] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:05] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:09] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:13] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:17] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:21] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:26] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:30] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:34] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:38] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:43] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:47] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:51] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:55] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:43:59] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:04] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:08] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:12] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:16] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:20] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:25] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:29] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:33] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:37] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:41] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:45] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:50] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:54] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:44:58] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:02] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:06] job started | 4/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:11] job started | 5/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:15] job started | 5/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:19] job started | 5/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:23] job started | 5/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:27] job started | 5/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:32] job started | 5/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:36] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:40] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:44] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:48] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:53] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:45:57] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:02] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:06] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:10] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:14] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:18] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:23] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:27] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:31] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:35] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:39] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:44] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:48] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:52] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:46:56] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:00] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:05] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:09] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:13] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:17] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:21] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:26] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:30] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:34] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:38] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:42] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:46] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:51] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:55] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:47:59] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:03] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:07] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:12] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:16] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:20] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:24] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:28] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:33] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:37] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:41] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:45] job started | 6/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:49] job started | 7/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:54] job started | 7/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:48:58] job started | 7/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:02] job started | 7/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:06] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:10] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:15] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:19] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:23] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:27] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:32] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:36] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:40] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:44] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:48] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:53] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:49:57] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:01] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:05] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:09] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:14] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:18] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:22] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:26] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:30] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:34] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:39] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:43] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:47] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:51] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:50:55] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:00] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:04] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:08] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:12] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:16] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:21] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:25] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:29] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:33] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:37] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:42] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:46] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:50] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:54] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:51:58] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:03] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:07] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:11] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:15] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:19] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:23] job started | 8/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:28] job started | 9/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:32] job started | 9/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:36] job started | 9/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:40] job started | 9/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:44] job started | 9/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:49] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:53] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:52:57] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:01] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:05] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:10] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:14] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:18] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:22] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:26] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:31] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:35] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:39] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:43] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:47] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:51] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:53:56] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:00] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:04] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:08] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:12] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:17] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:21] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:25] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:29] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:33] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:38] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:42] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:46] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:50] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:54] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:54:59] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:03] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:07] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:11] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:15] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:19] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:24] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:28] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:32] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:36] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:40] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:45] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:49] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:53] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:55:57] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:01] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:06] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:10] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:14] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:18] job started | 10/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:23] job started | 11/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:27] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:31] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:35] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:39] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:44] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:48] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:52] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:56:56] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:00] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:05] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:09] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:13] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:17] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:21] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:26] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:30] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:34] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:38] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:42] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:47] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:51] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:55] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:57:59] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:58:03] job started | 12/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:58:07] job finished | 14/14 files created | id=a36662696a0a74734857e19d532b0b13caacd710
+#> INFO [2026-07-30 02:58:07] downloading
+#> INFO [2026-07-30 02:58:10] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -568,7 +794,7 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [10ms]
 #> 
 #> 
 #> 
@@ -704,14 +930,14 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-07-27 04:40:29]
-#> → DYRESM-CAEDYM running... [2026-07-27 04:40:29]
-#> ✔ DYRESM-CAEDYM run successful! [2026-07-27 04:40:52]
-#> → GLM-AED running... [2026-07-27 04:40:52]
-#> ✔ GLM-AED run successful! [2026-07-27 04:40:52]
-#> → GOTM-WET running... [2026-07-27 04:40:52]
-#> ✔ GOTM-WET run successful! [2026-07-27 04:40:53]
-#> ✔ Model run complete! [2026-07-27 04:40:53]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-30 02:58:36]
+#> → DYRESM-CAEDYM running... [2026-07-30 02:58:36]
+#> ✔ DYRESM-CAEDYM run successful! [2026-07-30 02:59:03]
+#> → GLM-AED running... [2026-07-30 02:59:03]
+#> ✔ GLM-AED run successful! [2026-07-30 02:59:04]
+#> → GOTM-WET running... [2026-07-30 02:59:04]
+#> ✔ GOTM-WET run successful! [2026-07-30 02:59:04]
+#> ✔ Model run complete! [2026-07-30 02:59:04]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```
 

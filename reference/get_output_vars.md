@@ -76,11 +76,6 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ℹ PHY_diatom: 8.4 replaced with 0.300275
 #> ℹ PHY_green: 0.04 replaced with 0.300275
 #> ℹ SIL_rsi: 100 replaced with 1
-#> ✔ Updated GLM-AED models from: aed_sedflux, aed_oxygen, aed_silica,
-#>   aed_nitrogen, aed_phosphorus, aed_organic_matter, aed_phytoplankton,
-#>   aed_zooplankton, aed_macrophyte, aed_totals to: aed_sedflux, aed_oxygen,
-#>   aed_silica, aed_nitrogen, aed_phosphorus, aed_organic_matter,
-#>   aed_phytoplankton, aed_totals
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
 #> ℹ Tier 2: zone-median summer concentrations used for adjustment:
 #> ┌─────┬───────────┬────────────┬────────────┬────────────┐
@@ -110,17 +105,15 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-07-27 04:24:42]
-#> → GLM-AED running... [2026-07-27 04:24:42]
-#> ✔ GLM-AED run successful! [2026-07-27 04:24:44]
-#> ✔ Model run complete! [2026-07-27 04:24:44]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-07-30 02:24:49]
+#> → GLM-AED running... [2026-07-30 02:24:49]
+#> ✔ GLM-AED run successful! [2026-07-30 02:24:51]
+#> ✔ Model run complete! [2026-07-30 02:24:51]
 get_output_vars(aeme, model)
 #>          Water temperature          Thermocline depth 
 #>                 "HYD_temp"               "HYD_thmcln" 
 #>           Dissolved oxygen        Total chlorophyll a 
 #>                  "CHM_oxy"                "PHY_tchla" 
-#>             Total nitrogen           Total phosphorus 
-#>                   "NIT_tn"                   "PHS_tp" 
 #>      Evaporative heat flux         Sensible heat flux 
 #>                   "LKE_Qe"                   "LKE_Qh" 
 #>         Longwave radiation        Shortwave radiation 
