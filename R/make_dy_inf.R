@@ -12,7 +12,7 @@
 #' @importFrom utils write.table
 #'
 
-make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
+make_dy_inf <-  function(lakename = "unknown", info = "", infList, filePath = "",
                         date_range, inf_factor = 1) {
   dy_inf_names <- c(
     "Date", "VOL", "TEMPTURE", "SALINITY", "DO", "PO4", "DOPL", "POPL", "PIP",
@@ -93,7 +93,7 @@ make_DYinf <-  function(lakename = "unknown", info = "", infList, filePath = "",
   # add inf IDs
   for (i in 1:length(infNames) ) {
     
-    writeLines(txtComment(infNames[i], width = 37, paste0("# Inflow ",i)), f)
+    writeLines(txt_comment(infNames[i], width = 37, paste0("# Inflow ",i)), f)
     
   }
   

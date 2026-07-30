@@ -20,7 +20,7 @@
 
 
 
-make_DYmet <-  function(lakename = "unknown",
+make_dy_met <-  function(lakename = "unknown",
                         info = "",
                         verDY = 3.1,
                         obsMet,

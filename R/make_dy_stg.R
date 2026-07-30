@@ -17,7 +17,7 @@
 #' @importFrom utils write.table
 #'
 
-make_DYstg <-  function(lakename = "!unknown",
+make_dy_stg <-  function(lakename = "!unknown",
                         latitude = -9999,
                         bathy,
                         surfElev, crest, outHeights,
@@ -93,20 +93,20 @@ make_DYstg <-  function(lakename = "!unknown",
 
   list("<#3>",
        paste0("DYRESM morphometry file for ",lakename),
-       txtComment(latitude, 40, "# latitude of lake centre"),
-       txtComment(round(surfElev,2), 40, "# lake surface elevation (m above sea level)"),
-       txtComment(length(infNames),40, "# number of inflows")) |>
+       txt_comment(latitude, 40, "# latitude of lake centre"),
+       txt_comment(round(surfElev,2), 40, "# lake surface elevation (m above sea level)"),
+       txt_comment(length(infNames),40, "# number of inflows")) |>
     lapply(writeLines, con = f)
 
   # if(!is.null(infNames)) {
   write.table(infTable[,c(2:5,1)], f, sep="\t", quote=FALSE, col.names = F, row.names=FALSE)
   # }
 
-  list(txtComment(round(min(bathy[,1]), 2), 40,"# base elevation (m above sea level)"),
-       txtComment(round(crest, 2), 40, "# crest/full supply elevation (m above sea level)"),
-       txtComment(as.numeric(length(outNames)),40, "# number of outlets"),
-       txtComment(round(outHeights, 2), 40, "# outlet heights (m above sea level)"),
-       txtComment(nrow(bathy), 40, "# number of bathymetry records")) |>
+  list(txt_comment(round(min(bathy[,1]), 2), 40,"# base elevation (m above sea level)"),
+       txt_comment(round(crest, 2), 40, "# crest/full supply elevation (m above sea level)"),
+       txt_comment(as.numeric(length(outNames)),40, "# number of outlets"),
+       txt_comment(round(outHeights, 2), 40, "# outlet heights (m above sea level)"),
+       txt_comment(nrow(bathy), 40, "# number of bathymetry records")) |>
     lapply(writeLines, con = f)
 
   writeLines("Elevation_[m]     Area_[m^2]",f)

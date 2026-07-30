@@ -8,7 +8,7 @@
 #' @param filePath path to write the complete .wdr file
 #' @param outf_factor numeric; scaling factor for outflow
 #' @keywords inputs
-#' @examples make_DYinf(lakename, info, infNames, filePath)
+#' @examples make_dy_inf(lakename, info, infNames, filePath)
 #'
 #' @importFrom dplyr filter mutate across arrange
 #' @importFrom lubridate year
@@ -18,7 +18,7 @@
 #'
 
 
-make_DYwdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
+make_dy_wdr <-  function(lakename = "unknown", wdrData, info = "", filePath = "",
                         outf_factor = 1.0) {
 
   if (length(wdrData) > 1) {

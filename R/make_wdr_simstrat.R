@@ -47,7 +47,7 @@ make_wdr_simstrat <- function(outf, heights_wdr, path_simstrat, surface_elev,
 
   # A height of NA or <= 0 is AEME's sentinel for a floating/surface offtake
   # (see build_aeme.R's `outf$elevation$wbal <- -1` for the water-balance
-  # correction term, and make_wdrGLM.R's `outlet_type <- ifelse(heights_wdr
+  # correction term, and make_wdr_glm.R's `outlet_type <- ifelse(heights_wdr
   # < 0, 2, 1)`), NOT a literal elevation. Treating it as a literal negative
   # elevation placed the withdrawal below the lake bottom, which silently
   # broke Simstrat's lake-level response to the water balance (level stayed

@@ -14,7 +14,7 @@
 #' variables.
 #' @noRd
 
-make_metGOTM <- function(df_met, path.gotm, hum_type = 3, lat, lon,
+make_met_gotm <- function(df_met, path.gotm, hum_type = 3, lat, lon,
                          est_swr_hr = TRUE, return_colname = TRUE) {
 
   df_met <- df_met |>

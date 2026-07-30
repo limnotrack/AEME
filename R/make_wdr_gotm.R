@@ -1,13 +1,13 @@
 #' Make GOTM outflows
 #'
-#' @inheritParams initialiseGOTM
+#' @inheritParams initialise_gotm
 #' @inheritParams build_dycd
 #' @inheritParams build_aeme
 #'
 #' @return GOTM yaml configuration as a list object
 #' @noRd
 
-make_wdrGOTM <- function(outf, path_gotm, outf_factor = 1) {
+make_wdr_gotm <- function(outf, path_gotm, outf_factor = 1) {
   names.outf <- names(outf)
 
   for (w in seq_len(length(names.outf))) {

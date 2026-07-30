@@ -10,7 +10,7 @@
 #' @noRd
 #'
 
-initialise_FABM <- function(path_gotm, model_controls) {
+initialise_fabm <- function(path_gotm, model_controls) {
 
   fabm <- yaml::read_yaml(file.path(path_gotm, "fabm.yaml"))
 

@@ -10,7 +10,7 @@
 #' @importFrom dplyr select mutate across
 #' @importFrom utils write.table
 #'
-make_metGLM <-  function(obs_met, path_glm = "", infRain = FALSE,
+make_met_glm <-  function(obs_met, path_glm = "", infRain = FALSE,
                          use_lw = TRUE) {
 
   if (use_lw) {

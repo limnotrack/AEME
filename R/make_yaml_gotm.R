@@ -2,14 +2,14 @@
 #'
 #' @inheritParams delagrangify
 #' @inheritParams initialise_glm
-#' @inheritParams initialiseGOTM
+#' @inheritParams initialise_gotm
 #' @inheritParams build_dycd
 #' @inheritParams build_aeme
 #'
 #' @return write updated GOTM yaml file in GOTM directory.
 #' @noRd
 
-make_yamlGOTM <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
+make_yaml_gotm <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
                           inf, outf, init_depth, path_gotm,
                           outf_factor, inf_factor, Kw, use_bgc, hum_type = 1,
                           est_swr_hr = TRUE) {
@@ -68,7 +68,7 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
   gotm$location$hypsograph <- "inputs/hypsograph.dat"
 
   # Met ----
-  met_cols <- make_metGOTM(df_met = met, path_gotm, hum_type = hum_type,
+  met_cols <- make_met_gotm(df_met = met, path_gotm, hum_type = hum_type,
                            lat = lat, lon = lon,
                            est_swr_hr = est_swr_hr)
   gotm_met_names <- met_cols[-c(1, 2)]
@@ -97,7 +97,7 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
 
   # Inflows ----
   gotm[["streams"]] <- NULL
-  gotm <- make_infGOTM(inf_list = inf, path_gotm = path_gotm, gotm = gotm,
+  gotm <- make_inf_gotm(inf_list = inf, path_gotm = path_gotm, gotm = gotm,
                        inf_factor = inf_factor, update_gotm = TRUE,
                        use_bgc = use_bgc)
 
@@ -110,7 +110,7 @@ make_yamlGOTM <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
   # Withdrawal ----
   if (length(outf) > 0) {
 
-    make_wdrGOTM(outf = outf, path_gotm = path_gotm, outf_factor = outf_factor)
+    make_wdr_gotm(outf = outf, path_gotm = path_gotm, outf_factor = outf_factor)
 
     # Update GOTM yaml file
     names.outf <- names(outf)

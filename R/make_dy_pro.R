@@ -15,7 +15,7 @@
 #' @return writes DYRESM inital profile file.
 #' @noRd
 
-make_DYpro <-  function(lakename = "!unknown",
+make_dy_pro <-  function(lakename = "!unknown",
                         verDY = 3.1,
                         startSim = "!unknown date",
                         lvlBottom, lvlStart,

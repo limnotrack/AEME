@@ -1,6 +1,6 @@
 #' Write GOTM inflow files and update GOTM yaml file
 #'
-#' @inheritParams make_yamlGOTM
+#' @inheritParams make_yaml_gotm
 #' @param inf_list list of dataframes with inflow data.
 #' @param update_gotm logical, if TRUE update the GOTM yaml file.
 #'
@@ -9,7 +9,7 @@
 #'
 #' @return write updated GOTM yaml file in GOTM directory.
 #' @noRd
-make_infGOTM <- function(inf_list, inf_factor = 1, path_gotm, gotm = NULL,
+make_inf_gotm <- function(inf_list, inf_factor = 1, path_gotm, gotm = NULL,
                          update_gotm = TRUE, use_bgc) {
 
   names_inf <- names(inf_list)

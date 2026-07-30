@@ -78,10 +78,10 @@ input_model_parameters <- function(aeme, model, param, path) {
       }
       
       if(m == "glm_aed") {
-        make_metGLM(obs_met = met, path_glm = model_path,
+        make_met_glm(obs_met = met, path_glm = model_path,
                     use_lw = inp$use_lw)
       } else if(m == "gotm_wet") {
-        make_metGOTM(df_met = met, path.gotm = model_path,
+        make_met_gotm(df_met = met, path.gotm = model_path,
                      return_colname = FALSE, lat = lke$latitude,
                      lon = lke$longitude)
       } else if (m == "simstrat_aed2") {
@@ -91,7 +91,7 @@ input_model_parameters <- function(aeme, model, param, path) {
                           ref_year = as.integer(simstrat_par$Simulation$`Reference year`))
       } else if(m == "dy_cd") {
         # lakename <- strsplit(basename(lake_dir), "_")[[1]][2]
-        make_DYmet(lakename = lakename, info = "test", obsMet = met,
+        make_dy_met(lakename = lakename, info = "test", obsMet = met,
                    filePath = model_path, infRain = FALSE, wndType = 0,
                    metHeight = 15, z_max = z_max, use_lw = inp$use_lw)
       }
@@ -110,9 +110,9 @@ input_model_parameters <- function(aeme, model, param, path) {
         wdr[[c]][[flow_col]] <- wdr[[c]][[flow_col]] * value
       }
       if (m == "glm_aed") {
-        make_wdrGLM(outf = wdr, path_glm = model_path, update_nml = FALSE)
+        make_wdr_glm(outf = wdr, path_glm = model_path, update_nml = FALSE)
       } else if(m == "gotm_wet") {
-        make_wdrGOTM(outf = wdr, path_gotm = model_path, outf_factor = 1)
+        make_wdr_gotm(outf = wdr, path_gotm = model_path, outf_factor = 1)
       } else if (m == "simstrat_aed2") {
         simstrat_par <- jsonlite::fromJSON(file.path(model_path, "simstrat.par"),
                                            simplifyVector = FALSE)
@@ -122,7 +122,7 @@ input_model_parameters <- function(aeme, model, param, path) {
                           outf_factor = 1,
                           ref_year = as.integer(simstrat_par$Simulation$`Reference year`))
       } else if(m == "dy_cd") {
-        make_DYwdr(lakename = lakename, wdrData = wdr, filePath = model_path,
+        make_dy_wdr(lakename = lakename, wdrData = wdr, filePath = model_path,
                    info = "test")
       }
     }
@@ -138,12 +138,12 @@ input_model_parameters <- function(aeme, model, param, path) {
       inf_factor <- unlist(param[["value"]][inf_idx])
       
       if (m == "glm_aed") {
-        make_infGLM(path_glm = model_path, list_inf = inf,
+        make_inf_glm(path_glm = model_path, list_inf = inf,
                     update_nml = FALSE, inf_factor = inf_factor)
       } else if(m == "gotm_wet") {
         cfg <- configuration(aeme)
         use_bgc <-!is.null(cfg[["gotm_wet"]][["bgc"]])
-        make_infGOTM(inf_list = inf, inf_factor = inf_factor,
+        make_inf_gotm(inf_list = inf, inf_factor = inf_factor,
                      use_bgc = use_bgc, path_gotm = model_path,
                      update_gotm = FALSE)
       } else if (m == "simstrat_aed2") {
@@ -158,7 +158,7 @@ input_model_parameters <- function(aeme, model, param, path) {
                           use_bgc = use_bgc,
                           ref_year = as.integer(simstrat_par$Simulation$`Reference year`))
       } else if(m == "dy_cd") {
-        make_DYinf(lakename = lakename, infList = inf,
+        make_dy_inf(lakename = lakename, infList = inf,
                    filePath = model_path, inf_factor = inf_factor)
       }
     }

@@ -16,7 +16,7 @@
 #' @noRd
 #'
 
-make_DYCDcfg <-  function(lakename = "unknown",
+make_dy_cd_cfg <-  function(lakename = "unknown",
                           date_range, verDY = 3.1,
                           runCD = FALSE,
                           EXTC = 0.2,
@@ -93,24 +93,24 @@ make_DYCDcfg <-  function(lakename = "unknown",
 
   writeLines(paste0("! DYRESM-CAEDYM configuration file for ",lakename),f)
 
-  writeLines(txtComment(cfgStart, width = 37, "# start date"), f)
-  writeLines(txtComment(nDays, width = 37, "# simulation length (days)"), f)
-  writeLines(txtComment(runCD, width = 37, "# run CAEDYM (.TRUE. or .FALSE.)"), f)
-  writeLines(txtComment('1', width = 37, "# output Interval (in days, -9999 for every time step)"), f)
-  writeLines(txtComment(EXTC, width = 37, "# light extinction coefficient (m-1)"), f)
+  writeLines(txt_comment(cfgStart, width = 37, "# start date"), f)
+  writeLines(txt_comment(nDays, width = 37, "# simulation length (days)"), f)
+  writeLines(txt_comment(runCD, width = 37, "# run CAEDYM (.TRUE. or .FALSE.)"), f)
+  writeLines(txt_comment('1', width = 37, "# output Interval (in days, -9999 for every time step)"), f)
+  writeLines(txt_comment(EXTC, width = 37, "# light extinction coefficient (m-1)"), f)
 
   if (verDY < 3) {
-    writeLines(txtComment('0.05', width = 37, paste0("# benthic boundary thickness (m)")), f)
+    writeLines(txt_comment('0.05', width = 37, paste0("# benthic boundary thickness (m)")), f)
 
   }
 
-  writeLines(txtComment(minLyrThk,37,"# minimum layer thickness"), f)
-  writeLines(txtComment(maxLyrThk,37, "# maximum layer thickness"), f)
-  writeLines(txtComment("3600", 37, "# time Step (s)"), f)
-  writeLines(txtComment(nVars,37,"# number of Output Selections"), f)
+  writeLines(txt_comment(minLyrThk,37,"# minimum layer thickness"), f)
+  writeLines(txt_comment(maxLyrThk,37, "# maximum layer thickness"), f)
+  writeLines(txt_comment("3600", 37, "# time Step (s)"), f)
+  writeLines(txt_comment(nVars,37,"# number of Output Selections"), f)
   writeLines(simVars, f)
-  writeLines(txtComment(".FALSE.",37,"# activate bubbler (.TRUE. or .FALSE.)"), f)
-  writeLines(txtComment(".FALSE.", 37,"# activate non-neutral atmospheric stability (.TRUE. or .FALSE.)"), f)
+  writeLines(txt_comment(".FALSE.",37,"# activate bubbler (.TRUE. or .FALSE.)"), f)
+  writeLines(txt_comment(".FALSE.", 37,"# activate non-neutral atmospheric stability (.TRUE. or .FALSE.)"), f)
 
   # close and write file
   close(f)

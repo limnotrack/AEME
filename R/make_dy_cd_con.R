@@ -9,9 +9,9 @@
 #'
 #' @keywords inputs
 #'
-#' @examples make_DYCDcon(lakename, verCD, simVars, nFix, ppnTS, filePath)
+#' @examples make_dy_cd_con(lakename, verCD, simVars, nFix, ppnTS, filePath)
 
-make_DYCDcon <-  function(lakename = "unknown", verCD = 3.1, simVars,
+make_dy_cd_con <-  function(lakename = "unknown", verCD = 3.1, simVars,
                           nFix = FALSE, filePath = "") {
 
 

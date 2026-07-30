@@ -2,8 +2,8 @@
 #'
 #' @param outf list of outflow
 #' @param heights_wdr numeric vector; height of outflow
-#' @inheritParams make_stgGLM
-#' @inheritParams make_metGLM
+#' @inheritParams make_stg_glm
+#' @inheritParams make_met_glm
 #' @param wdr_factor numeric; scaling factor to be applied to the outflow.
 #' @param update_nml Logical; update the nml object?
 #' @inheritParams set_nml
@@ -14,7 +14,7 @@
 #' @importFrom utils write.csv
 #' @importFrom dplyr mutate bind_rows
 
-make_wdrGLM <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy, 
+make_wdr_glm <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy, 
                         dims_lake, wdr_factor = 1,
                         update_nml = TRUE, glm_nml, path_glm) {
 
@@ -140,7 +140,7 @@ make_wdrGLM <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy,
 #'
 #' @inheritParams extrap_hyps
 #' @param height numeric; height of outflow from lake bottom.
-#' @inheritParams make_stgGLM
+#' @inheritParams make_stg_glm
 #'
 #' @return vector of length 2; with length and width at the outflow.
 #' @noRd

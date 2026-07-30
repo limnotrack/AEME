@@ -8,9 +8,9 @@
 #' @param verCD CAEDYM version number
 #' @param filePath dir of model, relative to working dir
 #' @keywords inputs
-#' @examples make_DYCDcon(lakename, verCD, intVars, nFix, ppnTS, filePath)
+#' @examples make_dy_cd_con(lakename, verCD, intVars, nFix, ppnTS, filePath)
 
-make_DYCDint <-  function(lakename = "unknown",
+make_dy_cd_int <-  function(lakename = "unknown",
                           intVars, wcVals, sedVals, verCD,
                           filePath = "") {
 

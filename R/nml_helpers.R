@@ -94,7 +94,7 @@ to.glm_boolean <- function(values) {
 #' @return A length-1 named list: \code{list(param_name = param_value)}.
 #' @keywords internal
 #' @noRd
-buildVal <- function(textLine, lineNum, blckName, coerce = TRUE) {
+build_val <- function(textLine, lineNum, blckName, coerce = TRUE) {
   
   # Strip inline comments
   textLine <- strsplit(textLine, "!")[[1]][1]
@@ -191,7 +191,7 @@ buildVal <- function(textLine, lineNum, blckName, coerce = TRUE) {
 #' @param argName string; argument name to search for.
 #' @return Integer index (or indices) of the matching block(s).
 #' @noRd
-findBlck <- function(nml, argName) {
+find_blck <- function(nml, argName) {
   
   if (!is.character(argName)) {
     cli::cli_abort(
@@ -252,7 +252,7 @@ get_block <- function(glm_nml, arg_name, warn = TRUE) {
     blck     <- arg_split[1]
     arg_name <- arg_split[2]
   } else {
-    blck <- findBlck(glm_nml, arg_name)
+    blck <- find_blck(glm_nml, arg_name)
   }
   
   if (length(blck) > 1) {
@@ -281,7 +281,7 @@ get_block <- function(glm_nml, arg_name, warn = TRUE) {
 #' @param arg_list A named list of parameter name-value pairs.
 #' @return An updated nml object.
 #' @noRd
-setnmlList <- function(glm_nml, arg_list) {
+set_nml_list <- function(glm_nml, arg_list) {
   
   if (!is.list(arg_list)) {
     cli::cli_abort(

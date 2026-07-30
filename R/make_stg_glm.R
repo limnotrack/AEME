@@ -13,7 +13,7 @@
 #' @return updated nml object
 #' @noRd
 
-make_stgGLM <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
+make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
                         update_sediment = TRUE) {
 
   bathy_glm <- bathy |>

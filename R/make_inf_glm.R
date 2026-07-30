@@ -1,7 +1,7 @@
 #' write and configure inflows for a GLM simulation
 #'
 #' @inheritParams set_nml
-#' @inheritParams make_wdrGLM
+#' @inheritParams make_wdr_glm
 #' @param path_glm filepath; to GLM directory
 #' @param list_inf list of inflows
 #' @param mass logical; do mass conversion for GLM-AED units.
@@ -12,7 +12,7 @@
 #'
 #' @importFrom utils write.csv
 
-make_infGLM <- function(glm_nml, path_glm, list_inf, mass = TRUE,
+make_inf_glm <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                         inf_factor = 1, update_nml = TRUE) {
 
   # Load Rdata
