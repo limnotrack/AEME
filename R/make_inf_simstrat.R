@@ -38,9 +38,12 @@ make_inf_simstrat <- function(inf, path_simstrat, surface_elev, inf_factor = 1,
   combined <- dplyr::bind_rows(inf, .id = "inflow_name") |>
     dplyr::group_by(Date) |>
     dplyr::summarise(
-      HYD_flow = sum(HYD_flow, na.rm = TRUE),
+      # HYD_temp/CHM_salt must be computed *before* HYD_flow is collapsed to
+      # its sum below -- dplyr::summarise() evaluates arguments
+      # sequentially
       HYD_temp = stats::weighted.mean(HYD_temp, w = pmax(HYD_flow, 0), na.rm = TRUE),
       CHM_salt = stats::weighted.mean(CHM_salt, w = pmax(HYD_flow, 0), na.rm = TRUE),
+      HYD_flow = sum(HYD_flow, na.rm = TRUE),
       .groups = "drop"
     ) |>
     dplyr::arrange(Date)
