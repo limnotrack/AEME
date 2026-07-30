@@ -623,16 +623,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               use_lw = inp$use_lw, overwrite_nml = overwrite)
     
     if (use_bgc) {
-      aeme <- aeme |> 
-        set_glm_aed_models(path = path, 
-                           aed_models = c("aed_sedflux", "aed_oxygen", 
-                                          "aed_silica", "aed_nitrogen",
-                                          "aed_phosphorus",
-                                          "aed_organic_matter",
-                                          "aed_phytoplankton", "aed_totals")) |> 
+      aeme <- aeme |>
         set_aed_sed_const2d(path = path)
     }
-    # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
   if ("gotm_wet" %in% model) {
     #--- configure GOTM-WET

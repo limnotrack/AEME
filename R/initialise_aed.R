@@ -26,11 +26,90 @@ initialise_aed <- function(model_controls, path_aed) {
                                    "PHS_pip", "NIT_pin",
                                    "PHS_tp","NIT_tn","PHY_tchla")
     )
+  
+  aed_cfg <- file.path(path_aed, "aed.nml")
+  aed_nml <- read_nml(aed_cfg)
+  
+  # --- Determine active AED modules -------------------------------------
+  module_map <- c(OXY = "aed_oxygen", SIL = "aed_silica", NIT = "aed_nitrogen",
+                  PHS = "aed_phosphorus", OGM = "aed_organic_matter",
+                  PHY = "aed_phytoplankton", ZOO = "aed_zooplankton")
+  module_order <- c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
+                    "aed_phosphorus", "aed_organic_matter",
+                    "aed_phytoplankton", "aed_zooplankton",
+                    "aed_macrophyte", "aed_totals")
+  
+  # Use the glm_aed-renamed names' prefixes, not var_aeme's own prefix --
+  # AEME's var_aeme convention doesn't always match AED's internal module
+  # naming (e.g. var_aeme "CHM_oxy" and "CAR_doc"/"CAR_poc" rename to
+  # "OXY_oxy" and "OGM_doc"/"OGM_poc" respectively), exactly as
+  # initialise_aed2() does for simstrat_aed2 names.
+  if (nrow(this_ctrls) > 0) {
+    glm_names <- rename_modelvars(input = this_ctrls$var_aeme,
+                                  type_output = "glm_aed")
+    prefixes <- sub("_.*$", "", glm_names)
+    active_modules <- module_order[module_order %in% unname(module_map[prefixes])]
+  } else {
+    active_modules <- character(0)
+  }
+  
+  # Cross-module dependencies, verified directly against this package's own
+  # bundled aed.nml target-variable links (not just libaed-water/libaed-api's
+  # compiled-in Fortran defaults, which for some parameters differ from what
+  # is actually configured here -- e.g. aed_phytoplankton's
+  # `c_uptake_target_variable` is blank in this template, so no aed_carbon
+  # module is required at all, unlike AED2/Simstrat's aed2_phytoplankton,
+  # which does link to aed2_carbon; see initialise_aed2()):
+  #  - aed_oxygen         -> aed_sedflux        (`fsed_oxy_variable = 'SDF_Fsed_oxy'`)
+  #  - aed_silica         -> aed_oxygen         (`silica_reactant_variable = 'OXY_oxy'`)
+  #  - aed_nitrogen       -> aed_oxygen,        (`nitrif_reactant_variable = 'OXY_oxy'`)
+  #                          aed_sedflux        (`fsed_amm_variable`/`fsed_nit_variable`)
+  #  - aed_phosphorus     -> aed_oxygen,        (`phosphorus_reactant_variable = 'OXY_oxy'`)
+  #                          aed_sedflux        (`fsed_frp_variable`)
+  #  - aed_organic_matter -> aed_oxygen,        (`dom_miner_oxy_reactant_var = 'OXY_oxy'`)
+  #                          aed_nitrogen,      (`dom_miner_nit_reactant_var`/`don_miner_product_variable`)
+  #                          aed_phosphorus     (`dop_miner_product_variable = 'PHS_frp'`)
+  #  - aed_phytoplankton  -> aed_oxygen, aed_nitrogen, aed_phosphorus,
+  #                          aed_silica, aed_organic_matter (uptake/
+  #                          excretion/mortality target variables)
+  #  - aed_zooplankton    -> aed_organic_matter (excretion/mortality target
+  #                          variables)
+  # `aed_macrophyte` has no equivalent source file in the current
+  # libaed-water/libaed-api checkouts (seemingly superseded/removed there)
+  # and has no target-variable keys in the bundled template either, so its
+  # dependencies can't be verified the same way -- left with no forced
+  # dependencies, as before. `aed_totals` is a pure diagnostic aggregator
+  # (its TN_vars/TP_vars/TOC_vars lists just reference whichever state
+  # variables are already configured), so it doesn't force anything new.
+  module_deps <- list(
+    aed_oxygen         = "aed_sedflux",
+    aed_silica         = "aed_oxygen",
+    aed_nitrogen       = c("aed_oxygen", "aed_sedflux"),
+    aed_phosphorus     = c("aed_oxygen", "aed_sedflux"),
+    aed_organic_matter = c("aed_oxygen", "aed_nitrogen", "aed_phosphorus"),
+    aed_phytoplankton  = c("aed_oxygen", "aed_nitrogen", "aed_phosphorus",
+                           "aed_silica", "aed_organic_matter"),
+    aed_zooplankton    = "aed_organic_matter"
+  )
+  
+  repeat {
+    added <- unlist(module_deps[active_modules], use.names = FALSE)
+    new_active <- union(active_modules, added)
+    if (setequal(new_active, active_modules)) break
+    active_modules <- new_active
+  }
+  active_modules <- module_order[module_order %in% active_modules]
+  
+  if (length(active_modules) > 0) {
+    aed_nml <- set_nml(aed_nml, arg_name = "models", arg_val = active_modules)
+  }
+  
   if (nrow(this_ctrls) == 0) {
     cli_inform_safe(c("i" = "No variables to initialise in AED"))
+    write_nml(aed_nml, aed_cfg)
     return(invisible())
-  } 
-  nme_chk <- rename_modelvars(input = this_ctrls$var_aeme, 
+  }
+  nme_chk <- rename_modelvars(input = this_ctrls$var_aeme,
                               type_output = "glm_aed")
   # Remove columns with no name - not necessary for GLM
   this_ctrls <- this_ctrls[nme_chk != "", ]
@@ -41,12 +120,6 @@ initialise_aed <- function(model_controls, path_aed) {
                   Please check your key file")
   }
   
-  aed_cfg <- file.path(path_aed, "aed.nml")
-  # aed_phyto <- file.path(path_aed, "aed_phyto_pars.nml")
-  
-  # open the aed.nml
-  aed_nml <- read_nml(file.path(path_aed, "aed.nml"))
-
   # open the pyto pars file
   # phy_nml <-  readLines(file.path(path_aed, "aed_phyto_pars.nml"))
   phy_csv_file <- basename(aed_nml[["aed_phytoplankton"]][["dbase"]])
@@ -116,18 +189,18 @@ initialise_aed <- function(model_controls, path_aed) {
       
       # Zooplankton initialisation
     } else if (grepl("ZOO_", var_name)) {
-    
+      
       # pH initialisation
     } else if (grepl("CHM_ph", var_name)) {
       # cli_inform_safe(c("i" = "Using default pH initialisation"))
     } else {
       
       nml_param_name <- paste0(gsub("^.*_","", var_name),
-                        "_initial")
+                               "_initial")
       nml_param_name <- ifelse(nml_param_name %in% c("ss1_initial","ss2_initial"),
-                        "ss_initial", nml_param_name)
+                               "ss_initial", nml_param_name)
       if (nml_param_name == "ss_initial") next
-
+      
       old_val <- get_nml_value(glm_nml = aed_nml,
                                arg_name = nml_param_name)
       
