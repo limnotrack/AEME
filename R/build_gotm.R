@@ -48,7 +48,7 @@ build_gotm <- function(lakename, model_controls, date_range,
 
   gotm <- yaml::read_yaml(file.path(path_gotm, "gotm.yaml"))
 
-  gotm <- make_yamlGOTM(gotm = gotm, lakename = lakename, date_range = date_range,
+  gotm <- make_yaml_gotm(gotm = gotm, lakename = lakename, date_range = date_range,
                         hyps = hyps, lat = lat, lon = lon, nlev = nlev,
                         met = met, inf = inf, outf = outf,
                         init_depth = init_depth, path_gotm = path_gotm,
@@ -60,7 +60,7 @@ build_gotm <- function(lakename, model_controls, date_range,
   gotm <- set_gotm_grid(gotm = gotm, depth = init_depth, path_gotm = path_gotm,
                         method = 1)
 
-  gotm <- initialiseGOTM(gotm = gotm, lvl_bottom = 0.1, lvl_surf = lvl_start,
+  gotm <- initialise_gotm(gotm = gotm, lvl_bottom = 0.1, lvl_surf = lvl_start,
                          tbl_obs = init_prof,
                          tmpwtr = model_controls$initial_wc[model_controls$var_aeme == "HYD_temp"],
                          start_date = date_range[1], path_gotm = path_gotm,

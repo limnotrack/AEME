@@ -65,7 +65,7 @@ build_glm <- function(lakename, model_controls, date_range,
   glm_nml <- read_nml(file.path(path_glm, "glm3.nml"))
   
   # set the simulation date range
-  glm_nml <- daterange_GLM(date_range, glm_nml = glm_nml)
+  glm_nml <- daterange_glm(date_range, glm_nml = glm_nml)
   
   
   # elipse dimensions at surface for nml
@@ -79,11 +79,11 @@ build_glm <- function(lakename, model_controls, date_range,
   
   crest <- max(hyps[["elev"]])
   
-  glm_nml <- make_stgGLM(glm_nml, lakename, bathy = hyps, lat = lat,
+  glm_nml <- make_stg_glm(glm_nml, lakename, bathy = hyps, lat = lat,
                          lon = lon, crest = crest, dims_lake = dims_lake)
   
   # Make meteorology file
-  make_metGLM(obs_met = met, path_glm = path_glm, use_lw = use_lw)
+  make_met_glm(obs_met = met, path_glm = path_glm, use_lw = use_lw)
   # Longwave Radiation switch
   if (use_lw) {
     glm_nml$meteorology$lw_type <- "LW_IN"
@@ -92,7 +92,7 @@ build_glm <- function(lakename, model_controls, date_range,
   }
   
   # Make inflows table and modify nml
-  glm_nml <- make_infGLM(glm_nml = glm_nml, path_glm = path_glm, list_inf = inf,
+  glm_nml <- make_inf_glm(glm_nml = glm_nml, path_glm = path_glm, list_inf = inf,
                          mass = TRUE, inf_factor = inf_factor)
   
   #--- make outflows table and modify nml
@@ -112,7 +112,7 @@ build_glm <- function(lakename, model_controls, date_range,
     }
   }
   
-  glm_nml <- make_wdrGLM(outf = outf,
+  glm_nml <- make_wdr_glm(outf = outf,
                          heights_wdr = heights_wdr,
                          outlet_type = outlet_type,
                          flt_off_sw = flt_off_sw,
