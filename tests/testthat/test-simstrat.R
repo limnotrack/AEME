@@ -154,3 +154,141 @@ test_that("running Simstrat-AED2 (with biogeochemistry) works", {
   testthat::expect_true(nrow(out$CHM_oxy) > 2)
   testthat::expect_true(any(!is.na(out$CHM_oxy)))
 })
+
+# --- Additional coverage matching test-run-glm.R/test-run-gotm.R ----------
+
+test_that("running Simstrat with a spinup works", {
+  skip_simstrat_run()
+
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls()
+  inf_factor <- c("simstrat_aed2" = 1)
+  outf_factor <- c("simstrat_aed2" = 1)
+  model <- "simstrat_aed2"
+
+  # Add spin up time
+  tim <- time(aeme)
+  tim[["spin_up"]][[model]] <- 100
+  time(aeme) <- tim
+
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
+  lke <- lake(aeme)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "output.nc"))
+  testthat::expect_true(file_chk)
+})
+
+test_that("can get variable indices after running Simstrat", {
+  skip_simstrat_run()
+
+  path <- file.path(tempdir(), "simstrat_var_indices")
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+  model_controls <- get_model_controls()
+  model <- "simstrat_aed2"
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
+
+  var_indices <- get_var_indices(model = model, aeme = aeme, path = path,
+                                 vars_sim = "HYD_temp", use_obs = TRUE)
+  testthat::expect_true(length(var_indices) > 0)
+  testthat::expect_true(is.list(var_indices))
+})
+
+test_that("assessing Simstrat model performance works", {
+  skip_simstrat_run()
+
+  path <- file.path(tempdir(), "simstrat_assess")
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+  model_controls <- get_model_controls()
+  model <- "simstrat_aed2"
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
+
+  model_performance <- assess_model(aeme = aeme, model = model,
+                                    var_sim = c("LKE_lvlwtr", "HYD_temp"))
+  testthat::expect_true(is.data.frame(model_performance))
+})
+
+test_that("getting variables from Simstrat output works", {
+  skip_simstrat_run()
+
+  path <- file.path(tempdir(), "simstrat_get_var")
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+  model_controls <- get_model_controls()
+  model <- "simstrat_aed2"
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
+
+  v <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp", depth = 0)
+  v2 <- get_var(aeme = aeme, model = model, var_sim = "HYD_temp", depth = 0,
+                depth_ref = "bottom")
+  testthat::expect_true(is.data.frame(v))
+  testthat::expect_true(is.data.frame(v2))
+})
+
+test_that("running Simstrat ensemble works", {
+  skip_simstrat_run()
+
+  path <- file.path(tempdir(), "simstrat_ensemble")
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+  model_controls <- get_model_controls()
+  model <- "simstrat_aed2"
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
+  aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,
+                   ens_n = 2)
+
+  outp <- output(aeme)
+  testthat::expect_true(check_all_model_outfiles(aeme))
+  testthat::expect_true(outp$n_members > 1)
+})
+
+test_that("reading Simstrat output via a direct nc handle works", {
+  skip_simstrat_run()
+
+  path <- file.path(tempdir(), "simstrat_nc_handle")
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+  model_controls <- get_model_controls()
+  model <- "simstrat_aed2"
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
+
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+
+  nc <- ncdf4::nc_open(outfile$simstrat_aed2)
+  wlev <- read_model_wlev(nc = nc, model = model)
+  testthat::expect_true(is.data.frame(wlev))
+
+  outp1 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model,
+                              vars_sim = "HYD_temp")
+  testthat::expect_true(is.list(outp1))
+  testthat::expect_true(nrow(outp1$HYD_temp) > 2)
+  ncdf4::nc_close(nc)
+})
+
