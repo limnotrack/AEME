@@ -18,13 +18,14 @@ initialise_aed <- function(model_controls, path_aed) {
   this_ctrls <-  model_controls |>
     dplyr::filter(simulate,
                   !var_aeme %in% deriv_vars,
+                  # variables with no init values
                   !var_aeme %in% c("DateTime",
-                                   "HYD_flow","HYD_temp","HYD_dens",
+                                   "HYD_flow", "HYD_temp", "HYD_dens",
                                    "LKE_lvlwtr",
-                                   "RAD_par","RAD_extc","RAD_secchi",
+                                   "RAD_par", "RAD_extc","RAD_secchi",
                                    "CHM_salt",
                                    "PHS_pip", "NIT_pin",
-                                   "PHS_tp","NIT_tn","PHY_tchla")
+                                   "PHS_tp", "NIT_tn", "PHY_tchla", "CAR_toc")
     )
   
   aed_cfg <- file.path(path_aed, "aed.nml")
@@ -52,7 +53,20 @@ initialise_aed <- function(model_controls, path_aed) {
   } else {
     active_modules <- character(0)
   }
-  
+
+  # NIT_tn/PHS_tp/CAR_toc are excluded from this_ctrls above (they're
+  # aggregate totals, not state variables with their own initial
+  # concentration), so they'd never be picked up by the prefix-based
+  # detection -- but requesting one of them as output requires aed_totals
+  # itself to be active (it's the module that actually computes
+  # TOT_tn/TOT_tp/TOT_toc from the aed.nml TN_vars/TP_vars/TOC_vars lists).
+  totals_vars <- c("NIT_tn", "PHS_tp", "CAR_toc")
+  wants_totals <- any(model_controls$var_aeme %in% totals_vars &
+                      model_controls$simulate)
+  if (wants_totals) {
+    active_modules <- union(active_modules, "aed_totals")
+  }
+
   # Cross-module dependencies, verified directly against this package's own
   # bundled aed.nml target-variable links (not just libaed-water/libaed-api's
   # compiled-in Fortran defaults, which for some parameters differ from what
@@ -78,9 +92,15 @@ initialise_aed <- function(model_controls, path_aed) {
   # libaed-water/libaed-api checkouts (seemingly superseded/removed there)
   # and has no target-variable keys in the bundled template either, so its
   # dependencies can't be verified the same way -- left with no forced
-  # dependencies, as before. `aed_totals` is a pure diagnostic aggregator
-  # (its TN_vars/TP_vars/TOC_vars lists just reference whichever state
-  # variables are already configured), so it doesn't force anything new.
+  # dependencies, as before. `aed_totals` is force-included above whenever
+  # NIT_tn/PHS_tp/CAR_toc is requested; its own TN_vars/TP_vars/TOC_vars in
+  # the bundled template ('NIT_nit','NIT_amm','OGM_don','OGM_pon',
+  # 'PHY_green_IN'; 'PHS_frp','OGM_dop','OGM_pop','PHY_green_IP';
+  # 'OGM_doc','OGM_poc','PHY_green','PHY_diatom') reference aed_nitrogen,
+  # aed_phosphorus, aed_organic_matter, and aed_phytoplankton -- so those
+  # must be forced too, or GLM aborts with "Undefined variable" (same
+  # failure mode as aed2_phytoplankton without its dependencies; see
+  # initialise_aed2()).
   module_deps <- list(
     aed_oxygen         = "aed_sedflux",
     aed_silica         = "aed_oxygen",
@@ -89,7 +109,9 @@ initialise_aed <- function(model_controls, path_aed) {
     aed_organic_matter = c("aed_oxygen", "aed_nitrogen", "aed_phosphorus"),
     aed_phytoplankton  = c("aed_oxygen", "aed_nitrogen", "aed_phosphorus",
                            "aed_silica", "aed_organic_matter"),
-    aed_zooplankton    = "aed_organic_matter"
+    aed_zooplankton    = "aed_organic_matter",
+    aed_totals         = c("aed_nitrogen", "aed_phosphorus",
+                           "aed_organic_matter", "aed_phytoplankton")
   )
   
   repeat {
