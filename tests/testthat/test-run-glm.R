@@ -148,7 +148,7 @@ test_that("running GLM-AED works", {
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb",
                 "CHM_oxycln", "CHM_oxynal",
-                "NIT_tn", "PHS_tp", "PHY_tchla")
+                "NIT_tn", "PHS_tp", "PHY_tchla", "CAR_toc")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model_controls <- set_vars_sim(model_controls = model_controls,
                                  vars_sim = vars_sim)
@@ -205,9 +205,11 @@ test_that("running GLM-AED works", {
   p1 <- plot_output(aeme, model = model, "PHY_tchla", facet = FALSE)
   p2 <- plot_output(aeme, model = model, "NIT_tn", facet = FALSE)
   p3 <- plot_output(aeme, model = model, "PHS_tp", facet = FALSE)
+  p4 <- plot_output(aeme, model = model, "CAR_toc", facet = FALSE)
   plot_phytos(aeme)
   plot_phs(aeme)
   plot_nit(aeme)
+  plot_car(aeme)
 
   pstrat <- plot_output(aeme, model = model, var_sim = "HYD_strat",
                         facet = FALSE)
