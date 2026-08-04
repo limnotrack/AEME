@@ -1,5 +1,5 @@
 test_that("package check is working", {
-  chk <- check_aeme_pkg()
+  chk <- check_AEME_pkg()
   testthat::expect_true(chk)
 })
 
