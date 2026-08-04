@@ -24,6 +24,10 @@ get_aeme_parameters <- function(model, file, module, name, par) {
   }
 
   # Load parameters and combine
+  data("dy_cd_parameters", package = "AEME", envir = environment())
+  data("gotm_wet_parameters", package = "AEME", envir = environment())
+  data("glm_aed_parameters", package = "AEME", envir = environment())
+  data("simstrat_aed2_parameters", package = "AEME", envir = environment())
   all_param <- dplyr::bind_rows(dy_cd_parameters, gotm_wet_parameters,
                                 glm_aed_parameters, simstrat_aed2_parameters)
   accept_module <- unique(all_param$module)
