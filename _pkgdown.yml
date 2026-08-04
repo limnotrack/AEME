@@ -38,6 +38,7 @@ articles:
   contents:
   - articles/glm-aed
   - articles/simstrat-aed2
+  - articles/aed-sediment-np-parameterisation
 - title: Use cases
   navbar: Use cases
   contents:
@@ -45,3 +46,4 @@ articles:
   - articles/lernzmp-aeme
   - articles/rotoehu-water-balance
   - setup-new-lake
+
