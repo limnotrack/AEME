@@ -54,11 +54,8 @@ Suggests:
     aemetools (>= 0.0.0.9000),
     bathytools (>= 0.0.0.9000),
     DT,
-    GLM3r (>= 3.1.17),
-    GOTMr (>= 0.0.0.10),
     htmltools,
     knitr,
-    LakeEnsemblR (>= 1.2.9),
     ltapi (>= 0.0.0.9000),
     osmdata,
     rmarkdown,
@@ -67,10 +64,7 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:  
-    github::aemon-j/GLM3r,
-    github::aemon-j/GOTMr,
-    github::aemon-j/LakeEnsemblR,
-    github::limnotrack/aemetools@dev,
+    github::limnotrack/aemetools,
     github::limnotrack/bathytools,
     github::limnotrack/ltapi
 Config/checklist/communities: limnotrack
