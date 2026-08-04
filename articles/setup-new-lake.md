@@ -138,13 +138,13 @@ metres above sea level.
 key <- Sys.getenv("LINZ_KEY")
 elevation <- aemetools::get_dem_value(lat = lat, lon = lon, key = key)
 elevation # in metres above sea level
-#> [1] 23.296
+#> [1] 29
 ```
 
 ``` r
 
 elevation
-#> [1] 23.296
+#> [1] 29
 ```
 
 We will now create a list of the lake data. This will be used to
@@ -195,9 +195,9 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-08-04 02:48:22] job submitted
-#> INFO [2026-08-04 02:48:22] downloading
-#> INFO [2026-08-04 02:48:24] extracting
+#> INFO [2026-08-04 03:37:59] job submitted
+#> INFO [2026-08-04 03:37:59] downloading
+#> INFO [2026-08-04 03:38:00] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -252,9 +252,9 @@ hypsograph_simple <- data.frame(area = c(area, 0),
                          elev = c(elevation, elevation - depth),
                          depth = c(0, -depth))
 hypsograph_simple
-#>       area   elev  depth
-#> 1 151938.6 23.296   0.00
-#> 2      0.0 10.226 -13.07
+#>       area  elev  depth
+#> 1 151938.6 29.00   0.00
+#> 2      0.0 15.93 -13.07
 ```
 
 ``` r
@@ -357,7 +357,7 @@ aeme
 #> 
 #> Wainamu (ID: 45819)
 #> • Lat: -36.89; Lon: 174.47
-#> • Elev: 23.3m; Depth: 13.07m; Area: 151938.62 m2
+#> • Elev: 29m; Depth: 13.07m; Area: 151938.62 m2
 #> 
 #> ── Time ──
 #> 
@@ -569,7 +569,7 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [7ms]
 #> 
 #> 
 #> 
@@ -579,19 +579,19 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #> 
 #>   ℹ Optimizing parameters for water balance
 #> 
-#>   ✔ Optimization Complete: C = 0.001, h_inv = 23.3, Final RMSE = 0.0675
+#>   ✔ Optimization Complete: C = 0.001, h_inv = 29, Final RMSE = 0.0675
 #> 
 #> Estimating lake water levels for glm_aed
 #> 
 #>   ℹ Optimizing parameters for water balance
 #> 
-#>   ✔ Optimization Complete: C = 0.001, h_inv = 23.3, Final RMSE = 0.0675
+#>   ✔ Optimization Complete: C = 0.001, h_inv = 29, Final RMSE = 0.0675
 #> 
 #> Estimating lake water levels for gotm_wet
 #> 
 #>   ℹ Optimizing parameters for water balance
 #> 
-#>   ✔ Optimization Complete: C = 0.001, h_inv = 23.3, Final RMSE = 0.0551
+#>   ✔ Optimization Complete: C = 0.001, h_inv = 29, Final RMSE = 0.0551
 #> 
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Building DYRESM-CAEDYM for lake wainamu
@@ -620,7 +620,7 @@ print(aeme)
 #> 
 #> Wainamu (ID: 45819)
 #> • Lat: -36.89; Lon: 174.47
-#> • Elev: 23.3m; Depth: 13.07m; Area: 151938.62 m2
+#> • Elev: 29m; Depth: 13.07m; Area: 151938.62 m2
 #> 
 #> ── Time ──
 #> 
@@ -705,14 +705,14 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-08-04 02:48:49]
-#> → DYRESM-CAEDYM running... [2026-08-04 02:48:49]
-#> ✔ DYRESM-CAEDYM run successful! [2026-08-04 02:49:16]
-#> → GLM-AED running... [2026-08-04 02:49:16]
-#> ✔ GLM-AED run successful! [2026-08-04 02:49:17]
-#> → GOTM-WET running... [2026-08-04 02:49:17]
-#> ✔ GOTM-WET run successful! [2026-08-04 02:49:17]
-#> ✔ Model run complete! [2026-08-04 02:49:17]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-08-04 03:38:19]
+#> → DYRESM-CAEDYM running... [2026-08-04 03:38:19]
+#> ✔ DYRESM-CAEDYM run successful! [2026-08-04 03:38:44]
+#> → GLM-AED running... [2026-08-04 03:38:44]
+#> ✔ GLM-AED run successful! [2026-08-04 03:38:44]
+#> → GOTM-WET running... [2026-08-04 03:38:44]
+#> ✔ GOTM-WET run successful! [2026-08-04 03:38:45]
+#> ✔ Model run complete! [2026-08-04 03:38:45]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```
 

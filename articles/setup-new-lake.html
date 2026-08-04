@@ -188,22 +188,22 @@ an API key from LINZ.</p>
 <p>You can easily create a key on the LINZ website: <a href="https://data.linz.govt.nz/" class="external-link uri">https://data.linz.govt.nz/</a> or use the function within
 the <code>aemetools</code> package to create one.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/aemetools/reference/create_linz_key.html">create_linz_key</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/create_linz_key.html" class="external-link">create_linz_key</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Then adding it to your <code>.Renviron</code> file.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add the LINZ API key to your .Renviron file</span></span>
-<span><span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/aemetools/reference/add_linz_key.html">add_linz_key</a></span><span class="op">(</span>key <span class="op">=</span> <span class="st">"your_key_here"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/add_linz_key.html" class="external-link">add_linz_key</a></span><span class="op">(</span>key <span class="op">=</span> <span class="st">"your_key_here"</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>get_dem_value</code> function will return the elevation of
 the lake in metres above sea level.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the elevation of the lake</span></span>
 <span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"LINZ_KEY"</span><span class="op">)</span></span>
-<span><span class="va">elevation</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/aemetools/reference/get_dem_value.html">get_dem_value</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, key <span class="op">=</span> <span class="va">key</span><span class="op">)</span></span>
+<span><span class="va">elevation</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_dem_value.html" class="external-link">get_dem_value</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, key <span class="op">=</span> <span class="va">key</span><span class="op">)</span></span>
 <span><span class="va">elevation</span> <span class="co"># in metres above sea level</span></span>
-<span><span class="co">#&gt; [1] 23.296</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 29</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elevation</span></span>
-<span><span class="co">#&gt; [1] 23.296</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 29</span></span></code></pre></div>
 <p>We will now create a list of the lake data. This will be used to
 construct the AEME object.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -249,10 +249,10 @@ locations around the world. However, its date range is only from
 1900-2021.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get ERA5 meteorological data</span></span>
-<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/aemetools/reference/get_era5_isimip_point.html">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2026-08-04 02:48:22] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2026-08-04 02:48:22] downloading</span></span>
-<span><span class="co">#&gt; INFO [2026-08-04 02:48:24] extracting</span></span></code></pre></div>
+<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">aemetools</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html" class="external-link">get_era5_isimip_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span><span class="op">)</span></span>
+<span><span class="co">#&gt; INFO [2026-08-04 03:37:59] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2026-08-04 03:37:59] downloading</span></span>
+<span><span class="co">#&gt; INFO [2026-08-04 03:38:00] extracting</span></span></code></pre></div>
 <p>View the summary of the meteorological data. The units have been
 converted to more common units used in aquatic ecosystem modelling.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -296,9 +296,9 @@ not ideal, but it will work for this example.</p>
 <span>                         elev <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">elevation</span>, <span class="va">elevation</span> <span class="op">-</span> <span class="va">depth</span><span class="op">)</span>,</span>
 <span>                         depth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="op">-</span><span class="va">depth</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">hypsograph_simple</span></span>
-<span><span class="co">#&gt;       area   elev  depth</span></span>
-<span><span class="co">#&gt; 1 151938.6 23.296   0.00</span></span>
-<span><span class="co">#&gt; 2      0.0 10.226 -13.07</span></span></code></pre></div>
+<span><span class="co">#&gt;       area  elev  depth</span></span>
+<span><span class="co">#&gt; 1 151938.6 29.00   0.00</span></span>
+<span><span class="co">#&gt; 2      0.0 15.93 -13.07</span></span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot the hypsograph</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -384,7 +384,7 @@ with default values for inputs not provided.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Wainamu (ID: 45819)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Lat: -36.89; Lon: 174.47</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Elev: 23.3m; Depth: 13.07m; Area: 151938.62 m2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Elev: 29m; Depth: 13.07m; Area: 151938.62 m2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -597,7 +597,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt;   <span style="color: #00BBBB;">ℹ</span> No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[9ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[7ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -607,19 +607,19 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   <span style="color: #00BBBB;">ℹ</span> Optimizing parameters for water balance</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   <span style="color: #00BB00;">✔</span> Optimization Complete: C = 0.001, h_inv = 23.3, Final RMSE = 0.0675</span></span>
+<span><span class="co">#&gt;   <span style="color: #00BB00;">✔</span> Optimization Complete: C = 0.001, h_inv = 29, Final RMSE = 0.0675</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Estimating lake water levels for glm_aed</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   <span style="color: #00BBBB;">ℹ</span> Optimizing parameters for water balance</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   <span style="color: #00BB00;">✔</span> Optimization Complete: C = 0.001, h_inv = 23.3, Final RMSE = 0.0675</span></span>
+<span><span class="co">#&gt;   <span style="color: #00BB00;">✔</span> Optimization Complete: C = 0.001, h_inv = 29, Final RMSE = 0.0675</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Estimating lake water levels for gotm_wet</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   <span style="color: #00BBBB;">ℹ</span> Optimizing parameters for water balance</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   <span style="color: #00BB00;">✔</span> Optimization Complete: C = 0.001, h_inv = 23.3, Final RMSE = 0.0551</span></span>
+<span><span class="co">#&gt;   <span style="color: #00BB00;">✔</span> Optimization Complete: C = 0.001, h_inv = 29, Final RMSE = 0.0551</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Building DYRESM-CAEDYM for lake wainamu</span></span>
@@ -648,7 +648,7 @@ The models available are <code>dy_cd</code>, <code>glm_aed</code>, and
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Wainamu (ID: 45819)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Lat: -36.89; Lon: 174.47</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Elev: 23.3m; Depth: 13.07m; Area: 151938.62 m2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Elev: 29m; Depth: 13.07m; Area: 151938.62 m2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -726,14 +726,14 @@ object.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run the ensemble</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-08-04 02:48:49]</span></span>
-<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-08-04 02:48:49]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-08-04 02:49:16]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-08-04 02:49:16]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-08-04 02:49:17]</span></span>
-<span><span class="co">#&gt; → GOTM-WET running... [2026-08-04 02:49:17]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-08-04 02:49:17]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-08-04 02:49:17]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-08-04 03:38:19]</span></span>
+<span><span class="co">#&gt; → DYRESM-CAEDYM running... [2026-08-04 03:38:19]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> DYRESM-CAEDYM run successful! [2026-08-04 03:38:44]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2026-08-04 03:38:44]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-08-04 03:38:44]</span></span>
+<span><span class="co">#&gt; → GOTM-WET running... [2026-08-04 03:38:44]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-08-04 03:38:45]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-08-04 03:38:45]</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span></span></code></pre></div>
 </div>
 <div class="section level3">
