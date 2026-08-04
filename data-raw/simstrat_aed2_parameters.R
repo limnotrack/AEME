@@ -54,6 +54,7 @@ simstrat_aed2_parameters <- dplyr::bind_rows(phys_df, aed2_df) |>
     group = NA_character_
   ) |>
   dplyr::select(dplyr::any_of(param_colnames)) |>
+  dplyr::select(-par) |> 
   tibble::as_tibble()
 
 usethis::use_data(simstrat_aed2_parameters, overwrite = TRUE)

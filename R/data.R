@@ -69,7 +69,7 @@
 #' An example dataframe used for inputting and calibrating AEME models.
 #'
 #' @format ## `aeme_parameters`
-#' A data frame with 17 rows and 6 columns:
+#' A data frame with 34 rows and 10 columns:
 #' \describe{
 #'   \item{model}{Model for the parameter}
 #'   \item{file}{File in which the parameter is stored}
@@ -84,6 +84,7 @@
 #'    "sediment/sed_temp_mean" in GLM-AED}
 #'   \item{module}{Module for the parameter in the model, useful to help
 #'   identify parameters} 
+#'   \item{var_sim}{Variable name in AEME that it influences, useful to help identify parameters}
 #' }
 #' @source Package development.
 "aeme_parameters"
@@ -94,7 +95,7 @@
 #' An example dataframe used for inputting and calibrating AEME models.
 #'
 #' @format ## `aeme_parameters_bgc`
-#' A data frame with 30 rows and 7 columns:
+#' A data frame with 66 rows and 7 columns:
 #' \describe{
 #'   \item{model}{Model for the parameter}
 #'   \item{file}{File in which the parameter is stored}
@@ -109,6 +110,7 @@
 #'    "sediment/sed_temp_mean" in GLM-AED}
 #'   \item{module}{Module for the parameter in the model, useful to help
 #'   identify parameters} 
+#'   \item{var_sim}{Variable name in AEME that it influences, useful to help identify parameters}
 #' }
 #' @source Package development.
 "aeme_parameters_bgc"
