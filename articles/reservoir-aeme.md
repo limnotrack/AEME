@@ -526,7 +526,7 @@ aeme <- build_aeme(
   wb_method = 1
 )
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmp2pI4M6\reservoir
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpimYvFG\reservoir
 #> 
 #> 
 #> ── Calculating water balance ──
@@ -562,10 +562,10 @@ aeme <- build_aeme(
 ``` r
 
 aeme <- run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-08-04 19:03:05]
-#> → GLM-AED running... [2026-08-04 19:03:05]
-#> ✔ GLM-AED run successful! [2026-08-04 19:03:05]
-#> ✔ Model run complete! [2026-08-04 19:03:05]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-08-04 21:22:52]
+#> → GLM-AED running... [2026-08-04 21:22:52]
+#> ✔ GLM-AED run successful! [2026-08-04 21:22:52]
+#> ✔ Model run complete! [2026-08-04 21:22:52]
 ```
 
 ## View the output

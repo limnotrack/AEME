@@ -12,7 +12,7 @@ aeme_parameters_bgc
 
 ### `aeme_parameters_bgc`
 
-A data frame with 30 rows and 7 columns:
+A data frame with 66 rows and 7 columns:
 
 - model:
 
@@ -52,6 +52,11 @@ A data frame with 30 rows and 7 columns:
 - module:
 
   Module for the parameter in the model, useful to help identify
+  parameters
+
+- var_sim:
+
+  Variable name in AEME that it influences, useful to help identify
   parameters
 
 ## Source

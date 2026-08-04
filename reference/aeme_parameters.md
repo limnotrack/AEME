@@ -12,7 +12,7 @@ aeme_parameters
 
 ### `aeme_parameters`
 
-A data frame with 17 rows and 6 columns:
+A data frame with 34 rows and 10 columns:
 
 - model:
 
@@ -52,6 +52,11 @@ A data frame with 17 rows and 6 columns:
 - module:
 
   Module for the parameter in the model, useful to help identify
+  parameters
+
+- var_sim:
+
+  Variable name in AEME that it influences, useful to help identify
   parameters
 
 ## Source
