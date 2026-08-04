@@ -486,17 +486,17 @@ skill
 #> 8  SIMSTRAT-AED2    CHM_oxy  2.488  2.539  3.787 0.368   -0.404 0.229  0.576
 #> 9  SIMSTRAT-AED2   CHM_salt -0.117  0.117  0.117 1.000 -328.984 0.914     NA
 #> 10 SIMSTRAT-AED2   HYD_temp  0.735  1.777  2.415 0.099    0.398 0.221  0.862
-#>        rs    r2     B   n obs_na sim_na                name_text
-#> 1  -0.294 0.047 0.003  10      0      0 Dissolved organic carbon
-#> 2      NA 0.000 0.000  10      0      0               Stratified
-#> 3      NA 0.000 0.000  10      0      0        Thermocline depth
-#> 4   0.067 0.031 0.000  10      0      0      Total chlorophyll a
-#> 5   0.102 0.021 0.010  20      0      0      Ammoniacal nitrogen
-#> 6  -0.345 0.034 0.003  20      0      0                  Nitrate
-#> 7   0.322 0.050 0.020  20      0      0                Phosphate
-#> 8   0.714 0.331 0.138 125      0      0         Dissolved oxygen
-#> 9      NA 0.000 0.000 125      0      0                 Salinity
-#> 10  0.856 0.742 0.463 125      0      0        Water temperature
+#>        rs    r2     B   n obs_na sim_na           name_text
+#> 1  -0.294 0.047 0.003  10      0      0 Dissolved organic C
+#> 2      NA 0.000 0.000  10      0      0          Stratified
+#> 3      NA 0.000 0.000  10      0      0   Thermocline depth
+#> 4   0.067 0.031 0.000  10      0      0 Total chlorophyll a
+#> 5   0.102 0.021 0.010  20      0      0 Ammoniacal nitrogen
+#> 6  -0.345 0.034 0.003  20      0      0             Nitrate
+#> 7   0.322 0.050 0.020  20      0      0           Phosphate
+#> 8   0.714 0.331 0.138 125      0      0    Dissolved oxygen
+#> 9      NA 0.000 0.000 125      0      0            Salinity
+#> 10  0.856 0.742 0.463 125      0      0   Water temperature
 #>                           name_parse
 #> 1  Dissolved~organic~carbon~(g~m^-3)
 #> 2                     Stratified~(1)

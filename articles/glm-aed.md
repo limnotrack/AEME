@@ -326,6 +326,99 @@ aeme <- set_glm_aed_models(
 
 ------------------------------------------------------------------------
 
+#### AED module dependency hierarchy
+
+AED modules are not independent of one another — most reference state
+variables that are only computed if another module is switched on. For
+example, `aed_nitrogen` reduces ammonium using `OXY_oxy` as its oxidant,
+so it requires `aed_oxygen` to also be active; if it is not, GLM aborts
+at runtime with an “Undefined variable” error rather than silently
+ignoring the missing link.
+
+[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+resolves this automatically: when you set `simulate = TRUE` for a
+biogeochemical variable via `model_controls`, `initialise_aed()`
+determines which module that variable belongs to, then walks the
+dependency graph below to a fixed point, adding every module that
+dependency chain requires — you never need to enable a module’s
+prerequisites by hand. The one place this *isn’t* automatic is
+[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)
+(used above), which sets the active-module list exactly as given, so it
+is up to you to include the full chain if you call it directly.
+
+The dependency graph, verified directly against the target-variable
+links configured in AEME’s bundled `aed.nml` template:
+
+    aed_sedflux
+      └─ aed_oxygen           (sediment oxygen demand)
+           ├─ aed_silica          (silica reactant = OXY_oxy)
+           ├─ aed_nitrogen        (nitrification reactant = OXY_oxy; also needs aed_sedflux directly)
+           ├─ aed_phosphorus      (P release reactant = OXY_oxy; also needs aed_sedflux directly)
+           └─ aed_organic_matter  (mineralisation reactant = OXY_oxy)
+                ├─ needs aed_nitrogen        (DON mineralisation product)
+                ├─ needs aed_phosphorus      (DOP mineralisation product = PHS_frp)
+                ├─ aed_zooplankton      (excretion/mortality targets)
+                └─ aed_phytoplankton    (uptake/excretion/mortality targets;
+                                          needs aed_oxygen, aed_nitrogen,
+                                          aed_phosphorus, aed_silica, and
+                                          aed_organic_matter directly)
+                     └─ aed_totals      (TN/TP/TOC totals aggregate state
+                                          variables owned by aed_nitrogen,
+                                          aed_phosphorus, aed_organic_matter,
+                                          and aed_phytoplankton)
+
+    aed_macrophyte  (no enforced dependencies — no target-variable links in the
+                     bundled template)
+
+| Module | Required dependencies | Why |
+|----|----|----|
+| `aed_sedflux` | — | Sediment flux is the base of the chain; nothing else must be active first. |
+| `aed_oxygen` | `aed_sedflux` | Sediment oxygen demand flux comes from `aed_sedflux`. |
+| `aed_silica` | `aed_oxygen` | Silica reactant variable is `OXY_oxy`. |
+| `aed_nitrogen` | `aed_oxygen`, `aed_sedflux` | Nitrification reactant is `OXY_oxy`; sediment NH₄/NO₃ fluxes come from `aed_sedflux`. |
+| `aed_phosphorus` | `aed_oxygen`, `aed_sedflux` | Redox-sensitive P release reactant is `OXY_oxy`; sediment FRP flux comes from `aed_sedflux`. |
+| `aed_organic_matter` | `aed_oxygen`, `aed_nitrogen`, `aed_phosphorus` | Mineralisation reactant is `OXY_oxy`; DON/DOP mineralisation products feed `aed_nitrogen`/`aed_phosphorus`. |
+| `aed_phytoplankton` | `aed_oxygen`, `aed_nitrogen`, `aed_phosphorus`, `aed_silica`, `aed_organic_matter` | Growth/uptake/excretion/mortality target variables span all five modules (e.g. diatom silica uptake, nutrient uptake, DOM excretion). |
+| `aed_zooplankton` | `aed_organic_matter` | Excretion and mortality products are organic-matter state variables. |
+| `aed_totals` | `aed_nitrogen`, `aed_phosphorus`, `aed_organic_matter`, `aed_phytoplankton` | Its `TN_vars`/`TP_vars`/`TOC_vars` lists aggregate state variables owned by these four modules (e.g. `NIT_nit`, `PHS_frp`, `OGM_doc`, `PHY_green`). |
+| `aed_macrophyte` | — | No target-variable links to other modules in the bundled template. |
+
+AED module dependency requirements enforced by `initialise_aed()`.
+{.table}
+
+For example, requesting only `NIT_tn` (total nitrogen) in
+`model_controls` looks like a single-variable request, but because it is
+a diagnostic total computed by `aed_totals`, and `aed_totals` in turn
+depends on nitrogen, phosphorus, organic matter, and phytoplankton,
+[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+activates the following module set automatically:
+
+``` r
+
+mc <- get_model_controls(use_bgc = TRUE) |>
+  set_vars_sim(vars_sim = "NIT_tn")
+
+aeme_nit_tn <- build_aeme(
+  aeme           = aeme,
+  model          = model,
+  path           = path,
+  model_controls = mc,
+  ext_elev       = 5,
+  use_bgc        = TRUE
+)
+
+config_files <- get_model_config_files(aeme)
+
+
+nml <- read_nml(config_files$glm_aed["aed"])
+get_nml_value(nml, "models")
+#> [1] "aed_sedflux"        "aed_oxygen"         "aed_silica"        
+#> [4] "aed_nitrogen"       "aed_phosphorus"     "aed_organic_matter"
+#> [7] "aed_phytoplankton"  "aed_totals"
+```
+
+------------------------------------------------------------------------
+
 #### Sediment zones
 
 One of the most important GLM-AED features for water-quality simulation
@@ -652,24 +745,28 @@ skill
 #> 5  GLM-AED  PHY_tchla -1.490 4.777 5.642   0.661      -1.941 1.092  0.094
 #> 6  GLM-AED    NIT_amm -0.002 0.014 0.031   1.168      -1.519 0.465  0.800
 #> 7  GLM-AED    NIT_nit  1.441 1.441 1.584 900.650 -653469.853 0.999  0.067
-#> 8  GLM-AED    PHS_frp  0.000 0.003 0.005   1.417     -30.046 4.157  0.662
-#> 9  GLM-AED CHM_oxycln  1.316 2.066 2.743   0.238      -0.134 0.300  0.489
-#> 10 GLM-AED    CHM_oxy  0.655 0.986 1.414   0.143       0.804 0.071  0.923
-#> 11 GLM-AED   CHM_salt -0.117 0.117 0.117   1.000    -328.984 0.914     NA
-#> 12 GLM-AED   HYD_temp -0.509 0.808 1.066   0.045       0.883 0.051  0.954
-#>        rs    r2     B   n obs_na sim_na                name_text
-#> 1  -0.350 0.283 0.008  10      0      0 Dissolved organic carbon
-#> 2   0.764 0.583 0.395  10      0      0               Stratified
-#> 3   0.437 0.270 0.084  10      0      0        Thermocline depth
-#> 4  -0.124 0.036 0.015  10      0      0            Cyanobacteria
-#> 5  -0.139 0.009 0.002  10      0      0      Total chlorophyll a
-#> 6   0.767 0.640 0.182  20      0      0      Ammoniacal nitrogen
-#> 7   0.015 0.005 0.000  20      0      0                  Nitrate
-#> 8   0.453 0.439 0.014  20      0      0                Phosphate
-#> 9   0.607 0.239 0.112  30      0      0           Oxycline depth
-#> 10  0.934 0.851 0.712 125      0      0         Dissolved oxygen
-#> 11     NA 0.000 0.000 125      0      0                 Salinity
-#> 12  0.946 0.910 0.814 125      0      0        Water temperature
+#> 8  GLM-AED     NIT_tn  1.298 1.298 1.473   6.850   -2964.415 0.969 -0.299
+#> 9  GLM-AED    PHS_frp  0.000 0.003 0.005   1.417     -30.046 4.157  0.662
+#> 10 GLM-AED     PHS_tp -0.007 0.008 0.009   0.711      -2.255 0.460  0.376
+#> 11 GLM-AED CHM_oxycln  1.316 2.066 2.743   0.238      -0.134 0.300  0.489
+#> 12 GLM-AED    CHM_oxy  0.655 0.986 1.414   0.143       0.804 0.071  0.923
+#> 13 GLM-AED   CHM_salt -0.117 0.117 0.117   1.000    -328.984 0.914     NA
+#> 14 GLM-AED   HYD_temp -0.509 0.808 1.066   0.045       0.883 0.051  0.954
+#>        rs    r2     B   n obs_na sim_na           name_text
+#> 1  -0.350 0.283 0.008  10      0      0 Dissolved organic C
+#> 2   0.764 0.583 0.395  10      0      0          Stratified
+#> 3   0.437 0.270 0.084  10      0      0   Thermocline depth
+#> 4  -0.124 0.036 0.015  10      0      0       Cyanobacteria
+#> 5  -0.139 0.009 0.002  10      0      0 Total chlorophyll a
+#> 6   0.767 0.640 0.182  20      0      0 Ammoniacal nitrogen
+#> 7   0.015 0.005 0.000  20      0      0             Nitrate
+#> 8  -0.390 0.089 0.000  20      0      0      Total nitrogen
+#> 9   0.453 0.439 0.014  20      0      0           Phosphate
+#> 10 -0.192 0.142 0.033  20      0      0    Total phosphorus
+#> 11  0.607 0.239 0.112  30      0      0      Oxycline depth
+#> 12  0.934 0.851 0.712 125      0      0    Dissolved oxygen
+#> 13     NA 0.000 0.000 125      0      0            Salinity
+#> 14  0.946 0.910 0.814 125      0      0   Water temperature
 #>                           name_parse
 #> 1  Dissolved~organic~carbon~(g~m^-3)
 #> 2                     Stratified~(1)
@@ -678,11 +775,13 @@ skill
 #> 5      Total~chlorophyll~a~(mg~m^-3)
 #> 6       Ammoniacal~nitrogen~(g~m^-3)
 #> 7                 Nitrate-N~(g~m^-3)
-#> 8               Phosphate-P~(g~m^-3)
-#> 9                 Oxycline~depth~(m)
-#> 10        Dissolved~oxygen~(mg~L^-1)
-#> 11                    Salinity~(PSU)
-#> 12            Temperature~(degree~C)
+#> 8            Total~nitrogen~(g~m^-3)
+#> 9               Phosphate-P~(g~m^-3)
+#> 10         Total~phosphorus~(g~m^-3)
+#> 11                Oxycline~depth~(m)
+#> 12        Dissolved~oxygen~(mg~L^-1)
+#> 13                    Salinity~(PSU)
+#> 14            Temperature~(degree~C)
 ```
 
 ------------------------------------------------------------------------

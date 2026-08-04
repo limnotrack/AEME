@@ -46,6 +46,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
     <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2: The 1-D k-epsilon lake model coupled with AED2</a></li>
+    <li><a class="dropdown-item" href="../articles/aed-sediment-np-parameterisation.html">GLM-AED: Sediment Nitrogen &amp; Phosphorus Pools and Resuspension</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
@@ -645,17 +646,17 @@ NSE, bias, Pearson <em>r</em>, etc.) for each simulated variable:</p>
 <span><span class="co">#&gt; 8  SIMSTRAT-AED2    CHM_oxy  2.488  2.539  3.787 0.368   -0.404 0.229  0.576</span></span>
 <span><span class="co">#&gt; 9  SIMSTRAT-AED2   CHM_salt -0.117  0.117  0.117 1.000 -328.984 0.914     NA</span></span>
 <span><span class="co">#&gt; 10 SIMSTRAT-AED2   HYD_temp  0.735  1.777  2.415 0.099    0.398 0.221  0.862</span></span>
-<span><span class="co">#&gt;        rs    r2     B   n obs_na sim_na                name_text</span></span>
-<span><span class="co">#&gt; 1  -0.294 0.047 0.003  10      0      0 Dissolved organic carbon</span></span>
-<span><span class="co">#&gt; 2      NA 0.000 0.000  10      0      0               Stratified</span></span>
-<span><span class="co">#&gt; 3      NA 0.000 0.000  10      0      0        Thermocline depth</span></span>
-<span><span class="co">#&gt; 4   0.067 0.031 0.000  10      0      0      Total chlorophyll a</span></span>
-<span><span class="co">#&gt; 5   0.102 0.021 0.010  20      0      0      Ammoniacal nitrogen</span></span>
-<span><span class="co">#&gt; 6  -0.345 0.034 0.003  20      0      0                  Nitrate</span></span>
-<span><span class="co">#&gt; 7   0.322 0.050 0.020  20      0      0                Phosphate</span></span>
-<span><span class="co">#&gt; 8   0.714 0.331 0.138 125      0      0         Dissolved oxygen</span></span>
-<span><span class="co">#&gt; 9      NA 0.000 0.000 125      0      0                 Salinity</span></span>
-<span><span class="co">#&gt; 10  0.856 0.742 0.463 125      0      0        Water temperature</span></span>
+<span><span class="co">#&gt;        rs    r2     B   n obs_na sim_na           name_text</span></span>
+<span><span class="co">#&gt; 1  -0.294 0.047 0.003  10      0      0 Dissolved organic C</span></span>
+<span><span class="co">#&gt; 2      NA 0.000 0.000  10      0      0          Stratified</span></span>
+<span><span class="co">#&gt; 3      NA 0.000 0.000  10      0      0   Thermocline depth</span></span>
+<span><span class="co">#&gt; 4   0.067 0.031 0.000  10      0      0 Total chlorophyll a</span></span>
+<span><span class="co">#&gt; 5   0.102 0.021 0.010  20      0      0 Ammoniacal nitrogen</span></span>
+<span><span class="co">#&gt; 6  -0.345 0.034 0.003  20      0      0             Nitrate</span></span>
+<span><span class="co">#&gt; 7   0.322 0.050 0.020  20      0      0           Phosphate</span></span>
+<span><span class="co">#&gt; 8   0.714 0.331 0.138 125      0      0    Dissolved oxygen</span></span>
+<span><span class="co">#&gt; 9      NA 0.000 0.000 125      0      0            Salinity</span></span>
+<span><span class="co">#&gt; 10  0.856 0.742 0.463 125      0      0   Water temperature</span></span>
 <span><span class="co">#&gt;                           name_parse</span></span>
 <span><span class="co">#&gt; 1  Dissolved~organic~carbon~(g~m^-3)</span></span>
 <span><span class="co">#&gt; 2                     Stratified~(1)</span></span>

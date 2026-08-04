@@ -280,6 +280,8 @@
   : Get AEME parameters data frame column names
 - [`plot(`*`<Aeme>`*`)`](https://limnotrack.com/reference/plot-Aeme-method.md)
   : Plot method for Aeme objects
+- [`plot_car()`](https://limnotrack.com/reference/plot_car.md) : Plot
+  carbon variables
 - [`plot_est_wbal()`](https://limnotrack.com/reference/plot_est_wbal.md)
   : Plot estimated water balance diagnostics from an aeme object.
 - [`plot_flows()`](https://limnotrack.com/reference/plot_flows.md) :
@@ -295,7 +297,7 @@
 - [`plot_met_tile()`](https://limnotrack.com/reference/plot_met_tile.md)
   : Plot a tile plot of meteorological data
 - [`plot_nit()`](https://limnotrack.com/reference/plot_nit.md) : Plot
-  phytoplankton variables
+  nitrogen variables
 - [`plot_obs()`](https://limnotrack.com/reference/plot_obs.md) : Plot
   observations
 - [`plot_output()`](https://limnotrack.com/reference/plot_output.md) :

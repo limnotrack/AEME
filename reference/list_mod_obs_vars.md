@@ -90,18 +90,18 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-07-30 04:53:11]
-#> ✔ Model run complete! [2026-07-30 04:53:14]
-#> ℹ Reading models in parallel...[2026-07-30 04:53:14]
-#> ✔ Model reading complete! [2026-07-30 04:53:14]
+#> ℹ Running models in parallel... [2026-08-04 02:31:13]
+#> ✔ Model run complete! [2026-08-04 02:31:16]
+#> ℹ Reading models in parallel...[2026-08-04 02:31:16]
+#> ✔ Model reading complete! [2026-08-04 02:31:17]
 aeme |> 
   list_mod_obs_vars()
-#>            Cyanobacteria         Dissolved oxygen                 Salinity 
-#>              "PHY_cyano"                "CHM_oxy"               "CHM_salt" 
-#>        Water temperature      Total chlorophyll a Dissolved organic carbon 
-#>               "HYD_temp"              "PHY_tchla"                "CAR_doc" 
-#>                Phosphate      Ammoniacal nitrogen                  Nitrate 
-#>                "PHS_frp"                "NIT_amm"                "NIT_nit" 
-#>        Thermocline depth               Stratified 
-#>             "HYD_thmcln"              "HYD_strat" 
+#>       Cyanobacteria    Dissolved oxygen            Salinity   Water temperature 
+#>         "PHY_cyano"           "CHM_oxy"          "CHM_salt"          "HYD_temp" 
+#> Total chlorophyll a Dissolved organic C           Phosphate Ammoniacal nitrogen 
+#>         "PHY_tchla"           "CAR_doc"           "PHS_frp"           "NIT_amm" 
+#>             Nitrate      Total nitrogen    Total phosphorus   Thermocline depth 
+#>           "NIT_nit"            "NIT_tn"            "PHS_tp"        "HYD_thmcln" 
+#>          Stratified 
+#>         "HYD_strat" 
 ```

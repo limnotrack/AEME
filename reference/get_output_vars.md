@@ -50,7 +50,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [7ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -105,45 +105,35 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-07-30 04:52:53]
-#> → GLM-AED running... [2026-07-30 04:52:53]
-#> ✔ GLM-AED run successful! [2026-07-30 04:52:55]
-#> ✔ Model run complete! [2026-07-30 04:52:55]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-08-04 02:30:53]
+#> → GLM-AED running... [2026-08-04 02:30:53]
+#> ✔ GLM-AED run successful! [2026-08-04 02:30:55]
+#> ✔ Model run complete! [2026-08-04 02:30:56]
 get_output_vars(aeme, model)
-#>          Water temperature          Thermocline depth 
-#>                 "HYD_temp"               "HYD_thmcln" 
-#>           Dissolved oxygen        Total chlorophyll a 
-#>                  "CHM_oxy"                "PHY_tchla" 
-#>      Evaporative heat flux         Sensible heat flux 
-#>                   "LKE_Qe"                   "LKE_Qh" 
-#>         Longwave radiation        Shortwave radiation 
-#>                  "LKE_Qlw"                  "LKE_Qsw" 
-#>                     Volume                Evaporation 
-#>                    "LKE_V"               "LKE_evpvol" 
-#>                Evaporation               Surface area 
-#>               "LKE_evpflx"                   "LKE_A0" 
-#>                Evaporation                     Inflow 
-#>               "LKE_evprte"               "LKE_inflow" 
-#>                   Overflow                    Outflow 
-#>             "LKE_overflow"              "LKE_outflow" 
-#>              Total outflow              Precipitation 
-#>              "LKE_outftot"               "LKE_precip" 
-#>              Precipitation        Surface temperature 
-#>               "LKE_pcpvol"                "HYD_surft" 
-#>                 Lake depth              Water density 
-#>               "LKE_depths"                 "HYD_dens" 
-#>                 Stratified                   Salinity 
-#>                "HYD_strat"                 "CHM_salt" 
-#>                  Phosphate        Dissolved organic P 
-#>                  "PHS_frp"                  "PHS_dop" 
-#>      Particulate organic P        Ammoniacal nitrogen 
-#>                  "PHS_pop"                  "NIT_amm" 
-#>                    Nitrate        Dissolved organic N 
-#>                  "NIT_nit"                  "NIT_don" 
-#>      Particulate organic N   Dissolved organic carbon 
-#>                  "NIT_pon"                  "CAR_doc" 
-#> Particulate organic carbon              Cyanobacteria 
-#>                  "CAR_poc"                "PHY_cyano" 
-#>                Green algae         Diatoms freshwater 
-#>                "PHY_green"               "PHY_diatom" 
+#>     Water temperature     Thermocline depth      Dissolved oxygen 
+#>            "HYD_temp"          "HYD_thmcln"             "CHM_oxy" 
+#>   Total chlorophyll a        Total nitrogen      Total phosphorus 
+#>           "PHY_tchla"              "NIT_tn"              "PHS_tp" 
+#> Evaporative heat flux    Sensible heat flux    Longwave radiation 
+#>              "LKE_Qe"              "LKE_Qh"             "LKE_Qlw" 
+#>   Shortwave radiation                Volume           Evaporation 
+#>             "LKE_Qsw"               "LKE_V"          "LKE_evpvol" 
+#>           Evaporation          Surface area           Evaporation 
+#>          "LKE_evpflx"              "LKE_A0"          "LKE_evprte" 
+#>                Inflow              Overflow               Outflow 
+#>          "LKE_inflow"        "LKE_overflow"         "LKE_outflow" 
+#>         Total outflow         Precipitation         Precipitation 
+#>         "LKE_outftot"          "LKE_precip"          "LKE_pcpvol" 
+#>   Surface temperature            Lake depth         Water density 
+#>           "HYD_surft"          "LKE_depths"            "HYD_dens" 
+#>            Stratified              Salinity             Phosphate 
+#>           "HYD_strat"            "CHM_salt"             "PHS_frp" 
+#>   Dissolved organic P Particulate organic P   Ammoniacal nitrogen 
+#>             "PHS_dop"             "PHS_pop"             "NIT_amm" 
+#>               Nitrate   Dissolved organic N Particulate organic N 
+#>             "NIT_nit"             "NIT_don"             "NIT_pon" 
+#>   Dissolved organic C Particulate organic C         Cyanobacteria 
+#>             "CAR_doc"             "CAR_poc"           "PHY_cyano" 
+#>           Green algae    Diatoms freshwater 
+#>           "PHY_green"          "PHY_diatom" 
 ```

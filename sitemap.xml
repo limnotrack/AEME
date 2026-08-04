@@ -1,5 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://limnotrack.com/404.html</loc></url>
+<url><loc>https://limnotrack.com/articles/aed-sediment-np-parameterisation.html</loc></url>
 <url><loc>https://limnotrack.com/articles/aeme-inputs.html</loc></url>
 <url><loc>https://limnotrack.com/articles/glm-aed.html</loc></url>
 <url><loc>https://limnotrack.com/articles/index.html</loc></url>
@@ -152,6 +153,7 @@
 <url><loc>https://limnotrack.com/reference/parameters.html</loc></url>
 <url><loc>https://limnotrack.com/reference/param_colnames.html</loc></url>
 <url><loc>https://limnotrack.com/reference/plot-Aeme-method.html</loc></url>
+<url><loc>https://limnotrack.com/reference/plot_car.html</loc></url>
 <url><loc>https://limnotrack.com/reference/plot_est_wbal.html</loc></url>
 <url><loc>https://limnotrack.com/reference/plot_flows.html</loc></url>
 <url><loc>https://limnotrack.com/reference/plot_fluxes.html</loc></url>

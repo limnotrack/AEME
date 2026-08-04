@@ -25,6 +25,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
     <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2: The 1-D k-epsilon lake model coupled with AED2</a></li>
+    <li><a class="dropdown-item" href="../articles/aed-sediment-np-parameterisation.html">GLM-AED: Sediment Nitrogen &amp; Phosphorus Pools and Resuspension</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
@@ -106,7 +107,7 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[9ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[7ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating lake water levels for glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Optimizing parameters for water balance</span>
@@ -161,47 +162,37 @@ loaded. Defaults to 1.</p></dd>
 <span class="r-in"><span><span class="co"># Run models</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>path <span class="op">=</span> <span class="va">path</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-07-30 04:52:53]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-07-30 04:52:53]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-07-30 04:52:55]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-07-30 04:52:55]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-08-04 02:30:53]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-08-04 02:30:53]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-08-04 02:30:55]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-08-04 02:30:56]</span>
 <span class="r-in"><span><span class="fu">get_output_vars</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Water temperature          Thermocline depth </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 "HYD_temp"               "HYD_thmcln" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           Dissolved oxygen        Total chlorophyll a </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  "CHM_oxy"                "PHY_tchla" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Evaporative heat flux         Sensible heat flux </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   "LKE_Qe"                   "LKE_Qh" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Longwave radiation        Shortwave radiation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  "LKE_Qlw"                  "LKE_Qsw" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Volume                Evaporation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    "LKE_V"               "LKE_evpvol" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Evaporation               Surface area </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               "LKE_evpflx"                   "LKE_A0" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Evaporation                     Inflow </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               "LKE_evprte"               "LKE_inflow" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   Overflow                    Outflow </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             "LKE_overflow"              "LKE_outflow" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              Total outflow              Precipitation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              "LKE_outftot"               "LKE_precip" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              Precipitation        Surface temperature </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               "LKE_pcpvol"                "HYD_surft" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 Lake depth              Water density </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               "LKE_depths"                 "HYD_dens" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 Stratified                   Salinity </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                "HYD_strat"                 "CHM_salt" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  Phosphate        Dissolved organic P </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  "PHS_frp"                  "PHS_dop" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Particulate organic P        Ammoniacal nitrogen </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  "PHS_pop"                  "NIT_amm" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    Nitrate        Dissolved organic N </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  "NIT_nit"                  "NIT_don" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Particulate organic N   Dissolved organic carbon </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  "NIT_pon"                  "CAR_doc" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Particulate organic carbon              Cyanobacteria </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  "CAR_poc"                "PHY_cyano" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Green algae         Diatoms freshwater </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                "PHY_green"               "PHY_diatom" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Water temperature     Thermocline depth      Dissolved oxygen </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            "HYD_temp"          "HYD_thmcln"             "CHM_oxy" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Total chlorophyll a        Total nitrogen      Total phosphorus </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           "PHY_tchla"              "NIT_tn"              "PHS_tp" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Evaporative heat flux    Sensible heat flux    Longwave radiation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              "LKE_Qe"              "LKE_Qh"             "LKE_Qlw" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Shortwave radiation                Volume           Evaporation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             "LKE_Qsw"               "LKE_V"          "LKE_evpvol" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Evaporation          Surface area           Evaporation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          "LKE_evpflx"              "LKE_A0"          "LKE_evprte" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Inflow              Overflow               Outflow </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          "LKE_inflow"        "LKE_overflow"         "LKE_outflow" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Total outflow         Precipitation         Precipitation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         "LKE_outftot"          "LKE_precip"          "LKE_pcpvol" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Surface temperature            Lake depth         Water density </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           "HYD_surft"          "LKE_depths"            "HYD_dens" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            Stratified              Salinity             Phosphate </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           "HYD_strat"            "CHM_salt"             "PHS_frp" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Dissolved organic P Particulate organic P   Ammoniacal nitrogen </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             "PHS_dop"             "PHS_pop"             "NIT_amm" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               Nitrate   Dissolved organic N Particulate organic N </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             "NIT_nit"             "NIT_don"             "NIT_pon" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Dissolved organic C Particulate organic C         Cyanobacteria </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             "CAR_doc"             "CAR_poc"           "PHY_cyano" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Green algae    Diatoms freshwater </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           "PHY_green"          "PHY_diatom" </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

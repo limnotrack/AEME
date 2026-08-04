@@ -13,6 +13,8 @@
   AED](https://limnotrack.com/articles/glm-aed.md):
 - [Simstrat-AED2: The 1-D k-epsilon lake model coupled with
   AED2](https://limnotrack.com/articles/simstrat-aed2.md):
+- [GLM-AED: Sediment Nitrogen & Phosphorus Pools and
+  Resuspension](https://limnotrack.com/articles/aed-sediment-np-parameterisation.md):
 
 ### Use cases
 

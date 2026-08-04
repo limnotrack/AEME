@@ -1,6 +1,6 @@
-# Plot phytoplankton variables
+# Plot nitrogen variables
 
-Plot phytoplankton variables
+Plot nitrogen variables
 
 ## Usage
 
