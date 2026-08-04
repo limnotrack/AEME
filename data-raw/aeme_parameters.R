@@ -9,8 +9,7 @@ met_pars <- aeme_parameters |>
   dplyr::distinct(name, .keep_all = TRUE) |> 
   dplyr::mutate(model = "simstrat_aed2")
 sim_pars <- simstrat_aed2_parameters |> 
-  dplyr::filter(grepl("a_seiche$|hgeo|cd", name)) |> 
-  dplyr::select(-par)
+  dplyr::filter(grepl("a_seiche$|hgeo|cd", name))
 
 aeme_parameters <- aeme_parameters |> 
   dplyr::bind_rows(met_pars, sim_pars) |> 
