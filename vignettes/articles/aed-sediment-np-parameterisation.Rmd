@@ -1,5 +1,5 @@
 ---
-title: "Sediment Nitrogen & Phosphorus Pools and Resuspension in GLM-AED"
+title: "GLM-AED: Sediment Nitrogen & Phosphorus Pools and Resuspension"
 subtitle: "Parameterisation trade-offs for long-term climate simulations"
 date: today
 format:
