@@ -13,11 +13,13 @@ get_model_config_files <- function(aeme, model, path, lake_dir = NULL) {
     model <- list_models(aeme)
   }
   model <- check_model(model = model)
-  if (missing(path)) {
-    path <- get_aeme_path(aeme = aeme)
-  }
+
+  # Check if lake_dir is NULL, if so, compute it from aeme and path
   if (is.null(lake_dir)) {
     aeme <- check_aeme(aeme)
+    if (missing(path)) {
+      path <- get_aeme_path(aeme = aeme)
+    }
     path <- check_path(path = path, must_exist = TRUE)
     lake_dir <- get_lake_dir(aeme = aeme, path = path)
   }
