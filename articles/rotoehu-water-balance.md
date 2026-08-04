@@ -176,7 +176,7 @@ bathy_raster <- rasterise_bathy(shoreline = shoreline,
 #> No islands found.
 #> ℹ Generating depth points for interpolation
 #> Warning: large number of points for interpolation (95645)
-#> ✔ Generating depth points for interpolation [5.5s]
+#> ✔ Generating depth points for interpolation [6.7s]
 #> 
 #> ℹ Interpolating depth points to raster
 #> ℹ Adjusting depths >= 0 to -0.4m
@@ -185,7 +185,7 @@ bathy_raster <- rasterise_bathy(shoreline = shoreline,
 
 ![](rotoehu-water-balance_files/figure-html/rasterise-contours-1.png)
 
-    #> ✔ Interpolating depth points to raster [1.3s]
+    #> ✔ Interpolating depth points to raster [1.5s]
 
 ``` r
 

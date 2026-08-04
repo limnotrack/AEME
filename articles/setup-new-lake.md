@@ -195,9 +195,9 @@ the world. However, its date range is only from 1900-2021.
 
 # Get ERA5 meteorological data
 met <- aemetools::get_era5_isimip_point(lat = lat, lon = lon, years = 2020:2021)
-#> INFO [2026-08-04 03:37:59] job submitted
-#> INFO [2026-08-04 03:37:59] downloading
-#> INFO [2026-08-04 03:38:00] extracting
+#> INFO [2026-08-04 19:06:03] job submitted
+#> INFO [2026-08-04 19:06:03] downloading
+#> INFO [2026-08-04 19:06:05] extracting
 ```
 
 View the summary of the meteorological data. The units have been
@@ -569,7 +569,7 @@ aeme <- build_aeme(aeme = aeme, model = model, model_controls = model_controls,
 #>   ℹ No water level present. Using constant water level.
 #> ℹ Estimating surface water temperature
 #> 
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [9ms]
 #> 
 #> 
 #> 
@@ -705,14 +705,14 @@ without needing to reconstruct the object.
 
 # Run the ensemble
 aeme <- run_aeme(aeme = aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-08-04 03:38:19]
-#> → DYRESM-CAEDYM running... [2026-08-04 03:38:19]
-#> ✔ DYRESM-CAEDYM run successful! [2026-08-04 03:38:44]
-#> → GLM-AED running... [2026-08-04 03:38:44]
-#> ✔ GLM-AED run successful! [2026-08-04 03:38:44]
-#> → GOTM-WET running... [2026-08-04 03:38:44]
-#> ✔ GOTM-WET run successful! [2026-08-04 03:38:45]
-#> ✔ Model run complete! [2026-08-04 03:38:45]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-08-04 19:06:30]
+#> → DYRESM-CAEDYM running... [2026-08-04 19:06:30]
+#> ✔ DYRESM-CAEDYM run successful! [2026-08-04 19:06:57]
+#> → GLM-AED running... [2026-08-04 19:06:57]
+#> ✔ GLM-AED run successful! [2026-08-04 19:06:58]
+#> → GOTM-WET running... [2026-08-04 19:06:58]
+#> ✔ GOTM-WET run successful! [2026-08-04 19:06:58]
+#> ✔ Model run complete! [2026-08-04 19:06:58]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 ```
 
