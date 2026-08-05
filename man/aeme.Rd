@@ -34,6 +34,8 @@ are required to run the models.
 
 \item{\code{configuration}}{A list representing each model's configuration. \itemize{
 \item \code{model_controls}: dataframe; Model controls for simulation.
+\item \code{aeme_version}: character; version of the AEME package used to
+build the configuration.
 \item \code{dy_cd}: list; DYRESM-CAEDYM configuration.
 \item \code{glm_aed}: list; GLM-AED configuration.
 \item \code{gotm_wet}: list; GOTM-WET configuration.

@@ -167,6 +167,31 @@ check_aeme <- function(aeme) {
 
   aeme <- migrate_aeme(aeme)
 
+  built_version <- aeme@configuration$aeme_version
+  installed_version <- utils::packageVersion("AEME")
+  if (is.null(built_version)) {
+    cli::cli_warn(
+      c("!" = "This {.cls Aeme} object has no recorded AEME package version.",
+        "i" = "It was likely built with an older version of AEME (<0.4.0), or has
+        never been built with {.fn build_aeme}. Consider rebuilding with
+        {.fn build_aeme} to keep it in sync with the installed package
+        ({installed_version})."),
+      class = "aeme_warning_version_missing",
+      .frequency = "once",
+      .frequency_id = "aeme_warning_version_missing"
+    )
+  } else if (package_version(built_version) < installed_version) {
+    cli::cli_warn(
+      c("!" = "This {.cls Aeme} object was built with AEME {built_version},
+        but the installed version is {installed_version}.",
+        "i" = "Consider rebuilding with {.fn build_aeme} if you encounter
+        unexpected behaviour."),
+      class = "aeme_warning_version_outdated",
+      .frequency = "once",
+      .frequency_id = paste0("aeme_warning_version_outdated_", built_version)
+    )
+  }
+
   invisible(aeme)
 }
 
