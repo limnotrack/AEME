@@ -7,7 +7,6 @@
 config_defaults <- function() {
   cfg_dflt <- list(
     path           = getwd(),
-    aeme_version   = as.character(utils::packageVersion("AEME")),
     model          = "glm_aed",
     use_bgc        = FALSE,
     model_controls = get_model_controls(),

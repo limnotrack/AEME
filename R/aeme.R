@@ -1318,8 +1318,9 @@ setMethod("show", "Aeme", function(object) {
   hyps_n <- if (is.data.frame(inp$hypsograph)) glue::glue(" (n={nrow(inp$hypsograph)})") else ""
   
   aeme_version <- config[["aeme_version"]]
-  
-  cli::cli_h1("AEME v{aeme_version}")
+  version_label <- if (is.null(aeme_version)) "not yet built" else paste0("v", aeme_version)
+
+  cli::cli_h1("AEME {version_label}")
   
   cli::cli_h2("Lake")
   cli::cli_text("{lke$name} (ID: {lke$id})")
