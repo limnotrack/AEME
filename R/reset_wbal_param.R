@@ -11,7 +11,7 @@
 #'
 
 reset_wbal_param <- function(aeme) {
-  check_aeme(aeme)
+  aeme <- check_aeme(aeme)
   wbal <- aeme |> 
     water_balance()
   
