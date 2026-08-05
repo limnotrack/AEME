@@ -26,16 +26,17 @@ insert_aeme <- function() {
       start = as.POSIXct(\"2020-01-01 00:00:00\"), # start date
       stop = as.POSIXct(\"2020-12-31 00:00:00\"), # stop date
       time_step = 3600, # time step in seconds
-      spin_up = list( # spin-up period for each model
+      spin_up = list( # spin-up period for each model [days]
         \"dy_cd\" = 365,
         \"glm_aed\" = 365,
-        \"gotm_wet\" = 365
+        \"gotm_wet\" = 365,
+        \"simstrat_aed2\" = 365
         )
       ),
     # Define observations list
     observations = list(
-      lake = data.frame(), # dataframe of lake observations in the AEME format
-      level = data.frame() # dataframe of lake level observations in the AEME format
+      lake = NULL, # dataframe of lake observations in the AEME format, or NULL if none
+      level = NULL # dataframe of lake level observations in the AEME format, or NULL if none
     ),
     # Define input list
     input = list(
@@ -53,7 +54,8 @@ insert_aeme <- function() {
       factor = list( # scaling factors for inflows for each model
         \"dy_cd\" = 1,
         \"glm_aed\" = 1,
-        \"gotm_wet\" = 1
+        \"gotm_wet\" = 1,
+        \"simstrat_aed2\" = 1
         )
       ),
     # Define outflows list
@@ -61,10 +63,14 @@ insert_aeme <- function() {
       data = list(
         outflow1 = data.frame() # dataframe of outflow data in the AEME format
       ),
+      elevation = list( # elevation of each outflow [m]; -1 = same as hypsograph
+        \"outflow1\" = -1
+        ),
       factor = list( # scaling factor for outflows for each model
         \"dy_cd\" = 1,
         \"glm_aed\" = 1,
-        \"gotm_wet\" = 1
+        \"gotm_wet\" = 1,
+        \"simstrat_aed2\" = 1
         )
       ),
     # Define water balance list
