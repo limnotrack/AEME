@@ -162,7 +162,7 @@ test_that("get_wbal_param: returns NULL when no parameters set", {
   # Create a fresh AEME object without water balance params
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
+
   # Suppress the informational message about no parameters
   expect_message(
     result <- get_wbal_param(aeme),
@@ -171,19 +171,41 @@ test_that("get_wbal_param: returns NULL when no parameters set", {
   expect_null(result)
 })
 
-test_that("get_wbal_param: retrieves parameters after they are set", {
+test_that("get_wbal_param: with model resolves a single family's flat vector", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
-  # Set parameters
+
+  # Set parameters (no model -> applied to every family)
   aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0)
-  
-  # Get parameters
-  result <- get_wbal_param(aeme)
+
+  # Get parameters for one model
+  result <- get_wbal_param(aeme, model = "glm_aed")
   expect_type(result, "double")
   expect_named(result, c("C", "h_inv"))
   expect_equal(result[["C"]], 0.5)
   expect_equal(result[["h_inv"]], 1.0)
+})
+
+test_that("get_wbal_param: without model returns the full family-keyed list", {
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+
+  aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0)
+
+  result <- get_wbal_param(aeme)
+  expect_type(result, "list")
+  expect_true(all(c("glm_aed", "gotm_wet", "simstrat_aed2") %in% names(result)))
+  expect_equal(result$glm_aed[["C"]], 0.5)
+})
+
+test_that("get_wbal_param: dy_cd resolves to the same family as glm_aed", {
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+
+  aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0, model = "glm_aed")
+
+  expect_equal(get_wbal_param(aeme, model = "dy_cd"),
+              get_wbal_param(aeme, model = "glm_aed"))
 })
 
 test_that("get_wbal_param: returns Aeme object check error for invalid input", {
@@ -198,53 +220,93 @@ test_that("get_wbal_param: returns Aeme object check error for invalid input", {
 # set_wbal_param() — set water balance parameters
 # ══════════════════════════════════════════════════════════════════════════════
 
-test_that("set_wbal_param: sets C and h_inv parameters", {
+test_that("set_wbal_param: with no model sets every evaporation family", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
+
   aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0)
   wb <- water_balance(aeme)
-  
-  expect_equal(wb$params[["C"]], 0.5)
-  expect_equal(wb$params[["h_inv"]], 1.0)
+
+  expect_equal(wb$params$glm_aed[["C"]], 0.5)
+  expect_equal(wb$params$gotm_wet[["h_inv"]], 1.0)
+  expect_equal(wb$params$simstrat_aed2[["C"]], 0.5)
+})
+
+test_that("set_wbal_param: with model only sets that model's family", {
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+
+  aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0, model = "gotm_wet")
+  wb <- water_balance(aeme)
+
+  expect_equal(wb$params$gotm_wet[["C"]], 0.5)
+  expect_null(wb$params$glm_aed)
+  expect_null(wb$params$simstrat_aed2)
+})
+
+test_that("set_wbal_param: different families can hold different values", {
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+
+  aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0, model = "glm_aed")
+  aeme <- set_wbal_param(aeme, C = 0.9, h_inv = 2.0, model = "gotm_wet")
+  wb <- water_balance(aeme)
+
+  expect_equal(wb$params$glm_aed[["C"]], 0.5)
+  expect_equal(wb$params$gotm_wet[["C"]], 0.9)
+})
+
+test_that("set_wbal_param: accepts a family-keyed list from get_wbal_param()", {
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+
+  aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0, model = "glm_aed")
+  aeme <- set_wbal_param(aeme, C = 0.9, h_inv = 2.0, model = "gotm_wet")
+  saved <- get_wbal_param(aeme)
+
+  aeme2 <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+  aeme2 <- set_wbal_param(aeme2, params = saved)
+
+  expect_equal(get_wbal_param(aeme2), saved)
 })
 
 test_that("set_wbal_param: accepts params vector instead of individual args", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
+
   params <- c(C = 0.75, h_inv = 1.5)
-  aeme <- set_wbal_param(aeme, params = params)
+  aeme <- set_wbal_param(aeme, params = params, model = "glm_aed")
   wb <- water_balance(aeme)
-  
-  expect_equal(wb$params[["C"]], 0.75)
-  expect_equal(wb$params[["h_inv"]], 1.5)
+
+  expect_equal(wb$params$glm_aed[["C"]], 0.75)
+  expect_equal(wb$params$glm_aed[["h_inv"]], 1.5)
 })
 
 test_that("set_wbal_param: params vector overrides individual arguments", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
+
   params <- c(C = 0.75, h_inv = 1.5)
-  aeme <- set_wbal_param(aeme, C = 0.1, h_inv = 0.1, params = params)
+  aeme <- set_wbal_param(aeme, C = 0.1, h_inv = 0.1, params = params,
+                         model = "glm_aed")
   wb <- water_balance(aeme)
-  
+
   # params should override individual args
-  expect_equal(wb$params[["C"]], 0.75)
-  expect_equal(wb$params[["h_inv"]], 1.5)
+  expect_equal(wb$params$glm_aed[["C"]], 0.75)
+  expect_equal(wb$params$glm_aed[["h_inv"]], 1.5)
 })
 
 test_that("set_wbal_param: errors when params missing required names", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
+
   # Missing h_inv
   params <- c(C = 0.5)
   expect_error(
     set_wbal_param(aeme, params = params),
     "must contain.*C.*h_inv"
   )
-  
+
   # Missing C
   params <- c(h_inv = 1.0)
   expect_error(
@@ -256,7 +318,7 @@ test_that("set_wbal_param: errors when params missing required names", {
 test_that("set_wbal_param: returns an Aeme object", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
+
   result <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0)
   expect_s4_class(result, "Aeme")
 })
@@ -269,20 +331,32 @@ test_that("set_wbal_param: returns an Aeme object", {
 test_that("reset_wbal_param: sets params to NULL", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
+
   # Set parameters
   aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0)
   expect_false(is.null(water_balance(aeme)$params))
-  
+
   # Reset parameters
   aeme <- reset_wbal_param(aeme)
   expect_null(water_balance(aeme)$params)
 })
 
+test_that("reset_wbal_param: with model only clears that model's family", {
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+
+  aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0)
+  aeme <- reset_wbal_param(aeme, model = "glm_aed")
+  wb <- water_balance(aeme)
+
+  expect_null(wb$params$glm_aed)
+  expect_equal(wb$params$gotm_wet[["C"]], 0.5)
+})
+
 test_that("reset_wbal_param: returns an Aeme object", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
+
   aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0)
   result <- reset_wbal_param(aeme)
   expect_s4_class(result, "Aeme")
@@ -291,7 +365,7 @@ test_that("reset_wbal_param: returns an Aeme object", {
 test_that("reset_wbal_param: can be called on object without params", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
+
   # Reset on fresh object should not error
   expect_no_error(reset_wbal_param(aeme))
 })
@@ -410,10 +484,10 @@ test_that("water_balance setter updates water balance slot", {
 test_that("water_balance accessor works after set_wbal_param", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
-  
-  aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0)
+
+  aeme <- set_wbal_param(aeme, C = 0.5, h_inv = 1.0, model = "glm_aed")
   wb <- water_balance(aeme)
-  
-  expect_equal(wb$params[["C"]], 0.5)
-  expect_equal(wb$params[["h_inv"]], 1.0)
+
+  expect_equal(wb$params$glm_aed[["C"]], 0.5)
+  expect_equal(wb$params$glm_aed[["h_inv"]], 1.0)
 })
