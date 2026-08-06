@@ -8,7 +8,7 @@
 
 get_lake_dir <- function(aeme, path) {
   aeme <- check_aeme(aeme = aeme)
-  if (missing(path)) {
+  if (missing(path) || is.null(path)) {
     path <- get_aeme_path(aeme)
   }
   path <- check_path(path = path, must_exist = TRUE)
