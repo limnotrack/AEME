@@ -189,21 +189,22 @@ find_lake_dir <- function(path) {
   path <- normalizePath(path, mustWork = FALSE)
   sub_dirs <- list.dirs(path)
   
-  # Match dirs of the form [digits]_[name] (direct children only, no further nesting)
-  pattern <- "^(.+)[/\\\\](\\d+_[^/\\\\]+)$"
+  # Normalise all sub_dirs so separators are consistent
+  sub_dirs <- normalizePath(sub_dirs, mustWork = FALSE)
   
-  candidates <- sub_dirs[grepl(pattern, sub_dirs) & 
-                           !grepl("[/\\\\]\\d+_[^/\\\\]+[/\\\\]", sub_dirs)]
+  pattern <- "^[A-Za-z]*\\d+_[^/\\\\]+$"
+  candidates <- sub_dirs[grepl(pattern, basename(sub_dirs))]
   
-  # Check which ones contain the expected model subdirs
   model_subdirs <- list_models()
   
   for (dir in candidates) {
-    children <- basename(sub_dirs[startsWith(sub_dirs, paste0(dir, "/")) | 
+    # Use normalizePath-consistent separator; add both sep variants to be safe
+    children <- basename(sub_dirs[startsWith(sub_dirs, paste0(dir, "/")) |
                                     startsWith(sub_dirs, paste0(dir, "\\"))])
     if (any(children %in% model_subdirs)) {
       return(dir)
     }
   }
+  
   cli::cli_abort("No model directory found in path: {path}")
 }
