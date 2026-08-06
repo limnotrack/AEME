@@ -1,3 +1,7 @@
+# Silence AEME's informational cli messages for the whole test run, so
+# individual test files don't each need their own options(AEME.inform = FALSE).
+options(AEME.inform = FALSE)
+
 # Pre-install GLM once, up front, before any test file runs - fails fast
 # with one clear message here rather than the same failure surfacing
 # separately (or being masked) partway through 50+ tests.
