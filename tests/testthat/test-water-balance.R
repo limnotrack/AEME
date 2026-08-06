@@ -164,11 +164,13 @@ test_that("get_wbal_param: returns NULL when no parameters set", {
   aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
 
   # Suppress the informational message about no parameters
+  options(AEME.inform = TRUE)
   expect_message(
     result <- get_wbal_param(aeme),
     "No water balance parameters"
   )
   expect_null(result)
+  options(AEME.inform = FALSE)
 })
 
 test_that("get_wbal_param: with model resolves a single family's flat vector", {
