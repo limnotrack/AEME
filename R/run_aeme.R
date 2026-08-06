@@ -94,7 +94,7 @@ run_aeme <- function(aeme, model, path, args = character(),
   }
   
   # Delete previous model output if it exists
-  model_output <- get_model_outfile(aeme = aeme, model = model, path = path)
+  model_output <- get_model_outfile(aeme = aeme, model = model)
   for (m in model) {
     if (any(file.exists(model_output[[m]]))) {
       unlink(model_output[[m]])

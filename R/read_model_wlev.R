@@ -1,7 +1,6 @@
 #' Read water level from model output
 #' 
 #' @description
-#' `r lifecycle::badge("stable")`
 #' This function reads water level data from the output of supported lake models.
 #' 
 #' @inheritParams read_model_outputs
@@ -29,7 +28,7 @@ read_model_wlev <- function(nc = NULL, lake_dir, model) {
   if (is.null(nc)) {
     lake_dir <- check_path(lake_dir, must_exist = TRUE)
     # Read in model netCDF file
-    nc_files <- get_model_outfile(model = model, lake_dir = lake_dir)[[model]]
+    nc_files <- get_model_outfile(model = model, path = lake_dir)[[model]]
     if (model == "gotm_wet") {
       nc_file <- nc_files["output"]
     } else {
