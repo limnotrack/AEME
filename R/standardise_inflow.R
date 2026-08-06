@@ -235,7 +235,7 @@ standardise_inflow <- function(inflow,
   
   if (all(non_time %in% known_inflow_vars)) {
     if (verbose) {
-      # cli::cli_inform(
+      # cli_inform_safe(
       #   c("i" = "All columns already match AEME standard inflow variable names, skipping name guessing."),
       #   class = "aeme_inform_inflow_already_standard"
       # )
@@ -278,7 +278,7 @@ standardise_inflow <- function(inflow,
       paste0(names(matched), " \u2192 ", matched),
       rep("*", length(matched))
     )
-    cli::cli_inform(
+    cli_inform_safe(
       c("i" = "Renaming {length(matched)} column{?s} to AEME standard names:",
         rename_bullets),
       class = "aeme_inform_inflow_rename"
@@ -475,7 +475,7 @@ standardise_inflow <- function(inflow,
     # Skip entirely if column is all NA
     if (all(is.na(x))) {
       if (verbose) {
-        cli::cli_inform(
+        cli_inform_safe(
           c("i" = "{.code {var}}: all NA, skipping unit detection."),
           class = "aeme_inform_inflow_all_na"
         )
@@ -487,7 +487,7 @@ standardise_inflow <- function(inflow,
     
     if (isFALSE(flag) || is.null(flag) || is.na(flag)) {
       if (verbose) {
-        # cli::cli_inform(
+        # cli_inform_safe(
         #   c("i" = "{.code {var}}: values appear to be in the expected units, no conversion applied."),
         #   class = "aeme_inform_inflow_no_conversion"
         # )
@@ -498,7 +498,7 @@ standardise_inflow <- function(inflow,
     inflow[[var]] <- spec$convert(x)
     
     if (verbose) {
-      cli::cli_inform(
+      cli_inform_safe(
         c("v" = "{.code {var}}: converted from {spec$from} to {spec$to}."),
         class = "aeme_inform_inflow_converted"
       )

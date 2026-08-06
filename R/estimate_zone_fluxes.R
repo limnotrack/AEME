@@ -378,9 +378,9 @@ estimate_zone_fluxes <- function(aeme, path,
   
   
   if (verbose) {
-    cli::cli_rule(left = paste0("Sediment zone flux estimates (", method, ")"))
-    cli::cli_text("n_zones: {n_zones} | max lake depth: {max_depth} m | ref_depth: {ref_depth} m")
-    
+    cli_safe(paste0("Sediment zone flux estimates (", method, ")"), FUN = cli::cli_rule)
+    cli_safe(paste0("n_zones: ", n_zones, " | max lake depth: ", max_depth, 
+                    " m | ref_depth: ", ref_depth, " m"), FUN = cli::cli_text)
     # --- zone summary table ----------------------------------------------------
     zone_tbl <- zone_summary |>
       dplyr::mutate(
@@ -408,9 +408,11 @@ estimate_zone_fluxes <- function(aeme, path,
     cli_table_safe(ct)
     
     # --- lake-wide averages table -----------------------------------------------
-    cli::cli_text("")
-    cli::cli_rule(left = "Lake-wide area-weighted average fluxes")
-    
+    # cli::cli_text("")
+    cli_safe("", FUN = cli::cli_text)
+    cli_safe("Lake-wide area-weighted average fluxes (mmol/m2/d)",
+             FUN = cli::cli_rule)
+
     avg_tbl <- as.data.frame(t(round(lake_avg_fluxes, 3)))
     
     colnames(avg_tbl) <- dplyr::recode(
