@@ -56,6 +56,11 @@ yaml_to_aeme <- function(path, file) {
   path <- check_path(path = path, must_exist = TRUE)
   
   yaml <- yaml::read_yaml(file.path(path, file))
+  
+  # Set package version
+  yaml$configuration$aeme_version <- as.character(utils::packageVersion("AEME"))
+  
+  
   # if (!is.null(yaml$lake$shape)) {
   #   invisible(capture.output({
   #     yaml$lake$shape <- sf::st_read(file.path(path, yaml$lake$shape))
