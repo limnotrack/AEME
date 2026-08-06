@@ -46,10 +46,9 @@ set_vars_sim <- function(model_controls,
   model_controls$simulate[idx[!missing]] <- simulate
   if (any(missing)) {
     missing_vars <- vars_sim[missing]
-    cli::cli_alert_info(
-      "Variables not found: {.var {paste(missing_vars, collapse = ', ')}}.
-      Adding them to model_controls."
-    )
+    msg <- paste("Variables not found:", paste(missing_vars, collapse = ", "), 
+                 ". Adding them to model_controls.")
+    cli_inform_safe(c("i" = msg))
     new_rows <- data.frame(
       var_aeme = missing_vars,
       simulate = simulate,
