@@ -638,7 +638,7 @@ neither name is registered). Until these diagnostics get their own
 `var_aeme` entries, read them straight from `output.nc` instead:
 
 ```{r read-diagnostics-nc}
-outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+outfile <- get_model_outfile(aeme = aeme)
 nc <- ncdf4::nc_open(outfile$simstrat_aed2)
 
 time_sec <- ncdf4::ncvar_get(nc, "time")
