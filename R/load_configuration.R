@@ -26,10 +26,13 @@ load_configuration <- function(aeme,
   } else {
     model <- check_model(model = model)
   }
+  if (missing(path)) {
+    path <- get_aeme_path(aeme)
+  }
+  path <- check_path(path = path, must_exist = TRUE)
   if (is.null(model_controls)) {
     model_controls <- get_model_controls(aeme = aeme)
   }
-  path <- check_path(path = path, must_exist = TRUE)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   get_config_args <- list(path = lake_dir)
   model_config <- setNames(
