@@ -19,7 +19,7 @@ read_model_config <- function(model, lake_dir) {
     cli::cli_abort("Please provide only one model at a time. {.arg model} has 
                    {length(model)} models {.val {model}}.")
   }
-  model_cfg_files <- get_model_config_files(lake_dir = lake_dir, 
+  model_cfg_files <- get_model_config_files(path = path,
                                             model = model)[[model]]
   cfg <- lapply(model_cfg_files, \(f) {
     file_type <- tools::file_ext(f)
