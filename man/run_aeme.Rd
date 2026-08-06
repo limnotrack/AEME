@@ -12,7 +12,7 @@ run_aeme(
   return_type = c("aeme", "exec_result", "both", "none"),
   ens_n = 1,
   model_controls = NULL,
-  verbose = FALSE,
+  verbose = getOption("AEME.inform", FALSE),
   debug = FALSE,
   timeout = Inf,
   parallel = FALSE,
@@ -45,7 +45,8 @@ loaded. Defaults to 1.}
 \item{model_controls}{data.frame; model configuration, typically loaded via
 \code{\link[=get_model_controls]{get_model_controls()}}.}
 
-\item{verbose}{logical; print model output to console. Defaults to FALSE.}
+\item{verbose}{logical; print model output to console. Defaults to
+\code{getOption("AEME.inform", FALSE)}.}
 
 \item{debug}{logical; write debug log (Only DYRESM). Defaults to FALSE.}
 

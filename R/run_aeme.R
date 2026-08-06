@@ -9,7 +9,8 @@
 #' elements; `"none"` returns `NULL` invisibly (useful when only the model
 #' run's side effects, i.e. the output files, are wanted).
 #' @inheritParams load_output
-#' @param verbose logical; print model output to console. Defaults to FALSE.
+#' @param verbose logical; print model output to console. Defaults to
+#'  `getOption("AEME.inform", FALSE)`.
 #' @param debug logical; write debug log (Only DYRESM). Defaults to FALSE.
 #' @param parallel logical; run models in parallel. Defaults to FALSE.
 #' @param ncores integer; number of cores to use for parallelization. Defaults
@@ -45,7 +46,8 @@
 run_aeme <- function(aeme, model, path, args = character(),
                      return_type = c("aeme", "exec_result", "both", "none"),
                      ens_n = 1,
-                     model_controls = NULL, verbose = FALSE,
+                     model_controls = NULL, 
+                     verbose = getOption("AEME.inform", FALSE),
                      debug = FALSE, timeout = Inf, parallel = FALSE, ncores,
                      check_output = FALSE) {
   
