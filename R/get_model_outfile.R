@@ -1,30 +1,50 @@
 #' Get model output file
 #'
 #' @inheritParams build_aeme
-#' @param lake_dir Path to the lake AEME directory. If NULL, it will be
-#' computed from `aeme` and `path`.
+#' @param path Directory to search for the model output. If `aeme` is also
+#' provided, `path` is the root combined with `aeme` to compute the lake's
+#' directory (as in `get_lake_dir()`) -- omit it to use `aeme`'s own stored
+#' path. If `aeme` is not provided, `path` is searched directly, and can be
+#' either an ensemble root or a single model's own directory.
+#' @param lake_dir `r lifecycle::badge("deprecated")` Use `path` instead of
+#'  `lake_dir`
+#' 
+#' @importFrom cli cli_abort
 #'
 #' @return list of model output files.
 #' @export
 #'
 
-get_model_outfile <- function(aeme = NULL, model, path = NULL, 
-                              lake_dir = NULL) {
+get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir) {
+
+  
+  # Soft deprecate lake_dir arg
+  if (!missing(lake_dir)) {
+    lifecycle::deprecate_warn(
+      when = "0.4.0",
+      what = "get_model_config_files(lake_dir)",
+      details = "Use `path` instead of `lake_dir`"
+    )
+    path <- lake_dir
+  }
+  
+  if (is.null(aeme) && is.null(path)) {
+    cli::cli_abort("Either `aeme` or `path` must be provided")
+  }
+
+  if (is.null(aeme)) {
+    lake_dir <- check_path(path = path, must_exist = TRUE)
+  } else {
+    aeme <- check_aeme(aeme)
+    lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  }
+
   if (missing(model)) {
     model <- list_models(aeme)
   } else {
     model <- check_model(model = model)
-  }  
-  # --- Resolve lake_dir as needed ---
-  if (is.null(lake_dir)) {
-    aeme <- check_aeme(aeme)
-    if (missing(path)) {
-      path <- get_aeme_path(aeme)
-    }
-    path <- check_path(path = path, must_exist = TRUE)
-    lake_dir <- get_lake_dir(path = path, aeme = aeme)
   }
-  
+
   # Get config files once
   cfg_files <- get_model_config_files(model = model, lake_dir = lake_dir)
   
