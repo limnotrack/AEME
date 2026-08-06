@@ -71,6 +71,11 @@ new_aeme <- function(name = "newlake",
     use_lw     = TRUE,
     Kw         = Kw
   )
+  
+  configuration <- list(
+    aeme_version = packageVersion("AEME")
+  )
 
-  aeme_constructor(lake = lake, time = time, input = input)
+  aeme_constructor(lake = lake, time = time, input = input, 
+                   configuration = configuration)
 }
