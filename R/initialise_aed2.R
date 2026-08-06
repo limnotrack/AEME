@@ -65,6 +65,11 @@ initialise_aed2 <- function(model_controls, path_aed2, max_depth = 10,
                                    "PHS_tp", "NIT_tn", "PHY_tchla")
     )
 
+  if (nrow(this_ctrls) == 0) {
+    cli_inform_safe(c("i" = "No variables to initialise in AED2"))
+    write_nml(aed2_nml, aed2_nml_file)
+    return(invisible())
+  }
   simstrat_names <- rename_modelvars(input = this_ctrls$var_aeme,
                                      type_output = "simstrat_aed2",
                                      warn_unmatched = TRUE)
