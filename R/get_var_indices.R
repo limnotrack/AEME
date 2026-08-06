@@ -34,8 +34,7 @@ get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
 
   # If nc is not provided access it using aeme and model ----
   if (is.null(nc)) {
-    out_file <- get_model_outfile(aeme = aeme, model = model, 
-                                  path = path)[[model]]
+    out_file <- get_model_outfile(aeme = aeme, model = model)[[model]]
     if (length(out_file) == 2) {
       out_file <- out_file[1]
     }

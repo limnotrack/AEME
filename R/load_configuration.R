@@ -143,7 +143,7 @@ get_config_glm_aed <- function(lake_dir, path) {
     stop("No GLM nml file present at\n", nml_file)
   }
 
-  model_cfg_files <- get_model_config_files(lake_dir = lake_dir, 
+  model_cfg_files <- get_model_config_files(path = lake_dir,
                                             model = "glm_aed")[["glm_aed"]]
   cfg <- lapply(model_cfg_files, \(f) {
     file_type <- tools::file_ext(f)
