@@ -58,6 +58,10 @@
 #' \item\strong{\code{use}}: character; Can be 'obs' or 'mod'. Use observations
 #'  or modelled data for water balance.
 #' \item{\code{data}}: list of dataframe for water balance.
+#' \item{\code{params}}: fitted outflow parameters (C, h_inv), keyed by
+#' evaporation family since \code{dy_cd}/\code{glm_aed} share one fit and
+#' \code{gotm_wet}/\code{simstrat_aed2} each have their own -- see
+#' \code{\link{get_wbal_param}}.
 #' }
 #' @slot output A list representing output information. \itemize{
 #' \item \code{dy_cd}: list; DYRESM-CAEDYM output.

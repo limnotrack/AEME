@@ -34,8 +34,8 @@
 #' - `wb`: data frame of water balance components (Date, model, value,
 #'   HYD_flow, HYD_outflow, area, Ts, T5avg, evap_flux, evap_m3, rain,
 #'   deltaV, inflow, spill_outflow, net)
-#' - `wbal_params`: named numeric vector of fitted parameters (C, h_inv),
-#'   or NULL for method 1
+#' - `wbal_params`: named list of fitted parameter vectors (C, h_inv), keyed
+#'   by evaporation family (see `wbal_evap_family()`), or NULL for method 1
 #'
 #' @noRd
 
@@ -132,23 +132,49 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   obs_rain <- dplyr::select(obs_met, Date, MET_pprain)
   
   # ---- Assemble water balance per model ----
+  # dy_cd and glm_aed use the exact same bulk aerodynamic evaporation formula
+  # in simulate_lake_nudged() (unlike gotm_wet and simstrat_aed2, which each
+  # have their own distinct formula), so fitting the water level twice for
+  # that pair is redundant -- the fit is cached per evaporation family (see
+  # wbal_evap_family()) and reused for the second model instead of
+  # re-running optim(). This assumes a model's inflow/outflow/meteorology
+  # inputs don't diverge from the other member of its family (true unless
+  # inflow rows are manually tagged to apply to only one of dy_cd/glm_aed
+  # via a `model` column).
+  wlev_fit_cache <- list()
+  wlev_cols <- c("lvl_sim", "spill_outflow", "evap_m3", "evap_flux", "C",
+                 "h_inv", "net_balance")
+
   wb <- lapply(model, \(m) {
-    mod_inflow <- vol_inflow  |> 
-      dplyr::filter(model == m) |> 
-      dplyr::select(Date, HYD_flow) 
+    mod_inflow <- vol_inflow  |>
+      dplyr::filter(model == m) |>
+      dplyr::select(Date, HYD_flow)
     wb_m <- obs_met |>
       dplyr::select(Date) |>
-      dplyr::mutate(model = m) |> 
+      dplyr::mutate(model = m) |>
       dplyr::left_join(mod_inflow, by = "Date") |>
       dplyr::left_join(vol_outflow, by = "Date") |>
       dplyr::left_join(wbal        |> dplyr::filter(model == m),
                        by = c("Date", "model")) |>
       dplyr::filter(Date >= spin_start & Date <= date_stop)
-    
+
     if (method %in% c(2, 3)) {
-      wb_m <- wb_m |>
-        estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev,
-                           params = params)
+      family <- wbal_evap_family(m)
+      cached <- if (!is.na(family)) wlev_fit_cache[[family]] else NULL
+      if (!is.null(cached)) {
+        cli_safe(paste0("Reusing water level fit for ", m,
+                        " (shares evaporation physics with an already-fitted model)"),
+                 indent = FALSE)
+        wb_m <- dplyr::bind_cols(wb_m, cached)
+      } else {
+        fam_params <- if (!is.na(family)) resolve_wbal_params(params, family) else params
+        wb_m <- wb_m |>
+          estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev,
+                             params = fam_params)
+        if (!is.na(family)) {
+          wlev_fit_cache[[family]] <<- wb_m[wlev_cols]
+        }
+      }
     }
     wb_m
   }) |>
@@ -157,9 +183,22 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   # ---- Apply method-specific inflow/outflow logic ----
   wb <- apply_wb_method(wb, method, hyps)
   
-  # ---- Extract fitted parameters ----
+  # ---- Extract fitted parameters, one set per evaporation family ----
   wbal_params <- if (method %in% c(2, 3)) {
-    dplyr::summarise(wb, C = mean(C), h_inv = mean(h_inv))
+    fam_fit <- wb |>
+      dplyr::mutate(family = wbal_evap_family(model)) |>
+      dplyr::filter(!is.na(family)) |>
+      dplyr::group_by(family) |>
+      dplyr::summarise(C = dplyr::first(C), h_inv = dplyr::first(h_inv),
+                       .groups = "drop")
+    if (nrow(fam_fit) > 0) {
+      setNames(
+        lapply(seq_len(nrow(fam_fit)), \(i) c(C = fam_fit$C[i], h_inv = fam_fit$h_inv[i])),
+        fam_fit$family
+      )
+    } else {
+      NULL
+    }
   } else {
     NULL
   }
@@ -198,7 +237,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   
   list(
     wb          = wb_out,
-    wbal_params = c("C" = wbal_params$C, "h_inv" = wbal_params$h_inv)
+    wbal_params = wbal_params
   )
 }
 
