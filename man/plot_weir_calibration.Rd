@@ -9,9 +9,11 @@ plot_weir_calibration(aeme, model)
 \arguments{
 \item{aeme}{Aeme object.}
 
-\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
-not found in \code{aeme}.}
+\item{model}{character; model name(s) to plot. Multiple models are
+overlaid on the same panels, coloured by model, rather than faceted --
+useful for comparing evaporation families (e.g. \code{glm_aed} vs
+\code{gotm_wet}) or confirming that \code{dy_cd}/\code{glm_aed} share a fit. Defaults
+to every model present in \code{aeme}.}
 }
 \value{
 A patchwork object.
