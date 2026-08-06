@@ -58,7 +58,7 @@
 #' Inform messages respecting the global AEME.inform option
 #'
 #' @param ... arguments passed to cli_inform_safe()
-#' @noRd
+#' @export
 cli_inform_safe <- function(...) {
   if (isTRUE(getOption("AEME.inform", TRUE))) {
     cli::cli_inform(...)
@@ -66,10 +66,16 @@ cli_inform_safe <- function(...) {
 }
 
 #' Inform messages respecting the global AEME.inform option
+#' 
+#' @description
+#' Used primarily as an internal helper to safely suppress messages to console.
+#' Messages are printed if the global option is set to TRUE: 
+#' `options(AEME.inform = TRUE)`
+#' 
 #' @param ... arguments passed to cli_inform_safe()
 #' @param FUN function to use for messaging, default is cli::cli_inform
 #' @param indent logical, whether to indent the message, default is FALSE
-#' @noRd
+#' @export
 cli_safe <- function(..., FUN = cli::cli_bullets, indent = TRUE) {
   if (isTRUE(getOption("AEME.inform", TRUE))) {
     if (indent) {
