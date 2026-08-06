@@ -16,8 +16,10 @@ test_that("running GLM works", {
   # plot_wbal(aeme)
   lake_dir <- get_lake_dir(aeme = aeme)
   outfile <- get_model_outfile(aeme = aeme)
-  outfile2 <- get_model_outfile(lake_dir = lake_dir, model = model)
+  outfile2 <- get_model_outfile(path = path, model = model)
+  outfile3 <- get_model_outfile(aeme, model = model)
   testthat::expect_equal(outfile, outfile2)
+  testthat::expect_equal(outfile, outfile3)
 
   wlev <- read_model_wlev(lake_dir = lake_dir, model = model)
   testthat::expect_true(is.data.frame(wlev))
@@ -187,7 +189,7 @@ test_that("running GLM-AED works", {
   chk <- sapply(diag_plot, \(x) ggplot2::is_ggplot(x))
   testthat::expect_true(all(chk))
 
-  file <- get_model_outfile(aeme = aeme, model = model, path = path)
+  file <- get_model_outfile(aeme = aeme, model = model)
 
   plot_output(aeme, model = model)
 

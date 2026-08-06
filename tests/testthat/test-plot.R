@@ -162,7 +162,7 @@ test_that("plotting model summary output works", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = TRUE, ncore = getOption("ncore"))
 
   get_output_vars(aeme, model)
   aeme_summ <- summary(aeme)
@@ -200,7 +200,7 @@ test_that("plotting model output works with no lake observations", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = FALSE, ncores = 2L)
+                   parallel = FALSE, ncore = getOption("ncore"))
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
@@ -232,7 +232,7 @@ test_that("plotting model output works with no lake & level observations", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = F, ncores = 2L)
+                   parallel = F, ncore = getOption("ncore"))
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
@@ -264,7 +264,7 @@ test_that("plotting model residuals for 2d and 1d variables", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = TRUE, ncore = getOption("ncore"))
 
   p1 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1))
@@ -344,7 +344,7 @@ test_that("plotting water balance components", {
   
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, path = path,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = TRUE, ncore = getOption("ncore"))
   
   wbal <- get_wbal_components(aeme = aeme)
   testthat::expect_true(is.list(wbal))

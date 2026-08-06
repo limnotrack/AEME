@@ -104,7 +104,7 @@ test_that("running Simstrat works", {
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
 
-  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  outfile <- get_model_outfile(aeme = aeme)
   testthat::expect_true(file.exists(outfile[["simstrat_aed2"]]))
 
   outp <- output(aeme)
@@ -143,7 +143,7 @@ test_that("running Simstrat-AED2 (with biogeochemistry) works", {
                      ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
 
-  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  outfile <- get_model_outfile(aeme = aeme)
   testthat::expect_true(file.exists(outfile[["simstrat_aed2"]]))
 
   outp <- output(aeme)
@@ -278,9 +278,9 @@ test_that("reading Simstrat output via a direct nc handle works", {
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
 
-  lake_dir <- get_lake_dir(aeme = aeme, path = path)
-  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
-
+  lake_dir <- get_lake_dir(aeme = aeme)
+  outfile <- get_model_outfile(aeme = aeme)
+  
   nc <- ncdf4::nc_open(outfile$simstrat_aed2)
   wlev <- read_model_wlev(nc = nc, model = model)
   testthat::expect_true(is.data.frame(wlev))

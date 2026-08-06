@@ -67,8 +67,7 @@ test_that("GLM-AED parameters can be input", {
   aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = TRUE)
   
   testthat::expect_true(file.exists(get_model_outfile(aeme = aeme, 
-                                                       model = model, 
-                                                       path = path)$glm_aed))
+                                                       model = model)$glm_aed))
   
   # Zooplankton parameters
   zoo_param <- get_aeme_parameters(model = model, 
@@ -128,7 +127,7 @@ test_that("GLM sediment parameters can be input and run", {
   
   aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = T)
 
-  outfiles <- get_model_outfile(aeme = aeme, model = model, path = path)
+  outfiles <- get_model_outfile(aeme = aeme, model = model)
   testthat::expect_true(file.exists(outfiles$glm_aed))
   
   sed_params <- glm_sed_params(n_zones = 3, zone_heights = c(5, 10, 14), 
@@ -142,7 +141,7 @@ test_that("GLM sediment parameters can be input and run", {
   
   aeme <- run_aeme(aeme = aeme, model = model, path = path)
   
-  outfiles <- get_model_outfile(aeme = aeme, model = model, path = path)
+  outfiles <- get_model_outfile(aeme = aeme, model = model)
   testthat::expect_true(file.exists(outfiles$glm_aed))
 })
 
@@ -165,7 +164,7 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   
   aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = T)
   
-  outfiles <- get_model_outfile(aeme = aeme, model = model, path = path)
+  outfiles <- get_model_outfile(aeme = aeme, model = model)
   testthat::expect_true(file.exists(outfiles$glm_aed))
   
   sed_params <- glm_sed_params(n_zones = 3, zone_heights = c(5, 10, 14), 
@@ -179,7 +178,7 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   
   aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = T)
   
-  outfiles <- get_model_outfile(aeme = aeme, model = model, path = path)
+  outfiles <- get_model_outfile(aeme = aeme, model = model)
   testthat::expect_true(file.exists(outfiles$glm_aed))
 })
 

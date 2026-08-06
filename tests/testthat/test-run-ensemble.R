@@ -28,7 +28,7 @@ test_that("running all models with running out of water works", {
 
   plot_output(aeme)
   plot_output(aeme, var_sim = "LKE_lvlwtr")
-  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  outfile <- get_model_outfile(aeme = aeme, model = model)
   testthat::expect_true(all(file.exists(unlist(outfile))))
 })
 
@@ -44,7 +44,7 @@ test_that("running models in parallel works", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
                      calc_wlev = FALSE)
-  aeme <- run_aeme(aeme = aeme, parallel = TRUE, ncores = 2)
+  aeme <- run_aeme(aeme = aeme, parallel = TRUE, ncore = getOption("ncore"))
   plot_wlev(aeme)
 
   testthat::expect_true(check_all_model_outfiles(aeme))
@@ -83,7 +83,7 @@ test_that("running models with wbal method = 1", {
   inp <- input(aeme)
   met <- inp$meteo
   aeme <- run_aeme(aeme = aeme, verbose = FALSE,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = TRUE, ncore = getOption("ncore")L)
 
   file_chk <- check_all_model_outfiles(aeme)
   testthat::expect_true(file_chk)
@@ -146,7 +146,7 @@ test_that("running models with wbal method = 3", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
                      wb_method = 3, calc_wlev = F) |>
-    run_aeme(parallel = F, ncores = 2L)
+    run_aeme(parallel = F, ncore = getOption("ncore")L)
 
   file_chk <- check_all_model_outfiles(aeme = aeme)
   testthat::expect_true(file_chk)
@@ -196,7 +196,7 @@ test_that("running models in parallel with no wbal calculated", {
 
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
+                   parallel = TRUE, ncore = getOption("ncore"))
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = FALSE, facet = FALSE)
   plot_output(aeme = aeme, model = model, var_sim = "LKE_outflow",
@@ -228,7 +228,7 @@ test_that("running models with no wbal/outflows calculated", {
 
   aeme <- run_aeme(aeme = aeme, model = model, verbose = T,
                    model_controls = model_controls, path = path,
-                   parallel = F, ncores = 2L)
+                   parallel = F, ncore = getOption("ncore")L)
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
 
@@ -257,7 +257,7 @@ test_that("running models in parallel with no wbal & no wlev calculated", {
 
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
+                   parallel = TRUE, ncore = getOption("ncore"))
 
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
@@ -282,7 +282,7 @@ test_that("getting model output works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 5,
                      model_controls = model_controls, use_bgc = TRUE)
   run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,
-           parallel = TRUE, return_type = "none", ncores = 2)
+           parallel = TRUE, return_type = "none", ncore = getOption("ncore"))
 
   aeme <- load_output(model = model, aeme = aeme, path = path,
                       model_controls = model_controls, parallel = FALSE)
@@ -309,7 +309,7 @@ test_that("getting model output in parallel works", {
              use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
-                   parallel = TRUE, ncores = 2)
+                   parallel = TRUE, ncore = getOption("ncore"))
 
   outp <- output(aeme)
   output_chk <- !all(is.null(unlist(outp)))
@@ -334,7 +334,7 @@ test_that("can build all models, run and write to new directory & re-run", {
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
 
-  aeme <- run_aeme(aeme = aeme, model = model, parallel = TRUE, ncores = 2,
+  aeme <- run_aeme(aeme = aeme, model = model, parallel = TRUE, ncore = getOption("ncore"),
                    model_controls = model_controls, path = path)
 
   plot_output_base(aeme, var_sim = "qe")

@@ -27,7 +27,7 @@ test_that("running GOTM works", {
   # p2 <- plot_output(aeme, var_sim = "LKE_tli4")
   # testthat::expect_true(ggplot2::is.ggplot(p2))
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
-  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  outfile <- get_model_outfile(aeme = aeme, model = model)
 
   vars_sim <- "HYD_temp"
   out <- read_gotm_output(file = outfile$gotm_wet["output"],

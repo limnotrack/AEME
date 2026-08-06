@@ -15,7 +15,7 @@ test_that("running DYRESM works", {
   testthat::expect_true(!is.null(outp$ens_001$dy_cd))
 
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
-  outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+  outfile <- get_model_outfile(aeme = aeme, model = model)
 
   vars_sim <- "HYD_temp"
   out <- read_dy_output(file = outfile$dy_cd, vars_sim = vars_sim)
