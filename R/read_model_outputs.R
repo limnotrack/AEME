@@ -39,7 +39,7 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   if (is.null(nc)) {
     lake_dir <- check_path(lake_dir, must_exist = TRUE)
     # Read in model netCDF file
-    nc_files <- get_model_outfile(model = model, lake_dir = lake_dir)[[model]]
+    nc_files <- get_model_outfile(model = model, path = lake_dir)[[model]]
     if (model == "gotm_wet") {
       nc_file <- nc_files["output"]  
       incl_fluxes <- ifelse("output_daily" %in% names(nc_files), FALSE, TRUE)
