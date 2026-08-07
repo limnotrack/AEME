@@ -31,7 +31,7 @@ read_model_hypsograph <- function(model, lake_dir, file = NULL) {
   } else if (model == "dy_cd") {
     if (is.null(file)) {
       file <- get_model_config_files(model = model,
-                                     lake_dir = lake_dir)[[model]]["stg"]
+                                     path = lake_dir)[[model]]["stg"]
     }
     stg <- read_dy_stg(file = file)
     hyps <- stg$bathymetry |>

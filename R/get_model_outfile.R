@@ -22,7 +22,7 @@ get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir) {
   if (!missing(lake_dir)) {
     lifecycle::deprecate_warn(
       when = "0.4.0",
-      what = "get_model_config_files(lake_dir)",
+      what = "get_model_outfile(lake_dir)",
       details = "Use `path` instead of `lake_dir`"
     )
     path <- lake_dir
@@ -36,7 +36,10 @@ get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir) {
     lake_dir <- check_path(path = path, must_exist = TRUE)
   } else {
     aeme <- check_aeme(aeme)
-    lake_dir <- get_lake_dir(aeme = aeme, path = path)
+    if (is.null(path)) {
+      path <- get_aeme_path(aeme)
+    }
+    lake_dir <- get_lake_dir(aeme)
   }
 
   if (missing(model)) {
@@ -46,7 +49,7 @@ get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir) {
   }
 
   # Get config files once
-  cfg_files <- get_model_config_files(model = model, lake_dir = lake_dir)
+  cfg_files <- get_model_config_files(model = model, path = path)
   
   # Map of model-specific resolvers
   resolvers <- list(

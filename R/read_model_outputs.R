@@ -240,7 +240,7 @@ load_model_config <- function(model, lake_dir, file) {
   model <- check_model(model)
   lake_dir <- check_path(lake_dir, must_exist = TRUE)
   cfg_files <- get_model_config_files(model = model,
-                                      lake_dir = lake_dir)[[model]]
+                                      path = lake_dir)[[model]]
   if (file %in% names(cfg_files)) {
     cfg_file <- cfg_files[[file]]
   } else {
