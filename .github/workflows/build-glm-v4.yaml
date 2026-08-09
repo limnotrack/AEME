@@ -2,455 +2,457 @@ name: Build GLM v4
 
 on:
   workflow_dispatch:
-  inputs:
-  package_version:
-  description: "AEME package version to attach binaries to (must match an existing or intended GitHub release tag, e.g. v0.4.0)"
-required: true
-default: "v0.4.0"
+    inputs:
+      package_version:
+        description: "AEME package version to attach binaries to (must match an existing or intended GitHub release tag, e.g. v0.4.0)"
+        required: true
+        default: "v0.4.0"
 
 permissions:
   contents: write   # required for the release-creation/upload steps below
 
 env:
   # ----------------------------------------------------------------------
-# Pin every sibling repo to an explicit tag or commit SHA known to build
-# successfully against GLM. `main` and `feature/write-nml` both need the
-# same sibling architecture (WITH_API=true: libaed-water/libaed-api/
-# libaed-benthic/libaed-demo, no libaed2 - that's a different, older GLM
-# lineage not built here), so one flat set of pins covers both branches,
-# unlike the old per-branch (V4ALPHA_*/MASTER_*) split this replaced.
-#
-# Treat this block as GLM's de facto lockfile: bump entries deliberately
-# (via PR, after re-validating the build) rather than letting them float.
-# ----------------------------------------------------------------------
-AED_TOOLS_REF: master
-LIBAED_WATER_REF: master
-LIBAED_BENTHIC_REF: master
-LIBAED_DEMO_REF: master
-LIBAED_API_REF: main
-LIBUTIL_REF: master
-LIBPLOT_REF: master
+  # Pin every sibling repo to an explicit tag or commit SHA known to build
+  # successfully against GLM. `main` and `feature/write-nml` both need the
+  # same sibling architecture (WITH_API=true: libaed-water/libaed-api/
+  # libaed-benthic/libaed-demo, no libaed2 - that's a different, older GLM
+  # lineage not built here), so one flat set of pins covers both branches,
+  # unlike the old per-branch (V4ALPHA_*/MASTER_*) split this replaced.
+  #
+  # Treat this block as GLM's de facto lockfile: bump entries deliberately
+  # (via PR, after re-validating the build) rather than letting them float.
+  # ----------------------------------------------------------------------
+  AED_TOOLS_REF: master
+  LIBAED_WATER_REF: master
+  LIBAED_BENTHIC_REF: master
+  LIBAED_DEMO_REF: master
+  LIBAED_API_REF: main
+  LIBUTIL_REF: master
+  LIBPLOT_REF: master
 
 jobs:
   # ==========================================================================
-# NOTE ON VERSIONING: binaries are attached as assets to the AEME package's
-# own release (tag = package_version, e.g. "v0.4.0") rather than a release
-# tagged with GLM's version number. The GLM version (parsed from `glm
-# --version` after compiling) becomes part of the asset filename instead,
-# e.g. glm-windows-4.0.0.zip attached to the v0.4.0 release - the same
-# filename scheme regardless of which branch produced it, so the AEME R
-# package's install_glm_aed(version = "4.0.0") lookup doesn't need to
-# know about branches at all.
-#
-# That does mean main and feature/write-nml MUST report distinct
-# glm_version strings for any version that's actually built - if they
-# ever collided, one build's assets would silently overwrite the other's
-# under the same filename. The "Guard against version collisions" step
-# below turns that from a silent bug into a hard failure instead of
-# trying to prevent it by construction (e.g. baking branch into the
-# filename), since GLM's own versioning is presumed to already keep these
-# numbers distinct.
-#
-# AS OF THIS WRITING THEY DON'T: feature/write-nml is main plus the
-# --write_nml flag, and src/glm.h's GLM_VERSION hasn't been bumped on
-# that branch, so both currently report "4.0.0". Running this workflow
-# today will build main successfully, then have feature/write-nml hit the
-# collision guard and fail loudly (by design - it refuses to silently
-# clobber main's already-uploaded glm-<os>-4.0.0.zip with a differently
-# -behaved binary of the same name). Bump GLM_VERSION on feature/write-nml
-# before expecting both legs to succeed in one run. If you'd rather remove
-# that assumption entirely, filenames could include the branch too, but
-# that also requires updating install_glm_aed() / list_glm_versions() on
-# the R side to match, so it's not done here.
-# ==========================================================================
-create-release:
-  runs-on: ubuntu-latest
-steps:
-  - name: Ensure release exists for package version ${{ inputs.package_version }}
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-run: |
-  gh release view "${{ inputs.package_version }}" --repo "${{ github.repository }}" \
-  || gh release create "${{ inputs.package_version }}" \
-  --repo "${{ github.repository }}" \
-  --title "AEME ${{ inputs.package_version }}" \
-  --notes "GLM binaries built from \`main\` and \`feature/write-nml\` are attached to this release."
+  # NOTE ON VERSIONING: binaries are attached as assets to the AEME package's
+  # own release (tag = package_version, e.g. "v0.4.0") rather than a release
+  # tagged with GLM's version number. The GLM version (parsed from `glm
+  # --version` after compiling) becomes part of the asset filename instead,
+  # e.g. glm-windows-4.0.0.zip attached to the v0.4.0 release - the same
+  # filename scheme regardless of which branch produced it, so the AEME R
+  # package's install_glm_aed(version = "4.0.0") lookup doesn't need to
+  # know about branches at all.
+  #
+  # That does mean main and feature/write-nml MUST report distinct
+  # glm_version strings for any version that's actually built - if they
+  # ever collided, one build's assets would silently overwrite the other's
+  # under the same filename. The "Guard against version collisions" step
+  # below turns that from a silent bug into a hard failure instead of
+  # trying to prevent it by construction (e.g. baking branch into the
+  # filename), since GLM's own versioning is presumed to already keep these
+  # numbers distinct.
+  #
+  # AS OF THIS WRITING THEY DON'T: feature/write-nml is main plus the
+  # --write_nml flag, and src/glm.h's GLM_VERSION hasn't been bumped on
+  # that branch, so both currently report "4.0.0". Running this workflow
+  # today will build main successfully, then have feature/write-nml hit the
+  # collision guard and fail loudly (by design - it refuses to silently
+  # clobber main's already-uploaded glm-<os>-4.0.0.zip with a differently
+  # -behaved binary of the same name). Bump GLM_VERSION on feature/write-nml
+  # before expecting both legs to succeed in one run. If you'd rather remove
+  # that assumption entirely, filenames could include the branch too, but
+  # that also requires updating install_glm_aed() / list_glm_versions() on
+  # the R side to match, so it's not done here.
+  # ==========================================================================
 
-build:
-  needs: create-release
-strategy:
-  fail-fast: false
-# Explicit combinations rather than crossing separate branch/os matrix
-# keys - easier to audit at a glance, and trimming one combination
-# later (e.g. a branch not yet buildable on macOS) is a one-line
-# delete instead of restructuring the matrix.
-matrix:
-  include:
-  - os: windows-latest
-name: windows
-branch: main
-- os: windows-latest
-name: windows
-branch: feature/write-nml
-- os: ubuntu-latest
-name: linux
-branch: main
-- os: ubuntu-latest
-name: linux
-branch: feature/write-nml
-- os: macos-latest
-name: macos
-branch: main
-- os: macos-latest
-name: macos
-branch: feature/write-nml
-runs-on: ${{ matrix.os }}
-defaults:
-  run:
-  shell: bash
-env:
-  # Everything below is checked out/built as siblings under this folder,
-  # matching the layout build_glm.sh expects (GLM, ancillary, libaed-*,
-  # libutil, libplot all next to each other).
-  ROOT: ${{ github.workspace }}
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure release exists for package version ${{ inputs.package_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "${{ inputs.package_version }}" --repo "${{ github.repository }}" \
+            || gh release create "${{ inputs.package_version }}" \
+              --repo "${{ github.repository }}" \
+              --title "AEME ${{ inputs.package_version }}" \
+              --notes "GLM binaries built from \`main\` and \`feature/write-nml\` are attached to this release."
 
-steps:
-  # ------------------------------------------------------------------
-# 1. Toolchain. Windows builds its C/Fortran dependency chain from
-#    source (see the ancillary/ steps further down), so it only
-#    needs the compilers themselves via choco. Linux and macOS get
-#    netcdf-c/netcdf-fortran/gd from their system package manager
-#    instead - same as how this project ships its own .deb package
-#    (see debian/control) and documents macOS builds (README.Macintosh).
-# ------------------------------------------------------------------
-- name: "Toolchain (Windows): install make/mingw/cmake via chocolatey"
-if: matrix.os == 'windows-latest'
-shell: pwsh
-run: |
-  choco install -y make
-choco install -y mingw
-choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+  build:
+    needs: create-release
+    strategy:
+      fail-fast: false
+      # Explicit combinations rather than crossing separate branch/os matrix
+      # keys - easier to audit at a glance, and trimming one combination
+      # later (e.g. a branch not yet buildable on macOS) is a one-line
+      # delete instead of restructuring the matrix.
+      matrix:
+        include:
+          - os: windows-latest
+            name: windows
+            branch: main
+          - os: windows-latest
+            name: windows
+            branch: feature/write-nml
+          - os: ubuntu-latest
+            name: linux
+            branch: main
+          - os: ubuntu-latest
+            name: linux
+            branch: feature/write-nml
+          - os: macos-latest
+            name: macos
+            branch: main
+          - os: macos-latest
+            name: macos
+            branch: feature/write-nml
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    env:
+      # Everything below is checked out/built as siblings under this folder,
+      # matching the layout build_glm.sh expects (GLM, ancillary, libaed-*,
+      # libutil, libplot all next to each other).
+      ROOT: ${{ github.workspace }}
 
-- name: "Toolchain (Windows): put mingw + cmake on PATH for later steps"
-if: matrix.os == 'windows-latest'
-run: |
-  echo "C:\ProgramData\mingw64\mingw64\bin" >> "$GITHUB_PATH"
-echo "C:\Program Files\CMake\bin" >> "$GITHUB_PATH"
+    steps:
+      # ------------------------------------------------------------------
+      # 1. Toolchain. Windows builds its C/Fortran dependency chain from
+      #    source (see the ancillary/ steps further down), so it only
+      #    needs the compilers themselves via choco. Linux and macOS get
+      #    netcdf-c/netcdf-fortran/gd from their system package manager
+      #    instead - same as how this project ships its own .deb package
+      #    (see debian/control) and documents macOS builds (README.Macintosh).
+      # ------------------------------------------------------------------
+      - name: "Toolchain (Windows): install make/mingw/cmake via chocolatey"
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          choco install -y make
+          choco install -y mingw
+          choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 
-- name: "Toolchain (Linux): install via apt"
-if: matrix.os == 'ubuntu-latest'
-run: |
-  sudo apt-get update
-# libx11-dev is only needed for --xdisp (the interactive plot
-# window); drop it (and WITH_XPLOTS below) if you don't need that.
-sudo apt-get install -y gfortran gcc make git \
-libnetcdf-dev libnetcdff-dev libgd-dev libx11-dev
+      - name: "Toolchain (Windows): put mingw + cmake on PATH for later steps"
+        if: matrix.os == 'windows-latest'
+        run: |
+          echo "C:\ProgramData\mingw64\mingw64\bin" >> "$GITHUB_PATH"
+          echo "C:\Program Files\CMake\bin" >> "$GITHUB_PATH"
 
-- name: "Toolchain (macOS): install via Homebrew"
-if: matrix.os == 'macos-latest'
-run: |
-  brew install gcc netcdf netcdf-fortran gd
-# Homebrew's gcc formula installs versioned binaries (gfortran-14,
-# gcc-14, ...), not a plain "gfortran"/"gcc" - resolve whatever
-# version actually got installed instead of hardcoding one.
-GCC_VER=$(brew list --versions gcc | awk '{print $2}' | cut -d. -f1)
-echo "FC=gfortran-${GCC_VER}" >> "$GITHUB_ENV"
-echo "CC=gcc-${GCC_VER}" >> "$GITHUB_ENV"
-echo "HOMEBREW=true" >> "$GITHUB_ENV"
+      - name: "Toolchain (Linux): install via apt"
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          # libx11-dev is only needed for --xdisp (the interactive plot
+          # window); drop it (and WITH_XPLOTS below) if you don't need that.
+          sudo apt-get install -y gfortran gcc make git \
+            libnetcdf-dev libnetcdff-dev libgd-dev libx11-dev
 
-- name: Sanity-check toolchain
-run: |
-  gcc --version | head -1
-gfortran --version | head -1
-make --version | head -1
-if [ "${{ matrix.os }}" = "windows-latest" ]; then cmake --version | head -1; fi
+      - name: "Toolchain (macOS): install via Homebrew"
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install gcc netcdf netcdf-fortran gd
+          # Homebrew's gcc formula installs versioned binaries (gfortran-14,
+          # gcc-14, ...), not a plain "gfortran"/"gcc" - resolve whatever
+          # version actually got installed instead of hardcoding one.
+          GCC_VER=$(brew list --versions gcc | awk '{print $2}' | cut -d. -f1)
+          echo "FC=gfortran-${GCC_VER}" >> "$GITHUB_ENV"
+          echo "CC=gcc-${GCC_VER}" >> "$GITHUB_ENV"
+          echo "HOMEBREW=true" >> "$GITHUB_ENV"
 
-# ------------------------------------------------------------------
-# 2. Checkout GLM at this matrix entry's branch, plus the sibling
-#    repos it needs, each pinned to the ref recorded in the env
-#    block above. build_glm.sh assumes GLM sits next to
-#    AED_Tools/libaed-*/libutil/libplot in one common parent
-#    directory (this workspace root).
-# ------------------------------------------------------------------
-- name: Checkout GLM
-uses: actions/checkout@v4
-with:
-  repository: limnotrack/GLM
-ref: ${{ matrix.branch }}
-path: GLM
+      - name: Sanity-check toolchain
+        run: |
+          gcc --version | head -1
+          gfortran --version | head -1
+          make --version | head -1
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then cmake --version | head -1; fi
 
-- name: Checkout AED_Tools and sibling libraries (pinned refs)
-run: |
-  cd "$ROOT"
-# Full clone + checkout (not --depth 1 --branch) so this works
-# whether a pinned ref above is a tag, branch, or raw commit SHA.
-checkout_repo () {
-  local repo="$1" ref="$2"
-  local org="AquaticEcoDynamics"
-  # libutil come from limnotrack's forks, not
-  # upstream:
-  #  - libutil carries the write_namelist() function (commit
-  #    24a8771, "add write_nml fun") that GLM's --write_nml flag
-  #    links against on feature/write-nml, not yet merged into
-  #    AquaticEcoDynamics/libutil. It's an addition only, so it's
-  #    also safe to build main against.
-  # Switch each back once its respective PR lands upstream.
-  case "$repo" in
-  libutil) org="limnotrack" ;;
-  esac
-  git clone "https://github.com/${org}/${repo}.git" --depth 1
-  git -C "$repo" checkout "$ref"
-}
+      # ------------------------------------------------------------------
+      # 2. Checkout GLM at this matrix entry's branch, plus the sibling
+      #    repos it needs, each pinned to the ref recorded in the env
+      #    block above. build_glm.sh assumes GLM sits next to
+      #    AED_Tools/libaed-*/libutil/libplot in one common parent
+      #    directory (this workspace root).
+      # ------------------------------------------------------------------
+      - name: Checkout GLM
+        uses: actions/checkout@v4
+        with:
+          repository: limnotrack/GLM
+          ref: ${{ matrix.branch }}
+          path: GLM
 
-checkout_repo AED_Tools        "$AED_TOOLS_REF"
-checkout_repo libaed-water     "$LIBAED_WATER_REF"
-checkout_repo libaed-benthic   "$LIBAED_BENTHIC_REF"
-checkout_repo libaed-demo      "$LIBAED_DEMO_REF"
-checkout_repo libaed-api       "$LIBAED_API_REF"
-checkout_repo libutil          "$LIBUTIL_REF"
-checkout_repo libplot          "$LIBPLOT_REF"
+      - name: Checkout AED_Tools and sibling libraries (pinned refs)
+        run: |
+          cd "$ROOT"
+          # Full clone + checkout (not --depth 1 --branch) so this works
+          # whether a pinned ref above is a tag, branch, or raw commit SHA.
+          checkout_repo () {
+            local repo="$1" ref="$2"
+            local org="AquaticEcoDynamics"
+            # libutil come from limnotrack's forks, not
+            # upstream:
+            #  - libutil carries the write_namelist() function (commit
+            #    24a8771, "add write_nml fun") that GLM's --write_nml flag
+            #    links against on feature/write-nml, not yet merged into
+            #    AquaticEcoDynamics/libutil. It's an addition only, so it's
+            #    also safe to build main against.
+            # Switch each back once its respective PR lands upstream.
+            case "$repo" in
+              libutil) org="limnotrack" ;;
+            esac
+            git clone "https://github.com/${org}/${repo}.git" --depth 1
+            git -C "$repo" checkout "$ref"
+          }
 
-# ------------------------------------------------------------------
-# 3. Stage the files build_glm.sh needs but that GLM's own repo does
-#    NOT track: build_env.inc / build_aedlibs.inc (sourced by
-#    build_glm.sh) and the ancillary/ dependency-build pipeline.
-#    Both come from AED_Tools, which is the documented starting
-#    point for AED/GLM builds. On Linux/macOS this is only a
-#    fallback: build_env.inc auto-detects whether apt's/Homebrew's
-#    netcdf-c/netcdf-fortran/gd are already found (via nc-config/
-#    nf-config/gd.h) and only falls back to building from ancillary/
-#    if something's missing.
-# ------------------------------------------------------------------
-- name: Stage build_env.inc, build_aedlibs.inc and ancillary/
-  run: |
-  cd "$ROOT"
-cp AED_Tools/build_env.inc .
-cp AED_Tools/build_aedlibs.inc .
-cp -r AED_Tools/ancillary .
+          checkout_repo AED_Tools        "$AED_TOOLS_REF"
+          checkout_repo libaed-water     "$LIBAED_WATER_REF"
+          checkout_repo libaed-benthic   "$LIBAED_BENTHIC_REF"
+          checkout_repo libaed-demo      "$LIBAED_DEMO_REF"
+          checkout_repo libaed-api       "$LIBAED_API_REF"
+          checkout_repo libutil          "$LIBUTIL_REF"
+          checkout_repo libplot          "$LIBPLOT_REF"
 
-# ------------------------------------------------------------------
-# 4. Build the ancillary C/Fortran dependency chain: zlib, libaec,
-#    curl, hdf5, netcdf-c, netcdf-fortran, jpeg, libpng, freetype,
-#    gd. Windows-only - this is the slow part (~20-30 min from
-#    cold), so it's cached independently of the GLM source itself,
-#    and the patches/workarounds below only need to run on a cache
-#    miss. The cache key is content-addressed via versions.inc, so
-#    main and feature/write-nml jobs naturally share the same cache
-#    entry (they pin the exact same AED_Tools ref) - no branch-
-#    specific key needed on top of that.
-# ------------------------------------------------------------------
-- name: Cache ancillary dependencies (Windows only)
-if: matrix.os == 'windows-latest'
-id: ancillary-cache
-uses: actions/cache@v4
-with:
-  path: |
-  ${{ github.workspace }}/ancillary/lib
-${{ github.workspace }}/ancillary/include
-${{ github.workspace }}/ancillary/bin
-${{ github.workspace }}/ancillary/share
-# Bump the trailing version suffix if you change any of the
-# patches below, or if ancillary/sources/versions.inc changes.
-key: glm-ancillary-windows-v1-${{ hashFiles('ancillary/sources/versions.inc') }}
+      # ------------------------------------------------------------------
+      # 3. Stage the files build_glm.sh needs but that GLM's own repo does
+      #    NOT track: build_env.inc / build_aedlibs.inc (sourced by
+      #    build_glm.sh) and the ancillary/ dependency-build pipeline.
+      #    Both come from AED_Tools, which is the documented starting
+      #    point for AED/GLM builds. On Linux/macOS this is only a
+      #    fallback: build_env.inc auto-detects whether apt's/Homebrew's
+      #    netcdf-c/netcdf-fortran/gd are already found (via nc-config/
+      #    nf-config/gd.h) and only falls back to building from ancillary/
+      #    if something's missing.
+      # ------------------------------------------------------------------
+      - name: Stage build_env.inc, build_aedlibs.inc and ancillary/
+        run: |
+          cd "$ROOT"
+          cp AED_Tools/build_env.inc .
+          cp AED_Tools/build_aedlibs.inc .
+          cp -r AED_Tools/ancillary .
 
-- name: Build ancillary dependencies (Windows only)
-if: matrix.os == 'windows-latest' && steps.ancillary-cache.outputs.cache-hit != 'true'
-run: |
-  cd "$ROOT/ancillary"
-export FINALDIR="$ROOT/ancillary"
-# CC/FC must be exported explicitly: the jpeg build step only
-# writes its Makefile "if [ \"$CC\" != \"\" ]", so without this
-# it silently produces no Makefile at all.
-export CC=gcc
-export FC=gfortran
-./build.sh --all
+      # ------------------------------------------------------------------
+      # 4. Build the ancillary C/Fortran dependency chain: zlib, libaec,
+      #    curl, hdf5, netcdf-c, netcdf-fortran, jpeg, libpng, freetype,
+      #    gd. Windows-only - this is the slow part (~20-30 min from
+      #    cold), so it's cached independently of the GLM source itself,
+      #    and the patches/workarounds below only need to run on a cache
+      #    miss. The cache key is content-addressed via versions.inc, so
+      #    main and feature/write-nml jobs naturally share the same cache
+      #    entry (they pin the exact same AED_Tools ref) - no branch-
+      #    specific key needed on top of that.
+      # ------------------------------------------------------------------
+      - name: Cache ancillary dependencies (Windows only)
+        if: matrix.os == 'windows-latest'
+        id: ancillary-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/ancillary/lib
+            ${{ github.workspace }}/ancillary/include
+            ${{ github.workspace }}/ancillary/bin
+            ${{ github.workspace }}/ancillary/share
+          # Bump the trailing version suffix if you change any of the
+          # patches below, or if ancillary/sources/versions.inc changes.
+          key: glm-ancillary-windows-v1-${{ hashFiles('ancillary/sources/versions.inc') }}
 
-# build_env.inc's gd detection only checks the literal path
-# /usr/include/gd.h, which Homebrew never installs to (it uses
-# /opt/homebrew or /usr/local). Left as-is, that makes it fall back to
-# building gd from source via ancillary/ every run, which is slow and
-# untested on macOS. Pointing Homebrew's gd.h at the path it checks
-# avoids that - if /usr/include isn't writable on the runner, this
-# step is harmless to skip; build_glm.sh will just fall back to
-# ancillary/ instead.
-- name: "Workaround: make Homebrew's gd.h visible to build_env.inc's detection (macOS only)"
-if: matrix.os == 'macos-latest'
-run: |
-  GD_INCLUDE="$(brew --prefix gd)/include/gd.h"
-sudo mkdir -p /usr/include 2>/dev/null || true
-sudo cp "$GD_INCLUDE" /usr/include/gd.h 2>/dev/null || \
-echo "could not stage /usr/include/gd.h - build_glm.sh will build gd from source via ancillary/ instead"
+      - name: Build ancillary dependencies (Windows only)
+        if: matrix.os == 'windows-latest' && steps.ancillary-cache.outputs.cache-hit != 'true'
+        run: |
+          cd "$ROOT/ancillary"
+          export FINALDIR="$ROOT/ancillary"
+          # CC/FC must be exported explicitly: the jpeg build step only
+          # writes its Makefile "if [ \"$CC\" != \"\" ]", so without this
+          # it silently produces no Makefile at all.
+          export CC=gcc
+          export FC=gfortran
+          ./build.sh --all
 
-# ------------------------------------------------------------------
-# 5. Build GLM itself.
-# ------------------------------------------------------------------
-- name: Build GLM
-run: |
-  cd "$ROOT/GLM"
-./build_glm.sh
+      # build_env.inc's gd detection only checks the literal path
+      # /usr/include/gd.h, which Homebrew never installs to (it uses
+      # /opt/homebrew or /usr/local). Left as-is, that makes it fall back to
+      # building gd from source via ancillary/ every run, which is slow and
+      # untested on macOS. Pointing Homebrew's gd.h at the path it checks
+      # avoids that - if /usr/include isn't writable on the runner, this
+      # step is harmless to skip; build_glm.sh will just fall back to
+      # ancillary/ instead.
+      - name: "Workaround: make Homebrew's gd.h visible to build_env.inc's detection (macOS only)"
+        if: matrix.os == 'macos-latest'
+        run: |
+          GD_INCLUDE="$(brew --prefix gd)/include/gd.h"
+          sudo mkdir -p /usr/include 2>/dev/null || true
+          sudo cp "$GD_INCLUDE" /usr/include/gd.h 2>/dev/null || \
+            echo "could not stage /usr/include/gd.h - build_glm.sh will build gd from source via ancillary/ instead"
 
-- name: Verify glm runs
-id: verify
-run: |
-  cd "$ROOT/GLM"
-if [ "${{ matrix.os }}" = "windows-latest" ]; then
-PATH="$ROOT/ancillary/bin:$PATH" ./glm.exe --version
-VER=$(PATH="$ROOT/ancillary/bin:$PATH" ./glm.exe --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
-else
-  ./glm --version
-VER=$(./glm --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
-fi
-echo "glm_version=$VER" >> "$GITHUB_OUTPUT"
+      # ------------------------------------------------------------------
+      # 5. Build GLM itself.
+      # ------------------------------------------------------------------
+      - name: Build GLM
+        run: |
+          cd "$ROOT/GLM"
+          ./build_glm.sh
 
-# ------------------------------------------------------------------
-# 6. Package the binary for upload. Windows gets its runtime DLLs
-#    bundled alongside it so the artifact is self-contained; Linux
-#    and macOS binaries are dynamically linked against system
-#    packages (apt/Homebrew) instead, so they're only guaranteed to
-#    run on a matching machine, not a portable bundle - ldd/otool
-#    output is recorded alongside them for reference.
-# ------------------------------------------------------------------
-- name: Assemble distributable folder
-run: |
-  mkdir -p "$ROOT/glm_dist"
-case "${{ matrix.os }}" in
-windows-latest)
-cp "$ROOT/GLM/glm.exe" "$ROOT/glm_dist/"
-cp "$ROOT/ancillary/bin/libgd.dll" "$ROOT/glm_dist/"
-cp "$ROOT/ancillary/bin/libnetcdf.dll" "$ROOT/glm_dist/"
-cp "C:/ProgramData/mingw64/mingw64/bin/libgfortran-5.dll" "$ROOT/glm_dist/"
-cp "C:/ProgramData/mingw64/mingw64/bin/libquadmath-0.dll" "$ROOT/glm_dist/"
-cp "C:/ProgramData/mingw64/mingw64/bin/libgcc_s_seh-1.dll" "$ROOT/glm_dist/"
-cp "C:/ProgramData/mingw64/mingw64/bin/libwinpthread-1.dll" "$ROOT/glm_dist/"
-;;
-ubuntu-latest)
-cp "$ROOT/GLM/glm" "$ROOT/glm_dist/"
-ldd "$ROOT/GLM/glm" > "$ROOT/glm_dist/ldd-dependencies.txt" || true
-;;
-macos-latest)
-cp "$ROOT/GLM/glm" "$ROOT/glm_dist/"
-otool -L "$ROOT/GLM/glm" > "$ROOT/glm_dist/otool-dependencies.txt" || true
-;;
-esac
+      - name: Verify glm runs
+        id: verify
+        run: |
+          cd "$ROOT/GLM"
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            PATH="$ROOT/ancillary/bin:$PATH" ./glm.exe --version
+            VER=$(PATH="$ROOT/ancillary/bin:$PATH" ./glm.exe --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          else
+            ./glm --version
+            VER=$(./glm --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          fi
+          echo "glm_version=$VER" >> "$GITHUB_OUTPUT"
 
-- name: "Zip distributable folder (Windows)"
-if: matrix.os == 'windows-latest'
-shell: pwsh
-run: |
-  Compress-Archive -Path "$env:ROOT\glm_dist\*" -DestinationPath "$env:ROOT\glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
+      # ------------------------------------------------------------------
+      # 6. Package the binary for upload. Windows gets its runtime DLLs
+      #    bundled alongside it so the artifact is self-contained; Linux
+      #    and macOS binaries are dynamically linked against system
+      #    packages (apt/Homebrew) instead, so they're only guaranteed to
+      #    run on a matching machine, not a portable bundle - ldd/otool
+      #    output is recorded alongside them for reference.
+      # ------------------------------------------------------------------
+      - name: Assemble distributable folder
+        run: |
+          mkdir -p "$ROOT/glm_dist"
+          case "${{ matrix.os }}" in
+            windows-latest)
+              cp "$ROOT/GLM/glm.exe" "$ROOT/glm_dist/"
+              cp "$ROOT/ancillary/bin/libgd.dll" "$ROOT/glm_dist/"
+              cp "$ROOT/ancillary/bin/libnetcdf.dll" "$ROOT/glm_dist/"
+              cp "C:/ProgramData/mingw64/mingw64/bin/libgfortran-5.dll" "$ROOT/glm_dist/"
+              cp "C:/ProgramData/mingw64/mingw64/bin/libquadmath-0.dll" "$ROOT/glm_dist/"
+              cp "C:/ProgramData/mingw64/mingw64/bin/libgcc_s_seh-1.dll" "$ROOT/glm_dist/"
+              cp "C:/ProgramData/mingw64/mingw64/bin/libwinpthread-1.dll" "$ROOT/glm_dist/"
+              ;;
+            ubuntu-latest)
+              cp "$ROOT/GLM/glm" "$ROOT/glm_dist/"
+              ldd "$ROOT/GLM/glm" > "$ROOT/glm_dist/ldd-dependencies.txt" || true
+              ;;
+            macos-latest)
+              cp "$ROOT/GLM/glm" "$ROOT/glm_dist/"
+              otool -L "$ROOT/GLM/glm" > "$ROOT/glm_dist/otool-dependencies.txt" || true
+              ;;
+          esac
 
-- name: "Install dylibbundler (macOS only)"
-if: matrix.os == 'macos-latest'
-run: brew install dylibbundler
+      - name: "Zip distributable folder (Windows)"
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "$env:ROOT\glm_dist\*" -DestinationPath "$env:ROOT\glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
 
-# dylibbundler walks the binary's dependency tree (recursively, via
-# -b), copies every non-system dylib it finds into glm_dist/libs/,
-# and rewrites the binary's own load commands to point at those
-# copies via @executable_path instead of the absolute Homebrew paths
-# (/opt/homebrew/opt/netcdf/lib/...) that only exist on a machine
-# with the exact same Homebrew packages installed - which is
-# precisely what broke on the runner that had no netcdf installed.
-- name: "Bundle runtime dylibs into distributable folder (macOS only)"
-if: matrix.os == 'macos-latest'
-run: |
-  mkdir -p "$ROOT/glm_dist/libs"
+      - name: "Install dylibbundler (macOS only)"
+        if: matrix.os == 'macos-latest'
+        run: brew install dylibbundler
 
-echo "--- rpaths before cleanup ---"
-otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
+      # dylibbundler walks the binary's dependency tree (recursively, via
+      # -b), copies every non-system dylib it finds into glm_dist/libs/,
+      # and rewrites the binary's own load commands to point at those
+      # copies via @executable_path instead of the absolute Homebrew paths
+      # (/opt/homebrew/opt/netcdf/lib/...) that only exist on a machine
+      # with the exact same Homebrew packages installed - which is
+      # precisely what broke on the runner that had no netcdf installed.
+      - name: "Bundle runtime dylibs into distributable folder (macOS only)"
+        if: matrix.os == 'macos-latest'
+        run: |
+          mkdir -p "$ROOT/glm_dist/libs"
 
-# More robust than matching one hardcoded string: parse every
-# LC_RPATH actually present and remove each one, so this is safe
-# regardless of how many duplicates exist or what path they hold.
-otool -l "$ROOT/glm_dist/glm" \
-| awk '/LC_RPATH/{getline; getline; print $2}' \
-| while read -r rp; do
-install_name_tool -delete_rpath "$rp" "$ROOT/glm_dist/glm" || true
-done
+          echo "--- rpaths before cleanup ---"
+          otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
 
-echo "--- rpaths after cleanup, before dylibbundler ---"
-otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
+          # More robust than matching one hardcoded string: parse every
+          # LC_RPATH actually present and remove each one, so this is safe
+          # regardless of how many duplicates exist or what path they hold.
+          otool -l "$ROOT/glm_dist/glm" \
+            | awk '/LC_RPATH/{getline; getline; print $2}' \
+            | while read -r rp; do
+              install_name_tool -delete_rpath "$rp" "$ROOT/glm_dist/glm" || true
+            done
 
-dylibbundler -od -b \
--x "$ROOT/glm_dist/glm" \
--d "$ROOT/glm_dist/libs" \
--p "@executable_path/libs/"
+          echo "--- rpaths after cleanup, before dylibbundler ---"
+          otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
 
-echo "--- rpaths after dylibbundler (final) ---"
-otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
+          dylibbundler -od -b \
+            -x "$ROOT/glm_dist/glm" \
+            -d "$ROOT/glm_dist/libs" \
+            -p "@executable_path/libs/"
 
-# install_name_tool (used internally by dylibbundler to rewrite load
-# commands) invalidates whatever signature the binary had. Apple
-# Silicon refuses to execute an unsigned binary at all (unlike
-# Intel Macs, where this was often just a Gatekeeper warning) - an
-# ad-hoc signature (no certificate, no notarization) is enough to
-# run locally/in CI, though see the caveat below for what it does
-# NOT solve.
-- name: "Re-sign bundled binary (macOS only)"
-if: matrix.os == 'macos-latest'
-run: codesign --force --deep -s - "$ROOT/glm_dist/glm"
+          echo "--- rpaths after dylibbundler (final) ---"
+          otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
 
-# Fail loudly here rather than silently ship a half-bundled binary:
-# if anything still resolves to an external Homebrew/local path,
-# dylibbundler missed a dependency (e.g. a dependency-of-a-dependency
-# it didn't recurse into for some reason) and this exact bug would
-# resurface for every user, not just this CI runner.
-- name: "Verify no external Homebrew dependencies remain (macOS only)"
-if: matrix.os == 'macos-latest'
-run: |
-  cd "$ROOT/glm_dist"
-if otool -L glm | grep -qE '/opt/homebrew|/usr/local/opt'; then
-echo "::error::glm still references external Homebrew paths - bundling incomplete"
-otool -L glm
-exit 1
-fi
-echo "glm dependencies (should all be @executable_path/libs/... or system frameworks):"
-otool -L glm
+      # install_name_tool (used internally by dylibbundler to rewrite load
+      # commands) invalidates whatever signature the binary had. Apple
+      # Silicon refuses to execute an unsigned binary at all (unlike
+      # Intel Macs, where this was often just a Gatekeeper warning) - an
+      # ad-hoc signature (no certificate, no notarization) is enough to
+      # run locally/in CI, though see the caveat below for what it does
+      # NOT solve.
+      - name: "Re-sign bundled binary (macOS only)"
+        if: matrix.os == 'macos-latest'
+        run: codesign --force --deep -s - "$ROOT/glm_dist/glm"
 
-- name: "Zip distributable folder (Linux/macOS)"
-if: matrix.os != 'windows-latest'
-run: |
-  cd "$ROOT/glm_dist"
-zip -r "$ROOT/glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip" .
+      # Fail loudly here rather than silently ship a half-bundled binary:
+      # if anything still resolves to an external Homebrew/local path,
+      # dylibbundler missed a dependency (e.g. a dependency-of-a-dependency
+      # it didn't recurse into for some reason) and this exact bug would
+      # resurface for every user, not just this CI runner.
+      - name: "Verify no external Homebrew dependencies remain (macOS only)"
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd "$ROOT/glm_dist"
+          if otool -L glm | grep -qE '/opt/homebrew|/usr/local/opt'; then
+            echo "::error::glm still references external Homebrew paths - bundling incomplete"
+            otool -L glm
+            exit 1
+          fi
+          echo "glm dependencies (should all be @executable_path/libs/... or system frameworks):"
+          otool -L glm
 
-- name: Compute SHA256 checksum
-run: |
-  cd "$ROOT"
-ZIP="glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
-if [ "${{ matrix.os }}" = "macos-latest" ]; then
-# macOS runners ship `shasum`, not GNU `sha256sum` - same output format.
-shasum -a 256 "$ZIP" > "$ZIP.sha256"
-else
-  sha256sum "$ZIP" > "$ZIP.sha256"
-fi
-cat "$ZIP.sha256"
+      - name: "Zip distributable folder (Linux/macOS)"
+        if: matrix.os != 'windows-latest'
+        run: |
+          cd "$ROOT/glm_dist"
+          zip -r "$ROOT/glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip" .
 
-# Both main and feature/write-nml upload into the SAME release under
-# the SAME filename scheme (glm-<os>-<version>.zip) - see the
-# versioning note above the create-release job. If a differently
-# -branched build ever produces the same glm_version as one already
-# uploaded, refuse to silently clobber it and fail loudly instead.
-- name: Guard against version collisions between branches
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-run: |
-  cd "$ROOT"
-ZIP="glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
-SHA_FILE="$ZIP.sha256"
-if gh release download "${{ inputs.package_version }}" --repo "${{ github.repository }}" \
---pattern "$SHA_FILE" --output "existing.$SHA_FILE" --clobber 2>/dev/null; then
-if ! diff -q "$SHA_FILE" "existing.$SHA_FILE" > /dev/null; then
-echo "::error::Asset $ZIP already exists in release ${{ inputs.package_version }} with a DIFFERENT checksum than this build (branch: ${{ matrix.branch }}). This likely means GLM version ${{ steps.verify.outputs.glm_version }} collides between main and feature/write-nml. Refusing to silently overwrite - resolve the version collision before re-running."
-exit 1
-else
-  echo "Existing asset '$ZIP' matches this build exactly (identical rebuild) - safe to proceed."
-fi
-fi
+      - name: Compute SHA256 checksum
+        run: |
+          cd "$ROOT"
+          ZIP="glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
+          if [ "${{ matrix.os }}" = "macos-latest" ]; then
+            # macOS runners ship `shasum`, not GNU `sha256sum` - same output format.
+            shasum -a 256 "$ZIP" > "$ZIP.sha256"
+          else
+            sha256sum "$ZIP" > "$ZIP.sha256"
+          fi
+          cat "$ZIP.sha256"
 
-- name: Upload zip + checksum to release ${{ inputs.package_version }}
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-run: |
-  cd "$ROOT"
-ZIP="glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
-gh release upload "${{ inputs.package_version }}" "$ZIP" "$ZIP.sha256" \
---repo "${{ github.repository }}" --clobber
+      # Both main and feature/write-nml upload into the SAME release under
+      # the SAME filename scheme (glm-<os>-<version>.zip) - see the
+      # versioning note above the create-release job. If a differently
+      # -branched build ever produces the same glm_version as one already
+      # uploaded, refuse to silently clobber it and fail loudly instead.
+      - name: Guard against version collisions between branches
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd "$ROOT"
+          ZIP="glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
+          SHA_FILE="$ZIP.sha256"
+          if gh release download "${{ inputs.package_version }}" --repo "${{ github.repository }}" \
+            --pattern "$SHA_FILE" --output "existing.$SHA_FILE" --clobber 2>/dev/null; then
+            if ! diff -q "$SHA_FILE" "existing.$SHA_FILE" > /dev/null; then
+              echo "::error::Asset $ZIP already exists in release ${{ inputs.package_version }} with a DIFFERENT checksum than this build (branch: ${{ matrix.branch }}). This likely means GLM version ${{ steps.verify.outputs.glm_version }} collides between main and feature/write-nml. Refusing to silently overwrite - resolve the version collision before re-running."
+              exit 1
+            else
+              echo "Existing asset '$ZIP' matches this build exactly (identical rebuild) - safe to proceed."
+            fi
+          fi
+
+      - name: Upload zip + checksum to release ${{ inputs.package_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd "$ROOT"
+          ZIP="glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
+          gh release upload "${{ inputs.package_version }}" "$ZIP" "$ZIP.sha256" \
+            --repo "${{ github.repository }}" --clobber
+            
