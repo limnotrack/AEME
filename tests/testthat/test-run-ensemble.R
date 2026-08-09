@@ -83,7 +83,7 @@ test_that("running models with wbal method = 1", {
   inp <- input(aeme)
   met <- inp$meteo
   aeme <- run_aeme(aeme = aeme, verbose = FALSE,
-                   parallel = TRUE, ncore = getOption("ncore")L)
+                   parallel = TRUE, ncore = getOption("ncore"))
 
   file_chk <- check_all_model_outfiles(aeme)
   testthat::expect_true(file_chk)
@@ -146,7 +146,7 @@ test_that("running models with wbal method = 3", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
                      wb_method = 3, calc_wlev = F) |>
-    run_aeme(parallel = F, ncore = getOption("ncore")L)
+    run_aeme(parallel = F, ncore = getOption("ncore"))
 
   file_chk <- check_all_model_outfiles(aeme = aeme)
   testthat::expect_true(file_chk)
@@ -228,7 +228,7 @@ test_that("running models with no wbal/outflows calculated", {
 
   aeme <- run_aeme(aeme = aeme, model = model, verbose = T,
                    model_controls = model_controls, path = path,
-                   parallel = F, ncore = getOption("ncore")L)
+                   parallel = F, ncore = getOption("ncore"))
   plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
               add_obs = F)
 
