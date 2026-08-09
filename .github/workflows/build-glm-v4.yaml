@@ -87,21 +87,21 @@ jobs:
       # delete instead of restructuring the matrix.
       matrix:
         include:
-          - os: windows-latest
-            name: windows
-            branch: main
+          # - os: windows-latest
+          #   name: windows
+          #   branch: main
           - os: windows-latest
             name: windows
             branch: feature/write-nml
-          - os: ubuntu-latest
-            name: linux
-            branch: main
+          # - os: ubuntu-latest
+          #   name: linux
+          #   branch: main
           - os: ubuntu-latest
             name: linux
             branch: feature/write-nml
-          - os: macos-latest
-            name: macos
-            branch: main
+          # - os: macos-latest
+          #   name: macos
+          #   branch: main
           - os: macos-latest
             name: macos
             branch: feature/write-nml
