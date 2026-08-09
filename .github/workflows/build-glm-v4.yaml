@@ -71,10 +71,10 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 run: |
   gh release view "${{ inputs.package_version }}" --repo "${{ github.repository }}" \
-|| gh release create "${{ inputs.package_version }}" \
---repo "${{ github.repository }}" \
---title "AEME ${{ inputs.package_version }}" \
---notes "GLM binaries built from \`main\` and \`feature/write-nml\` are attached to this release."
+  || gh release create "${{ inputs.package_version }}" \
+  --repo "${{ github.repository }}" \
+  --title "AEME ${{ inputs.package_version }}" \
+  --notes "GLM binaries built from \`main\` and \`feature/write-nml\` are attached to this release."
 
 build:
   needs: create-release
