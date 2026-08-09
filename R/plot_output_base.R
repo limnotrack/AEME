@@ -1,8 +1,16 @@
 #' Base plotting function for AEME output
-#' 
+#'
 #' @inheritParams plot_output
+#' @param plot_width numeric; width in pixels of each panel, used to size the
+#' plotting device. Default is 400.
+#' @param plot_height numeric; height in pixels of each panel, used to size
+#' the plotting device. Default is 200.
+#' @param bar_width numeric; width of the colour bar as a fraction of
+#' `plot_width`. Default is 0.08.
 #' @export
 #' @return A list of matrices with the plotted output, invisibly.
+#' @importFrom graphics axis box image layout legend lines mtext par
+#' @importFrom grDevices dev.new dev.size
 #' @examples
 #' \dontrun{
 #' tmpdir <- tempdir()
@@ -266,7 +274,7 @@ get_level <- function(aeme, model, ens_lab, date_idx) {
     axis(4, las = 1, cex.axis = 1)
     mtext(label, side = 4, line = right_mar - 0.5, cex = 0.7)
   }, error = \(e) {
-    cli::cli_alert_warning("Colour bar too narrow — try increasing {.arg plot_width}")
+    cli::cli_alert_warning("Colour bar too narrow -- try increasing {.arg plot_width}")
   })
 }
 

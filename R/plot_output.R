@@ -8,6 +8,8 @@
 #' @param model character vector; model(s) to plot. If missing, all models
 #' in the Aeme object will be plotted.
 #' @param var_sim string; of variable to plot
+#' @param point_size numeric; size of observation points added to the plot
+#' when `add_obs` is `TRUE`. Default is 2.
 #' @param ens_n integer; ensemble number to plot. Default is 1.
 #' @param level logical; include lake level. Only applies for contour plots.
 #' @param remove_spin_up logical; remove spin-up period from plot. Default is

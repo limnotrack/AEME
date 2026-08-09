@@ -45,6 +45,9 @@ Defaults to NULL and will generate common limits for all variables.}
 
 \item{add_obs}{logical; add observations to plot}
 
+\item{point_size}{numeric; size of observation points added to the plot
+when \code{add_obs} is \code{TRUE}. Default is 2.}
+
 \item{level}{logical; include lake level. Only applies for contour plots.}
 
 \item{facet}{logical; if \code{TRUE}, for variables with depth, plot each

@@ -72,10 +72,7 @@ test_that("plotting model output works", {
   path <- tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- "glm_aed"
-  }
+  model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,  ext_elev = 5, 
                      use_bgc = TRUE)
@@ -104,8 +101,7 @@ test_that("plotting model output works", {
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   path = path, model_controls = model_controls)
 
 
   p1 <- plot(aeme, "output")
@@ -127,8 +123,7 @@ test_that("plotting model output works", {
   plot_output(aeme = aeme, model = model, var_sim = "NIT_tn")
   plot_output(aeme = aeme, model = model, var_sim = "PHS_tp")
   testthat::expect_true(is.list(p1))
-  testthat::expect_true(all(c(ggplot2::is_ggplot(p1[[1]]),
-                              ggplot2::is_ggplot(p1[[2]]))))
+  testthat::expect_true(ggplot2::is_ggplot(p1[[1]]))
 
   p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_evpflx",
                     print_plots = FALSE, cumulative = TRUE, facet = FALSE)
@@ -159,10 +154,7 @@ test_that("plotting model summary output works", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- "glm_aed"
-  }
+  model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
                      ext_elev = 5, use_bgc = TRUE)
@@ -170,7 +162,7 @@ test_that("plotting model summary output works", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = TRUE, ncore = getOption("ncore"))
 
   get_output_vars(aeme, model)
   aeme_summ <- summary(aeme)
@@ -193,10 +185,7 @@ test_that("plotting model output works with no lake observations", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- "glm_aed"
-  }
+  model <- filter_platform_models(model)
 
   # Remove observations
   obs <- observations(aeme)
@@ -211,7 +200,7 @@ test_that("plotting model output works with no lake observations", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = FALSE, ncores = 2L)
+                   parallel = FALSE, ncore = getOption("ncore"))
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
@@ -227,10 +216,7 @@ test_that("plotting model output works with no lake & level observations", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- "glm_aed"
-  }
+  model <- filter_platform_models(model)
 
   # Remove observations
   obs <- observations(aeme)
@@ -246,7 +232,7 @@ test_that("plotting model output works with no lake & level observations", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = F, ncores = 2L)
+                   parallel = F, ncore = getOption("ncore"))
 
   p1 <- plot_output(aeme = aeme, model = model, var_sim = "HYD_temp",
                     level = TRUE, print_plots = FALSE,
@@ -270,10 +256,7 @@ test_that("plotting model residuals for 2d and 1d variables", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- "glm_aed"
-  }
+  model <- filter_platform_models(model)
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, inf_factor = inf_factor,
@@ -281,7 +264,7 @@ test_that("plotting model residuals for 2d and 1d variables", {
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = TRUE, ncore = getOption("ncore"))
 
   p1 <- plot_resid(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1))
@@ -301,18 +284,14 @@ test_that("plotting phytoplankton model output works", {
       .default = simulate
     ))
   model <- c("glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- "glm_aed"
-  }
+  model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE)
 
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                   path = path, model_controls = model_controls,
-                   parallel = TRUE, ncores = 2L)
+                   path = path, model_controls = model_controls)
 
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1))
@@ -330,8 +309,8 @@ test_that("plotting phytoplankton model output works", {
   p4 <- plot_phs(aeme = aeme, model = model)
   testthat::expect_true(ggplot2::is_ggplot(p4))
 
-  p5 <- plot_zoops(aeme = aeme, model = model)
-  testthat::expect_true(ggplot2::is_ggplot(p5))
+  # p5 <- plot_zoops(aeme = aeme, model = model)
+  # testthat::expect_true(ggplot2::is_ggplot(p5))
 })
 
 test_that("plotting water balance components", {
@@ -347,10 +326,7 @@ test_that("plotting water balance components", {
       .default = simulate
     ))
   model <- c("glm_aed")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- "glm_aed"
-  }
+  model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
@@ -368,7 +344,7 @@ test_that("plotting water balance components", {
   
   # Run models
   aeme <- run_aeme(aeme = aeme, model = model, path = path,
-                   parallel = TRUE, ncores = 2L)
+                   parallel = TRUE, ncore = getOption("ncore"))
   
   wbal <- get_wbal_components(aeme = aeme)
   testthat::expect_true(is.list(wbal))

@@ -117,6 +117,7 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
 
       lke <- lake(aeme)
       max_depth <- lke$depth
+      data("model_layer_structure", package = "AEME", envir = environment())
       h <- model_layer_structure |>
         dplyr::filter(zi <= max_depth) |>
         dplyr::pull(h)

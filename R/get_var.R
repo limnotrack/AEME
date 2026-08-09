@@ -97,20 +97,23 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
                      lyr_thk = NA)
     
     if (is.null(variable)) {
-      message(strwrap(paste0(var_sim, " is not in output for model ", m,
-                             ". Returning a dataframe with NA's.")))
+      msg <- paste0(var_sim, " is not in output for model ", m,
+                    ". Returning a dataframe with NA's.")
+      cli_inform_safe(c("i" = msg))
       return(df)
     }
     if (is.matrix(variable)) {
       if (ncol(variable) == 0) {
-        message(strwrap(paste0(var_sim, " is not in output for model ", m,
-                               ". Returning a dataframe with NA's.")))
+        msg <- paste0(var_sim, " is not in output for model ", m,
+                      ". Returning a dataframe with NA's.")
+        cli_inform_safe(c("i" = msg))
         return(df)
       }
     }
     if (length(variable) == 0) {
-      message(strwrap(paste0(var_sim, " is not in output for model ", m,
-                             ". Returning a dataframe with NA's.")))
+      msg <- paste0(var_sim, " is not in output for model ", m,
+                    ". Returning a dataframe with NA's.")
+      cli_inform_safe(c("i" = msg))
       return(df)
     }
     

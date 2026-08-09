@@ -15,7 +15,6 @@
 #' list_obs_vars(aeme)
 
 list_obs_vars <- function(aeme) {
-  data("key_naming", package = "AEME")
   aeme_time <- AEME::time(aeme)
 
   obs_vars <- AEME::observations(aeme) |>
@@ -39,6 +38,7 @@ list_obs_vars <- function(aeme) {
   if (length(obs_vars) == 0) {
     return()
   }
+  data("key_naming", package = "AEME", envir = environment())
   name <- key_naming$name_text[match(obs_vars, key_naming$var_aeme)]
   idx <- !is.na(name)
   setNames(obs_vars[idx], name[idx])

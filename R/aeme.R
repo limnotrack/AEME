@@ -6,25 +6,28 @@
 #' @name Aeme
 #' @aliases Aeme-class
 #' @slot lake A list representing lake information. \itemize{
-#'  \item \code{\bold{name}}: character; lake name.
-#'  \item \code{\bold{id}}: character; lake identifier.
-#'  \item \code{\bold{latitude}}: numeric; lake latitude.
-#'  \item \code{\bold{longitude}}: numeric; lake longitude.
-#'  \item \code{\bold{elevation}}: numeric; lake elevation.
-#'  \item \code{\bold{depth}}: numeric; lake depth.
-#'  \item \code{\bold{area}}: numeric; lake area.
+#'  \item \strong{\code{name}}: character; lake name.
+#'  \item \strong{\code{id}}: character; lake identifier.
+#'  \item \strong{\code{latitude}}: numeric; lake latitude.
+#'  \item \strong{\code{longitude}}: numeric; lake longitude.
+#'  \item \strong{\code{elevation}}: numeric; lake elevation.
+#'  \item \strong{\code{depth}}: numeric; lake depth.
+#'  \item \strong{\code{area}}: numeric; lake area.
 #'  }
 #' @slot time A list representing time information. \itemize{
-#' \item \code{\bold{start}}: character; start date.
-#' \item \code{\bold{stop}}: character; end date.
-#' \item \code{\bold{timestep}}: numeric; time step.
-#' \item \code{\bold{spin_up}}: list; spin up information for each model
+#' \item \strong{\code{start}}: character; start date.
+#' \item \strong{\code{stop}}: character; end date.
+#' \item \strong{\code{timestep}}: numeric; time step.
+#' \item \strong{\code{spin_up}}: list; spin up information for each model
 #' }
 #' @slot configuration A list representing each model's configuration. \itemize{
 #' \item \code{model_controls}: dataframe; Model controls for simulation.
+#' \item \code{aeme_version}: character; version of the AEME package used to
+#' build the configuration.
 #' \item \code{dy_cd}: list; DYRESM-CAEDYM configuration.
 #' \item \code{glm_aed}: list; GLM-AED configuration.
 #' \item \code{gotm_wet}: list; GOTM-WET configuration.
+#' \item \code{simstrat_aed2}: list; Simstrat-AED2 configuration.
 #' }
 #' @slot observations A list representing observation information. \itemize{
 #' \item \code{lake}: dataframe; lake observations.
@@ -33,12 +36,12 @@
 #' @slot input A list representing input information. \itemize{
 #' \item \code{init_profile}: dataframe; initial temperature profile (if none
 #' use NULL or leave empty; if empty/NULL, the observations file will be used).
-#' \item \code{\bold{init_depth}}: numeric; initial height of lake surface relative to
+#' \item \strong{\code{init_depth}}: numeric; initial height of lake surface relative to
 #' the bottom (m).
-#' \item \code{\bold{hypsograph}}: dataframe; hypsograph.
-#' \item \code{\bold{meteo}}: dataframe; meteorological data.
-#' \item \code{\bold{use_lw}}: logical; use longwave radiation.
-#' \item \code{\bold{Kw}}: numeric; light extinction coefficient (m-1).
+#' \item \strong{\code{hypsograph}}: dataframe; hypsograph.
+#' \item \strong{\code{meteo}}: dataframe; meteorological data.
+#' \item \strong{\code{use_lw}}: logical; use longwave radiation.
+#' \item \strong{\code{Kw}}: numeric; light extinction coefficient (m-1).
 #' }
 #' @slot inflows A list representing inflows information. \itemize{
 #' \item \code{data}: named list of inflow dataframes.
@@ -50,16 +53,21 @@
 #' \item \code{lvl}: numeric; height of lake level outflow.
 #' }
 #' @slot water_balance A list representing water balance information. \itemize{
-#' \item\code{\bold{method}}: integer; Method for calculating water balance.
+#' \item\strong{\code{method}}: integer; Method for calculating water balance.
 #' 1 = none, 2 = outflows, 3 = inflows and outflows.
-#' \item\code{\bold{use}}: character; Can be 'obs' or 'mod'. Use observations
+#' \item\strong{\code{use}}: character; Can be 'obs' or 'mod'. Use observations
 #'  or modelled data for water balance.
 #' \item{\code{data}}: list of dataframe for water balance.
+#' \item{\code{params}}: fitted outflow parameters (C, h_inv), keyed by
+#' evaporation family since \code{dy_cd}/\code{glm_aed} share one fit and
+#' \code{gotm_wet}/\code{simstrat_aed2} each have their own -- see
+#' \code{\link{get_wbal_param}}.
 #' }
 #' @slot output A list representing output information. \itemize{
 #' \item \code{dy_cd}: list; DYRESM-CAEDYM output.
 #' \item \code{glm_aed}: list; GLM-AED output.
 #' \item \code{gotm_wet}: list; GOTM-WET output.
+#' \item \code{simstrat_aed2}: list; Simstrat-AED2 output.
 #' }
 #' @slot parameters A dataframe representing model parameters.
 #' @export
@@ -249,7 +257,8 @@ aeme_constructor <- function(
       factor = list(
         dy_cd = 1,
         glm_aed = 1,
-        gotm_wet = 1
+        gotm_wet = 1,
+        simstrat_aed2 = 1
       )
     )
   }
@@ -260,7 +269,8 @@ aeme_constructor <- function(
       factor = list(
         dy_cd = 1,
         glm_aed = 1,
-        gotm_wet = 1
+        gotm_wet = 1,
+        simstrat_aed2 = 1
       )
     )
   }
@@ -287,7 +297,8 @@ aeme_constructor <- function(
       n_members = 0,
       dy_cd = NULL,
       glm_aed = NULL,
-      gotm_wet = NULL
+      gotm_wet = NULL,
+      simstrat_aed2 = NULL
     )
   }
   param_names <- param_colnames(incl_opt = FALSE)
@@ -499,7 +510,8 @@ aeme_constructor <- function(
           "i" = "Defaulting to 2 days spin-up for all models."),
         class = "aeme_inform_spin_up_default"
       )
-      time$spin_up <- list(dy_cd = 2, glm_aed = 2, gotm_wet = 2)
+      time$spin_up <- list(dy_cd = 2, glm_aed = 2, gotm_wet = 2,
+                           simstrat_aed2 = 2)
     } else {
       cli::cli_abort(
         c("{.arg time$spin_up} must be a {.cls list} of numeric values.",
@@ -510,11 +522,17 @@ aeme_constructor <- function(
   } else if (all(!is.numeric(unlist(time$spin_up)))) {
     cli::cli_abort(
       c("All values in {.arg time$spin_up} must be {.cls numeric}.",
-        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, and {.code gotm_wet}."),
+        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, {.code gotm_wet}, and {.code simstrat_aed2}."),
       class = "aeme_error_spin_up"
     )
   }
-  
+  # Back-fill spin_up entries for any model not present (e.g. objects
+  # constructed/serialised before a new model was added to the package)
+  missing_spin_up <- setdiff(list_models(), names(time$spin_up))
+  if (length(missing_spin_up) > 0) {
+    for (m in missing_spin_up) time$spin_up[[m]] <- 2
+  }
+
   # Configuration type checking for specific elements
   if (!is.null(configuration$model_controls) &&
       !is.data.frame(configuration$model_controls)) {
@@ -531,7 +549,7 @@ aeme_constructor <- function(
       class = "aeme_error_configuration"
     )
   }
-  for (model_cfg in c("dy_cd", "glm_aed", "gotm_wet")) {
+  for (model_cfg in c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2")) {
     val <- configuration[[model_cfg]]
     if (!is.null(val) && !is.list(val)) {
       cli::cli_abort(
@@ -667,11 +685,16 @@ aeme_constructor <- function(
   } else if (!all(sapply(inflows$factor, is.numeric))) {
     cli::cli_abort(
       c("All values in {.arg inflows$factor} must be {.cls numeric}.",
-        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, and {.code gotm_wet}."),
+        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, {.code gotm_wet}, and {.code simstrat_aed2}."),
       class = "aeme_error_inflows"
     )
   }
-  
+  # Back-fill factor entries for any model not present
+  missing_inf_factor <- setdiff(list_models(), names(inflows$factor))
+  if (length(missing_inf_factor) > 0) {
+    for (m in missing_inf_factor) inflows$factor[[m]] <- 1
+  }
+
   # Outflows type checking for specific elements
   if (!is.null(outflows$data)) {
     if (!is.list(outflows$data) || !all(sapply(outflows$data, is.data.frame))) {
@@ -691,11 +714,16 @@ aeme_constructor <- function(
   } else if (!all(sapply(outflows$factor, is.numeric))) {
     cli::cli_abort(
       c("All values in {.arg outflows$factor} must be {.cls numeric}.",
-        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, and {.code gotm_wet}."),
+        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, {.code gotm_wet}, and {.code simstrat_aed2}."),
       class = "aeme_error_outflows"
     )
   }
-  
+  # Back-fill factor entries for any model not present
+  missing_outf_factor <- setdiff(list_models(), names(outflows$factor))
+  if (length(missing_outf_factor) > 0) {
+    for (m in missing_outf_factor) outflows$factor[[m]] <- 1
+  }
+
   # Water balance type checking for specific elements
   if (!is.null(water_balance[["data"]][["model"]]) &&
       !is.data.frame(water_balance[["data"]][["model"]])) {
@@ -1250,6 +1278,7 @@ setReplaceMethod("parameters", "Aeme", function(aeme, value) {
 #' @importFrom glue glue
 #' @export
 setMethod("show", "Aeme", function(object) {
+  object    <- migrate_aeme(object)
   lke       <- lake(object)
   aeme_time <- time(object)
   config    <- configuration(object)
@@ -1277,7 +1306,8 @@ setMethod("show", "Aeme", function(object) {
   n_dyresm  <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["dy_cd"]])),   integer(1))
   n_glm     <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["glm_aed"]])), integer(1))
   n_gotm    <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["gotm_wet"]])), integer(1))
-  if (outp$n_members == 0) n_dyresm <- n_glm <- n_gotm <- 0L
+  n_simstrat <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["simstrat_aed2"]])), integer(1))
+  if (outp$n_members == 0) n_dyresm <- n_glm <- n_gotm <- n_simstrat <- 0L
   
   # Inflow summary
   n_inflows    <- length(inf$data)
@@ -1291,7 +1321,10 @@ setMethod("show", "Aeme", function(object) {
   # Hypsograph suffix
   hyps_n <- if (is.data.frame(inp$hypsograph)) glue::glue(" (n={nrow(inp$hypsograph)})") else ""
   
-  cli::cli_h1("AEME")
+  aeme_version <- config[["aeme_version"]]
+  version_label <- if (is.null(aeme_version)) "not yet built" else paste0("v", aeme_version)
+
+  cli::cli_h1("AEME {version_label}")
   
   cli::cli_h2("Lake")
   cli::cli_text("{lke$name} (ID: {lke$id})")
@@ -1303,7 +1336,7 @@ setMethod("show", "Aeme", function(object) {
   cli::cli_h2("Time")
   cli::cli_bullets(c(
     "*" = "Start: {aeme_time$start}; Stop: {aeme_time$stop}; Time step: {aeme_time$time_step}",
-    "*" = "Spin up (days): GLM: {aeme_time$spin_up$glm_aed}; GOTM: {aeme_time$spin_up$gotm_wet}; DYRESM: {aeme_time$spin_up$dy_cd}"
+    "*" = "Spin up (days): GLM: {aeme_time$spin_up$glm_aed}; GOTM: {aeme_time$spin_up$gotm_wet}; DYRESM: {aeme_time$spin_up$dy_cd}; Simstrat: {aeme_time$spin_up$simstrat_aed2}"
   ))
   
   cli::cli_h2("Configuration")
@@ -1313,9 +1346,9 @@ setMethod("show", "Aeme", function(object) {
     "*" = "Model controls: {present_absent(config[['model_controls']])}",
     "*" = "Use biogeochemical model: {ifelse(config[['use_bgc']], cli::col_green('Yes'), cli::col_red('No'))}"
   ))
-  models <- c("DY-CD", "GLM-AED", "GOTM-WET")
-  phys   <- c("dy_cd", "glm_aed", "gotm_wet")
-  
+  models <- c("DY-CD", "GLM-AED", "GOTM-WET", "SIMSTRAT-AED2")
+  phys   <- c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2")
+
   header_row <- cli::ansi_columns(
     c(cli::col_cyan("Model"), cli::col_cyan("Physical"), cli::col_cyan("Biogeochemical")),
     width = 60, fill = "rows", max_cols = 3, align = "center", sep = "   "
@@ -1351,13 +1384,13 @@ setMethod("show", "Aeme", function(object) {
   cli::cli_h2("Inflows")
   cli::cli_bullets(c(
     "*" = "Number of inflows: {n_inflows}; Names: {inflow_names}",
-    "*" = "Scaling factors: DY-CD: {round(inf$factor$dy_cd, 2)}; GLM-AED: {round(inf$factor$glm_aed, 2)}; GOTM-WET: {round(inf$factor$gotm_wet, 2)}"
+    "*" = "Scaling factors: DY-CD: {round(inf$factor$dy_cd, 2)}; GLM-AED: {round(inf$factor$glm_aed, 2)}; GOTM-WET: {round(inf$factor$gotm_wet, 2)}; Simstrat-AED2: {round(inf$factor$simstrat_aed2, 2)}"
   ))
-  
+
   cli::cli_h2("Outflows")
   cli::cli_bullets(c(
     "*" = "Number of outflows: {n_outflows}; Names: {outflow_names}; Elevations: {outflow_elevs}",
-    "*" = "Scaling factors: DY-CD: {round(outf$factor$dy_cd, 2)}; GLM-AED: {round(outf$factor$glm_aed, 2)}; GOTM-WET: {round(outf$factor$gotm_wet, 2)}"
+    "*" = "Scaling factors: DY-CD: {round(outf$factor$dy_cd, 2)}; GLM-AED: {round(outf$factor$glm_aed, 2)}; GOTM-WET: {round(outf$factor$gotm_wet, 2)}; Simstrat-AED2: {round(outf$factor$simstrat_aed2, 2)}"
   ))
   
   cli::cli_h2("Water Balance")
@@ -1373,9 +1406,10 @@ setMethod("show", "Aeme", function(object) {
   
   cli::cli_h2("Output")
   cli::cli_bullets(c(
-    "*" = "DY-CD:    {paste(n_dyresm, collapse = ' ')}",
-    "*" = "GLM-AED:  {paste(n_glm,    collapse = ' ')}",
-    "*" = "GOTM-WET: {paste(n_gotm,   collapse = ' ')}",
+    "*" = "DY-CD:         {paste(n_dyresm,   collapse = ' ')}",
+    "*" = "GLM-AED:       {paste(n_glm,      collapse = ' ')}",
+    "*" = "GOTM-WET:      {paste(n_gotm,     collapse = ' ')}",
+    "*" = "SIMSTRAT-AED2: {paste(n_simstrat, collapse = ' ')}",
     "*" = "Variables: {length(output_vars)}"
   ))
   max_vars <- 10
@@ -1429,11 +1463,13 @@ setMethod("summary", "Aeme", function(object) {
 #' @return A ggplot object, or prints to the active graphics device.
 #' @export
 setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
-  
+
+  x <- migrate_aeme(x)
+
   if (missing(y)) {
     y <- "output"
   }
-  
+
   valid_slots <- methods::slotNames(x)
   if (!y %in% valid_slots) {
     cli::cli_abort(

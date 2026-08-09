@@ -10,6 +10,10 @@ read_model_hypsograph(model, lake_dir, file = NULL)
 \item{model}{Model name. One of "gotm_wet", "glm_aed", or "dy_cd".}
 
 \item{lake_dir}{Directory of lake model outputs}
+
+\item{file}{Optional; path directly to the model's hypsograph/
+configuration file, bypassing the \code{lake_dir}-based lookup. Defaults to
+\code{NULL}.}
 }
 \value{
 Dataframe of hypsograph with columns elev, area, and depth

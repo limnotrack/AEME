@@ -137,7 +137,7 @@ check_hypsograph <- function(hypsograph, aeme = NULL) {
 
 #' Check if object is a valid Aeme object
 #' @param aeme object to check
-#' @returns Invisibly returns the Aeme object if valid, otherwise throws an 
+#' @returns Invisibly returns the Aeme object if valid, otherwise throws an
 #' error.
 #' @importFrom cli cli_abort
 #' @importFrom methods slotNames
@@ -149,11 +149,11 @@ check_aeme <- function(aeme) {
       class = "aeme_error_aeme_type"
     )
   }
-  
-  required_slots <- c("lake", "time", "input", "inflows", "outflows", 
+
+  required_slots <- c("lake", "time", "input", "inflows", "outflows",
                       "water_balance", "parameters")
   missing_slots <- setdiff(required_slots, methods::slotNames(aeme))
-  
+
   if (length(missing_slots) > 0) {
     cli::cli_abort(
       c(
@@ -164,8 +164,89 @@ check_aeme <- function(aeme) {
       class = "aeme_error_aeme_slots"
     )
   }
-  
+
+  aeme <- migrate_aeme(aeme)
+
+  built_version <- aeme@configuration$aeme_version
+  installed_version <- utils::packageVersion("AEME")
+  if (is.null(built_version)) {
+    cli::cli_warn(
+      c("!" = "This {.cls Aeme} object has no recorded AEME package version.",
+        "i" = "It was likely built with an older version of AEME (<0.4.0), or has
+        never been built with {.fn build_aeme}. Consider rebuilding with
+        {.fn build_aeme} to keep it in sync with the installed package
+        ({installed_version})."),
+      class = "aeme_warning_version_missing",
+      .frequency = "once",
+      .frequency_id = "aeme_warning_version_missing"
+    )
+  } else if (package_version(built_version) < installed_version) {
+    cli::cli_warn(
+      c("!" = "This {.cls Aeme} object was built with AEME {built_version},
+        but the installed version is {installed_version}.",
+        "i" = "Consider rebuilding with {.fn build_aeme} if you encounter
+        unexpected behaviour."),
+      class = "aeme_warning_version_outdated",
+      .frequency = "once",
+      .frequency_id = paste0("aeme_warning_version_outdated_", built_version)
+    )
+  }
+
   invisible(aeme)
+}
+
+#' Backfill defaults for models added to AEME after an object was created
+#'
+#' Older `Aeme` objects (loaded from `.rds`/`.yaml` files, or already held in
+#' memory from an earlier package version) predate models such as
+#' `simstrat_aed2` and so are missing its entries in `time$spin_up`,
+#' `inflows$factor`, `outflows$factor`, and `configuration`. Most read paths
+#' in the package use `[[`, which tolerates a missing list element (returns
+#' `NULL`), but a few (e.g. the `show()` method's
+#' `round(inf$factor$simstrat_aed2, 2)`) pass that `NULL` straight into a
+#' function that errors on it. This adds the same defaults
+#' `aeme_constructor()` would use for a brand-new object, for any model in
+#' `list_models()` not already present, so older objects keep working without
+#' the user having to rebuild them from scratch.
+#'
+#' @param aeme An Aeme object.
+#' @return The Aeme object, with missing-model defaults backfilled.
+#' @keywords internal
+#' @noRd
+migrate_aeme <- function(aeme) {
+  if (!inherits(aeme, "Aeme")) return(aeme)
+
+  models <- unname(list_models())
+
+  aeme_time <- aeme@time
+  if (is.list(aeme_time$spin_up)) {
+    missing_m <- setdiff(models, names(aeme_time$spin_up))
+    for (m in missing_m) aeme_time$spin_up[[m]] <- 2
+    aeme@time <- aeme_time
+  }
+
+  inf <- aeme@inflows
+  if (is.list(inf$factor)) {
+    missing_m <- setdiff(models, names(inf$factor))
+    for (m in missing_m) inf$factor[[m]] <- 1
+    aeme@inflows <- inf
+  }
+
+  outf <- aeme@outflows
+  if (is.list(outf$factor)) {
+    missing_m <- setdiff(models, names(outf$factor))
+    for (m in missing_m) outf$factor[[m]] <- 1
+    aeme@outflows <- outf
+  }
+
+  cfg <- aeme@configuration
+  if (is.list(cfg)) {
+    missing_m <- setdiff(models, names(cfg))
+    for (m in missing_m) cfg[[m]] <- list(hydrodynamic = NULL, bgc = NULL)
+    aeme@configuration <- cfg
+  }
+
+  aeme
 }
 
 
@@ -220,9 +301,9 @@ format_ens_label <- function(ens_n) {
 
 #' Return mean sea level pressure given air temperature, elevation and station pressure.
 #'
-#' @param MET_prsttn A numeric vector of observed station pressure in Pa
+#' @param prsttn A numeric vector of observed station pressure in Pa
 #' @param elevation A numeric vector of elevation in m
-#' @param MET_tmpair A numeric vector of air temperature in degC
+#' @param tmpair A numeric vector of air temperature in degC
 #'
 #' @return A numeric vector of mean sea level pressure in Pa
 #'

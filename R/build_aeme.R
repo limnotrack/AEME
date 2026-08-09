@@ -4,7 +4,8 @@
 #'
 #' @param aeme Aeme object.
 #' @param model character vector; models to use. One or more of `"dy_cd"`,
-#'   `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in `aeme`.
+#'   `"glm_aed"`, `"gotm_wet"`, `"simstrat_aed2"`. Defaults to all models if
+#'   not found in `aeme`.
 #' @param path character; directory where input files are located. Defaults to
 #'   the path stored in `aeme`, or the current working directory if not set.
 #' @param use_bgc logical; enable the biogeochemical model. Default: `FALSE`.
@@ -89,15 +90,17 @@ build_aeme <- function(aeme = NULL,
   if (is.null(aeme) & is.null(config)) {
     stop("Either 'aeme' or 'config' must be supplied.")
   }
+  aeme <- migrate_aeme(aeme)
   if (is.null(model)) {
     model <- list_models(aeme)
     if (length(model) == 0) {
       model <- list_models()
       cli_inform_safe(c("i" = "No models specified. Defaulting to all models:
-                        glm_aed, dy_cd, gotm_wet."))
+                        glm_aed, dy_cd, gotm_wet, simstrat_aed2."))
     }
   }
   model <- check_model(model = model)
+  aeme <- set_model(aeme = aeme, model = model)
   
   if (is.null(path)) {
     path <- get_config_value(aeme, key = "path")
@@ -133,7 +136,7 @@ build_aeme <- function(aeme = NULL,
                      "i" = "4: specific humidity (kg/kg)."))
   }
   
-  all_models <- c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1)
+  all_models <- c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1, "simstrat_aed2" = 1)
   if (is.null(inf_factor))  inf_factor  <- all_models
   if (is.null(outf_factor)) outf_factor <- all_models
   
@@ -620,16 +623,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               use_lw = inp$use_lw, overwrite_nml = overwrite)
     
     if (use_bgc) {
-      aeme <- aeme |> 
-        set_glm_aed_models(path = path, 
-                           aed_models = c("aed_sedflux", "aed_oxygen", 
-                                          "aed_silica", "aed_nitrogen",
-                                          "aed_phosphorus",
-                                          "aed_organic_matter",
-                                          "aed_phytoplankton", "aed_totals")) |> 
+      aeme <- aeme |>
         set_aed_sed_const2d(path = path)
     }
-    # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
   if ("gotm_wet" %in% model) {
     #--- configure GOTM-WET
@@ -652,7 +648,24 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                hum_type = hum_type, overwrite_yaml = overwrite,
                est_swr_hr = est_swr_hr)
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
-    
+
+  }
+  if ("simstrat_aed2" %in% model) {
+    #--- configure Simstrat-AED2
+    dates.simstrat <- c(date_range[1] - spin_up[["simstrat_aed2"]], date_range[2]) |>
+      `names<-`(NULL)
+
+    build_simstrat(lakename, model_controls = model_controls,
+                   date_range = dates.simstrat, lake_shape = lake_shape,
+                   lat = lat, lon = lon, hyps = hyps, lvl = lvl,
+                   init_prof = init_prof, init_depth = init_depth,
+                   inf = inf, outf = outf,
+                   heights_wdr = unlist(aeme_outf[["elevation"]]),
+                   met = met, lake_dir = lake_dir,
+                   inf_factor = inf_factor[["simstrat_aed2"]],
+                   outf_factor = outf_factor[["simstrat_aed2"]],
+                   Kw = Kw, use_bgc = use_bgc, overwrite_par = overwrite)
+    # run_simstrat_aed2(sim_folder = lake_dir, verbose = TRUE)
   }
   
   # Model parameters ----
@@ -680,7 +693,10 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   if ("glm_aed" %in% model) {
     check_glm_nml(file = cfg_files$glm_aed["glm3"])
-  } 
+  }
+  if ("simstrat_aed2" %in% model) {
+    check_simstrat_par(file = cfg_files$simstrat_aed2["simstrat"])
+  }
   
   
   # Load model configuration ----

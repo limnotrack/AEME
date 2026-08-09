@@ -396,6 +396,93 @@ aeme <- set_glm_aed_models(
 
 ---
 
+### AED module dependency hierarchy
+
+AED modules are not independent of one another — most reference state
+variables that are only computed if another module is switched on. For
+example, `aed_nitrogen` reduces ammonium using `OXY_oxy` as its oxidant, so it
+requires `aed_oxygen` to also be active; if it is not, GLM aborts at runtime
+with an "Undefined variable" error rather than silently ignoring the missing
+link.
+
+`build_aeme()` resolves this automatically: when you set `simulate = TRUE`
+for a biogeochemical variable via `model_controls`, `initialise_aed()`
+determines which module that variable belongs to, then walks the dependency
+graph below to a fixed point, adding every module that dependency chain
+requires — you never need to enable a module's prerequisites by hand. The
+one place this *isn't* automatic is `set_glm_aed_models()` (used above),
+which sets the active-module list exactly as given, so it is up to you to
+include the full chain if you call it directly.
+
+The dependency graph, verified directly against the target-variable links
+configured in AEME's bundled `aed.nml` template:
+
+```
+aed_sedflux
+  └─ aed_oxygen           (sediment oxygen demand)
+       ├─ aed_silica          (silica reactant = OXY_oxy)
+       ├─ aed_nitrogen        (nitrification reactant = OXY_oxy; also needs aed_sedflux directly)
+       ├─ aed_phosphorus      (P release reactant = OXY_oxy; also needs aed_sedflux directly)
+       └─ aed_organic_matter  (mineralisation reactant = OXY_oxy)
+            ├─ needs aed_nitrogen        (DON mineralisation product)
+            ├─ needs aed_phosphorus      (DOP mineralisation product = PHS_frp)
+            ├─ aed_zooplankton      (excretion/mortality targets)
+            └─ aed_phytoplankton    (uptake/excretion/mortality targets;
+                                      needs aed_oxygen, aed_nitrogen,
+                                      aed_phosphorus, aed_silica, and
+                                      aed_organic_matter directly)
+                 └─ aed_totals      (TN/TP/TOC totals aggregate state
+                                      variables owned by aed_nitrogen,
+                                      aed_phosphorus, aed_organic_matter,
+                                      and aed_phytoplankton)
+
+aed_macrophyte  (no enforced dependencies — no target-variable links in the
+                 bundled template)
+```
+
+| Module | Required dependencies | Why |
+|--------|-----------------------|-----|
+| `aed_sedflux` | — | Sediment flux is the base of the chain; nothing else must be active first. |
+| `aed_oxygen` | `aed_sedflux` | Sediment oxygen demand flux comes from `aed_sedflux`. |
+| `aed_silica` | `aed_oxygen` | Silica reactant variable is `OXY_oxy`. |
+| `aed_nitrogen` | `aed_oxygen`, `aed_sedflux` | Nitrification reactant is `OXY_oxy`; sediment NH~4~/NO~3~ fluxes come from `aed_sedflux`. |
+| `aed_phosphorus` | `aed_oxygen`, `aed_sedflux` | Redox-sensitive P release reactant is `OXY_oxy`; sediment FRP flux comes from `aed_sedflux`. |
+| `aed_organic_matter` | `aed_oxygen`, `aed_nitrogen`, `aed_phosphorus` | Mineralisation reactant is `OXY_oxy`; DON/DOP mineralisation products feed `aed_nitrogen`/`aed_phosphorus`. |
+| `aed_phytoplankton` | `aed_oxygen`, `aed_nitrogen`, `aed_phosphorus`, `aed_silica`, `aed_organic_matter` | Growth/uptake/excretion/mortality target variables span all five modules (e.g. diatom silica uptake, nutrient uptake, DOM excretion). |
+| `aed_zooplankton` | `aed_organic_matter` | Excretion and mortality products are organic-matter state variables. |
+| `aed_totals` | `aed_nitrogen`, `aed_phosphorus`, `aed_organic_matter`, `aed_phytoplankton` | Its `TN_vars`/`TP_vars`/`TOC_vars` lists aggregate state variables owned by these four modules (e.g. `NIT_nit`, `PHS_frp`, `OGM_doc`, `PHY_green`). |
+| `aed_macrophyte` | — | No target-variable links to other modules in the bundled template. |
+
+: AED module dependency requirements enforced by `initialise_aed()`.
+
+For example, requesting only `NIT_tn` (total nitrogen) in `model_controls`
+looks like a single-variable request, but because it is a diagnostic total
+computed by `aed_totals`, and `aed_totals` in turn depends on nitrogen,
+phosphorus, organic matter, and phytoplankton, `build_aeme()` activates the
+following module set automatically:
+
+```{r nit-tn-example}
+mc <- get_model_controls(use_bgc = TRUE) |>
+  set_vars_sim(vars_sim = "NIT_tn")
+
+aeme_nit_tn <- build_aeme(
+  aeme           = aeme,
+  model          = model,
+  path           = path,
+  model_controls = mc,
+  ext_elev       = 5,
+  use_bgc        = TRUE
+)
+
+config_files <- get_model_config_files(aeme)
+
+
+nml <- read_nml(config_files$glm_aed["aed"])
+get_nml_value(nml, "models")
+```
+
+---
+
 ### Sediment zones
 
 One of the most important GLM-AED features for water-quality simulation is

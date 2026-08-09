@@ -23,7 +23,7 @@
 set_nml <- function(glm_nml, arg_name, arg_val, arg_list = NULL){
 
   if (missing(arg_name) & missing(arg_val)){
-    return(setnmlList(glm_nml, arg_list))
+    return(set_nml_list(glm_nml, arg_list))
   }
 
   if (!is.character(arg_name)){stop('arg_name should be a character')}
@@ -31,7 +31,7 @@ set_nml <- function(glm_nml, arg_name, arg_val, arg_list = NULL){
   if (!is.null(arg_list) & arg_name %in% names(arg_list)){
     warning(c("duplicate names given to arg_name and arg_list.",
               " arg_name and arg_val values will overwrite duplicate arg_list values."))
-    glm_nml <- setnmlList(glm_nml,arg_list)
+    glm_nml <- set_nml_list(glm_nml,arg_list)
   }
 
 

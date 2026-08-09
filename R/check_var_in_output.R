@@ -47,7 +47,7 @@ check_var_in_output <- function(aeme, model, var_sim, ens_n = 1) {
       ))
     }
   } else {
-    cli_inform_safe("All requested variables are present in the model output.")
+    # cli_inform_safe("All requested variables are present in the model output.")
   }
   
   return(out)

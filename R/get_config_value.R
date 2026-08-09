@@ -14,7 +14,7 @@
 get_config_value <- function(aeme, key, default = NULL) {
   cfg_dflt <- config_defaults()
   
-  check_aeme(aeme)
+  aeme <- check_aeme(aeme)
   cfg <- aeme |>
     configuration()
   

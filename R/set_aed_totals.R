@@ -8,6 +8,8 @@
 #' file in the glm_aed model directory.
 #'
 #' @inheritParams build_aeme
+#' @param lake_dir Path to the lake AEME directory. If `NULL`, it is derived
+#' from `aeme`/`path`.
 #'
 #' @returns Aeme object with aed_totals parameters set in the model config
 #' @export

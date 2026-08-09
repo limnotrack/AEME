@@ -33,10 +33,17 @@ articles:
   - intro-aeme
   - aeme-inputs
   - setup-new-lake
+- title: Model descriptions
+  navbar: Model descriptions
+  contents:
+  - articles/glm-aed
+  - articles/simstrat-aed2
+  - articles/aed-sediment-np-parameterisation
 - title: Use cases
   navbar: Use cases
   contents:
   - articles/reservoir-aeme
   - articles/lernzmp-aeme
   - articles/rotoehu-water-balance
-  - articles/glm-aed
+  - setup-new-lake
+

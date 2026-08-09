@@ -17,7 +17,8 @@ get_model_controls <- function(aeme = NULL, use_bgc = FALSE) {
     config <- configuration(aeme)
     model_controls <- config$model_controls
   } else {
-    data("model_controls", package = "AEME")
+    # Load the data strictly into this function's local environment
+    utils::data("model_controls", package = "AEME", envir = environment())
     hyd_vars <- c("HYD_temp", "HYD_dens", "HYD_thmcln", "HYD_strat", "CHM_salt")
     light_vars <- c("RAD_par", "RAD_extc")
     bgc_vars <- c(

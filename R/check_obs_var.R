@@ -68,7 +68,8 @@ check_obs_var <- function(aeme, var_sim) {
       cli::cli_text("{.emph {out_missing$model[i]}}: Variable {.var {out_missing$var_aeme[i]}} has 0 observations")
     }
   } else {
-    cli::cli_alert_success("All requested variables are present in observations for all models.")
+    cli_inform_safe(c("v" = "All requested variables are present in 
+                      observations for all models."))
   }
   
   list(obs = out, vars_present = vars_present)

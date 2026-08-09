@@ -3,11 +3,13 @@
 #' A reference table for variable names between the models in AEME.
 #'
 #' @format ## `key_naming`
-#' A data frame with 129 rows and 17 columns:
+#' A data frame with 130 rows and 18 columns:
 #' \describe{
 #'   \item{var_aeme}{AEME variable name}
 #'   \item{dy_cd}{DYRESM variable name}
 #'   \item{glm_aed}{GLM variable name}
+#'   \item{glm_aed2}{GLM-AED2 variable name}
+#'   \item{simstrat_aed2}{Simstrat-AED2 variable name}
 #'   \item{gotm_wet}{GOTM variable name}
 #'   \item{gotm_fabm}{GOTM-FABM variable name containing key-value names}
 #'   \item{name_text}{Regular text string variable name}
@@ -67,7 +69,7 @@
 #' An example dataframe used for inputting and calibrating AEME models.
 #'
 #' @format ## `aeme_parameters`
-#' A data frame with 17 rows and 6 columns:
+#' A data frame with 34 rows and 10 columns:
 #' \describe{
 #'   \item{model}{Model for the parameter}
 #'   \item{file}{File in which the parameter is stored}
@@ -82,6 +84,7 @@
 #'    "sediment/sed_temp_mean" in GLM-AED}
 #'   \item{module}{Module for the parameter in the model, useful to help
 #'   identify parameters} 
+#'   \item{var_sim}{Variable name in AEME that it influences, useful to help identify parameters}
 #' }
 #' @source Package development.
 "aeme_parameters"
@@ -92,7 +95,7 @@
 #' An example dataframe used for inputting and calibrating AEME models.
 #'
 #' @format ## `aeme_parameters_bgc`
-#' A data frame with 30 rows and 7 columns:
+#' A data frame with 66 rows and 7 columns:
 #' \describe{
 #'   \item{model}{Model for the parameter}
 #'   \item{file}{File in which the parameter is stored}
@@ -107,6 +110,7 @@
 #'    "sediment/sed_temp_mean" in GLM-AED}
 #'   \item{module}{Module for the parameter in the model, useful to help
 #'   identify parameters} 
+#'   \item{var_sim}{Variable name in AEME that it influences, useful to help identify parameters}
 #' }
 #' @source Package development.
 "aeme_parameters_bgc"
@@ -200,6 +204,30 @@
 #' }
 #' @source Package development.
 "glm_aed_parameters"
+
+#' Example dataframe used for calibrating the Simstrat-AED2 model.
+#'
+#' Physical (hydrodynamic) parameters from the Simstrat `.par` file and a
+#' subset of biogeochemical initial-concentration parameters from the
+#' `aed2.nml` file (oxygen, carbon, silica, nitrogen, phosphorus, and organic
+#' matter modules). This has the values in the default template files and
+#' 50 % parameter ranges for sensitivity analysis.
+#'
+#' @format `simstrat_aed2_parameters`
+#' A data frame with columns:
+#' \describe{
+#'   \item{model}{Model for the parameter}
+#'   \item{file}{File in which the parameter is stored}
+#'   \item{name}{Name of the parameter}
+#'   \item{value}{Value of the parameter}
+#'   \item{min}{Minimum range of the parameter}
+#'   \item{max}{Maximum range of the parameter}
+#'   \item{module}{Whether the parameter belongs to the "hydrodynamic" or
+#'   "bgc" (biogeochemical) part of the model}
+#'   \item{par}{Short parameter name}
+#' }
+#' @source Package development.
+"simstrat_aed2_parameters"
 
 #' Reference data frame for model layer structure.
 #'
@@ -360,3 +388,78 @@
 #' table(glm_aed_parameter_library$module)
 #'
 "glm_aed_parameter_library"
+
+#' Simstrat-AED2 parameter library
+#'
+#' A comprehensive reference table of parameters used in the Simstrat-AED2
+#' configuration, including their default (template) values, units, and a
+#' brief description of each parameter's role.
+#'
+#' @format A data frame with columns:
+#' \describe{
+#'   \item{module}{The model module the parameter belongs to.}
+#'   \item{group}{A functional grouping of the parameter within the module.}
+#'   \item{parameter}{The parameter's name as it appears in the configuration
+#'   file (\code{simstrat.par} or \code{aed2.nml}).}
+#'   \item{label}{A short human-readable label for the parameter.}
+#'   \item{symbol}{A mathematical symbol for the parameter, where applicable.}
+#'   \item{description}{A description of the parameter's role in the model.}
+#'   \item{units}{The units of the parameter.}
+#'   \item{default}{The default (template) value of the parameter.}
+#'   \item{source}{A URL for further information about the parameter.}
+#' }
+#'
+#' The physical (hydrodynamic) parameters configure Simstrat's seiche
+#' (internal wave) energy, wind drag, bottom drag, surface heat fluxes,
+#' light absorption, and ice/snow dynamics -- described in Table 1 of the
+#' Simstrat User Manual. Default values are those in AEME's bundled
+#' \code{inst/extdata/simstrat_aed2/simstrat.par} template.
+#'
+#' The AED2 (Aquatic EcoDynamics) parameters configure the biogeochemical
+#' modules coupled to Simstrat: oxygen, carbon (dissolved inorganic carbon,
+#' pH, methane), silica, inorganic nitrogen, inorganic phosphorus, organic
+#' matter, phytoplankton, and zooplankton. Simstrat-AED2 and GLM-AED couple
+#' to the same underlying AED2 library, so most module/parameter
+#' descriptions here are shared with \code{\link{glm_aed_parameter_library}}
+#' (only the module name prefix differs: \code{"aed2_"} here vs.
+#' \code{"aed_"} there, matching each model's actual configuration file).
+#' The carbon module has no AED (v1) analogue and is documented directly from
+#' AEME's bundled \code{aed2.nml} template.
+#'
+#' As with \code{glm_aed_parameter_library}, \code{aed2_phytoplankton} and
+#' \code{aed2_zooplankton} parameters listed under groups such as
+#' \code{"growth"}, \code{"light"}, \code{"nitrogen"}, \code{"phosphorus"},
+#' and \code{"silica"} are per-group parameters specified in the separate
+#' \code{aed2_phyto_pars.nml}/\code{aed2_zoop_pars.nml} files rather than
+#' directly in \code{aed2.nml}.
+#'
+#' @source
+#' Simstrat User Manual and source code:
+#' \url{https://github.com/Eawag-AppliedSystemAnalysis/Simstrat}
+#'
+#' AED Science Manual:
+#' \url{https://aquaticecodynamics.github.io/aed-science/}
+#'
+#' Goudsmit, G-H., Burchard, H., Peeters, F., and Wuest, A. (2002).
+#' Application of k-epsilon turbulence models to enclosed basins: The role of
+#' internal seiches. \emph{Journal of Geophysical Research: Oceans}, 107(C12),
+#' 23-1--23-13.
+#'
+#' @examples
+#' # Load the parameter library
+#' data(simstrat_aed2_parameter_library)
+#'
+#' # View the structure
+#' str(simstrat_aed2_parameter_library)
+#'
+#' # List all unique modules
+#' unique(simstrat_aed2_parameter_library$module)
+#'
+#' # Filter to the physical (hydrodynamic) parameters
+#' simstrat_aed2_parameter_library[simstrat_aed2_parameter_library$module ==
+#'                                 "simstrat", ]
+#'
+#' # Count parameters per module
+#' table(simstrat_aed2_parameter_library$module)
+#'
+"simstrat_aed2_parameter_library"

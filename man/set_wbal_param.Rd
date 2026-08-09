@@ -4,7 +4,7 @@
 \alias{set_wbal_param}
 \title{Set water balance parameters}
 \usage{
-set_wbal_param(aeme, C, h_inv, params = NULL)
+set_wbal_param(aeme, C, h_inv, params = NULL, model = NULL)
 }
 \arguments{
 \item{aeme}{Aeme object.}
@@ -16,8 +16,16 @@ water level exceeds \code{h_inv}.}
 which outflow is zero.}
 
 \item{params}{Optional named numeric vector with elements \code{"C"} and
-\code{"h_inv"}, as returned by \code{\link{get_wbal_param}}. If supplied,
-overrides the individual \code{C} and \code{h_inv} arguments.}
+\code{"h_inv"}, as returned by \code{\link{get_wbal_param}} for a single
+model. If supplied, overrides the individual \code{C} and \code{h_inv}
+arguments. Alternatively, a family-keyed list as returned by
+\code{\link{get_wbal_param}} with no \code{model} -- each entry is
+applied directly to its own family, and \code{model} is ignored.}
+
+\item{model}{character; model name(s) to set parameters for (e.g.
+\code{"glm_aed"}). If \code{NULL} (default), the same values are applied
+to every evaporation family (\code{dy_cd}/\code{glm_aed}, \code{gotm_wet},
+\code{simstrat_aed2}). Ignored if \code{params} is a family-keyed list.}
 }
 \value{
 An \code{Aeme} object with updated water balance parameters.
@@ -32,4 +40,10 @@ calculated at each timestep as:
 where \eqn{O_t} is outflow (m\eqn{^3}/day), \eqn{h_t} is the simulated
 water level (m), \eqn{h_{inv}} is the inversion height (m), \eqn{C} is the
 outflow coefficient, and 86400 converts seconds to days.
+
+Parameters are stored per evaporation family, since \code{dy_cd}/\code{glm_aed}
+share one fitted set and \code{gotm_wet}/\code{simstrat_aed2} each have their own
+(see \code{\link{calc_water_balance}}). Use \code{model} to set a
+specific model's parameters; omit it to apply the same values to every
+family (matching the pre-per-family behaviour).
 }

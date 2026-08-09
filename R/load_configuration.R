@@ -26,10 +26,13 @@ load_configuration <- function(aeme,
   } else {
     model <- check_model(model = model)
   }
+  if (missing(path)) {
+    path <- get_aeme_path(aeme)
+  }
+  path <- check_path(path = path, must_exist = TRUE)
   if (is.null(model_controls)) {
     model_controls <- get_model_controls(aeme = aeme)
   }
-  path <- check_path(path = path, must_exist = TRUE)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   get_config_args <- list(path = lake_dir)
   model_config <- setNames(
@@ -41,6 +44,7 @@ load_configuration <- function(aeme,
   out <- list(model_controls = model_controls,
               use_bgc = use_bgc,
               path = path,
+              aeme_version = as.character(utils::packageVersion("AEME")),
               ext_elev = ext_elev,
               calc_wbal = calc_wbal, wb_method = wb_method, 
               calc_wlev = calc_wlev,
@@ -53,7 +57,10 @@ load_configuration <- function(aeme,
                              bgc = model_config[["glm_aed"]][["bgc"]]),
               gotm_wet = list(hydrodynamic =
                                 model_config[["gotm_wet"]][["hydrodynamic"]],
-                              bgc = model_config[["gotm_wet"]][["bgc"]])
+                              bgc = model_config[["gotm_wet"]][["bgc"]]),
+              simstrat_aed2 = list(hydrodynamic =
+                                     model_config[["simstrat_aed2"]][["hydrodynamic"]],
+                                   bgc = model_config[["simstrat_aed2"]][["bgc"]])
   )
 
   configuration(aeme) <- out
@@ -136,7 +143,7 @@ get_config_glm_aed <- function(lake_dir, path) {
     stop("No GLM nml file present at\n", nml_file)
   }
 
-  model_cfg_files <- get_model_config_files(lake_dir = lake_dir, 
+  model_cfg_files <- get_model_config_files(path = lake_dir,
                                             model = "glm_aed")[["glm_aed"]]
   cfg <- lapply(model_cfg_files, \(f) {
     file_type <- tools::file_ext(f)

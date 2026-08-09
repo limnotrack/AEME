@@ -1,6 +1,9 @@
 #' Load model hypsograph from configuration
 #' @param lake_dir Directory of lake model outputs
 #' @param model Model name. One of "gotm_wet", "glm_aed", or "dy_cd".
+#' @param file Optional; path directly to the model's hypsograph/
+#' configuration file, bypassing the `lake_dir`-based lookup. Defaults to
+#' `NULL`.
 #' @return Dataframe of hypsograph with columns elev, area, and depth
 #' @export
 read_model_hypsograph <- function(model, lake_dir, file = NULL) {
@@ -27,12 +30,20 @@ read_model_hypsograph <- function(model, lake_dir, file = NULL) {
       dplyr::arrange(dplyr::desc(elev))
   } else if (model == "dy_cd") {
     if (is.null(file)) {
-      file <- get_model_config_files(model = model, 
-                                     lake_dir = lake_dir)[[model]]["stg"]
+      file <- get_model_config_files(model = model,
+                                     path = lake_dir)[[model]]["stg"]
     }
     stg <- read_dy_stg(file = file)
-    hyps <- stg$bathymetry |> 
-      dplyr::mutate(depth = elev - stg$surface_elev) |> 
+    hyps <- stg$bathymetry |>
+      dplyr::mutate(depth = elev - stg$surface_elev) |>
+      dplyr::arrange(dplyr::desc(elev))
+  } else if (model == "simstrat_aed2") {
+    if (is.null(file)) {
+      bathy_filename <- cfg$Input$Morphology
+      file <- file.path(lake_dir, "simstrat_aed2", bathy_filename)
+    }
+    hyps <- read_simstrat_hyps(file = file) |>
+      dplyr::mutate(depth = elev - max(elev)) |>
       dplyr::arrange(dplyr::desc(elev))
   }
   return(hyps)

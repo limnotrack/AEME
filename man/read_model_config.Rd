@@ -10,7 +10,8 @@ read_model_config(model, lake_dir)
 \item{model}{character; model name ("dy_cd", "glm_aed", "gotm_wet"). Only
 one model at a time.}
 
-\item{path}{character; directory which contains the model configuration files.}
+\item{lake_dir}{character; directory which contains the model configuration
+files.}
 }
 \value{
 List with model configuration components. This includes a 'hydrodynamic'

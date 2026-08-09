@@ -1,7 +1,7 @@
 Type: Package
 Package: AEME
 Title: Aquatic Ecosystem Model Ensemble
-Version: 0.3.1
+Version: 0.4.0
 Authors@R: c(
     person("Tadhg", "Moore", , "tadhg@limnotrack.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3834-8868")),
@@ -18,8 +18,10 @@ Depends:
 Imports: 
     cli,
     clitable,
+    digest,
     dplyr,
     ggplot2,
+    gh,
     glue,
     jsonlite,
     lifecycle,
@@ -52,11 +54,9 @@ Suggests:
     aemetools (>= 0.0.0.9000),
     bathytools (>= 0.0.0.9000),
     DT,
-    GLM3r (>= 3.1.17),
-    GOTMr (>= 0.0.0.10),
     htmltools,
     knitr,
-    LakeEnsemblR (>= 1.2.9),
+    ltapi (>= 0.0.0.9000),
     osmdata,
     rmarkdown,
     testthat (>= 3.0.0),
@@ -64,11 +64,9 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:  
-    github::aemon-j/GLM3r,
-    github::aemon-j/GOTMr,
-    github::aemon-j/LakeEnsemblR,
-    github::limnotrack/aemetools@dev,
-    github::limnotrack/bathytools
+    github::limnotrack/aemetools,
+    github::limnotrack/bathytools,
+    github::limnotrack/ltapi
 Config/checklist/communities: limnotrack
 Config/checklist/keywords: ecosystem; modelling
 Config/Needs/website:
