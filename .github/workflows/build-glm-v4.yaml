@@ -23,13 +23,13 @@ env:
   # Treat this block as GLM's de facto lockfile: bump entries deliberately
   # (via PR, after re-validating the build) rather than letting them float.
   # ----------------------------------------------------------------------
-  AED_TOOLS_REF: master
-  LIBAED_WATER_REF: master
-  LIBAED_BENTHIC_REF: master
-  LIBAED_DEMO_REF: master
-  LIBAED_API_REF: main
-  LIBUTIL_REF: master
-  LIBPLOT_REF: master
+  AED_TOOLS_REF: cf91a0c411d7299b48b85397445f25eda965308e
+  LIBAED_WATER_REF: 057df43f8dc07a3f914555fe2c7be63a279bc693
+  LIBAED_BENTHIC_REF: c6d4b0ea79f6015a06fa85c32568099b7843a798
+  LIBAED_DEMO_REF: d35b05e0ee3ad9bf677dc16f43082c28a4c91593
+  LIBAED_API_REF: d62ed0d9c2442b0f9eb9af634a7ea48a7f35a60c
+  LIBUTIL_REF: 24a8771253f8abab39267b7bf760a2bad231fd81
+  LIBPLOT_REF: 2a540c7774d43d8a97e887c00324ed85538c7fd7
 
 jobs:
   # ==========================================================================
@@ -197,7 +197,7 @@ jobs:
             #    also safe to build main against.
             # Switch each back once its respective PR lands upstream.
             case "$repo" in
-              libutil) org="limnotrack" ;;
+              libaed-water|libutil) org="limnotrack" ;;
             esac
             git clone "https://github.com/${org}/${repo}.git" --depth 1
             git -C "$repo" checkout "$ref"
