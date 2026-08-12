@@ -24,7 +24,7 @@ env:
   # (via PR, after re-validating the build) rather than letting them float.
   # ----------------------------------------------------------------------
   AED_TOOLS_REF: cf91a0c411d7299b48b85397445f25eda965308e
-  LIBAED_WATER_REF: 'feature/write-nml'
+  LIBAED_WATER_REF: dev
   LIBAED_BENTHIC_REF: c6d4b0ea79f6015a06fa85c32568099b7843a798
   LIBAED_DEMO_REF: d35b05e0ee3ad9bf677dc16f43082c28a4c91593
   LIBAED_API_REF: d62ed0d9c2442b0f9eb9af634a7ea48a7f35a60c
