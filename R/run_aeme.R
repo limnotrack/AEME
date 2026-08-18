@@ -890,7 +890,7 @@ get_dy_cd_version <- function() {
 #' Get model version
 #' @param model model name. Only "glm_aed", "gotm_wet", and "dy_cd" are
 #' supported. 
-#' @return version string
+#' @return version string (invisible)
 #' @export
 get_model_version <- function(model) {
   if (length(model) > 1) {
@@ -909,5 +909,5 @@ get_model_version <- function(model) {
     cli::cli_abort(c("x" = "Model {.field {model}} is not supported for version
                      checking."))
   }
-  return(vers)
+  return(invisible(vers))
 }
