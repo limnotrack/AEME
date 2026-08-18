@@ -46,12 +46,16 @@ get_model_config_files <- function(aeme = NULL, model, path = NULL, lake_dir) {
       # Recursively search for "dbase" in the list aed_nml
       csv_file_sections <- c("aed_phytoplankton", "aed_zooplankton",
                              "aed_macrophyte")
+      # dbase paths are relative to the GLM hydrodynamic nml's own directory
+      # (e.g. glm3.nml/glm4.nml), not the aed/ subdirectory
+      glm_key <- find_glm_nml_key(names(glm_files), must_exist = FALSE)
+      glm_dir <- if (!is.na(glm_key)) dirname(glm_files[glm_key]) else lake_dir
       # Extract dbase value from each section
       for (section in csv_file_sections) {
         if (section %in% names(aed_nml)) {
           dbase_value <- aed_nml[[section]]$dbase
           if (!is.null(dbase_value)) {
-            csv_file_path <- file.path(dirname(glm_files["glm3"]), dbase_value)
+            csv_file_path <- file.path(glm_dir, dbase_value)
             if (file.exists(csv_file_path)) {
               csv_name <- basename(tools::file_path_sans_ext(dbase_value))
               glm_files[csv_name] <- csv_file_path
@@ -59,7 +63,7 @@ get_model_config_files <- function(aeme = NULL, model, path = NULL, lake_dir) {
           }
         }
       }
-      
+
     }
     out$glm_aed <- glm_files
   }
