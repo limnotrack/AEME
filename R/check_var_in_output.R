@@ -12,7 +12,7 @@ check_var_in_output <- function(aeme, model, var_sim, ens_n = 1) {
   # --- Input validation ---
   aeme    <- check_aeme(aeme)
   model   <- check_model(model)
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   outp    <- output(aeme)
   ens_lab <- format_ens_label(ens_n = ens_n)
   
@@ -61,9 +61,13 @@ check_var_in_output <- function(aeme, model, var_sim, ens_n = 1) {
 #' @return logical; TRUE if variable exists and is not all -99
 #' @noRd
 is_var_present <- function(out_model, var) {
-  chk <- !is.null(out_model[[var]])
+  x <- out_model[[var]]
+  chk <- !is.null(x)
+  if (chk && inherits(x, "aeme_grouped_var")) {
+    return(length(x$value) > 0)
+  }
   if (chk) {
-    chk <- !all(out_model[[var]] == -99)
+    chk <- !all(x == -99)
   }
   if (is.na(chk)) chk <- FALSE
   return(chk)
