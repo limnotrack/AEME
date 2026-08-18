@@ -54,7 +54,9 @@ load_configuration <- function(aeme,
                            bgc = model_config[["dy_cd"]][["bgc"]]),
               glm_aed = list(hydrodynamic =
                                model_config[["glm_aed"]][["hydrodynamic"]],
-                             bgc = model_config[["glm_aed"]][["bgc"]]),
+                             bgc = model_config[["glm_aed"]][["bgc"]],
+                             hydrodynamic_file =
+                               model_config[["glm_aed"]][["hydrodynamic_file"]]),
               gotm_wet = list(hydrodynamic =
                                 model_config[["gotm_wet"]][["hydrodynamic"]],
                               bgc = model_config[["gotm_wet"]][["bgc"]]),

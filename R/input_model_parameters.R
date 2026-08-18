@@ -189,15 +189,23 @@ input_model_parameters <- function(aeme, model, param, path) {
     #* GLM-AED ----
     if (m == "glm_aed") {
       # m <- "glm_aed"
-      nml_files <- c("aed2/aed2.nml", "aed2/aed2_phyto_pars.nml", 
-                     "aed2/aed2_zoop_pars.nml", "glm3.nml", 
+      # The parameter catalogue always tags the GLM hydrodynamic nml as
+      # "glm3.nml", but the file actually on disk may be named differently
+      # (e.g. glm4.nml for newer GLM releases) -- resolve the real filename
+      # once, and substitute it in wherever a candidate says "glm3.nml"
+      glm_nml_existing <- find_glm_nml(file.path(lake_dir, m), must_exist = FALSE)
+      glm_nml_actual <- if (!is.na(glm_nml_existing)) basename(glm_nml_existing) else "glm3.nml"
+
+      nml_files <- c("aed2/aed2.nml", "aed2/aed2_phyto_pars.nml",
+                     "aed2/aed2_zoop_pars.nml", "glm3.nml",
                      "aed/aed.nml")
       # cfg_files <- c("glm3.nml", "aed2/aed2.nml", "aed2/aed2_phyto_pars.nml",
       #                "aed2/aed2_zoop_pars.nml")
       sel_files <- nml_files[basename(nml_files) %in% all_p$file]
       for (f in sel_files) {
         idx <- which(all_p$file == basename(f))
-        cfg_file <- file.path(lake_dir, m, f)
+        actual_f <- if (basename(f) == "glm3.nml") glm_nml_actual else f
+        cfg_file <- file.path(lake_dir, m, actual_f)
         nml <- read_nml(cfg_file)
         
         if (basename(f) %in% c("aed2_phyto_pars.nml", "aed2_zoop_pars.nml")) {
