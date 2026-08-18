@@ -48,8 +48,12 @@ get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir) {
     model <- check_model(model = model)
   }
 
-  # Get config files once
-  cfg_files <- get_model_config_files(model = model, path = path)
+  # Get config files once. When an `aeme` was supplied, pass it through so
+  # get_model_config_files() narrows the search to this lake's own
+  # directory via get_lake_dir() -- otherwise, with `path` pointing at a
+  # multi-lake ensemble root, file discovery (e.g. find_glm_nml()) could
+  # match a different lake's config files sharing the same directory tree.
+  cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
   
   # Map of model-specific resolvers
   resolvers <- list(
@@ -71,11 +75,12 @@ get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir) {
 #' Model-specific resolvers
 #' @noRd
 resolve_glm_aed <- function(lake_dir, cfg) {
-  nml <- read_nml(cfg[["glm3"]])
-  
+  glm_key <- find_glm_nml_key(names(cfg))
+  nml <- read_nml(cfg[[glm_key]])
+
   # Expected basename
   expected_name <- paste0(nml$output$out_fn, ".nc")
-  model_dir <- dirname(cfg[["glm3"]])
+  model_dir <- dirname(cfg[[glm_key]])
   
   # Search recursively
   files <- list.files(
