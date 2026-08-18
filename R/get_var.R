@@ -31,7 +31,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
   } else {
     model <- check_model(model = model)
   }
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   depth_ref <- rlang::arg_match(depth_ref)
   
   # Extract output from aeme ----
@@ -101,6 +101,25 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
                     ". Returning a dataframe with NA's.")
       cli_inform_safe(c("i" = msg))
       return(df)
+    }
+    if (inherits(variable, "aeme_grouped_var")) {
+      # Variable has dimensions other than (time) or (z, time) -- see
+      # new_grouped_var(); return it long-format rather than trying to
+      # force it into the depth x time convention the rest of this
+      # function assumes. use_obs/cumulative are not yet supported for
+      # these variables.
+      if (use_obs) {
+        cli_inform_safe(c("i" = paste0(var_sim, " has non-standard dimensions (",
+                                       paste(variable$dim_names, collapse = ", "),
+                                       "); use_obs comparison is not supported for it.")))
+      }
+      gdf <- as.data.frame(variable)
+      gdf$var_sim <- var_sim
+      gdf$Model <- toggle_models(m, to = "display")
+      if (remove_spin_up && "Date" %in% names(gdf)) {
+        gdf <- gdf[gdf$Date >= aeme_time$start & gdf$Date <= aeme_time$stop, ]
+      }
+      return(gdf)
     }
     if (is.matrix(variable)) {
       if (ncol(variable) == 0) {

@@ -42,7 +42,7 @@ assess_model <- function(aeme, model, var_sim) {
       dplyr::pull(var_aeme)
   }
   # Check model is in aeme
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   
   data("key_naming", package = "AEME", envir = environment())
   var_name <- key_naming |> 

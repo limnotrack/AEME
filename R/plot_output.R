@@ -90,7 +90,7 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
   } else {
     model <- check_model(model = model)
   }
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   if (missing(model)) {
     model <- list_models(aeme)
   }
@@ -131,10 +131,27 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
                 dimnames = list(var_sim, model))
   
   if (all(!chk)) {
-    cli::cli_abort("Variable(s) '{paste0(var_sim, collapse = ', ')}' not in 
+    cli::cli_abort("Variable(s) '{paste0(var_sim, collapse = ', ')}' not in
                    output for model(s): {paste0(model, collapse = ', ')}")
   }
-  
+
+  # Guard against variables with non-standard dimensions (e.g. nzones,
+  # particle, sed_layers) -- plotting for these isn't supported yet;
+  # point users to get_var() instead of failing deep inside the plotting
+  # logic below
+  grouped_hits <- unlist(lapply(model, \(m) {
+    vapply(var_sim, \(v) {
+      inherits(outp[[ens_lab]][[m]][[v]], "aeme_grouped_var")
+    }, logical(1))
+  }))
+  if (any(grouped_hits)) {
+    cli::cli_abort(c(
+      "x" = "{.arg var_sim} includes variable(s) with non-standard dimensions that {.fn plot_output} does not support yet.",
+      "i" = "Use {.fn get_var} to retrieve their values directly."
+    ), class = "aeme_error_grouped_var_plot")
+  }
+
+
   # Warn and drop models where ALL vars are missing
   bad_models <- colnames(chk)[!colSums(chk) > 0]
   if (length(bad_models) > 0) {

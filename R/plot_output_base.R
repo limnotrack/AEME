@@ -45,17 +45,17 @@ plot_output_base <- function(aeme, var_sim = "HYD_temp", model, ens_n = 1,
   } else {
     model <- check_model(model = model)
   }
-  var_sim <- check_aeme_vars(var_sim)
-  
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
+
   # --- Enforce one-or-many constraint --------------------------------------
   if (length(var_sim) > 1 && length(model) > 1)
     stop("Supply either one var_sim with multiple models, ",
          "or multiple var_sim with one model, not both.")
-  
+
   outp    <- output(aeme)
   tme     <- time(aeme)
   ens_lab <- format_ens_label(ens_n = ens_n)
-  
+
   # --- Check var_sim exists in each model ----------------------------------
   chk <- sapply(model, \(m)
                 all(var_sim %in% names(outp[[ens_lab]][[m]]))
@@ -65,6 +65,22 @@ plot_output_base <- function(aeme, var_sim = "HYD_temp", model, ens_n = 1,
   if (any(!chk)) {
     warning("Variable(s) missing from: ", paste(model[!chk], collapse = ", "))
     model <- model[chk]
+  }
+
+  # --- Guard against non-standard-dimension variables ----------------------
+  # (e.g. nzones, particle, sed_layers) -- not supported by this plotting
+  # function yet; point users to get_var() instead of failing deep inside
+  # the contour/line plotting logic below
+  grouped_hits <- unlist(lapply(model, \(m) {
+    vapply(var_sim, \(v) {
+      inherits(outp[[ens_lab]][[m]][[v]], "aeme_grouped_var")
+    }, logical(1))
+  }))
+  if (any(grouped_hits)) {
+    cli::cli_abort(c(
+      "x" = "{.arg var_sim} includes variable(s) with non-standard dimensions that {.fn plot_output_base} does not support yet.",
+      "i" = "Use {.fn get_var} to retrieve their values directly."
+    ), class = "aeme_error_grouped_var_plot")
   }
   
   # --- Date range ----------------------------------------------------------

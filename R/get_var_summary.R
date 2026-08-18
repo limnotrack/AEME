@@ -12,7 +12,7 @@ get_var_summary <- function(aeme, model, var_sim, ens_n = 1) {
   } else {
     model <- check_model(model = model)
   }
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   outp <- output(aeme)
   ens_lab <- format_ens_label(ens_n = ens_n)
   names(model) <- model

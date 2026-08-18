@@ -28,7 +28,7 @@ get_obs <- function(aeme, var_sim, depth_range = NULL, time_filter = FALSE) {
     # If var_sim is missing, return all observations
     var_sim <- c(unique(obs$lake$var_aeme), "LKE_lvlwtr")
   } else {
-    var_sim <- check_aeme_vars(var_sim)
+    var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   }
   if (!is.null(obs$lake)) {
     lake <- obs$lake |>

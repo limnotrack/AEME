@@ -26,7 +26,7 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
   } else {
     model <- check_model(model = model)
   }
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   # Get model controls
   model_controls <- get_model_controls(aeme)
   if (is.null(model_controls)) {
