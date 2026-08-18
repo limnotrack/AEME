@@ -38,8 +38,14 @@ test_that("running GLM works", {
   testthat::expect_true(nrow(outp1$HYD_temp) == 42)
   testthat::expect_true(length(outp1) >= length(vars_sim))
 
+  # load_all = FALSE here to check the minimal, tightly-scoped read still
+  # returns exactly what was asked for (Date, HYD_temp, LKE_depths,
+  # LKE_lvlwtr, ok, reason) -- load_all = TRUE (the read_model_outputs()
+  # default) would additionally pick up every other variable in the file,
+  # tested separately in test-read-glm-output-load-all.R
   outp2 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model,
-                              vars_sim = "HYD_temp", incl_fluxes = FALSE)
+                              vars_sim = "HYD_temp", incl_fluxes = FALSE,
+                              load_all = FALSE)
   testthat::expect_true(is.list(outp2))
   testthat::expect_true(nrow(outp2$HYD_temp) == 42)
   testthat::expect_true(length(outp2) == 6)
