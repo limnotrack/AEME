@@ -12,18 +12,28 @@
 #' @param output_hour Hour of the day to extract (0-23). Defaults to 0.
 #' @param file File path to netCDF file. Only used if `nc` is NULL.
 #' @param phyto_pars Data frame with phytoplankton parameters from AED.
+#' @param load_all logical; also load every other variable present in the
+#'   netCDF file, beyond the declared `vars_sim` set. Each such variable is
+#'   keyed by its AEME `var_aeme` name if [key_naming] has a translation for
+#'   it, or by its raw GLM/netCDF name otherwise. Variables shaped like
+#'   GLM's usual `(time)` or `(z, time)` output are loaded the same way as
+#'   any declared variable; variables with other dimensions (e.g. `nzones`,
+#'   `particle`, `sed_layers`, `lon`, `lat`) are loaded as a
+#'   [new_grouped_var()] object instead of being forced into the depth x
+#'   time convention. Default `TRUE`.
 #'
 #' @returns List with AEME output variables
 #' @export
-#' 
+#'
 #' @importFrom ncdf4 ncvar_get ncatt_get
 #' @importFrom lubridate hour
 #' @importFrom dplyr filter mutate pull
 
 read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
-                            dates = NULL, date_index = NULL, incl_fluxes = TRUE, 
-                            output_hour = 0, file, phyto_pars = NULL) {
-  
+                            dates = NULL, date_index = NULL, incl_fluxes = TRUE,
+                            output_hour = 0, file, phyto_pars = NULL,
+                            load_all = TRUE) {
+
   if (is.null(nc)) {
     nc <- open_nc_safe(file, model = "glm_aed")
     on.exit(ncdf4::nc_close(nc))
@@ -192,7 +202,13 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                                   out_depths = out_depths)
         return(out)
       } else if (length(dim(var_out)) == 1) {
-        var_out <- var_out[date_index] * conv_factor
+        # ncdf4::ncvar_get() can return a single-dimension variable with a
+        # length-1 dim attribute still attached (class "array", not a
+        # plain vector), which survives `[` indexing -- strip it so
+        # downstream code's is.null(dim(x)) checks correctly treat this as
+        # an ordinary 1D time series (matches the as.vector() normalisation
+        # already applied to the fixed-name flux variables above)
+        var_out <- as.vector(var_out[date_index] * conv_factor)
         return(var_out)
       } else {
         cli::cli_abort(paste("Variable", v, "has unsupported number of dimensions"))
@@ -201,8 +217,134 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     
     out_list <- c(out_list, out_vars)
   }
+
+  # ---- Load every remaining variable present in the file ----
+  # Variables already handled above (by the fixed-name blocks and, if
+  # vars_sim was supplied, the declared/translated loop) are skipped;
+  # everything else in the file is loaded too -- keyed by its var_aeme
+  # name if key_naming has a translation, otherwise by its raw GLM name.
+  if (isTRUE(load_all)) {
+    already_extracted <- c("time", "z", "lake_level")
+    if (incl_fluxes) {
+      already_extracted <- c(
+        already_extracted,
+        "daily_qe", "daily_qh", "daily_qlw", "daily_qsw", "lake_volume",
+        "evaporation", "evap_mass_flux", "surface_area", "tot_inflow_vol",
+        "overflow_vol", "tot_outflow_vol", "precipitation", "surface_temp"
+      )
+    }
+    if ("LKE_photic" %in% vars_sim | "LKE_efold" %in% vars_sim) {
+      already_extracted <- c(already_extracted, "radn")
+    }
+    if (!is.null(vars_sim)) {
+      already_extracted <- c(already_extracted, model_vars_vec)
+    }
+
+    data("key_naming", package = "AEME", envir = environment())
+    glm_to_var_aeme <- stats::setNames(key_naming$var_aeme, key_naming$glm_aed)
+
+    nc_vars <- names(nc$var)
+    remaining_vars <- setdiff(nc_vars, already_extracted)
+
+    for (v in remaining_vars) {
+      key <- unname(glm_to_var_aeme[v])
+      if (is.na(key) || !nzchar(key)) key <- v
+      if (key %in% names(out_list)) next
+
+      conv_idx <- match(v, key_naming$glm_aed)
+      conv_factor <- if (!is.na(conv_idx)) key_naming$conversion_aed[conv_idx] else NA
+      if (is.na(conv_factor)) conv_factor <- 1
+
+      result <- tryCatch({
+        # ncdf4::ncvar_get() drops length-1 dimensions by default (e.g. a
+        # single-column GLM run's degenerate lon/lat), so the array it
+        # actually returns won't have those axes even though the file's
+        # dimension metadata still lists them for every variable -- match
+        # that behaviour here rather than comparing against the raw
+        # (pre-squeeze) dimension list
+        dim_objs  <- Filter(\(d) d$len > 1, nc$var[[v]]$dim)
+        dim_names <- vapply(dim_objs, \(d) d$name, character(1))
+
+        # Guard against accidentally loading a genuinely huge variable in
+        # full (e.g. a real particle-tracking run, where `particle` can be
+        # declared with length in the millions even though it's unused --
+        # length 1 -- in most runs)
+        n_elem <- prod(vapply(dim_objs, \(d) d$len, numeric(1)))
+        if (length(n_elem) == 0) n_elem <- 1
+
+        if (n_elem > 5e6) {
+          cli::cli_warn(c("!" = "Skipping variable {.val {v}}: {n_elem} values ({paste(dim_names, collapse = ' x ')}) is too large to load automatically."))
+          NULL
+        } else if (setequal(dim_names, "time")) {
+          # See the analogous as.vector() fix above -- a single-dimension
+          # netCDF variable can come back with a length-1 dim attribute
+          # still attached, which survives `[` indexing
+          var_out <- ncdf4::ncvar_get(nc, v)
+          as.vector(var_out[date_index] * conv_factor)
+        } else if (setequal(dim_names, c("z", "time"))) {
+          var_out <- ncdf4::ncvar_get(nc, v)
+          if (dim_names[1] != "z") var_out <- t(var_out)
+          var <- var_out[, date_index, drop = FALSE] * conv_factor
+          interp_static_grid(var = var, midpoints = midpoints,
+                             out_depths = out_depths)
+        } else {
+          .read_glm_grouped_var(nc = nc, v = v, dim_objs = dim_objs,
+                                dim_names = dim_names, date_index = date_index,
+                                dates = dates)
+        }
+      }, error = function(e) {
+        cli::cli_warn(c("!" = "Could not read variable {.val {v}} from GLM output: {conditionMessage(e)}"))
+        NULL
+      })
+
+      if (!is.null(result)) {
+        out_list[[key]] <- result
+      }
+    }
+  }
+
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
   return(out_list)
+}
+
+#' Read a GLM-AED output variable with dimensions other than `(time)` or
+#' `(z, time)` into a [new_grouped_var()], preserving each dimension's
+#' actual coordinate/index values
+#' @param nc open ncdf4 object.
+#' @param v character; the netCDF variable name.
+#' @param dim_objs list; `nc$var[[v]]$dim`.
+#' @param dim_names character; names of `dim_objs`, in order.
+#' @inheritParams read_glm_output
+#' @param dates Date vector; already resolved simulation dates
+#'   (`glm_dates[date_index]`), used as the coordinate values for a `"time"`
+#'   dimension.
+#' @return An `aeme_grouped_var` object.
+#' @noRd
+.read_glm_grouped_var <- function(nc, v, dim_objs, dim_names, date_index, dates) {
+  arr <- ncdf4::ncvar_get(nc, v)
+  if (is.null(dim(arr)) && length(dim_names) == 1) {
+    dim(arr) <- length(arr)
+  }
+
+  time_pos <- which(dim_names == "time")
+  if (length(time_pos) == 1) {
+    d <- dim(arr)
+    idx_list <- lapply(d, seq_len)
+    idx_list[[time_pos]] <- date_index
+    arr <- do.call(`[`, c(list(arr), idx_list, list(drop = FALSE)))
+  }
+
+  dim_values <- stats::setNames(
+    lapply(dim_objs, \(d) {
+      if (d$name == "time") return(dates)
+      vals <- d$vals
+      if (is.null(vals) || length(vals) != d$len) vals <- seq_len(d$len)
+      vals
+    }),
+    dim_names
+  )
+
+  new_grouped_var(value = arr, dim_names = dim_names, dim_values = dim_values)
 }
 
 #' Read GLM lake water level output

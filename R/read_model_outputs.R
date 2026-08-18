@@ -14,8 +14,11 @@
 #' @param incl_fluxes Logical indicating whether to include flux variables.
 #' Defaults to TRUE.
 #' @param output_hour Hour of the day to extract (0-23). Defaults to 0.
-#' @param phyto_pars Dataframe of phytoplankton parameters for GLM-AED model. 
+#' @param phyto_pars Dataframe of phytoplankton parameters for GLM-AED model.
 #' See `?read_glm_output` for details. Defaults to NULL.
+#' @param load_all logical; for `model = "glm_aed"`, also load every other
+#' variable present in the netCDF output beyond the declared `vars_sim` set
+#' -- see `?read_glm_output`. Ignored for other models. Defaults to TRUE.
 #'
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @importFrom withr local_locale local_timezone
@@ -23,11 +26,11 @@
 #' @returns List of model outputs in AEME standard format
 #' @export
 
-read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL, 
+read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                                depths = NULL, dates = NULL, date_index = NULL,
-                               incl_fluxes = TRUE, output_hour = 0, 
-                               phyto_pars = NULL) {
-  
+                               incl_fluxes = TRUE, output_hour = 0,
+                               phyto_pars = NULL, load_all = TRUE) {
+
   # Set timezone
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
@@ -82,7 +85,8 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                      "glm_aed"  = read_glm_output(nc, vars_sim, depths = depths,
                                                   incl_fluxes = incl_fluxes,
                                                   date_index = date_index,
-                                                  phyto_pars = phyto_pars),
+                                                  phyto_pars = phyto_pars,
+                                                  load_all = load_all),
                      "dy_cd"    = read_dy_output(nc, vars_sim, depths = depths,
                                                  incl_fluxes = incl_fluxes,
                                                  date_index = date_index),
@@ -229,18 +233,19 @@ extract_model_depth <- function(model, lake_dir) {
 #' @keywords internal
 #' @noRd
 load_model_config <- function(model, lake_dir, file) {
-  
-  if (missing(file)) {
-    file <- switch(model,
-                   "gotm_wet" = "gotm",
-                   "glm_aed"  = "glm3",
-                   "dy_cd"    = "stg",
-                   "simstrat_aed2" = "simstrat")
-  }
+
   model <- check_model(model)
   lake_dir <- check_path(lake_dir, must_exist = TRUE)
   cfg_files <- get_model_config_files(model = model,
                                       path = lake_dir)[[model]]
+
+  if (missing(file)) {
+    file <- switch(model,
+                   "gotm_wet" = "gotm",
+                   "glm_aed"  = find_glm_nml_key(names(cfg_files)),
+                   "dy_cd"    = "stg",
+                   "simstrat_aed2" = "simstrat")
+  }
   if (file %in% names(cfg_files)) {
     cfg_file <- cfg_files[[file]]
   } else {

@@ -13,7 +13,8 @@ read_glm_output(
   incl_fluxes = TRUE,
   output_hour = 0,
   file,
-  phyto_pars = NULL
+  phyto_pars = NULL,
+  load_all = TRUE
 )
 }
 \arguments{
@@ -39,6 +40,16 @@ Defaults to TRUE.}
 \item{file}{File path to netCDF file. Only used if \code{nc} is NULL.}
 
 \item{phyto_pars}{Data frame with phytoplankton parameters from AED.}
+
+\item{load_all}{logical; also load every other variable present in the
+netCDF file, beyond the declared \code{vars_sim} set. Each such variable is
+keyed by its AEME \code{var_aeme} name if \link{key_naming} has a translation for
+it, or by its raw GLM/netCDF name otherwise. Variables shaped like
+GLM's usual \code{(time)} or \verb{(z, time)} output are loaded the same way as
+any declared variable; variables with other dimensions (e.g. \code{nzones},
+\code{particle}, \code{sed_layers}, \code{lon}, \code{lat}) are loaded as a
+\code{\link[=new_grouped_var]{new_grouped_var()}} object instead of being forced into the depth x
+time convention. Default \code{TRUE}.}
 }
 \value{
 List with AEME output variables

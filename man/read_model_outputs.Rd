@@ -14,7 +14,8 @@ read_model_outputs(
   date_index = NULL,
   incl_fluxes = TRUE,
   output_hour = 0,
-  phyto_pars = NULL
+  phyto_pars = NULL,
+  load_all = TRUE
 )
 }
 \arguments{
@@ -43,6 +44,10 @@ Defaults to TRUE.}
 
 \item{phyto_pars}{Dataframe of phytoplankton parameters for GLM-AED model.
 See \code{?read_glm_output} for details. Defaults to NULL.}
+
+\item{load_all}{logical; for \code{model = "glm_aed"}, also load every other
+variable present in the netCDF output beyond the declared \code{vars_sim} set
+-- see \code{?read_glm_output}. Ignored for other models. Defaults to TRUE.}
 }
 \value{
 List of model outputs in AEME standard format
