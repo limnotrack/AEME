@@ -33,10 +33,14 @@ build_glm <- function(lakename, model_controls, date_range,
              recursive = TRUE)
   
   
-  glm_file <- file.path(path_glm, "glm3.nml")
-  if (!file.exists(glm_file)) {
-    glm_file <- system.file("extdata/glm_aed/glm3.nml", package = "AEME")
-    file.copy(glm_file, file.path(path_glm, "glm3.nml"))
+  # Preserve whichever GLM hydrodynamic nml version (glm3.nml, glm4.nml, ...)
+  # is already present, rather than assuming glm3.nml; only fall back to
+  # copying the glm3.nml template when no such file exists yet
+  glm_file <- find_glm_nml(path_glm, must_exist = FALSE)
+  if (is.na(glm_file)) {
+    glm_file <- file.path(path_glm, "glm3.nml")
+    template_file <- system.file("extdata/glm_aed/glm3.nml", package = "AEME")
+    file.copy(template_file, glm_file)
     overwrite_nml <- TRUE
     cli_inform_safe(c("i" = "Copied in GLM nml file"))
   }
@@ -62,7 +66,7 @@ build_glm <- function(lakename, model_controls, date_range,
     unlink()
   
   # Read in GLM nml file
-  glm_nml <- read_nml(file.path(path_glm, "glm3.nml"))
+  glm_nml <- read_nml(glm_file)
   
   # set the simulation date range
   glm_nml <- daterange_glm(date_range, glm_nml = glm_nml)
@@ -126,11 +130,11 @@ build_glm <- function(lakename, model_controls, date_range,
                             init_depth = init_depth, tbl_obs = init_prof,
                             Kw = Kw, model_controls = model_controls)
   
-  if (use_bgc) {
+  if (use_bgc && overwrite_nml) {
     initialise_aed(model_controls = model_controls,
                    path_aed = file.path(path_glm, "aed"))
   }
-  
+
   if (use_bgc) {
     glm_nml[["wq_setup"]] <- list("wq_lib" = "aed",
                                   "wq_nml_file" = "aed/aed.nml",
@@ -148,9 +152,9 @@ build_glm <- function(lakename, model_controls, date_range,
   
   # Write the GLM nml file
   if (overwrite_nml) {
-    write_nml(glm_nml, file.path(path_glm, "glm3.nml"))
+    write_nml(glm_nml, glm_file)
   }
-  # check_glm_nml(file = file.path(path_glm, "glm3.nml"))
+  # check_glm_nml(file = glm_file)
   
   return(invisible())
 }
