@@ -7,7 +7,9 @@
 #'
 #' @returns List with model configuration components. This includes a 'hydrodynamic'
 #' list with hydrodynamic model configuration and a 'bgc' list with biogeochemistry
-#' model configuration (if applicable).
+#' model configuration (if applicable). For `model = "glm_aed"`, also includes
+#' 'hydrodynamic_file', the basename of the GLM nml file it was read from
+#' (e.g. `"glm3.nml"` or `"glm4.nml"`).
 #' @export
 #'
 
@@ -45,9 +47,14 @@ read_model_config <- function(model, lake_dir) {
     cfg$par <- NULL
     cfg$cfg <- NULL
   } else if (model == "glm_aed") {
-    out$hydrodynamic <- cfg[["glm3"]]
-    # Remove glm3 from list
-    cfg[["glm3"]] <- NULL
+    glm_key <- find_glm_nml_key(names(cfg))
+    out$hydrodynamic <- cfg[[glm_key]]
+    # Record which GLM version's nml this came from (glm3.nml, glm4.nml,
+    # ...) so a later write_configuration() call can write it back under
+    # the same filename instead of assuming glm3.nml
+    out$hydrodynamic_file <- paste0(glm_key, ".nml")
+    # Remove the GLM hydrodynamic nml from list
+    cfg[[glm_key]] <- NULL
   } else if (model == "gotm_wet") {
     out$hydrodynamic <- list(gotm = cfg[["gotm"]],
                          output = cfg[["output"]])

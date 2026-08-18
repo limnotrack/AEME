@@ -16,7 +16,9 @@ files.}
 \value{
 List with model configuration components. This includes a 'hydrodynamic'
 list with hydrodynamic model configuration and a 'bgc' list with biogeochemistry
-model configuration (if applicable).
+model configuration (if applicable). For \code{model = "glm_aed"}, also includes
+'hydrodynamic_file', the basename of the GLM nml file it was read from
+(e.g. \code{"glm3.nml"} or \code{"glm4.nml"}).
 }
 \description{
 Read in model configuration files for a given model and lake directory
