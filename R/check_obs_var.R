@@ -23,7 +23,7 @@
 
 check_obs_var <- function(aeme, var_sim) {
   aeme    <- check_aeme(aeme)
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   
   obs     <- observations(aeme)
   tme     <- time(aeme)
