@@ -101,9 +101,19 @@ check_glm_nml <- function(file) {
   if (!is.null(sed)) {
     n_zones <- as.numeric(sed$n_zones)
     pars <- c("sed_heat_Ksoil", "sed_temp_depth", "sed_temp_mean",
-              "sed_temp_amplitude", "sed_temp_peak_doy", "zone_heights", 
+              "sed_temp_amplitude", "sed_temp_peak_doy", "zone_heights",
               "sed_reflectivity", "sed_roughness")
+    # sed_heat_Ksoil and sed_temp_depth only feed GLM's analytical
+    # sediment-heat model, enabled via sed_heat_model = 1 (a newer GLM
+    # option; older nmls that don't set it at all still rely on that
+    # model implicitly, so the check only backs off when sed_heat_model
+    # is explicitly present and set to something other than 1)
+    heat_model_only_pars <- c("sed_heat_Ksoil", "sed_temp_depth")
+    sed_heat_model <- suppressWarnings(as.numeric(sed$sed_heat_model))
+    heat_model_disabled <- !is.null(sed$sed_heat_model) &&
+      !is.na(sed_heat_model) && sed_heat_model != 1
     for (p in pars) {
+      if (p %in% heat_model_only_pars && heat_model_disabled) next
       vals <- as.numeric(sed[[p]])
       if (length(vals) != n_zones) {
         issues <- c(issues, paste0("Number of ", p, " values (", length(vals),
