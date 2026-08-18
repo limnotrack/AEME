@@ -188,7 +188,11 @@ build_aeme <- function(aeme = NULL,
     if (use_aeme) {
       model_config <- configuration(aeme)
       if (all(sapply(model, \(x) !is.null(model_config[[x]][["hydrodynamic"]])))) {
-        write_configuration(model = model, aeme = aeme, path = path)
+        # Boundary-condition files are left to the build_glm()/build_gotm()/
+        # etc. calls below, which run regardless of overwrite -- writing
+        # them here too would just be immediately overwritten again
+        write_configuration(model = model, aeme = aeme, path = path,
+                            include_boundary = FALSE)
         overwrite <- FALSE
         # Potentially add in option to switch off bgc and/or use default bgc setup
         # return(aeme)
@@ -451,8 +455,16 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       w_bal[["data"]][["wbal"]] <- wbal
       w_bal[["params"]] <- wbal_params
     } else {
+      # Only clear a "wbal" outflow that this aeme's own water_balance data
+      # shows was produced by an earlier calc_wbal = TRUE run. If outf$wbal
+      # is present without a matching water_balance()$data$wbal, it was
+      # supplied directly (e.g. by glm_config_to_aeme(), reading an existing
+      # outflow_wbal.csv back from disk) rather than computed by AEME, so
+      # leave it as a normal outflow instead of silently discarding it.
+      if (!is.null(w_bal[["data"]][["wbal"]])) {
+        outf[["wbal"]] <- NULL
+      }
       w_bal[["data"]][["wbal"]] <- NULL
-      outf[["wbal"]] <- NULL
     }
     
     #* Update water balance slot in aeme object ----
@@ -622,7 +634,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               Kw = Kw, use_bgc = use_bgc,
               use_lw = inp$use_lw, overwrite_nml = overwrite)
     
-    if (use_bgc) {
+    if (use_bgc && overwrite) {
       aeme <- aeme |>
         set_aed_sed_const2d(path = path)
     }
@@ -682,9 +694,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   
   # GLM-AED totals configuration ----
-  if ("glm_aed" %in% model & use_bgc) {
+  if ("glm_aed" %in% model & use_bgc & overwrite) {
     set_aed_totals(aeme = aeme, path = path)
-  } 
+  }
   
   # Check model cfg files ----
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
@@ -692,7 +704,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     check_gotm_yaml(file = cfg_files$gotm_wet["gotm"])
   }
   if ("glm_aed" %in% model) {
-    check_glm_nml(file = cfg_files$glm_aed["glm3"])
+    check_glm_nml(file = cfg_files$glm_aed[find_glm_nml_key(names(cfg_files$glm_aed))])
   }
   if ("simstrat_aed2" %in% model) {
     check_simstrat_par(file = cfg_files$simstrat_aed2["simstrat"])
