@@ -2,6 +2,7 @@
 
 S3method(as.data.frame,aeme_grouped_var)
 S3method(print,aeme_grouped_var)
+S3method(print,model_controls)
 S3method(print,nml)
 S3method(summary,nml)
 export("configuration<-")

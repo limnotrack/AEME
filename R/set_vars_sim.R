@@ -62,6 +62,6 @@ set_vars_sim <- function(model_controls,
   }
   model_controls <- model_controls |>
     dplyr::arrange(dplyr::desc(simulate), var_aeme)
-  
-  return(model_controls)
+
+  return(new_model_controls(model_controls))
 }

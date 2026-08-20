@@ -37,9 +37,9 @@ get_model_controls <- function(aeme = NULL, use_bgc = FALSE) {
       sel_vars <- c(hyd_vars, light_vars)
     }
     model_controls <- set_vars_sim(model_controls = model_controls,
-                                   vars_sim = sel_vars, simulate = TRUE, 
+                                   vars_sim = sel_vars, simulate = TRUE,
                                    exclusive = TRUE)
-    
+
   }
-  return(model_controls)
+  return(new_model_controls(model_controls))
 }
