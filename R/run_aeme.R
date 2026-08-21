@@ -232,8 +232,14 @@ run_aeme <- function(aeme, model, path, args = character(),
 #' @param sim_folder the directory where simulation files are contained
 #' @param verbose Logical: Should output of model be shown
 #' @param debug Logical; save debug file. DYRESM only.
+#' @param config_file character; path to the model's main configuration file,
+#' passed to the model executable on the command line. Defaults to the
+#' hydrodynamic configuration file within `sim_folder`: the GLM nml file
+#' (see [find_glm_nml()]) for GLM-AED, `"gotm.yaml"` for GOTM-WET, and
+#' `"simstrat.par"` for Simstrat-AED2. Not used by DYRESM-CAEDYM, which reads
+#' several files derived from the `.stg` file present in `sim_folder`.
 #' @param args character vector of additional command-line arguments to pass to
-#'  the model executable. Currently only used for GLM-AED. Options are: 
+#'  the model executable. Currently only used for GLM-AED. Options are:
 #'  "--xdisp" to plot the model output using the plots.nml settings.
 #' @inheritParams base::system2
 #' @param version character; specific version of the model to run. If not 
@@ -605,9 +611,10 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @export
 #' @importFrom processx run
 run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
+                        config_file = find_glm_nml(sim_folder),
                         args = character(), timeout = Inf,
                         version = getOption("AEME.glm_version", default = NULL)) {
-  
+
   oldwd <- getwd()
   on.exit({
     setwd(oldwd)
@@ -615,9 +622,10 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
   setwd(sim_folder)
   cli_inform_safe(c(">" = paste0("GLM-AED running... ", "[",
                                  format(Sys.time()), "]")))
-  
+
   bin_exec <- .resolve_glm_exec(version)
-  
+  args <- c("--nml", config_file, args)
+
   if (verbose) {
     p <- processx::run(
       command = bin_exec,
@@ -660,9 +668,10 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @rdname run_dy_cd
 #' @export
 run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
+                         config_file = "gotm.yaml",
                          args = character(), timeout = Inf,
                          version = getOption("AEME.gotm_version", default = NULL)) {
-  
+
   oldwd <- getwd()
   on.exit({
     setwd(oldwd)
@@ -672,10 +681,11 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
   cli_inform_safe(c(">" = paste0("GOTM-WET running... ",
                                  "[", format(Sys.time()), "]")))
   bin_exec <- .resolve_gotm_exec(version)
+  args <- c(config_file, args)
   if (verbose) {
     p <- processx::run(
       command = bin_exec,
-      args = character(),
+      args = args,
       wd = sim_folder,
       echo = TRUE,               # print output live (closest to stdout="")
       error_on_status = FALSE,
@@ -685,7 +695,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
     # Capture stdout/stderr (similar to stdout=TRUE, stderr=TRUE)
     p <- processx::run(
       command = bin_exec,
-      args = character(),
+      args = args,
       wd = sim_folder,
       spinner = TRUE,
       echo = FALSE,
@@ -721,6 +731,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
 #' @rdname run_dy_cd
 #' @export
 run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
+                              config_file = "simstrat.par",
                               args = character(), timeout = Inf,
                               version = getOption("AEME.simstrat_version", default = NULL)) {
 
@@ -737,7 +748,7 @@ run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
   if (verbose) {
     p <- processx::run(
       command = bin_exec,
-      args = c("simstrat.par", args),
+      args = c(config_file, args),
       wd = sim_folder,
       echo = TRUE,
       error_on_status = FALSE,
@@ -746,7 +757,7 @@ run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
   } else {
     p <- processx::run(
       command = bin_exec,
-      args = c("simstrat.par", args),
+      args = c(config_file, args),
       wd = sim_folder,
       spinner = TRUE,
       echo = FALSE,

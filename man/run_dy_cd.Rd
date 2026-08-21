@@ -20,6 +20,7 @@ run_glm_aed(
   sim_folder,
   verbose = FALSE,
   debug = FALSE,
+  config_file = find_glm_nml(sim_folder),
   args = character(),
   timeout = Inf,
   version = getOption("AEME.glm_version", default = NULL)
@@ -29,6 +30,7 @@ run_gotm_wet(
   sim_folder,
   verbose = FALSE,
   debug = FALSE,
+  config_file = "gotm.yaml",
   args = character(),
   timeout = Inf,
   version = getOption("AEME.gotm_version", default = NULL)
@@ -38,6 +40,7 @@ run_simstrat_aed2(
   sim_folder,
   verbose = FALSE,
   debug = FALSE,
+  config_file = "simstrat.par",
   args = character(),
   timeout = Inf,
   version = getOption("AEME.simstrat_version", default = NULL)
@@ -64,6 +67,13 @@ GLM-AED and GOTM-WET, this can also be set via the \code{AEME.glm_version} or
 \code{AEME.gotm_version} options, respectively. For DYRESM-CAEDYM, use
 \code{AEME.dyresm_version}. Currently, only GLM-AED support version selection;
 GOTM-WET and DYRESM-CAEDYM always uses the bundled version.}
+
+\item{config_file}{character; path to the model's main configuration file,
+passed to the model executable on the command line. Defaults to the
+hydrodynamic configuration file within \code{sim_folder}: the GLM nml file
+(see \code{\link[=find_glm_nml]{find_glm_nml()}}) for GLM-AED, \code{"gotm.yaml"} for GOTM-WET, and
+\code{"simstrat.par"} for Simstrat-AED2. Not used by DYRESM-CAEDYM, which reads
+several files derived from the \code{.stg} file present in \code{sim_folder}.}
 }
 \value{
 Invisibly returns \code{NULL}.
