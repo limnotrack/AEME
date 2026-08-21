@@ -89,9 +89,14 @@ resolve_glm_aed <- function(lake_dir, cfg) {
     full.names = TRUE,
     recursive = TRUE
   )
+  if (length(files) == 0) {
+    cli::cli_alert_warning(
+      "No GLM-AED output file found in {model_dir}. Expected {expected_name}"
+    )
+  }
   
   names(files) <- tools::file_path_sans_ext(basename(files))
-  files
+  return(files)
 }
 
 #' Model-specific resolvers
