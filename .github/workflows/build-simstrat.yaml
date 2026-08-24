@@ -248,6 +248,11 @@ jobs:
         if: matrix.aed_full
         run: git clone --depth 1 https://github.com/usgs-coupled/phreeqcrm lib/phreeqcrm
 
+      - name: Clone libaed-demo (public)
+        if: matrix.aed_api
+        run: git clone --depth 1 https://github.com/AquaticEcoDynamics/libaed-demo lib/libaed-demo
+
+
       # All entries (tagged releases and feature/aed-api alike) build the old
       # vendored lib/libaed2 -- on feature/aed-api it now coexists with the
       # newer libaed-api based coupling below rather than replacing it (both
