@@ -41,15 +41,15 @@ jobs:
           #   build_mode: release-gnu
           #   make_cmd: make
           #   aed_api: false
-          - os: ubuntu-latest
-            name: linux
-            repo: Eawag-AppliedSystemAnalysis/Simstrat
-            ref: v3.05
-            simstrat_tag: v3.05
-            build_mode: release-gnu
-            make_cmd: make
-            aed_api: false
-            bgc: aed2
+          # - os: ubuntu-latest
+          #   name: linux
+          #   repo: Eawag-AppliedSystemAnalysis/Simstrat
+          #   ref: v3.05
+          #   simstrat_tag: v3.05
+          #   build_mode: release-gnu
+          #   make_cmd: make
+          #   aed_api: false
+          #   bgc: aed2
           # - os: macos-latest
           #   name: macos
           #   repo: Eawag-AppliedSystemAnalysis/Simstrat
@@ -58,15 +58,15 @@ jobs:
           #   build_mode: release-gnu-dynamic
           #   make_cmd: make
           #   aed_api: false
-          - os: macos-latest
-            name: macos
-            repo: Eawag-AppliedSystemAnalysis/Simstrat
-            ref: v3.05
-            simstrat_tag: v3.05
-            build_mode: release-gnu-dynamic
-            make_cmd: make
-            aed_api: false
-            bgc: aed2
+          # - os: macos-latest
+          #   name: macos
+          #   repo: Eawag-AppliedSystemAnalysis/Simstrat
+          #   ref: v3.05
+          #   simstrat_tag: v3.05
+          #   build_mode: release-gnu-dynamic
+          #   make_cmd: make
+          #   aed_api: false
+          #   bgc: aed2
           # - os: windows-latest
           #   name: windows
           #   repo: Eawag-AppliedSystemAnalysis/Simstrat
@@ -75,15 +75,15 @@ jobs:
           #   build_mode: release-gnu
           #   make_cmd: mingw32-make
           #   aed_api: false
-          - os: windows-latest
-            name: windows
-            repo: Eawag-AppliedSystemAnalysis/Simstrat
-            ref: v3.05
-            simstrat_tag: v3.05
-            build_mode: release-gnu
-            make_cmd: mingw32-make
-            aed_api: false
-            bgc: aed2
+          # - os: windows-latest
+          #   name: windows
+          #   repo: Eawag-AppliedSystemAnalysis/Simstrat
+          #   ref: v3.05
+          #   simstrat_tag: v3.05
+          #   build_mode: release-gnu
+          #   make_cmd: mingw32-make
+          #   aed_api: false
+          #   bgc: aed2
           # ---- limnotrack/Simstrat feature/aed-api branch (libaed-api coupling) ----
           # Needs libaed-water/-benthic/-demo/-api checked out as siblings of Simstrat/
           # (build/fobos on this branch links them via ../../libaed-*) and built before
