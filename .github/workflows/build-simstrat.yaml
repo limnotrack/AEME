@@ -125,44 +125,11 @@ jobs:
           submodules: recursive
           path: Simstrat
 
-      # ------------------------------------------------------------------
-      # feature/aed-api only: checkout the AED libraries the new coupler
-      # links against, as siblings of Simstrat/ (not nested inside it) to
-      # match the ../../libaed-* relative paths in Simstrat/build/fobos.
-      # Assumes these repos are public; if any are private, add a `token:`
-      # (PAT with repo read access, stored as a secret) to these steps.
-      # ------------------------------------------------------------------
-      - name: Checkout libaed-water (limnotrack/libaed-water@dev)
-        if: matrix.aed_api
-        uses: actions/checkout@v4
-        with:
-          repository: limnotrack/libaed-water
-          ref: dev
-          path: libaed-water
-
-      - name: Checkout libaed-benthic (AquaticEcoDynamics/libaed-benthic@master)
-        if: matrix.aed_api
-        uses: actions/checkout@v4
-        with:
-          repository: AquaticEcoDynamics/libaed-benthic
-          ref: master
-          path: libaed-benthic
-
-      - name: Checkout libaed-demo (AquaticEcoDynamics/libaed-demo@master)
-        if: matrix.aed_api
-        uses: actions/checkout@v4
-        with:
-          repository: AquaticEcoDynamics/libaed-demo
-          ref: master
-          path: libaed-demo
-
-      - name: Checkout libaed-api (AquaticEcoDynamics/libaed-api@main)
-        if: matrix.aed_api
-        uses: actions/checkout@v4
-        with:
-          repository: AquaticEcoDynamics/libaed-api
-          ref: main
-          path: libaed-api
+      # feature/aed-api checks out lib/libaed-api, lib/libaed-water,
+      # lib/libaed-benthic and lib/libaed-demo as submodules (same mechanism
+      # as lib/libaed2 and lib/forbear above) via `submodules: recursive` on
+      # the checkout step, pinned to fixed commits for reproducible builds.
+      # No separate checkout steps needed here.
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -220,30 +187,35 @@ jobs:
         run: ${{ matrix.make_cmd }}
 
       # ------------------------------------------------------------------
-      # feature/aed-api only: build the sibling AED libraries. libaed-water
+      # feature/aed-api only: build the AED libraries (now lib/libaed-* git
+      # submodules, resolved by build/fobos via ../lib/libaed-*). libaed-water
       # must build first (libaed-benthic/-demo/-api all include its
       # make_defs.inc and reference its mod/ dir); order between benthic,
-      # demo and api does not otherwise matter.
+      # demo and api does not otherwise matter. aed_external.o is a separate
+      # explicit target in libaed-api's Makefile, not part of its default
+      # `all`, and build/fobos links it directly -- must be built explicitly.
       # ------------------------------------------------------------------
       - name: Build libaed-water library
         if: matrix.aed_api
-        working-directory: libaed-water
+        working-directory: Simstrat/lib/libaed-water
         run: ${{ matrix.make_cmd }}
 
       - name: Build libaed-benthic library
         if: matrix.aed_api
-        working-directory: libaed-benthic
+        working-directory: Simstrat/lib/libaed-benthic
         run: ${{ matrix.make_cmd }}
 
       - name: Build libaed-demo library
         if: matrix.aed_api
-        working-directory: libaed-demo
+        working-directory: Simstrat/lib/libaed-demo
         run: ${{ matrix.make_cmd }}
 
       - name: Build libaed-api library
         if: matrix.aed_api
-        working-directory: libaed-api
-        run: ${{ matrix.make_cmd }}
+        working-directory: Simstrat/lib/libaed-api
+        run: |
+          ${{ matrix.make_cmd }}
+          ${{ matrix.make_cmd }} obj/aed_external.o
 
       - name: Build Simstrat
         working-directory: Simstrat/build
