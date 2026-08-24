@@ -43,7 +43,8 @@ read_model_wlev <- function(nc = NULL, lake_dir, model) {
                      "gotm_wet" = read_gotm_wlev(nc),
                      "glm_aed" = read_glm_wlev(nc),
                      "dy_cd" = read_dy_wlev(nc),
-                     "simstrat_aed2" = read_simstrat_wlev(nc)
+                     "simstrat_aed2" = read_simstrat_wlev(nc, model = "simstrat_aed2"),
+                     "simstrat_aed" = read_simstrat_wlev(nc, model = "simstrat_aed")
   )
   return(wlev)
 }

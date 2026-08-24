@@ -93,7 +93,13 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                      "simstrat_aed2" = read_simstrat_output(nc, vars_sim,
                                                             depths = depths,
                                                             incl_fluxes = incl_fluxes,
-                                                            date_index = date_index)
+                                                            date_index = date_index,
+                                                            model = "simstrat_aed2"),
+                     "simstrat_aed" = read_simstrat_output(nc, vars_sim,
+                                                           depths = depths,
+                                                           incl_fluxes = incl_fluxes,
+                                                           date_index = date_index,
+                                                           model = "simstrat_aed")
   )
   
   if (model == "gotm_wet" & !incl_fluxes & read_gotm_daily) {
@@ -136,7 +142,7 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
     }
   }
 
-  return(out_list)
+  return(.new_aeme_output(out_list, model = model))
 }
 
 
@@ -217,7 +223,7 @@ extract_model_depth <- function(model, lake_dir) {
     depth <- cfg$init_profiles$lake_depth
   } else if (model == "dy_cd") {
     depth <- cfg$lake_depth_m
-  } else if (model == "simstrat_aed2") {
+  } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
     hyps <- read_model_hypsograph(model = model, lake_dir = lake_dir)
     depth <- max(hyps$elev) - min(hyps$elev)
   }
@@ -244,7 +250,8 @@ load_model_config <- function(model, lake_dir, file) {
                    "gotm_wet" = "gotm",
                    "glm_aed"  = find_glm_nml_key(names(cfg_files)),
                    "dy_cd"    = "stg",
-                   "simstrat_aed2" = "simstrat")
+                   "simstrat_aed2" = "simstrat",
+                   "simstrat_aed" = "simstrat")
   }
   if (file %in% names(cfg_files)) {
     cfg_file <- cfg_files[[file]]
@@ -257,7 +264,7 @@ load_model_config <- function(model, lake_dir, file) {
     cfg <- read_nml(cfg_file)
   } else if (model == "dy_cd") {
     cfg <- readLines(cfg_file)
-  } else if (model == "simstrat_aed2") {
+  } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
     cfg <- jsonlite::fromJSON(cfg_file, simplifyVector = FALSE)
   }
   return(cfg)
@@ -287,7 +294,7 @@ extract_model_time <- function(nc, model) {
     dt <- as.POSIXct((ncdf4::ncvar_get(nc, "dyresmTime") - 2415018.5) *
                        86400, origin = "1899-12-30")
 
-  } else if (model == "simstrat_aed2") {
+  } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
     units_prefix <- "seconds since "
     t <- ncdf4::ncvar_get(nc, "time")
     origin <- gsub(units_prefix, "", ncdf4::ncatt_get(nc, "time", "units")$value)

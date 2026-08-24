@@ -4,7 +4,7 @@
 \alias{read_simstrat_wlev}
 \title{Read Simstrat-AED2 lake water level output}
 \usage{
-read_simstrat_wlev(nc = NULL, file)
+read_simstrat_wlev(nc = NULL, file, model = "simstrat_aed2")
 }
 \arguments{
 \item{nc}{An object of class \code{ncdf4} (as returned by either 
@@ -12,6 +12,12 @@ read_simstrat_wlev(nc = NULL, file)
  or function \code{\link[ncdf4]{nc_create}}), indicating what file to read from.}
 
 \item{file}{File path to netCDF file. Only used if \code{nc} is NULL.}
+
+\item{model}{character; which Simstrat coupling this output came from,
+\code{"simstrat_aed2"} (default) or \code{"simstrat_aed"}. Selects the matching
+\code{key_naming} column for variable-name translation -- the netCDF file
+format itself (produced by \code{\link{write_simstrat_nc}}) is identical
+either way.}
 }
 \value{
 Data frame with Date and LKE_lvlwtr columns

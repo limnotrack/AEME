@@ -14,7 +14,8 @@ check_model_output <- function(aeme, model, path) {
     "dy_cd"    = file.path(lake_dir, model, "DYsim.nc"),
     "glm_aed"  = file.path(lake_dir, model, "output", "output.nc"),
     "gotm_wet" = file.path(lake_dir, model, "output", "output.nc"),
-    "simstrat_aed2" = file.path(lake_dir, model, "output.nc")
+    "simstrat_aed2" = file.path(lake_dir, model, "output.nc"),
+    "simstrat_aed" = file.path(lake_dir, model, "output.nc")
   )
 
   # Open NetCDF safely
@@ -25,7 +26,8 @@ check_model_output <- function(aeme, model, path) {
          "dy_cd"    = check_dyresm_output(nc, out_file, aeme_time),
          "gotm_wet" = check_gotm_output(nc, out_file),
          "glm_aed"  = check_glm_output(nc, out_file),
-         "simstrat_aed2" = check_simstrat_output(nc, out_file)
+         "simstrat_aed2" = check_simstrat_output(nc, out_file),
+         "simstrat_aed" = check_simstrat_output(nc, out_file)
   )
   
   cli_inform_safe("{.val {model}} output file {.file {out_file}} is valid.")

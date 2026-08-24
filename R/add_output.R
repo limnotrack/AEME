@@ -15,7 +15,8 @@ add_output <- function(aeme, out) {
   
   outp[[ens_lab]] <- list(dy_cd = out[["dy_cd"]], glm_aed = out[["glm_aed"]],
                           gotm_wet = out[["gotm_wet"]],
-                          simstrat_aed2 = out[["simstrat_aed2"]])
+                          simstrat_aed2 = out[["simstrat_aed2"]],
+                          simstrat_aed = out[["simstrat_aed"]])
   outp$n_members <- sum(grepl("ens", names(outp)))
   
   output(aeme) <- outp

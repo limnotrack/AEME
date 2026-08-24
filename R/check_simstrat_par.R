@@ -20,10 +20,19 @@ check_simstrat_par <- function(file) {
     file.exists(file.path(base_path, path))
   }
 
+  # BGC config section is "AED2Config" for Simstrat-AED2, "AEDConfig" for
+  # Simstrat-AED -- accept whichever is present rather than assuming
+  # AED2Config, so this validator works for either coupling.
+  bgc_tag <- if ("AEDConfig" %in% names(par)) "AED" else "AED2"
+  bgc_section <- paste0(bgc_tag, "Config")
+
   # --- Required sections ---
-  required_sections <- c("Input", "Output", "ModelConfig", "AED2Config",
+  required_sections <- c("Input", "Output", "ModelConfig",
                          "Simulation", "ModelParameters")
   missing_sections <- setdiff(required_sections, names(par))
+  if (!any(c("AEDConfig", "AED2Config") %in% names(par))) {
+    missing_sections <- c(missing_sections, "AEDConfig or AED2Config")
+  }
   if (length(missing_sections) > 0) {
     issues <- c(issues, paste("Missing sections:",
                               paste(missing_sections, collapse = ", ")))
@@ -41,16 +50,17 @@ check_simstrat_par <- function(file) {
     }
   }
 
-  # --- AED2 checks ---
-  aed2 <- par[["AED2Config"]]
+  # --- AED/AED2 checks ---
+  aed_cfg <- par[[bgc_section]]
   model_cfg <- par[["ModelConfig"]]
-  if (!is.null(aed2) && isTRUE(model_cfg[["CoupleAED2"]])) {
-    if (!check_file(aed2[["AED2ConfigFile"]])) {
-      issues <- c(issues, paste("AED2 config file not found:",
-                                aed2[["AED2ConfigFile"]]))
+  couple_key <- paste0("Couple", bgc_tag)
+  if (!is.null(aed_cfg) && isTRUE(model_cfg[[couple_key]])) {
+    if (!check_file(aed_cfg[[paste0(bgc_tag, "ConfigFile")]])) {
+      issues <- c(issues, paste0(bgc_tag, " config file not found: ",
+                                 aed_cfg[[paste0(bgc_tag, "ConfigFile")]]))
     }
-    for (nm in c("PathAED2initial", "PathAED2inflow")) {
-      path <- aed2[[nm]]
+    for (nm in c(paste0("Path", bgc_tag, "initial"), paste0("Path", bgc_tag, "inflow"))) {
+      path <- aed_cfg[[nm]]
       if (is.null(path) || !dir.exists(file.path(base_path, path))) {
         issues <- c(issues, paste0(nm, " directory not found: ", path))
       }
@@ -60,7 +70,7 @@ check_simstrat_par <- function(file) {
   # --- Output checks ---
   output <- par[["Output"]]
   if (!is.null(output)) {
-    if (isTRUE(model_cfg[["CoupleAED2"]]) &&
+    if (isTRUE(model_cfg[[couple_key]]) &&
         !"WaterH" %in% unlist(output[["Variables"]])) {
       issues <- c(issues,
                   "Output.Variables should include \"WaterH\" so AEME can

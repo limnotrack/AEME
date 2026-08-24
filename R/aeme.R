@@ -258,7 +258,8 @@ aeme_constructor <- function(
         dy_cd = 1,
         glm_aed = 1,
         gotm_wet = 1,
-        simstrat_aed2 = 1
+        simstrat_aed2 = 1,
+        simstrat_aed = 1
       )
     )
   }
@@ -270,7 +271,8 @@ aeme_constructor <- function(
         dy_cd = 1,
         glm_aed = 1,
         gotm_wet = 1,
-        simstrat_aed2 = 1
+        simstrat_aed2 = 1,
+        simstrat_aed = 1
       )
     )
   }
@@ -298,7 +300,8 @@ aeme_constructor <- function(
       dy_cd = NULL,
       glm_aed = NULL,
       gotm_wet = NULL,
-      simstrat_aed2 = NULL
+      simstrat_aed2 = NULL,
+      simstrat_aed = NULL
     )
   }
   param_names <- param_colnames(incl_opt = FALSE)
@@ -511,7 +514,7 @@ aeme_constructor <- function(
         class = "aeme_inform_spin_up_default"
       )
       time$spin_up <- list(dy_cd = 2, glm_aed = 2, gotm_wet = 2,
-                           simstrat_aed2 = 2)
+                           simstrat_aed2 = 2, simstrat_aed = 2)
     } else {
       cli::cli_abort(
         c("{.arg time$spin_up} must be a {.cls list} of numeric values.",
@@ -549,7 +552,7 @@ aeme_constructor <- function(
       class = "aeme_error_configuration"
     )
   }
-  for (model_cfg in c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2")) {
+  for (model_cfg in c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2", "simstrat_aed")) {
     val <- configuration[[model_cfg]]
     if (!is.null(val) && !is.list(val)) {
       cli::cli_abort(
@@ -1307,7 +1310,8 @@ setMethod("show", "Aeme", function(object) {
   n_glm     <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["glm_aed"]])), integer(1))
   n_gotm    <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["gotm_wet"]])), integer(1))
   n_simstrat <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["simstrat_aed2"]])), integer(1))
-  if (outp$n_members == 0) n_dyresm <- n_glm <- n_gotm <- n_simstrat <- 0L
+  n_simstrat_aed <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["simstrat_aed"]])), integer(1))
+  if (outp$n_members == 0) n_dyresm <- n_glm <- n_gotm <- n_simstrat <- n_simstrat_aed <- 0L
   
   # Inflow summary
   n_inflows    <- length(inf$data)
@@ -1346,8 +1350,8 @@ setMethod("show", "Aeme", function(object) {
     "*" = "Model controls: {present_absent(config[['model_controls']])}",
     "*" = "Use biogeochemical model: {ifelse(config[['use_bgc']], cli::col_green('Yes'), cli::col_red('No'))}"
   ))
-  models <- c("DY-CD", "GLM-AED", "GOTM-WET", "SIMSTRAT-AED2")
-  phys   <- c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2")
+  models <- c("DY-CD", "GLM-AED", "GOTM-WET", "SIMSTRAT-AED2", "SIMSTRAT-AED")
+  phys   <- c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2", "simstrat_aed")
 
   header_row <- cli::ansi_columns(
     c(cli::col_cyan("Model"), cli::col_cyan("Physical"), cli::col_cyan("Biogeochemical")),
@@ -1410,6 +1414,7 @@ setMethod("show", "Aeme", function(object) {
     "*" = "GLM-AED:       {paste(n_glm,      collapse = ' ')}",
     "*" = "GOTM-WET:      {paste(n_gotm,     collapse = ' ')}",
     "*" = "SIMSTRAT-AED2: {paste(n_simstrat, collapse = ' ')}",
+    "*" = "SIMSTRAT-AED:  {paste(n_simstrat_aed, collapse = ' ')}",
     "*" = "Variables: {length(output_vars)}"
   ))
   max_vars <- 10

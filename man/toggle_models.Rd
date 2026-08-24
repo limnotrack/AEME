@@ -26,6 +26,7 @@ toggle_models("GLM-AED")  # Returns "glm_aed"
 toggle_models("gotm_wet", to = "display")  # Returns "GOTM-WET"
 toggle_models("GOTM-WET", to = "code")  # Returns "gotm_wet"
 toggle_models("simstrat_aed2", to = "display")  # Returns "SIMSTRAT-AED2"
+toggle_models("simstrat_aed", to = "display")  # Returns "SIMSTRAT-AED"
 df <- data.frame(model = rep(c("dy_cd", "glm_aed"), 50))
 df <- df |>
         dplyr::mutate(Model = toggle_models(model, to = "display"))

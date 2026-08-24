@@ -53,7 +53,8 @@ install_models <- function(model = NULL,
     glm_aed       = install_glm_aed,
     gotm_wet      = install_gotm_wet,
     dy_cd         = install_dy_cd,
-    simstrat_aed2 = install_simstrat_aed2
+    simstrat_aed2 = install_simstrat_aed2,
+    simstrat_aed  = install_simstrat_aed
   )
 
   unknown <- setdiff(model, names(installers))

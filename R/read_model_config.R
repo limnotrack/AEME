@@ -31,7 +31,7 @@ read_model_config <- function(model, lake_dir) {
       read_aed_param_csv(f)
     } else if (file_type == "yaml") {
       yaml::read_yaml(file = f)
-    } else if (file_type == "par" && model == "simstrat_aed2") {
+    } else if (file_type == "par" && model %in% c("simstrat_aed2", "simstrat_aed")) {
       # Only Simstrat's own .par file is JSON - dy_cd's dyresm3p1.par shares
       # the same extension but is plain text, and falls through to
       # readLines() below like the rest of DYRESM-CAEDYM's config files.
@@ -61,7 +61,7 @@ read_model_config <- function(model, lake_dir) {
     # Remove gotm and output from list
     cfg[["gotm"]] <- NULL
     cfg[["output"]] <- NULL
-  } else if (model == "simstrat_aed2") {
+  } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
     out$hydrodynamic <- cfg[["simstrat"]]
     # Remove simstrat from list
     cfg[["simstrat"]] <- NULL

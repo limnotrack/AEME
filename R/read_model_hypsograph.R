@@ -37,10 +37,10 @@ read_model_hypsograph <- function(model, lake_dir, file = NULL) {
     hyps <- stg$bathymetry |>
       dplyr::mutate(depth = elev - stg$surface_elev) |>
       dplyr::arrange(dplyr::desc(elev))
-  } else if (model == "simstrat_aed2") {
+  } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
     if (is.null(file)) {
       bathy_filename <- cfg$Input$Morphology
-      file <- file.path(lake_dir, "simstrat_aed2", bathy_filename)
+      file <- file.path(lake_dir, model, bathy_filename)
     }
     hyps <- read_simstrat_hyps(file = file) |>
       dplyr::mutate(depth = elev - max(elev)) |>

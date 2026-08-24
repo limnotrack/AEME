@@ -136,7 +136,8 @@ build_aeme <- function(aeme = NULL,
                      "i" = "4: specific humidity (kg/kg)."))
   }
   
-  all_models <- c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1, "simstrat_aed2" = 1)
+  all_models <- c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1, "simstrat_aed2" = 1,
+                  "simstrat_aed" = 1)
   if (is.null(inf_factor))  inf_factor  <- all_models
   if (is.null(outf_factor)) outf_factor <- all_models
   
@@ -676,10 +677,29 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                    met = met, lake_dir = lake_dir,
                    inf_factor = inf_factor[["simstrat_aed2"]],
                    outf_factor = outf_factor[["simstrat_aed2"]],
-                   Kw = Kw, use_bgc = use_bgc, overwrite_par = overwrite)
+                   Kw = Kw, use_bgc = use_bgc, overwrite_par = overwrite,
+                   bgc_lib = "aed2")
     # run_simstrat_aed2(sim_folder = lake_dir, verbose = TRUE)
   }
-  
+  if ("simstrat_aed" %in% model) {
+    #--- configure Simstrat-AED
+    dates.simstrat_aed <- c(date_range[1] - spin_up[["simstrat_aed"]], date_range[2]) |>
+      `names<-`(NULL)
+
+    build_simstrat(lakename, model_controls = model_controls,
+                   date_range = dates.simstrat_aed, lake_shape = lake_shape,
+                   lat = lat, lon = lon, hyps = hyps, lvl = lvl,
+                   init_prof = init_prof, init_depth = init_depth,
+                   inf = inf, outf = outf,
+                   heights_wdr = unlist(aeme_outf[["elevation"]]),
+                   met = met, lake_dir = lake_dir,
+                   inf_factor = inf_factor[["simstrat_aed"]],
+                   outf_factor = outf_factor[["simstrat_aed"]],
+                   Kw = Kw, use_bgc = use_bgc, overwrite_par = overwrite,
+                   bgc_lib = "aed")
+    # run_simstrat_aed(sim_folder = lake_dir, verbose = TRUE)
+  }
+
   # Model parameters ----
   param <- parameters(aeme = aeme)
   if (nrow(param) > 1) {
@@ -708,6 +728,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   if ("simstrat_aed2" %in% model) {
     check_simstrat_par(file = cfg_files$simstrat_aed2["simstrat"])
+  }
+  if ("simstrat_aed" %in% model) {
+    check_simstrat_par(file = cfg_files$simstrat_aed["simstrat"])
   }
   
   

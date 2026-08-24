@@ -60,7 +60,8 @@ get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir) {
     dy_cd = resolve_dy_cd,
     glm_aed = resolve_glm_aed,
     gotm_wet = resolve_gotm_wet,
-    simstrat_aed2 = resolve_simstrat_aed2
+    simstrat_aed2 = resolve_simstrat_aed2,
+    simstrat_aed = resolve_simstrat_aed2
   )
   
   # Loop over models and resolve paths

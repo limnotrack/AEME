@@ -63,7 +63,10 @@ load_configuration <- function(aeme,
                               bgc = model_config[["gotm_wet"]][["bgc"]]),
               simstrat_aed2 = list(hydrodynamic =
                                      model_config[["simstrat_aed2"]][["hydrodynamic"]],
-                                   bgc = model_config[["simstrat_aed2"]][["bgc"]])
+                                   bgc = model_config[["simstrat_aed2"]][["bgc"]]),
+              simstrat_aed = list(hydrodynamic =
+                                    model_config[["simstrat_aed"]][["hydrodynamic"]],
+                                  bgc = model_config[["simstrat_aed"]][["bgc"]])
   )
 
   configuration(aeme) <- out

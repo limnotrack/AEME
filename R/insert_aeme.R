@@ -30,7 +30,8 @@ insert_aeme <- function() {
         \"dy_cd\" = 365,
         \"glm_aed\" = 365,
         \"gotm_wet\" = 365,
-        \"simstrat_aed2\" = 365
+        \"simstrat_aed2\" = 365,
+        \"simstrat_aed\" = 365
         )
       ),
     # Define observations list
@@ -55,7 +56,8 @@ insert_aeme <- function() {
         \"dy_cd\" = 1,
         \"glm_aed\" = 1,
         \"gotm_wet\" = 1,
-        \"simstrat_aed2\" = 1
+        \"simstrat_aed2\" = 1,
+        \"simstrat_aed\" = 1
         )
       ),
     # Define outflows list
@@ -70,7 +72,8 @@ insert_aeme <- function() {
         \"dy_cd\" = 1,
         \"glm_aed\" = 1,
         \"gotm_wet\" = 1,
-        \"simstrat_aed2\" = 1
+        \"simstrat_aed2\" = 1,
+        \"simstrat_aed\" = 1
         )
       ),
     # Define water balance list

@@ -2,10 +2,14 @@
 #'
 #' `dy_cd` and `glm_aed` use the exact same bulk aerodynamic evaporation
 #' formula in `simulate_lake_nudged()`, so they share one fitted water
-#' balance outflow parameter set (C, h_inv); `gotm_wet` and `simstrat_aed2`
-#' each use their own distinct evaporation formula and so need their own
-#' fit. The family key is the "representative" model for that formula, so
-#' the shared `dy_cd`/`glm_aed` family is keyed by `"glm_aed"`.
+#' balance outflow parameter set (C, h_inv); `gotm_wet` and Simstrat
+#' (`simstrat_aed2`/`simstrat_aed`) each use their own distinct evaporation
+#' formula and so need their own fit. `simstrat_aed` shares `simstrat_aed2`'s
+#' family rather than getting its own -- the evaporation formula lives in
+#' Simstrat's own physics, which doesn't depend on which BGC library it's
+#' coupled to. The family key is the "representative" model for that
+#' formula, so the shared `dy_cd`/`glm_aed` family is keyed by `"glm_aed"`,
+#' and the shared Simstrat family by `"simstrat_aed2"`.
 #'
 #' This is the single source of truth for that grouping, used by
 #' `calc_water_balance()`, `get_wbal_param()`, `set_wbal_param()`, and
@@ -17,7 +21,8 @@
 #' @noRd
 wbal_evap_family <- function(model) {
   family_map <- c(dy_cd = "glm_aed", glm_aed = "glm_aed",
-                  gotm_wet = "gotm_wet", simstrat_aed2 = "simstrat_aed2")
+                  gotm_wet = "gotm_wet", simstrat_aed2 = "simstrat_aed2",
+                  simstrat_aed = "simstrat_aed2")
   unname(family_map[model])
 }
 

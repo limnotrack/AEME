@@ -15,11 +15,13 @@ time:
       glm_aed: 2
       gotm_wet: 1
       simstrat_aed2: 2
+      simstrat_aed: 2
 configuration:
   dy_cd: null
   glm_aed: null
   gotm_wet: null
   simstrat_aed2: null
+  simstrat_aed: null
 observations:
    lake: data/lake_obs.csv
    level: data/water_level.csv
@@ -39,6 +41,7 @@ inflows:
       glm_aed: 1
       gotm_wet: 1
       simstrat_aed2: 1
+      simstrat_aed: 1
 outflows:
    data:                                        # file with outflow data, with column headers according to LakeEnsemblR vocabulary [csv file; must be provided if outflows -> use is true]
       outflow:
@@ -48,6 +51,7 @@ outflows:
       glm_aed: 1
       gotm_wet: 1
       simstrat_aed2: 1
+      simstrat_aed: 1
    elevation:                               # Elevation of the outflow. If the outflow is a surface outflow use "-1". If there are more than one outflow in the outflow file, this must be a list with one value per outflow
       outflow: -1
 water_balance:
@@ -63,3 +67,4 @@ output:
    glm_aed: null
    gotm_wet: null
    simstrat_aed2: null
+   simstrat_aed: null

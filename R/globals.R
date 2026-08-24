@@ -107,6 +107,7 @@ utils::globalVariables(c(
   "gotm_wet_parameters",
   "simstrat_aed2_parameters",
   "simstrat_aed2_parameter_library",
+  "simstrat_aed_parameters",
   "group",
   
   # Physical/numerical

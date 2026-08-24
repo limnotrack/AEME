@@ -84,7 +84,7 @@ input_model_parameters <- function(aeme, model, param, path) {
         make_met_gotm(df_met = met, path.gotm = model_path,
                      return_colname = FALSE, lat = lke$latitude,
                      lon = lke$longitude)
-      } else if (m == "simstrat_aed2") {
+      } else if (m %in% c("simstrat_aed2", "simstrat_aed")) {
         simstrat_par <- jsonlite::fromJSON(file.path(model_path, "simstrat.par"),
                                            simplifyVector = FALSE)
         make_met_simstrat(met = met, path_simstrat = model_path,
@@ -113,14 +113,15 @@ input_model_parameters <- function(aeme, model, param, path) {
         make_wdr_glm(outf = wdr, path_glm = model_path, update_nml = FALSE)
       } else if(m == "gotm_wet") {
         make_wdr_gotm(outf = wdr, path_gotm = model_path, outf_factor = 1)
-      } else if (m == "simstrat_aed2") {
+      } else if (m %in% c("simstrat_aed2", "simstrat_aed")) {
         simstrat_par <- jsonlite::fromJSON(file.path(model_path, "simstrat.par"),
                                            simplifyVector = FALSE)
         surface_elev <- min(inp$hypsograph$elev) + inp$init_depth
         make_wdr_simstrat(outf = wdr, heights_wdr = unlist(outflows(aeme)[["elevation"]]),
                           path_simstrat = model_path, surface_elev = surface_elev,
                           outf_factor = 1,
-                          ref_year = as.integer(simstrat_par$Simulation$`Reference year`))
+                          ref_year = as.integer(simstrat_par$Simulation$`Reference year`),
+                          model = m)
       } else if(m == "dy_cd") {
         make_dy_wdr(lakename = lakename, wdrData = wdr, filePath = model_path,
                    info = "test")
@@ -146,9 +147,9 @@ input_model_parameters <- function(aeme, model, param, path) {
         make_inf_gotm(inf_list = inf, inf_factor = inf_factor,
                      use_bgc = use_bgc, path_gotm = model_path,
                      update_gotm = FALSE)
-      } else if (m == "simstrat_aed2") {
+      } else if (m %in% c("simstrat_aed2", "simstrat_aed")) {
         cfg <- configuration(aeme)
-        use_bgc <- !is.null(cfg[["simstrat_aed2"]][["bgc"]])
+        use_bgc <- !is.null(cfg[[m]][["bgc"]])
         simstrat_par <- jsonlite::fromJSON(file.path(model_path, "simstrat.par"),
                                            simplifyVector = FALSE)
         surface_elev <- min(inp$hypsograph$elev) + inp$init_depth
@@ -156,7 +157,8 @@ input_model_parameters <- function(aeme, model, param, path) {
                           surface_elev = surface_elev, inf_factor = inf_factor,
                           model_controls = configuration(aeme)$model_controls,
                           use_bgc = use_bgc,
-                          ref_year = as.integer(simstrat_par$Simulation$`Reference year`))
+                          ref_year = as.integer(simstrat_par$Simulation$`Reference year`),
+                          model = m)
       } else if(m == "dy_cd") {
         make_dy_inf(lakename = lakename, infList = inf,
                    filePath = model_path, inf_factor = inf_factor)
@@ -351,6 +353,39 @@ input_model_parameters <- function(aeme, model, param, path) {
         cfg_file <- file.path(lake_dir, m, "aed2.nml")
         nml <- read_nml(cfg_file)
         idx <- which(all_p$file == "aed2.nml")
+        arg_list <- lapply(idx, \(p) unlist(all_p$value[p]))
+        names(arg_list) <- sapply(idx, \(p) gsub("/", "::", all_p$name[p]))
+        nml <- set_nml(nml, arg_list = arg_list)
+        write_nml(nml, cfg_file)
+      }
+    }
+    #* Simstrat-AED ----
+    if (m == "simstrat_aed") {
+      # m <- "simstrat_aed"
+      if ("simstrat.par" %in% all_p$file) {
+        cfg_file <- file.path(lake_dir, m, "simstrat.par")
+        par <- jsonlite::fromJSON(cfg_file, simplifyVector = FALSE)
+        idx <- which(all_p$file == "simstrat.par")
+        pnames <- lapply(idx, \(p) {
+          list(name = strsplit(all_p$name[p], "/")[[1]],
+               value = unlist(all_p$value[p]))
+        })
+        for (i in pnames) {
+          if (length(i[["name"]]) == 2) {
+            par[[i[["name"]][1]]][[i[["name"]][2]]] <- i[["value"]]
+          } else if (length(i[["name"]]) == 3) {
+            par[[i[["name"]][1]]][[i[["name"]][2]]][[i[["name"]][3]]] <- i[["value"]]
+          }
+        }
+        jsonlite::write_json(par, cfg_file, pretty = TRUE, auto_unbox = TRUE,
+                             null = "null")
+      }
+      # Note: aed_phyto_pars.csv/aed_zoop_pars.csv are CSV, not nml -- not
+      # supported here either, same limitation as simstrat_aed2 above.
+      if ("aed.nml" %in% all_p$file) {
+        cfg_file <- file.path(lake_dir, m, "aed.nml")
+        nml <- read_nml(cfg_file)
+        idx <- which(all_p$file == "aed.nml")
         arg_list <- lapply(idx, \(p) unlist(all_p$value[p]))
         names(arg_list) <- sapply(idx, \(p) gsub("/", "::", all_p$name[p]))
         nml <- set_nml(nml, arg_list = arg_list)

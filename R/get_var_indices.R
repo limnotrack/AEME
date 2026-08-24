@@ -64,7 +64,7 @@ get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
       as.POSIXct() |>
       as.Date()
     dates <- seq.Date(date_start, by = 1, length.out = length(out.steps))
-  } else if (model == "simstrat_aed2") {
+  } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
     seconds_since <- ncdf4::ncvar_get(nc, "time")
     date_start <- as.POSIXct(gsub("seconds since ", "",
                                   ncdf4::ncatt_get(nc, "time", "units")$value),

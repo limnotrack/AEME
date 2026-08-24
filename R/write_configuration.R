@@ -39,7 +39,8 @@ write_configuration <- function(aeme, model, path = getwd(),
     dy_cd    = write_config_dy_cd,
     glm_aed  = write_config_glm_aed,
     gotm_wet = write_config_gotm_wet,
-    simstrat_aed2 = write_config_simstrat_aed2
+    simstrat_aed2 = write_config_simstrat_aed2,
+    simstrat_aed  = write_config_simstrat_aed
   )
 
   lapply(model, function(m) {
@@ -255,6 +256,46 @@ write_config_simstrat_aed2 <- function(model_config, model_dir, name) {
     if (!is.null(model_config[["bgc"]][["aed2_zoop_pars"]])) {
       write_nml(model_config[["bgc"]][["aed2_zoop_pars"]],
                file.path(model_dir, "aed2_zoop_pars.nml"))
+    }
+  }
+  invisible()
+}
+
+#' Write Simstrat-AED configuration
+#'
+#' Mirrors \code{\link{write_config_simstrat_aed2}} for the Simstrat-AED
+#' (not AED2) coupling -- AED's phyto/zoo/macrophyte par files are CSV, not
+#' `%`-syntax nml, so those are written with \code{\link{write_aed_param_csv}}
+#' (the same writer GLM-AED's config uses) instead of \code{\link{write_nml}}.
+#'
+#' @inheritParams build_aeme
+#'
+#' @return write Simstrat-AED config files to disk
+#' @noRd
+write_config_simstrat_aed <- function(model_config, model_dir, name) {
+
+  model_dir <- check_path(model_dir, create = TRUE)
+  if (is.null(model_config[["hydrodynamic"]]))
+    cli::cli_abort("No Simstrat hydrodynamic configuration present")
+  par_file <- file.path(model_dir, "simstrat.par")
+  jsonlite::write_json(model_config[["hydrodynamic"]], par_file,
+                       pretty = TRUE, auto_unbox = TRUE, null = "null")
+
+  if (!is.null(model_config[["bgc"]])) {
+    if (!is.null(model_config[["bgc"]][["aed"]])) {
+      write_nml(model_config[["bgc"]][["aed"]], file.path(model_dir, "aed.nml"))
+    }
+    if (!is.null(model_config[["bgc"]][["aed_phyto_pars"]])) {
+      write_aed_param_csv(model_config[["bgc"]][["aed_phyto_pars"]],
+                          file.path(model_dir, "aed_phyto_pars.csv"))
+    }
+    if (!is.null(model_config[["bgc"]][["aed_zoop_pars"]])) {
+      write_aed_param_csv(model_config[["bgc"]][["aed_zoop_pars"]],
+                          file.path(model_dir, "aed_zoop_pars.csv"))
+    }
+    if (!is.null(model_config[["bgc"]][["aed_macrophyte_pars"]])) {
+      write_aed_param_csv(model_config[["bgc"]][["aed_macrophyte_pars"]],
+                          file.path(model_dir, "aed_macrophyte_pars.csv"))
     }
   }
   invisible()

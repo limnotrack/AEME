@@ -88,6 +88,15 @@ get_model_config_files <- function(aeme = NULL, model, path = NULL, lake_dir) {
     out$simstrat_aed2 <- simstrat_files
   }
 
+  if ("simstrat_aed" %in% model) {
+    # AED (unlike AED2) uses CSV-based phyto/zoo/macrophyte par files (same
+    # format as GLM-AED's, since both link the same AED library), so this
+    # pattern includes .csv alongside .par/.nml.
+    simstrat_files <- .find_model_files(lake_dir, "simstrat_aed", "\\.(par|nml|csv)$")
+    names(simstrat_files) <- basename(tools::file_path_sans_ext(simstrat_files))
+    out$simstrat_aed <- simstrat_files
+  }
+
   return(out)
 }
 
