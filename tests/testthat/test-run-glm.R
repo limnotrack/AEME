@@ -2,6 +2,7 @@ test_that("running GLM works", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   path <- tempdir()
+  unlink(list.files(path, recursive = TRUE, full.names = TRUE))
   model_controls <- get_model_controls()
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
@@ -89,6 +90,60 @@ test_that("running GLM works", {
   #   get_var(aeme = aeme, model = model, var_sim = "HYD_temp",
   #           depth = max_depth + 1)
   # })
+})
+
+test_that("editing and running GLM-AED via the thin path-based wrapper works", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
+  unlink(list.files(path, recursive = TRUE, full.names = TRUE))
+  model_controls <- get_model_controls()
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5,
+                     use_bgc = FALSE)
+
+  # From here on, only `path_glm` is used -- no `aeme` object required,
+  # mirroring a GLM-AED-only user's workflow of editing an existing
+  # configuration directory, running it, and loading the output.
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  path_glm <- file.path(lake_dir, "glm_aed")
+
+  # -- parameters --
+  old_kw <- get_glm_param(path_glm, "Kw")
+  set_glm_param(path_glm, Kw = old_kw * 1.5)
+  testthat::expect_equal(get_glm_param(path_glm, "Kw"), old_kw * 1.5)
+
+  # -- inflows --
+  inf_df <- read.csv(file.path(path_glm, "bcs", "inflow_FWMT.csv"))
+  inf_df <- data.frame(Date = as.Date(inf_df$time),
+                       HYD_flow = inf_df$flow * 86400 * 1.1,
+                       HYD_temp = inf_df$temp,
+                       CHM_salt = inf_df$salt)
+  set_glm_inflows(path_glm, list_inf = list(FWMT = inf_df), mass = FALSE)
+  new_inf <- read.csv(file.path(path_glm, "bcs", "inflow_FWMT.csv"))
+  testthat::expect_equal(nrow(new_inf), nrow(inf_df))
+
+  # -- outflows --
+  outf_df <- read.csv(file.path(path_glm, "bcs", "outflow_outflow.csv"))
+  outf_df <- data.frame(Date = as.Date(outf_df$time),
+                        HYD_flow = outf_df$flow * 0.99)
+  set_glm_outflows(path_glm, outf = list(outflow = outf_df),
+                   heights_wdr = c(outflow = 12.07))
+  testthat::expect_true(file.exists(file.path(path_glm, "bcs",
+                                              "outflow_outflow.csv")))
+
+  # -- run and load output, all from the path alone --
+  run_glm_aed(sim_folder = path_glm)
+  outfile <- file.path(path_glm, "output", "output.nc")
+  testthat::expect_true(file.exists(outfile))
+  out <- read_glm_output(file = outfile, vars_sim = "HYD_temp")
+  testthat::expect_true(nrow(out$HYD_temp) > 0)
+  
+  out_raw <- read_glm_output(file = outfile, raw_output = TRUE,
+                             load_all = TRUE)
+  testthat::expect_true(nrow(out_raw$temp) > 0)
+  testthat::expect_true(class(out_raw$zarea) == "aeme_grouped_var")
 })
 
 test_that("running GLM with different exec works", {
