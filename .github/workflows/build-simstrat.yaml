@@ -234,9 +234,13 @@ jobs:
         run: echo "F90=gfortran" >> "$GITHUB_ENV"
 
       # Full-edition (AED+) only -- the base AED edition builds without these.
+      # Destinations are relative to Simstrat/lib/ (matching build/fobos'
+      # ../lib/libaed-* references) -- not the workspace root, since Simstrat
+      # is checked out into a Simstrat/ subdirectory above, not the root.
       - name: Clone private AquaticEcoDynamics repos
         if: matrix.aed_full
         shell: bash
+        working-directory: Simstrat
         env:
           TOKEN: ${{ secrets.AED_PRIVATE_PAT }}
         run: |
@@ -246,12 +250,12 @@ jobs:
 
       - name: Clone phreeqcrm (public)
         if: matrix.aed_full
+        working-directory: Simstrat
         run: git clone --depth 1 https://github.com/usgs-coupled/phreeqcrm lib/phreeqcrm
 
-      - name: Clone libaed-demo (public)
-        if: matrix.aed_api
-        run: git clone --depth 1 https://github.com/AquaticEcoDynamics/libaed-demo lib/libaed-demo
-
+      # libaed-demo is already a git submodule of Simstrat (see .gitmodules),
+      # checked out by `submodules: recursive` on the checkout step above --
+      # no separate clone needed, just the build below.
 
       # All entries (tagged releases and feature/aed-api alike) build the old
       # vendored lib/libaed2 -- on feature/aed-api it now coexists with the
@@ -282,32 +286,39 @@ jobs:
 
       - name: Build libaed-demo library
         if: matrix.aed_api
-        working-directory: lib/libaed-demo
-        run: make
+        working-directory: Simstrat/lib/libaed-demo
+        run: ${{ matrix.make_cmd }}
 
       - name: Build libaed-riparian library
         if: matrix.aed_full
-        working-directory: lib/libaed-riparian
-        run: make
+        working-directory: Simstrat/lib/libaed-riparian
+        run: ${{ matrix.make_cmd }}
 
       - name: Build libaed-lighting library
         if: matrix.aed_full
-        working-directory: lib/libaed-lighting
-        run: make
+        working-directory: Simstrat/lib/libaed-lighting
+        run: ${{ matrix.make_cmd }}
 
       - name: Build phreeqcrm
         if: matrix.aed_full
-        working-directory: lib/phreeqcrm
+        working-directory: Simstrat/lib/phreeqcrm
         run: |
           mkdir build
           cd build
-          cmake .. -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_BUILD_TYPE=Release
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            # Default generator on the windows-latest runner is Visual Studio
+            # (MSVC), which would build an ABI-incompatible lib against the
+            # MinGW-gfortran toolchain used for everything else here.
+            cmake .. -G "MinGW Makefiles" -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_BUILD_TYPE=Release
+          else
+            cmake .. -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_BUILD_TYPE=Release
+          fi
           cmake --build . --config Release -j 2
 
       - name: Exclude aed_plots.F90 from libaed-dev (needs libgd, not installed here)
         if: matrix.aed_full
         shell: bash
-        working-directory: lib/libaed-dev
+        working-directory: Simstrat/lib/libaed-dev
         run: |
           sed -i '/OBJS=\${objdir}\/aed_campbell\.o/i DEFINES+=-D_NO_PLOTS_' Makefile
           sed -i '/aed_plots\.o \\$/d' Makefile
@@ -316,22 +327,22 @@ jobs:
 
       - name: Build libaed-dev library
         if: matrix.aed_full
-        working-directory: lib/libaed-dev
-        run: make PHREEQDIR=../phreeqcrm
+        working-directory: Simstrat/lib/libaed-dev
+        run: ${{ matrix.make_cmd }} PHREEQDIR=../phreeqcrm
 
       # Base (AED) edition omits AEDRIPDIR/AEDLGTDIR/AEDDEVDIR entirely -- the
       # private libaed-riparian/-lighting/-dev repos aren't cloned/built for
       # this edition, and libaed-api's Makefile accepts them being omitted.
       - name: Build libaed-api library
         if: matrix.aed_api
-        working-directory: lib/libaed-api
+        working-directory: Simstrat/lib/libaed-api
         run: |
           if [ "${{ matrix.aed_full }}" = "true" ]; then
-            make AEDBENDIR=../libaed-benthic AEDDMODIR=../libaed-demo AEDRIPDIR=../libaed-riparian AEDLGTDIR=../libaed-lighting AEDDEVDIR=../libaed-dev
-            make AEDRIPDIR=../libaed-riparian AEDLGTDIR=../libaed-lighting AEDDEVDIR=../libaed-dev obj/aed_external.o
+            ${{ matrix.make_cmd }} AEDBENDIR=../libaed-benthic AEDDMODIR=../libaed-demo AEDRIPDIR=../libaed-riparian AEDLGTDIR=../libaed-lighting AEDDEVDIR=../libaed-dev
+            ${{ matrix.make_cmd }} AEDRIPDIR=../libaed-riparian AEDLGTDIR=../libaed-lighting AEDDEVDIR=../libaed-dev obj/aed_external.o
           else
-            make AEDBENDIR=../libaed-benthic AEDDMODIR=../libaed-demo
-            make obj/aed_external.o
+            ${{ matrix.make_cmd }} AEDBENDIR=../libaed-benthic AEDDMODIR=../libaed-demo
+            ${{ matrix.make_cmd }} obj/aed_external.o
           fi
 
       - name: Build Simstrat
