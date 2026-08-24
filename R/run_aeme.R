@@ -662,7 +662,7 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
       message(msg)
     }
   }
-  return(p)
+  return(invisible(p))
 }
 
 #' @rdname run_dy_cd
