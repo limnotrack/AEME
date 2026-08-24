@@ -33,30 +33,31 @@ jobs:
       matrix:
         include:
           # ---- Eawag-AppliedSystemAnalysis/Simstrat tagged releases ----
+          # - os: ubuntu-latest
+          #   name: linux
+          #   repo: Eawag-AppliedSystemAnalysis/Simstrat
+          #   ref: v3.04
+          #   simstrat_tag: v3.04
+          #   build_mode: release-gnu
+          #   make_cmd: make
+          #   aed_api: false
           - os: ubuntu-latest
             name: linux
             repo: Eawag-AppliedSystemAnalysis/Simstrat
-            ref: v3.04
-            simstrat_tag: v3.04
-            build_mode: release-gnu
-            make_cmd: make
-            aed_api: false
-          - os: ubuntu-latest
-            name: linux
-            repo: Eawag-AppliedSystemAnalysis/Simstrat
             ref: v3.05
             simstrat_tag: v3.05
             build_mode: release-gnu
             make_cmd: make
             aed_api: false
-          - os: macos-latest
-            name: macos
-            repo: Eawag-AppliedSystemAnalysis/Simstrat
-            ref: v3.04
-            simstrat_tag: v3.04
-            build_mode: release-gnu-dynamic
-            make_cmd: make
-            aed_api: false
+            bgc: aed2
+          # - os: macos-latest
+          #   name: macos
+          #   repo: Eawag-AppliedSystemAnalysis/Simstrat
+          #   ref: v3.04
+          #   simstrat_tag: v3.04
+          #   build_mode: release-gnu-dynamic
+          #   make_cmd: make
+          #   aed_api: false
           - os: macos-latest
             name: macos
             repo: Eawag-AppliedSystemAnalysis/Simstrat
@@ -65,14 +66,15 @@ jobs:
             build_mode: release-gnu-dynamic
             make_cmd: make
             aed_api: false
-          - os: windows-latest
-            name: windows
-            repo: Eawag-AppliedSystemAnalysis/Simstrat
-            ref: v3.04
-            simstrat_tag: v3.04
-            build_mode: release-gnu
-            make_cmd: mingw32-make
-            aed_api: false
+            bgc: aed2
+          # - os: windows-latest
+          #   name: windows
+          #   repo: Eawag-AppliedSystemAnalysis/Simstrat
+          #   ref: v3.04
+          #   simstrat_tag: v3.04
+          #   build_mode: release-gnu
+          #   make_cmd: mingw32-make
+          #   aed_api: false
           - os: windows-latest
             name: windows
             repo: Eawag-AppliedSystemAnalysis/Simstrat
@@ -81,6 +83,7 @@ jobs:
             build_mode: release-gnu
             make_cmd: mingw32-make
             aed_api: false
+            bgc: aed2
           # ---- limnotrack/Simstrat feature/aed-api branch (libaed-api coupling) ----
           # Needs libaed-water/-benthic/-demo/-api checked out as siblings of Simstrat/
           # (build/fobos on this branch links them via ../../libaed-*) and built before
@@ -90,25 +93,28 @@ jobs:
             repo: limnotrack/Simstrat
             ref: feature/aed-api
             simstrat_tag: aed-api
-            build_mode: release-gnu
+            build_mode: release-gnu-aed-full
             make_cmd: make
             aed_api: true
+            bgc: aed
           - os: macos-latest
             name: macos
             repo: limnotrack/Simstrat
             ref: feature/aed-api
             simstrat_tag: aed-api
-            build_mode: release-gnu-dynamic
+            build_mode: release-gnu-aed-full
             make_cmd: make
             aed_api: true
+            bgc: aed
           - os: windows-latest
             name: windows
             repo: limnotrack/Simstrat
             ref: feature/aed-api
             simstrat_tag: aed-api
-            build_mode: release-gnu
+            build_mode: release-gnu-aed-full
             make_cmd: mingw32-make
             aed_api: true
+            bgc: aed
 
     runs-on: ${{ matrix.os }}
     defaults:
@@ -193,6 +199,9 @@ jobs:
           git clone --depth 1 "https://${TOKEN}@github.com/AquaticEcoDynamics/libaed-light" lib/libaed-lighting
           git clone --depth 1 "https://${TOKEN}@github.com/AquaticEcoDynamics/libaed-dev" lib/libaed-dev
 
+      - name: Clone phreeqcrm (public)
+        if: matrix.aed_api
+        run: git clone --depth 1 https://github.com/usgs-coupled/phreeqcrm lib/phreeqcrm
 
       # All entries (tagged releases and feature/aed-api alike) build the old
       # vendored lib/libaed2 -- on feature/aed-api it now coexists with the
@@ -223,15 +232,49 @@ jobs:
 
       - name: Build libaed-demo library
         if: matrix.aed_api
-        working-directory: Simstrat/lib/libaed-demo
-        run: ${{ matrix.make_cmd }}
+        working-directory: lib/libaed-demo
+        run: make
 
-      - name: Build libaed-api library
+      - name: Build libaed-riparian library
         if: matrix.aed_api
-        working-directory: Simstrat/lib/libaed-api
+        working-directory: lib/libaed-riparian
+        run: make
+
+      - name: Build libaed-lighting library
+        if: matrix.aed_api
+        working-directory: lib/libaed-lighting
+        run: make
+
+      - name: Build phreeqcrm
+        if: matrix.aed_api
+        working-directory: lib/phreeqcrm
         run: |
-          ${{ matrix.make_cmd }}
-          ${{ matrix.make_cmd }} obj/aed_external.o
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --config Release -j 2
+
+      - name: Exclude aed_plots.F90 from libaed-dev (needs libgd, not installed here)
+        if: matrix.aed_api
+        shell: bash
+        working-directory: lib/libaed-dev
+        run: |
+          sed -i '/OBJS=\${objdir}\/aed_campbell\.o/i DEFINES+=-D_NO_PLOTS_' Makefile
+          sed -i '/aed_plots\.o \\$/d' Makefile
+          grep -q 'DEFINES+=-D_NO_PLOTS_' Makefile
+          ! grep -q 'aed_plots\.o \\$' Makefile
+
+      - name: Build libaed-dev library
+        if: matrix.aed_api
+        working-directory: lib/libaed-dev
+        run: make PHREEQDIR=../phreeqcrm
+
+      - name: Build libaed-api library (full path)
+        if: matrix.aed_api
+        working-directory: lib/libaed-api
+        run: |
+          make AEDBENDIR=../libaed-benthic AEDDMODIR=../libaed-demo AEDRIPDIR=../libaed-riparian AEDLGTDIR=../libaed-lighting AEDDEVDIR=../libaed-dev
+          make AEDRIPDIR=../libaed-riparian AEDLGTDIR=../libaed-lighting AEDDEVDIR=../libaed-dev obj/aed_external.o
 
       - name: Build Simstrat
         working-directory: Simstrat/build
@@ -262,9 +305,12 @@ jobs:
           fi
           echo "$output"
           if [ "${{ matrix.aed_api }}" = "true" ]; then
-            # The aed-api branch still prints the version of the release it was
-            # branched from, which would collide with that release's own asset
-            # name. Use the matrix label instead so the two builds stay distinct.
+            # The aed-api branch still prints the version banner of the release
+            # it was branched from, which would be a misleading "version" for a
+            # feature branch with no semver of its own -- use the matrix label
+            # instead. (The asset filename's simstrat_${{ matrix.bgc }} prefix is
+            # what actually keeps this build's assets distinct from the AED2
+            # release's, not this version string.)
             echo "simstrat_version=${{ matrix.simstrat_tag }}" >> "$GITHUB_OUTPUT"
           else
             VER=$(echo "$output" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
@@ -339,19 +385,19 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           cd Simstrat/build/dist
-          zip -r "${{ github.workspace }}/simstrat-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip" .
+          zip -r "${{ github.workspace }}/simstrat_${{ matrix.bgc }}-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip" .
 
       - name: Zip distributable folder (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           Compress-Archive -Path "${{ env.SIMSTRAT_DIR }}\build\dist\*" `
-            -DestinationPath "${{ github.workspace }}\simstrat-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
+            -DestinationPath "${{ github.workspace }}\simstrat_${{ matrix.bgc }}-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
 
       - name: Compute SHA256 checksum
         run: |
           cd "${{ github.workspace }}"
-          ZIP="simstrat-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
+          ZIP="simstrat_${{ matrix.bgc }}-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
           if [ "${{ runner.os }}" = "macOS" ]; then
             shasum -a 256 "$ZIP" > "$ZIP.sha256"
           else
@@ -364,7 +410,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd "${{ github.workspace }}"
-          ZIP="simstrat-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
+          ZIP="simstrat_${{ matrix.bgc }}-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
           SHA_FILE="$ZIP.sha256"
           if gh release download "${{ inputs.release_tag }}" --repo "${{ github.repository }}" \
                --pattern "$SHA_FILE" --output "existing.$SHA_FILE" --clobber 2>/dev/null; then
@@ -381,7 +427,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd "${{ github.workspace }}"
-          ZIP="simstrat-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
+          ZIP="simstrat_${{ matrix.bgc }}-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
           gh release upload "${{ inputs.release_tag }}" "$ZIP" "$ZIP.sha256" \
             --repo "${{ github.repository }}" --clobber
             
