@@ -152,7 +152,7 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
 get_model_vars <- function(vars_sim, model, as_vector = FALSE) {
   data("key_naming", package = "AEME", envir = environment())
   model_vars <- key_naming |> 
-    dplyr::filter(var_aeme %in% vars_sim & !derived & var_aeme != "LKE_lvlwtr") |> 
+    dplyr::filter(var_aeme %in% vars_sim & !derived) |> 
     dplyr::select(var_aeme, dplyr::sym(model), conversion_aed)
   
   # If any variables are not in key_naming add them as separate rows
