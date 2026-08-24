@@ -14,7 +14,8 @@ read_glm_output(
   output_hour = 0,
   file,
   phyto_pars = NULL,
-  load_all = TRUE
+  load_all = TRUE,
+  raw_output = FALSE
 )
 }
 \arguments{
@@ -50,6 +51,15 @@ any declared variable; variables with other dimensions (e.g. \code{nzones},
 \code{particle}, \code{sed_layers}, \code{lon}, \code{lat}) are loaded as a
 \code{\link[=new_grouped_var]{new_grouped_var()}} object instead of being forced into the depth x
 time convention. Default \code{TRUE}.}
+
+\item{raw_output}{logical; if \code{TRUE}, return output as close to the raw
+netCDF file as possible instead of AEME's standardised format: \verb{(z, time)} variables are left on GLM's own, time-varying model layer
+midpoints (no interpolation onto a common depth grid), variables
+requested via \code{vars_sim} are keyed by their raw GLM/netCDF name (e.g.
+\code{"temp"}) rather than the translated AEME \code{var_aeme} name (e.g.
+\code{"HYD_temp"}), and no AED unit-conversion factors are applied.
+\code{depths} must not be supplied when \code{raw_output = TRUE}, since raw
+output has no common depth grid to interpolate onto. Default \code{FALSE}.}
 }
 \value{
 List with AEME output variables

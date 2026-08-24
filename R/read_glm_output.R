@@ -21,6 +21,15 @@
 #'   `particle`, `sed_layers`, `lon`, `lat`) are loaded as a
 #'   [new_grouped_var()] object instead of being forced into the depth x
 #'   time convention. Default `TRUE`.
+#' @param raw_output logical; if `TRUE`, return output as close to the raw
+#'   netCDF file as possible instead of AEME's standardised format: `(z,
+#'   time)` variables are left on GLM's own, time-varying model layer
+#'   midpoints (no interpolation onto a common depth grid), variables
+#'   requested via `vars_sim` are keyed by their raw GLM/netCDF name (e.g.
+#'   `"temp"`) rather than the translated AEME `var_aeme` name (e.g.
+#'   `"HYD_temp"`), and no AED unit-conversion factors are applied.
+#'   `depths` must not be supplied when `raw_output = TRUE`, since raw
+#'   output has no common depth grid to interpolate onto. Default `FALSE`.
 #'
 #' @returns List with AEME output variables
 #' @export
@@ -32,7 +41,11 @@
 read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                             dates = NULL, date_index = NULL, incl_fluxes = TRUE,
                             output_hour = 0, file, phyto_pars = NULL,
-                            load_all = TRUE) {
+                            load_all = TRUE, raw_output = FALSE) {
+
+  if (isTRUE(raw_output) && !is.null(depths)) {
+    cli::cli_abort("'depths' cannot be supplied when 'raw_output = TRUE' -- raw output uses each timestep's native GLM layer depths.")
+  }
 
   if (is.null(nc)) {
     nc <- open_nc_safe(file, model = "glm_aed")
@@ -84,15 +97,21 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   out_list[["LKE_lvlwtr"]] <- lake_level
   
   if (is.null(depths)) {
-    max_depth <- max(lake_level, na.rm = TRUE)
-    data("model_layer_structure", package = "AEME", envir = environment())
-    depth_fraction <- model_layer_structure |> 
-      dplyr::filter(z < max_depth) |> 
-      dplyr::mutate(deps = z / max_depth) |> 
-      dplyr::pull(deps) |> 
-      matrix(ncol = 1)
-    depth_mat <- depth_fraction %*% t(lake_level)
-    out_depths <- round(depth_mat, 2)
+    if (isTRUE(raw_output)) {
+      # raw mode: report each timestep's own GLM model layer midpoints,
+      # rather than interpolating onto a shared standardised grid
+      out_depths <- round(midpoints, 2)
+    } else {
+      max_depth <- max(lake_level, na.rm = TRUE)
+      data("model_layer_structure", package = "AEME", envir = environment())
+      depth_fraction <- model_layer_structure |>
+        dplyr::filter(z < max_depth) |>
+        dplyr::mutate(deps = z / max_depth) |>
+        dplyr::pull(deps) |>
+        matrix(ncol = 1)
+      depth_mat <- depth_fraction %*% t(lake_level)
+      out_depths <- round(depth_mat, 2)
+    }
   } else {
     out_depths <- matrix(rep(depths, length(dates)),
                          nrow = length(depths),
@@ -166,28 +185,35 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       dplyr::left_join(model_vars, by = c("vars" = "glm_aed")) |> 
       dplyr::rename(conv_factor = conversion_aed)
     
-    if (any(grepl("PHY", model_vars_vec))) {
+    if (!isTRUE(raw_output) && any(grepl("PHY", model_vars_vec))) {
       phyto_vars <- model_vars_vec[grepl("PHY", model_vars_vec)]
       phyto_vars <- phyto_vars[phyto_vars != "PHY_tchla"]
       phyto_vars <- gsub("PHY_", "", phyto_vars)
       if (!is.null(phyto_pars)) {
-        Xcc <- phyto_pars |> 
-          dplyr::filter(p_name == "Xcc") 
+        Xcc <- phyto_pars |>
+          dplyr::filter(p_name == "Xcc")
         for (pv in phyto_vars) {
           vars_chk$conv_factor[vars_chk$vars == paste0("PHY_", pv)] <- 12.0 / Xcc[[pv]]
         }
       }
     }
-    
+
     out_vars <- lapply(model_vars_vec, \(v) {
       if(vars_chk$present[vars_chk$vars == v] == FALSE) {
         # cli::cli_alert_warning("Variable {.val {v}} not found in GLM output.
         #                        Returning NULL for this variable.")
         return(NULL)
       }
-      conv_factor <- vars_chk$conv_factor[vars_chk$vars == v]
-      if (is.na(conv_factor)) {
+      # AED unit-conversion factors are an AEME-specific transform, only
+      # applied when standardising output -- raw output stays in GLM/AED's
+      # own units, matching the netCDF file exactly
+      if (isTRUE(raw_output)) {
         conv_factor <- 1
+      } else {
+        conv_factor <- vars_chk$conv_factor[vars_chk$vars == v]
+        if (is.na(conv_factor)) {
+          conv_factor <- 1
+        }
       }
       var_out <- ncdf4::ncvar_get(nc, v)
       if (grepl("_Z", v)) {
@@ -197,9 +223,9 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
         var_out <- var_out[, , date_index, drop = FALSE]
       } else if (length(dim(var_out)) == 2) {
         var <- var_out[, date_index, drop = FALSE]  * conv_factor
-        out <- interp_static_grid(var = var,
-                                  midpoints = midpoints,
-                                  out_depths = out_depths)
+        out <- .glm_depth_profile(var = var, midpoints = midpoints,
+                                  out_depths = out_depths,
+                                  raw_output = raw_output)
         return(out)
       } else if (length(dim(var_out)) == 1) {
         # ncdf4::ncvar_get() can return a single-dimension variable with a
@@ -214,7 +240,13 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
         cli::cli_abort(paste("Variable", v, "has unsupported number of dimensions"))
       }
     })
-    
+
+    if (isTRUE(raw_output)) {
+      # raw mode: key by the native GLM/netCDF variable name (e.g. "temp")
+      # instead of the translated AEME var_aeme name (e.g. "HYD_temp")
+      names(out_vars) <- unname(model_vars_vec)
+    }
+
     out_list <- c(out_list, out_vars)
   }
 
@@ -251,9 +283,16 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       if (is.na(key) || !nzchar(key)) key <- v
       if (key %in% names(out_list)) next
 
-      conv_idx <- match(v, key_naming$glm_aed)
-      conv_factor <- if (!is.na(conv_idx)) key_naming$conversion_aed[conv_idx] else NA
-      if (is.na(conv_factor)) conv_factor <- 1
+      # AED unit-conversion factors are an AEME-specific transform, only
+      # applied when standardising output -- raw output stays in GLM/AED's
+      # own units, matching the netCDF file exactly
+      if (isTRUE(raw_output)) {
+        conv_factor <- 1
+      } else {
+        conv_idx <- match(v, key_naming$glm_aed)
+        conv_factor <- if (!is.na(conv_idx)) key_naming$conversion_aed[conv_idx] else NA
+        if (is.na(conv_factor)) conv_factor <- 1
+      }
 
       result <- tryCatch({
         # ncdf4::ncvar_get() drops length-1 dimensions by default (e.g. a
@@ -285,8 +324,9 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
           var_out <- ncdf4::ncvar_get(nc, v)
           if (dim_names[1] != "z") var_out <- t(var_out)
           var <- var_out[, date_index, drop = FALSE] * conv_factor
-          interp_static_grid(var = var, midpoints = midpoints,
-                             out_depths = out_depths)
+          .glm_depth_profile(var = var, midpoints = midpoints,
+                             out_depths = out_depths,
+                             raw_output = raw_output)
         } else {
           .read_glm_grouped_var(nc = nc, v = v, dim_objs = dim_objs,
                                 dim_names = dim_names, date_index = date_index,
@@ -303,8 +343,34 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     }
   }
 
+  if (isTRUE(raw_output)) {
+    out_names <- names(out_list)
+    var_names <- get_model_vars(out_names, model = "glm_aed", as_vector = TRUE)
+    for (i in seq_along(var_names)) {
+      if (!is.na(var_names[i]) && nzchar(var_names[i])) {
+        names(out_list)[names(out_list) == names(var_names)[i]] <- var_names[i]
+      }
+    }
+  }
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
   return(out_list)
+}
+
+#' Return a `(z, time)` variable either interpolated onto a standardised
+#' depth grid, or as-is on its native GLM layer midpoints
+#' @param var matrix; the variable, already subset to `date_index`.
+#' @param midpoints matrix; native GLM layer midpoints (depth below surface).
+#' @param out_depths matrix; target depth grid (ignored when
+#'   `raw_output = TRUE`, since `var` is already on `midpoints`).
+#' @param raw_output logical.
+#' @return matrix, interpolated or raw.
+#' @noRd
+.glm_depth_profile <- function(var, midpoints, out_depths, raw_output) {
+  if (isTRUE(raw_output)) {
+    var
+  } else {
+    interp_static_grid(var = var, midpoints = midpoints, out_depths = out_depths)
+  }
 }
 
 #' Read a GLM-AED output variable with dimensions other than `(time)` or
