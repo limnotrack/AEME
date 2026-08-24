@@ -1,0 +1,387 @@
+name: Build Simstrat
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "GitHub release tag in THIS repo to attach binaries to (must match an existing or intended release tag, e.g. v0.4.0)"
+        required: true
+        default: "v0.4.0"
+
+permissions:
+  contents: write   # required for the release-creation/upload steps below
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure release exists for ${{ inputs.release_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AED_PRIVATE_PAT: ${{ secrets.AED_PRIVATE_PAT }}
+        run: |
+          gh release view "${{ inputs.release_tag }}" --repo "${{ github.repository }}" \
+            || gh release create "${{ inputs.release_tag }}" \
+                 --repo "${{ github.repository }}" \
+                 --title "Release ${{ inputs.release_tag }}" \
+                 --notes "Simstrat binaries for Linux, macOS, and Windows are attached to this release."
+
+  build:
+    needs: create-release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # ---- Eawag-AppliedSystemAnalysis/Simstrat tagged releases ----
+          - os: ubuntu-latest
+            name: linux
+            repo: Eawag-AppliedSystemAnalysis/Simstrat
+            ref: v3.04
+            simstrat_tag: v3.04
+            build_mode: release-gnu
+            make_cmd: make
+            aed_api: false
+          - os: ubuntu-latest
+            name: linux
+            repo: Eawag-AppliedSystemAnalysis/Simstrat
+            ref: v3.05
+            simstrat_tag: v3.05
+            build_mode: release-gnu
+            make_cmd: make
+            aed_api: false
+          - os: macos-latest
+            name: macos
+            repo: Eawag-AppliedSystemAnalysis/Simstrat
+            ref: v3.04
+            simstrat_tag: v3.04
+            build_mode: release-gnu-dynamic
+            make_cmd: make
+            aed_api: false
+          - os: macos-latest
+            name: macos
+            repo: Eawag-AppliedSystemAnalysis/Simstrat
+            ref: v3.05
+            simstrat_tag: v3.05
+            build_mode: release-gnu-dynamic
+            make_cmd: make
+            aed_api: false
+          - os: windows-latest
+            name: windows
+            repo: Eawag-AppliedSystemAnalysis/Simstrat
+            ref: v3.04
+            simstrat_tag: v3.04
+            build_mode: release-gnu
+            make_cmd: mingw32-make
+            aed_api: false
+          - os: windows-latest
+            name: windows
+            repo: Eawag-AppliedSystemAnalysis/Simstrat
+            ref: v3.05
+            simstrat_tag: v3.05
+            build_mode: release-gnu
+            make_cmd: mingw32-make
+            aed_api: false
+          # ---- limnotrack/Simstrat feature/aed-api branch (libaed-api coupling) ----
+          # Needs libaed-water/-benthic/-demo/-api checked out as siblings of Simstrat/
+          # (build/fobos on this branch links them via ../../libaed-*) and built before
+          # Simstrat itself. See the extra checkout/build steps gated on aed_api below.
+          - os: ubuntu-latest
+            name: linux
+            repo: limnotrack/Simstrat
+            ref: feature/aed-api
+            simstrat_tag: aed-api
+            build_mode: release-gnu
+            make_cmd: make
+            aed_api: true
+          - os: macos-latest
+            name: macos
+            repo: limnotrack/Simstrat
+            ref: feature/aed-api
+            simstrat_tag: aed-api
+            build_mode: release-gnu-dynamic
+            make_cmd: make
+            aed_api: true
+          - os: windows-latest
+            name: windows
+            repo: limnotrack/Simstrat
+            ref: feature/aed-api
+            simstrat_tag: aed-api
+            build_mode: release-gnu
+            make_cmd: mingw32-make
+            aed_api: true
+
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    env:
+      SIMSTRAT_DIR: ${{ github.workspace }}/Simstrat
+
+    steps:
+      - name: Checkout Simstrat (${{ matrix.repo }}@${{ matrix.ref }})
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.repo }}
+          ref: ${{ matrix.ref }}
+          submodules: recursive
+          path: Simstrat
+
+      # feature/aed-api checks out lib/libaed-api, lib/libaed-water,
+      # lib/libaed-benthic and lib/libaed-demo as submodules (same mechanism
+      # as lib/libaed2 and lib/forbear above) via `submodules: recursive` on
+      # the checkout step, pinned to fixed commits for reproducible builds.
+      # No separate checkout steps needed here.
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install FoBiS.py
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            # FoBiS.py >=3.6.10 builds compile commands with Windows backslash
+            # paths but parses them back with shlex.split() in POSIX mode, which
+            # treats backslash as an escape char and corrupts every path
+            # (e.g. "src\csv_kinds.f90" -> "srccsv_kinds.f90"). 3.6.8 is the last
+            # release before that regression (it used shell=True instead).
+            pip install "FoBiS.py==3.6.8"
+          else
+            pip install FoBiS.py
+          fi
+
+      - name: Create FoBiS.py Windows shim
+        if: runner.os == 'Windows'
+        run: |
+          # pip only creates fobis.exe on Windows, not FoBiS.py(.exe). FoBiS.py's own
+          # code spawns interdependent fobos builds via a hardcoded "FoBiS.py" subprocess
+          # call, so that exact literal filename must exist on PATH too.
+          SCRIPTS_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('scripts').replace(chr(92), '/'))")
+          cp "$SCRIPTS_DIR/fobis.exe" "$SCRIPTS_DIR/FoBiS.py"
+
+      - name: Install gfortran (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gfortran make
+
+      - name: Install gfortran (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install gcc make
+          GCC_VER=$(brew list --versions gcc | awk '{print $2}' | cut -d. -f1)
+          echo "F90=gfortran-${GCC_VER}" >> "$GITHUB_ENV"
+
+      - name: Install gfortran (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install mingw --no-progress
+          echo "C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Set F90 environment variable (Linux/Windows)
+        if: runner.os != 'macOS'
+        run: echo "F90=gfortran" >> "$GITHUB_ENV"
+
+      - name: Clone private AquaticEcoDynamics repos
+        if: matrix.aed_api
+        shell: bash
+        env:
+          TOKEN: ${{ secrets.AED_PRIVATE_PAT }}
+        run: |
+          git clone --depth 1 "https://${TOKEN}@github.com/AquaticEcoDynamics/libaed-riparian" lib/libaed-riparian
+          git clone --depth 1 "https://${TOKEN}@github.com/AquaticEcoDynamics/libaed-light" lib/libaed-lighting
+          git clone --depth 1 "https://${TOKEN}@github.com/AquaticEcoDynamics/libaed-dev" lib/libaed-dev
+
+
+      # All entries (tagged releases and feature/aed-api alike) build the old
+      # vendored lib/libaed2 -- on feature/aed-api it now coexists with the
+      # newer libaed-api based coupling below rather than replacing it (both
+      # AED backends are runtime-selectable via CoupleAED2/CoupleAED).
+      - name: Build libaed2 library
+        working-directory: Simstrat/lib/libaed2
+        run: ${{ matrix.make_cmd }}
+
+      # ------------------------------------------------------------------
+      # feature/aed-api only: build the AED libraries (now lib/libaed-* git
+      # submodules, resolved by build/fobos via ../lib/libaed-*). libaed-water
+      # must build first (libaed-benthic/-demo/-api all include its
+      # make_defs.inc and reference its mod/ dir); order between benthic,
+      # demo and api does not otherwise matter. aed_external.o is a separate
+      # explicit target in libaed-api's Makefile, not part of its default
+      # `all`, and build/fobos links it directly -- must be built explicitly.
+      # ------------------------------------------------------------------
+      - name: Build libaed-water library
+        if: matrix.aed_api
+        working-directory: Simstrat/lib/libaed-water
+        run: ${{ matrix.make_cmd }}
+
+      - name: Build libaed-benthic library
+        if: matrix.aed_api
+        working-directory: Simstrat/lib/libaed-benthic
+        run: ${{ matrix.make_cmd }}
+
+      - name: Build libaed-demo library
+        if: matrix.aed_api
+        working-directory: Simstrat/lib/libaed-demo
+        run: ${{ matrix.make_cmd }}
+
+      - name: Build libaed-api library
+        if: matrix.aed_api
+        working-directory: Simstrat/lib/libaed-api
+        run: |
+          ${{ matrix.make_cmd }}
+          ${{ matrix.make_cmd }} obj/aed_external.o
+
+      - name: Build Simstrat
+        working-directory: Simstrat/build
+        run: fobis build -mode ${{ matrix.build_mode }}
+
+      - name: Verify Simstrat runs (Windows)
+        if: runner.os == 'Windows'
+        working-directory: Simstrat/build
+        run: |
+          # simstrat.exe has no --version flag and exits non-zero without a config
+          # file, so just confirm it launches far enough to print its banner.
+          output=$(./simstrat.exe 2>&1 || true)
+          echo "$output"
+          echo "$output" | grep -q "Simstrat version" || (echo "::error::simstrat.exe failed to launch" && exit 1)
+
+      - name: Extract Simstrat version
+        id: verify
+        working-directory: Simstrat/build
+        # Simstrat exits non-zero without a .par config file even though it prints
+        # its version banner first. Disable errexit for this step so that expected
+        # non-zero exit doesn't fail the job.
+        shell: bash --noprofile --norc -o pipefail {0}
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            output=$(./simstrat.exe 2>&1) || true
+          else
+            output=$(./simstrat 2>&1) || true
+          fi
+          echo "$output"
+          if [ "${{ matrix.aed_api }}" = "true" ]; then
+            # The aed-api branch still prints the version of the release it was
+            # branched from, which would collide with that release's own asset
+            # name. Use the matrix label instead so the two builds stay distinct.
+            echo "simstrat_version=${{ matrix.simstrat_tag }}" >> "$GITHUB_OUTPUT"
+          else
+            VER=$(echo "$output" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+            # Fall back to the tag name (strip leading 'v') if the banner parse fails
+            FALLBACK="${{ matrix.simstrat_tag }}"
+            echo "simstrat_version=${VER:-${FALLBACK#v}}" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ------------------------------------------------------------------
+      # Package. Windows bundles runtime DLLs for a self-contained exe.
+      # Linux records ldd output; macOS bundles dylibs via dylibbundler
+      # so the binary runs on machines without Homebrew installed.
+      # ------------------------------------------------------------------
+      - name: Assemble distributable folder (Linux)
+        if: runner.os == 'Linux'
+        working-directory: Simstrat/build
+        run: |
+          mkdir -p dist
+          chmod +x simstrat
+          cp simstrat dist/
+          ldd simstrat > dist/ldd-dependencies.txt || true
+
+      - name: Install dylibbundler (macOS)
+        if: runner.os == 'macOS'
+        run: brew install dylibbundler
+
+      - name: Assemble distributable folder (macOS)
+        if: runner.os == 'macOS'
+        working-directory: Simstrat/build
+        run: |
+          mkdir -p dist/libs
+          chmod +x simstrat
+          cp simstrat dist/
+
+          # Strip existing rpaths so dylibbundler can rewrite them cleanly.
+          otool -l dist/simstrat \
+            | awk '/LC_RPATH/{getline; getline; print $2}' \
+            | while read -r rp; do
+                install_name_tool -delete_rpath "$rp" dist/simstrat || true
+              done
+
+          dylibbundler -od -b \
+            -x dist/simstrat \
+            -d dist/libs \
+            -p "@executable_path/libs/"
+
+          # Re-sign after dylibbundler rewrites load commands (required on Apple Silicon).
+          codesign --force --deep -s - dist/simstrat
+
+          # Fail loudly if any external Homebrew paths were missed.
+          if otool -L dist/simstrat | grep -qE '/opt/homebrew|/usr/local/opt'; then
+            echo "::error::simstrat still references external Homebrew paths - bundling incomplete"
+            otool -L dist/simstrat
+            exit 1
+          fi
+
+          otool -L dist/simstrat > dist/otool-dependencies.txt || true
+
+      - name: Assemble distributable folder (Windows)
+        if: runner.os == 'Windows'
+        working-directory: Simstrat/build
+        run: |
+          mkdir -p dist
+          cp simstrat.exe dist/
+          # release-gnu links statically, but bundle any non-system DLLs as a safety net.
+          for dll in $(ldd simstrat.exe | awk '{print $3}' | grep -vi '^/c/windows/'); do
+            [ -f "$dll" ] && cp "$dll" dist/
+          done
+          ls -lh dist/
+
+      - name: Zip distributable folder (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          cd Simstrat/build/dist
+          zip -r "${{ github.workspace }}/simstrat-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip" .
+
+      - name: Zip distributable folder (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "${{ env.SIMSTRAT_DIR }}\build\dist\*" `
+            -DestinationPath "${{ github.workspace }}\simstrat-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
+
+      - name: Compute SHA256 checksum
+        run: |
+          cd "${{ github.workspace }}"
+          ZIP="simstrat-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
+          if [ "${{ runner.os }}" = "macOS" ]; then
+            shasum -a 256 "$ZIP" > "$ZIP.sha256"
+          else
+            sha256sum "$ZIP" > "$ZIP.sha256"
+          fi
+          cat "$ZIP.sha256"
+
+      - name: Guard against duplicate asset collisions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd "${{ github.workspace }}"
+          ZIP="simstrat-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
+          SHA_FILE="$ZIP.sha256"
+          if gh release download "${{ inputs.release_tag }}" --repo "${{ github.repository }}" \
+               --pattern "$SHA_FILE" --output "existing.$SHA_FILE" --clobber 2>/dev/null; then
+            if ! diff -q "$SHA_FILE" "existing.$SHA_FILE" > /dev/null; then
+              echo "::error::Asset $ZIP already exists in release ${{ inputs.release_tag }} with a DIFFERENT checksum. Refusing to silently overwrite."
+              exit 1
+            else
+              echo "Existing asset '$ZIP' matches this build exactly (identical rebuild) - safe to proceed."
+            fi
+          fi
+
+      - name: Upload zip + checksum to release ${{ inputs.release_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd "${{ github.workspace }}"
+          ZIP="simstrat-${{ matrix.name }}-${{ steps.verify.outputs.simstrat_version }}.zip"
+          gh release upload "${{ inputs.release_tag }}" "$ZIP" "$ZIP.sha256" \
+            --repo "${{ github.repository }}" --clobber
+            
