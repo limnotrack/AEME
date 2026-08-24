@@ -99,66 +99,70 @@ jobs:
           # one) -- aed_full instead only widens simstrat_version's "+" suffix, per
           # the "Extract Simstrat version" step below, so the two editions land as
           # simstrat_aed-<os>-aed-api.zip / simstrat_aed-<os>-aed-api+.zip.
-          - os: ubuntu-latest
-            name: linux
+          # - os: ubuntu-latest
+          #   name: linux
+          #   repo: limnotrack/Simstrat
+          #   ref: feature/aed-api
+          #   simstrat_tag: aed-api
+          #   build_mode: release-gnu
+          #   make_cmd: make
+          #   aed_api: true
+          #   aed_full: false
+          #   bgc: aed
+          # - os: ubuntu-latest
+          #   name: linux
+          #   repo: limnotrack/Simstrat
+          #   ref: feature/aed-api
+          #   simstrat_tag: aed-api
+          #   build_mode: release-gnu-aed-full
+          #   make_cmd: make
+          #   aed_api: true
+          #   aed_full: true
+          #   bgc: aed
+          # macOS uses the *-dynamic FoBiS modes (matching the commented-out
+          # Eawag entries above) -- unlike Linux/Windows, macOS's linker
+          # doesn't support fully static binaries, so the plain release-gnu /
+          # release-gnu-aed-full (-static) modes crash there.
+          - os: macos-latest
+            name: macos
             repo: limnotrack/Simstrat
             ref: feature/aed-api
             simstrat_tag: aed-api
-            build_mode: release-gnu
+            build_mode: release-gnu-dynamic
             make_cmd: make
             aed_api: true
             aed_full: false
-            bgc: aed
-          - os: ubuntu-latest
-            name: linux
-            repo: limnotrack/Simstrat
-            ref: feature/aed-api
-            simstrat_tag: aed-api
-            build_mode: release-gnu-aed-full
-            make_cmd: make
-            aed_api: true
-            aed_full: true
             bgc: aed
           - os: macos-latest
             name: macos
             repo: limnotrack/Simstrat
             ref: feature/aed-api
             simstrat_tag: aed-api
-            build_mode: release-gnu
-            make_cmd: make
-            aed_api: true
-            aed_full: false
-            bgc: aed
-          - os: macos-latest
-            name: macos
-            repo: limnotrack/Simstrat
-            ref: feature/aed-api
-            simstrat_tag: aed-api
-            build_mode: release-gnu-aed-full
+            build_mode: release-gnu-aed-full-dynamic
             make_cmd: make
             aed_api: true
             aed_full: true
             bgc: aed
-          - os: windows-latest
-            name: windows
-            repo: limnotrack/Simstrat
-            ref: feature/aed-api
-            simstrat_tag: aed-api
-            build_mode: release-gnu
-            make_cmd: mingw32-make
-            aed_api: true
-            aed_full: false
-            bgc: aed
-          - os: windows-latest
-            name: windows
-            repo: limnotrack/Simstrat
-            ref: feature/aed-api
-            simstrat_tag: aed-api
-            build_mode: release-gnu-aed-full
-            make_cmd: mingw32-make
-            aed_api: true
-            aed_full: true
-            bgc: aed
+          # - os: windows-latest
+          #   name: windows
+          #   repo: limnotrack/Simstrat
+          #   ref: feature/aed-api
+          #   simstrat_tag: aed-api
+          #   build_mode: release-gnu
+          #   make_cmd: mingw32-make
+          #   aed_api: true
+          #   aed_full: false
+          #   bgc: aed
+          # - os: windows-latest
+          #   name: windows
+          #   repo: limnotrack/Simstrat
+          #   ref: feature/aed-api
+          #   simstrat_tag: aed-api
+          #   build_mode: release-gnu-aed-full
+          #   make_cmd: mingw32-make
+          #   aed_api: true
+          #   aed_full: true
+          #   bgc: aed
 
     runs-on: ${{ matrix.os }}
     defaults:
