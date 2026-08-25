@@ -245,7 +245,17 @@ read_simstrat_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   }
 
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
-  return(.new_aeme_output(out_list, model = model, raw = raw_output))
+
+  var_units <- var_long_name <- NULL
+  if (isTRUE(raw_output)) {
+    raw_vars <- setdiff(names(out_list), c("Date", "LKE_depths", "ok", "reason"))
+    meta <- lapply(raw_vars, \(v) .nc_var_meta(nc, v))
+    var_units <- stats::setNames(vapply(meta, `[[`, "", "units"), raw_vars)
+    var_long_name <- stats::setNames(vapply(meta, `[[`, "", "long_name"), raw_vars)
+  }
+
+  return(.new_aeme_output(out_list, model = model, raw = raw_output,
+                          var_units = var_units, var_long_name = var_long_name))
 }
 
 #' Read Simstrat-AED2 lake water level output

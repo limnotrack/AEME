@@ -38,6 +38,13 @@
 #' they have been written to `output.nc`. Default `TRUE` (this is the actual
 #' disk-space saving -- keeping both would use more space, not less).
 #'
+#' Each netCDF variable's `units` and `long_name` attributes are looked up
+#' from the package's `key_naming` table (matched on the variable's native
+#' Simstrat-AED2/AED name, sediment-zone variables under their base name with
+#' the `_zone` suffix stripped). A variable not present in `key_naming` is
+#' written with empty `units` and `long_name` equal to its netCDF variable
+#' name.
+#'
 #' @return Invisibly returns the path to the written `output.nc` file, or
 #' `NULL` if no output files were found.
 #'
@@ -106,19 +113,44 @@ write_simstrat_nc <- function(sim_folder, config_file = "simstrat.par",
     dim_zone <- ncdf4::ncdim_def("zone", units = "m", vals = zone_depths)
   }
 
-  nc_vars <- Map(function(v, zone) {
+  # Look up units/long_name for each variable's native Simstrat-AED2/AED name
+  # from `key_naming` (the same var_aeme<->model-name table used to translate
+  # Simstrat output elsewhere, e.g. read_simstrat_output()). Zone variables
+  # are looked up under their base name (the `_zone` suffix stripped) since
+  # that's what's recorded in key_naming.
+  data("key_naming", package = "AEME", envir = environment())
+  lookup <- rbind(
+    stats::setNames(key_naming[nzchar(key_naming$simstrat_aed2),
+                               c("simstrat_aed2", "units", "name_text")],
+                    c("native", "units", "long_name")),
+    stats::setNames(key_naming[nzchar(key_naming$simstrat_aed),
+                               c("simstrat_aed", "units", "name_text")],
+                    c("native", "units", "long_name"))
+  )
+  lookup <- lookup[!duplicated(lookup$native), ]
+  units_map <- stats::setNames(lookup$units, lookup$native)
+  long_map <- stats::setNames(lookup$long_name, lookup$native)
+
+  base_names <- ifelse(is_zone, sub("_zone$", "", var_names), var_names)
+  var_units <- unname(units_map[base_names])
+  var_units[is.na(var_units)] <- ""
+  var_long <- unname(long_map[base_names])
+  no_long <- is.na(var_long) | !nzchar(var_long)
+  var_long[no_long] <- var_names[no_long]
+
+  nc_vars <- Map(function(v, zone, units, longname) {
     d <- data_list[[v]]
     if (zone) {
-      ncdf4::ncvar_def(v, units = "", dim = list(dim_zone, dim_time),
-                       missval = NaN, compression = 9)
+      ncdf4::ncvar_def(v, units = units, dim = list(dim_zone, dim_time),
+                       missval = NaN, longname = longname, compression = 9)
     } else if (length(d$depths) > 1) {
-      ncdf4::ncvar_def(v, units = "", dim = list(dim_z, dim_time),
-                       missval = NaN, compression = 9)
+      ncdf4::ncvar_def(v, units = units, dim = list(dim_z, dim_time),
+                       missval = NaN, longname = longname, compression = 9)
     } else {
-      ncdf4::ncvar_def(v, units = "", dim = list(dim_time),
-                       missval = NaN, compression = 9)
+      ncdf4::ncvar_def(v, units = units, dim = list(dim_time),
+                       missval = NaN, longname = longname, compression = 9)
     }
-  }, var_names, is_zone)
+  }, var_names, is_zone, var_units, var_long)
   names(nc_vars) <- var_names
 
   nc_file <- file.path(sim_folder, "output.nc")

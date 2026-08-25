@@ -13,7 +13,14 @@ referenced by its \code{Output.Path}).}
 
 \item{remove_dat}{logical; delete the source \verb{<var>_out.dat} files after
 they have been written to \code{output.nc}. Default \code{TRUE} (this is the actual
-disk-space saving -- keeping both would use more space, not less).}
+disk-space saving -- keeping both would use more space, not less).
+
+Each netCDF variable's \code{units} and \code{long_name} attributes are looked up
+from the package's \code{key_naming} table (matched on the variable's native
+Simstrat-AED2/AED name, sediment-zone variables under their base name with
+the \verb{_zone} suffix stripped). A variable not present in \code{key_naming} is
+written with empty \code{units} and \code{long_name} equal to its netCDF variable
+name.}
 }
 \value{
 Invisibly returns the path to the written \code{output.nc} file, or

@@ -18,7 +18,8 @@ plot_var(
   level = FALSE,
   facet = FALSE,
   cumulative = FALSE,
-  print_plots = FALSE
+  print_plots = FALSE,
+  raw_label = NULL
 )
 }
 \arguments{
@@ -60,6 +61,11 @@ This only applies to variables without a depth component.}
 \item{cumulative}{logical; plot cumulative sum of variable}
 
 \item{print_plots}{logical; print plots}
+
+\item{raw_label}{character; fallback y-axis/fill label to use when
+\code{var_sim} has no \code{\link{key_naming}} entry (e.g. a raw netCDF
+variable name from \code{raw_output = TRUE} output). Default \code{NULL}
+(falls back to \code{var_sim} itself).}
 }
 \value{
 ggplot2 object or list of ggplot2 objects
