@@ -135,11 +135,17 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
 #'
 #' @param df data.frame; as returned by [get_var()] or built by
 #'   `.plot_model_output_list()`.
+#' @param raw_label character; fallback y-axis/fill label to use when
+#'   `var_sim` has no [key_naming] entry (i.e. a raw netCDF variable name),
+#'   built from that variable's own `units`/`long_name` netCDF attributes.
+#'   Default `NULL` (no fallback).
 #' @inheritParams plot_model_output
 #' @noRd
-.plot_var_single <- function(df, var_sim, var_lims = NULL, ylim = NULL) {
+.plot_var_single <- function(df, var_sim, var_lims = NULL, ylim = NULL,
+                             raw_label = NULL) {
   p <- plot_var(df = df, var_sim = var_sim, ylim = ylim, xlim = range(df$Date),
-               var_lims = var_lims, obs = NULL, add_obs = FALSE, facet = FALSE)
+               var_lims = var_lims, obs = NULL, add_obs = FALSE, facet = FALSE,
+               raw_label = raw_label)
   if (is.list(p) && !inherits(p, "gg") && length(p) == 1) p <- p[[1]]
   p
 }
@@ -154,14 +160,18 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
 #' @param df data.frame; either from [as.data.frame()] on an
 #'   `aeme_grouped_var` (raw-list path, plus `var_sim`), or [get_var()]'s
 #'   own grouped-variable branch (`Aeme` path).
+#' @param raw_label character; fallback y-axis/title label to use in place
+#'   of `var_sim`, built from that variable's own `units`/`long_name`
+#'   netCDF attributes. Default `NULL` (use `var_sim`).
 #' @inheritParams plot_model_output
 #' @noRd
-.plot_grouped_ggplot <- function(df, var_sim, ylim = NULL) {
+.plot_grouped_ggplot <- function(df, var_sim, ylim = NULL, raw_label = NULL) {
   if (!"Date" %in% names(df)) {
     cli::cli_warn("{.val {var_sim}} has no time dimension; nothing to plot as a series.")
     return(df)
   }
 
+  lab <- if (!is.null(raw_label)) raw_label else var_sim
   group_dims <- setdiff(names(df), c("Date", "value", "var_sim", "Model"))
   ylim_layer <- if (!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim) else NULL
 
@@ -169,7 +179,7 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
     p <- ggplot2::ggplot(df, ggplot2::aes(Date, value)) +
       ggplot2::geom_line() +
       ylim_layer +
-      ggplot2::labs(y = var_sim, title = var_sim) +
+      ggplot2::labs(y = lab, title = lab) +
       ggplot2::theme_bw()
     return(p)
   }
@@ -178,7 +188,7 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
   ggplot2::ggplot(df, ggplot2::aes(Date, value, colour = group)) +
     ggplot2::geom_line() +
     ylim_layer +
-    ggplot2::labs(y = var_sim, title = var_sim,
+    ggplot2::labs(y = lab, title = lab,
                  colour = paste(group_dims, collapse = ", ")) +
     ggplot2::theme_bw()
 }
@@ -205,11 +215,25 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
   dates    <- as.Date(out[["Date"]])
   variable <- out[[var_sim]]
 
+  # Raw (native netCDF name) variables have no key_naming entry to source a
+  # plot label from -- fall back to that variable's own units/long_name
+  # netCDF attributes, captured by read_glm_output()/read_gotm_output()/
+  # read_simstrat_output() when raw_output = TRUE.
+  raw_label <- NULL
+  var_units <- attr(out, "var_units")
+  var_long_name <- attr(out, "var_long_name")
+  if (var_sim %in% names(var_units) || var_sim %in% names(var_long_name)) {
+    units_v <- if (var_sim %in% names(var_units)) var_units[[var_sim]] else NA_character_
+    long_v  <- if (var_sim %in% names(var_long_name)) var_long_name[[var_sim]] else NA_character_
+    raw_label <- .raw_var_label(units_v, long_v, var_sim)
+  }
+
   if (inherits(variable, "aeme_grouped_var")) {
     gdf <- as.data.frame(variable)
     gdf$var_sim <- var_sim
     gdf$Model <- "Output"
-    p <- .plot_grouped_ggplot(gdf, var_sim = var_sim, ylim = ylim)
+    p <- .plot_grouped_ggplot(gdf, var_sim = var_sim, ylim = ylim,
+                              raw_label = raw_label)
     return(if (raw) .add_raw_subtitle(p) else p)
   }
 
@@ -248,6 +272,7 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
                      Model = "Output", stringsAsFactors = FALSE)
   }
 
-  p <- .plot_var_single(df, var_sim = var_sim, var_lims = var_lims, ylim = ylim)
+  p <- .plot_var_single(df, var_sim = var_sim, var_lims = var_lims, ylim = ylim,
+                        raw_label = raw_label)
   if (raw) .add_raw_subtitle(p) else p
 }

@@ -6,6 +6,10 @@
 #' @inheritParams plot_output
 #' @param obs list; output from \code{\link{observations}}
 #' @param xlim numeric; x-axis limits
+#' @param raw_label character; fallback y-axis/fill label to use when
+#' \code{var_sim} has no \code{\link{key_naming}} entry (e.g. a raw netCDF
+#' variable name from \code{raw_output = TRUE} output). Default \code{NULL}
+#' (falls back to \code{var_sim} itself).
 #'
 #' @return ggplot2 object or list of ggplot2 objects
 #' @export
@@ -13,7 +17,7 @@
 plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
                      var_lims = NULL, obs = NULL, add_obs = TRUE, point_size = 2,
                      level = FALSE, facet = FALSE, cumulative = FALSE,
-                     print_plots = FALSE) {
+                     print_plots = FALSE, raw_label = NULL) {
 
   data("key_naming", package = "AEME", envir = environment())
 
@@ -52,7 +56,7 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
       p <- plot_var_depth(df = df, obs = obs, ylim = ylim, xlim = xlim,
                           var_lims = var_lims, add_obs = add_obs,
                           point_size = point_size, print_plots = print_plots,
-                          facet = facet)
+                          facet = facet, raw_label = raw_label)
       if (print_plots) print(p)
       return(p)
     } else {
@@ -70,13 +74,19 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
         plot_var_depth(df = df2, obs = obs2, ylim = ylim, xlim = xlim,
                        var_lims = var_lims, add_obs = add_obs,
                        point_size = point_size, print_plots = print_plots,
-                       facet = facet)
+                       facet = facet, raw_label = raw_label)
       })
       return(lst)
     }
   } else {
     # Plot variables with no depth
-    y_lab <- eval(parse(text = df$name_parse[1]))
+    y_lab <- if (!is.na(df$name_parse[1])) {
+      eval(parse(text = df$name_parse[1]))
+    } else if (!is.null(raw_label)) {
+      raw_label
+    } else {
+      var_sim
+    }
 
     p <- ggplot2::ggplot() +
       ggplot2::geom_line(data = df, ggplot2::aes(Date, value,
@@ -134,12 +144,18 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
 #' Plot variable with depth component
 #' @noRd
 plot_var_depth <- function(df, obs, ylim, xlim, var_lims, point_size, add_obs,
-                           print_plots = FALSE, facet = TRUE) {
+                           print_plots = FALSE, facet = TRUE, raw_label = NULL) {
 
   sel_var <- df$var_sim[1]
   n <- 11
   my_cols <- get_hm_palette(var = sel_var, n = n)
-  fill_lab <- eval(parse(text = df$name_parse[1]))
+  fill_lab <- if (!is.na(df$name_parse[1])) {
+    eval(parse(text = df$name_parse[1]))
+  } else if (!is.null(raw_label)) {
+    raw_label
+  } else {
+    sel_var
+  }
   df <- df |> 
     dplyr::group_by(Date, Model) |> 
     dplyr::arrange(depth, .by_group = TRUE) |> 
