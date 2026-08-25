@@ -46,7 +46,7 @@ build_glm <- function(lakename, model_controls, date_range,
   }
   aed_file <- file.path(path_glm, "aed", "aed.nml")
   if (!file.exists(aed_file)) {
-    aed_files <- list.files(system.file("extdata/glm_aed/", package = "AEME"),
+    aed_files <- list.files(system.file("extdata/aed/", package = "AEME"),
                             full.names = TRUE, pattern = "^aed[_.]")
     aed_path <- file.path(path_glm, "aed")
     dir.create(aed_path, showWarnings = FALSE)
