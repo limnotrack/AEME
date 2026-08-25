@@ -110,7 +110,8 @@ run_aeme <- function(aeme, model, path, args = character(),
     dy_cd      = run_dy_cd,
     glm_aed    = run_glm_aed,
     gotm_wet   = run_gotm_wet,
-    simstrat_aed2 = run_simstrat_aed2
+    simstrat_aed2 = run_simstrat_aed2,
+    simstrat_aed  = run_simstrat_aed
   )
   
   run_model_args <- list(sim_folder = sim_folder, verbose = verbose,
@@ -607,6 +608,46 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   ))
 }
 
+#' Resolve which Simstrat-AED executable to run
+#'
+#' Mirrors \code{\link{.resolve_simstrat_aed2_exec}} for the Simstrat-AED
+#' (not AED2) coupling: an explicit `AEME.simstrat_aed_exec` option (always
+#' wins), a specific installed version (`version` argument or
+#' `AEME.simstrat_aed_version` option, resolved via
+#' [simstrat_aed_exe_path()]), or - if neither is set - whatever version is
+#' already installed on disk.
+#'
+#' @keywords internal
+#' @noRd
+.resolve_simstrat_aed_exec <- function(version = NULL) {
+  bin_exec <- getOption("AEME.simstrat_aed_exec", default = NULL)
+  if (!is.null(bin_exec)) {
+    if (!file.exists(bin_exec)) {
+      cli::cli_abort(
+        "{.envvar AEME.simstrat_aed_exec} points to {.path {bin_exec}}, but that file doesn't exist."
+      )
+    }
+    return(.ensure_executable(bin_exec))
+  }
+
+  sys_OS <- .detect_os()
+
+  if (!is.null(version)) {
+    return(.ensure_executable(simstrat_aed_exe_path(version, os = sys_OS)))
+  }
+
+  latest <- .simstrat_aed_latest_installed_version(sys_OS)
+  if (!is.null(latest)) {
+    options(AEME.simstrat_aed_version = latest)  # sync session state for next time
+    return(.ensure_executable(simstrat_aed_exe_path(latest, os = sys_OS)))
+  }
+
+  cli::cli_abort(c(
+    "x" = "No Simstrat-AED binary found for {.field {sys_OS}}.",
+    "i" = "Install one with {.run install_simstrat_aed()}."
+  ))
+}
+
 #' @rdname run_dy_cd
 #' @export
 #' @importFrom processx run
@@ -725,7 +766,7 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
       message(msg)
     }
   }
-  return(p)
+  return(invisible(p))
 }
 
 #' @rdname run_dy_cd
@@ -805,7 +846,80 @@ run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
     msg <- gsub("\033\\[[0-9;]*m", "", msg)
     message(msg)
   }
-  return(p)
+  return(invisible(p))
+}
+
+#' @rdname run_dy_cd
+#' @export
+run_simstrat_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
+                             config_file = "simstrat.par",
+                             args = character(), timeout = Inf,
+                             version = getOption("AEME.simstrat_aed_version", default = NULL)) {
+
+  oldwd <- getwd()
+  on.exit({
+    setwd(oldwd)
+  })
+  setwd(sim_folder)
+  cli_safe("Simstrat-AED running", FUN = cli::cli_progress_step)
+
+  bin_exec <- .resolve_simstrat_aed_exec(version)
+
+  if (verbose) {
+    p <- processx::run(
+      command = bin_exec,
+      args = c(config_file, args),
+      wd = sim_folder,
+      echo = TRUE,
+      error_on_status = FALSE,
+      timeout = timeout
+    )
+  } else {
+    p <- processx::run(
+      command = bin_exec,
+      args = c(config_file, args),
+      wd = sim_folder,
+      spinner = TRUE,
+      echo = FALSE,
+      error_on_status = FALSE,
+      timeout = timeout
+    )
+  }
+  out <- unlist(strsplit(c(p$stdout, p$stderr), "\n", fixed = TRUE))
+  # Success judged by exit status, not the "SIMULATION COMPLETED" banner --
+  # see run_simstrat_aed2() for why.
+  success <- isTRUE(p$status == 0)
+  if (success) {
+    cli_safe("Converting Simstrat-AED output to netCDF", 
+             FUN = cli::cli_progress_step)
+    nc_file <- tryCatch(
+      write_simstrat_nc(sim_folder = sim_folder, config_file = config_file),
+      error = function(e) {
+        cli::cli_warn(c("!" = "Simstrat-AED ran successfully but converting
+                        output to netCDF failed: {conditionMessage(e)}"))
+        NULL
+      }
+    )
+    if (is.null(nc_file)) {
+      success <- FALSE
+      p$status <- 1L
+    } else {
+      # cli_inform_safe(c("v" = paste0("Simstrat-AED run successful! ",
+      #                                "[", format(Sys.time()), "]")))
+    }
+  }
+  if (!success) {
+    cli_inform_safe(c(
+      "!" = paste0(
+        "Simstrat-AED run FAILED! ",
+        "[", format(Sys.time()), "]"
+      )
+    ))
+    msg <- paste(utils::tail(out, 10), collapse = "\n")
+    msg <- gsub("\033\\[[0-9;]*m", "", msg)
+    message(msg)
+  }
+  return(invisible(p))
 }
 
 #' Check model output
@@ -882,6 +996,15 @@ get_simstrat_aed2_version <- function() {
   return(trimws(vers[grepl("Simstrat version", vers)]))
 }
 
+#' Get Simstrat-AED model version
+#' @return version string
+#' @noRd
+get_simstrat_aed_version <- function() {
+  bin_exec <- .resolve_simstrat_aed_exec()
+  vers <- system2(bin_exec, stdout = TRUE)
+  return(trimws(vers[grepl("Simstrat version", vers)]))
+}
+
 #' Get DYRESM-CAEDYM model version
 #' @return version string
 #' @noRd
@@ -916,6 +1039,8 @@ get_model_version <- function(model) {
     vers <- get_dy_cd_version()
   } else if (model == "simstrat_aed2") {
     vers <- get_simstrat_aed2_version()
+  } else if (model == "simstrat_aed") {
+    vers <- get_simstrat_aed_version()
   } else {
     cli::cli_abort(c("x" = "Model {.field {model}} is not supported for version
                      checking."))
