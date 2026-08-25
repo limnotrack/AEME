@@ -6,14 +6,20 @@
 #' \code{\link{make_stg_simstrat}}.
 #' @param inf_factor numeric; scaling factor to apply to inflows.
 #' @param model_controls dataframe of loaded model controls.
-#' @param use_bgc logical; write AED2 inflow concentration files.
+#' @param use_bgc logical; write BGC inflow concentration files.
 #' @param ref_year integer; Simstrat `Simulation.Reference year`.
+#' @param model character; which Simstrat coupling this is for (`"simstrat_aed2"`
+#' or `"simstrat_aed"`), used to select the matching rows of `inf`'s `model`
+#' column (if present) and, when `use_bgc`, as the `rename_modelvars()`
+#' `type_output` and the BGC inflow subdirectory name (`AED2_inflow` /
+#' `AED_inflow`).
 #'
 #' @return Writes `Qinp.dat`, `Tinp.dat`, `Sinp.dat` (and, if `use_bgc`,
-#' `AED2_inflow/<var>_inflow.dat` files) to `path_simstrat`.
+#' `<AED2|AED>_inflow/<var>_inflow.dat` files) to `path_simstrat`.
 #' @noRd
 make_inf_simstrat <- function(inf, path_simstrat, surface_elev, inf_factor = 1,
-                              model_controls, use_bgc = FALSE, ref_year) {
+                              model_controls, use_bgc = FALSE, ref_year,
+                              model = "simstrat_aed2") {
 
   if (length(inf) == 0) {
     # No inflows: Simstrat requires the files to exist but they can be empty
@@ -26,9 +32,8 @@ make_inf_simstrat <- function(inf, path_simstrat, surface_elev, inf_factor = 1,
 
   for (i in seq_along(inf)) {
     if ("model" %in% colnames(inf[[i]])) {
-      inf[[i]] <- inf[[i]] |>
-        dplyr::filter(model == "simstrat_aed2") |>
-        dplyr::select(-model)
+      inf[[i]] <- inf[[i]][inf[[i]]$model == model, , drop = FALSE]
+      inf[[i]]$model <- NULL
     }
   }
 
@@ -88,9 +93,10 @@ make_inf_simstrat <- function(inf, path_simstrat, surface_elev, inf_factor = 1,
       dplyr::pull(var_aeme)
 
     all_inf <- dplyr::bind_rows(inf)
+    inflow_dir <- if (model == "simstrat_aed") "AED_inflow" else "AED2_inflow"
     for (v in bgc_vars) {
       if (!v %in% names(all_inf)) next
-      simstrat_name <- rename_modelvars(v, type_output = "simstrat_aed2",
+      simstrat_name <- rename_modelvars(v, type_output = model,
                                         warn_unmatched = TRUE)
       if (is.na(simstrat_name) || simstrat_name == "") next
 
@@ -100,13 +106,13 @@ make_inf_simstrat <- function(inf, path_simstrat, surface_elev, inf_factor = 1,
         dplyr::summarise(value = sum(.data[[v]], na.rm = TRUE), .groups = "drop") |>
         dplyr::arrange(Date)
 
-      # integrate = FALSE for the same reason as Tinp/Sinp above -- AED2
+      # integrate = FALSE for the same reason as Tinp/Sinp above -- BGC
       # concentration advection shares the same at-risk code path in
       # Simstrat (strat_lateral.f90's surface-input handling) as
       # temperature/salinity, and hasn't been separately confirmed stable.
       .write_simstrat_grid_file(
         df = var_df,
-        file = file.path(path_simstrat, "AED2_inflow",
+        file = file.path(path_simstrat, inflow_dir,
                          paste0(simstrat_name, "_inflow.dat")),
         comment = "depth [m], conc. [mmol/m3 * m2/s]",
         depth = 0, ref_year = ref_year, integrate = FALSE

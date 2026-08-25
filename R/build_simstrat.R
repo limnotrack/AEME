@@ -1,4 +1,4 @@
-#' Build a Simstrat-AED2 model from generic inputs
+#' Build a Simstrat-AED2 or Simstrat-AED model from generic inputs
 #'
 #' @inheritParams build_dycd
 #' @inheritParams build_aeme
@@ -7,8 +7,13 @@
 #' outflow (as used by \code{\link{make_wdr_simstrat}}).
 #' @param overwrite_par logical, overwrite the `simstrat.par` file. Default is
 #' TRUE
+#' @param bgc_lib character; which BGC library Simstrat is coupled to,
+#' `"aed2"` (default, preserves prior behaviour) or `"aed"`. Determines the
+#' model subdirectory (`simstrat_aed2`/`simstrat_aed`), which `simstrat.par`
+#' template and BGC config files are copied in, and which initialiser
+#' (\code{\link{initialise_aed2}} or `initialise_simstrat_aed()`) is used.
 #'
-#' @return Directory with Simstrat-AED2 configuration
+#' @return Directory with Simstrat-AED2 or Simstrat-AED configuration
 #' @noRd
 #'
 build_simstrat <- function(lakename, model_controls, date_range,
@@ -16,32 +21,44 @@ build_simstrat <- function(lakename, model_controls, date_range,
                            lvl, inf, outf, heights_wdr, met,
                            lake_dir, init_prof, init_depth,
                            inf_factor = 1, outf_factor = 1,
-                           Kw, use_bgc, overwrite_par = TRUE) {
+                           Kw, use_bgc, overwrite_par = TRUE,
+                           bgc_lib = c("aed2", "aed")) {
 
-  cli_safe(paste0("Building Simstrat-AED2 for lake ", lakename), FUN = cli::cli_h2)
+  bgc_lib <- match.arg(bgc_lib)
+  model <- paste0("simstrat_", bgc_lib)
+  # AED2's own directories/files keep their historical "AED2_*"/"aed2.*"
+  # naming; AED's (this package's newer addition) use "AED_*"/"aed.*" to
+  # match the AEDConfig block in inst/extdata/simstrat_aed/simstrat.par.
+  bgc_tag <- if (bgc_lib == "aed2") "AED2" else "AED"
+  aed_nml_name <- if (bgc_lib == "aed2") "aed2.nml" else "aed.nml"
+  bgc_template_dir <- if (bgc_lib == "aed2") "aed2" else "aed"
 
-  path_simstrat <- file.path(lake_dir, "simstrat_aed2")
+  cli_safe(paste0("Building Simstrat-", toupper(bgc_lib), " for lake ", lakename),
+          FUN = cli::cli_h2)
+
+  path_simstrat <- file.path(lake_dir, model)
   dir.create(path_simstrat, recursive = TRUE, showWarnings = FALSE)
-  dir.create(file.path(path_simstrat, "AED2_inflow"), showWarnings = FALSE,
+  dir.create(file.path(path_simstrat, paste0(bgc_tag, "_inflow")), showWarnings = FALSE,
              recursive = TRUE)
-  dir.create(file.path(path_simstrat, "AED2_initcond"), showWarnings = FALSE,
+  dir.create(file.path(path_simstrat, paste0(bgc_tag, "_initcond")), showWarnings = FALSE,
              recursive = TRUE)
   dir.create(file.path(path_simstrat, "Results"), showWarnings = FALSE,
              recursive = TRUE)
 
   par_file <- file.path(path_simstrat, "simstrat.par")
   if (!file.exists(par_file)) {
-    par_file <- system.file("extdata/simstrat_aed2/simstrat.par", package = "AEME")
+    par_file <- system.file(file.path("extdata", model, "simstrat.par"), package = "AEME")
     file.copy(par_file, file.path(path_simstrat, "simstrat.par"))
     overwrite_par <- TRUE
     cli_inform_safe(c("i" = "Copied in Simstrat par file"))
   }
-  aed2_file <- file.path(path_simstrat, "aed2.nml")
-  if (!file.exists(aed2_file)) {
-    aed2_files <- list.files(system.file("extdata/simstrat_aed2/", package = "AEME"),
-                             full.names = TRUE, pattern = "^aed2")
-    file.copy(aed2_files, path_simstrat)
-    cli_inform_safe(c("i" = "Copied in AED2 nml files and supporting files"))
+  bgc_file <- file.path(path_simstrat, aed_nml_name)
+  if (!file.exists(bgc_file)) {
+    bgc_files <- list.files(system.file(file.path("extdata", bgc_template_dir), package = "AEME"),
+                            full.names = TRUE, pattern = paste0("^", bgc_lib))
+    file.copy(bgc_files, path_simstrat)
+    cli_inform_safe(c("i" = paste0("Copied in ", toupper(bgc_lib),
+                                   " nml files and supporting files")))
   }
 
   # Remove previous output files
@@ -81,10 +98,11 @@ build_simstrat <- function(lakename, model_controls, date_range,
   # timestep.
   par[["Output"]][["Times"]] <- 86400 / par[["Simulation"]][["Timestep s"]]
 
-  par[["AED2Config"]][["AED2ConfigFile"]] <- "aed2.nml"
-  par[["AED2Config"]][["PathAED2initial"]] <- "AED2_initcond/"
-  par[["AED2Config"]][["PathAED2inflow"]] <- "AED2_inflow/"
-  par[["ModelConfig"]][["CoupleAED2"]] <- isTRUE(use_bgc)
+  bgc_cfg_key <- paste0(bgc_tag, "Config")
+  par[[bgc_cfg_key]][[paste0(bgc_tag, "ConfigFile")]] <- aed_nml_name
+  par[[bgc_cfg_key]][[paste0("Path", bgc_tag, "initial")]] <- paste0(bgc_tag, "_initcond/")
+  par[[bgc_cfg_key]][[paste0("Path", bgc_tag, "inflow")]] <- paste0(bgc_tag, "_inflow/")
+  par[["ModelConfig"]][[paste0("Couple", bgc_tag)]] <- isTRUE(use_bgc)
 
   par[["Simulation"]][["Reference year"]] <- ref_year
   par[["Simulation"]][["Start d"]] <- start_day
@@ -107,11 +125,12 @@ build_simstrat <- function(lakename, model_controls, date_range,
   make_inf_simstrat(inf = inf, path_simstrat = path_simstrat,
                     surface_elev = surface_elev, inf_factor = inf_factor,
                     model_controls = model_controls, use_bgc = use_bgc,
-                    ref_year = ref_year)
+                    ref_year = ref_year, model = model)
 
   make_wdr_simstrat(outf = outf, heights_wdr = heights_wdr,
                     path_simstrat = path_simstrat, surface_elev = surface_elev,
-                    outf_factor = outf_factor, ref_year = ref_year)
+                    outf_factor = outf_factor, ref_year = ref_year,
+                    model = model)
 
   # Light extinction as a constant time series (single depth is valid here --
   # Absorption.dat uses a different, non-integrated read path, see
@@ -125,9 +144,15 @@ build_simstrat <- function(lakename, model_controls, date_range,
 
   if (use_bgc) {
     max_depth <- surface_elev - min(hyps$elev)
-    initialise_aed2(model_controls = model_controls, path_aed2 = path_simstrat,
-                    max_depth = max_depth, date_range = date_range,
-                    ref_year = ref_year)
+    if (bgc_lib == "aed2") {
+      initialise_aed2(model_controls = model_controls, path_aed2 = path_simstrat,
+                      max_depth = max_depth, date_range = date_range,
+                      ref_year = ref_year)
+    } else {
+      initialise_simstrat_aed(model_controls = model_controls, path_aed = path_simstrat,
+                              max_depth = max_depth, date_range = date_range,
+                              ref_year = ref_year)
+    }
   }
 
   if (overwrite_par) {

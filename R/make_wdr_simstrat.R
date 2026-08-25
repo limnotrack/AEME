@@ -8,6 +8,9 @@
 #' \code{\link{make_stg_simstrat}}.
 #' @param outf_factor numeric; scaling factor to apply to outflows.
 #' @param ref_year integer; Simstrat `Simulation.Reference year`.
+#' @param model character; which Simstrat coupling this is for (`"simstrat_aed2"`
+#' or `"simstrat_aed"`), used to select the matching rows of `outf`'s `model`
+#' column, if present.
 #'
 #' @details Simstrat's own outflow file format (`Qout.dat`) supports one
 #' column per distinct withdrawal depth. AEME combines all named outflows
@@ -20,7 +23,8 @@
 #' @return Writes `Qout.dat` to `path_simstrat`.
 #' @noRd
 make_wdr_simstrat <- function(outf, heights_wdr, path_simstrat, surface_elev,
-                              outf_factor = 1, ref_year) {
+                              outf_factor = 1, ref_year,
+                              model = "simstrat_aed2") {
 
   if (length(outf) == 0) {
     writeLines(c("no outflow", "0 1", "-1 0.00", "0.0000 0.0000"),
@@ -30,9 +34,8 @@ make_wdr_simstrat <- function(outf, heights_wdr, path_simstrat, surface_elev,
 
   for (n in names(outf)) {
     if ("model" %in% colnames(outf[[n]])) {
-      outf[[n]] <- outf[[n]] |>
-        dplyr::filter(model == "simstrat_aed2") |>
-        dplyr::select(-model)
+      outf[[n]] <- outf[[n]][outf[[n]]$model == model, , drop = FALSE]
+      outf[[n]]$model <- NULL
     }
     if ("HYD_flow" %in% colnames(outf[[n]])) {
       outf[[n]] <- outf[[n]] |>
