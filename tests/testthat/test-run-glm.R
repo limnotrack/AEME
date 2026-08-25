@@ -13,6 +13,7 @@ test_that("running GLM works", {
   mod_obs_vars <- get_mod_obs_vars(aeme)
   testthat::expect_true(all(mod_obs_vars$var_aeme %in% obs$var_aeme))
   aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
+  plot_output(aeme)
   # plot_wlev(aeme)
   # plot_wbal(aeme)
   lake_dir <- get_lake_dir(aeme = aeme)
@@ -138,12 +139,51 @@ test_that("editing and running GLM-AED via the thin path-based wrapper works", {
   outfile <- file.path(path_glm, "output", "output.nc")
   testthat::expect_true(file.exists(outfile))
   out <- read_glm_output(file = outfile, vars_sim = "HYD_temp")
+  plot_model_output(out, "HYD_temp")
   testthat::expect_true(nrow(out$HYD_temp) > 0)
-  
+  testthat::expect_true(is_aeme_output(out))
+  testthat::expect_false(is_aeme_output_raw(out))
+  testthat::expect_equal(attr(out, "model"), "glm_aed")
+  testthat::expect_output(print(out), "aeme_output")
+
   out_raw <- read_glm_output(file = outfile, raw_output = TRUE,
                              load_all = TRUE)
+  plot_model_output(out_raw, "temp")
   testthat::expect_true(nrow(out_raw$temp) > 0)
   testthat::expect_true(class(out_raw$zarea) == "aeme_grouped_var")
+  testthat::expect_true(is_aeme_output(out_raw))
+  testthat::expect_true(is_aeme_output_raw(out_raw))
+  testthat::expect_output(print(out_raw), "raw")
+  # "Date" is structural, not a variable -- must survive the raw-mode
+  # rename sweep unchanged (key_naming has a real Date -> "time" entry that
+  # previously renamed it out from under every consumer)
+  testthat::expect_true("Date" %in% names(out_raw))
+  testthat::expect_s3_class(out_raw$Date, "Date")
+
+  # GLM's own raw layer-height matrix -- always captured (not just under
+  # raw_output, since GLM's layers genuinely vary in thickness/count over
+  # time), and survives the raw-mode rename sweep with its key unchanged.
+  # LKE_depths uses model_layer_structure's fixed row count in standardised
+  # mode, so only compare shapes against z in raw mode, where both are
+  # built from the same native GLM layer grid.
+  testthat::expect_true("z" %in% names(out))
+  testthat::expect_true(is.matrix(out$z))
+  testthat::expect_true("z" %in% names(out_raw))
+  testthat::expect_true(is.matrix(out_raw$z))
+  testthat::expect_equal(dim(out_raw$z), dim(out_raw$LKE_depths))
+
+  # standardise_glm_output() interpolates the raw output back onto AEME's
+  # depth grid using "z" -- should closely reproduce a direct standardised
+  # read of the same file (HYD_temp's conversion_aed factor is 1, so this
+  # should match almost exactly, not just approximately)
+  out_std <- standardise_glm_output(out_raw)
+  testthat::expect_true(is_aeme_output(out_std))
+  testthat::expect_false(is_aeme_output_raw(out_std))
+  testthat::expect_true("HYD_temp" %in% names(out_std))
+  testthat::expect_equal(dim(out_std$HYD_temp), dim(out$HYD_temp))
+  testthat::expect_equal(out_std$HYD_temp, out$HYD_temp, tolerance = 1e-6)
+  testthat::expect_equal(out_std$LKE_lvlwtr, out_raw$LKE_lvlwtr)
+  testthat::expect_error(standardise_glm_output(out))
 })
 
 test_that("running GLM with different exec works", {

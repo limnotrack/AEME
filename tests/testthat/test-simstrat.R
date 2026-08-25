@@ -265,6 +265,78 @@ test_that("running Simstrat ensemble works", {
   testthat::expect_true(outp$n_members > 1)
 })
 
+test_that("editing and running Simstrat-AED2 via the thin path-based wrapper works", {
+  skip_simstrat_run()
+
+  path <- file.path(tempdir(), "simstrat_thin_wrapper")
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, file = "aeme.yaml")
+  model_controls <- get_model_controls()
+  model <- "simstrat_aed2"
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = FALSE)
+
+  # From here on, only `path_simstrat` is used -- no `aeme` object required,
+  # mirroring a Simstrat-AED2-only user's workflow of editing an existing
+  # configuration directory, running it, and loading the output.
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  path_simstrat <- file.path(lake_dir, "simstrat_aed2")
+
+  # -- parameters --
+  old_f_wind <- get_simstrat_param(path_simstrat, "ModelParameters.f_wind")
+  set_simstrat_param(path_simstrat, `ModelParameters.f_wind` = 0.9)
+  testthat::expect_equal(
+    get_simstrat_param(path_simstrat, "ModelParameters.f_wind"),
+    0.9
+  )
+
+  # -- inflows --
+  inf_data <- inflows(aeme)[["data"]]
+  set_simstrat_inflows(path_simstrat, inf = inf_data)
+  testthat::expect_true(file.exists(file.path(path_simstrat, "Qinp.dat")))
+
+  # -- outflows --
+  hyps <- input(aeme)$hypsograph
+  init_depth <- input(aeme)$init_depth
+  surface_elev <- min(hyps$elev) + init_depth
+  outf_data <- outflows(aeme)[["data"]]
+  set_simstrat_outflows(path_simstrat, outf = outf_data,
+                        heights_wdr = c(outflow = surface_elev - 3, wbal = surface_elev - 1),
+                        surface_elev = surface_elev)
+  testthat::expect_true(file.exists(file.path(path_simstrat, "Qout.dat")))
+
+  # -- run and load output, all from the path alone --
+  run_simstrat_aed2(sim_folder = path_simstrat)
+  outfile <- file.path(path_simstrat, "output.nc")
+  testthat::expect_true(file.exists(outfile))
+  out <- read_simstrat_output(file = outfile, vars_sim = "HYD_temp")
+  testthat::expect_true(nrow(out$HYD_temp) > 0)
+  testthat::expect_true(is_aeme_output(out))
+  testthat::expect_false(is_aeme_output_raw(out))
+  testthat::expect_equal(attr(out, "model"), "simstrat_aed2")
+
+  out_raw <- read_simstrat_output(file = outfile, vars_sim = "HYD_temp",
+                                  raw_output = TRUE)
+  testthat::expect_true(is_aeme_output_raw(out_raw))
+  # "Date" is structural, not a variable -- must survive the raw-mode
+  # rename sweep unchanged (key_naming has a real Date -> "time" entry for
+  # simstrat_aed2 that previously renamed it out from under every consumer)
+  testthat::expect_true("Date" %in% names(out_raw))
+  testthat::expect_s3_class(out_raw$Date, "Date")
+  plot_model_output(x = out_raw, var_sim = "T")
+  testthat::expect_true(nrow(out_raw$`T`) > 0)
+  testthat::expect_null(out_raw$HYD_temp)
+  testthat::expect_error(
+    read_simstrat_output(file = outfile, vars_sim = "HYD_temp",
+                         raw_output = TRUE, depths = c(0, 5))
+  )
+
+  out_min <- read_simstrat_output(file = outfile, vars_sim = "HYD_temp",
+                                  incl_fluxes = FALSE, load_all = FALSE)
+  testthat::expect_true(length(out_min) < length(out))
+})
+
 test_that("reading Simstrat output via a direct nc handle works", {
   skip_simstrat_run()
 

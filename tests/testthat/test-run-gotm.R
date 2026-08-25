@@ -126,6 +126,69 @@ test_that("running GOTM with a spinup works", {
   testthat::expect_true(file_chk)
 })
 
+test_that("editing and running GOTM-WET via the thin path-based wrapper works", {
+  skip_if_models_unavailable(c("gotm_wet"))
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls()
+  model <- "gotm_wet"
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5,
+                     use_bgc = FALSE)
+
+  # From here on, only `path_gotm` is used -- no `aeme` object required,
+  # mirroring a GOTM-WET-only user's workflow of editing an existing
+  # configuration directory, running it, and loading the output.
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  path_gotm <- file.path(lake_dir, "gotm_wet")
+
+  # -- parameters --
+  old_dt <- get_gotm_param(path_gotm, "time.dt")
+  set_gotm_param(path_gotm, `time.dt` = 1800)
+  testthat::expect_equal(get_gotm_param(path_gotm, "time.dt"), 1800)
+
+  # -- inflows --
+  inf_data <- inflows(aeme)[["data"]]
+  set_gotm_inflows(path_gotm, inf_list = inf_data)
+  testthat::expect_true(file.exists(file.path(path_gotm, "inputs",
+                                              "inf_flow_FWMT.dat")))
+
+  # -- outflows --
+  outf_data <- outflows(aeme)[["data"]]
+  set_gotm_outflows(path_gotm, outf = outf_data)
+  testthat::expect_true(file.exists(file.path(path_gotm, "inputs",
+                                              "outf_outflow.dat")))
+
+  # -- run and load output, all from the path alone --
+  run_gotm_wet(sim_folder = path_gotm)
+  outfile <- file.path(path_gotm, "output", "output.nc")
+  testthat::expect_true(file.exists(outfile))
+  out <- read_gotm_output(file = outfile, vars_sim = "HYD_temp")
+  testthat::expect_true(nrow(out$HYD_temp) > 0)
+
+  out_raw <- read_gotm_output(file = outfile, raw_output = TRUE)
+  testthat::expect_true(nrow(out_raw$temp) > 0)
+  testthat::expect_null(out_raw$HYD_temp)
+  testthat::expect_true(is_aeme_output_raw(out_raw))
+  # "Date" is structural, not a variable -- must survive the raw-mode
+  # rename sweep unchanged (key_naming has a real Date -> "date" entry for
+  # gotm_wet that previously renamed it out from under every consumer)
+  testthat::expect_true("Date" %in% names(out_raw))
+  testthat::expect_s3_class(out_raw$Date, "Date")
+  testthat::expect_error(
+    read_gotm_output(file = outfile, vars_sim = "HYD_temp",
+                     raw_output = TRUE, depths = c(0, 5))
+  )
+
+  out_min <- read_gotm_output(file = outfile, vars_sim = "HYD_temp",
+                              load_all = FALSE)
+  testthat::expect_true(length(out_min) < length(out))
+})
+
 test_that("can get variable indices after running the model", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
