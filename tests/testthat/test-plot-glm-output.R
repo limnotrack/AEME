@@ -17,28 +17,19 @@ test_that("plot_glm_output() plots vector, matrix, and grouped variables from a 
   outfile <- file.path(lake_dir, "glm_aed", "output", "output.nc")
   out <- read_glm_output(file = outfile)
 
-  plot_file <- file.path(tmpdir, "p.png")
-
-  # (z, time) matrix variable -- depth x time contour
-  grDevices::png(plot_file)
+  # (z, time) matrix variable -- depth x time tile plot
   r1 <- plot_glm_output(out, "HYD_temp")
-  grDevices::dev.off()
-  testthat::expect_true(is.matrix(r1))
+  testthat::expect_true(ggplot2::is_ggplot(r1))
 
   # (time)-only vector variable -- simple line plot
-  grDevices::png(plot_file)
   r2 <- plot_glm_output(out, "LKE_lvlwtr")
-  grDevices::dev.off()
-  testthat::expect_true(is.numeric(r2))
+  testthat::expect_true(ggplot2::is_ggplot(r2))
 
   # Grouped (nzones, time) variable -- one line per zone
   grouped_name <- names(out)[vapply(out, inherits, logical(1), "aeme_grouped_var")][1]
   testthat::expect_false(is.na(grouped_name))
-  grDevices::png(plot_file)
   r3 <- plot_glm_output(out, grouped_name)
-  grDevices::dev.off()
-  testthat::expect_s3_class(r3, "data.frame")
-  testthat::expect_true(all(c("Date", "value") %in% names(r3)))
+  testthat::expect_true(ggplot2::is_ggplot(r3))
 
   # Unknown variable -- clear error, not a cryptic one
   testthat::expect_error(plot_glm_output(out, "not_a_real_variable"))
