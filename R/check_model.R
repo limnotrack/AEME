@@ -1,8 +1,9 @@
 #' Check model name and return standardized code
 #'
 #' @param model Character vector of model names. Valid options are:
-#'  "DYRESM-CAEDYM", "GLM-AED", "GOTM-WET", "SIMSTRAT-AED2" or their
-#'  corresponding codes "dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2".
+#'  "DYRESM-CAEDYM", "GLM-AED", "GOTM-WET", "SIMSTRAT-AED2", "SIMSTRAT-AED"
+#'  or their corresponding codes "dy_cd", "glm_aed", "gotm_wet",
+#'  "simstrat_aed2", "simstrat_aed".
 #' @param os_valid Logical. If TRUE, checks if the model is valid for the
 #'  current operating system.
 #'
@@ -20,7 +21,8 @@ check_model <- function(model, os_valid = FALSE) {
     "DYRESM-CAEDYM"  = "dy_cd",
     "GLM-AED"        = "glm_aed",
     "GOTM-WET"       = "gotm_wet",
-    "SIMSTRAT-AED2"  = "simstrat_aed2"
+    "SIMSTRAT-AED2"  = "simstrat_aed2",
+    "SIMSTRAT-AED"   = "simstrat_aed"
   )
 
   valid_names <- c(names(all_models), unname(all_models))
@@ -46,15 +48,16 @@ check_model <- function(model, os_valid = FALSE) {
   if (os_valid) {
     os <- .detect_os()
 
-    # DYRESM-CAEDYM, GOTM-WET, and Simstrat-AED2 only have Windows binaries
-    # published as release assets (see install_dy_cd()/install_gotm_wet()/
-    # install_simstrat_aed2()); GLM-AED ships cross-platform builds.
-    windows_only <- c("dy_cd", "gotm_wet", "simstrat_aed2")
+    # DYRESM-CAEDYM, GOTM-WET, and Simstrat (AED2 and AED) only have Windows
+    # binaries published as release assets (see install_dy_cd()/
+    # install_gotm_wet()/install_simstrat_aed2()/install_simstrat_aed());
+    # GLM-AED ships cross-platform builds.
+    windows_only <- c("dy_cd", "gotm_wet")
 
     os_valid_models <- if (os == "windows") {
       all_models
     } else {
-      cli::cli_alert_info("DYRESM-CAEDYM, GOTM-WET, and SIMSTRAT-AED2 are only available on Windows. Defaulting to GLM-AED for {.field {os}} OS.")
+      cli::cli_alert_info("DYRESM-CAEDYM and GOTM-WET are only available on Windows. Defaulting to GLM-AED for {.field {os}} OS.")
       # Check for exe
       exe <- .resolve_glm_exec()
       all_models[!all_models %in% windows_only]
