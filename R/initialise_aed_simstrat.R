@@ -36,6 +36,13 @@ initialise_simstrat_aed <- function(model_controls, path_aed, max_depth = 10,
   aed_nml_file <- file.path(path_aed, "aed.nml")
   aed_nml <- read_nml(aed_nml_file)
 
+  for (grp in c("aed_phytoplankton", "aed_zooplankton", "aed_macrophyte")) {
+    dbase <- aed_nml[[grp]][["dbase"]]
+    if (!is.null(dbase)) {
+      aed_nml[[grp]][["dbase"]] <- basename(dbase)
+    }
+  }
+
   data("key_naming", package = "AEME", envir = environment())
   deriv_vars <- key_naming |>
     dplyr::filter(derived) |>
@@ -99,6 +106,28 @@ initialise_simstrat_aed <- function(model_controls, path_aed, max_depth = 10,
   )
   required_vars <- unlist(base_statevars[intersect(names(base_statevars), active_modules)])
 
+  # aed_nitrogen's N2O/NO2 pools (simn2o) and aed_organic_matter's
+  # recalcitrant pools (simrpools) are switch-activated rather than always
+  # present, unlike AED2's fixed variable set -- when on, Simstrat still
+  # requires an AED_inflow/<var>_inflow.dat for each (missing ini files just
+  # fall back to the namelist default and warn, but a missing inflow file is
+  # a fatal Fortran runtime error: "Cannot open file ..._inflow.dat").
+  if ("aed_nitrogen" %in% active_modules) {
+    simn2o <- tryCatch(as.numeric(get_nml_value(aed_nml, "simn2o")),
+                       error = function(e) 0)
+    if (isTRUE(simn2o > 0)) {
+      required_vars <- c(required_vars, "NIT_n2o", "NIT_no2")
+    }
+  }
+  if ("aed_organic_matter" %in% active_modules) {
+    simrpools <- tryCatch(isTRUE(get_nml_value(aed_nml, "simrpools")),
+                          error = function(e) FALSE)
+    if (simrpools) {
+      required_vars <- c(required_vars,
+                         "OGM_docr", "OGM_donr", "OGM_dopr", "OGM_cpom")
+    }
+  }
+
   # Phyto/zoo group names come from the CSV-based par files (the same format
   # and reader approach initialise_aed() uses for GLM-AED, since both link
   # the same AED library) -- unlike AED2's aed2_phyto_pars.nml/
@@ -127,12 +156,33 @@ initialise_simstrat_aed <- function(model_controls, path_aed, max_depth = 10,
   }
 
   # --- Placeholder inflow files for any required var not already written -
+  # Every AED state variable that gets registered (see the module lists
+  # above) needs its own AED_inflow/<name>_inflow.dat -- Simstrat's
+  # strat_lateral.f90 opens each with status='old' and no iostat=, so a
+  # missing file is a hard runtime abort, not a graceful fallback (unlike
+  # a missing AED_initcond file, which just falls back to the aed.nml
+  # default and warns). Value defaults to model_controls$inf_default for
+  # the AED name's var_aeme (converted to AED units the same way
+  # initial_wc is below), or 0 if there's no key_naming/model_controls
+  # entry for it (e.g. NIT_n2o/NIT_no2/OGM_cpom have none).
+  aed_inflow_default <- function(v) {
+    kn_idx <- match(v, key_naming$simstrat_aed)
+    if (is.na(kn_idx)) return(0)
+    mc_idx <- match(key_naming$var_aeme[kn_idx], model_controls$var_aeme)
+    if (is.na(mc_idx)) return(0)
+    default_val <- model_controls$inf_default[mc_idx]
+    conv <- model_controls$conversion_aed[mc_idx]
+    if (is.na(default_val) || is.na(conv) || conv == 0) return(0)
+    round(default_val / conv, 4)
+  }
+
   inflow_dir <- file.path(path_aed, "AED_inflow")
   for (v in required_vars) {
     inflow_file <- file.path(inflow_dir, paste0(v, "_inflow.dat"))
     if (!file.exists(inflow_file)) {
+      val <- aed_inflow_default(v)
       .write_simstrat_grid_file(
-        df = data.frame(Date = date_range, value = c(0, 0)),
+        df = data.frame(Date = date_range, value = c(val, val)),
         file = inflow_file,
         comment = "depth [m], conc. [mmol/m3 * m2/s]",
         depth = 0, ref_year = ref_year
