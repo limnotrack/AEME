@@ -8,6 +8,19 @@
   `run_simstrat_aed2()`, `read_simstrat_output()`, `check_simstrat_par()`,
   `write_simstrat_nc()`, and AED2 biogeochemistry support via
   `initialise_aed2()`.
+* Added **Simstrat-AED** (`"simstrat_aed"`) as a fifth supported model,
+  coupling Simstrat to AED (v3) instead of AED2 - the same actively
+  developed biogeochemical library GLM-AED already links, rather than the
+  older AED2. Shares the module-activation/cross-module-dependency logic
+  with GLM-AED via a new common engine (`resolve_aed_active_modules()` in
+  `R/aed_modules.R`) instead of a second independent copy, so the two AED
+  couplings behave identically for the same `model_controls`. New
+  `run_simstrat_aed()`, `initialise_simstrat_aed()`,
+  `install_simstrat_aed()`/`list_simstrat_aed_versions()`/
+  `simstrat_aed_exe_path()`, and `simstrat_aed_parameters` dataset;
+  `build_simstrat()` gained a `bgc_lib = c("aed2", "aed")` argument and now
+  shares its AED config templates (`inst/extdata/aed/`) with GLM-AED rather
+  than each model carrying its own copy.
 
 ## Model binaries moved out of the package
 
@@ -94,6 +107,21 @@ the R package version.
   would crash inside `check_time()`'s `compute_spinup_dates()` the first
   time it was built with a newer AEME version. `build_aeme()` now migrates
   the object on entry, matching `check_aeme()`/`show()`/`plot()`.
+* `write_simstrat_nc()` mishandled AED's sediment-zone output
+  (`<var>_zone_out.dat`, Simstrat-AED only). These files also match the
+  general `*_out.dat` glob and were being written against the shared
+  water-column `z` dimension/grid used by regular depth-profile variables,
+  which either put zone values at the wrong depths or failed outright
+  whenever a zone file's column count (one per benthic zone) didn't happen
+  to match the water column's level count. Zone variables now get their own
+  `zone` netCDF dimension, coordinate-valued by each zone's reference depth
+  - keeping the existing `<var>` and new `<var>_zone` variables distinct.
+  No changes were needed on the reading side: `read_simstrat_output()`'s
+  `load_all` sweep already routes any variable shaped other than `(time)`
+  or `(z, time)` through the same generic grouped-variable path GLM-AED's
+  own `nzones`-dimensioned output uses, so zone variables come back as
+  `aeme_grouped_var` objects automatically. Verified against a real
+  Simstrat-AED Rotorua run (75 sediment-zone variables across 3 zones).
 
 ## New data
 
