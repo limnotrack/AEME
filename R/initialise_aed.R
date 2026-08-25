@@ -30,16 +30,8 @@ initialise_aed <- function(model_controls, path_aed) {
   
   aed_cfg <- file.path(path_aed, "aed.nml")
   aed_nml <- read_nml(aed_cfg)
-  
+
   # --- Determine active AED modules -------------------------------------
-  module_map <- c(OXY = "aed_oxygen", SIL = "aed_silica", NIT = "aed_nitrogen",
-                  PHS = "aed_phosphorus", OGM = "aed_organic_matter",
-                  PHY = "aed_phytoplankton", ZOO = "aed_zooplankton")
-  module_order <- c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
-                    "aed_phosphorus", "aed_organic_matter",
-                    "aed_phytoplankton", "aed_zooplankton",
-                    "aed_macrophyte", "aed_totals")
-  
   # Use the glm_aed-renamed names' prefixes, not var_aeme's own prefix --
   # AEME's var_aeme convention doesn't always match AED's internal module
   # naming (e.g. var_aeme "CHM_oxy" and "CAR_doc"/"CAR_poc" rename to
@@ -49,7 +41,7 @@ initialise_aed <- function(model_controls, path_aed) {
     glm_names <- rename_modelvars(input = this_ctrls$var_aeme,
                                   type_output = "glm_aed")
     prefixes <- sub("_.*$", "", glm_names)
-    active_modules <- module_order[module_order %in% unname(module_map[prefixes])]
+    active_modules <- aed_prefixes_to_modules(prefixes)
   } else {
     active_modules <- character(0)
   }
@@ -67,61 +59,8 @@ initialise_aed <- function(model_controls, path_aed) {
     active_modules <- union(active_modules, "aed_totals")
   }
 
-  # Cross-module dependencies, verified directly against this package's own
-  # bundled aed.nml target-variable links (not just libaed-water/libaed-api's
-  # compiled-in Fortran defaults, which for some parameters differ from what
-  # is actually configured here -- e.g. aed_phytoplankton's
-  # `c_uptake_target_variable` is blank in this template, so no aed_carbon
-  # module is required at all, unlike AED2/Simstrat's aed2_phytoplankton,
-  # which does link to aed2_carbon; see initialise_aed2()):
-  #  - aed_oxygen         -> aed_sedflux        (`fsed_oxy_variable = 'SDF_Fsed_oxy'`)
-  #  - aed_silica         -> aed_oxygen         (`silica_reactant_variable = 'OXY_oxy'`)
-  #  - aed_nitrogen       -> aed_oxygen,        (`nitrif_reactant_variable = 'OXY_oxy'`)
-  #                          aed_sedflux        (`fsed_amm_variable`/`fsed_nit_variable`)
-  #  - aed_phosphorus     -> aed_oxygen,        (`phosphorus_reactant_variable = 'OXY_oxy'`)
-  #                          aed_sedflux        (`fsed_frp_variable`)
-  #  - aed_organic_matter -> aed_oxygen,        (`dom_miner_oxy_reactant_var = 'OXY_oxy'`)
-  #                          aed_nitrogen,      (`dom_miner_nit_reactant_var`/`don_miner_product_variable`)
-  #                          aed_phosphorus     (`dop_miner_product_variable = 'PHS_frp'`)
-  #  - aed_phytoplankton  -> aed_oxygen, aed_nitrogen, aed_phosphorus,
-  #                          aed_silica, aed_organic_matter (uptake/
-  #                          excretion/mortality target variables)
-  #  - aed_zooplankton    -> aed_organic_matter (excretion/mortality target
-  #                          variables)
-  # `aed_macrophyte` has no equivalent source file in the current
-  # libaed-water/libaed-api checkouts (seemingly superseded/removed there)
-  # and has no target-variable keys in the bundled template either, so its
-  # dependencies can't be verified the same way -- left with no forced
-  # dependencies, as before. `aed_totals` is force-included above whenever
-  # NIT_tn/PHS_tp/CAR_toc is requested; its own TN_vars/TP_vars/TOC_vars in
-  # the bundled template ('NIT_nit','NIT_amm','OGM_don','OGM_pon',
-  # 'PHY_green_IN'; 'PHS_frp','OGM_dop','OGM_pop','PHY_green_IP';
-  # 'OGM_doc','OGM_poc','PHY_green','PHY_diatom') reference aed_nitrogen,
-  # aed_phosphorus, aed_organic_matter, and aed_phytoplankton -- so those
-  # must be forced too, or GLM aborts with "Undefined variable" (same
-  # failure mode as aed2_phytoplankton without its dependencies; see
-  # initialise_aed2()).
-  module_deps <- list(
-    aed_oxygen         = "aed_sedflux",
-    aed_silica         = "aed_oxygen",
-    aed_nitrogen       = c("aed_oxygen", "aed_sedflux"),
-    aed_phosphorus     = c("aed_oxygen", "aed_sedflux"),
-    aed_organic_matter = c("aed_oxygen", "aed_nitrogen", "aed_phosphorus"),
-    aed_phytoplankton  = c("aed_oxygen", "aed_nitrogen", "aed_phosphorus",
-                           "aed_silica", "aed_organic_matter"),
-    aed_zooplankton    = "aed_organic_matter",
-    aed_totals         = c("aed_nitrogen", "aed_phosphorus",
-                           "aed_organic_matter", "aed_phytoplankton")
-  )
-  
-  repeat {
-    added <- unlist(module_deps[active_modules], use.names = FALSE)
-    new_active <- union(active_modules, added)
-    if (setequal(new_active, active_modules)) break
-    active_modules <- new_active
-  }
-  active_modules <- module_order[module_order %in% active_modules]
-  
+  active_modules <- resolve_aed_active_modules(active_modules)
+
   if (length(active_modules) > 0) {
     aed_nml <- set_nml(aed_nml, arg_name = "models", arg_val = active_modules)
   }
