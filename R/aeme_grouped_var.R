@@ -56,3 +56,29 @@ as.data.frame.aeme_grouped_var <- function(x, ...) {
   names(grid)[names(grid) == "time"] <- "Date"
   grid
 }
+
+#' Plot a grouped variable as a line plot, coloured by its non-time
+#' dimensions (e.g. one line per zone)
+#'
+#' A thin wrapper around [as.data.frame.aeme_grouped_var()] that plots the
+#' resulting long-format data frame with ggplot2 -- one coloured line per
+#' combination of the variable's dimensions other than `"time"` (e.g. one
+#' line per sediment zone for a GLM-AED `(nzones, time)` AED flux variable).
+#'
+#' @param x an `aeme_grouped_var` object (see [new_grouped_var()]).
+#' @param var_sim character; variable name, used for the plot title/y-axis
+#'   label. Default `NULL` (no title/label).
+#' @param ylim numeric vector of length 2; y-axis limits. Default `NULL`
+#'   (ranged to the data).
+#' @param ... unused.
+#'
+#' @return A ggplot2 object (the long-format data frame instead, with a
+#'   warning, if `x` has no `"time"` dimension).
+#' @export
+#' @method plot aeme_grouped_var
+#'
+#' @importFrom ggplot2 ggplot aes geom_line coord_cartesian labs theme_bw
+plot.aeme_grouped_var <- function(x, var_sim = NULL, ylim = NULL, ...) {
+  df <- as.data.frame(x)
+  .plot_grouped_ggplot(df, var_sim = var_sim, ylim = ylim)
+}
