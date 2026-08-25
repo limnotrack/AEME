@@ -226,7 +226,7 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   }
   
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
-  return(out_list)
+  return(.new_aeme_output(out_list, model = "dy_cd"))
 }
 
 #' Read DYRESM water level output

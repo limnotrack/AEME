@@ -5,6 +5,7 @@
 \alias{run_glm_aed}
 \alias{run_gotm_wet}
 \alias{run_simstrat_aed2}
+\alias{run_simstrat_aed}
 \title{Run AEME models}
 \usage{
 run_dy_cd(
@@ -44,6 +45,16 @@ run_simstrat_aed2(
   args = character(),
   timeout = Inf,
   version = getOption("AEME.simstrat_version", default = NULL)
+)
+
+run_simstrat_aed(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  config_file = "simstrat.par",
+  args = character(),
+  timeout = Inf,
+  version = getOption("AEME.simstrat_aed_version", default = NULL)
 )
 }
 \arguments{

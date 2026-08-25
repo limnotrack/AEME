@@ -62,7 +62,12 @@ requested via \code{vars_sim} are keyed by their raw GLM/netCDF name (e.g.
 output has no common depth grid to interpolate onto. Default \code{FALSE}.}
 }
 \value{
-List with AEME output variables
+List with AEME output variables. Also includes \code{z}, GLM's own
+raw layer-height matrix (height of each layer's top boundary above the
+lake bottom, per timestep, before conversion to \code{LKE_depths}) -- unlike
+GOTM-WET/Simstrat-AED2, GLM's layer structure genuinely changes over
+time, so this is kept alongside the derived depth grid rather than
+discarded after use.
 }
 \description{
 Read GLM netCDF output

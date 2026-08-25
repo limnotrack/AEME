@@ -2,14 +2,14 @@
 % Please edit documentation in R/write_simstrat_nc.R
 \name{write_simstrat_nc}
 \alias{write_simstrat_nc}
-\title{Consolidate Simstrat-AED2 text output into a single netCDF file}
+\title{Consolidate Simstrat-AED2/AED text output into a single netCDF file}
 \usage{
-write_simstrat_nc(sim_folder, remove_dat = TRUE)
+write_simstrat_nc(sim_folder, config_file = "simstrat.par", remove_dat = FALSE)
 }
 \arguments{
-\item{sim_folder}{character; path to the \code{simstrat_aed2} simulation
-directory (containing \code{simstrat.par} and the output directory referenced
-by its \code{Output.Path}).}
+\item{sim_folder}{character; path to the \code{simstrat_aed2}/\code{simstrat_aed}
+simulation directory (containing \code{simstrat.par} and the output directory
+referenced by its \code{Output.Path}).}
 
 \item{remove_dat}{logical; delete the source \verb{<var>_out.dat} files after
 they have been written to \code{output.nc}. Default \code{TRUE} (this is the actual
@@ -24,9 +24,31 @@ Simstrat writes one plain-text \code{.dat} file per output variable (see
 \code{strat_outputfile.f90} in the Simstrat source), unlike GLM-AED and
 GOTM-WET which write netCDF directly. This function reads every
 \verb{<var>_out.dat} file in the simulation's output directory and writes them
-into a single compressed \code{output.nc}, so that Simstrat-AED2 output can be
-read with the same netCDF-based tooling
-(\code{\link{read_model_outputs}}, \code{\link{get_model_outfile}}, ...)
-used for the other models, and so the on-disk output is much smaller than
-the raw text files.
+into a single compressed \code{output.nc}, so that Simstrat output can be read
+with the same netCDF-based tooling (\code{\link{read_model_outputs}},
+\code{\link{get_model_outfile}}, ...) used for the other models, and so
+the on-disk output is much smaller than the raw text files.
+}
+\details{
+AED's sediment-zone output (Simstrat-AED only, not AED2) is written as a
+second, separate family of files, \verb{<var>_zone_out.dat} -- one column per
+benthic zone (labelled by that zone's reference depth), alongside the
+regular \verb{<var>_out.dat} for the same variable (a single lake-bottom or
+whole-lake value). Because both exist side by side for the same variable
+name and \verb{_zone_out.dat} itself ends in \verb{_out.dat}, these can't share the
+water-column \code{z} dimension/grid the way regular depth-profile variables
+do -- doing so silently wrote zone values against the wrong depths (or
+failed outright on a column-count mismatch) whenever a zone file's column
+count didn't happen to match the shared \code{z} grid's length. They get their
+own \code{zone} netCDF dimension instead, coordinate-valued by each zone's
+reference depth (m). Variable names keep their \verb{_zone} suffix (stripping
+only the trailing \verb{_out.dat}, as for every other file), so e.g.
+\code{NIT_amm_dsf_out.dat} and \code{NIT_amm_dsf_zone_out.dat} become the distinct
+netCDF variables \code{NIT_amm_dsf} (dims \code{time}) and \code{NIT_amm_dsf_zone} (dims
+\verb{zone, time}) -- never colliding. Reading them back needs no extra code:
+\code{\link{read_simstrat_output}}'s \code{load_all} sweep already routes any
+variable whose dimensions aren't \code{(time)} or \verb{(z, time)} through
+\code{\link{.read_glm_grouped_var}} into an \code{\link{new_grouped_var}}
+object, the same generic path GLM-AED's own \code{nzones}-dimensioned output
+uses.
 }

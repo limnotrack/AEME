@@ -51,7 +51,8 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
     if (facet) {
       p <- plot_var_depth(df = df, obs = obs, ylim = ylim, xlim = xlim,
                           var_lims = var_lims, add_obs = add_obs,
-                          point_size = point_size, print_plots = print_plots)
+                          point_size = point_size, print_plots = print_plots,
+                          facet = facet)
       if (print_plots) print(p)
       return(p)
     } else {
@@ -68,7 +69,8 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
         }
         plot_var_depth(df = df2, obs = obs2, ylim = ylim, xlim = xlim,
                        var_lims = var_lims, add_obs = add_obs,
-                       point_size = point_size, print_plots = print_plots)
+                       point_size = point_size, print_plots = print_plots,
+                       facet = facet)
       })
       return(lst)
     }
@@ -132,7 +134,7 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
 #' Plot variable with depth component
 #' @noRd
 plot_var_depth <- function(df, obs, ylim, xlim, var_lims, point_size, add_obs,
-                           print_plots = FALSE) {
+                           print_plots = FALSE, facet = TRUE) {
 
   sel_var <- df$var_sim[1]
   n <- 11
@@ -166,7 +168,7 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, point_size, add_obs,
     ) +
     {if(!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim)} +
     ggplot2::labs(fill = bquote(.(fill_lab))) +
-    ggplot2::facet_grid(Model ~ name_text) +
+    {if (facet) ggplot2::facet_grid(Model ~ name_text)} +
     ggplot2::xlim(xlim) +
     ggplot2::ylab("Elevation (m)") +
     ggplot2::xlab(NULL) +

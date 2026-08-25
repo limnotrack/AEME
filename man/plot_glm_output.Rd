@@ -11,8 +11,9 @@ plot_glm_output(out, var_sim, var_lims = NULL, ylim = NULL)
 \code{\link[=read_model_outputs]{read_model_outputs()}} (with \code{model = "glm_aed"}).}
 
 \item{var_sim}{character; name of the variable to plot, as it appears in
-\code{names(out)} (a \code{var_aeme} name if \link{key_naming} has a translation for
-it, otherwise its raw GLM/netCDF name).}
+\code{names(x)} (or in the model output list, if \code{x} is an \code{Aeme} object) --
+a \code{var_aeme} name if \link{key_naming} has a translation for it, otherwise
+its raw model/netCDF name.}
 
 \item{var_lims}{numeric vector of length 2; colour scale limits for a
 depth x time plot. Default \code{NULL} (ranged to the data).}
@@ -21,31 +22,17 @@ depth x time plot. Default \code{NULL} (ranged to the data).}
 Default \code{NULL} (ranged to the data).}
 }
 \value{
-Invisibly, the plotted data (the raw variable for a vector/matrix,
-or the long-format data frame for a grouped variable).
+A ggplot2 object -- see \code{\link[=plot_model_output]{plot_model_output()}}.
 }
 \description{
-A lightweight plotting helper for the list returned directly by
-\code{\link[=read_glm_output]{read_glm_output()}} or \code{\link[=read_model_outputs]{read_model_outputs()}} (with \code{model = "glm_aed"}), for when
-you don't have (or don't want to build) a full \code{Aeme} object -- e.g.
-\code{out <- read_glm_output(file = outfile)}. Dispatches on the shape of the
-requested variable: a depth x time contour plot for \verb{(z, time)}
-variables (paired with lake level, same convention as \code{\link[=plot_output]{plot_output()}}),
-a simple time series for \code{(time)}-only variables, and a line plot (one
-line per combination of its non-time dimensions) for an
-\code{\link[=new_grouped_var]{new_grouped_var()}} variable -- e.g. one line per sediment zone for a
-\verb{(nzones, time)} AED flux variable.
-}
-\details{
-For richer plots (ggplot2 backend, faceting, observation overlay,
-multiple models/variables at once), build an \code{Aeme} object (e.g. via
-\code{\link[=glm_config_to_aeme]{glm_config_to_aeme()}}) and use \code{\link[=plot_output]{plot_output()}} instead -- this function
-is intentionally minimal.
+A thin, backward-compatible alias for \code{\link[=plot_model_output]{plot_model_output()}} -- kept for
+existing callers. New code should call \code{\link[=plot_model_output]{plot_model_output()}} directly,
+which also accepts an \code{Aeme} object.
 }
 \examples{
 \dontrun{
 out <- read_glm_output(file = outfile)
-plot_glm_output(out, "HYD_temp")        # depth x time contour
+plot_glm_output(out, "HYD_temp")        # depth x time tile plot
 plot_glm_output(out, "LKE_lvlwtr")      # simple time series
 plot_glm_output(out, "SDF_Fsed_oxy_Z")  # one line per sediment zone
 }

@@ -31,7 +31,12 @@
 #'   `depths` must not be supplied when `raw_output = TRUE`, since raw
 #'   output has no common depth grid to interpolate onto. Default `FALSE`.
 #'
-#' @returns List with AEME output variables
+#' @returns List with AEME output variables. Also includes `z`, GLM's own
+#'   raw layer-height matrix (height of each layer's top boundary above the
+#'   lake bottom, per timestep, before conversion to `LKE_depths`) -- unlike
+#'   GOTM-WET/Simstrat-AED2, GLM's layer structure genuinely changes over
+#'   time, so this is kept alongside the derived depth grid rather than
+#'   discarded after use.
 #' @export
 #'
 #' @importFrom ncdf4 ncvar_get ncatt_get
@@ -95,7 +100,7 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                  byrow = TRUE)
   midpoints <- Lmat - midpoints
   out_list[["LKE_lvlwtr"]] <- lake_level
-  
+
   if (is.null(depths)) {
     if (isTRUE(raw_output)) {
       # raw mode: report each timestep's own GLM model layer midpoints,
@@ -166,10 +171,14 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   out_list <- lapply(out_list, as.vector)
   out_list[["Date"]] <- dates
-  
-  
-  # Add depths as a matrix
+  # Add depths as a matrix. LKE_depths is always depth-below-surface at
+  # each layer's *midpoint* (raw mode: out_depths <- round(midpoints, 2),
+  # computed above) -- NOT the raw z boundary-height-above-bottom values,
+  # which use a different reference frame, a half-layer offset, and no
+  # lake-level adjustment. z (raw boundary heights) is kept separately
+  # below for anyone who wants GLM's own native layer definition.
   out_list[["LKE_depths"]] <- out_depths
+  out_list[["z"]] <- mod_layers
   
   
   if (!is.null(vars_sim)) {
@@ -344,7 +353,12 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   }
 
   if (isTRUE(raw_output)) {
-    out_names <- names(out_list)
+    # "Date"/"LKE_depths"/"z"/"ok"/"reason" are the output list's own
+    # structural keys, not plotted variables -- key_naming does have a real
+    # "Date" -> "time" translation (used elsewhere for a genuinely different
+    # purpose), so leaving them in this sweep would rename "Date" itself out
+    # from under every consumer that expects a stable key
+    out_names <- setdiff(names(out_list), c("Date", "LKE_depths", "z", "ok", "reason"))
     var_names <- get_model_vars(out_names, model = "glm_aed", as_vector = TRUE)
     for (i in seq_along(var_names)) {
       if (!is.na(var_names[i]) && nzchar(var_names[i])) {
@@ -353,7 +367,7 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     }
   }
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
-  return(out_list)
+  return(.new_aeme_output(out_list, model = "glm_aed", raw = raw_output))
 }
 
 #' Return a `(z, time)` variable either interpolated onto a standardised
