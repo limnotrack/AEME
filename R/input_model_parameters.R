@@ -153,7 +153,11 @@ input_model_parameters <- function(aeme, model, param, path) {
         simstrat_par <- jsonlite::fromJSON(file.path(model_path, "simstrat.par"),
                                            simplifyVector = FALSE)
         surface_elev <- min(inp$hypsograph$elev) + inp$init_depth
+        # BGC files live in a subdirectory of model_path (e.g. "aed2"/"aed")
+        # -- see build_simstrat()
+        bgc_dir <- file.path(model_path, sub("^simstrat_", "", m))
         make_inf_simstrat(inf = inf, path_simstrat = model_path,
+                          bgc_dir = bgc_dir,
                           surface_elev = surface_elev, inf_factor = inf_factor,
                           model_controls = configuration(aeme)$model_controls,
                           use_bgc = use_bgc,

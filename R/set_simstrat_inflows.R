@@ -41,8 +41,11 @@ set_simstrat_inflows <- function(path_simstrat, inf, inf_factor = 1,
   }
 
   par <- jsonlite::fromJSON(par_file, simplifyVector = FALSE)
+  is_aed <- "AEDConfig" %in% names(par)
+  bgc_cfg_key <- if (is_aed) "AEDConfig" else "AED2Config"
+  bgc_tag <- if (is_aed) "AED" else "AED2"
   if (is.null(use_bgc)) {
-    use_bgc <- isTRUE(par[["ModelConfig"]][["CoupleAED2"]])
+    use_bgc <- isTRUE(par[["ModelConfig"]][[paste0("Couple", bgc_tag)]])
   }
   if (isTRUE(use_bgc) && is.null(model_controls)) {
     cli::cli_abort("'model_controls' is required when 'use_bgc = TRUE' -- see get_model_controls().")
@@ -51,12 +54,24 @@ set_simstrat_inflows <- function(path_simstrat, inf, inf_factor = 1,
     ref_year <- as.integer(par[["Simulation"]][["Reference year"]])
   }
 
+  # BGC files may live in a subdirectory of path_simstrat (see
+  # build_simstrat()) -- inferred from the configured BGC nml file's own
+  # directory, so this works whether or not that subdirectory is used.
+  config_file <- par[[bgc_cfg_key]][[paste0(bgc_tag, "ConfigFile")]]
+  bgc_dir <- if (!is.null(config_file)) {
+    file.path(path_simstrat, dirname(config_file))
+  } else {
+    path_simstrat
+  }
+
   # surface_elev only matters to make_inf_simstrat() for depth-referenced
   # inflows, which it does not currently implement (a fixed value here has
   # no effect on the written files)
-  make_inf_simstrat(inf = inf, path_simstrat = path_simstrat, surface_elev = 0,
+  make_inf_simstrat(inf = inf, path_simstrat = path_simstrat, bgc_dir = bgc_dir,
+                    surface_elev = 0,
                     inf_factor = inf_factor, model_controls = model_controls,
-                    use_bgc = use_bgc, ref_year = ref_year)
+                    use_bgc = use_bgc, ref_year = ref_year,
+                    model = if (is_aed) "simstrat_aed" else "simstrat_aed2")
 
   invisible(NULL)
 }

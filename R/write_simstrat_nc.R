@@ -35,8 +35,9 @@
 #' simulation directory (containing `simstrat.par` and the output directory
 #' referenced by its `Output.Path`).
 #' @param remove_dat logical; delete the source `<var>_out.dat` files after
-#' they have been written to `output.nc`. Default `TRUE` (this is the actual
-#' disk-space saving -- keeping both would use more space, not less).
+#' they have been written to `output.nc`. Default `FALSE` -- deleting them is
+#' the actual disk-space saving (keeping both uses more space, not less), but
+#' it also removes what \code{\link{read_simstrat_dat}} reads.
 #'
 #' Each netCDF variable's `units` and `long_name` attributes are looked up
 #' from the package's `key_naming` table (matched on the variable's native
@@ -53,18 +54,10 @@
 write_simstrat_nc <- function(sim_folder, config_file = "simstrat.par",
                               remove_dat = FALSE) {
 
-  if (!file.exists(config_file)) {
-    # Try to find it in the sim_folder if not given as a full path
-    config_file <- file.path(sim_folder, config_file)
-    if (!file.exists(config_file)) {
-      cli::cli_abort(c("x" = "Simstrat configuration file {.file simstrat.par}
-                       not found in {.path {sim_folder}}."))
-    }
-  }
-
-  par <- jsonlite::fromJSON(config_file, simplifyVector = FALSE)
-  ref_year <- as.integer(par[["Simulation"]][["Reference year"]])
-  out_dir <- file.path(sim_folder, par[["Output"]][["Path"]])
+  par_info <- .simstrat_par_paths(sim_folder = sim_folder,
+                                  config_file = config_file)
+  ref_year <- par_info$ref_year
+  out_dir <- par_info$out_dir
 
   dat_files <- list.files(out_dir, pattern = "_out\\.dat$", full.names = TRUE)
   if (length(dat_files) == 0) {
@@ -75,15 +68,8 @@ write_simstrat_nc <- function(sim_folder, config_file = "simstrat.par",
   var_names <- gsub("_out\\.dat$", "", basename(dat_files))
   is_zone <- grepl("_zone$", var_names)
 
-  read_one <- function(f) {
-    header <- strsplit(readLines(f, n = 1), ",")[[1]]
-    header <- gsub('"', "", header)
-    depths <- suppressWarnings(as.numeric(header[-1]))
-    body <- utils::read.csv(f, skip = 1, header = FALSE, na.strings = "NaN")
-    list(day = body[[1]], depths = depths,
-        values = as.matrix(body[, -1, drop = FALSE]))
-  }
-  data_list <- stats::setNames(lapply(dat_files, read_one), var_names)
+  data_list <- stats::setNames(lapply(dat_files, read_simstrat_dat_file),
+                               var_names)
 
   # All output files share the same simulation output times
   dt <- simstrat_day_to_date(data_list[[1]]$day, ref_year)
@@ -118,18 +104,9 @@ write_simstrat_nc <- function(sim_folder, config_file = "simstrat.par",
   # Simstrat output elsewhere, e.g. read_simstrat_output()). Zone variables
   # are looked up under their base name (the `_zone` suffix stripped) since
   # that's what's recorded in key_naming.
-  data("key_naming", package = "AEME", envir = environment())
-  lookup <- rbind(
-    stats::setNames(key_naming[nzchar(key_naming$simstrat_aed2),
-                               c("simstrat_aed2", "units", "name_text")],
-                    c("native", "units", "long_name")),
-    stats::setNames(key_naming[nzchar(key_naming$simstrat_aed),
-                               c("simstrat_aed", "units", "name_text")],
-                    c("native", "units", "long_name"))
-  )
-  lookup <- lookup[!duplicated(lookup$native), ]
-  units_map <- stats::setNames(lookup$units, lookup$native)
-  long_map <- stats::setNames(lookup$long_name, lookup$native)
+  meta <- .simstrat_var_meta()
+  units_map <- meta$units
+  long_map <- meta$long_name
 
   base_names <- ifelse(is_zone, sub("_zone$", "", var_names), var_names)
   var_units <- unname(units_map[base_names])
@@ -153,7 +130,7 @@ write_simstrat_nc <- function(sim_folder, config_file = "simstrat.par",
   }, var_names, is_zone, var_units, var_long)
   names(nc_vars) <- var_names
 
-  nc_file <- file.path(sim_folder, "output.nc")
+  nc_file <- file.path(out_dir, "output.nc")
   nc <- ncdf4::nc_create(nc_file, nc_vars)
   on.exit(ncdf4::nc_close(nc), add = TRUE)
 

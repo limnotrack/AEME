@@ -2,6 +2,9 @@
 #'
 #' @param inf list of inflow data.frames.
 #' @param path_simstrat filepath; to the Simstrat directory.
+#' @param bgc_dir filepath; to the BGC (AED/AED2) subdirectory, used (when
+#' `use_bgc`) as the base for the `<AED2|AED>_inflow` subdirectory. Defaults
+#' to `path_simstrat` for callers that keep BGC files unnested.
 #' @param surface_elev numeric; lake surface elevation (m), see
 #' \code{\link{make_stg_simstrat}}.
 #' @param inf_factor numeric; scaling factor to apply to inflows.
@@ -14,10 +17,11 @@
 #' `type_output` and the BGC inflow subdirectory name (`AED2_inflow` /
 #' `AED_inflow`).
 #'
-#' @return Writes `Qinp.dat`, `Tinp.dat`, `Sinp.dat` (and, if `use_bgc`,
-#' `<AED2|AED>_inflow/<var>_inflow.dat` files) to `path_simstrat`.
+#' @return Writes `Qinp.dat`, `Tinp.dat`, `Sinp.dat` to `path_simstrat` (and,
+#' if `use_bgc`, `<AED2|AED>_inflow/<var>_inflow.dat` files to `bgc_dir`).
 #' @noRd
-make_inf_simstrat <- function(inf, path_simstrat, surface_elev, inf_factor = 1,
+make_inf_simstrat <- function(inf, path_simstrat, bgc_dir = path_simstrat,
+                              surface_elev, inf_factor = 1,
                               model_controls, use_bgc = FALSE, ref_year,
                               model = "simstrat_aed2") {
 
@@ -112,7 +116,7 @@ make_inf_simstrat <- function(inf, path_simstrat, surface_elev, inf_factor = 1,
       # temperature/salinity, and hasn't been separately confirmed stable.
       .write_simstrat_grid_file(
         df = var_df,
-        file = file.path(path_simstrat, inflow_dir,
+        file = file.path(bgc_dir, inflow_dir,
                          paste0(simstrat_name, "_inflow.dat")),
         comment = "depth [m], conc. [mmol/m3 * m2/s]",
         depth = 0, ref_year = ref_year, integrate = FALSE

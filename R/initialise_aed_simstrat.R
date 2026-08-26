@@ -36,10 +36,17 @@ initialise_simstrat_aed <- function(model_controls, path_aed, max_depth = 10,
   aed_nml_file <- file.path(path_aed, "aed.nml")
   aed_nml <- read_nml(aed_nml_file)
 
+  # Simstrat resolves nml-referenced file paths (dbase, ConfigFile, Path...)
+  # relative to simstrat.par's own directory (path_simstrat), not relative to
+  # aed.nml's directory -- confirmed empirically: 'aed/aed_phyto_pars.csv'
+  # works, a bare 'aed_phyto_pars.csv' does not, when aed.nml itself lives in
+  # the "aed" subdirectory (see build_simstrat()). So dbase must carry the
+  # BGC subdirectory prefix, not just the bare filename.
+  bgc_subdir <- basename(path_aed)
   for (grp in c("aed_phytoplankton", "aed_zooplankton", "aed_macrophyte")) {
     dbase <- aed_nml[[grp]][["dbase"]]
     if (!is.null(dbase)) {
-      aed_nml[[grp]][["dbase"]] <- basename(dbase)
+      aed_nml[[grp]][["dbase"]] <- file.path(bgc_subdir, basename(dbase))
     }
   }
 

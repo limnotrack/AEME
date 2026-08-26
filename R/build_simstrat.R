@@ -37,12 +37,19 @@ build_simstrat <- function(lakename, model_controls, date_range,
           FUN = cli::cli_h2)
 
   path_simstrat <- file.path(lake_dir, model)
+  # BGC (AED/AED2) files live in their own subdirectory, mirroring
+  # build_glm()'s "aed" subdir under glm_aed -- keeps the model root
+  # (simstrat.par, Qinp.dat, ...) uncluttered by BGC config/support files.
+  bgc_dir <- file.path(path_simstrat, bgc_template_dir)
   dir.create(path_simstrat, recursive = TRUE, showWarnings = FALSE)
-  dir.create(file.path(path_simstrat, paste0(bgc_tag, "_inflow")), showWarnings = FALSE,
+  dir.create(bgc_dir, showWarnings = FALSE, recursive = TRUE)
+  dir.create(file.path(bgc_dir, paste0(bgc_tag, "_inflow")), showWarnings = FALSE,
              recursive = TRUE)
-  dir.create(file.path(path_simstrat, paste0(bgc_tag, "_initcond")), showWarnings = FALSE,
+  dir.create(file.path(bgc_dir, paste0(bgc_tag, "_initcond")), showWarnings = FALSE,
              recursive = TRUE)
-  dir.create(file.path(path_simstrat, "Results"), showWarnings = FALSE,
+  # Simstrat's native text output plus the consolidated output.nc both live
+  # in "output/", mirroring build_glm()'s glm_aed/output/output.nc.
+  dir.create(file.path(path_simstrat, "output"), showWarnings = FALSE,
              recursive = TRUE)
 
   par_file <- file.path(path_simstrat, "simstrat.par")
@@ -52,17 +59,17 @@ build_simstrat <- function(lakename, model_controls, date_range,
     overwrite_par <- TRUE
     cli_inform_safe(c("i" = "Copied in Simstrat par file"))
   }
-  bgc_file <- file.path(path_simstrat, aed_nml_name)
+  bgc_file <- file.path(bgc_dir, aed_nml_name)
   if (!file.exists(bgc_file)) {
     bgc_files <- list.files(system.file(file.path("extdata", bgc_template_dir), package = "AEME"),
                             full.names = TRUE, pattern = paste0("^", bgc_lib))
-    file.copy(bgc_files, path_simstrat)
+    file.copy(bgc_files, bgc_dir)
     cli_inform_safe(c("i" = paste0("Copied in ", toupper(bgc_lib),
                                    " nml files and supporting files")))
   }
 
   # Remove previous output files
-  list.files(file.path(path_simstrat, "Results"), full.names = TRUE) |>
+  list.files(file.path(path_simstrat, "output"), full.names = TRUE) |>
     unlink()
 
   # Reference year for the Simstrat day-number time convention (day 1 = 00:00
@@ -89,7 +96,7 @@ build_simstrat <- function(lakename, model_controls, date_range,
     "Inflow temperature" = "Tinp.dat",
     "Inflow salinity"    = "Sinp.dat"
   )
-  par[["Output"]][["Path"]] <- "Results/"
+  par[["Output"]][["Path"]] <- "output/"
   # AEME's date-index machinery (get_date_index()) assumes exactly one
   # output row per calendar day, matching GLM-AED/GOTM-WET's convention --
   # it indexes model output positionally (1, 2, 3, ...) rather than by
@@ -99,9 +106,9 @@ build_simstrat <- function(lakename, model_controls, date_range,
   par[["Output"]][["Times"]] <- 86400 / par[["Simulation"]][["Timestep s"]]
 
   bgc_cfg_key <- paste0(bgc_tag, "Config")
-  par[[bgc_cfg_key]][[paste0(bgc_tag, "ConfigFile")]] <- aed_nml_name
-  par[[bgc_cfg_key]][[paste0("Path", bgc_tag, "initial")]] <- paste0(bgc_tag, "_initcond/")
-  par[[bgc_cfg_key]][[paste0("Path", bgc_tag, "inflow")]] <- paste0(bgc_tag, "_inflow/")
+  par[[bgc_cfg_key]][[paste0(bgc_tag, "ConfigFile")]] <- paste0(bgc_template_dir, "/", aed_nml_name)
+  par[[bgc_cfg_key]][[paste0("Path", bgc_tag, "initial")]] <- paste0(bgc_template_dir, "/", bgc_tag, "_initcond/")
+  par[[bgc_cfg_key]][[paste0("Path", bgc_tag, "inflow")]] <- paste0(bgc_template_dir, "/", bgc_tag, "_inflow/")
   par[["ModelConfig"]][[paste0("Couple", bgc_tag)]] <- isTRUE(use_bgc)
 
   par[["Simulation"]][["Reference year"]] <- ref_year
@@ -122,7 +129,7 @@ build_simstrat <- function(lakename, model_controls, date_range,
   initialise_simstrat(init_prof = init_prof, path_simstrat = path_simstrat,
                       surface_elev = surface_elev)
 
-  make_inf_simstrat(inf = inf, path_simstrat = path_simstrat,
+  make_inf_simstrat(inf = inf, path_simstrat = path_simstrat, bgc_dir = bgc_dir,
                     surface_elev = surface_elev, inf_factor = inf_factor,
                     model_controls = model_controls, use_bgc = use_bgc,
                     ref_year = ref_year, model = model)
@@ -145,11 +152,11 @@ build_simstrat <- function(lakename, model_controls, date_range,
   if (use_bgc) {
     max_depth <- surface_elev - min(hyps$elev)
     if (bgc_lib == "aed2") {
-      initialise_aed2(model_controls = model_controls, path_aed2 = path_simstrat,
+      initialise_aed2(model_controls = model_controls, path_aed2 = bgc_dir,
                       max_depth = max_depth, date_range = date_range,
                       ref_year = ref_year)
     } else {
-      initialise_simstrat_aed(model_controls = model_controls, path_aed = path_simstrat,
+      initialise_simstrat_aed(model_controls = model_controls, path_aed = bgc_dir,
                               max_depth = max_depth, date_range = date_range,
                               ref_year = ref_year)
     }
