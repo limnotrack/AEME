@@ -482,11 +482,11 @@ test_that("can build all models and write to new directory", {
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls()
   model <- c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2")
-  build_aeme(path = path, aeme = aeme, model = model,
-             model_controls = model_controls, 
-             ext_elev = 5, use_bgc = TRUE)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = TRUE)
   aeme <- load_configuration(aeme = aeme, model = model, path = path)
-  
+
   path2 <- file.path(tmpdir, "lake-rewrite")
   aeme <- write_configuration(aeme = aeme, model = model, path = path2)
   

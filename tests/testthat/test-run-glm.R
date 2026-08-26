@@ -98,11 +98,11 @@ test_that("editing and running GLM-AED via the thin path-based wrapper works", {
   aeme <- readRDS(aeme_file)
   path <- tempdir()
   unlink(list.files(path, recursive = TRUE, full.names = TRUE))
-  model_controls <- get_model_controls()
+  model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("glm_aed")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, ext_elev = 5,
-                     use_bgc = FALSE)
+                     use_bgc = TRUE)
 
   # From here on, only `path_glm` is used -- no `aeme` object required,
   # mirroring a GLM-AED-only user's workflow of editing an existing
@@ -114,6 +114,22 @@ test_that("editing and running GLM-AED via the thin path-based wrapper works", {
   old_kw <- get_glm_param(path_glm, "Kw")
   set_glm_param(path_glm, Kw = old_kw * 1.5)
   testthat::expect_equal(get_glm_param(path_glm, "Kw"), old_kw * 1.5)
+
+  # -- init --
+  glm_file <- find_glm_nml(path_glm)
+  nml0 <- read_nml(glm_file)
+  n_depths <- nml0$init_profiles$num_depths
+  new_temp <- seq(20, 10, length.out = n_depths)
+  new_salt <- rep(1, n_depths)
+  wq_var <- nml0$init_profiles$wq_names[1]
+  set_glm_init(path_glm, temp = new_temp, salt = new_salt,
+              wq_init = setNames(list(321), wq_var))
+  nml1 <- read_nml(glm_file)
+  testthat::expect_equal(nml1$init_profiles$the_temps, new_temp)
+  testthat::expect_equal(nml1$init_profiles$the_sals, new_salt)
+  wq_idx <- match(wq_var, nml1$init_profiles$wq_names)
+  wq_vals <- matrix(nml1$init_profiles$wq_init_vals, nrow = n_depths)
+  testthat::expect_true(all(wq_vals[, wq_idx] == 321))
 
   # -- inflows --
   inf_df <- read.csv(file.path(path_glm, "bcs", "inflow_FWMT.csv"))
@@ -149,6 +165,7 @@ test_that("editing and running GLM-AED via the thin path-based wrapper works", {
   out_raw <- read_glm_output(file = outfile, raw_output = TRUE,
                              load_all = TRUE)
   plot_model_output(out_raw, "temp")
+  plot_model_output(out_raw, "SDF_Fsed_oxy_Z")
   testthat::expect_true(nrow(out_raw$temp) > 0)
   testthat::expect_true(class(out_raw$zarea) == "aeme_grouped_var")
   testthat::expect_true(is_aeme_output(out_raw))
