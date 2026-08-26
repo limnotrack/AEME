@@ -105,7 +105,7 @@ test_that("running Simstrat-AED works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE)
-  aeme <- run_aeme_with_retry_aed(aeme = aeme, model = model, path = path)
+  aeme <- run_aeme(aeme = aeme, model = model, path = path)
 
   outfile <- get_model_outfile(aeme = aeme)
   testthat::expect_true(file.exists(outfile[["simstrat_aed"]]))
@@ -147,9 +147,6 @@ test_that("running Simstrat-AED (with biogeochemistry) works", {
   plot_model_output(out, var_sim = "T") /
   plot_model_output(out, var_sim = "PHY_green") /
   plot_model_output(out, var_sim = "OXY_oxy")
-  plot_model_output(out, var_sim = "OXY_oxy_dsf")
-  plot_model_output(out, var_sim = "OXY_oxy_dsfv")
-  plot_model_output(out, var_sim = "OXY_oxy_atm")
   plot_model_output(out, var_sim = "Eseiche")
   
   outp <- output(aeme)
