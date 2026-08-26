@@ -71,13 +71,13 @@ test_that("building Simstrat-AED2 (with biogeochemistry) works", {
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   sim_dir <- file.path(lake_dir, model)
 
-  testthat::expect_true(file.exists(file.path(sim_dir, "aed2.nml")))
-  testthat::expect_true(dir.exists(file.path(sim_dir, "AED2_inflow")))
-  testthat::expect_true(dir.exists(file.path(sim_dir, "AED2_initcond")))
+  testthat::expect_true(file.exists(file.path(sim_dir, "aed2", "aed2.nml")))
+  testthat::expect_true(dir.exists(file.path(sim_dir, "aed2", "AED2_inflow")))
+  testthat::expect_true(dir.exists(file.path(sim_dir, "aed2", "AED2_initcond")))
 
   # Every active AED2 state variable must have an inflow file, or Simstrat
   # aborts with a Fortran runtime error at run time (see initialise_aed2())
-  aed2_nml <- read_nml(file.path(sim_dir, "aed2.nml"))
+  aed2_nml <- read_nml(file.path(sim_dir, "aed2", "aed2.nml"))
   active_modules <- get_nml_value(aed2_nml, "models")
   testthat::expect_true(length(active_modules) > 0)
 
@@ -142,7 +142,10 @@ test_that("running Simstrat-AED2 (with biogeochemistry) works", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
-
+  plot_output(aeme)
+  plot_output(aeme, "oxy")
+  plot_output(aeme, "chla")
+  
   outfile <- get_model_outfile(aeme = aeme)
   testthat::expect_true(file.exists(outfile[["simstrat_aed2"]]))
 
@@ -183,7 +186,7 @@ test_that("running Simstrat with a spinup works", {
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
-                                    model, "output.nc"))
+                                    model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 })
 
@@ -291,6 +294,23 @@ test_that("editing and running Simstrat-AED2 via the thin path-based wrapper wor
     0.9
   )
 
+  # -- init --
+  ic_file <- file.path(path_simstrat, "InitialConditions.dat")
+  n_depths <- length(readLines(ic_file)) - 1
+  new_temp <- seq(20, 10, length.out = n_depths)
+  new_salt <- rep(1, n_depths)
+  set_simstrat_init(path_simstrat, temp = new_temp, salt = new_salt,
+                    wq_init = list(NIT_amm = 0.5))
+  ic <- read.table(ic_file, skip = 1,
+                   col.names = c("depth", "U", "V", "temperature", "salt",
+                                 "k", "eps"))
+  testthat::expect_equal(ic$temperature, new_temp)
+  testthat::expect_equal(ic$salt, new_salt)
+  wq_file <- file.path(path_simstrat, "aed2", "AED2_initcond", "NIT_amm_ini.dat")
+  testthat::expect_true(file.exists(wq_file))
+  wq_prof <- read.table(wq_file, skip = 1, col.names = c("depth", "value"))
+  testthat::expect_true(all(wq_prof$value == 0.5))
+
   # -- inflows --
   inf_data <- inflows(aeme)[["data"]]
   set_simstrat_inflows(path_simstrat, inf = inf_data)
@@ -308,9 +328,10 @@ test_that("editing and running Simstrat-AED2 via the thin path-based wrapper wor
 
   # -- run and load output, all from the path alone --
   run_simstrat_aed2(sim_folder = path_simstrat)
-  outfile <- file.path(path_simstrat, "output.nc")
+  outfile <- file.path(path_simstrat, "output", "output.nc")
   testthat::expect_true(file.exists(outfile))
   out <- read_simstrat_output(file = outfile, vars_sim = "HYD_temp")
+  plot_model_output(x = out, var_sim = "HYD_temp")
   testthat::expect_true(nrow(out$HYD_temp) > 0)
   testthat::expect_true(is_aeme_output(out))
   testthat::expect_false(is_aeme_output_raw(out))
@@ -319,9 +340,6 @@ test_that("editing and running Simstrat-AED2 via the thin path-based wrapper wor
   out_raw <- read_simstrat_output(file = outfile, vars_sim = "HYD_temp",
                                   raw_output = TRUE)
   testthat::expect_true(is_aeme_output_raw(out_raw))
-  # "Date" is structural, not a variable -- must survive the raw-mode
-  # rename sweep unchanged (key_naming has a real Date -> "time" entry for
-  # simstrat_aed2 that previously renamed it out from under every consumer)
   testthat::expect_true("Date" %in% names(out_raw))
   testthat::expect_s3_class(out_raw$Date, "Date")
   plot_model_output(x = out_raw, var_sim = "T")

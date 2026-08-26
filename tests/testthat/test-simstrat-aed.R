@@ -75,12 +75,12 @@ test_that("building Simstrat-AED (with biogeochemistry) works", {
   sim_dir <- file.path(lake_dir, model)
 
   # bgc_lib = "aed" (not "aed2") -- distinct nml file and inflow/initcond dirs
-  testthat::expect_true(file.exists(file.path(sim_dir, "aed.nml")))
-  testthat::expect_false(file.exists(file.path(sim_dir, "aed2.nml")))
-  testthat::expect_true(dir.exists(file.path(sim_dir, "AED_inflow")))
-  testthat::expect_true(dir.exists(file.path(sim_dir, "AED_initcond")))
+  testthat::expect_true(file.exists(file.path(sim_dir, "aed", "aed.nml")))
+  testthat::expect_false(file.exists(file.path(sim_dir, "aed", "aed2.nml")))
+  testthat::expect_true(dir.exists(file.path(sim_dir, "aed", "AED_inflow")))
+  testthat::expect_true(dir.exists(file.path(sim_dir, "aed", "AED_initcond")))
 
-  aed_nml <- read_nml(file.path(sim_dir, "aed.nml"))
+  aed_nml <- read_nml(file.path(sim_dir, "aed", "aed.nml"))
   active_modules <- get_nml_value(aed_nml, "models")
   testthat::expect_true(length(active_modules) > 0)
 
@@ -132,11 +132,26 @@ test_that("running Simstrat-AED (with biogeochemistry) works", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE)
-  aeme <- run_aeme_with_retry_aed(aeme = aeme, model = model, path = path)
-
+  aeme <- run_aeme(aeme = aeme, model = model, path = path)
+  plot_output(aeme) /
+  plot_output(aeme, "oxy")
+  
   outfile <- get_model_outfile(aeme = aeme)
   testthat::expect_true(file.exists(outfile[["simstrat_aed"]]))
-
+  run_simstrat_aed(sim_folder = file.path(get_lake_dir(aeme = aeme, path = path), "simstrat_aed"))
+  out <- read_simstrat_output(file = outfile$simstrat_aed, load_all = TRUE,
+                              raw_output = T)
+  plot_model_output(out, var_sim = "nuh")
+  plot_model_output(out, var_sim = "PHY_cyano")
+  plot_model_output(out, var_sim = "PHY_diatom")
+  plot_model_output(out, var_sim = "T") /
+  plot_model_output(out, var_sim = "PHY_green") /
+  plot_model_output(out, var_sim = "OXY_oxy")
+  plot_model_output(out, var_sim = "OXY_oxy_dsf")
+  plot_model_output(out, var_sim = "OXY_oxy_dsfv")
+  plot_model_output(out, var_sim = "OXY_oxy_atm")
+  plot_model_output(out, var_sim = "Eseiche")
+  
   outp <- output(aeme)
   testthat::expect_true(!is.null(outp$ens_001$simstrat_aed))
 
@@ -162,16 +177,34 @@ test_that("editing and running Simstrat-AED via the thin path-based wrapper work
   path_simstrat <- file.path(lake_dir, "simstrat_aed")
 
   old_f_wind <- get_simstrat_param(path_simstrat, "ModelParameters.f_wind")
-  set_simstrat_param(path_simstrat, `ModelParameters.f_wind` = 0.9)
+  set_simstrat_param(path_simstrat, `ModelParameters.f_wind` = 0.5)
   testthat::expect_equal(
     get_simstrat_param(path_simstrat, "ModelParameters.f_wind"),
-    0.9
+    0.5
   )
 
+  # -- init --
+  ic_file <- file.path(path_simstrat, "InitialConditions.dat")
+  n_depths <- length(readLines(ic_file)) - 1
+  new_temp <- seq(20, 10, length.out = n_depths)
+  new_salt <- rep(1, n_depths)
+  set_simstrat_init(path_simstrat, temp = new_temp, salt = new_salt,
+                    wq_init = list(NIT_amm = 0.5))
+  ic <- read.table(ic_file, skip = 1,
+                   col.names = c("depth", "U", "V", "temperature", "salt",
+                                 "k", "eps"))
+  testthat::expect_equal(ic$temperature, new_temp)
+  testthat::expect_equal(ic$salt, new_salt)
+  wq_file <- file.path(path_simstrat, "aed", "AED_initcond", "NIT_amm_ini.dat")
+  testthat::expect_true(file.exists(wq_file))
+  wq_prof <- read.table(wq_file, skip = 1, col.names = c("depth", "value"))
+  testthat::expect_true(all(wq_prof$value == 0.5))
+
   run_simstrat_aed(sim_folder = path_simstrat)
-  outfile <- file.path(path_simstrat, "output.nc")
+  outfile <- file.path(path_simstrat, "output", "output.nc")
   testthat::expect_true(file.exists(outfile))
   out <- read_simstrat_output(file = outfile, vars_sim = "HYD_temp", model = "simstrat_aed")
+  plot_model_output(out, var_sim = "HYD_temp")
   testthat::expect_true(nrow(out$HYD_temp) > 0)
   testthat::expect_true(is_aeme_output(out))
   testthat::expect_equal(attr(out, "model"), "simstrat_aed")
