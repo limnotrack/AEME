@@ -133,8 +133,8 @@ write_aeme_to_files <- function(aeme, path, include_output = FALSE) {
       v = out_vars[2]
       ens_df <- lapply(1:n_members, \(ens) {
         out_df <- lapply(out_vars, \(v) {
-          out <- AEME::get_var(aeme = aeme, model = model, var_sim = v,
-                               return_df = TRUE, ens_n = ens) 
+          out <- get_var(aeme = aeme, model = model, var_sim = v,
+                         return_df = TRUE, ens_n = ens) 
 
           if (all(is.na(out$depth))) {
             out <- out |>
