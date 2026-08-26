@@ -96,6 +96,11 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
                      Model = toggle_models(m, to = "display"),
                      lyr_thk = NA)
     
+    if (var_sim == "z") {
+      cli_inform_safe(c("i" = paste0(var_sim, " is a dimension for model ", m,
+                                     ". Returning a dataframe with NA's.")))
+      return(df)
+    }
     if (is.null(variable)) {
       msg <- paste0(var_sim, " is not in output for model ", m,
                     ". Returning a dataframe with NA's.")
