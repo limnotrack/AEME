@@ -281,8 +281,10 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   stdout <- ifelse(verbose, "", TRUE)
   stderr <- ifelse(verbose, "", TRUE)
   # message("DYRESM-CAEDYM running... [", format(Sys.time()), "]")
-  cli_inform_safe(c(">" = paste0("DYRESM-CAEDYM running... ",
-                                 "[", format(Sys.time()), "]")))
+  print_console <- getOption("AEME.inform", TRUE)
+  if (print_console) {
+    cli::cli_progress_step("DYRESM-CAEDYM running... [{format(Sys.time())}]")
+  }
   # Create reference netcdf
   bin_exec <- file.path(bin_path, "createDYref.exe")
   if (verbose) {
@@ -395,8 +397,9 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
   out <- readLines("dy.log")
   success <- sum(grepl("END DYRESM-CAEDYM", out)) == 1
   if (success) {
-    cli_inform_safe(c("v" = paste0("DYRESM-CAEDYM run successful! ",
-                                   "[", format(Sys.time()), "]")))
+    if (print_console) {
+      cli::cli_progress_done("DYRESM-CAEDYM run successful! [{format(Sys.time())}]")
+    }
   } else {
     cli_inform_safe(c(
       "!" = paste0(
@@ -661,8 +664,10 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     setwd(oldwd)
   })
   setwd(sim_folder)
-  cli_inform_safe(c(">" = paste0("GLM-AED running... ", "[",
-                                 format(Sys.time()), "]")))
+  print_console <- getOption("AEME.inform", TRUE)
+  if (print_console) {
+    cli::cli_progress_step("GLM-AED running... [{format(Sys.time())}]")
+  }
 
   bin_exec <- .resolve_glm_exec(version)
   args <- c("--nml", config_file, args)
@@ -689,8 +694,9 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     out <- unlist(strsplit(p$stdout, "\n", fixed = TRUE))
     success <- sum(grepl("Model Run Complete", out)) == 1
     if (success) {
-      cli_inform_safe(c("v" = paste0("GLM-AED run successful! ",
-                                     "[", format(Sys.time()), "]")))
+      if (print_console) {
+        cli::cli_progress_done("GLM-AED run successful! [{format(Sys.time())}]")
+      }
     } else {
       cli_inform_safe(c(
         "!" = paste0(
@@ -719,8 +725,10 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
   })
   setwd(sim_folder)
   dir.create("output", showWarnings = FALSE)
-  cli_inform_safe(c(">" = paste0("GOTM-WET running... ",
-                                 "[", format(Sys.time()), "]")))
+  print_console <- getOption("AEME.inform", TRUE)
+  if (print_console) {
+    cli::cli_progress_step("GOTM-WET running... [{format(Sys.time())}]")
+  }
   bin_exec <- .resolve_gotm_exec(version)
   args <- c(config_file, args)
   if (verbose) {
@@ -747,8 +755,9 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
     out <- p$stderr
     success <- sum(grepl("GOTM-WET finished on|GOTM finished on", out)) == 1
     if (success) {
-      cli_inform_safe(c("v" = paste0("GOTM-WET run successful! ",
-                                     "[", format(Sys.time()), "]")))
+      if (print_console) {
+        cli::cli_progress_done("GOTM-WET run successful! [{format(Sys.time())}]")
+      }
     } else {
       cli_inform_safe(c(
         "!" = paste0(
@@ -781,8 +790,10 @@ run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
     setwd(oldwd)
   })
   setwd(sim_folder)
-  cli_inform_safe(c(">" = paste0("Simstrat-AED2 running... ",
-                                 "[", format(Sys.time()), "]")))
+  print_console <- getOption("AEME.inform", TRUE)
+  if (print_console) {
+    cli::cli_progress_step("Simstrat-AED2 running... [{format(Sys.time())}]")
+  }
 
   bin_exec <- .resolve_simstrat_aed2_exec(version)
 
@@ -819,6 +830,9 @@ run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
     # producing any output at all, instead of the ~15-25s a real run takes.
     # Treat that as a failure rather than let it cascade into a confusing
     # netCDF error downstream in load_output().
+    if (print_console) {
+      cli::cli_progress_step("Converting Simstrat-AED2 output to netCDF [{format(Sys.time())}]")
+    }
     nc_file <- tryCatch(
       write_simstrat_nc(sim_folder = sim_folder),
       error = function(e) {
@@ -831,8 +845,9 @@ run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
       success <- FALSE
       p$status <- 1L
     } else {
-      cli_inform_safe(c("v" = paste0("Simstrat-AED2 run successful! ",
-                                     "[", format(Sys.time()), "]")))
+      if (print_console) {
+        cli::cli_progress_done("Simstrat-AED2 run successful! [{format(Sys.time())}]")
+      }
     }
   }
   if (!success) {
@@ -861,7 +876,10 @@ run_simstrat_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     setwd(oldwd)
   })
   setwd(sim_folder)
-  cli_safe("Simstrat-AED running", FUN = cli::cli_progress_step)
+  print_console <- getOption("AEME.inform", TRUE)
+  if (print_console) {
+    cli::cli_progress_step("Simstrat-AED running... [{format(Sys.time())}]")
+  }
 
   bin_exec <- .resolve_simstrat_aed_exec(version)
 
@@ -890,8 +908,9 @@ run_simstrat_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
   # see run_simstrat_aed2() for why.
   success <- isTRUE(p$status == 0)
   if (success) {
-    cli_safe("Converting Simstrat-AED output to netCDF", 
-             FUN = cli::cli_progress_step)
+    if (print_console) {
+      cli::cli_progress_step("Converting Simstrat-AED output to netCDF [{format(Sys.time())}]")
+    }
     nc_file <- tryCatch(
       write_simstrat_nc(sim_folder = sim_folder, config_file = config_file),
       error = function(e) {
@@ -918,6 +937,10 @@ run_simstrat_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     msg <- paste(utils::tail(out, 10), collapse = "\n")
     msg <- gsub("\033\\[[0-9;]*m", "", msg)
     message(msg)
+  } else {
+    if (print_console) {
+      cli::cli_progress_done("Simstrat-AED run successful! [{format(Sys.time())}]")
+    }
   }
   return(invisible(p))
 }
