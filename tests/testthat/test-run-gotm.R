@@ -151,6 +151,25 @@ test_that("editing and running GOTM-WET via the thin path-based wrapper works", 
   set_gotm_param(path_gotm, `time.dt` = 1800)
   testthat::expect_equal(get_gotm_param(path_gotm, "time.dt"), 1800)
 
+  # -- init --
+  t_prof_file <- file.path(path_gotm, "inputs", "t_prof_file.dat")
+  n_depths <- length(readLines(t_prof_file)) - 1
+  new_temp <- seq(20, 10, length.out = n_depths)
+  new_salt <- rep(1, n_depths)
+  set_gotm_init(path_gotm, temp = new_temp, salt = new_salt)
+  t_prof <- read.table(t_prof_file, skip = 1,
+                       col.names = c("depth", "value"))
+  s_prof <- read.table(file.path(path_gotm, "inputs", "s_prof_file.dat"),
+                       skip = 1, col.names = c("depth", "value"))
+  # Row order (and depths) in each .dat file is left untouched -- only the
+  # value column is overwritten positionally. The first row is depth 0 (the
+  # surface), so its new value also becomes gotm.yaml's
+  # surface$sst$constant_value seed.
+  testthat::expect_equal(t_prof$value, new_temp)
+  testthat::expect_equal(s_prof$value, new_salt)
+  gotm <- yaml::read_yaml(file.path(path_gotm, "gotm.yaml"))
+  testthat::expect_equal(gotm$surface$sst$constant_value, new_temp[1])
+
   # -- inflows --
   inf_data <- inflows(aeme)[["data"]]
   set_gotm_inflows(path_gotm, inf_list = inf_data)
