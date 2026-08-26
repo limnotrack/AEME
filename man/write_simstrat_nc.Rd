@@ -12,8 +12,9 @@ simulation directory (containing \code{simstrat.par} and the output directory
 referenced by its \code{Output.Path}).}
 
 \item{remove_dat}{logical; delete the source \verb{<var>_out.dat} files after
-they have been written to \code{output.nc}. Default \code{TRUE} (this is the actual
-disk-space saving -- keeping both would use more space, not less).
+they have been written to \code{output.nc}. Default \code{FALSE} -- deleting them is
+the actual disk-space saving (keeping both uses more space, not less), but
+it also removes what \code{\link{read_simstrat_dat}} reads.
 
 Each netCDF variable's \code{units} and \code{long_name} attributes are looked up
 from the package's \code{key_naming} table (matched on the variable's native

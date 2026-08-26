@@ -19,6 +19,17 @@
 #' @param load_all logical; for `model = "glm_aed"`, also load every other
 #' variable present in the netCDF output beyond the declared `vars_sim` set
 #' -- see `?read_glm_output`. Ignored for other models. Defaults to TRUE.
+#' @param use_dat logical; for the Simstrat models only, read Simstrat's own
+#' `<var>_out.dat` text output via \code{\link{read_simstrat_dat}} instead of
+#' the consolidated `output.nc`. Every other argument means the same thing
+#' either way, so this only changes where the numbers are read from. `TRUE`
+#' is the faster path -- it skips the netCDF entirely, and with
+#' `load_all = FALSE` reads only the files the requested `vars_sim` need,
+#' which is what a calibration wants. Defaults to `NULL`: read `output.nc`
+#' when there is one, and fall back to the text output when there is not
+#' (a run whose output was never converted, or converted with
+#' \code{\link{write_simstrat_nc}}`(remove_dat = FALSE)` and the netCDF since
+#' removed). Ignored when `nc` is supplied.
 #'
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @importFrom withr local_locale local_timezone
@@ -29,22 +40,72 @@
 read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                                depths = NULL, dates = NULL, date_index = NULL,
                                incl_fluxes = TRUE, output_hour = 0,
-                               phyto_pars = NULL, load_all = TRUE) {
+                               phyto_pars = NULL, load_all = TRUE,
+                               use_dat = NULL) {
 
   # Set timezone
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
-  
+
   model <- check_model(model)
   if (length(model) != 1) {
     cli::cli_abort("Please supply a single model name.")
   }
-  if (is.null(nc)) {
+
+  # ---- netCDF or Simstrat's own text output? ----
+  is_simstrat <- model %in% c("simstrat_aed2", "simstrat_aed")
+  if (isTRUE(use_dat) && !is_simstrat) {
+    cli::cli_abort(c(
+      "x" = "{.arg use_dat} only applies to the Simstrat models, not {.val {model}}.",
+      "i" = "Only Simstrat writes its output as text alongside a netCDF."
+    ))
+  }
+  auto_dat <- is.null(use_dat) && is_simstrat && is.null(nc)
+  use_dat <- isTRUE(use_dat) && is.null(nc)
+
+  nc_files <- NULL
+  if (!use_dat && is.null(nc)) {
     lake_dir <- check_path(lake_dir, must_exist = TRUE)
     # Read in model netCDF file
-    nc_files <- get_model_outfile(model = model, path = lake_dir)[[model]]
+    nc_files <- if (auto_dat) {
+      # The netCDF may legitimately be absent here -- that is what the
+      # fall-back below is for -- so a failure to resolve it is not yet an
+      # error.
+      tryCatch(get_model_outfile(model = model, path = lake_dir)[[model]],
+               error = function(e) character(0))
+    } else {
+      get_model_outfile(model = model, path = lake_dir)[[model]]
+    }
+    if (auto_dat && (length(nc_files) == 0 || !all(file.exists(nc_files)))) {
+      use_dat <- .simstrat_dat_available(lake_dir = lake_dir, model = model)
+      if (!use_dat) {
+        # Neither form of output is there: let the netCDF path report it,
+        # so the error is the one callers already handle.
+        nc_files <- get_model_outfile(model = model, path = lake_dir)[[model]]
+      }
+    }
+  }
+
+  if (use_dat) {
+    # Simstrat's raw text output. read_simstrat_dat() takes vars_sim/depths/
+    # dates/date_index/incl_fluxes/load_all with the same meaning as the
+    # netCDF readers below, and returns the same output list, so nothing
+    # downstream needs to know which path was taken.
+    lake_dir <- check_path(lake_dir, must_exist = TRUE)
+    hyps <- read_model_hypsograph(model = model, lake_dir = lake_dir)
+    out_list <- read_simstrat_dat(sim_folder = file.path(lake_dir, model),
+                                  vars_sim = vars_sim, depths = depths,
+                                  dates = dates, date_index = date_index,
+                                  incl_fluxes = incl_fluxes,
+                                  load_all = load_all, model = model)
+    if (is_model_error(out_list)) return(out_list)
+    return(.finalise_model_output(out_list = out_list, hyps = hyps,
+                                  vars_sim = vars_sim, model = model))
+  }
+
+  if (is.null(nc)) {
     if (model == "gotm_wet") {
-      nc_file <- nc_files["output"]  
+      nc_file <- nc_files["output"]
       incl_fluxes <- ifelse("output_daily" %in% names(nc_files), FALSE, TRUE)
       read_gotm_daily <- !incl_fluxes
     } else {
@@ -59,7 +120,7 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
 
   # Load model hypsograph
   hyps <- read_model_hypsograph(model = model, lake_dir = lake_dir)
-  
+
   if (is.null(date_index)) {
     # ---- 1. extract time info for this model
     time_info <- extract_model_time(nc = nc, model = model)
@@ -112,26 +173,45 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
     out_list <- c(out_list, add_vars)
   }
   
+  return(.finalise_model_output(out_list = out_list, hyps = hyps,
+                                vars_sim = vars_sim, model = model))
+}
+
+#' Add derived variables, flatten 1-D variables, and tag the output list
+#'
+#' Steps 4 and 5 of [read_model_outputs()], shared by every way of getting
+#' the output list -- the netCDF readers and, for Simstrat, the raw-text
+#' [read_simstrat_dat()] -- so the two cannot drift apart.
+#'
+#' @param out_list list; the model output list from a reader.
+#' @param hyps dataframe; the model hypsograph, for the derived variables.
+#' @param vars_sim character; requested AEME variables, which decide the
+#'   derived variables to add.
+#' @param model character; the model that produced the output.
+#' @return `out_list`, classed by `.new_aeme_output()`.
+#' @noRd
+.finalise_model_output <- function(out_list, hyps, vars_sim, model) {
+
   # ---- 4. add derivative outputs
   data("key_naming", package = "AEME", envir = environment())
-  deriv_vars <- key_naming |> 
-    dplyr::filter(var_aeme %in% vars_sim & derived) |> 
+  deriv_vars <- key_naming |>
+    dplyr::filter(var_aeme %in% vars_sim & derived) |>
     dplyr::pull(var_aeme)
   if (length(deriv_vars) > 0) {
-    out_list <- add_deriv_output(out_list = out_list, hyps = hyps, 
+    out_list <- add_deriv_output(out_list = out_list, hyps = hyps,
                                  vars_sim = deriv_vars)
   }
-  
+
   # ---- 5. convert all 1 dimension variables to vectors
-  vars_1d <- c("LKE_lvlwtr", "HYD_surft", 
-               "LKE_Qe", "LKE_Qh", "LKE_Qlw", "LKE_Qsw", 
+  vars_1d <- c("LKE_lvlwtr", "HYD_surft",
+               "LKE_Qe", "LKE_Qh", "LKE_Qlw", "LKE_Qsw",
                "LKE_inflow", "LKE_outflow", "LKE_overflow", "LKE_outftot",
                "LKE_A0", "LKE_V",
                "LKE_evpflx", "LKE_evpvol", "LKE_pcpvol",
                # Derived vars
-               "HYD_thmcln", "HYD_strat", "HYD_ctrbuy", "HYD_epidep", 
-               "HYD_hypdep", "HYD_schstb", "CHM_oxycln", "CHM_oxyepi", "CHM_oxyhyp", 
-               "CHM_oxymet", "CHM_oxymom", "CHM_oxynal", "LKE_tlic", "LKE_tlin", 
+               "HYD_thmcln", "HYD_strat", "HYD_ctrbuy", "HYD_epidep",
+               "HYD_hypdep", "HYD_schstb", "CHM_oxycln", "CHM_oxyepi", "CHM_oxyhyp",
+               "CHM_oxymet", "CHM_oxymom", "CHM_oxynal", "LKE_tlic", "LKE_tlin",
                "LKE_tlip", "LKE_tlise", "LKE_tli3", "LKE_tli4"
                )
   vars_1d_in <- vars_1d[vars_1d %in% names(out_list)]
@@ -143,6 +223,22 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   }
 
   return(.new_aeme_output(out_list, model = model))
+}
+
+#' Has a Simstrat run left its `<var>_out.dat` text output behind?
+#'
+#' @param lake_dir character; the lake directory.
+#' @param model character; `"simstrat_aed2"` or `"simstrat_aed"`.
+#' @return logical; `FALSE` if the simulation directory, its `simstrat.par`,
+#'   or its output files are missing.
+#' @noRd
+.simstrat_dat_available <- function(lake_dir, model) {
+  sim_folder <- file.path(lake_dir, model)
+  if (!dir.exists(sim_folder)) return(FALSE)
+  info <- tryCatch(.simstrat_par_paths(sim_folder = sim_folder),
+                   error = function(e) NULL)
+  if (is.null(info) || !dir.exists(info$out_dir)) return(FALSE)
+  length(list.files(info$out_dir, pattern = "_out\\.dat$")) > 0
 }
 
 
