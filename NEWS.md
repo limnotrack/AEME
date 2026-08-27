@@ -64,6 +64,38 @@ the R package version.
   library `make` steps, instead of AED_Tools' `build_glm.sh` /
   `build_env.inc` / `build_aedlibs.inc`.
 
+## GLM v4 hydrodynamic configuration
+
+* `build_aeme(model = "glm_aed")` now ships and selects a GLM-v4
+  hydrodynamic namelist. A `glm4.nml` template was added at
+  `inst/extdata/glm_aed/`, and `build_glm()` copies it in (instead of
+  always `glm3.nml`) when the pinned/installed GLM binary is v4 — resolved
+  via `.preferred_glm_major_version()`, the same priority order
+  `find_glm_nml()` uses. Falls back to `glm3.nml` when the version can't be
+  determined or no matching template ships.
+* The `&sediment` block is now **merged** rather than overwritten when a
+  model is (re)built. `make_stg_glm()` still refreshes the zone geometry and
+  per-zone parameters AEME derives from the bathymetry (`n_zones`,
+  `zone_heights`, `sed_temp_*`, `sed_reflectivity`, `sed_roughness`, ...),
+  but preserves the expanded GLM-v4 soil-column heat-model keys a
+  `glm4.nml` carries (`sed_heat_model`, `n_sed_layers`, `sed_layer_depth`,
+  `sed_vwc`, `sed_spinup_days`, `sed_deep_temp`). Under
+  `sed_heat_model = 2`, `sed_heat_Ksoil` / `sed_temp_depth` are left as the
+  template's scalars instead of being expanded to per-zone vectors.
+* The GLM-v4 `&mass_balance` block is populated from the AED variables that
+  are switched on. New internal `set_glm_mass_balance()` fills
+  `balance_vars` / `balance_varnum` with the active `model_controls`
+  variables (translated to GLM-AED names); with biogeochemistry off, or no
+  qualifying variable, it defaults to `balance_varnum = 0` and drops
+  `balance_vars`. Only touches the nml when a `&mass_balance` block is
+  already present (i.e. a `glm4.nml` template).
+* `build_glm()` now forces `sed_heat_model` back to `1` when
+  `use_bgc = FALSE`: GLM v4's dynamic soil-temperature solver
+  (`sed_heat_model = 2`, `zZSoilTemp`) is provided by the WQ library and
+  GLM aborts with it enabled but no active WQ module. `check_glm_nml()`
+  gained a matching validation rule that flags `sed_heat_model = 2` without
+  an active `&wq_setup` (`wq_lib = 'aed'`/`'api'`).
+
 ## OS-aware model selection
 
 * `check_model()` gained an `os_valid` argument: when `TRUE`, restricts the

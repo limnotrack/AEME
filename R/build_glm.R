@@ -31,6 +31,9 @@ build_glm <- function(lakename, model_controls, date_range,
              recursive = TRUE)
   dir.create(file.path(path_glm, "aed"), showWarnings = FALSE,
              recursive = TRUE)
+  # Cover mass_balance bug in GLMv4
+  dir.create(file.path(path_glm, "output"), showWarnings = FALSE,
+             recursive = TRUE)
   
   
   # Preserve whichever GLM hydrodynamic nml version (glm3.nml, glm4.nml, ...)
@@ -38,11 +41,21 @@ build_glm <- function(lakename, model_controls, date_range,
   # copying the glm3.nml template when no such file exists yet
   glm_file <- find_glm_nml(path_glm, must_exist = FALSE)
   if (is.na(glm_file)) {
-    glm_file <- file.path(path_glm, "glm3.nml")
-    template_file <- system.file("extdata/glm_aed/glm3.nml", package = "AEME")
+    # Match the hydrodynamic nml template to the pinned/installed GLM binary
+    # version (glm4.nml for GLM v4, glm3.nml for v3), falling back to glm3.nml
+    # when the version can't be determined or no matching template ships.
+    major <- .preferred_glm_major_version()
+    nml_name <- if (!is.null(major)) sprintf("glm%d.nml", major) else "glm3.nml"
+    template_file <- system.file(file.path("extdata/glm_aed", nml_name),
+                                 package = "AEME")
+    if (!nzchar(template_file)) {
+      nml_name <- "glm3.nml"
+      template_file <- system.file("extdata/glm_aed/glm3.nml", package = "AEME")
+    }
+    glm_file <- file.path(path_glm, nml_name)
     file.copy(template_file, glm_file)
     overwrite_nml <- TRUE
-    cli_inform_safe(c("i" = "Copied in GLM nml file"))
+    cli_inform_safe(c("i" = "Copied in GLM nml file ({nml_name})"))
   }
   aed_file <- file.path(path_glm, "aed", "aed.nml")
   if (!file.exists(aed_file)) {
@@ -84,7 +97,8 @@ build_glm <- function(lakename, model_controls, date_range,
   crest <- max(hyps[["elev"]])
   
   glm_nml <- make_stg_glm(glm_nml, lakename, bathy = hyps, lat = lat,
-                         lon = lon, crest = crest, dims_lake = dims_lake)
+                         lon = lon, crest = crest, dims_lake = dims_lake,
+                         use_bgc = use_bgc)
   
   # Make meteorology file
   make_met_glm(obs_met = met, path_glm = path_glm, use_lw = use_lw)
@@ -149,7 +163,13 @@ build_glm <- function(lakename, model_controls, date_range,
   } else {
     glm_nml[["wq_setup"]] <- NULL
   }
-  
+
+  # GLMv4: report the water/mass balance for the AED variables that are
+  # switched on. A glm4.nml template ships an &mass_balance block; older GLM
+  # builds have none, in which case this is a no-op.
+  glm_nml <- set_glm_mass_balance(glm_nml, model_controls = model_controls,
+                                  use_bgc = use_bgc)
+
   # Write the GLM nml file
   if (overwrite_nml) {
     write_nml(glm_nml, glm_file)

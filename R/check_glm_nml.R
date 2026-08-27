@@ -120,6 +120,20 @@ check_glm_nml <- function(file) {
                                    ") does not match n_zones (", n_zones, ")"))
       }
     }
+
+    # sed_heat_model = 2 (dynamic soil-column solver) is supplied by the WQ
+    # library, so GLM aborts with it enabled when no WQ module is active.
+    if (!is.null(sed$sed_heat_model) && !is.na(sed_heat_model) &&
+        sed_heat_model == 2) {
+      wq_lib <- tolower(as.character(nml$wq_setup$wq_lib))
+      wq_active <- length(wq_lib) == 1 &&
+        wq_lib %in% c("aed", "aed2", "api", "fabm")
+      if (!wq_active) {
+        issues <- c(issues, paste0("sed_heat_model = 2 requires an active WQ ",
+                                   "module (&wq_setup with wq_lib = 'aed'/",
+                                   "'api'); none found"))
+      }
+    }
   }
   
   # --- Light checks ---
