@@ -10,9 +10,12 @@
 #' has the requested version's asset attached.
 #'
 #' @param version Character. The GLM version to install, e.g. `"3.9.108"`.
-#'   Use [list_glm_versions()] to see what's available. Defaults to `"latest"`,
-#'    which resolves to the highest version number available for the current 
-#'    platform.
+#'   Use [list_glm_versions()] to see what's available. A trailing `"+"`
+#'   (e.g. `"4.0.0+"`) selects the GLM+ (AED+) build of that version -- the
+#'   same binary plus the private `libaed-riparian`/`-light`/`-dev` modules.
+#'   Defaults to `"latest"`, which resolves to the highest version number
+#'   available for the current platform (preferring the `"+"` edition on a
+#'   tie).
 #' @param os Character. One of `"windows"`, `"macos"`, or `"linux"`.
 #'   Defaults to the platform R is currently running on; you shouldn't
 #'   normally need to set this.
@@ -87,8 +90,8 @@ os}}.",
       ))
     }
     # Extract latest version
-    version <- versions[order(numeric_version(versions), decreasing = TRUE)][1]
-    cli::cli_alert_info("Resolved {.val latest} to GLM version {.val {version}} 
+    version <- .glm_pick_latest(versions)[1]
+    cli::cli_alert_info("Resolved {.val latest} to GLM version {.val {version}}
                         for {.field {os}}.")
   }
   if (missing(version) || !is.character(version) || length(version) != 1L) {
@@ -375,5 +378,27 @@ glm_exe_path <- function(version = getOption("AEME.glm_version", NULL), os = NUL
 .glm_latest_installed_version <- function(os = .detect_os()) {
   versions <- .glm_installed_versions(os)
   if (length(versions) == 0) return(NULL)
-  versions[order(numeric_version(versions), decreasing = TRUE)][1]
+  .glm_pick_latest(versions)[1]
+}
+
+#' Order a set of GLM version labels newest-first
+#'
+#' GLM versions are semver (e.g. `"4.0.0"`), except GLM+ (AED+) builds carry
+#' a trailing `"+"` (e.g. `"4.0.0+"`, see [install_glm_aed()]) that
+#' `numeric_version()` cannot parse. Rank by the numeric part, breaking ties
+#' in favour of the `"+"` (AED+) edition. Falls back to a plain
+#' lexicographic sort if some label isn't semver even after stripping `"+"`.
+#'
+#' @param versions character vector of version labels.
+#' @return `versions`, reordered descending ("latest" first).
+#' @keywords internal
+#' @noRd
+.glm_pick_latest <- function(versions) {
+  base <- sub("\\+$", "", versions)
+  is_plus <- grepl("\\+$", versions)
+  ok <- tryCatch({ numeric_version(base); TRUE }, error = function(e) FALSE)
+  if (!ok) {
+    return(versions[order(is_plus, versions, decreasing = TRUE)])
+  }
+  versions[order(numeric_version(base), is_plus, decreasing = TRUE)]
 }

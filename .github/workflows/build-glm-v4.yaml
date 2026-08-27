@@ -4,66 +4,80 @@ on:
   workflow_dispatch:
     inputs:
       package_version:
-        description: "AEME package version to attach binaries to (must match an existing or intended GitHub release tag, e.g. v0.4.0)"
+        description: "AEME package version / release tag to attach binaries to (must match an existing or intended release tag, e.g. v0.4.0)"
         required: true
         default: "v0.4.0"
 
 permissions:
   contents: write   # required for the release-creation/upload steps below
 
+# ---------------------------------------------------------------------------
+# This workflow is modelled on build-simstrat.yaml: one explicit matrix
+# entry per (os, edition), each library built by its own `make` step, then
+# the final binary linked directly via GLM's own Makefile targets.
+#
+# It deliberately does NOT source AED_Tools' build_glm.sh / build_env.inc /
+# build_aedlibs.inc any more. Those scripts bundled three concerns together
+# (environment detection, per-library build order, and packaging); here each
+# is an explicit, individually-logged step instead. The ONLY AED_Tools
+# script still used is ancillary/build.sh, to compile the Windows
+# netcdf-c / netcdf-fortran / hdf5 / gd dependency chain from source (there
+# is no maintained MinGW package for it) - and that stays cached.
+#
+# Two editions are built from the same GLM branch, mirroring GLM's `glm`
+# and `glm+` Makefile targets and the GLM/GLM+ naming convention Simstrat
+# also follows:
+#   * "aed"      (aed_full: false) -> `make glm`  : public libaed-water /
+#                 -benthic / -demo / -api only.
+#   * "aed-plus" (aed_full: true)  -> `make glm+` : adds the private
+#                 libaed-riparian / -light / -dev modules + phreeqcrm.
+# Both ship a `glm` / `glm.exe` binary; the AED+ edition is distinguished
+# only by a trailing "+" on the version label, so its assets land as
+# glm-<os>-<version>+.zip (consumed by install_glm_aed("<version>+")).
+# ---------------------------------------------------------------------------
+
 env:
-  # ----------------------------------------------------------------------
-  # Pin every sibling repo to an explicit tag or commit SHA known to build
-  # successfully against GLM. `main` and `feature/write-nml` both need the
-  # same sibling architecture (WITH_API=true: libaed-water/libaed-api/
-  # libaed-benthic/libaed-demo, no libaed2 - that's a different, older GLM
-  # lineage not built here), so one flat set of pins covers both branches,
-  # unlike the old per-branch (V4ALPHA_*/MASTER_*) split this replaced.
-  #
-  # Treat this block as GLM's de facto lockfile: bump entries deliberately
-  # (via PR, after re-validating the build) rather than letting them float.
-  # ----------------------------------------------------------------------
-  AED_TOOLS_REF: cf91a0c411d7299b48b85397445f25eda965308e
+  # -- GLM source: one branch, both the regular (glm) and AED+ (glm+)
+  #    editions build from it. --
+  GLM_REPO: limnotrack/GLM
+  GLM_REF: dev
+
+  # -- Sibling libraries. Treat this block as GLM's de-facto lockfile: bump
+  #    entries deliberately (via PR, after re-validating the build) rather
+  #    than letting them float. libaed-water and libutil come from
+  #    limnotrack forks (write_namelist() support not yet upstream); the
+  #    rest from AquaticEcoDynamics. --
+  LIBAED_WATER_REPO: limnotrack/libaed-water
   LIBAED_WATER_REF: dev
-  LIBAED_BENTHIC_REF: c6d4b0ea79f6015a06fa85c32568099b7843a798
-  LIBAED_DEMO_REF: d35b05e0ee3ad9bf677dc16f43082c28a4c91593
-  LIBAED_API_REF: d62ed0d9c2442b0f9eb9af634a7ea48a7f35a60c
+  LIBUTIL_REPO: limnotrack/libutil
   LIBUTIL_REF: 24a8771253f8abab39267b7bf760a2bad231fd81
+  LIBAED_BENTHIC_REPO: AquaticEcoDynamics/libaed-benthic
+  LIBAED_BENTHIC_REF: c6d4b0ea79f6015a06fa85c32568099b7843a798
+  LIBAED_DEMO_REPO: AquaticEcoDynamics/libaed-demo
+  LIBAED_DEMO_REF: d35b05e0ee3ad9bf677dc16f43082c28a4c91593
+  LIBAED_API_REPO: AquaticEcoDynamics/libaed-api
+  LIBAED_API_REF: d62ed0d9c2442b0f9eb9af634a7ea48a7f35a60c
+  LIBPLOT_REPO: AquaticEcoDynamics/libplot
   LIBPLOT_REF: 2a540c7774d43d8a97e887c00324ed85538c7fd7
 
-jobs:
-  # ==========================================================================
-  # NOTE ON VERSIONING: binaries are attached as assets to the AEME package's
-  # own release (tag = package_version, e.g. "v0.4.0") rather than a release
-  # tagged with GLM's version number. The GLM version (parsed from `glm
-  # --version` after compiling) becomes part of the asset filename instead,
-  # e.g. glm-windows-4.0.0.zip attached to the v0.4.0 release - the same
-  # filename scheme regardless of which branch produced it, so the AEME R
-  # package's install_glm_aed(version = "4.0.0") lookup doesn't need to
-  # know about branches at all.
-  #
-  # That does mean main and feature/write-nml MUST report distinct
-  # glm_version strings for any version that's actually built - if they
-  # ever collided, one build's assets would silently overwrite the other's
-  # under the same filename. The "Guard against version collisions" step
-  # below turns that from a silent bug into a hard failure instead of
-  # trying to prevent it by construction (e.g. baking branch into the
-  # filename), since GLM's own versioning is presumed to already keep these
-  # numbers distinct.
-  #
-  # AS OF THIS WRITING THEY DON'T: feature/write-nml is main plus the
-  # --write_nml flag, and src/glm.h's GLM_VERSION hasn't been bumped on
-  # that branch, so both currently report "4.0.0". Running this workflow
-  # today will build main successfully, then have feature/write-nml hit the
-  # collision guard and fail loudly (by design - it refuses to silently
-  # clobber main's already-uploaded glm-<os>-4.0.0.zip with a differently
-  # -behaved binary of the same name). Bump GLM_VERSION on feature/write-nml
-  # before expecting both legs to succeed in one run. If you'd rather remove
-  # that assumption entirely, filenames could include the branch too, but
-  # that also requires updating install_glm_aed() / list_glm_versions() on
-  # the R side to match, so it's not done here.
-  # ==========================================================================
+  # -- AED+ (private) modules - only cloned/built for the aed-plus edition,
+  #    via the AED_PRIVATE_PAT secret (same secret build-simstrat.yaml
+  #    uses). Defaults track each repo's default branch; pin to a SHA once
+  #    an aed-plus build has been validated. --
+  LIBAED_RIPARIAN_REPO: AquaticEcoDynamics/libaed-riparian
+  LIBAED_RIPARIAN_REF: master
+  LIBAED_LIGHT_REPO: AquaticEcoDynamics/libaed-light
+  LIBAED_LIGHT_REF: main
+  LIBAED_DEV_REPO: AquaticEcoDynamics/libaed-dev
+  LIBAED_DEV_REF: master
+  PHREEQCRM_REPO: usgs-coupled/phreeqcrm
 
+  # -- AED_Tools is used ONLY for its ancillary/ pipeline (see the header
+  #    comment above). --
+  AED_TOOLS_REPO: AquaticEcoDynamics/AED_Tools
+  AED_TOOLS_REF: cf91a0c411d7299b48b85397445f25eda965308e
+
+jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
@@ -75,54 +89,56 @@ jobs:
             || gh release create "${{ inputs.package_version }}" \
               --repo "${{ github.repository }}" \
               --title "AEME ${{ inputs.package_version }}" \
-              --notes "GLM binaries built from \`main\` and \`feature/write-nml\` are attached to this release."
+              --notes "GLM (\`glm-<os>-<version>.zip\`) and GLM+ (\`glm-<os>-<version>+.zip\`) binaries are attached to this release."
 
   build:
     needs: create-release
     strategy:
       fail-fast: false
-      # Explicit combinations rather than crossing separate branch/os matrix
-      # keys - easier to audit at a glance, and trimming one combination
-      # later (e.g. a branch not yet buildable on macOS) is a one-line
-      # delete instead of restructuring the matrix.
+      # Explicit (os, edition) combinations rather than a crossed matrix -
+      # easier to audit, and disabling one platform or edition is a
+      # one-block delete. Both editions build from GLM_REF above.
       matrix:
         include:
-          # - os: windows-latest
-          #   name: windows
-          #   branch: main
           - os: windows-latest
             name: windows
-            branch: feature/write-nml
-          # - os: ubuntu-latest
-          #   name: linux
-          #   branch: main
+            edition: aed
+            aed_full: false
+          - os: windows-latest
+            name: windows
+            edition: aed-plus
+            aed_full: true
           - os: ubuntu-latest
             name: linux
-            branch: feature/write-nml
-          # - os: macos-latest
-          #   name: macos
-          #   branch: main
+            edition: aed
+            aed_full: false
+          - os: ubuntu-latest
+            name: linux
+            edition: aed-plus
+            aed_full: true
           - os: macos-latest
             name: macos
-            branch: feature/write-nml
+            edition: aed
+            aed_full: false
+          - os: macos-latest
+            name: macos
+            edition: aed-plus
+            aed_full: true
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
     env:
-      # Everything below is checked out/built as siblings under this folder,
-      # matching the layout build_glm.sh expects (GLM, ancillary, libaed-*,
-      # libutil, libplot all next to each other).
+      # Everything is checked out/built as siblings under this folder,
+      # matching the layout GLM's Makefile expects (GLM, ancillary,
+      # libaed-*, libutil, libplot all next to each other).
       ROOT: ${{ github.workspace }}
 
     steps:
       # ------------------------------------------------------------------
       # 1. Toolchain. Windows builds its C/Fortran dependency chain from
-      #    source (see the ancillary/ steps further down), so it only
-      #    needs the compilers themselves via choco. Linux and macOS get
-      #    netcdf-c/netcdf-fortran/gd from their system package manager
-      #    instead - same as how this project ships its own .deb package
-      #    (see debian/control) and documents macOS builds (README.Macintosh).
+      #    source (ancillary/ steps below), so it only needs the compilers
+      #    via choco. Linux/macOS get netcdf/gd from apt/Homebrew.
       # ------------------------------------------------------------------
       - name: "Toolchain (Windows): install make/mingw/cmake via chocolatey"
         if: matrix.os == 'windows-latest'
@@ -132,11 +148,13 @@ jobs:
           choco install -y mingw
           choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 
-      - name: "Toolchain (Windows): put mingw + cmake on PATH for later steps"
+      - name: "Toolchain (Windows): PATH + compiler env for later steps"
         if: matrix.os == 'windows-latest'
         run: |
           echo "C:\ProgramData\mingw64\mingw64\bin" >> "$GITHUB_PATH"
           echo "C:\Program Files\CMake\bin" >> "$GITHUB_PATH"
+          for v in FC F77 F90 F95; do echo "$v=gfortran" >> "$GITHUB_ENV"; done
+          echo "CC=gcc" >> "$GITHUB_ENV"
 
       - name: "Toolchain (Linux): install via apt"
         if: matrix.os == 'ubuntu-latest'
@@ -144,102 +162,96 @@ jobs:
           sudo apt-get update
           # libx11-dev is only needed for --xdisp (the interactive plot
           # window); drop it (and WITH_XPLOTS below) if you don't need that.
-          sudo apt-get install -y gfortran gcc make git \
+          sudo apt-get install -y gfortran gcc make git cmake \
             libnetcdf-dev libnetcdff-dev libgd-dev libx11-dev
+          for v in FC F77 F90 F95; do echo "$v=gfortran" >> "$GITHUB_ENV"; done
+          echo "CC=gcc" >> "$GITHUB_ENV"
 
       - name: "Toolchain (macOS): install via Homebrew"
         if: matrix.os == 'macos-latest'
         run: |
-          brew install gcc netcdf netcdf-fortran gd
+          brew install gcc netcdf netcdf-fortran gd make cmake
           # Homebrew's gcc formula installs versioned binaries (gfortran-14,
           # gcc-14, ...), not a plain "gfortran"/"gcc" - resolve whatever
           # version actually got installed instead of hardcoding one.
           GCC_VER=$(brew list --versions gcc | awk '{print $2}' | cut -d. -f1)
-          echo "FC=gfortran-${GCC_VER}" >> "$GITHUB_ENV"
+          for v in FC F77 F90 F95; do echo "$v=gfortran-${GCC_VER}" >> "$GITHUB_ENV"; done
           echo "CC=gcc-${GCC_VER}" >> "$GITHUB_ENV"
           echo "HOMEBREW=true" >> "$GITHUB_ENV"
 
       - name: Sanity-check toolchain
         run: |
-          gcc --version | head -1
-          gfortran --version | head -1
+          gcc --version | head -1 || true
+          "${FC:-gfortran}" --version | head -1
           make --version | head -1
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then cmake --version | head -1; fi
+          cmake --version | head -1
 
       # ------------------------------------------------------------------
-      # 2. Checkout GLM at this matrix entry's branch, plus the sibling
-      #    repos it needs, each pinned to the ref recorded in the env
-      #    block above. build_glm.sh assumes GLM sits next to
-      #    AED_Tools/libaed-*/libutil/libplot in one common parent
-      #    directory (this workspace root).
+      # 2. Checkout GLM + sibling libraries as siblings under $ROOT.
       # ------------------------------------------------------------------
-      - name: Checkout GLM
+      - name: Checkout GLM (${{ env.GLM_REPO }}@${{ env.GLM_REF }})
         uses: actions/checkout@v4
         with:
-          repository: limnotrack/GLM
-          ref: ${{ matrix.branch }}
+          repository: ${{ env.GLM_REPO }}
+          ref: ${{ env.GLM_REF }}
           path: GLM
 
-      - name: Checkout AED_Tools and sibling libraries (pinned refs)
+      - name: Checkout sibling libraries (pinned refs)
+        working-directory: ${{ env.ROOT }}
         run: |
-          cd "$ROOT"
           # Full clone + checkout (not --depth 1 --branch) so this works
-          # whether a pinned ref above is a tag, branch, or raw commit SHA.
+          # whether a pinned ref is a tag, branch, or raw commit SHA.
           checkout_repo () {
-            local repo="$1" ref="$2"
-            local org="AquaticEcoDynamics"
-            # libutil come from limnotrack's forks, not
-            # upstream:
-            #  - libutil carries the write_namelist() function (commit
-            #    24a8771, "add write_nml fun") that GLM's --write_nml flag
-            #    links against on feature/write-nml, not yet merged into
-            #    AquaticEcoDynamics/libutil. It's an addition only, so it's
-            #    also safe to build main against.
-            # Switch each back once its respective PR lands upstream.
-            case "$repo" in
-              libaed-water|libutil) org="limnotrack" ;;
-            esac
-            git clone "https://github.com/${org}/${repo}.git"
-            git -C "$repo" checkout "$ref"
+            local slug="$1" ref="$2" dir="$3" token="${4:-}"
+            local url="https://github.com/${slug}.git"
+            [ -n "$token" ] && url="https://${token}@github.com/${slug}.git"
+            git clone "$url" "$dir"
+            git -C "$dir" checkout "$ref"
           }
+          checkout_repo "$LIBAED_WATER_REPO"   "$LIBAED_WATER_REF"   libaed-water
+          checkout_repo "$LIBAED_BENTHIC_REPO" "$LIBAED_BENTHIC_REF" libaed-benthic
+          checkout_repo "$LIBAED_DEMO_REPO"    "$LIBAED_DEMO_REF"    libaed-demo
+          checkout_repo "$LIBAED_API_REPO"     "$LIBAED_API_REF"     libaed-api
+          checkout_repo "$LIBUTIL_REPO"        "$LIBUTIL_REF"        libutil
+          checkout_repo "$LIBPLOT_REPO"        "$LIBPLOT_REF"        libplot
+          checkout_repo "$AED_TOOLS_REPO"      "$AED_TOOLS_REF"      AED_Tools
 
-          checkout_repo AED_Tools        "$AED_TOOLS_REF"
-          checkout_repo libaed-water     "$LIBAED_WATER_REF"
-          checkout_repo libaed-benthic   "$LIBAED_BENTHIC_REF"
-          checkout_repo libaed-demo      "$LIBAED_DEMO_REF"
-          checkout_repo libaed-api       "$LIBAED_API_REF"
-          checkout_repo libutil          "$LIBUTIL_REF"
-          checkout_repo libplot          "$LIBPLOT_REF"
-
-      # ------------------------------------------------------------------
-      # 3. Stage the files build_glm.sh needs but that GLM's own repo does
-      #    NOT track: build_env.inc / build_aedlibs.inc (sourced by
-      #    build_glm.sh) and the ancillary/ dependency-build pipeline.
-      #    Both come from AED_Tools, which is the documented starting
-      #    point for AED/GLM builds. On Linux/macOS this is only a
-      #    fallback: build_env.inc auto-detects whether apt's/Homebrew's
-      #    netcdf-c/netcdf-fortran/gd are already found (via nc-config/
-      #    nf-config/gd.h) and only falls back to building from ancillary/
-      #    if something's missing.
-      # ------------------------------------------------------------------
-      - name: Stage build_env.inc, build_aedlibs.inc and ancillary/
+      # AED+ only: the private modules GLM's `glm+` target links. Directory
+      # names matter - libaed-dev's Makefile references ../libaed-riparian
+      # and ../libaed-light by path, and GLM's Makefile links -laed-lighting
+      # out of AEDLGTDIR (which is the libaed-light checkout).
+      - name: Checkout AED+ private modules
+        if: matrix.aed_full
+        working-directory: ${{ env.ROOT }}
+        env:
+          TOKEN: ${{ secrets.AED_PRIVATE_PAT }}
         run: |
-          cd "$ROOT"
-          cp AED_Tools/build_env.inc .
-          cp AED_Tools/build_aedlibs.inc .
-          cp -r AED_Tools/ancillary .
+          checkout_repo () {
+            local slug="$1" ref="$2" dir="$3" token="${4:-}"
+            local url="https://github.com/${slug}.git"
+            [ -n "$token" ] && url="https://${token}@github.com/${slug}.git"
+            git clone "$url" "$dir"
+            git -C "$dir" checkout "$ref"
+          }
+          checkout_repo "$LIBAED_RIPARIAN_REPO" "$LIBAED_RIPARIAN_REF" libaed-riparian "$TOKEN"
+          checkout_repo "$LIBAED_LIGHT_REPO"    "$LIBAED_LIGHT_REF"    libaed-light    "$TOKEN"
+          checkout_repo "$LIBAED_DEV_REPO"      "$LIBAED_DEV_REF"      libaed-dev      "$TOKEN"
+          # phreeqcrm is public; latest is fine (build-simstrat.yaml does the same).
+          git clone --depth 1 "https://github.com/${PHREEQCRM_REPO}.git" phreeqcrm
 
       # ------------------------------------------------------------------
-      # 4. Build the ancillary C/Fortran dependency chain: zlib, libaec,
-      #    curl, hdf5, netcdf-c, netcdf-fortran, jpeg, libpng, freetype,
-      #    gd. Windows-only - this is the slow part (~20-30 min from
-      #    cold), so it's cached independently of the GLM source itself,
-      #    and the patches/workarounds below only need to run on a cache
-      #    miss. The cache key is content-addressed via versions.inc, so
-      #    main and feature/write-nml jobs naturally share the same cache
-      #    entry (they pin the exact same AED_Tools ref) - no branch-
-      #    specific key needed on top of that.
+      # 3. Windows dependency chain (zlib, libaec, curl, hdf5, netcdf-c,
+      #    netcdf-fortran, jpeg, libpng, freetype, gd) via AED_Tools'
+      #    ancillary/build.sh - the one AED_Tools script still used. Cached
+      #    independently of the GLM source; the ~20-30 min cold build only
+      #    runs on a cache miss. Content-addressed on versions.inc, so both
+      #    editions share one cache entry (same AED_Tools pin).
       # ------------------------------------------------------------------
+      - name: Stage ancillary/ (from AED_Tools)
+        if: matrix.os == 'windows-latest'
+        working-directory: ${{ env.ROOT }}
+        run: cp -r AED_Tools/ancillary ancillary
+
       - name: Cache ancillary dependencies (Windows only)
         if: matrix.os == 'windows-latest'
         id: ancillary-cache
@@ -250,14 +262,13 @@ jobs:
             ${{ github.workspace }}/ancillary/include
             ${{ github.workspace }}/ancillary/bin
             ${{ github.workspace }}/ancillary/share
-          # Bump the trailing version suffix if you change any of the
-          # patches below, or if ancillary/sources/versions.inc changes.
+          # Bump the trailing version suffix if ancillary/sources/versions.inc changes.
           key: glm-ancillary-windows-v1-${{ hashFiles('ancillary/sources/versions.inc') }}
 
       - name: Build ancillary dependencies (Windows only)
         if: matrix.os == 'windows-latest' && steps.ancillary-cache.outputs.cache-hit != 'true'
+        working-directory: ${{ env.ROOT }}/ancillary
         run: |
-          cd "$ROOT/ancillary"
           export FINALDIR="$ROOT/ancillary"
           # CC/FC must be exported explicitly: the jpeg build step only
           # writes its Makefile "if [ \"$CC\" != \"\" ]", so without this
@@ -266,50 +277,161 @@ jobs:
           export FC=gfortran
           ./build.sh --all
 
+      - name: "Point build env at ancillary (Windows)"
+        if: matrix.os == 'windows-latest'
+        run: |
+          # Replaces build_env.inc's INCLUDES/LDFLAGS/PATH exports. The
+          # libaed-*/libplot/GLM Makefiles pick these up via `+=`; GLM's
+          # own Makefile also hardcodes ../ancillary paths for Msys.
+          echo "INCLUDES=-I${ROOT}/ancillary/include" >> "$GITHUB_ENV"
+          echo "LDFLAGS=-L${ROOT}/ancillary/lib" >> "$GITHUB_ENV"
+          echo "NETCDFHOME=${ROOT}/ancillary" >> "$GITHUB_ENV"
+          echo "${ROOT}/ancillary/bin" >> "$GITHUB_PATH"
+
       # build_env.inc's gd detection only checks the literal path
-      # /usr/include/gd.h, which Homebrew never installs to (it uses
-      # /opt/homebrew or /usr/local). Left as-is, that makes it fall back to
-      # building gd from source via ancillary/ every run, which is slow and
-      # untested on macOS. Pointing Homebrew's gd.h at the path it checks
-      # avoids that - if /usr/include isn't writable on the runner, this
-      # step is harmless to skip; build_glm.sh will just fall back to
-      # ancillary/ instead.
-      - name: "Workaround: make Homebrew's gd.h visible to build_env.inc's detection (macOS only)"
+      # /usr/include/gd.h, which Homebrew never installs to. Point
+      # Homebrew's gd.h there so libplot/libaed-dev find it without falling
+      # back to an (untested on macOS) ancillary build.
+      - name: "Workaround: expose Homebrew's gd.h at /usr/include (macOS only)"
         if: matrix.os == 'macos-latest'
         run: |
           GD_INCLUDE="$(brew --prefix gd)/include/gd.h"
           sudo mkdir -p /usr/include 2>/dev/null || true
           sudo cp "$GD_INCLUDE" /usr/include/gd.h 2>/dev/null || \
-            echo "could not stage /usr/include/gd.h - build_glm.sh will build gd from source via ancillary/ instead"
+            echo "could not stage /usr/include/gd.h - relying on Makefile's Homebrew include paths instead"
 
       # ------------------------------------------------------------------
-      # 5. Build GLM itself.
+      # 4. Build the libraries, in dependency order. Replaces
+      #    build_aedlibs.inc + build_glm.sh's libutil/libplot steps.
       # ------------------------------------------------------------------
-      - name: Build GLM
-        run: |
-          cd "$ROOT/GLM"
-          ./build_glm.sh
+      - name: Build libutil
+        run: make -C "$ROOT/libutil"
 
-      - name: Verify glm runs
-        id: verify
+      - name: Build libplot
+        run: make -C "$ROOT/libplot"
+
+      - name: Build libaed-water
+        run: make -C "$ROOT/libaed-water"
+
+      - name: Build libaed-benthic
+        run: make -C "$ROOT/libaed-benthic"
+
+      - name: Build libaed-demo
+        run: make -C "$ROOT/libaed-demo"
+
+      - name: Build libaed-riparian
+        if: matrix.aed_full
+        run: make -C "$ROOT/libaed-riparian"
+
+      - name: Build libaed-light
+        if: matrix.aed_full
+        run: make -C "$ROOT/libaed-light"
+
+      - name: Build phreeqcrm
+        if: matrix.aed_full
+        working-directory: ${{ env.ROOT }}/phreeqcrm
         run: |
-          cd "$ROOT/GLM"
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            PATH="$ROOT/ancillary/bin:$PATH" ./glm.exe --version
-            VER=$(PATH="$ROOT/ancillary/bin:$PATH" ./glm.exe --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          mkdir build && cd build
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            # Default generator on windows-latest is Visual Studio (MSVC),
+            # which would produce an ABI-incompatible lib against the
+            # MinGW-gfortran toolchain used for everything else here.
+            cmake .. -G "MinGW Makefiles" -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_BUILD_TYPE=Release
           else
-            ./glm --version
-            VER=$(./glm --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+            cmake .. -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_BUILD_TYPE=Release
           fi
+          cmake --build . --config Release -j 2
+
+      - name: Build libaed-dev
+        if: matrix.aed_full
+        # Keeps aed_plots.F90 (unlike build-simstrat.yaml, which excludes it
+        # for lack of libgd) - GLM+ links libplot/libgd, so plotting stays
+        # in. If this step ever fails on aed_plots.o, exclude it the way
+        # build-simstrat.yaml does.
+        run: make -C "$ROOT/libaed-dev" PHREEQDIR=../phreeqcrm
+
+      - name: Build libaed-api
+        run: |
+          if [ "${{ matrix.aed_full }}" = "true" ]; then
+            make -C "$ROOT/libaed-api" \
+              AEDBENDIR=../libaed-benthic AEDDMODIR=../libaed-demo \
+              AEDRIPDIR=../libaed-riparian AEDLGTDIR=../libaed-light AEDDEVDIR=../libaed-dev
+          else
+            make -C "$ROOT/libaed-api" AEDBENDIR=../libaed-benthic AEDDMODIR=../libaed-demo
+            make -C "$ROOT/libaed-api" NO_RIPARIAN=1 NO_LGT=1 NO_DEV=1 obj/aed_external.o
+          fi
+
+      # ------------------------------------------------------------------
+      # 5. Build GLM. Replaces `./build_glm.sh` - GLM's Makefile has `glm`
+      #    and `glm+` targets directly; edition is driven by whether the
+      #    AED+ dirs are passed. Siblings are found at ../libaed-water,
+      #    ../libaed-api, ../ancillary automatically.
+      # ------------------------------------------------------------------
+      - name: Update Windows resource-file versions
+        if: matrix.os == 'windows-latest'
+        working-directory: ${{ env.ROOT }}/GLM
+        run: |
+          if [ -f src/glm.h ]; then
+            VER=$(grep GLM_VERSION src/glm.h | cut -f2 -d\")
+          else
+            VER=$(grep GLM_VERSION include/glm.h | cut -f2 -d\")
+          fi
+          ( cd win && sh ../vers.sh "$VER" ) \
+            || echo "vers.sh failed - continuing with the committed win/*.rc versions"
+
+      - name: Build GLM (${{ matrix.edition }})
+        working-directory: ${{ env.ROOT }}/GLM
+        run: |
+          COMMON="WITH_AED=true WITH_API=true WITH_PLOTS=true WITH_XPLOTS=true \
+                  PLOTDIR=$ROOT/libplot UTILDIR=$ROOT/libutil \
+                  AEDBENDIR=$ROOT/libaed-benthic AEDDMODIR=$ROOT/libaed-demo"
+          if [ "${{ matrix.aed_full }}" = "true" ]; then
+            make glm+ $COMMON WITH_AED_PLUS=1 \
+              AEDRIPDIR=$ROOT/libaed-riparian \
+              AEDLGTDIR=$ROOT/libaed-light \
+              AEDDEVDIR=$ROOT/libaed-dev \
+              PHREEQDIR=$ROOT/phreeqcrm
+          else
+            make glm $COMMON
+          fi
+
+      - name: Verify GLM runs & extract version
+        id: verify
+        working-directory: ${{ env.ROOT }}/GLM
+        run: |
+          if [ "${{ matrix.aed_full }}" = "true" ]; then BIN=glm+; else BIN=glm; fi
+          # MinGW appends .exe; be tolerant if it ever doesn't.
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            [ -f "$BIN.exe" ] && BIN="$BIN.exe"
+            OUT=$(PATH="$ROOT/ancillary/bin:$PATH" "./$BIN" --version)
+          else
+            OUT=$("./$BIN" --version)
+          fi
+          echo "$OUT"
+          VER=$(echo "$OUT" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          # AED+ builds carry a trailing "+" on the version label, so their
+          # assets are glm-<os>-<version>+.zip - same convention as
+          # build-simstrat.yaml's aed-api+ edition.
+          if [ "${{ matrix.aed_full }}" = "true" ]; then VER="${VER}+"; fi
           echo "glm_version=$VER" >> "$GITHUB_OUTPUT"
 
+      # Ship the AED+ binary under the plain `glm` / `glm.exe` name so
+      # install_glm_aed() finds it - the "+" lives only in the version
+      # label / zip name.
+      - name: Normalise glm+ binary name
+        if: matrix.aed_full
+        working-directory: ${{ env.ROOT }}/GLM
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            mv "glm+.exe" "glm.exe" 2>/dev/null || mv "glm+" "glm.exe"
+          else
+            mv "glm+" "glm"
+          fi
+
       # ------------------------------------------------------------------
-      # 6. Package the binary for upload. Windows gets its runtime DLLs
-      #    bundled alongside it so the artifact is self-contained; Linux
-      #    and macOS binaries are dynamically linked against system
-      #    packages (apt/Homebrew) instead, so they're only guaranteed to
-      #    run on a matching machine, not a portable bundle - ldd/otool
-      #    output is recorded alongside them for reference.
+      # 6. Package. Windows bundles runtime DLLs; Linux records ldd;
+      #    macOS bundles dylibs via dylibbundler so the binary runs on
+      #    machines without Homebrew.
       # ------------------------------------------------------------------
       - name: Assemble distributable folder
         run: |
@@ -345,12 +467,9 @@ jobs:
         run: brew install dylibbundler
 
       # dylibbundler walks the binary's dependency tree (recursively, via
-      # -b), copies every non-system dylib it finds into glm_dist/libs/,
-      # and rewrites the binary's own load commands to point at those
-      # copies via @executable_path instead of the absolute Homebrew paths
-      # (/opt/homebrew/opt/netcdf/lib/...) that only exist on a machine
-      # with the exact same Homebrew packages installed - which is
-      # precisely what broke on the runner that had no netcdf installed.
+      # -b), copies every non-system dylib into glm_dist/libs/, and rewrites
+      # the binary's load commands to @executable_path/libs/ instead of the
+      # absolute Homebrew paths that only exist on a matching machine.
       - name: "Bundle runtime dylibs into distributable folder (macOS only)"
         if: matrix.os == 'macos-latest'
         run: |
@@ -359,14 +478,11 @@ jobs:
           echo "--- rpaths before cleanup ---"
           otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
 
-          # More robust than matching one hardcoded string: parse every
-          # LC_RPATH actually present and remove each one, so this is safe
-          # regardless of how many duplicates exist or what path they hold.
           otool -l "$ROOT/glm_dist/glm" \
             | awk '/LC_RPATH/{getline; getline; print $2}' \
             | while read -r rp; do
-              install_name_tool -delete_rpath "$rp" "$ROOT/glm_dist/glm" || true
-            done
+                install_name_tool -delete_rpath "$rp" "$ROOT/glm_dist/glm" || true
+              done
 
           echo "--- rpaths after cleanup, before dylibbundler ---"
           otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
@@ -379,22 +495,12 @@ jobs:
           echo "--- rpaths after dylibbundler (final) ---"
           otool -l "$ROOT/glm_dist/glm" | grep -A2 LC_RPATH || echo "(none)"
 
-      # install_name_tool (used internally by dylibbundler to rewrite load
-      # commands) invalidates whatever signature the binary had. Apple
-      # Silicon refuses to execute an unsigned binary at all (unlike
-      # Intel Macs, where this was often just a Gatekeeper warning) - an
-      # ad-hoc signature (no certificate, no notarization) is enough to
-      # run locally/in CI, though see the caveat below for what it does
-      # NOT solve.
+      # install_name_tool invalidates the signature; Apple Silicon refuses
+      # to execute an unsigned binary. An ad-hoc signature is enough for CI.
       - name: "Re-sign bundled binary (macOS only)"
         if: matrix.os == 'macos-latest'
         run: codesign --force --deep -s - "$ROOT/glm_dist/glm"
 
-      # Fail loudly here rather than silently ship a half-bundled binary:
-      # if anything still resolves to an external Homebrew/local path,
-      # dylibbundler missed a dependency (e.g. a dependency-of-a-dependency
-      # it didn't recurse into for some reason) and this exact bug would
-      # resurface for every user, not just this CI runner.
       - name: "Verify no external Homebrew dependencies remain (macOS only)"
         if: matrix.os == 'macos-latest'
         run: |
@@ -418,19 +524,17 @@ jobs:
           cd "$ROOT"
           ZIP="glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
           if [ "${{ matrix.os }}" = "macos-latest" ]; then
-            # macOS runners ship `shasum`, not GNU `sha256sum` - same output format.
             shasum -a 256 "$ZIP" > "$ZIP.sha256"
           else
             sha256sum "$ZIP" > "$ZIP.sha256"
           fi
           cat "$ZIP.sha256"
 
-      # Both main and feature/write-nml upload into the SAME release under
-      # the SAME filename scheme (glm-<os>-<version>.zip) - see the
-      # versioning note above the create-release job. If a differently
-      # -branched build ever produces the same glm_version as one already
-      # uploaded, refuse to silently clobber it and fail loudly instead.
-      - name: Guard against version collisions between branches
+      # glm and glm+ land in the same release under distinct filenames
+      # (.../<version>.zip vs .../<version>+.zip), so they cannot collide
+      # with each other. This guard only catches an accidental
+      # different-content re-upload of the SAME asset.
+      - name: Guard against duplicate asset collisions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -440,7 +544,7 @@ jobs:
           if gh release download "${{ inputs.package_version }}" --repo "${{ github.repository }}" \
             --pattern "$SHA_FILE" --output "existing.$SHA_FILE" --clobber 2>/dev/null; then
             if ! diff -q "$SHA_FILE" "existing.$SHA_FILE" > /dev/null; then
-              echo "::error::Asset $ZIP already exists in release ${{ inputs.package_version }} with a DIFFERENT checksum than this build (branch: ${{ matrix.branch }}). This likely means GLM version ${{ steps.verify.outputs.glm_version }} collides between main and feature/write-nml. Refusing to silently overwrite - resolve the version collision before re-running."
+              echo "::error::Asset $ZIP already exists in release ${{ inputs.package_version }} with a DIFFERENT checksum. Refusing to silently overwrite."
               exit 1
             else
               echo "Existing asset '$ZIP' matches this build exactly (identical rebuild) - safe to proceed."
@@ -455,4 +559,3 @@ jobs:
           ZIP="glm-${{ matrix.name }}-${{ steps.verify.outputs.glm_version }}.zip"
           gh release upload "${{ inputs.package_version }}" "$ZIP" "$ZIP.sha256" \
             --repo "${{ github.repository }}" --clobber
-            

@@ -55,6 +55,14 @@ the R package version.
   by side (switch between them via `glm_exe_path()`/`AEME.glm_version`
   without re-downloading), with corrected OS detection and a GLM version
   passed through correctly to parallel workers in `run_aeme(parallel = TRUE)`.
+* `install_glm_aed()`/`list_glm_versions()` now understand a trailing `"+"`
+  on a version (e.g. `"4.0.0+"`), selecting the GLM+ (AED+) build published
+  as `glm-<os>-<version>+.zip`. The `.github/workflows/build-glm-v4.yaml`
+  workflow was rewritten along the lines of `build-simstrat.yaml` to build
+  both the regular `glm` and `glm+` binaries (the latter linking the
+  private `libaed-riparian`/`-light`/`-dev` modules) via explicit per-
+  library `make` steps, instead of AED_Tools' `build_glm.sh` /
+  `build_env.inc` / `build_aedlibs.inc`.
 
 ## OS-aware model selection
 
