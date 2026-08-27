@@ -111,6 +111,33 @@ build_simstrat <- function(lakename, model_controls, date_range,
   par[[bgc_cfg_key]][[paste0("Path", bgc_tag, "inflow")]] <- paste0(bgc_template_dir, "/", bgc_tag, "_inflow/")
   par[["ModelConfig"]][[paste0("Couple", bgc_tag)]] <- isTRUE(use_bgc)
 
+  # Sediment zones: size the AED benthic-zone geometry (NZones / ZoneHeights
+  # in the AEDConfig block) to this lake's own hypsography, using the same
+  # estimate_sed_zones() helper build_glm()/make_stg_glm() uses for GLM-AED,
+  # instead of leaving the template's hard-coded values. Only applies when
+  # the template runs a zoned benthic mode (BenthicMode = 2, i.e. the
+  # simstrat_aed template; simstrat_aed2's default is BenthicMode = 1 with no
+  # zone lists).
+  aed_cfg <- par[[bgc_cfg_key]]
+  benthic_mode <- suppressWarnings(as.numeric(aed_cfg[["BenthicMode"]]))
+  if (isTRUE(use_bgc) && !is.null(aed_cfg[["ZoneHeights"]]) &&
+      length(benthic_mode) == 1 && !is.na(benthic_mode) && benthic_mode == 2) {
+    sed_zones <- tryCatch(estimate_sed_zones(hypsograph = hyps),
+                          error = function(e) NULL)
+    if (!is.null(sed_zones) && length(sed_zones) >= 1) {
+      par[[bgc_cfg_key]][["NZones"]] <- length(sed_zones)
+      par[[bgc_cfg_key]][["ZoneHeights"]] <- as.list(round(sed_zones, 2))
+      cli_inform_safe(c(
+        "i" = "Estimated {length(sed_zones)} AED sediment zone{?s} from hypsography."
+      ))
+    } else {
+      cli_inform_safe(c(
+        "!" = "Could not estimate AED sediment zones from the hypsography; \\
+               keeping the template {.field NZones}/{.field ZoneHeights}."
+      ))
+    }
+  }
+
   par[["Simulation"]][["Reference year"]] <- ref_year
   par[["Simulation"]][["Start d"]] <- start_day
   par[["Simulation"]][["End d"]] <- end_day
