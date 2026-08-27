@@ -4,7 +4,7 @@
 \alias{cli_safe}
 \title{Inform messages respecting the global AEME.inform option}
 \usage{
-cli_safe(..., FUN = cli::cli_bullets, indent = TRUE)
+cli_safe(..., FUN = cli::cli_bullets, indent = TRUE, .envir = parent.frame())
 }
 \arguments{
 \item{...}{arguments passed to cli_inform_safe()}
@@ -12,6 +12,11 @@ cli_safe(..., FUN = cli::cli_bullets, indent = TRUE)
 \item{FUN}{function to use for messaging, default is cli::cli_inform}
 
 \item{indent}{logical, whether to indent the message, default is FALSE}
+
+\item{.envir}{environment in which to evaluate \code{{}} expressions in the
+message. Defaults to the calling environment; forwarded to \code{FUN} when it
+accepts a \code{.envir} argument so interpolation sees the caller's locals
+rather than this wrapper's frame.}
 }
 \description{
 Used primarily as an internal helper to safely suppress messages to console.

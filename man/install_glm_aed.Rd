@@ -14,9 +14,12 @@ install_glm_aed(
 }
 \arguments{
 \item{version}{Character. The GLM version to install, e.g. \code{"3.9.108"}.
-Use \code{\link[=list_glm_versions]{list_glm_versions()}} to see what's available. Defaults to \code{"latest"},
-which resolves to the highest version number available for the current
-platform.}
+Use \code{\link[=list_glm_versions]{list_glm_versions()}} to see what's available. A trailing \code{"+"}
+(e.g. \code{"4.0.0+"}) selects the GLM+ (AED+) build of that version -- the
+same binary plus the private \code{libaed-riparian}/\code{-light}/\code{-dev} modules.
+Defaults to \code{"latest"}, which resolves to the highest version number
+available for the current platform (preferring the \code{"+"} edition on a
+tie).}
 
 \item{os}{Character. One of \code{"windows"}, \code{"macos"}, or \code{"linux"}.
 Defaults to the platform R is currently running on; you shouldn't

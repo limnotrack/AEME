@@ -195,22 +195,35 @@ check_aeme <- function(aeme) {
   invisible(aeme)
 }
 
-#' Backfill defaults for models added to AEME after an object was created
+#' Apply structural migrations to an older Aeme object (silent, idempotent)
 #'
 #' Older `Aeme` objects (loaded from `.rds`/`.yaml` files, or already held in
 #' memory from an earlier package version) predate models such as
-#' `simstrat_aed2` and so are missing its entries in `time$spin_up`,
-#' `inflows$factor`, `outflows$factor`, and `configuration`. Most read paths
-#' in the package use `[[`, which tolerates a missing list element (returns
-#' `NULL`), but a few (e.g. the `show()` method's
-#' `round(inf$factor$simstrat_aed2, 2)`) pass that `NULL` straight into a
-#' function that errors on it. This adds the same defaults
-#' `aeme_constructor()` would use for a brand-new object, for any model in
-#' `list_models()` not already present, so older objects keep working without
-#' the user having to rebuild them from scratch.
+#' `simstrat_aed2`/`simstrat_aed` and use since-renamed list elements. Most
+#' read paths in the package use `[[`, which tolerates a missing list element
+#' (returns `NULL`), but a few (e.g. the `show()` method's
+#' `round(inf$factor$simstrat_aed2, 2)`, or `build_aeme()`'s outflow-elevation
+#' handling) pass that `NULL` straight into a function that errors on it.
+#'
+#' This is the low-level worker: it is silent, idempotent, and cheap enough to
+#' run on every `show()`/`plot()`. [upgrade_aeme()] is the user-facing wrapper
+#' that also reports what changed and fills in build-time scalar defaults.
+#'
+#' Migrations applied here:
+#' \itemize{
+#'  \item `time$spin_up`, `inflows$factor`, `outflows$factor`,
+#'    `configuration`: backfill entries for any model in `list_models()` not
+#'    already present, using the same defaults `aeme_constructor()` would.
+#'  \item `outflows`: rename the legacy `lvl` (<= 0.2.x) / `outflow_lvl`
+#'    (0.3.x) element to `elevation`.
+#'  \item `output`: add a `NULL` placeholder per model and coerce
+#'    `n_members` to integer.
+#'  \item `observations$level`: coerce a legacy tibble to a plain data frame
+#'    and ensure a `var_aeme` column.
+#' }
 #'
 #' @param aeme An Aeme object.
-#' @return The Aeme object, with missing-model defaults backfilled.
+#' @return The Aeme object, migrated to the current layout.
 #' @keywords internal
 #' @noRd
 migrate_aeme <- function(aeme) {
@@ -218,32 +231,189 @@ migrate_aeme <- function(aeme) {
 
   models <- unname(list_models())
 
+  # -- time$spin_up: backfill entries for models added after this object ------
   aeme_time <- aeme@time
   if (is.list(aeme_time$spin_up)) {
-    missing_m <- setdiff(models, names(aeme_time$spin_up))
-    for (m in missing_m) aeme_time$spin_up[[m]] <- 2
+    for (m in setdiff(models, names(aeme_time$spin_up))) aeme_time$spin_up[[m]] <- 2
     aeme@time <- aeme_time
   }
 
+  # -- inflows$factor: backfill entries for new models -----------------------
   inf <- aeme@inflows
   if (is.list(inf$factor)) {
-    missing_m <- setdiff(models, names(inf$factor))
-    for (m in missing_m) inf$factor[[m]] <- 1
+    for (m in setdiff(models, names(inf$factor))) inf$factor[[m]] <- 1
     aeme@inflows <- inf
   }
 
+  # -- outflows: backfill factors + rename lvl/outflow_lvl -> elevation ------
   outf <- aeme@outflows
   if (is.list(outf$factor)) {
-    missing_m <- setdiff(models, names(outf$factor))
-    for (m in missing_m) outf$factor[[m]] <- 1
-    aeme@outflows <- outf
+    for (m in setdiff(models, names(outf$factor))) outf$factor[[m]] <- 1
   }
+  if (is.null(outf$elevation)) {
+    legacy_lvl <- outf$lvl %||% outf$outflow_lvl
+    if (!is.null(legacy_lvl) && length(outf$data) > 0) {
+      outf$elevation <- stats::setNames(
+        as.list(rep(legacy_lvl[1], length(outf$data))), names(outf$data)
+      )
+    } else {
+      outf$elevation <- -1
+    }
+  }
+  outf$lvl <- NULL
+  outf$outflow_lvl <- NULL
+  aeme@outflows <- outf
 
+  # -- configuration: backfill per-model hydrodynamic/bgc sublists ----------
   cfg <- aeme@configuration
   if (is.list(cfg)) {
-    missing_m <- setdiff(models, names(cfg))
-    for (m in missing_m) cfg[[m]] <- list(hydrodynamic = NULL, bgc = NULL)
+    for (m in setdiff(models, names(cfg))) {
+      cfg[[m]] <- list(hydrodynamic = NULL, bgc = NULL)
+    }
     aeme@configuration <- cfg
+  }
+
+  # -- output: NULL placeholder per model + integer n_members --------------
+  outp <- aeme@output
+  if (is.list(outp)) {
+    if (is.null(outp$n_members)) outp$n_members <- 0L
+    outp$n_members <- as.integer(outp$n_members)
+    for (m in models) if (!m %in% names(outp)) outp[m] <- list(NULL)
+    aeme@output <- outp
+  }
+
+  # -- observations$level: legacy tibble -> data.frame + var_aeme ----------
+  obs <- aeme@observations
+  if (!is.null(obs$level)) {
+    if (!is.data.frame(obs$level) || inherits(obs$level, "tbl_df")) {
+      obs$level <- as.data.frame(obs$level, stringsAsFactors = FALSE)
+    }
+    if (!"var_aeme" %in% names(obs$level)) obs$level[["var_aeme"]] <- "LKE_lvlwtr"
+    aeme@observations <- obs
+  }
+
+  aeme
+}
+
+#' Upgrade an Aeme object to the current AEME version
+#'
+#' @description
+#' Older `Aeme` objects -- loaded from `.rds` files written by a previous
+#' version of AEME -- can be missing list elements, use since-renamed slot
+#' names, or carry data frames with an older column layout. Most of the
+#' package tolerates this, but some code paths (and [build_aeme()] in
+#' particular) assume the current layout.
+#'
+#' `upgrade_aeme()` applies every structural migration AEME knows about, in
+#' order, each one idempotent so the function is safe to run repeatedly. It
+#' does **not** rebuild model configuration
+#' (`configuration$<model>$hydrodynamic`) or model output -- those only come
+#' from [build_aeme()] / [run_aeme()]. Run `upgrade_aeme()` first, then
+#' rebuild if you need the model files refreshed.
+#'
+#' Migrations applied (see also migrate_aeme(), the silent worker):
+#' \itemize{
+#'  \item `time$spin_up`, `inflows$factor`, `outflows$factor`,
+#'    `configuration`: backfill entries for models added to AEME after the
+#'    object was created (e.g. `simstrat_aed2`, `simstrat_aed`).
+#'  \item `outflows`: rename the legacy `lvl` / `outflow_lvl` element to
+#'    `elevation`.
+#'  \item `output`: add a `NULL` placeholder per model and coerce
+#'    `n_members` to integer.
+#'  \item `observations$level`: coerce a legacy tibble to a plain data frame
+#'    and ensure a `var_aeme` column.
+#'  \item `configuration`: backfill scalar build defaults (`ext_elev`,
+#'    `calc_wbal`, `wb_method`, `calc_wlev`, `hum_type`, `est_swr_hr`,
+#'    `use_bgc`) from `config_defaults()`.
+#'  \item `parameters`: reorder columns to [param_colnames()] order.
+#' }
+#'
+#' @param aeme An `Aeme` object.
+#' @param quiet Logical; suppress the summary of applied changes. Default
+#'   `FALSE`.
+#' @return The `Aeme` object, migrated to the current layout, with
+#'   `configuration$aeme_upgraded` set to the installed AEME version.
+#' @seealso [build_aeme()], [check_aeme()]
+#' @importFrom cli cli_abort cli_inform
+#' @importFrom utils packageVersion
+#' @export
+upgrade_aeme <- function(aeme, quiet = FALSE) {
+  if (!inherits(aeme, "Aeme")) {
+    cli::cli_abort(
+      "{.arg aeme} must be an {.cls Aeme} object, not {.cls {class(aeme)[1]}}.",
+      class = "aeme_error_aeme_type"
+    )
+  }
+
+  before <- aeme
+  aeme <- migrate_aeme(aeme)
+  changed <- character()
+
+  bn <- function(x) if (is.null(x)) character() else names(x)
+  note_added <- function(label, old, new) {
+    d <- setdiff(bn(new), bn(old))
+    if (length(d))
+      changed <<- c(changed, sprintf("%s: added %s", label,
+                                     paste(d, collapse = ", ")))
+  }
+  note_added("time$spin_up", before@time$spin_up, aeme@time$spin_up)
+  note_added("inflows$factor", before@inflows$factor, aeme@inflows$factor)
+  note_added("outflows$factor", before@outflows$factor, aeme@outflows$factor)
+  note_added("configuration", before@configuration, aeme@configuration)
+  if (is.null(before@outflows$elevation) && !is.null(aeme@outflows$elevation))
+    changed <- c(changed,
+                 "outflows: `lvl`/`outflow_lvl` renamed to `elevation`")
+  if (!identical(bn(before@output), bn(aeme@output)))
+    changed <- c(changed, "output: added per-model placeholders")
+  if (inherits(before@observations$level, "tbl_df") &&
+      !inherits(aeme@observations$level, "tbl_df"))
+    changed <- c(changed, "observations$level: coerced tibble to data.frame")
+
+  # -- scalar configuration defaults (cold path only) ---------------------
+  cfg <- aeme@configuration
+  cfg_dflt <- config_defaults()
+  scalar_keys <- c("ext_elev", "calc_wbal", "wb_method", "calc_wlev",
+                   "hum_type", "est_swr_hr", "use_bgc")
+  added_cfg <- character()
+  for (k in scalar_keys) {
+    if (is.null(cfg[[k]])) {
+      cfg[[k]] <- cfg_dflt[[k]]
+      added_cfg <- c(added_cfg, k)
+    }
+  }
+  if (length(added_cfg))
+    changed <- c(changed, sprintf("configuration: filled defaults for %s",
+                                  paste(added_cfg, collapse = ", ")))
+  aeme@configuration <- cfg
+
+  # -- parameters column order ------------------------------------------
+  params <- aeme@parameters
+  want <- param_colnames(incl_opt = FALSE)
+  if (all(want %in% names(params)) &&
+      !identical(names(params)[seq_along(want)], want)) {
+    aeme@parameters <- params[, c(want, setdiff(names(params), want)),
+                              drop = FALSE]
+    changed <- c(changed, "parameters: columns reordered to canonical layout")
+  }
+
+  target <- as.character(utils::packageVersion("AEME"))
+  aeme@configuration$aeme_upgraded <- target
+
+  if (!quiet) {
+    from <- before@configuration$aeme_version
+    from_lbl <- if (is.null(from)) "an unversioned (pre-0.4.0) build" else
+      paste0("v", from)
+    if (length(changed) == 0) {
+      cli::cli_inform(c(
+        "v" = "{.cls Aeme} object already matches AEME {target}; nothing to upgrade."
+      ))
+    } else {
+      cli::cli_inform(c(
+        "v" = "Upgraded {.cls Aeme} object from {from_lbl} to AEME {target}:",
+        stats::setNames(changed, rep("*", length(changed))),
+        "i" = "Model configuration and output are not migrated - rerun {.fn build_aeme} to refresh them."
+      ))
+    }
   }
 
   aeme

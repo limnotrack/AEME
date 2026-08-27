@@ -78,13 +78,34 @@ the R package version.
 
 ## New functions
 
-* `migrate_aeme()` — backfills defaults for any model missing from an
-  `Aeme` object's `time$spin_up`, `inflows$factor`, `outflows$factor`, or
-  `configuration` slots (e.g. objects created before `simstrat_aed2`
-  existed). Called automatically by `check_aeme()`, `show()`, and `plot()`
-  so older saved objects keep working without needing to be rebuilt.
+* `upgrade_aeme()` — upgrades an `Aeme` object saved by an older AEME
+  version to the current layout, in idempotent steps, reporting what it
+  changed. On top of the per-model backfills (`time$spin_up`,
+  `inflows$factor`, `outflows$factor`, `configuration`) it renames the
+  legacy `outflows$lvl` / `outflows$outflow_lvl` element to
+  `outflows$elevation`, adds the per-model `output` placeholders and an
+  integer `n_members`, coerces a legacy `observations$level` tibble to a
+  plain data frame, fills scalar `configuration` build defaults from
+  `config_defaults()`, and reorders `parameters` columns to
+  `param_colnames()` order. It does **not** rebuild model configuration or
+  output — rerun `build_aeme()` for those. Stamps
+  `configuration$aeme_upgraded` with the installed version.
+* `migrate_aeme()` — the silent, idempotent worker behind `upgrade_aeme()`,
+  now also covering the `outflows$elevation` rename, `output` placeholders,
+  and `observations$level` coercion. Still called automatically by
+  `build_aeme()`, `check_aeme()`, `show()`, and `plot()` so older saved
+  objects keep working without needing to be rebuilt.
 
 ## Bug fixes
+
+* `cli_inform_safe()` and `cli_safe()` did not forward an evaluation
+  environment to `cli`, so any message containing a `{}` expression that
+  referenced a local variable of the *calling* function failed with
+  `object '<name>' not found` — `cli` was interpolating against the wrapper's
+  own frame. This surfaced when building any `Aeme` object whose inflow
+  tables still used pre-standard column names (e.g. `NIT_din`), where
+  `standardise_inflow()` reports `"Renaming {length(matched)} column{?s}"`.
+  Both wrappers now take `.envir = parent.frame()` and pass it through.
 
 * `read_model_config()` assumed any `.par` configuration file was
   Simstrat's JSON format, but DYRESM-CAEDYM's `dyresm3p1.par` shares that

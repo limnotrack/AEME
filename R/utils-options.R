@@ -58,10 +58,14 @@
 #' Inform messages respecting the global AEME.inform option
 #'
 #' @param ... arguments passed to cli_inform_safe()
+#' @param .envir environment in which to evaluate `{}` expressions in the
+#'   message. Defaults to the calling environment, matching `cli::cli_inform()`.
+#'   Forwarded explicitly because otherwise `cli` would interpolate against this
+#'   wrapper's frame, where the caller's locals do not exist.
 #' @export
-cli_inform_safe <- function(...) {
+cli_inform_safe <- function(..., .envir = parent.frame()) {
   if (isTRUE(getOption("AEME.inform", TRUE))) {
-    cli::cli_inform(...)
+    cli::cli_inform(..., .envir = .envir)
   }
 }
 
@@ -75,14 +79,23 @@ cli_inform_safe <- function(...) {
 #' @param ... arguments passed to cli_inform_safe()
 #' @param FUN function to use for messaging, default is cli::cli_inform
 #' @param indent logical, whether to indent the message, default is FALSE
+#' @param .envir environment in which to evaluate `{}` expressions in the
+#'   message. Defaults to the calling environment; forwarded to `FUN` when it
+#'   accepts a `.envir` argument so interpolation sees the caller's locals
+#'   rather than this wrapper's frame.
 #' @export
-cli_safe <- function(..., FUN = cli::cli_bullets, indent = TRUE) {
+cli_safe <- function(..., FUN = cli::cli_bullets, indent = TRUE,
+                     .envir = parent.frame()) {
   if (isTRUE(getOption("AEME.inform", TRUE))) {
     if (indent) {
       d <- cli::cli_div(theme = list(".bullet" = list("margin-left" = 2)))
       on.exit(cli::cli_end(d))
     }
-    FUN(...)
+    if (".envir" %in% names(formals(FUN))) {
+      FUN(..., .envir = .envir)
+    } else {
+      FUN(...)
+    }
   }
 }
 

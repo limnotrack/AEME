@@ -4,10 +4,15 @@
 \alias{cli_inform_safe}
 \title{Inform messages respecting the global AEME.inform option}
 \usage{
-cli_inform_safe(...)
+cli_inform_safe(..., .envir = parent.frame())
 }
 \arguments{
 \item{...}{arguments passed to cli_inform_safe()}
+
+\item{.envir}{environment in which to evaluate \code{{}} expressions in the
+message. Defaults to the calling environment, matching \code{cli::cli_inform()}.
+Forwarded explicitly because otherwise \code{cli} would interpolate against this
+wrapper's frame, where the caller's locals do not exist.}
 }
 \description{
 Inform messages respecting the global AEME.inform option
