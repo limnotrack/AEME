@@ -58,7 +58,7 @@ write_configuration <- function(aeme, model, path = getwd(),
                            model_dir = file.path(lake_dir, "glm_aed"))
   }
 
-  return(aeme)
+  return(invisible(aeme))
 }
 
 #' Write GLM-AED boundary-condition files straight from cached aeme state
