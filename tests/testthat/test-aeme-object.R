@@ -478,6 +478,8 @@ test_that("Aeme can be written and read from files", {
   Sys.sleep(1)
   aeme <- run_aeme(aeme)
   
+  zv <- get_var(aeme, var_sim =  "z")
+  
   write_path <- file.path(tempdir(), "test_write")
   out_files <- write_aeme_to_files(aeme = aeme, path = write_path,
                                    include_output = TRUE)

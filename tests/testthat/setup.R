@@ -1,6 +1,6 @@
 # Silence AEME's informational cli messages for the whole test run, so
 # individual test files don't each need their own options(AEME.inform = FALSE).
-options(AEME.inform = FALSE, ncore = 4L)
+options(AEME.inform = FALSE, ncore = 6L)
 
 # Pre-install GLM once, up front, before any test file runs - fails fast
 # with one clear message here rather than the same failure surfacing
@@ -12,11 +12,11 @@ options(AEME.inform = FALSE, ncore = 4L)
 # test still handle that correctly and skip individually - this file's job
 # is only to warm the cache once, not to gate the whole suite.
 tryCatch(
-  invisible(install_glm_aed(version = getOption("AEME.glm_version", "3.9.108"))),
+  invisible(install_models()),
   error = function(e) {
     message(
-      "Could not pre-install GLM at test setup (", conditionMessage(e), ") - ",
-      "tests requiring GLM will skip individually via skip_if_no_glm()."
+      "Could not pre-install models at test setup (", conditionMessage(e), ") - ",
+      "tests requiring models will skip individually via skip_if_no_models()."
     )
   }
 )

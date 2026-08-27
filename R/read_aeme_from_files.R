@@ -62,7 +62,7 @@ read_aeme_from_files <- function(path) {
         # no matching column -- default to 2 (matching aeme_constructor())
         # rather than numeric(0), which breaks downstream date arithmetic.
         get_spin_up <- function(model) {
-          val <- as.numeric(df[1, grepl(model, names(df))])
+          val <- as.numeric(df[1, grepl(paste0(model, "$"), names(df))])
           if (length(val) == 0 || is.na(val)) 2 else val
         }
         inp <- list(
