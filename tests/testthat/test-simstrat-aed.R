@@ -89,7 +89,9 @@ test_that("building Simstrat-AED (with biogeochemistry) works", {
 
   par <- jsonlite::fromJSON(file.path(sim_dir, "simstrat.par"), simplifyVector = FALSE)
   testthat::expect_true(isTRUE(par$ModelConfig$CoupleAED))
-
+  testthat::expect_equal(par$AEDConfig$NZones, 2)
+  testthat::expect_equal(length(par$AEDConfig$ZoneHeights), 2)
+  
   chk <- check_simstrat_par(file.path(sim_dir, "simstrat.par"))
   testthat::expect_true(chk)
 })
