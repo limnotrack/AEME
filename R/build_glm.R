@@ -164,11 +164,11 @@ build_glm <- function(lakename, model_controls, date_range,
     glm_nml[["wq_setup"]] <- NULL
   }
 
-  # GLMv4: report the water/mass balance for the AED variables that are
-  # switched on. A glm4.nml template ships an &mass_balance block; older GLM
-  # builds have none, in which case this is a no-op.
-  glm_nml <- set_glm_mass_balance(glm_nml, model_controls = model_controls,
-                                  use_bgc = use_bgc)
+  # GLMv4: report the water/mass balance for the AED state variables that are
+  # switched on (mirrors the &init_profiles wq_names initialise_glm() just
+  # wrote). A glm4.nml template ships an &mass_balance block; older GLM builds
+  # have none, in which case this is a no-op.
+  glm_nml <- set_glm_mass_balance(glm_nml, use_bgc = use_bgc)
 
   # Write the GLM nml file
   if (overwrite_nml) {

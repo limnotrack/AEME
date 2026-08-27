@@ -84,11 +84,21 @@ the R package version.
   template's scalars instead of being expanded to per-zone vectors.
 * The GLM-v4 `&mass_balance` block is populated from the AED variables that
   are switched on. New internal `set_glm_mass_balance()` fills
-  `balance_vars` / `balance_varnum` with the active `model_controls`
-  variables (translated to GLM-AED names); with biogeochemistry off, or no
-  qualifying variable, it defaults to `balance_varnum = 0` and drops
-  `balance_vars`. Only touches the nml when a `&mass_balance` block is
-  already present (i.e. a `glm4.nml` template).
+  `balance_vars` / `balance_varnum` straight from the `&init_profiles`
+  `wq_names` that `initialise_glm()` has just written, so the two lists
+  cannot drift apart; with biogeochemistry off, or no qualifying variable,
+  it defaults to `balance_varnum = 0` and drops `balance_vars`. Only touches
+  the nml when a `&mass_balance` block is already present (i.e. a `glm4.nml`
+  template).
+* `initialise_glm()` no longer writes the aggregate totals (`NIT_tn`,
+  `PHS_tp`, `CAR_toc` → AED diagnostics `TOT_tn`/`TOT_tp`/`TOT_toc`),
+  particulate-inorganic pools (`PHS_pip` → `PHS_frp_ads`, `NIT_pin`),
+  `PHY_tchla`, or the `NCS_ss*` groups into `&init_profiles` `wq_names` —
+  none are GLM-AED water-column state variables, and GLM aborts with
+  `Cannot find "<var>" for initial value` (and, on GLM v4, the equivalent
+  `... for mass balance output`) when they appear. The exclusion list is
+  shared via the new internal `glm_non_state_vars()` and mirrors what
+  `initialise_aed()` already drops.
 * `build_glm()` now forces `sed_heat_model` back to `1` when
   `use_bgc = FALSE`: GLM v4's dynamic soil-temperature solver
   (`sed_heat_model = 2`, `zZSoilTemp`) is provided by the WQ library and
