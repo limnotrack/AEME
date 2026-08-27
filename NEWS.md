@@ -21,6 +21,12 @@
   `build_simstrat()` gained a `bgc_lib = c("aed2", "aed")` argument and now
   shares its AED config templates (`inst/extdata/aed/`) with GLM-AED rather
   than each model carrying its own copy.
+* Simstrat-AED benthic zones are now sized to the lake. When `use_bgc` is on
+  and the `simstrat.par` `AEDConfig` block runs a zoned benthic mode
+  (`BenthicMode = 2`), `build_simstrat()` sets `NZones` / `ZoneHeights` from
+  the hypsography via the same `estimate_sed_zones()` helper `build_glm()`
+  uses for GLM-AED, instead of leaving the template's hard-coded values.
+  Falls back to the template values if the estimate can't be computed.
 
 ## Model binaries moved out of the package
 
