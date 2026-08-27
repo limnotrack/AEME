@@ -20,5 +20,3 @@ tryCatch(
     )
   }
 )
-
-vers <- get_model_version("glm_aed")
