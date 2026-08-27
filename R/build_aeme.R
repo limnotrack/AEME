@@ -40,6 +40,17 @@
 #'   values. Default: `TRUE`.
 #' @param config list; AEME configuration, typically loaded via
 #'   `yaml::read_yaml("aeme.yaml")`.
+#' @param output_vars character; AEME variable names (e.g.
+#'   `c("HYD_temp", "CHM_oxy")`) to restrict each model's written output to,
+#'   applied via [set_output_vars()] once the configuration has been built
+#'   and re-written to disk. Use this to build a lake trimmed for
+#'   calibration / sensitivity analysis, where only one or two variables
+#'   feed the objective. `NULL` (default) leaves every model writing its
+#'   full output.
+#' @param mass_balance logical; passed to [set_output_vars()] when
+#'   `output_vars` is supplied - for `"glm_aed"` only, keep the GLMv4
+#'   `&mass_balance` diagnostic CSV. Default `TRUE`. Ignored when
+#'   `output_vars` is `NULL`.
 #'
 #' @importFrom sf sf_use_s2 st_transform st_centroid st_coordinates st_buffer
 #' @importFrom dplyr select filter
@@ -81,7 +92,9 @@ build_aeme <- function(aeme = NULL,
                        hum_type = NULL,
                        est_swr_hr = NULL,
                        use_aeme = FALSE,
-                       config = NULL
+                       config = NULL,
+                       output_vars = NULL,
+                       mass_balance = TRUE
 ) {
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
@@ -735,12 +748,25 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   
   
   # Load model configuration ----
-  aeme <- load_configuration(model = model, aeme = aeme, 
-                             model_controls = model_controls, use_bgc = use_bgc, 
+  aeme <- load_configuration(model = model, aeme = aeme,
+                             model_controls = model_controls, use_bgc = use_bgc,
                              path = path, ext_elev = ext_elev,
                              calc_wbal = calc_wbal, wb_method = wb_method,
-                             calc_wlev = calc_wlev, coeffs = coeffs, 
+                             calc_wlev = calc_wlev, coeffs = coeffs,
                              hum_type = hum_type, est_swr_hr = est_swr_hr)
-  
+
+  # Restrict written output to the variables of interest ----
+  # Applied after load_configuration() has populated configuration(aeme) from
+  # the freshly built files, then persisted straight back to disk (no
+  # re-derivation of boundary conditions - build_*() already wrote them).
+  if (!is.null(output_vars)) {
+    for (m in model) {
+      aeme <- set_output_vars(aeme = aeme, model = m, vars = output_vars,
+                              mass_balance = mass_balance)
+    }
+    write_configuration(aeme = aeme, model = model, path = path,
+                        include_boundary = FALSE)
+  }
+
   return(aeme)
 }

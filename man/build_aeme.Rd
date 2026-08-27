@@ -20,7 +20,9 @@ build_aeme(
   hum_type = NULL,
   est_swr_hr = NULL,
   use_aeme = FALSE,
-  config = NULL
+  config = NULL,
+  output_vars = NULL,
+  mass_balance = TRUE
 )
 }
 \arguments{
@@ -81,6 +83,19 @@ configuration files. Default: \code{FALSE}.}
 
 \item{config}{list; AEME configuration, typically loaded via
 \code{yaml::read_yaml("aeme.yaml")}.}
+
+\item{output_vars}{character; AEME variable names (e.g.
+\code{c("HYD_temp", "CHM_oxy")}) to restrict each model's written output to,
+applied via \code{\link[=set_output_vars]{set_output_vars()}} once the configuration has been built
+and re-written to disk. Use this to build a lake trimmed for
+calibration / sensitivity analysis, where only one or two variables
+feed the objective. \code{NULL} (default) leaves every model writing its
+full output.}
+
+\item{mass_balance}{logical; passed to \code{\link[=set_output_vars]{set_output_vars()}} when
+\code{output_vars} is supplied - for \code{"glm_aed"} only, keep the GLMv4
+\verb{&mass_balance} diagnostic CSV. Default \code{TRUE}. Ignored when
+\code{output_vars} is \code{NULL}.}
 }
 \value{
 An updated \code{aeme} object.
