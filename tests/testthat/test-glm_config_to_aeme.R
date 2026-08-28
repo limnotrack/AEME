@@ -22,7 +22,7 @@ test_that("glm_config_to_aeme() recovers the lake, time, and input slots", {
                      model_controls = model_controls, ext_elev = 5,
                      use_bgc = TRUE)
 
-  nml_file <- file.path(get_lake_dir(aeme, path), "glm_aed", "glm3.nml")
+  nml_file <- glm_nml_path(get_lake_dir(aeme, path))
   testthat::expect_true(file.exists(nml_file))
 
   loaded <- glm_config_to_aeme(nml_file, model_controls = model_controls)
@@ -30,7 +30,7 @@ test_that("glm_config_to_aeme() recovers the lake, time, and input slots", {
   lke <- lake(aeme)
   lke2 <- lake(loaded)
   testthat::expect_equal(lke2$name, tolower(lke$name))
-  # glm3.nml stores lat/lon with limited text precision, so allow a small
+  # The GLM nml stores lat/lon with limited text precision, so allow a small
   # tolerance rather than requiring exact equality
   expect_close(lke2$latitude, lke$latitude, tolerance = 1e-4)
   expect_close(lke2$longitude, lke$longitude, tolerance = 1e-4)
@@ -69,7 +69,7 @@ test_that("glm_config_to_aeme() disables recompute of water balance/lake level",
   aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
                      model_controls = model_controls, ext_elev = 5,
                      use_bgc = TRUE)
-  nml_file <- file.path(get_lake_dir(aeme, path), "glm_aed", "glm3.nml")
+  nml_file <- glm_nml_path(get_lake_dir(aeme, path))
 
   loaded <- glm_config_to_aeme(nml_file, model_controls = model_controls)
   cfg <- configuration(loaded)
@@ -98,7 +98,7 @@ test_that("build_aeme(use_aeme = TRUE) on a loaded object reproduces the origina
   testthat::expect_true("wbal" %in% names(outf$data))
 
   lake_dir <- get_lake_dir(aeme, path)
-  nml_file <- file.path(lake_dir, "glm_aed", "glm3.nml")
+  nml_file <- glm_nml_path(lake_dir)
   loaded <- glm_config_to_aeme(nml_file, model_controls = model_controls)
 
   # Rebuild from the loaded object into a fresh directory, trusting it as-is
@@ -106,10 +106,10 @@ test_that("build_aeme(use_aeme = TRUE) on a loaded object reproduces the origina
   loaded <- build_aeme(aeme = loaded, path = path2, model = "glm_aed",
                        model_controls = model_controls, use_aeme = TRUE)
   lake_dir2 <- get_lake_dir(loaded, path2)
-  nml_file2 <- file.path(lake_dir2, "glm_aed", "glm3.nml")
+  nml_file2 <- glm_nml_path(lake_dir2, must_exist = FALSE)
   testthat::expect_true(file.exists(nml_file2))
 
-  # glm3.nml must be written back verbatim from the cached configuration
+  # The GLM nml must be written back verbatim from the cached configuration
   testthat::expect_identical(readLines(nml_file), readLines(nml_file2))
 
   # Boundary-condition files must not gain, lose, or silently recompute
@@ -167,7 +167,7 @@ test_that("write_configuration() alone reproduces a full GLM-AED lake directory,
                      use_bgc = TRUE)
 
   lake_dir <- get_lake_dir(aeme, path)
-  nml_file <- file.path(lake_dir, "glm_aed", "glm3.nml")
+  nml_file <- glm_nml_path(lake_dir)
   loaded <- glm_config_to_aeme(nml_file, model_controls = model_controls)
 
   # write_configuration() alone -- not build_aeme() -- into a fresh
@@ -182,7 +182,7 @@ test_that("write_configuration() alone reproduces a full GLM-AED lake directory,
   glm_dir2 <- file.path(lake_dir2, "glm_aed")
 
   testthat::expect_identical(readLines(nml_file),
-                             readLines(file.path(glm_dir2, "glm3.nml")))
+                             readLines(glm_nml_path(glm_dir2)))
 
   for (sub in c("bcs", "aed")) {
     dir1 <- file.path(glm_dir, sub)

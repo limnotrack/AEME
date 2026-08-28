@@ -1,6 +1,6 @@
 test_that("all parameters can be retrieved", {
   param <- get_aeme_parameters()
-  testthat::expect_equal(nrow(param), 1411)
+  testthat::expect_equal(nrow(param), 1436)
 })
 
 test_that("DYRESM parameters can be retrieved", {
@@ -56,5 +56,5 @@ test_that("Simstrat parameters can be retrieved", {
   testthat::expect_true(length(unique(param$model)) == 1)
   testthat::expect_equal(nrow(param), 27)
   param <- get_aeme_parameters(name = "ModelParameters/a_seiche")
-  testthat::expect_equal(nrow(param), 2)
+  testthat::expect_equal(nrow(param), 4)
 })
