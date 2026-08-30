@@ -7,9 +7,10 @@
 #' @param path_simstrat filepath; to Simstrat-AED2 directory
 #' @param inf named list of data.frames, one per inflow. Each must have a
 #' `Date` column plus `HYD_flow`, `HYD_temp`, `CHM_salt` columns -- see
-#' [add_inflow()] for the expected schema. All inflows are summed into a
-#' single combined series (Simstrat only accepts one inflow series), matching
-#' `make_inf_simstrat()`'s existing behaviour.
+#' [add_inflow()] for the expected schema. Multiple inflows are merged into
+#' a single series (Simstrat only accepts one): flow is summed and the
+#' scalars (temperature, salinity, BGC) are flow-weighted so total load is
+#' conserved -- see `make_inf_simstrat()`.
 #' @param inf_factor numeric; scaling factor applied to all inflow flow
 #' rates. Default is `1`.
 #' @param use_bgc logical; also write AED2 inflow concentration files.

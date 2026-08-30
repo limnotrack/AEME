@@ -171,7 +171,8 @@ initialise_aed2 <- function(model_controls, path_aed2, max_depth = 10,
         df = data.frame(Date = date_range, value = c(0, 0)),
         file = inflow_file,
         comment = "depth [m], conc. [mmol/m3 * m2/s]",
-        depth = 0, ref_year = ref_year
+        depth = 0, ref_year = ref_year,
+        integrate = .resolve_simstrat_inflow_load() %in% c("bgc", "all")
       )
     }
   }
