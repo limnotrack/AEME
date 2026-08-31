@@ -5,6 +5,11 @@
 #' @param lake_shape shapefile
 #' @param use_lw logical, use incoming longwave radiation
 #' @param overwrite_nml logical, overwrite nml file. Default is TRUE
+#' @param obs_temp data.frame; observed water-column temperature profiles in the
+#'   long AEME format (`Date`, `var_aeme`, `depth_from`, `depth_to`, `value`),
+#'   typically from [get_obs()]. When supplied, per-zone sediment-temperature
+#'   parameters are derived from it via `calc_sed_temp()`; otherwise generic
+#'   defaults are used. Default is `NULL`.
 #'
 #' @return Directory with GLM-AED configuration
 #' @noRd
@@ -17,7 +22,8 @@ build_glm <- function(lakename, model_controls, date_range,
                       lvl, inf, outf, heights_wdr, met,
                       lake_dir, config_dir, init_prof, init_depth,
                       inf_factor = 1, outf_factor = 1,
-                      Kw, use_bgc, use_lw, overwrite_nml = TRUE) {
+                      Kw, use_bgc, use_lw, overwrite_nml = TRUE,
+                      obs_temp = NULL) {
   
   msg <- paste0("Building GLM-AED for lake ", lakename)
   # cli_inform_safe(c("i" = msg))
@@ -98,7 +104,8 @@ build_glm <- function(lakename, model_controls, date_range,
   
   glm_nml <- make_stg_glm(glm_nml, lakename, bathy = hyps, lat = lat,
                          lon = lon, crest = crest, dims_lake = dims_lake,
-                         use_bgc = use_bgc)
+                         use_bgc = use_bgc, obs_temp = obs_temp,
+                         nml_file = basename(glm_file))
   
   # Make meteorology file
   make_met_glm(obs_met = met, path_glm = path_glm, use_lw = use_lw)

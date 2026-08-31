@@ -637,6 +637,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
       `names<-`(NULL)
     
+    obs_temp <- get_obs(aeme, var_sim = "HYD_temp")
+    
     build_glm(lakename, model_controls = model_controls, date_range = dates.glm,
               lake_shape = lake_shape, lat = lat, lon = lon,
               hyps = hyps, lvl = lvl, init_prof = init_prof,
@@ -646,7 +648,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
               Kw = Kw, use_bgc = use_bgc,
-              use_lw = inp$use_lw, overwrite_nml = overwrite)
+              use_lw = inp$use_lw, overwrite_nml = overwrite,
+              obs_temp = obs_temp)
     
     if (use_bgc && overwrite) {
       aeme <- aeme |>

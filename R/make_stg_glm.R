@@ -13,12 +13,18 @@
 #'   `FALSE`, `sed_heat_model` is forced to 1 because GLM's dynamic
 #'   soil-temperature solver (`sed_heat_model = 2`) requires an active WQ
 #'   module and aborts without one.
+#' @param obs_temp data.frame or `NULL`; observed water-column temperature
+#'   profiles in the long AEME format. When supplied, per-zone
+#'   sediment-temperature parameters are derived from it via `calc_sed_temp()`.
+#' @param nml_file character; name of the GLM nml file, forwarded to
+#'   `calc_sed_temp()` for the `file` column of its AEME parameter table.
 #'
 #' @return updated nml object
 #' @noRd
 
 make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
-                        update_sediment = TRUE, use_bgc = TRUE) {
+                        update_sediment = TRUE, use_bgc = TRUE,
+                        obs_temp = NULL, nml_file = "glm4.nml") {
 
   bathy_glm <- bathy |>
     dplyr::arrange(elev)
@@ -51,13 +57,41 @@ make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
     sed_zones <- estimate_sed_zones(hypsograph = bathy)
     n_zones <- length(sed_zones)
 
+    # Per-zone sediment-temperature cycle (zone 1 = deepest). When observed
+    # water-column temperatures are supplied, fit an annual harmonic per zone
+    # via calc_sed_temp(); otherwise fall back to generic defaults.
+    sed_temp <- list(
+      mean      = rep(10, n_zones),
+      amplitude = rep(4, n_zones),
+      peak_doy  = rep(10L, n_zones)
+    )
+    if (!is.null(obs_temp) && nrow(obs_temp) > 0) {
+      est <- tryCatch(
+        calc_sed_temp(obs_temp = obs_temp, sed_zones = sed_zones,
+                      max_depth = max_depth, hypsograph = bathy,
+                      nml_file = nml_file, output = "nml", verbose = FALSE),
+        error = function(e) {
+          cli_inform_safe(c(
+            "!" = "Could not estimate sediment temperatures from observations \\
+                   ({conditionMessage(e)}); using defaults."
+          ))
+          NULL
+        }
+      )
+      if (!is.null(est)) {
+        sed_temp$mean      <- est$sed_temp_mean
+        sed_temp$amplitude <- est$sed_temp_amplitude
+        sed_temp$peak_doy  <- est$sed_temp_peak_doy
+      }
+    }
+
     # Zone geometry and per-zone parameters AEME derives from the bathymetry.
     managed <- list(
       sed_heat_Ksoil = rep(1.2, n_zones),
       sed_temp_depth = rep(0.2, n_zones),
-      sed_temp_mean = rep(10, n_zones),
-      sed_temp_amplitude = rep(4, n_zones),
-      sed_temp_peak_doy = rep(10, n_zones),
+      sed_temp_mean = sed_temp$mean,
+      sed_temp_amplitude = sed_temp$amplitude,
+      sed_temp_peak_doy = sed_temp$peak_doy,
       benthic_mode = 2,
       n_zones = n_zones,
       zone_heights = sed_zones,
