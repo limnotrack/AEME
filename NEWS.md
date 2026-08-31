@@ -112,6 +112,30 @@ the R package version.
   gained a matching validation rule that flags `sed_heat_model = 2` without
   an active `&wq_setup` (`wq_lib = 'aed'`/`'api'`).
 
+## Restricting model output for calibration
+
+* `set_output_vars(aeme, model, vars, mass_balance = TRUE)` — rewrites the
+  output section of a model's configuration so only `vars` (mapped to each
+  model's own output names via `key_naming`), plus the handful of internals
+  AEME always needs to read a result back, are written. Aimed at
+  calibration / sensitivity analysis, where the objective uses one or two
+  variables but every model otherwise writes its full state every step.
+  Per model: **GLM-AED** drops the fixed-depth `WQ_*.csv` point outputs and,
+  with `mass_balance = FALSE`, the `&mass_balance` block — the whole-lake
+  `lake.csv` is kept, because GLM 4.x only writes the netCDF diagnostic
+  scalars (`lake_level`, ...) while that CSV is open; **Simstrat** switches
+  off "write everything" and pins the variable list, cutting ~25 `*_out.dat`
+  files to a handful; **GOTM-WET** replaces the `/*` all-variables output
+  source with an explicit list; **DYRESM-CAEDYM** has a fixed output form
+  and is left unchanged. The change is made in memory — call
+  `write_configuration()` (or use `build_aeme()`, below) to write it out.
+* `build_aeme()` gained `output_vars` and `mass_balance` arguments: when
+  `output_vars` is supplied, `build_aeme()` applies `set_output_vars()` to
+  every built model and re-writes the trimmed configuration to disk, so a
+  lake can be built restricted from the start. `output_vars = NULL` (the
+  default) leaves every model writing its full output, unchanged from
+  before.
+
 ## OS-aware model selection
 
 * `check_model()` gained an `os_valid` argument: when `TRUE`, restricts the
