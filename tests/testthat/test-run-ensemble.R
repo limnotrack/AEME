@@ -363,9 +363,10 @@ test_that("can build all models, run and write to new directory & re-run", {
   })
 
   # Check GLM files
-  file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
-                                                  tolower(lke$name)),
-                                    "glm_aed", "glm3.nml"))
+  file_chk <- file.exists(glm_nml_path(
+    file.path(path2, paste0(lke$id, "_", tolower(lke$name))),
+    must_exist = FALSE
+  ))
   testthat::expect_true(file_chk)
   file_chk <- file.exists(file.path(path2, paste0(lke$id, "_",
                                                   tolower(lke$name)),

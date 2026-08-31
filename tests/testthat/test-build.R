@@ -80,9 +80,10 @@ test_that("building GLM works", {
   
   lke <- lake(aeme)
   testthat::expect_true(is.character(lke$id))
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "glm3.nml"))
+  file_chk <- file.exists(glm_nml_path(
+    file.path(path, paste0(lke$id, "_", tolower(lke$name)), model),
+    must_exist = FALSE
+  ))
   testthat::expect_true(file_chk)
   
   obs <- observations(aeme)
@@ -234,8 +235,8 @@ test_that("building Simstrat-AED2 works", {
                      model_controls = model_controls,  
                      ext_elev = 5, use_bgc = TRUE)
   lake_dir <- get_lake_dir(aeme)
-  simstrat_files <- c("Absorption.dat", "aed2.nml", "aed2_phyto_pars.nml",
-                      "aed2_zoop_pars.nml", "Bathymetry.dat", "Grid.dat",
+  simstrat_files <- c("Absorption.dat", "aed2/aed2.nml", "aed2/aed2_phyto_pars.nml",
+                      "aed2/aed2_zoop_pars.nml", "Bathymetry.dat", "Grid.dat",
                       "InitialConditions.dat", "MeteoForcing.dat", "Qinp.dat", 
                       "Qout.dat", "simstrat.par", "Sinp.dat", "Tinp.dat")
   
@@ -411,8 +412,9 @@ test_that("building all models with same initial depth", {
                                  "wainamu.stg"))
   dy_depth <- as.numeric(strsplit(dy_init[4], "#" )[[1]][1]) -
     as.numeric(strsplit(dy_init[7], "#" )[[1]][1])
-  glm_init <- read_nml(file.path(path, paste0(lke$id, "_", lke$name), "glm_aed",
-                                 "glm3.nml"))
+  glm_init <- read_nml(glm_nml_path(
+    file.path(path, paste0(lke$id, "_", lke$name), "glm_aed")
+  ))
   glm_depth <- glm_init$init_profiles$lake_depth
   gotm_init <- read.delim(file.path(path, paste0(lke$id, "_", lke$name),
                                     "gotm_wet", "inputs", "hypsograph.dat"),
@@ -435,8 +437,9 @@ test_that("building all models with same initial depth", {
                                  "wainamu.stg"))
   dy_depth <- as.numeric(strsplit(dy_init[4], "#" )[[1]][1]) -
     as.numeric(strsplit(dy_init[7], "#" )[[1]][1])
-  glm_init <- read_nml(file.path(path, paste0(lke$id, "_", lke$name), "glm_aed",
-                                 "glm3.nml"))
+  glm_init <- read_nml(glm_nml_path(
+    file.path(path, paste0(lke$id, "_", lke$name), "glm_aed")
+  ))
   glm_depth <- glm_init$init_profiles$lake_depth
   gotm_init <- read.delim(file.path(path, paste0(lke$id, "_", lke$name),
                                     "gotm_wet", "inputs", "hypsograph.dat"),
@@ -499,7 +502,7 @@ test_that("can build all models and write to new directory", {
   testthat::expect_true(file_chk)
   
   # Check GLM files
-  file_chk <- file.exists(file.path(lake_dir, "glm_aed", "glm3.nml"))
+  file_chk <- file.exists(glm_nml_path(lake_dir, must_exist = FALSE))
   testthat::expect_true(file_chk)
   file_chk <- file.exists(file.path(lake_dir, "glm_aed", "aed", "aed.nml"))
   testthat::expect_true(file_chk)
@@ -549,7 +552,7 @@ test_that("building all models with new parameters works", {
   dy_cfg <- readLines(file.path(lake_dir, "dy_cd", "wainamu.cfg"))
   testthat::expect_true(as.numeric(substr(dy_cfg[7], 1, 2)) == 1)
   
-  glm_cfg <- read_nml(file.path(lake_dir, "glm_aed", "glm3.nml"))
+  glm_cfg <- read_nml(glm_nml_path(lake_dir))
   testthat::expect_true(glm_cfg$light$Kw == 5)
   
   gotm_cfg <- yaml::read_yaml(file.path(lake_dir, "gotm_wet", "gotm.yaml"))
@@ -613,7 +616,7 @@ test_that("building models with parameters for only one model", {
                      use_bgc = FALSE)
   
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
-  glm_cfg <- read_nml(file.path(lake_dir, "glm_aed", "glm3.nml"))
+  glm_cfg <- read_nml(glm_nml_path(lake_dir))
   testthat::expect_true(glm_cfg$light$Kw == 5)
   
 })
@@ -676,7 +679,9 @@ test_that("can update initial profile with obs", {
   testthat::expect_true(length(unlist(model_files)) > 0)
   testthat::expect_true(all(file.exists(unlist(model_files))))
   
-  glm_nml <- read_nml(model_files$glm_aed["glm3"])
+  glm_nml <- read_nml(
+    model_files$glm_aed[find_glm_nml_key(names(model_files$glm_aed))]
+  )
   testthat::expect_true(all(glm_nml$init_profiles$the_temps %in%
                               inp2$init_profile$temperature))
   

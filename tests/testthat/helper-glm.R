@@ -64,6 +64,27 @@ skip_if_no_glm <- function(version = getOption("AEME.glm_version", "3.9.108")) {
   invisible(exe)
 }
 
+#' Locate a lake's GLM hydrodynamic nml without hard-coding its filename
+#'
+#' The hydrodynamic namelist is named `glm3.nml` or `glm4.nml` depending on
+#' which GLM major version produced the build, so tests must not assume
+#' either literal - see [AEME::find_glm_nml()], which this thinly wraps.
+#'
+#' @param lake_dir A built lake directory (the parent of `glm_aed/`), or the
+#'   `glm_aed/` directory itself.
+#' @param must_exist Passed to [AEME::find_glm_nml()]; with `FALSE` it
+#'   returns `NA` rather than erroring when no nml is present yet (handy for
+#'   `file.exists()` "was it written?" checks).
+#' @return Full path to the GLM hydrodynamic nml, or `NA_character_`.
+glm_nml_path <- function(lake_dir, must_exist = TRUE) {
+  glm_dir <- if (basename(lake_dir) == "glm_aed") {
+    lake_dir
+  } else {
+    file.path(lake_dir, "glm_aed")
+  }
+  find_glm_nml(glm_dir, must_exist = must_exist)
+}
+
 #' Check that every expected model output file exists
 #'
 #' @param aeme An Aeme object that has already been run.

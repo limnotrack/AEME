@@ -21,6 +21,24 @@
   `build_simstrat()` gained a `bgc_lib = c("aed2", "aed")` argument and now
   shares its AED config templates (`inst/extdata/aed/`) with GLM-AED rather
   than each model carrying its own copy.
+* Simstrat inflow handling reworked so it can carry nutrient/heat **load**
+  like GLM-AED. `make_inf_simstrat()` now:
+  - converts AED/AED2 inflow concentrations to the model's native units via
+    `conversion_aed` (the same conversion `make_inf_glm()` applies) -
+    previously written unconverted;
+  - merges multiple inflow streams with a **flow-weighted mean** of every
+    concentration-like quantity (`HYD_temp`, `CHM_salt`, each BGC var)
+    instead of summing the BGC concentrations, so the single combined
+    series carries the same total load as GLM-AED's per-stream inflows;
+  - gained the `AEME.simstrat_inflow_load` option (`"none"` (default) /
+    `"bgc"` / `"all"`) controlling whether `Tinp.dat`/`Sinp.dat` and the
+    AED inflow files are written depth-integrated (effective) or
+    single-point (inert). `"none"` keeps the pre-0.4.x behaviour. `"bgc"`
+    makes the inflow nutrient load effective. `"all"` also advects inflow
+    temperature/salinity but is **experimental** - it currently produces an
+    unphysical warm surface bias because Simstrat does not plunge a surface
+    point source the way GLM does. When effective, the advected scalar is
+    forced to `0` on dates with negligible inflow.
 * Simstrat-AED benthic zones are now sized to the lake. When `use_bgc` is on
   and the `simstrat.par` `AEDConfig` block runs a zoned benthic mode
   (`BenthicMode = 2`), `build_simstrat()` sets `NZones` / `ZoneHeights` from

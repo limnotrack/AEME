@@ -18,7 +18,7 @@ test_that("GLM parameters can be input", {
     )
   input_model_parameters(aeme = aeme, model = model, param = param, path = path)
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
-  nml <- read_nml(cfg_files$glm_aed["glm3"])
+  nml <- read_nml(cfg_files$glm_aed[find_glm_nml_key(names(cfg_files$glm_aed))])
   kw_value <- nml$light$Kw
   testthat::expect_equal(kw_value, 1.5)
 })
@@ -102,7 +102,7 @@ test_that("GLM sediment parameters can be input", {
   input_model_parameters(aeme = aeme, model = model, param = sed_params,
                          path = path)
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
-  nml <- read_nml(cfg_files$glm_aed["glm3"])
+  nml <- read_nml(cfg_files$glm_aed[find_glm_nml_key(names(cfg_files$glm_aed))])
   sed_temp <- get_nml_value(nml, "sed_temp_mean")
   testthat::expect_equal(sed_temp, 16.5)
 })
@@ -121,7 +121,7 @@ test_that("GLM sediment parameters can be input and run", {
                      model_controls = model_controls, ext_elev = 5)
   
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
-  nml <- read_nml(cfg_files$glm_aed["glm3"])
+  nml <- read_nml(cfg_files$glm_aed[find_glm_nml_key(names(cfg_files$glm_aed))])
   zone_heights <- get_nml_value(nml, "zone_heights")
   testthat::expect_equal(zone_heights, c(5, 14))
   
@@ -135,7 +135,7 @@ test_that("GLM sediment parameters can be input and run", {
   input_model_parameters(aeme = aeme, model = model, param = sed_params,
                          path = path)
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
-  nml <- read_nml(cfg_files$glm_aed["glm3"])
+  nml <- read_nml(cfg_files$glm_aed[find_glm_nml_key(names(cfg_files$glm_aed))])
   zone_heights <- get_nml_value(nml, "zone_heights")
   testthat::expect_equal(zone_heights, c(5, 10, 14))
   
@@ -158,7 +158,7 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   input_model_parameters(aeme = aeme, model = model, param = sed_params,
                          path = path)
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
-  nml <- read_nml(cfg_files$glm_aed["glm3"])
+  nml <- read_nml(cfg_files$glm_aed[find_glm_nml_key(names(cfg_files$glm_aed))])
   zone_heights <- get_nml_value(nml, "zone_heights")
   testthat::expect_equal(zone_heights, c(5, 14))
   
@@ -172,7 +172,7 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   input_model_parameters(aeme = aeme, model = model, param = sed_params,
                          path = path)
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
-  nml <- read_nml(cfg_files$glm_aed["glm3"])
+  nml <- read_nml(cfg_files$glm_aed[find_glm_nml_key(names(cfg_files$glm_aed))])
   zone_heights <- get_nml_value(nml, "zone_heights")
   testthat::expect_equal(zone_heights, c(5, 10, 14))
   
@@ -226,7 +226,10 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   n_zones <- get_glm_sed_zones(aeme = aeme)
   testthat::expect_equal(n_zones, 2)
   glm_sed_pars <- get_glm_sed_params(aeme = aeme)
-  testthat::expect_equal(nrow(glm_sed_pars), 18)
+  # One row per value across the &sediment block; the shipped glm4.nml
+  # template carries more sediment keys than glm3.nml did (sed_heat_model,
+  # sed_spinup_days, sed_deep_temp, ...), so this tracks that template.
+  testthat::expect_equal(nrow(glm_sed_pars), 30)
   
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   glm_cfg <- read_model_config(model = model, lake_dir = lake_dir)

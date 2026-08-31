@@ -456,7 +456,7 @@ test_that("GLM-AED sediment parameters can be added", {
                      model_controls = model_controls, path = path, ext_elev = 3)
   
   lake_dir <- get_lake_dir(aeme, path = path)
-  glm_nml_file <- file.path(lake_dir, "glm_aed", "glm3.nml")
+  glm_nml_file <- glm_nml_path(lake_dir)
   nml <- read_nml(glm_nml_file)
   sed_temp_mean <- nml[["sediment"]][["sed_temp_mean"]]
   testthat::expect_true(all(sed_temp_mean == param$value[param$model == "glm_aed" & 

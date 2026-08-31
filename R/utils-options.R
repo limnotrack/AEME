@@ -3,7 +3,14 @@
   op <- options()
   op.AEME <- list(
     AEME.inform = TRUE,  # default: messages are shown
-    AEME.glm_exec = NULL
+    AEME.glm_exec = NULL,
+    # Controls whether Simstrat inflow scalar files force the model:
+    #   "none" (default) - Tinp/Sinp/AED inflow written but inert
+    #   "bgc"            - AED/AED2 inflow concentrations effective, T/S inert
+    #   "all"            - T/S effective too (experimental: warm surface bias)
+    # FALSE == "none", TRUE == "all". See ?make_inf_simstrat and the
+    # "Inflow scalar load" section of .write_simstrat_grid_file().
+    AEME.simstrat_inflow_load = "none"
   )
   # Only set options that are not already defined
   toset <- !(names(op.AEME) %in% names(op))
@@ -53,6 +60,27 @@
   }, error = function(e) invisible())  # never block attach on a check failure
 
   invisible()
+}
+
+#' Resolve the `AEME.simstrat_inflow_load` option to a mode string
+#'
+#' @return one of `"none"`, `"bgc"`, `"all"`. `FALSE`/`NULL` map to
+#'   `"none"`, `TRUE` maps to `"all"`; an unrecognised value warns and
+#'   falls back to `"none"`.
+#' @noRd
+.resolve_simstrat_inflow_load <- function() {
+  v <- getOption("AEME.simstrat_inflow_load", "none")
+  if (is.null(v) || isFALSE(v)) return("none")
+  if (isTRUE(v)) return("all")
+  v <- tolower(as.character(v)[1])
+  if (!v %in% c("none", "bgc", "all")) {
+    cli::cli_warn(c(
+      "!" = "Unrecognised {.code AEME.simstrat_inflow_load} value {.val {v}}.",
+      "i" = "Using {.val none}. Valid: {.val none}, {.val bgc}, {.val all}."
+    ))
+    return("none")
+  }
+  v
 }
 
 #' Inform messages respecting the global AEME.inform option

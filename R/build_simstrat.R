@@ -246,23 +246,29 @@ simstrat_day_to_date <- function(day, ref_year) {
 #' exactly equal to `value`, correctly representing a single point
 #' source/sink at `depth`.
 #'
-#' @section Known limitation -- inflow temperature/salinity left inert:
+#' @section Inflow scalar load (temperature/salinity/BGC):
 #' Applying the two-point fix to `Qinp.dat`/`Qout.dat` (volume flux) is
 #' confirmed stable and gives physically sensible lake-level variation
-#' (verified against the water-balance target trajectory). Applying the
-#' *same* fix to `Tinp.dat`/`Sinp.dat` (advected inflow temperature/
-#' salinity) causes a severe, growing surface-temperature instability
-#' (observed: blows up to roughly -350 degC over part of a one-year run),
-#' even though the written values themselves are unremarkable -- isolated
-#' by reverting each file individually. The exact Simstrat-side mechanism
-#' (suspected: a heat/salt flux getting divided by a near-zero volume flux
-#' at some layer, given AEME's simplification of combining every named
-#' inflow into one flow-weighted-mean series at one representative depth)
-#' has not been root-caused yet. Until it is, `make_inf_simstrat()` calls
-#' this with `integrate = FALSE` for `Tinp.dat`/`Sinp.dat` and AED2 inflow
-#' files, deliberately keeping them at their historical (pre-fix, zero
-#' thermal/salinity forcing from inflow) behavior -- a real simplification,
-#' but not a regression, and not silently broken.
+#' (verified against the water-balance target trajectory).
+#'
+#' `make_inf_simstrat()` writes `Tinp.dat`/`Sinp.dat` and the AED/AED2
+#' inflow files with `integrate =` set from
+#' `getOption("AEME.simstrat_inflow_load", "none")`:
+#' * `"none"` (default) - single-point (inert) form: the files exist so
+#'   Simstrat can open them but integrate to exactly zero flux (pre-0.4.x
+#'   behaviour).
+#' * `"bgc"` - only the AED/AED2 inflow concentration files are
+#'   depth-integrated, so the inflow carries its nutrient load.
+#' * `"all"` - `Tinp.dat`/`Sinp.dat` too. **Experimental** - see
+#'   `?make_inf_simstrat`; currently gives an unphysical warm surface bias.
+#'
+#' Whenever a scalar file is made effective, `make_inf_simstrat()` forces
+#' its value to `0` on dates with negligible inflow so a scalar flux is
+#' never divided by a near-zero volume flux. History: applying the
+#' two-point fix to `Tinp.dat`/`Sinp.dat` unconditionally once produced a
+#' growing cold instability (~ -350 degC over part of a one-year run);
+#' making them effective still does not behave physically because Simstrat's
+#' inflow scheme does not plunge a surface point source the way GLM does.
 #'
 #' Not used for `Absorption.dat`, which is read by a different Simstrat
 #' module (`strat_absorption.f90`) with a distinct, simpler file format (a
@@ -279,8 +285,8 @@ simstrat_day_to_date <- function(day, ref_year) {
 #' apart so Simstrat's trapezoidal-rule integration gives a real, non-zero
 #' flux (see Details). If `FALSE`, write the single-point format, which
 #' Simstrat reads successfully but always integrates to zero -- use this
-#' for quantities not yet confirmed stable at full effect (see the "Known
-#' limitation" section).
+#' for quantities that should be present on disk but exert no forcing (see
+#' the "Inflow scalar load" section).
 #'
 #' @return Invisibly returns `NULL`.
 #' @noRd

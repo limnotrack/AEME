@@ -15,7 +15,14 @@
                      use_bgc = TRUE)
 
   glm_dir <- file.path(get_lake_dir(aeme, path), "glm_aed")
-  file.rename(file.path(glm_dir, "glm3.nml"), file.path(glm_dir, "glm4.nml"))
+  # build_aeme() names the nml after whichever GLM major version is
+  # installed (glm3.nml on GLM 3.x, glm4.nml on 4.x). Normalise the fixture
+  # to a glm4.nml lake regardless, so it keeps simulating "a lake built by a
+  # newer GLM than the code assumes" even once GLM 4 is the default.
+  built_nml <- find_glm_nml(glm_dir)
+  if (basename(built_nml) != "glm4.nml") {
+    file.rename(built_nml, file.path(glm_dir, "glm4.nml"))
+  }
 
   list(aeme = aeme, path = path, model_controls = model_controls,
        glm_dir = glm_dir)

@@ -15,7 +15,9 @@ test_that("building lernzmp example works", {
                      use_bgc = TRUE)
   testthat::expect_true(is(aeme, "Aeme"))
   mod_files <- list.files(path, recursive = TRUE)
-  testthat::expect_true(any(grepl("glm_aed/glm3.nml", mod_files)))
+  testthat::expect_true(
+    file.exists(glm_nml_path(get_lake_dir(aeme, path), must_exist = FALSE))
+  )
   testthat::expect_true(any(grepl("bcs/outflow_wbal.csv", mod_files)))
   
   aeme <- aeme |> 

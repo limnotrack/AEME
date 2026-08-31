@@ -192,7 +192,10 @@ initialise_simstrat_aed <- function(model_controls, path_aed, max_depth = 10,
         df = data.frame(Date = date_range, value = c(val, val)),
         file = inflow_file,
         comment = "depth [m], conc. [mmol/m3 * m2/s]",
-        depth = 0, ref_year = ref_year
+        depth = 0, ref_year = ref_year,
+        # Match make_inf_simstrat(): a placeholder default concentration is
+        # only advected into the lake when real inflow BGC is too.
+        integrate = .resolve_simstrat_inflow_load() %in% c("bgc", "all")
       )
     }
   }

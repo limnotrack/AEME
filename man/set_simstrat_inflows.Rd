@@ -19,9 +19,10 @@ set_simstrat_inflows(
 
 \item{inf}{named list of data.frames, one per inflow. Each must have a
 \code{Date} column plus \code{HYD_flow}, \code{HYD_temp}, \code{CHM_salt} columns -- see
-\code{\link[=add_inflow]{add_inflow()}} for the expected schema. All inflows are summed into a
-single combined series (Simstrat only accepts one inflow series), matching
-\code{make_inf_simstrat()}'s existing behaviour.}
+\code{\link[=add_inflow]{add_inflow()}} for the expected schema. Multiple inflows are merged into
+a single series (Simstrat only accepts one): flow is summed and the
+scalars (temperature, salinity, BGC) are flow-weighted so total load is
+conserved -- see \code{make_inf_simstrat()}.}
 
 \item{inf_factor}{numeric; scaling factor applied to all inflow flow
 rates. Default is \code{1}.}
