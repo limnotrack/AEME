@@ -638,7 +638,19 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       `names<-`(NULL)
     
     obs_temp <- get_obs(aeme, var_sim = "HYD_temp")
-    
+
+    # Any GLM &sediment rows the user has put in parameters(aeme) take
+    # precedence over the bathymetry/observation estimates in make_stg_glm().
+    glm_sed_params <- parameters(aeme = aeme)
+    if (is.data.frame(glm_sed_params) && nrow(glm_sed_params) > 0 &&
+        all(c("model", "name") %in% names(glm_sed_params))) {
+      glm_sed_params <- glm_sed_params |>
+        dplyr::filter(model == "glm_aed", grepl("^sediment/", name))
+      if (nrow(glm_sed_params) == 0) glm_sed_params <- NULL
+    } else {
+      glm_sed_params <- NULL
+    }
+
     build_glm(lakename, model_controls = model_controls, date_range = dates.glm,
               lake_shape = lake_shape, lat = lat, lon = lon,
               hyps = hyps, lvl = lvl, init_prof = init_prof,
@@ -649,7 +661,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               outf_factor = outf_factor[["glm_aed"]],
               Kw = Kw, use_bgc = use_bgc,
               use_lw = inp$use_lw, overwrite_nml = overwrite,
-              obs_temp = obs_temp)
+              obs_temp = obs_temp, sed_params = glm_sed_params)
     
     if (use_bgc && overwrite) {
       aeme <- aeme |>

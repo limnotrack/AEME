@@ -134,6 +134,37 @@ check_glm_nml <- function(file) {
                                    "'api'); none found"))
       }
     }
+
+    # When a WQ library is coupled, AEME builds aed_sed_const2d with the same
+    # sediment-zone count as GLM and every zone active. A deliberately
+    # different / partial set-up is legitimate, so flag mismatches as a
+    # warning rather than a hard failure.
+    wq_file <- nml$wq_setup$wq_nml_file
+    if (!is.null(wq_file) && check_file(wq_file)) {
+      aed_nml <- tryCatch(read_nml(file.path(base_path, wq_file)),
+                          error = function(e) NULL)
+      scd <- aed_nml[["aed_sed_const2d"]]
+      if (!is.null(scd) && !is.null(scd$n_zones) && !is.na(n_zones)) {
+        aed_nz <- suppressWarnings(as.numeric(scd$n_zones))
+        if (!is.na(aed_nz) && aed_nz != n_zones) {
+          cli::cli_warn(c(
+            "!" = "AED {.field aed_sed_const2d} n_zones ({aed_nz}) does not \\
+                   match GLM {.field sediment} n_zones ({n_zones}).",
+            "i" = "AEME normally keeps these aligned; check this is intended."
+          ))
+        }
+        az <- suppressWarnings(as.numeric(scd$active_zones))
+        if (!is.na(aed_nz) &&
+            !isTRUE(all.equal(sort(az), seq_len(aed_nz)))) {
+          cli::cli_warn(c(
+            "!" = "AED {.field aed_sed_const2d} active_zones \\
+                   ({paste(az, collapse = ', ')}) is not all zones \\
+                   1..{aed_nz}.",
+            "i" = "AEME switches on every sediment zone by default."
+          ))
+        }
+      }
+    }
   }
   
   # --- Light checks ---

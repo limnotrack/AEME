@@ -18,13 +18,19 @@
 #'   sediment-temperature parameters are derived from it via `calc_sed_temp()`.
 #' @param nml_file character; name of the GLM nml file, forwarded to
 #'   `calc_sed_temp()` for the `file` column of its AEME parameter table.
+#' @param sed_params data.frame or `NULL`; rows of `parameters(aeme)` for the
+#'   GLM `&sediment` block (i.e. `model == "glm_aed"`, `name` like
+#'   `"sediment/..."`). Any key found here is used verbatim (per `index` for
+#'   per-zone keys) instead of being estimated; `sediment/zone_heights` or
+#'   `sediment/n_zones` also drive the zone count.
 #'
 #' @return updated nml object
 #' @noRd
 
 make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
                         update_sediment = TRUE, use_bgc = TRUE,
-                        obs_temp = NULL, nml_file = "glm4.nml") {
+                        obs_temp = NULL, nml_file = "glm4.nml",
+                        sed_params = NULL) {
 
   bathy_glm <- bathy |>
     dplyr::arrange(elev)
@@ -54,18 +60,48 @@ make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
   glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
 
   if (update_sediment) {
-    sed_zones <- estimate_sed_zones(hypsograph = bathy)
+
+    # Pull one &sediment key out of the supplied model-parameter rows: a
+    # per-zone numeric vector ordered by `index`, a scalar when unindexed, or
+    # NULL when the caller did not provide that key.
+    sp_val <- function(key) {
+      if (is.null(sed_params) || !nrow(sed_params)) return(NULL)
+      rows <- sed_params[!is.na(sed_params$name) &
+                           sed_params$name == paste0("sediment/", key), ,
+                         drop = FALSE]
+      if (!nrow(rows)) return(NULL)
+      if (all(is.na(rows$index))) return(as.numeric(rows$value[[1]]))
+      as.numeric(rows$value[order(rows$index)])
+    }
+
+    # 1. Zone geometry -- parameters(aeme) override the bathymetry estimate.
+    zh_param <- sp_val("zone_heights")
+    nz_param <- sp_val("n_zones")
+    if (!is.null(zh_param)) {
+      sed_zones <- zh_param
+      if (!is.null(nz_param) && as.integer(nz_param) != length(sed_zones))
+        cli_inform_safe(c("!" = "sediment/n_zones ({as.integer(nz_param)}) \\
+                          disagrees with sediment/zone_heights \\
+                          (length {length(sed_zones)}); using zone_heights."))
+    } else if (!is.null(nz_param)) {
+      sed_zones <- estimate_sed_zones(hypsograph = bathy,
+                                      n_zones = as.integer(nz_param))
+    } else {
+      sed_zones <- estimate_sed_zones(hypsograph = bathy)
+    }
     n_zones <- length(sed_zones)
 
-    # Per-zone sediment-temperature cycle (zone 1 = deepest). When observed
-    # water-column temperatures are supplied, fit an annual harmonic per zone
-    # via calc_sed_temp(); otherwise fall back to generic defaults.
-    sed_temp <- list(
-      mean      = rep(10, n_zones),
-      amplitude = rep(4, n_zones),
-      peak_doy  = rep(10L, n_zones)
-    )
-    if (!is.null(obs_temp) && nrow(obs_temp) > 0) {
+    # 2. Sediment-temperature cycle (zone 1 = deepest). Keep any of the three
+    # keys already supplied via parameters(aeme); estimate only the missing
+    # ones from observed profiles (calc_sed_temp()), else fall back to
+    # generic defaults.
+    st_keys  <- c("sed_temp_mean", "sed_temp_amplitude", "sed_temp_peak_doy")
+    st_param <- stats::setNames(lapply(st_keys, sp_val), st_keys)
+    st_val   <- list(sed_temp_mean = rep(10, n_zones),
+                     sed_temp_amplitude = rep(4, n_zones),
+                     sed_temp_peak_doy = rep(10L, n_zones))
+    if (any(vapply(st_param, is.null, logical(1))) &&
+        !is.null(obs_temp) && nrow(obs_temp) > 0) {
       est <- tryCatch(
         calc_sed_temp(obs_temp = obs_temp, sed_zones = sed_zones,
                       max_depth = max_depth, hypsograph = bathy,
@@ -78,25 +114,35 @@ make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
           NULL
         }
       )
-      if (!is.null(est)) {
-        sed_temp$mean      <- est$sed_temp_mean
-        sed_temp$amplitude <- est$sed_temp_amplitude
-        sed_temp$peak_doy  <- est$sed_temp_peak_doy
-      }
+      if (!is.null(est)) st_val[st_keys] <- est[st_keys]
+    }
+    for (k in st_keys) {
+      if (!is.null(st_param[[k]])) st_val[[k]] <- st_param[[k]]
+      st_val[[k]] <- rep_len(st_val[[k]], n_zones)
     }
 
-    # Zone geometry and per-zone parameters AEME derives from the bathymetry.
+    # 3. Remaining per-zone keys: parameter value if supplied, else default.
+    zone_default <- c(sed_heat_Ksoil = 1.2, sed_temp_depth = 0.2,
+                      sed_reflectivity = 0.1, sed_roughness = 0.1)
+    resolve_zone <- function(k) {
+      v <- sp_val(k)
+      if (is.null(v)) v <- zone_default[[k]]
+      rep_len(v, n_zones)
+    }
+    benthic_mode <- sp_val("benthic_mode")
+    if (is.null(benthic_mode)) benthic_mode <- 2
+
     managed <- list(
-      sed_heat_Ksoil = rep(1.2, n_zones),
-      sed_temp_depth = rep(0.2, n_zones),
-      sed_temp_mean = sed_temp$mean,
-      sed_temp_amplitude = sed_temp$amplitude,
-      sed_temp_peak_doy = sed_temp$peak_doy,
-      benthic_mode = 2,
+      sed_heat_Ksoil = resolve_zone("sed_heat_Ksoil"),
+      sed_temp_depth = resolve_zone("sed_temp_depth"),
+      sed_temp_mean = st_val$sed_temp_mean,
+      sed_temp_amplitude = st_val$sed_temp_amplitude,
+      sed_temp_peak_doy = st_val$sed_temp_peak_doy,
+      benthic_mode = benthic_mode,
       n_zones = n_zones,
       zone_heights = sed_zones,
-      sed_reflectivity = rep(0.1, n_zones),
-      sed_roughness = rep(0.1, n_zones)
+      sed_reflectivity = resolve_zone("sed_reflectivity"),
+      sed_roughness = resolve_zone("sed_roughness")
     )
 
     # Merge rather than replace: keep any other keys already in the &sediment

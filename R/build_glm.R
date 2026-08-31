@@ -10,6 +10,9 @@
 #'   typically from [get_obs()]. When supplied, per-zone sediment-temperature
 #'   parameters are derived from it via `calc_sed_temp()`; otherwise generic
 #'   defaults are used. Default is `NULL`.
+#' @param sed_params data.frame; `parameters(aeme)` rows for the GLM
+#'   `&sediment` block (`model == "glm_aed"`, `name` like `"sediment/..."`).
+#'   Keys present here are used as-is rather than estimated. Default `NULL`.
 #'
 #' @return Directory with GLM-AED configuration
 #' @noRd
@@ -23,7 +26,7 @@ build_glm <- function(lakename, model_controls, date_range,
                       lake_dir, config_dir, init_prof, init_depth,
                       inf_factor = 1, outf_factor = 1,
                       Kw, use_bgc, use_lw, overwrite_nml = TRUE,
-                      obs_temp = NULL) {
+                      obs_temp = NULL, sed_params = NULL) {
   
   msg <- paste0("Building GLM-AED for lake ", lakename)
   # cli_inform_safe(c("i" = msg))
@@ -105,7 +108,7 @@ build_glm <- function(lakename, model_controls, date_range,
   glm_nml <- make_stg_glm(glm_nml, lakename, bathy = hyps, lat = lat,
                          lon = lon, crest = crest, dims_lake = dims_lake,
                          use_bgc = use_bgc, obs_temp = obs_temp,
-                         nml_file = basename(glm_file))
+                         nml_file = basename(glm_file), sed_params = sed_params)
   
   # Make meteorology file
   make_met_glm(obs_met = met, path_glm = path_glm, use_lw = use_lw)
@@ -153,7 +156,8 @@ build_glm <- function(lakename, model_controls, date_range,
   
   if (use_bgc && overwrite_nml) {
     initialise_aed(model_controls = model_controls,
-                   path_aed = file.path(path_glm, "aed"))
+                   path_aed = file.path(path_glm, "aed"),
+                   n_zones = glm_nml[["sediment"]][["n_zones"]])
   }
 
   if (use_bgc) {

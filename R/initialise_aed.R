@@ -2,15 +2,20 @@
 #'
 #' @param model_controls dataframe of loaded model controls
 #' @param path_aed filepath; to AED files
+#' @param n_zones integer or `NULL`; GLM `&sediment` zone count. When supplied,
+#'   `aed_sed_const2d` `n_zones` / `active_zones` are aligned to it (all zones
+#'   active) and its per-zone flux vectors recycled to length, so aed.nml stays
+#'   consistent with the GLM sediment block even before `set_aed_sed_const2d()`
+#'   refines the flux values.
 #'
 #' @return Written aed.nml files
 #' @noRd
 #'
 #' @importFrom dplyr filter pull
 #' @importFrom readr read_csv write_csv
-#' 
+#'
 
-initialise_aed <- function(model_controls, path_aed) {
+initialise_aed <- function(model_controls, path_aed, n_zones = NULL) {
   data("key_naming", package = "AEME", envir = environment())
   deriv_vars <- key_naming |>
     dplyr::filter(derived) |>
@@ -30,6 +35,24 @@ initialise_aed <- function(model_controls, path_aed) {
   
   aed_cfg <- file.path(path_aed, "aed.nml")
   aed_nml <- read_nml(aed_cfg)
+
+  # --- Align AED sediment zones with GLM's &sediment block --------------
+  # Keep aed_sed_const2d's zone count matched to GLM and every zone active.
+  # set_aed_sed_const2d() later replaces the per-zone flux values with proper
+  # estimates; recycling here just guarantees valid lengths in the meantime.
+  aed_nz <- suppressWarnings(as.integer(n_zones))
+  if (length(aed_nz) == 1 && !is.na(aed_nz) && aed_nz >= 1 &&
+      !is.null(aed_nml[["aed_sed_const2d"]])) {
+    scd <- aed_nml[["aed_sed_const2d"]]
+    scd[["n_zones"]] <- aed_nz
+    scd[["active_zones"]] <- seq_len(aed_nz)
+    for (k in c("fsed_oxy", "fsed_amm", "fsed_nit", "fsed_frp")) {
+      if (!is.null(scd[[k]])) scd[[k]] <- rep_len(as.numeric(scd[[k]]), aed_nz)
+    }
+    aed_nml[["aed_sed_const2d"]] <- scd
+    cli_inform_safe(c("i" = "Aligned AED sediment zones to GLM: {aed_nz} \\
+                             zone{?s} (all active)."))
+  }
 
   # --- Determine active AED modules -------------------------------------
   # Use the glm_aed-renamed names' prefixes, not var_aeme's own prefix --
