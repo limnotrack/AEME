@@ -63,29 +63,34 @@ make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
 
     # Pull one &sediment key out of the supplied model-parameter rows: a
     # per-zone numeric vector ordered by `index`, a scalar when unindexed, or
-    # NULL when the caller did not provide that key.
-    sp_val <- function(key) {
+    # NULL when the caller did not provide that key. The same key can appear
+    # under more than one `file` (e.g. a combined glm3.nml + glm4.nml
+    # parameter library), so collapse to one value per zone index.
+    sp_val <- function(key, scalar = FALSE) {
       if (is.null(sed_params) || !nrow(sed_params)) return(NULL)
       rows <- sed_params[!is.na(sed_params$name) &
                            sed_params$name == paste0("sediment/", key), ,
                          drop = FALSE]
       if (!nrow(rows)) return(NULL)
-      if (all(is.na(rows$index))) return(as.numeric(rows$value[[1]]))
-      as.numeric(rows$value[order(rows$index)])
+      if (scalar) return(as.numeric(rows$value[[1]]))
+      idx_rows <- rows[!is.na(rows$index), , drop = FALSE]
+      if (!nrow(idx_rows)) return(as.numeric(rows$value[[1]]))
+      idx_rows <- idx_rows[!duplicated(idx_rows$index), , drop = FALSE]
+      as.numeric(idx_rows$value[order(idx_rows$index)])
     }
 
     # 1. Zone geometry -- parameters(aeme) override the bathymetry estimate.
     zh_param <- sp_val("zone_heights")
-    nz_param <- sp_val("n_zones")
+    nz_param <- sp_val("n_zones", scalar = TRUE)
+    if (!is.null(nz_param)) nz_param <- as.integer(round(nz_param))
     if (!is.null(zh_param)) {
       sed_zones <- zh_param
-      if (!is.null(nz_param) && as.integer(nz_param) != length(sed_zones))
-        cli_inform_safe(c("!" = "sediment/n_zones ({as.integer(nz_param)}) \\
+      if (!is.null(nz_param) && nz_param != length(sed_zones))
+        cli_inform_safe(c("!" = "sediment/n_zones ({nz_param}) \\
                           disagrees with sediment/zone_heights \\
                           (length {length(sed_zones)}); using zone_heights."))
     } else if (!is.null(nz_param)) {
-      sed_zones <- estimate_sed_zones(hypsograph = bathy,
-                                      n_zones = as.integer(nz_param))
+      sed_zones <- estimate_sed_zones(hypsograph = bathy, n_zones = nz_param)
     } else {
       sed_zones <- estimate_sed_zones(hypsograph = bathy)
     }
@@ -129,7 +134,7 @@ make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
       if (is.null(v)) v <- zone_default[[k]]
       rep_len(v, n_zones)
     }
-    benthic_mode <- sp_val("benthic_mode")
+    benthic_mode <- sp_val("benthic_mode", scalar = TRUE)
     if (is.null(benthic_mode)) benthic_mode <- 2
 
     managed <- list(
