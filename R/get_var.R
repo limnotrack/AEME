@@ -70,7 +70,6 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
       obs_sub <- obs$lake |>
         dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
                         var_aeme %in% var_sim) |>
-        dplyr::mutate(depth = (depth_from + depth_to) / 2) |>
         dplyr::arrange(Date, depth) |>
         dplyr::select(Date, var_aeme, depth, value)
     }

@@ -30,8 +30,7 @@ input_model_parameters <- function(aeme, model, param, path) {
   lake_dir <- get_lake_dir(aeme, path)
   inp <- input(aeme)
   obs <- observations(aeme)
-  obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
-  
+
   if (!is.null(obs$level)) {
     z_max <- mean(obs$level[["value"]]) - min(inp$hypsograph$elev)
   } else {

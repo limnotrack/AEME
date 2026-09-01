@@ -249,6 +249,12 @@ aeme_constructor <- function(
       observations[["level"]][["var_aeme"]] <- "LKE_lvlwtr"
     }
   }
+
+  # Normalise legacy depth_from / depth_to lake observations to a `depth` column
+  if (!is.null(observations[["lake"]])) {
+    observations[["lake"]] <- normalise_lake_obs(observations[["lake"]],
+                                                 warn = FALSE)
+  }
   
   
   if (missing(inflows)) {
@@ -1650,8 +1656,15 @@ setMethod("names", "Aeme", function(x) {
 
 #' Get column names for the observational data frame
 #'
-#' @return Character vector of required column names for observational data.
+#' @param include_optional logical; if `TRUE`, append the optional columns
+#'   (`depth_to`, `sd`) after the required columns. Default `FALSE`.
+#'
+#' @return Character vector of column names for observational data. The required
+#'   columns are `Date`, `var_aeme`, `depth` and `value`. The optional columns
+#'   are `depth_to` (bottom of an integrated sample) and `sd` (measurement
+#'   standard deviation, in the variable's units).
 #' @export
-get_obs_column_names <- function() {
-  c("Date", "var_aeme", "depth_from", "depth_to", "value")
+get_obs_column_names <- function(include_optional = FALSE) {
+  req <- c("Date", "var_aeme", "depth", "value")
+  if (include_optional) c(req, "depth_to", "sd") else req
 }

@@ -46,6 +46,31 @@
   uses for GLM-AED, instead of leaving the template's hard-coded values.
   Falls back to the template values if the estimate can't be computed.
 
+## Observations schema: single `depth` column
+
+* The lake observations data frame now uses a single required **`depth`**
+  column (nominal sampling depth, m positive-down from the surface) in place
+  of the `depth_from` / `depth_to` pair. Every analytical consumer already
+  collapsed that pair to its midpoint, so this matches how observations were
+  actually used. `get_obs_column_names()` returns
+  `c("Date", "var_aeme", "depth", "value")`; pass
+  `include_optional = TRUE` for the optional columns.
+* Two **optional** columns are recognised: `depth_to` (bottom of an
+  integrated sample, for provenance - not consumed by AEME core) and `sd`
+  (measurement standard deviation, in the variable's units, for 1/sd
+  weighting in PEST-style calibration downstream).
+* Backward compatible: `add_obs()`, `lake_obs_to_aeme()`, `yaml_to_aeme()`,
+  the constructor, and `migrate_aeme()` / `upgrade_aeme()` all accept the
+  legacy `depth_from` / `depth_to` layout and collapse it to `depth`
+  (interval midpoint) with a one-time deprecation warning. Objects loaded
+  from older `.rds` files are migrated automatically on `check_aeme()` /
+  `show()` / `plot()`.
+* `lake_obs_to_aeme()` gained optional `depth_to_col_name` and `sd_col_name`
+  arguments.
+* Fixed a latent bug in `input_model_parameters()` that computed a
+  half-thickness (`(depth_to - depth_from) / 2`) instead of a midpoint; the
+  value was unused and the line has been removed.
+
 ## Model binaries moved out of the package
 
 Model executables are no longer bundled inside the package - they're now

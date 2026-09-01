@@ -41,6 +41,9 @@ object was created (e.g. \code{simstrat_aed2}, \code{simstrat_aed}).
 \code{n_members} to integer.
 \item \code{observations$level}: coerce a legacy tibble to a plain data frame
 and ensure a \code{var_aeme} column.
+\item \code{observations$lake}: collapse the legacy \code{depth_from} / \code{depth_to}
+column pair to a single \code{depth} column (interval midpoint), keeping
+\code{depth_to} only where it records a genuine integrated sample.
 \item \code{configuration}: backfill scalar build defaults (\code{ext_elev},
 \code{calc_wbal}, \code{wb_method}, \code{calc_wlev}, \code{hum_type}, \code{est_swr_hr},
 \code{use_bgc}) from \code{config_defaults()}.

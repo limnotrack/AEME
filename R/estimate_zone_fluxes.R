@@ -206,7 +206,7 @@ estimate_zone_fluxes <- function(aeme, path,
   if (!is.null(obs) && nrow(obs) > 0) {
     
     # -- Validate ---------------------------------------------------------------
-    req_cols <- c("Date", "var_aeme", "depth_from", "depth_to", "value")
+    req_cols <- c("Date", "var_aeme", "depth", "value")
     missing_cols <- setdiff(req_cols, names(obs))
     if (length(missing_cols))
       cli::cli_abort("obs is missing columns: {paste(missing_cols, collapse = ', ')}")
@@ -219,7 +219,7 @@ estimate_zone_fluxes <- function(aeme, path,
         obs$var_aeme %in% names(var_map),
     ]
     obs_use$flux_type <- var_map[obs_use$var_aeme]
-    obs_use$depth_mid <- (obs_use$depth_from + obs_use$depth_to) / 2
+    obs_use$depth_mid <- obs_use$depth
     
     if (nrow(obs_use) == 0) {
       # message("No summer observations found for O2/NH4/NO3/FRP -- ",

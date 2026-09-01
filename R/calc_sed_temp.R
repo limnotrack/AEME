@@ -13,8 +13,8 @@
 #'
 #' @param aeme `Aeme` object; when supplied, `obs_temp` and `hypsograph` are
 #'   extracted from it unless passed explicitly. Default `NULL`.
-#' @param obs_temp long df: Date, var_aeme, depth_from, depth_to, value (degC),
-#'   depths in m below surface. Optional when `aeme` is given.
+#' @param obs_temp long df: Date, var_aeme, depth, value (degC), depths in m
+#'   below surface. Optional when `aeme` is given.
 #' @param hypsograph df with `depth` (m, +down) or `elev`, and `area` (m2), used
 #'   to area-weight within a zone and (with `sed_zones = NULL`) to derive the
 #'   zones. Optional when `aeme` is given. `NULL` -> uniform weighting and
@@ -95,7 +95,7 @@ calc_sed_temp <- function(aeme = NULL, obs_temp = NULL, hypsograph = NULL,
   d <- d |>
     dplyr::mutate(
       Date  = as.Date(Date),
-      depth = (depth_from + depth_to) / 2,
+      depth = as.numeric(depth),
       value = as.numeric(value)
     ) |>
     dplyr::filter(is.finite(depth), is.finite(value), !is.na(Date))

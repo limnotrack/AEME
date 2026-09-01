@@ -171,19 +171,27 @@ water level (`level`). The observations are used to assess model performance
 using the function \code{assess_model()} and also to calibrate the model using
 the [aemetools](https://github.com/limnotrack/aemetools) package.
 
-The `lake` observations are stored in a data frame with the following columns:
+The `lake` observations are stored in a data frame with the following required
+columns:
 
 -   **Date** - Date of the observation (character). The date must be in the
     format `YYYY-MM-DD HH:MM:SS`.
 
--   **depth** - Depth of the observation (m) (numeric). The depth must be in
-    metres.
+-   **depth** - Nominal sampling depth of the observation (m, numeric),
+    positive-down from the lake surface.
 
--   **var** - Variable name of the observation (character). The variable names
-    an input preparation are designed in the [AEME inputs
+-   **var_aeme** - Variable name of the observation (character). The variable
+    names and input preparation are described in the [AEME inputs
     article](aeme-inputs.html).
 
 -   **value** - Value of the observation (numeric).
+
+Two optional columns are also recognised: **depth_to** (the bottom of an
+integrated sample, when the observation covers a depth interval) and **sd**
+(the measurement standard deviation, in the variable's units, used for
+observation weighting during calibration). The legacy `depth_from` /
+`depth_to` column pair is still accepted and is collapsed to a single `depth`
+(interval midpoint) with a deprecation warning.
 
 The `level` observations are stored in a data frame with the following columns:
 

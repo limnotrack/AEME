@@ -24,13 +24,11 @@ list. Default is TRUE.}
 A data frame with the following columns:
 \itemize{
 \item \code{Date}: Date of observation
-\item \code{depth}: Depth of observation
+\item \code{depth}: Depth of observation (m, positive-down from the surface)
 \item \code{elev}: Elevation of observation
 \item \code{Model}: Model name
 \item \code{var_sim}: Variable name
 \item \code{value}: Value of the variable
-\item \code{depth_from}: Depth from which the variable is extracted
-\item \code{depth_to}: Depth to which the variable is extracted
 }
 }
 \description{

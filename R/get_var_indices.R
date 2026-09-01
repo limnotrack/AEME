@@ -82,7 +82,7 @@ get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
     var_indices <- lapply(vars_sim, \(v) {
       obs_v <- obs$lake |>
         dplyr::filter(var_aeme == v & Date %in% dates) |>
-        dplyr::mutate(depth_mid = (depth_from + depth_to) / 2)
+        dplyr::mutate(depth_mid = depth)
       deps <- unique(obs_v$depth_mid)
       deps <- deps[order(deps)]
       date_idx <- which(dates %in% obs_v$Date)

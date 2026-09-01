@@ -6,8 +6,8 @@
 #' @param use_lw logical, use incoming longwave radiation
 #' @param overwrite_nml logical, overwrite nml file. Default is TRUE
 #' @param obs_temp data.frame; observed water-column temperature profiles in the
-#'   long AEME format (`Date`, `var_aeme`, `depth_from`, `depth_to`, `value`),
-#'   typically from [get_obs()]. When supplied, per-zone sediment-temperature
+#'   long AEME format (`Date`, `var_aeme`, `depth`, `value`), typically from
+#'   [get_obs()]. When supplied, per-zone sediment-temperature
 #'   parameters are derived from it via `calc_sed_temp()`; otherwise generic
 #'   defaults are used. Default is `NULL`.
 #' @param sed_params data.frame; `parameters(aeme)` rows for the GLM

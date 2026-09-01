@@ -311,20 +311,21 @@ test_that("lake observations can be formatted", {
   code <- generate_var_map_code(data = obs, var_col_name = "var_aeme")
   eval(parse(text = code))
   
-  obs_test <- obs |> 
+  obs_test <- obs |>
     dplyr::rename(
       DateTime = datetime,
       variable = var_aeme,
-      Depth = depth_from,
+      Depth = depth,
       meas = value
     )
-  
-  out <- lake_obs_to_aeme(data = obs_test, depth_col_name = "Depth", 
+
+  out <- lake_obs_to_aeme(data = obs_test, depth_col_name = "Depth",
                           value_col_name = "meas", var_map = var_map)
-  
-  testthat::expect_true(is.data.frame(out) & nrow(out) > 0 & 
-                          all(c("Date", "var_aeme", "depth_from", "depth_to",
-                                "value") %in% colnames(out)))
+
+  testthat::expect_true(is.data.frame(out) & nrow(out) > 0 &
+                          all(c("Date", "var_aeme", "depth", "value") %in%
+                                colnames(out)))
+  testthat::expect_false(any(c("depth_from", "depth_to") %in% colnames(out)))
 })
 
 test_that("lake observations can be added", {

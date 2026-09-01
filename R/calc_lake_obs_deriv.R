@@ -47,12 +47,7 @@ calc_lake_obs_deriv <- function(aeme) {
     wtr <- obs$lake |>
       dplyr::filter(var_aeme == "HYD_temp") |>
       # Create depth_mid column with "wtr_" prefix and 3 digits before the decimal and one after with preleading zero
-      dplyr::mutate(depth_mid = paste0("wtr_",
-                                       formatC((depth_from + depth_to) / 2,
-                                               width = 5, format = "f",
-                                               digits = 1, flag = 0))) |>
-      # dplyr::mutate(depth_mid = (depth_from + depth_to) / 2) |>
-      #Create a depth label with 3
+      dplyr::mutate(depth_mid = format_depth_label(depth = depth)) |>
       tidyr::pivot_wider(names_from = depth_mid, values_from = value,
                          id_cols = Date)
     
@@ -115,9 +110,8 @@ calc_lake_obs_deriv <- function(aeme) {
     
     # Calculate CHM_oxy from sat if not present
     oxy_sat <- obs$lake |>
-      dplyr::filter(var_aeme == "CHM_oxysat") |> 
-      dplyr::mutate(depth_mid = format_depth_label(depth_from = depth_from,
-                                                   depth_to = depth_to))
+      dplyr::filter(var_aeme == "CHM_oxysat") |>
+      dplyr::mutate(depth_mid = format_depth_label(depth = depth))
     if ("HYD_temp" %in% obs$lake$var_aeme) {
       inp <- input(aeme)
       met <- inp$meteo
@@ -126,29 +120,25 @@ calc_lake_obs_deriv <- function(aeme) {
         dplyr::rename(baro = MET_prsttn) |> 
         dplyr::mutate(baro = baro / 100) # Convert from Pa to mbar
       temp <- obs$lake |>
-        dplyr::filter(var_aeme == "HYD_temp") |> 
-        dplyr::mutate(depth_mid = format_depth_label(depth_from = depth_from,
-                                                     depth_to = depth_to)) |> 
-        dplyr::select(Date, depth_mid, value) |> 
+        dplyr::filter(var_aeme == "HYD_temp") |>
+        dplyr::mutate(depth_mid = format_depth_label(depth = depth)) |>
+        dplyr::select(Date, depth_mid, value) |>
         dplyr::rename(temp = value)
-      
+
       oxy_mgl <- oxy_sat |>
         dplyr::left_join(temp, by = c("Date", "depth_mid")) |>
-        dplyr::left_join(baro, by = "Date") |> 
+        dplyr::left_join(baro, by = "Date") |>
         dplyr::mutate(
-          depth = (depth_from + depth_to) / 2,
-          do_sat = convert_do(value = value, temp = temp, depth = depth, 
+          do_sat = convert_do(value = value, temp = temp, depth = depth,
                               baro = baro, direction = "to_mgL"),
           var_aeme = "CHM_oxy"
-        ) |> 
-        dplyr::select(Date, var_aeme, value = do_sat, depth_from, depth_to,
-                      depth_mid)
+        ) |>
+        dplyr::select(Date, var_aeme, value = do_sat, depth, depth_mid)
       if ("CHM_oxy" %in% obs$lake$var_aeme) {
         # Check if already exists and only add new values
         existing_oxy <- obs$lake |>
-          dplyr::filter(var_aeme == "CHM_oxy") |> 
-          dplyr::mutate(depth_mid = format_depth_label(depth_from = depth_from,
-                                                       depth_to = depth_to))
+          dplyr::filter(var_aeme == "CHM_oxy") |>
+          dplyr::mutate(depth_mid = format_depth_label(depth = depth))
         
         oxy_mgl <- oxy_mgl |>
           dplyr::anti_join(existing_oxy, by = c("Date", "depth_mid"))
@@ -160,34 +150,31 @@ calc_lake_obs_deriv <- function(aeme) {
       any(!deriv_chk$present[deriv_chk$group == "CHM"])) {
     
     oxy <- obs$lake |>
-      dplyr::filter(var_aeme == "CHM_oxy") |> 
-      dplyr::mutate(depth_mid = format_depth_label(depth_from = depth_from,
-                                                   depth_to = depth_to)) 
-    
+      dplyr::filter(var_aeme == "CHM_oxy") |>
+      dplyr::mutate(depth_mid = format_depth_label(depth = depth))
+
     if ("HYD_temp" %in% obs$lake$var_aeme) {
       inp <- input(aeme)
       met <- inp$meteo
-      baro <- met |> 
-        dplyr::select(Date, MET_prsttn) |> 
-        dplyr::rename(baro = MET_prsttn) |> 
+      baro <- met |>
+        dplyr::select(Date, MET_prsttn) |>
+        dplyr::rename(baro = MET_prsttn) |>
         dplyr::mutate(baro = baro / 100) # Convert from Pa to mbar
       temp <- obs$lake |>
-        dplyr::filter(var_aeme == "HYD_temp") |> 
-        dplyr::mutate(depth_mid = format_depth_label(depth_from = depth_from,
-                                                     depth_to = depth_to)) |> 
-        dplyr::select(Date, depth_mid, value) |> 
+        dplyr::filter(var_aeme == "HYD_temp") |>
+        dplyr::mutate(depth_mid = format_depth_label(depth = depth)) |>
+        dplyr::select(Date, depth_mid, value) |>
         dplyr::rename(temp = value)
-      
+
       oxy_sat <- oxy |>
         dplyr::left_join(temp, by = c("Date", "depth_mid")) |>
-        dplyr::left_join(baro, by = "Date") |> 
+        dplyr::left_join(baro, by = "Date") |>
         dplyr::mutate(
-          depth = (depth_from + depth_to) / 2,
-          do_sat = convert_do(value = value, temp = temp, depth = depth, 
+          do_sat = convert_do(value = value, temp = temp, depth = depth,
                               baro = baro, direction = "to_percent"),
           var_aeme = "CHM_oxysat"
-        ) |> 
-        dplyr::select(Date, var_aeme, value = do_sat, depth_from, depth_to)
+        ) |>
+        dplyr::select(Date, var_aeme, value = do_sat, depth)
       # head(oxy_sat)
       out_list[["CHM_oxysat"]] <- oxy_sat
       
@@ -297,7 +284,7 @@ calc_lake_obs_deriv <- function(aeme) {
     tli <- obs$lake |>
       # dplyr::filter(!var_aeme %in% c("RAD_secchi")) |>
       dplyr::filter(var_aeme %in% tli_vars) |>
-      dplyr::mutate(depth_mid = (depth_from + depth_to) / 2) |> 
+      dplyr::mutate(depth_mid = depth) |>
       dplyr::left_join(epi_dep, by = "Date") |>
       dplyr::filter(depth_mid <= epi_dep) |>
       dplyr::group_by(Date, var_aeme) |>
@@ -334,13 +321,14 @@ calc_lake_obs_deriv <- function(aeme) {
   if (length(out_list) > 0) {
     out_df <- out_list |>
       dplyr::bind_rows() |>
-      dplyr::filter(!is.na(value)) |>
-      # dplyr::mutate(lake = lke$name, lake_id = lke$name_id) |> 
-      dplyr::select(Date, var_aeme, depth_from, depth_to, value)
-    
+      dplyr::filter(!is.na(value))
+    if (!"depth" %in% names(out_df)) out_df$depth <- NA_real_
+    out_df <- out_df |>
+      dplyr::select(Date, var_aeme, depth, value)
+
     obs$lake <- obs$lake |>
       dplyr::bind_rows(out_df)
-    
+
   }
   
   observations(aeme) <- obs
@@ -351,9 +339,9 @@ calc_lake_obs_deriv <- function(aeme) {
 
 #' Helper function to format depth labels
 #' @noRd
-format_depth_label <- function(stem = "wtr", depth_from, depth_to) {
+format_depth_label <- function(stem = "wtr", depth) {
   paste0(stem, "_",
-         formatC((depth_from + depth_to) / 2,
+         formatC(depth,
                  width = 5, format = "f",
                  digits = 1, flag = 0))
 }

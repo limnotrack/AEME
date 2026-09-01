@@ -63,10 +63,9 @@ get_obs_vars <- function(aeme, time_filter = FALSE) {
     if (is.null(df) || nrow(df) == 0) {
       return(NULL)
     }
-    if (!("depth_from" %in% names(df))) df$depth_from <- NA_real_
-    if (!("depth_to" %in% names(df))) df$depth_to <- NA_real_
+    if (!("depth" %in% names(df))) df$depth <- NA_real_
     df |>
-      dplyr::mutate(depth_mid = (depth_from + depth_to) / 2) |>
+      dplyr::mutate(depth_mid = depth) |>
       dplyr::filter(!is.na(var_aeme)) |>
       dplyr::group_by(var_aeme) |>
       dplyr::summarise(

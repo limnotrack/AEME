@@ -326,7 +326,7 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
 add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
   if (!is.null(obs_lake)) {
     sub <- obs_lake |>
-      dplyr::filter(var_aeme == "HYD_temp", depth_from < 1,
+      dplyr::filter(var_aeme == "HYD_temp", depth < 1,
                     Date %in% obs_met$Date) |>
       dplyr::filter(!duplicated(Date)) |>
       dplyr::select(Date, value)

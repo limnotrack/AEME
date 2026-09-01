@@ -11,7 +11,9 @@ lake_obs_to_aeme(
   var_col_name,
   value_col_name,
   lake_id_col,
-  var_map
+  var_map,
+  depth_to_col_name,
+  sd_col_name
 )
 }
 \arguments{
@@ -36,10 +38,18 @@ assumes all data is for a single lake.}
 mapping variable names and units to AEME standards. "var_aeme" is the
 defined AEME variable name, "name" is the name used in the input data,
 and "unit" is the unit used in the input data.}
+
+\item{depth_to_col_name}{column name for the bottom of an integrated sample
+(m). Optional; if missing, no \code{depth_to} column is produced.}
+
+\item{sd_col_name}{column name for the measurement standard deviation, in the
+input units of each variable. Optional; if missing, no \code{sd} column is
+produced.}
 }
 \value{
-A data frame formatted for AEME with columns "Date", "var_aeme",
-"depth_from", "depth_to", and "value".
+A data frame formatted for AEME with required columns "Date",
+"var_aeme", "depth", and "value", plus the optional columns "depth_to" and
+"sd" when the corresponding arguments are supplied.
 }
 \description{
 Converts a data frame of lake observations into the format required for AEME.

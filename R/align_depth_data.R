@@ -6,13 +6,11 @@
 #' @return A data frame with the following columns:
 #' \itemize{
 #'  \item \code{Date}: Date of observation
-#'  \item \code{depth}: Depth of observation
+#'  \item \code{depth}: Depth of observation (m, positive-down from the surface)
 #'  \item \code{elev}: Elevation of observation
 #'  \item \code{Model}: Model name
 #'  \item \code{var_sim}: Variable name
 #'  \item \code{value}: Value of the variable
-#'  \item \code{depth_from}: Depth from which the variable is extracted
-#'  \item \code{depth_to}: Depth to which the variable is extracted
 #'  }
 #'
 #' @importFrom dplyr filter left_join mutate bind_rows case_when
@@ -34,18 +32,17 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
   
   # Align the observed data with the model data ----
   lst <- lapply(model, \(m) {
-    depth <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
-                        depth = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
-    
+    surface <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
+                          surface_elev = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
+
     df <- get_var(aeme = aeme, model = m, var_sim = var_sim,
                   return_df = TRUE)
-    
+
     if (!is.null(obs$lake)) {
       obs$lake |>
         dplyr::filter(Date %in% df$Date & var_aeme == var_sim) |>
-        # merge(x = _, depth, by = "Date") |>
-        dplyr::left_join(depth, by = "Date") |>
-        dplyr::mutate(elev = depth - depth_from, 
+        dplyr::left_join(surface, by = "Date") |>
+        dplyr::mutate(elev = surface_elev - depth,
                       Model = toggle_models(m, to = "display")) |>
         dplyr::filter(elev >= 0)
     }

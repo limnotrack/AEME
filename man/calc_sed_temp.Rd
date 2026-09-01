@@ -29,8 +29,8 @@ calc_sed_temp(
 \item{aeme}{\code{Aeme} object; when supplied, \code{obs_temp} and \code{hypsograph} are
 extracted from it unless passed explicitly. Default \code{NULL}.}
 
-\item{obs_temp}{long df: Date, var_aeme, depth_from, depth_to, value (degC),
-depths in m below surface. Optional when \code{aeme} is given.}
+\item{obs_temp}{long df: Date, var_aeme, depth, value (degC), depths in m
+below surface. Optional when \code{aeme} is given.}
 
 \item{hypsograph}{df with \code{depth} (m, +down) or \code{elev}, and \code{area} (m2), used
 to area-weight within a zone and (with \code{sed_zones = NULL}) to derive the

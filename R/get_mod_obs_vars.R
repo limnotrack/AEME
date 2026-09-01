@@ -27,8 +27,8 @@ get_mod_obs_vars <- function(aeme, model) {
         dplyr::pull(var_aeme)
     }
   }
-  obs <- get_obs(aeme, time_filter = TRUE) |> 
-    dplyr::mutate(depth_mid = (depth_from + depth_to) / 2) |> 
+  obs <- get_obs(aeme, time_filter = TRUE) |>
+    dplyr::mutate(depth_mid = depth) |>
     dplyr::group_by(var_aeme) |>
     dplyr::summarise(
       n = dplyr::n(),

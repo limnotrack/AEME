@@ -220,6 +220,8 @@ check_aeme <- function(aeme) {
 #'    `n_members` to integer.
 #'  \item `observations$level`: coerce a legacy tibble to a plain data frame
 #'    and ensure a `var_aeme` column.
+#'  \item `observations$lake`: collapse the legacy `depth_from` / `depth_to`
+#'    column pair to a single `depth` column (interval midpoint).
 #' }
 #'
 #' @param aeme An Aeme object.
@@ -292,6 +294,13 @@ migrate_aeme <- function(aeme) {
     aeme@observations <- obs
   }
 
+  # -- observations$lake: legacy depth_from / depth_to -> depth -----------
+  if (!is.null(obs$lake) && "depth_from" %in% names(obs$lake) &&
+      !"depth" %in% names(obs$lake)) {
+    obs$lake <- normalise_lake_obs(obs$lake)
+    aeme@observations <- obs
+  }
+
   aeme
 }
 
@@ -322,6 +331,9 @@ migrate_aeme <- function(aeme) {
 #'    `n_members` to integer.
 #'  \item `observations$level`: coerce a legacy tibble to a plain data frame
 #'    and ensure a `var_aeme` column.
+#'  \item `observations$lake`: collapse the legacy `depth_from` / `depth_to`
+#'    column pair to a single `depth` column (interval midpoint), keeping
+#'    `depth_to` only where it records a genuine integrated sample.
 #'  \item `configuration`: backfill scalar build defaults (`ext_elev`,
 #'    `calc_wbal`, `wb_method`, `calc_wlev`, `hum_type`, `est_swr_hr`,
 #'    `use_bgc`) from `config_defaults()`.
@@ -368,6 +380,12 @@ upgrade_aeme <- function(aeme, quiet = FALSE) {
   if (inherits(before@observations$level, "tbl_df") &&
       !inherits(aeme@observations$level, "tbl_df"))
     changed <- c(changed, "observations$level: coerced tibble to data.frame")
+  if (!is.null(before@observations$lake) &&
+      "depth_from" %in% names(before@observations$lake) &&
+      "depth" %in% names(aeme@observations$lake) &&
+      !"depth_from" %in% names(aeme@observations$lake))
+    changed <- c(changed,
+                 "observations$lake: `depth_from`/`depth_to` collapsed to `depth`")
 
   # -- scalar configuration defaults (cold path only) ---------------------
   cfg <- aeme@configuration

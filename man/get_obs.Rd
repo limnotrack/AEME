@@ -23,9 +23,11 @@ A data frame with the following columns:
 \itemize{
 \item \code{Date}: Date of observation
 \item \code{var_aeme}: Name of the variable in the AEME format
-\item \code{depth_from}: Depth from which the variable is extracted
-\item \code{depth_to}: Depth to which the variable is extracted
+\item \code{depth}: Nominal sampling depth (m, positive-down from the surface)
 \item \code{value}: Value of the variable
+\item \code{depth_to}: (optional) Bottom of an integrated sample, if recorded
+\item \code{sd}: (optional) Measurement standard deviation, in the variable's
+units
 }
 }
 \description{

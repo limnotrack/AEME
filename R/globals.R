@@ -224,6 +224,7 @@ utils::globalVariables(c(
   "strat",
   "strat_days",
   "surf",
+  "surface_elev",
   "temperature",
   "type",
   "upper",
