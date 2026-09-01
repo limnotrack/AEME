@@ -195,23 +195,32 @@ input_model_parameters <- function(aeme, model, param, path) {
     #* GLM-AED ----
     if (m == "glm_aed") {
       # m <- "glm_aed"
-      # The parameter catalogue always tags the GLM hydrodynamic nml as
-      # "glm3.nml", but the file actually on disk may be named differently
-      # (e.g. glm4.nml for newer GLM releases) -- resolve the real filename
-      # once, and substitute it in wherever a candidate says "glm3.nml"
+      # The parameter catalogue tags the GLM hydrodynamic nml by version
+      # ("glm3.nml", historically; "glm4.nml" from newer catalogues /
+      # calc_sed_temp()). AEME treats any `glm<version>.nml` as *the*
+      # hydrodynamic nml, so accept whichever the table uses and route it to
+      # the file actually on disk -- keeps calibration tables working across
+      # the GLM v3 -> v4 rename regardless of which literal they carry.
       glm_nml_existing <- find_glm_nml(file.path(lake_dir, m), must_exist = FALSE)
       glm_nml_actual <- if (!is.na(glm_nml_existing)) basename(glm_nml_existing) else "glm3.nml"
 
+      # Canonicalise every glm<version>.nml row to the on-disk name, then drop
+      # duplicates a combined library can carry (same key under glm3.nml and
+      # glm4.nml). Values are already collapsed per (model, file, name, group).
+      is_glm_hydro <- grepl("^glm[0-9]+\\.nml$", all_p$file)
+      if (any(is_glm_hydro)) {
+        all_p$file[is_glm_hydro] <- glm_nml_actual
+        dup <- duplicated(all_p[, c("file", "name", "group")]) & is_glm_hydro
+        if (any(dup)) all_p <- all_p[!dup, , drop = FALSE]
+      }
+
       nml_files <- c("aed2/aed2.nml", "aed2/aed2_phyto_pars.nml",
-                     "aed2/aed2_zoop_pars.nml", "glm3.nml",
+                     "aed2/aed2_zoop_pars.nml", glm_nml_actual,
                      "aed/aed.nml")
-      # cfg_files <- c("glm3.nml", "aed2/aed2.nml", "aed2/aed2_phyto_pars.nml",
-      #                "aed2/aed2_zoop_pars.nml")
       sel_files <- nml_files[basename(nml_files) %in% all_p$file]
       for (f in sel_files) {
         idx <- which(all_p$file == basename(f))
-        actual_f <- if (basename(f) == "glm3.nml") glm_nml_actual else f
-        cfg_file <- file.path(lake_dir, m, actual_f)
+        cfg_file <- file.path(lake_dir, m, f)
         nml <- read_nml(cfg_file)
         
         if (basename(f) %in% c("aed2_phyto_pars.nml", "aed2_zoop_pars.nml")) {
