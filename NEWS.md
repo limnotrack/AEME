@@ -46,6 +46,28 @@
   uses for GLM-AED, instead of leaving the template's hard-coded values.
   Falls back to the template values if the estimate can't be computed.
 
+## Non-cohesive sediment (`aed_noncohesive`)
+
+* The bundled AED template (`inst/extdata/aed/aed.nml`) now ships an
+  `&aed_noncohesive` block with **two** suspended-sediment groups
+  (`num_ss = 2`), including constant settling and shear-driven
+  resuspension defaults, and lists `aed_noncohesive` in `&aed_models`
+  immediately after `aed_sedflux`. The `&aed_noncohesive` **block** is
+  placed after `&aed_sed_const2d` in the file: libaed reads the module
+  namelists in one forward pass without rewinding between `aed_sedflux`
+  (which also consumes `&aed_sed_const2d`) and `aed_noncohesive`, so an
+  earlier block is never found and GLM aborts with "ERROR reading namelist
+  aed_noncohesive".
+* Module activation is wired up in `R/aed_modules.R`: the `NCS` variable
+  prefix maps to `aed_noncohesive`, so simulating any `NCS_ss*` variable
+  now activates the module (it carries no forced cross-module
+  dependencies). `set_glm_aed_models()`'s default `aed_models` includes it.
+* `&aed_totals` now counts both groups as TSS
+  (`TSS_vars = 'NCS_ss1','NCS_ss2'`). `set_aed_totals()` re-derives
+  `TSS_vars` / `TSS_varscale` during `build_aeme()` from the active
+  `aed_noncohesive` `num_ss` (one `NCS_ss<i>` per group, unit scaling),
+  so the totals survive a build.
+
 ## Observations schema: single `depth` column
 
 * The lake observations data frame now uses a single required **`depth`**
@@ -212,6 +234,20 @@ the R package version.
   objects keep working without needing to be rebuilt.
 
 ## Bug fixes
+
+* `run_aeme()` reported a successful run and then failed with an opaque
+  netCDF error (`open_nc_safe()`: "File path must be a single character
+  string") when a model crashed. Three causes: GLM-AED is built with
+  gfortran, whose `STOP "..."` (e.g. a malformed `aed_noncohesive`
+  namelist) exits `0`, so `run_aeme()`'s `status == 0` success test
+  passed; the `verbose = TRUE` path of `run_glm_aed()`/`run_gotm_wet()`
+  checked nothing at all, leaving a misleading `cli` tick; and a failed
+  model was still handed to `load_output()`. Now each `run_*()` attaches a
+  logical `$success` (exit status *and* the model's completion banner, and
+  for Simstrat the netCDF conversion), `run_aeme()` gates the "Model run
+  complete!" message and output loading on it, and `read_model_outputs()`
+  aborts with a clear `aeme_error_missing_output` ("re-run with
+  `verbose = TRUE`") when the expected output file is absent.
 
 * `cli_inform_safe()` and `cli_safe()` did not forward an evaluation
   environment to `cli`, so any message containing a `{}` expression that
