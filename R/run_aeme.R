@@ -145,9 +145,7 @@ run_aeme <- function(aeme, model, path, args = character(),
       }),
       names(model)
     )
-    cli_inform_safe(c("v" = paste0("Model run complete! ",
-                                   "[", format(Sys.time()), "]")))
-    
+
   } else {
     cli_inform_safe(c("i" = paste0("Running models... (Have you tried ",
                                    "parallelizing?) ",
@@ -157,19 +155,36 @@ run_aeme <- function(aeme, model, path, args = character(),
       args$sim_folder <- sim
       do.call(model_funs[[m]], args)
     }, 
-    model, 
+    model,
     run_model_args$sim_folder[model]
     )
-    
+  }
+
+  # Did each model run to completion? run_*() attaches a logical $success
+  # (from exit status, the model's own completion banner, and -- for
+  # Simstrat -- netCDF conversion). GLM in particular exits 0 even on a
+  # `STOP ERROR`, so exit status alone is not enough. Fall back to it only
+  # when $success is absent (an older runner not yet updated).
+  model_check <- vapply(names(model), function(m) {
+    res <- exec_result[[m]]
+    if (is.null(res$success)) isTRUE(res$status == 0) else isTRUE(res$success)
+  }, logical(1))
+
+  if (all(model_check)) {
     cli_inform_safe(c("v" = paste0("Model run complete! ",
                                    "[", format(Sys.time()), "]")))
+  } else {
+    cli_inform_safe(c("!" = paste0("Model run finished with failures: ",
+                                   paste0(model[!model_check], collapse = ", "),
+                                   ". [", format(Sys.time()), "] Re-run with ",
+                                   "`verbose = TRUE` to see the model log.")))
   }
-  
+
   if ("none" %in% return_type) return(invisible(NULL))
   
-  if (check_output) {
+  if (check_output && any(model_check)) {
     cli_inform_safe(c("i" = "Checking model output..."))
-    chk <- sapply(model, \(m) {
+    chk <- sapply(model[model_check], \(m) {
       check_model_output(path = path, aeme = aeme, model = m)
     })
     if (any(chk)) {
@@ -185,20 +200,17 @@ run_aeme <- function(aeme, model, path, args = character(),
   }
   
   if ("aeme" %in% return_type | "both" %in% return_type) {
-    
-    model_check <- sapply(names(model), function(m) {
-      exec_result[[m]]$status == 0
-    })
+
     model_success <- model[model_check]
     if (length(model_success) < length(model)) {
-      cli_inform_safe(c("!" = paste0("Warning: Some model runs failed and
-                                     will not be loaded: ",
+      cli_inform_safe(c("!" = paste0("Some model runs failed and will not be ",
+                                     "loaded: ",
                                      paste0(model[!model_check],
                                             collapse = ", "))))
     }
-    
+
     if (length(model_success) > 0) {
-      aeme <- load_output(model = model, aeme = aeme, path = path,
+      aeme <- load_output(model = model_success, aeme = aeme, path = path,
                           model_controls = model_controls, parallel = parallel,
                           cl = cl, ens_n = ens_n)
     } else {
@@ -391,31 +403,38 @@ run_dy_cd <- function(sim_folder, verbose = FALSE, debug = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
     )
-    # p$stdout contains full captured output
-    out <- unlist(strsplit(p$stdout, "\n", fixed = TRUE))
   }
-  out <- readLines("dy.log")
-  success <- sum(grepl("END DYRESM-CAEDYM", out)) == 1
+  # dy.log may be absent if the model died before opening it.
+  out <- suppressWarnings(
+    tryCatch(readLines("dy.log"), error = function(e) character(0))
+  )
+  success <- any(grepl("END DYRESM-CAEDYM", out))
+  p$success <- success
+  p$model <- "dy_cd"
+  if (!success) p$status <- 1L
   if (success) {
     if (print_console) {
       cli::cli_progress_done("DYRESM-CAEDYM run successful! [{format(Sys.time())}]")
     }
   } else {
+    if (print_console) {
+      cli::cli_progress_done(result = "failed")
+    }
     cli_inform_safe(c(
       "!" = paste0(
         "DYRESM-CAEDYM run FAILED! ",
         "[", format(Sys.time()), "]"
       )
     ))
-    
+
     # Emit raw stderr safely (no cli wrapping)
-    msg <- paste(tail(out, 10), collapse = "\n")
-    
+    msg <- paste(utils::tail(out, 10), collapse = "\n")
+
     # Strip ANSI just in case
     msg <- gsub("\033\\[[0-9;]*m", "", msg)
-    
+
     message(msg)
-    
+
   }
   return(p)
 }
@@ -691,23 +710,39 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
       error_on_status = FALSE,
       timeout = timeout
     )
-    out <- unlist(strsplit(p$stdout, "\n", fixed = TRUE))
-    success <- sum(grepl("Model Run Complete", out)) == 1
-    if (success) {
-      if (print_console) {
-        cli::cli_progress_done("GLM-AED run successful! [{format(Sys.time())}]")
-      }
-    } else {
-      cli_inform_safe(c(
-        "!" = paste0(
-          "GLM-AED run FAILED! ",
-          "[", format(Sys.time()), "]"
-        )
-      ))
-      msg <- paste(tail(out, 10), collapse = "\n")
-      msg <- gsub("\033\\[[0-9;]*m", "", msg)
-      message(msg)
+  }
+
+  # Judge success from the run itself, not the exit status alone: GLM is
+  # built with gfortran, whose `STOP "..."` (used for e.g. a malformed
+  # namelist) still exits 0. A completed run prints "Model Run Complete"
+  # and no "STOP ERROR" / "Program halted"; check stdout and stderr, as
+  # the STOP text is written to stderr. This runs for verbose runs too --
+  # the old code checked nothing there, so a crash showed a ✔.
+  out <- unlist(strsplit(c(p$stdout, p$stderr), "\n", fixed = TRUE))
+  success <- isTRUE(p$status == 0) && !isTRUE(p$timeout) &&
+    any(grepl("Model Run Complete", out)) &&
+    !any(grepl("STOP ERROR|Program halted", out))
+  p$success <- success
+  p$model <- "glm_aed"
+  if (!success) p$status <- 1L
+
+  if (success) {
+    if (print_console) {
+      cli::cli_progress_done("GLM-AED run successful! [{format(Sys.time())}]")
     }
+  } else {
+    if (print_console) {
+      cli::cli_progress_done(result = "failed")
+    }
+    cli_inform_safe(c(
+      "!" = paste0(
+        "GLM-AED run FAILED! ",
+        "[", format(Sys.time()), "]"
+      )
+    ))
+    msg <- paste(utils::tail(out, 10), collapse = "\n")
+    msg <- gsub("\033\\[[0-9;]*m", "", msg)
+    message(msg)
   }
   return(invisible(p))
 }
@@ -751,29 +786,37 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
       error_on_status = FALSE,  # so non-zero exit doesn't stop execution
       timeout = timeout
     )
-    # p$stdout contains full captured output
-    out <- p$stderr
-    success <- sum(grepl("GOTM-WET finished on|GOTM finished on", out)) == 1
-    if (success) {
-      if (print_console) {
-        cli::cli_progress_done("GOTM-WET run successful! [{format(Sys.time())}]")
-      }
-    } else {
-      cli_inform_safe(c(
-        "!" = paste0(
-          "GOTM-WET run FAILED! ",
-          "[", format(Sys.time()), "]"
-        )
-      ))
-      
-      # Emit raw stderr safely (no cli wrapping)
-      msg <- paste(tail(out, 10), collapse = "\n")
-      
-      # Strip ANSI just in case
-      msg <- gsub("\033\\[[0-9;]*m", "", msg)
-      
-      message(msg)
+  }
+
+  # GOTM-WET prints "GOTM-WET finished on ..." to stderr on a clean run.
+  # Also check the verbose path, which previously verified nothing.
+  out <- unlist(strsplit(c(p$stdout, p$stderr), "\n", fixed = TRUE))
+  success <- any(grepl("GOTM-WET finished on|GOTM finished on", out))
+  p$success <- success
+  p$model <- "gotm_wet"
+  if (!success) p$status <- 1L
+  if (success) {
+    if (print_console) {
+      cli::cli_progress_done("GOTM-WET run successful! [{format(Sys.time())}]")
     }
+  } else {
+    if (print_console) {
+      cli::cli_progress_done(result = "failed")
+    }
+    cli_inform_safe(c(
+      "!" = paste0(
+        "GOTM-WET run FAILED! ",
+        "[", format(Sys.time()), "]"
+      )
+    ))
+
+    # Emit raw stderr safely (no cli wrapping)
+    msg <- paste(utils::tail(out, 10), collapse = "\n")
+
+    # Strip ANSI just in case
+    msg <- gsub("\033\\[[0-9;]*m", "", msg)
+
+    message(msg)
   }
   return(invisible(p))
 }
@@ -861,6 +904,8 @@ run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
     msg <- gsub("\033\\[[0-9;]*m", "", msg)
     message(msg)
   }
+  p$success <- isTRUE(success)
+  p$model <- "simstrat_aed2"
   return(invisible(p))
 }
 
@@ -942,6 +987,8 @@ run_simstrat_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
       cli::cli_progress_done("Simstrat-AED run successful! [{format(Sys.time())}]")
     }
   }
+  p$success <- isTRUE(success)
+  p$model <- "simstrat_aed"
   return(invisible(p))
 }
 

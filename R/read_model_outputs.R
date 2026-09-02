@@ -104,6 +104,17 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   }
 
   if (is.null(nc)) {
+    # By here the run should have produced an output file. If it did not,
+    # the model almost certainly failed to complete -- say so plainly
+    # rather than let open_nc_safe() choke further down on an empty path.
+    if (length(nc_files) == 0 || !any(nzchar(nc_files)) ||
+        !all(file.exists(nc_files))) {
+      cli::cli_abort(c(
+        "x" = "No {.val {model}} output file found in {.path {lake_dir}}.",
+        "i" = "The model run likely failed to complete. Re-run it with
+               {.code verbose = TRUE} to inspect the model log."
+      ), class = "aeme_error_missing_output")
+    }
     if (model == "gotm_wet") {
       nc_file <- nc_files["output"]
       incl_fluxes <- ifelse("output_daily" %in% names(nc_files), FALSE, TRUE)
