@@ -126,9 +126,25 @@ set_aed_totals <- function(aeme, path, lake_dir = NULL) {
   }
   
   # ----------------------------------------------------
+  # -------------------- TSS ---------------------------
+  # ----------------------------------------------------
+  # Only include suspended-sediment groups when aed_noncohesive is active.
+  # One NCS_ss<i> per group in `num_ss`, unit scaling.
+  active_models <- aed[["aed_models"]][["models"]]
+  num_ss <- suppressWarnings(as.integer(aed[["aed_noncohesive"]][["num_ss"]]))
+  if ("aed_noncohesive" %in% active_models && length(num_ss) == 1 &&
+      !is.na(num_ss) && num_ss >= 1) {
+    TSS_vars  <- paste0("NCS_ss", seq_len(num_ss))
+    TSS_scale <- rep(1.0, num_ss)
+  } else {
+    TSS_vars  <- NULL
+    TSS_scale <- NULL
+  }
+
+  # ----------------------------------------------------
   # ------------- Format AED block ---------------------
   # ----------------------------------------------------
-  
+
   aed_totals <- list(
     TN_vars = TN_vars,
     TN_varscale = TN_scale,
@@ -137,6 +153,11 @@ set_aed_totals <- function(aeme, path, lake_dir = NULL) {
     TOC_vars = TOC_vars,
     TOC_varscale = TOC_scale
   )
+
+  if (!is.null(TSS_vars)) {
+    aed_totals[["TSS_vars"]] <- TSS_vars
+    aed_totals[["TSS_varscale"]] <- TSS_scale
+  }
   
   model_config[["bgc"]][["aed"]][["aed_totals"]] <- aed_totals
   

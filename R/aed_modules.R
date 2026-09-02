@@ -7,14 +7,25 @@
 #'
 #' @keywords internal
 #' @noRd
-.aed_module_map <- c(OXY = "aed_oxygen", SIL = "aed_silica", NIT = "aed_nitrogen",
+.aed_module_map <- c(NCS = "aed_noncohesive", OXY = "aed_oxygen",
+                     SIL = "aed_silica", NIT = "aed_nitrogen",
                      PHS = "aed_phosphorus", OGM = "aed_organic_matter",
                      PHY = "aed_phytoplankton", ZOO = "aed_zooplankton")
 
 #' Canonical AED module ordering
+#'
+#' Only real `&aed_models` `models` entries belong here -- this vector orders
+#' the `models` list written to aed.nml. It is NOT the physical order of the
+#' `&<block>` sections in the file. `aed_noncohesive` in particular must be
+#' written *after* the `&aed_sed_const2d` block (libaed reads the module
+#' namelists in one forward pass without rewinding, so an earlier
+#' `&aed_noncohesive` is never found and GLM aborts); that block ordering is
+#' fixed in the bundled `inst/extdata/aed/aed.nml` template and preserved by
+#' `read_nml()`/`write_nml()`, not controlled here.
 #' @keywords internal
 #' @noRd
-.aed_module_order <- c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
+.aed_module_order <- c("aed_sedflux", "aed_noncohesive",
+                       "aed_oxygen", "aed_silica", "aed_nitrogen",
                        "aed_phosphorus", "aed_organic_matter",
                        "aed_phytoplankton", "aed_zooplankton",
                        "aed_macrophyte", "aed_totals")
@@ -42,6 +53,15 @@
 #'                          excretion/mortality target variables)
 #'  - aed_zooplankton    -> aed_organic_matter (excretion/mortality target
 #'                          variables)
+#' `aed_noncohesive` (suspended-sediment groups `NCS_ss*`) runs standalone
+#' in the bundled template -- `settling`/`resuspension` are self-contained
+#' and it has no target-variable links back into other modules -- so it
+#' carries no forced dependencies. It is force-included whenever any
+#' `NCS_ss*` state variable is simulated (via the `NCS` prefix in
+#' \code{.aed_module_map}) and is also referenced by `aed_totals`'
+#' `TSS_vars`. Its `&aed_noncohesive` block must sit *after*
+#' `&aed_sed_const2d` in aed.nml (see \code{.aed_module_order}); the bundled
+#' template is ordered that way.
 #' `aed_macrophyte` has no equivalent source file in the current
 #' libaed-water/libaed-api checkouts (seemingly superseded/removed there)
 #' and has no target-variable keys in the bundled template either, so its

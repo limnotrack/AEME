@@ -1,5 +1,5 @@
 &aed_models
-   models = 'aed_sedflux','aed_oxygen','aed_silica','aed_nitrogen','aed_phosphorus','aed_organic_matter','aed_phytoplankton','aed_zooplankton','aed_macrophyte','aed_totals'
+   models = 'aed_sedflux','aed_noncohesive','aed_oxygen','aed_silica','aed_nitrogen','aed_phosphorus','aed_organic_matter','aed_phytoplankton','aed_zooplankton','aed_macrophyte','aed_totals'
 /
 &aed_sedflux
    sedflux_model = 'Constant2d'
@@ -11,6 +11,30 @@
    fsed_amm = 2, 1, 0
    fsed_nit = -0.2, -0.1, 0
    fsed_frp = 0.05, 0.05, 0.01
+/
+! NOTE: keep &aed_noncohesive AFTER &aed_sed_const2d. libaed reads the module
+! namelists in a single forward pass over this file without rewinding between
+! aed_sedflux (which also consumes &aed_sed_const2d) and aed_noncohesive, so a
+! &aed_noncohesive block placed earlier in the file is never found and GLM
+! aborts with "ERROR reading namelist aed_noncohesive".
+&aed_noncohesive
+   num_ss          = 2               ! number of non-cohesive (suspended solids) particle groups; sets length of all per-group arrays below
+   ss_initial      = 3, 1            ! g/m3   initial water-column concentration, per group
+   Ke_ss           = 0.06, 0.06      ! /m per g/m3   specific light-extinction coefficient (turbidity contribution), per group
+   settling        = 1              ! settling scheme: 0=off  1=constant w_ss  2=constant, corrected for water density  3=Stokes' law (uses d_ss, rho_ss)
+   w_ss            = 0.5, 0.03       ! m/day   constant settling velocity, per group (+ve = sinking); used when settling = 1 or 2
+   rho_ss          = 1800, 1200      ! kg/m3   particle density, per group; used when settling = 2 or 3
+   d_ss            = 2e-05, 4e-06    ! m       particle diameter, per group; used when settling = 3 (Stokes)
+   resuspension    = 1              ! 0=off  1=shear-stress driven (taub vs tau_0)  2=per-zone bed fractions (needs simSedimentMass + benthic-init file)  3=mode 2 + macrophyte critical-stress modifier
+   epsilon         = 0.02            ! g/m2/s  maximum resuspension rate (scalar); erosion flux = epsilon*fs(i)*(taub - tau_0(i))/tau_r
+   tau_0           = 0.04, 0.03      ! N/m2    critical bed shear stress for resuspension, per group
+   tau_r           = 1               ! days    resuspension time scale (scalar)
+   fs              = 1, 1            ! w/w     bed sediment fraction, per group; in mode 1 scales epsilon (epsilon*fs(i))
+   Fsed            = 0, 0            ! g/m2/s  constant benthic source flux, per group (advanced; leave 0 for normal use)
+   decay           = 0, 0            ! /day    first-order decay (loss) rate of suspended solids, per group
+   simSedimentMass = .false.         ! track a finite benthic sediment mass pool (NCS_ss{i}_sed); required .true. for resuspension = 2/3
+   sed_porosity    = 0.3             ! -       porosity of the benthic sediment layer; used for bed-mass and sediment-water-interface position accounting
+   diag_level      = 10             ! diagnostic output verbosity: 0 = minimal (only what state calcs need) ... 10 = all debug/checking diagnostics
 /
 &aed_oxygen
    oxy_initial = 225
@@ -192,6 +216,6 @@
    TP_varscale = 1.0, 1.0, 1.0, 0.01
    TOC_vars = 'OGM_doc','OGM_poc','PHY_green','PHY_diatom' !,'PHY_crypto'
    TOC_varscale = 1.0, 1.0, 1.0, 1.0, 1.0
-!  TSS_vars = 'NCS_ss1','PHY_green' !, ....
-!  TSS_varscale = 0.1,0.1           !,  <vector same length as TSS names>
+   TSS_vars = 'NCS_ss1','NCS_ss2'   ! add 'PHY_grn','OGM_poc' etc. to also count them
+   TSS_varscale = 1.0, 1.0          ! vector same length as TSS_vars
 /
