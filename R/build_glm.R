@@ -124,21 +124,28 @@ build_glm <- function(lakename, model_controls, date_range,
                          mass = TRUE, inf_factor = inf_factor)
   
   #--- make outflows table and modify nml
-  # heights_wdr <- max(hyps$elev) - min(hyps$elev) - 1
-  outlet_type <- ifelse(heights_wdr < 0, 2, 1) 
-  flt_off_sw <- outlet_type == 2
+  # `heights_wdr` and GLM's `outl_elvs` are absolute elevations on the same
+  # datum as the hypsography (`hyps$elev`), which for some lakes extends below
+  # 0 m (e.g. a lake bed below sea level). Keep everything in that datum.
+  lake_floor <- min(hyps[["elev"]])
+  surface_elev <- lake_floor + init_depth
   outf[["elevation"]] <- NULL
   for (i in seq_along(heights_wdr)) {
-    if (is.na(heights_wdr[i]) | heights_wdr[i] <= 0) {
-      heights_wdr[i] <- init_depth - 1
+    # A non-positive value is only a "not set" sentinel when the hypsography
+    # sits at/above 0 m; when it extends below 0 m a negative elevation is a
+    # legitimate absolute outlet elevation and must be kept as-is.
+    if (is.na(heights_wdr[i]) || (heights_wdr[i] <= 0 && lake_floor >= 0)) {
+      heights_wdr[i] <- surface_elev - 1
       next
     }
-    if (heights_wdr[i] > max(hyps$elev) || heights_wdr[i] < min(hyps$elev)) {
-      cli_inform_safe(c("!" = "Withdrawal depth is not within the range of the 
-                        hypsography. Setting to 0.75 of the maximum depth."))
-      heights_wdr[i] <- min(hyps$elev) + (0.75 * (max(hyps$elev) - min(hyps$elev)))
+    if (heights_wdr[i] > crest || heights_wdr[i] < lake_floor) {
+      cli_inform_safe(c("!" = "Withdrawal elevation is not within the range of
+                        the hypsography. Setting to 0.75 of the maximum depth."))
+      heights_wdr[i] <- lake_floor + (0.75 * (crest - lake_floor))
     }
   }
+  outlet_type <- ifelse(heights_wdr < 0, 2, 1)
+  flt_off_sw <- outlet_type == 2
   
   glm_nml <- make_wdr_glm(outf = outf,
                          heights_wdr = heights_wdr,

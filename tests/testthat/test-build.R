@@ -391,6 +391,55 @@ test_that("can build all models with the generated hypsograph", {
                               round(gotm_hyps$depth, 2)))
 })
 
+test_that("can build all models with hypsograph below sea level", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model <- c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2")
+  skip_if_models_unavailable(model)
+  lke <- lake(aeme)
+  new_elev <- 5
+  elev_diff <- new_elev - lke$elevation
+  lke$elevation <- 5
+  lake(aeme) <- lke
+  obs <- observations(aeme)
+  obs$level$value <- obs$level$value + elev_diff
+  observations(aeme) <- obs
+  
+  hyps <- generate_hypsograph(max_depth = lke$depth, surface_area = lke$area,
+                              volume_development = 1.2, elev = 5, ext_elev = 3)
+  
+  aeme <- add_hypsograph(aeme, hyps)
+  
+  aeme <- build_aeme(path = path, aeme = aeme, model = model, ext_elev = 3,
+                     model_controls = model_controls, 
+                     use_bgc = FALSE)
+  
+  inp <- input(aeme)
+  lke <- lake(aeme)
+  inp$init_depth
+  
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  dy_hyps <- read_model_hypsograph(model = "dy_cd", lake_dir = lake_dir)
+  glm_hyps <- read_model_hypsograph(model = "glm_aed", lake_dir = lake_dir)
+  gotm_hyps <- read_model_hypsograph(model = "gotm_wet", lake_dir = lake_dir)
+  
+  testthat::expect_true(all(gotm_hyps$area %in% glm_hyps$area))
+  testthat::expect_true(all(gotm_hyps$area %in% dy_hyps$area))
+  testthat::expect_true(all(glm_hyps$area %in% dy_hyps$area))
+  
+  testthat::expect_true(all(round(glm_hyps$depth, 2) %in%
+                              round(hyps$depth, 2)))
+  testthat::expect_true(all(round(gotm_hyps$depth, 2) %in%
+                              round(dy_hyps$depth, 2)))
+  testthat::expect_true(all(round(glm_hyps$depth, 2) %in%
+                              round(gotm_hyps$depth, 2)))
+})
+
 test_that("building all models with same initial depth", {
   skip_if_models_unavailable(c("dy_cd", "glm_aed", "gotm_wet"))
   tmpdir <- tempdir()

@@ -235,6 +235,23 @@ the R package version.
 
 ## Bug fixes
 
+* GLM-AED outflow setup coerced `bsn_len_outl` / `bsn_wid_outl` to `NA`
+  (and wrote a nonsensical `outl_elvs`) for lakes whose hypsography extends
+  below 0 m, e.g. a lake bed below sea level. `build_glm()` treated any
+  outlet elevation `<= 0` as "not set" and replaced it with `init_depth - 1`
+  - a water *depth* written into `outl_elvs`, which is an absolute elevation
+  on the hypsography datum - so the basin-dimension lookup in
+  `elipse_dims()` fell outside the hypsography and returned `NA`. Outlet
+  elevations are now validated in the hypsography's absolute datum: a
+  non-positive value is only a sentinel when the lake bed sits at/above 0 m,
+  the missing-value default is `surface_elev - 1`, out-of-range values clamp
+  into the hypsography, and `outlet_type` / `flt_off_sw` are derived from the
+  validated elevations. `make_wdr_glm()` additionally clamps the elevation
+  used for the length/width lookup into `range(bathy$elev)` so a direct
+  `set_glm_outflows()` call with an out-of-range outlet still yields finite
+  dimensions. Configurations for lakes with a non-negative hypsography are
+  unchanged.
+
 * `run_aeme()` reported a successful run and then failed with an opaque
   netCDF error (`open_nc_safe()`: "File path must be a single character
   string") when a model crashed. Three causes: GLM-AED is built with
