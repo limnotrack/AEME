@@ -78,12 +78,12 @@ make_wdr_glm <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy,
         heights_wdr <- rep(crest - 3, length(names_wdr))
       }
 
-      # get the glm outlet elevations (neg depths)
-      dim_heights <- heights_wdr# - crest
-      min_elev <- min(bathy$elev)
-      if (any(dim_heights < min_elev)) {
-        dim_heights[dim_heights < min_elev] <- heights_wdr[dim_heights < min_elev] + min_elev
-      }
+      # Elevations used only to look up basin length/width at each outlet:
+      # clamp into the hypsography range so an out-of-range outlet still yields
+      # a finite length/width instead of NA. `outl_elvs` itself is written from
+      # the unclamped `heights_wdr` (absolute elevation, same datum as bathy).
+      elev_rng <- range(bathy[["elev"]], na.rm = TRUE)
+      dim_heights <- pmin(pmax(heights_wdr, elev_rng[1]), elev_rng[2])
 
       dims_outf <- lapply(dim_heights, FUN = elipse_dims,
                           bathy = bathy, dims_lake = dims_lake)  |>
