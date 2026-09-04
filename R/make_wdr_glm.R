@@ -1,7 +1,14 @@
 #' Make GLM outflow
 #'
 #' @param outf list of outflow
-#' @param heights_wdr numeric vector; height of outflow
+#' @param heights_wdr numeric vector; the value written to GLM's `outl_elvs`
+#'   for each outlet - an absolute elevation (m) for a fixed outlet, or a depth
+#'   below the surface (m) for a floating offtake.
+#' @param dims_elev numeric vector (optional, named to match `heights_wdr`);
+#'   the *absolute* elevation at which to look up basin length/width for each
+#'   outlet. Defaults to `heights_wdr`, which is correct when every outlet is
+#'   fixed; callers with floating offtakes pass the surface-relative depth back
+#'   as an absolute elevation here.
 #' @inheritParams make_stg_glm
 #' @inheritParams make_met_glm
 #' @param wdr_factor numeric; scaling factor to be applied to the outflow.
@@ -14,8 +21,8 @@
 #' @importFrom utils write.csv
 #' @importFrom dplyr mutate bind_rows
 
-make_wdr_glm <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy, 
-                        dims_lake, wdr_factor = 1,
+make_wdr_glm <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy,
+                        dims_lake, dims_elev = NULL, wdr_factor = 1,
                         update_nml = TRUE, glm_nml, path_glm) {
 
 
@@ -68,22 +75,27 @@ make_wdr_glm <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy,
       names_wdr <- names(df_wdr)[2:ncol(df_wdr)]
       n_wdr <- length(names_wdr)
       # heights_wdr <- unlist(heights_wdr)
+      # default to outflow = 3 m below crest if not supplied
+      if (missing(heights_wdr)) {
+        heights_wdr <- stats::setNames(rep(crest - 3, length(names_wdr)),
+                                       names_wdr)
+      }
+
       # Reorder to match column order
       heights_wdr <- heights_wdr[names_wdr]
       outlet_type <- outlet_type[names_wdr]
       flt_off_sw <- flt_off_sw[names_wdr]
-      
-      # default to outflow = 3 m below crest if not supplied
-      if (missing(heights_wdr)) {
-        heights_wdr <- rep(crest - 3, length(names_wdr))
-      }
 
-      # Elevations used only to look up basin length/width at each outlet:
-      # clamp into the hypsography range so an out-of-range outlet still yields
-      # a finite length/width instead of NA. `outl_elvs` itself is written from
-      # the unclamped `heights_wdr` (absolute elevation, same datum as bathy).
+      # Absolute elevations at which to look up basin length/width for each
+      # outlet. For a fixed outlet this is `outl_elvs`; for a floating offtake
+      # `outl_elvs` is a depth below the surface, so the caller passes the
+      # matching absolute elevation via `dims_elev`. Clamp into the hypsography
+      # range so an out-of-range outlet still yields finite dimensions instead
+      # of NA. `outl_elvs` itself is written from the unclamped `heights_wdr`.
+      if (is.null(dims_elev)) dims_elev <- heights_wdr
+      dims_elev <- dims_elev[names_wdr]
       elev_rng <- range(bathy[["elev"]], na.rm = TRUE)
-      dim_heights <- pmin(pmax(heights_wdr, elev_rng[1]), elev_rng[2])
+      dim_heights <- pmin(pmax(dims_elev, elev_rng[1]), elev_rng[2])
 
       dims_outf <- lapply(dim_heights, FUN = elipse_dims,
                           bathy = bathy, dims_lake = dims_lake)  |>

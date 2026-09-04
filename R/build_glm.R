@@ -124,35 +124,56 @@ build_glm <- function(lakename, model_controls, date_range,
                          mass = TRUE, inf_factor = inf_factor)
   
   #--- make outflows table and modify nml
-  # `heights_wdr` and GLM's `outl_elvs` are absolute elevations on the same
-  # datum as the hypsography (`hyps$elev`), which for some lakes extends below
-  # 0 m (e.g. a lake bed below sea level). Keep everything in that datum.
+  # `heights_wdr` is the AEME outflow `elevation`: an absolute elevation on the
+  # same datum as the hypsography (`hyps$elev`), or the sentinel -1 / NA meaning
+  # "not specified" (add_outflows(); build_aeme() sets the wbal outflow to -1).
+  #
+  # Unspecified outlets default to a *floating offtake* (outlet_type 2,
+  # flt_off_sw .true.) so the draw tracks a fluctuating surface. GLM wants a
+  # floating outlet's `outl_elvs` as a depth *below the surface* in
+  # [0, lake depth]; an explicitly placed outlet is written as a *fixed* outlet
+  # (outlet_type 1) whose `outl_elvs` is an absolute elevation in
+  # [base_elev, crest_elev]. `set_glm_outflow_config()` exposes the full
+  # per-outlet configuration (fixed / floating / adaptive, submerged outlets,
+  # target withdrawal temperature, seepage, weir geometry, ...).
   lake_floor <- min(hyps[["elev"]])
+  lake_depth <- crest - lake_floor
   surface_elev <- lake_floor + init_depth
   outf[["elevation"]] <- NULL
-  for (i in seq_along(heights_wdr)) {
-    # A non-positive value is only a "not set" sentinel when the hypsography
-    # sits at/above 0 m; when it extends below 0 m a negative elevation is a
-    # legitimate absolute outlet elevation and must be kept as-is.
-    if (is.na(heights_wdr[i]) || (heights_wdr[i] <= 0 && lake_floor >= 0)) {
-      heights_wdr[i] <- surface_elev - 1
+
+  n_out       <- length(heights_wdr)
+  nm_out      <- names(heights_wdr)
+  outlet_type <- rep(1L, n_out)
+  flt_off_sw  <- rep(FALSE, n_out)
+  dims_elev   <- rep(NA_real_, n_out)   # absolute elevation, for outlet geometry
+  for (i in seq_len(n_out)) {
+    if (is.na(heights_wdr[i]) || heights_wdr[i] == -1) {
+      # not specified => floating offtake, ~1 m above the bed but tracking the
+      # surface (i.e. the historical default, now expressed surface-relative)
+      d <- min(max(init_depth - 1, 0), lake_depth)
+      outlet_type[i] <- 2L
+      flt_off_sw[i]  <- TRUE
+      heights_wdr[i] <- d                 # outl_elvs: depth below surface
+      dims_elev[i]   <- surface_elev - d
       next
     }
+    # explicit elevation => fixed outlet at that absolute elevation
     if (heights_wdr[i] > crest || heights_wdr[i] < lake_floor) {
       cli_inform_safe(c("!" = "Withdrawal elevation is not within the range of
                         the hypsography. Setting to 0.75 of the maximum depth."))
-      heights_wdr[i] <- lake_floor + (0.75 * (crest - lake_floor))
+      heights_wdr[i] <- lake_floor + (0.75 * lake_depth)
     }
+    dims_elev[i] <- heights_wdr[i]
   }
-  outlet_type <- ifelse(heights_wdr < 0, 2, 1)
-  flt_off_sw <- outlet_type == 2
-  
+  names(outlet_type) <- names(flt_off_sw) <- names(dims_elev) <- nm_out
+
   glm_nml <- make_wdr_glm(outf = outf,
                          heights_wdr = heights_wdr,
                          outlet_type = outlet_type,
                          flt_off_sw = flt_off_sw,
                          bathy = hyps,
                          dims_lake = dims_lake,
+                         dims_elev = dims_elev,
                          wdr_factor = outf_factor, update_nml = TRUE,
                          glm_nml = glm_nml, path_glm = path_glm)
   
