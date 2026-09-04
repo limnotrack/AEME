@@ -235,22 +235,49 @@ the R package version.
 
 ## Bug fixes
 
-* GLM-AED outflow setup coerced `bsn_len_outl` / `bsn_wid_outl` to `NA`
-  (and wrote a nonsensical `outl_elvs`) for lakes whose hypsography extends
-  below 0 m, e.g. a lake bed below sea level. `build_glm()` treated any
-  outlet elevation `<= 0` as "not set" and replaced it with `init_depth - 1`
-  - a water *depth* written into `outl_elvs`, which is an absolute elevation
-  on the hypsography datum - so the basin-dimension lookup in
-  `elipse_dims()` fell outside the hypsography and returned `NA`. Outlet
-  elevations are now validated in the hypsography's absolute datum: a
-  non-positive value is only a sentinel when the lake bed sits at/above 0 m,
-  the missing-value default is `surface_elev - 1`, out-of-range values clamp
-  into the hypsography, and `outlet_type` / `flt_off_sw` are derived from the
-  validated elevations. `make_wdr_glm()` additionally clamps the elevation
-  used for the length/width lookup into `range(bathy$elev)` so a direct
-  `set_glm_outflows()` call with an out-of-range outlet still yields finite
-  dimensions. Configurations for lakes with a non-negative hypsography are
-  unchanged.
+* GLM-AED outflow setup wrote a nonsensical `outl_elvs` and coerced
+  `bsn_len_outl` / `bsn_wid_outl` to `NA` for lakes whose hypsography
+  extends below 0 m, e.g. a lake bed below sea level. Several problems in
+  `build_glm()`, all rooted in `-1` being AEME's "not specified" sentinel
+  for an outflow `elevation` (`add_outflows()`; `build_aeme()` sets the
+  water-balance outflow to `-1`):
+  - the sentinel was recognised only via `heights_wdr <= 0`, so for a lake
+    bed below 0 m a real request could be swallowed, or the `-1` sentinel
+    leak through as a literal elevation;
+  - the "not specified" replacement was `init_depth - 1`, a water *depth*
+    written into `outl_elvs`, which for a fixed outlet GLM reads as an
+    absolute elevation on the hypsography datum - so it fell outside the
+    hypsography and `elipse_dims()`'s area lookup returned `NA`;
+  - `outlet_type` / `flt_off_sw` were inferred from the *sign* of the
+    elevation (`ifelse(heights_wdr < 0, 2, 1)`), so the default `-1`
+    sentinel silently produced a floating offtake, for which GLM expects
+    `outl_elvs` as a depth below the surface in `[0, depth]` and rejects
+    negative values ("above lake surface").
+  `build_glm()` now interprets an outflow `elevation` explicitly: the
+  `-1` / `NA` sentinel means *not specified* and defaults to a **floating
+  offtake** (`outlet_type = 2`, `flt_off_sw = .true.`) drawing ~1 m above
+  the bed but tracking the surface, with `outl_elvs` written as the
+  depth-below-surface GLM requires for a floating outlet; any explicit
+  `elevation` is placed as a **fixed** outlet at that absolute elevation,
+  validated and clamped into `[base_elev, crest_elev]`. Basin length/width
+  are looked up at the outlet's true absolute elevation (`make_wdr_glm()`
+  gained a `dims_elev` argument for this) and clamped into
+  `range(bathy$elev)` so a `set_glm_outflows()` call with an out-of-range
+  outlet still yields finite dimensions. For lakes whose hypsography sits
+  at/above 0 m the generated `&outflow` block is unchanged; sub-sea-level
+  lakes previously failed and now build.
+
+* `set_glm_outflow_config()` (new, exported) — fine-grained control of the
+  GLM-AED `&outflow` block for an existing configuration, beyond the
+  fixed/floating split `set_glm_outflows()` offers: per-outlet
+  adaptive/target-temperature (`type 3`) and submerged (`type 6`) outlets,
+  `outlet_crit` thresholds, `target_temp`, `withdrTemp_fl`, bed
+  `seepage` / `seepage_rate`, weir `crest_width` / `crest_factor`,
+  `outflow_thick_limit` and `single_layer_draw`, plus an `adaptive` list
+  for the block-level `crit_*` controls. Elevations are given on the
+  hypsography datum and converted per outlet; every value is checked
+  against GLM's own ranges (from `src/glm_init.c`) before writing. It edits
+  only the nml, leaving the flow-forcing CSVs alone.
 
 * `run_aeme()` reported a successful run and then failed with an opaque
   netCDF error (`open_nc_safe()`: "File path must be a single character
