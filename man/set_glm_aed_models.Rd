@@ -7,9 +7,9 @@
 set_glm_aed_models(
   aeme,
   path,
-  aed_models = c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
-    "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton", "aed_zooplankton",
-    "aed_macrophyte", "aed_totals"),
+  aed_models = c("aed_sedflux", "aed_noncohesive", "aed_oxygen", "aed_silica",
+    "aed_nitrogen", "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton",
+    "aed_zooplankton", "aed_macrophyte", "aed_totals"),
   file = NULL,
   nml = NULL
 )
@@ -21,9 +21,9 @@ set_glm_aed_models(
 the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{aed_models}{Character vector of GLM-AED models to include. Default includes
-all available AED models: "aed_sedflux", "aed_oxygen", "aed_silica",
-"aed_nitrogen", "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton",
-"aed_zooplankton", and "aed_macrophyte".}
+all available AED models: "aed_sedflux", "aed_noncohesive", "aed_oxygen",
+"aed_silica", "aed_nitrogen", "aed_phosphorus", "aed_organic_matter",
+"aed_phytoplankton", "aed_zooplankton", "aed_macrophyte", and "aed_totals".}
 
 \item{file}{Path to the GLM-AED configuration file. If NULL, the function
 will attempt to locate the file based on the provided Aeme object and path.}
