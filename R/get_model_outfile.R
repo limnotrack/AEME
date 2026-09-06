@@ -79,14 +79,25 @@ resolve_glm_aed <- function(lake_dir, cfg) {
   glm_key <- find_glm_nml_key(names(cfg))
   nml <- read_nml(cfg[[glm_key]])
 
+  outfile <- nml[["output"]][["out_fn"]]
+  csv_lake <- nml[["output"]][["csv_lake_fname"]]
+  csv_point <- nml[["output"]][["csv_point_fname"]]
+  csv_point_at <- nml[["output"]][["csv_point_at"]]
+  balance_file <- nml[["mass_balance"]][["balance_file"]]
+  
   # Expected basename
-  expected_name <- paste0(nml$output$out_fn, ".nc")
+  expected_names <- paste0(
+    paste0(nml$output$out_fn, ".nc"),
+    ifelse(!is.null(csv_lake), paste0("|", csv_lake, ".csv"), ""),
+    ifelse(!is.null(csv_point), paste0("|", csv_point, csv_point_at, ".csv"), ""),
+    ifelse(!is.null(balance_file), paste0("|", balance_file, ".csv"), "")
+  )
   model_dir <- dirname(cfg[[glm_key]])
   
   # Search recursively
   files <- list.files(
     path = model_dir,
-    pattern = paste0("^", expected_name, "$"),
+    pattern = paste0("^", expected_names, "$"),
     full.names = TRUE,
     recursive = TRUE
   )
@@ -117,7 +128,7 @@ resolve_simstrat_aed2 <- function(lake_dir, cfg) {
   model_dir <- dirname(cfg[["simstrat"]])
   files <- list.files(
     path = model_dir,
-    pattern = "^output\\.nc$",
+    pattern = "^output\\.nc$|\\_out.dat$",
     full.names = TRUE,
     recursive = TRUE
   )
