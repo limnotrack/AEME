@@ -19,8 +19,9 @@ coverage](https://codecov.io/gh/limnotrack/AEME/branch/main/graph/badge.svg)](ht
 The Aquatic Ecosystem Model Ensemble (AEME) package allows you to setup
 and run an ensemble of aquatic ecosystem models. The models are
 [DYRESM-CAEDYM](https://github.com/AquaticEcoDynamics/dy-cd),
-[GLM-AED](https://aquatic.science.uwa.edu.au/research/models/GLM/) and
-[GOTM-WET](https://gitlab.com/wateritech-public/waterecosystemstool/wet).
+[GLM-AED](https://aquatic.science.uwa.edu.au/research/models/GLM/),
+[GOTM-WET](https://gitlab.com/wateritech-public/waterecosystemstool/wet) and
+[Simstrat-AED2](https://github.com/Eawag-AppliedSystemAnalysis/Simstrat).
 
 ## Development
 
@@ -189,10 +190,15 @@ We have a host of vignettes to help you get started with AEME:
 
 - [Introduction to
   AEME](https://limnotrack.com/AEME/articles/intro-aeme.html)
-- [Set up for your own
-  lake](https://limnotrack.com/AEME/articles/getting-started.html)
 - [Description of model
   inputs](https://limnotrack.com/AEME/articles/aeme-inputs.html)
+- [Set up for your own
+  lake](https://limnotrack.com/AEME/articles/setup-new-lake.html)
+
+Model-specific and use-case articles (GLM-AED, Simstrat-AED2, water
+balance calibration, and more) are listed under
+[Articles](https://limnotrack.com/AEME/articles/) on the package
+website.
 
 ## Extension
 
@@ -200,3 +206,5 @@ We have a host of vignettes to help you get started with AEME:
   meteorological data, calibration and sensitivity analysis.
 - [bathytools](https://limnotrack.com//bathytools/) - For processing
   lake bathymetry data.
+- [ltapi](https://github.com/limnotrack/ltapi) - For querying
+  LimnoTrack’s lake and water quality API.
