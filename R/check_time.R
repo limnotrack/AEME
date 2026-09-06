@@ -20,7 +20,7 @@ check_time <- function(df, model, aeme_time, name = "") {
     # Detect a "Date" column
     col_classes <- sapply(df, class)
     date_col <- names(col_classes)[sapply(col_classes, function(c) any(c %in% c("Date", "POSIXct", "POSIXt")))]
-    if (length(date_col) == 0) { 
+    if (length(date_col) == 0) {
       # cli::cli_abort("{.arg df} must contain a {.var Date} column.")
       cli::cli_abort(c(
         "{.arg df} must contain a {.cls Date} column.",
@@ -28,48 +28,74 @@ check_time <- function(df, model, aeme_time, name = "") {
       ), class = "aeme_error_missing_date_column")
     }
   }
-  
-  # Compute spin-up dates
+
+  # Coverage is checked on the calendar-day grid so that daily forcing still
+  # satisfies a sub-daily simulation window (AEME does not disaggregate, but a
+  # daily series does bracket every sub-daily timestamp within a day).
+  df_dates <- as.Date(df[[date_col]])
+  data_min <- min(df_dates, na.rm = TRUE)
+  data_max <- max(df_dates, na.rm = TRUE)
+
+  # Compute spin-up dates (earliest date each model needs)
   spin_dates <- compute_spinup_dates(model, aeme_time)
-  spin_chk <- spin_dates %in% df[[date_col]]
-  
-  # Start and stop checks
-  start_chk <- as.Date(aeme_time[["start"]]) %in% df[[date_col]]
-  stop_chk  <- as.Date(aeme_time[["stop"]])  %in% df[[date_col]]
-  
+  spin_chk <- spin_dates >= data_min & spin_dates <= data_max
+
+  # Start and stop checks -- the simulation window must sit inside the data
+  start_chk <- as.Date(aeme_time[["start"]]) >= data_min
+  stop_chk  <- as.Date(aeme_time[["stop"]])  <= data_max
+
   # Collect missing checks
   missing <- c(
     spin_up = any(!spin_chk),
     start   = !start_chk,
     stop    = !stop_chk
   )
-  
+
   if (any(missing)) {
     msgs <- c()
-    
+
     # Spin-up messages
     if (missing["spin_up"]) {
       msgs <- c(msgs, paste0(
         "Spin-up date(s) for model(s) ",
         paste(names(spin_chk)[!spin_chk], collapse = ", "),
-        " are missing from the ", name, " data."
+        " are outside the ", name, " data (data covers ", data_min, " to ",
+        data_max, ")."
       ))
     }
-    
+
     # Start/stop messages
     for (d in c("start", "stop")) {
       if (missing[d]) {
         msgs <- c(msgs, paste0(
           toupper(substr(d, 1, 1)), substr(d, 2, nchar(d)),
           " date ", as.character(aeme_time[[d]]),
-          " is missing from the ", name, " data."
+          " is outside the ", name, " data (data covers ", data_min, " to ",
+          data_max, ")."
         ))
       }
     }
-    
+
     cli::cli_abort(msgs, class = "aeme_error_missing_dates")
   }
-  
+
+  # Cadence check: sub-daily output requires forcing supplied at (at least)
+  # that cadence -- AEME will not temporally disaggregate.
+  ots <- aeme_time[["output_time_step"]]
+  if (!is.null(ots) && is.finite(ots) && ots < 86400 && nrow(df) > 2) {
+    ordered_t <- sort(as.POSIXct(df[[date_col]], tz = "UTC"))
+    med_step <- stats::median(as.numeric(diff(ordered_t), units = "secs"),
+                              na.rm = TRUE)
+    if (is.finite(med_step) && med_step > ots) {
+      cli::cli_abort(c(
+        "The {name} data is coarser than the requested output time step.",
+        "x" = "Forcing step: ~{round(med_step)} s; output_time_step: {ots} s.",
+        "i" = paste("Supply {name} forcing at {ots} s or finer -- AEME does",
+                    "not temporally disaggregate forcing.")
+      ), class = "aeme_error_forcing_cadence")
+    }
+  }
+
   invisible(TRUE)
 }
 

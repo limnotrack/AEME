@@ -22,7 +22,10 @@
 #'   one year before `stop`.
 #' @param stop character, Date, or POSIXct; simulation stop date. Default
 #'   today.
-#' @param time_step numeric; time step in seconds. Default `3600` (1 hour).
+#' @param time_step numeric; model integration time step in seconds. Default
+#'   `3600` (1 hour).
+#' @param output_time_step numeric; model output time step in seconds. Must be
+#'   `>= time_step`. Default `86400` (daily).
 #' @param Kw numeric; light extinction coefficient (m^-1). Default `1`.
 #'
 #' @return A valid `Aeme` object populated with placeholder values.
@@ -48,6 +51,7 @@ new_aeme <- function(name = "newlake",
                      start = Sys.Date() - 365,
                      stop = Sys.Date(),
                      time_step = 3600,
+                     output_time_step = 86400,
                      Kw = 1) {
 
   lake <- list(
@@ -61,9 +65,10 @@ new_aeme <- function(name = "newlake",
   )
 
   time <- list(
-    start     = as.POSIXct(start, tz = "UTC"),
-    stop      = as.POSIXct(stop, tz = "UTC"),
-    time_step = time_step
+    start            = as.POSIXct(start, tz = "UTC"),
+    stop             = as.POSIXct(stop, tz = "UTC"),
+    time_step        = time_step,
+    output_time_step = output_time_step
   )
 
   input <- list(

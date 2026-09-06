@@ -65,10 +65,18 @@ read_aeme_from_files <- function(path) {
           val <- as.numeric(df[1, grepl(paste0(model, "$"), names(df))])
           if (length(val) == 0 || is.na(val)) 2 else val
         }
+        # output_time_step absent from time.csv written before it existed --
+        # default to 86400 (daily), matching aeme_constructor()
+        output_time_step <- if ("output_time_step" %in% names(df)) {
+          as.numeric(df$output_time_step)
+        } else {
+          86400
+        }
         inp <- list(
           start = as.POSIXct(df$start, tz = "UTC"),
           stop = as.POSIXct(df$stop, tz = "UTC"),
           time_step = as.numeric(df$time_step),
+          output_time_step = output_time_step,
           spin_up = stats::setNames(
             lapply(unname(list_models()), get_spin_up),
             unname(list_models())

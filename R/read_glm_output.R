@@ -64,12 +64,12 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     return(out)
   }
   date_start <- as.POSIXct(gsub("hours since ", "",
-                                ncdf4::ncatt_get(nc,'time','units')$value))
-  glm_dates <- as.POSIXct(hours_since * 3600 + date_start) |> 
-    as.Date()
+                                ncdf4::ncatt_get(nc,'time','units')$value),
+                           tz = "UTC")
+  glm_dates <- as.POSIXct(hours_since * 3600 + date_start)
   if (is.null(date_index)) {
     if (!is.null(dates)) {
-      date_index <- which(glm_dates %in% dates)
+      date_index <- which(as.Date(glm_dates) %in% as.Date(dates))
       if (length(date_index) == 0) {
         cli::cli_abort("No output for GLM at specified dates")
       }
@@ -78,16 +78,15 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     }
   }
   if (length(glm_dates) < max(date_index)) {
-    cli::cli_alert_warning("date_index exceeds available GLM output dates. 
+    cli::cli_alert_warning("date_index exceeds available GLM output dates.
                           Returning empty output.")
     out <- empty_model_output(
       reason = "date_index exceeds available GLM output dates"
     )
     return(out)
   }
-  dates <- glm_dates[date_index] |>
-    as.Date()
-  
+  dates <- .collapse_output_date(glm_dates[date_index])
+
   # Extract depths and format
   mod_layers <- ncdf4::ncvar_get(nc, "z")[, date_index]
   mod_layers[mod_layers > 1000000] <- NA
@@ -453,12 +452,12 @@ read_glm_wlev <- function(nc = NULL, file) {
     cli::cli_abort("No time dimension in GLM output")
   }
   date_start <- as.POSIXct(gsub("hours since ", "",
-                                ncdf4::ncatt_get(nc,'time','units')$value))
-  glm_dates <- as.POSIXct(hours_since * 3600 + date_start) |> 
-    as.Date()
-  
+                                ncdf4::ncatt_get(nc,'time','units')$value),
+                           tz = "UTC")
+  glm_dates <- .collapse_output_date(as.POSIXct(hours_since * 3600 + date_start))
+
   lake_level <- ncdf4::ncvar_get(nc, "lake_level")
-  
+
   out <- data.frame(Date = glm_dates,
                     LKE_lvlwtr = lake_level)
   return(out)

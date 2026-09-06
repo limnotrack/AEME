@@ -15,10 +15,13 @@
 #'  \item \strong{\code{area}}: numeric; lake area.
 #'  }
 #' @slot time A list representing time information. \itemize{
-#' \item \strong{\code{start}}: character; start date.
-#' \item \strong{\code{stop}}: character; end date.
-#' \item \strong{\code{timestep}}: numeric; time step.
-#' \item \strong{\code{spin_up}}: list; spin up information for each model
+#' \item \strong{\code{start}}: POSIXct (UTC); simulation start date-time.
+#' \item \strong{\code{stop}}: POSIXct (UTC); simulation stop date-time.
+#' \item \strong{\code{time_step}}: numeric; model integration time step in
+#' seconds. Default 3600 (1 hour).
+#' \item \strong{\code{output_time_step}}: numeric; model output time step in
+#' seconds. Must be >= \code{time_step}. Default 86400 (daily).
+#' \item \strong{\code{spin_up}}: list; spin up period in days for each model
 #' }
 #' @slot configuration A list representing each model's configuration. \itemize{
 #' \item \code{model_controls}: dataframe; Model controls for simulation.
@@ -510,6 +513,24 @@ aeme_constructor <- function(
       c("{.arg time$time_step} must be {.cls numeric}.",
         "x" = "Got {.cls {class(time$time_step)}}."),
       class = "aeme_error_time_step"
+    )
+  }
+  if (is.null(time$output_time_step)) {
+    time$output_time_step <- 86400
+  }
+  if (!is.numeric(time$output_time_step)) {
+    cli::cli_abort(
+      c("{.arg time$output_time_step} must be {.cls numeric}.",
+        "x" = "Got {.cls {class(time$output_time_step)}}."),
+      class = "aeme_error_output_time_step"
+    )
+  }
+  if (time$output_time_step < time$time_step) {
+    cli::cli_abort(
+      c("{.arg time$output_time_step} must be >= {.arg time$time_step}.",
+        "x" = "output_time_step: {.val {time$output_time_step}} s",
+        "x" = "time_step: {.val {time$time_step}} s"),
+      class = "aeme_error_output_time_step"
     )
   }
   if (!is.list(time$spin_up)) {
@@ -1345,7 +1366,7 @@ setMethod("show", "Aeme", function(object) {
   
   cli::cli_h2("Time")
   cli::cli_bullets(c(
-    "*" = "Start: {aeme_time$start}; Stop: {aeme_time$stop}; Time step: {aeme_time$time_step}",
+    "*" = "Start: {aeme_time$start}; Stop: {aeme_time$stop}; Time step: {aeme_time$time_step} s; Output step: {aeme_time$output_time_step} s",
     "*" = "Spin up (days): GLM: {aeme_time$spin_up$glm_aed}; GOTM: {aeme_time$spin_up$gotm_wet}; DYRESM: {aeme_time$spin_up$dy_cd}; Simstrat: {aeme_time$spin_up$simstrat_aed2}"
   ))
   

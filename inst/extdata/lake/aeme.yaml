@@ -10,6 +10,7 @@ time:
    start: 2020-08-01 00:00:00                   # start date and time [yyyy-mm-dd HH:MM:SS]
    stop: 2021-06-30 00:00:00                    # stop date and time [yyyy-mm-dd HH:MM:SS]
    time_step: 3600.0                            # time step for integration [s; min=0.0]
+   output_time_step: 86400.0                    # time step for model output [s; >= time_step]
    spin_up:
       dy_cd: 1
       glm_aed: 2

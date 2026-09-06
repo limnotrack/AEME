@@ -4,7 +4,7 @@
 \alias{set_time}
 \title{Set time parameters for an Aeme object}
 \usage{
-set_time(aeme, start, stop, spin_up)
+set_time(aeme, start, stop, spin_up, time_step, output_time_step)
 }
 \arguments{
 \item{aeme}{Aeme object.}
@@ -14,6 +14,15 @@ set_time(aeme, start, stop, spin_up)
 
 \item{spin_up}{Spin-up time in days. Can be a single numeric value or a list with
 model names as names and numeric values as values.}
+
+\item{time_step}{numeric; model integration time step in seconds. Default
+(when unset on the object) 3600.}
+
+\item{output_time_step}{numeric; model output time step in seconds. Must be
+greater than or equal to \code{time_step}. Default (when unset on the object)
+86400 (daily). Set to e.g. 3600 for hourly output. Note that AEME does not
+temporally disaggregate forcing: sub-daily output requires forcing supplied at
+(at least) the same cadence.}
 }
 \value{
 Aeme object with time parameters set

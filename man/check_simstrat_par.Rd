@@ -4,10 +4,14 @@
 \alias{check_simstrat_par}
 \title{Check Simstrat par file for common issues}
 \usage{
-check_simstrat_par(file)
+check_simstrat_par(file, output_time_step = 86400)
 }
 \arguments{
 \item{file}{path to Simstrat \code{.par} (JSON) file}
+
+\item{output_time_step}{numeric; expected model output step in seconds
+(\code{time$output_time_step}). \verb{Output.Times * Simulation.Timestep s} must
+equal this. Default 86400 (one output row per day).}
 }
 \value{
 Invisibly returns TRUE if no issues found, otherwise aborts with

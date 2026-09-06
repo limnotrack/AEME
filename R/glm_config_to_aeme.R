@@ -87,7 +87,7 @@
 #' aeme <- aeme |>
 #'   build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
 #'              ext_elev = 5)
-#' nml_file <- file.path(get_lake_dir(aeme, path), "glm_aed", "glm3.nml")
+#' nml_file <- find_glm_nml(file.path(get_lake_dir(aeme, path), "glm_aed"))
 #' aeme2 <- glm_config_to_aeme(nml_file)
 
 glm_config_to_aeme <- function(nml_file, model_controls = NULL, spin_up = 2,
@@ -116,12 +116,14 @@ glm_config_to_aeme <- function(nml_file, model_controls = NULL, spin_up = 2,
 
   # ---- time ----
   nml_start <- as.POSIXct(nml$time$start, tz = "UTC")
+  nsave <- if (!is.null(nml$output$nsave)) nml$output$nsave else 24
   time <- list(
-    start     = nml_start + spin_up * 86400,
-    stop      = as.POSIXct(nml$time$stop, tz = "UTC"),
-    time_step = nml$time$dt,
-    spin_up   = list(dy_cd = 2, glm_aed = spin_up, gotm_wet = 2,
-                     simstrat_aed2 = 2)
+    start            = nml_start + spin_up * 86400,
+    stop             = as.POSIXct(nml$time$stop, tz = "UTC"),
+    time_step        = nml$time$dt,
+    output_time_step = nml$time$dt * nsave,
+    spin_up          = list(dy_cd = 2, glm_aed = spin_up, gotm_wet = 2,
+                            simstrat_aed2 = 2)
   )
 
   # ---- hypsograph ----

@@ -188,6 +188,28 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                                 vars_sim = vars_sim, model = model))
 }
 
+#' Collapse a midnight-only POSIXct output axis back to Date
+#'
+#' Keeps `POSIXct` when the series carries a genuine time-of-day (sub-daily
+#' output); returns a `Date` vector when it does not, so daily output and its
+#' Date-keyed consumers are byte-for-byte unchanged.
+#'
+#' @param x Date or POSIXct vector.
+#' @return Date when all timestamps are at 00:00:00 UTC, else POSIXct (UTC).
+#' @noRd
+.collapse_output_date <- function(x) {
+  if (is.null(x) || !length(x)) return(x)
+  if (inherits(x, "Date")) return(x)
+  xt <- as.POSIXct(x, tz = "UTC")
+  # Model time axes are UTC ("<unit> since <origin>", CF convention). If every
+  # timestamp sits at (near) UTC midnight the output is daily -- return a Date
+  # so the historical contract and Date-keyed consumers are unchanged. The
+  # tolerance absorbs the tiny float error GLM/GOTM time axes carry.
+  secs <- as.numeric(xt) %% 86400
+  near_midnight <- is.na(xt) | secs < 1 | secs > 86399
+  if (all(near_midnight)) as.Date(xt, tz = "UTC") else xt
+}
+
 #' Add derived variables, flatten 1-D variables, and tag the output list
 #'
 #' Steps 4 and 5 of [read_model_outputs()], shared by every way of getting
@@ -202,6 +224,14 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
 #' @return `out_list`, classed by `.new_aeme_output()`.
 #' @noRd
 .finalise_model_output <- function(out_list, hyps, vars_sim, model) {
+
+  # ---- 0. normalise the time axis
+  # Readers return POSIXct so sub-daily output survives. When every timestamp
+  # sits at midnight the output is daily -- collapse back to Date so the
+  # historical (daily) contract and all Date-keyed consumers are unchanged.
+  if (!is.null(out_list[["Date"]])) {
+    out_list[["Date"]] <- .collapse_output_date(out_list[["Date"]])
+  }
 
   # ---- 4. add derivative outputs
   data("key_naming", package = "AEME", envir = environment())
@@ -389,14 +419,14 @@ extract_model_time <- function(nc, model) {
     units_prefix <- "seconds since "
     t <- ncdf4::ncvar_get(nc, "time")
     origin <- gsub(units_prefix, "", ncdf4::ncatt_get(nc, "time", "units")$value)
-    dt <- as.POSIXct(t + as.POSIXct(origin), tz = "UTC")
-    
+    dt <- as.POSIXct(t + as.POSIXct(origin, tz = "UTC"), tz = "UTC")
+
   } else if (model == "glm_aed") {
     units_prefix <- "hours since "
     t <- ncdf4::ncvar_get(nc, "time")
     origin <- gsub(units_prefix, "", ncdf4::ncatt_get(nc, "time", "units")$value)
-    dt <- as.POSIXct(t * 3600 + as.POSIXct(origin), tz = "UTC")
-    
+    dt <- as.POSIXct(t * 3600 + as.POSIXct(origin, tz = "UTC"), tz = "UTC")
+
   } else if (model == "dy_cd") {
     dt <- as.POSIXct((ncdf4::ncvar_get(nc, "dyresmTime") - 2415018.5) *
                        86400, origin = "1899-12-30")

@@ -281,9 +281,19 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     }
     met <- inp[["meteo"]]
     check_time(df = met, model = model, aeme_time = aeme_time, name = "meteo")
+    # Keep sub-daily meteo at its native resolution; otherwise collapse to
+    # Date exactly as before so the daily pipeline is byte-for-byte unchanged.
+    # AEME never temporally disaggregates -- sub-daily runs need sub-daily input.
+    if (!is_subdaily(met[["Date"]])) {
+      met <- dplyr::mutate(met, Date = as.Date(Date))
+    } else {
+      met <- dplyr::mutate(met, Date = as.POSIXct(Date, tz = "UTC"))
+      cli::cli_inform(c("i" = paste("Sub-daily meteo detected -- keeping its",
+                                    "native resolution.")),
+                      class = "aeme_inform_subdaily_met")
+    }
     met <- met |>
-      dplyr::mutate(Date = as.Date(Date)) |>
-      expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE) |> 
+      expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE) |>
       standardise_met()
     # names(met) <- gsub("MET_", "", names(met))
     
@@ -661,6 +671,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               outf_factor = outf_factor[["glm_aed"]],
               Kw = Kw, use_bgc = use_bgc,
               use_lw = inp$use_lw, overwrite_nml = overwrite,
+              output_time_step = aeme_time[["output_time_step"]] %||% 86400,
               obs_temp = obs_temp, sed_params = glm_sed_params)
     
     if (use_bgc && overwrite) {
@@ -687,7 +698,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                outf_factor = outf_factor[["gotm_wet"]], Kw = Kw,
                nlev = nlev, use_bgc = use_bgc,
                hum_type = hum_type, overwrite_yaml = overwrite,
-               est_swr_hr = est_swr_hr)
+               est_swr_hr = est_swr_hr,
+               time_step = aeme_time[["time_step"]] %||% 3600,
+               output_time_step = aeme_time[["output_time_step"]] %||% 86400)
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
 
   }
@@ -706,6 +719,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                    inf_factor = inf_factor[["simstrat_aed2"]],
                    outf_factor = outf_factor[["simstrat_aed2"]],
                    Kw = Kw, use_bgc = use_bgc, overwrite_par = overwrite,
+                   output_time_step = aeme_time[["output_time_step"]] %||% 86400,
                    bgc_lib = "aed2")
     # run_simstrat_aed2(sim_folder = lake_dir, verbose = TRUE)
   }
@@ -724,6 +738,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                    inf_factor = inf_factor[["simstrat_aed"]],
                    outf_factor = outf_factor[["simstrat_aed"]],
                    Kw = Kw, use_bgc = use_bgc, overwrite_par = overwrite,
+                   output_time_step = aeme_time[["output_time_step"]] %||% 86400,
                    bgc_lib = "aed")
     # run_simstrat_aed(sim_folder = lake_dir, verbose = TRUE)
   }
@@ -755,10 +770,12 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     check_glm_nml(file = cfg_files$glm_aed[find_glm_nml_key(names(cfg_files$glm_aed))])
   }
   if ("simstrat_aed2" %in% model) {
-    check_simstrat_par(file = cfg_files$simstrat_aed2["simstrat"])
+    check_simstrat_par(file = cfg_files$simstrat_aed2["simstrat"],
+                       output_time_step = aeme_time[["output_time_step"]] %||% 86400)
   }
   if ("simstrat_aed" %in% model) {
-    check_simstrat_par(file = cfg_files$simstrat_aed["simstrat"])
+    check_simstrat_par(file = cfg_files$simstrat_aed["simstrat"],
+                       output_time_step = aeme_time[["output_time_step"]] %||% 86400)
   }
   
   

@@ -1,5 +1,24 @@
 # AEME 0.4.0
 
+## Sub-daily (hourly) forcing and output
+
+* `time` gains an **`output_time_step`** element (seconds; default `86400`,
+  i.e. daily) separate from the integration `time_step`. `set_time()` gains
+  `time_step` / `output_time_step` arguments, and both round-trip through
+  `time.csv`, `aeme.yaml`, and `.rds` (objects/files without the new field
+  default to daily).
+* Supplying **sub-daily meteo / inflow** (a `POSIXct` `Date` column, or any
+  sub-daily-spaced series) is now carried through `build_aeme()` at its
+  native resolution instead of being collapsed to daily, and written to
+  GLM-AED (`subdaily`/`nsave`, full timestamps), GOTM-WET
+  (`output.yaml` cadence, real time-of-day, `time/dt`), and Simstrat
+  (`Output.Times`) accordingly. Set `output_time_step` (e.g. `3600`) to get
+  sub-daily output; model output is read back as `POSIXct` when it carries a
+  time-of-day and as `Date` (unchanged) when it does not.
+* AEME does **not** temporally disaggregate forcing: sub-daily runs require
+  forcing supplied at (at least) that cadence, and `build_aeme()` aborts
+  otherwise. DYRESM-CAEDYM and the water-balance path remain daily.
+
 ## New model
 
 * Added **Simstrat-AED2** (`"simstrat_aed2"`) as a fourth supported model,

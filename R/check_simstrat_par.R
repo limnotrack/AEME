@@ -1,11 +1,14 @@
 #' Check Simstrat par file for common issues
 #'
 #' @param file path to Simstrat `.par` (JSON) file
+#' @param output_time_step numeric; expected model output step in seconds
+#'   (`time$output_time_step`). `Output.Times * Simulation.Timestep s` must
+#'   equal this. Default 86400 (one output row per day).
 #' @returns Invisibly returns TRUE if no issues found, otherwise aborts with
 #' informative messages
 #' @importFrom cli cli_abort
 #' @export
-check_simstrat_par <- function(file) {
+check_simstrat_par <- function(file, output_time_step = 86400) {
 
   par <- tryCatch(jsonlite::fromJSON(file, simplifyVector = FALSE),
                   error = function(e) {
@@ -93,12 +96,12 @@ check_simstrat_par <- function(file) {
       issues <- c(issues, "Simulation.Timestep s must be a positive number")
     } else {
       times <- suppressWarnings(as.numeric(output[["Times"]]))
-      if (!is.na(times) && abs(times * ts - 86400) > 1e-6) {
+      if (!is.na(times) && abs(times * ts - output_time_step) > 1e-6) {
         issues <- c(issues,
-                    "Output.Times * Simulation.Timestep s must equal 86400
-                    (exactly one output row per day) -- AEME's get_date_index()
-                    indexes model output positionally by day, not by matching
-                    actual dates.")
+                    paste0("Output.Times * Simulation.Timestep s must equal ",
+                    output_time_step, " (the configured output time step) -- ",
+                    "AEME's get_date_index() indexes model output positionally ",
+                    "against a time axis stepped by output_time_step."))
       }
     }
   }

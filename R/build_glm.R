@@ -26,6 +26,7 @@ build_glm <- function(lakename, model_controls, date_range,
                       lake_dir, config_dir, init_prof, init_depth,
                       inf_factor = 1, outf_factor = 1,
                       Kw, use_bgc, use_lw, overwrite_nml = TRUE,
+                      output_time_step = 86400,
                       obs_temp = NULL, sed_params = NULL) {
   
   msg <- paste0("Building GLM-AED for lake ", lakename)
@@ -92,7 +93,19 @@ build_glm <- function(lakename, model_controls, date_range,
   
   # set the simulation date range
   glm_nml <- daterange_glm(date_range, glm_nml = glm_nml)
-  
+
+  # Output cadence and sub-daily forcing switch. Defaults (output_time_step
+  # 86400 s, daily meteo) reproduce the shipped template (nsave = 24,
+  # subdaily = .false.) exactly. AEME never disaggregates: sub-daily output
+  # relies on the user supplying sub-daily meteo.
+  dt_glm <- glm_nml[["time"]][["dt"]]
+  if (is.null(dt_glm) || !is.finite(dt_glm) || dt_glm <= 0) dt_glm <- 3600
+  sub_daily_met <- is_subdaily(met[["Date"]])
+  glm_nml[["output"]][["nsave"]] <-
+    max(1L, as.integer(round(output_time_step / dt_glm)))
+  glm_nml[["meteorology"]][["subdaily"]] <-
+    isTRUE(output_time_step < 86400) || sub_daily_met
+
   
   # elipse dimensions at surface for nml
   dims_lake <- lake_dims(lake_shape)

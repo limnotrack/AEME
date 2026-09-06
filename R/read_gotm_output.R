@@ -30,13 +30,12 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   }
   date_start <- ncdf4::ncatt_get(nc, "time", "units")$value |>
     gsub("seconds since ", "", x = _) |>
-    as.POSIXct()
+    as.POSIXct(tz = "UTC")
   time_vec <- ncdf4::ncvar_get(nc, "time")
-  gotm_dates <- as.POSIXct(time_vec + date_start) |> 
-    as.Date()
+  gotm_dates <- as.POSIXct(time_vec + date_start)
   if (is.null(date_index)) {
     if (!is.null(dates)) {
-      date_index <- which(gotm_dates %in% dates)
+      date_index <- which(as.Date(gotm_dates) %in% as.Date(dates))
       if (length(date_index) == 0) {
         cli::cli_abort("No output for GOTM at specified dates")
       }
@@ -57,8 +56,8 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   start_1d <- c(1, 1, t_start)
   start_2d <- c(1, 1, 1, t_start)
   
-  dates <- gotm_dates[date_index] |> as.Date()
-  
+  dates <- .collapse_output_date(gotm_dates[date_index])
+
   # dates <- seq.Date(date_start, by = 1, length.out = length(out_steps))
   lyr_h <- ncdf4::ncvar_get(nc, "h")[, date_index] # lyrs
   zeta <- ncdf4::ncvar_get(nc, "zeta")[date_index]
@@ -305,11 +304,10 @@ read_gotm_wlev <- function(nc = NULL, file) {
   # }
   date_start <- ncdf4::ncatt_get(nc, "time", "units")$value |>
     gsub("seconds since ", "", x = _) |>
-    as.POSIXct()
+    as.POSIXct(tz = "UTC")
   time_vec <- ncdf4::ncvar_get(nc, "time")
-  gotm_dates <- as.POSIXct(time_vec + date_start) |> 
-    as.Date()
-  
+  gotm_dates <- .collapse_output_date(as.POSIXct(time_vec + date_start))
+
   zi <- ncdf4::ncvar_get(nc, "zi")
   zeta <- ncdf4::ncvar_get(nc, "zeta")
   if (is.null(dim(zi))) {

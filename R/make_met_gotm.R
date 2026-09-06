@@ -17,8 +17,18 @@
 make_met_gotm <- function(df_met, path.gotm, hum_type = 3, lat, lon,
                          est_swr_hr = TRUE, return_colname = TRUE) {
 
+  # Sub-daily meteo carries a real time-of-day; daily meteo keeps the historical
+  # "12:00:00" stamp. AEME does not disaggregate -- sub-daily rows are the
+  # user's responsibility.
+  sub_daily <- is_subdaily(df_met[["Date"]])
+  if (sub_daily) {
+    .dts <- as.POSIXct(df_met[["Date"]], tz = "UTC")
+    df_met[["time"]] <- format(.dts, "%H:%M:%S")
+    df_met[["Date"]] <- format(.dts, "%Y-%m-%d")
+  } else {
+    df_met[["time"]] <- "12:00:00"
+  }
   df_met <- df_met |>
-    dplyr::mutate(time = "12:00:00") |>
     dplyr::mutate(MET_pprain = MET_pprain / 1000, # convert to m
                   MET_ppsnow = MET_ppsnow / 1000) #, # convert to m
                   # MET_prsttn = MET_prsttn * 100) # convert to Pa
@@ -30,8 +40,9 @@ make_met_gotm <- function(df_met, path.gotm, hum_type = 3, lat, lon,
                  "MET_tmpair", "MET_tmpdew", "MET_cldcvr", "MET_pprain")
   }
 
-  # SWR met file
-  if (est_swr_hr) {
+  # SWR met file. estimate_hourly_swr() is a daily-input convenience only;
+  # when the meteo is already sub-daily it is written through as supplied.
+  if (est_swr_hr && !sub_daily) {
     met_swr <- df_met |>
       dplyr::select(Date, MET_radswd)
 

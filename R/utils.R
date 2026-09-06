@@ -37,6 +37,45 @@ check_time_format <- function(x, tz = "UTC") {
 }
 
 
+#' Parse a forcing date column, preserving sub-daily resolution
+#'
+#' Reads a `Date`/`POSIXct`/character column of forcing timestamps. Sub-daily
+#' data is returned as `POSIXct` (UTC); daily data is returned as `Date` so the
+#' rest of the daily pipeline is unaffected. AEME never disaggregates -- this
+#' only preserves whatever resolution the user supplied.
+#'
+#' @param x Date, POSIXct, or character vector.
+#' @return Date (daily input) or POSIXct (sub-daily input).
+#' @noRd
+.as_forcing_datetime <- function(x) {
+  xt <- check_time_format(x)
+  if (is_subdaily(xt)) xt else as.Date(xt)
+}
+
+
+#' Is a date/time vector sub-daily?
+#'
+#' Returns \code{TRUE} when the median spacing between successive timestamps is
+#' shorter than one day. A \code{Date} vector, or a \code{POSIXct} vector whose
+#' rows all fall at midnight, is treated as daily (\code{FALSE}). Used to decide
+#' whether the daily code paths (which collapse to \code{as.Date()}) can be kept.
+#'
+#' @param x Date, POSIXct, or character vector of timestamps.
+#' @return logical scalar.
+#' @noRd
+is_subdaily <- function(x) {
+  if (is.null(x) || length(x) < 2) return(FALSE)
+  if (inherits(x, "Date")) return(FALSE)
+  xt <- tryCatch(as.POSIXct(x, tz = "UTC"), error = function(e) NULL)
+  if (is.null(xt) || all(is.na(xt))) return(FALSE)
+  xt <- sort(xt[!is.na(xt)])
+  if (length(xt) < 2) return(FALSE)
+  steps <- as.numeric(diff(xt), units = "secs")
+  med <- stats::median(steps, na.rm = TRUE)
+  isTRUE(is.finite(med) && med < 86400)
+}
+
+
 #' Abort if object is not a data frame
 #'
 #' Utility function to check that an object is a data frame or tibble.
@@ -469,9 +508,11 @@ check_met <- function(met) {
                    class = "aeme_error_met_na")
   }
 
-  # Check Date column type
-  if (!inherits(met$Date, "Date")) {
-    cli::cli_abort("{.arg met$Date} must be a {.cls Date} object, not {.cls {class(met$Date)[1]}}.",
+  # Check Date column type. POSIXct is accepted so sub-daily meteo can be
+  # supplied at its native resolution (AEME does not disaggregate).
+  if (!inherits(met$Date, c("Date", "POSIXct"))) {
+    cli::cli_abort(paste0("{.arg met$Date} must be a {.cls Date} or {.cls ",
+                          "POSIXct} object, not {.cls {class(met$Date)[1]}}."),
                    class = "aeme_error_met_date")
   }
 

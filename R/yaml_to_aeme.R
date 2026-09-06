@@ -91,18 +91,18 @@ yaml_to_aeme <- function(path, file) {
   }
   if (!is.null(yaml$input$meteo)) {
     yaml$input$meteo <- read.csv(file.path(path, yaml$input$meteo)) |>
-      dplyr::mutate(Date = as.Date(Date))
+      dplyr::mutate(Date = .as_forcing_datetime(Date))
   }
   if (length(yaml$inflows$data) > 0) {
     yaml$inflows$data <- lapply(yaml$inflows$data, \(i) {
       read.csv(file.path(path, i)) |>
-        dplyr::mutate(Date = as.Date(Date))
+        dplyr::mutate(Date = .as_forcing_datetime(Date))
     })
   }
   if (length(yaml$outflows$data) > 0) {
     yaml$outflows$data <- lapply(yaml$outflows$data, \(i) {
       read.csv(file.path(path, i)) |>
-        dplyr::mutate(Date = as.Date(Date))
+        dplyr::mutate(Date = .as_forcing_datetime(Date))
     })
   }
 

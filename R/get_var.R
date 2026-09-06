@@ -151,19 +151,24 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
       # )
     
     if (use_obs) {
-      
+
+      # Observations are daily; when model output is sub-daily POSIXct, snap the
+      # model time axis to calendar days for matching/joining against obs.
+      mod_date <- outp[[ens_lab]][[m]][["Date"]]
+      if (inherits(mod_date, "POSIXct")) mod_date <- as.Date(mod_date)
+
       obs_dates <- unique(obs_sub$Date)
-      date_index <- which(outp[[ens_lab]][[m]][["Date"]] %in% obs_dates)
-      
+      date_index <- which(mod_date %in% obs_dates)
+
       if (var_sim == "LKE_lvlwtr") {
-        
-        df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]][date_index],
+
+        df <- data.frame(Date = mod_date[date_index],
                          sim = outp[[ens_lab]][[m]][["LKE_lvlwtr"]][date_index] +
                            min(inp$hypsograph$elev),
                          Model = toggle_models(m, to = "display")) |>
           dplyr::left_join(obs_sub, by = c("Date" = "Date"))
       } else if (is.vector(variable)) {
-        df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]][date_index],
+        df <- data.frame(Date = mod_date[date_index],
                          sim = outp[[ens_lab]][[m]][[var_sim]][date_index],
                          Model = toggle_models(m, to = "display")) |>
           dplyr::left_join(obs_sub, by = c("Date" = "Date")) |>
@@ -189,7 +194,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
         # Build long dataframe for 2D variable
         each <- length(depth)
         mod <- data.frame(
-          Date     = rep(outp[[ens_lab]][[m]][["Date"]][date_index], each = each),
+          Date     = rep(mod_date[date_index], each = each),
           depth    = as.vector(out_depths),
           sim    = as.vector(value),
           Model = toggle_models(m, to = "display"),

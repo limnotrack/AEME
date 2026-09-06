@@ -22,6 +22,7 @@ build_simstrat <- function(lakename, model_controls, date_range,
                            lake_dir, init_prof, init_depth,
                            inf_factor = 1, outf_factor = 1,
                            Kw, use_bgc, overwrite_par = TRUE,
+                           output_time_step = 86400,
                            bgc_lib = c("aed2", "aed")) {
 
   bgc_lib <- match.arg(bgc_lib)
@@ -97,13 +98,13 @@ build_simstrat <- function(lakename, model_controls, date_range,
     "Inflow salinity"    = "Sinp.dat"
   )
   par[["Output"]][["Path"]] <- "output/"
-  # AEME's date-index machinery (get_date_index()) assumes exactly one
-  # output row per calendar day, matching GLM-AED/GOTM-WET's convention --
-  # it indexes model output positionally (1, 2, 3, ...) rather than by
-  # matching actual dates. Output.Times must therefore always be set so
-  # thinning_interval * Timestep = 1 day, regardless of the configured
-  # timestep.
-  par[["Output"]][["Times"]] <- 86400 / par[["Simulation"]][["Timestep s"]]
+  # AEME's date-index machinery (get_date_index()) indexes model output
+  # positionally against a time axis stepped by output_time_step, so
+  # Output.Times (the thinning interval) must be set so
+  # thinning_interval * Timestep = output_time_step. Default 86400 s keeps
+  # the historical one-row-per-day behaviour.
+  par[["Output"]][["Times"]] <- output_time_step /
+    par[["Simulation"]][["Timestep s"]]
 
   bgc_cfg_key <- paste0(bgc_tag, "Config")
   par[[bgc_cfg_key]][[paste0(bgc_tag, "ConfigFile")]] <- paste0(bgc_template_dir, "/", aed_nml_name)

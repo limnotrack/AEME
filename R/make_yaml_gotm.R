@@ -12,7 +12,7 @@
 make_yaml_gotm <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met,
                           inf, outf, init_depth, path_gotm,
                           outf_factor, inf_factor, Kw, use_bgc, hum_type = 1,
-                          est_swr_hr = TRUE) {
+                          est_swr_hr = TRUE, time_step = 3600) {
 
   met_ref <- data.frame(gotm = c("u10", "v10", "airp", "airt", "hum", "hum",
                                  "cloud", "swr", "precip"),
@@ -29,7 +29,7 @@ make_yaml_gotm <- function(gotm, lakename, date_range, hyps, lat, lon, nlev, met
   gotm$time$method <- 2
   gotm$time$start <- paste(date_range[1], "00:00:00")
   gotm$time$stop <- paste(date_range[2], "00:00:00")
-  gotm$time$dt <- 3600
+  gotm$time$dt <- time_step
 
   gotm$light_extinction$method <- 7
   gotm$light_extinction$g2$method <- 0

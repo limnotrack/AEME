@@ -25,7 +25,8 @@ insert_aeme <- function() {
     time = list(
       start = as.POSIXct(\"2020-01-01 00:00:00\"), # start date
       stop = as.POSIXct(\"2020-12-31 00:00:00\"), # stop date
-      time_step = 3600, # time step in seconds
+      time_step = 3600, # model integration time step in seconds
+      output_time_step = 86400, # model output time step in seconds (>= time_step)
       spin_up = list( # spin-up period for each model [days]
         \"dy_cd\" = 365,
         \"glm_aed\" = 365,

@@ -12,7 +12,8 @@ build_gotm <- function(lakename, model_controls, date_range,
                        lvl, inf, outf, met, init_prof, init_depth,
                        nlev = 40, outf_factor = 1.0, inf_factor = 1, Kw,
                        use_bgc, hum_type = 1, overwrite_yaml = TRUE,
-                       est_swr_hr = TRUE) {
+                       est_swr_hr = TRUE, time_step = 3600,
+                       output_time_step = 86400) {
 
   msg <- paste0("Building GOTM-WET model for lake ", lakename)
   cli_inform_safe(c("i" = msg))
@@ -54,7 +55,24 @@ build_gotm <- function(lakename, model_controls, date_range,
                         init_depth = init_depth, path_gotm = path_gotm,
                         outf_factor = outf_factor,
                         inf_factor = inf_factor, Kw = Kw, use_bgc = use_bgc,
-                        hum_type = hum_type, est_swr_hr = est_swr_hr)
+                        hum_type = hum_type, est_swr_hr = est_swr_hr,
+                        time_step = time_step)
+
+  # Output cadence. The shipped output.yaml is daily (output\output:
+  # hour/24); only rewrite it for sub-daily output so the daily path is
+  # byte-for-byte unchanged. AEME never disaggregates forcing.
+  if (isTRUE(output_time_step < 86400)) {
+    out_yaml_file <- file.path(path_gotm, "output.yaml")
+    if (file.exists(out_yaml_file)) {
+      out_yaml <- yaml::read_yaml(out_yaml_file)
+      main_key <- grep("output.output$", names(out_yaml), value = TRUE)
+      if (length(main_key) == 1) {
+        out_yaml[[main_key]][["time_unit"]] <- "second"
+        out_yaml[[main_key]][["time_step"]] <- as.integer(output_time_step)
+        write_yaml(out_yaml, out_yaml_file)
+      }
+    }
+  }
 
   # Set grid
   gotm <- set_gotm_grid(gotm = gotm, depth = init_depth, path_gotm = path_gotm,

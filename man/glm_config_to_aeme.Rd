@@ -100,6 +100,6 @@ model_controls <- get_model_controls()
 aeme <- aeme |>
   build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
              ext_elev = 5)
-nml_file <- file.path(get_lake_dir(aeme, path), "glm_aed", "glm3.nml")
+nml_file <- find_glm_nml(file.path(get_lake_dir(aeme, path), "glm_aed"))
 aeme2 <- glm_config_to_aeme(nml_file)
 }

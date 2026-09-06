@@ -40,9 +40,16 @@ make_inf_gotm <- function(inf_list, inf_factor = 1, path_gotm, gotm = NULL,
       # Remove columns with no name - not necessary for GLM
       df <- df[, colnames(df) != ""]
 
+      # Sub-daily inflow carries a real time-of-day; daily keeps "12:00:00".
+      if (is_subdaily(df[["date"]])) {
+        .dts <- as.POSIXct(df[["date"]], tz = "UTC")
+        df[["time"]] <- format(.dts, "%H:%M:%S")
+        df[["date"]] <- format(.dts, "%Y-%m-%d")
+      } else {
+        df[["time"]] <- "12:00:00"
+      }
       df <- df |>
-        dplyr::mutate(time = "12:00:00",
-                      flow = (flow * inf_factor) / 86400) |>
+        dplyr::mutate(flow = (flow * inf_factor) / 86400) |>
         dplyr::select(c("date", "time", everything()))
 
       write.table(df[, c("date", "time", "flow")],

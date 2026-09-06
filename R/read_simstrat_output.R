@@ -41,12 +41,11 @@ read_simstrat_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   date_start <- as.POSIXct(gsub("seconds since ", "",
                                 ncdf4::ncatt_get(nc, "time", "units")$value),
                            tz = "UTC")
-  simstrat_dates <- as.POSIXct(time_sec, origin = date_start, tz = "UTC") |>
-    as.Date()
+  simstrat_dates <- as.POSIXct(time_sec, origin = date_start, tz = "UTC")
 
   if (is.null(date_index)) {
     if (!is.null(dates)) {
-      date_index <- which(simstrat_dates %in% dates)
+      date_index <- which(as.Date(simstrat_dates) %in% as.Date(dates))
       if (length(date_index) == 0) {
         cli::cli_abort("No output for Simstrat-AED2 at specified dates")
       }
@@ -62,7 +61,7 @@ read_simstrat_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     )
     return(out)
   }
-  dates <- simstrat_dates[date_index] |> as.Date()
+  dates <- .collapse_output_date(simstrat_dates[date_index])
 
   nc_vars <- names(nc$var)
 
@@ -276,7 +275,8 @@ read_simstrat_wlev <- function(nc = NULL, file, model = "simstrat_aed2") {
   date_start <- as.POSIXct(gsub("seconds since ", "",
                                 ncdf4::ncatt_get(nc, "time", "units")$value),
                            tz = "UTC")
-  dates <- as.POSIXct(time_sec, origin = date_start, tz = "UTC") |> as.Date()
+  dates <- .collapse_output_date(as.POSIXct(time_sec, origin = date_start,
+                                            tz = "UTC"))
 
   lake_level <- if ("WaterH" %in% names(nc$var)) {
     ncdf4::ncvar_get(nc, "WaterH")

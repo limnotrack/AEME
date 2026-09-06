@@ -46,6 +46,15 @@ make_met_glm <-  function(obs_met, path_glm = "", infRain = FALSE,
                   dplyr::across(7:ncol(metVals), \(x) format(x, nsmall = 5,
                                                        width = 12)))
 
+  # Sub-daily meteo keeps a full timestamp so GLM (subdaily = .true.) can read
+  # it; daily meteo is written as a bare date exactly as before. AEME does not
+  # disaggregate -- sub-daily rows must be supplied by the user.
+  if (inherits(metVals[["Date"]], "POSIXct") && is_subdaily(metVals[["Date"]])) {
+    metVals[["Date"]] <- format(metVals[["Date"]], "%Y-%m-%d %H:%M:%S")
+  } else {
+    metVals[["Date"]] <- as.Date(metVals[["Date"]])
+  }
+
   # set rain to zero, if specified
   if (infRain == TRUE) {
     metVals$rain_m <- 0

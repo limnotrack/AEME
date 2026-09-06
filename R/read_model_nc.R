@@ -48,30 +48,3 @@ read_model_nc <- function(aeme, model, path, lake_dir = NULL, vars_sim,
   
   return(out)
 }
-
-#' Extract model time information from netCDF
-#' @param nc netCDF object
-#' @param var character; name of time variable
-#' @param units_prefix character; prefix to remove from time units attribute
-#' @param output_hour numeric; hour of day to extract
-#' @return list with dates and indices
-#' @noRd
-extract_model_time <- function(nc, var = "time", units_prefix, output_hour) {
-  times <- ncdf4::ncvar_get(nc, var)
-  if (!length(times)) return(NULL)
-  
-  origin <- ncdf4::ncatt_get(nc, var, "units")$value |>
-    gsub(units_prefix, "", x = _) |>
-    as.POSIXct()
-  
-  dates <- as.POSIXct(times + origin)
-  idx   <- which(lubridate::hour(dates) == output_hour)
-  
-  if (!length(idx))
-    stop("No output at hour ", output_hour)
-  
-  list(
-    dates = as.Date(dates[idx]),
-    idx   = idx
-  )
-}

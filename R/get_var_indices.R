@@ -45,32 +45,31 @@ get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
     on.exit(ncdf4::nc_close(nc))
   }
 
-  # Get model time ----
+  # Get model time (POSIXct; collapsed to Date when the output is daily) ----
   if (model == "dy_cd") {
     dates <- as.POSIXct((ncdf4::ncvar_get(nc, 'dyresmTime') - 2415018.5) *
                           86400,
-                        origin = "1899-12-30", tz = "UTC") |>
-      as.Date()
+                        origin = "1899-12-30", tz = "UTC")
   } else if (model == "glm_aed") {
     hours_since  <- ncdf4::ncvar_get(nc, "time")
     date_start <- as.POSIXct(gsub("hours since ", "",
                                   ncdf4::ncatt_get(nc, "time", "units")$value),
                              tz = "UTC")
-    dates <- as.Date(hours_since * 3600 + date_start)
+    dates <- as.POSIXct(hours_since * 3600 + date_start, tz = "UTC")
   } else if (model == 'gotm_pclake' | model == "gotm_wet") {
     out.steps <- ncdf4::ncvar_get(nc, "time")
     date_start <- ncdf4::ncatt_get(nc,'time','units')$value |>
       gsub("seconds since ", "", x = _) |>
-      as.POSIXct() |>
-      as.Date()
-    dates <- seq.Date(date_start, by = 1, length.out = length(out.steps))
+      as.POSIXct(tz = "UTC")
+    dates <- as.POSIXct(out.steps + date_start, tz = "UTC")
   } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
     seconds_since <- ncdf4::ncvar_get(nc, "time")
     date_start <- as.POSIXct(gsub("seconds since ", "",
                                   ncdf4::ncatt_get(nc, "time", "units")$value),
                              tz = "UTC")
-    dates <- as.Date(as.POSIXct(seconds_since, origin = date_start, tz = "UTC"))
+    dates <- as.POSIXct(seconds_since, origin = date_start, tz = "UTC")
   }
+  dates <- .collapse_output_date(dates)
 
   # Trim off spinup time
   # dates <- dates[dates >= aeme_time$start & dates <= aeme_time$stop]
