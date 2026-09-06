@@ -94,16 +94,16 @@ run_aeme <- function(aeme, model, path, args = character(),
   }
   
   # Delete previous model output if it exists
-  model_output <- get_model_outfile(aeme = aeme, model = model)
-  for (m in model) {
-    if (any(file.exists(model_output[[m]]))) {
-      unlink(model_output[[m]])
-      cli_inform_safe(c("i" = paste0("Deleted previous output for model ",
-                                     toggle_models(m, to = "display"),
-                                     " at {.file ",
-                                     model_output[[m]], "}")))
-    }
-  }
+  # model_output <- get_model_outfile(aeme = aeme, model = model)
+  # for (m in model) {
+  #   if (any(file.exists(model_output[[m]]))) {
+  #     unlink(model_output[[m]])
+  #     cli_inform_safe(c("i" = paste0("Deleted previous output for model ",
+  #                                    toggle_models(m, to = "display"),
+  #                                    " at {.file ",
+  #                                    model_output[[m]], "}")))
+  #   }
+  # }
   
   # A lookup table of model runners
   model_funs <- list(
@@ -683,6 +683,9 @@ run_glm_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
     setwd(oldwd)
   })
   setwd(sim_folder)
+  cfg_files <- get_model_config_files(model = "glm_aed", path = sim_folder)
+  outfile <- resolve_glm_aed(lake_dir = sim_folder, cfg = cfg_files[["glm_aed"]])
+  unlink(outfile, force = TRUE)
   print_console <- getOption("AEME.inform", TRUE)
   if (print_console) {
     cli::cli_progress_step("GLM-AED running... [{format(Sys.time())}]")
@@ -759,6 +762,11 @@ run_gotm_wet <- function(sim_folder, verbose = FALSE, debug = FALSE,
     setwd(oldwd)
   })
   setwd(sim_folder)
+  
+  cfg_files <- get_model_config_files(model = "gotm_wet", path = sim_folder)
+  outfile <- resolve_gotm_wet(lake_dir = sim_folder, cfg = cfg_files[["gotm_wet"]])
+  unlink(outfile, force = TRUE)
+  
   dir.create("output", showWarnings = FALSE)
   print_console <- getOption("AEME.inform", TRUE)
   if (print_console) {
@@ -833,6 +841,14 @@ run_simstrat_aed2 <- function(sim_folder, verbose = FALSE, debug = FALSE,
     setwd(oldwd)
   })
   setwd(sim_folder)
+  
+  cfg_files <- get_model_config_files(model = "simstrat_aed2", 
+                                      path = sim_folder)
+  outfile <- resolve_simstrat_aed2(lake_dir = sim_folder,
+                                   cfg = cfg_files[["simstrat_aed2"]])
+  unlink(outfile, force = TRUE)
+  
+  
   print_console <- getOption("AEME.inform", TRUE)
   if (print_console) {
     cli::cli_progress_step("Simstrat-AED2 running... [{format(Sys.time())}]")
@@ -925,6 +941,12 @@ run_simstrat_aed <- function(sim_folder, verbose = FALSE, debug = FALSE,
   if (print_console) {
     cli::cli_progress_step("Simstrat-AED running... [{format(Sys.time())}]")
   }
+  cfg_files <- get_model_config_files(model = "simstrat_aed2", 
+                                      path = sim_folder)
+  outfile <- resolve_simstrat_aed2(lake_dir = sim_folder,
+                                   cfg = cfg_files[["simstrat_aed2"]])
+  unlink(outfile, force = TRUE)
+  
 
   bin_exec <- .resolve_simstrat_aed_exec(version)
 

@@ -120,7 +120,7 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
       incl_fluxes <- ifelse("output_daily" %in% names(nc_files), FALSE, TRUE)
       read_gotm_daily <- !incl_fluxes
     } else {
-      nc_file <- nc_files
+      nc_file <- nc_files["output"]
       read_gotm_daily <- FALSE
     }
     nc <- open_nc_safe(file = nc_file, model = model)
