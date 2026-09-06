@@ -1,0 +1,220 @@
+---
+title: "Visualising AEME Output"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+<!--
+DRAFT -- sketched from the vignette-coverage audit, gap 01 (plot_* family,
+0/20 functions demonstrated in any vignette; every other vignette uses the
+S4 plot(aeme, ...) dispatcher or hand-rolled ggplot instead). Every eval=TRUE
+chunk has been run end-to-end against this vignette's own build() (not just
+knit-checked) -- plot_ts, plot_var, plot_obs, plot_resid, plot_nit,
+plot_met_tile, plot_hyps, plot_flows and plot_model_output all confirmed
+working with these exact arguments. TODO before publishing:
+  - swap the toy example for one of the richer example objects
+    (aeme.rds / LID45819_wainamu) so the biogeochemical plots have more than
+    one timestep of variation to show, then flip the plot_phs/plot_car/
+    plot_phytos/plot_zoops/plot_fluxes chunks from eval=FALSE to TRUE and
+    confirm each one
+  - review plot quality/captions once real screenshots exist -- correctness
+    was checked, visual polish wasn't
+  - decide whether plot_glm_output()/plot_output_base() belong here or in
+    glm-aed.Rmd next to the raw-config-editing section (they operate on a
+    raw output list, not an Aeme object, unlike everything else on this
+    page)
+-->
+
+# Introduction
+
+`plot(aeme, "output")` and friends -- the S4 dispatcher used throughout the
+other vignettes -- cover the common case. Underneath it, AEME ships a wider
+set of purpose-built plotting functions: multi-variable timeseries, group
+plots for individual biogeochemical modules, residuals against observations,
+and diagnostics on the inputs (hypsograph, meteorology, flows) rather than
+the output. This vignette works through them using one small built model.
+
+```{r setup, message = FALSE, warning = FALSE}
+library(AEME)
+library(ggplot2)
+options(AEME.inform = FALSE)
+```
+
+```{r build, message = FALSE, results = "hide"}
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme <- readRDS(aeme_file)
+
+model_controls <- get_model_controls(use_bgc = TRUE)
+model <- "glm_aed"
+path <- tempdir()
+
+aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                   model_controls = model_controls, ext_elev = 5,
+                   use_bgc = TRUE)
+aeme <- run_aeme(aeme = aeme, verbose = FALSE)
+```
+
+# Timeseries
+
+`plot_ts()` is the general-purpose multi-variable plot -- pass one or more
+`var_sim`, and it facets automatically. Observations overlay by default
+(`add_obs = TRUE`) where the `Aeme` object has them.
+
+```{r plot-ts}
+plot_ts(aeme, model = model, var_sim = c("HYD_temp", "CHM_oxy"))
+```
+
+Restrict to a depth range (e.g. surface only) with `depth_range`:
+
+```{r plot-ts-depth}
+plot_ts(aeme, model = model, var_sim = "HYD_temp", depth_range = c(0, 2))
+```
+
+`plot_var()` is the lower-level building block `plot_ts()` is written on top
+of -- reach for it directly when you already have a `data.frame` from
+`get_var()` and want the same plot style without re-deriving it from the
+`Aeme` object:
+
+```{r plot-var}
+df <- get_var(aeme, model = model, var_sim = "HYD_temp", return_df = TRUE)
+plot_var(df = df, aeme = aeme, model = model, var_sim = "HYD_temp")
+```
+
+# Observations and residuals
+
+`plot_obs()` shows the observation record alone -- useful for checking
+coverage before deciding what to calibrate against (see also
+`summarise_obs()` in `vignette("setup-new-lake")`):
+
+```{r plot-obs}
+plot_obs(aeme, var_sim = "HYD_temp")
+```
+
+`plot_resid()` plots modelled-minus-observed directly, rather than the two
+series overlaid -- the faster way to see whether a model is biased high/low
+versus just imprecise:
+
+```{r plot-resid}
+plot_resid(aeme, model = model, var_sim = "HYD_temp")
+```
+
+# Biogeochemical group plots
+
+Each major AED module has its own plot, all sharing the `plot_ts()`
+argument shape (`add_obs`, `depth_range`, `remove_spin_up`, `ens_n`):
+
+```{r plot-nit}
+plot_nit(aeme)
+```
+
+```{r plot-phs}
+plot_phs(aeme)      # phosphorus
+```
+
+```{r plot-car}
+plot_car(aeme)      # carbon
+```
+
+```{r plot-phytos}
+plot_phytos(aeme)   # phytoplankton groups
+```
+Similarly, `plot_zoops()` shows the zooplankton groups but requires the 
+zooplankton module to be active in the model configuration. This example's 
+minimal config does not carry zooplankton/full phyto groups.
+
+```{r plot-zoops eval = FALSE}
+plot_zoops(aeme)    # zooplankton groups
+```
+
+# Inputs, not output
+
+Three functions plot what went *into* the model rather than what came out --
+useful when a run looks wrong and the question is whether the forcing data
+is the problem.
+
+Meteorology, as a tile plot (one row per variable, coloured by value,
+faceted by hydrological year):
+
+```{r plot-met-tile}
+plot_met_tile(aeme, var_inp = "MET_tmpair")
+```
+
+The hypsograph the model was built with:
+
+```{r plot-hyps}
+plot_hyps(aeme)
+```
+
+Inflows and/or outflows:
+
+```{r plot-flows}
+plot_flows(aeme, flow = "inflow")
+```
+
+Cumulative heat fluxes (e.g. checking an energy budget):
+
+```{r plot-fluxes}
+plot_fluxes(aeme, cumulative = TRUE)
+```
+
+# Working with a raw output list
+
+`plot_model_output()` is the lowest-level of the plotting functions: pass it
+an `Aeme` object directly, as below, or -- its other accepted input -- the
+specifically classed list `read_glm_output()`/`read_gotm_output()`/
+`read_simstrat_output()`/`read_dy_output()`/`read_model_outputs()` return
+(`output(aeme)` itself is a plain list and isn't accepted; use one of those
+readers if you need output outside the `Aeme` object). It's what every
+other `plot_*` function on this page is ultimately built on:
+
+```{r plot-model-output}
+outfile <- get_model_outfile(aeme, model = "glm_aed")$glm_aed
+outfile
+```
+
+`read_glm_output()` reads the model output, projects onto a standard grid
+and also does some unit conversions, especially for the AED variables that are 
+stored in mmol/m3 in the raw output but are more commonly expressed in mg/L.
+
+```{r plot-model-output}
+out <- read_glm_output(file = outfile)
+plot_model_output(out, var_sim = "CHM_oxy")
+```
+
+However, you can also load all raw output from the GLM netcdf output file and 
+plot any variable in its raw form e.g. model units and Lagrangian grid, rather 
+than the standardised grid and converted units. This is useful for plotting 
+variables that are not included in the `Aeme` object by default.
+You need to use the raw variable name for plotting instead of the standardised
+AEME variable name.
+
+```{r}
+raw <- read_glm_output(file = outfile, raw = TRUE, load_all = TRUE)
+raw
+```
+
+```{r}
+plot_model_output(raw, var_sim = "OXY_oxy")
+```
+
+
+
+The AED sediment fluxes, which are not included in the `Aeme` object by default.
+For example, to plot the sediment oxygen flux:
+
+```{r}
+plot_model_output(raw, var_sim = "SDF_Fsed_oxy_Z")
+```
+
+# Next steps
+
+`vignette("testing-parameters")` covers changing a parameter and re-running
+without a full rebuild -- these plotting functions are the natural way to
+compare the result against what you started with.

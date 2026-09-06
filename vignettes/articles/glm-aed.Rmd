@@ -332,7 +332,9 @@ aeme <- build_aeme(
 ```
 
 The configuration files are stored in the `configuration` slot of the `aeme`
-object. For GLM-AED the slot contains the parsed `glm3.nml` and `aed/aed.nml`:
+object. For GLM-AED the slot contains the parsed GLM hydrodynamic nml
+(`glm3.nml` or `glm4.nml`, whichever version was built -- see
+`find_glm_nml()`) and `aed/aed.nml`:
 
 ```{r inspect-config}
 cfg <- configuration(aeme)
@@ -756,8 +758,9 @@ print(pages$sediment)
 
 ## Working with the GLM configuration directly
 
-The raw `glm3.nml` file and `aed/aed.nml` file can be read, modified, and
-written using the NML helpers bundled with AEME:
+The raw GLM hydrodynamic nml (`glm3.nml` or `glm4.nml`, resolved via
+`find_glm_nml()`) and `aed/aed.nml` file can be read, modified, and written
+using the NML helpers bundled with AEME:
 
 ```{r nml-helpers, eval=FALSE}
 # Retrieve the parsed configuration
@@ -771,6 +774,16 @@ glm_nml$morphometry$lake_name
 # Access AED biogeochemistry section
 aed_nml <- cfg$bgc$aed
 aed_nml$aed_nitrogen$rnitrif   # nitrification rate
+```
+
+For quick edits to a single parameter without loading the whole config,
+`get_glm_param()`/`set_glm_param()` work directly against the nml file on
+disk (see `vignette("testing-parameters")`):
+
+```{r glm-param-helpers, eval=FALSE}
+path_glm <- file.path(get_lake_dir(aeme), "glm_aed")
+get_glm_param(path_glm, "Kw")
+set_glm_param(path_glm, Kw = 0.5, coef_mix_hyp = 0.3)
 ```
 
 ### Retrieving parameters by module

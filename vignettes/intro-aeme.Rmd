@@ -50,13 +50,17 @@ parameter_names <- paste0(names(pars), collapse = ", ")
 
 ## Summary
 
-The AEME package hosts three one-dimensional hydrodynamic models: the DYnamic
-REservoir Simulation Model (DYRESM), the General Lake Model (GLM), and the
+The AEME package hosts four one-dimensional hydrodynamic models: the DYnamic
+REservoir Simulation Model (DYRESM), the General Lake Model (GLM), the
 General Ocean Turbulence Model (GOTM, which has been adapted for closed basins
-for application to lakes and reservoirs). The models can be coupled to their
-corresponding water quality models, the DYRESM-CAEDYM (Computational Aquatic
-Ecosystem Dynamics Model), GLM-AED (Aquatic Ecosystem Dynamics Model), and
-GOTM-WET (Water Ecosystem Tool).
+for application to lakes and reservoirs), and Simstrat. The models can be
+coupled to their corresponding water quality models, the DYRESM-CAEDYM
+(Computational Aquatic Ecosystem Dynamics Model), GLM-AED (Aquatic Ecosystem
+Dynamics Model), GOTM-WET (Water Ecosystem Tool), and Simstrat-AED2/AED.
+
+This vignette assumes at least one model is already installed -- see
+`vignette("installing-models")` if `build_aeme()` below reports a missing
+executable.
 
 Key aspects of the AEME package include:
 
@@ -153,7 +157,7 @@ components as well as the aquatic ecosystem model components:
 | Model | Hyrodynamic | Ecosystem |
 |--------------------|---------------------------|---------------------------------|
 | DYRESM-CAEDYM | *.cfg* file and *.par* file | *.con*, *caedym3p1.bio, caedym3p1.chm* and *caedym3p1.sed* files |
-| GLM-AED | *glm3.nml* file | *aed2.nml*, *phytos.nml*, *zoops.nml* files |
+| GLM-AED | GLM hydrodynamic nml (*glm3.nml* or *glm4.nml*) | *aed.nml* (or *aed2.nml*) and its phytoplankton/zooplankton parameter files |
 | GOTM-WET | *gotm.yaml* and *output.yaml* files | *fabm.yaml* file |
 
 : Files for hydrodynamic and ecosystem models.
@@ -290,11 +294,14 @@ The columns for the parameters data.frame are:
 
 -   model - Either "dy_cd", "glm_aed" and "gotm_wet".
 
--   file - Either the name of the file e.g. "glm3.nml" for model specific files
-    or "met" for meteorological variables or "inf" for inflow or "wdr" for
-    outflows. (Outflows were initiallly referred to as withdrawals, hence the
-    "wdr" notation, this will probably be updated to reflect the current
-    outflows slot soon...).
+-   file - Either the name of the file e.g. "glm3.nml" for model specific
+    files (whichever of `glm3.nml`/`glm4.nml` is actually on disk is resolved
+    automatically -- see `find_glm_nml()` -- so this table entry always uses
+    the literal string `"glm3.nml"` regardless of the GLM version an object
+    was built with) or "met" for meteorological variables or "inf" for inflow
+    or "wdr" for outflows. (Outflows were initiallly referred to as
+    withdrawals, hence the "wdr" notation, this will probably be updated to
+    reflect the current outflows slot soon...).
 
 -   name - Name of the parameter. If the name of the parameter is nested in a
     nml/yaml file, then the whole hierarchy needs to be provide with each level
