@@ -349,7 +349,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
         check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
                    aeme_time = aeme_time,
-                   name = paste0("outflow-", names(aeme_outf[["data"]])[i]))
+                   name = paste0("outflow-", names(aeme_outf[["data"]])[i]),
+                   check_cadence = FALSE)
       }
       outflow_names <- names(outf)
       # Select names not set to "wbal"
@@ -626,15 +627,35 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   if (length(inf) == 0) {
     inf <- NULL
   }
+
+  # Per-model initial conditions ----
+  # Resolve configuration(aeme)$initial_conditions (see set_initial_conditions())
+  # into the profile / depth / model_controls handed to each build_<model>()
+  # call. Depth-resolved water-quality profiles (model_ic[[m]]$wq_prof) are
+  # applied to the written files after the build_<model>() calls below.
+  ic_spec <- if (!is.null(aeme)) {
+    configuration(aeme)[["initial_conditions"]]
+  } else {
+    NULL
+  }
+  model_ic <- stats::setNames(
+    lapply(model, \(m) .resolve_model_ic(ic_spec, m, init_prof = init_prof,
+                                         init_depth = init_depth,
+                                         model_controls = model_controls)),
+    model
+  )
+
   if ("dy_cd" %in% model) {
     #--- configure DYRESM-CAEDYM
+    ic <- model_ic[["dy_cd"]]
     dates.dy <- c(date_range[1] - spin_up[["dy_cd"]], date_range[2]) |>
       `names<-`(NULL)
-    build_dycd(lakename, model_controls = model_controls, date_range = dates.dy,
+    build_dycd(lakename, model_controls = ic[["model_controls"]],
+               date_range = dates.dy,
                lat = lat, lon = lon, hyps = hyps, lvl = lvl,
                inf = inf, outf = outf, met = met,
-               lake_dir = lake_dir, init_prof = init_prof,
-               init_depth = init_depth,
+               lake_dir = lake_dir, init_prof = ic[["init_prof"]],
+               init_depth = ic[["init_depth"]],
                inf_factor = inf_factor[["dy_cd"]],
                outf_factor = outf_factor[["dy_cd"]],
                Kw = Kw,
@@ -644,9 +665,10 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   if ("glm_aed" %in% model) {
     #--- configure GLM-AED
+    ic <- model_ic[["glm_aed"]]
     dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
       `names<-`(NULL)
-    
+
     obs_temp <- get_obs(aeme, var_sim = "HYD_temp")
 
     # Any GLM &sediment rows the user has put in parameters(aeme) take
@@ -661,10 +683,11 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       glm_sed_params <- NULL
     }
 
-    build_glm(lakename, model_controls = model_controls, date_range = dates.glm,
+    build_glm(lakename, model_controls = ic[["model_controls"]],
+              date_range = dates.glm,
               lake_shape = lake_shape, lat = lat, lon = lon,
-              hyps = hyps, lvl = lvl, init_prof = init_prof,
-              init_depth = init_depth, inf = inf, outf = outf,
+              hyps = hyps, lvl = lvl, init_prof = ic[["init_prof"]],
+              init_depth = ic[["init_depth"]], inf = inf, outf = outf,
               heights_wdr = unlist(aeme_outf[["elevation"]]),
               met = met, lake_dir = lake_dir,
               inf_factor = inf_factor[["glm_aed"]],
@@ -681,6 +704,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   if ("gotm_wet" %in% model) {
     #--- configure GOTM-WET
+    ic <- model_ic[["gotm_wet"]]
     dates.gotm <- c(date_range[1] - spin_up[["gotm_wet"]], date_range[2]) |>
       `names<-`(NULL)
     depth <- max(hyps$elev) - min(hyps$elev)
@@ -690,10 +714,12 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       div <- 0.33
     }
     nlev <- ceiling(depth / div)
-    build_gotm(lakename, model_controls = model_controls, date_range = dates.gotm,
+    build_gotm(lakename, model_controls = ic[["model_controls"]],
+               date_range = dates.gotm,
                lake_shape = lake_shape, lat = lat, lon = lon,
                lake_dir = lake_dir, hyps = hyps, lvl = lvl,
-               init_prof = init_prof, init_depth = init_depth, inf = inf,
+               init_prof = ic[["init_prof"]], init_depth = ic[["init_depth"]],
+               inf = inf,
                outf = outf, met = met, inf_factor = inf_factor[["gotm_wet"]],
                outf_factor = outf_factor[["gotm_wet"]], Kw = Kw,
                nlev = nlev, use_bgc = use_bgc,
@@ -706,13 +732,14 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   if ("simstrat_aed2" %in% model) {
     #--- configure Simstrat-AED2
+    ic <- model_ic[["simstrat_aed2"]]
     dates.simstrat <- c(date_range[1] - spin_up[["simstrat_aed2"]], date_range[2]) |>
       `names<-`(NULL)
 
-    build_simstrat(lakename, model_controls = model_controls,
+    build_simstrat(lakename, model_controls = ic[["model_controls"]],
                    date_range = dates.simstrat, lake_shape = lake_shape,
                    lat = lat, lon = lon, hyps = hyps, lvl = lvl,
-                   init_prof = init_prof, init_depth = init_depth,
+                   init_prof = ic[["init_prof"]], init_depth = ic[["init_depth"]],
                    inf = inf, outf = outf,
                    heights_wdr = unlist(aeme_outf[["elevation"]]),
                    met = met, lake_dir = lake_dir,
@@ -725,13 +752,14 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   if ("simstrat_aed" %in% model) {
     #--- configure Simstrat-AED
+    ic <- model_ic[["simstrat_aed"]]
     dates.simstrat_aed <- c(date_range[1] - spin_up[["simstrat_aed"]], date_range[2]) |>
       `names<-`(NULL)
 
-    build_simstrat(lakename, model_controls = model_controls,
+    build_simstrat(lakename, model_controls = ic[["model_controls"]],
                    date_range = dates.simstrat_aed, lake_shape = lake_shape,
                    lat = lat, lon = lon, hyps = hyps, lvl = lvl,
-                   init_prof = init_prof, init_depth = init_depth,
+                   init_prof = ic[["init_prof"]], init_depth = ic[["init_depth"]],
                    inf = inf, outf = outf,
                    heights_wdr = unlist(aeme_outf[["elevation"]]),
                    met = met, lake_dir = lake_dir,
@@ -741,6 +769,16 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                    output_time_step = aeme_time[["output_time_step"]] %||% 86400,
                    bgc_lib = "aed")
     # run_simstrat_aed(sim_folder = lake_dir, verbose = TRUE)
+  }
+
+  # Depth-resolved initial water-quality profiles ----
+  # Scalar water-quality initials were folded into each model's
+  # `model_controls` above; `depth`/`value` profiles are written to the
+  # built model directories here via the model-specific `set_*_init()`
+  # writers.
+  for (m in model) {
+    .apply_wq_prof(model = m, lake_dir = lake_dir,
+                   wq_prof = model_ic[[m]][["wq_prof"]], use_bgc = use_bgc)
   }
 
   # Model parameters ----
