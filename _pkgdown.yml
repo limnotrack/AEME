@@ -39,6 +39,7 @@ articles:
   contents:
   - articles/visualising-output
   - articles/testing-parameters
+  - articles/hourly-vs-daily-met
 - title: Model descriptions
   navbar: Model descriptions
   contents:
