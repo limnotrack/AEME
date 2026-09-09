@@ -69,6 +69,13 @@ load_configuration <- function(aeme,
                                   bgc = model_config[["simstrat_aed"]][["bgc"]])
   )
 
+  # Preserve the initial-conditions specification (set_initial_conditions());
+  # it is an input to the build, not something re-read from the config files.
+  ic_spec <- configuration(aeme)[["initial_conditions"]]
+  if (!is.null(ic_spec)) {
+    out[["initial_conditions"]] <- ic_spec
+  }
+
   configuration(aeme) <- out
   aeme
 }
