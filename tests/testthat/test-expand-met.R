@@ -3,7 +3,7 @@ test_that("can expand met", {
   aeme_file <- list.files(aeme_dir, recursive = TRUE, pattern = "aeme",
                          full.names = TRUE)
   aeme_yaml <- yaml::read_yaml(aeme_file)
-  met_file <- list.files(aeme_dir, recursive = TRUE, pattern = "meteo",
+  met_file <- list.files(aeme_dir, recursive = TRUE, pattern = "^meteo\\.csv$",
                          full.names = TRUE)
   met <- read.csv(met_file) |>
     dplyr::mutate(Date = as.Date(Date))

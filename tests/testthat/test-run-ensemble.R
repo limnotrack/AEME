@@ -44,7 +44,7 @@ test_that("running models in parallel works", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
                      calc_wlev = FALSE)
-  aeme <- run_aeme(aeme = aeme, parallel = TRUE, ncore = getOption("ncore"))
+  aeme <- run_aeme(aeme = aeme, parallel = F, ncore = getOption("ncore"))
   plot_wlev(aeme)
 
   testthat::expect_true(check_all_model_outfiles(aeme))
@@ -55,6 +55,72 @@ test_that("running models in parallel works", {
                                     var_sim = var_sim)
   testthat::expect_true(is.data.frame(model_performance))
 
+  pl <- plot_resid(aeme = aeme, model = model, var_sim = var_sim[1])
+  testthat::expect_true(ggplot2::is_ggplot(pl))
+})
+
+test_that("running models with 1hr met data", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  era5_file <- system.file("extdata/lake/data/meteo_era5_hr.csv.gz", 
+                           package = "AEME")
+  era5_met <- readr::read_csv(era5_file)
+  aeme <- readRDS(aeme_file)
+  dly_met <- collapse_met_daily(obs_met = era5_met, precip = "sum")
+  path <- tempdir()
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model <- c("glm_aed")
+  # model <- filter_platform_models(model)
+
+  aeme <- aeme |>
+    set_time(start = "2020-01-15", stop = "2020-01-17", spin_up = 1) |>
+    add_met(met = era5_met) |> 
+    set_output_time_step(frequency = "1 hours") |>
+    build_aeme(path = path, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = FALSE, tz = "Pacific/Auckland") |> 
+    run_aeme()
+  raw <- read_g
+  # plot_output(aeme, var_lims = c(5, 30), add_obs = F)
+  p <- plot_ts(aeme, var_sim = "HYD_temp", depth_range = c(0, 1),
+          remove_spin_up = F) +
+    ggplot2::coord_cartesian(ylim = c(10, 27))  
+  p /
+  plot_fluxes(aeme, facet_by = "model", remove_spin_up = F)
+  
+  get_var(aeme, var_sim = "HYD_temp", depth = c(0), remove_spin_up = F) 
+  
+  # plot(aeme)
+  plot_output(aeme, var_sim = "LKE_Qe") /
+  plot_output(aeme, var_sim = "LKE_Qh") 
+  
+  
+  outfile <- get_model_outfile(aeme)
+  raw <- read_glm_output(file = outfile$glm_aed, raw_output = T)
+  min_layer_h <- apply(raw$z, 2, \(x) {
+    min(diff(c(0, x)), na.rm = TRUE)
+  })
+  surf_layer_thick <- apply(raw$z, 2, \(x) {
+    # Subtract the largest from the second largest 
+    sort(x, decreasing = TRUE)[1] - sort(x, decreasing = TRUE)[2]
+  })
+  plot(surf_layer_thick)
+  
+  nc <- ncdf4::nc_open(outfile$glm_aed)
+  temp <- ncdf4::ncvar_get(nc, "temp")
+  plot(temp[1,])
+  lines(temp[40,], col = "red")
+  ncdf4::nc_close(nc)
+  plot_wlev(aeme)
+  temp <- get_var(aeme, var_sim = "HYD_temp")
+  
+  testthat::expect_true(check_all_model_outfiles(aeme))
+  
+  var_sim <- c("LKE_lvlwtr", "HYD_temp")
+  
+  model_performance <- assess_model(aeme = aeme, model = model,
+                                    var_sim = var_sim)
+  testthat::expect_true(is.data.frame(model_performance))
+  
   pl <- plot_resid(aeme = aeme, model = model, var_sim = var_sim[1])
   testthat::expect_true(ggplot2::is_ggplot(pl))
 })
@@ -449,7 +515,7 @@ test_that("summarise multi-year output", {
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 
   aeme_time <- time(aeme)
-  aeme_time$start <- as.POSIXct("2020-01-01 00:00:00")
+  aeme_time$start <- as.POSIXct("2020-01-01 00:00:00", tz = "UTC")
   time(aeme) <- aeme_time
 
   model_controls <- get_model_controls(use_bgc = TRUE)

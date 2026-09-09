@@ -42,7 +42,7 @@ test_that("running GLM works", {
 
   # load_all = FALSE here to check the minimal, tightly-scoped read still
   # returns exactly what was asked for (Date, HYD_temp, LKE_depths,
-  # LKE_lvlwtr, ok, reason) -- load_all = TRUE (the read_model_outputs()
+  # LKE_lvlwtr, z, ok, reason) -- load_all = TRUE (the read_model_outputs()
   # default) would additionally pick up every other variable in the file,
   # tested separately in test-read-glm-output-load-all.R
   outp2 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model,
@@ -50,7 +50,7 @@ test_that("running GLM works", {
                               load_all = FALSE)
   testthat::expect_true(is.list(outp2))
   testthat::expect_true(nrow(outp2$HYD_temp) == 42)
-  testthat::expect_true(length(outp2) == 6)
+  testthat::expect_true(length(outp2) == 7)
 
   ncdf4::nc_close(nc)
 
@@ -199,7 +199,7 @@ test_that("editing and running GLM-AED via the thin path-based wrapper works", {
   testthat::expect_true("HYD_temp" %in% names(out_std))
   testthat::expect_equal(dim(out_std$HYD_temp), dim(out$HYD_temp))
   testthat::expect_equal(out_std$HYD_temp, out$HYD_temp, tolerance = 1e-6)
-  testthat::expect_equal(out_std$LKE_lvlwtr, out_raw$LKE_lvlwtr)
+  testthat::expect_equal(out_std$LKE_lvlwtr, out_raw$lake_level)
   testthat::expect_error(standardise_glm_output(out))
 })
 
@@ -215,18 +215,10 @@ test_that("running GLM with different exec works", {
   model <- c("glm_aed")
 
   path <- tempdir()  # or wherever you want to save
+  install_glm_aed(version = "3.3.5")
 
-  glm_exec_url <- "https://github.com/AquaticEcoDynamics/Binaries/raw/master/windows/glm_3.9.016.zip"
-
-  download.file(
-    glm_exec_url,
-    destfile = file.path(path, "glm_3.9.016.zip"),
-    mode = "wb"
-  )
-  unzip(file.path(path, "glm_3.9.016.zip"), exdir = file.path(path, "glm_exec"))
-  glm_exec <- file.path(path, "glm_exec", "glm_3.9.016", "glm.exe")
-  testthat::expect_true(file.exists(glm_exec))
-  options("AEME.glm_exec" = glm_exec)
+  options("AEME.glm_exec" = glm_exe_path())
+  getOption("AEME.glm_exec")
 
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, ext_elev = 5,
@@ -234,7 +226,7 @@ test_that("running GLM with different exec works", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
 
   glm_ver <- get_model_version(model = model)
-  testthat::expect_true(any(grepl("3.9.016", glm_ver)))
+  testthat::expect_true(any(grepl("3.3.5", glm_ver)))
   # plot_output(aeme, model = model)
   outp <- output(aeme)
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
@@ -266,6 +258,8 @@ test_that("running GLM-AED works", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
   vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb",
                 "CHM_oxycln", "CHM_oxynal",
                 "NIT_tn", "PHS_tp", "PHY_tchla", "CAR_toc")

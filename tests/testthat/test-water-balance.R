@@ -381,7 +381,7 @@ test_that("get_wbal_components: returns a list with expected structure", {
   # Load a pre-built AEME object with output
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file) |> 
-    build_aeme(ext_elev = 3, model = "dy_cd")
+    build_aeme(path = withr::local_tempdir(), ext_elev = 3, model = "dy_cd")
   
   result <- get_wbal_components(aeme, model = "dy_cd")
   
@@ -392,7 +392,7 @@ test_that("get_wbal_components: returns a list with expected structure", {
 test_that("get_wbal_components: meta contains expected fields", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file) |> 
-    build_aeme(ext_elev = 3, model = "dy_cd")
+    build_aeme(path = withr::local_tempdir(), ext_elev = 3, model = "dy_cd")
   
   result <- get_wbal_components(aeme, model = "dy_cd")
   
@@ -404,7 +404,7 @@ test_that("get_wbal_components: meta contains expected fields", {
 test_that("get_wbal_components: wb is a data frame", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file) |> 
-    build_aeme(ext_elev = 3, model = "dy_cd")
+    build_aeme(path = withr::local_tempdir(), ext_elev = 3, model = "dy_cd")
   
   result <- get_wbal_components(aeme, model = "dy_cd")
   
@@ -416,7 +416,7 @@ test_that("get_wbal_components: wb is a data frame", {
 test_that("get_wbal_components: mod is a list of data frames", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file) |> 
-    build_aeme(ext_elev = 3, model = "dy_cd")
+    build_aeme(path = withr::local_tempdir(), ext_elev = 3, model = "dy_cd")
   
   result <- get_wbal_components(aeme, model = "dy_cd")
   
@@ -429,7 +429,7 @@ test_that("get_wbal_components: mod is a list of data frames", {
 test_that("get_wbal_components: cumulative option works", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file) |> 
-    build_aeme(ext_elev = 3, model = "glm_aed") |> 
+    build_aeme(path = withr::local_tempdir(), ext_elev = 3, model = "glm_aed") |> 
     run_aeme()
   
   result <- get_wbal_components(aeme, model = "glm_aed", cumulative = TRUE)
@@ -440,7 +440,7 @@ test_that("get_wbal_components: cumulative option works", {
 test_that("get_wbal_components: remove_spin_up option works", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file) |> 
-    build_aeme(ext_elev = 3, model = "dy_cd")
+    build_aeme(path = withr::local_tempdir(), ext_elev = 3, model = "dy_cd")
   
   result_with_spinup <- get_wbal_components(aeme, model = "dy_cd", 
                                              remove_spin_up = FALSE)

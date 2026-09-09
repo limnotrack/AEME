@@ -94,3 +94,150 @@ test_that("build_glm() propagates output_time_step to nsave/subdaily", {
   expect_equal(nml_d$output$nsave, 24)
   expect_false(isTRUE(nml_d$meteorology$subdaily))
 })
+
+test_that("read_glm_output() tolerates a date_index that overshoots the file", {
+  skip_if_models_unavailable("glm_aed")
+  aeme <- suppressMessages(
+    yaml_to_aeme(path = system.file("extdata/lake/", package = "AEME"),
+                 file = "aeme.yaml")
+  )
+  path <- withr::local_tempdir()
+  mc <- get_model_controls()
+  aeme <- suppressWarnings(suppressMessages(
+    build_aeme(aeme = aeme, path = path, model = "glm_aed",
+               model_controls = mc, ext_elev = 5)
+  ))
+  aeme <- suppressWarnings(suppressMessages(
+    run_aeme(aeme = aeme, model = "glm_aed", path = path,
+             model_controls = mc, verbose = FALSE)
+  ))
+
+  outfile <- get_model_outfile(aeme, model = "glm_aed", path = path)[["glm_aed"]]
+  nc <- ncdf4::nc_open(outfile)
+  on.exit(ncdf4::nc_close(nc))
+  n_rec <- length(ncdf4::ncvar_get(nc, "time"))
+
+  # An index ~3x longer than the file (what an hourly output_time_step would
+  # reconstruct against a still-daily run) must not empty the output.
+  out <- suppressWarnings(
+    read_glm_output(nc = nc, vars_sim = "HYD_temp", date_index = seq_len(3 * n_rec))
+  )
+  expect_false(is_model_error(out))
+  expect_equal(length(out[["Date"]]), n_rec)
+  expect_equal(ncol(out[["HYD_temp"]]), n_rec)
+
+  # A non-overlapping index still bails cleanly.
+  bail <- suppressWarnings(
+    read_glm_output(nc = nc, vars_sim = "HYD_temp",
+                    date_index = seq(n_rec + 10L, n_rec + 20L))
+  )
+  expect_true(is_model_error(bail))
+})
+
+test_that(".glm_fill_daily() carries once-per-day values across a sub-daily axis", {
+  hourly <- seq(as.POSIXct("2020-07-30 01:00", tz = "UTC"), by = "hour",
+                length.out = 72)
+  x <- rep(NA_real_, 72)
+  x[which(format(hourly, "%H") == "00")] <- c(10, 20, 30)  # GLM's daily writes
+
+  filled <- .glm_fill_daily(x, hourly)
+  expect_false(anyNA(filled))
+  # steps at 01:00..23:00 of 07-30 plus 07-31 00:00 all take the 07-31 write
+  expect_equal(unique(filled[1:24]), 10)
+  expect_equal(unique(filled[25:48]), 20)
+  expect_equal(unique(filled[49:72]), 30)
+
+  # daily series (no NA) is returned untouched
+  daily <- as.Date("2020-07-30") + 0:9
+  y <- runif(10)
+  expect_identical(.glm_fill_daily(y, daily), y)
+})
+
+test_that("hourly GLM output loads without all-NA daily-cadence variables", {
+  skip_if_models_unavailable("glm_aed")
+  path <- withr::local_tempdir()
+  file.copy(system.file("extdata/lake", package = "AEME"), path, recursive = TRUE)
+  lake_path <- file.path(path, "lake")
+  aeme <- suppressMessages(yaml_to_aeme(path = lake_path, "aeme.yaml"))
+
+  met <- read.csv(file.path(lake_path, "data/meteo_era5_hr.csv.gz"))
+  met$Date <- as.POSIXct(met$Date, tz = "UTC")
+  met <- met[met$Date >= as.POSIXct("2020-07-25", tz = "UTC") &
+             met$Date <= as.POSIXct("2021-07-01", tz = "UTC"), ]
+  inp <- input(aeme); inp$meteo <- met; input(aeme) <- inp
+  aeme <- suppressMessages(set_time(aeme, output_time_step = 3600))
+  aeme <- set_time(aeme, time_step = 3600, start = as.POSIXct("2020-08-01", tz = "UTC"),
+                  stop = as.POSIXct("2020-08-15", tz = "UTC"), spin_up = 1)
+
+  mc <- get_model_controls()
+  aeme <- suppressWarnings(suppressMessages(
+    build_aeme(aeme = aeme, path = lake_path, model = "glm_aed",
+               model_controls = mc, ext_elev = 5, use_bgc = FALSE)
+  ))
+  aeme <- suppressWarnings(suppressMessages(
+    run_aeme(aeme = aeme, verbose = FALSE)
+  ))
+  file <- get_model_outfile(aeme, model = "glm_aed", path = lake_path)[["glm_aed"]]
+  raw <- read_glm_output(file = file, raw_output = TRUE)
+
+  g <- output(aeme)[[format_ens_label(1)]]$glm_aed
+  expect_false(is_model_error(g))
+  expect_s3_class(g$Date, "POSIXct")
+  # ~14 days of hourly output (minus the 1-day spin-up), sub-daily spacing
+  expect_gt(length(g$Date), 24 * 10)
+  expect_lt(as.numeric(stats::median(diff(g$Date)), units = "hours"), 2)
+
+  # daily-cadence GLM diagnostics used to come back ~96% NA on a sub-daily run
+  for (v in c("HYD_surft", "LKE_Qe", "LKE_Qh", "LKE_A0", "LKE_evprte")) {
+    expect_lt(mean(is.na(g[[v]])), 0.05, label = v)
+  }
+  # and are piecewise-constant within each GLM day (filled, not interpolated)
+  day <- as.Date(g$Date - 1)
+  runs <- tapply(g$LKE_Qe, day, function(z) length(unique(round(z, 8))))
+  expect_true(all(runs <= 1, na.rm = TRUE))
+})
+
+test_that("plotting functions work on sub-daily (POSIXct) output", {
+  skip_if_models_unavailable("glm_aed")
+  path <- withr::local_tempdir()
+  file.copy(system.file("extdata/lake", package = "AEME"), path, recursive = TRUE)
+  lake_path <- file.path(path, "lake")
+  aeme <- suppressMessages(yaml_to_aeme(path = lake_path, "aeme.yaml"))
+
+  met <- read.csv(file.path(lake_path, "data/meteo_era5_hr.csv.gz"))
+  met$Date <- as.POSIXct(met$Date, tz = "UTC")
+  met <- met[met$Date >= as.POSIXct("2021-01-10", tz = "UTC") &
+             met$Date <= as.POSIXct("2021-02-10", tz = "UTC"), ]
+  inp <- input(aeme); inp$meteo <- met; input(aeme) <- inp
+  aeme <- suppressMessages(set_time(aeme, output_time_step = 3600))
+  aeme <- suppressMessages(set_time(
+    aeme, time_step = 3600, start = as.POSIXct("2021-01-13", tz = "UTC"),
+    stop = as.POSIXct("2021-01-31", tz = "UTC"), spin_up = 1))
+
+  mc <- get_model_controls()
+  aeme <- suppressWarnings(suppressMessages(
+    build_aeme(aeme = aeme, path = lake_path, model = "glm_aed",
+               model_controls = mc, ext_elev = 5, use_bgc = FALSE)))
+  aeme <- suppressWarnings(suppressMessages(run_aeme(aeme = aeme, verbose = FALSE)))
+
+  file <- get_model_outfile(aeme, model = "glm_aed", path = lake_path)[["glm_aed"]]
+  std <- read_glm_output(file = file)
+  raw <- read_glm_output(file = file, raw_output = TRUE)
+  plot_model_output(raw, "temp")
+
+  # ggplot backend: heatmap tiles must span the real output step, not 1 s
+  p <- plot_output(aeme, "HYD_temp")
+  tile_w <- ggplot2::ggplot_build(p)$data[[1]]
+  tile_w <- stats::median(tile_w$xmax - tile_w$xmin, na.rm = TRUE)
+  expect_equal(tile_w, 3600)
+
+  expect_s3_class(plot_output(aeme, "LKE_evpvol"), "gg")            # 1-D series
+  expect_no_error(plot_output(aeme, "HYD_temp", backend = "base")) # image() x-axis
+  expect_s3_class(plot_model_output(std, "HYD_temp"), "gg")
+  expect_s3_class(plot_glm_output(raw, "temp"), "gg")
+
+  # observation overlay: daily obs must still match a POSIXct model axis
+  ad <- align_depth_data(aeme, model = "glm_aed", var_sim = "HYD_temp")
+  expect_gt(nrow(ad$lake_adj), 0)
+  expect_no_error(plot_output(aeme, "HYD_temp", add_obs = TRUE))
+})

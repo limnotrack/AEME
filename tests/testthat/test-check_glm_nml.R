@@ -41,6 +41,10 @@ test_that("check_glm_nml() enforces sed_heat_Ksoil/sed_temp_depth zone length wh
 test_that("check_glm_nml() skips sed_heat_Ksoil/sed_temp_depth zone length when sed_heat_model != 1", {
   nml <- .glm_nml_fixture()
   nml$sediment$sed_heat_model <- 2
+  # sed_heat_model = 2 is supplied by the WQ library, so a coupled WQ module
+  # must be present for it to be valid -- otherwise a separate check fires and
+  # masks what this test is exercising.
+  nml$wq_setup$wq_lib <- "aed"
   tmp <- tempfile(fileext = ".nml")
   write_nml(nml, tmp)
 

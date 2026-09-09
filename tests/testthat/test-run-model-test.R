@@ -65,7 +65,8 @@ test_that("run_model_test() works end-to-end for GLM-AED", {
   testthat::expect_true(is.list(out))
   testthat::expect_true(nrow(out$HYD_temp) > 0)
   testthat::expect_true(is_aeme_output(out))
-  testthat::expect_equal(get_glm_param(path_glm, "Kw"), 0.8)
+  # run_model_test() applies param_overrides and leaves them in place
+  testthat::expect_equal(get_glm_param(path_glm, "Kw"), 1.5)
   nml1 <- read_nml(glm_file)
   testthat::expect_equal(nml1$init_profiles$the_temps, new_temp)
 })
