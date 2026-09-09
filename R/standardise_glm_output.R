@@ -52,7 +52,7 @@ standardise_glm_output <- function(out_raw, depths = NULL) {
   }
 
   dates      <- as.Date(out_raw[["Date"]])
-  lake_level <- out_raw[["LKE_lvlwtr"]]
+  lake_level <- out_raw[["lake_level"]]
 
   # Recompute layer midpoints from the raw z boundary heights at full
   # precision -- LKE_depths in raw mode is this same quantity, but already
