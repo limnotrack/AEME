@@ -40,6 +40,10 @@ articles:
   - articles/visualising-output
   - articles/testing-parameters
   - articles/hourly-vs-daily-met
+- title: Uncertainty
+  navbar: Uncertainty
+  contents:
+  - articles/initial-conditions-and-spin-up
 - title: Model descriptions
   navbar: Model descriptions
   contents:
