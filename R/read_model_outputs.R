@@ -120,7 +120,14 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
       incl_fluxes <- ifelse("output_daily" %in% names(nc_files), FALSE, TRUE)
       read_gotm_daily <- !incl_fluxes
     } else {
-      nc_file <- nc_files["output"]
+      # Resolvers name the primary output differently per model (glm/simstrat
+      # use "output", dy_cd uses "DYsim"), so select by name when present and
+      # otherwise fall back to the first (only) file rather than yielding NA.
+      nc_file <- if ("output" %in% names(nc_files)) {
+        nc_files[["output"]]
+      } else {
+        nc_files[[1]]
+      }
       read_gotm_daily <- FALSE
     }
     nc <- open_nc_safe(file = nc_file, model = model)
@@ -174,6 +181,12 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                                                            model = "simstrat_aed")
   )
   
+  # A reader can bail with a `model_output_error` struct (e.g. the requested
+  # date_index does not overlap the file at all). Pass it straight through --
+  # `.finalise_model_output()` would otherwise wrap the bare error list as if
+  # it were a real output list.
+  if (is_model_error(out_list)) return(out_list)
+
   if (model == "gotm_wet" & !incl_fluxes & read_gotm_daily) {
     add_vars <- read_gotm_output(file = nc_files["output_daily"], 
                                  incl_fluxes = TRUE, date_index = date_index)
@@ -429,7 +442,7 @@ extract_model_time <- function(nc, model) {
 
   } else if (model == "dy_cd") {
     dt <- as.POSIXct((ncdf4::ncvar_get(nc, "dyresmTime") - 2415018.5) *
-                       86400, origin = "1899-12-30")
+                       86400, origin = "1899-12-30", tz = "UTC")
 
   } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
     units_prefix <- "seconds since "
@@ -441,7 +454,7 @@ extract_model_time <- function(nc, model) {
 
   list(
     datetime = dt,
-    dates = as.Date(dt)
+    dates = as.Date(dt, tz = "UTC")
   )
 }
 

@@ -27,7 +27,8 @@ read_model_nc <- function(aeme, model, path, lake_dir = NULL, vars_sim,
     lake_dir <- get_lake_dir(aeme, path)
   }
   date_index <- get_date_index(aeme = aeme, model = model,
-                               remove_spin_up = remove_spin_up)[[model]]
+                               remove_spin_up = remove_spin_up,
+                               lake_dir = lake_dir)[[model]]
   
   cfg <- configuration(aeme)
   if ("glm_aed" %in% model & cfg$use_bgc) {

@@ -53,13 +53,25 @@ read_simstrat_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       date_index <- seq_along(simstrat_dates)
     }
   }
-  if (length(simstrat_dates) < max(date_index)) {
-    cli::cli_alert_warning("date_index exceeds available Simstrat-AED2 output
-                          dates. Returning empty output.")
-    out <- empty_model_output(
-      reason = "date_index exceeds available Simstrat-AED2 output dates"
-    )
-    return(out)
+  # Keep the positions that exist rather than discarding every variable when
+  # a reconstructed `date_index` overshoots the records Simstrat actually
+  # wrote (e.g. an hourly output_time_step against a run still written daily).
+  n_out <- length(simstrat_dates)
+  if (any(date_index < 1 | date_index > n_out)) {
+    dropped <- sum(date_index < 1 | date_index > n_out)
+    date_index <- date_index[date_index >= 1 & date_index <= n_out]
+    if (length(date_index) == 0) {
+      cli::cli_alert_warning(
+        "date_index does not overlap the {n_out} Simstrat-AED2 output record{?s}. Returning empty output."
+      )
+      return(empty_model_output(
+        reason = "date_index does not overlap available Simstrat-AED2 output dates"
+      ))
+    }
+    cli::cli_warn(c(
+      "!" = "Simstrat-AED2 output holds {n_out} record{?s} but {dropped} requested index position{?s} fell outside it -- those step{?s} were dropped.",
+      "i" = "Was the Simstrat run rebuilt and re-run after changing {.field output_time_step}?"
+    ))
   }
   dates <- .collapse_output_date(simstrat_dates[date_index])
 

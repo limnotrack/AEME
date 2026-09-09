@@ -327,12 +327,25 @@ read_simstrat_dat <- function(sim_folder = NULL, vars_sim = NULL,
       date_index <- seq_along(simstrat_dates)
     }
   }
-  if (length(simstrat_dates) < max(date_index)) {
-    cli::cli_alert_warning("date_index exceeds available {model} output
-                          dates. Returning empty output.")
-    return(empty_model_output(
-      reason = paste0("date_index exceeds available ", model,
-                      " output dates")
+  # Keep the positions that exist rather than discarding every variable when
+  # a reconstructed `date_index` overshoots the rows actually written (e.g. an
+  # hourly output_time_step against a run still written daily).
+  n_out <- length(simstrat_dates)
+  if (any(date_index < 1 | date_index > n_out)) {
+    dropped <- sum(date_index < 1 | date_index > n_out)
+    date_index <- date_index[date_index >= 1 & date_index <= n_out]
+    if (length(date_index) == 0) {
+      cli::cli_alert_warning(
+        "date_index does not overlap the {n_out} {model} output row{?s}. Returning empty output."
+      )
+      return(empty_model_output(
+        reason = paste0("date_index does not overlap available ", model,
+                        " output dates")
+      ))
+    }
+    cli::cli_warn(c(
+      "!" = "{model} output holds {n_out} row{?s} but {dropped} requested index position{?s} fell outside it -- those step{?s} were dropped.",
+      "i" = "Was the {model} run rebuilt and re-run after changing {.field output_time_step}?"
     ))
   }
   dates <- simstrat_dates[date_index]
