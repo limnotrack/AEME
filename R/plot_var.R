@@ -156,9 +156,20 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, point_size, add_obs,
   } else {
     sel_var
   }
-  df <- df |> 
-    dplyr::group_by(Date, Model) |> 
-    dplyr::arrange(depth, .by_group = TRUE) |> 
+  # geom_col()'s `width` is in x data units: 1 day for a Date axis (the
+  # historical daily case) but *seconds* for a POSIXct axis, so a sub-daily
+  # run needs the width set to its actual output step or the tiles collapse
+  # to invisible slivers.
+  bar_w <- if (inherits(df$Date, "POSIXct")) {
+    ud <- sort(unique(as.numeric(df$Date)))
+    if (length(ud) > 1) stats::median(diff(ud)) else 86400
+  } else {
+    1
+  }
+
+  df <- df |>
+    dplyr::group_by(Date, Model) |>
+    dplyr::arrange(depth, .by_group = TRUE) |>
     dplyr::mutate(
       # internal boundaries
       mid_next = dplyr::lead(depth),
@@ -177,7 +188,7 @@ plot_var_depth <- function(df, obs, ylim, xlim, var_lims, point_size, add_obs,
   p <- ggplot2::ggplot() +
     ggplot2::geom_col(data = df, ggplot2::aes(x = Date, y = lyr_thk,
                                               fill = value),
-                      position = 'stack', width = 1) +
+                      position = 'stack', width = bar_w) +
     ggplot2::scale_fill_gradientn(
       colours = my_cols,
       limits  = var_lims
