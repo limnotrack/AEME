@@ -30,7 +30,7 @@
 make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
                         update_sediment = TRUE, use_bgc = TRUE,
                         obs_temp = NULL, nml_file = "glm4.nml",
-                        sed_params = NULL) {
+                        sed_params = NULL, subdaily = FALSE, init_depth = NULL) {
 
   bathy_glm <- bathy |>
     dplyr::arrange(elev)
@@ -40,13 +40,33 @@ make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
   wid <- dims_lake[2]
 
   max_depth <- max(bathy_glm$elev) - min(bathy_glm$elev)
-  sub_layers <- get_model_layers(depth = max_depth)
-  min_layer_thick <- min(sub_layers$h)
-  max_layer_thick <- max(sub_layers$h)
-  max_layers <- ceiling(max_depth / min_layer_thick) + 10
+
+  # Surface area and below-surface volume at the current water level, for the
+  # size-scaled layer parameters below.
+  surf_elev <- if (!is.null(init_depth)) {
+    min(bathy_glm$elev) + init_depth
+  } else {
+    max(bathy_glm$elev)
+  }
+  surf_elev <- max(min(bathy_glm$elev),
+                   min(surf_elev, max(bathy_glm$elev)))
+  surface_area <- stats::approx(bathy_glm$elev, bathy_glm$area,
+                                xout = surf_elev, rule = 2)$y
+  .sel <- bathy_glm$elev < surf_elev
+  .e <- c(bathy_glm$elev[.sel], surf_elev)
+  .a <- c(bathy_glm$area[.sel], surface_area)
+  lake_volume <- if (length(.e) > 1) {
+    sum(diff(.e) * (utils::head(.a, -1) + utils::tail(.a, -1)) / 2)
+  } else NA_real_
+
+  lp <- .glm_layer_params(max_depth = max_depth, surface_area = surface_area,
+                          lake_volume = lake_volume, conservative = subdaily)
+  min_layer_thick <- lp$min_layer_thick
+  max_layer_thick <- lp$max_layer_thick
+  max_layers      <- lp$max_layers
 
   arg_list <- list(max_layers = max_layers,
-                   min_layer_vol = 0.025,
+                   min_layer_vol = lp$min_layer_vol,
                    min_layer_thick = min_layer_thick,
                    max_layer_thick = max_layer_thick,
                    crest_elev = crest,
@@ -187,4 +207,79 @@ make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
   }
 
   return(glm_nml)
+}
+
+
+#' Size-scaled GLM layer parameters
+#'
+#' Starting points for the `&glm_setup` layer controls, scaled to lake depth
+#' (and, for the volume, surface area), following a common rule of thumb:
+#'
+#' \itemize{
+#'   \item `min_layer_thick` from a depth band (finer for shallow lakes);
+#'   \item `max_layer_thick` about 3-5x `min_layer_thick`, on the order of
+#'         `max_depth / 50`;
+#'   \item `max_layers` at least `1.5 * max_depth / min_layer_thick`, with
+#'         head-room, clamped to `[200, 1000]`;
+#'   \item `min_layer_vol` about `min_layer_thick * 1%` of the surface area
+#'         (the volume of a `min_layer_thick`-thick layer where the area has
+#'         dropped to ~1% of the surface), capped at `1e-4` of the lake
+#'         volume so a normal drawdown does not trigger wholesale layer
+#'         merging. Returned in the nml's units (thousands of m3).
+#' }
+#'
+#' `conservative = TRUE` (used for sub-daily runs) biases `min_layer_thick`
+#' to the safe (upper) end of its band: a thin surface layer oscillates under
+#' sub-daily surface heat fluxes.
+#'
+#' @param max_depth numeric; basin depth (m), base to crest.
+#' @param surface_area numeric; lake surface area (m2).
+#' @param lake_volume numeric; lake volume below the surface (m3); `NA` skips
+#'   the volume cap.
+#' @param conservative logical; bias `min_layer_thick` toward the safe end.
+#'
+#' @return list with `min_layer_thick`, `max_layer_thick`, `max_layers`,
+#'   `min_layer_vol`.
+#' @noRd
+.glm_layer_params <- function(max_depth, surface_area, lake_volume,
+                              conservative = FALSE) {
+  if (!is.finite(max_depth) || max_depth <= 0) max_depth <- 15
+
+  band <- if (max_depth < 15) {
+    c(0.10, 0.15)
+  } else if (max_depth < 40) {
+    c(0.15, 0.25)
+  } else if (max_depth < 100) {
+    c(0.25, 0.50)
+  } else {
+    c(0.50, 1.00)
+  }
+  # Sub-daily runs bias to the safe end of the band; and because AEME cannot
+  # shorten `dt` per lake, enforce a 0.5 m floor -- below that the surface
+  # layer still oscillates under sub-daily heat fluxes (verified on an ERA5
+  # test year: 0.25 m left occasional 30 C+ spikes, 0.5 m did not).
+  mlt <- if (isTRUE(conservative)) max(band[[2]], 0.5) else mean(band)
+
+  # ~3-5x min, on the order of depth/50; never below ~1.5x min.
+  max_lt <- min(5 * mlt, max(3 * mlt, max_depth / 50))
+  max_lt <- max(max_lt, 1.5 * mlt)
+
+  # >= 1.5 x depth / min_layer_thick, with a per-band floor so a deep lake
+  # is not pegged at its layer cap.
+  band_floor <- if (max_depth < 15) 200 else if (max_depth < 40) 300 else
+    if (max_depth < 100) 400 else 500
+  max_layers <- ceiling(1.5 * max_depth / mlt) + 20
+  max_layers <- as.integer(max(band_floor, min(max_layers, 1000)))
+
+  # thickness x 1% of surface area, capped at 1e-4 of the lake volume.
+  mlv_m3 <- mlt * 0.01 * surface_area
+  if (is.finite(lake_volume) && lake_volume > 0) {
+    mlv_m3 <- min(mlv_m3, 1e-4 * lake_volume)
+  }
+  if (!is.finite(mlv_m3) || mlv_m3 <= 0) mlv_m3 <- 25   # template default (25 m3)
+
+  list(min_layer_thick = round(mlt, 3),
+       max_layer_thick = round(max_lt, 3),
+       max_layers      = max_layers,
+       min_layer_vol   = signif(max(mlv_m3 / 1000, 1e-3), 4))
 }

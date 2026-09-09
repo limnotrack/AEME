@@ -103,8 +103,7 @@ build_glm <- function(lakename, model_controls, date_range,
   sub_daily_met <- is_subdaily(met[["Date"]])
   glm_nml[["output"]][["nsave"]] <-
     max(1L, as.integer(round(output_time_step / dt_glm)))
-  glm_nml[["meteorology"]][["subdaily"]] <-
-    isTRUE(output_time_step < 86400) || sub_daily_met
+  glm_nml[["meteorology"]][["subdaily"]] <- sub_daily_met
 
   
   # elipse dimensions at surface for nml
@@ -118,11 +117,28 @@ build_glm <- function(lakename, model_controls, date_range,
   
   crest <- max(hyps[["elev"]])
   
+  # `subdaily` biases the size-scaled layer parameters (min/max_layer_thick,
+  # max_layers, min_layer_vol -- see .glm_layer_params()) toward the stable
+  # end, since GLM's explicit surface heat-flux update oscillates on a thin
+  # top layer when it is driven at sub-daily resolution. That thicker
+  # minimum layer takes a test ERA5 year from a 80 C surface-temperature
+  # spike down to a 20 C maximum with no daily excursions above 25 C.
+  #
+  # Note: `atm_stab = 1` was also trialled here (atmospheric-stability
+  # correction on the bulk transfer coefficients) but is left at the
+  # template default. It barely moves the surface temperature once the
+  # layer is thick enough, does not reduce the larger, more variable
+  # turbulent fluxes that sub-daily forcing produces in GLM (which is
+  # partly real -- daily means under-resolve gust/covariance-driven
+  # exchange -- and partly GLM's own sub-daily flux response), and it would
+  # make the sub-daily config inconsistent with the daily one.
   glm_nml <- make_stg_glm(glm_nml, lakename, bathy = hyps, lat = lat,
                          lon = lon, crest = crest, dims_lake = dims_lake,
                          use_bgc = use_bgc, obs_temp = obs_temp,
-                         nml_file = basename(glm_file), sed_params = sed_params)
-  
+                         nml_file = basename(glm_file), sed_params = sed_params,
+                         subdaily = isTRUE(glm_nml[["meteorology"]][["subdaily"]]),
+                         init_depth = init_depth)
+
   # Make meteorology file
   make_met_glm(obs_met = met, path_glm = path_glm, use_lw = use_lw)
   # Longwave Radiation switch

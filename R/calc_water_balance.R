@@ -50,7 +50,22 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   cli_safe("Calculating water balance", FUN = cli::cli_h2)
   
   model <- check_model(model = model)
-  
+
+  # ---- Collapse sub-daily meteo to a daily timestep ----
+  # The water balance is an inherently daily calculation: estimate_lake_wlev()
+  # advances the lake by one day per row (C * dh^1.5 * 86400, evap in m/day),
+  # the 5-day T5avg roll assumes daily spacing, and the fitted outflow/inflow
+  # correction is written to the model input files the same way daily inflows
+  # are. Sub-daily forcing is therefore aggregated to daily here before any
+  # balance work. `obs_met` has already been through standardise_met(), so
+  # MET_pprain / MET_ppsnow are a mm/day rate and a daily mean is the daily
+  # rate (precip = "mean", the default). The model runs themselves keep their
+  # native sub-daily meteo -- that is built separately from `met` in
+  # build_aeme().
+  if (is_subdaily(obs_met[["Date"]])) {
+    obs_met <- collapse_met_daily(obs_met)
+  }
+
   # ---- Date range ----
   max_spin  <- max(unlist(aeme_time[["spin_up"]])[model])
   spin_start <- aeme_time[["start"]] - lubridate::ddays(max_spin + 1)
@@ -362,6 +377,72 @@ add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
   }
   
   obs_met
+}
+
+
+#' Collapse a sub-daily meteo data frame to a daily time step
+#'
+#' Aggregates a `POSIXct`-stamped (or otherwise sub-daily) meteorological data
+#' frame to one row per calendar day: every numeric column is averaged over the
+#' day, except `MET_pprain` / `MET_ppsnow`, whose aggregation is controlled by
+#' `precip`. Non-numeric columns other than `Date` are dropped, and `Date` is
+#' returned as a `Date`.
+#'
+#' AEME defines `MET_pprain` / `MET_ppsnow` as a **rate in mm/day**
+#' (see [standardise_met()]). If the frame is already on that convention -- e.g.
+#' the output of [standardise_met()], which is what [build_aeme()] feeds the
+#' water balance -- a daily *mean* of the rate is the daily rate, so
+#' `precip = "mean"` (the default) is correct. Raw sub-daily reanalysis / AWS
+#' products instead report precipitation as an **accumulation per time step**
+#' (mm that fell during that step); for those, use `precip = "sum"` to get the
+#' daily total.
+#'
+#' @param obs_met data frame; meteo forcing with a `Date` column (`Date` or
+#'   `POSIXct`) and numeric `MET_*` columns.
+#' @param precip character; how to aggregate `MET_pprain` / `MET_ppsnow` over
+#'   the day. `"mean"` (default) when they are already a mm/day rate;
+#'   `"sum"` when they are per-time-step accumulations.
+#'
+#' @return A data frame with one row per day: `Date` (as `Date`) and the
+#'   day-aggregated numeric columns.
+#' @export
+#'
+#' @seealso [standardise_met()]
+#'
+#' @examples
+#' hourly <- data.frame(
+#'   Date = seq(as.POSIXct("2020-01-01", tz = "UTC"), by = "hour",
+#'              length.out = 48),
+#'   MET_tmpair = rnorm(48, 15, 3),
+#'   MET_pprain = c(rep(0, 20), rep(0.5, 4), rep(0, 24))  # mm per hour
+#' )
+#' collapse_met_daily(hourly, precip = "sum")
+collapse_met_daily <- function(obs_met, precip = c("mean", "sum")) {
+  precip <- match.arg(precip)
+  num <- names(obs_met)[vapply(obs_met, is.numeric, logical(1))]
+  sum_cols  <- if (precip == "sum") {
+    intersect(c("MET_pprain", "MET_ppsnow"), num)
+  } else {
+    character(0)
+  }
+  mean_cols <- setdiff(num, sum_cols)
+
+  day <- if (inherits(obs_met[["Date"]], "POSIXct")) {
+    as.Date(obs_met[["Date"]], tz = "UTC")
+  } else {
+    as.Date(obs_met[["Date"]])
+  }
+
+  out <- obs_met |>
+    dplyr::mutate(Date = day) |>
+    dplyr::group_by(Date) |>
+    dplyr::summarise(
+      dplyr::across(dplyr::all_of(mean_cols), \(x) mean(x, na.rm = TRUE)),
+      dplyr::across(dplyr::all_of(sum_cols),  \(x) sum(x, na.rm = TRUE)),
+      .groups = "drop"
+    )
+  # keep the caller's original column order
+  out[, c("Date", intersect(names(obs_met), num)), drop = FALSE]
 }
 
 
