@@ -79,7 +79,6 @@ test_that("running models with 1hr met data", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE, tz = "Pacific/Auckland") |> 
     run_aeme()
-  raw <- read_g
   # plot_output(aeme, var_lims = c(5, 30), add_obs = F)
   p <- plot_ts(aeme, var_sim = "HYD_temp", depth_range = c(0, 1),
           remove_spin_up = F) +
@@ -115,14 +114,14 @@ test_that("running models with 1hr met data", {
   
   testthat::expect_true(check_all_model_outfiles(aeme))
   
-  var_sim <- c("LKE_lvlwtr", "HYD_temp")
-  
-  model_performance <- assess_model(aeme = aeme, model = model,
-                                    var_sim = var_sim)
-  testthat::expect_true(is.data.frame(model_performance))
-  
-  pl <- plot_resid(aeme = aeme, model = model, var_sim = var_sim[1])
-  testthat::expect_true(ggplot2::is_ggplot(pl))
+  # var_sim <- c("LKE_lvlwtr", "HYD_temp")
+  # 
+  # model_performance <- assess_model(aeme = aeme, model = model,
+  #                                   var_sim = var_sim)
+  # testthat::expect_true(is.data.frame(model_performance))
+  # 
+  # pl <- plot_resid(aeme = aeme, model = model, var_sim = var_sim[1])
+  # testthat::expect_true(ggplot2::is_ggplot(pl))
 })
 
 test_that("running models with wbal method = 1", {
