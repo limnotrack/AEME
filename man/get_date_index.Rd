@@ -4,7 +4,13 @@
 \alias{get_date_index}
 \title{Get date index for each model in the AEME object}
 \usage{
-get_date_index(aeme, model, remove_spin_up = TRUE)
+get_date_index(
+  aeme,
+  model,
+  remove_spin_up = TRUE,
+  path = NULL,
+  lake_dir = NULL
+)
 }
 \arguments{
 \item{aeme}{Aeme object.}
@@ -15,6 +21,14 @@ not found in \code{aeme}.}
 
 \item{remove_spin_up}{logical; remove spin-up period from plot. Default is
 TRUE.}
+
+\item{path, lake_dir}{optional; root path or resolved lake directory used to
+locate each model's output file. When supplied (and the file exists), the
+reconstructed positional index is trimmed to the number of records the
+file actually holds, so a stale cadence (e.g. an hourly
+\code{output_time_step} against a run still written daily) is caught here
+rather than silently emptying the output downstream. When omitted, the
+index is the pure \code{aeme_time_axis()} reconstruction, exactly as before.}
 }
 \value{
 A list with date index for each model
