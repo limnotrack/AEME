@@ -37,6 +37,68 @@ check_time_format <- function(x, tz = "UTC") {
 }
 
 
+#' Interpret user-supplied timestamps in a declared timezone, store as UTC
+#'
+#' The ingest-boundary conversion. Everything downstream of this in AEME assumes
+#' UTC. Rules:
+#' \itemize{
+#'   \item `Date` (daily) input is returned unchanged -- a timezone is
+#'     meaningless for a calendar date and must never shift it.
+#'   \item character / naive `POSIXct` input (no `tzone`, or an empty one) is
+#'     taken to be wall-clock time in `tz` and converted to the equivalent UTC
+#'     instant.
+#'   \item a `POSIXct` carrying an explicit, non-UTC `tzone` is an absolute
+#'     instant: it is re-expressed in UTC, never re-localised.
+#'   \item a `POSIXct` tagged `"UTC"` is ambiguous -- `"UTC"` is also R's default
+#'     fallback label (`read_csv()`, `read_yaml()`, `as.POSIXct()` on many
+#'     paths). With `reinterpret_utc_tag = TRUE` and a non-UTC `tz`, such a
+#'     column is taken to be wall-clock time in `tz` (the user declared a data
+#'     timezone, so their file's `"UTC"` tag is treated as unreliable). With the
+#'     default `FALSE` it is left as an absolute instant.
+#' }
+#'
+#' @param x Date, POSIXct, or character vector of timestamps.
+#' @param tz character; Olson timezone the naive input is expressed in.
+#' @param reinterpret_utc_tag logical; treat a `"UTC"`-tagged `POSIXct` as naive
+#'   wall-clock time in `tz` when `tz` is not `"UTC"`. Use at the single ingest
+#'   call for a data stream; keep `FALSE` everywhere the data may already have
+#'   been through ingest, so re-running never double-shifts.
+#' @return `Date` unchanged, or a UTC `POSIXct`.
+#' @noRd
+.to_utc <- function(x, tz = "UTC", reinterpret_utc_tag = FALSE) {
+  if (is.null(x) || !length(x)) return(x)
+  if (inherits(x, "Date")) return(x)
+
+  if (is.character(x) || is.factor(x)) {
+    # check_time_format() anchors the wall-clock string in `tz`; with_tz then
+    # re-expresses that same instant in UTC.
+    return(lubridate::with_tz(check_time_format(as.character(x), tz = tz), "UTC"))
+  }
+
+  if (inherits(x, "POSIXt")) {
+    tzone <- attr(x, "tzone")
+    is_naive <- is.null(tzone) || !nzchar(tzone)
+    treat_as_naive <- is_naive ||
+      (identical(tzone, "UTC") && isTRUE(reinterpret_utc_tag) &&
+         !identical(tz, "UTC"))
+    if (treat_as_naive) {
+      # The clock reading is wall time in `tz` (tz may be "UTC" -- a no-op).
+      # roll_dst keeps the spring-forward gap hour from becoming NA: gap times
+      # roll to the boundary, and an ambiguous fall-back hour takes the later
+      # offset.
+      x <- lubridate::force_tz(as.POSIXct(x), tzone = tz,
+                               roll_dst = c("boundary", "post"))
+    }
+    return(lubridate::with_tz(x, "UTC"))
+  }
+
+  cli::cli_abort(
+    c("!" = "{.arg x} must be a {.cls character}, {.cls Date}, or {.cls POSIXt} object.",
+      "x" = "You supplied a {.cls {class(x)[1]}}."),
+    class = "aeme_error_time_type"
+  )
+}
+
 #' Parse a forcing date column, preserving sub-daily resolution
 #'
 #' Reads a `Date`/`POSIXct`/character column of forcing timestamps. Sub-daily
@@ -45,11 +107,22 @@ check_time_format <- function(x, tz = "UTC") {
 #' only preserves whatever resolution the user supplied.
 #'
 #' @param x Date, POSIXct, or character vector.
-#' @return Date (daily input) or POSIXct (sub-daily input).
+#' @param tz character; timezone a naive **sub-daily** series is expressed in.
+#'   Daily input is treated as calendar dates and is never shifted, whatever
+#'   `tz` is.
+#' @param reinterpret_utc_tag logical; passed to `.to_utc()`. Only set `TRUE` at
+#'   the single ingest call for a stream.
+#' @return Date (daily input) or UTC POSIXct (sub-daily input).
 #' @noRd
-.as_forcing_datetime <- function(x) {
-  xt <- check_time_format(x)
-  if (is_subdaily(xt)) xt else as.Date(xt)
+.as_forcing_datetime <- function(x, tz = "UTC", reinterpret_utc_tag = FALSE) {
+  # Decide resolution on the unshifted parse so a daily calendar series is
+  # never moved across a day boundary by the timezone conversion.
+  xt <- check_time_format(x, tz = "UTC")
+  if (is_subdaily(xt)) {
+    .to_utc(x, tz = tz, reinterpret_utc_tag = reinterpret_utc_tag)
+  } else {
+    as.Date(xt)
+  }
 }
 
 
@@ -277,6 +350,13 @@ migrate_aeme <- function(aeme) {
   if (is.list(aeme_time$spin_up)) {
     for (m in setdiff(models, names(aeme_time$spin_up))) aeme_time$spin_up[[m]] <- 2
     aeme@time <- aeme_time
+  }
+
+  # -- time$tz: legacy objects predate the declared input timezone. Their
+  # start/stop were stored as UTC (or were broken); "UTC" is the safe,
+  # reproducible assumption and a no-op for already-absolute instants.
+  if (is.null(aeme@time$tz)) {
+    aeme@time$tz <- "UTC"
   }
 
   # -- inflows$factor: backfill entries for new models -----------------------

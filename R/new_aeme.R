@@ -26,6 +26,10 @@
 #'   `3600` (1 hour).
 #' @param output_time_step numeric; model output time step in seconds. Must be
 #'   `>= time_step`. Default `86400` (daily).
+#' @param tz character; Olson timezone in which `start`, `stop` and any forcing
+#'   timestamps are expressed. Stored as `time$tz`; timestamps are converted to
+#'   UTC internally. Default `"UTC"` -- set a non-UTC zone only when your
+#'   source data is in local time.
 #' @param Kw numeric; light extinction coefficient (m^-1). Default `1`.
 #'
 #' @return A valid `Aeme` object populated with placeholder values.
@@ -52,6 +56,7 @@ new_aeme <- function(name = "newlake",
                      stop = Sys.Date(),
                      time_step = 3600,
                      output_time_step = 86400,
+                     tz = "UTC",
                      Kw = 1) {
 
   lake <- list(
@@ -64,11 +69,14 @@ new_aeme <- function(name = "newlake",
     area      = area
   )
 
+  # start/stop are passed through as supplied (character/Date/POSIXct);
+  # aeme_constructor() interprets them in `tz` and stores UTC.
   time <- list(
-    start            = as.POSIXct(start, tz = "UTC"),
-    stop             = as.POSIXct(stop, tz = "UTC"),
+    start            = start,
+    stop             = stop,
     time_step        = time_step,
-    output_time_step = output_time_step
+    output_time_step = output_time_step,
+    tz               = tz
   )
 
   input <- list(
@@ -81,6 +89,6 @@ new_aeme <- function(name = "newlake",
     aeme_version = packageVersion("AEME")
   )
 
-  aeme_constructor(lake = lake, time = time, input = input, 
-                   configuration = configuration)
+  aeme_constructor(lake = lake, time = time, input = input,
+                   configuration = configuration, tz = tz)
 }

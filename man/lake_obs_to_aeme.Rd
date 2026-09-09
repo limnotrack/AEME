@@ -13,7 +13,8 @@ lake_obs_to_aeme(
   lake_id_col,
   var_map,
   depth_to_col_name,
-  sd_col_name
+  sd_col_name,
+  tz = "UTC"
 )
 }
 \arguments{
@@ -45,6 +46,10 @@ and "unit" is the unit used in the input data.}
 \item{sd_col_name}{column name for the measurement standard deviation, in the
 input units of each variable. Optional; if missing, no \code{sd} column is
 produced.}
+
+\item{tz}{character; Olson timezone a naive datetime column is expressed in.
+Sub-daily timestamps are converted to UTC before being reduced to a \code{Date};
+daily data is treated as calendar dates and never shifted. Default \code{"UTC"}.}
 }
 \value{
 A data frame formatted for AEME with required columns "Date",

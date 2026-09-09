@@ -56,7 +56,16 @@ yaml_to_aeme <- function(path, file) {
   path <- check_path(path = path, must_exist = TRUE)
   
   yaml <- yaml::read_yaml(file.path(path, file))
-  
+
+  # Declared input timezone. YAML files predate this field and were authored
+  # under the "all UTC" regime, so default to "UTC" (not the session tz) to keep
+  # existing yaml-based workflows byte-identical.
+  input_tz <- yaml$time$tz %||% "UTC"
+  if (length(input_tz) != 1L || is.na(input_tz) || !input_tz %in% OlsonNames()) {
+    input_tz <- "UTC"
+  }
+  yaml$time$tz <- input_tz
+
   # Set package version
   yaml$configuration$aeme_version <- as.character(utils::packageVersion("AEME"))
   
@@ -74,13 +83,14 @@ yaml_to_aeme <- function(path, file) {
   if (!is.null(yaml$observations$lake)) {
     yaml$observations$lake <- read.csv(file.path(path,
                                                  yaml$observations$lake)) |>
-      dplyr::mutate(Date = as.Date(datetime)) |>
+      dplyr::mutate(Date = as.Date(.as_forcing_datetime(
+        datetime, tz = input_tz, reinterpret_utc_tag = TRUE))) |>
       normalise_lake_obs()
   }
   if (!is.null(yaml$observations$level)) {
     yaml$observations$level <- read.csv(file.path(path,
                                                   yaml$observations$level)) |>
-      dplyr::mutate(Date = as.Date(Date))
+      dplyr::mutate(Date = as.Date(.as_forcing_datetime(Date, tz = input_tz, reinterpret_utc_tag = TRUE)))
   }
   if (!is.null(yaml$input$init_temp_profile)) {
     yaml$input$init_temp_profile <-
@@ -91,25 +101,23 @@ yaml_to_aeme <- function(path, file) {
   }
   if (!is.null(yaml$input$meteo)) {
     yaml$input$meteo <- read.csv(file.path(path, yaml$input$meteo)) |>
-      dplyr::mutate(Date = .as_forcing_datetime(Date))
+      dplyr::mutate(Date = .as_forcing_datetime(Date, tz = input_tz, reinterpret_utc_tag = TRUE))
   }
   if (length(yaml$inflows$data) > 0) {
     yaml$inflows$data <- lapply(yaml$inflows$data, \(i) {
       read.csv(file.path(path, i)) |>
-        dplyr::mutate(Date = .as_forcing_datetime(Date))
+        dplyr::mutate(Date = .as_forcing_datetime(Date, tz = input_tz, reinterpret_utc_tag = TRUE))
     })
   }
   if (length(yaml$outflows$data) > 0) {
     yaml$outflows$data <- lapply(yaml$outflows$data, \(i) {
       read.csv(file.path(path, i)) |>
-        dplyr::mutate(Date = .as_forcing_datetime(Date))
+        dplyr::mutate(Date = .as_forcing_datetime(Date, tz = input_tz, reinterpret_utc_tag = TRUE))
     })
   }
 
-  yaml$time$start <- as.POSIXct(yaml$time$start, format = "%Y-%m-%d %H:%M:%S",
-                                tz = "UTC")
-  yaml$time$stop <- as.POSIXct(yaml$time$stop, format = "%Y-%m-%d %H:%M:%S",
-                               tz = "UTC")
+  # start/stop are passed through as strings; aeme_constructor() interprets them
+  # in yaml$time$tz and stores UTC.
 
   aeme <- aeme_constructor(
     lake = yaml$lake,
@@ -121,7 +129,8 @@ yaml_to_aeme <- function(path, file) {
     inflows = yaml$inflows,
     outflows = yaml$outflows,
     water_balance = yaml$water_balance,
-    output = yaml$output
+    output = yaml$output,
+    tz = input_tz
   )
 
   return(aeme)

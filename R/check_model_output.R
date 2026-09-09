@@ -4,6 +4,11 @@
 #' @return Invisibly TRUE if model output passes checks; otherwise aborts
 #' @export
 check_model_output <- function(aeme, model, path) {
+  # Model output time axes are UTC (CF "<unit> since <origin>"); keep all
+  # datetime arithmetic here in UTC too.
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+
   model <- check_model(model = model)
   path  <- check_path(path = path, must_exist = TRUE)
   aeme_time <- time(aeme)
@@ -78,7 +83,8 @@ check_dyresm_output <- function(nc, out_file, aeme_time) {
   dates[dates > 9e36] <- NA
   if (any(is.na(dates))) {
     last_date <- dates[which.max(is.na(dates)) - 1]
-    last_date <- as.POSIXct((last_date - 2415018.5) * 86400, origin = "1899-12-30")
+    last_date <- as.POSIXct((last_date - 2415018.5) * 86400,
+                            origin = "1899-12-30", tz = "UTC")
     msg <- if (length(last_date) == 0) {
       "DYRESM-CAEDYM crashed during initialization; no output available."
     } else if (last_date < aeme_time$start) {

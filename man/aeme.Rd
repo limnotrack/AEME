@@ -33,6 +33,13 @@ seconds. Default 3600 (1 hour).
 \item \strong{\code{output_time_step}}: numeric; model output time step in
 seconds. Must be >= \code{time_step}. Default 86400 (daily).
 \item \strong{\code{spin_up}}: list; spin up period in days for each model
+\item \code{tz}: character; Olson timezone in which user-supplied timestamps
+(\code{start}, \code{stop}, and the date columns of meteo, inflow, outflow
+and observation inputs) are expressed. It is applied once, at ingest, to
+convert those timestamps to UTC; all datetimes are stored and computed in
+UTC internally. It is also used to render plots and summaries in local time.
+Defaults to \code{"UTC"}; set a non-UTC zone only when the source data is
+local time. Unrelated to GLM's numeric \code{timezone} nml parameter.
 }}
 
 \item{\code{configuration}}{A list representing each model's configuration. \itemize{

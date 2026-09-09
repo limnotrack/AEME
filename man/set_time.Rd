@@ -4,13 +4,15 @@
 \alias{set_time}
 \title{Set time parameters for an Aeme object}
 \usage{
-set_time(aeme, start, stop, spin_up, time_step, output_time_step)
+set_time(aeme, start, stop, spin_up, time_step, output_time_step, tz)
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
 \item{start, stop}{Time in the format "YYYY-mm-dd" or "YYYY-mm-dd HH:MM" or
-"YYYY-mm-dd HH:MM:SS"}
+"YYYY-mm-dd HH:MM:SS". Interpreted as wall-clock time in the object's
+timezone (\code{time(aeme)$tz}, or \code{tz} if supplied here) and stored as
+UTC.}
 
 \item{spin_up}{Spin-up time in days. Can be a single numeric value or a list with
 model names as names and numeric values as values.}
@@ -23,6 +25,11 @@ greater than or equal to \code{time_step}. Default (when unset on the object)
 86400 (daily). Set to e.g. 3600 for hourly output. Note that AEME does not
 temporally disaggregate forcing: sub-daily output requires forcing supplied at
 (at least) the same cadence.}
+
+\item{tz}{character; Olson timezone in which user-supplied timestamps (here
+and in the forcing/observation inputs) are expressed. Stored on the object as
+\code{time$tz} and used to convert those timestamps to UTC internally and for
+display. If omitted, the object's existing \code{time$tz} is kept.}
 }
 \value{
 Aeme object with time parameters set

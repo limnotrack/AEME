@@ -98,9 +98,18 @@ standardise_inflow <- function(inflow,
                                model          = NULL,
                                pot_inf_vars   = NULL,
                                verbose        = TRUE) {
-  
+
+  # Internal datetime arithmetic runs in UTC; the declared input timezone
+  # (aeme_time$tz) is applied explicitly to the incoming date column only.
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+  tz <- tryCatch(
+    if (inherits(aeme_time, "Aeme")) time(aeme_time)[["tz"]] else aeme_time[["tz"]],
+    error = function(e) NULL
+  ) %||% "UTC"
+
   # -- Input validation --------------------------------------------------------
-  
+
   if (!is.data.frame(inflow)) {
     cli::cli_abort(
       c("{.arg inflow} must be a {.cls data.frame}.",
@@ -134,7 +143,8 @@ standardise_inflow <- function(inflow,
     }
   }
   
-  inflow <- .rename_date_column(inflow, verbose = verbose, arg_name = "inflow")
+  inflow <- .rename_date_column(inflow, verbose = verbose, arg_name = "inflow",
+                                tz = tz)
   time_col <- intersect(c("time", "Date", "date"), names(inflow))
   if (length(time_col) == 0) {
     cli::cli_abort(
@@ -192,10 +202,11 @@ standardise_inflow <- function(inflow,
   
   if (!is.null(aeme_time)) {
     check_time(
-      df        = inflow,
-      model     = model,
-      aeme_time = aeme_time,
-      name      = inflow_name
+      df            = inflow,
+      model         = model,
+      aeme_time     = aeme_time,
+      name          = inflow_name,
+      check_cadence = FALSE
     )
   }
   

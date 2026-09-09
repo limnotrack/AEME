@@ -15,6 +15,8 @@ new_aeme(
   start = Sys.Date() - 365,
   stop = Sys.Date(),
   time_step = 3600,
+  output_time_step = 86400,
+  tz = "UTC",
   Kw = 1
 )
 }
@@ -42,7 +44,16 @@ one year before \code{stop}.}
 \item{stop}{character, Date, or POSIXct; simulation stop date. Default
 today.}
 
-\item{time_step}{numeric; time step in seconds. Default \code{3600} (1 hour).}
+\item{time_step}{numeric; model integration time step in seconds. Default
+\code{3600} (1 hour).}
+
+\item{output_time_step}{numeric; model output time step in seconds. Must be
+\verb{>= time_step}. Default \code{86400} (daily).}
+
+\item{tz}{character; Olson timezone in which \code{start}, \code{stop} and any forcing
+timestamps are expressed. Stored as \code{time$tz}; timestamps are converted to
+UTC internally. Default \code{"UTC"} -- set a non-UTC zone only when your
+source data is in local time.}
 
 \item{Kw}{numeric; light extinction coefficient (m^-1). Default \code{1}.}
 }

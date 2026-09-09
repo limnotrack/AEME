@@ -22,6 +22,13 @@
 #' \item \strong{\code{output_time_step}}: numeric; model output time step in
 #' seconds. Must be >= \code{time_step}. Default 86400 (daily).
 #' \item \strong{\code{spin_up}}: list; spin up period in days for each model
+#' \item \code{tz}: character; Olson timezone in which user-supplied timestamps
+#' (\code{start}, \code{stop}, and the date columns of meteo, inflow, outflow
+#' and observation inputs) are expressed. It is applied once, at ingest, to
+#' convert those timestamps to UTC; all datetimes are stored and computed in
+#' UTC internally. It is also used to render plots and summaries in local time.
+#' Defaults to \code{"UTC"}; set a non-UTC zone only when the source data is
+#' local time. Unrelated to GLM's numeric \code{timezone} nml parameter.
 #' }
 #' @slot configuration A list representing each model's configuration. \itemize{
 #' \item \code{model_controls}: dataframe; Model controls for simulation.
@@ -181,7 +188,17 @@ setValidity("Aeme", function(object) {
   }
   if (!is.null(wb$use) && !wb$use %in% c("obs", "mod"))
     errors <- c(errors, "@water_balance$use must be 'obs' or 'mod'")
-  
+
+  # -- time$tz check (declared input timezone) -------------------------------
+  tz <- object@time$tz
+  if (!is.null(tz)) {
+    if (!is.character(tz) || length(tz) != 1L || is.na(tz))
+      errors <- c(errors, "@time$tz must be a single character string")
+    else if (!tz %in% OlsonNames())
+      errors <- c(errors, paste0("@time$tz '", tz, "' is not a valid Olson ",
+                                 "timezone name (see OlsonNames())"))
+  }
+
   if (length(errors) == 0) TRUE else errors
 })
 
@@ -199,6 +216,14 @@ setValidity("Aeme", function(object) {
 #' @param output List representing output information.
 #' @param parameters Dataframe containing model parameters.
 #' @param print Logical; print messages. Default is TRUE.
+#' @param tz character; Olson timezone in which user-supplied timestamps
+#' (\code{time$start}, \code{time$stop}, and the date columns of meteo, inflow,
+#' outflow and observation inputs) are expressed. Applied once, at ingest, to
+#' convert those timestamps to UTC; all datetimes are stored and computed in UTC
+#' internally, and \code{tz} is also used for display. Defaults to
+#' \code{time$tz} if present, otherwise \code{"UTC"}. Set a non-UTC zone only
+#' when your source data really is in local time (gridded reanalysis such as
+#' ERA5 is UTC). Unrelated to GLM's numeric \code{timezone} nml parameter.
 #' @return An instance of the Aeme class.
 #'
 #' @importFrom sf st_area sf_use_s2
@@ -211,7 +236,8 @@ setValidity("Aeme", function(object) {
 
 aeme_constructor <- function(
     lake, time, configuration, observations,
-    input, inflows, outflows, water_balance, output, parameters, print = TRUE
+    input, inflows, outflows, water_balance, output, parameters, print = TRUE,
+    tz = NULL
 ) {
   
   # Set timezone temporarily to UTC
@@ -222,6 +248,25 @@ aeme_constructor <- function(
   if (missing(lake) & missing(time) & missing(input)) {
     cli::cli_abort("Objects lake, time, and input must be provided.")
   }
+
+  # -- Declared input timezone ------------------------------------------------
+  # Everything the user types (start/stop, forcing & observation date columns)
+  # is taken to be wall-clock time in this zone and converted to UTC on ingest.
+  # Defaults to "UTC" -- gridded met (ERA5 etc.) and model conventions are all
+  # UTC. Declare a non-UTC zone only when your source data really is local time.
+  if (is.null(tz) && !missing(time) && is.list(time)) tz <- time$tz
+  if (is.null(tz)) tz <- "UTC"
+  if (length(tz) != 1L || is.na(tz) || !nzchar(tz) || !tz %in% OlsonNames()) {
+    tz <- "UTC"
+  }
+  if (print && !identical(tz, "UTC")) {
+    cli::cli_inform(
+      c("i" = "Interpreting input timestamps (start/stop, meteo, inflow, obs) as {.val {tz}}; stored as UTC."),
+      class = "aeme_inform_input_tz"
+    )
+  }
+  if (!missing(time) && is.list(time)) time$tz <- tz
+
   cfg_dflt <- config_defaults()
   if (missing(configuration)) {
     configuration <- cfg_dflt
@@ -452,46 +497,48 @@ aeme_constructor <- function(
     )
   }
   
-  # Time type checking for specific elements
+  # Time type checking for specific elements. start/stop are simulation
+  # boundaries the user types: a character/naive value is wall-clock time in
+  # `tz`; a Date is a calendar day (midnight UTC, never shifted); a tz-aware
+  # POSIXct is an absolute instant. All are stored as UTC POSIXct.
   is.POSIXct <- function(x) inherits(x, "POSIXct")
-  if (is.character(time$start)) {
-    cli::cli_inform(
-      c("i" = "{.arg time$start} is a {.cls character}; converting to {.cls POSIXct} (UTC)."),
-      class = "aeme_inform_time_coerced"
-    )
-    time$start <- as.POSIXct(time$start, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
-    if (is.na(time$start))
-      cli::cli_abort(
-        c("{.arg time$start} could not be parsed as a date-time.",
-          "i" = "Expected format: {.code YYYY-MM-DD HH:MM:SS}."),
-        class = "aeme_error_time_start"
-      )
-  } else if (!is.POSIXct(time$start)) {
+  .norm_bound <- function(x, arg, err_class) {
+    if (inherits(x, "Date")) {
+      return(as.POSIXct(format(x, "%Y-%m-%d"), tz = "UTC"))
+    }
+    if (is.character(x)) {
+      if (!identical(tz, "UTC")) {
+        cli::cli_inform(
+          c("i" = "{.arg {arg}} is a {.cls character}; interpreting as {.val {tz}} (stored UTC)."),
+          class = "aeme_inform_time_coerced"
+        )
+      }
+      return(.to_utc(x, tz = tz, reinterpret_utc_tag = TRUE))
+    }
+    if (inherits(x, "POSIXt")) {
+      return(.to_utc(x, tz = tz, reinterpret_utc_tag = TRUE))
+    }
     cli::cli_abort(
-      c("{.arg time$start} must be {.cls POSIXct} or a parseable {.cls character}.",
-        "x" = "Got {.cls {class(time$start)}}."),
+      c("{.arg {arg}} must be {.cls POSIXct}, {.cls Date} or a parseable {.cls character}.",
+        "x" = "Got {.cls {class(x)[1]}}."),
+      class = err_class
+    )
+  }
+  time$start <- .norm_bound(time$start, "time$start", "aeme_error_time_start")
+  time$stop  <- .norm_bound(time$stop,  "time$stop",  "aeme_error_time_stop")
+  if (length(time$start) != 1L || is.na(time$start))
+    cli::cli_abort(
+      c("{.arg time$start} could not be parsed as a date-time.",
+        "i" = "Expected format: {.code YYYY-MM-DD HH:MM:SS}."),
       class = "aeme_error_time_start"
     )
-  }
-  if (is.character(time$stop)) {
-    cli::cli_inform(
-      c("i" = "{.arg time$stop} is a {.cls character}; converting to {.cls POSIXct} (UTC)."),
-      class = "aeme_inform_time_coerced"
-    )
-    time$stop <- as.POSIXct(time$stop, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
-    if (is.na(time$stop))
-      cli::cli_abort(
-        c("{.arg time$stop} could not be parsed as a date-time.",
-          "i" = "Expected format: {.code YYYY-MM-DD HH:MM:SS}."),
-        class = "aeme_error_time_stop"
-      )
-  } else if (!is.POSIXct(time$stop)) {
+  if (length(time$stop) != 1L || is.na(time$stop))
     cli::cli_abort(
-      c("{.arg time$stop} must be {.cls POSIXct} or a parseable {.cls character}.",
-        "x" = "Got {.cls {class(time$stop)}}."),
+      c("{.arg time$stop} could not be parsed as a date-time.",
+        "i" = "Expected format: {.code YYYY-MM-DD HH:MM:SS}."),
       class = "aeme_error_time_stop"
     )
-  }
+  time$tz <- tz
   if (time$stop <= time$start) {
     cli::cli_abort(
       c("{.arg time$stop} must be after {.arg time$start}.",
@@ -651,10 +698,12 @@ aeme_constructor <- function(
                !lubridate::is.Date(input$meteo$Date)) {
       cli::cli_warn(
         c("!" = "{.arg input$meteo$Date} is not {.cls POSIXct} or {.cls Date}.",
-          "i" = "Coercing to {.cls Date}. Supply a proper date column to avoid this."),
+          "i" = paste("Parsing it as {.val {tz}} and converting to UTC. Supply",
+                      "a proper date column to avoid this.")),
         class = "aeme_warn_meteo_date_coerced"
       )
-      input$meteo$Date <- as.Date(input$meteo$Date)
+      input$meteo$Date <- .as_forcing_datetime(input$meteo$Date, tz = tz,
+                                               reinterpret_utc_tag = TRUE)
       if (any(is.na(input$meteo$Date))) {
         cli::cli_abort(
           c("NAs introduced when coercing {.arg input$meteo$Date} to {.cls Date}.",
@@ -1365,8 +1414,13 @@ setMethod("show", "Aeme", function(object) {
   ))
   
   cli::cli_h2("Time")
+  tz_disp <- aeme_time$tz %||% "UTC"
+  fmt_dt <- function(x) format(x, "%Y-%m-%d %H:%M:%S", tz = tz_disp)
+  start_disp <- fmt_dt(aeme_time$start)
+  stop_disp <- fmt_dt(aeme_time$stop)
   cli::cli_bullets(c(
-    "*" = "Start: {aeme_time$start}; Stop: {aeme_time$stop}; Time step: {aeme_time$time_step} s; Output step: {aeme_time$output_time_step} s",
+    "*" = "Start: {start_disp}; Stop: {stop_disp}; Time step: {aeme_time$time_step} s; Output step: {aeme_time$output_time_step} s",
+    "*" = "Timezone: {tz_disp} (timestamps stored UTC)",
     "*" = "Spin up (days): GLM: {aeme_time$spin_up$glm_aed}; GOTM: {aeme_time$spin_up$gotm_wet}; DYRESM: {aeme_time$spin_up$dy_cd}; Simstrat: {aeme_time$spin_up$simstrat_aed2}"
   ))
   

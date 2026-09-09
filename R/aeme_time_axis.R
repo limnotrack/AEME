@@ -23,6 +23,8 @@
 #' @noRd
 aeme_time_axis <- function(aeme_time, model, which = c("output", "forcing"),
                            remove_spin_up = TRUE) {
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
   which <- match.arg(which)
   step <- if (which == "output") {
     aeme_time[["output_time_step"]] %||% 86400

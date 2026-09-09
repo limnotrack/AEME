@@ -44,8 +44,8 @@ test_that("aeme object can be built with partial information", {
     ),
     # Define time list
     time = list(
-      start = as.POSIXct("2020-01-01 00:00:00"), # start date
-      stop = as.POSIXct("2020-12-31 00:00:00") # stop date
+      start = as.POSIXct("2020-01-01 00:00:00", tz = "UTC"), # start date
+      stop = as.POSIXct("2020-12-31 00:00:00", tz = "UTC") # stop date
     ),
     # Define input list
     input = list(
@@ -89,8 +89,8 @@ test_that("aeme object errors when non alpha numeric chars present", {
     ),
     # Define time list
     time = list(
-      start = as.POSIXct("2020-01-01 00:00:00"), # start date
-      stop = as.POSIXct("2020-12-31 00:00:00") # stop date
+      start = as.POSIXct("2020-01-01 00:00:00", tz = "UTC"), # start date
+      stop = as.POSIXct("2020-12-31 00:00:00", tz = "UTC") # stop date
     ),
     # Define input list
     input = list(
@@ -147,8 +147,8 @@ test_that("parameters can be added to an aeme object", {
     ),
     # Define time list
     time = list(
-      start = as.POSIXct("2020-01-01 00:00:00"), # start date
-      stop = as.POSIXct("2020-12-31 00:00:00") # stop date
+      start = as.POSIXct("2020-01-01 00:00:00", tz = "UTC"), # start date
+      stop = as.POSIXct("2020-12-31 00:00:00", tz = "UTC") # stop date
     ),
     # Define input list
     input = list(

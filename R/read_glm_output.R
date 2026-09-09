@@ -66,7 +66,7 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   date_start <- as.POSIXct(gsub("hours since ", "",
                                 ncdf4::ncatt_get(nc,'time','units')$value),
                            tz = "UTC")
-  glm_dates <- as.POSIXct(hours_since * 3600 + date_start)
+  glm_dates <- as.POSIXct(hours_since * 3600 + date_start, tz = "UTC")
   if (is.null(date_index)) {
     if (!is.null(dates)) {
       date_index <- which(as.Date(glm_dates) %in% as.Date(dates))
@@ -77,23 +77,59 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       date_index <- seq_along(glm_dates)
     }
   }
-  if (length(glm_dates) < max(date_index)) {
-    cli::cli_alert_warning("date_index exceeds available GLM output dates.
-                          Returning empty output.")
-    out <- empty_model_output(
-      reason = "date_index exceeds available GLM output dates"
-    )
-    return(out)
+  # `date_index` is usually a positional axis reconstructed by
+  # aeme_time_axis() from start/stop/spin_up/output_time_step, not read from
+  # this file. If it overshoots the records GLM actually wrote -- e.g. an
+  # hourly output_time_step against a run that is still daily, or a `stop`
+  # that is not an exact multiple of the output step -- keep the positions
+  # that do exist rather than discarding every variable. Only bail when the
+  # overlap is empty.
+  n_out <- length(glm_dates)
+  if (any(date_index < 1 | date_index > n_out)) {
+    dropped <- sum(date_index < 1 | date_index > n_out)
+    date_index <- date_index[date_index >= 1 & date_index <= n_out]
+    if (length(date_index) == 0) {
+      cli::cli_alert_warning(
+        "date_index does not overlap the {n_out} GLM output record{?s}. Returning empty output."
+      )
+      return(empty_model_output(
+        reason = "date_index does not overlap available GLM output dates"
+      ))
+    }
+    cli::cli_warn(c(
+      "!" = "GLM output holds {n_out} record{?s} but {dropped} requested index position{?s} fell outside it -- those step{?s} were dropped.",
+      "i" = "Was the GLM run rebuilt and re-run after changing {.field output_time_step}?"
+    ))
   }
   dates <- .collapse_output_date(glm_dates[date_index])
 
-  # Extract depths and format
-  mod_layers <- ncdf4::ncvar_get(nc, "z")[, date_index]
-  mod_layers[mod_layers > 1000000] <- NA
+  # Extract layer-top heights (above the lake bottom) and blank out the
+  # inactive layers. GLM's `z` array is padded above the active layer count
+  # (`NS`) with either NC_FILL_DOUBLE or -- worse -- a stale value carried
+  # over from an earlier step, so mask by `NS` when it is available and fall
+  # back to the fill-value magnitude otherwise.
+  mod_layers <- ncdf4::ncvar_get(nc, "z")[, date_index, drop = FALSE]
+  mod_layers[!is.na(mod_layers) & abs(mod_layers) > 1e6] <- NA
+  if ("NS" %in% names(nc$var)) {
+    ns <- ncdf4::ncvar_get(nc, "NS")[date_index]
+    row_mat <- matrix(seq_len(nrow(mod_layers)), nrow = nrow(mod_layers),
+                      ncol = ncol(mod_layers))
+    ns_mat  <- matrix(ns, nrow = nrow(mod_layers), ncol = ncol(mod_layers),
+                      byrow = TRUE)
+    mod_layers[!is.na(ns_mat) & row_mat > ns_mat] <- NA
+  }
   midpoints <- apply(mod_layers, 2, \(x) {
     x - diff(c(0, x)) / 2
   })
-  lake_level <- ncdf4::ncvar_get(nc, "lake_level")[date_index]
+
+  # GLM writes the `lake_level` variable only on a daily cadence, so on a
+  # sub-daily output run it is NA at every non-midnight step. The surface
+  # height is the top of the uppermost active layer, i.e. max(z) -- identical
+  # to `lake_level` wherever GLM does write it (verified: mean/sd of the
+  # difference are 0), and defined at every step.
+  lake_level <- apply(mod_layers, 2, \(x) {
+    if (all(is.na(x))) NA_real_ else max(x, na.rm = TRUE)
+  })
   # Adjust midpoints to be relative to lake level
   Lmat <- matrix(lake_level, nrow = nrow(midpoints), ncol = length(lake_level),
                  byrow = TRUE)
@@ -124,25 +160,34 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   # Extract flux variables
   if (incl_fluxes) {
-    out_list[["LKE_Qe"]] <- ncdf4::ncvar_get(nc, "daily_qe")[date_index]
-    out_list[["LKE_Qh"]] <- ncdf4::ncvar_get(nc, "daily_qh")[date_index]
-    out_list[["LKE_Qlw"]] <- ncdf4::ncvar_get(nc, "daily_qlw")[date_index]
-    out_list[["LKE_Qsw"]] <- ncdf4::ncvar_get(nc, "daily_qsw")[date_index]
+    # GLM only computes its `daily_*` diagnostics (surface energy fluxes,
+    # evaporation, areas, in/out/overflow volumes, surface temp, lake level)
+    # once per simulated day and stamps them at the day's closing midnight.
+    # On a sub-daily output run every other step is therefore NA. Carry each
+    # day's single written value across all of that day's steps so these
+    # series are usable; on a daily run `.glm_fill_daily()` is a no-op.
+    glm_sel <- glm_dates[date_index]
+    fd <- function(v) .glm_fill_daily(v, glm_sel)
+
+    out_list[["LKE_Qe"]] <- fd(ncdf4::ncvar_get(nc, "daily_qe")[date_index])
+    out_list[["LKE_Qh"]] <- fd(ncdf4::ncvar_get(nc, "daily_qh")[date_index])
+    out_list[["LKE_Qlw"]] <- fd(ncdf4::ncvar_get(nc, "daily_qlw")[date_index])
+    out_list[["LKE_Qsw"]] <- fd(ncdf4::ncvar_get(nc, "daily_qsw")[date_index])
     out_list[["LKE_V"]] <- ncdf4::ncvar_get(nc, "lake_volume")[date_index]
-    out_list[["LKE_evpvol"]] <- -ncdf4::ncvar_get(nc, "evaporation")[date_index]
+    out_list[["LKE_evpvol"]] <- -fd(ncdf4::ncvar_get(nc, "evaporation")[date_index])
     out_list[["LKE_evpflx"]] <- -ncdf4::ncvar_get(nc, "evap_mass_flux")[date_index]
-    out_list[["LKE_A0"]] <- ncdf4::ncvar_get(nc, "surface_area")[date_index]
-    out_list[["LKE_evprte"]] <- abs(out_list[["LKE_evpvol"]] / 
+    out_list[["LKE_A0"]] <- fd(ncdf4::ncvar_get(nc, "surface_area")[date_index])
+    out_list[["LKE_evprte"]] <- abs(out_list[["LKE_evpvol"]] /
                                       out_list[["LKE_A0"]])
-    out_list[["LKE_inflow"]] <- ncdf4::ncvar_get(nc, "tot_inflow_vol")[date_index] # / A0
-    overflow <- ncdf4::ncvar_get(nc, "overflow_vol")[date_index]
+    out_list[["LKE_inflow"]] <- fd(ncdf4::ncvar_get(nc, "tot_inflow_vol")[date_index]) # / A0
+    overflow <- fd(ncdf4::ncvar_get(nc, "overflow_vol")[date_index])
     out_list[["LKE_overflow"]] <- overflow
-    tot_outflow <- ncdf4::ncvar_get(nc, "tot_outflow_vol")[date_index]
+    tot_outflow <- fd(ncdf4::ncvar_get(nc, "tot_outflow_vol")[date_index])
     out_list[["LKE_outflow"]] <- tot_outflow
     out_list[["LKE_outftot"]] <- tot_outflow + overflow
     out_list[["LKE_precip"]] <- ncdf4::ncvar_get(nc, "precipitation")[date_index]
     out_list[["LKE_pcpvol"]] <- out_list[["LKE_precip"]] * out_list[["LKE_A0"]]
-    out_list[["HYD_surft"]] <- ncdf4::ncvar_get(nc, "surface_temp")[date_index]
+    out_list[["HYD_surft"]] <- fd(ncdf4::ncvar_get(nc, "surface_temp")[date_index])
   }
   
   if ("LKE_photic" %in% vars_sim | "LKE_efold" %in% vars_sim) {
@@ -325,9 +370,13 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
         } else if (setequal(dim_names, "time")) {
           # See the analogous as.vector() fix above -- a single-dimension
           # netCDF variable can come back with a length-1 dim attribute
-          # still attached, which survives `[` indexing
+          # still attached, which survives `[` indexing. Many GLM 1-D
+          # diagnostics are written once per day (like the flux block
+          # above), so carry each day's value across a sub-daily axis --
+          # `.glm_fill_daily()` is a no-op for variables written every step.
           var_out <- ncdf4::ncvar_get(nc, v)
-          as.vector(var_out[date_index] * conv_factor)
+          as.vector(.glm_fill_daily(var_out[date_index], glm_dates[date_index]) *
+                      conv_factor)
         } else if (setequal(dim_names, c("z", "time"))) {
           var_out <- ncdf4::ncvar_get(nc, v)
           if (dim_names[1] != "z") var_out <- t(var_out)
@@ -377,6 +426,32 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
 
   return(.new_aeme_output(out_list, model = "glm_aed", raw = raw_output,
                           var_units = var_units, var_long_name = var_long_name))
+}
+
+#' Carry GLM's once-per-day diagnostics across a sub-daily output axis
+#'
+#' GLM writes its `daily_*` variables (and `lake_level` / `surface_temp` /
+#' `surface_area`) once per simulated day, stamped at the day's closing
+#' midnight, so on a sub-daily run they are `NA` at every other step. This
+#' groups each step with the day GLM accounts it to -- the steps at `HH:00`
+#' for `HH > 0` plus the following `00:00` -- and fills the whole group with
+#' that day's single written value.
+#'
+#' @param x numeric vector, already subset to `date_index`.
+#' @param glm_dates POSIXct/Date vector, the timestamps of `x` (same length).
+#' @return `x` with intra-day gaps filled. A no-op when `x` has no `NA` (the
+#'   daily-output case) or the lengths disagree.
+#' @noRd
+.glm_fill_daily <- function(x, glm_dates) {
+  if (length(x) != length(glm_dates) || !anyNA(x)) return(x)
+  grp <- as.character(as.Date(as.POSIXct(glm_dates, tz = "UTC") - 1,
+                              tz = "UTC"))
+  agg <- tapply(x, grp, function(v) {
+    v <- v[!is.na(v)]
+    if (length(v)) v[[length(v)]] else NA_real_
+  })
+  filled <- as.numeric(agg[grp])
+  ifelse(is.na(x), filled, x)
 }
 
 #' Return a `(z, time)` variable either interpolated onto a standardised
@@ -454,9 +529,26 @@ read_glm_wlev <- function(nc = NULL, file) {
   date_start <- as.POSIXct(gsub("hours since ", "",
                                 ncdf4::ncatt_get(nc,'time','units')$value),
                            tz = "UTC")
-  glm_dates <- .collapse_output_date(as.POSIXct(hours_since * 3600 + date_start))
+  glm_dates <- .collapse_output_date(as.POSIXct(hours_since * 3600 + date_start,
+                                                tz = "UTC"))
 
+  # GLM only writes `lake_level` on a daily cadence, so on a sub-daily output
+  # run it is NA at every non-midnight step. Reconstruct the surface height
+  # from the top of the uppermost active layer (max(z)) -- identical to
+  # `lake_level` wherever GLM writes it, and defined at every step.
   lake_level <- ncdf4::ncvar_get(nc, "lake_level")
+  if (anyNA(lake_level)) {
+    z <- ncdf4::ncvar_get(nc, "z")
+    z[!is.na(z) & abs(z) > 1e6] <- NA
+    if ("NS" %in% names(nc$var)) {
+      ns <- ncdf4::ncvar_get(nc, "NS")
+      row_mat <- matrix(seq_len(nrow(z)), nrow = nrow(z), ncol = ncol(z))
+      ns_mat  <- matrix(ns, nrow = nrow(z), ncol = ncol(z), byrow = TRUE)
+      z[!is.na(ns_mat) & row_mat > ns_mat] <- NA
+    }
+    zmax <- apply(z, 2, \(x) if (all(is.na(x))) NA_real_ else max(x, na.rm = TRUE))
+    lake_level <- ifelse(is.na(lake_level), zmax, lake_level)
+  }
 
   out <- data.frame(Date = glm_dates,
                     LKE_lvlwtr = lake_level)

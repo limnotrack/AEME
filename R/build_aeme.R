@@ -94,16 +94,25 @@ build_aeme <- function(aeme = NULL,
                        use_aeme = FALSE,
                        config = NULL,
                        output_vars = NULL,
-                       mass_balance = TRUE
+                       mass_balance = TRUE,
+                       tz = NULL
 ) {
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
-  
+
   if (is.null(aeme) & is.null(config)) {
     stop("Either 'aeme' or 'config' must be supplied.")
   }
   aeme <- migrate_aeme(aeme)
+
+  # Declared input timezone: `tz` arg overrides, else the object's stored value,
+  # else UTC. Used to interpret the meteo/inflow/outflow date columns.
+  input_tz <- tz %||% time(aeme)[["tz"]] %||% "UTC"
+  if (!input_tz %in% OlsonNames()) input_tz <- "UTC"
+  if (!identical(time(aeme)[["tz"]], input_tz)) {
+    aeme <- set_time(aeme, tz = input_tz)
+  }
   if (is.null(model)) {
     model <- list_models(aeme)
     if (length(model) == 0) {
@@ -294,7 +303,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     }
     met <- met |>
       expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE) |>
-      standardise_met()
+      standardise_met(tz = aeme_time[["tz"]] %||% "UTC", longitude = lon)
     # names(met) <- gsub("MET_", "", names(met))
     
     input(aeme) <- list(init_profile = init_prof,

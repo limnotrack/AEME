@@ -72,6 +72,11 @@ read_aeme_from_files <- function(path) {
         } else {
           86400
         }
+        # start/stop are serialised as UTC wall-clock strings -- read straight
+        # back as UTC. `tz` is stored metadata (declared input timezone); older
+        # time.csv files without it default to "UTC".
+        tz <- if ("tz" %in% names(df) && !is.na(df$tz[1]) &&
+                  nzchar(df$tz[1])) df$tz[1] else "UTC"
         inp <- list(
           start = as.POSIXct(df$start, tz = "UTC"),
           stop = as.POSIXct(df$stop, tz = "UTC"),
@@ -80,7 +85,8 @@ read_aeme_from_files <- function(path) {
           spin_up = stats::setNames(
             lapply(unname(list_models()), get_spin_up),
             unname(list_models())
-          )
+          ),
+          tz = tz
         )
         methods::slot(aeme, slot_name) <- inp
       }

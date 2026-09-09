@@ -123,7 +123,8 @@ glm_config_to_aeme <- function(nml_file, model_controls = NULL, spin_up = 2,
     time_step        = nml$time$dt,
     output_time_step = nml$time$dt * nsave,
     spin_up          = list(dy_cd = 2, glm_aed = spin_up, gotm_wet = 2,
-                            simstrat_aed2 = 2)
+                            simstrat_aed2 = 2),
+    tz               = "UTC"
   )
 
   # ---- hypsograph ----
@@ -172,7 +173,8 @@ glm_config_to_aeme <- function(nml_file, model_controls = NULL, spin_up = 2,
     time     = time,
     input    = input,
     inflows  = inflows,
-    outflows = outflows
+    outflows = outflows,
+    tz       = "UTC"
   )
 
   cfg <- config_defaults()

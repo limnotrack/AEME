@@ -32,7 +32,7 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     gsub("seconds since ", "", x = _) |>
     as.POSIXct(tz = "UTC")
   time_vec <- ncdf4::ncvar_get(nc, "time")
-  gotm_dates <- as.POSIXct(time_vec + date_start)
+  gotm_dates <- as.POSIXct(time_vec + date_start, tz = "UTC")
   if (is.null(date_index)) {
     if (!is.null(dates)) {
       date_index <- which(as.Date(gotm_dates) %in% as.Date(dates))
@@ -43,15 +43,28 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       date_index <- seq_along(gotm_dates)
     }
   }
-  if (length(gotm_dates) < max(date_index)) {
-    cli::cli_alert_warning("date_index exceeds available GOTM output dates. 
-                          Returning empty output.")
-    out <- empty_model_output(
-      reason = "date_index exceeds available GOTM output dates"
-    )
-    return(out)
+  # Keep the positions that exist rather than discarding every variable when
+  # a reconstructed `date_index` overshoots the records GOTM actually wrote
+  # (e.g. an hourly output_time_step against a run still written daily).
+  n_out <- length(gotm_dates)
+  if (any(date_index < 1 | date_index > n_out)) {
+    dropped <- sum(date_index < 1 | date_index > n_out)
+    date_index <- date_index[date_index >= 1 & date_index <= n_out]
+    if (length(date_index) == 0) {
+      cli::cli_alert_warning(
+        "date_index does not overlap the {n_out} GOTM output record{?s}. Returning empty output."
+      )
+      return(empty_model_output(
+        reason = "date_index does not overlap available GOTM output dates"
+      ))
+    }
+    cli::cli_warn(c(
+      "!" = "GOTM output holds {n_out} record{?s} but {dropped} requested index position{?s} fell outside it -- those step{?s} were dropped.",
+      "i" = "Was the GOTM run rebuilt and re-run after changing {.field output_time_step}?"
+    ))
   }
-  
+
+
   t_start <- date_index[1]
   start_1d <- c(1, 1, t_start)
   start_2d <- c(1, 1, 1, t_start)
@@ -306,7 +319,8 @@ read_gotm_wlev <- function(nc = NULL, file) {
     gsub("seconds since ", "", x = _) |>
     as.POSIXct(tz = "UTC")
   time_vec <- ncdf4::ncvar_get(nc, "time")
-  gotm_dates <- .collapse_output_date(as.POSIXct(time_vec + date_start))
+  gotm_dates <- .collapse_output_date(as.POSIXct(time_vec + date_start,
+                                                 tz = "UTC"))
 
   zi <- ncdf4::ncvar_get(nc, "zi")
   zeta <- ncdf4::ncvar_get(nc, "zeta")

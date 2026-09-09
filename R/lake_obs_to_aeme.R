@@ -25,7 +25,10 @@
 #' mapping variable names and units to AEME standards. "var_aeme" is the
 #' defined AEME variable name, "name" is the name used in the input data,
 #' and "unit" is the unit used in the input data.
-#' 
+#' @param tz character; Olson timezone a naive datetime column is expressed in.
+#' Sub-daily timestamps are converted to UTC before being reduced to a `Date`;
+#' daily data is treated as calendar dates and never shifted. Default `"UTC"`.
+#'
 #' @importFrom dplyr select mutate left_join rename
 #' @importFrom units as_units set_units
 #'
@@ -37,8 +40,15 @@
 
 lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
                              var_col_name, value_col_name, lake_id_col,
-                             var_map, depth_to_col_name, sd_col_name) {
-  
+                             var_map, depth_to_col_name, sd_col_name,
+                             tz = "UTC") {
+
+  # Internal datetime arithmetic runs in UTC. A naive datetime column is taken
+  # to be wall-clock time in `tz`; a Date (or tz-aware POSIXct) is left as the
+  # calendar/absolute value it already is.
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+
   # Load Rdata
   data("key_naming", package = "AEME", envir = environment())
   sub_key_naming <- key_naming |> 
@@ -244,7 +254,8 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
     dplyr::left_join(sub_key_naming, by = c("var" = "var_aeme")) |>
     dplyr::rename(var_aeme = var) |>
     dplyr::filter(!is.na(var_aeme), !is.na(unit)) |>
-    dplyr::mutate(Date = as.Date(datetime))
+    dplyr::mutate(Date = as.Date(.as_forcing_datetime(datetime, tz = tz,
+                                                      reinterpret_utc_tag = TRUE)))
 
   # Group by var_aeme and convert units
   v <- var_map$var_aeme[9]

@@ -22,7 +22,8 @@ build_aeme(
   use_aeme = FALSE,
   config = NULL,
   output_vars = NULL,
-  mass_balance = TRUE
+  mass_balance = TRUE,
+  tz = NULL
 )
 }
 \arguments{

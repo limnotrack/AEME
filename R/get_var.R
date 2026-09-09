@@ -152,13 +152,30 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
     
     if (use_obs) {
 
-      # Observations are daily; when model output is sub-daily POSIXct, snap the
-      # model time axis to calendar days for matching/joining against obs.
-      mod_date <- outp[[ens_lab]][[m]][["Date"]]
-      if (inherits(mod_date, "POSIXct")) mod_date <- as.Date(mod_date)
-
+      # Observations are daily. When model output is sub-daily POSIXct, snap
+      # the model axis to calendar days -- but keep only ONE model step per
+      # obs day (the timestamp nearest midnight, matching the historical
+      # daily convention), otherwise every obs would join to all 24 hourly
+      # steps of its day and blow the result up 24x.
+      mod_raw <- outp[[ens_lab]][[m]][["Date"]]
       obs_dates <- unique(obs_sub$Date)
-      date_index <- which(mod_date %in% obs_dates)
+      if (inherits(mod_raw, "POSIXct")) {
+        mod_date <- as.Date(mod_raw)
+        cand <- which(mod_date %in% obs_dates)
+        if (length(cand)) {
+          tod <- as.numeric(mod_raw[cand]) %% 86400
+          near_mid <- pmin(tod, 86400 - tod)
+          date_index <- vapply(split(seq_along(cand), mod_date[cand]),
+                               \(ii) cand[ii[which.min(near_mid[ii])]],
+                               integer(1))
+          date_index <- sort(unname(date_index))
+        } else {
+          date_index <- integer(0)
+        }
+      } else {
+        mod_date <- mod_raw
+        date_index <- which(mod_date %in% obs_dates)
+      }
 
       if (var_sim == "LKE_lvlwtr") {
 
@@ -254,7 +271,13 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
       # lyr <- outp[[ens_lab]][[m]][["LKE_layers"]]
       if (!is.null(depth)) {
         min_depth <- 0
-        max_depth <- round(max(lake_level), 2)
+        max_depth <- round(max(lake_level, na.rm = TRUE), 2)
+        if (!is.finite(max_depth)) {
+          cli::cli_abort(
+            "No finite modelled lake levels ({.field LKE_lvlwtr}) to place {.arg depth} against.",
+            class = "aeme_error_depth_out_of_range"
+          )
+        }
         if (depth > max_depth | depth < min_depth) {
           cli::cli_abort("Depth is outside the range of the modelled lake levels [{min_depth}, {max_depth} m].",
                          class = "aeme_error_depth_out_of_range")

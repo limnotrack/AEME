@@ -21,6 +21,11 @@
 get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
                             month = NULL, depth_range = NULL, use_obs = TRUE) {
 
+  # Model output time axes are UTC (CF "<unit> since <origin>"); keep all
+  # datetime arithmetic here in UTC too.
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+
   # Check function args ----
   aeme <- check_aeme(aeme)
   model <- check_model(model = model)
