@@ -175,13 +175,21 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
   }
 
   # Date lims
-  # Find date range and have output in Date format
-  all_dates <- sapply(model, \(m){
-    "[["(outp[[ens_lab]][[m]], "Date")
-  })
-  xlim <- as.Date(range(all_dates, na.rm = TRUE))
+  # Find date range. Output may be daily (Date) or sub-daily (POSIXct) --
+  # keep whichever it is rather than forcing Date, which on a POSIXct axis
+  # reinterprets the epoch-seconds as days and lands centuries in the future.
+  all_dates <- do.call(c, lapply(model, \(m) {
+    d <- outp[[ens_lab]][[m]][["Date"]]
+    if (inherits(d, "POSIXct")) d else as.Date(d)
+  }))
+  subdaily_axis <- inherits(all_dates, "POSIXct")
+  xlim <- range(all_dates, na.rm = TRUE)
   if (remove_spin_up) {
-    xlim <- c(as.Date(tme$start), as.Date(tme$stop))
+    xlim <- if (subdaily_axis) {
+      as.POSIXct(c(tme$start, tme$stop), tz = "UTC")
+    } else {
+      c(as.Date(tme$start), as.Date(tme$stop))
+    }
   }
 
   # Filter observations by variable and Date

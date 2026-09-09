@@ -212,7 +212,7 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
     ))
   }
   raw      <- is_aeme_output_raw(out)
-  dates    <- as.Date(out[["Date"]])
+  dates    <- out[["Date"]]
   variable <- out[[var_sim]]
 
   # Raw (native netCDF name) variables have no key_naming entry to source a

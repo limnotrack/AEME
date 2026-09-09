@@ -84,8 +84,16 @@ plot_output_base <- function(aeme, var_sim = "HYD_temp", model, ens_n = 1,
   }
   
   # --- Date range ----------------------------------------------------------
-  dates    <- as.Date(outp[[ens_lab]][[model[1]]][["Date"]])
-  xlim     <- c(as.Date(tme$start), as.Date(tme$stop))
+  # Keep the output's native time axis: `as.Date()` on a sub-daily (POSIXct)
+  # run collapses every step of a day onto one value, which then breaks
+  # image()'s "strictly increasing x" requirement further down.
+  dates <- outp[[ens_lab]][[model[1]]][["Date"]]
+  if (inherits(dates, "POSIXct")) {
+    xlim <- as.POSIXct(c(tme$start, tme$stop), tz = "UTC")
+  } else {
+    dates <- as.Date(dates)
+    xlim  <- c(as.Date(tme$start), as.Date(tme$stop))
+  }
   date_idx <- which(dates >= xlim[1] & dates <= xlim[2])
   dates    <- dates[date_idx]
   
@@ -243,6 +251,18 @@ get_level <- function(aeme, model, ens_lab, date_idx) {
 }
 
 
+# --- Axis date labels --------------------------------------------------------
+#' Format x-axis tick labels for a Date or POSIXct axis, choosing a
+#' resolution that suits the plotted span (day/month for a sub-daily or
+#' short window, month/year for a long one).
+#' @noRd
+.axis_date_labels <- function(at, dates) {
+  span_days <- diff(range(as.numeric(dates))) /
+    if (inherits(dates, "POSIXct")) 86400 else 1
+  fmt <- if (span_days <= 3) "%d %b %H:%M" else if (span_days <= 120) "%d %b" else "%b %Y"
+  if (inherits(at, "POSIXct")) format(at, fmt) else format(as.Date(at), fmt)
+}
+
 # --- Contour plot --------------------------------------------------------
 #' @noRd
 .plot_contour <- function(dates, mat, depth_mat, level_vec, mod_name,
@@ -257,12 +277,11 @@ get_level <- function(aeme, model, ens_lab, date_idx) {
         col = pal, breaks = breaks,
         xlim = as.numeric(xlim), ylim = y_range,
         xlab = "", ylab = "Depth (m)", main = mod_name, axes = FALSE)
-  
+
   lines(as.numeric(dates), level_vec, col = "black", lwd = 1.5)
-  
+
   at_x <- pretty(dates)
-  axis(1, at = as.numeric(at_x),
-       labels = format(as.Date(at_x, origin = "1970-01-01"), "%b %Y"),
+  axis(1, at = as.numeric(at_x), labels = .axis_date_labels(at_x, dates),
        las = 2, cex.axis = 0.8)
   axis(2); box()
 }
@@ -310,12 +329,11 @@ get_level <- function(aeme, model, ens_lab, date_idx) {
     
     plot(NULL, xlim = as.numeric(xlim), ylim = y_range,
          xlab = "", ylab = var_name, main = var_name, xaxt = "n")
-    
+
     at_x <- pretty(dates)
-    axis(1, at = as.numeric(at_x),
-         labels = format(as.Date(at_x, origin = "1970-01-01"), "%b %Y"),
+    axis(1, at = as.numeric(at_x), labels = .axis_date_labels(at_x, dates),
          las = 2, cex.axis = 0.8)
-    
+
     for (m in model)
       lines(as.numeric(dates), out[[m]][[v]], col = cols[m], lwd = 1.5)
     
