@@ -1,5 +1,63 @@
 # AEME 0.4.0
 
+## Timezone of input data
+
+The model runs entirely in **UTC**: input timestamps are converted to UTC once,
+at ingest; every model gets UTC boundary conditions (GLM's nml `timezone` stays
+`0`); output is read back and stored in UTC; and only plots / `summary()` render
+in local time. You never manage timezones per model or on the way out.
+
+* **Declare the timezone of your input data once**, via
+  `aeme_constructor(tz = ...)`, `new_aeme(tz = ...)`, `build_aeme(tz = ...)` or
+  `set_time(tz = ...)`. It is stored as `time$tz` (a concrete Olson name) and
+  round-trips through `time.csv`, `aeme.yaml` and `.rds`.
+* **Default `tz` is `"UTC"`.** Gridded reanalysis (ERA5, etc.) and model
+  conventions are all UTC, so most workflows need nothing. Set a non-UTC zone
+  only when your source data really is in local time. Legacy `.rds` objects
+  migrate to `time$tz = "UTC"`.
+* Timestamps you supply -- `time$start` / `time$stop` and the date columns of
+  meteo, inflow, outflow and observation inputs -- are read as wall-clock time
+  in `time$tz` and converted to UTC at ingest (`add_met()`, `add_inflows()`,
+  `aeme_constructor()`, `yaml_to_aeme()`). Daily (calendar) data is never
+  shifted.
+* When you declare a **non-UTC** `time$tz`, a date column that a CSV reader
+  tagged `"UTC"` (`readr`/`read.csv`'s default) is reinterpreted in your
+  declared zone -- `"UTC"` is an unreliable label there. A column carrying a
+  genuinely different timezone (e.g. `"America/New_York"`) is always kept as an
+  absolute instant.
+* `standardise_met()` now **warns when sub-daily `MET_radswd` peaks more than
+  3 h from astronomical solar noon** for the lake's longitude -- the usual sign
+  that meteo timestamps are in local time rather than UTC.
+* Datetime parsing across the model-output readers, `check_time()`,
+  `standardise_met()` / `standardise_inflow()`, `aeme_time_axis()` and the
+  variable-index helpers is now explicitly UTC and independent of the session
+  timezone. `show()` / `summary()` print `time$tz` and render `start` / `stop`
+  in it.
+* GLM's numeric `timezone` nml field is a solar-geometry parameter, unrelated to
+  `time$tz`, and is unchanged.
+
+## Initial conditions
+
+* New **`set_initial_conditions()`** / **`get_initial_conditions()`** expose
+  the initial water depth, temperature/salinity profile, and biogeochemical
+  water-column pools that `build_aeme()` writes into each model. Values can be
+  set once for every model or overridden per model via `model_init`
+  (e.g. a GLM-AED-specific temperature profile). The specification is stored
+  in `configuration(aeme)$initial_conditions` and resolved per model at build
+  time (generic defaults <- per-model overrides); it survives
+  `load_configuration()`. Scalar water-quality values fold into
+  `model_controls$initial_wc`; depth-resolved (`depth`/`value`) profiles are
+  applied to the built GLM-AED / Simstrat directories via the existing
+  `set_*_init()` writers.
+* New **`assess_spin_up()`** builds and runs an ensemble of
+  initial-condition perturbations across a range of spin-up lengths and
+  reports how quickly the ensemble spread at the start of the analysis
+  period collapses, with an optional recommended spin-up. The summary gives
+  per-depth-then-averaged `spread` / `drift` in the variable's units plus
+  dimensionless `spread_cv` / `drift_cv` (normalised by the ensemble mean),
+  and `metric` selects which the recommendation targets. **`plot_spin_up()`**
+  plots the chosen metric against spin-up length.
+
 ## Sub-daily (hourly) forcing and output
 
 * `time` gains an **`output_time_step`** element (seconds; default `86400`,
@@ -18,6 +76,29 @@
 * AEME does **not** temporally disaggregate forcing: sub-daily runs require
   forcing supplied at (at least) that cadence, and `build_aeme()` aborts
   otherwise. DYRESM-CAEDYM and the water-balance path remain daily.
+* Reading output back no longer silently discards **everything** when the
+  reconstructed output time axis is longer than the records a run actually
+  wrote (e.g. an hourly `output_time_step` set on a run still written
+  daily, or a `stop` that is not an exact multiple of the output step). The
+  model readers now keep the overlapping steps and warn, and
+  `get_date_index()` trims the index to the file (and warns) when given a
+  `path`/`lake_dir`. `get_var(use_obs = TRUE)` against sub-daily output now
+  matches one model step per observation day (nearest midnight) instead of
+  joining each daily observation to all 24 hourly steps.
+* GLM computes its `daily_*` diagnostics -- surface energy fluxes,
+  evaporation, surface area/temperature, lake level, in/out/overflow
+  volumes -- once per simulated day, so on a sub-daily `read_glm_output()`
+  they previously came back `NA` at ~23 of every 24 steps (and any variable
+  derived from them, e.g. `LKE_evprte`, `HYD_surft`). Each day's single
+  written value is now carried across that day's sub-daily steps; daily
+  runs are unaffected.
+* The plotting functions now handle a sub-daily (`POSIXct`) output axis:
+  `plot_output()` / `plot_model_output()` / `plot_glm_output()` heat-map
+  tiles are drawn at the real output step instead of collapsing to
+  1-second slivers; `plot_output(backend = "base")` no longer errors on
+  the non-unique `as.Date()` axis; observation overlays (`align_depth_data()`)
+  match daily observations to the model day rather than an exact timestamp;
+  and axis date labels adapt to the plotted span.
 
 ## New model
 
