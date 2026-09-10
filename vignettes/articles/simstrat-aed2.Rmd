@@ -495,12 +495,12 @@ interpret the wider set of diagnostics it unlocks.
 
 ## Assessing model performance
 
-When observations are stored in the `aeme` object, `assess_model()` computes
+When observations are stored in the `aeme` object, `assess_aeme()` computes
 a suite of skill metrics (RMSE, NSE, bias, Pearson *r*, etc.) for each
 simulated variable:
 
 ```{r assess-model, eval=TRUE}
-skill <- assess_model(aeme = aeme, model = model)
+skill <- assess_aeme(aeme = aeme, model = model)
 skill
 ```
 
@@ -629,7 +629,7 @@ users won't need day-to-day).
 `PHY_TCHLA`. Most of the diagnostics tabulated above (`PHY_GPP`,
 `OXY_atm_oxy_flux`, `OXY_sat`, ...) do **not** have a `var_aeme` entry yet —
 AEME hasn't adopted every AED2 diagnostic into its standardised variable
-catalog. `plot_output()`/`assess_model()` only recognise `var_aeme` names,
+catalog. `plot_output()`/`assess_aeme()` only recognise `var_aeme` names,
 and passing an unregistered one through can silently resolve to the *wrong*
 variable via `guess_aeme_vars()`'s fuzzy keyword matching rather than
 failing loudly (`"PHY_GPP"`, for instance, fuzzy-matches to `"PHY_green"` —
@@ -729,7 +729,7 @@ These parameter sets — together with `simstrat_aed2_parameter_library`'s
 richer descriptions above — are the natural inputs to an automated
 calibration workflow via the
 [aemetools](https://github.com/limnotrack/aemetools) package, which wraps
-`build_aeme()`/`run_aeme()`/`assess_model()` in an optimiser.
+`build_aeme()`/`run_aeme()`/`assess_aeme()` in an optimiser.
 
 ### Simstrat's native PEST-based calibration
 

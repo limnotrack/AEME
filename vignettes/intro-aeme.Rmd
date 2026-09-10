@@ -172,7 +172,7 @@ For more details on the `model_controls`, see it's section [below](#sec-model_co
 The `observations` slot is a list that contains observations of in-lake (`lake`)
 variables (e.g. water temperature, chlorophyll-a, dissolved oxygen etc.) and
 water level (`level`). The observations are used to assess model performance
-using the function \code{assess_model()} and also to calibrate the model using
+using the function \code{assess_aeme()} and also to calibrate the model using
 the [aemetools](https://github.com/limnotrack/aemetools) package.
 
 The `lake` observations are stored in a data frame with the following required

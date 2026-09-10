@@ -676,7 +676,7 @@ suite of skill metrics (RMSE, NSE, bias, Pearson *r*, etc.) for each simulated
 variable:
 
 ```{r assess-model, eval=TRUE}
-skill <- assess_model(aeme = aeme, model = model)
+skill <- assess_aeme(aeme = aeme, model = model)
 skill
 ```
 
