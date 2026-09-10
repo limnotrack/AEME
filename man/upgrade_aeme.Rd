@@ -44,6 +44,9 @@ and ensure a \code{var_aeme} column.
 \item \code{observations$lake}: collapse the legacy \code{depth_from} / \code{depth_to}
 column pair to a single \code{depth} column (interval midpoint), keeping
 \code{depth_to} only where it records a genuine integrated sample.
+\item \code{observations$lake} / \code{observations$level}: convert a \code{Date} \code{Date}
+column to noon-anchored UTC \code{POSIXct} (\verb{<date> 12:00:00}), so daily
+observations match a sub-daily model axis unambiguously.
 \item \code{configuration}: backfill scalar build defaults (\code{ext_elev},
 \code{calc_wbal}, \code{wb_method}, \code{calc_wlev}, \code{hum_type}, \code{est_swr_hr},
 \code{use_bgc}) from \code{config_defaults()}.

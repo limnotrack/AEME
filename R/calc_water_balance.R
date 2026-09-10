@@ -265,9 +265,15 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
   
   FUN = cli::cli_inform
   cli_safe("Resolving water level", indent = FALSE)
+  # The water balance is daily; `obs_met$Date` is a calendar Date. Level
+  # observations are stored as noon POSIXct -- reduce them to the same
+  # calendar day so the joins and %in% tests below match.
+  if (!is.null(level) && "Date" %in% names(level)) {
+    level$Date <- as.Date(level$Date, tz = "UTC")
+  }
   # on.exit({
   #   if (!is.null(pb_id)) cli::cli_progress_done(id = pb_id)
-  # })  
+  # })
   if (use == "mod") {
     date_vector <- seq.Date(as.Date(spin_start), as.Date(date_stop), by = 1)
     mod_lvl <- dplyr::filter(level, Date >= spin_start & Date <= date_stop)
@@ -340,6 +346,9 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
 #' @noRd
 add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
   if (!is.null(obs_lake)) {
+    # Lake observations are stored as noon POSIXct; `obs_met$Date` is a
+    # calendar Date. Match on the day.
+    obs_lake$Date <- as.Date(obs_lake$Date, tz = "UTC")
     sub <- obs_lake |>
       dplyr::filter(var_aeme == "HYD_temp", depth < 1,
                     Date %in% obs_met$Date) |>

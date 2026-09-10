@@ -16,17 +16,23 @@
 #'   \code{output_time_step}, \code{"forcing"} uses \code{time_step}.
 #' @param remove_spin_up logical; if \code{TRUE}, also return the index of the
 #'   timestamps on or after \code{start} (the post-spin-up window).
+#' @param daily logical; if \code{TRUE}, force a 86400 s step regardless of
+#'   \code{which}. Used to index a model's daily-mean \code{output_daily.nc}
+#'   (see \code{\link{set_output_time_step}}), whose cadence is fixed at daily
+#'   irrespective of the sub-daily \code{output_time_step} the raw run used.
 #'
 #' @return list with \code{axis} (POSIXct vector) and \code{index} (integer
 #'   positions into \code{axis}; all positions when
 #'   \code{remove_spin_up = FALSE}).
 #' @noRd
 aeme_time_axis <- function(aeme_time, model, which = c("output", "forcing"),
-                           remove_spin_up = TRUE) {
+                           remove_spin_up = TRUE, daily = FALSE) {
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
   which <- match.arg(which)
-  step <- if (which == "output") {
+  step <- if (isTRUE(daily)) {
+    86400
+  } else if (which == "output") {
     aeme_time[["output_time_step"]] %||% 86400
   } else {
     aeme_time[["time_step"]] %||% 3600

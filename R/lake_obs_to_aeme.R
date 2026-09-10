@@ -26,15 +26,17 @@
 #' defined AEME variable name, "name" is the name used in the input data,
 #' and "unit" is the unit used in the input data.
 #' @param tz character; Olson timezone a naive datetime column is expressed in.
-#' Sub-daily timestamps are converted to UTC before being reduced to a `Date`;
-#' daily data is treated as calendar dates and never shifted. Default `"UTC"`.
+#' Sub-daily timestamps are converted to UTC and kept at their time-of-day;
+#' daily data is treated as calendar dates (never shifted) and anchored at
+#' 12:00:00 UTC. Default `"UTC"`.
 #'
 #' @importFrom dplyr select mutate left_join rename
 #' @importFrom units as_units set_units
 #'
-#' @returns A data frame formatted for AEME with required columns "Date",
-#' "var_aeme", "depth", and "value", plus the optional columns "depth_to" and
-#' "sd" when the corresponding arguments are supplied.
+#' @returns A data frame formatted for AEME with required columns "Date"
+#' (UTC `POSIXct`; daily observations anchored at 12:00:00), "var_aeme",
+#' "depth", and "value", plus the optional columns "depth_to" and "sd" when
+#' the corresponding arguments are supplied.
 #' @export
 #'
 
@@ -254,8 +256,8 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
     dplyr::left_join(sub_key_naming, by = c("var" = "var_aeme")) |>
     dplyr::rename(var_aeme = var) |>
     dplyr::filter(!is.na(var_aeme), !is.na(unit)) |>
-    dplyr::mutate(Date = as.Date(.as_forcing_datetime(datetime, tz = tz,
-                                                      reinterpret_utc_tag = TRUE)))
+    dplyr::mutate(Date = .as_obs_datetime(datetime, tz = tz,
+                                          reinterpret_utc_tag = TRUE))
 
   # Group by var_aeme and convert units
   v <- var_map$var_aeme[9]

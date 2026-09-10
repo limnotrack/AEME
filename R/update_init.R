@@ -42,7 +42,7 @@ update_init <- function(aeme, model_controls = NULL) {
       "NIT_ponr", "NIT_pin", "NIT_tn"
     )
     summ <- lake_obs |>
-      dplyr::mutate(month = as.numeric(format(as.Date(Date), "%m")),
+      dplyr::mutate(month = as.numeric(format(as.Date(Date, tz = "UTC"), "%m")),
                     depth_mid = depth) |>
       dplyr::filter(var_aeme %in% init_vars,
                     month %in% month_range
@@ -68,7 +68,7 @@ update_init <- function(aeme, model_controls = NULL) {
     init_values <- lapply(init_vars, \(v) {
       if (v %in% summ$var_aeme) {
         temp_profile <- lake_obs |>
-          dplyr::mutate(month = as.numeric(format(as.Date(Date), "%m")),
+          dplyr::mutate(month = as.numeric(format(as.Date(Date, tz = "UTC"), "%m")),
                         depth_mid = depth) |>
           dplyr::filter(var_aeme == v,
                         month %in% month_range) |>

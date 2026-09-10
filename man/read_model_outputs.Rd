@@ -16,7 +16,8 @@ read_model_outputs(
   output_hour = 0,
   phyto_pars = NULL,
   load_all = TRUE,
-  use_dat = NULL
+  use_dat = NULL,
+  daily_mean = FALSE
 )
 }
 \arguments{
@@ -61,6 +62,13 @@ when there is one, and fall back to the text output when there is not
 (a run whose output was never converted, or converted with
 \code{\link{write_simstrat_nc}}\code{(remove_dat = FALSE)} and the netCDF since
 removed). Ignored when \code{nc} is supplied.}
+
+\item{daily_mean}{logical; when \code{TRUE}, return one record per calendar day.
+If a model's daily-mean \code{output_daily.nc} companion is present (GOTM writes
+one natively; GLM-AED and Simstrat get one from \code{run_aeme()} when
+\code{time(aeme)$output_daily_mean} is \code{TRUE}) it is read directly; otherwise the
+raw sub-daily \code{output.nc} is read and averaged by calendar day. Defaults to
+\code{FALSE}. See \code{\link{set_output_time_step}}.}
 }
 \value{
 List of model outputs in AEME standard format

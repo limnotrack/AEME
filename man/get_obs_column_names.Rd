@@ -12,9 +12,10 @@ get_obs_column_names(include_optional = FALSE)
 }
 \value{
 Character vector of column names for observational data. The required
-columns are \code{Date}, \code{var_aeme}, \code{depth} and \code{value}. The optional columns
-are \code{depth_to} (bottom of an integrated sample) and \code{sd} (measurement
-standard deviation, in the variable's units).
+columns are \code{Date} (a UTC \code{POSIXct}; daily observations anchored at
+12:00:00), \code{var_aeme}, \code{depth} and \code{value}. The optional columns are
+\code{depth_to} (bottom of an integrated sample) and \code{sd} (measurement standard
+deviation, in the variable's units).
 }
 \description{
 Get column names for the observational data frame

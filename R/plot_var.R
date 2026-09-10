@@ -43,6 +43,21 @@ plot_var <- function(df = NULL, aeme, model, var_sim, ylim = NULL, xlim,
     dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
                      by = c("var_sim" = "var_aeme"))
 
+  # Observation frames reach here keyed either on a calendar Date
+  # (align_depth_data() output) or on the stored noon POSIXct (raw
+  # obs$lake / obs$level). The modelled series `df$Date` is Date (daily) or
+  # POSIXct (sub-daily). Put every observation layer on the same x-axis class
+  # so ggplot does not error on a mixed Date / datetime scale.
+  if (!is.null(obs)) {
+    df_posix <- inherits(df$Date, "POSIXct")
+    for (k in c("lake", "level", "lake_adj", "level_adj")) {
+      if (is.data.frame(obs[[k]]) && "Date" %in% names(obs[[k]])) {
+        obs[[k]]$Date <- if (df_posix) as.POSIXct(obs[[k]]$Date, tz = "UTC")
+                         else as.Date(obs[[k]]$Date, tz = "UTC")
+      }
+    }
+  }
+
   if (!all(is.na(df$depth))) {
     # Plot variables with depth
     if (all(is.na(df$value))) {

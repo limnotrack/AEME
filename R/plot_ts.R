@@ -112,6 +112,11 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
         dplyr::summarise(value = mean(value), .groups = "drop") |>
         dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
                          by = "var_aeme")
+      # Match the model line layer's x-axis class: obs Date is noon POSIXct,
+      # the model series is Date (daily) or POSIXct (sub-daily).
+      if (inherits(out_df$Date, "Date")) {
+        obs$Date <- as.Date(obs$Date, tz = "UTC")
+      }
       p1 <- p1 +
         ggplot2::geom_point(data = obs, ggplot2::aes(x = Date, y = value,
                                                      fill = "Obs",

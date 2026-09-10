@@ -26,7 +26,7 @@ build_glm <- function(lakename, model_controls, date_range,
                       lake_dir, config_dir, init_prof, init_depth,
                       inf_factor = 1, outf_factor = 1,
                       Kw, use_bgc, use_lw, overwrite_nml = TRUE,
-                      output_time_step = 86400,
+                      output_time_step = 86400, output_daily_mean = FALSE,
                       obs_temp = NULL, sed_params = NULL) {
   
   msg <- paste0("Building GLM-AED for lake ", lakename)
@@ -104,6 +104,17 @@ build_glm <- function(lakename, model_controls, date_range,
   glm_nml[["output"]][["nsave"]] <-
     max(1L, as.integer(round(output_time_step / dt_glm)))
   glm_nml[["meteorology"]][["subdaily"]] <- sub_daily_met
+
+  # Daily-mean stream (time(aeme)$output_daily_mean): GLM has no native
+  # time-averaging, so run_aeme() averages output.nc by calendar day into a
+  # companion output_daily.nc after the run. Nothing to configure in the nml;
+  # just flag a mismatch with daily forcing.
+  if (isTRUE(output_daily_mean) && !sub_daily_met) {
+    cli_inform_safe(c(
+      "!" = paste("GLM-AED daily-mean output requested but the meteorology is",
+                  "daily; the daily mean will equal the daily value.")
+    ))
+  }
 
   
   # elipse dimensions at surface for nml

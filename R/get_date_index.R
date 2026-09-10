@@ -13,7 +13,7 @@
 #' @export
 #'
 get_date_index <- function(aeme, model, remove_spin_up = TRUE, path = NULL,
-                           lake_dir = NULL) {
+                           lake_dir = NULL, daily_mean = FALSE) {
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
   aeme_time <- time(aeme)
@@ -24,9 +24,11 @@ get_date_index <- function(aeme, model, remove_spin_up = TRUE, path = NULL,
   }
   date_index <- lapply(model, \(m) {
     idx <- aeme_time_axis(aeme_time = aeme_time, model = m, which = "output",
-                          remove_spin_up = remove_spin_up)[["index"]]
+                          remove_spin_up = remove_spin_up,
+                          daily = daily_mean)[["index"]]
     n_rec <- .model_output_nrec(aeme = aeme, model = m, path = path,
-                                lake_dir = lake_dir)
+                                lake_dir = lake_dir,
+                                daily_mean = daily_mean)
     if (!is.na(n_rec) && length(idx)) {
       if (max(idx) > n_rec) {
         dropped <- sum(idx > n_rec)
@@ -55,8 +57,11 @@ get_date_index <- function(aeme, model, remove_spin_up = TRUE, path = NULL,
 }
 
 #' Number of time records in a model's output file, or `NA` if it can't be read
+#' @param daily_mean logical; count records in the daily-mean
+#'   `output_daily.nc` instead of the raw output file.
 #' @noRd
-.model_output_nrec <- function(aeme, model, path = NULL, lake_dir = NULL) {
+.model_output_nrec <- function(aeme, model, path = NULL, lake_dir = NULL,
+                               daily_mean = FALSE) {
   if (is.null(path) && is.null(lake_dir)) return(NA_integer_)
   out <- tryCatch({
     of <- if (!is.null(lake_dir)) {
@@ -64,8 +69,16 @@ get_date_index <- function(aeme, model, remove_spin_up = TRUE, path = NULL,
     } else {
       get_model_outfile(aeme = aeme, model = model, path = path)[[model]]
     }
+    # Prefer the "output" entry (GOTM also returns "output_daily"); fall back
+    # to the first match.
+    if (!is.null(names(of)) && "output" %in% names(of)) of <- of["output"]
     of <- of[nzchar(of) & file.exists(of)]
     if (length(of) == 0) return(NA_integer_)
+    if (isTRUE(daily_mean)) {
+      # The daily-mean companion sits next to the raw output file.
+      dof <- .output_daily_path(of[[1]])
+      if (!is.null(dof) && file.exists(dof)) of <- stats::setNames(dof, "output_daily")
+    }
     nc <- ncdf4::nc_open(of[[1]])
     on.exit(ncdf4::nc_close(nc))
     tvar <- if ("time" %in% names(nc$var) || "time" %in% names(nc$dim)) {

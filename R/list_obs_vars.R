@@ -25,7 +25,8 @@ list_obs_vars <- function(aeme) {
   }
 
   obs_vars <- obs_vars |>
-    dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop)
+    dplyr::filter(as.Date(Date, tz = "UTC") >= as.Date(aeme_time$start, tz = "UTC") &
+                    as.Date(Date, tz = "UTC") <= as.Date(aeme_time$stop, tz = "UTC"))
 
   if (nrow(obs_vars) == 0) {
     return()

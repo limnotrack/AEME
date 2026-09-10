@@ -4,7 +4,7 @@
 \alias{set_output_time_step}
 \title{Set the model output temporal frequency}
 \usage{
-set_output_time_step(aeme, frequency)
+set_output_time_step(aeme, frequency, daily_mean = FALSE)
 }
 \arguments{
 \item{aeme}{An \link[=Aeme-class]{Aeme} object.}
@@ -18,11 +18,15 @@ number of \strong{seconds}, or a character string:
 \code{"900 sec"} (units: \code{sec}/\code{min}/\code{hour}/\code{day}/\code{week}, singular or
 plural).
 }}
+
+\item{daily_mean}{logical; if \code{TRUE}, also produce a daily-mean output
+stream (see Details). Default \code{FALSE}.}
 }
 \value{
-The \code{aeme} object with \code{time(aeme)$output_time_step} updated. The
-value must be greater than or equal to \code{time(aeme)$time_step}; \code{\link[=set_time]{set_time()}}
-raises \code{aeme_error_output_time_step} otherwise.
+The \code{aeme} object with \code{time(aeme)$output_time_step} (and, when
+supplied, \code{time(aeme)$output_daily_mean}) updated. \code{output_time_step} must
+be greater than or equal to \code{time(aeme)$time_step}; \code{\link[=set_time]{set_time()}} raises
+\code{aeme_error_output_time_step} otherwise.
 }
 \description{
 A thin, generic wrapper around \code{\link[=set_time]{set_time()}} for the common case of only
@@ -38,6 +42,25 @@ AEME does not temporally disaggregate forcing, so requesting output more
 frequent than daily is only meaningful when the meteorological (and, where
 relevant, inflow/outflow) forcing is supplied at least as often. See
 \code{vignette("hourly-vs-daily-met")}.
+\subsection{Daily-mean output}{
+
+\code{daily_mean = TRUE} makes every model additionally produce a \strong{daily-mean}
+output stream alongside the raw \code{frequency} output, so a run can be done at
+a sub-daily cadence (for accuracy, or to average out a diurnal cycle) while
+the results compared against daily observations are true daily means rather
+than instantaneous snapshots. It is modelled on GOTM's native \code{output_daily}
+stream (\code{time_method: mean}, one record per day):
+\itemize{
+\item \strong{GOTM-WET} writes the daily means itself (its \code{output_daily.nc}).
+\item \strong{GLM-AED} and \strong{Simstrat} have no native time-averaging, so AEME
+averages their sub-daily \code{output.nc} by calendar day after the run and
+writes a companion \code{output_daily.nc}. The raw sub-daily output is kept.
+}
+
+The daily stream stores only the targeted variables --- the
+\code{model_controls} \code{simulate} set plus the fixed set AEME's readers require
+--- not every model variable.
+}
 }
 \examples{
 aeme <- readRDS(system.file("extdata/aeme.rds", package = "AEME"))
@@ -45,6 +68,8 @@ aeme <- set_output_time_step(aeme, "hourly")
 time(aeme)$output_time_step
 aeme <- set_output_time_step(aeme, "6 hours")
 time(aeme)$output_time_step
+aeme <- set_output_time_step(aeme, "hourly", daily_mean = TRUE)
+time(aeme)$output_daily_mean
 }
 \seealso{
 \code{\link[=set_time]{set_time()}}

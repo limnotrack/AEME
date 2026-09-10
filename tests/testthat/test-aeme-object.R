@@ -326,6 +326,10 @@ test_that("lake observations can be formatted", {
                           all(c("Date", "var_aeme", "depth", "value") %in%
                                 colnames(out)))
   testthat::expect_false(any(c("depth_from", "depth_to") %in% colnames(out)))
+  # Date is a noon-anchored UTC POSIXct (lake_obs.csv is date-only / daily)
+  testthat::expect_s3_class(out$Date, "POSIXct")
+  testthat::expect_true(all(format(out$Date, "%H:%M:%S", tz = "UTC") ==
+                              "12:00:00"))
 })
 
 test_that("lake observations can be added", {

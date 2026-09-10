@@ -126,6 +126,58 @@ check_time_format <- function(x, tz = "UTC") {
 }
 
 
+#' Parse an observation date column to noon-anchored POSIXct
+#'
+#' Observations are daily in meaning but are stored as `POSIXct` (UTC) so they
+#' can be matched against a sub-daily model axis without the midnight
+#' calendar-day-boundary ambiguity. Daily input -- a `Date`, a date-only
+#' string, or a `POSIXct` whose stamps all sit at UTC midnight -- is anchored
+#' at `<date> 12:00:00` UTC. Input that already carries a genuine time-of-day
+#' (sub-daily observations, or a column already anchored at noon) is converted
+#' to UTC and returned unchanged; this also makes the function idempotent.
+#'
+#' Unlike `.as_forcing_datetime()` the resolution test is "does any stamp carry
+#' a time-of-day", not median spacing -- an observation column legitimately has
+#' many rows on one calendar date (a depth profile), which a spacing heuristic
+#' would misread as sub-daily.
+#'
+#' @param x Date, POSIXct, or character vector.
+#' @param tz character; timezone a naive **time-carrying** input is expressed
+#'   in. A calendar date is never shifted, whatever `tz` is.
+#' @param reinterpret_utc_tag logical; passed to `.to_utc()` for time-carrying
+#'   input. Only set `TRUE` at the single ingest call for a data stream.
+#' @return UTC `POSIXct`.
+#' @noRd
+.as_obs_datetime <- function(x, tz = "UTC", reinterpret_utc_tag = FALSE) {
+  if (is.null(x) || !length(x)) return(x)
+
+  # Resolve the resolution on an UNSHIFTED parse first -- as .as_forcing_datetime
+  # does -- so a daily calendar series is never moved across a day boundary by
+  # the timezone conversion below. check_time_format() rejects a character
+  # vector holding NA, so probe only the finite entries.
+  ok <- !is.na(x) & (!is.character(x) | nzchar(trimws(as.character(x))))
+  probe <- rep(as.POSIXct(NA, tz = "UTC"), length(x))
+  if (any(ok)) probe[ok] <- check_time_format(x[ok], tz = "UTC")
+  secs  <- as.numeric(probe) %% 86400
+  has_tod <- !(is.na(probe) | secs < 1 | secs > 86399)
+
+  if (!inherits(x, "Date") && any(has_tod)) {
+    # Time-carrying input (sub-daily obs, or a column already anchored at noon).
+    # Take the true absolute instant in UTC and leave it -- this also makes the
+    # function idempotent on an already-converted column.
+    out <- rep(as.POSIXct(NA, tz = "UTC"), length(x))
+    if (any(ok)) out[ok] <- as.POSIXct(.to_utc(x[ok], tz = tz,
+                              reinterpret_utc_tag = reinterpret_utc_tag),
+                            tz = "UTC")
+    return(out)
+  }
+
+  # Daily: anchor every row at noon UTC of its (unshifted) calendar day.
+  # Built from the numeric day count so NA rows propagate cleanly.
+  .POSIXct(as.numeric(as.Date(probe, tz = "UTC")) * 86400 + 43200, tz = "UTC")
+}
+
+
 #' Is a date/time vector sub-daily?
 #'
 #' Returns \code{TRUE} when the median spacing between successive timestamps is
@@ -334,6 +386,8 @@ check_aeme <- function(aeme) {
 #'    and ensure a `var_aeme` column.
 #'  \item `observations$lake`: collapse the legacy `depth_from` / `depth_to`
 #'    column pair to a single `depth` column (interval midpoint).
+#'  \item `observations$lake` / `observations$level`: convert a `Date` `Date`
+#'    column to noon-anchored UTC `POSIXct` (`<date> 12:00:00`).
 #' }
 #'
 #' @param aeme An Aeme object.
@@ -420,6 +474,21 @@ migrate_aeme <- function(aeme) {
     aeme@observations <- obs
   }
 
+  # -- observations$lake / $level Date: Date -> noon-anchored UTC POSIXct --
+  # Guarded on `Date`-class so this is a no-op once converted (keeps the
+  # migration idempotent). Sub-daily observation columns already carrying a
+  # time-of-day are left as they are by .as_obs_datetime().
+  if (!is.null(obs$lake) && "Date" %in% names(obs$lake) &&
+      inherits(obs$lake$Date, "Date")) {
+    obs$lake$Date <- .as_obs_datetime(obs$lake$Date)
+    aeme@observations <- obs
+  }
+  if (!is.null(obs$level) && "Date" %in% names(obs$level) &&
+      inherits(obs$level$Date, "Date")) {
+    obs$level$Date <- .as_obs_datetime(obs$level$Date)
+    aeme@observations <- obs
+  }
+
   aeme
 }
 
@@ -453,6 +522,9 @@ migrate_aeme <- function(aeme) {
 #'  \item `observations$lake`: collapse the legacy `depth_from` / `depth_to`
 #'    column pair to a single `depth` column (interval midpoint), keeping
 #'    `depth_to` only where it records a genuine integrated sample.
+#'  \item `observations$lake` / `observations$level`: convert a `Date` `Date`
+#'    column to noon-anchored UTC `POSIXct` (`<date> 12:00:00`), so daily
+#'    observations match a sub-daily model axis unambiguously.
 #'  \item `configuration`: backfill scalar build defaults (`ext_elev`,
 #'    `calc_wbal`, `wb_method`, `calc_wlev`, `hum_type`, `est_swr_hr`,
 #'    `use_bgc`) from `config_defaults()`.
@@ -505,6 +577,14 @@ upgrade_aeme <- function(aeme, quiet = FALSE) {
       !"depth_from" %in% names(aeme@observations$lake))
     changed <- c(changed,
                  "observations$lake: `depth_from`/`depth_to` collapsed to `depth`")
+  obs_date_migrated <- vapply(c("lake", "level"), function(slot) {
+    inherits(before@observations[[slot]]$Date, "Date") &&
+      inherits(aeme@observations[[slot]]$Date, "POSIXct")
+  }, logical(1))
+  if (any(obs_date_migrated))
+    changed <- c(changed,
+                 sprintf("observations$%s$Date: `Date` anchored to noon UTC `POSIXct`",
+                         paste(names(which(obs_date_migrated)), collapse = "/")))
 
   # -- scalar configuration defaults (cold path only) ---------------------
   cfg <- aeme@configuration

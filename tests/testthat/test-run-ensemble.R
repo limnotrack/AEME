@@ -44,15 +44,23 @@ test_that("running models in parallel works", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE, calc_wbal = TRUE,
                      calc_wlev = FALSE)
-  aeme <- run_aeme(aeme = aeme, parallel = F, ncore = getOption("ncore"))
+  aeme <- run_aeme(aeme = aeme, parallel = TRUE, ncore = getOption("ncore"))
+  model_performance <- assess_aeme(aeme = aeme)
+  
+  plot_assess(aeme)
+  plot_assess(aeme, type = "heatmap")
+  sel_vars <- c("HYD_temp", "HYD_thmcln", "CHM_oxy")
+  plot_assess(aeme, type = "taylor", var_sim = sel_vars)
+  plot_assess(aeme, type = "target", var_sim = sel_vars)
+  
   plot_wlev(aeme)
+  
 
   testthat::expect_true(check_all_model_outfiles(aeme))
 
   var_sim <- c("LKE_lvlwtr", "HYD_temp")
 
-  model_performance <- assess_model(aeme = aeme, model = model,
-                                    var_sim = var_sim)
+  model_performance <- assess_aeme(aeme = aeme)
   testthat::expect_true(is.data.frame(model_performance))
 
   pl <- plot_resid(aeme = aeme, model = model, var_sim = var_sim[1])
@@ -116,7 +124,7 @@ test_that("running models with 1hr met data", {
   
   # var_sim <- c("LKE_lvlwtr", "HYD_temp")
   # 
-  # model_performance <- assess_model(aeme = aeme, model = model,
+  # model_performance <- assess_aeme(aeme = aeme, model = model,
   #                                   var_sim = var_sim)
   # testthat::expect_true(is.data.frame(model_performance))
   # 
@@ -153,7 +161,7 @@ test_that("running models with wbal method = 1", {
   file_chk <- check_all_model_outfiles(aeme)
   testthat::expect_true(file_chk)
 
-  model_performance <- assess_model(aeme = aeme, model = model,
+  model_performance <- assess_aeme(aeme = aeme, model = model,
                                     var_sim = c("LKE_lvlwtr", "HYD_temp"))
   testthat::expect_true(is.data.frame(model_performance))
 

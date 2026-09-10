@@ -9,7 +9,8 @@ get_date_index(
   model,
   remove_spin_up = TRUE,
   path = NULL,
-  lake_dir = NULL
+  lake_dir = NULL,
+  daily_mean = FALSE
 )
 }
 \arguments{

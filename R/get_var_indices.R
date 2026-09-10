@@ -83,13 +83,17 @@ get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
   # If month and depth_range are not provided, use aeme observation month and depth_range
   if (is.null(month) & is.null(depth_range) & use_obs) {
     obs <- AEME::observations(aeme)
+    # Observations are daily (stored as noon POSIXct); match the model axis on
+    # the calendar day. For a sub-daily axis keep one step per obs day.
+    dates_day <- as.Date(dates, tz = "UTC")
     var_indices <- lapply(vars_sim, \(v) {
       obs_v <- obs$lake |>
-        dplyr::filter(var_aeme == v & Date %in% dates) |>
+        dplyr::mutate(Date = as.Date(Date, tz = "UTC")) |>
+        dplyr::filter(var_aeme == v & Date %in% dates_day) |>
         dplyr::mutate(depth_mid = depth)
       deps <- unique(obs_v$depth_mid)
       deps <- deps[order(deps)]
-      date_idx <- which(dates %in% obs_v$Date)
+      date_idx <- which(dates_day %in% obs_v$Date & !duplicated(dates_day))
       list(date_index = date_idx, depths = deps, dates = dates[date_idx])
     })
   } else if (is.null(month) & is.null(depth_range)) {

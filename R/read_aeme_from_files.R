@@ -30,8 +30,10 @@ read_aeme_from_files <- function(path) {
   name <- strsplit(lake_dirname, "_")[[1]][2]
   
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
-  aeme <- readRDS(aeme_file)
-  
+  # Used only as a structural template; migrate it so it satisfies the current
+  # Aeme validity (e.g. POSIXct observation Date) before the setters below run.
+  aeme <- migrate_aeme(readRDS(aeme_file))
+
   lke <- lake(aeme)
   lke$name <- name
   lke$id <- id
@@ -72,6 +74,13 @@ read_aeme_from_files <- function(path) {
         } else {
           86400
         }
+        # output_daily_mean absent from time.csv written before it existed --
+        # default to FALSE (no daily-mean stream)
+        output_daily_mean <- if ("output_daily_mean" %in% names(df)) {
+          isTRUE(as.logical(df$output_daily_mean[1]))
+        } else {
+          FALSE
+        }
         # start/stop are serialised as UTC wall-clock strings -- read straight
         # back as UTC. `tz` is stored metadata (declared input timezone); older
         # time.csv files without it default to "UTC".
@@ -82,6 +91,7 @@ read_aeme_from_files <- function(path) {
           stop = as.POSIXct(df$stop, tz = "UTC"),
           time_step = as.numeric(df$time_step),
           output_time_step = output_time_step,
+          output_daily_mean = output_daily_mean,
           spin_up = stats::setNames(
             lapply(unname(list_models()), get_spin_up),
             unname(list_models())
@@ -102,9 +112,14 @@ read_aeme_from_files <- function(path) {
           df <- unlist(df)
         }
         if ("Date" %in% colnames(df)) {
-          df$Date <- as.Date(df$Date)
+          if (slot_name == "observations") {
+            # Observations carry a noon-anchored UTC POSIXct Date column.
+            df$Date <- .as_obs_datetime(df$Date)
+          } else {
+            df$Date <- as.Date(df$Date)
+          }
         }
-        
+
         slot_content[[obs_name]] <- df
       }
       methods::slot(aeme, slot_name) <- slot_content

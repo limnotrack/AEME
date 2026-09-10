@@ -18,6 +18,10 @@
 #' 86400 (daily). Set to e.g. 3600 for hourly output. Note that AEME does not
 #' temporally disaggregate forcing: sub-daily output requires forcing supplied at
 #' (at least) the same cadence.
+#' @param output_daily_mean logical; if \code{TRUE}, every model additionally
+#' produces a daily-mean output stream alongside its raw
+#' \code{output_time_step} output. Default (when unset on the object)
+#' \code{FALSE}. See \code{\link{set_output_time_step}}.
 #'
 #' @returns Aeme object with time parameters set
 #' @export
@@ -29,7 +33,7 @@
 #'                  spin_up = 35)
 
 set_time <- function(aeme, start, stop, spin_up, time_step, output_time_step,
-                     tz) {
+                     output_daily_mean, tz) {
   # Set timezone temporarily to UTC for all internal datetime arithmetic
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
@@ -40,6 +44,7 @@ set_time <- function(aeme, start, stop, spin_up, time_step, output_time_step,
   aeme_time <- time(aeme)
   if (is.null(aeme_time$time_step)) aeme_time$time_step <- 3600
   if (is.null(aeme_time$output_time_step)) aeme_time$output_time_step <- 86400
+  if (is.null(aeme_time$output_daily_mean)) aeme_time$output_daily_mean <- FALSE
   # Declared input timezone: default to the object's existing value, else UTC
   if (!missing(tz)) {
     if (length(tz) != 1L || is.na(tz) || !tz %in% OlsonNames()) {
@@ -79,6 +84,14 @@ set_time <- function(aeme, start, stop, spin_up, time_step, output_time_step,
                      class = "aeme_error_output_time_step")
     }
     aeme_time$output_time_step <- output_time_step
+  }
+  if (!missing(output_daily_mean)) {
+    if (!is.logical(output_daily_mean) || length(output_daily_mean) != 1 ||
+        is.na(output_daily_mean)) {
+      cli::cli_abort("{.arg output_daily_mean} must be a single {.cls logical}.",
+                     class = "aeme_error_output_daily_mean")
+    }
+    aeme_time$output_daily_mean <- output_daily_mean
   }
   if (aeme_time$output_time_step < aeme_time$time_step) {
     cli::cli_abort(

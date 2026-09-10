@@ -210,6 +210,30 @@ run_aeme <- function(aeme, model, path, args = character(),
     }
 
     if (length(model_success) > 0) {
+      # Daily-mean storage (time(aeme)$output_daily_mean): GOTM writes its own
+      # daily-mean output_daily.nc; GLM-AED and Simstrat have no native
+      # time-averaging, so build the companion daily file here by averaging
+      # their sub-daily output.nc over each calendar day. Restricted to the
+      # targeted variables.
+      if (isTRUE(time(aeme)[["output_daily_mean"]])) {
+        daily_models <- intersect(model_success,
+                                  c("glm_aed", "simstrat_aed2", "simstrat_aed"))
+        if (length(daily_models)) {
+          lake_dir <- get_lake_dir(aeme, path)
+          keep_vars <- tryCatch(
+            get_vars_sim(model_controls = model_controls),
+            error = function(e) NULL)
+          for (m in daily_models) {
+            tryCatch(
+              write_output_daily_nc(lake_dir = lake_dir, model = m,
+                                    vars = keep_vars),
+              error = function(e) cli::cli_warn(c(
+                "!" = "Could not write daily-mean output for {.val {m}}: {conditionMessage(e)}"
+              ))
+            )
+          }
+        }
+      }
       aeme <- load_output(model = model_success, aeme = aeme, path = path,
                           model_controls = model_controls, parallel = parallel,
                           cl = cl, ens_n = ens_n)

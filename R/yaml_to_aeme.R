@@ -83,14 +83,15 @@ yaml_to_aeme <- function(path, file) {
   if (!is.null(yaml$observations$lake)) {
     yaml$observations$lake <- read.csv(file.path(path,
                                                  yaml$observations$lake)) |>
-      dplyr::mutate(Date = as.Date(.as_forcing_datetime(
-        datetime, tz = input_tz, reinterpret_utc_tag = TRUE))) |>
+      dplyr::mutate(Date = .as_obs_datetime(
+        datetime, tz = input_tz, reinterpret_utc_tag = TRUE)) |>
       normalise_lake_obs()
   }
   if (!is.null(yaml$observations$level)) {
     yaml$observations$level <- read.csv(file.path(path,
                                                   yaml$observations$level)) |>
-      dplyr::mutate(Date = as.Date(.as_forcing_datetime(Date, tz = input_tz, reinterpret_utc_tag = TRUE)))
+      dplyr::mutate(Date = .as_obs_datetime(Date, tz = input_tz,
+                                            reinterpret_utc_tag = TRUE))
   }
   if (!is.null(yaml$input$init_temp_profile)) {
     yaml$input$init_temp_profile <-

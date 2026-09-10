@@ -704,6 +704,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               Kw = Kw, use_bgc = use_bgc,
               use_lw = inp$use_lw, overwrite_nml = overwrite,
               output_time_step = aeme_time[["output_time_step"]] %||% 86400,
+              output_daily_mean = isTRUE(aeme_time[["output_daily_mean"]]),
               obs_temp = obs_temp, sed_params = glm_sed_params)
     
     if (use_bgc && overwrite) {
@@ -735,7 +736,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                hum_type = hum_type, overwrite_yaml = overwrite,
                est_swr_hr = est_swr_hr,
                time_step = aeme_time[["time_step"]] %||% 3600,
-               output_time_step = aeme_time[["output_time_step"]] %||% 86400)
+               output_time_step = aeme_time[["output_time_step"]] %||% 86400,
+               output_daily_mean = isTRUE(aeme_time[["output_daily_mean"]]))
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
 
   }
@@ -756,6 +758,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                    outf_factor = outf_factor[["simstrat_aed2"]],
                    Kw = Kw, use_bgc = use_bgc, overwrite_par = overwrite,
                    output_time_step = aeme_time[["output_time_step"]] %||% 86400,
+                   output_daily_mean = isTRUE(aeme_time[["output_daily_mean"]]),
                    bgc_lib = "aed2")
     # run_simstrat_aed2(sim_folder = lake_dir, verbose = TRUE)
   }
@@ -776,6 +779,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                    outf_factor = outf_factor[["simstrat_aed"]],
                    Kw = Kw, use_bgc = use_bgc, overwrite_par = overwrite,
                    output_time_step = aeme_time[["output_time_step"]] %||% 86400,
+                   output_daily_mean = isTRUE(aeme_time[["output_daily_mean"]]),
                    bgc_lib = "aed")
     # run_simstrat_aed(sim_folder = lake_dir, verbose = TRUE)
   }

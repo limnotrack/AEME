@@ -26,6 +26,9 @@
 #'   `3600` (1 hour).
 #' @param output_time_step numeric; model output time step in seconds. Must be
 #'   `>= time_step`. Default `86400` (daily).
+#' @param output_daily_mean logical; if `TRUE`, every model additionally
+#'   produces a daily-mean output stream (see [set_output_time_step()]).
+#'   Default `FALSE`.
 #' @param tz character; Olson timezone in which `start`, `stop` and any forcing
 #'   timestamps are expressed. Stored as `time$tz`; timestamps are converted to
 #'   UTC internally. Default `"UTC"` -- set a non-UTC zone only when your
@@ -56,6 +59,7 @@ new_aeme <- function(name = "newlake",
                      stop = Sys.Date(),
                      time_step = 3600,
                      output_time_step = 86400,
+                     output_daily_mean = FALSE,
                      tz = "UTC",
                      Kw = 1) {
 
@@ -72,11 +76,19 @@ new_aeme <- function(name = "newlake",
   # start/stop are passed through as supplied (character/Date/POSIXct);
   # aeme_constructor() interprets them in `tz` and stores UTC.
   time <- list(
-    start            = start,
-    stop             = stop,
-    time_step        = time_step,
-    output_time_step = output_time_step,
-    tz               = tz
+    start             = start,
+    stop              = stop,
+    time_step         = time_step,
+    output_time_step  = output_time_step,
+    output_daily_mean = isTRUE(output_daily_mean),
+    tz                = tz,
+    spin_up = list(
+      dy_cd = 2,
+      glm_aed = 2,
+      gotm_wet = 2,
+      simstrat_aed2 = 2,
+      simstrat_aed = 2
+    )
   )
 
   input <- list(

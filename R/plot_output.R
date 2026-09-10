@@ -192,10 +192,13 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
     }
   }
 
-  # Filter observations by variable and Date
+  # Filter observations by variable and Date. Observations are daily (noon
+  # POSIXct); compare on the calendar day against whichever class `xlim` is.
   if (!is.null(obs$lake)) {
     obs_lake <- obs$lake |>
-      dplyr::filter(var_aeme == var_sim & Date >= xlim[1] & Date <= xlim[2])
+      dplyr::filter(var_aeme == var_sim &
+                      as.Date(Date, tz = "UTC") >= as.Date(xlim[1], tz = "UTC") &
+                      as.Date(Date, tz = "UTC") <= as.Date(xlim[2], tz = "UTC"))
   } else {
     obs_lake <- NULL
   }

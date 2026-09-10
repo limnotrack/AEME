@@ -32,6 +32,10 @@ are required to run the models.
 seconds. Default 3600 (1 hour).
 \item \strong{\code{output_time_step}}: numeric; model output time step in
 seconds. Must be >= \code{time_step}. Default 86400 (daily).
+\item \strong{\code{output_daily_mean}}: logical; if \code{TRUE}, every model
+additionally produces a daily-mean output stream alongside its raw
+\code{output_time_step} output. Default \code{FALSE}. See
+\code{\link{set_output_time_step}}.
 \item \strong{\code{spin_up}}: list; spin up period in days for each model
 \item \code{tz}: character; Olson timezone in which user-supplied timestamps
 (\code{start}, \code{stop}, and the date columns of meteo, inflow, outflow
@@ -53,8 +57,10 @@ build the configuration.
 }}
 
 \item{\code{observations}}{A list representing observation information. \itemize{
-\item \code{lake}: dataframe; lake observations.
-\item \code{level}: dataframe; lake level observations.
+\item \code{lake}: dataframe; lake observations. The \code{Date} column is a
+UTC \code{POSIXct}; daily observations are anchored at 12:00:00.
+\item \code{level}: dataframe; lake level observations (\code{Date} as for
+\code{lake}).
 }}
 
 \item{\code{input}}{A list representing input information. \itemize{

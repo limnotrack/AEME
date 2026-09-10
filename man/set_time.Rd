@@ -4,7 +4,16 @@
 \alias{set_time}
 \title{Set time parameters for an Aeme object}
 \usage{
-set_time(aeme, start, stop, spin_up, time_step, output_time_step, tz)
+set_time(
+  aeme,
+  start,
+  stop,
+  spin_up,
+  time_step,
+  output_time_step,
+  output_daily_mean,
+  tz
+)
 }
 \arguments{
 \item{aeme}{Aeme object.}
@@ -25,6 +34,11 @@ greater than or equal to \code{time_step}. Default (when unset on the object)
 86400 (daily). Set to e.g. 3600 for hourly output. Note that AEME does not
 temporally disaggregate forcing: sub-daily output requires forcing supplied at
 (at least) the same cadence.}
+
+\item{output_daily_mean}{logical; if \code{TRUE}, every model additionally
+produces a daily-mean output stream alongside its raw
+\code{output_time_step} output. Default (when unset on the object)
+\code{FALSE}. See \code{\link{set_output_time_step}}.}
 
 \item{tz}{character; Olson timezone in which user-supplied timestamps (here
 and in the forcing/observation inputs) are expressed. Stored on the object as

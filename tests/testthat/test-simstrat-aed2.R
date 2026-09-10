@@ -222,7 +222,7 @@ test_that("assessing Simstrat model performance works", {
                      ext_elev = 5, use_bgc = FALSE)
   aeme <- run_aeme_with_retry(aeme = aeme, model = model, path = path)
 
-  model_performance <- assess_model(aeme = aeme, model = model,
+  model_performance <- assess_aeme(aeme = aeme, model = model,
                                     var_sim = c("LKE_lvlwtr", "HYD_temp"))
   testthat::expect_true(is.data.frame(model_performance))
 })

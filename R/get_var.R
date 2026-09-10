@@ -61,14 +61,16 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
         # stop("No observations of lake level found.")
       } else {
         obs_sub <- obs$level |>
-          dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
+          dplyr::filter(as.Date(Date, tz = "UTC") >= as.Date(aeme_time$start, tz = "UTC") &
+                          as.Date(Date, tz = "UTC") <= as.Date(aeme_time$stop, tz = "UTC") &
                           var_aeme %in% var_sim) |>
           dplyr::arrange(Date)
       }
     } else {
       if (is.null(obs$lake)) stop("No lake observations found.")
       obs_sub <- obs$lake |>
-        dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
+        dplyr::filter(as.Date(Date, tz = "UTC") >= as.Date(aeme_time$start, tz = "UTC") &
+                        as.Date(Date, tz = "UTC") <= as.Date(aeme_time$stop, tz = "UTC") &
                         var_aeme %in% var_sim) |>
         dplyr::arrange(Date, depth) |>
         dplyr::select(Date, var_aeme, depth, value)
@@ -76,8 +78,12 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
     if (nrow(obs_sub) == 0) {
       cli::cli_abort("No observations found for the model simulation period.")
     }
+    # Observations are daily. Reduce the join key to a calendar Date so it
+    # matches the model axis (also reduced to Date below) regardless of whether
+    # the stored obs Date is noon POSIXct or the model output is sub-daily.
     obs_sub <- obs_sub |>
-      dplyr::rename(obs = value)
+      dplyr::rename(obs = value) |>
+      dplyr::mutate(Date = as.Date(Date, tz = "UTC"))
   }
   
   # Loop through the models and extract the variable of interest ----

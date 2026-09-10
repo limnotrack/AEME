@@ -26,10 +26,12 @@ read_model_nc <- function(aeme, model, path, lake_dir = NULL, vars_sim,
     path  <- check_path(path, must_exist = TRUE)
     lake_dir <- get_lake_dir(aeme, path)
   }
+  daily_mean <- isTRUE(time(aeme)[["output_daily_mean"]])
   date_index <- get_date_index(aeme = aeme, model = model,
                                remove_spin_up = remove_spin_up,
-                               lake_dir = lake_dir)[[model]]
-  
+                               lake_dir = lake_dir,
+                               daily_mean = daily_mean)[[model]]
+
   cfg <- configuration(aeme)
   if ("glm_aed" %in% model & cfg$use_bgc) {
     phyto_pars <- cfg[["glm_aed"]][["bgc"]][["aed_phyto_pars"]]
@@ -44,7 +46,8 @@ read_model_nc <- function(aeme, model, path, lake_dir = NULL, vars_sim,
     incl_fluxes = incl_fluxes,
     date_index = date_index,
     output_hour = output_hour,
-    phyto_pars = phyto_pars
+    phyto_pars = phyto_pars,
+    daily_mean = daily_mean
   )
   
   return(out)

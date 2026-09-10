@@ -271,7 +271,13 @@ test_that("running GLM-AED works", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE) |>
     run_aeme(verbose = T)
-
+  
+  metrics <- assess_aeme(aeme = aeme)
+  plot_assess(aeme)
+  plot_assess(aeme, type = "heatmap")
+  plot_assess(aeme, type = "taylor", var_sim = c("HYD_temp", "CHM_oxy"))
+  plot_assess(aeme, type = "target", var_sim = c("HYD_temp", "CHM_oxy"))
+  
   plot_output_base(aeme)
   plot_output_base(aeme, var_sim = c("evap"))
   plot_output_base(aeme, var_sim = c("qh"))
@@ -329,7 +335,7 @@ test_that("running GLM-AED works", {
                         facet = FALSE)
   testthat::expect_true(ggplot2::is_ggplot(pstrat))
 
-  model_performance <- assess_model(aeme = aeme)
+  model_performance <- assess_aeme(aeme = aeme)
   testthat::expect_true(is.data.frame(model_performance))
 
 
@@ -419,7 +425,7 @@ test_that("assess model with no lake level data", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path,
                    parallel = FALSE)
-  model_performance <- assess_model(aeme = aeme, model = model,
+  model_performance <- assess_aeme(aeme = aeme, model = model,
                                     var_sim = c("LKE_lvlwtr", "HYD_temp"))
   testthat::expect_true(is.data.frame(model_performance))
 

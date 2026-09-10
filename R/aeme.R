@@ -21,6 +21,10 @@
 #' seconds. Default 3600 (1 hour).
 #' \item \strong{\code{output_time_step}}: numeric; model output time step in
 #' seconds. Must be >= \code{time_step}. Default 86400 (daily).
+#' \item \strong{\code{output_daily_mean}}: logical; if \code{TRUE}, every model
+#' additionally produces a daily-mean output stream alongside its raw
+#' \code{output_time_step} output. Default \code{FALSE}. See
+#' \code{\link{set_output_time_step}}.
 #' \item \strong{\code{spin_up}}: list; spin up period in days for each model
 #' \item \code{tz}: character; Olson timezone in which user-supplied timestamps
 #' (\code{start}, \code{stop}, and the date columns of meteo, inflow, outflow
@@ -40,8 +44,10 @@
 #' \item \code{simstrat_aed2}: list; Simstrat-AED2 configuration.
 #' }
 #' @slot observations A list representing observation information. \itemize{
-#' \item \code{lake}: dataframe; lake observations.
-#' \item \code{level}: dataframe; lake level observations.
+#' \item \code{lake}: dataframe; lake observations. The \code{Date} column is a
+#' UTC \code{POSIXct}; daily observations are anchored at 12:00:00.
+#' \item \code{level}: dataframe; lake level observations (\code{Date} as for
+#' \code{lake}).
 #' }
 #' @slot input A list representing input information. \itemize{
 #' \item \code{init_profile}: dataframe; initial temperature profile (if none
@@ -198,6 +204,14 @@ setValidity("Aeme", function(object) {
       errors <- c(errors, paste0("@time$tz '", tz, "' is not a valid Olson ",
                                  "timezone name (see OlsonNames())"))
   }
+
+  # Note: the observation Date column is expected to be a noon-anchored UTC
+  # POSIXct, but that is *not* enforced here as a hard error -- an object read
+  # straight from an older `.rds` (before any check_aeme() / migrate_aeme())
+  # still carries a `Date` column, and every consumer coerces the join key
+  # with as.Date() defensively. aeme_constructor() and add_obs() convert it
+  # (with a warning for a non-Date/POSIXct input) and migrate_aeme() converts
+  # it silently on the first check_aeme()/show()/plot()/build_aeme().
 
   if (length(errors) == 0) TRUE else errors
 })
@@ -580,6 +594,17 @@ aeme_constructor <- function(
       class = "aeme_error_output_time_step"
     )
   }
+  if (is.null(time$output_daily_mean)) {
+    time$output_daily_mean <- FALSE
+  }
+  if (!is.logical(time$output_daily_mean) ||
+      length(time$output_daily_mean) != 1L || is.na(time$output_daily_mean)) {
+    cli::cli_abort(
+      c("{.arg time$output_daily_mean} must be a single {.cls logical}.",
+        "x" = "Got {.cls {class(time$output_daily_mean)}}."),
+      class = "aeme_error_output_daily_mean"
+    )
+  }
   if (!is.list(time$spin_up)) {
     if (is.null(time$spin_up)) {
       cli::cli_inform(
@@ -664,7 +689,27 @@ aeme_constructor <- function(
       )
     }
   }
-  
+
+  # Observation Date columns are stored as noon-anchored UTC POSIXct (daily
+  # observations at 12:00:00) so they match a sub-daily model axis without a
+  # midnight day-boundary ambiguity. Mirrors the input$meteo$Date handling
+  # below. A Date / POSIXct column is converted quietly; anything else is
+  # coerced with a warning.
+  for (slot in c("lake", "level")) {
+    d <- observations[[slot]]
+    if (is.null(d) || !is.data.frame(d) || !"Date" %in% names(d)) next
+    if (!inherits(d$Date, "POSIXct")) {
+      if (!inherits(d$Date, "Date")) {
+        cli::cli_warn(
+          c("!" = "{.arg observations${slot}$Date} is not {.cls POSIXct} or {.cls Date}.",
+            "i" = "Parsing it as {.val UTC} and anchoring daily rows at 12:00:00."),
+          class = "aeme_warn_obs_date_coerced"
+        )
+      }
+      observations[[slot]]$Date <- .as_obs_datetime(d$Date)
+    }
+  }
+
   # Input type checking for specific elements
   if (!is.null(input$init_profile) && !is.data.frame(input$init_profile)) {
     cli::cli_abort(
@@ -1735,9 +1780,10 @@ setMethod("names", "Aeme", function(x) {
 #'   (`depth_to`, `sd`) after the required columns. Default `FALSE`.
 #'
 #' @return Character vector of column names for observational data. The required
-#'   columns are `Date`, `var_aeme`, `depth` and `value`. The optional columns
-#'   are `depth_to` (bottom of an integrated sample) and `sd` (measurement
-#'   standard deviation, in the variable's units).
+#'   columns are `Date` (a UTC `POSIXct`; daily observations anchored at
+#'   12:00:00), `var_aeme`, `depth` and `value`. The optional columns are
+#'   `depth_to` (bottom of an integrated sample) and `sd` (measurement standard
+#'   deviation, in the variable's units).
 #' @export
 get_obs_column_names <- function(include_optional = FALSE) {
   req <- c("Date", "var_aeme", "depth", "value")

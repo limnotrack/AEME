@@ -22,7 +22,7 @@ build_simstrat <- function(lakename, model_controls, date_range,
                            lake_dir, init_prof, init_depth,
                            inf_factor = 1, outf_factor = 1,
                            Kw, use_bgc, overwrite_par = TRUE,
-                           output_time_step = 86400,
+                           output_time_step = 86400, output_daily_mean = FALSE,
                            bgc_lib = c("aed2", "aed")) {
 
   bgc_lib <- match.arg(bgc_lib)
@@ -105,6 +105,18 @@ build_simstrat <- function(lakename, model_controls, date_range,
   # the historical one-row-per-day behaviour.
   par[["Output"]][["Times"]] <- output_time_step /
     par[["Simulation"]][["Timestep s"]]
+
+  # Daily-mean stream (time(aeme)$output_daily_mean): Simstrat has no native
+  # time-averaging, so run_aeme() averages output.nc by calendar day into a
+  # companion output_daily.nc after the run. Nothing to configure in the par;
+  # just flag a mismatch with daily forcing.
+  if (isTRUE(output_daily_mean) && !missing(met) && !is.null(met) &&
+      !is_subdaily(met[["Date"]])) {
+    cli_inform_safe(c(
+      "!" = paste("Simstrat daily-mean output requested but the meteorology",
+                  "is daily; the daily mean will equal the daily value.")
+    ))
+  }
 
   bgc_cfg_key <- paste0(bgc_tag, "Config")
   par[[bgc_cfg_key]][[paste0(bgc_tag, "ConfigFile")]] <- paste0(bgc_template_dir, "/", aed_nml_name)

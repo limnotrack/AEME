@@ -23,7 +23,7 @@ list. Default is TRUE.}
 \value{
 A data frame with the following columns:
 \itemize{
-\item \code{Date}: Date of observation
+\item \code{Date}: Observation date, as a calendar \code{Date}
 \item \code{depth}: Depth of observation (m, positive-down from the surface)
 \item \code{elev}: Elevation of observation
 \item \code{Model}: Model name

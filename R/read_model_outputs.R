@@ -19,6 +19,12 @@
 #' @param load_all logical; for `model = "glm_aed"`, also load every other
 #' variable present in the netCDF output beyond the declared `vars_sim` set
 #' -- see `?read_glm_output`. Ignored for other models. Defaults to TRUE.
+#' @param daily_mean logical; when `TRUE`, return one record per calendar day.
+#' If a model's daily-mean `output_daily.nc` companion is present (GOTM writes
+#' one natively; GLM-AED and Simstrat get one from `run_aeme()` when
+#' `time(aeme)$output_daily_mean` is `TRUE`) it is read directly; otherwise the
+#' raw sub-daily `output.nc` is read and averaged by calendar day. Defaults to
+#' `FALSE`. See \code{\link{set_output_time_step}}.
 #' @param use_dat logical; for the Simstrat models only, read Simstrat's own
 #' `<var>_out.dat` text output via \code{\link{read_simstrat_dat}} instead of
 #' the consolidated `output.nc`. Every other argument means the same thing
@@ -41,7 +47,7 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                                depths = NULL, dates = NULL, date_index = NULL,
                                incl_fluxes = TRUE, output_hour = 0,
                                phyto_pars = NULL, load_all = TRUE,
-                               use_dat = NULL) {
+                               use_dat = NULL, daily_mean = FALSE) {
 
   # Set timezone
   withr::local_locale(c("LC_TIME" = "C"))
@@ -62,6 +68,12 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   }
   auto_dat <- is.null(use_dat) && is_simstrat && is.null(nc)
   use_dat <- isTRUE(use_dat) && is.null(nc)
+  # Daily-mean storage forces the netCDF path: the raw-text Simstrat reader
+  # has no daily companion, and GOTM's daily means live in output_daily.nc.
+  if (isTRUE(daily_mean) && is.null(nc)) {
+    auto_dat <- FALSE
+    use_dat <- FALSE
+  }
 
   nc_files <- NULL
   if (!use_dat && is.null(nc)) {
@@ -83,6 +95,24 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
         # so the error is the one callers already handle.
         nc_files <- get_model_outfile(model = model, path = lake_dir)[[model]]
       }
+    }
+  }
+
+  # Daily-mean storage: redirect to output_daily.nc when it exists, so the
+  # daily records are read straight off disk. When it does not (a GLM/Simstrat
+  # run made before run_aeme() wrote it, or a manual read), we fall back to
+  # reading the raw output.nc and averaging by calendar day further down.
+  read_from_daily <- FALSE
+  if (isTRUE(daily_mean) && !is.null(nc_files) && length(nc_files)) {
+    primary <- if (!is.null(names(nc_files)) && "output" %in% names(nc_files)) {
+      nc_files[["output"]]
+    } else {
+      nc_files[[1]]
+    }
+    dfile <- .output_daily_path(primary)
+    if (!is.null(dfile) && file.exists(dfile)) {
+      nc_files <- stats::setNames(dfile, "output_daily")
+      read_from_daily <- TRUE
     }
   }
 
@@ -115,7 +145,12 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                {.code verbose = TRUE} to inspect the model log."
       ), class = "aeme_error_missing_output")
     }
-    if (model == "gotm_wet") {
+    if (read_from_daily) {
+      # Everything (states and fluxes) comes from the one daily-mean file.
+      nc_file <- nc_files[["output_daily"]]
+      incl_fluxes <- TRUE
+      read_gotm_daily <- FALSE
+    } else if (model == "gotm_wet") {
       nc_file <- nc_files["output"]
       incl_fluxes <- ifelse("output_daily" %in% names(nc_files), FALSE, TRUE)
       read_gotm_daily <- !incl_fluxes
@@ -138,6 +173,15 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
 
   # Load model hypsograph
   hyps <- read_model_hypsograph(model = model, lake_dir = lake_dir)
+
+  # Daily-mean storage: the reconstructed positional date_index is built on a
+  # daily axis whose exact phase (close-of-day vs period-end vs inclusive)
+  # varies per model. The daily file's own `time` variable is authoritative,
+  # so discard the reconstructed index and let the reader derive dates from
+  # the file. For the fall-back (no companion file) the raw sub-daily records
+  # are then averaged by calendar day after the dispatch.
+  aggregate_daily <- isTRUE(daily_mean) && !read_from_daily
+  if (isTRUE(daily_mean)) date_index <- NULL
 
   if (is.null(date_index)) {
     # ---- 1. extract time info for this model
@@ -196,9 +240,87 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
     
     out_list <- c(out_list, add_vars)
   }
-  
+
+  # Daily-mean fall-back: no output_daily.nc companion, so average the raw
+  # sub-daily records by calendar day here.
+  if (aggregate_daily) {
+    out_list <- .aggregate_output_list_daily(out_list)
+  }
+
   return(.finalise_model_output(out_list = out_list, hyps = hyps,
                                 vars_sim = vars_sim, model = model))
+}
+
+#' Path to a model's daily-mean companion, `<dir>/<name>_daily.nc`
+#'
+#' Given the path to a model's raw `output.nc`, return the path its
+#' daily-mean companion would have. A path already ending `_daily.nc` is
+#' returned unchanged. `NULL` for an empty / missing input.
+#' @noRd
+.output_daily_path <- function(f) {
+  if (is.null(f) || !length(f) || is.na(f[[1]]) || !nzchar(f[[1]])) return(NULL)
+  f <- f[[1]]
+  b <- basename(f)
+  if (grepl("_daily\\.nc$", b)) return(unname(f))
+  unname(file.path(dirname(f), sub("\\.nc$", "_daily.nc", b)))
+}
+
+#' Average an output list to one record per calendar day
+#'
+#' Used when daily-mean storage is requested but no `output_daily.nc`
+#' companion exists, so the raw sub-daily `output.nc` was read instead. Groups
+#' the output list's records by `as.Date()` of its `Date` axis and takes the
+#' per-day mean of every variable: for a `depth x time` matrix, the per-row
+#' mean within each day; for a vector or `1 x time` series over time, the mean
+#' within each day. A list already at one-record-per-day is returned
+#' unchanged.
+#'
+#' @param out_list list; a model output list from one of the `read_*` readers
+#'   (before `.finalise_model_output()`), with a `Date` element and variable
+#'   elements shaped `[depth, time]` or `[time]`.
+#' @return `out_list` with every time-indexed element collapsed to one column
+#'   / element per day and `Date` a `Date` vector of the distinct days.
+#' @noRd
+.aggregate_output_list_daily <- function(out_list) {
+  d <- out_list[["Date"]]
+  if (is.null(d) || !length(d)) return(out_list)
+  day <- as.Date(as.POSIXct(d, tz = "UTC"), tz = "UTC")
+  nt <- length(day)
+  ud <- unique(day)
+  if (length(ud) == nt) {
+    # already one record per day
+    out_list[["Date"]] <- day
+    return(out_list)
+  }
+  grp <- match(day, ud)
+  cols_by_day <- split(seq_len(nt), grp)
+
+  denan <- function(z) { z[is.nan(z)] <- NA_real_; z }
+  agg_one <- function(x) {
+    dm <- dim(x)
+    if (is.null(dm)) {
+      if (length(x) != nt) return(x)
+      denan(vapply(cols_by_day, function(ix) mean(x[ix], na.rm = TRUE),
+                   numeric(1), USE.NAMES = FALSE))
+    } else if (length(dm) == 2L) {
+      if (dm[2] != nt) return(x)
+      res <- vapply(cols_by_day, function(ix)
+        rowMeans(x[, ix, drop = FALSE], na.rm = TRUE),
+        numeric(dm[1]))
+      dim(res) <- c(dm[1], length(cols_by_day))
+      rownames(res) <- rownames(x)
+      denan(res)
+    } else {
+      x
+    }
+  }
+
+  for (nm in names(out_list)) {
+    if (identical(nm, "Date")) next
+    out_list[[nm]] <- agg_one(out_list[[nm]])
+  }
+  out_list[["Date"]] <- ud
+  out_list
 }
 
 #' Collapse a midnight-only POSIXct output axis back to Date
