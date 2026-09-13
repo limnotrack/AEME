@@ -1,5 +1,54 @@
 # AEME 0.4.0
 
+## Daily-mean output for GLM-AED and Simstrat
+
+`set_output_time_step(aeme, frequency, daily_mean = TRUE)` (new argument, also
+`time(aeme)$output_daily_mean`) makes every model produce a daily-mean output
+stream alongside its raw `frequency` output, so a run can be done at a
+sub-daily cadence while the results compared against daily observations are
+true daily means rather than instantaneous snapshots -- the behaviour GOTM's
+native `output_daily` stream already provided, now available for all three
+hydrodynamic models.
+
+* **GOTM-WET** keeps writing its daily means itself; the `output_daily` block
+  of `output.yaml` is now restricted to the targeted variables (the
+  `model_controls` `simulate` set plus the internals the reader needs) instead
+  of every variable.
+* **GLM-AED** and **Simstrat** have no native time-averaging, so `run_aeme()`
+  averages their sub-daily `output.nc` by calendar day into a companion
+  `output_daily.nc` (same structure, one record per day). The raw sub-daily
+  file is kept. The companion carries only the variables the reader consumes
+  --- the targeted `model_controls` set plus each reader's internals --- so
+  for GLM, whose own netCDF cannot be sub-selected, the companion is also
+  where the stored output is pruned (its large 4-D `light` / `umean` / wave
+  fields are dropped): ~20 variables instead of ~60, and the averaging pass is
+  several times faster and smaller.
+* `run_aeme()` / `get_var()` read the daily means transparently: when
+  `output_daily_mean` is `TRUE` the `output_daily.nc` companion is read if
+  present, otherwise the raw `output.nc` is averaged by calendar day on read.
+* Model integration is unchanged (`dt` / `Timestep s` are untouched); the cost
+  is the extra in-run output I/O and one post-run averaging pass.
+* Averaging arbitrary (non-daily) storage cadences is not yet supported.
+
+## Observation dates are POSIXct
+
+The `Date` column of `observations$lake` and `observations$level` is now a
+UTC `POSIXct` rather than a `Date`. **Daily observations are anchored at
+12:00:00 UTC**, so a daily value sits unambiguously inside its calendar day
+when matched against a sub-daily (`POSIXct`) model axis -- midnight is a
+day boundary. Genuinely sub-daily observations keep their time-of-day.
+
+* The conversion happens at every entry point: `yaml_to_aeme()`,
+  `lake_obs_to_aeme()`, `add_obs()`, `read_aeme_from_files()` and
+  `aeme_constructor()` (a non-`Date`/`POSIXct` column is coerced with a
+  warning). Objects loaded from an older `.rds` are converted silently by
+  `migrate_aeme()` on the first `check_aeme()` / `show()` / `plot()` /
+  `build_aeme()`, or explicitly by `upgrade_aeme()`.
+* Observation-to-model matching remains a **calendar-day** join throughout
+  (`get_var(use_obs = TRUE)`, `assess_model()`, `align_depth_data()`, the
+  water-balance surface-temperature and level fits, `plot_*` overlays), so
+  results are unchanged for daily runs.
+
 ## Timezone of input data
 
 The model runs entirely in **UTC**: input timestamps are converted to UTC once,
