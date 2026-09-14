@@ -120,8 +120,11 @@
 #'   the model requires (e.g. `heights_wdr`, and `surface_elev` for
 #'   Simstrat). `NULL` (default) leaves outflows unchanged.
 #' @param tgt_vars character vector of output variables to read back (passed
-#'   as `vars_sim` to the model's `read_*_output()` wrapper). `NULL`
-#'   (default) reads every variable the reader returns by default.
+#'   as `vars_sim` to the model's `read_*_output()` wrapper, and also used to
+#'   decide which derived variables -- e.g. `"HYD_thmcln"` -- to compute via
+#'   [add_deriv_output()]). `NULL` (default) reads every variable the reader
+#'   returns by default, but adds no derived variables -- request them
+#'   explicitly by name to get them.
 #' @param verbose logical; passed through to the model's `run_*()` wrapper.
 #' @param safe logical; if `TRUE` (default), a failed edit or model run is
 #'   caught and reported with `message()` instead of stopping -- useful when
@@ -129,8 +132,9 @@
 #'   rest. Set `FALSE` to let errors propagate normally.
 #'
 #' @return A list of the requested output variables (as returned by the
-#'   model's `read_*_output()` wrapper), or `NULL` if `safe = TRUE` and the
-#'   edit/run/read failed.
+#'   model's `read_*_output()` wrapper, with derived variables added via
+#'   [add_deriv_output()]), or `NULL` if `safe = TRUE` and the edit/run/read
+#'   failed.
 #' @export
 #'
 #' @examples
@@ -193,5 +197,12 @@ run_model_test <- function(model, path, param_overrides = list(),
     cli::cli_abort("Expected output file not found: {outfile}")
   }
 
-  step(fns$read_output(file = outfile, vars_sim = tgt_vars))
+  raw <- step(fns$read_output(file = outfile, vars_sim = tgt_vars))
+  if (failed) return(NULL)
+
+  hyps <- step(read_model_hypsograph(model = model, lake_dir = dirname(path)))
+  if (failed) return(NULL)
+
+  .finalise_model_output(out_list = raw, hyps = hyps, vars_sim = tgt_vars,
+                         model = model)
 }
