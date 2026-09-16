@@ -39,6 +39,7 @@ NULL
   CHM_oxymet = calc_CHM_oxymet,
   CHM_oxymom = calc_CHM_oxymom,
   CHM_oxynal = calc_CHM_oxynal,
+  CHM_oxysat = calc_CHM_oxysat,
   # Lake trophic index variables
   LKE_tlic   = calc_LKE_tlic,
   LKE_tlin   = calc_LKE_tlin,
@@ -64,6 +65,7 @@ NULL
   CHM_oxymet = c("HYD_epidep", "HYD_hypdep"),
   CHM_oxymom = c("HYD_epidep", "HYD_hypdep"),
   CHM_oxynal = character(0),
+  CHM_oxysat = character(0),
   
   # Lake trophic index requires epilimnetic depth
   LKE_tlic   = "HYD_epidep",
