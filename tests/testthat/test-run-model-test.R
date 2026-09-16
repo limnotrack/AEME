@@ -57,9 +57,10 @@ test_that("run_model_test() works end-to-end for GLM-AED", {
     inflow_args = list(data = list(FWMT = inf_df), mass = FALSE),
     outflow_args = list(data = list(outflow = outf_df),
                         heights_wdr = c(outflow = 12.07)),
-    tgt_vars = "HYD_temp"
+    tgt_vars = c("HYD_temp", "HYD_thmcln")
   )
   plot_model_output(out, "HYD_temp")
+  plot_model_output(out, "HYD_thmcln")
   
 
   testthat::expect_true(is.list(out))
