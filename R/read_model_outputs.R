@@ -92,7 +92,8 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
     } else {
       get_model_outfile(model = model, path = lake_dir, all = TRUE)[[model]]
     }
-    if (auto_dat && (length(nc_files) == 0 || !all(file.exists(nc_files)))) {
+    if (auto_dat && (length(nc_files) == 0 ||
+                     !("output" %in% names(nc_files)))) {
       use_dat <- .simstrat_dat_available(lake_dir = lake_dir, model = model)
       if (!use_dat) {
         # Neither form of output is there: let the netCDF path report it,
