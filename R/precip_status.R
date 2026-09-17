@@ -4,7 +4,9 @@
 #' or as an inflow in the Aeme object. It examines the meteorological data for
 #' precipitation values and the inflow data for a precipitation inflow.
 #' @inheritParams build_aeme
-#' @returns character. Either "precip_as_met", "precip_as_inflow" or "no_precip"
+#' @returns character. Either "met" if precipitation is set in meteorological 
+#' data, "inflow" if it is set as an inflow, or "none" if it is not set in 
+#' either.
 #' @export
 #'
 
@@ -19,5 +21,13 @@ precip_status <- function(aeme) {
   } else if (any(met[["MET_pprain"]] > 0) | any(met[["MET_ppsnow"]] > 0) &
              !("precip" %in% inf_names)) {
     return("met")
+  } else if (all(met[["MET_pprain"]] == 0) & all(met[["MET_ppsnow"]] == 0) &
+             !("precip" %in% inf_names)) {
+    return("none")
+  } else {
+    cli::cli_abort(c(
+      "Precipitation is set in both meteorological data and inflow data.",
+      "i" = "Please ensure that precipitation is only set in one place."
+    ))
   }
 }
