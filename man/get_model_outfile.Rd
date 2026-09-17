@@ -4,7 +4,7 @@
 \alias{get_model_outfile}
 \title{Get model output file}
 \usage{
-get_model_outfile(aeme = NULL, model, path = NULL, lake_dir)
+get_model_outfile(aeme = NULL, model, path = NULL, lake_dir, all = FALSE)
 }
 \arguments{
 \item{aeme}{Aeme object.}
@@ -21,6 +21,13 @@ either an ensemble root or a single model's own directory.}
 
 \item{lake_dir}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{path} instead of
 \code{lake_dir}}
+
+\item{all}{logical; a model run can produce more than one output file
+(e.g. GLM-AED's netCDF plus its \code{csv_lake}/\code{csv_point}/mass-balance CSVs,
+or GOTM's \code{output.nc} plus \code{output_daily.nc}). When \code{FALSE} (the default),
+only the primary file per model is returned -- the netCDF entry named
+\code{"output"} when there is one, otherwise the first (only) file. Set to
+\code{TRUE} to get every file the model's resolver found.}
 }
 \value{
 list of model output files.

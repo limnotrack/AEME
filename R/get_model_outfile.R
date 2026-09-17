@@ -8,14 +8,21 @@
 #' either an ensemble root or a single model's own directory.
 #' @param lake_dir `r lifecycle::badge("deprecated")` Use `path` instead of
 #'  `lake_dir`
-#' 
+#' @param all logical; a model run can produce more than one output file
+#' (e.g. GLM-AED's netCDF plus its `csv_lake`/`csv_point`/mass-balance CSVs,
+#' or GOTM's `output.nc` plus `output_daily.nc`). When `FALSE` (the default),
+#' only the primary file per model is returned -- the netCDF entry named
+#' `"output"` when there is one, otherwise the first (only) file. Set to
+#' `TRUE` to get every file the model's resolver found.
+#'
 #' @importFrom cli cli_abort
 #'
 #' @return list of model output files.
 #' @export
 #'
 
-get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir) {
+get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir,
+                              all = FALSE) {
 
   
   # Soft deprecate lake_dir arg
@@ -69,8 +76,22 @@ get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir) {
     resolvers[[m]](lake_dir = lake_dir, cfg = cfg_files[[m]])
   })
   names(out_files) <- model
-  
+
+  if (!isTRUE(all)) {
+    out_files <- lapply(out_files, .primary_outfile)
+  }
+
   return(out_files)
+}
+
+#' Pick the primary file out of a resolver's named vector of output files
+#' @noRd
+.primary_outfile <- function(files) {
+  if (length(files) <= 1) return(files)
+  if (!is.null(names(files)) && "output" %in% names(files)) {
+    return(files["output"])
+  }
+  files[1]
 }
 
 #' Model-specific resolvers

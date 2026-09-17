@@ -28,12 +28,7 @@ read_model_wlev <- function(nc = NULL, lake_dir, model) {
   if (is.null(nc)) {
     lake_dir <- check_path(lake_dir, must_exist = TRUE)
     # Read in model netCDF file
-    nc_files <- get_model_outfile(model = model, path = lake_dir)[[model]]
-    if (model == "gotm_wet") {
-      nc_file <- nc_files["output"]
-    } else {
-      nc_file <- nc_files
-    }
+    nc_file <- get_model_outfile(model = model, path = lake_dir)[[model]]
     nc <- open_nc_safe(file = nc_file, model = model)
     on.exit(ncdf4::nc_close(nc), add = TRUE)
   }

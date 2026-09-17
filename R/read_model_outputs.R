@@ -79,21 +79,25 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   if (!use_dat && is.null(nc)) {
     lake_dir <- check_path(lake_dir, must_exist = TRUE)
     # Read in model netCDF file
+    # `all = TRUE`: this function checks every file a model run produces
+    # (e.g. GLM-AED's csv/balance companions) exists before trusting the
+    # run completed, and needs GOTM's "output"/"output_daily" pair together
+    # to pick between them below.
     nc_files <- if (auto_dat) {
       # The netCDF may legitimately be absent here -- that is what the
       # fall-back below is for -- so a failure to resolve it is not yet an
       # error.
-      tryCatch(get_model_outfile(model = model, path = lake_dir)[[model]],
+      tryCatch(get_model_outfile(model = model, path = lake_dir, all = TRUE)[[model]],
                error = function(e) character(0))
     } else {
-      get_model_outfile(model = model, path = lake_dir)[[model]]
+      get_model_outfile(model = model, path = lake_dir, all = TRUE)[[model]]
     }
     if (auto_dat && (length(nc_files) == 0 || !all(file.exists(nc_files)))) {
       use_dat <- .simstrat_dat_available(lake_dir = lake_dir, model = model)
       if (!use_dat) {
         # Neither form of output is there: let the netCDF path report it,
         # so the error is the one callers already handle.
-        nc_files <- get_model_outfile(model = model, path = lake_dir)[[model]]
+        nc_files <- get_model_outfile(model = model, path = lake_dir, all = TRUE)[[model]]
       }
     }
   }

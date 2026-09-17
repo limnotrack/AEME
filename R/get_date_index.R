@@ -69,9 +69,6 @@ get_date_index <- function(aeme, model, remove_spin_up = TRUE, path = NULL,
     } else {
       get_model_outfile(aeme = aeme, model = model, path = path)[[model]]
     }
-    # Prefer the "output" entry (GOTM also returns "output_daily"); fall back
-    # to the first match.
-    if (!is.null(names(of)) && "output" %in% names(of)) of <- of["output"]
     of <- of[nzchar(of) & file.exists(of)]
     if (length(of) == 0) return(NA_integer_)
     if (isTRUE(daily_mean)) {

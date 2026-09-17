@@ -91,7 +91,7 @@ glm_nml_path <- function(lake_dir, must_exist = TRUE) {
 #' @return Logical; TRUE if all output files exist.
 check_all_model_outfiles <- function(aeme) {
   lake_dir <- get_lake_dir(aeme)
-  model_outfiles <- get_model_outfile(aeme) |>
+  model_outfiles <- get_model_outfile(aeme, all = TRUE) |>
     unlist()
   file_chk <- all(file.exists(model_outfiles))
   return(file_chk)
