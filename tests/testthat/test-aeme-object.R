@@ -44,8 +44,8 @@ test_that("aeme object can be built with partial information", {
     ),
     # Define time list
     time = list(
-      start = as.POSIXct("2020-01-01 00:00:00"), # start date
-      stop = as.POSIXct("2020-12-31 00:00:00") # stop date
+      start = as.POSIXct("2020-01-01 00:00:00", tz = "UTC"), # start date
+      stop = as.POSIXct("2020-12-31 00:00:00", tz = "UTC") # stop date
     ),
     # Define input list
     input = list(
@@ -89,8 +89,8 @@ test_that("aeme object errors when non alpha numeric chars present", {
     ),
     # Define time list
     time = list(
-      start = as.POSIXct("2020-01-01 00:00:00"), # start date
-      stop = as.POSIXct("2020-12-31 00:00:00") # stop date
+      start = as.POSIXct("2020-01-01 00:00:00", tz = "UTC"), # start date
+      stop = as.POSIXct("2020-12-31 00:00:00", tz = "UTC") # stop date
     ),
     # Define input list
     input = list(
@@ -147,8 +147,8 @@ test_that("parameters can be added to an aeme object", {
     ),
     # Define time list
     time = list(
-      start = as.POSIXct("2020-01-01 00:00:00"), # start date
-      stop = as.POSIXct("2020-12-31 00:00:00") # stop date
+      start = as.POSIXct("2020-01-01 00:00:00", tz = "UTC"), # start date
+      stop = as.POSIXct("2020-12-31 00:00:00", tz = "UTC") # stop date
     ),
     # Define input list
     input = list(
@@ -311,20 +311,25 @@ test_that("lake observations can be formatted", {
   code <- generate_var_map_code(data = obs, var_col_name = "var_aeme")
   eval(parse(text = code))
   
-  obs_test <- obs |> 
+  obs_test <- obs |>
     dplyr::rename(
       DateTime = datetime,
       variable = var_aeme,
-      Depth = depth_from,
+      Depth = depth,
       meas = value
     )
-  
-  out <- lake_obs_to_aeme(data = obs_test, depth_col_name = "Depth", 
+
+  out <- lake_obs_to_aeme(data = obs_test, depth_col_name = "Depth",
                           value_col_name = "meas", var_map = var_map)
-  
-  testthat::expect_true(is.data.frame(out) & nrow(out) > 0 & 
-                          all(c("Date", "var_aeme", "depth_from", "depth_to",
-                                "value") %in% colnames(out)))
+
+  testthat::expect_true(is.data.frame(out) & nrow(out) > 0 &
+                          all(c("Date", "var_aeme", "depth", "value") %in%
+                                colnames(out)))
+  testthat::expect_false(any(c("depth_from", "depth_to") %in% colnames(out)))
+  # Date is a noon-anchored UTC POSIXct (lake_obs.csv is date-only / daily)
+  testthat::expect_s3_class(out$Date, "POSIXct")
+  testthat::expect_true(all(format(out$Date, "%H:%M:%S", tz = "UTC") ==
+                              "12:00:00"))
 })
 
 test_that("lake observations can be added", {
@@ -456,7 +461,7 @@ test_that("GLM-AED sediment parameters can be added", {
                      model_controls = model_controls, path = path, ext_elev = 3)
   
   lake_dir <- get_lake_dir(aeme, path = path)
-  glm_nml_file <- file.path(lake_dir, "glm_aed", "glm3.nml")
+  glm_nml_file <- glm_nml_path(lake_dir)
   nml <- read_nml(glm_nml_file)
   sed_temp_mean <- nml[["sediment"]][["sed_temp_mean"]]
   testthat::expect_true(all(sed_temp_mean == param$value[param$model == "glm_aed" & 
@@ -477,6 +482,8 @@ test_that("Aeme can be written and read from files", {
     run_aeme()
   Sys.sleep(1)
   aeme <- run_aeme(aeme)
+  
+  zv <- get_var(aeme, var_sim =  "z")
   
   write_path <- file.path(tempdir(), "test_write")
   out_files <- write_aeme_to_files(aeme = aeme, path = write_path,

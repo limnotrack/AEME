@@ -5,14 +5,12 @@
 #'
 #' @return A data frame with the following columns:
 #' \itemize{
-#'  \item \code{Date}: Date of observation
-#'  \item \code{depth}: Depth of observation
+#'  \item \code{Date}: Observation date, as a calendar \code{Date}
+#'  \item \code{depth}: Depth of observation (m, positive-down from the surface)
 #'  \item \code{elev}: Elevation of observation
 #'  \item \code{Model}: Model name
 #'  \item \code{var_sim}: Variable name
 #'  \item \code{value}: Value of the variable
-#'  \item \code{depth_from}: Depth from which the variable is extracted
-#'  \item \code{depth_to}: Depth to which the variable is extracted
 #'  }
 #'
 #' @importFrom dplyr filter left_join mutate bind_rows case_when
@@ -21,6 +19,8 @@
 
 align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
                              return_df = TRUE) {
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
   if (missing(model)) {
     model <- list_models(aeme)
   } else {
@@ -33,29 +33,42 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
   
   
   # Align the observed data with the model data ----
+  # Lake observations are daily; model output may be sub-daily (POSIXct). In
+  # that case collapse the modelled surface elevation to one value per
+  # calendar day and match observations on the day, otherwise an exact
+  # timestamp join drops every observation.
   lst <- lapply(model, \(m) {
-    depth <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
-                        depth = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
-    
-    df <- get_var(aeme = aeme, model = m, var_sim = var_sim,
-                  return_df = TRUE)
-    
+    surface <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
+                          surface_elev = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
+    subdaily <- inherits(surface$Date, "POSIXct")
+    if (subdaily) {
+      surface$Date <- as.Date(surface$Date)
+      surface <- stats::aggregate(surface_elev ~ Date, data = surface,
+                                  FUN = mean, na.rm = TRUE)
+    }
+
     if (!is.null(obs$lake)) {
+      # `surface$Date` is a calendar Date here (a daily model axis is already
+      # Date; a sub-daily one was collapsed above). Reduce the observation
+      # Date to the same calendar day for the join -- it is stored as noon
+      # POSIXct.
       obs$lake |>
-        dplyr::filter(Date %in% df$Date & var_aeme == var_sim) |>
-        # merge(x = _, depth, by = "Date") |>
-        dplyr::left_join(depth, by = "Date") |>
-        dplyr::mutate(elev = depth - depth_from, 
+        dplyr::mutate(Date = as.Date(Date, tz = "UTC")) |>
+        dplyr::filter(Date %in% surface$Date & var_aeme == var_sim) |>
+        dplyr::left_join(surface, by = "Date") |>
+        dplyr::mutate(elev = surface_elev - depth,
                       Model = toggle_models(m, to = "display")) |>
         dplyr::filter(elev >= 0)
     }
   })
-  
+
   # Adjust water level observations
   if (!is.null(obs$level)) {
+    mod_days <- outp[[ens_lab]][[model[1]]][["Date"]]
+    if (inherits(mod_days, "POSIXct")) mod_days <- as.Date(mod_days, tz = "UTC")
     obs$level_adj <- obs$level |>
-      dplyr::filter(Date %in% outp[[ens_lab]][[model[1]]][["Date"]] &
-                      var_aeme == "LKE_lvlwtr")
+      dplyr::mutate(Date = as.Date(Date, tz = "UTC")) |>
+      dplyr::filter(Date %in% mod_days & var_aeme == "LKE_lvlwtr")
     if (nrow(obs$level_adj) > 0) {
       obs$level_adj <- obs$level_adj |>
         dplyr::mutate(lvl_adj = value - min(inp$hypsograph$elev))

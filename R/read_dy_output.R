@@ -30,7 +30,7 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   dy_time <- ncdf4::ncvar_get(nc, "dyresmTime")
   dy_time[dy_time > 9.9e36] <- NA
   dy_dates <- as.POSIXct((dy_time - 2415018.5) *
-                           86400, origin = "1899-12-30")
+                           86400, origin = "1899-12-30", tz = "UTC")
   idx <- which(lubridate::hour(dy_dates) == output_hour)
   if (length(idx) == 0) stop("No output for DYRESM at ", output_hour, " hour")
   dy_dates <- dy_dates |> as.Date()
@@ -45,13 +45,23 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       date_index <- seq_along(dy_dates)
     }
   }
-  if (length(valid_dates) < length(date_index)) {
-    cli::cli_alert_warning("date_index exceeds available DYRESM output dates. 
-                          Returning empty output.")
-    out <- empty_model_output(
-      reason = "date_index exceeds available DYRESM output dates"
-    )
-    return(out)
+  # Keep the positions that exist rather than discarding every variable when
+  # a reconstructed `date_index` overshoots the records DYRESM actually wrote.
+  n_out <- length(dy_dates)
+  if (any(date_index < 1 | date_index > n_out)) {
+    dropped <- sum(date_index < 1 | date_index > n_out)
+    date_index <- date_index[date_index >= 1 & date_index <= n_out]
+    if (length(date_index) == 0) {
+      cli::cli_alert_warning(
+        "date_index does not overlap the {n_out} DYRESM output record{?s}. Returning empty output."
+      )
+      return(empty_model_output(
+        reason = "date_index does not overlap available DYRESM output dates"
+      ))
+    }
+    cli::cli_warn(c(
+      "!" = "DYRESM output holds {n_out} record{?s} but {dropped} requested index position{?s} fell outside it -- those step{?s} were dropped."
+    ))
   }
   dates <- dy_dates[date_index]
   out_list[["Date"]] <- dates
@@ -226,7 +236,7 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   }
   
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
-  return(out_list)
+  return(.new_aeme_output(out_list, model = "dy_cd"))
 }
 
 #' Read DYRESM water level output
@@ -253,7 +263,8 @@ read_dy_wlev <- function(nc = NULL, file) {
   dy_time <- ncdf4::ncvar_get(nc, "dyresmTime")
   dy_time[dy_time > 9.9e36] <- NA
   dy_dates <- as.POSIXct((dy_time - 2415018.5) *
-                           86400, origin = "1899-12-30") |> as.Date()
+                           86400, origin = "1899-12-30", tz = "UTC") |>
+    as.Date(tz = "UTC")
   
   mod_layers <- ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")
   if (!is.matrix(mod_layers)) {

@@ -18,6 +18,7 @@
 #' met_cols <- get_met_vars(as_vector = TRUE)
 #' 
 get_met_vars <- function(as_vector = FALSE) {
+  data("key_naming", package = "AEME", envir = environment())
   met_vars <- key_naming |> 
     dplyr::filter(grepl("^(Date|MET_)", .data$var_aeme)) |> 
     dplyr::select(var_aeme, name_text, units)

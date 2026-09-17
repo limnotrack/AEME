@@ -12,18 +12,46 @@
 #' @param output_hour Hour of the day to extract (0-23). Defaults to 0.
 #' @param file File path to netCDF file. Only used if `nc` is NULL.
 #' @param phyto_pars Data frame with phytoplankton parameters from AED.
+#' @param load_all logical; also load every other variable present in the
+#'   netCDF file, beyond the declared `vars_sim` set. Each such variable is
+#'   keyed by its AEME `var_aeme` name if [key_naming] has a translation for
+#'   it, or by its raw GLM/netCDF name otherwise. Variables shaped like
+#'   GLM's usual `(time)` or `(z, time)` output are loaded the same way as
+#'   any declared variable; variables with other dimensions (e.g. `nzones`,
+#'   `particle`, `sed_layers`, `lon`, `lat`) are loaded as a
+#'   [new_grouped_var()] object instead of being forced into the depth x
+#'   time convention. Default `TRUE`.
+#' @param raw_output logical; if `TRUE`, return output as close to the raw
+#'   netCDF file as possible instead of AEME's standardised format: `(z,
+#'   time)` variables are left on GLM's own, time-varying model layer
+#'   midpoints (no interpolation onto a common depth grid), variables
+#'   requested via `vars_sim` are keyed by their raw GLM/netCDF name (e.g.
+#'   `"temp"`) rather than the translated AEME `var_aeme` name (e.g.
+#'   `"HYD_temp"`), and no AED unit-conversion factors are applied.
+#'   `depths` must not be supplied when `raw_output = TRUE`, since raw
+#'   output has no common depth grid to interpolate onto. Default `FALSE`.
 #'
-#' @returns List with AEME output variables
+#' @returns List with AEME output variables. Also includes `z`, GLM's own
+#'   raw layer-height matrix (height of each layer's top boundary above the
+#'   lake bottom, per timestep, before conversion to `LKE_depths`) -- unlike
+#'   GOTM-WET/Simstrat-AED2, GLM's layer structure genuinely changes over
+#'   time, so this is kept alongside the derived depth grid rather than
+#'   discarded after use.
 #' @export
-#' 
+#'
 #' @importFrom ncdf4 ncvar_get ncatt_get
 #' @importFrom lubridate hour
 #' @importFrom dplyr filter mutate pull
 
 read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
-                            dates = NULL, date_index = NULL, incl_fluxes = TRUE, 
-                            output_hour = 0, file, phyto_pars = NULL) {
-  
+                            dates = NULL, date_index = NULL, incl_fluxes = TRUE,
+                            output_hour = 0, file, phyto_pars = NULL,
+                            load_all = TRUE, raw_output = FALSE) {
+
+  if (isTRUE(raw_output) && !is.null(depths)) {
+    cli::cli_abort("'depths' cannot be supplied when 'raw_output = TRUE' -- raw output uses each timestep's native GLM layer depths.")
+  }
+
   if (is.null(nc)) {
     nc <- open_nc_safe(file, model = "glm_aed")
     on.exit(ncdf4::nc_close(nc))
@@ -36,12 +64,12 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     return(out)
   }
   date_start <- as.POSIXct(gsub("hours since ", "",
-                                ncdf4::ncatt_get(nc,'time','units')$value))
-  glm_dates <- as.POSIXct(hours_since * 3600 + date_start) |> 
-    as.Date()
+                                ncdf4::ncatt_get(nc,'time','units')$value),
+                           tz = "UTC")
+  glm_dates <- as.POSIXct(hours_since * 3600 + date_start, tz = "UTC")
   if (is.null(date_index)) {
     if (!is.null(dates)) {
-      date_index <- which(glm_dates %in% dates)
+      date_index <- which(as.Date(glm_dates) %in% as.Date(dates))
       if (length(date_index) == 0) {
         cli::cli_abort("No output for GLM at specified dates")
       }
@@ -49,40 +77,81 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       date_index <- seq_along(glm_dates)
     }
   }
-  if (length(glm_dates) < max(date_index)) {
-    cli::cli_alert_warning("date_index exceeds available GLM output dates. 
-                          Returning empty output.")
-    out <- empty_model_output(
-      reason = "date_index exceeds available GLM output dates"
-    )
-    return(out)
+  # `date_index` is usually a positional axis reconstructed by
+  # aeme_time_axis() from start/stop/spin_up/output_time_step, not read from
+  # this file. If it overshoots the records GLM actually wrote -- e.g. an
+  # hourly output_time_step against a run that is still daily, or a `stop`
+  # that is not an exact multiple of the output step -- keep the positions
+  # that do exist rather than discarding every variable. Only bail when the
+  # overlap is empty.
+  n_out <- length(glm_dates)
+  if (any(date_index < 1 | date_index > n_out)) {
+    dropped <- sum(date_index < 1 | date_index > n_out)
+    date_index <- date_index[date_index >= 1 & date_index <= n_out]
+    if (length(date_index) == 0) {
+      cli::cli_alert_warning(
+        "date_index does not overlap the {n_out} GLM output record{?s}. Returning empty output."
+      )
+      return(empty_model_output(
+        reason = "date_index does not overlap available GLM output dates"
+      ))
+    }
+    cli::cli_warn(c(
+      "!" = "GLM output holds {n_out} record{?s} but {dropped} requested index position{?s} fell outside it -- those step{?s} were dropped.",
+      "i" = "Was the GLM run rebuilt and re-run after changing {.field output_time_step}?"
+    ))
   }
-  dates <- glm_dates[date_index] |>
-    as.Date()
-  
-  # Extract depths and format
-  mod_layers <- ncdf4::ncvar_get(nc, "z")[, date_index]
-  mod_layers[mod_layers > 1000000] <- NA
+  dates <- .collapse_output_date(glm_dates[date_index])
+
+  # Extract layer-top heights (above the lake bottom) and blank out the
+  # inactive layers. GLM's `z` array is padded above the active layer count
+  # (`NS`) with either NC_FILL_DOUBLE or -- worse -- a stale value carried
+  # over from an earlier step, so mask by `NS` when it is available and fall
+  # back to the fill-value magnitude otherwise.
+  mod_layers <- ncdf4::ncvar_get(nc, "z")[, date_index, drop = FALSE]
+  mod_layers[!is.na(mod_layers) & abs(mod_layers) > 1e6] <- NA
+  if ("NS" %in% names(nc$var)) {
+    ns <- ncdf4::ncvar_get(nc, "NS")[date_index]
+    row_mat <- matrix(seq_len(nrow(mod_layers)), nrow = nrow(mod_layers),
+                      ncol = ncol(mod_layers))
+    ns_mat  <- matrix(ns, nrow = nrow(mod_layers), ncol = ncol(mod_layers),
+                      byrow = TRUE)
+    mod_layers[!is.na(ns_mat) & row_mat > ns_mat] <- NA
+  }
   midpoints <- apply(mod_layers, 2, \(x) {
     x - diff(c(0, x)) / 2
   })
-  lake_level <- ncdf4::ncvar_get(nc, "lake_level")[date_index]
+
+  # GLM writes the `lake_level` variable only on a daily cadence, so on a
+  # sub-daily output run it is NA at every non-midnight step. The surface
+  # height is the top of the uppermost active layer, i.e. max(z) -- identical
+  # to `lake_level` wherever GLM does write it (verified: mean/sd of the
+  # difference are 0), and defined at every step.
+  lake_level <- apply(mod_layers, 2, \(x) {
+    if (all(is.na(x))) NA_real_ else max(x, na.rm = TRUE)
+  })
   # Adjust midpoints to be relative to lake level
   Lmat <- matrix(lake_level, nrow = nrow(midpoints), ncol = length(lake_level),
                  byrow = TRUE)
   midpoints <- Lmat - midpoints
   out_list[["LKE_lvlwtr"]] <- lake_level
-  
+
   if (is.null(depths)) {
-    max_depth <- max(lake_level, na.rm = TRUE)
-    data("model_layer_structure", package = "AEME", envir = environment())
-    depth_fraction <- model_layer_structure |> 
-      dplyr::filter(z < max_depth) |> 
-      dplyr::mutate(deps = z / max_depth) |> 
-      dplyr::pull(deps) |> 
-      matrix(ncol = 1)
-    depth_mat <- depth_fraction %*% t(lake_level)
-    out_depths <- round(depth_mat, 2)
+    if (isTRUE(raw_output)) {
+      # raw mode: report each timestep's own GLM model layer midpoints,
+      # rather than interpolating onto a shared standardised grid
+      out_depths <- round(midpoints, 2)
+    } else {
+      max_depth <- max(lake_level, na.rm = TRUE)
+      data("model_layer_structure", package = "AEME", envir = environment())
+      depth_fraction <- model_layer_structure |>
+        dplyr::filter(z < max_depth) |>
+        dplyr::mutate(deps = z / max_depth) |>
+        dplyr::pull(deps) |>
+        matrix(ncol = 1)
+      depth_mat <- depth_fraction %*% t(lake_level)
+      out_depths <- round(depth_mat, 2)
+    }
   } else {
     out_depths <- matrix(rep(depths, length(dates)),
                          nrow = length(depths),
@@ -91,25 +160,34 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   # Extract flux variables
   if (incl_fluxes) {
-    out_list[["LKE_Qe"]] <- ncdf4::ncvar_get(nc, "daily_qe")[date_index]
-    out_list[["LKE_Qh"]] <- ncdf4::ncvar_get(nc, "daily_qh")[date_index]
-    out_list[["LKE_Qlw"]] <- ncdf4::ncvar_get(nc, "daily_qlw")[date_index]
-    out_list[["LKE_Qsw"]] <- ncdf4::ncvar_get(nc, "daily_qsw")[date_index]
+    # GLM only computes its `daily_*` diagnostics (surface energy fluxes,
+    # evaporation, areas, in/out/overflow volumes, surface temp, lake level)
+    # once per simulated day and stamps them at the day's closing midnight.
+    # On a sub-daily output run every other step is therefore NA. Carry each
+    # day's single written value across all of that day's steps so these
+    # series are usable; on a daily run `.glm_fill_daily()` is a no-op.
+    glm_sel <- glm_dates[date_index]
+    fd <- function(v) .glm_fill_daily(v, glm_sel)
+
+    out_list[["LKE_Qe"]] <- fd(ncdf4::ncvar_get(nc, "daily_qe")[date_index])
+    out_list[["LKE_Qh"]] <- fd(ncdf4::ncvar_get(nc, "daily_qh")[date_index])
+    out_list[["LKE_Qlw"]] <- fd(ncdf4::ncvar_get(nc, "daily_qlw")[date_index])
+    out_list[["LKE_Qsw"]] <- fd(ncdf4::ncvar_get(nc, "daily_qsw")[date_index])
     out_list[["LKE_V"]] <- ncdf4::ncvar_get(nc, "lake_volume")[date_index]
-    out_list[["LKE_evpvol"]] <- -ncdf4::ncvar_get(nc, "evaporation")[date_index]
+    out_list[["LKE_evpvol"]] <- -fd(ncdf4::ncvar_get(nc, "evaporation")[date_index])
     out_list[["LKE_evpflx"]] <- -ncdf4::ncvar_get(nc, "evap_mass_flux")[date_index]
-    out_list[["LKE_A0"]] <- ncdf4::ncvar_get(nc, "surface_area")[date_index]
-    out_list[["LKE_evprte"]] <- abs(out_list[["LKE_evpvol"]] / 
+    out_list[["LKE_A0"]] <- fd(ncdf4::ncvar_get(nc, "surface_area")[date_index])
+    out_list[["LKE_evprte"]] <- abs(out_list[["LKE_evpvol"]] /
                                       out_list[["LKE_A0"]])
-    out_list[["LKE_inflow"]] <- ncdf4::ncvar_get(nc, "tot_inflow_vol")[date_index] # / A0
-    overflow <- ncdf4::ncvar_get(nc, "overflow_vol")[date_index]
+    out_list[["LKE_inflow"]] <- fd(ncdf4::ncvar_get(nc, "tot_inflow_vol")[date_index]) # / A0
+    overflow <- fd(ncdf4::ncvar_get(nc, "overflow_vol")[date_index])
     out_list[["LKE_overflow"]] <- overflow
-    tot_outflow <- ncdf4::ncvar_get(nc, "tot_outflow_vol")[date_index]
+    tot_outflow <- fd(ncdf4::ncvar_get(nc, "tot_outflow_vol")[date_index])
     out_list[["LKE_outflow"]] <- tot_outflow
     out_list[["LKE_outftot"]] <- tot_outflow + overflow
     out_list[["LKE_precip"]] <- ncdf4::ncvar_get(nc, "precipitation")[date_index]
     out_list[["LKE_pcpvol"]] <- out_list[["LKE_precip"]] * out_list[["LKE_A0"]]
-    out_list[["HYD_surft"]] <- ncdf4::ncvar_get(nc, "surface_temp")[date_index]
+    out_list[["HYD_surft"]] <- fd(ncdf4::ncvar_get(nc, "surface_temp")[date_index])
   }
   
   if ("LKE_photic" %in% vars_sim | "LKE_efold" %in% vars_sim) {
@@ -137,10 +215,14 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   out_list <- lapply(out_list, as.vector)
   out_list[["Date"]] <- dates
-  
-  
-  # Add depths as a matrix
+  # Add depths as a matrix. LKE_depths is always depth-below-surface at
+  # each layer's *midpoint* (raw mode: out_depths <- round(midpoints, 2),
+  # computed above) -- NOT the raw z boundary-height-above-bottom values,
+  # which use a different reference frame, a half-layer offset, and no
+  # lake-level adjustment. z (raw boundary heights) is kept separately
+  # below for anyone who wants GLM's own native layer definition.
   out_list[["LKE_depths"]] <- out_depths
+  out_list[["z"]] <- mod_layers
   
   
   if (!is.null(vars_sim)) {
@@ -156,28 +238,35 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       dplyr::left_join(model_vars, by = c("vars" = "glm_aed")) |> 
       dplyr::rename(conv_factor = conversion_aed)
     
-    if (any(grepl("PHY", model_vars_vec))) {
+    if (!isTRUE(raw_output) && any(grepl("PHY", model_vars_vec))) {
       phyto_vars <- model_vars_vec[grepl("PHY", model_vars_vec)]
       phyto_vars <- phyto_vars[phyto_vars != "PHY_tchla"]
       phyto_vars <- gsub("PHY_", "", phyto_vars)
       if (!is.null(phyto_pars)) {
-        Xcc <- phyto_pars |> 
-          dplyr::filter(p_name == "Xcc") 
+        Xcc <- phyto_pars |>
+          dplyr::filter(p_name == "Xcc")
         for (pv in phyto_vars) {
           vars_chk$conv_factor[vars_chk$vars == paste0("PHY_", pv)] <- 12.0 / Xcc[[pv]]
         }
       }
     }
-    
+
     out_vars <- lapply(model_vars_vec, \(v) {
       if(vars_chk$present[vars_chk$vars == v] == FALSE) {
         # cli::cli_alert_warning("Variable {.val {v}} not found in GLM output.
         #                        Returning NULL for this variable.")
         return(NULL)
       }
-      conv_factor <- vars_chk$conv_factor[vars_chk$vars == v]
-      if (is.na(conv_factor)) {
+      # AED unit-conversion factors are an AEME-specific transform, only
+      # applied when standardising output -- raw output stays in GLM/AED's
+      # own units, matching the netCDF file exactly
+      if (isTRUE(raw_output)) {
         conv_factor <- 1
+      } else {
+        conv_factor <- vars_chk$conv_factor[vars_chk$vars == v]
+        if (is.na(conv_factor)) {
+          conv_factor <- 1
+        }
       }
       var_out <- ncdf4::ncvar_get(nc, v)
       if (grepl("_Z", v)) {
@@ -187,22 +276,239 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
         var_out <- var_out[, , date_index, drop = FALSE]
       } else if (length(dim(var_out)) == 2) {
         var <- var_out[, date_index, drop = FALSE]  * conv_factor
-        out <- interp_static_grid(var = var,
-                                  midpoints = midpoints,
-                                  out_depths = out_depths)
+        out <- .glm_depth_profile(var = var, midpoints = midpoints,
+                                  out_depths = out_depths,
+                                  raw_output = raw_output)
         return(out)
       } else if (length(dim(var_out)) == 1) {
-        var_out <- var_out[date_index] * conv_factor
+        # ncdf4::ncvar_get() can return a single-dimension variable with a
+        # length-1 dim attribute still attached (class "array", not a
+        # plain vector), which survives `[` indexing -- strip it so
+        # downstream code's is.null(dim(x)) checks correctly treat this as
+        # an ordinary 1D time series (matches the as.vector() normalisation
+        # already applied to the fixed-name flux variables above)
+        var_out <- as.vector(var_out[date_index] * conv_factor)
         return(var_out)
       } else {
         cli::cli_abort(paste("Variable", v, "has unsupported number of dimensions"))
       }
     })
-    
+
+    if (isTRUE(raw_output)) {
+      # raw mode: key by the native GLM/netCDF variable name (e.g. "temp")
+      # instead of the translated AEME var_aeme name (e.g. "HYD_temp")
+      names(out_vars) <- unname(model_vars_vec)
+    }
+
     out_list <- c(out_list, out_vars)
   }
+
+  # ---- Load every remaining variable present in the file ----
+  # Variables already handled above (by the fixed-name blocks and, if
+  # vars_sim was supplied, the declared/translated loop) are skipped;
+  # everything else in the file is loaded too -- keyed by its var_aeme
+  # name if key_naming has a translation, otherwise by its raw GLM name.
+  if (isTRUE(load_all)) {
+    already_extracted <- c("time", "z", "lake_level")
+    if (incl_fluxes) {
+      already_extracted <- c(
+        already_extracted,
+        "daily_qe", "daily_qh", "daily_qlw", "daily_qsw", "lake_volume",
+        "evaporation", "evap_mass_flux", "surface_area", "tot_inflow_vol",
+        "overflow_vol", "tot_outflow_vol", "precipitation", "surface_temp"
+      )
+    }
+    if ("LKE_photic" %in% vars_sim | "LKE_efold" %in% vars_sim) {
+      already_extracted <- c(already_extracted, "radn")
+    }
+    if (!is.null(vars_sim)) {
+      already_extracted <- c(already_extracted, model_vars_vec)
+    }
+
+    data("key_naming", package = "AEME", envir = environment())
+    glm_to_var_aeme <- stats::setNames(key_naming$var_aeme, key_naming$glm_aed)
+
+    nc_vars <- names(nc$var)
+    remaining_vars <- setdiff(nc_vars, already_extracted)
+
+    for (v in remaining_vars) {
+      key <- unname(glm_to_var_aeme[v])
+      if (is.na(key) || !nzchar(key)) key <- v
+      if (key %in% names(out_list)) next
+
+      # AED unit-conversion factors are an AEME-specific transform, only
+      # applied when standardising output -- raw output stays in GLM/AED's
+      # own units, matching the netCDF file exactly
+      if (isTRUE(raw_output)) {
+        conv_factor <- 1
+      } else {
+        conv_idx <- match(v, key_naming$glm_aed)
+        conv_factor <- if (!is.na(conv_idx)) key_naming$conversion_aed[conv_idx] else NA
+        if (is.na(conv_factor)) conv_factor <- 1
+      }
+
+      result <- tryCatch({
+        # ncdf4::ncvar_get() drops length-1 dimensions by default (e.g. a
+        # single-column GLM run's degenerate lon/lat), so the array it
+        # actually returns won't have those axes even though the file's
+        # dimension metadata still lists them for every variable -- match
+        # that behaviour here rather than comparing against the raw
+        # (pre-squeeze) dimension list
+        dim_objs  <- Filter(\(d) d$len > 1, nc$var[[v]]$dim)
+        dim_names <- vapply(dim_objs, \(d) d$name, character(1))
+
+        # Guard against accidentally loading a genuinely huge variable in
+        # full (e.g. a real particle-tracking run, where `particle` can be
+        # declared with length in the millions even though it's unused --
+        # length 1 -- in most runs)
+        n_elem <- prod(vapply(dim_objs, \(d) d$len, numeric(1)))
+        if (length(n_elem) == 0) n_elem <- 1
+
+        if (n_elem > 5e6) {
+          cli::cli_warn(c("!" = "Skipping variable {.val {v}}: {n_elem} values ({paste(dim_names, collapse = ' x ')}) is too large to load automatically."))
+          NULL
+        } else if (setequal(dim_names, "time")) {
+          # See the analogous as.vector() fix above -- a single-dimension
+          # netCDF variable can come back with a length-1 dim attribute
+          # still attached, which survives `[` indexing. Many GLM 1-D
+          # diagnostics are written once per day (like the flux block
+          # above), so carry each day's value across a sub-daily axis --
+          # `.glm_fill_daily()` is a no-op for variables written every step.
+          var_out <- ncdf4::ncvar_get(nc, v)
+          as.vector(.glm_fill_daily(var_out[date_index], glm_dates[date_index]) *
+                      conv_factor)
+        } else if (setequal(dim_names, c("z", "time"))) {
+          var_out <- ncdf4::ncvar_get(nc, v)
+          if (dim_names[1] != "z") var_out <- t(var_out)
+          var <- var_out[, date_index, drop = FALSE] * conv_factor
+          .glm_depth_profile(var = var, midpoints = midpoints,
+                             out_depths = out_depths,
+                             raw_output = raw_output)
+        } else {
+          .read_glm_grouped_var(nc = nc, v = v, dim_objs = dim_objs,
+                                dim_names = dim_names, date_index = date_index,
+                                dates = dates)
+        }
+      }, error = function(e) {
+        cli::cli_warn(c("!" = "Could not read variable {.val {v}} from GLM output: {conditionMessage(e)}"))
+        NULL
+      })
+
+      if (!is.null(result)) {
+        out_list[[key]] <- result
+      }
+    }
+  }
+
+  if (isTRUE(raw_output)) {
+    # "Date"/"LKE_depths"/"z"/"ok"/"reason" are the output list's own
+    # structural keys, not plotted variables -- key_naming does have a real
+    # "Date" -> "time" translation (used elsewhere for a genuinely different
+    # purpose), so leaving them in this sweep would rename "Date" itself out
+    # from under every consumer that expects a stable key
+    out_names <- setdiff(names(out_list), c("Date", "LKE_depths", "z", "ok", "reason"))
+    var_names <- get_model_vars(out_names, model = "glm_aed", as_vector = TRUE)
+    for (i in seq_along(var_names)) {
+      if (!is.na(var_names[i]) && nzchar(var_names[i])) {
+        names(out_list)[names(out_list) == names(var_names)[i]] <- var_names[i]
+      }
+    }
+  }
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
-  return(out_list)
+
+  var_units <- var_long_name <- NULL
+  if (isTRUE(raw_output)) {
+    raw_vars <- setdiff(names(out_list), c("Date", "LKE_depths", "z", "ok", "reason"))
+    meta <- lapply(raw_vars, \(v) .nc_var_meta(nc, v))
+    var_units <- stats::setNames(vapply(meta, `[[`, "", "units"), raw_vars)
+    var_long_name <- stats::setNames(vapply(meta, `[[`, "", "long_name"), raw_vars)
+  }
+
+  return(.new_aeme_output(out_list, model = "glm_aed", raw = raw_output,
+                          var_units = var_units, var_long_name = var_long_name))
+}
+
+#' Carry GLM's once-per-day diagnostics across a sub-daily output axis
+#'
+#' GLM writes its `daily_*` variables (and `lake_level` / `surface_temp` /
+#' `surface_area`) once per simulated day, stamped at the day's closing
+#' midnight, so on a sub-daily run they are `NA` at every other step. This
+#' groups each step with the day GLM accounts it to -- the steps at `HH:00`
+#' for `HH > 0` plus the following `00:00` -- and fills the whole group with
+#' that day's single written value.
+#'
+#' @param x numeric vector, already subset to `date_index`.
+#' @param glm_dates POSIXct/Date vector, the timestamps of `x` (same length).
+#' @return `x` with intra-day gaps filled. A no-op when `x` has no `NA` (the
+#'   daily-output case) or the lengths disagree.
+#' @noRd
+.glm_fill_daily <- function(x, glm_dates) {
+  if (length(x) != length(glm_dates) || !anyNA(x)) return(x)
+  grp <- as.character(as.Date(as.POSIXct(glm_dates, tz = "UTC") - 1,
+                              tz = "UTC"))
+  agg <- tapply(x, grp, function(v) {
+    v <- v[!is.na(v)]
+    if (length(v)) v[[length(v)]] else NA_real_
+  })
+  filled <- as.numeric(agg[grp])
+  ifelse(is.na(x), filled, x)
+}
+
+#' Return a `(z, time)` variable either interpolated onto a standardised
+#' depth grid, or as-is on its native GLM layer midpoints
+#' @param var matrix; the variable, already subset to `date_index`.
+#' @param midpoints matrix; native GLM layer midpoints (depth below surface).
+#' @param out_depths matrix; target depth grid (ignored when
+#'   `raw_output = TRUE`, since `var` is already on `midpoints`).
+#' @param raw_output logical.
+#' @return matrix, interpolated or raw.
+#' @noRd
+.glm_depth_profile <- function(var, midpoints, out_depths, raw_output) {
+  if (isTRUE(raw_output)) {
+    var
+  } else {
+    interp_static_grid(var = var, midpoints = midpoints, out_depths = out_depths)
+  }
+}
+
+#' Read a GLM-AED output variable with dimensions other than `(time)` or
+#' `(z, time)` into a [new_grouped_var()], preserving each dimension's
+#' actual coordinate/index values
+#' @param nc open ncdf4 object.
+#' @param v character; the netCDF variable name.
+#' @param dim_objs list; `nc$var[[v]]$dim`.
+#' @param dim_names character; names of `dim_objs`, in order.
+#' @inheritParams read_glm_output
+#' @param dates Date vector; already resolved simulation dates
+#'   (`glm_dates[date_index]`), used as the coordinate values for a `"time"`
+#'   dimension.
+#' @return An `aeme_grouped_var` object.
+#' @noRd
+.read_glm_grouped_var <- function(nc, v, dim_objs, dim_names, date_index, dates) {
+  arr <- ncdf4::ncvar_get(nc, v)
+  if (is.null(dim(arr)) && length(dim_names) == 1) {
+    dim(arr) <- length(arr)
+  }
+
+  time_pos <- which(dim_names == "time")
+  if (length(time_pos) == 1) {
+    d <- dim(arr)
+    idx_list <- lapply(d, seq_len)
+    idx_list[[time_pos]] <- date_index
+    arr <- do.call(`[`, c(list(arr), idx_list, list(drop = FALSE)))
+  }
+
+  dim_values <- stats::setNames(
+    lapply(dim_objs, \(d) {
+      if (d$name == "time") return(dates)
+      vals <- d$vals
+      if (is.null(vals) || length(vals) != d$len) vals <- seq_len(d$len)
+      vals
+    }),
+    dim_names
+  )
+
+  new_grouped_var(value = arr, dim_names = dim_names, dim_values = dim_values)
 }
 
 #' Read GLM lake water level output
@@ -221,12 +527,29 @@ read_glm_wlev <- function(nc = NULL, file) {
     cli::cli_abort("No time dimension in GLM output")
   }
   date_start <- as.POSIXct(gsub("hours since ", "",
-                                ncdf4::ncatt_get(nc,'time','units')$value))
-  glm_dates <- as.POSIXct(hours_since * 3600 + date_start) |> 
-    as.Date()
-  
+                                ncdf4::ncatt_get(nc,'time','units')$value),
+                           tz = "UTC")
+  glm_dates <- .collapse_output_date(as.POSIXct(hours_since * 3600 + date_start,
+                                                tz = "UTC"))
+
+  # GLM only writes `lake_level` on a daily cadence, so on a sub-daily output
+  # run it is NA at every non-midnight step. Reconstruct the surface height
+  # from the top of the uppermost active layer (max(z)) -- identical to
+  # `lake_level` wherever GLM writes it, and defined at every step.
   lake_level <- ncdf4::ncvar_get(nc, "lake_level")
-  
+  if (anyNA(lake_level)) {
+    z <- ncdf4::ncvar_get(nc, "z")
+    z[!is.na(z) & abs(z) > 1e6] <- NA
+    if ("NS" %in% names(nc$var)) {
+      ns <- ncdf4::ncvar_get(nc, "NS")
+      row_mat <- matrix(seq_len(nrow(z)), nrow = nrow(z), ncol = ncol(z))
+      ns_mat  <- matrix(ns, nrow = nrow(z), ncol = ncol(z), byrow = TRUE)
+      z[!is.na(ns_mat) & row_mat > ns_mat] <- NA
+    }
+    zmax <- apply(z, 2, \(x) if (all(is.na(x))) NA_real_ else max(x, na.rm = TRUE))
+    lake_level <- ifelse(is.na(lake_level), zmax, lake_level)
+  }
+
   out <- data.frame(Date = glm_dates,
                     LKE_lvlwtr = lake_level)
   return(out)

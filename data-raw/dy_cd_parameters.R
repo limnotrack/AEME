@@ -124,6 +124,7 @@ dy_cd_parameters <- dplyr::bind_rows(params, cfg_df) |>
     group = NA_character_
   ) |>
   dplyr::select(dplyr::any_of(param_colnames)) |> 
+  dplyr::select(-par) |> 
   tibble::as_tibble()
 
 usethis::use_data(dy_cd_parameters, overwrite = TRUE)

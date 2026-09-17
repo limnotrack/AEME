@@ -15,12 +15,13 @@ plot_wbal_ts(
 \item{aeme}{Aeme object with model output and observations added. Must have
 model output \code{run_aeme()}}
 
+\item{var_aeme}{character vector of AEME variable names to plot. Options
+are \code{"LKE_lvlwtr"}, \code{"LKE_inflow"}, \code{"LKE_outflow"},
+\code{"LKE_pcpvol"}, \code{"LKE_Qe"}, \code{"HYD_surft"}. Defaults to
+all.}
+
 \item{add_model}{logical; whether to overlay model output on the estimated
 components. Defaults to TRUE.}
-
-\item{vars}{character vector of AEME variable names to plot. Options are
-\code{"LKE_lvlwtr"}, \code{"LKE_inflow"}, \code{"LKE_outflow"},
-\code{"LKE_Qe"}, \code{"HYD_surft"}. Defaults to all.}
 }
 \value{
 ggplot object

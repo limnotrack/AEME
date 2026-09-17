@@ -31,6 +31,15 @@ Defaults to NULL and will generate common limits for all variables.}
 
 \item{ylim}{numeric vector of length 2; limits for the y-axis. Defaults to
 NULL and calculates this based on the data to be plotted.}
+
+\item{plot_width}{numeric; width in pixels of each panel, used to size the
+plotting device. Default is 400.}
+
+\item{plot_height}{numeric; height in pixels of each panel, used to size
+the plotting device. Default is 200.}
+
+\item{bar_width}{numeric; width of the colour bar as a fraction of
+\code{plot_width}. Default is 0.08.}
 }
 \value{
 A list of matrices with the plotted output, invisibly.

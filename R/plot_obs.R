@@ -47,12 +47,12 @@ plot_obs <- function(aeme, var_sim = "HYD_temp", add_line = FALSE) {
   if (incl_lake_level) {
 
     level <- level |>
-      dplyr::mutate(depth_from = 0, depth_to = 0)
+      dplyr::mutate(depth = 0)
 
     df <- dplyr::bind_rows(df, level)
   }
   df <- df |>
-    dplyr::mutate(depth_mid = (depth_from + depth_to) / 2)
+    dplyr::mutate(depth_mid = depth)
   n_depths <- unique(df$depth_mid) |>
     length()
 

@@ -10,7 +10,8 @@ get_output_vars(aeme, model, ens_n = 1)
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
@@ -26,13 +27,12 @@ aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme <- readRDS(aeme_file)
 path <- tempdir()
 model_controls <- get_model_controls(use_bgc = TRUE)
-model <- c("glm_aed", "gotm_wet")
+model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls,
                    ext_elev = 5, use_bgc = TRUE)
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
-path = path, model_controls = model_controls,
-parallel = TRUE, ncores = 2L)
+path = path, model_controls = model_controls)
 get_output_vars(aeme, model)
 }

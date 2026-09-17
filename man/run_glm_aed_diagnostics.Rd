@@ -15,6 +15,8 @@ run_glm_aed_diagnostics(
 )
 }
 \arguments{
+\item{aeme}{Aeme object.}
+
 \item{model}{Model name. One of "gotm_wet", "glm_aed", or "dy_cd".}
 
 \item{groups}{character vector selecting catalogue entries.
@@ -26,7 +28,7 @@ Accepts:
 Default NULL = all entries.
 }}
 
-\item{depth_collapse}{"mean", "surface" or "max" — reduce 3D variables}
+\item{depth_collapse}{"mean", "surface" or "max" -- reduce 3D variables}
 
 \item{plot}{draw combined plots, grouped by element}
 

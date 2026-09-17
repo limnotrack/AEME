@@ -40,6 +40,8 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
                                                     present"))}
   }
   
+  met <- as.data.frame(met)
+  
   Date = met$Date
   radswd = met[,which(grepl("radswd",colnames(met)))]
   tmpair = met[,which(grepl("tmpair",colnames(met)))]
@@ -164,13 +166,14 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
     wnduvu <- met[, which(grepl("wnduvu", colnames(met)))]
     wnduvv <- met[, which(grepl("wnduvv", colnames(met)))]
     
-    # get wind speed from vector components
-    wnd_ds <- uv2ds(wnduvu, wnduvv)
-    wndspd <- wnd_ds[, 2]
-    wnddir <- wnd_ds[, 1]
-    is.wndspd <- TRUE
-    is.wnddir <- TRUE
-    
+    if (!is.wndspd & !is.wnddir) {
+      # get wind speed from vector components
+      wnd_ds <- uv2ds(wnduvu, wnduvv)
+      wndspd <- wnd_ds[, 2]
+      wnddir <- wnd_ds[, 1]
+      is.wndspd <- TRUE
+      is.wnddir <- TRUE
+    }
   }
   
   # check that wind speed and dir are supplied

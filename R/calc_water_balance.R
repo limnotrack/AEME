@@ -34,8 +34,8 @@
 #' - `wb`: data frame of water balance components (Date, model, value,
 #'   HYD_flow, HYD_outflow, area, Ts, T5avg, evap_flux, evap_m3, rain,
 #'   deltaV, inflow, spill_outflow, net)
-#' - `wbal_params`: named numeric vector of fitted parameters (C, h_inv),
-#'   or NULL for method 1
+#' - `wbal_params`: named list of fitted parameter vectors (C, h_inv), keyed
+#'   by evaporation family (see `wbal_evap_family()`), or NULL for method 1
 #'
 #' @noRd
 
@@ -50,7 +50,22 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   cli_safe("Calculating water balance", FUN = cli::cli_h2)
   
   model <- check_model(model = model)
-  
+
+  # ---- Collapse sub-daily meteo to a daily timestep ----
+  # The water balance is an inherently daily calculation: estimate_lake_wlev()
+  # advances the lake by one day per row (C * dh^1.5 * 86400, evap in m/day),
+  # the 5-day T5avg roll assumes daily spacing, and the fitted outflow/inflow
+  # correction is written to the model input files the same way daily inflows
+  # are. Sub-daily forcing is therefore aggregated to daily here before any
+  # balance work. `obs_met` has already been through standardise_met(), so
+  # MET_pprain / MET_ppsnow are a mm/day rate and a daily mean is the daily
+  # rate (precip = "mean", the default). The model runs themselves keep their
+  # native sub-daily meteo -- that is built separately from `met` in
+  # build_aeme().
+  if (is_subdaily(obs_met[["Date"]])) {
+    obs_met <- collapse_met_daily(obs_met)
+  }
+
   # ---- Date range ----
   max_spin  <- max(unlist(aeme_time[["spin_up"]])[model])
   spin_start <- aeme_time[["start"]] - lubridate::ddays(max_spin + 1)
@@ -132,23 +147,49 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   obs_rain <- dplyr::select(obs_met, Date, MET_pprain)
   
   # ---- Assemble water balance per model ----
+  # dy_cd and glm_aed use the exact same bulk aerodynamic evaporation formula
+  # in simulate_lake_nudged() (unlike gotm_wet and simstrat_aed2, which each
+  # have their own distinct formula), so fitting the water level twice for
+  # that pair is redundant -- the fit is cached per evaporation family (see
+  # wbal_evap_family()) and reused for the second model instead of
+  # re-running optim(). This assumes a model's inflow/outflow/meteorology
+  # inputs don't diverge from the other member of its family (true unless
+  # inflow rows are manually tagged to apply to only one of dy_cd/glm_aed
+  # via a `model` column).
+  wlev_fit_cache <- list()
+  wlev_cols <- c("lvl_sim", "spill_outflow", "evap_m3", "evap_flux", "C",
+                 "h_inv", "net_balance")
+
   wb <- lapply(model, \(m) {
-    mod_inflow <- vol_inflow  |> 
-      dplyr::filter(model == m) |> 
-      dplyr::select(Date, HYD_flow) 
+    mod_inflow <- vol_inflow  |>
+      dplyr::filter(model == m) |>
+      dplyr::select(Date, HYD_flow)
     wb_m <- obs_met |>
       dplyr::select(Date) |>
-      dplyr::mutate(model = m) |> 
+      dplyr::mutate(model = m) |>
       dplyr::left_join(mod_inflow, by = "Date") |>
       dplyr::left_join(vol_outflow, by = "Date") |>
       dplyr::left_join(wbal        |> dplyr::filter(model == m),
                        by = c("Date", "model")) |>
       dplyr::filter(Date >= spin_start & Date <= date_stop)
-    
+
     if (method %in% c(2, 3)) {
-      wb_m <- wb_m |>
-        estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev,
-                           params = params)
+      family <- wbal_evap_family(m)
+      cached <- if (!is.na(family)) wlev_fit_cache[[family]] else NULL
+      if (!is.null(cached)) {
+        cli_safe(paste0("Reusing water level fit for ", m,
+                        " (shares evaporation physics with an already-fitted model)"),
+                 indent = FALSE)
+        wb_m <- dplyr::bind_cols(wb_m, cached)
+      } else {
+        fam_params <- if (!is.na(family)) resolve_wbal_params(params, family) else params
+        wb_m <- wb_m |>
+          estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev,
+                             params = fam_params)
+        if (!is.na(family)) {
+          wlev_fit_cache[[family]] <<- wb_m[wlev_cols]
+        }
+      }
     }
     wb_m
   }) |>
@@ -157,9 +198,22 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   # ---- Apply method-specific inflow/outflow logic ----
   wb <- apply_wb_method(wb, method, hyps)
   
-  # ---- Extract fitted parameters ----
+  # ---- Extract fitted parameters, one set per evaporation family ----
   wbal_params <- if (method %in% c(2, 3)) {
-    dplyr::summarise(wb, C = mean(C), h_inv = mean(h_inv))
+    fam_fit <- wb |>
+      dplyr::mutate(family = wbal_evap_family(model)) |>
+      dplyr::filter(!is.na(family)) |>
+      dplyr::group_by(family) |>
+      dplyr::summarise(C = dplyr::first(C), h_inv = dplyr::first(h_inv),
+                       .groups = "drop")
+    if (nrow(fam_fit) > 0) {
+      setNames(
+        lapply(seq_len(nrow(fam_fit)), \(i) c(C = fam_fit$C[i], h_inv = fam_fit$h_inv[i])),
+        fam_fit$family
+      )
+    } else {
+      NULL
+    }
   } else {
     NULL
   }
@@ -198,7 +252,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   
   list(
     wb          = wb_out,
-    wbal_params = c("C" = wbal_params$C, "h_inv" = wbal_params$h_inv)
+    wbal_params = wbal_params
   )
 }
 
@@ -211,9 +265,15 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
   
   FUN = cli::cli_inform
   cli_safe("Resolving water level", indent = FALSE)
+  # The water balance is daily; `obs_met$Date` is a calendar Date. Level
+  # observations are stored as noon POSIXct -- reduce them to the same
+  # calendar day so the joins and %in% tests below match.
+  if (!is.null(level) && "Date" %in% names(level)) {
+    level$Date <- as.Date(level$Date, tz = "UTC")
+  }
   # on.exit({
   #   if (!is.null(pb_id)) cli::cli_progress_done(id = pb_id)
-  # })  
+  # })
   if (use == "mod") {
     date_vector <- seq.Date(as.Date(spin_start), as.Date(date_stop), by = 1)
     mod_lvl <- dplyr::filter(level, Date >= spin_start & Date <= date_stop)
@@ -286,8 +346,11 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
 #' @noRd
 add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
   if (!is.null(obs_lake)) {
+    # Lake observations are stored as noon POSIXct; `obs_met$Date` is a
+    # calendar Date. Match on the day.
+    obs_lake$Date <- as.Date(obs_lake$Date, tz = "UTC")
     sub <- obs_lake |>
-      dplyr::filter(var_aeme == "HYD_temp", depth_from < 1,
+      dplyr::filter(var_aeme == "HYD_temp", depth < 1,
                     Date %in% obs_met$Date) |>
       dplyr::filter(!duplicated(Date)) |>
       dplyr::select(Date, value)
@@ -323,6 +386,72 @@ add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
   }
   
   obs_met
+}
+
+
+#' Collapse a sub-daily meteo data frame to a daily time step
+#'
+#' Aggregates a `POSIXct`-stamped (or otherwise sub-daily) meteorological data
+#' frame to one row per calendar day: every numeric column is averaged over the
+#' day, except `MET_pprain` / `MET_ppsnow`, whose aggregation is controlled by
+#' `precip`. Non-numeric columns other than `Date` are dropped, and `Date` is
+#' returned as a `Date`.
+#'
+#' AEME defines `MET_pprain` / `MET_ppsnow` as a **rate in mm/day**
+#' (see [standardise_met()]). If the frame is already on that convention -- e.g.
+#' the output of [standardise_met()], which is what [build_aeme()] feeds the
+#' water balance -- a daily *mean* of the rate is the daily rate, so
+#' `precip = "mean"` (the default) is correct. Raw sub-daily reanalysis / AWS
+#' products instead report precipitation as an **accumulation per time step**
+#' (mm that fell during that step); for those, use `precip = "sum"` to get the
+#' daily total.
+#'
+#' @param obs_met data frame; meteo forcing with a `Date` column (`Date` or
+#'   `POSIXct`) and numeric `MET_*` columns.
+#' @param precip character; how to aggregate `MET_pprain` / `MET_ppsnow` over
+#'   the day. `"mean"` (default) when they are already a mm/day rate;
+#'   `"sum"` when they are per-time-step accumulations.
+#'
+#' @return A data frame with one row per day: `Date` (as `Date`) and the
+#'   day-aggregated numeric columns.
+#' @export
+#'
+#' @seealso [standardise_met()]
+#'
+#' @examples
+#' hourly <- data.frame(
+#'   Date = seq(as.POSIXct("2020-01-01", tz = "UTC"), by = "hour",
+#'              length.out = 48),
+#'   MET_tmpair = rnorm(48, 15, 3),
+#'   MET_pprain = c(rep(0, 20), rep(0.5, 4), rep(0, 24))  # mm per hour
+#' )
+#' collapse_met_daily(hourly, precip = "sum")
+collapse_met_daily <- function(obs_met, precip = c("mean", "sum")) {
+  precip <- match.arg(precip)
+  num <- names(obs_met)[vapply(obs_met, is.numeric, logical(1))]
+  sum_cols  <- if (precip == "sum") {
+    intersect(c("MET_pprain", "MET_ppsnow"), num)
+  } else {
+    character(0)
+  }
+  mean_cols <- setdiff(num, sum_cols)
+
+  day <- if (inherits(obs_met[["Date"]], "POSIXct")) {
+    as.Date(obs_met[["Date"]], tz = "UTC")
+  } else {
+    as.Date(obs_met[["Date"]])
+  }
+
+  out <- obs_met |>
+    dplyr::mutate(Date = day) |>
+    dplyr::group_by(Date) |>
+    dplyr::summarise(
+      dplyr::across(dplyr::all_of(mean_cols), \(x) mean(x, na.rm = TRUE)),
+      dplyr::across(dplyr::all_of(sum_cols),  \(x) sum(x, na.rm = TRUE)),
+      .groups = "drop"
+    )
+  # keep the caller's original column order
+  out[, c("Date", intersect(names(obs_met), num)), drop = FALSE]
 }
 
 

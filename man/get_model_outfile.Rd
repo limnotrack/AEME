@@ -4,19 +4,30 @@
 \alias{get_model_outfile}
 \title{Get model output file}
 \usage{
-get_model_outfile(aeme = NULL, model, path = NULL, lake_dir = NULL)
+get_model_outfile(aeme = NULL, model, path = NULL, lake_dir, all = FALSE)
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
-\item{path}{character; directory where input files are located. Defaults to
-the path stored in \code{aeme}, or the current working directory if not set.}
+\item{path}{Directory to search for the model output. If \code{aeme} is also
+provided, \code{path} is the root combined with \code{aeme} to compute the lake's
+directory (as in \code{get_lake_dir()}) -- omit it to use \code{aeme}'s own stored
+path. If \code{aeme} is not provided, \code{path} is searched directly, and can be
+either an ensemble root or a single model's own directory.}
 
-\item{lake_dir}{Path to the lake AEME directory. If NULL, it will be
-computed from \code{aeme} and \code{path}.}
+\item{lake_dir}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{path} instead of
+\code{lake_dir}}
+
+\item{all}{logical; a model run can produce more than one output file
+(e.g. GLM-AED's netCDF plus its \code{csv_lake}/\code{csv_point}/mass-balance CSVs,
+or GOTM's \code{output.nc} plus \code{output_daily.nc}). When \code{FALSE} (the default),
+only the primary file per model is returned -- the netCDF entry named
+\code{"output"} when there is one, otherwise the first (only) file. Set to
+\code{TRUE} to get every file the model's resolver found.}
 }
 \value{
 list of model output files.

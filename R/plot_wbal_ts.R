@@ -1,9 +1,10 @@
 #' Plot Water Balance Components as Timeseries
 #'
 #' @inheritParams plot_wbal_summaries
-#' @param vars character vector of AEME variable names to plot. Options are
-#'   \code{"LKE_lvlwtr"}, \code{"LKE_inflow"}, \code{"LKE_outflow"},
-#'   \code{"LKE_Qe"}, \code{"HYD_surft"}. Defaults to all.
+#' @param var_aeme character vector of AEME variable names to plot. Options
+#'   are \code{"LKE_lvlwtr"}, \code{"LKE_inflow"}, \code{"LKE_outflow"},
+#'   \code{"LKE_pcpvol"}, \code{"LKE_Qe"}, \code{"HYD_surft"}. Defaults to
+#'   all.
 #' @param add_model logical; whether to overlay model output on the estimated
 #'   components. Defaults to TRUE.
 #'   

@@ -31,7 +31,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
   } else {
     model <- check_model(model = model)
   }
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   depth_ref <- rlang::arg_match(depth_ref)
   
   # Extract output from aeme ----
@@ -61,24 +61,29 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
         # stop("No observations of lake level found.")
       } else {
         obs_sub <- obs$level |>
-          dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
+          dplyr::filter(as.Date(Date, tz = "UTC") >= as.Date(aeme_time$start, tz = "UTC") &
+                          as.Date(Date, tz = "UTC") <= as.Date(aeme_time$stop, tz = "UTC") &
                           var_aeme %in% var_sim) |>
           dplyr::arrange(Date)
       }
     } else {
       if (is.null(obs$lake)) stop("No lake observations found.")
       obs_sub <- obs$lake |>
-        dplyr::filter(Date >= aeme_time$start & Date <= aeme_time$stop &
+        dplyr::filter(as.Date(Date, tz = "UTC") >= as.Date(aeme_time$start, tz = "UTC") &
+                        as.Date(Date, tz = "UTC") <= as.Date(aeme_time$stop, tz = "UTC") &
                         var_aeme %in% var_sim) |>
-        dplyr::mutate(depth = (depth_from + depth_to) / 2) |>
         dplyr::arrange(Date, depth) |>
         dplyr::select(Date, var_aeme, depth, value)
     }
     if (nrow(obs_sub) == 0) {
       cli::cli_abort("No observations found for the model simulation period.")
     }
+    # Observations are daily. Reduce the join key to a calendar Date so it
+    # matches the model axis (also reduced to Date below) regardless of whether
+    # the stored obs Date is noon POSIXct or the model output is sub-daily.
     obs_sub <- obs_sub |>
-      dplyr::rename(obs = value)
+      dplyr::rename(obs = value) |>
+      dplyr::mutate(Date = as.Date(Date, tz = "UTC"))
   }
   
   # Loop through the models and extract the variable of interest ----
@@ -96,21 +101,48 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
                      Model = toggle_models(m, to = "display"),
                      lyr_thk = NA)
     
-    if (is.null(variable)) {
-      message(strwrap(paste0(var_sim, " is not in output for model ", m,
-                             ". Returning a dataframe with NA's.")))
+    if (var_sim == "z") {
+      cli_inform_safe(c("i" = paste0(var_sim, " is a dimension for model ", m,
+                                     ". Returning a dataframe with NA's.")))
       return(df)
+    }
+    if (is.null(variable)) {
+      msg <- paste0(var_sim, " is not in output for model ", m,
+                    ". Returning a dataframe with NA's.")
+      cli_inform_safe(c("i" = msg))
+      return(df)
+    }
+    if (inherits(variable, "aeme_grouped_var")) {
+      # Variable has dimensions other than (time) or (z, time) -- see
+      # new_grouped_var(); return it long-format rather than trying to
+      # force it into the depth x time convention the rest of this
+      # function assumes. use_obs/cumulative are not yet supported for
+      # these variables.
+      if (use_obs) {
+        cli_inform_safe(c("i" = paste0(var_sim, " has non-standard dimensions (",
+                                       paste(variable$dim_names, collapse = ", "),
+                                       "); use_obs comparison is not supported for it.")))
+      }
+      gdf <- as.data.frame(variable)
+      gdf$var_sim <- var_sim
+      gdf$Model <- toggle_models(m, to = "display")
+      if (remove_spin_up && "Date" %in% names(gdf)) {
+        gdf <- gdf[gdf$Date >= aeme_time$start & gdf$Date <= aeme_time$stop, ]
+      }
+      return(gdf)
     }
     if (is.matrix(variable)) {
       if (ncol(variable) == 0) {
-        message(strwrap(paste0(var_sim, " is not in output for model ", m,
-                               ". Returning a dataframe with NA's.")))
+        msg <- paste0(var_sim, " is not in output for model ", m,
+                      ". Returning a dataframe with NA's.")
+        cli_inform_safe(c("i" = msg))
         return(df)
       }
     }
     if (length(variable) == 0) {
-      message(strwrap(paste0(var_sim, " is not in output for model ", m,
-                             ". Returning a dataframe with NA's.")))
+      msg <- paste0(var_sim, " is not in output for model ", m,
+                    ". Returning a dataframe with NA's.")
+      cli_inform_safe(c("i" = msg))
       return(df)
     }
     
@@ -125,19 +157,41 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
       # )
     
     if (use_obs) {
-      
+
+      # Observations are daily. When model output is sub-daily POSIXct, snap
+      # the model axis to calendar days -- but keep only ONE model step per
+      # obs day (the timestamp nearest midnight, matching the historical
+      # daily convention), otherwise every obs would join to all 24 hourly
+      # steps of its day and blow the result up 24x.
+      mod_raw <- outp[[ens_lab]][[m]][["Date"]]
       obs_dates <- unique(obs_sub$Date)
-      date_index <- which(outp[[ens_lab]][[m]][["Date"]] %in% obs_dates)
-      
+      if (inherits(mod_raw, "POSIXct")) {
+        mod_date <- as.Date(mod_raw)
+        cand <- which(mod_date %in% obs_dates)
+        if (length(cand)) {
+          tod <- as.numeric(mod_raw[cand]) %% 86400
+          near_mid <- pmin(tod, 86400 - tod)
+          date_index <- vapply(split(seq_along(cand), mod_date[cand]),
+                               \(ii) cand[ii[which.min(near_mid[ii])]],
+                               integer(1))
+          date_index <- sort(unname(date_index))
+        } else {
+          date_index <- integer(0)
+        }
+      } else {
+        mod_date <- mod_raw
+        date_index <- which(mod_date %in% obs_dates)
+      }
+
       if (var_sim == "LKE_lvlwtr") {
-        
-        df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]][date_index],
+
+        df <- data.frame(Date = mod_date[date_index],
                          sim = outp[[ens_lab]][[m]][["LKE_lvlwtr"]][date_index] +
                            min(inp$hypsograph$elev),
                          Model = toggle_models(m, to = "display")) |>
           dplyr::left_join(obs_sub, by = c("Date" = "Date"))
       } else if (is.vector(variable)) {
-        df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]][date_index],
+        df <- data.frame(Date = mod_date[date_index],
                          sim = outp[[ens_lab]][[m]][[var_sim]][date_index],
                          Model = toggle_models(m, to = "display")) |>
           dplyr::left_join(obs_sub, by = c("Date" = "Date")) |>
@@ -163,7 +217,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
         # Build long dataframe for 2D variable
         each <- length(depth)
         mod <- data.frame(
-          Date     = rep(outp[[ens_lab]][[m]][["Date"]][date_index], each = each),
+          Date     = rep(mod_date[date_index], each = each),
           depth    = as.vector(out_depths),
           sim    = as.vector(value),
           Model = toggle_models(m, to = "display"),
@@ -223,7 +277,13 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
       # lyr <- outp[[ens_lab]][[m]][["LKE_layers"]]
       if (!is.null(depth)) {
         min_depth <- 0
-        max_depth <- round(max(lake_level), 2)
+        max_depth <- round(max(lake_level, na.rm = TRUE), 2)
+        if (!is.finite(max_depth)) {
+          cli::cli_abort(
+            "No finite modelled lake levels ({.field LKE_lvlwtr}) to place {.arg depth} against.",
+            class = "aeme_error_depth_out_of_range"
+          )
+        }
         if (depth > max_depth | depth < min_depth) {
           cli::cli_abort("Depth is outside the range of the modelled lake levels [{min_depth}, {max_depth} m].",
                          class = "aeme_error_depth_out_of_range")

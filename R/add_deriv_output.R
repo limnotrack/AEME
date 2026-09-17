@@ -288,6 +288,21 @@ calc_CHM_oxynal <- function(out_list, hyps) {
   })
 }
 
+#' Dissolved oxygen percent saturation calculation function
+#' @noRd
+calc_CHM_oxysat <- function(out_list, hyps) {
+  req_vars <- c("CHM_oxy", "HYD_temp", "LKE_depths")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
+  oxy    <- out_list[["CHM_oxy"]]
+  wtr    <- out_list[["HYD_temp"]]
+  depths <- out_list[["LKE_depths"]]
+
+  convert_do(value = oxy, temp = wtr, depth = depths, direction = "to_percent")
+}
+
 #' @noRd
 check_vars <- function(out_list, req_vars) {
   # Check if vars are NULL
