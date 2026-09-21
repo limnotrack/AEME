@@ -204,7 +204,7 @@ calc_CHM_oxyepi <- function(out_list, hyps) {
   
   safe_apply(ncol(oxy), function(c) {
     if (all(is.na(oxy[, c]))) return(NA_real_)
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     mean(oxy[idx, c], na.rm = TRUE)
   })
 }
@@ -313,6 +313,24 @@ check_vars <- function(out_list, req_vars) {
   }
 }
 
+#' Depth indices at or above the epilimnion depth, for one output column.
+#'
+#' `which(depths <= epi)` is occasionally empty - e.g. epi reported as 0 or
+#' slightly negative at the exact moment stratification sets up/breaks down,
+#' or a depth grid that starts below a very shallow epi - which makes the
+#' caller's `mean(x[idx], na.rm = TRUE)` return NaN regardless of `na.rm`
+#' (mean() of a zero-length vector is NaN, not NA). NaN then fails any
+#' downstream is.finite() check the same way -Inf does, aborting an entire
+#' PEST++ forward run over what is really just a single edge-case day.
+#' Falling back to the single shallowest sampled depth keeps every day
+#' contributing a real (if less precise) TLI value instead of none at all.
+#' @noRd
+epi_idx <- function(depths_col, epi_val) {
+  idx <- which(depths_col <= epi_val)
+  if (length(idx) == 0) idx <- which.min(depths_col)
+  idx
+}
+
 
 #' TLI chlorophyll-a calculation function
 #' @noRd
@@ -328,7 +346,7 @@ calc_LKE_tlic <- function(out_list, hyps) {
   chla   <- out_list$PHY_tchla
   
   safe_apply(ncol(depths), function(c) {
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     calc_tli_chla(mean(chla[idx, c], na.rm = TRUE))
   })
 }
@@ -346,7 +364,7 @@ calc_LKE_tlin <- function(out_list, hyps) {
   tn     <- out_list$NIT_tn
   
   safe_apply(ncol(depths), function(c) {
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     calc_tli_n(mean(tn[idx, c], na.rm = TRUE))
   })
 }
@@ -364,7 +382,7 @@ calc_LKE_tlip <- function(out_list, hyps) {
   tp     <- out_list$PHS_tp
   
   safe_apply(ncol(depths), function(c) {
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     calc_tli_p(mean(tp[idx, c], na.rm = TRUE))
   })
 }
@@ -394,7 +412,7 @@ calc_LKE_tli3 <- function(out_list, hyps) {
   tp     <- out_list$PHS_tp
   
   safe_apply(ncol(depths), function(c) {
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     calc_tli3(
       mean(chla[idx, c], na.rm = TRUE),
       mean(tn[idx, c], na.rm = TRUE),
@@ -420,7 +438,7 @@ calc_LKE_tli4 <- function(out_list, hyps) {
   secchi <- out_list$LKE_photic
   
   safe_apply(ncol(depths), function(c) {
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     calc_tli4(
       mean(chla[idx, c], na.rm = TRUE),
       mean(tn[idx, c], na.rm = TRUE),
