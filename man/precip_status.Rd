@@ -10,7 +10,9 @@ precip_status(aeme)
 \item{aeme}{Aeme object.}
 }
 \value{
-character. Either "precip_as_met", "precip_as_inflow" or "no_precip"
+character. Either "met" if precipitation is set in meteorological
+data, "inflow" if it is set as an inflow, or "none" if it is not set in
+either.
 }
 \description{
 This function checks whether precipitation is currently set as a meteorological input
