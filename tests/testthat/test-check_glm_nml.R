@@ -62,3 +62,99 @@ test_that("check_glm_nml() still enforces other zone-length params regardless of
 
   testthat::expect_error(check_glm_nml(tmp), class = "aeme_error_glm_nml")
 })
+
+test_that("check_glm_nml() catches aed_sed_const2d fsed_* vectors shorter than n_zones", {
+  # Reproduces a real build artefact: aed_sed_const2d/n_zones bumped (e.g. to
+  # match a new GLM sediment/n_zones) without resizing the per-zone flux
+  # vectors -- AED aborts at runtime on this, so it must be a hard failure.
+  nml <- .glm_nml_fixture()
+  nml$sediment$sed_heat_model <- 2
+  nml$wq_setup <- list(wq_lib = "aed", wq_nml_file = "aed.nml")
+
+  tmp_dir <- tempfile()
+  dir.create(tmp_dir)
+  glm_file <- file.path(tmp_dir, "glm3.nml")
+  aed_file <- file.path(tmp_dir, "aed.nml")
+  write_nml(nml, glm_file)
+
+  aed_nml <- list(
+    aed_models = list(models = "aed_sedflux"),
+    aed_sedflux = list(sedflux_model = "Constant2d"),
+    aed_sed_const2d = list(
+      n_zones = 4,
+      active_zones = c(1, 2, 3, 4),
+      fsed_oxy = c(-25, -25, -25),
+      fsed_amm = c(3.231, 2, 0.66),
+      fsed_nit = c(-0.4, -0.4, 0.1),
+      fsed_frp = c(0.15, 0.05, 0.05)
+    )
+  )
+  class(aed_nml) <- "nml"
+  write_nml(aed_nml, aed_file)
+
+  testthat::expect_error(check_glm_nml(glm_file), class = "aeme_error_glm_nml")
+  err <- tryCatch(check_glm_nml(glm_file), error = function(e) e)
+  testthat::expect_match(paste(conditionMessage(err), collapse = "\n"),
+                         "fsed_oxy has 3 values, but n_zones = 4")
+})
+
+test_that("check_glm_nml() skips aed_sed_const2d validation when aed_sedflux is not active", {
+  nml <- .glm_nml_fixture()
+  nml$sediment$sed_heat_model <- 2
+  nml$wq_setup <- list(wq_lib = "aed", wq_nml_file = "aed.nml")
+
+  tmp_dir <- tempfile()
+  dir.create(tmp_dir)
+  glm_file <- file.path(tmp_dir, "glm3.nml")
+  aed_file <- file.path(tmp_dir, "aed.nml")
+  write_nml(nml, glm_file)
+
+  # aed_sedflux not listed in aed_models -- aed_sed_const2d is inert leftover
+  # config and should not be validated.
+  aed_nml <- list(
+    aed_models = list(models = "aed_oxygen"),
+    aed_sed_const2d = list(
+      n_zones = 4,
+      active_zones = c(1, 2, 3, 4),
+      fsed_oxy = c(-25, -25, -25),
+      fsed_amm = c(3.231, 2, 0.66),
+      fsed_nit = c(-0.4, -0.4, 0.1),
+      fsed_frp = c(0.15, 0.05, 0.05)
+    )
+  )
+  class(aed_nml) <- "nml"
+  write_nml(aed_nml, aed_file)
+
+  testthat::expect_true(check_glm_nml(glm_file))
+})
+
+test_that("check_glm_nml() skips aed_sed_const2d validation when sedflux_model is not Constant2d", {
+  nml <- .glm_nml_fixture()
+  nml$sediment$sed_heat_model <- 2
+  nml$wq_setup <- list(wq_lib = "aed", wq_nml_file = "aed.nml")
+
+  tmp_dir <- tempfile()
+  dir.create(tmp_dir)
+  glm_file <- file.path(tmp_dir, "glm3.nml")
+  aed_file <- file.path(tmp_dir, "aed.nml")
+  write_nml(nml, glm_file)
+
+  # aed_sedflux active but using a different flux model -- aed_sed_const2d is
+  # not the block AED actually reads for fluxes.
+  aed_nml <- list(
+    aed_models = list(models = "aed_sedflux"),
+    aed_sedflux = list(sedflux_model = "Dynamic2d"),
+    aed_sed_const2d = list(
+      n_zones = 4,
+      active_zones = c(1, 2, 3, 4),
+      fsed_oxy = c(-25, -25, -25),
+      fsed_amm = c(3.231, 2, 0.66),
+      fsed_nit = c(-0.4, -0.4, 0.1),
+      fsed_frp = c(0.15, 0.05, 0.05)
+    )
+  )
+  class(aed_nml) <- "nml"
+  write_nml(aed_nml, aed_file)
+
+  testthat::expect_true(check_glm_nml(glm_file))
+})

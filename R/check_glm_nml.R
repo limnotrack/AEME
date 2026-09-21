@@ -143,9 +143,40 @@ check_glm_nml <- function(file) {
     if (!is.null(wq_file) && check_file(wq_file)) {
       aed_nml <- tryCatch(read_nml(file.path(base_path, wq_file)),
                           error = function(e) NULL)
+
+      # aed_sed_const2d is only actually read by AED when aed_sedflux is an
+      # active module and it's configured to use the Constant2d flux model --
+      # otherwise the block (if present at all) is inert, so skip validating
+      # it to avoid flagging unused/leftover config.
+      aed_models <- tolower(trimws(as.character(aed_nml[["aed_models"]][["models"]])))
+      sedflux_active <- "aed_sedflux" %in% aed_models
+      sedflux_model <- tolower(trimws(as.character(
+        aed_nml[["aed_sedflux"]][["sedflux_model"]])))
+      const2d_active <- sedflux_active && length(sedflux_model) == 1 &&
+        !is.na(sedflux_model) && sedflux_model == "constant2d"
+
       scd <- aed_nml[["aed_sed_const2d"]]
-      if (!is.null(scd) && !is.null(scd$n_zones) && !is.na(n_zones)) {
+      if (const2d_active && !is.null(scd) && !is.null(scd$n_zones) && !is.na(n_zones)) {
         aed_nz <- suppressWarnings(as.numeric(scd$n_zones))
+
+        # Internal consistency of the AED file itself: every per-zone flux
+        # vector must have exactly n_zones entries, regardless of whether
+        # n_zones matches GLM. A mismatch here (e.g. n_zones bumped without
+        # resizing fsed_*) makes AED abort at runtime, so this is a hard
+        # failure, not a warning.
+        if (!is.na(aed_nz)) {
+          flux_pars <- c("fsed_oxy", "fsed_amm", "fsed_nit", "fsed_frp")
+          for (fp in flux_pars) {
+            fp_vals <- suppressWarnings(as.numeric(scd[[fp]]))
+            if (length(fp_vals) != aed_nz) {
+              issues <- c(issues, paste0(
+                "AED aed_sed_const2d ", fp, " has ", length(fp_vals),
+                " value", if (length(fp_vals) != 1) "s" else "",
+                ", but n_zones = ", aed_nz))
+            }
+          }
+        }
+
         if (!is.na(aed_nz) && aed_nz != n_zones) {
           cli::cli_warn(c(
             "!" = "AED {.field aed_sed_const2d} n_zones ({aed_nz}) does not \\
