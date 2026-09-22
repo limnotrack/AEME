@@ -229,7 +229,7 @@ build_glm <- function(lakename, model_controls, date_range,
   }
 
   if (use_bgc) {
-    glm_nml[["wq_setup"]] <- list("wq_lib" = "aed",
+    glm_nml[["wq_setup"]] <- list("wq_lib" = "api",
                                   "wq_nml_file" = "aed/aed.nml",
                                   "ode_method" = 1,
                                   "split_factor" = 1,
