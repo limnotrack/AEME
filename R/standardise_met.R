@@ -30,6 +30,27 @@
 #' @param verbose logical; if \code{TRUE} (default), emit \code{cli_inform}
 #'   messages describing each detected unit conversion applied. Set to
 #'   \code{FALSE} for quiet operation inside pipelines.
+#' @param precip_accum logical; how to interpret \code{MET_pprain} /
+#'   \code{MET_ppsnow} when the data is sub-daily. \code{TRUE} (default) treats
+#'   them as the depth accumulated \emph{within each step} (the ERA5 / AWS
+#'   convention) and rescales to the mm/day rate the rest of AEME expects;
+#'   \code{FALSE} takes the values to be a mm/day rate already and leaves them
+#'   untouched. Ignored for daily data, where the two are identical.
+#' @param tz character; Olson timezone in which a naive/character \code{Date}
+#'   column is expressed. Sub-daily timestamps are converted to UTC; daily data
+#'   is treated as calendar dates and never shifted. A column that already
+#'   carries a timezone (including \code{"UTC"}) is taken at face value here --
+#'   reinterpreting a \code{"UTC"}-tagged column against a declared local zone
+#'   happens once, upstream, in \code{\link{add_met}} /
+#'   \code{\link{aeme_constructor}}. Default \code{"UTC"}; \code{\link{build_aeme}}
+#'   passes the object's \code{time$tz}.
+#' @param longitude numeric; lake longitude in decimal degrees (east positive).
+#'   When supplied and the data is sub-daily, the hour at which
+#'   \code{MET_radswd} peaks each day is compared against astronomical solar
+#'   noon for that longitude; a warning is emitted if they differ by more than
+#'   3 h, which usually means the timestamps are in local time rather than UTC.
+#'   \code{NULL} (default) skips the check. \code{\link{build_aeme}} passes the
+#'   lake longitude.
 #'
 #' @return The input data frame with column names remapped to AEME standard
 #'   names and values converted to AEME standard units where a conversion
@@ -40,10 +61,16 @@
 #'
 #' @importFrom cli cli_abort cli_warn cli_inform
 #' @export
-standardise_met <- function(met, verbose = TRUE) {
-  
+standardise_met <- function(met, verbose = TRUE, precip_accum = TRUE,
+                            tz = "UTC", longitude = NULL) {
+
+  # Internal datetime arithmetic runs in UTC; `tz` is applied explicitly to the
+  # incoming Date column only.
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+
   # ── Input validation ──────────────────────────────────────────────────────
-  
+
   if (!is.data.frame(met)) {
     cli::cli_abort(
       c("{.arg met} must be a {.cls data.frame}.",
@@ -58,7 +85,7 @@ standardise_met <- function(met, verbose = TRUE) {
       class = "aeme_error_met_empty"
     )
   }
-  met <- .rename_date_column(met, verbose = verbose, arg_name = "met")
+  met <- .rename_date_column(met, verbose = verbose, arg_name = "met", tz = tz)
   if (!"Date" %in% names(met)) {
     cli::cli_abort(
       c("{.arg met} must contain a {.code Date} column.",
@@ -72,7 +99,7 @@ standardise_met <- function(met, verbose = TRUE) {
   met <- .rename_met_columns(met, verbose = verbose)
   
   # ── Step 2: warn if required variables are missing ───────────────────────
-  
+
   required <- c("MET_radswd", "MET_tmpair", "MET_wndspd", "MET_pprain")
   missing_required <- setdiff(required, names(met))
   if (length(missing_required) > 0) {
@@ -83,11 +110,57 @@ standardise_met <- function(met, verbose = TRUE) {
       class = "aeme_warn_met_missing_required"
     )
   }
-  
+
+  # ── Step 2b: sanity-check sub-daily shortwave against solar noon ──────────
+  .check_solar_noon_offset(met, longitude = longitude)
+
+
   # ── Step 3: detect units and convert ────────────────────────────────────
-  
+
   met <- .convert_met_units(met, verbose = verbose)
-  
+
+  # ── Step 4: sub-daily precip accumulation -> mm/day rate ────────────────
+
+  if (isTRUE(precip_accum)) {
+    met <- .subdaily_precip_to_rate(met, verbose = verbose)
+  }
+
+  met
+}
+
+
+#' Rescale sub-daily precipitation accumulations to a mm/day rate
+#'
+#' AEME defines `MET_pprain` / `MET_ppsnow` as a rate in mm/day, and every model
+#' met-writer (`make_met_glm()` `/1000`, `make_met_simstrat()` `/1000/24`,
+#' `make_met_gotm()` `/86400`) assumes that. Sub-daily reanalysis products
+#' instead report the depth that fell *within each step* (mm per hour, say).
+#' The two are numerically identical for daily data; for sub-daily data the
+#' per-step accumulation is scaled up by `86400 / step_seconds`. Applied
+#' automatically to sub-daily meteo (see `standardise_met(precip_accum=)`).
+#' @noRd
+.subdaily_precip_to_rate <- function(met, verbose = TRUE) {
+  vars <- intersect(c("MET_pprain", "MET_ppsnow"), names(met))
+  if (!length(vars) || !"Date" %in% names(met)) return(met)
+  if (!is_subdaily(met[["Date"]])) return(met)
+
+  ordered_t <- sort(as.POSIXct(met[["Date"]], tz = "UTC"))
+  step <- stats::median(as.numeric(diff(ordered_t), units = "secs"),
+                        na.rm = TRUE)
+  if (!is.finite(step) || step <= 0 || step >= 86400) return(met)
+
+  scale <- 86400 / step
+  for (v in vars) met[[v]] <- met[[v]] * scale
+
+  if (verbose) {
+    cli::cli_inform(c(
+      "i" = paste0("Sub-daily meteo: rescaled {.val {vars}} from a per-",
+                   "{round(step)}-s accumulation to a mm/day rate ",
+                   "(x{signif(scale, 4)})."),
+      "i" = paste("Pass {.code standardise_met(precip_accum = FALSE)} if these",
+                  "are already a mm/day rate.")
+    ), class = "aeme_inform_met_precip_rate")
+  }
   met
 }
 
@@ -96,7 +169,7 @@ standardise_met <- function(met, verbose = TRUE) {
 
 #' @noRd
 .report_timestep <- function(dates) {
-  
+
   if (length(dates) < 2) {
     cli::cli_inform(
       c("i" = "Only one timestamp present; cannot determine timestep."),
@@ -104,9 +177,9 @@ standardise_met <- function(met, verbose = TRUE) {
     )
     return(invisible(NULL))
   }
-  
+
   # Differences in seconds
-  diffs_secs <- as.numeric(diff(as.POSIXct(dates)), units = "secs")
+  diffs_secs <- as.numeric(diff(as.POSIXct(dates, tz = "UTC")), units = "secs")
   median_secs <- stats::median(diffs_secs, na.rm = TRUE)
   
   timestep_label <- dplyr::case_when(
@@ -134,15 +207,83 @@ standardise_met <- function(met, verbose = TRUE) {
   }
 }
 
+#' Warn when sub-daily shortwave peaks far from astronomical solar noon
+#'
+#' A cheap heuristic for the common "meteo timestamps are in local time, not
+#' UTC" mistake. For sub-daily data with a `MET_radswd` column and a known
+#' longitude, it finds the circular-mean hour-of-day at which shortwave peaks
+#' and compares it to solar noon (`12 - longitude / 15`, in UTC hours). A
+#' difference greater than 3 h is almost always a timezone offset. Never
+#' aborts; skips silently when it cannot decide.
+#'
+#' @param met data.frame; after column renaming (needs `Date` + `MET_radswd`).
+#' @param longitude numeric(1); east-positive decimal degrees, or NULL to skip.
 #' @noRd
-.rename_date_column <- function(data, verbose, arg_name = "data") {
-  
-  # If "Date" column already exists, just report timestep and return
+.check_solar_noon_offset <- function(met, longitude = NULL) {
+  if (is.null(longitude) || length(longitude) != 1L || !is.finite(longitude)) {
+    return(invisible(NULL))
+  }
+  d <- met[["Date"]]
+  if (is.null(d) || !inherits(d, "POSIXct")) return(invisible(NULL))  # daily
+  if (!"MET_radswd" %in% names(met)) return(invisible(NULL))
+
+  sw <- suppressWarnings(as.numeric(met[["MET_radswd"]]))
+  keep <- is.finite(sw) & !is.na(d)
+  if (sum(keep) < 24) return(invisible(NULL))
+  d <- d[keep]; sw <- sw[keep]
+
+  day <- as.Date(d, tz = "UTC")
+  # fractional hour-of-day (on the Date column's own clock) of each day's peak
+  peak_hr <- tapply(seq_along(sw), day, function(ix) {
+    if (all(sw[ix] <= 0)) return(NA_real_)
+    j <- ix[which.max(sw[ix])]
+    as.numeric(difftime(d[j], as.POSIXct(as.character(day[j]), tz = "UTC"),
+                        units = "hours"))
+  })
+  peak_hr <- peak_hr[is.finite(peak_hr)]
+  if (length(peak_hr) < 2) return(invisible(NULL))
+
+  # circular mean, so peaks either side of midnight (true-UTC data at eastern
+  # longitudes) average correctly
+  ang <- peak_hr / 24 * 2 * pi
+  obs <- (atan2(mean(sin(ang)), mean(cos(ang))) / (2 * pi) * 24) %% 24
+  expected <- (12 - longitude / 15) %% 24
+  diff_h <- ((obs - expected + 12) %% 24) - 12  # signed, in (-12, 12]
+  if (abs(diff_h) <= 3) return(invisible(NULL))
+
+  hm <- function(x) {
+    x <- x %% 24
+    h <- floor(x); m <- round((x - h) * 60)
+    if (m == 60L) { m <- 0L; h <- (h + 1) %% 24 }
+    sprintf("%02d:%02d", as.integer(h), as.integer(m))
+  }
+  cli::cli_warn(
+    c("!" = paste0("Sub-daily {.code MET_radswd} peaks around {hm(obs)} on the ",
+                   "meteo clock, ~{abs(round(diff_h))} h from solar noon ",
+                   "(~{hm(expected)} UTC) for longitude {round(longitude, 2)}."),
+      "i" = "This usually means the timestamps are in local time, not UTC.",
+      "i" = paste("Supply UTC timestamps, or declare the source zone via",
+                  "{.code build_aeme(tz = ...)} / {.code set_time(tz = ...)}",
+                  "so AEME converts them.")),
+    class = "aeme_warn_met_solar_offset"
+  )
+  invisible(NULL)
+}
+
+#' @noRd
+.rename_date_column <- function(data, verbose, arg_name = "data", tz = "UTC") {
+
+  # If "Date" column already exists, localise it and report the timestep.
+  # `.as_forcing_datetime()` keeps the Date/POSIXct hybrid: a daily calendar
+  # series is returned as `Date` (never shifted); a sub-daily series is taken to
+  # be wall-clock time in `tz` and returned as UTC `POSIXct`. Already-UTC input
+  # is a no-op.
   if ("Date" %in% names(data)) {
+    data[["Date"]] <- .as_forcing_datetime(data[["Date"]], tz = tz)
     if (verbose) .report_timestep(data$Date)
     return(data)
   }
-  
+
   # Try to find a date/time column among the column names
   keywords <- c("date", "time", "datetime", "timestamp", "dt")
   col_match <- names(data)[tolower(names(data)) %in% keywords]
@@ -169,34 +310,31 @@ standardise_met <- function(met, verbose = TRUE) {
   }
   
   date_col <- col_match[1]
-  
-  # Attempt to parse the column as a date/time if not already
-  date_vals <- data[[date_col]]
-  if (!inherits(date_vals, c("Date", "POSIXct", "POSIXlt"))) {
-    date_vals <- tryCatch(
-      as.POSIXct(date_vals),
-      error = function(e) {
-        cli::cli_abort(
-          c("!" = "Could not parse column {.val {date_col}} in {.arg {arg_name}} as a date/time.",
-            "x" = conditionMessage(e)),
-          class = "aeme_error_date_parse"
-        )
-      }
-    )
-    data[[date_col]] <- date_vals
-  }
-  
+
+  # Parse + localise: naive/character timestamps are wall-clock time in `tz`;
+  # sub-daily values become UTC POSIXct, daily values stay `Date` (unshifted).
+  data[[date_col]] <- tryCatch(
+    .as_forcing_datetime(data[[date_col]], tz = tz),
+    error = function(e) {
+      cli::cli_abort(
+        c("!" = "Could not parse column {.val {date_col}} in {.arg {arg_name}} as a date/time.",
+          "x" = conditionMessage(e)),
+        class = "aeme_error_date_parse"
+      )
+    }
+  )
+
   if (verbose) {
     cli::cli_inform(
       c("i" = "Renaming date/time column in {.arg {arg_name}}: {.val {date_col}} \u2192 {.val Date}"),
       class = "aeme_inform_date_rename"
     )
   }
-  
+
   names(data)[names(data) == date_col] <- "Date"
-  
+
   if (verbose) .report_timestep(data$Date)
-  
+
   data
 }
 

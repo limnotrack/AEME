@@ -34,10 +34,13 @@ initialise_glm <-  function(glm_nml, lvl_bottom, init_depth,
     the_sals = tbl_obs[, 3]
   )
   
-  # Add initial AED values
-  sim_vars <- model_controls |> 
-    dplyr::filter(simulate, !is.na(initial_wc), 
-                  !var_aeme %in% c("HYD_temp", "CHM_salt"))
+  # Add initial AED values. Drop the variables that are not GLM-AED
+  # water-column state variables (totals, particulate-inorganic pools,
+  # PHY_tchla, NCS_ss*, forcing columns) -- GLM aborts with
+  # "Cannot find <var> for initial value" if they reach wq_names.
+  sim_vars <- model_controls |>
+    dplyr::filter(simulate, !is.na(initial_wc),
+                  !var_aeme %in% glm_non_state_vars())
   if (length(sim_vars) > 0) {
     depths <- tbl_obs[["depth"]]
     glm_wq_vars <- sim_vars |> 

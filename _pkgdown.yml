@@ -30,13 +30,31 @@ articles:
 - title: Getting started
   navbar: ~
   contents:
+  - installing-models
   - intro-aeme
   - aeme-inputs
   - setup-new-lake
+- title: Working with models
+  navbar: Working with models
+  contents:
+  - articles/visualising-output
+  - articles/testing-parameters
+  - articles/hourly-vs-daily-met
+  - articles/subdaily-output
+- title: Uncertainty
+  navbar: Uncertainty
+  contents:
+  - articles/initial-conditions-and-spin-up
+- title: Model descriptions
+  navbar: Model descriptions
+  contents:
+  - articles/glm-aed
+  - articles/simstrat-aed2
+  - articles/aed-sediment-np-parameterisation
 - title: Use cases
   navbar: Use cases
   contents:
   - articles/reservoir-aeme
   - articles/lernzmp-aeme
   - articles/rotoehu-water-balance
-  - articles/glm-aed
+

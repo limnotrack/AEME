@@ -30,8 +30,10 @@ read_aeme_from_files <- function(path) {
   name <- strsplit(lake_dirname, "_")[[1]][2]
   
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
-  aeme <- readRDS(aeme_file)
-  
+  # Used only as a structural template; migrate it so it satisfies the current
+  # Aeme validity (e.g. POSIXct observation Date) before the setters below run.
+  aeme <- migrate_aeme(readRDS(aeme_file))
+
   lke <- lake(aeme)
   lke$name <- name
   lke$id <- id
@@ -58,15 +60,43 @@ read_aeme_from_files <- function(path) {
       file_path <- file.path(lake_dir, paste0(slot_name, ".csv"))
       if (file.exists(file_path)) {
         df <- read.csv(file_path, stringsAsFactors = FALSE)
+        # A time.csv written before a model existed (e.g. simstrat_aed2) has
+        # no matching column -- default to 2 (matching aeme_constructor())
+        # rather than numeric(0), which breaks downstream date arithmetic.
+        get_spin_up <- function(model) {
+          val <- as.numeric(df[1, grepl(paste0(model, "$"), names(df))])
+          if (length(val) == 0 || is.na(val)) 2 else val
+        }
+        # output_time_step absent from time.csv written before it existed --
+        # default to 86400 (daily), matching aeme_constructor()
+        output_time_step <- if ("output_time_step" %in% names(df)) {
+          as.numeric(df$output_time_step)
+        } else {
+          86400
+        }
+        # output_daily_mean absent from time.csv written before it existed --
+        # default to FALSE (no daily-mean stream)
+        output_daily_mean <- if ("output_daily_mean" %in% names(df)) {
+          isTRUE(as.logical(df$output_daily_mean[1]))
+        } else {
+          FALSE
+        }
+        # start/stop are serialised as UTC wall-clock strings -- read straight
+        # back as UTC. `tz` is stored metadata (declared input timezone); older
+        # time.csv files without it default to "UTC".
+        tz <- if ("tz" %in% names(df) && !is.na(df$tz[1]) &&
+                  nzchar(df$tz[1])) df$tz[1] else "UTC"
         inp <- list(
           start = as.POSIXct(df$start, tz = "UTC"),
           stop = as.POSIXct(df$stop, tz = "UTC"),
           time_step = as.numeric(df$time_step),
-          spin_up = list(
-            dy_cd = as.numeric(df[1, grepl("dy_cd", names(df))]),
-            glm_aed = as.numeric(df[1, grepl("glm_aed", names(df))]),
-            gotm_wet = as.numeric(df[1, grepl("gotm_wet", names(df))])
-          )
+          output_time_step = output_time_step,
+          output_daily_mean = output_daily_mean,
+          spin_up = stats::setNames(
+            lapply(unname(list_models()), get_spin_up),
+            unname(list_models())
+          ),
+          tz = tz
         )
         methods::slot(aeme, slot_name) <- inp
       }
@@ -82,9 +112,14 @@ read_aeme_from_files <- function(path) {
           df <- unlist(df)
         }
         if ("Date" %in% colnames(df)) {
-          df$Date <- as.Date(df$Date)
+          if (slot_name == "observations") {
+            # Observations carry a noon-anchored UTC POSIXct Date column.
+            df$Date <- .as_obs_datetime(df$Date)
+          } else {
+            df$Date <- as.Date(df$Date)
+          }
         }
-        
+
         slot_content[[obs_name]] <- df
       }
       methods::slot(aeme, slot_name) <- slot_content
@@ -183,21 +218,22 @@ find_lake_dir <- function(path) {
   path <- normalizePath(path, mustWork = FALSE)
   sub_dirs <- list.dirs(path)
   
-  # Match dirs of the form [digits]_[name] (direct children only, no further nesting)
-  pattern <- "^(.+)[/\\\\](\\d+_[^/\\\\]+)$"
+  # Normalise all sub_dirs so separators are consistent
+  sub_dirs <- normalizePath(sub_dirs, mustWork = FALSE)
   
-  candidates <- sub_dirs[grepl(pattern, sub_dirs) & 
-                           !grepl("[/\\\\]\\d+_[^/\\\\]+[/\\\\]", sub_dirs)]
+  pattern <- "^[A-Za-z]*\\d+_[^/\\\\]+$"
+  candidates <- sub_dirs[grepl(pattern, basename(sub_dirs))]
   
-  # Check which ones contain the expected model subdirs
   model_subdirs <- list_models()
   
   for (dir in candidates) {
-    children <- basename(sub_dirs[startsWith(sub_dirs, paste0(dir, "/")) | 
+    # Use normalizePath-consistent separator; add both sep variants to be safe
+    children <- basename(sub_dirs[startsWith(sub_dirs, paste0(dir, "/")) |
                                     startsWith(sub_dirs, paste0(dir, "\\"))])
     if (any(children %in% model_subdirs)) {
       return(dir)
     }
   }
+  
   cli::cli_abort("No model directory found in path: {path}")
 }

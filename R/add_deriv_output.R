@@ -118,6 +118,98 @@ calc_HYD_schstb <- function(out_list, hyps) {
   })
 }
 
+#' Depth-resolved internal energy content (energy density) calculation function
+#'
+#' Per-layer internal energy density (J/m3) at the model's own native depth
+#' grid, i.e. the same shape as `HYD_temp`/`LKE_depths` (one row per depth
+#' layer, one column per timestep). Deliberately mirrors
+#' `rLakeAnalyzer::internal.energy()`'s own density convention
+#' (`water.density(wtr)`, temperature only, no salinity term) so this and
+#' `calc_LKE_nrgtot()` stay internally consistent/summable with each other,
+#' rather than reusing `calc_HYD_dens()` (which also folds in `CHM_salt`).
+#' @noRd
+calc_HYD_nrgcnt <- function(out_list, hyps) {
+  req_vars <- c("HYD_temp")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
+  wtr <- out_list[["HYD_temp"]]
+  cw  <- 4186  # J/(kg degC), matches rLakeAnalyzer::internal.energy()
+
+  rho <- matrix(rLakeAnalyzer::water.density(as.vector(wtr)),
+                nrow = nrow(wtr), ncol = ncol(wtr))
+  rho * cw * wtr
+}
+
+#' Lake total internal energy (heat content) calculation function
+#' @noRd
+calc_LKE_nrgtot <- function(out_list, hyps) {
+  req_vars <- c("HYD_temp", "LKE_depths")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
+  wtr    <- out_list[["HYD_temp"]]
+  depths <- out_list[["LKE_depths"]]
+
+  safe_apply(ncol(wtr), function(c) {
+    if (all(is.na(wtr[, c]))) return(NA_real_)
+    bthD <- c(0, depths[, c])
+    bthA <- approx(x = hyps$full_depth, y = hyps$area,
+                   xout = bthD, rule = 2)$y
+    if (any(is.na(bthA))) return(NA_real_)
+
+    v <- internal_energy_total(wtr = wtr[, c], depths = depths[, c],
+                               bthA = bthA, bthD = bthD)
+    if (is.nan(v)) NA_real_ else v
+  })
+}
+
+#' Whole-lake internal energy in Joules (a real total, not per unit area).
+#'
+#' Adapted from `rLakeAnalyzer::internal.energy()` with its final
+#' area-normalisation step (`U <- sum(u_i) / layerA[1]`) removed, so the
+#' result is total heat content rather than an areal energy density -
+#' matching what "lake total energy" means, as distinct from the
+#' depth-resolved `HYD_nrgcnt` energy-density profile above.
+#' @noRd
+internal_energy_total <- function(wtr, depths, bthA, bthD) {
+  dz <- 0.1
+  cw <- 4186
+  if (min(bthD) < 0) {
+    useI <- bthD >= 0
+    depT <- if (any(bthD == 0)) bthD[useI] else c(0, bthD[useI])
+    bthA <- approx(bthD, bthA, depT)$y
+    bthD <- depT
+  }
+  numD <- length(wtr)
+  if (max(bthD) > depths[numD]) {
+    wtr[numD + 1] <- wtr[numD]
+    depths[numD + 1] <- max(bthD)
+  } else if (max(bthD) < depths[numD]) {
+    bthD <- c(bthD, depths[numD])
+    bthA <- c(bthA, 0)
+  }
+  if (min(bthD) < depths[1]) {
+    wtr <- c(wtr[1], wtr)
+    depths <- c(min(bthD), depths)
+  }
+  Io <- which.min(depths)
+  Ao <- bthA[Io]
+  if (length(Ao) == 0 || is.na(Ao) || Ao == 0) return(NA_real_)
+
+  rhoL   <- rLakeAnalyzer::water.density(wtr)
+  layerD <- seq(min(depths), max(depths), by = dz)
+  layerP <- approx(depths, rhoL, layerD)$y
+  layerT <- approx(depths, wtr, layerD)$y
+  layerA <- approx(bthD, bthA, layerD)$y
+  v_i <- layerA * dz
+  m_i <- layerP * v_i
+  u_i <- layerT * m_i * cw
+  sum(u_i)
+}
+
 #' Center of buoyancy calculation function
 #' @noRd
 calc_HYD_ctrbuy <- function(out_list, hyps) {
@@ -204,7 +296,7 @@ calc_CHM_oxyepi <- function(out_list, hyps) {
   
   safe_apply(ncol(oxy), function(c) {
     if (all(is.na(oxy[, c]))) return(NA_real_)
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     mean(oxy[idx, c], na.rm = TRUE)
   })
 }
@@ -288,6 +380,21 @@ calc_CHM_oxynal <- function(out_list, hyps) {
   })
 }
 
+#' Dissolved oxygen percent saturation calculation function
+#' @noRd
+calc_CHM_oxysat <- function(out_list, hyps) {
+  req_vars <- c("CHM_oxy", "HYD_temp", "LKE_depths")
+  var_check <- check_vars(out_list, req_vars)
+  if (!var_check) {
+    return(NULL)
+  }
+  oxy    <- out_list[["CHM_oxy"]]
+  wtr    <- out_list[["HYD_temp"]]
+  depths <- out_list[["LKE_depths"]]
+
+  convert_do(value = oxy, temp = wtr, depth = depths, direction = "to_percent")
+}
+
 #' @noRd
 check_vars <- function(out_list, req_vars) {
   # Check if vars are NULL
@@ -296,6 +403,24 @@ check_vars <- function(out_list, req_vars) {
   } else {
     return(TRUE)
   }
+}
+
+#' Depth indices at or above the epilimnion depth, for one output column.
+#'
+#' `which(depths <= epi)` is occasionally empty - e.g. epi reported as 0 or
+#' slightly negative at the exact moment stratification sets up/breaks down,
+#' or a depth grid that starts below a very shallow epi - which makes the
+#' caller's `mean(x[idx], na.rm = TRUE)` return NaN regardless of `na.rm`
+#' (mean() of a zero-length vector is NaN, not NA). NaN then fails any
+#' downstream is.finite() check the same way -Inf does, aborting an entire
+#' PEST++ forward run over what is really just a single edge-case day.
+#' Falling back to the single shallowest sampled depth keeps every day
+#' contributing a real (if less precise) TLI value instead of none at all.
+#' @noRd
+epi_idx <- function(depths_col, epi_val) {
+  idx <- which(depths_col <= epi_val)
+  if (length(idx) == 0) idx <- which.min(depths_col)
+  idx
 }
 
 
@@ -313,7 +438,7 @@ calc_LKE_tlic <- function(out_list, hyps) {
   chla   <- out_list$PHY_tchla
   
   safe_apply(ncol(depths), function(c) {
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     calc_tli_chla(mean(chla[idx, c], na.rm = TRUE))
   })
 }
@@ -331,7 +456,7 @@ calc_LKE_tlin <- function(out_list, hyps) {
   tn     <- out_list$NIT_tn
   
   safe_apply(ncol(depths), function(c) {
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     calc_tli_n(mean(tn[idx, c], na.rm = TRUE))
   })
 }
@@ -349,7 +474,7 @@ calc_LKE_tlip <- function(out_list, hyps) {
   tp     <- out_list$PHS_tp
   
   safe_apply(ncol(depths), function(c) {
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     calc_tli_p(mean(tp[idx, c], na.rm = TRUE))
   })
 }
@@ -379,7 +504,7 @@ calc_LKE_tli3 <- function(out_list, hyps) {
   tp     <- out_list$PHS_tp
   
   safe_apply(ncol(depths), function(c) {
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     calc_tli3(
       mean(chla[idx, c], na.rm = TRUE),
       mean(tn[idx, c], na.rm = TRUE),
@@ -405,7 +530,7 @@ calc_LKE_tli4 <- function(out_list, hyps) {
   secchi <- out_list$LKE_photic
   
   safe_apply(ncol(depths), function(c) {
-    idx <- which(depths[, c] <= epi[c])
+    idx <- epi_idx(depths[, c], epi[c])
     calc_tli4(
       mean(chla[idx, c], na.rm = TRUE),
       mean(tn[idx, c], na.rm = TRUE),

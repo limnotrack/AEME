@@ -329,7 +329,10 @@ by each model. Each model handles multiple outlets in its own way:
 
 - **GLM-AED**: creates individual CSV boundary condition files
   (`bcs/outflow_<name>.csv`) and sets `num_outlet`, `outl_elvs`, and
-  `outlet_type` in `glm3.nml`.
+  `outlet_type` in the GLM hydrodynamic nml (`glm3.nml` or `glm4.nml`). For
+  finer control than `add_outflows()`/`build_aeme()` offer -- adaptive or
+  target-temperature outlets, submerged draws, weir geometry -- edit the
+  `&outflow` block directly with `set_glm_outflow_config()` after building.
 - **GOTM-WET**: creates individual data files (`inputs/outf_<name>.dat`) and
   updates `gotm.yaml`.
 - **DYRESM-CAEDYM**: writes all outlets into a single `.wdr` file with a column

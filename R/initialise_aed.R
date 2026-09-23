@@ -2,15 +2,20 @@
 #'
 #' @param model_controls dataframe of loaded model controls
 #' @param path_aed filepath; to AED files
+#' @param n_zones integer or `NULL`; GLM `&sediment` zone count. When supplied,
+#'   `aed_sed_const2d` `n_zones` / `active_zones` are aligned to it (all zones
+#'   active) and its per-zone flux vectors recycled to length, so aed.nml stays
+#'   consistent with the GLM sediment block even before `set_aed_sed_const2d()`
+#'   refines the flux values.
 #'
 #' @return Written aed.nml files
 #' @noRd
 #'
 #' @importFrom dplyr filter pull
 #' @importFrom readr read_csv write_csv
-#' 
+#'
 
-initialise_aed <- function(model_controls, path_aed) {
+initialise_aed <- function(model_controls, path_aed, n_zones = NULL) {
   data("key_naming", package = "AEME", envir = environment())
   deriv_vars <- key_naming |>
     dplyr::filter(derived) |>
@@ -18,19 +23,77 @@ initialise_aed <- function(model_controls, path_aed) {
   this_ctrls <-  model_controls |>
     dplyr::filter(simulate,
                   !var_aeme %in% deriv_vars,
+                  # variables with no init values
                   !var_aeme %in% c("DateTime",
-                                   "HYD_flow","HYD_temp","HYD_dens",
+                                   "HYD_flow", "HYD_temp", "HYD_dens",
                                    "LKE_lvlwtr",
-                                   "RAD_par","RAD_extc","RAD_secchi",
+                                   "RAD_par", "RAD_extc","RAD_secchi",
                                    "CHM_salt",
                                    "PHS_pip", "NIT_pin",
-                                   "PHS_tp","NIT_tn","PHY_tchla")
+                                   "PHS_tp", "NIT_tn", "PHY_tchla", "CAR_toc")
     )
+  
+  aed_cfg <- file.path(path_aed, "aed.nml")
+  aed_nml <- read_nml(aed_cfg)
+
+  # --- Align AED sediment zones with GLM's &sediment block --------------
+  # Keep aed_sed_const2d's zone count matched to GLM and every zone active.
+  # set_aed_sed_const2d() later replaces the per-zone flux values with proper
+  # estimates; recycling here just guarantees valid lengths in the meantime.
+  aed_nz <- suppressWarnings(as.integer(n_zones))
+  if (length(aed_nz) == 1 && !is.na(aed_nz) && aed_nz >= 1 &&
+      !is.null(aed_nml[["aed_sed_const2d"]])) {
+    scd <- aed_nml[["aed_sed_const2d"]]
+    scd[["n_zones"]] <- aed_nz
+    scd[["active_zones"]] <- seq_len(aed_nz)
+    for (k in c("fsed_oxy", "fsed_amm", "fsed_nit", "fsed_frp")) {
+      if (!is.null(scd[[k]])) scd[[k]] <- rep_len(as.numeric(scd[[k]]), aed_nz)
+    }
+    aed_nml[["aed_sed_const2d"]] <- scd
+    cli_inform_safe(c("i" = "Aligned AED sediment zones to GLM: {aed_nz} \\
+                             zone{?s} (all active)."))
+  }
+
+  # --- Determine active AED modules -------------------------------------
+  # Use the glm_aed-renamed names' prefixes, not var_aeme's own prefix --
+  # AEME's var_aeme convention doesn't always match AED's internal module
+  # naming (e.g. var_aeme "CHM_oxy" and "CAR_doc"/"CAR_poc" rename to
+  # "OXY_oxy" and "OGM_doc"/"OGM_poc" respectively), exactly as
+  # initialise_aed2() does for simstrat_aed2 names.
+  if (nrow(this_ctrls) > 0) {
+    glm_names <- rename_modelvars(input = this_ctrls$var_aeme,
+                                  type_output = "glm_aed")
+    prefixes <- sub("_.*$", "", glm_names)
+    active_modules <- aed_prefixes_to_modules(prefixes)
+  } else {
+    active_modules <- character(0)
+  }
+
+  # NIT_tn/PHS_tp/CAR_toc are excluded from this_ctrls above (they're
+  # aggregate totals, not state variables with their own initial
+  # concentration), so they'd never be picked up by the prefix-based
+  # detection -- but requesting one of them as output requires aed_totals
+  # itself to be active (it's the module that actually computes
+  # TOT_tn/TOT_tp/TOT_toc from the aed.nml TN_vars/TP_vars/TOC_vars lists).
+  totals_vars <- c("NIT_tn", "PHS_tp", "CAR_toc")
+  wants_totals <- any(model_controls$var_aeme %in% totals_vars &
+                      model_controls$simulate)
+  if (wants_totals) {
+    active_modules <- union(active_modules, "aed_totals")
+  }
+
+  active_modules <- resolve_aed_active_modules(active_modules)
+
+  if (length(active_modules) > 0) {
+    aed_nml <- set_nml(aed_nml, arg_name = "models", arg_val = active_modules)
+  }
+  
   if (nrow(this_ctrls) == 0) {
     cli_inform_safe(c("i" = "No variables to initialise in AED"))
+    write_nml(aed_nml, aed_cfg)
     return(invisible())
-  } 
-  nme_chk <- rename_modelvars(input = this_ctrls$var_aeme, 
+  }
+  nme_chk <- rename_modelvars(input = this_ctrls$var_aeme,
                               type_output = "glm_aed")
   # Remove columns with no name - not necessary for GLM
   this_ctrls <- this_ctrls[nme_chk != "", ]
@@ -41,12 +104,6 @@ initialise_aed <- function(model_controls, path_aed) {
                   Please check your key file")
   }
   
-  aed_cfg <- file.path(path_aed, "aed.nml")
-  # aed_phyto <- file.path(path_aed, "aed_phyto_pars.nml")
-  
-  # open the aed.nml
-  aed_nml <- read_nml(file.path(path_aed, "aed.nml"))
-
   # open the pyto pars file
   # phy_nml <-  readLines(file.path(path_aed, "aed_phyto_pars.nml"))
   phy_csv_file <- basename(aed_nml[["aed_phytoplankton"]][["dbase"]])
@@ -116,18 +173,18 @@ initialise_aed <- function(model_controls, path_aed) {
       
       # Zooplankton initialisation
     } else if (grepl("ZOO_", var_name)) {
-    
+      
       # pH initialisation
     } else if (grepl("CHM_ph", var_name)) {
       # cli_inform_safe(c("i" = "Using default pH initialisation"))
     } else {
       
       nml_param_name <- paste0(gsub("^.*_","", var_name),
-                        "_initial")
+                               "_initial")
       nml_param_name <- ifelse(nml_param_name %in% c("ss1_initial","ss2_initial"),
-                        "ss_initial", nml_param_name)
+                               "ss_initial", nml_param_name)
       if (nml_param_name == "ss_initial") next
-
+      
       old_val <- get_nml_value(glm_nml = aed_nml,
                                arg_name = nml_param_name)
       

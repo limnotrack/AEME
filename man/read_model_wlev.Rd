@@ -23,6 +23,5 @@ A data frame with columns:
 }
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 This function reads water level data from the output of supported lake models.
 }

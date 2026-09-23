@@ -4,12 +4,18 @@
 \alias{estimate_sed_zones}
 \title{Estimate sediment zones based on hypsograph}
 \usage{
-estimate_sed_zones(hypsograph)
+estimate_sed_zones(hypsograph, n_zones = NULL)
 }
 \arguments{
 \item{hypsograph}{data frame with columns "depth" and "area". Depth should be
 negative below the surface and positive above. Area should be the lake area at
 each depth. Hypsograph should be ordered by depth (descending).}
+
+\item{n_zones}{integer or \code{NULL}; number of sediment zones to return. \code{NULL}
+(default) lets the zone count be inferred from the hypsograph slope
+(\code{estimate_n_zones_hyps()}). When given, exactly \code{n_zones} heights are
+returned, split by cumulative benthic area (falling back to evenly spaced
+heights if the hypsograph is too coarse for that many zones).}
 }
 \value{
 A numeric vector with the estimated heights of each sediment zone. The

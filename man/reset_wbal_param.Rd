@@ -4,10 +4,14 @@
 \alias{reset_wbal_param}
 \title{Reset water balance parameters}
 \usage{
-reset_wbal_param(aeme)
+reset_wbal_param(aeme, model = NULL)
 }
 \arguments{
 \item{aeme}{Aeme object.}
+
+\item{model}{character; model name(s) to reset parameters for (e.g.
+\code{"glm_aed"}). If \code{NULL} (default), all fitted parameters are
+cleared.}
 }
 \value{
 Aeme object with water balance parameters reset

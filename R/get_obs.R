@@ -10,11 +10,14 @@
 #'
 #' @return A data frame with the following columns:
 #' \itemize{
-#' \item \code{Date}: Date of observation
+#' \item \code{Date}: Observation date -- a UTC \code{POSIXct}; daily rows are
+#' anchored at 12:00:00
 #' \item \code{var_aeme}: Name of the variable in the AEME format
-#' \item \code{depth_from}: Depth from which the variable is extracted
-#' \item \code{depth_to}: Depth to which the variable is extracted
+#' \item \code{depth}: Nominal sampling depth (m, positive-down from the surface)
 #' \item \code{value}: Value of the variable
+#' \item \code{depth_to}: (optional) Bottom of an integrated sample, if recorded
+#' \item \code{sd}: (optional) Measurement standard deviation, in the variable's
+#' units
 #' }
 #' @export
 #'
@@ -23,25 +26,25 @@ get_obs <- function(aeme, var_sim, depth_range = NULL, time_filter = FALSE) {
 
   # Load observations
   obs <- observations(aeme)
-  obs_col_names <- get_obs_column_names()
+  obs_col_names <- get_obs_column_names(include_optional = TRUE)
   if (missing(var_sim)) {
     # If var_sim is missing, return all observations
     var_sim <- c(unique(obs$lake$var_aeme), "LKE_lvlwtr")
   } else {
-    var_sim <- check_aeme_vars(var_sim)
+    var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   }
   if (!is.null(obs$lake)) {
     lake <- obs$lake |>
-      dplyr::filter(var_aeme %in% var_sim) |> 
-      dplyr::select(dplyr::all_of(obs_col_names))
+      dplyr::filter(var_aeme %in% var_sim) |>
+      dplyr::select(dplyr::any_of(obs_col_names))
   } else {
     lake <- NULL
   }
-  
+
   if (!is.null(obs$level) & "LKE_lvlwtr" %in% var_sim) {
     level <- obs$level |>
-      dplyr::mutate(depth_from = NA, depth_to = NA) |> 
-      dplyr::select(dplyr::all_of(obs_col_names))
+      dplyr::mutate(depth = NA_real_) |>
+      dplyr::select(dplyr::any_of(obs_col_names))
   } else {
     level <- NULL
   }
@@ -49,23 +52,23 @@ get_obs <- function(aeme, var_sim, depth_range = NULL, time_filter = FALSE) {
   if (!is.null(depth_range)) {
     depth_range <- abs(depth_range)
     lake <- lake |>
-      dplyr::mutate(depth_mid = (depth_from + depth_to) / 2) |>
-      dplyr::filter(depth_mid >= min(depth_range) & depth_mid <= max(depth_range))
+      dplyr::filter(depth >= min(depth_range) & depth <= max(depth_range))
   }
-  
+
   df <- dplyr::bind_rows(lake, level)
 
   if (nrow(df) == 0) {
     warning("No observations found for the selected variable.")
   } else {
     df <- df  |>
-      dplyr::arrange(Date, var_aeme, depth_from, depth_to)
+      dplyr::arrange(Date, var_aeme, depth)
   }
   
   if (time_filter) {
     tme <- time(aeme)
-    df <- df |> 
-      dplyr::filter(Date >= as.Date(tme$start) & Date <= as.Date(tme$stop))
+    df <- df |>
+      dplyr::filter(as.Date(Date, tz = "UTC") >= as.Date(tme$start, tz = "UTC") &
+                      as.Date(Date, tz = "UTC") <= as.Date(tme$stop, tz = "UTC"))
   }
   return(df)
 }

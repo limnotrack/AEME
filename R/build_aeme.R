@@ -4,7 +4,8 @@
 #'
 #' @param aeme Aeme object.
 #' @param model character vector; models to use. One or more of `"dy_cd"`,
-#'   `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in `aeme`.
+#'   `"glm_aed"`, `"gotm_wet"`, `"simstrat_aed2"`. Defaults to all models if
+#'   not found in `aeme`.
 #' @param path character; directory where input files are located. Defaults to
 #'   the path stored in `aeme`, or the current working directory if not set.
 #' @param use_bgc logical; enable the biogeochemical model. Default: `FALSE`.
@@ -39,6 +40,17 @@
 #'   values. Default: `TRUE`.
 #' @param config list; AEME configuration, typically loaded via
 #'   `yaml::read_yaml("aeme.yaml")`.
+#' @param output_vars character; AEME variable names (e.g.
+#'   `c("HYD_temp", "CHM_oxy")`) to restrict each model's written output to,
+#'   applied via [set_output_vars()] once the configuration has been built
+#'   and re-written to disk. Use this to build a lake trimmed for
+#'   calibration / sensitivity analysis, where only one or two variables
+#'   feed the objective. `NULL` (default) leaves every model writing its
+#'   full output.
+#' @param mass_balance logical; passed to [set_output_vars()] when
+#'   `output_vars` is supplied - for `"glm_aed"` only, keep the GLMv4
+#'   `&mass_balance` diagnostic CSV. Default `TRUE`. Ignored when
+#'   `output_vars` is `NULL`.
 #'
 #' @importFrom sf sf_use_s2 st_transform st_centroid st_coordinates st_buffer
 #' @importFrom dplyr select filter
@@ -80,24 +92,37 @@ build_aeme <- function(aeme = NULL,
                        hum_type = NULL,
                        est_swr_hr = NULL,
                        use_aeme = FALSE,
-                       config = NULL
+                       config = NULL,
+                       output_vars = NULL,
+                       mass_balance = TRUE,
+                       tz = NULL
 ) {
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
-  
+
   if (is.null(aeme) & is.null(config)) {
     stop("Either 'aeme' or 'config' must be supplied.")
+  }
+  aeme <- migrate_aeme(aeme)
+
+  # Declared input timezone: `tz` arg overrides, else the object's stored value,
+  # else UTC. Used to interpret the meteo/inflow/outflow date columns.
+  input_tz <- tz %||% time(aeme)[["tz"]] %||% "UTC"
+  if (!input_tz %in% OlsonNames()) input_tz <- "UTC"
+  if (!identical(time(aeme)[["tz"]], input_tz)) {
+    aeme <- set_time(aeme, tz = input_tz)
   }
   if (is.null(model)) {
     model <- list_models(aeme)
     if (length(model) == 0) {
       model <- list_models()
       cli_inform_safe(c("i" = "No models specified. Defaulting to all models:
-                        glm_aed, dy_cd, gotm_wet."))
+                        glm_aed, dy_cd, gotm_wet, simstrat_aed2."))
     }
   }
   model <- check_model(model = model)
+  aeme <- set_model(aeme = aeme, model = model)
   
   if (is.null(path)) {
     path <- get_config_value(aeme, key = "path")
@@ -133,7 +158,8 @@ build_aeme <- function(aeme = NULL,
                      "i" = "4: specific humidity (kg/kg)."))
   }
   
-  all_models <- c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1)
+  all_models <- c("glm_aed" = 1, "dy_cd" = 1, "gotm_wet" = 1, "simstrat_aed2" = 1,
+                  "simstrat_aed" = 1)
   if (is.null(inf_factor))  inf_factor  <- all_models
   if (is.null(outf_factor)) outf_factor <- all_models
   
@@ -185,7 +211,11 @@ build_aeme <- function(aeme = NULL,
     if (use_aeme) {
       model_config <- configuration(aeme)
       if (all(sapply(model, \(x) !is.null(model_config[[x]][["hydrodynamic"]])))) {
-        write_configuration(model = model, aeme = aeme, path = path)
+        # Boundary-condition files are left to the build_glm()/build_gotm()/
+        # etc. calls below, which run regardless of overwrite -- writing
+        # them here too would just be immediately overwritten again
+        write_configuration(model = model, aeme = aeme, path = path,
+                            include_boundary = FALSE)
         overwrite <- FALSE
         # Potentially add in option to switch off bgc and/or use default bgc setup
         # return(aeme)
@@ -260,10 +290,20 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     }
     met <- inp[["meteo"]]
     check_time(df = met, model = model, aeme_time = aeme_time, name = "meteo")
+    # Keep sub-daily meteo at its native resolution; otherwise collapse to
+    # Date exactly as before so the daily pipeline is byte-for-byte unchanged.
+    # AEME never temporally disaggregates -- sub-daily runs need sub-daily input.
+    if (!is_subdaily(met[["Date"]])) {
+      met <- dplyr::mutate(met, Date = as.Date(Date))
+    } else {
+      met <- dplyr::mutate(met, Date = as.POSIXct(Date, tz = "UTC"))
+      cli::cli_inform(c("i" = paste("Sub-daily meteo detected -- keeping its",
+                                    "native resolution.")),
+                      class = "aeme_inform_subdaily_met")
+    }
     met <- met |>
-      dplyr::mutate(Date = as.Date(Date)) |>
-      expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE) |> 
-      standardise_met()
+      expand_met(lat = lat, lon = lon, elev = elev, print.plot = FALSE) |>
+      standardise_met(tz = aeme_time[["tz"]] %||% "UTC", longitude = lon)
     # names(met) <- gsub("MET_", "", names(met))
     
     input(aeme) <- list(init_profile = init_prof,
@@ -318,7 +358,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
         outf[[names(aeme_outf[["data"]])[i]]] <- aeme_outf[["data"]][[i]]
         check_time(df = outf[[names(aeme_outf[["data"]])[i]]], model = model,
                    aeme_time = aeme_time,
-                   name = paste0("outflow-", names(aeme_outf[["data"]])[i]))
+                   name = paste0("outflow-", names(aeme_outf[["data"]])[i]),
+                   check_cadence = FALSE)
       }
       outflow_names <- names(outf)
       # Select names not set to "wbal"
@@ -448,8 +489,16 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       w_bal[["data"]][["wbal"]] <- wbal
       w_bal[["params"]] <- wbal_params
     } else {
+      # Only clear a "wbal" outflow that this aeme's own water_balance data
+      # shows was produced by an earlier calc_wbal = TRUE run. If outf$wbal
+      # is present without a matching water_balance()$data$wbal, it was
+      # supplied directly (e.g. by glm_config_to_aeme(), reading an existing
+      # outflow_wbal.csv back from disk) rather than computed by AEME, so
+      # leave it as a normal outflow instead of silently discarding it.
+      if (!is.null(w_bal[["data"]][["wbal"]])) {
+        outf[["wbal"]] <- NULL
+      }
       w_bal[["data"]][["wbal"]] <- NULL
-      outf[["wbal"]] <- NULL
     }
     
     #* Update water balance slot in aeme object ----
@@ -587,15 +636,35 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   if (length(inf) == 0) {
     inf <- NULL
   }
+
+  # Per-model initial conditions ----
+  # Resolve configuration(aeme)$initial_conditions (see set_initial_conditions())
+  # into the profile / depth / model_controls handed to each build_<model>()
+  # call. Depth-resolved water-quality profiles (model_ic[[m]]$wq_prof) are
+  # applied to the written files after the build_<model>() calls below.
+  ic_spec <- if (!is.null(aeme)) {
+    configuration(aeme)[["initial_conditions"]]
+  } else {
+    NULL
+  }
+  model_ic <- stats::setNames(
+    lapply(model, \(m) .resolve_model_ic(ic_spec, m, init_prof = init_prof,
+                                         init_depth = init_depth,
+                                         model_controls = model_controls)),
+    model
+  )
+
   if ("dy_cd" %in% model) {
     #--- configure DYRESM-CAEDYM
+    ic <- model_ic[["dy_cd"]]
     dates.dy <- c(date_range[1] - spin_up[["dy_cd"]], date_range[2]) |>
       `names<-`(NULL)
-    build_dycd(lakename, model_controls = model_controls, date_range = dates.dy,
+    build_dycd(lakename, model_controls = ic[["model_controls"]],
+               date_range = dates.dy,
                lat = lat, lon = lon, hyps = hyps, lvl = lvl,
                inf = inf, outf = outf, met = met,
-               lake_dir = lake_dir, init_prof = init_prof,
-               init_depth = init_depth,
+               lake_dir = lake_dir, init_prof = ic[["init_prof"]],
+               init_depth = ic[["init_depth"]],
                inf_factor = inf_factor[["dy_cd"]],
                outf_factor = outf_factor[["dy_cd"]],
                Kw = Kw,
@@ -605,34 +674,47 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   if ("glm_aed" %in% model) {
     #--- configure GLM-AED
+    ic <- model_ic[["glm_aed"]]
     dates.glm <- c(date_range[1] - spin_up[["glm_aed"]], date_range[2]) |>
       `names<-`(NULL)
-    
-    build_glm(lakename, model_controls = model_controls, date_range = dates.glm,
+
+    obs_temp <- get_obs(aeme, var_sim = "HYD_temp")
+
+    # Any GLM &sediment rows the user has put in parameters(aeme) take
+    # precedence over the bathymetry/observation estimates in make_stg_glm().
+    glm_sed_params <- parameters(aeme = aeme)
+    if (is.data.frame(glm_sed_params) && nrow(glm_sed_params) > 0 &&
+        all(c("model", "name") %in% names(glm_sed_params))) {
+      glm_sed_params <- glm_sed_params |>
+        dplyr::filter(model == "glm_aed", grepl("^sediment/", name))
+      if (nrow(glm_sed_params) == 0) glm_sed_params <- NULL
+    } else {
+      glm_sed_params <- NULL
+    }
+
+    build_glm(lakename, model_controls = ic[["model_controls"]],
+              date_range = dates.glm,
               lake_shape = lake_shape, lat = lat, lon = lon,
-              hyps = hyps, lvl = lvl, init_prof = init_prof,
-              init_depth = init_depth, inf = inf, outf = outf,
+              hyps = hyps, lvl = lvl, init_prof = ic[["init_prof"]],
+              init_depth = ic[["init_depth"]], inf = inf, outf = outf,
               heights_wdr = unlist(aeme_outf[["elevation"]]),
               met = met, lake_dir = lake_dir,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
               Kw = Kw, use_bgc = use_bgc,
-              use_lw = inp$use_lw, overwrite_nml = overwrite)
+              use_lw = inp$use_lw, overwrite_nml = overwrite,
+              output_time_step = aeme_time[["output_time_step"]] %||% 86400,
+              output_daily_mean = isTRUE(aeme_time[["output_daily_mean"]]),
+              obs_temp = obs_temp, sed_params = glm_sed_params)
     
-    if (use_bgc) {
-      aeme <- aeme |> 
-        set_glm_aed_models(path = path, 
-                           aed_models = c("aed_sedflux", "aed_oxygen", 
-                                          "aed_silica", "aed_nitrogen",
-                                          "aed_phosphorus",
-                                          "aed_organic_matter",
-                                          "aed_phytoplankton", "aed_totals")) |> 
+    if (use_bgc && overwrite) {
+      aeme <- aeme |>
         set_aed_sed_const2d(path = path)
     }
-    # run_glm_aed(sim_folder = lake_dir, verbose = TRUE)
   }
   if ("gotm_wet" %in% model) {
     #--- configure GOTM-WET
+    ic <- model_ic[["gotm_wet"]]
     dates.gotm <- c(date_range[1] - spin_up[["gotm_wet"]], date_range[2]) |>
       `names<-`(NULL)
     depth <- max(hyps$elev) - min(hyps$elev)
@@ -642,19 +724,76 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       div <- 0.33
     }
     nlev <- ceiling(depth / div)
-    build_gotm(lakename, model_controls = model_controls, date_range = dates.gotm,
+    build_gotm(lakename, model_controls = ic[["model_controls"]],
+               date_range = dates.gotm,
                lake_shape = lake_shape, lat = lat, lon = lon,
                lake_dir = lake_dir, hyps = hyps, lvl = lvl,
-               init_prof = init_prof, init_depth = init_depth, inf = inf,
+               init_prof = ic[["init_prof"]], init_depth = ic[["init_depth"]],
+               inf = inf,
                outf = outf, met = met, inf_factor = inf_factor[["gotm_wet"]],
                outf_factor = outf_factor[["gotm_wet"]], Kw = Kw,
                nlev = nlev, use_bgc = use_bgc,
                hum_type = hum_type, overwrite_yaml = overwrite,
-               est_swr_hr = est_swr_hr)
+               est_swr_hr = est_swr_hr,
+               time_step = aeme_time[["time_step"]] %||% 3600,
+               output_time_step = aeme_time[["output_time_step"]] %||% 86400,
+               output_daily_mean = isTRUE(aeme_time[["output_daily_mean"]]))
     # run_gotm_wet(sim_folder = lake_dir, verbose = TRUE)
-    
+
   }
-  
+  if ("simstrat_aed2" %in% model) {
+    #--- configure Simstrat-AED2
+    ic <- model_ic[["simstrat_aed2"]]
+    dates.simstrat <- c(date_range[1] - spin_up[["simstrat_aed2"]], date_range[2]) |>
+      `names<-`(NULL)
+
+    build_simstrat(lakename, model_controls = ic[["model_controls"]],
+                   date_range = dates.simstrat, lake_shape = lake_shape,
+                   lat = lat, lon = lon, hyps = hyps, lvl = lvl,
+                   init_prof = ic[["init_prof"]], init_depth = ic[["init_depth"]],
+                   inf = inf, outf = outf,
+                   heights_wdr = unlist(aeme_outf[["elevation"]]),
+                   met = met, lake_dir = lake_dir,
+                   inf_factor = inf_factor[["simstrat_aed2"]],
+                   outf_factor = outf_factor[["simstrat_aed2"]],
+                   Kw = Kw, use_bgc = use_bgc, overwrite_par = overwrite,
+                   output_time_step = aeme_time[["output_time_step"]] %||% 86400,
+                   output_daily_mean = isTRUE(aeme_time[["output_daily_mean"]]),
+                   bgc_lib = "aed2")
+    # run_simstrat_aed2(sim_folder = lake_dir, verbose = TRUE)
+  }
+  if ("simstrat_aed" %in% model) {
+    #--- configure Simstrat-AED
+    ic <- model_ic[["simstrat_aed"]]
+    dates.simstrat_aed <- c(date_range[1] - spin_up[["simstrat_aed"]], date_range[2]) |>
+      `names<-`(NULL)
+
+    build_simstrat(lakename, model_controls = ic[["model_controls"]],
+                   date_range = dates.simstrat_aed, lake_shape = lake_shape,
+                   lat = lat, lon = lon, hyps = hyps, lvl = lvl,
+                   init_prof = ic[["init_prof"]], init_depth = ic[["init_depth"]],
+                   inf = inf, outf = outf,
+                   heights_wdr = unlist(aeme_outf[["elevation"]]),
+                   met = met, lake_dir = lake_dir,
+                   inf_factor = inf_factor[["simstrat_aed"]],
+                   outf_factor = outf_factor[["simstrat_aed"]],
+                   Kw = Kw, use_bgc = use_bgc, overwrite_par = overwrite,
+                   output_time_step = aeme_time[["output_time_step"]] %||% 86400,
+                   output_daily_mean = isTRUE(aeme_time[["output_daily_mean"]]),
+                   bgc_lib = "aed")
+    # run_simstrat_aed(sim_folder = lake_dir, verbose = TRUE)
+  }
+
+  # Depth-resolved initial water-quality profiles ----
+  # Scalar water-quality initials were folded into each model's
+  # `model_controls` above; `depth`/`value` profiles are written to the
+  # built model directories here via the model-specific `set_*_init()`
+  # writers.
+  for (m in model) {
+    .apply_wq_prof(model = m, lake_dir = lake_dir,
+                   wq_prof = model_ic[[m]][["wq_prof"]], use_bgc = use_bgc)
+  }
+
   # Model parameters ----
   param <- parameters(aeme = aeme)
   if (nrow(param) > 1) {
@@ -669,9 +808,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   }
   
   # GLM-AED totals configuration ----
-  if ("glm_aed" %in% model & use_bgc) {
+  if ("glm_aed" %in% model & use_bgc & overwrite) {
     set_aed_totals(aeme = aeme, path = path)
-  } 
+  }
   
   # Check model cfg files ----
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
@@ -679,17 +818,38 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     check_gotm_yaml(file = cfg_files$gotm_wet["gotm"])
   }
   if ("glm_aed" %in% model) {
-    check_glm_nml(file = cfg_files$glm_aed["glm3"])
-  } 
+    check_glm_nml(file = cfg_files$glm_aed[find_glm_nml_key(names(cfg_files$glm_aed))])
+  }
+  if ("simstrat_aed2" %in% model) {
+    check_simstrat_par(file = cfg_files$simstrat_aed2["simstrat"],
+                       output_time_step = aeme_time[["output_time_step"]] %||% 86400)
+  }
+  if ("simstrat_aed" %in% model) {
+    check_simstrat_par(file = cfg_files$simstrat_aed["simstrat"],
+                       output_time_step = aeme_time[["output_time_step"]] %||% 86400)
+  }
   
   
   # Load model configuration ----
-  aeme <- load_configuration(model = model, aeme = aeme, 
-                             model_controls = model_controls, use_bgc = use_bgc, 
+  aeme <- load_configuration(model = model, aeme = aeme,
+                             model_controls = model_controls, use_bgc = use_bgc,
                              path = path, ext_elev = ext_elev,
                              calc_wbal = calc_wbal, wb_method = wb_method,
-                             calc_wlev = calc_wlev, coeffs = coeffs, 
+                             calc_wlev = calc_wlev, coeffs = coeffs,
                              hum_type = hum_type, est_swr_hr = est_swr_hr)
-  
+
+  # Restrict written output to the variables of interest ----
+  # Applied after load_configuration() has populated configuration(aeme) from
+  # the freshly built files, then persisted straight back to disk (no
+  # re-derivation of boundary conditions - build_*() already wrote them).
+  if (!is.null(output_vars)) {
+    for (m in model) {
+      aeme <- set_output_vars(aeme = aeme, model = m, vars = output_vars,
+                              mass_balance = mass_balance)
+    }
+    write_configuration(aeme = aeme, model = model, path = path,
+                        include_boundary = FALSE)
+  }
+
   return(aeme)
 }

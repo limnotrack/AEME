@@ -15,10 +15,20 @@ yaml_to_aeme(path, file)
 aeme object
 }
 \description{
-Convert aeme.yaml file to list
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+}
+\details{
+\code{yaml_to_aeme()} is soft-deprecated in favour of \code{\link[=aeme_constructor]{aeme_constructor()}} (build
+an \code{Aeme} object from your own lake data, with full validation) or
+\code{\link[=new_aeme]{new_aeme()}} (a quick placeholder object to populate incrementally). It
+still works and will keep working, but new code should prefer those
+instead of hand-editing a YAML file.
 }
 \examples{
 aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
 aeme <- yaml_to_aeme(file = aeme_yaml)
 aeme
+}
+\seealso{
+\code{\link[=aeme_constructor]{aeme_constructor()}}, \code{\link[=new_aeme]{new_aeme()}}
 }

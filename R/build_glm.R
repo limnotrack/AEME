@@ -5,6 +5,14 @@
 #' @param lake_shape shapefile
 #' @param use_lw logical, use incoming longwave radiation
 #' @param overwrite_nml logical, overwrite nml file. Default is TRUE
+#' @param obs_temp data.frame; observed water-column temperature profiles in the
+#'   long AEME format (`Date`, `var_aeme`, `depth`, `value`), typically from
+#'   [get_obs()]. When supplied, per-zone sediment-temperature
+#'   parameters are derived from it via `calc_sed_temp()`; otherwise generic
+#'   defaults are used. Default is `NULL`.
+#' @param sed_params data.frame; `parameters(aeme)` rows for the GLM
+#'   `&sediment` block (`model == "glm_aed"`, `name` like `"sediment/..."`).
+#'   Keys present here are used as-is rather than estimated. Default `NULL`.
 #'
 #' @return Directory with GLM-AED configuration
 #' @noRd
@@ -17,7 +25,9 @@ build_glm <- function(lakename, model_controls, date_range,
                       lvl, inf, outf, heights_wdr, met,
                       lake_dir, config_dir, init_prof, init_depth,
                       inf_factor = 1, outf_factor = 1,
-                      Kw, use_bgc, use_lw, overwrite_nml = TRUE) {
+                      Kw, use_bgc, use_lw, overwrite_nml = TRUE,
+                      output_time_step = 86400, output_daily_mean = FALSE,
+                      obs_temp = NULL, sed_params = NULL) {
   
   msg <- paste0("Building GLM-AED for lake ", lakename)
   # cli_inform_safe(c("i" = msg))
@@ -31,18 +41,35 @@ build_glm <- function(lakename, model_controls, date_range,
              recursive = TRUE)
   dir.create(file.path(path_glm, "aed"), showWarnings = FALSE,
              recursive = TRUE)
+  # Cover mass_balance bug in GLMv4
+  dir.create(file.path(path_glm, "output"), showWarnings = FALSE,
+             recursive = TRUE)
   
   
-  glm_file <- file.path(path_glm, "glm3.nml")
-  if (!file.exists(glm_file)) {
-    glm_file <- system.file("extdata/glm_aed/glm3.nml", package = "AEME")
-    file.copy(glm_file, file.path(path_glm, "glm3.nml"))
+  # Preserve whichever GLM hydrodynamic nml version (glm3.nml, glm4.nml, ...)
+  # is already present, rather than assuming glm3.nml; only fall back to
+  # copying the glm3.nml template when no such file exists yet
+  glm_file <- find_glm_nml(path_glm, must_exist = FALSE)
+  if (is.na(glm_file)) {
+    # Match the hydrodynamic nml template to the pinned/installed GLM binary
+    # version (glm4.nml for GLM v4, glm3.nml for v3), falling back to glm3.nml
+    # when the version can't be determined or no matching template ships.
+    major <- .preferred_glm_major_version()
+    nml_name <- if (!is.null(major)) sprintf("glm%d.nml", major) else "glm3.nml"
+    template_file <- system.file(file.path("extdata/glm_aed", nml_name),
+                                 package = "AEME")
+    if (!nzchar(template_file)) {
+      nml_name <- "glm3.nml"
+      template_file <- system.file("extdata/glm_aed/glm3.nml", package = "AEME")
+    }
+    glm_file <- file.path(path_glm, nml_name)
+    file.copy(template_file, glm_file)
     overwrite_nml <- TRUE
-    cli_inform_safe(c("i" = "Copied in GLM nml file"))
+    cli_inform_safe(c("i" = "Copied in GLM nml file ({nml_name})"))
   }
   aed_file <- file.path(path_glm, "aed", "aed.nml")
   if (!file.exists(aed_file)) {
-    aed_files <- list.files(system.file("extdata/glm_aed/", package = "AEME"),
+    aed_files <- list.files(system.file("extdata/aed/", package = "AEME"),
                             full.names = TRUE, pattern = "^aed[_.]")
     aed_path <- file.path(path_glm, "aed")
     dir.create(aed_path, showWarnings = FALSE)
@@ -62,11 +89,33 @@ build_glm <- function(lakename, model_controls, date_range,
     unlink()
   
   # Read in GLM nml file
-  glm_nml <- read_nml(file.path(path_glm, "glm3.nml"))
+  glm_nml <- read_nml(glm_file)
   
   # set the simulation date range
-  glm_nml <- daterange_GLM(date_range, glm_nml = glm_nml)
-  
+  glm_nml <- daterange_glm(date_range, glm_nml = glm_nml)
+
+  # Output cadence and sub-daily forcing switch. Defaults (output_time_step
+  # 86400 s, daily meteo) reproduce the shipped template (nsave = 24,
+  # subdaily = .false.) exactly. AEME never disaggregates: sub-daily output
+  # relies on the user supplying sub-daily meteo.
+  dt_glm <- glm_nml[["time"]][["dt"]]
+  if (is.null(dt_glm) || !is.finite(dt_glm) || dt_glm <= 0) dt_glm <- 3600
+  sub_daily_met <- is_subdaily(met[["Date"]])
+  glm_nml[["output"]][["nsave"]] <-
+    max(1L, as.integer(round(output_time_step / dt_glm)))
+  glm_nml[["meteorology"]][["subdaily"]] <- sub_daily_met
+
+  # Daily-mean stream (time(aeme)$output_daily_mean): GLM has no native
+  # time-averaging, so run_aeme() averages output.nc by calendar day into a
+  # companion output_daily.nc after the run. Nothing to configure in the nml;
+  # just flag a mismatch with daily forcing.
+  if (isTRUE(output_daily_mean) && !sub_daily_met) {
+    cli_inform_safe(c(
+      "!" = paste("GLM-AED daily-mean output requested but the meteorology is",
+                  "daily; the daily mean will equal the daily value.")
+    ))
+  }
+
   
   # elipse dimensions at surface for nml
   dims_lake <- lake_dims(lake_shape)
@@ -79,11 +128,30 @@ build_glm <- function(lakename, model_controls, date_range,
   
   crest <- max(hyps[["elev"]])
   
-  glm_nml <- make_stgGLM(glm_nml, lakename, bathy = hyps, lat = lat,
-                         lon = lon, crest = crest, dims_lake = dims_lake)
-  
+  # `subdaily` biases the size-scaled layer parameters (min/max_layer_thick,
+  # max_layers, min_layer_vol -- see .glm_layer_params()) toward the stable
+  # end, since GLM's explicit surface heat-flux update oscillates on a thin
+  # top layer when it is driven at sub-daily resolution. That thicker
+  # minimum layer takes a test ERA5 year from a 80 C surface-temperature
+  # spike down to a 20 C maximum with no daily excursions above 25 C.
+  #
+  # Note: `atm_stab = 1` was also trialled here (atmospheric-stability
+  # correction on the bulk transfer coefficients) but is left at the
+  # template default. It barely moves the surface temperature once the
+  # layer is thick enough, does not reduce the larger, more variable
+  # turbulent fluxes that sub-daily forcing produces in GLM (which is
+  # partly real -- daily means under-resolve gust/covariance-driven
+  # exchange -- and partly GLM's own sub-daily flux response), and it would
+  # make the sub-daily config inconsistent with the daily one.
+  glm_nml <- make_stg_glm(glm_nml, lakename, bathy = hyps, lat = lat,
+                         lon = lon, crest = crest, dims_lake = dims_lake,
+                         use_bgc = use_bgc, obs_temp = obs_temp,
+                         nml_file = basename(glm_file), sed_params = sed_params,
+                         subdaily = isTRUE(glm_nml[["meteorology"]][["subdaily"]]),
+                         init_depth = init_depth)
+
   # Make meteorology file
-  make_metGLM(obs_met = met, path_glm = path_glm, use_lw = use_lw)
+  make_met_glm(obs_met = met, path_glm = path_glm, use_lw = use_lw)
   # Longwave Radiation switch
   if (use_lw) {
     glm_nml$meteorology$lw_type <- "LW_IN"
@@ -92,32 +160,60 @@ build_glm <- function(lakename, model_controls, date_range,
   }
   
   # Make inflows table and modify nml
-  glm_nml <- make_infGLM(glm_nml = glm_nml, path_glm = path_glm, list_inf = inf,
+  glm_nml <- make_inf_glm(glm_nml = glm_nml, path_glm = path_glm, list_inf = inf,
                          mass = TRUE, inf_factor = inf_factor)
   
   #--- make outflows table and modify nml
-  # heights_wdr <- max(hyps$elev) - min(hyps$elev) - 1
-  outlet_type <- ifelse(heights_wdr < 0, 2, 1) 
-  flt_off_sw <- outlet_type == 2
+  # `heights_wdr` is the AEME outflow `elevation`: an absolute elevation on the
+  # same datum as the hypsography (`hyps$elev`), or the sentinel -1 / NA meaning
+  # "not specified" (add_outflows(); build_aeme() sets the wbal outflow to -1).
+  #
+  # Unspecified outlets default to a *floating offtake* (outlet_type 2,
+  # flt_off_sw .true.) so the draw tracks a fluctuating surface. GLM wants a
+  # floating outlet's `outl_elvs` as a depth *below the surface* in
+  # [0, lake depth]; an explicitly placed outlet is written as a *fixed* outlet
+  # (outlet_type 1) whose `outl_elvs` is an absolute elevation in
+  # [base_elev, crest_elev]. `set_glm_outflow_config()` exposes the full
+  # per-outlet configuration (fixed / floating / adaptive, submerged outlets,
+  # target withdrawal temperature, seepage, weir geometry, ...).
+  lake_floor <- min(hyps[["elev"]])
+  lake_depth <- crest - lake_floor
+  surface_elev <- lake_floor + init_depth
   outf[["elevation"]] <- NULL
-  for (i in seq_along(heights_wdr)) {
-    if (is.na(heights_wdr[i]) | heights_wdr[i] <= 0) {
-      heights_wdr[i] <- init_depth - 1
+
+  n_out       <- length(heights_wdr)
+  nm_out      <- names(heights_wdr)
+  outlet_type <- rep(1L, n_out)
+  flt_off_sw  <- rep(FALSE, n_out)
+  dims_elev   <- rep(NA_real_, n_out)   # absolute elevation, for outlet geometry
+  for (i in seq_len(n_out)) {
+    if (is.na(heights_wdr[i]) || heights_wdr[i] == -1) {
+      # not specified => floating offtake, ~1 m above the bed but tracking the
+      # surface (i.e. the historical default, now expressed surface-relative)
+      d <- min(max(init_depth - 1, 0), lake_depth)
+      outlet_type[i] <- 2L
+      flt_off_sw[i]  <- TRUE
+      heights_wdr[i] <- d                 # outl_elvs: depth below surface
+      dims_elev[i]   <- surface_elev - d
       next
     }
-    if (heights_wdr[i] > max(hyps$elev) || heights_wdr[i] < min(hyps$elev)) {
-      cli_inform_safe(c("!" = "Withdrawal depth is not within the range of the 
-                        hypsography. Setting to 0.75 of the maximum depth."))
-      heights_wdr[i] <- min(hyps$elev) + (0.75 * (max(hyps$elev) - min(hyps$elev)))
+    # explicit elevation => fixed outlet at that absolute elevation
+    if (heights_wdr[i] > crest || heights_wdr[i] < lake_floor) {
+      cli_inform_safe(c("!" = "Withdrawal elevation is not within the range of
+                        the hypsography. Setting to 0.75 of the maximum depth."))
+      heights_wdr[i] <- lake_floor + (0.75 * lake_depth)
     }
+    dims_elev[i] <- heights_wdr[i]
   }
-  
-  glm_nml <- make_wdrGLM(outf = outf,
+  names(outlet_type) <- names(flt_off_sw) <- names(dims_elev) <- nm_out
+
+  glm_nml <- make_wdr_glm(outf = outf,
                          heights_wdr = heights_wdr,
                          outlet_type = outlet_type,
                          flt_off_sw = flt_off_sw,
                          bathy = hyps,
                          dims_lake = dims_lake,
+                         dims_elev = dims_elev,
                          wdr_factor = outf_factor, update_nml = TRUE,
                          glm_nml = glm_nml, path_glm = path_glm)
   
@@ -126,13 +222,14 @@ build_glm <- function(lakename, model_controls, date_range,
                             init_depth = init_depth, tbl_obs = init_prof,
                             Kw = Kw, model_controls = model_controls)
   
-  if (use_bgc) {
+  if (use_bgc && overwrite_nml) {
     initialise_aed(model_controls = model_controls,
-                   path_aed = file.path(path_glm, "aed"))
+                   path_aed = file.path(path_glm, "aed"),
+                   n_zones = glm_nml[["sediment"]][["n_zones"]])
   }
-  
+
   if (use_bgc) {
-    glm_nml[["wq_setup"]] <- list("wq_lib" = "aed",
+    glm_nml[["wq_setup"]] <- list("wq_lib" = "api",
                                   "wq_nml_file" = "aed/aed.nml",
                                   "ode_method" = 1,
                                   "split_factor" = 1,
@@ -145,12 +242,18 @@ build_glm <- function(lakename, model_controls, date_range,
   } else {
     glm_nml[["wq_setup"]] <- NULL
   }
-  
+
+  # GLMv4: report the water/mass balance for the AED state variables that are
+  # switched on (mirrors the &init_profiles wq_names initialise_glm() just
+  # wrote). A glm4.nml template ships an &mass_balance block; older GLM builds
+  # have none, in which case this is a no-op.
+  glm_nml <- set_glm_mass_balance(glm_nml, use_bgc = use_bgc)
+
   # Write the GLM nml file
   if (overwrite_nml) {
-    write_nml(glm_nml, file.path(path_glm, "glm3.nml"))
+    write_nml(glm_nml, glm_file)
   }
-  # check_glm_nml(file = file.path(path_glm, "glm3.nml"))
+  # check_glm_nml(file = glm_file)
   
   return(invisible())
 }

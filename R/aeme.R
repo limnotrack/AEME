@@ -6,39 +6,58 @@
 #' @name Aeme
 #' @aliases Aeme-class
 #' @slot lake A list representing lake information. \itemize{
-#'  \item \code{\bold{name}}: character; lake name.
-#'  \item \code{\bold{id}}: character; lake identifier.
-#'  \item \code{\bold{latitude}}: numeric; lake latitude.
-#'  \item \code{\bold{longitude}}: numeric; lake longitude.
-#'  \item \code{\bold{elevation}}: numeric; lake elevation.
-#'  \item \code{\bold{depth}}: numeric; lake depth.
-#'  \item \code{\bold{area}}: numeric; lake area.
+#'  \item \strong{\code{name}}: character; lake name.
+#'  \item \strong{\code{id}}: character; lake identifier.
+#'  \item \strong{\code{latitude}}: numeric; lake latitude.
+#'  \item \strong{\code{longitude}}: numeric; lake longitude.
+#'  \item \strong{\code{elevation}}: numeric; lake elevation.
+#'  \item \strong{\code{depth}}: numeric; lake depth.
+#'  \item \strong{\code{area}}: numeric; lake area.
 #'  }
 #' @slot time A list representing time information. \itemize{
-#' \item \code{\bold{start}}: character; start date.
-#' \item \code{\bold{stop}}: character; end date.
-#' \item \code{\bold{timestep}}: numeric; time step.
-#' \item \code{\bold{spin_up}}: list; spin up information for each model
+#' \item \strong{\code{start}}: POSIXct (UTC); simulation start date-time.
+#' \item \strong{\code{stop}}: POSIXct (UTC); simulation stop date-time.
+#' \item \strong{\code{time_step}}: numeric; model integration time step in
+#' seconds. Default 3600 (1 hour).
+#' \item \strong{\code{output_time_step}}: numeric; model output time step in
+#' seconds. Must be >= \code{time_step}. Default 86400 (daily).
+#' \item \strong{\code{output_daily_mean}}: logical; if \code{TRUE}, every model
+#' additionally produces a daily-mean output stream alongside its raw
+#' \code{output_time_step} output. Default \code{FALSE}. See
+#' \code{\link{set_output_time_step}}.
+#' \item \strong{\code{spin_up}}: list; spin up period in days for each model
+#' \item \code{tz}: character; Olson timezone in which user-supplied timestamps
+#' (\code{start}, \code{stop}, and the date columns of meteo, inflow, outflow
+#' and observation inputs) are expressed. It is applied once, at ingest, to
+#' convert those timestamps to UTC; all datetimes are stored and computed in
+#' UTC internally. It is also used to render plots and summaries in local time.
+#' Defaults to \code{"UTC"}; set a non-UTC zone only when the source data is
+#' local time. Unrelated to GLM's numeric \code{timezone} nml parameter.
 #' }
 #' @slot configuration A list representing each model's configuration. \itemize{
 #' \item \code{model_controls}: dataframe; Model controls for simulation.
+#' \item \code{aeme_version}: character; version of the AEME package used to
+#' build the configuration.
 #' \item \code{dy_cd}: list; DYRESM-CAEDYM configuration.
 #' \item \code{glm_aed}: list; GLM-AED configuration.
 #' \item \code{gotm_wet}: list; GOTM-WET configuration.
+#' \item \code{simstrat_aed2}: list; Simstrat-AED2 configuration.
 #' }
 #' @slot observations A list representing observation information. \itemize{
-#' \item \code{lake}: dataframe; lake observations.
-#' \item \code{level}: dataframe; lake level observations.
+#' \item \code{lake}: dataframe; lake observations. The \code{Date} column is a
+#' UTC \code{POSIXct}; daily observations are anchored at 12:00:00.
+#' \item \code{level}: dataframe; lake level observations (\code{Date} as for
+#' \code{lake}).
 #' }
 #' @slot input A list representing input information. \itemize{
 #' \item \code{init_profile}: dataframe; initial temperature profile (if none
 #' use NULL or leave empty; if empty/NULL, the observations file will be used).
-#' \item \code{\bold{init_depth}}: numeric; initial height of lake surface relative to
+#' \item \strong{\code{init_depth}}: numeric; initial height of lake surface relative to
 #' the bottom (m).
-#' \item \code{\bold{hypsograph}}: dataframe; hypsograph.
-#' \item \code{\bold{meteo}}: dataframe; meteorological data.
-#' \item \code{\bold{use_lw}}: logical; use longwave radiation.
-#' \item \code{\bold{Kw}}: numeric; light extinction coefficient (m-1).
+#' \item \strong{\code{hypsograph}}: dataframe; hypsograph.
+#' \item \strong{\code{meteo}}: dataframe; meteorological data.
+#' \item \strong{\code{use_lw}}: logical; use longwave radiation.
+#' \item \strong{\code{Kw}}: numeric; light extinction coefficient (m-1).
 #' }
 #' @slot inflows A list representing inflows information. \itemize{
 #' \item \code{data}: named list of inflow dataframes.
@@ -50,16 +69,21 @@
 #' \item \code{lvl}: numeric; height of lake level outflow.
 #' }
 #' @slot water_balance A list representing water balance information. \itemize{
-#' \item\code{\bold{method}}: integer; Method for calculating water balance.
+#' \item\strong{\code{method}}: integer; Method for calculating water balance.
 #' 1 = none, 2 = outflows, 3 = inflows and outflows.
-#' \item\code{\bold{use}}: character; Can be 'obs' or 'mod'. Use observations
+#' \item\strong{\code{use}}: character; Can be 'obs' or 'mod'. Use observations
 #'  or modelled data for water balance.
 #' \item{\code{data}}: list of dataframe for water balance.
+#' \item{\code{params}}: fitted outflow parameters (C, h_inv), keyed by
+#' evaporation family since \code{dy_cd}/\code{glm_aed} share one fit and
+#' \code{gotm_wet}/\code{simstrat_aed2} each have their own -- see
+#' \code{\link{get_wbal_param}}.
 #' }
 #' @slot output A list representing output information. \itemize{
 #' \item \code{dy_cd}: list; DYRESM-CAEDYM output.
 #' \item \code{glm_aed}: list; GLM-AED output.
 #' \item \code{gotm_wet}: list; GOTM-WET output.
+#' \item \code{simstrat_aed2}: list; Simstrat-AED2 output.
 #' }
 #' @slot parameters A dataframe representing model parameters.
 #' @export
@@ -170,7 +194,25 @@ setValidity("Aeme", function(object) {
   }
   if (!is.null(wb$use) && !wb$use %in% c("obs", "mod"))
     errors <- c(errors, "@water_balance$use must be 'obs' or 'mod'")
-  
+
+  # -- time$tz check (declared input timezone) -------------------------------
+  tz <- object@time$tz
+  if (!is.null(tz)) {
+    if (!is.character(tz) || length(tz) != 1L || is.na(tz))
+      errors <- c(errors, "@time$tz must be a single character string")
+    else if (!tz %in% OlsonNames())
+      errors <- c(errors, paste0("@time$tz '", tz, "' is not a valid Olson ",
+                                 "timezone name (see OlsonNames())"))
+  }
+
+  # Note: the observation Date column is expected to be a noon-anchored UTC
+  # POSIXct, but that is *not* enforced here as a hard error -- an object read
+  # straight from an older `.rds` (before any check_aeme() / migrate_aeme())
+  # still carries a `Date` column, and every consumer coerces the join key
+  # with as.Date() defensively. aeme_constructor() and add_obs() convert it
+  # (with a warning for a non-Date/POSIXct input) and migrate_aeme() converts
+  # it silently on the first check_aeme()/show()/plot()/build_aeme().
+
   if (length(errors) == 0) TRUE else errors
 })
 
@@ -188,6 +230,14 @@ setValidity("Aeme", function(object) {
 #' @param output List representing output information.
 #' @param parameters Dataframe containing model parameters.
 #' @param print Logical; print messages. Default is TRUE.
+#' @param tz character; Olson timezone in which user-supplied timestamps
+#' (\code{time$start}, \code{time$stop}, and the date columns of meteo, inflow,
+#' outflow and observation inputs) are expressed. Applied once, at ingest, to
+#' convert those timestamps to UTC; all datetimes are stored and computed in UTC
+#' internally, and \code{tz} is also used for display. Defaults to
+#' \code{time$tz} if present, otherwise \code{"UTC"}. Set a non-UTC zone only
+#' when your source data really is in local time (gridded reanalysis such as
+#' ERA5 is UTC). Unrelated to GLM's numeric \code{timezone} nml parameter.
 #' @return An instance of the Aeme class.
 #'
 #' @importFrom sf st_area sf_use_s2
@@ -200,7 +250,8 @@ setValidity("Aeme", function(object) {
 
 aeme_constructor <- function(
     lake, time, configuration, observations,
-    input, inflows, outflows, water_balance, output, parameters, print = TRUE
+    input, inflows, outflows, water_balance, output, parameters, print = TRUE,
+    tz = NULL
 ) {
   
   # Set timezone temporarily to UTC
@@ -211,6 +262,25 @@ aeme_constructor <- function(
   if (missing(lake) & missing(time) & missing(input)) {
     cli::cli_abort("Objects lake, time, and input must be provided.")
   }
+
+  # -- Declared input timezone ------------------------------------------------
+  # Everything the user types (start/stop, forcing & observation date columns)
+  # is taken to be wall-clock time in this zone and converted to UTC on ingest.
+  # Defaults to "UTC" -- gridded met (ERA5 etc.) and model conventions are all
+  # UTC. Declare a non-UTC zone only when your source data really is local time.
+  if (is.null(tz) && !missing(time) && is.list(time)) tz <- time$tz
+  if (is.null(tz)) tz <- "UTC"
+  if (length(tz) != 1L || is.na(tz) || !nzchar(tz) || !tz %in% OlsonNames()) {
+    tz <- "UTC"
+  }
+  if (print && !identical(tz, "UTC")) {
+    cli::cli_inform(
+      c("i" = "Interpreting input timestamps (start/stop, meteo, inflow, obs) as {.val {tz}}; stored as UTC."),
+      class = "aeme_inform_input_tz"
+    )
+  }
+  if (!missing(time) && is.list(time)) time$tz <- tz
+
   cfg_dflt <- config_defaults()
   if (missing(configuration)) {
     configuration <- cfg_dflt
@@ -241,6 +311,12 @@ aeme_constructor <- function(
       observations[["level"]][["var_aeme"]] <- "LKE_lvlwtr"
     }
   }
+
+  # Normalise legacy depth_from / depth_to lake observations to a `depth` column
+  if (!is.null(observations[["lake"]])) {
+    observations[["lake"]] <- normalise_lake_obs(observations[["lake"]],
+                                                 warn = FALSE)
+  }
   
   
   if (missing(inflows)) {
@@ -249,7 +325,9 @@ aeme_constructor <- function(
       factor = list(
         dy_cd = 1,
         glm_aed = 1,
-        gotm_wet = 1
+        gotm_wet = 1,
+        simstrat_aed2 = 1,
+        simstrat_aed = 1
       )
     )
   }
@@ -260,7 +338,9 @@ aeme_constructor <- function(
       factor = list(
         dy_cd = 1,
         glm_aed = 1,
-        gotm_wet = 1
+        gotm_wet = 1,
+        simstrat_aed2 = 1,
+        simstrat_aed = 1
       )
     )
   }
@@ -287,7 +367,9 @@ aeme_constructor <- function(
       n_members = 0,
       dy_cd = NULL,
       glm_aed = NULL,
-      gotm_wet = NULL
+      gotm_wet = NULL,
+      simstrat_aed2 = NULL,
+      simstrat_aed = NULL
     )
   }
   param_names <- param_colnames(incl_opt = FALSE)
@@ -429,46 +511,48 @@ aeme_constructor <- function(
     )
   }
   
-  # Time type checking for specific elements
+  # Time type checking for specific elements. start/stop are simulation
+  # boundaries the user types: a character/naive value is wall-clock time in
+  # `tz`; a Date is a calendar day (midnight UTC, never shifted); a tz-aware
+  # POSIXct is an absolute instant. All are stored as UTC POSIXct.
   is.POSIXct <- function(x) inherits(x, "POSIXct")
-  if (is.character(time$start)) {
-    cli::cli_inform(
-      c("i" = "{.arg time$start} is a {.cls character}; converting to {.cls POSIXct} (UTC)."),
-      class = "aeme_inform_time_coerced"
-    )
-    time$start <- as.POSIXct(time$start, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
-    if (is.na(time$start))
-      cli::cli_abort(
-        c("{.arg time$start} could not be parsed as a date-time.",
-          "i" = "Expected format: {.code YYYY-MM-DD HH:MM:SS}."),
-        class = "aeme_error_time_start"
-      )
-  } else if (!is.POSIXct(time$start)) {
+  .norm_bound <- function(x, arg, err_class) {
+    if (inherits(x, "Date")) {
+      return(as.POSIXct(format(x, "%Y-%m-%d"), tz = "UTC"))
+    }
+    if (is.character(x)) {
+      if (!identical(tz, "UTC")) {
+        cli::cli_inform(
+          c("i" = "{.arg {arg}} is a {.cls character}; interpreting as {.val {tz}} (stored UTC)."),
+          class = "aeme_inform_time_coerced"
+        )
+      }
+      return(.to_utc(x, tz = tz, reinterpret_utc_tag = TRUE))
+    }
+    if (inherits(x, "POSIXt")) {
+      return(.to_utc(x, tz = tz, reinterpret_utc_tag = TRUE))
+    }
     cli::cli_abort(
-      c("{.arg time$start} must be {.cls POSIXct} or a parseable {.cls character}.",
-        "x" = "Got {.cls {class(time$start)}}."),
+      c("{.arg {arg}} must be {.cls POSIXct}, {.cls Date} or a parseable {.cls character}.",
+        "x" = "Got {.cls {class(x)[1]}}."),
+      class = err_class
+    )
+  }
+  time$start <- .norm_bound(time$start, "time$start", "aeme_error_time_start")
+  time$stop  <- .norm_bound(time$stop,  "time$stop",  "aeme_error_time_stop")
+  if (length(time$start) != 1L || is.na(time$start))
+    cli::cli_abort(
+      c("{.arg time$start} could not be parsed as a date-time.",
+        "i" = "Expected format: {.code YYYY-MM-DD HH:MM:SS}."),
       class = "aeme_error_time_start"
     )
-  }
-  if (is.character(time$stop)) {
-    cli::cli_inform(
-      c("i" = "{.arg time$stop} is a {.cls character}; converting to {.cls POSIXct} (UTC)."),
-      class = "aeme_inform_time_coerced"
-    )
-    time$stop <- as.POSIXct(time$stop, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
-    if (is.na(time$stop))
-      cli::cli_abort(
-        c("{.arg time$stop} could not be parsed as a date-time.",
-          "i" = "Expected format: {.code YYYY-MM-DD HH:MM:SS}."),
-        class = "aeme_error_time_stop"
-      )
-  } else if (!is.POSIXct(time$stop)) {
+  if (length(time$stop) != 1L || is.na(time$stop))
     cli::cli_abort(
-      c("{.arg time$stop} must be {.cls POSIXct} or a parseable {.cls character}.",
-        "x" = "Got {.cls {class(time$stop)}}."),
+      c("{.arg time$stop} could not be parsed as a date-time.",
+        "i" = "Expected format: {.code YYYY-MM-DD HH:MM:SS}."),
       class = "aeme_error_time_stop"
     )
-  }
+  time$tz <- tz
   if (time$stop <= time$start) {
     cli::cli_abort(
       c("{.arg time$stop} must be after {.arg time$start}.",
@@ -492,6 +576,35 @@ aeme_constructor <- function(
       class = "aeme_error_time_step"
     )
   }
+  if (is.null(time$output_time_step)) {
+    time$output_time_step <- 86400
+  }
+  if (!is.numeric(time$output_time_step)) {
+    cli::cli_abort(
+      c("{.arg time$output_time_step} must be {.cls numeric}.",
+        "x" = "Got {.cls {class(time$output_time_step)}}."),
+      class = "aeme_error_output_time_step"
+    )
+  }
+  if (time$output_time_step < time$time_step) {
+    cli::cli_abort(
+      c("{.arg time$output_time_step} must be >= {.arg time$time_step}.",
+        "x" = "output_time_step: {.val {time$output_time_step}} s",
+        "x" = "time_step: {.val {time$time_step}} s"),
+      class = "aeme_error_output_time_step"
+    )
+  }
+  if (is.null(time$output_daily_mean)) {
+    time$output_daily_mean <- FALSE
+  }
+  if (!is.logical(time$output_daily_mean) ||
+      length(time$output_daily_mean) != 1L || is.na(time$output_daily_mean)) {
+    cli::cli_abort(
+      c("{.arg time$output_daily_mean} must be a single {.cls logical}.",
+        "x" = "Got {.cls {class(time$output_daily_mean)}}."),
+      class = "aeme_error_output_daily_mean"
+    )
+  }
   if (!is.list(time$spin_up)) {
     if (is.null(time$spin_up)) {
       cli::cli_inform(
@@ -499,7 +612,8 @@ aeme_constructor <- function(
           "i" = "Defaulting to 2 days spin-up for all models."),
         class = "aeme_inform_spin_up_default"
       )
-      time$spin_up <- list(dy_cd = 2, glm_aed = 2, gotm_wet = 2)
+      time$spin_up <- list(dy_cd = 2, glm_aed = 2, gotm_wet = 2,
+                           simstrat_aed2 = 2, simstrat_aed = 2)
     } else {
       cli::cli_abort(
         c("{.arg time$spin_up} must be a {.cls list} of numeric values.",
@@ -510,11 +624,17 @@ aeme_constructor <- function(
   } else if (all(!is.numeric(unlist(time$spin_up)))) {
     cli::cli_abort(
       c("All values in {.arg time$spin_up} must be {.cls numeric}.",
-        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, and {.code gotm_wet}."),
+        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, {.code gotm_wet}, and {.code simstrat_aed2}."),
       class = "aeme_error_spin_up"
     )
   }
-  
+  # Back-fill spin_up entries for any model not present (e.g. objects
+  # constructed/serialised before a new model was added to the package)
+  missing_spin_up <- setdiff(list_models(), names(time$spin_up))
+  if (length(missing_spin_up) > 0) {
+    for (m in missing_spin_up) time$spin_up[[m]] <- 2
+  }
+
   # Configuration type checking for specific elements
   if (!is.null(configuration$model_controls) &&
       !is.data.frame(configuration$model_controls)) {
@@ -531,7 +651,7 @@ aeme_constructor <- function(
       class = "aeme_error_configuration"
     )
   }
-  for (model_cfg in c("dy_cd", "glm_aed", "gotm_wet")) {
+  for (model_cfg in c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2", "simstrat_aed")) {
     val <- configuration[[model_cfg]]
     if (!is.null(val) && !is.list(val)) {
       cli::cli_abort(
@@ -569,7 +689,27 @@ aeme_constructor <- function(
       )
     }
   }
-  
+
+  # Observation Date columns are stored as noon-anchored UTC POSIXct (daily
+  # observations at 12:00:00) so they match a sub-daily model axis without a
+  # midnight day-boundary ambiguity. Mirrors the input$meteo$Date handling
+  # below. A Date / POSIXct column is converted quietly; anything else is
+  # coerced with a warning.
+  for (slot in c("lake", "level")) {
+    d <- observations[[slot]]
+    if (is.null(d) || !is.data.frame(d) || !"Date" %in% names(d)) next
+    if (!inherits(d$Date, "POSIXct")) {
+      if (!inherits(d$Date, "Date")) {
+        cli::cli_warn(
+          c("!" = "{.arg observations${slot}$Date} is not {.cls POSIXct} or {.cls Date}.",
+            "i" = "Parsing it as {.val UTC} and anchoring daily rows at 12:00:00."),
+          class = "aeme_warn_obs_date_coerced"
+        )
+      }
+      observations[[slot]]$Date <- .as_obs_datetime(d$Date)
+    }
+  }
+
   # Input type checking for specific elements
   if (!is.null(input$init_profile) && !is.data.frame(input$init_profile)) {
     cli::cli_abort(
@@ -603,10 +743,12 @@ aeme_constructor <- function(
                !lubridate::is.Date(input$meteo$Date)) {
       cli::cli_warn(
         c("!" = "{.arg input$meteo$Date} is not {.cls POSIXct} or {.cls Date}.",
-          "i" = "Coercing to {.cls Date}. Supply a proper date column to avoid this."),
+          "i" = paste("Parsing it as {.val {tz}} and converting to UTC. Supply",
+                      "a proper date column to avoid this.")),
         class = "aeme_warn_meteo_date_coerced"
       )
-      input$meteo$Date <- as.Date(input$meteo$Date)
+      input$meteo$Date <- .as_forcing_datetime(input$meteo$Date, tz = tz,
+                                               reinterpret_utc_tag = TRUE)
       if (any(is.na(input$meteo$Date))) {
         cli::cli_abort(
           c("NAs introduced when coercing {.arg input$meteo$Date} to {.cls Date}.",
@@ -667,11 +809,16 @@ aeme_constructor <- function(
   } else if (!all(sapply(inflows$factor, is.numeric))) {
     cli::cli_abort(
       c("All values in {.arg inflows$factor} must be {.cls numeric}.",
-        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, and {.code gotm_wet}."),
+        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, {.code gotm_wet}, and {.code simstrat_aed2}."),
       class = "aeme_error_inflows"
     )
   }
-  
+  # Back-fill factor entries for any model not present
+  missing_inf_factor <- setdiff(list_models(), names(inflows$factor))
+  if (length(missing_inf_factor) > 0) {
+    for (m in missing_inf_factor) inflows$factor[[m]] <- 1
+  }
+
   # Outflows type checking for specific elements
   if (!is.null(outflows$data)) {
     if (!is.list(outflows$data) || !all(sapply(outflows$data, is.data.frame))) {
@@ -691,11 +838,16 @@ aeme_constructor <- function(
   } else if (!all(sapply(outflows$factor, is.numeric))) {
     cli::cli_abort(
       c("All values in {.arg outflows$factor} must be {.cls numeric}.",
-        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, and {.code gotm_wet}."),
+        "i" = "Expected a named list with entries for {.code dy_cd}, {.code glm_aed}, {.code gotm_wet}, and {.code simstrat_aed2}."),
       class = "aeme_error_outflows"
     )
   }
-  
+  # Back-fill factor entries for any model not present
+  missing_outf_factor <- setdiff(list_models(), names(outflows$factor))
+  if (length(missing_outf_factor) > 0) {
+    for (m in missing_outf_factor) outflows$factor[[m]] <- 1
+  }
+
   # Water balance type checking for specific elements
   if (!is.null(water_balance[["data"]][["model"]]) &&
       !is.data.frame(water_balance[["data"]][["model"]])) {
@@ -1250,6 +1402,7 @@ setReplaceMethod("parameters", "Aeme", function(aeme, value) {
 #' @importFrom glue glue
 #' @export
 setMethod("show", "Aeme", function(object) {
+  object    <- migrate_aeme(object)
   lke       <- lake(object)
   aeme_time <- time(object)
   config    <- configuration(object)
@@ -1277,7 +1430,9 @@ setMethod("show", "Aeme", function(object) {
   n_dyresm  <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["dy_cd"]])),   integer(1))
   n_glm     <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["glm_aed"]])), integer(1))
   n_gotm    <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["gotm_wet"]])), integer(1))
-  if (outp$n_members == 0) n_dyresm <- n_glm <- n_gotm <- 0L
+  n_simstrat <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["simstrat_aed2"]])), integer(1))
+  n_simstrat_aed <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["simstrat_aed"]])), integer(1))
+  if (outp$n_members == 0) n_dyresm <- n_glm <- n_gotm <- n_simstrat <- n_simstrat_aed <- 0L
   
   # Inflow summary
   n_inflows    <- length(inf$data)
@@ -1291,7 +1446,10 @@ setMethod("show", "Aeme", function(object) {
   # Hypsograph suffix
   hyps_n <- if (is.data.frame(inp$hypsograph)) glue::glue(" (n={nrow(inp$hypsograph)})") else ""
   
-  cli::cli_h1("AEME")
+  aeme_version <- config[["aeme_version"]]
+  version_label <- if (is.null(aeme_version)) "not yet built" else paste0("v", aeme_version)
+
+  cli::cli_h1("AEME {version_label}")
   
   cli::cli_h2("Lake")
   cli::cli_text("{lke$name} (ID: {lke$id})")
@@ -1301,9 +1459,14 @@ setMethod("show", "Aeme", function(object) {
   ))
   
   cli::cli_h2("Time")
+  tz_disp <- aeme_time$tz %||% "UTC"
+  fmt_dt <- function(x) format(x, "%Y-%m-%d %H:%M:%S", tz = tz_disp)
+  start_disp <- fmt_dt(aeme_time$start)
+  stop_disp <- fmt_dt(aeme_time$stop)
   cli::cli_bullets(c(
-    "*" = "Start: {aeme_time$start}; Stop: {aeme_time$stop}; Time step: {aeme_time$time_step}",
-    "*" = "Spin up (days): GLM: {aeme_time$spin_up$glm_aed}; GOTM: {aeme_time$spin_up$gotm_wet}; DYRESM: {aeme_time$spin_up$dy_cd}"
+    "*" = "Start: {start_disp}; Stop: {stop_disp}; Time step: {aeme_time$time_step} s; Output step: {aeme_time$output_time_step} s",
+    "*" = "Timezone: {tz_disp} (timestamps stored UTC)",
+    "*" = "Spin up (days): GLM: {aeme_time$spin_up$glm_aed}; GOTM: {aeme_time$spin_up$gotm_wet}; DYRESM: {aeme_time$spin_up$dy_cd}; Simstrat: {aeme_time$spin_up$simstrat_aed2}"
   ))
   
   cli::cli_h2("Configuration")
@@ -1313,9 +1476,9 @@ setMethod("show", "Aeme", function(object) {
     "*" = "Model controls: {present_absent(config[['model_controls']])}",
     "*" = "Use biogeochemical model: {ifelse(config[['use_bgc']], cli::col_green('Yes'), cli::col_red('No'))}"
   ))
-  models <- c("DY-CD", "GLM-AED", "GOTM-WET")
-  phys   <- c("dy_cd", "glm_aed", "gotm_wet")
-  
+  models <- c("DY-CD", "GLM-AED", "GOTM-WET", "SIMSTRAT-AED2", "SIMSTRAT-AED")
+  phys   <- c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2", "simstrat_aed")
+
   header_row <- cli::ansi_columns(
     c(cli::col_cyan("Model"), cli::col_cyan("Physical"), cli::col_cyan("Biogeochemical")),
     width = 60, fill = "rows", max_cols = 3, align = "center", sep = "   "
@@ -1351,13 +1514,13 @@ setMethod("show", "Aeme", function(object) {
   cli::cli_h2("Inflows")
   cli::cli_bullets(c(
     "*" = "Number of inflows: {n_inflows}; Names: {inflow_names}",
-    "*" = "Scaling factors: DY-CD: {round(inf$factor$dy_cd, 2)}; GLM-AED: {round(inf$factor$glm_aed, 2)}; GOTM-WET: {round(inf$factor$gotm_wet, 2)}"
+    "*" = "Scaling factors: DY-CD: {round(inf$factor$dy_cd, 2)}; GLM-AED: {round(inf$factor$glm_aed, 2)}; GOTM-WET: {round(inf$factor$gotm_wet, 2)}; Simstrat-AED2: {round(inf$factor$simstrat_aed2, 2)}"
   ))
-  
+
   cli::cli_h2("Outflows")
   cli::cli_bullets(c(
     "*" = "Number of outflows: {n_outflows}; Names: {outflow_names}; Elevations: {outflow_elevs}",
-    "*" = "Scaling factors: DY-CD: {round(outf$factor$dy_cd, 2)}; GLM-AED: {round(outf$factor$glm_aed, 2)}; GOTM-WET: {round(outf$factor$gotm_wet, 2)}"
+    "*" = "Scaling factors: DY-CD: {round(outf$factor$dy_cd, 2)}; GLM-AED: {round(outf$factor$glm_aed, 2)}; GOTM-WET: {round(outf$factor$gotm_wet, 2)}; Simstrat-AED2: {round(outf$factor$simstrat_aed2, 2)}"
   ))
   
   cli::cli_h2("Water Balance")
@@ -1373,9 +1536,11 @@ setMethod("show", "Aeme", function(object) {
   
   cli::cli_h2("Output")
   cli::cli_bullets(c(
-    "*" = "DY-CD:    {paste(n_dyresm, collapse = ' ')}",
-    "*" = "GLM-AED:  {paste(n_glm,    collapse = ' ')}",
-    "*" = "GOTM-WET: {paste(n_gotm,   collapse = ' ')}",
+    "*" = "DY-CD:         {paste(n_dyresm,   collapse = ' ')}",
+    "*" = "GLM-AED:       {paste(n_glm,      collapse = ' ')}",
+    "*" = "GOTM-WET:      {paste(n_gotm,     collapse = ' ')}",
+    "*" = "SIMSTRAT-AED2: {paste(n_simstrat, collapse = ' ')}",
+    "*" = "SIMSTRAT-AED:  {paste(n_simstrat_aed, collapse = ' ')}",
     "*" = "Variables: {length(output_vars)}"
   ))
   max_vars <- 10
@@ -1429,11 +1594,13 @@ setMethod("summary", "Aeme", function(object) {
 #' @return A ggplot object, or prints to the active graphics device.
 #' @export
 setMethod("plot", "Aeme", function(x, y, ..., add = FALSE) {
-  
+
+  x <- migrate_aeme(x)
+
   if (missing(y)) {
     y <- "output"
   }
-  
+
   valid_slots <- methods::slotNames(x)
   if (!y %in% valid_slots) {
     cli::cli_abort(
@@ -1609,8 +1776,16 @@ setMethod("names", "Aeme", function(x) {
 
 #' Get column names for the observational data frame
 #'
-#' @return Character vector of required column names for observational data.
+#' @param include_optional logical; if `TRUE`, append the optional columns
+#'   (`depth_to`, `sd`) after the required columns. Default `FALSE`.
+#'
+#' @return Character vector of column names for observational data. The required
+#'   columns are `Date` (a UTC `POSIXct`; daily observations anchored at
+#'   12:00:00), `var_aeme`, `depth` and `value`. The optional columns are
+#'   `depth_to` (bottom of an integrated sample) and `sd` (measurement standard
+#'   deviation, in the variable's units).
 #' @export
-get_obs_column_names <- function() {
-  c("Date", "var_aeme", "depth_from", "depth_to", "value")
+get_obs_column_names <- function(include_optional = FALSE) {
+  req <- c("Date", "var_aeme", "depth", "value")
+  if (include_optional) c(req, "depth_to", "sd") else req
 }
