@@ -88,7 +88,7 @@ read_gotm_flux_output <- function(nc = NULL, file, dates = NULL,
   MET_tmpair <- ncdf4::ncvar_get(nc, "airt")
   
   out_list <- list(
-    LKE_V = as.vector(V),
+    LKE_vol = as.vector(V),
     LKE_A0 = as.vector(A0),
     LKE_evprte = as.vector(EVAP),
     LKE_evpflx = as.vector(evap_flux),

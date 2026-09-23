@@ -633,7 +633,7 @@ calc_V <- function(depth, hyps, h = 0.1) {
 #' own handling of the near-bed region where either V or H may be zero.
 #'
 #' This function is used in preference to \code{calc_V} when deriving observed
-#' \code{LKE_V} for comparison against GLM-AED model output, so that both
+#' \code{LKE_vol} for comparison against GLM-AED model output, so that both
 #' sides of the residual use the same hypsograph interpolation and the
 #' methodological volume difference (~0.7\% for typical lake shapes) does not
 #' appear as spurious model bias.

@@ -217,7 +217,7 @@ read_dy_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                                                      xout = lake_level[d])$y)
     dz <- 0.01
     adj_dep <- min(H)
-    out_list[["LKE_V"]] <- sapply(1:length(lake_level), function(d) {
+    out_list[["LKE_vol"]] <- sapply(1:length(lake_level), function(d) {
       if(is.na(lake_level[d]) | is.infinite(lake_level[d])) return(NA)
       layerD <- (seq(dz, (lake_level[d] - dz), dz)) + adj_dep
       layerA <- approx(H, A, layerD)$y

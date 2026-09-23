@@ -32,6 +32,16 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
     model <- check_model(model = model)
   }
   var_sim <- check_aeme_vars(var_sim, aeme = aeme)
+
+  # Deprecation shim: LKE_V was renamed to LKE_vol.
+  if (identical(var_sim, "LKE_V")) {
+    cli::cli_warn(
+      c("!" = "{.val LKE_V} has been renamed to {.val LKE_vol}.",
+        "i" = "Please update your code to use {.code var_sim = \"LKE_vol\"}."),
+      class = "aeme_warn_lke_v_renamed"
+    )
+    var_sim <- "LKE_vol"
+  }
   depth_ref <- rlang::arg_match(depth_ref)
   
   # Extract output from aeme ----

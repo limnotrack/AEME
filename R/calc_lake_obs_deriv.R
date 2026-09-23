@@ -319,16 +319,16 @@ calc_lake_obs_deriv <- function(aeme) {
   }
   
   
-  # Lake volume (LKE_V) from observed water level ----
+  # Lake volume (LKE_vol) from observed water level ----
   # Uses calc_V_glm (GLM power-law interpolation) so that observed and
-  # simulated LKE_V use the same hypsograph integration method, removing
+  # simulated LKE_vol use the same hypsograph integration method, removing
   # the ~0.7% systematic volume bias that arises when comparing against
-  # GLM's native LKE_V output.
+  # GLM's native LKE_vol output.
   if (!is.null(obs$level) && nrow(obs$level) > 0 &&
-      !"LKE_V" %in% obs$lake$var_aeme) {
-    out_list[["LKE_V"]] <- data.frame(
+      !"LKE_vol" %in% obs$lake$var_aeme) {
+    out_list[["LKE_vol"]] <- data.frame(
       Date     = obs$level$Date,
-      var_aeme = "LKE_V",
+      var_aeme = "LKE_vol",
       depth    = NA_real_,
       value    = calc_V_glm(depth = obs$level$value, hyps = hyps)
     )
