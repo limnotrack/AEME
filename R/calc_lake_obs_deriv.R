@@ -4,7 +4,7 @@
 #' \code{\link{observations}}
 #'
 #' @importFrom rLakeAnalyzer thermo.depth center.buoyancy meta.depths
-#' @importFrom rLakeAnalyzer schmidt.stability
+#' @importFrom rLakeAnalyzer schmidt.stability internal_energy_total
 #' @importFrom dplyr filter mutate bind_rows
 #' @importFrom tidyr pivot_wider
 #'
@@ -98,6 +98,22 @@ calc_lake_obs_deriv <- function(aeme) {
       wtr_list[["HYD_schstb"]] <- data.frame(Date = Date,
                                              var_aeme = "HYD_schstb",
                                              value = schstb)
+    }
+
+    if (!deriv_chk$present[deriv_chk$aeme_var == "LKE_nrgtot"]) {
+      nrgtot <- vapply(1:nrow(wtr), \(c) {
+        idx2 <- which(!is.na(wtr[c, ]))
+        if (length(idx2) <= 1) return(NA_real_)
+        wtr_col <- wtr[c, idx2]
+        depths_col <- depths[idx2]
+
+        v <- internal_energy_total(wtr = wtr_col, depths = depths_col,
+                                  bthA = bthA, bthD = bthD)
+        if (is.nan(v)) NA_real_ else v
+      }, numeric(1))
+      out_list[["LKE_nrgtot"]] <- data.frame(Date = Date,
+                                              var_aeme = "LKE_nrgtot",
+                                              value = nrgtot)
     }
     
     for (n in names(wtr_list)) {
