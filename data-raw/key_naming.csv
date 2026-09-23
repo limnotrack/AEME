@@ -7,6 +7,8 @@
 "HYD_strat","","","","","","","","Stratified","Stratified","Stratified~(1)","","1","","TRUE","HYD_temp","0","1","strat|stratifed|stratification|HYD_strat"
 "HYD_thmcln","","","","","","","","Thermocline depth","Thermocline_depth_m","Thermocline~depth~(m)","m","1","","TRUE","HYD_temp","0","","thermocline|depth|HYD_thmcln"
 "HYD_schstb","","","","","","","","Schmidt stability","Schmidt_stability_J/m2","Schmidt~stability~(J~m^2)","J/m2","1","","TRUE","HYD_temp","0","","stability|schmidt|HYD_schstb"
+"HYD_nrgcnt","","","","","","","","Internal energy content","Internal_energy_content_J/m3","Internal~energy~content~(J~m^-3)","J/m3","1","","TRUE","HYD_temp","0","","energy|heat|internal energy|heat content|HYD_nrgcnt"
+"LKE_nrgtot","","","","","","","","Lake total internal energy","Lake_total_internal_energy_J","Lake~total~internal~energy~(J)","J","1","","TRUE","HYD_temp","0","","energy|heat|internal energy|heat content|total energy|LKE_nrgtot"
 "HYD_ctrbuy","","","","","","","","Centre of buoyancy","Centre_of_buoyancy_m","Centre~of~buoyancy~(m)","m3","1","","TRUE","HYD_temp","0","","buoyancy|center|HYD_ctrbuy"
 "HYD_epidep","","","","","","","","Epilimnion depth","Epilimnion_depth_m","Epilimnion~depth~(m)","m3","1","","TRUE","HYD_temp","0","","epilimnion|epi depth|HYD_epidep"
 "HYD_hypdep","","","","","","","","Hypolimnion depth","Hypolimnion_depth_m","Hypolimnion~depth~(m)","m3","1","","TRUE","HYD_temp","0","","hypolimnion|hyp depth|HYD_hypdep"

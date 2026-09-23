@@ -6,4 +6,5 @@
 #' one timestep. 1e-6 is far below any physically meaningful concentration
 #' in these units (µg/L chla, mg/L*1000 = µg/L for N/P), so it only guards
 #' the log10() singularity and does not distort real values.
+#' @noRd
 tli_conc_floor <- 1e-6

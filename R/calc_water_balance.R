@@ -623,6 +623,74 @@ calc_V <- function(depth, hyps, h = 0.1) {
   })
 }
 
+#' Calculate lake volume using GLM's power-law hypsograph interpolation
+#'
+#' Replicates the volume interpolation used internally by GLM (General Lake
+#' Model). Between each pair of supplied hypsograph nodes GLM fits a power-law
+#' `V(h) = V[b] * (h / H[b]) ^ alpha_b` where
+#' `alpha_b = log10(V[b+1]/V[b]) / log10(H[b+1]/H[b])`.
+#' The bottom-most interval is treated as linear (alpha = 1) to match GLM's
+#' own handling of the near-bed region where either V or H may be zero.
+#'
+#' This function is used in preference to \code{calc_V} when deriving observed
+#' \code{LKE_V} for comparison against GLM-AED model output, so that both
+#' sides of the residual use the same hypsograph interpolation and the
+#' methodological volume difference (~0.7\% for typical lake shapes) does not
+#' appear as spurious model bias.
+#'
+#' @param depth numeric vector; water surface elevation(s) (m a.s.l.), the
+#'   same datum as \code{hyps$elev}. Note that \code{LKE_lvlwtr} as returned
+#'   by \code{get_var} is stored relative to the lake bed and must have
+#'   \code{min(hyps$elev)} added before being passed here.
+#' @param hyps data.frame with columns \code{elev} (m a.s.l.) and \code{area}
+#'   (m²), ordered from bed to surface.
+#' @return numeric vector of lake volumes (m³), same length as \code{depth}.
+#' @noRd
+calc_V_glm <- function(depth, hyps) {
+  hyps <- hyps[order(hyps$elev), ]
+  H <- hyps$elev
+  A <- hyps$area
+
+  # Pre-compute cumulative trapezoidal volumes at each node so we can use
+  # the same power-law lookup GLM builds in its MphLevelVol table.
+  n <- nrow(hyps)
+  V <- numeric(n)
+  for (i in seq_len(n - 1L)) {
+    # Trapezoid between node i and i+1 (linear area interpolation for V nodes)
+    V[i + 1L] <- V[i] + (A[i] + A[i + 1L]) / 2 * (H[i + 1L] - H[i])
+  }
+
+  # Power-law exponents alpha_b: log-log slope of V vs H between nodes.
+  # Bottom interval (i=1) is linear (alpha=1) matching GLM's special case.
+  alpha <- numeric(n)
+  alpha[1L] <- 1.0
+  for (i in seq_len(n - 2L) + 1L) {
+    if (V[i] > 0 && H[i] > 0 && V[i + 1L] > V[i] && H[i + 1L] > H[i]) {
+      alpha[i] <- log10(V[i + 1L] / V[i]) / log10(H[i + 1L] / H[i])
+    } else {
+      alpha[i] <- 1.0
+    }
+  }
+  alpha[n] <- alpha[n - 1L]
+
+  # Interpolate volume at each requested depth using the matching interval.
+  sapply(depth, function(d) {
+    if (is.na(d) || d <= H[1L]) return(0.0)
+    if (d >= H[n]) {
+      # Extrapolate with the top interval's exponent
+      b <- n - 1L
+      return(V[b] * (d / H[b]) ^ alpha[b])
+    }
+    b <- findInterval(d, H, rightmost.closed = TRUE)
+    b <- max(1L, min(b, n - 1L))
+    if (H[b] <= 0 || V[b] <= 0) {
+      # Linear fallback for bottom region
+      return(V[b + 1L] * d / H[b + 1L])
+    }
+    V[b] * (d / H[b]) ^ alpha[b]
+  })
+}
+
 #' Generate a sinusoidal water level time series
 #' @param dates vector of dates
 #' @param surf numeric; height of the lake surface (m)

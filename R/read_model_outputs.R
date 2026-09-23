@@ -391,7 +391,11 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                "LKE_evpflx", "LKE_evpvol", "LKE_pcpvol",
                # Derived vars
                "HYD_thmcln", "HYD_strat", "HYD_ctrbuy", "HYD_epidep",
-               "HYD_hypdep", "HYD_schstb", "CHM_oxycln", "CHM_oxyepi", "CHM_oxyhyp",
+               "HYD_hypdep", "HYD_schstb", "LKE_nrgtot",
+               # HYD_nrgcnt deliberately excluded: it is depth-resolved
+               # (same shape as HYD_temp/LKE_depths), not a scalar-per-
+               # timestep variable like the others in this list.
+               "CHM_oxycln", "CHM_oxyepi", "CHM_oxyhyp",
                "CHM_oxymet", "CHM_oxymom", "CHM_oxynal", "LKE_tlic", "LKE_tlin",
                "LKE_tlip", "LKE_tlise", "LKE_tli3", "LKE_tli4"
                )

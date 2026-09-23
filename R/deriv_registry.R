@@ -32,6 +32,8 @@ NULL
   HYD_epidep = calc_HYD_epidep,
   HYD_hypdep = calc_HYD_hypdep,
   HYD_schstb = calc_HYD_schstb,
+  HYD_nrgcnt = calc_HYD_nrgcnt,
+  LKE_nrgtot = calc_LKE_nrgtot,
   # CHM oxygen variables
   CHM_oxyepi = calc_CHM_oxyepi,
   CHM_oxyhyp = calc_CHM_oxyhyp,
@@ -57,7 +59,9 @@ NULL
   HYD_epidep = character(0),
   HYD_hypdep = character(0),
   HYD_schstb = character(0),
-  
+  HYD_nrgcnt = character(0),
+  LKE_nrgtot = character(0),
+
   # CHM oxygen
   CHM_oxyepi = "HYD_epidep",
   CHM_oxyhyp = "HYD_hypdep",
