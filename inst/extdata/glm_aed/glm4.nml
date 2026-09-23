@@ -147,9 +147,10 @@
    !   surface temperature and, with no sed_deep_temp given, also the deep
    !   boundary temperature.  amplitude / peak_doy are read by the static model
    !   only; kept here so model 1 remains a one-line switch back.
-   sed_temp_mean = 14.6525, 15.44675, 15.835625
-   sed_temp_amplitude = 3.58414990808649, 3.80009087651461, 4.11679673723239
+   sed_temp_mean = 14.7, 15.4, 15.8
+   sed_temp_amplitude = 3.6, 3.8, 4.1
    sed_temp_peak_doy = 46, 50, 50
+   sed_temp_deep = 10, 10, 10 ! fixed bottom temperature during spin-up
 
    !-- model 1 only (unused when sed_heat_model = 2: conductivity and heat
    !   capacity are derived from sed_vwc and the mineral/water/air properties)
