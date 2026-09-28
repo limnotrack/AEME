@@ -20,19 +20,37 @@ initialise_aed <- function(model_controls, path_aed, n_zones = NULL) {
   deriv_vars <- key_naming |>
     dplyr::filter(derived) |>
     dplyr::pull(var_aeme)
-  this_ctrls <-  model_controls |>
-    dplyr::filter(simulate,
-                  !var_aeme %in% deriv_vars,
-                  # variables with no init values
-                  !var_aeme %in% c("DateTime",
-                                   "HYD_flow", "HYD_temp", "HYD_dens",
-                                   "LKE_lvlwtr",
-                                   "RAD_par", "RAD_extc","RAD_secchi",
-                                   "CHM_salt",
-                                   "PHS_pip", "NIT_pin",
-                                   "PHS_tp", "NIT_tn", "PHY_tchla", "CAR_toc")
-    )
-  
+
+  # --- Restrict to genuine AED state variables ---------------------------
+  # A variable is only handled here when its glm_aed-renamed name's module
+  # prefix belongs to a module AED (GLM-AED/v3) actually implements
+  # (.aed_module_map, defined in aed_modules.R). This is a structural check
+  # against AED's own variable-naming convention, so any non-AED AEME
+  # variable (HYD_*, LKE_*, RAD_*, CHM_salt, MET_*, DateTime, ...) is
+  # excluded regardless of its name, rather than relying on an ever-growing
+  # list of non-AED names to exclude one by one -- which previously let
+  # unlisted ones (e.g. `LKE_vol`) slip through to `get_nml_value()`/
+  # `set_nml()` calls below that then failed or wrote bogus nml parameters.
+  candidates <- model_controls |>
+    dplyr::filter(simulate, !var_aeme %in% deriv_vars)
+  glm_names_all <- rename_modelvars(input = candidates$var_aeme,
+                                    type_output = "glm_aed",
+                                    warn_unmatched = TRUE)
+  prefixes_all <- sub("_.*$", "", glm_names_all)
+  is_aed_var <- !is.na(glm_names_all) & glm_names_all != "" &
+    prefixes_all %in% names(.aed_module_map)
+
+  # AED variables that exist but have no settable per-cell initial
+  # concentration of their own: PHY_tchla is an aggregate diagnostic (total
+  # chlorophyll-a across phyto groups) and PHS_pip ("PHS_frp_ads") is a
+  # diagnostic of adsorbed phosphorus -- neither has an `_initial` nml
+  # parameter.
+  no_initial_vars <- c("PHY_tchla", "PHS_pip")
+
+  keep_var <- is_aed_var & !candidates$var_aeme %in% no_initial_vars
+  this_ctrls <- candidates[keep_var, ]
+  glm_names_ctrls <- glm_names_all[keep_var]
+
   aed_cfg <- file.path(path_aed, "aed.nml")
   aed_nml <- read_nml(aed_cfg)
 
@@ -61,9 +79,7 @@ initialise_aed <- function(model_controls, path_aed, n_zones = NULL) {
   # "OXY_oxy" and "OGM_doc"/"OGM_poc" respectively), exactly as
   # initialise_aed2() does for simstrat_aed2 names.
   if (nrow(this_ctrls) > 0) {
-    glm_names <- rename_modelvars(input = this_ctrls$var_aeme,
-                                  type_output = "glm_aed")
-    prefixes <- sub("_.*$", "", glm_names)
+    prefixes <- sub("_.*$", "", glm_names_ctrls)
     active_modules <- aed_prefixes_to_modules(prefixes)
   } else {
     active_modules <- character(0)
@@ -93,11 +109,6 @@ initialise_aed <- function(model_controls, path_aed, n_zones = NULL) {
     write_nml(aed_nml, aed_cfg)
     return(invisible())
   }
-  nme_chk <- rename_modelvars(input = this_ctrls$var_aeme,
-                              type_output = "glm_aed")
-  # Remove columns with no name - not necessary for GLM
-  this_ctrls <- this_ctrls[nme_chk != "", ]
-  
   if (sum(is.na(this_ctrls$initial_wc)) > 0) {
     na_vars <- this_ctrls$var_aeme[which(is.na(this_ctrls$initial_wc))]
     cli::cli_abort("Initial concentrations missing for: {paste(na_vars, collapse = ', ')}.
