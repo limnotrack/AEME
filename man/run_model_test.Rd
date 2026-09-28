@@ -43,8 +43,11 @@ the model requires (e.g. \code{heights_wdr}, and \code{surface_elev} for
 Simstrat). \code{NULL} (default) leaves outflows unchanged.}
 
 \item{tgt_vars}{character vector of output variables to read back (passed
-as \code{vars_sim} to the model's \verb{read_*_output()} wrapper). \code{NULL}
-(default) reads every variable the reader returns by default.}
+as \code{vars_sim} to the model's \verb{read_*_output()} wrapper, and also used to
+decide which derived variables -- e.g. \code{"HYD_thmcln"} -- to compute via
+\code{\link[=add_deriv_output]{add_deriv_output()}}). \code{NULL} (default) reads every variable the reader
+returns by default, but adds no derived variables -- request them
+explicitly by name to get them.}
 
 \item{verbose}{logical; passed through to the model's \verb{run_*()} wrapper.}
 
@@ -55,8 +58,9 @@ rest. Set \code{FALSE} to let errors propagate normally.}
 }
 \value{
 A list of the requested output variables (as returned by the
-model's \verb{read_*_output()} wrapper), or \code{NULL} if \code{safe = TRUE} and the
-edit/run/read failed.
+model's \verb{read_*_output()} wrapper, with derived variables added via
+\code{\link[=add_deriv_output]{add_deriv_output()}}), or \code{NULL} if \code{safe = TRUE} and the edit/run/read
+failed.
 }
 \description{
 Generic driver for quickly testing different parameters, nml/yaml/par
