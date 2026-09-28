@@ -39,7 +39,7 @@ check_AEME_pkg <- function() {
                      model_controls = model_controls, path = path)
   ))
   
-  model_outfiles <- get_model_outfile(aeme) |>
+  model_outfiles <- get_model_outfile(aeme, all = TRUE) |>
     unlist()
   output_present <- any(file.exists(model_outfiles))
   

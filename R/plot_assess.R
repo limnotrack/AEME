@@ -137,7 +137,7 @@ plot_assess <- function(aeme, model, var_sim,
       # Rescale within metric x variable so 1 = best model, and orient by the
       # metric's higher-is-better direction (bias uses |bias|).
       long <- long |>
-        dplyr::group_by(metric, var_sim) |>
+        dplyr::group_by(metric, var_aeme) |>
         dplyr::mutate(
           score = {
             v <- value

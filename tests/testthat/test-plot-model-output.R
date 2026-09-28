@@ -14,6 +14,8 @@ test_that("plot_model_output() works directly on an Aeme object", {
                    model_controls = model_controls, path = path)
   aeme_time <- time(aeme)
 
+  plot_output(aeme)
+  
   # Model auto-selected (only one present) -- (z, time) tile plot
   r1 <- plot_model_output(aeme, "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(r1))

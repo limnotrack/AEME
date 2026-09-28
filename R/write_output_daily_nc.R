@@ -63,7 +63,6 @@ write_output_daily_nc <- function(lake_dir, model, vars = NULL) {
   src <- tryCatch(
     get_model_outfile(model = model, path = lake_dir)[[model]],
     error = function(e) character(0))
-  if (!is.null(names(src)) && "output" %in% names(src)) src <- src[["output"]]
   src <- src[nzchar(src) & file.exists(src)]
   if (length(src) == 0) {
     cli::cli_warn(c("!" = "No {.val {model}} {.file output.nc} to build a

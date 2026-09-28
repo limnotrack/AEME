@@ -33,32 +33,41 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
   
   
   # Align the observed data with the model data ----
-  # Lake observations are daily; model output may be sub-daily (POSIXct). In
-  # that case collapse the modelled surface elevation to one value per
-  # calendar day and match observations on the day, otherwise an exact
-  # timestamp join drops every observation.
+  # Lake observations are daily; model output may be sub-daily (POSIXct). A
+  # daily model axis is joined on the calendar day directly. A sub-daily one
+  # is matched to the model timestep *nearest* each observation's own
+  # timestamp (obs are stored as noon POSIXct) rather than collapsed to a
+  # daily mean -- otherwise an observation can be placed above the
+  # instantaneous modelled surface actually drawn for its timestep whenever
+  # the sub-daily lake level swings over the day.
   lst <- lapply(model, \(m) {
     surface <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
                           surface_elev = outp[[ens_lab]][[m]][["LKE_lvlwtr"]])
     subdaily <- inherits(surface$Date, "POSIXct")
-    if (subdaily) {
-      surface$Date <- as.Date(surface$Date)
-      surface <- stats::aggregate(surface_elev ~ Date, data = surface,
-                                  FUN = mean, na.rm = TRUE)
-    }
+    surface_days <- if (subdaily) as.Date(surface$Date) else surface$Date
 
     if (!is.null(obs$lake)) {
-      # `surface$Date` is a calendar Date here (a daily model axis is already
-      # Date; a sub-daily one was collapsed above). Reduce the observation
-      # Date to the same calendar day for the join -- it is stored as noon
-      # POSIXct.
-      obs$lake |>
-        dplyr::mutate(Date = as.Date(Date, tz = "UTC")) |>
-        dplyr::filter(Date %in% surface$Date & var_aeme == var_sim) |>
-        dplyr::left_join(surface, by = "Date") |>
-        dplyr::mutate(elev = surface_elev - depth,
-                      Model = toggle_models(m, to = "display")) |>
-        dplyr::filter(elev >= 0)
+      obs_sub <- obs$lake |>
+        dplyr::filter(as.Date(Date, tz = "UTC") %in% surface_days &
+                        var_aeme == var_sim)
+
+      if (subdaily) {
+        obs_sub |>
+          dplyr::mutate(surface_elev = .nearest_value(obs_time = Date,
+                                                       ref_time = surface$Date,
+                                                       ref_value = surface$surface_elev),
+                        Date = as.Date(Date, tz = "UTC"),
+                        elev = surface_elev - depth,
+                        Model = toggle_models(m, to = "display")) |>
+          dplyr::filter(elev >= 0)
+      } else {
+        obs_sub |>
+          dplyr::mutate(Date = as.Date(Date, tz = "UTC")) |>
+          dplyr::left_join(surface, by = "Date") |>
+          dplyr::mutate(elev = surface_elev - depth,
+                        Model = toggle_models(m, to = "display")) |>
+          dplyr::filter(elev >= 0)
+      }
     }
   })
 
@@ -86,4 +95,20 @@ align_depth_data <- function(aeme, model, var_sim, ens_n = 1,
     obs$lake_adj <- lst
   }
   obs
+}
+
+#' Look up the value in `ref_value` whose `ref_time` is closest to each
+#' `obs_time`
+#'
+#' `ref_time` must be sorted ascending (as model output timestamps are).
+#'
+#' @noRd
+.nearest_value <- function(obs_time, ref_time, ref_value) {
+  if (length(ref_time) < 2) return(rep(ref_value[1], length(obs_time)))
+  obs_num <- as.numeric(obs_time)
+  ref_num <- as.numeric(ref_time)
+  idx <- findInterval(obs_num, ref_num)
+  idx <- pmin(pmax(idx, 1), length(ref_num) - 1)
+  use_upper <- abs(obs_num - ref_num[idx + 1]) < abs(obs_num - ref_num[idx])
+  ref_value[idx + as.integer(use_upper)]
 }

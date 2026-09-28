@@ -173,7 +173,7 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     out_list[["LKE_Qh"]] <- fd(ncdf4::ncvar_get(nc, "daily_qh")[date_index])
     out_list[["LKE_Qlw"]] <- fd(ncdf4::ncvar_get(nc, "daily_qlw")[date_index])
     out_list[["LKE_Qsw"]] <- fd(ncdf4::ncvar_get(nc, "daily_qsw")[date_index])
-    out_list[["LKE_V"]] <- ncdf4::ncvar_get(nc, "lake_volume")[date_index]
+    out_list[["LKE_vol"]] <- ncdf4::ncvar_get(nc, "lake_volume")[date_index]
     out_list[["LKE_evpvol"]] <- -fd(ncdf4::ncvar_get(nc, "evaporation")[date_index])
     out_list[["LKE_evpflx"]] <- -ncdf4::ncvar_get(nc, "evap_mass_flux")[date_index]
     out_list[["LKE_A0"]] <- fd(ncdf4::ncvar_get(nc, "surface_area")[date_index])

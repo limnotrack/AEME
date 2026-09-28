@@ -68,31 +68,7 @@ initialise_aed2 <- function(model_controls, path_aed2, max_depth = 10,
     dplyr::filter(derived) |>
     dplyr::pull(var_aeme)
 
-  this_ctrls <- model_controls |>
-    dplyr::filter(simulate,
-                  !var_aeme %in% deriv_vars,
-                  !var_aeme %in% c("DateTime",
-                                   "HYD_flow", "HYD_temp", "HYD_dens",
-                                   "LKE_lvlwtr",
-                                   "RAD_par", "RAD_extc", "RAD_secchi",
-                                   "CHM_salt",
-                                   "PHS_pip", "NIT_pin",
-                                   "PHS_tp", "NIT_tn", "PHY_tchla")
-    )
-
-  if (nrow(this_ctrls) == 0) {
-    cli_inform_safe(c("i" = "No variables to initialise in AED2"))
-    write_nml(aed2_nml, aed2_nml_file)
-    return(invisible())
-  }
-  simstrat_names <- rename_modelvars(input = this_ctrls$var_aeme,
-                                     type_output = "simstrat_aed2",
-                                     warn_unmatched = TRUE)
-  keep <- !is.na(simstrat_names) & simstrat_names != ""
-  this_ctrls <- this_ctrls[keep, ]
-  simstrat_names <- simstrat_names[keep]
-
-  # --- Determine active AED2 modules -----------------------------------
+  # --- Determine active AED2 modules / genuine AED2 state variables -----
   module_map <- c(OXY = "aed2_oxygen", CAR = "aed2_carbon",
                   SIL = "aed2_silica", NIT = "aed2_nitrogen",
                   PHS = "aed2_phosphorus", OGM = "aed2_organic_matter",
@@ -101,6 +77,41 @@ initialise_aed2 <- function(model_controls, path_aed2, max_depth = 10,
                     "aed2_nitrogen", "aed2_phosphorus",
                     "aed2_organic_matter", "aed2_phytoplankton",
                     "aed2_zooplankton")
+
+  # A variable is only handled here when its simstrat_aed2-renamed name's
+  # module prefix belongs to a module AED2 actually implements
+  # (`module_map` above). This is a structural check against AED2's own
+  # variable-naming convention, so any non-AED2 AEME variable (HYD_*,
+  # LKE_*, RAD_*, CHM_salt, MET_*, DateTime, ...) is excluded regardless of
+  # its name, rather than relying on an ever-growing list of non-AED2 names
+  # to exclude one by one -- which previously let unlisted ones (e.g.
+  # `LKE_vol`) slip through to `get_nml_value()`/`set_nml()` calls below
+  # that then failed or wrote bogus nml parameters.
+  candidates <- model_controls |>
+    dplyr::filter(simulate, !var_aeme %in% deriv_vars)
+  simstrat_names_all <- rename_modelvars(input = candidates$var_aeme,
+                                         type_output = "simstrat_aed2",
+                                         warn_unmatched = TRUE)
+  prefixes_all <- sub("_.*$", "", simstrat_names_all)
+  is_aed2_var <- !is.na(simstrat_names_all) & simstrat_names_all != "" &
+    prefixes_all %in% names(module_map)
+
+  # AED2 variables that exist but have no settable per-cell initial
+  # concentration of their own: PHY_tchla is an aggregate diagnostic (total
+  # chlorophyll-a across phyto groups) and PHS_pip ("PHS_frp_ads") is a
+  # diagnostic of adsorbed phosphorus -- neither has an `_initial` nml
+  # parameter.
+  no_initial_vars <- c("PHY_tchla", "PHS_pip")
+
+  keep_var <- is_aed2_var & !candidates$var_aeme %in% no_initial_vars
+  this_ctrls <- candidates[keep_var, ]
+  simstrat_names <- simstrat_names_all[keep_var]
+
+  if (nrow(this_ctrls) == 0) {
+    cli_inform_safe(c("i" = "No variables to initialise in AED2"))
+    write_nml(aed2_nml, aed2_nml_file)
+    return(invisible())
+  }
 
   prefixes <- sub("_.*$", "", simstrat_names)
   active_modules <- module_order[module_order %in% unname(module_map[prefixes])]
@@ -175,12 +186,6 @@ initialise_aed2 <- function(model_controls, path_aed2, max_depth = 10,
         integrate = .resolve_simstrat_inflow_load() %in% c("bgc", "all")
       )
     }
-  }
-
-  if (nrow(this_ctrls) == 0) {
-    cli_inform_safe(c("i" = "No variables to initialise in AED2"))
-    write_nml(aed2_nml, aed2_nml_file)
-    return(invisible())
   }
 
   if (sum(is.na(this_ctrls$initial_wc)) > 0) {

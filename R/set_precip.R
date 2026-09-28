@@ -47,6 +47,9 @@ set_precip <- function(aeme, type = c("inflow", "met", "precip_as_inflow",
   lke <- get_lake(aeme)
   lake_area <- lke[["area"]]
   curr_status <- precip_status(aeme)
+  if (is.null(curr_status)) {
+    curr_status <- "none"
+  }
   if (type == curr_status) {
     message("Precip already set as ", type)
     return(aeme)

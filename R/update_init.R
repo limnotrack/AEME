@@ -76,6 +76,12 @@ update_init <- function(aeme, model_controls = NULL) {
           dplyr::summarise(median = median(value)) |>
           dplyr::arrange(depth_mid) |> 
           dplyr::filter(depth_mid <= init_depth)
+        if (nrow(temp_profile) < 2) {
+          cli_inform_safe(c("i" = paste0("Not enough observations for ", v, 
+                                          " to create a profile. Using initial value.")))
+          return(rep(mod_ctrls$initial_wc[mod_ctrls$var_aeme == v],
+                     length(depths)))
+        }
         lm <- lm(median ~ depth_mid, data = temp_profile)
         new_vals <- predict(lm, newdata = data.frame(depth_mid = depths)) |> 
           round(digits = 2)

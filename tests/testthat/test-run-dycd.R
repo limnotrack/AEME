@@ -4,7 +4,11 @@ test_that("running DYRESM works", {
   aeme <- yaml_to_aeme(file = aeme_yaml)
   model_controls <- get_model_controls(use_bgc = F)
   model <- c("dy_cd")
-  path <- tempdir()
+  # An isolated directory rather than the shared session tempdir(): other
+  # test files build/run models for this same lake into tempdir(), and a
+  # leftover config or output from one of them can otherwise leak into this
+  # run (e.g. a stale DYsim.nc from a differently-configured build).
+  path <- withr::local_tempdir()
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE) |>
@@ -33,7 +37,7 @@ test_that("running DYRESM works", {
 test_that("running DYRESM-CAEDYM works", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
-  path <- tempdir()
+  path <- withr::local_tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("dy_cd")
   skip_if_models_unavailable(model)
@@ -54,8 +58,7 @@ test_that("editing and running DYRESM-CAEDYM via the thin path-based wrapper wor
   skip_if_models_unavailable(c("dy_cd"))
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
-  path <- tempdir()
-  unlink(list.files(path, recursive = TRUE, full.names = TRUE))
+  path <- withr::local_tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("dy_cd")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
@@ -119,7 +122,7 @@ test_that("editing and running DYRESM-CAEDYM via the thin path-based wrapper wor
 
 test_that("running DYRESM with a spinup works", {
   skip_if_models_unavailable(c("dy_cd"))
-  tmpdir <- tempdir()
+  tmpdir <- withr::local_tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)

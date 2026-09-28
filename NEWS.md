@@ -521,6 +521,16 @@ the R package version.
   `skip_if_no_glm()`) and CI coverage extended to macOS and Ubuntu, in
   addition to Windows.
 
+## `get_model_outfile()` returns a single file by default
+
+`get_model_outfile()` previously returned every file a model run produced --
+for GLM-AED that meant its netCDF plus any configured `csv_lake`/`csv_point`/
+mass-balance CSVs -- so callers that only wanted the netCDF had to guess
+which entry it was (`nc_files[["output"]]`, else the first element), and a
+couple did so incorrectly. `get_model_outfile()` now returns just the primary
+file per model by default (the entry named `"output"`, or the only file when
+there is one); pass `all = TRUE` to get every file as before.
+
 # AEME 0.3.1
 
 ## New functions

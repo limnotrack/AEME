@@ -128,7 +128,7 @@ test_that("GLM sediment parameters can be input and run", {
   aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = T)
 
   outfiles <- get_model_outfile(aeme = aeme, model = model)
-  testthat::expect_true(file.exists(outfiles$glm_aed))
+  testthat::expect_true(all(file.exists(outfiles$glm_aed)))
   
   sed_params <- glm_sed_params(n_zones = 3, zone_heights = c(5, 10, 14), 
                                sed_temp_mean = c(10, 12, 16))
@@ -142,7 +142,7 @@ test_that("GLM sediment parameters can be input and run", {
   aeme <- run_aeme(aeme = aeme, model = model, path = path)
   
   outfiles <- get_model_outfile(aeme = aeme, model = model)
-  testthat::expect_true(file.exists(outfiles$glm_aed))
+  testthat::expect_true(all(file.exists(outfiles$glm_aed)))
 })
 
 test_that("GLM sediment parameters can be input and run with bgc", {
@@ -165,7 +165,7 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = T)
   
   outfiles <- get_model_outfile(aeme = aeme, model = model)
-  testthat::expect_true(file.exists(outfiles$glm_aed))
+  testthat::expect_true(all(file.exists(outfiles$glm_aed)))
   
   sed_params <- glm_sed_params(n_zones = 3, zone_heights = c(5, 10, 14), 
                                sed_temp_mean = c(10, 12, 16))
@@ -179,7 +179,7 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   aeme <- run_aeme(aeme = aeme, model = model, path = path, verbose = T)
   
   outfiles <- get_model_outfile(aeme = aeme, model = model)
-  testthat::expect_true(file.exists(outfiles$glm_aed))
+  testthat::expect_true(all(file.exists(outfiles$glm_aed)))
 })
 
 test_that("GLM sediment parameters can be input and run with bgc", {

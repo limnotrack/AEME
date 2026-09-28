@@ -235,8 +235,11 @@ test_that("read_simstrat_dat() handles missing or out-of-range output", {
   e1 <- read_simstrat_dat(out_dir = empty, ref_year = 2020)
   testthat::expect_true(is_model_error(e1))
 
-  # date_index past the end of the simulation
-  e2 <- read_simstrat_dat(sim_folder = sim_folder, date_index = 1:1e5)
+  # date_index entirely past the end of the simulation (no overlap with the
+  # rows actually written -- a date_index that only partially overshoots is
+  # clipped rather than erroring, see read_simstrat_dat())
+  e2 <- read_simstrat_dat(sim_folder = sim_folder,
+                          date_index = (1e5):(1e5 + 10))
   testthat::expect_true(is_model_error(e2))
 
   # dates that were never simulated

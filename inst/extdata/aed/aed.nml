@@ -65,7 +65,11 @@
    simnitrfph = .false.
    rnh4o2 = 1
    rno2o2 = 1
-   simn2o = 2
+   simn2o = 0   ! was 2 (N2O-explicit pathway) - that mode supersedes rdenit/
+                ! kdenit below with Kin_denitrat/Knit/Klim_denitrit/etc, none
+                ! of which this template configures, so denitrification was
+                ! structurally zero regardless of rdenit/kdenit. 0 uses the
+                ! classic pathway this template already fully parameterises.
    rn2o = 0.05
    kpart_ammox = 1
    kin_deamm = 1

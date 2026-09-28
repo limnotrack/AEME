@@ -4,7 +4,7 @@
 #' \code{\link{observations}}
 #'
 #' @importFrom rLakeAnalyzer thermo.depth center.buoyancy meta.depths
-#' @importFrom rLakeAnalyzer schmidt.stability
+#' @importFrom rLakeAnalyzer schmidt.stability internal_energy_total
 #' @importFrom dplyr filter mutate bind_rows
 #' @importFrom tidyr pivot_wider
 #'
@@ -26,7 +26,8 @@ calc_lake_obs_deriv <- function(aeme) {
   
   lke <- lake(aeme)
   inp <- input(aeme)
-  bathy <- inp$hypsograph |>
+  hyps <- inp$hypsograph
+  bathy <- hyps |>
     dplyr::filter(depth <= 0)
   bathy$depth <- max(bathy$elev) - bathy$elev
   max_dep <- max(bathy$depth)
@@ -97,6 +98,22 @@ calc_lake_obs_deriv <- function(aeme) {
       wtr_list[["HYD_schstb"]] <- data.frame(Date = Date,
                                              var_aeme = "HYD_schstb",
                                              value = schstb)
+    }
+
+    if (!deriv_chk$present[deriv_chk$aeme_var == "LKE_nrgtot"]) {
+      nrgtot <- vapply(1:nrow(wtr), \(c) {
+        idx2 <- which(!is.na(wtr[c, ]))
+        if (length(idx2) <= 1) return(NA_real_)
+        wtr_col <- wtr[c, idx2]
+        depths_col <- depths[idx2]
+
+        v <- internal_energy_total(wtr = wtr_col, depths = depths_col,
+                                  bthA = bthA, bthD = bthD)
+        if (is.nan(v)) NA_real_ else v
+      }, numeric(1))
+      out_list[["LKE_nrgtot"]] <- data.frame(Date = Date,
+                                              var_aeme = "LKE_nrgtot",
+                                              value = nrgtot)
     }
     
     for (n in names(wtr_list)) {
@@ -318,6 +335,21 @@ calc_lake_obs_deriv <- function(aeme) {
   }
   
   
+  # Lake volume (LKE_vol) from observed water level ----
+  # Uses calc_V_glm (GLM power-law interpolation) so that observed and
+  # simulated LKE_vol use the same hypsograph integration method, removing
+  # the ~0.7% systematic volume bias that arises when comparing against
+  # GLM's native LKE_vol output.
+  if (!is.null(obs$level) && nrow(obs$level) > 0 &&
+      !"LKE_vol" %in% obs$lake$var_aeme) {
+    out_list[["LKE_vol"]] <- data.frame(
+      Date     = obs$level$Date,
+      var_aeme = "LKE_vol",
+      depth    = NA_real_,
+      value    = calc_V_glm(depth = obs$level$value, hyps = hyps)
+    )
+  }
+
   if (length(out_list) > 0) {
     out_df <- out_list |>
       dplyr::bind_rows() |>
