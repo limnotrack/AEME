@@ -1,5 +1,56 @@
 # AEME 0.4.0
 
+## Phytoplankton default fixes and a new succession-diagnostic function
+
+Follow-up to an investigation into whether GLM-AED can reproduce genuine
+multi-group phytoplankton succession (diatom/green/cyanobacteria), which
+surfaced two structural issues in the shipped `aed_phyto_pars.csv` template
+(`inst/extdata/aed/aed_phyto_pars.csv`) that affect every lake built from
+package defaults, not just the one investigated:
+
+* **`X_nmin`/`X_nmax`/`X_pmin`/`X_pmax` (Droop internal-quota bounds) were
+  byte-identical across every phytoplankton group.** Under this template's
+  configuration (`simINDynamics`/`simIPDynamics = 2` for every group),
+  these bounds -- not `K_N`/`K_P`, which only apply in a rare edge case --
+  are the actual nutrient-competition lever, so shipping them identical
+  meant no group-level nutrient differentiation was possible regardless of
+  what else was tuned. Given modest, literature-informed, stability-tested
+  differentiation: cyanobacteria get a wider phosphorus luxury-storage range
+  (`X_pmin` 0.001->0.0007, `X_pmax` 0.005->0.009, reflecting documented
+  polyphosphate storage in bloom-forming taxa), and diatoms get a tighter,
+  more efficient nitrogen/phosphorus economy (`X_nmin` 0.02->0.025, `X_nmax`
+  0.07->0.055, `X_pmin` 0.001->0.0012, `X_pmax` 0.005->0.0038, reflecting
+  documented low-luxury nutrient uptake in diatoms relative to greens/
+  cyanobacteria). Every other group is unchanged.
+* **`simSiUptake` was 0 (off) for every group, including `diatom`.** Per
+  `aed_phyto_pars.csv`'s own dbase and `aed_bio_utils.F90`'s `phyto_fSi()`,
+  this switch gates whether silica limitation is computed at all --
+  `fSi` defaults to `1` (unlimited) whenever it's off. A diatom group
+  structurally requires silica; shipping the default with this switch off
+  meant silica limitation was silently inert for the one group it's
+  supposed to apply to. Now `1` for `diatom`, unchanged (`0`) for every
+  other group.
+
+(A third candidate fix -- `aed_zooplankton` being absent from a lake's
+active `&aed_models` list, which silently zeroes out all top-down grazing
+-- turned out to already be correct in this package's own default
+`inst/extdata/aed/aed.nml`; the omission found during the investigation was
+specific to one external project's lake configuration, not a package
+default.)
+
+## `aed_succession_index()`
+
+New exported function computing a system-level diagnostic for whether a
+model run shows genuine, recurring, multi-group phytoplankton succession --
+computed purely from model output via `get_var()`, no observations
+required. Returns three components (`evenness`, `dom_entropy`,
+`periodicity`) plus a `composite`; see `?aed_succession_index` for what
+each one catches and the two failed designs (raw autocorrelation; naive
+mode-matching) that led to the current `match_rate`/`regime_shift`
+construction for `periodicity`. Intended as a PEST regularisation
+observation (biasing a calibration away from single-group-monopoly or
+one-way-drift solutions) or as a standalone diagnostic.
+
 ## Daily-mean output for GLM-AED and Simstrat
 
 `set_output_time_step(aeme, frequency, daily_mean = TRUE)` (new argument, also
