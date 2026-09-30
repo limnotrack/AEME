@@ -1,6 +1,10 @@
 #' Set GLM-AED Models
 #' 
 #' Set the biogeochemical models to be used in a GLM-AED configuration file.
+#' When the file is located from `aeme`, the GLM nml is also updated so that the
+#' `&init_profiles` initial conditions, `&inflow` `inflow_vars` and
+#' `&mass_balance` `balance_vars` only include variables whose AED module is in
+#' `aed_models`. When `nml` is supplied only that aed.nml object is modified.
 #'
 #' @inheritParams build_aeme
 #' @param aed_models Character vector of GLM-AED models to include. Default includes
@@ -86,6 +90,20 @@ set_glm_aed_models <- function(aeme, path, aed_models = c("aed_sedflux",
   
   if (write_nml) {
     write_nml(nml, file)
+
+    # Keep the GLM nml consistent with the new module set: drop initial
+    # conditions, inflow variables and mass-balance variables that belong to
+    # modules that are no longer active (and restore them if re-enabled).
+    path_glm <- dirname(dirname(file))
+    glm_file <- find_glm_nml(path_glm, must_exist = FALSE)
+    if (!is.na(glm_file)) {
+      glm_nml <- read_nml(glm_file)
+      model_controls <- configuration(aeme)[["model_controls"]]
+      glm_nml <- sync_glm_aed_vars(glm_nml, model_controls = model_controls,
+                                   aed_models = aed_models,
+                                   path_glm = path_glm)
+      write_nml(glm_nml, glm_file)
+    }
     return(invisible(aeme))
   } else {
     return(nml)

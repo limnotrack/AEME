@@ -159,9 +159,25 @@ build_glm <- function(lakename, model_controls, date_range,
     glm_nml$meteorology$lw_type <- "LW_CC"
   }
   
+  # Write the AED nml first (needs the sediment zone count from make_stg_glm())
+  # so the active AED modules are known when the inflow, initial-profile and
+  # mass-balance variable lists are built: a variable is only written to the
+  # GLM nml when its AED module is active in aed.nml.
+  if (use_bgc && overwrite_nml) {
+    initialise_aed(model_controls = model_controls,
+                   path_aed = file.path(path_glm, "aed"),
+                   n_zones = glm_nml[["sediment"]][["n_zones"]])
+  }
+  aed_models <- if (use_bgc) {
+    glm_active_aed_models(file.path(path_glm, "aed", "aed.nml"))
+  } else {
+    NULL
+  }
+
   # Make inflows table and modify nml
   glm_nml <- make_inf_glm(glm_nml = glm_nml, path_glm = path_glm, list_inf = inf,
-                         mass = TRUE, inf_factor = inf_factor)
+                         mass = TRUE, inf_factor = inf_factor,
+                         aed_models = aed_models)
   
   #--- make outflows table and modify nml
   # `heights_wdr` is the AEME outflow `elevation`: an absolute elevation on the
@@ -220,14 +236,9 @@ build_glm <- function(lakename, model_controls, date_range,
   # starting water level
   glm_nml <- initialise_glm(glm_nml = glm_nml, lvl_bottom = 0.1, 
                             init_depth = init_depth, tbl_obs = init_prof,
-                            Kw = Kw, model_controls = model_controls)
+                            Kw = Kw, model_controls = model_controls,
+                            aed_models = aed_models)
   
-  if (use_bgc && overwrite_nml) {
-    initialise_aed(model_controls = model_controls,
-                   path_aed = file.path(path_glm, "aed"),
-                   n_zones = glm_nml[["sediment"]][["n_zones"]])
-  }
-
   if (use_bgc) {
     glm_nml[["wq_setup"]] <- list("wq_lib" = "api",
                                   "wq_nml_file" = "aed/aed.nml",

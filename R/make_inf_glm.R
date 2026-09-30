@@ -6,6 +6,9 @@
 #' @param list_inf list of inflows
 #' @param mass logical; do mass conversion for GLM-AED units.
 #' @param inf_factor numeric; scaling factor to apply to inflows
+#' @param aed_models character vector of active AED modules (see
+#'   `glm_active_aed_models()`); inflow variables belonging to inactive modules
+#'   are left out of `inflow_vars`. `NULL` applies no filter.
 #'
 #' @return nml object with updated inflow section
 #' @noRd
@@ -13,7 +16,7 @@
 #' @importFrom utils write.csv
 
 make_inf_glm <- function(glm_nml, path_glm, list_inf, mass = TRUE,
-                        inf_factor = 1, update_nml = TRUE) {
+                        inf_factor = 1, update_nml = TRUE, aed_models = NULL) {
 
   # Load Rdata
   data("key_naming", package = "AEME", envir = environment())
@@ -80,6 +83,16 @@ make_inf_glm <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                                                        names_inf, ".csv")),
            row.names = FALSE, quote = FALSE)
 
+    # Only list variables whose AED module is active; the CSVs keep every
+    # column (GLM reads by header name) so modules can be re-enabled later.
+    inf_vars <- names(df)[2:ncol(df)]
+    dropped <- inf_vars[!glm_aed_var_active(inf_vars, aed_models)]
+    if (length(dropped) > 0) {
+      cli_inform_safe(c("i" = "Skipping inflow variables whose AED module is \\
+                              not active: {paste(dropped, collapse = ', ')}."))
+    }
+    inf_vars <- setdiff(inf_vars, dropped)
+
     arg_list <- list(num_inflows = n_inf, names_of_strms = names_inf,
                      strm_hf_angle = rep(80, n_inf),
                      strmbd_slope = rep(0.5, n_inf),
@@ -87,8 +100,8 @@ make_inf_glm <- function(glm_nml, path_glm, list_inf, mass = TRUE,
                      inflow_factor = rep(1, n_inf),
                      inflow_fl = paste0("bcs/inflow_", names_inf,
                                         ".csv"),
-                     inflow_varnum = length(names(df)[2:ncol(df)]),
-                     inflow_vars = names(df)[2:ncol(df)],
+                     inflow_varnum = length(inf_vars),
+                     inflow_vars = inf_vars,
                      coef_inf_entrain = 0
                      )
   } else {
