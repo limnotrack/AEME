@@ -612,7 +612,12 @@ standardise_met <- function(met, verbose = TRUE, precip_accum = TRUE,
   for (var in names(.met_conversion_table)) {
     
     if (!var %in% names(met)) next
-    
+
+    # The m/day-vs-mm/day guess relies on daily magnitudes; sub-daily per-step
+    # accumulations (e.g. mm/hr) are routinely < 0.5 and would be mis-scaled.
+    if (var %in% c("MET_pprain", "MET_ppsnow") && "Date" %in% names(met) &&
+        is_subdaily(met[["Date"]])) next
+
     spec <- .met_conversion_table[[var]]
     x    <- met[[var]]
     
