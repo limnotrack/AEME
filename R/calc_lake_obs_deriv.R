@@ -4,7 +4,7 @@
 #' \code{\link{observations}}
 #'
 #' @importFrom rLakeAnalyzer thermo.depth center.buoyancy meta.depths
-#' @importFrom rLakeAnalyzer schmidt.stability internal_energy_total
+#' @importFrom rLakeAnalyzer schmidt.stability
 #' @importFrom dplyr filter mutate bind_rows
 #' @importFrom tidyr pivot_wider
 #'
