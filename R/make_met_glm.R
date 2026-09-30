@@ -51,9 +51,14 @@ make_met_glm <-  function(obs_met, path_glm = "", infRain = FALSE,
     # standardise formats
     dplyr::mutate(dplyr::across(2:6, \(x) round(x, digits = 3)),
                   dplyr::across(2:6, \(x) format(x, nsmall = 3, width = 12)),
-                  dplyr::across(7:ncol(metVals), \(x) round(x, digits = 5)),
-                  dplyr::across(7:ncol(metVals), \(x) format(x, nsmall = 5,
-                                                       width = 12)))
+                  # rain / snow are m/day: sub-daily rates are tiny, so keep
+                  # 8 dp (fixed notation) rather than the 5 dp used for the rest
+                  dplyr::across(dplyr::all_of(c("MET_pprain", "MET_ppsnow")),
+                                \(x) formatC(x, format = "f", digits = 8,
+                                             width = 12)),
+                  dplyr::across(dplyr::all_of("MET_prsttn"),
+                                \(x) formatC(x, format = "f", digits = 1,
+                                             width = 12)))
 
   # Sub-daily meteo keeps a full timestamp so GLM (subdaily = .true.) can read
   # it; daily meteo is written as a bare date exactly as before. AEME does not

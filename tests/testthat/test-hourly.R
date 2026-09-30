@@ -241,3 +241,57 @@ test_that("plotting functions work on sub-daily (POSIXct) output", {
   expect_gt(nrow(ad$lake_adj), 0)
   expect_no_error(plot_output(aeme, "HYD_temp", add_obs = TRUE))
 })
+
+test_that("GLM meteo_glm.csv matches the sub-daily met passed to build_aeme()", {
+  skip_if_models_unavailable("glm_aed")
+  path <- withr::local_tempdir()
+  file.copy(system.file("extdata/lake", package = "AEME"), path, recursive = TRUE)
+  lake_path <- file.path(path, "lake")
+  aeme <- suppressWarnings(suppressMessages(yaml_to_aeme(path = lake_path, "aeme.yaml")))
+
+  met <- read.csv(file.path(lake_path, "data/meteo_era5_hr.csv.gz"))
+  # as.POSIXct() on this column truncates to dates: midnight rows carry no time
+  met$Date <- .as_forcing_datetime(met$Date)
+  met <- met[met$Date >= as.POSIXct("2020-07-25", tz = "UTC") &
+             met$Date <= as.POSIXct("2020-08-20", tz = "UTC"), ]
+  inp <- input(aeme); inp$meteo <- met; input(aeme) <- inp
+  aeme <- suppressMessages(set_time(aeme, output_time_step = 3600))
+  aeme <- set_time(aeme, time_step = 3600,
+                   start = as.POSIXct("2020-08-01", tz = "UTC"),
+                   stop = as.POSIXct("2020-08-15", tz = "UTC"), spin_up = 1)
+
+  aeme <- suppressWarnings(suppressMessages(
+    build_aeme(aeme = aeme, path = lake_path, model = "glm_aed",
+               model_controls = get_model_controls(), ext_elev = 5,
+               use_bgc = FALSE)
+  ))
+
+  f <- file.path(get_lake_dir(aeme, lake_path), "glm_aed", "bcs", "meteo_glm.csv")
+  glm_met <- read.csv(f, strip.white = TRUE)
+  names(glm_met) <- trimws(names(glm_met))
+  glm_met$time <- as.POSIXct(glm_met$time, tz = "UTC")
+  expect_true(is_subdaily(glm_met$time))
+
+  # the file is a sub-set of the met stored on the aeme object (mm/day rates)
+  built <- input(aeme)$meteo
+  built$Date <- as.POSIXct(built$Date, tz = "UTC")
+  idx <- match(glm_met$time, built$Date)
+  expect_false(anyNA(idx))
+  b <- built[idx, ]
+
+  expect_equal(glm_met$ShortWave, b$MET_radswd, tolerance = 1e-3)
+  expect_equal(glm_met$AirTemp,   b$MET_tmpair, tolerance = 1e-3)
+  expect_equal(glm_met$WindSpeed, b$MET_wndspd, tolerance = 1e-3)
+  expect_equal(glm_met$RelHum,    b$MET_humrel, tolerance = 1e-3)
+  # unit conversions: mm/day -> m/day and Pa -> hPa
+  expect_equal(glm_met$Rain, b$MET_pprain / 1000, tolerance = 1e-8)
+  expect_equal(glm_met$AirPres, b$MET_prsttn / 100, tolerance = 0.06)
+
+  # and the rain is the user's per-step depth scaled once to a rate
+  # (x24 for hourly) then to m/day -- not compounded
+  orig <- met[match(glm_met$time, met$Date), ]
+  # (expand_met() rounds the per-step depth to 3 dp mm, hence the 0.0005 mm
+  # per-step slack)
+  expect_lt(max(abs(glm_met$Rain - orig$MET_pprain * 24 / 1000)),
+            0.0005 * 24 / 1000 + 1e-8)
+})

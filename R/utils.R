@@ -15,7 +15,18 @@ check_time_format <- function(x, tz = "UTC") {
     formats <- c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d")
     for (fmt in formats) {
       parsed <- as.POSIXct(x, format = fmt, tz = tz)
-      if (!any(is.na(parsed))) return(parsed)
+      if (!any(is.na(parsed))) {
+        # Sub-daily files often write midnight as a bare date; the date-only
+        # format then "succeeds" on every row by ignoring the time-of-day.
+        # Re-read the rows that do carry a time so they are not truncated.
+        if (fmt == "%Y-%m-%d") {
+          for (f2 in rev(formats[1:2])) {
+            p2 <- as.POSIXct(x, format = f2, tz = tz)
+            parsed[!is.na(p2)] <- p2[!is.na(p2)]
+          }
+        }
+        return(parsed)
+      }
     }
     cli::cli_abort(
       c(

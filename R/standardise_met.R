@@ -125,7 +125,41 @@ standardise_met <- function(met, verbose = TRUE, precip_accum = TRUE,
     met <- .subdaily_precip_to_rate(met, verbose = verbose)
   }
 
+  # ── Step 5: sub-daily precip magnitude check ────────────────────────────
+
+  .check_subdaily_precip_magnitude(met)
+
   met
+}
+
+
+#' Warn when sub-daily rainfall implies an implausibly low annual depth
+#'
+#' A sub-daily rain series supplied in metres (rather than mm) per step comes
+#' out ~1000x too small, which no unit heuristic can catch. Compares the
+#' mean mm/day rate, expressed as mm/yr, against a floor of 50 mm/yr (drier
+#' than almost anywhere inhabited). Needs >= 30 days of data to be meaningful.
+#' @noRd
+.check_subdaily_precip_magnitude <- function(met, min_mm_yr = 50) {
+  if (!all(c("Date", "MET_pprain") %in% names(met))) return(invisible(NULL))
+  if (!is_subdaily(met[["Date"]])) return(invisible(NULL))
+
+  rate <- met[["MET_pprain"]] # mm/day
+  if (!.has_nonzero(rate)) return(invisible(NULL))
+  span_days <- as.numeric(diff(range(as.POSIXct(met[["Date"]], tz = "UTC"))),
+                          units = "days")
+  if (!is.finite(span_days) || span_days < 30) return(invisible(NULL))
+
+  mm_yr <- mean(rate, na.rm = TRUE) * 365.25
+  if (mm_yr < min_mm_yr) {
+    cli::cli_warn(
+      c("!" = "Sub-daily {.code MET_pprain} implies only {round(mm_yr, 2)} mm/yr.",
+        "i" = paste("Rainfall should be a depth in {.strong mm} per step",
+                    "(e.g. mm/hr), not metres. Check the units of the input.")),
+      class = "aeme_warn_met_precip_low"
+    )
+  }
+  invisible(NULL)
 }
 
 
