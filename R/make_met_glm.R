@@ -41,10 +41,11 @@ make_met_glm <-  function(obs_met, path_glm = "", infRain = FALSE,
                   MET_ppsnow = MET_ppsnow / 1000) |> # convert to m
     dplyr::select(all_of(col.order))
 
-  # In sub-daily mode GLM reads AirPres as-is and treats it as hPa (daily mode
-  # ignores the column and uses 1013.25 hPa), whereas AEME stores Pa.
-  if (subdaily) {
-    metVals[["MET_prsttn"]] <- metVals[["MET_prsttn"]] / 100
+  # GLM treats AirPres as hPa, whereas AEME stores Pa.
+  metVals[["MET_prsttn"]] <- metVals[["MET_prsttn"]] / 100
+  if (!subdaily) {
+    rlang::warn("GLM ignores the AirPres met column in daily mode and uses the default 1013.25 hPa instead.",
+                .frequency = "once", .frequency_id = "aeme_glm_airpres_daily")
   }
   metVals <- metVals |>
     # standardise formats
