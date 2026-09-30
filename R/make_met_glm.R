@@ -32,12 +32,20 @@ make_met_glm <-  function(obs_met, path_glm = "", infRain = FALSE,
   }
 
 
+  subdaily <- inherits(obs_met[["Date"]], "POSIXct") &&
+    is_subdaily(obs_met[["Date"]])
+
   # process the obsMet into GLM format
   metVals <- obs_met |>
     dplyr::mutate(MET_pprain = MET_pprain / 1000,
                   MET_ppsnow = MET_ppsnow / 1000) |> # convert to m
-    dplyr::select(all_of(col.order)) |>
-    dplyr::mutate(MET_prsttn = MET_prsttn)
+    dplyr::select(all_of(col.order))
+
+  # In sub-daily mode GLM reads AirPres as-is and treats it as hPa (daily mode
+  # ignores the column and uses 1013.25 hPa), whereas AEME stores Pa.
+  if (subdaily) {
+    metVals[["MET_prsttn"]] <- metVals[["MET_prsttn"]] / 100
+  }
   metVals <- metVals |>
     # standardise formats
     dplyr::mutate(dplyr::across(2:6, \(x) round(x, digits = 3)),
@@ -49,7 +57,7 @@ make_met_glm <-  function(obs_met, path_glm = "", infRain = FALSE,
   # Sub-daily meteo keeps a full timestamp so GLM (subdaily = .true.) can read
   # it; daily meteo is written as a bare date exactly as before. AEME does not
   # disaggregate -- sub-daily rows must be supplied by the user.
-  if (inherits(metVals[["Date"]], "POSIXct") && is_subdaily(metVals[["Date"]])) {
+  if (subdaily) {
     metVals[["Date"]] <- format(metVals[["Date"]], "%Y-%m-%d %H:%M:%S")
   } else {
     metVals[["Date"]] <- as.Date(metVals[["Date"]])
