@@ -149,8 +149,18 @@ standardise_met <- function(met, verbose = TRUE, precip_accum = TRUE,
                         na.rm = TRUE)
   if (!is.finite(step) || step <= 0 || step >= 86400) return(met)
 
+  # build_aeme() writes the standardised met back into the aeme object and
+  # re-reads it on the next build, so this must be idempotent: columns already
+  # rescaled carry a marker and are left alone.
+  vars <- vars[!vapply(vars, function(v) isTRUE(attr(met[[v]], "aeme_precip_rate")),
+                       logical(1))]
+  if (!length(vars)) return(met)
+
   scale <- 86400 / step
-  for (v in vars) met[[v]] <- met[[v]] * scale
+  for (v in vars) {
+    met[[v]] <- met[[v]] * scale
+    attr(met[[v]], "aeme_precip_rate") <- TRUE
+  }
 
   if (verbose) {
     cli::cli_inform(c(
