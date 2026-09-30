@@ -37,4 +37,8 @@ returns the input Aeme object with the updated GLM-AED configuration file.
 }
 \description{
 Set the biogeochemical models to be used in a GLM-AED configuration file.
+When the file is located from \code{aeme}, the GLM nml is also updated so that the
+\verb{&init_profiles} initial conditions, \verb{&inflow} \code{inflow_vars} and
+\verb{&mass_balance} \code{balance_vars} only include variables whose AED module is in
+\code{aed_models}. When \code{nml} is supplied only that aed.nml object is modified.
 }
