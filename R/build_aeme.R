@@ -796,7 +796,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
 
   # Model parameters ----
   param <- parameters(aeme = aeme)
-  if (nrow(param) > 1) {
+  if (nrow(param) > 0) {
     # Add catch if index is missing
     if (!"index" %in% names(param)) {
       param$index <- NA_integer_
