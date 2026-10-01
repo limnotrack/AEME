@@ -21,6 +21,11 @@
 get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
                             month = NULL, depth_range = NULL, use_obs = TRUE) {
 
+  # Model output time axes are UTC (CF "<unit> since <origin>"); keep all
+  # datetime arithmetic here in UTC too.
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+
   # Check function args ----
   aeme <- check_aeme(aeme)
   model <- check_model(model = model)
@@ -34,11 +39,7 @@ get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
 
   # If nc is not provided access it using aeme and model ----
   if (is.null(nc)) {
-    out_file <- get_model_outfile(aeme = aeme, model = model, 
-                                  path = path)[[model]]
-    if (length(out_file) == 2) {
-      out_file <- out_file[1]
-    }
+    out_file <- get_model_outfile(aeme = aeme, model = model)[[model]]
     if (!file.exists(out_file)) {
       stop("No ", out_file, " present.")
     }
@@ -46,26 +47,31 @@ get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
     on.exit(ncdf4::nc_close(nc))
   }
 
-  # Get model time ----
+  # Get model time (POSIXct; collapsed to Date when the output is daily) ----
   if (model == "dy_cd") {
     dates <- as.POSIXct((ncdf4::ncvar_get(nc, 'dyresmTime') - 2415018.5) *
                           86400,
-                        origin = "1899-12-30", tz = "UTC") |>
-      as.Date()
+                        origin = "1899-12-30", tz = "UTC")
   } else if (model == "glm_aed") {
     hours_since  <- ncdf4::ncvar_get(nc, "time")
     date_start <- as.POSIXct(gsub("hours since ", "",
                                   ncdf4::ncatt_get(nc, "time", "units")$value),
                              tz = "UTC")
-    dates <- as.Date(hours_since * 3600 + date_start)
+    dates <- as.POSIXct(hours_since * 3600 + date_start, tz = "UTC")
   } else if (model == 'gotm_pclake' | model == "gotm_wet") {
     out.steps <- ncdf4::ncvar_get(nc, "time")
     date_start <- ncdf4::ncatt_get(nc,'time','units')$value |>
       gsub("seconds since ", "", x = _) |>
-      as.POSIXct() |>
-      as.Date()
-    dates <- seq.Date(date_start, by = 1, length.out = length(out.steps))
+      as.POSIXct(tz = "UTC")
+    dates <- as.POSIXct(out.steps + date_start, tz = "UTC")
+  } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
+    seconds_since <- ncdf4::ncvar_get(nc, "time")
+    date_start <- as.POSIXct(gsub("seconds since ", "",
+                                  ncdf4::ncatt_get(nc, "time", "units")$value),
+                             tz = "UTC")
+    dates <- as.POSIXct(seconds_since, origin = date_start, tz = "UTC")
   }
+  dates <- .collapse_output_date(dates)
 
   # Trim off spinup time
   # dates <- dates[dates >= aeme_time$start & dates <= aeme_time$stop]
@@ -74,13 +80,17 @@ get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
   # If month and depth_range are not provided, use aeme observation month and depth_range
   if (is.null(month) & is.null(depth_range) & use_obs) {
     obs <- AEME::observations(aeme)
+    # Observations are daily (stored as noon POSIXct); match the model axis on
+    # the calendar day. For a sub-daily axis keep one step per obs day.
+    dates_day <- as.Date(dates, tz = "UTC")
     var_indices <- lapply(vars_sim, \(v) {
       obs_v <- obs$lake |>
-        dplyr::filter(var_aeme == v & Date %in% dates) |>
-        dplyr::mutate(depth_mid = (depth_from + depth_to) / 2)
+        dplyr::mutate(Date = as.Date(Date, tz = "UTC")) |>
+        dplyr::filter(var_aeme == v & Date %in% dates_day) |>
+        dplyr::mutate(depth_mid = depth)
       deps <- unique(obs_v$depth_mid)
       deps <- deps[order(deps)]
-      date_idx <- which(dates %in% obs_v$Date)
+      date_idx <- which(dates_day %in% obs_v$Date & !duplicated(dates_day))
       list(date_index = date_idx, depths = deps, dates = dates[date_idx])
     })
   } else if (is.null(month) & is.null(depth_range)) {

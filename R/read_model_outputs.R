@@ -14,8 +14,28 @@
 #' @param incl_fluxes Logical indicating whether to include flux variables.
 #' Defaults to TRUE.
 #' @param output_hour Hour of the day to extract (0-23). Defaults to 0.
-#' @param phyto_pars Dataframe of phytoplankton parameters for GLM-AED model. 
+#' @param phyto_pars Dataframe of phytoplankton parameters for GLM-AED model.
 #' See `?read_glm_output` for details. Defaults to NULL.
+#' @param load_all logical; for `model = "glm_aed"`, also load every other
+#' variable present in the netCDF output beyond the declared `vars_sim` set
+#' -- see `?read_glm_output`. Ignored for other models. Defaults to TRUE.
+#' @param daily_mean logical; when `TRUE`, return one record per calendar day.
+#' If a model's daily-mean `output_daily.nc` companion is present (GOTM writes
+#' one natively; GLM-AED and Simstrat get one from `run_aeme()` when
+#' `time(aeme)$output_daily_mean` is `TRUE`) it is read directly; otherwise the
+#' raw sub-daily `output.nc` is read and averaged by calendar day. Defaults to
+#' `FALSE`. See \code{\link{set_output_time_step}}.
+#' @param use_dat logical; for the Simstrat models only, read Simstrat's own
+#' `<var>_out.dat` text output via \code{\link{read_simstrat_dat}} instead of
+#' the consolidated `output.nc`. Every other argument means the same thing
+#' either way, so this only changes where the numbers are read from. `TRUE`
+#' is the faster path -- it skips the netCDF entirely, and with
+#' `load_all = FALSE` reads only the files the requested `vars_sim` need,
+#' which is what a calibration wants. Defaults to `NULL`: read `output.nc`
+#' when there is one, and fall back to the text output when there is not
+#' (a run whose output was never converted, or converted with
+#' \code{\link{write_simstrat_nc}}`(remove_dat = FALSE)` and the netCDF since
+#' removed). Ignored when `nc` is supplied.
 #'
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @importFrom withr local_locale local_timezone
@@ -23,29 +43,131 @@
 #' @returns List of model outputs in AEME standard format
 #' @export
 
-read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL, 
+read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                                depths = NULL, dates = NULL, date_index = NULL,
-                               incl_fluxes = TRUE, output_hour = 0, 
-                               phyto_pars = NULL) {
-  
+                               incl_fluxes = TRUE, output_hour = 0,
+                               phyto_pars = NULL, load_all = TRUE,
+                               use_dat = NULL, daily_mean = FALSE) {
+
   # Set timezone
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
-  
+
   model <- check_model(model)
   if (length(model) != 1) {
     cli::cli_abort("Please supply a single model name.")
   }
-  if (is.null(nc)) {
+
+  # ---- netCDF or Simstrat's own text output? ----
+  is_simstrat <- model %in% c("simstrat_aed2", "simstrat_aed")
+  if (isTRUE(use_dat) && !is_simstrat) {
+    cli::cli_abort(c(
+      "x" = "{.arg use_dat} only applies to the Simstrat models, not {.val {model}}.",
+      "i" = "Only Simstrat writes its output as text alongside a netCDF."
+    ))
+  }
+  auto_dat <- is.null(use_dat) && is_simstrat && is.null(nc)
+  use_dat <- isTRUE(use_dat) && is.null(nc)
+  # Daily-mean storage forces the netCDF path: the raw-text Simstrat reader
+  # has no daily companion, and GOTM's daily means live in output_daily.nc.
+  if (isTRUE(daily_mean) && is.null(nc)) {
+    auto_dat <- FALSE
+    use_dat <- FALSE
+  }
+
+  nc_files <- NULL
+  if (!use_dat && is.null(nc)) {
     lake_dir <- check_path(lake_dir, must_exist = TRUE)
     # Read in model netCDF file
-    nc_files <- get_model_outfile(model = model, lake_dir = lake_dir)[[model]]
-    if (model == "gotm_wet") {
-      nc_file <- nc_files["output"]  
+    # `all = TRUE`: this function checks every file a model run produces
+    # (e.g. GLM-AED's csv/balance companions) exists before trusting the
+    # run completed, and needs GOTM's "output"/"output_daily" pair together
+    # to pick between them below.
+    nc_files <- if (auto_dat) {
+      # The netCDF may legitimately be absent here -- that is what the
+      # fall-back below is for -- so a failure to resolve it is not yet an
+      # error.
+      tryCatch(get_model_outfile(model = model, path = lake_dir, all = TRUE)[[model]],
+               error = function(e) character(0))
+    } else {
+      get_model_outfile(model = model, path = lake_dir, all = TRUE)[[model]]
+    }
+    if (auto_dat && (length(nc_files) == 0 ||
+                     !("output" %in% names(nc_files)))) {
+      use_dat <- .simstrat_dat_available(lake_dir = lake_dir, model = model)
+      if (!use_dat) {
+        # Neither form of output is there: let the netCDF path report it,
+        # so the error is the one callers already handle.
+        nc_files <- get_model_outfile(model = model, path = lake_dir, all = TRUE)[[model]]
+      }
+    }
+  }
+
+  # Daily-mean storage: redirect to output_daily.nc when it exists, so the
+  # daily records are read straight off disk. When it does not (a GLM/Simstrat
+  # run made before run_aeme() wrote it, or a manual read), we fall back to
+  # reading the raw output.nc and averaging by calendar day further down.
+  read_from_daily <- FALSE
+  if (isTRUE(daily_mean) && !is.null(nc_files) && length(nc_files)) {
+    primary <- if (!is.null(names(nc_files)) && "output" %in% names(nc_files)) {
+      nc_files[["output"]]
+    } else {
+      nc_files[[1]]
+    }
+    dfile <- .output_daily_path(primary)
+    if (!is.null(dfile) && file.exists(dfile)) {
+      nc_files <- stats::setNames(dfile, "output_daily")
+      read_from_daily <- TRUE
+    }
+  }
+
+  if (use_dat) {
+    # Simstrat's raw text output. read_simstrat_dat() takes vars_sim/depths/
+    # dates/date_index/incl_fluxes/load_all with the same meaning as the
+    # netCDF readers below, and returns the same output list, so nothing
+    # downstream needs to know which path was taken.
+    lake_dir <- check_path(lake_dir, must_exist = TRUE)
+    hyps <- read_model_hypsograph(model = model, lake_dir = lake_dir)
+    out_list <- read_simstrat_dat(sim_folder = file.path(lake_dir, model),
+                                  vars_sim = vars_sim, depths = depths,
+                                  dates = dates, date_index = date_index,
+                                  incl_fluxes = incl_fluxes,
+                                  load_all = load_all, model = model)
+    if (is_model_error(out_list)) return(out_list)
+    return(.finalise_model_output(out_list = out_list, hyps = hyps,
+                                  vars_sim = vars_sim, model = model))
+  }
+
+  if (is.null(nc)) {
+    # By here the run should have produced an output file. If it did not,
+    # the model almost certainly failed to complete -- say so plainly
+    # rather than let open_nc_safe() choke further down on an empty path.
+    if (length(nc_files) == 0 || !any(nzchar(nc_files)) ||
+        !all(file.exists(nc_files))) {
+      cli::cli_abort(c(
+        "x" = "No {.val {model}} output file found in {.path {lake_dir}}.",
+        "i" = "The model run likely failed to complete. Re-run it with
+               {.code verbose = TRUE} to inspect the model log."
+      ), class = "aeme_error_missing_output")
+    }
+    if (read_from_daily) {
+      # Everything (states and fluxes) comes from the one daily-mean file.
+      nc_file <- nc_files[["output_daily"]]
+      incl_fluxes <- TRUE
+      read_gotm_daily <- FALSE
+    } else if (model == "gotm_wet") {
+      nc_file <- nc_files["output"]
       incl_fluxes <- ifelse("output_daily" %in% names(nc_files), FALSE, TRUE)
       read_gotm_daily <- !incl_fluxes
     } else {
-      nc_file <- nc_files
+      # Resolvers name the primary output differently per model (glm/simstrat
+      # use "output", dy_cd uses "DYsim"), so select by name when present and
+      # otherwise fall back to the first (only) file rather than yielding NA.
+      nc_file <- if ("output" %in% names(nc_files)) {
+        nc_files[["output"]]
+      } else {
+        nc_files[[1]]
+      }
       read_gotm_daily <- FALSE
     }
     nc <- open_nc_safe(file = nc_file, model = model)
@@ -56,7 +178,16 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
 
   # Load model hypsograph
   hyps <- read_model_hypsograph(model = model, lake_dir = lake_dir)
-  
+
+  # Daily-mean storage: the reconstructed positional date_index is built on a
+  # daily axis whose exact phase (close-of-day vs period-end vs inclusive)
+  # varies per model. The daily file's own `time` variable is authoritative,
+  # so discard the reconstructed index and let the reader derive dates from
+  # the file. For the fall-back (no companion file) the raw sub-daily records
+  # are then averaged by calendar day after the dispatch.
+  aggregate_daily <- isTRUE(daily_mean) && !read_from_daily
+  if (isTRUE(daily_mean)) date_index <- NULL
+
   if (is.null(date_index)) {
     # ---- 1. extract time info for this model
     time_info <- extract_model_time(nc = nc, model = model)
@@ -75,19 +206,36 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
   
   # ---- 3. dispatch to model-specific extractor
   out_list <- switch(model,
-                     "gotm_wet" = read_gotm_output(nc, vars_sim, 
+                     "gotm_wet" = read_gotm_output(nc, vars_sim,
                                                    depths = depths,
-                                                   incl_fluxes = incl_fluxes, 
+                                                   incl_fluxes = incl_fluxes,
                                                    date_index = date_index),
                      "glm_aed"  = read_glm_output(nc, vars_sim, depths = depths,
-                                                  incl_fluxes = incl_fluxes, 
+                                                  incl_fluxes = incl_fluxes,
                                                   date_index = date_index,
-                                                  phyto_pars = phyto_pars),
+                                                  phyto_pars = phyto_pars,
+                                                  load_all = load_all),
                      "dy_cd"    = read_dy_output(nc, vars_sim, depths = depths,
-                                                 incl_fluxes = incl_fluxes, 
-                                                 date_index = date_index)
+                                                 incl_fluxes = incl_fluxes,
+                                                 date_index = date_index),
+                     "simstrat_aed2" = read_simstrat_output(nc, vars_sim,
+                                                            depths = depths,
+                                                            incl_fluxes = incl_fluxes,
+                                                            date_index = date_index,
+                                                            model = "simstrat_aed2"),
+                     "simstrat_aed" = read_simstrat_output(nc, vars_sim,
+                                                           depths = depths,
+                                                           incl_fluxes = incl_fluxes,
+                                                           date_index = date_index,
+                                                           model = "simstrat_aed")
   )
   
+  # A reader can bail with a `model_output_error` struct (e.g. the requested
+  # date_index does not overlap the file at all). Pass it straight through --
+  # `.finalise_model_output()` would otherwise wrap the bare error list as if
+  # it were a real output list.
+  if (is_model_error(out_list)) return(out_list)
+
   if (model == "gotm_wet" & !incl_fluxes & read_gotm_daily) {
     add_vars <- read_gotm_output(file = nc_files["output_daily"], 
                                  incl_fluxes = TRUE, date_index = date_index)
@@ -97,27 +245,158 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
     
     out_list <- c(out_list, add_vars)
   }
-  
+
+  # Daily-mean fall-back: no output_daily.nc companion, so average the raw
+  # sub-daily records by calendar day here.
+  if (aggregate_daily) {
+    out_list <- .aggregate_output_list_daily(out_list)
+  }
+
+  return(.finalise_model_output(out_list = out_list, hyps = hyps,
+                                vars_sim = vars_sim, model = model))
+}
+
+#' Path to a model's daily-mean companion, `<dir>/<name>_daily.nc`
+#'
+#' Given the path to a model's raw `output.nc`, return the path its
+#' daily-mean companion would have. A path already ending `_daily.nc` is
+#' returned unchanged. `NULL` for an empty / missing input.
+#' @noRd
+.output_daily_path <- function(f) {
+  if (is.null(f) || !length(f) || is.na(f[[1]]) || !nzchar(f[[1]])) return(NULL)
+  f <- f[[1]]
+  b <- basename(f)
+  if (grepl("_daily\\.nc$", b)) return(unname(f))
+  unname(file.path(dirname(f), sub("\\.nc$", "_daily.nc", b)))
+}
+
+#' Average an output list to one record per calendar day
+#'
+#' Used when daily-mean storage is requested but no `output_daily.nc`
+#' companion exists, so the raw sub-daily `output.nc` was read instead. Groups
+#' the output list's records by `as.Date()` of its `Date` axis and takes the
+#' per-day mean of every variable: for a `depth x time` matrix, the per-row
+#' mean within each day; for a vector or `1 x time` series over time, the mean
+#' within each day. A list already at one-record-per-day is returned
+#' unchanged.
+#'
+#' @param out_list list; a model output list from one of the `read_*` readers
+#'   (before `.finalise_model_output()`), with a `Date` element and variable
+#'   elements shaped `[depth, time]` or `[time]`.
+#' @return `out_list` with every time-indexed element collapsed to one column
+#'   / element per day and `Date` a `Date` vector of the distinct days.
+#' @noRd
+.aggregate_output_list_daily <- function(out_list) {
+  d <- out_list[["Date"]]
+  if (is.null(d) || !length(d)) return(out_list)
+  day <- as.Date(as.POSIXct(d, tz = "UTC"), tz = "UTC")
+  nt <- length(day)
+  ud <- unique(day)
+  if (length(ud) == nt) {
+    # already one record per day
+    out_list[["Date"]] <- day
+    return(out_list)
+  }
+  grp <- match(day, ud)
+  cols_by_day <- split(seq_len(nt), grp)
+
+  denan <- function(z) { z[is.nan(z)] <- NA_real_; z }
+  agg_one <- function(x) {
+    dm <- dim(x)
+    if (is.null(dm)) {
+      if (length(x) != nt) return(x)
+      denan(vapply(cols_by_day, function(ix) mean(x[ix], na.rm = TRUE),
+                   numeric(1), USE.NAMES = FALSE))
+    } else if (length(dm) == 2L) {
+      if (dm[2] != nt) return(x)
+      res <- vapply(cols_by_day, function(ix)
+        rowMeans(x[, ix, drop = FALSE], na.rm = TRUE),
+        numeric(dm[1]))
+      dim(res) <- c(dm[1], length(cols_by_day))
+      rownames(res) <- rownames(x)
+      denan(res)
+    } else {
+      x
+    }
+  }
+
+  for (nm in names(out_list)) {
+    if (identical(nm, "Date")) next
+    out_list[[nm]] <- agg_one(out_list[[nm]])
+  }
+  out_list[["Date"]] <- ud
+  out_list
+}
+
+#' Collapse a midnight-only POSIXct output axis back to Date
+#'
+#' Keeps `POSIXct` when the series carries a genuine time-of-day (sub-daily
+#' output); returns a `Date` vector when it does not, so daily output and its
+#' Date-keyed consumers are byte-for-byte unchanged.
+#'
+#' @param x Date or POSIXct vector.
+#' @return Date when all timestamps are at 00:00:00 UTC, else POSIXct (UTC).
+#' @noRd
+.collapse_output_date <- function(x) {
+  if (is.null(x) || !length(x)) return(x)
+  if (inherits(x, "Date")) return(x)
+  xt <- as.POSIXct(x, tz = "UTC")
+  # Model time axes are UTC ("<unit> since <origin>", CF convention). If every
+  # timestamp sits at (near) UTC midnight the output is daily -- return a Date
+  # so the historical contract and Date-keyed consumers are unchanged. The
+  # tolerance absorbs the tiny float error GLM/GOTM time axes carry.
+  secs <- as.numeric(xt) %% 86400
+  near_midnight <- is.na(xt) | secs < 1 | secs > 86399
+  if (all(near_midnight)) as.Date(xt, tz = "UTC") else xt
+}
+
+#' Add derived variables, flatten 1-D variables, and tag the output list
+#'
+#' Steps 4 and 5 of [read_model_outputs()], shared by every way of getting
+#' the output list -- the netCDF readers and, for Simstrat, the raw-text
+#' [read_simstrat_dat()] -- so the two cannot drift apart.
+#'
+#' @param out_list list; the model output list from a reader.
+#' @param hyps dataframe; the model hypsograph, for the derived variables.
+#' @param vars_sim character; requested AEME variables, which decide the
+#'   derived variables to add.
+#' @param model character; the model that produced the output.
+#' @return `out_list`, classed by `.new_aeme_output()`.
+#' @noRd
+.finalise_model_output <- function(out_list, hyps, vars_sim, model) {
+
+  # ---- 0. normalise the time axis
+  # Readers return POSIXct so sub-daily output survives. When every timestamp
+  # sits at midnight the output is daily -- collapse back to Date so the
+  # historical (daily) contract and all Date-keyed consumers are unchanged.
+  if (!is.null(out_list[["Date"]])) {
+    out_list[["Date"]] <- .collapse_output_date(out_list[["Date"]])
+  }
+
   # ---- 4. add derivative outputs
   data("key_naming", package = "AEME", envir = environment())
-  deriv_vars <- key_naming |> 
-    dplyr::filter(var_aeme %in% vars_sim & derived) |> 
+  deriv_vars <- key_naming |>
+    dplyr::filter(var_aeme %in% vars_sim & derived) |>
     dplyr::pull(var_aeme)
   if (length(deriv_vars) > 0) {
-    out_list <- add_deriv_output(out_list = out_list, hyps = hyps, 
+    out_list <- add_deriv_output(out_list = out_list, hyps = hyps,
                                  vars_sim = deriv_vars)
   }
-  
+
   # ---- 5. convert all 1 dimension variables to vectors
-  vars_1d <- c("LKE_lvlwtr", "HYD_surft", 
-               "LKE_Qe", "LKE_Qh", "LKE_Qlw", "LKE_Qsw", 
+  vars_1d <- c("LKE_lvlwtr", "HYD_surft",
+               "LKE_Qe", "LKE_Qh", "LKE_Qlw", "LKE_Qsw",
                "LKE_inflow", "LKE_outflow", "LKE_overflow", "LKE_outftot",
-               "LKE_A0", "LKE_V",
+               "LKE_A0", "LKE_vol",
                "LKE_evpflx", "LKE_evpvol", "LKE_pcpvol",
                # Derived vars
-               "HYD_thmcln", "HYD_strat", "HYD_ctrbuy", "HYD_epidep", 
-               "HYD_hypdep", "HYD_schstb", "CHM_oxycln", "CHM_oxyepi", "CHM_oxyhyp", 
-               "CHM_oxymet", "CHM_oxymom", "CHM_oxynal", "LKE_tlic", "LKE_tlin", 
+               "HYD_thmcln", "HYD_strat", "HYD_ctrbuy", "HYD_epidep",
+               "HYD_hypdep", "HYD_schstb", "LKE_nrgtot",
+               # HYD_nrgcnt deliberately excluded: it is depth-resolved
+               # (same shape as HYD_temp/LKE_depths), not a scalar-per-
+               # timestep variable like the others in this list.
+               "CHM_oxycln", "CHM_oxyepi", "CHM_oxyhyp",
+               "CHM_oxymet", "CHM_oxymom", "CHM_oxynal", "LKE_tlic", "LKE_tlin",
                "LKE_tlip", "LKE_tlise", "LKE_tli3", "LKE_tli4"
                )
   vars_1d_in <- vars_1d[vars_1d %in% names(out_list)]
@@ -128,7 +407,23 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
     }
   }
 
-  return(out_list)
+  return(.new_aeme_output(out_list, model = model))
+}
+
+#' Has a Simstrat run left its `<var>_out.dat` text output behind?
+#'
+#' @param lake_dir character; the lake directory.
+#' @param model character; `"simstrat_aed2"` or `"simstrat_aed"`.
+#' @return logical; `FALSE` if the simulation directory, its `simstrat.par`,
+#'   or its output files are missing.
+#' @noRd
+.simstrat_dat_available <- function(lake_dir, model) {
+  sim_folder <- file.path(lake_dir, model)
+  if (!dir.exists(sim_folder)) return(FALSE)
+  info <- tryCatch(.simstrat_par_paths(sim_folder = sim_folder),
+                   error = function(e) NULL)
+  if (is.null(info) || !dir.exists(info$out_dir)) return(FALSE)
+  length(list.files(info$out_dir, pattern = "_out\\.dat$")) > 0
 }
 
 
@@ -144,7 +439,7 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
 get_model_vars <- function(vars_sim, model, as_vector = FALSE) {
   data("key_naming", package = "AEME", envir = environment())
   model_vars <- key_naming |> 
-    dplyr::filter(var_aeme %in% vars_sim & !derived & var_aeme != "LKE_lvlwtr") |> 
+    dplyr::filter(var_aeme %in% vars_sim & !derived) |> 
     dplyr::select(var_aeme, dplyr::sym(model), conversion_aed)
   
   # If any variables are not in key_naming add them as separate rows
@@ -209,6 +504,9 @@ extract_model_depth <- function(model, lake_dir) {
     depth <- cfg$init_profiles$lake_depth
   } else if (model == "dy_cd") {
     depth <- cfg$lake_depth_m
+  } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
+    hyps <- read_model_hypsograph(model = model, lake_dir = lake_dir)
+    depth <- max(hyps$elev) - min(hyps$elev)
   }
   return(depth)
 }
@@ -222,17 +520,20 @@ extract_model_depth <- function(model, lake_dir) {
 #' @keywords internal
 #' @noRd
 load_model_config <- function(model, lake_dir, file) {
-  
+
+  model <- check_model(model)
+  lake_dir <- check_path(lake_dir, must_exist = TRUE)
+  cfg_files <- get_model_config_files(model = model,
+                                      path = lake_dir)[[model]]
+
   if (missing(file)) {
     file <- switch(model,
                    "gotm_wet" = "gotm",
-                   "glm_aed"  = "glm3",
-                   "dy_cd"    = "stg")
+                   "glm_aed"  = find_glm_nml_key(names(cfg_files)),
+                   "dy_cd"    = "stg",
+                   "simstrat_aed2" = "simstrat",
+                   "simstrat_aed" = "simstrat")
   }
-  model <- check_model(model)
-  lake_dir <- check_path(lake_dir, must_exist = TRUE)
-  cfg_files <- get_model_config_files(model = model, 
-                                      lake_dir = lake_dir)[[model]]
   if (file %in% names(cfg_files)) {
     cfg_file <- cfg_files[[file]]
   } else {
@@ -244,6 +545,8 @@ load_model_config <- function(model, lake_dir, file) {
     cfg <- read_nml(cfg_file)
   } else if (model == "dy_cd") {
     cfg <- readLines(cfg_file)
+  } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
+    cfg <- jsonlite::fromJSON(cfg_file, simplifyVector = FALSE)
   }
   return(cfg)
 }
@@ -260,23 +563,29 @@ extract_model_time <- function(nc, model) {
     units_prefix <- "seconds since "
     t <- ncdf4::ncvar_get(nc, "time")
     origin <- gsub(units_prefix, "", ncdf4::ncatt_get(nc, "time", "units")$value)
-    dt <- as.POSIXct(t + as.POSIXct(origin), tz = "UTC")
-    
+    dt <- as.POSIXct(t + as.POSIXct(origin, tz = "UTC"), tz = "UTC")
+
   } else if (model == "glm_aed") {
     units_prefix <- "hours since "
     t <- ncdf4::ncvar_get(nc, "time")
     origin <- gsub(units_prefix, "", ncdf4::ncatt_get(nc, "time", "units")$value)
-    dt <- as.POSIXct(t * 3600 + as.POSIXct(origin), tz = "UTC")
-    
+    dt <- as.POSIXct(t * 3600 + as.POSIXct(origin, tz = "UTC"), tz = "UTC")
+
   } else if (model == "dy_cd") {
     dt <- as.POSIXct((ncdf4::ncvar_get(nc, "dyresmTime") - 2415018.5) *
-                       86400, origin = "1899-12-30")
-    
+                       86400, origin = "1899-12-30", tz = "UTC")
+
+  } else if (model %in% c("simstrat_aed2", "simstrat_aed")) {
+    units_prefix <- "seconds since "
+    t <- ncdf4::ncvar_get(nc, "time")
+    origin <- gsub(units_prefix, "", ncdf4::ncatt_get(nc, "time", "units")$value)
+    dt <- as.POSIXct(t, origin = origin, tz = "UTC")
+
   }
-  
+
   list(
     datetime = dt,
-    dates = as.Date(dt)
+    dates = as.Date(dt, tz = "UTC")
   )
 }
 

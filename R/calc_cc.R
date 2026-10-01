@@ -150,16 +150,22 @@ calc_cc <- function(date, airt, relh = NULL, dewt = NULL, swr, lat, lon, elev,
   
   ## Gap filling
   ccsim <- df$ccsim
-  good <- which(!is.nan(ccsim))
-  
+  good <- which(is.finite(ccsim))
+
   if (length(good) > 1) {
     sta <- min(good)
     stp <- max(good)
-    
-    ccsim[sta:stp] <- zoo::na.approx(ccsim[sta:stp])
-    
+
+    # na.rm = FALSE keeps the length so the subassignment always matches;
+    # the ends are back-filled with the nearest value below.
+    ccsim[sta:stp] <- zoo::na.approx(ccsim[sta:stp], na.rm = FALSE)
+
     if (sta > 1) ccsim[1:sta] <- ccsim[sta]
     if (stp < length(ccsim)) ccsim[stp:length(ccsim)] <- ccsim[stp]
+  } else if (length(good) == 1) {
+    ccsim[] <- ccsim[good]
+  } else {
+    ccsim[] <- NA_real_
   }
   
   ccsim

@@ -8,6 +8,8 @@
 #' @param model character vector; model(s) to plot. If missing, all models
 #' in the Aeme object will be plotted.
 #' @param var_sim string; of variable to plot
+#' @param point_size numeric; size of observation points added to the plot
+#' when `add_obs` is `TRUE`. Default is 2.
 #' @param ens_n integer; ensemble number to plot. Default is 1.
 #' @param level logical; include lake level. Only applies for contour plots.
 #' @param remove_spin_up logical; remove spin-up period from plot. Default is
@@ -88,7 +90,7 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
   } else {
     model <- check_model(model = model)
   }
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   if (missing(model)) {
     model <- list_models(aeme)
   }
@@ -129,10 +131,27 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
                 dimnames = list(var_sim, model))
   
   if (all(!chk)) {
-    cli::cli_abort("Variable(s) '{paste0(var_sim, collapse = ', ')}' not in 
+    cli::cli_abort("Variable(s) '{paste0(var_sim, collapse = ', ')}' not in
                    output for model(s): {paste0(model, collapse = ', ')}")
   }
-  
+
+  # Guard against variables with non-standard dimensions (e.g. nzones,
+  # particle, sed_layers) -- plotting for these isn't supported yet;
+  # point users to get_var() instead of failing deep inside the plotting
+  # logic below
+  grouped_hits <- unlist(lapply(model, \(m) {
+    vapply(var_sim, \(v) {
+      inherits(outp[[ens_lab]][[m]][[v]], "aeme_grouped_var")
+    }, logical(1))
+  }))
+  if (any(grouped_hits)) {
+    cli::cli_abort(c(
+      "x" = "{.arg var_sim} includes variable(s) with non-standard dimensions that {.fn plot_output} does not support yet.",
+      "i" = "Use {.fn get_var} to retrieve their values directly."
+    ), class = "aeme_error_grouped_var_plot")
+  }
+
+
   # Warn and drop models where ALL vars are missing
   bad_models <- colnames(chk)[!colSums(chk) > 0]
   if (length(bad_models) > 0) {
@@ -156,19 +175,30 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
   }
 
   # Date lims
-  # Find date range and have output in Date format
-  all_dates <- sapply(model, \(m){
-    "[["(outp[[ens_lab]][[m]], "Date")
-  })
-  xlim <- as.Date(range(all_dates, na.rm = TRUE))
+  # Find date range. Output may be daily (Date) or sub-daily (POSIXct) --
+  # keep whichever it is rather than forcing Date, which on a POSIXct axis
+  # reinterprets the epoch-seconds as days and lands centuries in the future.
+  all_dates <- do.call(c, lapply(model, \(m) {
+    d <- outp[[ens_lab]][[m]][["Date"]]
+    if (inherits(d, "POSIXct")) d else as.Date(d)
+  }))
+  subdaily_axis <- inherits(all_dates, "POSIXct")
+  xlim <- range(all_dates, na.rm = TRUE)
   if (remove_spin_up) {
-    xlim <- c(as.Date(tme$start), as.Date(tme$stop))
+    xlim <- if (subdaily_axis) {
+      as.POSIXct(c(tme$start, tme$stop), tz = "UTC")
+    } else {
+      c(as.Date(tme$start), as.Date(tme$stop))
+    }
   }
 
-  # Filter observations by variable and Date
+  # Filter observations by variable and Date. Observations are daily (noon
+  # POSIXct); compare on the calendar day against whichever class `xlim` is.
   if (!is.null(obs$lake)) {
     obs_lake <- obs$lake |>
-      dplyr::filter(var_aeme == var_sim & Date >= xlim[1] & Date <= xlim[2])
+      dplyr::filter(var_aeme == var_sim &
+                      as.Date(Date, tz = "UTC") >= as.Date(xlim[1], tz = "UTC") &
+                      as.Date(Date, tz = "UTC") <= as.Date(xlim[2], tz = "UTC"))
   } else {
     obs_lake <- NULL
   }

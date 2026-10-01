@@ -68,7 +68,7 @@ plot_glm_diagnostics <- function(aeme, lake_dir,
   )
   
   # ---- 1. Read output -----------------------------------------------------
-  nc_file <- get_model_outfile(model = model, lake_dir = lake_dir)[[model]]
+  nc_file <- get_model_outfile(model = model, path = lake_dir)[[model]]
   if (!file.exists(nc_file)) {
     cli::cli_abort("GLM output file not found at {.file {nc_file}}")
   }

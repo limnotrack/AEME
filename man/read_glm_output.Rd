@@ -13,7 +13,9 @@ read_glm_output(
   incl_fluxes = TRUE,
   output_hour = 0,
   file,
-  phyto_pars = NULL
+  phyto_pars = NULL,
+  load_all = TRUE,
+  raw_output = FALSE
 )
 }
 \arguments{
@@ -39,9 +41,33 @@ Defaults to TRUE.}
 \item{file}{File path to netCDF file. Only used if \code{nc} is NULL.}
 
 \item{phyto_pars}{Data frame with phytoplankton parameters from AED.}
+
+\item{load_all}{logical; also load every other variable present in the
+netCDF file, beyond the declared \code{vars_sim} set. Each such variable is
+keyed by its AEME \code{var_aeme} name if \link{key_naming} has a translation for
+it, or by its raw GLM/netCDF name otherwise. Variables shaped like
+GLM's usual \code{(time)} or \verb{(z, time)} output are loaded the same way as
+any declared variable; variables with other dimensions (e.g. \code{nzones},
+\code{particle}, \code{sed_layers}, \code{lon}, \code{lat}) are loaded as a
+\code{\link[=new_grouped_var]{new_grouped_var()}} object instead of being forced into the depth x
+time convention. Default \code{TRUE}.}
+
+\item{raw_output}{logical; if \code{TRUE}, return output as close to the raw
+netCDF file as possible instead of AEME's standardised format: \verb{(z, time)} variables are left on GLM's own, time-varying model layer
+midpoints (no interpolation onto a common depth grid), variables
+requested via \code{vars_sim} are keyed by their raw GLM/netCDF name (e.g.
+\code{"temp"}) rather than the translated AEME \code{var_aeme} name (e.g.
+\code{"HYD_temp"}), and no AED unit-conversion factors are applied.
+\code{depths} must not be supplied when \code{raw_output = TRUE}, since raw
+output has no common depth grid to interpolate onto. Default \code{FALSE}.}
 }
 \value{
-List with AEME output variables
+List with AEME output variables. Also includes \code{z}, GLM's own
+raw layer-height matrix (height of each layer's top boundary above the
+lake bottom, per timestep, before conversion to \code{LKE_depths}) -- unlike
+GOTM-WET/Simstrat-AED2, GLM's layer structure genuinely changes over
+time, so this is kept alongside the derived depth grid rather than
+discarded after use.
 }
 \description{
 Read GLM netCDF output

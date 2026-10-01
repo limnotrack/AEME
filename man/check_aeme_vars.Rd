@@ -4,10 +4,18 @@
 \alias{check_aeme_vars}
 \title{Check AEME variable names}
 \usage{
-check_aeme_vars(x)
+check_aeme_vars(x, aeme = NULL)
 }
 \arguments{
 \item{x}{Character vector of variable names to check.}
+
+\item{aeme}{Aeme object, optional. If provided, names that are actually
+present in \code{aeme}'s loaded output (see \code{\link[=get_output_vars]{get_output_vars()}}) are also
+accepted, even without a \code{key_naming} entry -- this covers variables
+\code{\link[=read_glm_output]{read_glm_output()}} loaded straight from a GLM/AED output file with no
+AEME translation (\code{load_all = TRUE}). Such names are passed through
+as-is, without the fuzzy-matching \code{\link[=guess_aeme_vars]{guess_aeme_vars()}} would otherwise
+attempt on them.}
 }
 \value{
 Invisibly returns TRUE if all variables are valid, otherwise throws

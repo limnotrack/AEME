@@ -19,10 +19,12 @@ aed2_param_names <- aed2_params |>
 
 upd_param <- glm_aed_parameters |> 
   dplyr::filter(grepl(paste0(aed2_param_names, collapse = "|"), name),
-                !is.na(value), file == "aed.nml")
+                !is.na(value), file == "aed.nml") |> 
+  dplyr::select(dplyr::all_of(c(param_names)))
 aeme_parameters_bgc <- aeme_parameters_bgc |>
   dplyr::filter(!(model == "glm_aed" & name %in% aed2_params$name)) |>
   dplyr::bind_rows(upd_param) |>
+  dplyr::bind_rows(simstrat_aed2_parameters) |> 
   dplyr::arrange(model, file, name)
 
 

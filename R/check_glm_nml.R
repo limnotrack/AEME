@@ -101,13 +101,99 @@ check_glm_nml <- function(file) {
   if (!is.null(sed)) {
     n_zones <- as.numeric(sed$n_zones)
     pars <- c("sed_heat_Ksoil", "sed_temp_depth", "sed_temp_mean",
-              "sed_temp_amplitude", "sed_temp_peak_doy", "zone_heights", 
+              "sed_temp_amplitude", "sed_temp_peak_doy", "zone_heights",
               "sed_reflectivity", "sed_roughness")
+    # sed_heat_Ksoil and sed_temp_depth only feed GLM's analytical
+    # sediment-heat model, enabled via sed_heat_model = 1 (a newer GLM
+    # option; older nmls that don't set it at all still rely on that
+    # model implicitly, so the check only backs off when sed_heat_model
+    # is explicitly present and set to something other than 1)
+    heat_model_only_pars <- c("sed_heat_Ksoil", "sed_temp_depth")
+    sed_heat_model <- suppressWarnings(as.numeric(sed$sed_heat_model))
+    heat_model_disabled <- !is.null(sed$sed_heat_model) &&
+      !is.na(sed_heat_model) && sed_heat_model != 1
     for (p in pars) {
+      if (p %in% heat_model_only_pars && heat_model_disabled) next
       vals <- as.numeric(sed[[p]])
       if (length(vals) != n_zones) {
         issues <- c(issues, paste0("Number of ", p, " values (", length(vals),
                                    ") does not match n_zones (", n_zones, ")"))
+      }
+    }
+
+    # sed_heat_model = 2 (dynamic soil-column solver) is supplied by the WQ
+    # library, so GLM aborts with it enabled when no WQ module is active.
+    if (!is.null(sed$sed_heat_model) && !is.na(sed_heat_model) &&
+        sed_heat_model == 2) {
+      wq_lib <- tolower(as.character(nml$wq_setup$wq_lib))
+      wq_active <- length(wq_lib) == 1 &&
+        wq_lib %in% c("aed", "aed2", "api", "fabm")
+      if (!wq_active) {
+        issues <- c(issues, paste0("sed_heat_model = 2 requires an active WQ ",
+                                   "module (&wq_setup with wq_lib = 'aed'/",
+                                   "'api'); none found"))
+      }
+    }
+
+    # When a WQ library is coupled, AEME builds aed_sed_const2d with the same
+    # sediment-zone count as GLM and every zone active. A deliberately
+    # different / partial set-up is legitimate, so flag mismatches as a
+    # warning rather than a hard failure.
+    wq_file <- nml$wq_setup$wq_nml_file
+    if (!is.null(wq_file) && check_file(wq_file)) {
+      aed_nml <- tryCatch(read_nml(file.path(base_path, wq_file)),
+                          error = function(e) NULL)
+
+      # aed_sed_const2d is only actually read by AED when aed_sedflux is an
+      # active module and it's configured to use the Constant2d flux model --
+      # otherwise the block (if present at all) is inert, so skip validating
+      # it to avoid flagging unused/leftover config.
+      aed_models <- tolower(trimws(as.character(aed_nml[["aed_models"]][["models"]])))
+      sedflux_active <- "aed_sedflux" %in% aed_models
+      sedflux_model <- tolower(trimws(as.character(
+        aed_nml[["aed_sedflux"]][["sedflux_model"]])))
+      const2d_active <- sedflux_active && length(sedflux_model) == 1 &&
+        !is.na(sedflux_model) && sedflux_model == "constant2d"
+
+      scd <- aed_nml[["aed_sed_const2d"]]
+      if (const2d_active && !is.null(scd) && !is.null(scd$n_zones) && !is.na(n_zones)) {
+        aed_nz <- suppressWarnings(as.numeric(scd$n_zones))
+
+        # Internal consistency of the AED file itself: every per-zone flux
+        # vector must have exactly n_zones entries, regardless of whether
+        # n_zones matches GLM. A mismatch here (e.g. n_zones bumped without
+        # resizing fsed_*) makes AED abort at runtime, so this is a hard
+        # failure, not a warning.
+        if (!is.na(aed_nz)) {
+          flux_pars <- c("fsed_oxy", "fsed_amm", "fsed_nit", "fsed_frp")
+          for (fp in flux_pars) {
+            fp_vals <- suppressWarnings(as.numeric(scd[[fp]]))
+            if (length(fp_vals) != aed_nz) {
+              issues <- c(issues, paste0(
+                "AED aed_sed_const2d ", fp, " has ", length(fp_vals),
+                " value", if (length(fp_vals) != 1) "s" else "",
+                ", but n_zones = ", aed_nz))
+            }
+          }
+        }
+
+        if (!is.na(aed_nz) && aed_nz != n_zones) {
+          cli::cli_warn(c(
+            "!" = "AED {.field aed_sed_const2d} n_zones ({aed_nz}) does not \\
+                   match GLM {.field sediment} n_zones ({n_zones}).",
+            "i" = "AEME normally keeps these aligned; check this is intended."
+          ))
+        }
+        az <- suppressWarnings(as.numeric(scd$active_zones))
+        if (!is.na(aed_nz) &&
+            !isTRUE(all.equal(sort(az), seq_len(aed_nz)))) {
+          cli::cli_warn(c(
+            "!" = "AED {.field aed_sed_const2d} active_zones \\
+                   ({paste(az, collapse = ', ')}) is not all zones \\
+                   1..{aed_nz}.",
+            "i" = "AEME switches on every sediment zone by default."
+          ))
+        }
       }
     }
   }

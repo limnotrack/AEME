@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_nit.R
 \name{plot_nit}
 \alias{plot_nit}
-\title{Plot phytoplankton variables}
+\title{Plot nitrogen variables}
 \usage{
 plot_nit(
   aeme,
@@ -33,5 +33,5 @@ TRUE.}
 A ggplot object
 }
 \description{
-Plot phytoplankton variables
+Plot nitrogen variables
 }

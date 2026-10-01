@@ -8,9 +8,15 @@
 #' @importFrom ncdf4 ncvar_get ncatt_get nc_close
 #' @importFrom lubridate hour
 
-read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL, 
+read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                              dates = NULL, date_index = NULL,
-                             incl_fluxes = FALSE, output_hour = 0, file) {
+                             incl_fluxes = FALSE, output_hour = 0, file,
+                             load_all = TRUE, raw_output = FALSE) {
+
+  if (isTRUE(raw_output) && !is.null(depths)) {
+    cli::cli_abort("'depths' cannot be supplied when 'raw_output = TRUE' -- raw output uses GOTM-WET's native output depths.")
+  }
+
   if (is.null(nc)) {
     nc <- open_nc_safe(file, model = "gotm_wet")
     on.exit(ncdf4::nc_close(nc))
@@ -24,13 +30,12 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   }
   date_start <- ncdf4::ncatt_get(nc, "time", "units")$value |>
     gsub("seconds since ", "", x = _) |>
-    as.POSIXct()
+    as.POSIXct(tz = "UTC")
   time_vec <- ncdf4::ncvar_get(nc, "time")
-  gotm_dates <- as.POSIXct(time_vec + date_start) |> 
-    as.Date()
+  gotm_dates <- as.POSIXct(time_vec + date_start, tz = "UTC")
   if (is.null(date_index)) {
     if (!is.null(dates)) {
-      date_index <- which(gotm_dates %in% dates)
+      date_index <- which(as.Date(gotm_dates) %in% as.Date(dates))
       if (length(date_index) == 0) {
         cli::cli_abort("No output for GOTM at specified dates")
       }
@@ -38,21 +43,34 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       date_index <- seq_along(gotm_dates)
     }
   }
-  if (length(gotm_dates) < max(date_index)) {
-    cli::cli_alert_warning("date_index exceeds available GOTM output dates. 
-                          Returning empty output.")
-    out <- empty_model_output(
-      reason = "date_index exceeds available GOTM output dates"
-    )
-    return(out)
+  # Keep the positions that exist rather than discarding every variable when
+  # a reconstructed `date_index` overshoots the records GOTM actually wrote
+  # (e.g. an hourly output_time_step against a run still written daily).
+  n_out <- length(gotm_dates)
+  if (any(date_index < 1 | date_index > n_out)) {
+    dropped <- sum(date_index < 1 | date_index > n_out)
+    date_index <- date_index[date_index >= 1 & date_index <= n_out]
+    if (length(date_index) == 0) {
+      cli::cli_alert_warning(
+        "date_index does not overlap the {n_out} GOTM output record{?s}. Returning empty output."
+      )
+      return(empty_model_output(
+        reason = "date_index does not overlap available GOTM output dates"
+      ))
+    }
+    cli::cli_warn(c(
+      "!" = "GOTM output holds {n_out} record{?s} but {dropped} requested index position{?s} fell outside it -- those step{?s} were dropped.",
+      "i" = "Was the GOTM run rebuilt and re-run after changing {.field output_time_step}?"
+    ))
   }
-  
+
+
   t_start <- date_index[1]
   start_1d <- c(1, 1, t_start)
   start_2d <- c(1, 1, 1, t_start)
   
-  dates <- gotm_dates[date_index] |> as.Date()
-  
+  dates <- .collapse_output_date(gotm_dates[date_index])
+
   # dates <- seq.Date(date_start, by = 1, length.out = length(out_steps))
   lyr_h <- ncdf4::ncvar_get(nc, "h")[, date_index] # lyrs
   zeta <- ncdf4::ncvar_get(nc, "zeta")[date_index]
@@ -85,29 +103,35 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   lyrs[nrow(lyrs), ] <- lyrs[nrow(lyrs), ] + (lyr_h[nrow(lyr_h), ] / 2)
   lyrs <- apply(lyrs, 2, \(x) x + abs(min(x)))
   
+  Lmat <- matrix(zeta, nrow = nrow(z), ncol = length(zeta),
+                 byrow = TRUE)
+  Lmat_zi <- matrix(zeta, nrow = nrow(zi), ncol = length(zeta),
+                    byrow = TRUE)
+
+  midpoints <- Lmat - z
+  midpoints_zi <- Lmat_zi - zi
+
   if (is.null(depths)) {
-    max_depth <- max(lake_level, na.rm = TRUE)
-    data("model_layer_structure", package = "AEME", envir = environment())
-    depth_fraction <- model_layer_structure |> 
-      dplyr::filter(z < max_depth) |> 
-      dplyr::mutate(deps = z / max_depth) |> 
-      dplyr::pull(deps) |> 
-      matrix(ncol = 1)
-    depth_mat <- depth_fraction %*% t(lake_level)
-    out_depths <- round(depth_mat, 2)
+    if (isTRUE(raw_output)) {
+      # raw mode: report GOTM-WET's own native (cell-centre) output depths,
+      # rather than interpolating onto a shared standardised grid
+      out_depths <- round(midpoints, 2)
+    } else {
+      max_depth <- max(lake_level, na.rm = TRUE)
+      data("model_layer_structure", package = "AEME", envir = environment())
+      depth_fraction <- model_layer_structure |>
+        dplyr::filter(z < max_depth) |>
+        dplyr::mutate(deps = z / max_depth) |>
+        dplyr::pull(deps) |>
+        matrix(ncol = 1)
+      depth_mat <- depth_fraction %*% t(lake_level)
+      out_depths <- round(depth_mat, 2)
+    }
   } else {
     out_depths <- matrix(rep(depths, length(dates)),
                          nrow = length(depths),
                          ncol = length(dates))
   }
-  
-  Lmat <- matrix(zeta, nrow = nrow(z), ncol = length(zeta),
-                 byrow = TRUE)
-  Lmat_zi <- matrix(zeta, nrow = nrow(zi), ncol = length(zeta),
-                    byrow = TRUE)
-  
-  midpoints <- Lmat - z
-  midpoints_zi <- Lmat_zi - zi
   
   # norm_depths <- depths / max(depths)
   # depth_mat <- matrix(data = norm_depths, ncol = 1)
@@ -116,6 +140,8 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   # # Multiply matrices to get actual depths
   # out_depths <- depth_mat %*% level_mat
   
+  nc_vars <- names(nc$var)
+
   out_list[["Date"]] <- dates
   out_list[["LKE_lvlwtr"]] <- as.vector(lake_level)
   out_list[["LKE_depths"]] <- as.matrix(out_depths)
@@ -142,10 +168,9 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   
   
   if (!is.null(vars_sim)) {
-    model_vars_vec <- get_model_vars(vars_sim = vars_sim, model = "gotm_wet", 
+    model_vars_vec <- get_model_vars(vars_sim = vars_sim, model = "gotm_wet",
                                      as_vector = TRUE)
-    
-    nc_vars <- names(nc$var)
+
     vars_chk <- data.frame(vars = model_vars_vec,
                            present = model_vars_vec %in% nc_vars)
     
@@ -155,16 +180,20 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       }
       var <- ncdf4::ncvar_get(nc, v)[, date_index]
       if (nrow(var) == nrow(zi)) {
-        interp_static_grid(var = var,
-                           midpoints = midpoints_zi,
-                           out_depths = out_depths)
+        .glm_depth_profile(var = var, midpoints = midpoints_zi,
+                           out_depths = out_depths, raw_output = raw_output)
       } else if (nrow(var) == nrow(z)) {
-        interp_static_grid(var = var,
-                           midpoints = midpoints,
-                           out_depths = out_depths)
+        .glm_depth_profile(var = var, midpoints = midpoints,
+                           out_depths = out_depths, raw_output = raw_output)
       }
     })
-    
+
+    if (isTRUE(raw_output)) {
+      # raw mode: key by the native GOTM-WET/netCDF variable name instead of
+      # the translated AEME var_aeme name
+      names(out_vars) <- unname(model_vars_vec)
+    }
+
     out_list <- c(out_list, out_vars)
   }
   
@@ -175,9 +204,100 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     flux_list <- flux_list[missing_vars]
     out_list <- c(out_list, flux_list)
   }
-  
+
+  # ---- Load every remaining variable present in the file ----
+  # Variables already handled above (by the fixed-name blocks and, if
+  # vars_sim was supplied, the declared/translated loop) are skipped;
+  # everything else in the file is loaded too -- keyed by its var_aeme name
+  # if key_naming has a translation, otherwise by its raw GOTM-WET name.
+  if (isTRUE(load_all)) {
+    already_extracted <- c("time", "h", "zeta", "zi", "z", "sst")
+    if ("LKE_photic" %in% vars_sim | "LKE_efold" %in% vars_sim) {
+      already_extracted <- c(already_extracted, "rad")
+    }
+    if (!is.null(vars_sim)) {
+      already_extracted <- c(already_extracted, model_vars_vec)
+    }
+    if (incl_fluxes) {
+      already_extracted <- c(
+        already_extracted,
+        "Af", "qe", "qh", "ql", "I_0", "evap", "precip", "temp", "airt",
+        grep("^Q_", nc_vars, value = TRUE)
+      )
+    }
+
+    data("key_naming", package = "AEME", envir = environment())
+    gotm_to_var_aeme <- stats::setNames(key_naming$var_aeme, key_naming$gotm_wet)
+
+    remaining_vars <- setdiff(nc_vars, already_extracted)
+
+    for (v in remaining_vars) {
+      key <- unname(gotm_to_var_aeme[v])
+      if (is.na(key) || !nzchar(key)) key <- v
+      if (key %in% names(out_list)) next
+
+      result <- tryCatch({
+        dim_objs  <- Filter(\(d) d$len > 1, nc$var[[v]]$dim)
+        dim_names <- vapply(dim_objs, \(d) d$name, character(1))
+
+        if (setequal(dim_names, "time")) {
+          var_out <- ncdf4::ncvar_get(nc, v)
+          as.vector(var_out[date_index])
+        } else if (setequal(dim_names, c("zi", "time"))) {
+          var_out <- ncdf4::ncvar_get(nc, v)
+          if (dim_names[1] != "zi") var_out <- t(var_out)
+          var <- var_out[, date_index, drop = FALSE]
+          .glm_depth_profile(var = var, midpoints = midpoints_zi,
+                             out_depths = out_depths, raw_output = raw_output)
+        } else if (setequal(dim_names, c("z", "time"))) {
+          var_out <- ncdf4::ncvar_get(nc, v)
+          if (dim_names[1] != "z") var_out <- t(var_out)
+          var <- var_out[, date_index, drop = FALSE]
+          .glm_depth_profile(var = var, midpoints = midpoints,
+                             out_depths = out_depths, raw_output = raw_output)
+        } else {
+          .read_glm_grouped_var(nc = nc, v = v, dim_objs = dim_objs,
+                                dim_names = dim_names, date_index = date_index,
+                                dates = dates)
+        }
+      }, error = function(e) {
+        cli::cli_warn(c("!" = "Could not read variable {.val {v}} from GOTM-WET output: {conditionMessage(e)}"))
+        NULL
+      })
+
+      if (!is.null(result)) {
+        out_list[[key]] <- result
+      }
+    }
+  }
+
+  if (isTRUE(raw_output)) {
+    # "Date"/"LKE_depths"/"ok"/"reason" are the output list's own structural
+    # keys, not plotted variables -- key_naming does have a real "Date" ->
+    # "date" translation (used elsewhere for a genuinely different purpose),
+    # so leaving them in this sweep would rename "Date" itself out from
+    # under every consumer that expects a stable key
+    out_names <- setdiff(names(out_list), c("Date", "LKE_depths", "ok", "reason"))
+    var_names <- get_model_vars(out_names, model = "gotm_wet", as_vector = TRUE)
+    for (i in seq_along(var_names)) {
+      if (!is.na(var_names[i]) && nzchar(var_names[i])) {
+        names(out_list)[names(out_list) == names(var_names)[i]] <- var_names[i]
+      }
+    }
+  }
+
   out_list <- c(out_list, list(ok = TRUE, reason = NULL))
-  return(out_list)
+
+  var_units <- var_long_name <- NULL
+  if (isTRUE(raw_output)) {
+    raw_vars <- setdiff(names(out_list), c("Date", "LKE_depths", "ok", "reason"))
+    meta <- lapply(raw_vars, \(v) .nc_var_meta(nc, v))
+    var_units <- stats::setNames(vapply(meta, `[[`, "", "units"), raw_vars)
+    var_long_name <- stats::setNames(vapply(meta, `[[`, "", "long_name"), raw_vars)
+  }
+
+  return(.new_aeme_output(out_list, model = "gotm_wet", raw = raw_output,
+                          var_units = var_units, var_long_name = var_long_name))
 }
 
 #' Read GOTM water level output
@@ -197,11 +317,11 @@ read_gotm_wlev <- function(nc = NULL, file) {
   # }
   date_start <- ncdf4::ncatt_get(nc, "time", "units")$value |>
     gsub("seconds since ", "", x = _) |>
-    as.POSIXct()
+    as.POSIXct(tz = "UTC")
   time_vec <- ncdf4::ncvar_get(nc, "time")
-  gotm_dates <- as.POSIXct(time_vec + date_start) |> 
-    as.Date()
-  
+  gotm_dates <- .collapse_output_date(as.POSIXct(time_vec + date_start,
+                                                 tz = "UTC"))
+
   zi <- ncdf4::ncvar_get(nc, "zi")
   zeta <- ncdf4::ncvar_get(nc, "zeta")
   if (is.null(dim(zi))) {

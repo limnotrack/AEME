@@ -26,22 +26,27 @@ add_inflow <- function(aeme, inflow, inflow_id) {
     if ("inflow_id" %in% colnames(inflow)) {
       inflow_id <- unique(inflow$inflow_id)
       if (length(inflow_id) > 1) {
-        stop("inflow_id column contains multiple unique values. Please provide a single inflow_id.")
+        cli::cli_abort(c("inflow_id column contains multiple unique values. Please provide a single inflow_id."))
       }
       inflow <- inflow |>
         subset(select = -c(inflow_id))
     } else {
-      stop("inflow_id is required")
+      cli::cli_abort(c("inflow_id is required. Please provide an inflow_id or include an inflow_id column in the inflow data frame."))
     }
   }
-  check_aeme(aeme)
-  inf <- aeme |> 
-    inflows() 
+  aeme <- check_aeme(aeme)
+  inf <- aeme |>
+    inflows()
   inf_list <- inf[["data"]]
   curr_names <- names(inf_list)
   if (inflow_id %in% curr_names) {
-    stop(paste0("inflow_id '", inflow_id, 
-                "' already exists. Please choose a different inflow_id."))
+    cli::cli_abort(c("inflow_id '{inflow_id}' already exists. Please choose a different inflow_id."))
+  }
+  # Ingest boundary: interpret Date in the object's declared timezone, store UTC.
+  if (is.data.frame(inflow) && "Date" %in% names(inflow)) {
+    tz <- time(aeme)[["tz"]] %||% "UTC"
+    inflow[["Date"]] <- .as_forcing_datetime(inflow[["Date"]], tz = tz,
+                                             reinterpret_utc_tag = TRUE)
   }
   inf_list[[inflow_id]] <- inflow
   inf[["data"]] <- inf_list

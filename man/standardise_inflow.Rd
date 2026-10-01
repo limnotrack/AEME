@@ -66,52 +66,52 @@ the package (GLM-AED conventions).
 
 \tabular{llll}{
 \strong{Variable}          \tab \strong{Name}       \tab \strong{Unit}   \tab \strong{Required} \cr
-Flow                       \tab \code{flow}          \tab m³/day          \tab Yes \cr
-Water temperature          \tab \code{temp}          \tab °C              \tab Yes \cr
+Flow                       \tab \code{flow}          \tab m3/day          \tab Yes \cr
+Water temperature          \tab \code{temp}          \tab degC              \tab Yes \cr
 Salinity                   \tab \code{salt}          \tab PSU             \tab Yes \cr
-Dissolved oxygen           \tab \code{OXY_oxy}       \tab mmol/m³         \tab No \cr
-Phosphate-P                \tab \code{PHS_frp}       \tab mmol/m³         \tab No \cr
-Dissolved organic P        \tab \code{OGM_dop}       \tab mmol/m³         \tab No \cr
-Particulate organic P      \tab \code{OGM_pop}       \tab mmol/m³         \tab No \cr
-Particulate inorganic P    \tab \code{PHS_frp_ads}   \tab mmol/m³         \tab No \cr
-Ammoniacal nitrogen        \tab \code{NIT_amm}       \tab mmol/m³         \tab No \cr
-Nitrate-N                  \tab \code{NIT_nit}       \tab mmol/m³         \tab No \cr
-Dissolved organic N        \tab \code{OGM_don}       \tab mmol/m³         \tab No \cr
-Particulate organic N      \tab \code{OGM_pon}       \tab mmol/m³         \tab No \cr
-Dissolved organic C        \tab \code{OGM_doc}       \tab mmol/m³         \tab No \cr
-Particulate organic C      \tab \code{OGM_poc}       \tab mmol/m³         \tab No \cr
-Dissolved inorganic C      \tab \code{CAR_dic}       \tab mmol/m³         \tab No \cr
-Silica                     \tab \code{SIL_rsi}       \tab mmol/m³         \tab No \cr
-Suspended solids 1         \tab \code{NCS_ss1}       \tab g/m³            \tab No \cr
-Suspended solids 2         \tab \code{NCS_ss2}       \tab g/m³            \tab No \cr
+Dissolved oxygen           \tab \code{OXY_oxy}       \tab mmol/m3         \tab No \cr
+Phosphate-P                \tab \code{PHS_frp}       \tab mmol/m3         \tab No \cr
+Dissolved organic P        \tab \code{OGM_dop}       \tab mmol/m3         \tab No \cr
+Particulate organic P      \tab \code{OGM_pop}       \tab mmol/m3         \tab No \cr
+Particulate inorganic P    \tab \code{PHS_frp_ads}   \tab mmol/m3         \tab No \cr
+Ammoniacal nitrogen        \tab \code{NIT_amm}       \tab mmol/m3         \tab No \cr
+Nitrate-N                  \tab \code{NIT_nit}       \tab mmol/m3         \tab No \cr
+Dissolved organic N        \tab \code{OGM_don}       \tab mmol/m3         \tab No \cr
+Particulate organic N      \tab \code{OGM_pon}       \tab mmol/m3         \tab No \cr
+Dissolved organic C        \tab \code{OGM_doc}       \tab mmol/m3         \tab No \cr
+Particulate organic C      \tab \code{OGM_poc}       \tab mmol/m3         \tab No \cr
+Dissolved inorganic C      \tab \code{CAR_dic}       \tab mmol/m3         \tab No \cr
+Silica                     \tab \code{SIL_rsi}       \tab mmol/m3         \tab No \cr
+Suspended solids 1         \tab \code{NCS_ss1}       \tab g/m3            \tab No \cr
+Suspended solids 2         \tab \code{NCS_ss2}       \tab g/m3            \tab No \cr
 pH                         \tab \code{CHM_ph}        \tab -               \tab No \cr
 }
 }
 
 \section{Unit detection logic}{
 
-Nutrient concentrations (N, P, C fractions) are expected in mmol/m³.
+Nutrient concentrations (N, P, C fractions) are expected in mmol/m3.
 Detection thresholds are based on comparison of observed value ranges
 against the example inflow data distributed with AEME:
 
 \itemize{
 \item \strong{N fractions} (\code{NIT_amm}, \code{NIT_nit}, \code{OGM_don},
-\code{OGM_pon}): mmol/m³ typically 0-10. Median > 20 assumed to be
+\code{OGM_pon}): mmol/m3 typically 0-10. Median > 20 assumed to be
 mg/L and divided by the molar mass of N (14.007 g/mol).
 \item \strong{P fractions} (\code{PHS_frp}, \code{OGM_dop}, \code{OGM_pop},
-\code{PHS_frp_ads}): mmol/m³ typically 0-5. Median > 10 assumed to be
+\code{PHS_frp_ads}): mmol/m3 typically 0-5. Median > 10 assumed to be
 mg/L and divided by the molar mass of P (30.974 g/mol).
-\item \strong{C fractions} (\code{OGM_doc}, \code{OGM_poc}): mmol/m³
+\item \strong{C fractions} (\code{OGM_doc}, \code{OGM_poc}): mmol/m3
 typically 0-100. Median > 100 assumed to be mg/L and divided by the
 molar mass of C (12.011 g/mol).
-\item \strong{Dissolved inorganic C} (\code{CAR_dic}): mmol/m³ typically
+\item \strong{Dissolved inorganic C} (\code{CAR_dic}): mmol/m3 typically
 500-1000. Median > 2000 assumed to be mg/L.
-\item \strong{Dissolved oxygen} (\code{OXY_oxy}): mmol/m³ typically
+\item \strong{Dissolved oxygen} (\code{OXY_oxy}): mmol/m3 typically
 200-400. Median < 50 assumed to be mg/L and multiplied by 1000/32
 (molar mass of O2).
-\item \strong{Silica} (\code{SIL_rsi}): mmol/m³ typically 1-50. Median
+\item \strong{Silica} (\code{SIL_rsi}): mmol/m3 typically 1-50. Median
 > 100 assumed to be mg/L and divided by molar mass of SiO2 (60.084).
-\item \strong{Temperature} (\code{temp}): °C expected. Median > 100
+\item \strong{Temperature} (\code{temp}): degC expected. Median > 100
 assumed to be Kelvin.
 }
 }

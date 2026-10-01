@@ -25,13 +25,14 @@ read_gotm_flux_output <- function(nc = NULL, file, dates = NULL,
   }
   date_start <- ncdf4::ncatt_get(nc, "time", "units")$value |>
     gsub("seconds since ", "", x = _) |>
-    as.POSIXct()
+    as.POSIXct(tz = "UTC")
   time_vec <- ncdf4::ncvar_get(nc, "time")
-  gotm_dates <- as.POSIXct(time_vec + date_start) |> 
-    as.Date()
+  # output_daily.nc is daily-mean by design (fluxes / water balance stay daily)
+  gotm_dates <- as.POSIXct(time_vec + date_start, tz = "UTC") |>
+    as.Date(tz = "UTC")
   if (is.null(date_index)) {
     if (!is.null(dates)) {
-      date_index <- which(gotm_dates %in% dates)
+      date_index <- which(gotm_dates %in% as.Date(dates))
       if (length(date_index) == 0) {
         cli::cli_abort("No output for GOTM at specified dates")
       }
@@ -87,7 +88,7 @@ read_gotm_flux_output <- function(nc = NULL, file, dates = NULL,
   MET_tmpair <- ncdf4::ncvar_get(nc, "airt")
   
   out_list <- list(
-    LKE_V = as.vector(V),
+    LKE_vol = as.vector(V),
     LKE_A0 = as.vector(A0),
     LKE_evprte = as.vector(EVAP),
     LKE_evpflx = as.vector(evap_flux),

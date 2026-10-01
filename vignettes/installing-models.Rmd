@@ -1,0 +1,164 @@
+---
+title: "Installing Model Binaries"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Installing Model Binaries}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  markdown:
+    wrap: 80
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(AEME)
+```
+
+# Introduction
+
+Since AEME v0.4.0, the package does not bundle model executables with the R package -- GLM-AED,
+GOTM-WET, DYRESM-CAEDYM and Simstrat-AED2 are downloaded separately, once,
+after installing AEME itself. This vignette covers:
+
+1. Which models are available on which platform
+2. Installing everything with one call, or one model at a time
+3. Checking what's installed, and picking a specific version
+4. Where AEME looks for an installed model, if you need to know
+
+If you already have models installed (or are working through
+`vignette("intro-aeme")` in an environment where this has been done for you),
+skip ahead to `vignette("intro-aeme")`.
+
+# Platform availability
+
+Not every model builds on every operating system:
+
+| Model | Windows | macOS | Linux |
+|-------|---------|-------|-------|
+| DYRESM-CAEDYM | Yes | No | No |
+| GLM-AED | Yes | Yes | Yes |
+| GOTM-WET | Yes | No | No |
+| Simstrat-AED2 | Yes | Yes | Yes |
+
+`install_models()` installs whatever is available for the platform it's run
+on; asking for a model that doesn't build there raises an error naming what
+is available instead of failing silently.
+
+# Installing everything
+
+The simplest path -- one call installs the latest release of every model
+available for your platform:
+
+```{r install-all, eval=FALSE}
+library(AEME)
+install_models()
+```
+
+This is safe to re-run: by default, a model already installed at the
+resolved "latest" version is left untouched (`force = FALSE`).
+
+# Installing one model at a time
+
+Each model also has its own installer, for when you only need one:
+
+```{r install-one, eval=FALSE}
+install_glm_aed()
+install_gotm_wet()
+install_dy_cd()
+install_simstrat_aed2()
+```
+
+`install_models()` accepts a `model` argument if you'd rather filter the
+all-in-one call instead of calling installers individually:
+
+```{r install-subset, eval=FALSE}
+install_models(model = c("glm_aed", "simstrat_aed2"))
+```
+
+# Picking a specific version
+
+By default, every installer resolves to the latest available release. To see
+what's available -- for example, to pin a version for reproducibility, or to
+match a model version a collaborator is using -- list versions before
+installing:
+
+```{r list-versions, eval=FALSE}
+list_glm_versions()
+list_gotm_wet_versions()
+list_dy_cd_versions()
+list_simstrat_aed2_versions()
+list_simstrat_aed_versions()
+```
+```{r list-versions-glm, eval=TRUE}
+list_glm_versions()
+```
+
+
+```{r install-pinned, eval=FALSE}
+install_glm_aed(version = "4.0.0")
+```
+
+# Checking what's installed
+
+```{r model-version, eval=FALSE}
+get_model_version(model = "glm_aed")
+```
+
+`list_models()` returns every model code AEME knows about, independent of
+what's actually installed -- useful as the input to functions like
+`install_models(model = ...)` that expect the short code (`"glm_aed"`) rather
+than the display name (`"GLM-AED"`):
+
+```{r list-models}
+library(AEME)
+list_models()
+```
+
+# Where installed models live
+
+Installers place binaries under a per-user AEME data directory (not inside
+the R package library, so a package reinstall doesn't wipe them). You
+shouldn't normally need to know the exact path -- `run_aeme()` and the
+model-specific `run_*()` wrappers find it automatically -- but if a build
+step reports a missing executable, `get_model_version()` and the
+`*_exe_path()` family (`glm_exe_path()`, `gotm_wet_exe_path()`,
+`dy_cd_exe_path()`, `simstrat_aed2_exe_path()`) resolve exactly which binary,
+if any, AEME will use.
+
+```{r check-exe-path}
+exe_path <- glm_exe_path()
+exe_path
+```
+
+# Which model should I pick?
+
+Well, it depends on what you want to do. The model-specific vignettes cover the 
+differences in detail, but in brief:
+
+- GLM-AED is the most widely used and supported, and is the default in AEME. It 
+is suitable for a wide range of lakes and reservoirs, and has a large user community.
+
+- Simstrat-AED2/AED is a model that is also suitable for a wide range of lakes, 
+it is particularly well-suited for deep, stratified lakes. It is less widely 
+used than GLM-AED, but has a strong user community and is actively maintained. 
+The Simstrat-AED model is an experimental version of the model, coupled with 
+the recently (Augusu 2026) released AED API. It has only been developed within 
+the Limnotrack branch, but may be of interest to researchers looking to explore 
+new features and capabilities. 
+
+- GOTM-WET is a more specialized model, suitable for certain types of lakes and 
+reservoirs. It is less widely used than GLM-AED, but may be more appropriate for
+certain applications.
+
+- DYRESM-CAEDYM is a one-dimensional model that is suitable for certain types of
+lakes and reservoirs. However, it is quite old and is not actively maintained, 
+so it is not recommended for new projects.
+
+# Next steps
+
+With a model installed, `vignette("intro-aeme")` walks through the `Aeme`
+object model and builds your first ensemble member.

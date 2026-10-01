@@ -6,13 +6,17 @@
 #' @param tmpwtr numeric; water temperature
 #' @param tbl_obs data.frame; with profile
 #' @param Kw numeric; value of Kw
+#' @param aed_models character vector of active AED modules; initial
+#'   conditions for variables of inactive modules are omitted. `NULL` (default)
+#'   applies no filter.
 #'
 #' @return GLM nml list object
 #' @noRd
 #'
 
 initialise_glm <-  function(glm_nml, lvl_bottom, init_depth,
-                           tmpwtr = 10, tbl_obs = NULL, Kw, model_controls) {
+                           tmpwtr = 10, tbl_obs = NULL, Kw, model_controls,
+                           aed_models = NULL) {
 
   # define the proTable (intial profiles for T and SAL)
   if (is.null(tbl_obs)) {
@@ -34,32 +38,18 @@ initialise_glm <-  function(glm_nml, lvl_bottom, init_depth,
     the_sals = tbl_obs[, 3]
   )
   
-  # Add initial AED values
-  sim_vars <- model_controls |> 
-    dplyr::filter(simulate, !is.na(initial_wc), 
-                  !var_aeme %in% c("HYD_temp", "CHM_salt"))
-  if (length(sim_vars) > 0) {
-    depths <- tbl_obs[["depth"]]
-    glm_wq_vars <- sim_vars |> 
-      dplyr::mutate(value = initial_wc * conversion_aed) |>
-      dplyr::group_by(var_aeme) |>
-      # Duplicate each row by number of depths
-      dplyr::slice(rep(1:n(), each = length(depths))) 
-    var_names <- glm_wq_vars |> 
-      dplyr::distinct(var_aeme) |>
-      dplyr::pull(var_aeme)
-    if (length(var_names) > 0) {
-      wq_names <- rename_modelvars(var_names, type_output = "glm_aed")
-      num_wq_vars <- length(var_names)
-      wq_init_vals <- glm_wq_vars[["value"]]
-    } else {
-      wq_names <- "''"
-      num_wq_vars <- 0
-      wq_init_vals <- 0
-    }
-    arg_list[["wq_names"]] <- wq_names
-    arg_list[["num_wq_vars"]] <- num_wq_vars
-    arg_list[["wq_init_vals"]] <- wq_init_vals
+  # Add initial AED values. Drop the variables that are not GLM-AED
+  # water-column state variables (totals, particulate-inorganic pools,
+  # PHY_tchla, NCS_ss*, forcing columns) -- GLM aborts with
+  # "Cannot find <var> for initial value" if they reach wq_names.
+  # Variables whose AED module is not active (`aed_models`) are dropped too --
+  # e.g. CAR_pH without aed_carbon, ZOO_zoo1 without aed_zooplankton.
+  wq <- glm_wq_init_args(model_controls, n_depths = arg_list[["num_depths"]],
+                         aed_models = aed_models)
+  if (!is.null(wq)) {
+    arg_list[["wq_names"]] <- wq[["wq_names"]]
+    arg_list[["num_wq_vars"]] <- wq[["num_wq_vars"]]
+    arg_list[["wq_init_vals"]] <- wq[["wq_init_vals"]]
   }
   
   init_args_req <- c("wq_names", "num_wq_vars", "wq_init_vals")

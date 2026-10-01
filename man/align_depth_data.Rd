@@ -10,7 +10,8 @@ align_depth_data(aeme, model, var_sim, ens_n = 1, return_df = TRUE)
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp").}
 
@@ -22,14 +23,12 @@ list. Default is TRUE.}
 \value{
 A data frame with the following columns:
 \itemize{
-\item \code{Date}: Date of observation
-\item \code{depth}: Depth of observation
+\item \code{Date}: Observation date, as a calendar \code{Date}
+\item \code{depth}: Depth of observation (m, positive-down from the surface)
 \item \code{elev}: Elevation of observation
 \item \code{Model}: Model name
 \item \code{var_sim}: Variable name
 \item \code{value}: Value of the variable
-\item \code{depth_from}: Depth from which the variable is extracted
-\item \code{depth_to}: Depth to which the variable is extracted
 }
 }
 \description{

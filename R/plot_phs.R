@@ -18,12 +18,12 @@ plot_phs <- function(aeme, model, add_obs = TRUE, depth_range = NULL,
   } else {
     model <- check_model(model = model)
   }
-  # Set colours for Nitrogen variables
+  # Set colours for Phosphorus variables
   phs_cols <- c("Particulate inorganic P" = "#0072B2",
                 "Phosphate" = "#D55E00",
                 "Dissolved organic P" = "#CC79A7",
                 "Particulate organic P" = "#009E73",
-                "Total phosphorus" = "#F0E442")
+                "Total phosphorus" = "#5D4E60")
   phs_lwd <- c(1, 1, 1, 1, 2)
   phs_alpha <- c(1, 1, 1, 1, 0.5)
   names(phs_lwd) <- names(phs_cols)

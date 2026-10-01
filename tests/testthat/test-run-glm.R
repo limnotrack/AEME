@@ -1,0 +1,512 @@
+test_that("running GLM works", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
+  unlink(list.files(path, recursive = TRUE, full.names = TRUE))
+  model_controls <- get_model_controls()
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5,
+                     use_bgc = FALSE)
+
+  obs <- get_obs(aeme)
+  mod_obs_vars <- get_mod_obs_vars(aeme)
+  testthat::expect_true(all(mod_obs_vars$var_aeme %in% obs$var_aeme))
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = TRUE, path = path)
+  plot_output(aeme)
+  # plot_wlev(aeme)
+  # plot_wbal(aeme)
+  lake_dir <- get_lake_dir(aeme = aeme)
+  outfile <- get_model_outfile(aeme = aeme)
+  outfile2 <- get_model_outfile(path = path, model = model)
+  outfile3 <- get_model_outfile(aeme, model = model)
+  testthat::expect_equal(outfile, outfile2)
+  testthat::expect_equal(outfile, outfile3)
+
+  wlev <- read_model_wlev(lake_dir = lake_dir, model = model)
+  testthat::expect_true(is.data.frame(wlev))
+
+  vars_sim <- get_vars_sim(aeme = aeme)
+
+  # Read GLM output using ncdf4
+  nc <- ncdf4::nc_open(outfile$glm_aed)
+  wlev2 <- read_model_wlev(nc = nc, model = model)
+  testthat::expect_true(is.data.frame(wlev2))
+  testthat::expect_equal(nrow(wlev), nrow(wlev2))
+
+  outp1 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model,
+                              vars_sim = vars_sim)
+  testthat::expect_true(is.list(outp1))
+  testthat::expect_true(nrow(outp1$HYD_temp) == 42)
+  testthat::expect_true(length(outp1) >= length(vars_sim))
+
+  # load_all = FALSE here to check the minimal, tightly-scoped read still
+  # returns exactly what was asked for (Date, HYD_temp, LKE_depths,
+  # LKE_lvlwtr, z, ok, reason) -- load_all = TRUE (the read_model_outputs()
+  # default) would additionally pick up every other variable in the file,
+  # tested separately in test-read-glm-output-load-all.R
+  outp2 <- read_model_outputs(nc = nc, lake_dir = lake_dir, model = model,
+                              vars_sim = "HYD_temp", incl_fluxes = FALSE,
+                              load_all = FALSE)
+  testthat::expect_true(is.list(outp2))
+  testthat::expect_true(nrow(outp2$HYD_temp) == 42)
+  testthat::expect_true(length(outp2) == 7)
+
+  ncdf4::nc_close(nc)
+
+
+  out <- read_glm_output(file = outfile$glm_aed, vars_sim = vars_sim)
+  testthat::expect_true(nrow(out$HYD_temp) > 2)
+
+  var_indices <- get_var_indices(aeme = aeme, model = model, path = path,
+                                 use_obs = TRUE, vars_sim = vars_sim)
+
+  out <- read_glm_output(file = outfile$glm_aed, vars_sim = vars_sim,
+                         depths = var_indices$HYD_temp$depths, incl_fluxes = FALSE,
+                         date_index = var_indices$HYD_temp$date_index)
+
+  out2 <- read_glm_output(file = outfile$glm_aed, vars_sim = "HYD_temp",
+                          depths = c(0, 11), incl_fluxes = FALSE)
+  testthat::expect_true(nrow(out2$HYD_temp) == 2)
+  testthat::expect_true(all(out2$HYD_temp[1, ] >= out2$HYD_temp[2, ]))
+  out3 <- read_glm_output(file = outfile$glm_aed, vars_sim = "HYD_temp",
+                          depths = c(0, 11), incl_fluxes = FALSE,
+                          dates = c("2020-09-01", "2020-12-02"))
+  testthat::expect_true(ncol(out3$HYD_temp) == 2)
+
+  # plot_output(aeme)
+  outp <- output(aeme)
+  file_chk <- file.exists(file.path(lake_dir,
+                                    model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
+
+  v <- get_var(aeme = aeme, var_sim = "HYD_temp", depth = 0)
+  v2 <- get_var(aeme = aeme, var_sim = "HYD_temp", depth = 0,
+                depth_ref = "bottom")
+  lake_level <- get_var(aeme = aeme, var_sim = "LKE_lvlwtr")
+  max_depth <- max(lake_level$value, na.rm = TRUE)
+  testthat::expect_true(is.data.frame(v))
+  testthat::expect_true(is.data.frame(v2))
+  # testthat::expect_error({
+  #   get_var(aeme = aeme, model = model, var_sim = "HYD_temp",
+  #           depth = max_depth + 1)
+  # })
+})
+
+test_that("editing and running GLM-AED via the thin path-based wrapper works", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
+  unlink(list.files(path, recursive = TRUE, full.names = TRUE))
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5,
+                     use_bgc = TRUE)
+
+  # From here on, only `path_glm` is used -- no `aeme` object required,
+  # mirroring a GLM-AED-only user's workflow of editing an existing
+  # configuration directory, running it, and loading the output.
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  path_glm <- file.path(lake_dir, "glm_aed")
+
+  # -- parameters --
+  old_kw <- get_glm_param(path_glm, "Kw")
+  set_glm_param(path_glm, Kw = old_kw * 1.5)
+  testthat::expect_equal(get_glm_param(path_glm, "Kw"), old_kw * 1.5)
+
+  # -- init --
+  glm_file <- find_glm_nml(path_glm)
+  nml0 <- read_nml(glm_file)
+  n_depths <- nml0$init_profiles$num_depths
+  new_temp <- seq(20, 10, length.out = n_depths)
+  new_salt <- rep(1, n_depths)
+  wq_var <- nml0$init_profiles$wq_names[1]
+  set_glm_init(path_glm, temp = new_temp, salt = new_salt,
+              wq_init = setNames(list(321), wq_var))
+  nml1 <- read_nml(glm_file)
+  testthat::expect_equal(nml1$init_profiles$the_temps, new_temp)
+  testthat::expect_equal(nml1$init_profiles$the_sals, new_salt)
+  wq_idx <- match(wq_var, nml1$init_profiles$wq_names)
+  wq_vals <- matrix(nml1$init_profiles$wq_init_vals, nrow = n_depths)
+  testthat::expect_true(all(wq_vals[, wq_idx] == 321))
+
+  # -- inflows --
+  inf_df <- read.csv(file.path(path_glm, "bcs", "inflow_FWMT.csv"))
+  inf_df <- data.frame(Date = as.Date(inf_df$time),
+                       HYD_flow = inf_df$flow * 86400 * 1.1,
+                       HYD_temp = inf_df$temp,
+                       CHM_salt = inf_df$salt)
+  set_glm_inflows(path_glm, list_inf = list(FWMT = inf_df), mass = FALSE)
+  new_inf <- read.csv(file.path(path_glm, "bcs", "inflow_FWMT.csv"))
+  testthat::expect_equal(nrow(new_inf), nrow(inf_df))
+
+  # -- outflows --
+  outf_df <- read.csv(file.path(path_glm, "bcs", "outflow_outflow.csv"))
+  outf_df <- data.frame(Date = as.Date(outf_df$time),
+                        HYD_flow = outf_df$flow * 0.99)
+  set_glm_outflows(path_glm, outf = list(outflow = outf_df),
+                   heights_wdr = c(outflow = 12.07))
+  testthat::expect_true(file.exists(file.path(path_glm, "bcs",
+                                              "outflow_outflow.csv")))
+
+  # -- run and load output, all from the path alone --
+  run_glm_aed(sim_folder = path_glm)
+  outfile <- file.path(path_glm, "output", "output.nc")
+  testthat::expect_true(file.exists(outfile))
+  out <- read_glm_output(file = outfile, vars_sim = "HYD_temp")
+  plot_model_output(out, "HYD_temp")
+  testthat::expect_true(nrow(out$HYD_temp) > 0)
+  testthat::expect_true(is_aeme_output(out))
+  testthat::expect_false(is_aeme_output_raw(out))
+  testthat::expect_equal(attr(out, "model"), "glm_aed")
+  testthat::expect_output(print(out), "aeme_output")
+
+  out_raw <- read_glm_output(file = outfile, raw_output = TRUE,
+                             load_all = TRUE)
+  plot_model_output(out_raw, "temp")
+  plot_model_output(out_raw, "SDF_Fsed_oxy_Z")
+  testthat::expect_true(nrow(out_raw$temp) > 0)
+  testthat::expect_true(class(out_raw$zarea) == "aeme_grouped_var")
+  testthat::expect_true(is_aeme_output(out_raw))
+  testthat::expect_true(is_aeme_output_raw(out_raw))
+  testthat::expect_output(print(out_raw), "raw")
+  # "Date" is structural, not a variable -- must survive the raw-mode
+  # rename sweep unchanged (key_naming has a real Date -> "time" entry that
+  # previously renamed it out from under every consumer)
+  testthat::expect_true("Date" %in% names(out_raw))
+  testthat::expect_s3_class(out_raw$Date, "Date")
+
+  # GLM's own raw layer-height matrix -- always captured (not just under
+  # raw_output, since GLM's layers genuinely vary in thickness/count over
+  # time), and survives the raw-mode rename sweep with its key unchanged.
+  # LKE_depths uses model_layer_structure's fixed row count in standardised
+  # mode, so only compare shapes against z in raw mode, where both are
+  # built from the same native GLM layer grid.
+  testthat::expect_true("z" %in% names(out))
+  testthat::expect_true(is.matrix(out$z))
+  testthat::expect_true("z" %in% names(out_raw))
+  testthat::expect_true(is.matrix(out_raw$z))
+  testthat::expect_equal(dim(out_raw$z), dim(out_raw$LKE_depths))
+
+  # standardise_glm_output() interpolates the raw output back onto AEME's
+  # depth grid using "z" -- should closely reproduce a direct standardised
+  # read of the same file (HYD_temp's conversion_aed factor is 1, so this
+  # should match almost exactly, not just approximately)
+  out_std <- standardise_glm_output(out_raw)
+  testthat::expect_true(is_aeme_output(out_std))
+  testthat::expect_false(is_aeme_output_raw(out_std))
+  testthat::expect_true("HYD_temp" %in% names(out_std))
+  testthat::expect_equal(dim(out_std$HYD_temp), dim(out$HYD_temp))
+  testthat::expect_equal(out_std$HYD_temp, out$HYD_temp, tolerance = 1e-6)
+  testthat::expect_equal(out_std$LKE_lvlwtr, out_raw$lake_level)
+  testthat::expect_error(standardise_glm_output(out))
+})
+
+test_that("running GLM with different exec works", {
+  # Skip if not on Windows
+  if (.Platform$OS.type != "windows") {
+    testthat::skip("Skipping test on non-Windows OS")
+  }
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
+  model_controls <- get_model_controls()
+  model <- c("glm_aed")
+
+  path <- tempdir()  # or wherever you want to save
+  install_glm_aed(version = "3.3.5")
+
+  options("AEME.glm_exec" = glm_exe_path())
+  getOption("AEME.glm_exec")
+
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5,
+                     use_bgc = FALSE)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
+
+  glm_ver <- get_model_version(model = model)
+  testthat::expect_true(any(grepl("3.3.5", glm_ver)))
+  # plot_output(aeme, model = model)
+  outp <- output(aeme)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  file_chk <- file.exists(file.path(lake_dir,
+                                    model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
+  options("AEME.glm_exec" = NULL)
+
+})
+
+test_that("run GLM models with old object", {
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, ext_elev = 5) |>
+    run_aeme()
+  outfile <- get_model_outfile(aeme = aeme)
+  testthat::expect_true(all(file.exists(unlist(outfile))))
+
+})
+
+test_that("running GLM-AED works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb",
+                "CHM_oxycln", "CHM_oxynal",
+                "NIT_tn", "PHS_tp", "PHY_tchla", "CAR_toc")
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model_controls <- set_vars_sim(model_controls = model_controls,
+                                 vars_sim = vars_sim)
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = TRUE) |>
+    run_aeme(verbose = T)
+  
+  metrics <- assess_aeme(aeme = aeme)
+  plot_assess(aeme)
+  plot_assess(aeme, type = "heatmap")
+  plot_assess(aeme, type = "taylor", var_sim = c("HYD_temp", "CHM_oxy"))
+  plot_assess(aeme, type = "target", var_sim = c("HYD_temp", "CHM_oxy"))
+  
+  plot_output_base(aeme)
+  plot_output_base(aeme, var_sim = c("evap"))
+  plot_output_base(aeme, var_sim = c("qh"))
+  plot_output(aeme, var_sim = c("temp", "oxy", "tp", "tn", "frp", "amm"), backend = "base")
+  # aeme <- run_aeme(aeme, args = "--xdisp")
+  html_file <- plot_glm_config(aeme = aeme)
+  testthat::expect_true(file.exists(html_file))
+  html_widget <- plot_glm_config(aeme = aeme, return_widget = TRUE)
+  testthat::expect_true(!is.null(html_widget))
+
+
+  out <- run_glm_aed_diagnostics(aeme = aeme)
+  testthat::expect_true(is.list(out))
+  testthat::expect_true(all(c("data", "plots", "summary") %in% names(out)))
+  plt_chk <- sapply(out$plots, ggplot2::is_ggplot)
+  testthat::expect_true(all(plt_chk))
+
+  oxy_sdf <- out$data |>
+    dplyr::filter(variable == "SDF_Fsed_oxy_Z", is.na(value))
+
+  plot_output(aeme, var_sim = "CHM_oxy") /
+    plot_output(aeme)/
+    plot_output(aeme, var_sim = "PHY_tchla")
+
+  diag_plot <- plot_glm_diagnostics(aeme = aeme)
+  testthat::expect_true(is.list(diag_plot))
+  chk <- sapply(diag_plot, \(x) ggplot2::is_ggplot(x))
+  testthat::expect_true(all(chk))
+
+  file <- get_model_outfile(aeme = aeme, model = model)
+
+  plot_output(aeme, model = model)
+
+  v1 <- get_var(aeme = aeme, model = model, var = "HYD_temp")
+  v2 <- get_var(aeme = aeme, model = model, var = "CHM_oxynal",
+                remove_spin_up = FALSE)
+  testthat::expect_true(v1$Date[1] > v2$Date[1])
+
+  plot_output(aeme, model = model, "HYD_temp", facet = TRUE, remove_spin_up = TRUE, level = FALSE) /
+    plot_output(aeme, model = model, "CHM_oxy", facet = TRUE, remove_spin_up = FALSE)
+  plot_output(aeme, model = model, "HYD_schstb", facet = FALSE) /
+    plot_output(aeme, model = model, "CHM_oxycln", facet = FALSE) /
+    plot_output(aeme, model = model, "HYD_thmcln", facet = FALSE)
+
+  p1 <- plot_output(aeme, model = model, "PHY_tchla", facet = FALSE)
+  p2 <- plot_output(aeme, model = model, "NIT_tn", facet = FALSE)
+  p3 <- plot_output(aeme, model = model, "PHS_tp", facet = FALSE)
+  p4 <- plot_output(aeme, model = model, "CAR_toc", facet = FALSE)
+  plot_phytos(aeme)
+  plot_phs(aeme)
+  plot_nit(aeme)
+  plot_car(aeme)
+
+  pstrat <- plot_output(aeme, model = model, var_sim = "HYD_strat",
+                        facet = FALSE)
+  testthat::expect_true(ggplot2::is_ggplot(pstrat))
+
+  model_performance <- assess_aeme(aeme = aeme)
+  testthat::expect_true(is.data.frame(model_performance))
+
+
+
+  lke <- lake(aeme)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
+})
+
+test_that("running GLM with a spinup works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls()
+  inf_factor <- c("glm_aed" = 1)
+  outf_factor <- c("glm_aed" = 1)
+  model <- c("glm_aed")
+
+  # Add spin up time
+  tim <- time(aeme)
+  tim[["spin_up"]][[model]] <- 100
+  time(aeme) <- tim
+
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme(aeme = aeme, model = model,
+                   model_controls = model_controls, path = path)
+  lke <- lake(aeme)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
+})
+
+test_that("running ensemble works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- get_model_controls()
+  model <- c("glm_aed")
+  model <- filter_platform_models(model)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = FALSE)
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
+
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path,
+                   ens_n = 2)
+
+
+  outp <- output(aeme)
+  testthat::expect_true(check_all_model_outfiles(aeme))
+  testthat::expect_true(outp$n_members > 1)
+})
+
+test_that("assess model with no lake level data", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+
+  obs <- observations(aeme)
+  obs$level <- NULL
+  observations(aeme) <- obs
+
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls, inf_factor = inf_factor,
+                     ext_elev = 5, use_bgc = FALSE, calc_wbal = TRUE,
+                     calc_wlev = FALSE)
+  inp <- input(aeme)
+  met <- inp$meteo
+  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
+                   model_controls = model_controls, path = path,
+                   parallel = FALSE)
+  model_performance <- assess_aeme(aeme = aeme, model = model,
+                                    var_sim = c("LKE_lvlwtr", "HYD_temp"))
+  testthat::expect_true(is.data.frame(model_performance))
+
+})
+
+test_that("running GLM-AED with multiple aed models", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  yaml_path <- file.path(tmpdir, "lake")
+  aeme <- yaml_to_aeme(path = yaml_path, "aeme.yaml")
+  path <- file.path(tmpdir, "aeme")
+  vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb",
+                "CHM_oxycln", "CHM_oxynal")
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model_controls <- set_vars_sim(model_controls = model_controls,
+                                 vars_sim = vars_sim)
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = TRUE)
+  aed_models = c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
+                 "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton",
+                 "aed_zooplankton", "aed_macrophyte")
+  for (i in seq_len(length(aed_models))) {
+    sel_models <- aed_models[1:i]
+    set_glm_aed_models(aeme = aeme, path = path,
+                       aed_models = sel_models)
+    aeme <- run_aeme(aeme = aeme, model = model, verbose = T, path = path)
+
+    # Check output files
+    lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
+    file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
+    testthat::expect_true(file_chk)
+  }
+
+})
+
+test_that("updating AED sed params works", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
+  path <- tempdir()
+  vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb",
+                "CHM_oxycln", "CHM_oxynal")
+  model_controls <- get_model_controls(use_bgc = TRUE)
+  model_controls <- set_vars_sim(model_controls = model_controls,
+                                 vars_sim = vars_sim)
+  model <- c("glm_aed")
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     model_controls = model_controls,
+                     ext_elev = 5, use_bgc = TRUE)
+  set_aed_sed_const2d(aeme = aeme, path = path)
+
+  aeme <- run_aeme(aeme = aeme, model = model, path = path)
+
+  sed_param <- get_aed_sed_const2d_param(aeme = aeme, path = path)
+  testthat::expect_true(is.data.frame(sed_param))
+  testthat::expect_true(max(sed_param$index, na.rm = TRUE) == 2)
+
+  upd_sed_pars <- glm_sed_params(n_zones = 2, zone_heights = c(6, 14))
+
+  aeme <- add_param(aeme, upd_sed_pars)
+  aeme <- build_aeme(path = path, aeme = aeme, model = model,
+                     ext_elev = 5, use_bgc = TRUE)
+  lake_dir <- get_lake_dir(aeme = aeme, path = path)
+  cfg <- read_model_config(model = model, lake_dir = lake_dir)
+
+  aeme <- aeme |>
+    set_aed_sed_const2d(path = path)
+  cfg2 <- read_model_config(model = model, lake_dir = lake_dir)
+
+  testthat::expect_false(identical(cfg, cfg2))
+  testthat::expect_true(cfg$bgc$aed$aed_sed_const2d$n_zones == 2)
+  testthat::expect_true(cfg2$bgc$aed$aed_sed_const2d$n_zones == 2)
+
+  aeme <- run_aeme(aeme = aeme, model = model, path = path)
+  # Check output files
+  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
+  file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
+
+})

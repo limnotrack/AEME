@@ -1,38 +1,74 @@
 #' Get model output file
 #'
 #' @inheritParams build_aeme
-#' @param lake_dir Path to the lake AEME directory. If NULL, it will be
-#' computed from `aeme` and `path`.
+#' @param path Directory to search for the model output. If `aeme` is also
+#' provided, `path` is the root combined with `aeme` to compute the lake's
+#' directory (as in `get_lake_dir()`) -- omit it to use `aeme`'s own stored
+#' path. If `aeme` is not provided, `path` is searched directly, and can be
+#' either an ensemble root or a single model's own directory.
+#' @param lake_dir `r lifecycle::badge("deprecated")` Use `path` instead of
+#'  `lake_dir`
+#' @param all logical; a model run can produce more than one output file
+#' (e.g. GLM-AED's netCDF plus its `csv_lake`/`csv_point`/mass-balance CSVs,
+#' or GOTM's `output.nc` plus `output_daily.nc`). When `FALSE` (the default),
+#' only the primary file per model is returned -- the netCDF entry named
+#' `"output"` when there is one, otherwise the first (only) file. Set to
+#' `TRUE` to get every file the model's resolver found.
+#'
+#' @importFrom cli cli_abort
 #'
 #' @return list of model output files.
 #' @export
 #'
 
-get_model_outfile <- function(aeme = NULL, model, path = NULL, 
-                              lake_dir = NULL) {
+get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir,
+                              all = FALSE) {
+
+  
+  # Soft deprecate lake_dir arg
+  if (!missing(lake_dir)) {
+    lifecycle::deprecate_warn(
+      when = "0.4.0",
+      what = "get_model_outfile(lake_dir)",
+      details = "Use `path` instead of `lake_dir`"
+    )
+    path <- lake_dir
+  }
+  
+  if (is.null(aeme) && is.null(path)) {
+    cli::cli_abort("Either `aeme` or `path` must be provided")
+  }
+
+  if (is.null(aeme)) {
+    lake_dir <- check_path(path = path, must_exist = TRUE)
+  } else {
+    aeme <- check_aeme(aeme)
+    if (is.null(path)) {
+      path <- get_aeme_path(aeme)
+    }
+    lake_dir <- get_lake_dir(aeme)
+  }
+
   if (missing(model)) {
     model <- list_models(aeme)
   } else {
     model <- check_model(model = model)
-  }  
-  # --- Resolve lake_dir as needed ---
-  if (is.null(lake_dir)) {
-    aeme <- check_aeme(aeme)
-    if (missing(path)) {
-      path <- get_aeme_path(aeme)
-    }
-    path <- check_path(path = path, must_exist = TRUE)
-    lake_dir <- get_lake_dir(path = path, aeme = aeme)
   }
-  
-  # Get config files once
-  cfg_files <- get_model_config_files(model = model, lake_dir = lake_dir)
+
+  # Get config files once. When an `aeme` was supplied, pass it through so
+  # get_model_config_files() narrows the search to this lake's own
+  # directory via get_lake_dir() -- otherwise, with `path` pointing at a
+  # multi-lake ensemble root, file discovery (e.g. find_glm_nml()) could
+  # match a different lake's config files sharing the same directory tree.
+  cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
   
   # Map of model-specific resolvers
   resolvers <- list(
     dy_cd = resolve_dy_cd,
     glm_aed = resolve_glm_aed,
-    gotm_wet = resolve_gotm_wet
+    gotm_wet = resolve_gotm_wet,
+    simstrat_aed2 = resolve_simstrat_aed2,
+    simstrat_aed = resolve_simstrat_aed2
   )
   
   # Loop over models and resolve paths
@@ -40,29 +76,55 @@ get_model_outfile <- function(aeme = NULL, model, path = NULL,
     resolvers[[m]](lake_dir = lake_dir, cfg = cfg_files[[m]])
   })
   names(out_files) <- model
-  
+
+  if (!isTRUE(all)) {
+    out_files <- lapply(out_files, .primary_outfile)
+  }
+
   return(out_files)
+}
+
+#' Pick the primary file out of a resolver's named vector of output files
+#' @noRd
+.primary_outfile <- function(files) {
+  if (length(files) <= 1) return(files)
+  if (!is.null(names(files)) && "output" %in% names(files)) {
+    return(files["output"])
+  }
+  files[1]
 }
 
 #' Model-specific resolvers
 #' @noRd
 resolve_glm_aed <- function(lake_dir, cfg) {
-  nml <- read_nml(cfg[["glm3"]])
+  glm_key <- find_glm_nml_key(names(cfg))
+  nml <- read_nml(cfg[[glm_key]])
+
+  outfile <- nml[["output"]][["out_fn"]]
+  csv_lake <- nml[["output"]][["csv_lake_fname"]]
+  csv_point <- nml[["output"]][["csv_point_fname"]]
+  csv_point_at <- nml[["output"]][["csv_point_at"]]
+  balance_file <- nml[["mass_balance"]][["balance_file"]]
   
   # Expected basename
-  expected_name <- paste0(nml$output$out_fn, ".nc")
-  model_dir <- dirname(cfg[["glm3"]])
+  expected_names <- paste0(
+    paste0(nml$output$out_fn, ".nc"),
+    ifelse(!is.null(csv_lake), paste0("|", csv_lake, ".csv"), ""),
+    ifelse(!is.null(csv_point), paste0("|", csv_point, csv_point_at, ".csv"), ""),
+    ifelse(!is.null(balance_file), paste0("|", balance_file, ".csv"), "")
+  )
+  model_dir <- dirname(cfg[[glm_key]])
   
   # Search recursively
   files <- list.files(
     path = model_dir,
-    pattern = paste0("^", expected_name, "$"),
+    pattern = paste0("^", expected_names, "$"),
     full.names = TRUE,
     recursive = TRUE
   )
-  
+
   names(files) <- tools::file_path_sans_ext(basename(files))
-  files
+  return(files)
 }
 
 #' Model-specific resolvers
@@ -78,6 +140,20 @@ resolve_dy_cd <- function(lake_dir, cfg) {
     files <- file.path(lake_dir, "dy_cd", "DYsim.nc")
   }
   names(files) <- "DYsim"
+  files
+}
+
+#' Model-specific resolvers
+#' @noRd
+resolve_simstrat_aed2 <- function(lake_dir, cfg) {
+  model_dir <- dirname(cfg[["simstrat"]])
+  files <- list.files(
+    path = model_dir,
+    pattern = "^output\\.nc$|\\_out.dat$",
+    full.names = TRUE,
+    recursive = TRUE
+  )
+  names(files) <- tools::file_path_sans_ext(basename(files))
   files
 }
 
