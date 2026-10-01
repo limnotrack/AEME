@@ -260,7 +260,11 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
   colnames(out) <- (c("Date", paste0("MET_", colnames(out)[2:ncol(out)])))
   
   # Round to 2 decimal places
-  out[, -1] <- round(out[, -1], 3)
+  # round everything but precip; rain/snow are small and skewed, so leave them
+  keep <- c("MET_pprain", "MET_ppsnow")
+  cols <- setdiff(names(out)[-1], keep)
+  out[, cols] <- round(out[, cols], 3)
+  out[, -1] <- round(out[, -1], 6)
   
   
   if (print.plot) {
