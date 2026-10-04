@@ -33,10 +33,12 @@ write_aed_param_csv <- function(df, file) {
   if (length(name_col) > 0) {
     df[[name_col]] <- paste0("'", df[[name_col]], "'")
   }
-  # Round all other columns to 3 decimal places if numeric
+  # Round numeric columns to 6 significant digits: strips floating-point
+  # noise (0.30000000000000004) without zeroing small values such as rate
+  # constants, which a fixed number of decimal places would do.
   for (col in names(df)) {
     if (is.numeric(df[[col]])) {
-      df[[col]] <- round(df[[col]], 3)
+      df[[col]] <- signif(df[[col]], 6)
     }
   }
   readr::write_csv(df, file)
