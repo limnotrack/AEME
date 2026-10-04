@@ -103,6 +103,8 @@ check_glm_nml <- function(file) {
     pars <- c("sed_heat_Ksoil", "sed_temp_depth", "sed_temp_mean",
               "sed_temp_amplitude", "sed_temp_peak_doy", "zone_heights",
               "sed_reflectivity", "sed_roughness")
+    # GLMv4 per-zone deep soil temperature (only present in v4 nmls)
+    if (!is.null(sed$sed_temp_deep)) pars <- c(pars, "sed_temp_deep")
     # sed_heat_Ksoil and sed_temp_depth only feed GLM's analytical
     # sediment-heat model, enabled via sed_heat_model = 1 (a newer GLM
     # option; older nmls that don't set it at all still rely on that

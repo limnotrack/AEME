@@ -202,6 +202,14 @@ make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
       managed[["sed_temp_depth"]] <- NULL
     }
 
+    # GLMv4 templates also carry a per-zone deep soil temperature; resize it
+    # with the zones (keeping the template values) so it can't go out of step
+    # with n_zones.
+    if (!is.null(sediment[["sed_temp_deep"]])) {
+      managed[["sed_temp_deep"]] <- rep_len(
+        as.numeric(sediment[["sed_temp_deep"]]), n_zones)
+    }
+
     sediment[names(managed)] <- managed
     glm_nml[["sediment"]] <- sediment
   }
