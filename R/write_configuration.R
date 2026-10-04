@@ -2,8 +2,8 @@
 #'
 #' Writes each requested model's configuration files straight from the
 #' `aeme` object's cached state, with no recomputation of any kind -- the
-#' hydrodynamic/bgc files come verbatim from `configuration(aeme)`, and (for
-#' `glm_aed`, when `include_boundary = TRUE`) the meteorology/inflow/outflow
+#' hydrodynamic/bgc files come verbatim from `configuration(aeme)`, and (when
+#' `include_boundary = TRUE`) the meteorology/inflow/outflow
 #' boundary-condition files come straight from `input(aeme)`/`inflows(aeme)`/
 #' `outflows(aeme)`, bypassing [build_aeme()]'s water-balance/lake-level/
 #' AED-re-derivation pipeline entirely. This makes it the safe choice for
@@ -15,17 +15,27 @@
 #' @inheritParams build_aeme
 #' @param path character; path to the directory where the model configuration
 #'   should be written. Default is the current working directory.
-#' @param include_boundary logical; also write GLM-AED's boundary-condition
-#'   files (`bcs/meteo_glm.csv`, `bcs/inflow_*.csv`, `bcs/outflow_*.csv`)
-#'   straight from `input(aeme)`/`inflows(aeme)`/`outflows(aeme)`. Has no
-#'   effect on other models (dy_cd/gotm_wet/simstrat_aed2), which don't yet
-#'   have an equivalent boundary-file writer here. Default `TRUE`.
+#' @param include_boundary logical; also write each model's boundary-condition
+#'   files (meteorology, inflows and outflows, e.g. GLM-AED's
+#'   `bcs/meteo_glm.csv`, `bcs/inflow_*.csv` and `bcs/outflow_*.csv`) in the
+#'   model's own format, straight from `input(aeme)`/`inflows(aeme)`/
+#'   `outflows(aeme)`. Default `TRUE`.
+#'
+#' @param apply_params logical; apply `parameters(aeme)` when writing. The
+#'   configuration-file parameters are set on the configuration being written,
+#'   and (for the boundary files) the met/inflow/outflow scaling parameters
+#'   are applied to the data being written. Neither `configuration(aeme)` nor
+#'   `input(aeme)`/`inflows(aeme)`/`outflows(aeme)` is changed: the parameters
+#'   only affect what reaches disk. Parameters for a file the configuration
+#'   does not have (e.g. bgc parameters for a model built without bgc) are
+#'   skipped with a warning. Default `TRUE`.
 #'
 #' @return aeme object which was passed to the function,
 #' @export
 
 write_configuration <- function(aeme, model, path = getwd(),
-                                include_boundary = TRUE) {
+                                include_boundary = TRUE,
+                                apply_params = TRUE) {
 
   aeme  <- check_aeme(aeme)
   model <- if (missing(model)) list_models(aeme) else check_model(model)
@@ -34,6 +44,17 @@ write_configuration <- function(aeme, model, path = getwd(),
   lke <- lake(aeme)
   name <- tolower(lke$name)
   model_config <- configuration(aeme)
+
+  param <- if (apply_params) usable_parameters(aeme) else NULL
+  if (!is.null(param)) {
+    for (m in intersect(model, unique(param$model))) {
+      if (is.null(model_config[[m]])) next
+      p_m <- param[param$model == m, , drop = FALSE]
+      if (!any(!p_m$file %in% c("met", "inf", "wdr"))) next
+      model_config[[m]] <- apply_parameters(model_config[[m]], p_m, m,
+                                            strict = FALSE)$config
+    }
+  }
 
   writers <- list(
     dy_cd    = write_config_dy_cd,
@@ -53,51 +74,47 @@ write_configuration <- function(aeme, model, path = getwd(),
     }
   })
 
-  if (include_boundary && "glm_aed" %in% model) {
-    write_boundary_glm_aed(aeme = aeme,
-                           model_dir = file.path(lake_dir, "glm_aed"))
+  if (include_boundary) {
+    inp <- input(aeme)
+    for (m in model) {
+      if (is.null(model_config[[m]])) next
+      p_m <- if (!is.null(param)) param[param$model == m, , drop = FALSE]
+      # Scaling parameters give scaled copies of the data to write; the data
+      # held in `aeme` is not changed
+      bnd <- if (!is.null(p_m) && nrow(p_m) > 0) {
+        apply_boundary_params(meteo = inp[["meteo"]],
+                              outflows = outflows(aeme)[["data"]], param = p_m)
+      } else {
+        list()
+      }
+      write_boundary_data(
+        aeme = aeme, model = m, lake_dir = lake_dir,
+        meteo = bnd$meteo %||% inp[["meteo"]],
+        outf = bnd$outflows %||% outflows(aeme)[["data"]],
+        inf = inflows(aeme)[["data"]],
+        inf_factor = bnd$inf_factor %||% 1
+      )
+    }
   }
 
   return(invisible(aeme))
 }
 
-#' Write GLM-AED boundary-condition files straight from cached aeme state
+#' Parameters in a form `apply_parameters()` can use
 #'
-#' Companion to write_config_glm_aed(): writes `bcs/meteo_glm.csv`,
-#' `bcs/inflow_*.csv`, and `bcs/outflow_*.csv` directly from
-#' `input(aeme)`/`inflows(aeme)`/`outflows(aeme)`, with no recomputation --
-#' no water balance, no hypsograph re-derivation, no unit-detection/
-#' standardisation. The only transforms applied are the fixed, lossless
-#' unit conversions GLM's file format itself requires (m3/day -> m3/s,
-#' AED mass-unit scaling, mm -> m for rain/snow), the exact inverse of what
-#' [glm_config_to_aeme()] undoes when reading these same files back in.
-#'
-#' @inheritParams build_aeme
-#' @param model_dir character; the lake's `glm_aed` model directory.
-#' @return Invisibly, `NULL`.
+#' @param aeme Aeme object.
+#' @return `parameters(aeme)` with the columns `collapse_params()` requires,
+#'   or `NULL` if there are no parameters.
 #' @noRd
-write_boundary_glm_aed <- function(aeme, model_dir) {
-  model_dir <- check_path(model_dir, create = TRUE)
-  dir.create(file.path(model_dir, "bcs"), showWarnings = FALSE,
-            recursive = TRUE)
-
-  inp <- input(aeme)
-  if (!is.null(inp[["meteo"]])) {
-    use_lw <- if (is.null(inp[["use_lw"]])) TRUE else inp[["use_lw"]]
-    make_met_glm(obs_met = inp$meteo, path_glm = model_dir, use_lw = use_lw)
+usable_parameters <- function(aeme) {
+  param <- parameters(aeme)
+  needed <- c("model", "file", "name", "value", "min", "max", "group")
+  if (!is.data.frame(param) || nrow(param) == 0 ||
+      !all(needed %in% names(param))) {
+    return(NULL)
   }
-
-  inf <- inflows(aeme)[["data"]]
-  if (length(inf) > 0) {
-    make_inf_glm(path_glm = model_dir, list_inf = inf, update_nml = FALSE)
-  }
-
-  outf <- outflows(aeme)[["data"]]
-  if (length(outf) > 0) {
-    make_wdr_glm(outf = outf, path_glm = model_dir, update_nml = FALSE)
-  }
-
-  invisible()
+  if (!"index" %in% names(param)) param$index <- NA_integer_
+  collapse_params(param)
 }
 
 #' Write DYRESM-CAEDYM configuration

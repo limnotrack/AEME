@@ -23,7 +23,8 @@ build_aeme(
   config = NULL,
   output_vars = NULL,
   mass_balance = TRUE,
-  tz = NULL
+  tz = NULL,
+  aed = NULL
 )
 }
 \arguments{
@@ -97,6 +98,15 @@ full output.}
 \code{output_vars} is supplied - for \code{"glm_aed"} only, keep the GLMv4
 \verb{&mass_balance} diagnostic CSV. Default \code{TRUE}. Ignored when
 \code{output_vars} is \code{NULL}.}
+
+\item{tz}{character; time zone of the meteorology, inflow and outflow date
+columns. Defaults to the value stored in \code{aeme}, or \code{"UTC"}.}
+
+\item{aed}{\code{\link[=aed_options]{aed_options()}} object; which parts of the AED biogeochemistry
+setup to run for \code{"glm_aed"} when \code{use_bgc = TRUE} (the active modules,
+the initial concentrations, the sediment zone fluxes and the
+\code{aed_totals}). \code{NULL} (default) runs all of them. Ignored when
+\code{use_bgc = FALSE}.}
 }
 \value{
 An updated \code{aeme} object.

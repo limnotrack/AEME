@@ -54,7 +54,8 @@ make_inf_glm <- function(glm_nml, path_glm, list_inf, mass = TRUE,
       # format the tables
       df <- list_inf[[i]]
       colnames(df) <- rename_modelvars(input = colnames(df),
-                                       type_output = "glm_aed")
+                                       type_output = "glm_aed",
+                                       passthrough = TRUE)
       # Remove columns with no name - not necessary for GLM
       df <- df[, colnames(df) != ""]
 
@@ -70,6 +71,8 @@ make_inf_glm <- function(glm_nml, path_glm, list_inf, mass = TRUE,
           mult <- key_naming |>
             dplyr::filter(glm_aed == c) |>
             dplyr::pull(conversion_aed)
+          # variables passed through from outside key_naming: no conversion
+          if (length(mult) == 0L) mult <- 1
 
           df[, c] <- round(df[, c] / mult, 5)
         }

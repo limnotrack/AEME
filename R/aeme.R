@@ -85,7 +85,10 @@
 #' \item \code{gotm_wet}: list; GOTM-WET output.
 #' \item \code{simstrat_aed2}: list; Simstrat-AED2 output.
 #' }
-#' @slot parameters A dataframe representing model parameters.
+#' @slot parameters A dataframe representing model parameters: updates (e.g.
+#'   calibrated values) applied on top of the model `configuration` when the
+#'   model files are written. `configuration` itself is not changed by them;
+#'   see [effective_configuration()] for the two combined.
 #' @export
 
 setClass("Aeme",
@@ -1373,6 +1376,14 @@ setReplaceMethod("parameters", "Aeme", function(aeme, value) {
     cli::cli_abort(
       c("{.arg value} must be a {.cls data.frame}.",
         "x" = "Got {.cls {class(value)}}."),
+      class = "aeme_error_parameters_set"
+    )
+  # An empty table (e.g. from remove_param()) may carry no columns at all
+  req_cols <- c("model", "file", "name", "value", "min", "max", "group")
+  if (nrow(value) > 0 && !all(req_cols %in% names(value)))
+    cli::cli_abort(
+      c("{.arg value} is missing required columns.",
+        "x" = "Missing: {.val {setdiff(req_cols, names(value))}}."),
       class = "aeme_error_parameters_set"
     )
   aeme@parameters <- value

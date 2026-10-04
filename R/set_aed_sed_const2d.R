@@ -27,8 +27,7 @@ set_aed_sed_const2d <- function(aeme, path, lake_dir = NULL,
 
   if (is.null(lake_dir)) {
     if (missing(aeme)) {
-      cli::cli_abort("Eit
-her {.arg lake_dir} or {.arg aeme} must be provided.")
+      cli::cli_abort("Either {.arg lake_dir} or {.arg aeme} must be provided.")
     }
     if (missing(path)) {
       path <- get_aeme_path(aeme)
@@ -54,12 +53,8 @@ her {.arg lake_dir} or {.arg aeme} must be provided.")
 
   fluxes <- estimate_zone_fluxes(aeme = aeme, path = path, baseline = baseline)
 
-  # Update aed_sed_const2d parameters in aed.nml
-  model_config$bgc$aed$aed_sed_const2d$n_zones <- n_zones
-  model_config$bgc$aed$aed_sed_const2d$active_zones <- seq_len(n_zones)
-  for (k in setdiff(flux_keys, pinned)) {
-    model_config$bgc$aed$aed_sed_const2d[[k]] <- fluxes[[k]]
-  }
+  model_config <- derive_aed_sed_const2d(model_config, n_zones = n_zones,
+                                         fluxes = fluxes, pinned = pinned)
   if (length(pinned) > 0) {
     cli_inform_safe(c("i" = "Keeping user-supplied {.val {pinned}} from \\
                              {.code parameters(aeme)} (zone-flux estimate not \\
@@ -75,4 +70,32 @@ her {.arg lake_dir} or {.arg aeme} must be provided.")
   configuration(aeme) <- cfg
   
   return(invisible(aeme))
+}
+
+#' Set the AED `aed_sed_const2d` zone configuration on a glm_aed config
+#'
+#' Pure counterpart of [set_aed_sed_const2d()]: aligns `aed_sed_const2d` with
+#' the GLM sediment zones and sets the per-zone fluxes, returning the updated
+#' configuration without reading or writing any files.
+#'
+#' @param model_config list; glm_aed configuration (`hydrodynamic` and `bgc`),
+#'   as returned by [read_model_config()].
+#' @param n_zones integer; number of GLM sediment zones. All zones are made
+#'   active.
+#' @param fluxes list; per-zone flux vectors named `fsed_oxy`, `fsed_amm`,
+#'   `fsed_nit` and `fsed_frp` (e.g. from [estimate_zone_fluxes()]).
+#' @param pinned character; flux names to leave as they are in
+#'   `model_config` (e.g. values the user pinned in `parameters(aeme)`).
+#'
+#' @return `model_config` with `bgc$aed$aed_sed_const2d` updated.
+#' @noRd
+derive_aed_sed_const2d <- function(model_config, n_zones, fluxes,
+                                   pinned = character(0)) {
+  flux_keys <- c("fsed_oxy", "fsed_amm", "fsed_nit", "fsed_frp")
+  model_config$bgc$aed$aed_sed_const2d$n_zones <- n_zones
+  model_config$bgc$aed$aed_sed_const2d$active_zones <- seq_len(n_zones)
+  for (k in setdiff(flux_keys, pinned)) {
+    model_config$bgc$aed$aed_sed_const2d[[k]] <- fluxes[[k]]
+  }
+  model_config
 }

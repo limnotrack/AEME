@@ -396,6 +396,33 @@ aeme <- set_glm_aed_models(
 )
 ```
 
+`set_glm_aed_models()` works on a model that has already been built. To choose
+the modules (and which other AED setup steps run) as part of the build itself,
+pass `aed_options()` to `build_aeme()`:
+
+```{r aed-options, eval=FALSE}
+aeme <- build_aeme(
+  aeme           = aeme,
+  model          = model,
+  model_controls = model_controls,
+  path           = path,
+  ext_elev       = 5,
+  use_bgc        = TRUE,
+  aed            = aed_options(
+    # Only oxygen and nutrient cycling (plus whatever they depend on)
+    modules   = c("aed_sedflux", "aed_oxygen", "aed_nitrogen", "aed_phosphorus"),
+    # Keep the sediment fluxes already in aed.nml rather than estimating them
+    sed_zones = FALSE,
+    # Don't derive the aed_totals variable lists
+    totals    = FALSE
+  )
+)
+```
+
+By default `aed_options()` leaves every step on, so a plain `build_aeme(use_bgc
+= TRUE)` is unchanged. Each step is also available on its own after the build:
+`set_glm_aed_models()`, `set_aed_sed_const2d()` and `set_aed_totals()`.
+
 ---
 
 ### AED module dependency hierarchy
@@ -414,7 +441,8 @@ graph below to a fixed point, adding every module that dependency chain
 requires — you never need to enable a module's prerequisites by hand. The
 one place this *isn't* automatic is `set_glm_aed_models()` (used above),
 which sets the active-module list exactly as given, so it is up to you to
-include the full chain if you call it directly.
+include the full chain if you call it directly. (`aed_options(modules = )`
+adds the prerequisites for you unless you set `resolve_deps = FALSE`.)
 
 The dependency graph, verified directly against the target-variable links
 configured in AEME's bundled `aed.nml` template:

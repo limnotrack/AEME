@@ -4,7 +4,13 @@
 \alias{write_configuration}
 \title{Write model configuration from the aeme object}
 \usage{
-write_configuration(aeme, model, path = getwd(), include_boundary = TRUE)
+write_configuration(
+  aeme,
+  model,
+  path = getwd(),
+  include_boundary = TRUE,
+  apply_params = TRUE
+)
 }
 \arguments{
 \item{aeme}{Aeme object.}
@@ -16,11 +22,20 @@ not found in \code{aeme}.}
 \item{path}{character; path to the directory where the model configuration
 should be written. Default is the current working directory.}
 
-\item{include_boundary}{logical; also write GLM-AED's boundary-condition
-files (\code{bcs/meteo_glm.csv}, \code{bcs/inflow_*.csv}, \code{bcs/outflow_*.csv})
-straight from \code{input(aeme)}/\code{inflows(aeme)}/\code{outflows(aeme)}. Has no
-effect on other models (dy_cd/gotm_wet/simstrat_aed2), which don't yet
-have an equivalent boundary-file writer here. Default \code{TRUE}.}
+\item{include_boundary}{logical; also write each model's boundary-condition
+files (meteorology, inflows and outflows, e.g. GLM-AED's
+\code{bcs/meteo_glm.csv}, \code{bcs/inflow_*.csv} and \code{bcs/outflow_*.csv}) in the
+model's own format, straight from \code{input(aeme)}/\code{inflows(aeme)}/
+\code{outflows(aeme)}. Default \code{TRUE}.}
+
+\item{apply_params}{logical; apply \code{parameters(aeme)} when writing. The
+configuration-file parameters are set on the configuration being written,
+and (for the boundary files) the met/inflow/outflow scaling parameters
+are applied to the data being written. Neither \code{configuration(aeme)} nor
+\code{input(aeme)}/\code{inflows(aeme)}/\code{outflows(aeme)} is changed: the parameters
+only affect what reaches disk. Parameters for a file the configuration
+does not have (e.g. bgc parameters for a model built without bgc) are
+skipped with a warning. Default \code{TRUE}.}
 }
 \value{
 aeme object which was passed to the function,
@@ -28,8 +43,8 @@ aeme object which was passed to the function,
 \description{
 Writes each requested model's configuration files straight from the
 \code{aeme} object's cached state, with no recomputation of any kind -- the
-hydrodynamic/bgc files come verbatim from \code{configuration(aeme)}, and (for
-\code{glm_aed}, when \code{include_boundary = TRUE}) the meteorology/inflow/outflow
+hydrodynamic/bgc files come verbatim from \code{configuration(aeme)}, and (when
+\code{include_boundary = TRUE}) the meteorology/inflow/outflow
 boundary-condition files come straight from \code{input(aeme)}/\code{inflows(aeme)}/
 \code{outflows(aeme)}, bypassing \code{\link[=build_aeme]{build_aeme()}}'s water-balance/lake-level/
 AED-re-derivation pipeline entirely. This makes it the safe choice for

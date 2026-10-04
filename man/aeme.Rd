@@ -104,6 +104,9 @@ evaporation family since \code{dy_cd}/\code{glm_aed} share one fit and
 \item \code{simstrat_aed2}: list; Simstrat-AED2 output.
 }}
 
-\item{\code{parameters}}{A dataframe representing model parameters.}
+\item{\code{parameters}}{A dataframe representing model parameters: updates (e.g.
+calibrated values) applied on top of the model \code{configuration} when the
+model files are written. \code{configuration} itself is not changed by them;
+see \code{\link[=effective_configuration]{effective_configuration()}} for the two combined.}
 }}
 
