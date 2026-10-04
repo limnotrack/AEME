@@ -109,7 +109,8 @@ print.aeme_output_raw <- function(x, ...) {
 .print_aeme_output <- function(x, raw) {
   model <- attr(x, "model")
   dates <- x[["Date"]]
-  vars  <- setdiff(names(x), c("Date", "LKE_depths", "ok", "reason"))
+  vars  <- setdiff(names(x), c("Date", "LKE_depths", "ok", "reason",
+                               "diag", "sediment"))
 
   cat(sprintf(
     "<%s>%s\n",
@@ -127,5 +128,41 @@ print.aeme_output_raw <- function(x, ...) {
   cat(sprintf("  %d variable%s: %s\n", length(vars),
              if (length(vars) == 1) "" else "s",
              paste(vars, collapse = ", ")))
+  for (g in .output_extra_groups) {
+    if (length(x[[g]])) {
+      cat(sprintf("  %d %s variable%s: %s\n", length(x[[g]]), g,
+                  if (length(x[[g]]) == 1) "" else "s",
+                  paste(names(x[[g]]), collapse = ", ")))
+    }
+  }
   invisible(x)
+}
+
+# Sub-lists of a model output holding variables that are not (time) or
+# (z, time) -- diagnostics/scalars and sediment (zone/layer) variables
+.output_extra_groups <- c("diag", "sediment")
+
+#' Names of every variable in one model's output list, including those in
+#' the `diag`/`sediment` sub-lists
+#' @noRd
+.output_var_names <- function(out_model) {
+  c(setdiff(names(out_model), .output_extra_groups),
+    unlist(lapply(.output_extra_groups, \(g) names(out_model[[g]])),
+           use.names = FALSE))
+}
+
+#' Look up a variable in one model's output list, searching the flat core
+#' variables first and then the `diag`/`sediment` sub-lists
+#' @param out_model one model's output list.
+#' @param var character; variable name.
+#' @return the variable, or `NULL` if absent.
+#' @noRd
+.get_output_var <- function(out_model, var) {
+  v <- out_model[[var]]
+  if (!is.null(v)) return(v)
+  for (g in .output_extra_groups) {
+    v <- out_model[[g]][[var]]
+    if (!is.null(v)) return(v)
+  }
+  NULL
 }
