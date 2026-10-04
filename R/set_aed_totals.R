@@ -29,6 +29,39 @@ set_aed_totals <- function(aeme, path, lake_dir = NULL) {
     lake_dir <- get_lake_dir(aeme = aeme, path = path)
   }
   model_config <- read_model_config(model = "glm_aed", lake_dir = lake_dir)
+  model_config <- derive_aed_totals(model_config)
+  
+  model_dir <- file.path(lake_dir, "glm_aed")
+  
+  write_config_glm_aed(model_config = model_config, model_dir = model_dir)
+
+  # Keep the cached configuration in step with the file just written
+  if (!missing(aeme)) {
+    cfg <- configuration(aeme)
+    if (!is.null(cfg[["glm_aed"]][["bgc"]][["aed"]])) {
+      cfg[["glm_aed"]][["bgc"]][["aed"]][["aed_totals"]] <-
+        model_config[["bgc"]][["aed"]][["aed_totals"]]
+      configuration(aeme) <- cfg
+    }
+  }
+
+  return(invisible(aeme))
+}
+
+#' Derive the AED `aed_totals` block from a glm_aed configuration
+#'
+#' Pure counterpart of [set_aed_totals()]: builds the TN, TP, TOC (and, when
+#' `aed_noncohesive` is active, TSS) totals from the phytoplankton parameters
+#' and the `aed` block of `model_config`, and returns `model_config` with
+#' `bgc$aed$aed_totals` set. The totals depend on the phytoplankton
+#' parameters (`X_ncon`, `X_pcon`, `simINDynamics`, `simIPDynamics`), so they
+#' must be re-derived whenever those change.
+#'
+#' @param model_config list; glm_aed configuration (`hydrodynamic` and `bgc`),
+#'   as returned by [read_model_config()].
+#' @return `model_config` with `bgc$aed$aed_totals` set.
+#' @noRd
+derive_aed_totals <- function(model_config) {
   
   aed <- model_config[["bgc"]][["aed"]]
   if (is.null(aed)) {
@@ -160,10 +193,6 @@ set_aed_totals <- function(aeme, path, lake_dir = NULL) {
   }
   
   model_config[["bgc"]][["aed"]][["aed_totals"]] <- aed_totals
-  
-  model_dir <- file.path(lake_dir, "glm_aed")
-  
-  write_config_glm_aed(model_config = model_config, model_dir = model_dir)
-  
-  return(invisible(aeme))
+
+  model_config
 }

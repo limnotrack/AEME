@@ -7,11 +7,8 @@
 #' nml given the modules that are actually switched on. It therefore also
 #' covers `aed_carbon` (`CAR_dic`, `CAR_pH`, `CAR_ch4`).
 #' @noRd
-.glm_aed_prefix_map <- c(aed_oxygen = "OXY", aed_silica = "SIL",
-                         aed_nitrogen = "NIT", aed_phosphorus = "PHS",
-                         aed_organic_matter = "OGM", aed_phytoplankton = "PHY",
-                         aed_zooplankton = "ZOO", aed_noncohesive = "NCS",
-                         aed_carbon = "CAR", aed_totals = "TOT")
+.glm_aed_prefix_map <- with(.aed_modules[!is.na(.aed_modules$prefix), ],
+                                stats::setNames(prefix, module))
 
 #' Active AED modules listed in an aed.nml
 #'
@@ -64,7 +61,8 @@ glm_wq_init_args <- function(model_controls, n_depths, aed_models = NULL) {
 
   sim_vars <- sim_vars |>
     dplyr::mutate(glm_name = rename_modelvars(var_aeme,
-                                              type_output = "glm_aed"),
+                                              type_output = "glm_aed",
+                                              passthrough = TRUE),
                   value = initial_wc * conversion_aed) |>
     dplyr::filter(!is.na(glm_name), nzchar(glm_name)) |>
     dplyr::distinct(var_aeme, .keep_all = TRUE)

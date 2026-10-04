@@ -1,34 +1,76 @@
-#' AED module prefix -> module name map
+#' AED module registry
+#'
+#' Single source of truth for the AED modules AEME knows about. To support a
+#' new libaed module, add ONE row here (and its variables to
+#' `data-raw/key_naming.csv`); the activation map, canonical ordering,
+#' dependency table and GLM variable-prefix map are all derived from it.
+#'
+#' Columns:
+#'  - `module`: `&aed_models` `models` entry.
+#'  - `prefix`: variable-name prefix the module owns, as written by
+#'    `rename_modelvars(type_output = "glm_aed")` (`NA` if none).
+#'  - `activates`: `TRUE` if requesting a variable with this prefix switches
+#'    the module on (see \code{\link{aed_prefixes_to_modules}}). `FALSE` for
+#'    modules that are only forced on (`aed_totals`) or not handled by
+#'    `initialise_aed()` (`aed_carbon`).
+#'  - `ordered`: `TRUE` if the module is written to `models` in row order.
+#'    Row order is the canonical order; it is NOT the physical order of the
+#'    `&<block>` sections in aed.nml. `aed_noncohesive` must be written
+#'    *after* the `&aed_sed_const2d` block (libaed reads the module namelists
+#'    in one forward pass without rewinding, so an earlier `&aed_noncohesive`
+#'    is never found and GLM aborts); that block ordering is fixed in the
+#'    bundled `inst/extdata/aed/aed.nml` template and preserved by
+#'    `read_nml()`/`write_nml()`. Likewise `&aed_alum` must follow
+#'    `&aed_phosphorus` there.
+#'  - `deps`: modules this one needs (see `.aed_module_deps` for the
+#'    verification notes).
+#' @keywords internal
+#' @noRd
+.aed_modules <- data.frame(
+  module    = c("aed_sedflux", "aed_noncohesive", "aed_oxygen", "aed_silica",
+                "aed_nitrogen", "aed_phosphorus", "aed_alum",
+                "aed_organic_matter", "aed_phytoplankton", "aed_zooplankton",
+                "aed_macrophyte", "aed_totals", "aed_carbon"),
+  prefix    = c(NA, "NCS", "OXY", "SIL", "NIT", "PHS", "ALU", "OGM", "PHY",
+                "ZOO", "MAC", "TOT", "CAR"),
+  activates = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
+                FALSE, FALSE, FALSE),
+  ordered   = c(rep(TRUE, 12), FALSE),
+  stringsAsFactors = FALSE
+)
+.aed_modules$deps <- list(
+  character(0), character(0), "aed_sedflux", "aed_oxygen",
+  c("aed_oxygen", "aed_sedflux"), c("aed_oxygen", "aed_sedflux"),
+  "aed_phosphorus",
+  c("aed_oxygen", "aed_nitrogen", "aed_phosphorus"),
+  c("aed_oxygen", "aed_nitrogen", "aed_phosphorus", "aed_silica",
+    "aed_organic_matter"),
+  "aed_organic_matter", character(0),
+  c("aed_nitrogen", "aed_phosphorus", "aed_organic_matter",
+    "aed_phytoplankton"),
+  character(0)
+)
+
+#' AED module prefix -> module name map (activation)
 #'
 #' Shared between GLM-AED (\code{\link{initialise_aed}}) and Simstrat-AED
-#' (\code{initialise_simstrat_aed}, once added) -- both link the same AED
-#' library, so they must resolve active modules identically for the same
-#' `model_controls`. See \code{\link{resolve_aed_active_modules}}.
+#' (\code{initialise_simstrat_aed}) -- both link the same AED library, so
+#' they must resolve active modules identically for the same
+#' `model_controls`. Derived from `.aed_modules`. See
+#' \code{\link{resolve_aed_active_modules}}.
 #'
 #' @keywords internal
 #' @noRd
-.aed_module_map <- c(NCS = "aed_noncohesive", OXY = "aed_oxygen",
-                     SIL = "aed_silica", NIT = "aed_nitrogen",
-                     PHS = "aed_phosphorus", OGM = "aed_organic_matter",
-                     PHY = "aed_phytoplankton", ZOO = "aed_zooplankton")
+.aed_module_map <- with(.aed_modules[.aed_modules$activates, ],
+                        stats::setNames(module, prefix))
 
 #' Canonical AED module ordering
 #'
 #' Only real `&aed_models` `models` entries belong here -- this vector orders
-#' the `models` list written to aed.nml. It is NOT the physical order of the
-#' `&<block>` sections in the file. `aed_noncohesive` in particular must be
-#' written *after* the `&aed_sed_const2d` block (libaed reads the module
-#' namelists in one forward pass without rewinding, so an earlier
-#' `&aed_noncohesive` is never found and GLM aborts); that block ordering is
-#' fixed in the bundled `inst/extdata/aed/aed.nml` template and preserved by
-#' `read_nml()`/`write_nml()`, not controlled here.
+#' the `models` list written to aed.nml. Derived from `.aed_modules`.
 #' @keywords internal
 #' @noRd
-.aed_module_order <- c("aed_sedflux", "aed_noncohesive",
-                       "aed_oxygen", "aed_silica", "aed_nitrogen",
-                       "aed_phosphorus", "aed_organic_matter",
-                       "aed_phytoplankton", "aed_zooplankton",
-                       "aed_macrophyte", "aed_totals")
+.aed_module_order <- .aed_modules$module[.aed_modules$ordered]
 
 #' AED cross-module dependencies, keyed by dependent module
 #'
@@ -78,18 +120,8 @@
 #'
 #' @keywords internal
 #' @noRd
-.aed_module_deps <- list(
-  aed_oxygen         = "aed_sedflux",
-  aed_silica         = "aed_oxygen",
-  aed_nitrogen       = c("aed_oxygen", "aed_sedflux"),
-  aed_phosphorus     = c("aed_oxygen", "aed_sedflux"),
-  aed_organic_matter = c("aed_oxygen", "aed_nitrogen", "aed_phosphorus"),
-  aed_phytoplankton  = c("aed_oxygen", "aed_nitrogen", "aed_phosphorus",
-                         "aed_silica", "aed_organic_matter"),
-  aed_zooplankton    = "aed_organic_matter",
-  aed_totals         = c("aed_nitrogen", "aed_phosphorus",
-                         "aed_organic_matter", "aed_phytoplankton")
-)
+.aed_module_deps <- with(.aed_modules[lengths(.aed_modules$deps) > 0, ],
+                            stats::setNames(deps, module))
 
 #' Map AED variable-name prefixes to their owning (base) modules
 #'

@@ -73,21 +73,8 @@ set_glm_aed_models <- function(aeme, path, aed_models = c("aed_sedflux",
   } else {
     write_nml <- FALSE
   }
-  if (is.null(nml[["aed_models"]])) {
-    cli::cli_abort("No {.code aed_models} section found in the provided 
-                   configuration file.")
-  }
-  old_models <- nml[["aed_models"]][["models"]]
-  nml[["aed_models"]][["models"]] <- aed_models
-  msg <- paste0("Updated GLM-AED models from: ",
-                paste(old_models, collapse = ", "),
-                " to: ",
-                paste(aed_models, collapse = ", "))
-  diff_models <- setdiff(old_models, aed_models)
-  if (length(diff_models) > 0) {
-    cli_inform_safe(c("v" = msg))
-  }
-  
+  nml <- set_aed_models_nml(nml, aed_models)
+
   if (write_nml) {
     write_nml(nml, file)
 
@@ -109,3 +96,35 @@ set_glm_aed_models <- function(aeme, path, aed_models = c("aed_sedflux",
     return(nml)
   }
 } 
+
+#' Set the active AED modules on an aed.nml object
+#'
+#' Pure counterpart of [set_glm_aed_models()]: sets `&aed_models` `models` on
+#' an aed nml object and returns it, reading and writing no files. The list is
+#' set exactly as given; use `resolve_aed_active_modules()` first to add the
+#' modules a requested module depends on.
+#'
+#' @param nml aed nml object (as read by [read_nml()]).
+#' @param aed_models character; the AED modules to activate.
+#' @return `nml` with `aed_models$models` set.
+#' @noRd
+set_aed_models_nml <- function(nml, aed_models) {
+  if (!is.character(aed_models)) {
+    cli::cli_abort("{.arg aed_models} must be a character vector.")
+  }
+  if (is.null(nml[["aed_models"]])) {
+    cli::cli_abort("No {.code aed_models} section found in the provided 
+                   configuration file.")
+  }
+  old_models <- nml[["aed_models"]][["models"]]
+  nml[["aed_models"]][["models"]] <- aed_models
+  msg <- paste0("Updated GLM-AED models from: ",
+                paste(old_models, collapse = ", "),
+                " to: ",
+                paste(aed_models, collapse = ", "))
+  diff_models <- setdiff(old_models, aed_models)
+  if (length(diff_models) > 0) {
+    cli_inform_safe(c("v" = msg))
+  }
+  nml
+}
