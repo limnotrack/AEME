@@ -26,7 +26,7 @@ check_aeme_vars <- function(x, aeme = NULL) {
 
   loaded_vars <- character()
   if (!is.null(aeme)) {
-    loaded_vars <- tryCatch(get_output_vars(aeme), error = function(e) character())
+    loaded_vars <- tryCatch(get_output_vars(aeme, group = c("core", "diag", "sediment")), error = function(e) character())
   }
   already_loaded <- x %in% loaded_vars
 

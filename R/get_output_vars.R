@@ -3,6 +3,11 @@
 #' @inheritParams build_aeme
 #' @inheritParams run_aeme
 #'
+#' @param group character; which variables to list: `"core"` (time and
+#'   depth x time variables, default), `"diag"` (diagnostics and scalars),
+#'   and/or `"sediment"` (sediment zone/layer variables). Diagnostic and
+#'   sediment variables keep their raw model names.
+#'
 #' @return A character vector of the output variables
 #' @export
 #'
@@ -20,8 +25,10 @@
 #' path = path, model_controls = model_controls)
 #' get_output_vars(aeme, model)
 
-get_output_vars <- function(aeme, model, ens_n = 1) {
+get_output_vars <- function(aeme, model, ens_n = 1,
+                            group = c("core", "diag", "sediment")[1]) {
 
+  group <- match.arg(group, c("core", "diag", "sediment"), several.ok = TRUE)
   aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)
@@ -39,9 +46,18 @@ get_output_vars <- function(aeme, model, ens_n = 1) {
   # Loop through the variables and get the ones that are not all -99
   out_vars <- c()
   for (m in model) {
-    mod_vars <- names(out[[m]])
-    for (i in 1:length(mod_vars)) {
-      v <- out[[m]][[mod_vars[i]]]
+    # Variables to inspect: flat core ones and/or those in the sub-lists
+    cand <- list()
+    if ("core" %in% group) {
+      core_nms <- setdiff(names(out[[m]]), .output_extra_groups)
+      cand <- out[[m]][core_nms]
+    }
+    for (g in intersect(group, .output_extra_groups)) {
+      cand <- c(cand, out[[m]][[g]])
+    }
+    mod_vars <- names(cand)
+    for (i in seq_along(mod_vars)) {
+      v <- cand[[mod_vars[i]]]
       if (inherits(v, "aeme_grouped_var")) {
         # No -99 sentinel convention for grouped (non depth x time)
         # variables -- treat as present if it has any data at all

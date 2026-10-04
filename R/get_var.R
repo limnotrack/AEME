@@ -100,7 +100,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
   lst <- lapply(model, \(m) {
     lapply(outp[[ens_lab]][[m]], dim)
     
-    variable <- outp[[ens_lab]][[m]][[var_sim]]
+    variable <- .get_output_var(outp[[ens_lab]][[m]], var_sim)
     # Empty dataframe to return if variable is not in output
     df <- data.frame(Date = as.Date(NA),
                      depth = NA_real_,

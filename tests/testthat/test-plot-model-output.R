@@ -43,8 +43,8 @@ test_that("plot_model_output() works directly on an Aeme object", {
   lake_dir <- get_lake_dir(aeme, path)
   outfile <- file.path(lake_dir, "glm_aed", "output", "output.nc")
   out_full <- read_glm_output(file = outfile)
-  grouped_name <- names(out_full)[vapply(out_full, inherits, logical(1),
-                                         "aeme_grouped_var")][1]
+  grouped_name <- names(out_full$sediment)[vapply(out_full$sediment, inherits, logical(1),
+                                                  "aeme_grouped_var")][1]
   testthat::expect_false(is.na(grouped_name))
 
   r4 <- plot_model_output(aeme, grouped_name, model = "glm_aed")

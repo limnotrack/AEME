@@ -330,6 +330,7 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
 
     nc_vars <- names(nc$var)
     remaining_vars <- setdiff(nc_vars, already_extracted)
+    extras <- list(diag = list(), sediment = list())
 
     for (v in remaining_vars) {
       key <- unname(glm_to_var_aeme[v])
@@ -346,6 +347,11 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
         conv_factor <- if (!is.na(conv_idx)) key_naming$conversion_aed[conv_idx] else NA
         if (is.na(conv_factor)) conv_factor <- 1
       }
+
+      # Where the variable ends up: depth/time variables stay flat in
+      # out_list; anything with other dimensions (or none) is routed to the
+      # "diag"/"sediment" sub-lists, keyed by its raw netCDF name
+      grp <- "core"
 
       result <- tryCatch({
         # ncdf4::ncvar_get() drops length-1 dimensions by default (e.g. a
@@ -384,7 +390,12 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
           .glm_depth_profile(var = var, midpoints = midpoints,
                              out_depths = out_depths,
                              raw_output = raw_output)
+        } else if (length(dim_names) == 0) {
+          # Scalar (every dimension has length 1)
+          grp <- "diag"
+          as.vector(ncdf4::ncvar_get(nc, v)) * conv_factor
         } else {
+          grp <- .glm_extra_group(v, dim_names)
           .read_glm_grouped_var(nc = nc, v = v, dim_objs = dim_objs,
                                 dim_names = dim_names, date_index = date_index,
                                 dates = dates)
@@ -395,8 +406,16 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
       })
 
       if (!is.null(result)) {
-        out_list[[key]] <- result
+        if (grp == "core") {
+          out_list[[key]] <- result
+        } else {
+          extras[[grp]][[v]] <- result
+        }
       }
+    }
+    # Sub-lists sit beside the core variables; absent when empty
+    for (g in c("diag", "sediment")) {
+      if (length(extras[[g]])) out_list[[g]] <- extras[[g]]
     }
   }
 
@@ -406,7 +425,8 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     # "Date" -> "time" translation (used elsewhere for a genuinely different
     # purpose), so leaving them in this sweep would rename "Date" itself out
     # from under every consumer that expects a stable key
-    out_names <- setdiff(names(out_list), c("Date", "LKE_depths", "z", "ok", "reason"))
+    out_names <- setdiff(names(out_list), c("Date", "LKE_depths", "z", "ok", "reason",
+                                            "diag", "sediment"))
     var_names <- get_model_vars(out_names, model = "glm_aed", as_vector = TRUE)
     for (i in seq_along(var_names)) {
       if (!is.na(var_names[i]) && nzchar(var_names[i])) {
@@ -418,7 +438,10 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
 
   var_units <- var_long_name <- NULL
   if (isTRUE(raw_output)) {
-    raw_vars <- setdiff(names(out_list), c("Date", "LKE_depths", "z", "ok", "reason"))
+    raw_vars <- setdiff(names(out_list), c("Date", "LKE_depths", "z", "ok", "reason",
+                                           "diag", "sediment"))
+    # diag/sediment variables are keyed by their raw netCDF name already
+    raw_vars <- c(raw_vars, names(out_list[["diag"]]), names(out_list[["sediment"]]))
     meta <- lapply(raw_vars, \(v) .nc_var_meta(nc, v))
     var_units <- stats::setNames(vapply(meta, `[[`, "", "units"), raw_vars)
     var_long_name <- stats::setNames(vapply(meta, `[[`, "", "long_name"), raw_vars)
@@ -426,6 +449,22 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
 
   return(.new_aeme_output(out_list, model = "glm_aed", raw = raw_output,
                           var_units = var_units, var_long_name = var_long_name))
+}
+
+#' Decide which output sub-list a non-`(time)`/`(z, time)` GLM variable
+#' belongs in
+#' @param v character; raw netCDF variable name.
+#' @param dim_names character; its (non-degenerate) dimension names.
+#' @return `"sediment"` for variables on sediment dimensions or with
+#'   sediment-style names (`SDF_*`, `*_Z`), otherwise `"diag"`.
+#' @noRd
+.glm_extra_group <- function(v, dim_names) {
+  if (any(dim_names %in% c("nzones", "zone", "sed_layers")) ||
+      grepl("^SDF_|_Z$|^sed", v)) {
+    "sediment"
+  } else {
+    "diag"
+  }
 }
 
 #' Carry GLM's once-per-day diagnostics across a sub-daily output axis

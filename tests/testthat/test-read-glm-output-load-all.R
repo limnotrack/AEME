@@ -58,8 +58,9 @@ test_that("variables with non-standard dimensions load as aeme_grouped_var, not 
   # aiming to eventually support; here they must be present, correctly
   # classed, and *not* silently run through the depth x time interpolation
   # path (which would misinterpret zone index as depth)
-  testthat::expect_true("SDF_Fsed_oxy_Z" %in% names(glm))
-  gv <- glm[["SDF_Fsed_oxy_Z"]]
+  testthat::expect_true("SDF_Fsed_oxy_Z" %in% names(glm$sediment))
+  testthat::expect_false("SDF_Fsed_oxy_Z" %in% names(glm))
+  gv <- glm$sediment[["SDF_Fsed_oxy_Z"]]
   testthat::expect_s3_class(gv, "aeme_grouped_var")
   testthat::expect_setequal(gv$dim_names, c("nzones", "time"))
   testthat::expect_length(gv$dim_values$time, ncol(glm$LKE_depths))
@@ -77,7 +78,7 @@ test_that("as.data.frame.aeme_grouped_var() produces a correct long-format frame
 
   outp <- output(fx$aeme)
   ens_lab <- format_ens_label(ens_n = 1)
-  gv <- outp[[ens_lab]]$glm_aed[["zarea"]]
+  gv <- outp[[ens_lab]]$glm_aed$sediment[["zarea"]]
   testthat::expect_s3_class(gv, "aeme_grouped_var")
 
   df <- as.data.frame(gv)
@@ -145,4 +146,27 @@ test_that("read_model_outputs(load_all = FALSE) restricts loading to the declare
   testthat::expect_gt(length(out_all), length(out_declared))
   testthat::expect_false("OXY_sat" %in% names(out_declared))
   testthat::expect_true("OXY_sat" %in% names(out_all))
+})
+
+test_that("diag/sediment sub-lists are reachable via get_output_vars(group =) and survive load_output(keep_diag = FALSE) opt-out", {
+  tmpdir <- tempfile("load_all_output_")
+  dir.create(tmpdir)
+  fx <- .build_glm_bgc_run(tmpdir)
+
+  core <- get_output_vars(fx$aeme, model = "glm_aed")
+  sed  <- get_output_vars(fx$aeme, model = "glm_aed", group = "sediment")
+  testthat::expect_false("SDF_Fsed_oxy_Z" %in% core)
+  testthat::expect_true("SDF_Fsed_oxy_Z" %in% sed)
+
+  # Raw netCDF names are kept; units come from the raw output metadata
+  out_raw <- read_glm_output(file = file.path(get_lake_dir(fx$aeme, fx$path),
+                                              "glm_aed", "output", "output.nc"),
+                             raw_output = TRUE)
+  testthat::expect_true("SDF_Fsed_oxy_Z" %in% names(attr(out_raw, "var_units")))
+
+  aeme2 <- load_output(fx$aeme, model = "glm_aed", path = fx$path,
+                       model_controls = fx$model_controls, keep_diag = FALSE)
+  glm2 <- output(aeme2)[[format_ens_label(1)]]$glm_aed
+  testthat::expect_null(glm2$sediment)
+  testthat::expect_null(glm2$diag)
 })

@@ -58,7 +58,7 @@ plot_output_base <- function(aeme, var_sim = "HYD_temp", model, ens_n = 1,
 
   # --- Check var_sim exists in each model ----------------------------------
   chk <- sapply(model, \(m)
-                all(var_sim %in% names(outp[[ens_lab]][[m]]))
+                all(var_sim %in% .output_var_names(outp[[ens_lab]][[m]]))
   )
   if (all(!chk)) stop("Variable(s) '", paste(var_sim, collapse = ", "),
                       "' not found in any model output")
@@ -73,7 +73,7 @@ plot_output_base <- function(aeme, var_sim = "HYD_temp", model, ens_n = 1,
   # the contour/line plotting logic below
   grouped_hits <- unlist(lapply(model, \(m) {
     vapply(var_sim, \(v) {
-      inherits(outp[[ens_lab]][[m]][[v]], "aeme_grouped_var")
+      inherits(.get_output_var(outp[[ens_lab]][[m]], v), "aeme_grouped_var")
     }, logical(1))
   }))
   if (any(grouped_hits)) {

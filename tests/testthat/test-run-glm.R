@@ -167,7 +167,7 @@ test_that("editing and running GLM-AED via the thin path-based wrapper works", {
   plot_model_output(out_raw, "temp")
   plot_model_output(out_raw, "SDF_Fsed_oxy_Z")
   testthat::expect_true(nrow(out_raw$temp) > 0)
-  testthat::expect_true(class(out_raw$zarea) == "aeme_grouped_var")
+  testthat::expect_true(class(out_raw$sediment$zarea) == "aeme_grouped_var")
   testthat::expect_true(is_aeme_output(out_raw))
   testthat::expect_true(is_aeme_output_raw(out_raw))
   testthat::expect_output(print(out_raw), "raw")
@@ -261,18 +261,21 @@ test_that("running GLM-AED works", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb",
-                "CHM_oxycln", "CHM_oxynal",
+                "CHM_oxycln", "CHM_oxynal", "LKE_vol",
                 "NIT_tn", "PHS_tp", "PHY_tchla", "CAR_toc")
   model_controls <- get_model_controls(use_bgc = TRUE)
   model_controls <- set_vars_sim(model_controls = model_controls,
                                  vars_sim = vars_sim)
   model <- c("glm_aed")
+  sim_period <- suggest_sim_period(aeme, vars_sim = vars_sim)
+  aeme <- set_sim_period(aeme, period = sim_period)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE) |>
     run_aeme(verbose = T)
   
   metrics <- assess_aeme(aeme = aeme)
+  aed_succession_index(aeme)
   plot_assess(aeme)
   plot_assess(aeme, type = "heatmap")
   plot_assess(aeme, type = "taylor", var_sim = c("HYD_temp", "CHM_oxy"))

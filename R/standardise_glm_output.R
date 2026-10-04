@@ -14,9 +14,10 @@
 #' too -- interpolating in place is cheaper than re-opening the netCDF file
 #' and reading it again with `raw_output = FALSE`.
 #'
-#' `aeme_grouped_var` entries (dimensions other than `(time)`/`(z, time)`,
-#' e.g. sediment-zone variables) are carried over unchanged -- they aren't
-#' on a depth grid to begin with, so there's nothing to interpolate.
+#' The `diag` and `sediment` sub-lists (variables with dimensions other than
+#' `(time)`/`(z, time)`, e.g. sediment-zone variables, plus scalars) are
+#' carried over unchanged -- they aren't on a depth grid to begin with, so
+#' there's nothing to interpolate.
 #'
 #' @param out_raw list; an `aeme_output_raw`-classed GLM-AED output list
 #'   from [read_glm_output()] with `raw_output = TRUE` (must include its
@@ -86,7 +87,8 @@ standardise_glm_output <- function(out_raw, depths = NULL) {
   # These stay as they are -- either already handled above (Date/z/
   # LKE_lvlwtr feed the interpolation itself and are set explicitly below)
   # or aren't real variables (LKE_depths/ok/reason)
-  structural <- c("Date", "LKE_depths", "z", "LKE_lvlwtr", "ok", "reason")
+  structural <- c("Date", "LKE_depths", "z", "LKE_lvlwtr", "ok", "reason",
+                  "diag", "sediment")
 
   out_list <- list()
   for (nm in names(out_raw)) {
@@ -112,6 +114,11 @@ standardise_glm_output <- function(out_raw, depths = NULL) {
     } else {
       out_list[[key]] <- as.vector(val) * conv_factor
     }
+  }
+
+  # diag/sediment sub-lists keep raw GLM names and units -- carried unchanged
+  for (g in c("diag", "sediment")) {
+    if (length(out_raw[[g]])) out_list[[g]] <- out_raw[[g]]
   }
 
   out_list[["Date"]]       <- dates

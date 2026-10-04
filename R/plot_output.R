@@ -119,11 +119,7 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
   # Check if var_sim is in output
   chk <- sapply(model, \(m) {
     sapply(var_sim, \(v) {
-      if (v %in% names(outp[[ens_lab]][[m]])) {
-        !is.null(outp[[ens_lab]][[m]][[v]])
-      } else {
-        FALSE
-      }
+      !is.null(.get_output_var(outp[[ens_lab]][[m]], v))
     })
   })
   # Force to var_sim x model matrix regardless of lengths
@@ -141,7 +137,7 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
   # logic below
   grouped_hits <- unlist(lapply(model, \(m) {
     vapply(var_sim, \(v) {
-      inherits(outp[[ens_lab]][[m]][[v]], "aeme_grouped_var")
+      inherits(.get_output_var(outp[[ens_lab]][[m]], v), "aeme_grouped_var")
     }, logical(1))
   }))
   if (any(grouped_hits)) {

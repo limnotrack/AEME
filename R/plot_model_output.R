@@ -82,8 +82,8 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
     if (is.null(out_chk)) {
       cli::cli_abort("No output found for model {.val {model}} (ensemble {.val {ens_lab}}) -- has {.fn run_aeme} been called?")
     }
-    if (!var_sim %in% names(out_chk)) {
-      other_vars <- setdiff(names(out_chk), c("Date", "LKE_depths", "ok", "reason"))
+    if (!var_sim %in% .output_var_names(out_chk)) {
+      other_vars <- setdiff(.output_var_names(out_chk), c("Date", "LKE_depths", "ok", "reason"))
       cli::cli_abort(c(
         "x" = "{.val {var_sim}} not found in output for model {.val {model}}.",
         "i" = "Available variables: {.val {other_vars}}"
@@ -204,8 +204,8 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
   if (!is_aeme_output(out)) {
     cli::cli_abort("{.arg x} must be an {.cls Aeme} object, or the classed list returned by {.fn read_glm_output}/{.fn read_gotm_output}/{.fn read_simstrat_output}/{.fn read_dy_output}/{.fn read_model_outputs} ({.cls aeme_output}/{.cls aeme_output_raw}).")
   }
-  if (!var_sim %in% names(out)) {
-    other_vars <- setdiff(names(out), c("Date", "LKE_depths", "ok", "reason"))
+  if (!var_sim %in% .output_var_names(out)) {
+    other_vars <- setdiff(.output_var_names(out), c("Date", "LKE_depths", "ok", "reason"))
     cli::cli_abort(c(
       "x" = "{.val {var_sim}} not found in output.",
       "i" = "Available variables: {.val {other_vars}}"
@@ -213,7 +213,7 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
   }
   raw      <- is_aeme_output_raw(out)
   dates    <- out[["Date"]]
-  variable <- out[[var_sim]]
+  variable <- .get_output_var(out, var_sim)
 
   # Raw (native netCDF name) variables have no key_naming entry to source a
   # plot label from -- fall back to that variable's own units/long_name

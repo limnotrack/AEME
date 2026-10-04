@@ -26,7 +26,7 @@ test_that("plot_glm_output() plots vector, matrix, and grouped variables from a 
   testthat::expect_true(ggplot2::is_ggplot(r2))
 
   # Grouped (nzones, time) variable -- one line per zone
-  grouped_name <- names(out)[vapply(out, inherits, logical(1), "aeme_grouped_var")][1]
+  grouped_name <- names(out$sediment)[vapply(out$sediment, inherits, logical(1), "aeme_grouped_var")][1]
   testthat::expect_false(is.na(grouped_name))
   r3 <- plot_glm_output(out, grouped_name)
   testthat::expect_true(ggplot2::is_ggplot(r3))
