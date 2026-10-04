@@ -51,6 +51,13 @@
 #'   `output_vars` is supplied - for `"glm_aed"` only, keep the GLMv4
 #'   `&mass_balance` diagnostic CSV. Default `TRUE`. Ignored when
 #'   `output_vars` is `NULL`.
+#' @param tz character; time zone of the meteorology, inflow and outflow date
+#'   columns. Defaults to the value stored in `aeme`, or `"UTC"`.
+#' @param aed [aed_options()] object; which parts of the AED biogeochemistry
+#'   setup to run for `"glm_aed"` when `use_bgc = TRUE` (the active modules,
+#'   the initial concentrations, the sediment zone fluxes and the
+#'   `aed_totals`). `NULL` (default) runs all of them. Ignored when
+#'   `use_bgc = FALSE`.
 #'
 #' @importFrom sf sf_use_s2 st_transform st_centroid st_coordinates st_buffer
 #' @importFrom dplyr select filter
@@ -95,11 +102,13 @@ build_aeme <- function(aeme = NULL,
                        config = NULL,
                        output_vars = NULL,
                        mass_balance = TRUE,
-                       tz = NULL
+                       tz = NULL,
+                       aed = NULL
 ) {
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
+  aed <- check_aed_options(aed)
 
   if (is.null(aeme) & is.null(config)) {
     stop("Either 'aeme' or 'config' must be supplied.")
@@ -181,6 +190,10 @@ build_aeme <- function(aeme = NULL,
     )
   }
   
+  if (!use_bgc && !identical(unclass(aed), unclass(aed_options()))) {
+    cli_inform_safe(c("i" = "{.arg aed} is ignored because {.code use_bgc = FALSE}."))
+  }
+
   # Metadata
   lvl <- NULL
   inf <- list()
@@ -214,8 +227,9 @@ build_aeme <- function(aeme = NULL,
         # Boundary-condition files are left to the build_glm()/build_gotm()/
         # etc. calls below, which run regardless of overwrite -- writing
         # them here too would just be immediately overwritten again
+        # Parameters are applied once, further down, by input_model_parameters()
         write_configuration(model = model, aeme = aeme, path = path,
-                            include_boundary = FALSE)
+                            include_boundary = FALSE, apply_params = FALSE)
         overwrite <- FALSE
         # Potentially add in option to switch off bgc and/or use default bgc setup
         # return(aeme)
@@ -705,9 +719,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
               use_lw = inp$use_lw, overwrite_nml = overwrite,
               output_time_step = aeme_time[["output_time_step"]] %||% 86400,
               output_daily_mean = isTRUE(aeme_time[["output_daily_mean"]]),
-              obs_temp = obs_temp, sed_params = glm_sed_params)
-    
-    if (use_bgc && overwrite) {
+              obs_temp = obs_temp, sed_params = glm_sed_params, aed = aed)
+
+    if (use_bgc && overwrite && aed$sed_zones) {
       aeme <- aeme |>
         set_aed_sed_const2d(path = path)
     }
@@ -794,7 +808,25 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                    wq_prof = model_ic[[m]][["wq_prof"]], use_bgc = use_bgc)
   }
 
+  # GLM-AED totals configuration ----
+  if ("glm_aed" %in% model & use_bgc & overwrite & aed$totals) {
+    set_aed_totals(aeme = aeme, path = path)
+  }
+
+  # Load model configuration ----
+  # Loaded *before* the model parameters are applied, so configuration(aeme)
+  # holds the build defaults and parameters(aeme) is the update on top of
+  # them. See effective_configuration() for the two combined.
+  aeme <- load_configuration(model = model, aeme = aeme,
+                             model_controls = model_controls, use_bgc = use_bgc,
+                             path = path, ext_elev = ext_elev,
+                             calc_wbal = calc_wbal, wb_method = wb_method,
+                             calc_wlev = calc_wlev, coeffs = coeffs,
+                             hum_type = hum_type, est_swr_hr = est_swr_hr)
+
   # Model parameters ----
+  # Applied to the model files on disk (the files a model run reads);
+  # configuration(aeme) is left as the defaults.
   param <- parameters(aeme = aeme)
   if (nrow(param) > 0) {
     # Add catch if index is missing
@@ -806,12 +838,7 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     input_model_parameters(aeme = aeme, model = model, param = param,
                            path = path)
   }
-  
-  # GLM-AED totals configuration ----
-  if ("glm_aed" %in% model & use_bgc & overwrite) {
-    set_aed_totals(aeme = aeme, path = path)
-  }
-  
+
   # Check model cfg files ----
   cfg_files <- get_model_config_files(aeme = aeme, model = model, path = path)
   if ("gotm_wet" %in% model) {
@@ -828,20 +855,12 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
     check_simstrat_par(file = cfg_files$simstrat_aed["simstrat"],
                        output_time_step = aeme_time[["output_time_step"]] %||% 86400)
   }
-  
-  
-  # Load model configuration ----
-  aeme <- load_configuration(model = model, aeme = aeme,
-                             model_controls = model_controls, use_bgc = use_bgc,
-                             path = path, ext_elev = ext_elev,
-                             calc_wbal = calc_wbal, wb_method = wb_method,
-                             calc_wlev = calc_wlev, coeffs = coeffs,
-                             hum_type = hum_type, est_swr_hr = est_swr_hr)
 
   # Restrict written output to the variables of interest ----
   # Applied after load_configuration() has populated configuration(aeme) from
   # the freshly built files, then persisted straight back to disk (no
   # re-derivation of boundary conditions - build_*() already wrote them).
+  # write_configuration() re-applies parameters(aeme) to the defaults.
   if (!is.null(output_vars)) {
     for (m in model) {
       aeme <- set_output_vars(aeme = aeme, model = m, vars = output_vars,

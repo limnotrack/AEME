@@ -13,6 +13,8 @@
 #' @param sed_params data.frame; `parameters(aeme)` rows for the GLM
 #'   `&sediment` block (`model == "glm_aed"`, `name` like `"sediment/..."`).
 #'   Keys present here are used as-is rather than estimated. Default `NULL`.
+#' @param aed `aed_options` object (see [aed_options()]) choosing how AED is
+#'   configured when `use_bgc = TRUE`. Default `NULL` (the defaults).
 #'
 #' @return Directory with GLM-AED configuration
 #' @noRd
@@ -27,8 +29,9 @@ build_glm <- function(lakename, model_controls, date_range,
                       inf_factor = 1, outf_factor = 1,
                       Kw, use_bgc, use_lw, overwrite_nml = TRUE,
                       output_time_step = 86400, output_daily_mean = FALSE,
-                      obs_temp = NULL, sed_params = NULL) {
-  
+                      obs_temp = NULL, sed_params = NULL, aed = NULL) {
+
+  aed <- check_aed_options(aed)
   msg <- paste0("Building GLM-AED for lake ", lakename)
   # cli_inform_safe(c("i" = msg))
   cli_safe(msg, FUN = cli::cli_h2)
@@ -164,9 +167,18 @@ build_glm <- function(lakename, model_controls, date_range,
   # mass-balance variable lists are built: a variable is only written to the
   # GLM nml when its AED module is active in aed.nml.
   if (use_bgc && overwrite_nml) {
-    initialise_aed(model_controls = model_controls,
-                   path_aed = file.path(path_glm, "aed"),
-                   n_zones = glm_nml[["sediment"]][["n_zones"]])
+    if (aed$initialise) {
+      initialise_aed(model_controls = model_controls,
+                     path_aed = file.path(path_glm, "aed"),
+                     n_zones = glm_nml[["sediment"]][["n_zones"]])
+    }
+    # An explicit module list overrides the one derived from model_controls
+    aed_modules <- aed_options_modules(aed)
+    if (!is.null(aed_modules)) {
+      aed_nml_file <- file.path(path_glm, "aed", "aed.nml")
+      aed_nml <- set_aed_models_nml(read_nml(aed_nml_file), aed_modules)
+      write_nml(aed_nml, aed_nml_file)
+    }
   }
   aed_models <- if (use_bgc) {
     glm_active_aed_models(file.path(path_glm, "aed", "aed.nml"))
