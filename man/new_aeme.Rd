@@ -16,6 +16,7 @@ new_aeme(
   stop = Sys.Date(),
   time_step = 3600,
   output_time_step = 86400,
+  output_daily_mean = FALSE,
   tz = "UTC",
   Kw = 1
 )
@@ -49,6 +50,10 @@ today.}
 
 \item{output_time_step}{numeric; model output time step in seconds. Must be
 \verb{>= time_step}. Default \code{86400} (daily).}
+
+\item{output_daily_mean}{logical; if \code{TRUE}, every model additionally
+produces a daily-mean output stream (see \code{\link[=set_output_time_step]{set_output_time_step()}}).
+Default \code{FALSE}.}
 
 \item{tz}{character; Olson timezone in which \code{start}, \code{stop} and any forcing
 timestamps are expressed. Stored as \code{time$tz}; timestamps are converted to

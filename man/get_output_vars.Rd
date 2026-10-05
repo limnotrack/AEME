@@ -4,7 +4,12 @@
 \alias{get_output_vars}
 \title{Get the output variables from an AEME object}
 \usage{
-get_output_vars(aeme, model, ens_n = 1)
+get_output_vars(
+  aeme,
+  model,
+  ens_n = 1,
+  group = c("core", "diag", "sediment")[1]
+)
 }
 \arguments{
 \item{aeme}{Aeme object.}
@@ -15,6 +20,11 @@ not found in \code{aeme}.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
+
+\item{group}{character; which variables to list: \code{"core"} (time and
+depth x time variables, default), \code{"diag"} (diagnostics and scalars),
+and/or \code{"sediment"} (sediment zone/layer variables). Diagnostic and
+sediment variables keep their raw model names.}
 }
 \value{
 A character vector of the output variables
