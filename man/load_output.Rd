@@ -12,7 +12,8 @@ load_output(
   model_controls,
   parallel = FALSE,
   cl = NULL,
-  ens_n = 1
+  ens_n = 1,
+  keep_diag = TRUE
 )
 }
 \arguments{
@@ -37,6 +38,11 @@ from \code{aeme}/\code{path}.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
+
+\item{keep_diag}{logical; keep the \code{diag} (diagnostic/scalar) and
+\code{sediment} sub-lists of each model's output (variables with dimensions other
+than time or depth x time, keyed by raw model names). Default \code{TRUE}; set to
+\code{FALSE} to save memory.}
 }
 \value{
 Updated aeme object with model output
