@@ -35,9 +35,10 @@ units/names) and only later decide you want it on AEME's standard grid
 too -- interpolating in place is cheaper than re-opening the netCDF file
 and reading it again with \code{raw_output = FALSE}.
 
-\code{aeme_grouped_var} entries (dimensions other than \code{(time)}/\verb{(z, time)},
-e.g. sediment-zone variables) are carried over unchanged -- they aren't
-on a depth grid to begin with, so there's nothing to interpolate.
+The \code{diag} and \code{sediment} sub-lists (variables with dimensions other than
+\code{(time)}/\verb{(z, time)}, e.g. sediment-zone variables, plus scalars) are
+carried over unchanged -- they aren't on a depth grid to begin with, so
+there's nothing to interpolate.
 }
 \examples{
 \dontrun{
