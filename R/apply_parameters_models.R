@@ -172,19 +172,110 @@ apply_params_dy_cd <- function(config, all_p, strict = TRUE) {
   list(config = config, touched = touched)
 }
 
-#' Read just the configuration `apply_parameters()` needs for a model
+#' Locate a model's configuration files, named by file name without extension
 #'
-#' [read_model_config()], except for DYRESM-CAEDYM where only the `par` and
-#' `cfg` files are read (the rest of its files include large data files).
+#' [get_model_config_files()], except for GLM-AED where the `.nml` and `.csv`
+#' files are found by listing the model directory. For GLM-AED
+#' [get_model_config_files()] parses `aed.nml` to find the table paths, which
+#' takes about as long as reading the file for a parameter update. Parameter
+#' labels are literal file names, so listing is enough here. Where a file name
+#' occurs more than once, the shortest path is used.
 #'
 #' @param model character; one model.
 #' @param lake_dir character; the lake directory.
+#' @return named character vector of paths.
 #' @noRd
-read_config_for_params <- function(model, lake_dir) {
-  if (model != "dy_cd") return(read_model_config(model, lake_dir))
-  files <- get_model_config_files(path = lake_dir, model = model)[[model]]
-  list(hydrodynamic = list(par = readLines(files[["par"]]),
-                           cfg = readLines(files[["cfg"]])))
+locate_config_files <- function(model, lake_dir) {
+  if (model != "glm_aed") {
+    return(get_model_config_files(path = lake_dir, model = model)[[model]])
+  }
+  f <- .find_model_files(lake_dir, "glm_aed", "\\.(nml|csv)$")
+  f <- f[order(nchar(f))]
+  nm <- tools::file_path_sans_ext(basename(f))
+  stats::setNames(f[!duplicated(nm)], nm[!duplicated(nm)])
+}
+
+#' Read just the configuration `apply_parameters()` needs for a model
+#'
+#' Same structure as [read_model_config()], but only the configuration files
+#' named in `labels` (the `file` column of the parameters being applied) are
+#' read, plus the files `apply_parameters()` needs alongside them. This runs
+#' once per model run in calibration and sensitivity analysis, so reading
+#' every file of the model each time adds up. Files that are not read are left
+#' out of the returned list; `write_params()` only writes the files
+#' `apply_parameters()` touched, so they are not affected.
+#'
+#' @param model character; one model.
+#' @param lake_dir character; the lake directory.
+#' @param labels character or `NULL`; file labels of the parameters to apply.
+#'   `NULL` reads every configuration file ([read_model_config()]).
+#' @param files named character vector of paths from `locate_config_files()`;
+#'   located if `NULL`.
+#' @noRd
+read_config_for_params <- function(model, lake_dir, labels = NULL,
+                                   files = NULL) {
+  if (is.null(labels)) return(read_model_config(model, lake_dir))
+  if (is.null(files)) files <- locate_config_files(model, lake_dir)
+  labels <- setdiff(unique(labels), c("met", "inf", "wdr"))
+
+  read_file <- function(key) {
+    f <- files[[key]]
+    switch(
+      tools::file_ext(f),
+      nml = read_nml(f),
+      csv = ,
+      tsv = read_aed_param_csv(f),
+      yaml = yaml::read_yaml(file = f),
+      par = if (model %in% c("simstrat_aed2", "simstrat_aed")) {
+        jsonlite::fromJSON(f, simplifyVector = FALSE)
+      } else {
+        readLines(f)
+      },
+      readLines(f)
+    )
+  }
+  read_keys <- function(keys) {
+    keys <- unique(keys[keys %in% names(files)])
+    stats::setNames(lapply(keys, read_file), keys)
+  }
+
+  cfg <- list()
+  switch(
+    model,
+    glm_aed = {
+      glm_key <- find_glm_nml_key(names(files))
+      cfg$hydrodynamic_file <- paste0(glm_key, ".nml")
+      is_hydro <- grepl("^glm[0-9]+\\.nml$", labels)
+      if (any(is_hydro)) cfg$hydrodynamic <- read_file(glm_key)
+      keys <- tools::file_path_sans_ext(labels[!is_hydro])
+      # Group-indexed aed2 nmls are located through aed2.nml, and the totals
+      # re-derived after a phytoplankton change need both aed and its phyto
+      # table
+      if (any(c("aed2_phyto_pars", "aed2_zoop_pars") %in% keys)) {
+        keys <- c(keys, "aed2")
+      }
+      if (any(c("aed", "aed_phyto_pars") %in% keys)) {
+        keys <- c(keys, "aed", "aed_phyto_pars")
+      }
+      cfg$bgc <- read_keys(keys)
+    },
+    gotm_wet = {
+      cfg$hydrodynamic <- list()
+      if ("gotm.yaml" %in% labels) cfg$hydrodynamic$gotm <- read_file("gotm")
+      cfg$bgc <- read_keys(if ("fabm.yaml" %in% labels) "fabm")
+    },
+    simstrat_aed2 = ,
+    simstrat_aed = {
+      if ("simstrat.par" %in% labels) cfg$hydrodynamic <- read_file("simstrat")
+      cfg$bgc <- read_keys(tools::file_path_sans_ext(
+        labels[labels != "simstrat.par"]))
+    },
+    dy_cd = {
+      cfg$hydrodynamic <- list(par = readLines(files[["par"]]),
+                               cfg = readLines(files[["cfg"]]))
+    }
+  )
+  cfg
 }
 
 #' Write the configuration files changed by `apply_parameters()` back to disk
@@ -197,10 +288,12 @@ read_config_for_params <- function(model, lake_dir) {
 #' @param lake_dir character; the lake directory containing the model
 #'   directory.
 #' @param model character; the model `res` was produced for.
+#' @param files named character vector of paths from `locate_config_files()`;
+#'   located if `NULL`.
 #' @return Invisibly, the labels of the files written.
 #' @noRd
-write_params <- function(res, lake_dir, model) {
-  files <- get_model_config_files(path = lake_dir, model = model)[[model]]
+write_params <- function(res, lake_dir, model, files = NULL) {
+  if (is.null(files)) files <- locate_config_files(model, lake_dir)
   cfg <- res$config
   for (label in res$touched) {
     key <- tools::file_path_sans_ext(label)

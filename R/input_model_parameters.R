@@ -58,9 +58,11 @@ input_model_parameters <- function(aeme, model, param, path) {
     # Pure config patch (apply_parameters()), then write back only the files
     # that changed. Skipped when the parameters only scale boundary conditions.
     if (any(!all_p$file %in% c("met", "inf", "wdr"))) {
-      cfg <- read_config_for_params(model = m, lake_dir = lake_dir)
+      files <- locate_config_files(m, lake_dir)
+      cfg <- read_config_for_params(model = m, lake_dir = lake_dir,
+                                  labels = all_p$file, files = files)
       res <- apply_parameters(config = cfg, param = all_p, model = m)
-      write_params(res, lake_dir = lake_dir, model = m)
+      write_params(res, lake_dir = lake_dir, model = m, files = files)
     }
 
   })
