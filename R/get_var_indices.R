@@ -104,8 +104,29 @@ get_var_indices <- function(nc = NULL, model, aeme, path, vars_sim,
     })
   } else {
     var_indices <- lapply(vars_sim, \(v) {
-      deps <- seq(min(depth_range),
-                  max(depth_range), by = 0.5)
+      # Prefer real observation depths within depth_range over a synthetic
+      # evenly-spaced grid: run_and_fit()'s calibration scoring joins model
+      # output to observations on EXACT (Date, depth, var_aeme) equality
+      # (see run_and_fit.R's `dplyr::left_join(mod_out, by = c("Date",
+      # "depth", "var_aeme"))`). A seq(min, max, by = 0.5) grid almost never
+      # lands exactly on a real observation's depth (e.g. 22, 23, 21.81),
+      # so the join silently drops most region-covered observations to
+      # model = NA - confirmed directly: depths 22.06/22.56/... vs real obs
+      # at 22/23 never matched, producing hundreds of non-finite "scored"
+      # values despite the underlying model run being entirely healthy.
+      # Falls back to the synthetic grid when this variable/region has no
+      # observations at all (e.g. Morris/SA screening, which never joins
+      # against obs and just needs some representative depths).
+      deps <- NULL
+      if (use_obs) {
+        obs_v <- AEME::observations(aeme)$lake |>
+          dplyr::filter(var_aeme == v, depth >= min(depth_range),
+                       depth <= max(depth_range))
+        if (nrow(obs_v) > 0) deps <- sort(unique(obs_v$depth))
+      }
+      if (is.null(deps)) {
+        deps <- seq(min(depth_range), max(depth_range), by = 0.5)
+      }
       df <- data.frame(dates = dates, month = lubridate::month(dates))
 
       date_idx <- which(df$month %in% month)
