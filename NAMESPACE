@@ -213,6 +213,7 @@ export(r_pearson)
 export(r_spearman)
 export(read_aed_param_csv)
 export(read_aeme_from_files)
+export(read_aeme_parquet)
 export(read_dy_output)
 export(read_dy_wlev)
 export(read_glm_output)
@@ -294,6 +295,7 @@ export(update_init)
 export(upgrade_aeme)
 export(water_balance)
 export(write_aed_param_csv)
+export(write_aeme_parquet)
 export(write_aeme_to_files)
 export(write_configuration)
 export(write_nml)
@@ -363,6 +365,7 @@ importFrom(dplyr,
   arrange,
   bind_rows,
   case_when,
+  collect,
   contains,
   desc,
   distinct,
@@ -507,7 +510,8 @@ importFrom(rlang,
   "!!",
   ":=",
   .data,
-  arg_match
+  arg_match,
+  check_installed
 )
 importFrom(rstudioapi,
   insertText,
@@ -548,7 +552,8 @@ importFrom(stringr,str_pad)
 importFrom(tibble,tibble)
 importFrom(tidyr,
   pivot_longer,
-  pivot_wider
+  pivot_wider,
+  unnest_wider
 )
 importFrom(tools,showNonASCIIfile)
 importFrom(units,

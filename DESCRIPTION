@@ -50,8 +50,9 @@ Imports:
     withr,
     yaml,
     zoo
-Suggests: 
+Suggests:
     aemetools (>= 0.0.0.9000),
+    arrow,
     bathytools (>= 0.0.0.9000),
     DT,
     htmltools,
