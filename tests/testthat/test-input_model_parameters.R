@@ -229,7 +229,7 @@ test_that("GLM sediment parameters can be input and run with bgc", {
   # One row per value across the &sediment block; the shipped glm4.nml
   # template carries more sediment keys than glm3.nml did (sed_heat_model,
   # sed_spinup_days, sed_deep_temp, ...), so this tracks that template.
-  testthat::expect_equal(nrow(glm_sed_pars), 30)
+  testthat::expect_equal(nrow(glm_sed_pars), 32)
   
   lake_dir <- get_lake_dir(aeme = aeme, path = path)
   glm_cfg <- read_model_config(model = model, lake_dir = lake_dir)

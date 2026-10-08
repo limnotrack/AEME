@@ -25,7 +25,8 @@ test_that("default aed.nml carries an aed_noncohesive block with 2 groups", {
     expect_length(ncs[[p]], 2L)
   }
   expect_equal(ncs[["ss_initial"]], c(3.0, 1.0))
-  expect_equal(ncs[["w_ss"]], c(0.5, 0.03))
+  # negative = sinking
+  expect_equal(ncs[["w_ss"]], c(-0.5, -0.03))
   expect_equal(ncs[["settling"]], 1)
   expect_equal(ncs[["resuspension"]], 1)
   expect_identical(ncs[["simSedimentMass"]], FALSE)

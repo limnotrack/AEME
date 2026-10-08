@@ -17,10 +17,13 @@ test_that("aed_alum pulls in its dependencies", {
                   c("aed_sedflux", "aed_oxygen", "aed_phosphorus", "aed_alum"))
 })
 
-test_that("ALU variables are in key_naming", {
-  expect_identical(rename_modelvars(c("ALU_ala", "ALU_alp"),
-                                    type_output = "glm_aed"),
-                   c("ALU_ala", "ALU_alp"))
+test_that("ALU variables pass through and map to the aed_alum module", {
+  # ALU_* are not registered in key_naming, so they are passed through as-is
+  expect_warning(
+    out <- rename_modelvars(c("ALU_ala", "ALU_alp"), type_output = "glm_aed",
+                            passthrough = TRUE),
+    "passed through")
+  expect_identical(out, c("ALU_ala", "ALU_alp"))
   expect_true(glm_aed_var_active("ALU_ala", c("aed_alum", "aed_phosphorus")))
   expect_false(glm_aed_var_active("ALU_ala", "aed_phosphorus"))
 })

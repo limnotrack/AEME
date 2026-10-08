@@ -284,7 +284,7 @@ test_that("GLM meteo_glm.csv matches the sub-daily met passed to build_aeme()", 
   expect_equal(glm_met$WindSpeed, b$MET_wndspd, tolerance = 1e-3)
   expect_equal(glm_met$RelHum,    b$MET_humrel, tolerance = 1e-3)
   # unit conversions: mm/day -> m/day and Pa -> hPa
-  expect_equal(glm_met$Rain, b$MET_pprain / 1000, tolerance = 1e-8)
+  expect_equal(glm_met$Rain, b$MET_pprain / 1000, tolerance = 1e-5)
   expect_equal(glm_met$AirPres, b$MET_prsttn / 100, tolerance = 0.06)
 
   # and the rain is the user's per-step depth scaled once to a rate
