@@ -1,5 +1,22 @@
 # AEME 0.4.0
 
+## `estimate_zone_fluxes()` documentation and Tier 2 normalisation
+
+* **Tier 2 (observed-data) adjustment now preserves the lake-wide total.**
+  The documentation has always said that only inter-zone ratios are adjusted
+  and the lake-wide area-weighted total is preserved, but the `fsed_amm` and
+  `fsed_frp` multipliers were applied after the Tier 1 normalisation and not
+  re-normalised, so the total drifted whenever observations were available.
+  The adjusted fluxes are now re-normalised. Lakes built with observations of
+  near-bed NH4 or FRP will see `fsed_amm`/`fsed_frp` zone values change; the
+  area-weighted lake average equals the baseline again.
+* Documentation corrected: only NH4 and FRP are adjusted from observations
+  (the O2 and NO3 adjustments are disabled), the depth scale factor is capped
+  at 2 (not 4), the NO3 sign change is at 0.6 (not 0.5) of the maximum depth,
+  and zones are the GLM sediment zones of a built model.
+* The normalisation is now an internal function, `normalise_zone_flux()`,
+  with unit tests.
+
 ## Phytoplankton default fixes and a new succession-diagnostic function
 
 Follow-up to an investigation into whether GLM-AED can reproduce genuine
