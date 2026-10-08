@@ -215,6 +215,10 @@ test_that("running GLM with different exec works", {
   model <- c("glm_aed")
 
   path <- tempdir()  # or wherever you want to save
+  # install_glm_aed() pins AEME.glm_version; restore both options on exit so
+  # later tests don't pick the glm3.nml template
+  withr::local_options(AEME.glm_version = getOption("AEME.glm_version"),
+                       AEME.glm_exec = NULL)
   install_glm_aed(version = "3.3.5")
 
   options("AEME.glm_exec" = glm_exe_path())
@@ -233,8 +237,6 @@ test_that("running GLM with different exec works", {
   file_chk <- file.exists(file.path(lake_dir,
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
-  options("AEME.glm_exec" = NULL)
-
 })
 
 test_that("run GLM models with old object", {
