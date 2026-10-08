@@ -9,10 +9,14 @@
 #' reflecting greater organic matter accumulation and more persistent anoxia.
 #'
 #' \strong{Tier 2 (optional, when \code{obs} supplied)} -- observed data
-#' adjustment. Near-bed summer concentrations of O2, NH4, NO3, and FRP are used
-#' to adjust the relative difference in fluxes between zones. Only inter-zone
-#' ratios are adjusted, not absolute magnitude, so the lake-wide total is
-#' preserved.
+#' adjustment. Near-bed summer concentrations of NH4 and FRP are used to adjust
+#' the relative difference in fluxes between zones. After adjusting, the fluxes
+#' are re-normalised so the lake-wide area-weighted total is unchanged: only
+#' the inter-zone ratios move, not the absolute magnitude. Observed O2 and NO3
+#' are read and summarised per zone, but are not currently used to adjust
+#' \code{fsed_oxy} or \code{fsed_nit}, because a concentration ratio is not a
+#' good proxy for the direction of change in those fluxes. The adjustment is a
+#' heuristic based on concentrations, not on rates of change.
 #'
 #' Literature baselines at reference depth 5 m (temperate lakes):
 #' \itemize{
@@ -25,9 +29,13 @@
 #'
 #' Depth scaling (Beutel 2006; Muller et al. 2012): SOD and NH4/FRP fluxes
 #' scale approximately linearly with mean zone depth divided by
-#' \code{ref_depth}. NO3 flux transitions from small positive values (shallow,
-#' oxic) to negative values (deep, anoxic denitrification) at approximately
-#' \code{0.5 * max_depth}.
+#' \code{ref_depth}, with the scale factor capped at 2. NO3 flux transitions
+#' from small positive values (shallow, oxic) to negative values (deep, anoxic
+#' denitrification) at approximately \code{0.6 * max_depth}.
+#'
+#' Zones are the GLM sediment zones, taken from \code{zone_heights} in the
+#' built \code{glm_aed} configuration, so \code{aeme} must have been built.
+#' Zone 1 is the deepest.
 #'
 #' @inheritParams build_aeme
 #' @param ref_depth Numeric. Reference depth (m) for literature baseline
@@ -160,15 +168,15 @@ estimate_zone_fluxes <- function(aeme, path,
   # ---------------------------------------------------------------------------
   # 2. Tier 1 -- depth-scaled baseline fluxes
   # ---------------------------------------------------------------------------
-  # Scale each flux by (mean_zone_depth / ref_depth), capped at 4x.
+  # Scale each flux by (mean_zone_depth / ref_depth), capped at 2x.
   # Area-weighted normalisation then ensures the lake-wide area-weighted
   # total matches the literature baseline -- inter-zone differences are
   # preserved but the overall magnitude is anchored.
   #
   # NO3 sign logic:
-  #   Shallow zones (< 0.5 * max_depth): small positive release
-  #   Deep zones    (> 0.5 * max_depth): negative (denitrification consumes NO3)
-  #   Transition is linear across zones.
+  #   Shallow zones (<= 0.6 * max_depth): small positive release
+  #   Deep zones    (>  0.6 * max_depth): negative (denitrification consumes NO3)
+  #   The change is a step between zones, not a gradual transition.
   
   depth_scale <- pmin(zone_mean_depth / ref_depth, 2)
   
@@ -180,16 +188,12 @@ estimate_zone_fluxes <- function(aeme, path,
                     baseline["fsed_nit"] * +0.5) # nitrification dominates
   
   # Normalise so area-weighted sum equals baseline * total_area_fraction
-  .normalise <- function(raw, base_val, area_frac) {
-    target  <- base_val * sum(area_frac)
-    current <- sum(raw * area_frac)
-    if (abs(current) < 1e-10) return(raw)
-    raw * (target / current)
-  }
-  
-  fsed_oxy <- unname(.normalise(oxy_raw, baseline["fsed_oxy"], zone_area_frac))
-  fsed_amm <- unname(.normalise(amm_raw, baseline["fsed_amm"], zone_area_frac))
-  fsed_frp <- unname(.normalise(frp_raw, baseline["fsed_frp"], zone_area_frac))
+  fsed_oxy <- unname(normalise_zone_flux(oxy_raw, baseline["fsed_oxy"],
+                                         zone_area_frac))
+  fsed_amm <- unname(normalise_zone_flux(amm_raw, baseline["fsed_amm"],
+                                         zone_area_frac))
+  fsed_frp <- unname(normalise_zone_flux(frp_raw, baseline["fsed_frp"],
+                                         zone_area_frac))
   fsed_nit <- unname(nit_raw)   # not normalised -- sign flip is intentional
   
   method <- "baseline_scaled"
@@ -335,6 +339,16 @@ estimate_zone_fluxes <- function(aeme, path,
         }
         
         if (length(adj_log)) {
+          # Keep the lake-wide area-weighted total fixed: the observations
+          # only adjust how the flux is shared between zones.
+          if (any(grepl("^fsed_amm", adj_log)))
+            fsed_amm <- unname(normalise_zone_flux(fsed_amm,
+                                                   baseline["fsed_amm"],
+                                                   zone_area_frac))
+          if (any(grepl("^fsed_frp", adj_log)))
+            fsed_frp <- unname(normalise_zone_flux(fsed_frp,
+                                                   baseline["fsed_frp"],
+                                                   zone_area_frac))
           # message()
           msg <- paste0("Tier 2 adjustments applied: ", paste(adj_log, 
                                                               collapse = "; "))
@@ -435,4 +449,20 @@ estimate_zone_fluxes <- function(aeme, path,
     zone_summary = zone_summary,
     method       = method
   ))
+}
+
+#' Rescale zone fluxes so the area-weighted total matches the baseline
+#'
+#' @param raw numeric; flux per zone.
+#' @param base_val numeric; baseline lake-wide flux.
+#' @param area_frac numeric; fraction of the bed area in each zone.
+#' @return `raw` multiplied by a constant so `sum(raw * area_frac)` equals
+#' `base_val * sum(area_frac)`. Returned unchanged if the current total is
+#' effectively zero.
+#' @noRd
+normalise_zone_flux <- function(raw, base_val, area_frac) {
+  target  <- base_val * sum(area_frac)
+  current <- sum(raw * area_frac)
+  if (abs(current) < 1e-10) return(raw)
+  raw * (target / current)
 }

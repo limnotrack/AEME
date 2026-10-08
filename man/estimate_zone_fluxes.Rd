@@ -56,10 +56,14 @@ fractional bed area. Deep zones receive higher SOD and nutrient fluxes
 reflecting greater organic matter accumulation and more persistent anoxia.
 
 \strong{Tier 2 (optional, when \code{obs} supplied)} -- observed data
-adjustment. Near-bed summer concentrations of O2, NH4, NO3, and FRP are used
-to adjust the relative difference in fluxes between zones. Only inter-zone
-ratios are adjusted, not absolute magnitude, so the lake-wide total is
-preserved.
+adjustment. Near-bed summer concentrations of NH4 and FRP are used to adjust
+the relative difference in fluxes between zones. After adjusting, the fluxes
+are re-normalised so the lake-wide area-weighted total is unchanged: only
+the inter-zone ratios move, not the absolute magnitude. Observed O2 and NO3
+are read and summarised per zone, but are not currently used to adjust
+\code{fsed_oxy} or \code{fsed_nit}, because a concentration ratio is not a
+good proxy for the direction of change in those fluxes. The adjustment is a
+heuristic based on concentrations, not on rates of change.
 
 Literature baselines at reference depth 5 m (temperate lakes):
 \itemize{
@@ -72,9 +76,13 @@ et al. 2003)
 
 Depth scaling (Beutel 2006; Muller et al. 2012): SOD and NH4/FRP fluxes
 scale approximately linearly with mean zone depth divided by
-\code{ref_depth}. NO3 flux transitions from small positive values (shallow,
-oxic) to negative values (deep, anoxic denitrification) at approximately
-\code{0.5 * max_depth}.
+\code{ref_depth}, with the scale factor capped at 2. NO3 flux transitions
+from small positive values (shallow, oxic) to negative values (deep, anoxic
+denitrification) at approximately \code{0.6 * max_depth}.
+
+Zones are the GLM sediment zones, taken from \code{zone_heights} in the
+built \code{glm_aed} configuration, so \code{aeme} must have been built.
+Zone 1 is the deepest.
 }
 \examples{
 \dontrun{
