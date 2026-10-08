@@ -3,6 +3,8 @@ title: "Hourly vs daily meteorological forcing"
 ---
 
 ```{r, include = FALSE}
+library(AEME)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
