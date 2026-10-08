@@ -265,6 +265,8 @@ glm_config_to_aeme <- function(nml_file, model_controls = NULL, spin_up = 2,
   # GLM stores rain/snow in m; AEME uses mm
   met$MET_pprain <- met$MET_pprain * 1000
   met$MET_ppsnow <- met$MET_ppsnow * 1000
+  # GLM stores pressure in hPa; AEME uses Pa (inverse of make_met_glm())
+  if ("MET_prsttn" %in% names(met)) met$MET_prsttn <- met$MET_prsttn * 100
   met
 }
 
