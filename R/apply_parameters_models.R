@@ -301,7 +301,7 @@ write_params <- function(res, lake_dir, model, files = NULL) {
       model,
       glm_aed = {
         hydro_label <- cfg[["hydrodynamic_file"]]
-        if (is.null(hydro_label)) hydro_label <- "glm3.nml"
+        if (is.null(hydro_label)) hydro_label <- "glm4.nml"
         obj <- if (label == hydro_label) {
           cfg[["hydrodynamic"]]
         } else {

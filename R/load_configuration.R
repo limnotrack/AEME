@@ -151,7 +151,7 @@ get_config_dy_cd <- function(lake_dir, path) {
 get_config_glm_aed <- function(lake_dir, path) {
 
   out <- list(hydrodynamic = NULL, bgc = NULL)
-  nml_file <- file.path(lake_dir, "glm_aed", "glm3.nml")
+  nml_file <- file.path(lake_dir, "glm_aed", "glm4.nml")
   if (!file.exists(nml_file)) {
     stop("No GLM nml file present at\n", nml_file)
   }
@@ -166,9 +166,9 @@ get_config_glm_aed <- function(lake_dir, path) {
       read_aed_param_csv(f)
     }
   })
-  out$hydrodynamic <- cfg[["glm3"]]
-  # Remove glm3 from list
-  cfg[["glm3"]] <- NULL
+  out$hydrodynamic <- cfg[["glm4"]]
+  # Remove glm4 from list
+  cfg[["glm4"]] <- NULL
   if (length(cfg) > 0) {
     out$bgc <- cfg
   }

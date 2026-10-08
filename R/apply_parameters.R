@@ -63,7 +63,7 @@ apply_params_glm_aed <- function(config, all_p, strict = TRUE) {
   # working across the GLM v3 -> v4 rename regardless of which literal they
   # carry.
   glm_nml_actual <- config[["hydrodynamic_file"]]
-  if (is.null(glm_nml_actual)) glm_nml_actual <- "glm3.nml"
+  if (is.null(glm_nml_actual)) glm_nml_actual <- "glm4.nml"
 
   # Canonicalise every glm<version>.nml row to that name, then drop
   # duplicates a combined library can carry (same key under glm3.nml and

@@ -122,7 +122,7 @@ glm_sed_params <- function(n_zones = 1,
   
   multi_params <- data.frame(
     model = "glm_aed",
-    file  = "glm3.nml",
+    file  = "glm4.nml",
     name  = name_vec,
     value = values_vec,
     min   = min_vec,
@@ -136,7 +136,7 @@ glm_sed_params <- function(n_zones = 1,
   # Global parameters: benthic_mode and n_zones
   single_params <- data.frame(
     model = "glm_aed",
-    file  = "glm3.nml",
+    file  = "glm4.nml",
     name  = c("sediment/benthic_mode", "sediment/n_zones"),
     value = c(benthic_mode, n_zones),
     min   = c(benthic_mode, n_zones),

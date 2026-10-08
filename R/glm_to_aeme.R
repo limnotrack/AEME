@@ -11,7 +11,7 @@ glm_to_aeme <- function(nml_file) {
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
   
-  # nml_file <- "inst/extdata/glm_aed/glm3.nml"
+  # nml_file <- "inst/extdata/glm_aed/glm4.nml"
   base_dir <- dirname(nml_file)
   
   nml <- read_nml(nml_file)
