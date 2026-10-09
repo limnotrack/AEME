@@ -1,4 +1,4 @@
-#' Plot phytoplankton variables
+#' Plot nitrogen variables
 #'
 #' @inheritParams plot_output
 #' @inheritParams get_var

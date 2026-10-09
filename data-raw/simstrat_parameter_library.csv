@@ -1,0 +1,24 @@
+module,group,parameter,label,symbol,description,units,default,source
+simstrat,site,lat,Latitude,lat,Latitude of the site (used for Coriolis force and albedo calculation),deg,45,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,site,p_air,Air pressure,p_air,Long-term average air pressure at the site,mbar,965,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,seiche,a_seiche,Seiche parameter,a_seiche,Fraction of wind energy transferred to seiche (internal wave) energy,-,0.00424,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,seiche,a_seiche_w,Seiche parameter (winter),a_seiche^w,"Fraction of wind energy transferred to seiche energy in winter (used instead of a_seiche when N2 < strat_sumr, only if SplitSeicheParameter = true)",-,0,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,seiche,strat_sumr,Stratification threshold,N2_thresh,"Brunt-Vaisala frequency threshold below which a_seiche_w is used instead of a_seiche (only used if SplitSeicheParameter = true)",1/s2,0,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,seiche,q_nn,Seiche energy distribution,q_NN,Fit parameter controlling the vertical distribution of seiche energy,-,1.1,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,seiche,seiche_ini,Initial seiche energy,E_seiche|t=0,Initial total seiche energy,J,0,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,wind,f_wind,Filtered wind fit,f_wind,Fit parameter for the (optionally pre-filtered) wind speed used to allot seiche energy,-,1.2193,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,wind,c10,Wind drag coefficient,C_10,"Wind drag coefficient at 10 m: a near-constant physical value (~0.001) if WindDragModel = 1, or itself a calibration parameter (~1) if WindDragModel = 2 or 3",-,1,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,mixing,cd,Bottom drag coefficient,C_D,Bottom drag coefficient used in the momentum equations when BottomFriction is enabled,-,0.002,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,heat,hgeo,Geothermal heat flux,H_geo,Geothermal heat flux applied at the lake bed,W/m2,0.08,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,heat,p_sw_water,Short-wave scaling,p_sw,Scaling (fit) parameter applied to incoming short-wave radiation over open water,-,1,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,heat,p_lw,Long-wave scaling,p_lw,Scaling (fit) parameter applied to incoming long-wave radiation from the sky,-,0.9406,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,heat,p_windf,Turbulent heat flux scaling,p_windf,Scaling (fit) parameter applied to the convective (sensible) and latent heat fluxes,-,1,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,light,p_absorb,Light absorption scaling,p_absorb,Scaling (fit) parameter applied to the light absorption (extinction) coefficient,-,1,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,light,beta_sol,Surface absorption fraction,beta_sol,Fraction of incoming short-wave radiation absorbed as heat directly at the water surface (the remainder penetrates and is absorbed with depth per the light-extinction file),-,0.5,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,ice,wat_albedo,Water albedo,alpha_water,User-defined albedo of open water (only used if UserDefinedWaterAlbedo = true; otherwise computed internally from Grishchenko tables),-,0.09,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,ice,p_sw_ice,Ice short-wave scaling,p_sw_ice,Scaling (fit) parameter for incoming short-wave radiation in the presence of ice/snow-ice/snow (only used if IceModel is on),-,1,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,ice,freez_temp,Freezing temperature,T_freeze,Freezing temperature of water,degC,0,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,ice,snow_temp,Snow threshold temperature,T_snow,Threshold air temperature distinguishing accumulation from melting of snow on ice-covered lakes,degC,0.5,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,ice,snow_ini,Initial snow thickness,H_snow|t=0,Initial snow thickness (only used if SnowModel is on),m,0,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,ice,w_ice_ini,Initial white ice thickness,H_whiteice|t=0,Initial white (snow) ice thickness (only used if IceModel is on),m,0,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat
+simstrat,ice,b_ice_ini,Initial black ice thickness,H_blackice|t=0,Initial black (clear) ice thickness (only used if IceModel is on),m,0,https://github.com/Eawag-AppliedSystemAnalysis/Simstrat

@@ -10,6 +10,13 @@
 #' @param warn_unmatched logical; if `TRUE`, emits a warning (rather than an
 #'   error) for unmatched names and returns `NA` for those entries. Defaults
 #'   to `FALSE` (error on any unmatched name).
+#' @param passthrough logical; if `TRUE`, unmatched names that look like AED
+#'   variables (`PFX_name`, i.e. 2-4 capitals, an underscore, then a name) are
+#'   returned unchanged with a warning instead of an error. Intended for
+#'   modules still in development that are not yet in `key_naming`, when the
+#'   input name already is the target model's name (e.g. `type_output =
+#'   "glm_aed"`). Names that don't look like AED variables still error.
+#'   Defaults to `FALSE`.
 #'
 #' @return A character vector of renamed variables, in the same order as
 #'   `input`. Unmatched entries are `NA` when `warn_unmatched = TRUE`.
@@ -19,7 +26,8 @@ rename_modelvars <- function(input,
                              type_input     = "var_aeme",
                              type_output    = "name_parse",
                              verbose        = FALSE,
-                             warn_unmatched = FALSE) {
+                             warn_unmatched = FALSE,
+                             passthrough    = FALSE) {
   
   # --- Input validation -------------------------------------------------------
   if (!is.character(input) || length(input) == 0L) {
@@ -36,6 +44,9 @@ rename_modelvars <- function(input,
   }
   if (!is.logical(warn_unmatched) || length(warn_unmatched) != 1L) {
     cli::cli_abort("{.arg warn_unmatched} must be a single logical value.")
+  }
+  if (!is.logical(passthrough) || length(passthrough) != 1L) {
+    cli::cli_abort("{.arg passthrough} must be a single logical value.")
   }
   type_input <- ifelse(type_input == "name", "var_aeme", type_input)
   type_output <- ifelse(type_output == "name", "var_aeme", type_output)
@@ -66,6 +77,19 @@ rename_modelvars <- function(input,
   idx       <- match(input, key[[type_input]])
   names_new <- key[[type_output]][idx]
   
+  # --- Pass through AED-looking names missing from key_naming -----------------
+  if (passthrough) {
+    pass <- is.na(idx) & grepl("^[A-Z]{2,4}_[A-Za-z0-9_]+$", input)
+    if (any(pass)) {
+      cli::cli_warn(c(
+        "Not in {.var key_naming}; passed through unchanged: {.val {input[pass]}}.",
+        "i" = "No unit conversion is applied. Add to \
+               {.file data-raw/key_naming.csv} for full support."))
+      names_new[pass] <- input[pass]
+      idx[pass] <- 0L  # mark as handled
+    }
+  }
+
   # --- Handle unmatched entries -----------------------------------------------
   unmatched <- input[is.na(idx)]
   

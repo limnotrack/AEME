@@ -20,7 +20,8 @@ get_var_indices(
  \code{\link[ncdf4]{nc_open}} or function \code{\link[ncdf4]{nc_create}}.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{aeme}{Aeme object.}
 

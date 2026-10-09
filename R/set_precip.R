@@ -47,6 +47,9 @@ set_precip <- function(aeme, type = c("inflow", "met", "precip_as_inflow",
   lke <- get_lake(aeme)
   lake_area <- lke[["area"]]
   curr_status <- precip_status(aeme)
+  if (is.null(curr_status)) {
+    curr_status <- "none"
+  }
   if (type == curr_status) {
     message("Precip already set as ", type)
     return(aeme)
@@ -69,10 +72,13 @@ set_precip <- function(aeme, type = c("inflow", "met", "precip_as_inflow",
     # Check if water level observations are present
     obs <- get_obs(aeme, var_sim = "LKE_lvlwtr")
     if (nrow(obs) > 0) {
-      full_date <- met |> 
+      full_date <- met |>
         dplyr::select(Date)
-      obs <- obs |> 
-        dplyr::select(Date, value) |> 
+      # Observations carry a noon POSIXct Date; the meteorology Date it is
+      # joined to is a calendar Date. Match on the day.
+      obs <- obs |>
+        dplyr::mutate(Date = as.Date(Date, tz = "UTC")) |>
+        dplyr::select(Date, value) |>
         dplyr::right_join(full_date, by = "Date") |>
         # Fill NAs in value
         dplyr::mutate(value = zoo::na.locf(value, na.rm = FALSE)) |> 

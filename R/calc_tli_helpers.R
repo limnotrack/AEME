@@ -2,21 +2,21 @@
 #' @param chla Chlorophyll-a concentration in µg/L
 #' @return TLI chlorophyll component
 calc_tli_chla <- function(chla) {
-  2.22 + 2.54 * log10(chla)
+  2.22 + 2.54 * log10(pmax(chla, tli_conc_floor))
 }
 
 #' Calculate TLI nitrogen component
 #' @param tn Total nitrogen concentration in mg/L
 #' @return TLI nitrogen component
 calc_tli_n <- function(tn) {
-  -3.61 + 3.01 * log10(tn * 1000)
+  -3.61 + 3.01 * log10(pmax(tn * 1000, tli_conc_floor))
 }
 
 #' Calculate TLI phosphorus component
 #' @param tp Total phosphorus concentration in mg/L
 #' @return TLI phosphorus component
 calc_tli_p <- function(tp) {
-  0.218 + 2.92 * log10(tp * 1000)
+  0.218 + 2.92 * log10(pmax(tp * 1000, tli_conc_floor))
 }
 
 #' Calculate TLI secchi component

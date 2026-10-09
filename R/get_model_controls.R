@@ -17,7 +17,8 @@ get_model_controls <- function(aeme = NULL, use_bgc = FALSE) {
     config <- configuration(aeme)
     model_controls <- config$model_controls
   } else {
-    data("model_controls", package = "AEME")
+    # Load the data strictly into this function's local environment
+    utils::data("model_controls", package = "AEME", envir = environment())
     hyd_vars <- c("HYD_temp", "HYD_dens", "HYD_thmcln", "HYD_strat", "CHM_salt")
     light_vars <- c("RAD_par", "RAD_extc")
     bgc_vars <- c(
@@ -28,7 +29,7 @@ get_model_controls <- function(aeme = NULL, use_bgc = FALSE) {
       "SIL_rsi",
       "PHY_cyano", "PHY_green", "PHY_diatom",
       "PHY_tchla",
-      "NCS_ss1"
+      "NCS_ss1", "NCS_ss2"
     )
     if (use_bgc) {
       sel_vars <- c(hyd_vars, light_vars, bgc_vars)
@@ -36,9 +37,9 @@ get_model_controls <- function(aeme = NULL, use_bgc = FALSE) {
       sel_vars <- c(hyd_vars, light_vars)
     }
     model_controls <- set_vars_sim(model_controls = model_controls,
-                                   vars_sim = sel_vars, simulate = TRUE, 
+                                   vars_sim = sel_vars, simulate = TRUE,
                                    exclusive = TRUE)
-    
+
   }
-  return(model_controls)
+  return(new_model_controls(model_controls))
 }

@@ -10,12 +10,15 @@ read_model_config(model, lake_dir)
 \item{model}{character; model name ("dy_cd", "glm_aed", "gotm_wet"). Only
 one model at a time.}
 
-\item{path}{character; directory which contains the model configuration files.}
+\item{lake_dir}{character; directory which contains the model configuration
+files.}
 }
 \value{
 List with model configuration components. This includes a 'hydrodynamic'
 list with hydrodynamic model configuration and a 'bgc' list with biogeochemistry
-model configuration (if applicable).
+model configuration (if applicable). For \code{model = "glm_aed"}, also includes
+'hydrodynamic_file', the basename of the GLM nml file it was read from
+(e.g. \code{"glm3.nml"} or \code{"glm4.nml"}).
 }
 \description{
 Read in model configuration files for a given model and lake directory

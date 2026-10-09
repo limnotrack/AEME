@@ -4,13 +4,19 @@
 \alias{remove_param}
 \title{Remove parameter(s) from Aeme object}
 \usage{
-remove_param(aeme, name)
+remove_param(aeme, name, model, file)
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
 \item{name}{character vector with names of parameters to remove. If missing,
-all parameters are removed.}
+all parameters (within \code{model}/\code{file}, if supplied) are removed.}
+
+\item{model}{character vector; only remove parameters for these models.
+If missing, parameters are removed regardless of model.}
+
+\item{file}{character vector; only remove parameters in these files. If
+missing, parameters are removed regardless of file.}
 }
 \value{
 Aeme object with parameters removed

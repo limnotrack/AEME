@@ -1,13 +1,14 @@
 #' Run GLM-AED diagnostics
 #'
 #' @inheritParams read_model_outputs
+#' @param aeme Aeme object.
 #' @param groups         character vector selecting catalogue entries.
 #'                       Accepts:
 #'                         - catalogue entry names (e.g. "nitrogen_state"),
 #'                         - element codes ("O","N","P","Phy"),
 #'                         - types ("state","process").
 #'                       Default NULL = all entries.
-#' @param depth_collapse "mean", "surface" or "max" — reduce 3D variables
+#' @param depth_collapse "mean", "surface" or "max" -- reduce 3D variables
 #' @param plot           draw combined plots, grouped by element
 #' @param use_bounds     add dashed lines to plots showing expected bounds 
 #'  (from catalogue)
@@ -329,7 +330,7 @@ glm_aed_diag_catalogue <- list(
   
   # ---------------- SEDIMENT ZONES (_Z vars) ----------------
   # Only present when the AED sediment flux / diagenesis module writes
-  # per-zone output. Variables are [n_zones x time] matrices — each zone
+  # per-zone output. Variables are [n_zones x time] matrices -- each zone
   # index is treated like a depth layer and collapsed by depth_collapse.
   # Use groups = "Sed" to run just these panels.
   
@@ -423,8 +424,8 @@ glm_aed_diag_catalogue <- list(
 # H (morphometry): absolute elevations (same datum); min(H) = lake bed elevation
 # zone_heights  : upper boundaries of sediment zones measured as height above
 #                 the lake BED (m).  e.g. c(3.5, 9) ->
-#                   Zone 1: 0 – 3.5 m above bed  (row 1 of _Z matrices)
-#                   Zone 2: 3.5 – 9 m above bed  (row 2 of _Z matrices)
+#                   Zone 1: 0 - 3.5 m above bed  (row 1 of _Z matrices)
+#                   Zone 2: 3.5 - 9 m above bed  (row 2 of _Z matrices)
 #
 # For water-column layers the height above bed at timestep t is:
 #   LKE_lvlwtr[t] - LKE_depths[layer, t] - lake_bed_elevation
@@ -564,7 +565,7 @@ glm_aed_diag_catalogue <- list(
           zlabels <- sprintf("Zone %d", seq_len(nz))
           if (!is.null(zone_heights) && nz != n_zones_cfg)
             message(nm, ": matrix has ", nz, " active rows; zone_heights implies ",
-                    n_zones_cfg, " zones — using integer labels for this variable.")
+                    n_zones_cfg, " zones -- using integer labels for this variable.")
         }
         rows[[nm]] <- tibble::tibble(
           DateTime = rep(times, each = nz),
@@ -606,7 +607,7 @@ glm_aed_diag_catalogue <- list(
   dplyr::bind_rows(rows)
 }
 
-# Collapse a long tidy df to one row per (DateTime, variable) — or, when
+# Collapse a long tidy df to one row per (DateTime, variable) -- or, when
 # collapse = "zone", one row per (DateTime, variable, zone).
 #
 # Streams:
@@ -644,7 +645,7 @@ glm_aed_diag_catalogue <- list(
       # Check zone labels are present; warn if not (zone_heights not supplied)
       if (all(is.na(wc$zone))) {
         warning(".collapse_depth(collapse='zone'): water-column zone labels are ",
-                "all NA — zone_heights and lake_bed_elevation must be passed to ",
+                "all NA -- zone_heights and lake_bed_elevation must be passed to ",
                 ".tidy_model_output(). Falling back to overall mean.")
         wc_c <- wc |>
           dplyr::group_by(DateTime, variable) |>
@@ -752,7 +753,7 @@ summarise_diag_group <- function(data, group) {
                            variable, ignore.case = TRUE)       ~ "NEGATIVE",
         # MISSING flag: skip _Z vars (per-zone row counts differ from 1D vars;
         # phantom NA rows are stripped at parse time so n_na should be 0 for
-        # active zones — if n == 0 they will already be caught by NO DATA above)
+        # active zones -- if n == 0 they will already be caught by NO DATA above)
         !grepl("_Z$", variable) &
           n_na / pmax(n + n_na, 1) > 0.1                       ~ "MISSING > 10%",
         TRUE                                                   ~ "ok"

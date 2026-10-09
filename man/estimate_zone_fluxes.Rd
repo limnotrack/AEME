@@ -50,31 +50,39 @@ Estimates zone-specific sediment fluxes for \code{aed_sed_const2d} using up
 to two tiers of adjustment:
 }
 \details{
-\strong{Tier 1 (always)} — area-weighted depth scaling. Each zone's flux is
+\strong{Tier 1 (always)} -- area-weighted depth scaling. Each zone's flux is
 scaled from literature baseline values according to its mean depth and
 fractional bed area. Deep zones receive higher SOD and nutrient fluxes
 reflecting greater organic matter accumulation and more persistent anoxia.
 
-\strong{Tier 2 (optional, when \code{obs} supplied)} — observed data
-adjustment. Near-bed summer concentrations of O2, NH4, NO3, and FRP are used
-to adjust the relative difference in fluxes between zones. Only inter-zone
-ratios are adjusted, not absolute magnitude, so the lake-wide total is
-preserved.
+\strong{Tier 2 (optional, when \code{obs} supplied)} -- observed data
+adjustment. Near-bed summer concentrations of NH4 and FRP are used to adjust
+the relative difference in fluxes between zones. After adjusting, the fluxes
+are re-normalised so the lake-wide area-weighted total is unchanged: only
+the inter-zone ratios move, not the absolute magnitude. Observed O2 and NO3
+are read and summarised per zone, but are not currently used to adjust
+\code{fsed_oxy} or \code{fsed_nit}, because a concentration ratio is not a
+good proxy for the direction of change in those fluxes. The adjustment is a
+heuristic based on concentrations, not on rates of change.
 
 Literature baselines at reference depth 5 m (temperate lakes):
 \itemize{
-\item \code{fsed_oxy}: -25 mmol O2/m2/d (Müller et al. 2012; Sondergaard
+\item \code{fsed_oxy}: -25 mmol O2/m2/d (Muller et al. 2012; Sondergaard
 et al. 2003)
 \item \code{fsed_amm}: 2 mmol N/m2/d (Andersen 1982; Beutel 2006)
 \item \code{fsed_nit}: 0.2 mmol N/m2/d (Seitzinger 1988)
-\item \code{fsed_frp}: 0.05 mmol P/m2/d (Nürnberg 1984)
+\item \code{fsed_frp}: 0.05 mmol P/m2/d (Nurnberg 1984)
 }
 
-Depth scaling (Beutel 2006; Müller et al. 2012): SOD and NH4/FRP fluxes
+Depth scaling (Beutel 2006; Muller et al. 2012): SOD and NH4/FRP fluxes
 scale approximately linearly with mean zone depth divided by
-\code{ref_depth}. NO3 flux transitions from small positive values (shallow,
-oxic) to negative values (deep, anoxic denitrification) at approximately
-\code{0.5 * max_depth}.
+\code{ref_depth}, with the scale factor capped at 2. NO3 flux transitions
+from small positive values (shallow, oxic) to negative values (deep, anoxic
+denitrification) at approximately \code{0.6 * max_depth}.
+
+Zones are the GLM sediment zones, taken from \code{zone_heights} in the
+built \code{glm_aed} configuration, so \code{aeme} must have been built.
+Zone 1 is the deepest.
 }
 \examples{
 \dontrun{
@@ -96,9 +104,9 @@ fluxes <- estimate_zone_fluxes(
 \references{
 Beutel, M.W. (2006). \doi{10.1016/j.ecoleng.2006.05.009}
 
-Müller, B., et al. (2012). \doi{10.1021/es301422r}
+Muller, B., et al. (2012). \doi{10.1021/es301422r}
 
-Nürnberg, G.K. (1984). \doi{10.4319/lo.1984.29.1.0111}
+Nurnberg, G.K. (1984). \doi{10.4319/lo.1984.29.1.0111}
 
 Seitzinger, S.P. (1988). \doi{10.4319/lo.1988.33.4part2.0702}
 

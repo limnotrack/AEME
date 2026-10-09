@@ -11,7 +11,7 @@ glm_to_aeme <- function(nml_file) {
   withr::local_locale(c("LC_TIME" = "C"))
   withr::local_timezone("UTC")
   
-  # nml_file <- "inst/extdata/glm_aed/glm3.nml"
+  # nml_file <- "inst/extdata/glm_aed/glm4.nml"
   base_dir <- dirname(nml_file)
   
   nml <- read_nml(nml_file)
@@ -28,10 +28,13 @@ glm_to_aeme <- function(nml_file) {
     area = max(nml$morphometry$A)
   )
   
-  # Time
+  # Time. GLM nml datetimes are wall-clock in the run's own zone; AEME stores
+  # UTC internally and treats a bare GLM nml as UTC (its numeric `timezone`
+  # field is solar geometry, not a timestamp offset).
   time <- list(
-    start = as.POSIXct(nml$time$start),
-    stop = as.POSIXct(nml$time$stop)
+    start = as.POSIXct(nml$time$start, tz = "UTC"),
+    stop = as.POSIXct(nml$time$stop, tz = "UTC"),
+    tz = "UTC"
   )
   
   # Inputs
@@ -49,7 +52,7 @@ glm_to_aeme <- function(nml_file) {
     cli::cli_abort("Meteorological file {.file {met_filepath}} does not exist.")
   }
   met <- read.csv(met_filepath)
-  met$time <- as.POSIXct(met$time)
+  met$time <- as.POSIXct(met$time, tz = "UTC")
   
   # Rename columns to match aeme expectations
   glm_aeme_names <- data.frame(
@@ -71,7 +74,8 @@ glm_to_aeme <- function(nml_file) {
   aeme <- aeme_constructor(
     lake = lake,
     time = time,
-    input = input
+    input = input,
+    tz = "UTC"
   )
   return(aeme)
 }

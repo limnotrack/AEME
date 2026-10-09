@@ -16,7 +16,7 @@
 #' @export
 
 set_inflows <- function(aeme, inflows) {
-  check_aeme(aeme)
+  aeme <- check_aeme(aeme)
   inf <- aeme |> 
     inflows() 
   inf_list <- inf[["data"]]

@@ -7,11 +7,11 @@
 get_mean_sea_level_pressure(prsttn, elevation, tmpair)
 }
 \arguments{
+\item{prsttn}{A numeric vector of observed station pressure in Pa}
+
 \item{elevation}{A numeric vector of elevation in m}
 
-\item{MET_prsttn}{A numeric vector of observed station pressure in Pa}
-
-\item{MET_tmpair}{A numeric vector of air temperature in degC}
+\item{tmpair}{A numeric vector of air temperature in degC}
 }
 \value{
 A numeric vector of mean sea level pressure in Pa

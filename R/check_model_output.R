@@ -4,6 +4,11 @@
 #' @return Invisibly TRUE if model output passes checks; otherwise aborts
 #' @export
 check_model_output <- function(aeme, model, path) {
+  # Model output time axes are UTC (CF "<unit> since <origin>"); keep all
+  # datetime arithmetic here in UTC too.
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+
   model <- check_model(model = model)
   path  <- check_path(path = path, must_exist = TRUE)
   aeme_time <- time(aeme)
@@ -13,17 +18,21 @@ check_model_output <- function(aeme, model, path) {
     model,
     "dy_cd"    = file.path(lake_dir, model, "DYsim.nc"),
     "glm_aed"  = file.path(lake_dir, model, "output", "output.nc"),
-    "gotm_wet" = file.path(lake_dir, model, "output", "output.nc")
+    "gotm_wet" = file.path(lake_dir, model, "output", "output.nc"),
+    "simstrat_aed2" = file.path(lake_dir, model, "output", "output.nc"),
+    "simstrat_aed" = file.path(lake_dir, model, "output", "output.nc")
   )
-  
+
   # Open NetCDF safely
   nc <- open_nc_safe(out_file, model)
-  
+
   # Model-specific validation
   switch(model,
          "dy_cd"    = check_dyresm_output(nc, out_file, aeme_time),
          "gotm_wet" = check_gotm_output(nc, out_file),
-         "glm_aed"  = check_glm_output(nc, out_file)
+         "glm_aed"  = check_glm_output(nc, out_file),
+         "simstrat_aed2" = check_simstrat_output(nc, out_file),
+         "simstrat_aed" = check_simstrat_output(nc, out_file)
   )
   
   cli_inform_safe("{.val {model}} output file {.file {out_file}} is valid.")
@@ -74,7 +83,8 @@ check_dyresm_output <- function(nc, out_file, aeme_time) {
   dates[dates > 9e36] <- NA
   if (any(is.na(dates))) {
     last_date <- dates[which.max(is.na(dates)) - 1]
-    last_date <- as.POSIXct((last_date - 2415018.5) * 86400, origin = "1899-12-30")
+    last_date <- as.POSIXct((last_date - 2415018.5) * 86400,
+                            origin = "1899-12-30", tz = "UTC")
     msg <- if (length(last_date) == 0) {
       "DYRESM-CAEDYM crashed during initialization; no output available."
     } else if (last_date < aeme_time$start) {
@@ -120,4 +130,20 @@ check_glm_output <- function(nc, out_file) {
   # for future GLM-AED output validations.
   # If the nc object has errors, open_nc_safe() will already abort.
   cli_inform_safe("GLM-AED output file {.file {out_file}} passed initial checks.")
+}
+
+#' Check Simstrat-AED2 output for required dimensions
+#' @param nc ncdf4 object of Simstrat-AED2 output file (see
+#' \code{\link{write_simstrat_nc}})
+#' @param out_file path to Simstrat-AED2 output file
+#' @return Invisibly TRUE if output passes checks; otherwise aborts
+#' @noRd
+check_simstrat_output <- function(nc, out_file) {
+  if (!"time" %in% names(nc$dim) || nc$dim$time$len == 0) {
+    cli::cli_abort(
+      "Simstrat-AED2 output file {.file {out_file}} has an empty or missing 'time' dimension.",
+      class = "aeme_error_simstrat_output"
+    )
+  }
+  cli_inform_safe("Simstrat-AED2 output file {.file {out_file}} passed initial checks.")
 }

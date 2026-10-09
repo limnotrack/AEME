@@ -1,0 +1,20 @@
+module,group,parameter,label,symbol,description,units,default,source
+aed2_carbon,initialisation,dic_initial,Initial DIC,DIC|t=0,Initial dissolved inorganic carbon concentration,mmol C/m3,1600.5,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,initialisation,pH_initial,Initial pH,pH|t=0,Initial water column pH,-,7.5,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,initialisation,ch4_initial,Initial CH4,CH4|t=0,Initial methane concentration,mmol C/m3,27.6,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,carbonate_system,co2_model,CO2 model switch,Theta_co2,Switch selecting the CO2 carbonate-system model,-,1,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,carbonate_system,alk_mode,Alkalinity mode,Theta_alk,Switch selecting the alkalinity formulation used in the carbonate equilibrium,-,1,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,carbonate_system,ionic,Ionic strength,I,Ionic strength of the water column used in the carbonate equilibrium,-,0.1,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,atmospheric_exchange,atm_co2,Atmospheric CO2,CO2_atm,Atmospheric CO2 mixing ratio used for air-water CO2 gas exchange,atm,410e-6,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,atmospheric_exchange,co2_piston_model,CO2 piston model,Theta_co2^piston,Selection of air/water CO2 gas-exchange (piston velocity) method,-,1,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,sediment_flux,Fsed_dic,Sediment DIC flux,F_sed^dic,Sediment DIC flux at 20C,mmol C/m2/d,3.0,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,sediment_flux,Ksed_dic,Half-sat O2 for sed DIC flux,K_sed^dic,Half-saturation oxygen concentration controlling sediment DIC flux,mmol O2/m3,20.0,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,sediment_flux,theta_sed_dic,Theta sed DIC,theta_sed^dic,Arrhenius temperature multiplier for sediment DIC flux,-,1.08,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,methane_oxidation,Rch4ox,Methane oxidation rate,R_ch4ox,Kinetic rate constant for methane oxidation,/d,0.01,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,methane_oxidation,Kch4ox,Half-sat O2 for CH4 oxidation,K_ch4ox,Half-saturation oxygen concentration for methane oxidation,mmol O2/m3,0.5,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,methane_oxidation,vTch4ox,Theta methane oxidation,theta_ch4ox,Arrhenius temperature multiplier for methane oxidation,-,1.08,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,sediment_flux,Fsed_ch4,Sediment CH4 flux,F_sed^ch4,Sediment CH4 flux at 20C,mmol C/m2/d,22,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,sediment_flux,Ksed_ch4,Half-sat O2 for sed CH4 flux,K_sed^ch4,Half-saturation oxygen concentration controlling sediment CH4 flux,mmol O2/m3,100.0,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,sediment_flux,theta_sed_ch4,Theta sed CH4,theta_sed^ch4,Arrhenius temperature multiplier for sediment CH4 flux,-,1.08,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,atmospheric_exchange,atm_ch4,Atmospheric CH4,CH4_atm,Atmospheric CH4 mixing ratio used for air-water CH4 gas exchange,atm,1.9e-6,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
+aed2_carbon,atmospheric_exchange,ch4_piston_model,CH4 piston model,Theta_ch4^piston,"Selection of air/water CH4 gas-exchange (piston velocity) method (Simstrat v3.04 adds the Cole and Caraco (1998) lake formulation, with a lower limit more realistic for wind-sheltered lakes)",-,1,https://aquatic.science.uwa.edu.au/research/models/AED/index.html
