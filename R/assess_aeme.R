@@ -62,16 +62,14 @@ assess_aeme <- function(aeme, model, var_sim) {
   # Loop through variables, extract model statistics, bind to dataframe and
   # return
   out <- lapply(var_sim, \(v) {
-    
+
     # Extract variable from aeme
-    df <- get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE)
-    if (nrow(df) > 0) {
-      df <- df |> 
-        dplyr::filter(!is.na(sim), !is.infinite(sim))
-    } else if (nrow(df) == 0) {
+    df <- get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE) |>
+      dplyr::filter(is.finite(sim))
+    
+    if (nrow(df) == 0) {
       return(NULL)
     }
-    
     
     # Calculate statistics for each model
     df |>
