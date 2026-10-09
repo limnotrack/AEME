@@ -661,6 +661,13 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
   } else {
     NULL
   }
+  # Cap all initial profiles (generic + model-specific) at the initial depth
+  # once for the whole AEME object, rather than per model
+  if (!is.null(init_prof) && !is.null(init_depth)) {
+    capped <- .cap_init_profiles(init_prof, init_depth, ic_spec)
+    init_prof <- capped[["init_prof"]]
+    ic_spec <- capped[["spec"]]
+  }
   model_ic <- stats::setNames(
     lapply(model, \(m) .resolve_model_ic(ic_spec, m, init_prof = init_prof,
                                          init_depth = init_depth,

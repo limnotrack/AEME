@@ -140,3 +140,32 @@ test_that("build_aeme honours a GLM-AED-specific profile and scalar wq", {
   conv <- mc$conversion_aed[mc$var_aeme == "CHM_oxy"]
   expect_true(all(abs(oxy_vals - 275 * conv) < 1e-4))
 })
+
+test_that(".trim_init_profile() trims to the initial depth and interpolates the end point", {
+  prof <- data.frame(depth = c(0, 10, 20), temperature = c(20, 10, 4),
+                     salt = 0)
+  out <- AEME:::.trim_init_profile(prof, 15)
+  expect_equal(out$depth, c(0, 10, 15))
+  expect_equal(out$temperature, c(20, 10, 7))
+  # nothing deeper than the initial depth: unchanged
+  expect_equal(AEME:::.trim_init_profile(prof, 20), prof)
+  # exact match keeps existing row, no duplicate depth
+  expect_equal(AEME:::.trim_init_profile(prof, 10)$depth, c(0, 10))
+})
+
+test_that(".cap_init_profiles() caps generic and model-specific profiles once", {
+  prof <- data.frame(depth = c(0, 16), temperature = c(20, 10), salt = 0)
+  spec <- list(default = list(),
+               glm_aed = list(profile = data.frame(depth = c(0, 20),
+                                                   temperature = c(18, 8))),
+               gotm_wet = list(depth = 5))
+  out <- AEME:::.cap_init_profiles(prof, 13, spec)
+  expect_equal(max(out$init_prof$depth), 13)
+  expect_equal(max(out$spec$glm_aed$profile$depth), 13)
+  # a model overriding only the depth inherits a profile trimmed to that depth
+  expect_equal(max(out$spec$gotm_wet$profile$depth), 5)
+  # no spec at all is fine
+  out2 <- AEME:::.cap_init_profiles(prof, 13, NULL)
+  expect_equal(max(out2$init_prof$depth), 13)
+  expect_null(out2$spec)
+})

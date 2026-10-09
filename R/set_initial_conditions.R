@@ -256,6 +256,91 @@ get_initial_conditions <- function(aeme, model = NULL) {
   base
 }
 
+#' Trim an initial profile so it does not exceed the initial water depth
+#'
+#' GLM-AED fails if any initial-profile depth is greater than the initial
+#' water depth. Rows deeper than `depth` are dropped and, so the profile still
+#' reaches the initial depth, a row at `depth` is added with values linearly
+#' interpolated between the neighbouring rows.
+#'
+#' @param prof data.frame with a `depth` column plus value columns.
+#' @param depth numeric(1); initial water depth (m).
+#' @returns the trimmed data.frame (unchanged if no row exceeds `depth`).
+#' @noRd
+.trim_init_profile <- function(prof, depth) {
+  prof <- prof[order(prof[["depth"]]), , drop = FALSE]
+  if (max(prof[["depth"]], na.rm = TRUE) <= depth) return(prof)
+  keep <- prof[["depth"]] <= depth
+  new_row <- prof[1, , drop = FALSE]
+  for (col in setdiff(names(prof), "depth")) {
+    if (is.numeric(prof[[col]])) {
+      new_row[[col]] <- stats::approx(prof[["depth"]], prof[[col]],
+                                      xout = depth, rule = 2)[["y"]]
+    }
+  }
+  new_row[["depth"]] <- depth
+  out <- prof[keep, , drop = FALSE]
+  if (!any(out[["depth"]] == depth)) out <- rbind(out, new_row)
+  rownames(out) <- NULL
+  out
+}
+
+#' Cap every initial profile at the initial water depth (AEME level)
+#'
+#' Checks, once for the whole AEME object, that no initial profile -- the
+#' generic one or any model-specific override in the stored specification --
+#' has a depth greater than the initial depth that applies to it (a
+#' model-specific `depth` if given, otherwise the generic one). Offending
+#' profiles are trimmed with `.trim_init_profile()`. A model that overrides
+#' only the depth inherits the (trimmed) generic profile.
+#'
+#' @param init_prof data.frame; generic initial profile.
+#' @param init_depth numeric(1); generic initial depth.
+#' @param spec `configuration(aeme)$initial_conditions`, or `NULL`.
+#' @returns list with `init_prof` and `spec` (both trimmed where needed).
+#' @noRd
+.cap_init_profiles <- function(init_prof, init_depth, spec) {
+  msg <- function(what, max_depth, id) {
+    cli_inform_safe(c("!" = paste0(
+      "Initial profile maximum depth (", max_depth, " m) for ", what,
+      " exceeds the initial water depth (", id, " m); trimming to ", id,
+      " m.")))
+  }
+
+  # Generic profile vs generic depth (a stored default depth wins)
+  gen_depth <- spec[["default"]][["depth"]] %||% init_depth
+  gen_prof <- spec[["default"]][["profile"]] %||% init_prof
+  if (!is.null(init_prof) && !is.null(init_depth)) {
+    mx <- max(init_prof[["depth"]], na.rm = TRUE)
+    if (mx > init_depth) {
+      msg("the generic profile", mx, init_depth)
+      init_prof <- .trim_init_profile(init_prof, init_depth)
+    }
+  }
+  if (!is.null(spec[["default"]][["profile"]]) && !is.null(gen_depth)) {
+    mx <- max(gen_prof[["depth"]], na.rm = TRUE)
+    if (mx > gen_depth) {
+      msg("the default initial conditions", mx, gen_depth)
+      spec[["default"]][["profile"]] <- .trim_init_profile(gen_prof, gen_depth)
+    }
+  }
+
+  # Model-specific overrides
+  for (m in setdiff(names(spec), "default")) {
+    id <- spec[[m]][["depth"]] %||% gen_depth
+    prof <- spec[[m]][["profile"]] %||%
+      spec[["default"]][["profile"]] %||% init_prof
+    if (is.null(prof) || is.null(id)) next
+    mx <- max(prof[["depth"]], na.rm = TRUE)
+    if (mx > id) {
+      msg(paste0("model ", m), mx, id)
+      spec[[m]][["profile"]] <- .trim_init_profile(prof, id)
+    }
+  }
+
+  list(init_prof = init_prof, spec = spec)
+}
+
 #' Resolve a model's build-time initial conditions
 #'
 #' Combine the stored specification (see [set_initial_conditions()]) with the
