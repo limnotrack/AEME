@@ -18,9 +18,19 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -31,7 +41,6 @@
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -102,14 +111,14 @@
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">vars_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CHM_oxy"</span>, <span class="st">"NIT_tn"</span>, <span class="st">"PHS_tp"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">updated_controls</span> <span class="op">&lt;-</span> <span class="fu">set_vars_sim</span><span class="op">(</span><span class="va">model_controls</span>, <span class="va">vars_sim</span>, simulate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Variables not found: `NIT_tn`.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding them to model_controls.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Variables not found: NIT_tn . Adding them to model_controls.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">updated_controls</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   var_aeme simulate inf_default initial_wc initial_sed conversion_aed</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  CHM_oxy     TRUE          NA         NA          NA              1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 HYD_temp     TRUE          NA         NA          NA              1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   NIT_tn     TRUE          NA         NA          NA              1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   PHS_tp     TRUE          NA         NA          NA              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;model_controls&gt; 4/4 variables simulated</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  var_aeme simulate inf_default initial_wc initial_sed conversion_aed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   CHM_oxy      yes           -          -           -              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  HYD_temp      yes           -          -           -              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    NIT_tn      yes           -          -           -              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    PHS_tp      yes           -          -           -              1</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

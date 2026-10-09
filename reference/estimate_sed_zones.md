@@ -5,7 +5,7 @@ Estimate sediment zones based on hypsograph
 ## Usage
 
 ``` r
-estimate_sed_zones(hypsograph)
+estimate_sed_zones(hypsograph, n_zones = NULL)
 ```
 
 ## Arguments
@@ -15,6 +15,14 @@ estimate_sed_zones(hypsograph)
   data frame with columns "depth" and "area". Depth should be negative
   below the surface and positive above. Area should be the lake area at
   each depth. Hypsograph should be ordered by depth (descending).
+
+- n_zones:
+
+  integer or `NULL`; number of sediment zones to return. `NULL`
+  (default) lets the zone count be inferred from the hypsograph slope
+  (`estimate_n_zones_hyps()`). When given, exactly `n_zones` heights are
+  returned, split by cumulative benthic area (falling back to evenly
+  spaced heights if the hypsograph is too coarse for that many zones).
 
 ## Value
 

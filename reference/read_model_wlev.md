@@ -1,7 +1,7 @@
 # Read water level from model output
 
-**\[stable\]** This function reads water level data from the output of
-supported lake models.
+This function reads water level data from the output of supported lake
+models.
 
 ## Usage
 

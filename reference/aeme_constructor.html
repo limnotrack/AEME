@@ -18,9 +18,19 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -31,7 +41,6 @@
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -50,7 +59,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Constructor function for Aeme class</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/R/aeme.R" class="external-link"><code>R/aeme.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/AEME/blob/dev/R/Aeme.R" class="external-link"><code>R/Aeme.R</code></a></small>
       <div class="d-none name"><code>aeme_constructor.Rd</code></div>
     </div>
 
@@ -71,7 +80,8 @@
 <span>  <span class="va">water_balance</span>,</span>
 <span>  <span class="va">output</span>,</span>
 <span>  <span class="va">parameters</span>,</span>
-<span>  print <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  print <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  tz <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -121,6 +131,17 @@
 
 <dt id="arg-print">print<a class="anchor" aria-label="anchor" href="#arg-print"></a></dt>
 <dd><p>Logical; print messages. Default is TRUE.</p></dd>
+
+
+<dt id="arg-tz">tz<a class="anchor" aria-label="anchor" href="#arg-tz"></a></dt>
+<dd><p>character; Olson timezone in which user-supplied timestamps
+(<code>time$start</code>, <code>time$stop</code>, and the date columns of meteo, inflow,
+outflow and observation inputs) are expressed. Applied once, at ingest, to
+convert those timestamps to UTC; all datetimes are stored and computed in UTC
+internally, and <code>tz</code> is also used for display. Defaults to
+<code>time$tz</code> if present, otherwise <code>"UTC"</code>. Set a non-UTC zone only
+when your source data really is in local time (gridded reanalysis such as
+ERA5 is UTC). Unrelated to GLM's numeric <code>timezone</code> nml parameter.</p></dd>
 
 </dl></div>
     <div class="section level2">

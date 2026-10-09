@@ -82,16 +82,16 @@ Data frame of GLM sediment parameters
 sed_params_1zone <- glm_sed_params(n_zones = 1)
 print(sed_params_1zone)
 #>      model     file                        name value    min    max group index
-#> 1  glm_aed glm3.nml       sediment/benthic_mode  2.00  2.000  2.000  <NA>    NA
-#> 2  glm_aed glm3.nml            sediment/n_zones  1.00  1.000  1.000  <NA>    NA
-#> 3  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     1
-#> 4  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     1
-#> 5  glm_aed glm3.nml      sediment/sed_temp_mean 12.00  6.000 18.000  <NA>     1
-#> 6  glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  <NA>     1
-#> 7  glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     1
-#> 8  glm_aed glm3.nml       sediment/zone_heights 10.00  5.000 15.000  <NA>     1
-#> 9  glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     1
-#> 10 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     1
+#> 1  glm_aed glm4.nml       sediment/benthic_mode  2.00  2.000  2.000  <NA>    NA
+#> 2  glm_aed glm4.nml            sediment/n_zones  1.00  1.000  1.000  <NA>    NA
+#> 3  glm_aed glm4.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     1
+#> 4  glm_aed glm4.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     1
+#> 5  glm_aed glm4.nml      sediment/sed_temp_mean 12.00  6.000 18.000  <NA>     1
+#> 6  glm_aed glm4.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  <NA>     1
+#> 7  glm_aed glm4.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     1
+#> 8  glm_aed glm4.nml       sediment/zone_heights 10.00  5.000 15.000  <NA>     1
+#> 9  glm_aed glm4.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     1
+#> 10 glm_aed glm4.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     1
 #>      module
 #> 1  sediment
 #> 2  sediment
@@ -111,32 +111,32 @@ sed_params_3zones <- glm_sed_params(
 )
 print(sed_params_3zones)
 #>      model     file                        name value    min    max group index
-#> 1  glm_aed glm3.nml       sediment/benthic_mode  2.00  2.000  2.000  <NA>    NA
-#> 2  glm_aed glm3.nml            sediment/n_zones  3.00  3.000  3.000  <NA>    NA
-#> 3  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     1
-#> 4  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     2
-#> 5  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     3
-#> 6  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     1
-#> 7  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     2
-#> 8  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     3
-#> 9  glm_aed glm3.nml      sediment/sed_temp_mean 10.00  5.000 15.000  <NA>     1
-#> 10 glm_aed glm3.nml      sediment/sed_temp_mean 12.00  6.000 18.000  <NA>     2
-#> 11 glm_aed glm3.nml      sediment/sed_temp_mean 14.00  7.000 21.000  <NA>     3
-#> 12 glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  <NA>     1
-#> 13 glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  <NA>     2
-#> 14 glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  <NA>     3
-#> 15 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     1
-#> 16 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     2
-#> 17 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     3
-#> 18 glm_aed glm3.nml       sediment/zone_heights  5.00  2.500  7.500  <NA>     1
-#> 19 glm_aed glm3.nml       sediment/zone_heights 15.00  7.500 22.500  <NA>     2
-#> 20 glm_aed glm3.nml       sediment/zone_heights 20.00 10.000 30.000  <NA>     3
-#> 21 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     1
-#> 22 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     2
-#> 23 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     3
-#> 24 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     1
-#> 25 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     2
-#> 26 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     3
+#> 1  glm_aed glm4.nml       sediment/benthic_mode  2.00  2.000  2.000  <NA>    NA
+#> 2  glm_aed glm4.nml            sediment/n_zones  3.00  3.000  3.000  <NA>    NA
+#> 3  glm_aed glm4.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     1
+#> 4  glm_aed glm4.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     2
+#> 5  glm_aed glm4.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     3
+#> 6  glm_aed glm4.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     1
+#> 7  glm_aed glm4.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     2
+#> 8  glm_aed glm4.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     3
+#> 9  glm_aed glm4.nml      sediment/sed_temp_mean 10.00  5.000 15.000  <NA>     1
+#> 10 glm_aed glm4.nml      sediment/sed_temp_mean 12.00  6.000 18.000  <NA>     2
+#> 11 glm_aed glm4.nml      sediment/sed_temp_mean 14.00  7.000 21.000  <NA>     3
+#> 12 glm_aed glm4.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  <NA>     1
+#> 13 glm_aed glm4.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  <NA>     2
+#> 14 glm_aed glm4.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  <NA>     3
+#> 15 glm_aed glm4.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     1
+#> 16 glm_aed glm4.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     2
+#> 17 glm_aed glm4.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     3
+#> 18 glm_aed glm4.nml       sediment/zone_heights  5.00  2.500  7.500  <NA>     1
+#> 19 glm_aed glm4.nml       sediment/zone_heights 15.00  7.500 22.500  <NA>     2
+#> 20 glm_aed glm4.nml       sediment/zone_heights 20.00 10.000 30.000  <NA>     3
+#> 21 glm_aed glm4.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     1
+#> 22 glm_aed glm4.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     2
+#> 23 glm_aed glm4.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     3
+#> 24 glm_aed glm4.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     1
+#> 25 glm_aed glm4.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     2
+#> 26 glm_aed glm4.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     3
 #>      module
 #> 1  sediment
 #> 2  sediment

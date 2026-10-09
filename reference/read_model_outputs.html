@@ -18,9 +18,19 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -31,7 +41,6 @@
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -70,7 +79,10 @@
 <span>  date_index <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  incl_fluxes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output_hour <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  phyto_pars <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  phyto_pars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  load_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  use_dat <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  daily_mean <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -122,6 +134,35 @@ Defaults to TRUE.</p></dd>
 <dt id="arg-phyto-pars">phyto_pars<a class="anchor" aria-label="anchor" href="#arg-phyto-pars"></a></dt>
 <dd><p>Dataframe of phytoplankton parameters for GLM-AED model.
 See <code><a href="read_glm_output.html">?read_glm_output</a></code> for details. Defaults to NULL.</p></dd>
+
+
+<dt id="arg-load-all">load_all<a class="anchor" aria-label="anchor" href="#arg-load-all"></a></dt>
+<dd><p>logical; for <code>model = "glm_aed"</code>, also load every other
+variable present in the netCDF output beyond the declared <code>vars_sim</code> set
+– see <code><a href="read_glm_output.html">?read_glm_output</a></code>. Ignored for other models. Defaults to TRUE.</p></dd>
+
+
+<dt id="arg-use-dat">use_dat<a class="anchor" aria-label="anchor" href="#arg-use-dat"></a></dt>
+<dd><p>logical; for the Simstrat models only, read Simstrat's own
+<code>&lt;var&gt;_out.dat</code> text output via <code><a href="read_simstrat_dat.html">read_simstrat_dat</a></code> instead of
+the consolidated <code>output.nc</code>. Every other argument means the same thing
+either way, so this only changes where the numbers are read from. <code>TRUE</code>
+is the faster path – it skips the netCDF entirely, and with
+<code>load_all = FALSE</code> reads only the files the requested <code>vars_sim</code> need,
+which is what a calibration wants. Defaults to <code>NULL</code>: read <code>output.nc</code>
+when there is one, and fall back to the text output when there is not
+(a run whose output was never converted, or converted with
+<code><a href="write_simstrat_nc.html">write_simstrat_nc</a></code><code>(remove_dat = FALSE)</code> and the netCDF since
+removed). Ignored when <code>nc</code> is supplied.</p></dd>
+
+
+<dt id="arg-daily-mean">daily_mean<a class="anchor" aria-label="anchor" href="#arg-daily-mean"></a></dt>
+<dd><p>logical; when <code>TRUE</code>, return one record per calendar day.
+If a model's daily-mean <code>output_daily.nc</code> companion is present (GOTM writes
+one natively; GLM-AED and Simstrat get one from <code><a href="run_aeme.html">run_aeme()</a></code> when
+<code>time(aeme)$output_daily_mean</code> is <code>TRUE</code>) it is read directly; otherwise the
+raw sub-daily <code>output.nc</code> is read and averaged by calendar day. Defaults to
+<code>FALSE</code>. See <code><a href="set_output_time_step.html">set_output_time_step</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

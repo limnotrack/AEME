@@ -20,9 +20,19 @@ to two tiers of adjustment:"><meta property="og:image" content="https://limnotra
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -33,7 +43,6 @@ to two tiers of adjustment:"><meta property="og:image" content="https://limnotra
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -136,10 +145,14 @@ scaled from literature baseline values according to its mean depth and
 fractional bed area. Deep zones receive higher SOD and nutrient fluxes
 reflecting greater organic matter accumulation and more persistent anoxia.</p>
 <p><strong>Tier 2 (optional, when <code>obs</code> supplied)</strong> – observed data
-adjustment. Near-bed summer concentrations of O2, NH4, NO3, and FRP are used
-to adjust the relative difference in fluxes between zones. Only inter-zone
-ratios are adjusted, not absolute magnitude, so the lake-wide total is
-preserved.</p>
+adjustment. Near-bed summer concentrations of NH4 and FRP are used to adjust
+the relative difference in fluxes between zones. After adjusting, the fluxes
+are re-normalised so the lake-wide area-weighted total is unchanged: only
+the inter-zone ratios move, not the absolute magnitude. Observed O2 and NO3
+are read and summarised per zone, but are not currently used to adjust
+<code>fsed_oxy</code> or <code>fsed_nit</code>, because a concentration ratio is not a
+good proxy for the direction of change in those fluxes. The adjustment is a
+heuristic based on concentrations, not on rates of change.</p>
 <p>Literature baselines at reference depth 5 m (temperate lakes):</p><ul><li><p><code>fsed_oxy</code>: -25 mmol O2/m2/d (Muller et al. 2012; Sondergaard
 et al. 2003)</p></li>
 <li><p><code>fsed_amm</code>: 2 mmol N/m2/d (Andersen 1982; Beutel 2006)</p></li>
@@ -147,9 +160,12 @@ et al. 2003)</p></li>
 <li><p><code>fsed_frp</code>: 0.05 mmol P/m2/d (Nurnberg 1984)</p></li>
 </ul><p>Depth scaling (Beutel 2006; Muller et al. 2012): SOD and NH4/FRP fluxes
 scale approximately linearly with mean zone depth divided by
-<code>ref_depth</code>. NO3 flux transitions from small positive values (shallow,
-oxic) to negative values (deep, anoxic denitrification) at approximately
-<code>0.5 * max_depth</code>.</p>
+<code>ref_depth</code>, with the scale factor capped at 2. NO3 flux transitions
+from small positive values (shallow, oxic) to negative values (deep, anoxic
+denitrification) at approximately <code>0.6 * max_depth</code>.</p>
+<p>Zones are the GLM sediment zones, taken from <code>zone_heights</code> in the
+built <code>glm_aed</code> configuration, so <code>aeme</code> must have been built.
+Zone 1 is the deepest.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

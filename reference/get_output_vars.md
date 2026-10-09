@@ -5,7 +5,12 @@ Get the output variables from an AEME object
 ## Usage
 
 ``` r
-get_output_vars(aeme, model, ens_n = 1)
+get_output_vars(
+  aeme,
+  model,
+  ens_n = 1,
+  group = c("core", "diag", "sediment")[1]
+)
 ```
 
 ## Arguments
@@ -24,6 +29,13 @@ get_output_vars(aeme, model, ens_n = 1)
 
   numeric; ensemble number to allocate to model output which is loaded.
   Defaults to 1.
+
+- group:
+
+  character; which variables to list: `"core"` (time and depth x time
+  variables, default), `"diag"` (diagnostics and scalars), and/or
+  `"sediment"` (sediment zone/layer variables). Diagnostic and sediment
+  variables keep their raw model names.
 
 ## Value
 
@@ -50,7 +62,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [24ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -59,9 +71,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> 
 #> ── Building GLM-AED for lake wainamu ──
 #> 
-#> ℹ Copied in GLM nml file
-#> ℹ Copied in AED nml file and supporting files
-#> ℹ Copied in GLM plots nml file
+#> ℹ Aligned AED sediment zones to GLM: 2 zones (all active).
 #> ℹ CAR_doc: 15 replaced with 41.6285
 #> ℹ CAR_poc: 15 replaced with 16.6514
 #> ℹ CHM_oxy: 225 replaced with 312.5
@@ -88,52 +98,185 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   zones, direct FRP)
 #> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────
 #> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m
-#> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐
-#> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │
-#> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤
-#> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.83│-0.4│ 0.103│
-#> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│0.512│ 0.1│0.0259│
-#> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘
+#> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬────┬────┬──────┐
+#> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4│ NO3│ FRP  │
+#> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼────┼────┼──────┤
+#> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.7│-0.4│ 0.107│
+#> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│ 0.5│ 0.1│0.0268│
+#> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴────┴────┴──────┘
 #> 
-#> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────
+#> ── Lake-wide area-weighted average fluxes (mmol/m2/d) ──────────────────────────
 #> ┌──────────────┬───────────────┬───────────────┬───────────────┐
 #> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│
 #> ├──────────────┼───────────────┼───────────────┼───────────────┤
-#> │ -25.007      │ 2.05          │ -0.044        │ 0.048         │
+#> │ -25.007      │ 2.002         │ -0.044        │ 0.05          │
 #> └──────────────┴───────────────┴───────────────┴───────────────┘
 #> ✔ GLM nml validation completed - no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-08-04 21:09:18]
-#> → GLM-AED running... [2026-08-04 21:09:18]
-#> ✔ GLM-AED run successful! [2026-08-04 21:09:20]
-#> ✔ Model run complete! [2026-08-04 21:09:20]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-10-09 00:54:16]
+#> ℹ GLM-AED running... [2026-10-09 00:54:16]
+#> ✔ GLM-AED running... [2026-10-09 00:54:19] [3s]
+#> 
+#> ✔ Model run complete! [2026-10-09 00:54:19]
 get_output_vars(aeme, model)
 #>     Water temperature     Thermocline depth      Dissolved oxygen 
 #>            "HYD_temp"          "HYD_thmcln"             "CHM_oxy" 
 #>   Total chlorophyll a        Total nitrogen      Total phosphorus 
 #>           "PHY_tchla"              "NIT_tn"              "PHS_tp" 
-#> Evaporative heat flux    Sensible heat flux    Longwave radiation 
-#>              "LKE_Qe"              "LKE_Qh"             "LKE_Qlw" 
-#>   Shortwave radiation                Volume           Evaporation 
-#>             "LKE_Qsw"               "LKE_V"          "LKE_evpvol" 
-#>           Evaporation          Surface area           Evaporation 
-#>          "LKE_evpflx"              "LKE_A0"          "LKE_evprte" 
-#>                Inflow              Overflow               Outflow 
-#>          "LKE_inflow"        "LKE_overflow"         "LKE_outflow" 
-#>         Total outflow         Precipitation         Precipitation 
-#>         "LKE_outftot"          "LKE_precip"          "LKE_pcpvol" 
-#>   Surface temperature            Lake depth         Water density 
-#>           "HYD_surft"          "LKE_depths"            "HYD_dens" 
-#>            Stratified              Salinity             Phosphate 
-#>           "HYD_strat"            "CHM_salt"             "PHS_frp" 
-#>   Dissolved organic P Particulate organic P   Ammoniacal nitrogen 
-#>             "PHS_dop"             "PHS_pop"             "NIT_amm" 
-#>               Nitrate   Dissolved organic N Particulate organic N 
-#>             "NIT_nit"             "NIT_don"             "NIT_pon" 
-#>   Dissolved organic C Particulate organic C         Cyanobacteria 
-#>             "CAR_doc"             "CAR_poc"           "PHY_cyano" 
-#>           Green algae    Diatoms freshwater 
-#>           "PHY_green"          "PHY_diatom" 
+#>           Water level Evaporative heat flux    Sensible heat flux 
+#>          "LKE_lvlwtr"              "LKE_Qe"              "LKE_Qh" 
+#>    Longwave radiation   Shortwave radiation                Volume 
+#>             "LKE_Qlw"             "LKE_Qsw"             "LKE_vol" 
+#>           Evaporation           Evaporation          Surface area 
+#>          "LKE_evpvol"          "LKE_evpflx"              "LKE_A0" 
+#>           Evaporation                Inflow              Overflow 
+#>          "LKE_evprte"          "LKE_inflow"        "LKE_overflow" 
+#>               Outflow         Total outflow         Precipitation 
+#>         "LKE_outflow"         "LKE_outftot"          "LKE_precip" 
+#>         Precipitation   Surface temperature            Lake depth 
+#>          "LKE_pcpvol"           "HYD_surft"          "LKE_depths" 
+#>                     z         Water density            Stratified 
+#>                   "z"            "HYD_dens"           "HYD_strat" 
+#>              Salinity             Phosphate   Dissolved organic P 
+#>            "CHM_salt"             "PHS_frp"             "PHS_dop" 
+#> Particulate organic P   Ammoniacal nitrogen               Nitrate 
+#>             "PHS_pop"             "NIT_amm"             "NIT_nit" 
+#>   Dissolved organic N Particulate organic N   Dissolved organic C 
+#>             "NIT_don"             "NIT_pon"             "CAR_doc" 
+#> Particulate organic C               SIL_rsi         Cyanobacteria 
+#>             "CAR_poc"             "SIL_rsi"           "PHY_cyano" 
+#>           Green algae    Diatoms freshwater      Suspended solids 
+#>           "PHY_green"          "PHY_diatom"             "NCS_ss1" 
+#>      Suspended solids                    NS    blue_ice_thickness 
+#>             "NCS_ss2"                  "NS"  "blue_ice_thickness" 
+#>        snow_thickness   white_ice_thickness         surface_layer 
+#>      "snow_thickness" "white_ice_thickness"       "surface_layer" 
+#>                 solar                  wind              vol_snow 
+#>               "solar"                "wind"            "vol_snow" 
+#>          vol_blue_ice         vol_white_ice                  rain 
+#>        "vol_blue_ice"       "vol_white_ice"                "rain" 
+#>          local_runoff              snowfall           seepage_vol 
+#>        "local_runoff"            "snowfall"         "seepage_vol" 
+#>          snow_density                albedo              max_temp 
+#>        "snow_density"              "albedo"            "max_temp" 
+#>              min_temp                   Qsw                    Qe 
+#>            "min_temp"                 "Qsw"                  "Qe" 
+#>                    Qh                   Qlw                 light 
+#>                  "Qh"                 "Qlw"               "light" 
+#>         benthic_light   surface_wave_height   surface_wave_length 
+#>       "benthic_light" "surface_wave_height" "surface_wave_length" 
+#>   surface_wave_period           lake_number             max_dT_dz 
+#> "surface_wave_period"         "lake_number"           "max_dT_dz" 
+#>                    CD                   CHE                   z_L 
+#>                  "CD"                 "CHE"                 "z_L" 
+#>                     H                     V                     A 
+#>                   "H"                   "V"                   "A" 
+#>                  radn                  extc                 umean 
+#>                "radn"                "extc"               "umean" 
+#>                  uorb                  taub               epsilon 
+#>                "uorb"                "taub"             "epsilon" 
+#>          NCS_ss1_vvel           NCS_ss1_set          NCS_ss2_vvel 
+#>        "NCS_ss1_vvel"         "NCS_ss1_set"        "NCS_ss2_vvel" 
+#>           NCS_ss2_set               NCS_set               OXY_sat 
+#>         "NCS_ss2_set"             "NCS_set"             "OXY_sat" 
+#>          OXY_oxy_dsfv          OXY_oxy_atmv            NIT_nitrif 
+#>        "OXY_oxy_dsfv"        "OXY_oxy_atmv"          "NIT_nitrif" 
+#>             NIT_denit           NIT_anammox              NIT_dnra 
+#>           "NIT_denit"         "NIT_anammox"            "NIT_dnra" 
+#>              OGM_docr              OGM_donr              OGM_dopr 
+#>            "OGM_docr"            "OGM_donr"            "OGM_dopr" 
+#>              OGM_cpom           OGM_poc_set          OGM_cpom_set 
+#>            "OGM_cpom"         "OGM_poc_set"        "OGM_cpom_set" 
+#>           OGM_pon_set           OGM_pop_set              OGM_cdom 
+#>         "OGM_pon_set"         "OGM_pop_set"            "OGM_cdom" 
+#>           OGM_poc_hyd           OGM_pon_hyd           OGM_pop_hyd 
+#>         "OGM_poc_hyd"         "OGM_pon_hyd"         "OGM_pop_hyd" 
+#>           OGM_doc_min           OGM_don_min           OGM_dop_min 
+#>         "OGM_doc_min"         "OGM_don_min"         "OGM_dop_min" 
+#>     OGM_doc_anaerobic         OGM_doc_denit          OGM_docr_min 
+#>   "OGM_doc_anaerobic"       "OGM_doc_denit"        "OGM_docr_min" 
+#>          OGM_donr_min          OGM_dopr_min        OGM_cpom_bdown 
+#>        "OGM_donr_min"        "OGM_dopr_min"      "OGM_cpom_bdown" 
+#>              OGM_bod5          OGM_pom_vvel         OGM_cpom_vvel 
+#>            "OGM_bod5"        "OGM_pom_vvel"       "OGM_cpom_vvel" 
+#>          PHY_cyano_IN          PHY_cyano_IP        PHY_cyano_NtoP 
+#>        "PHY_cyano_IN"        "PHY_cyano_IP"      "PHY_cyano_NtoP" 
+#>       PHY_cyano_set_c       PHY_cyano_set_n       PHY_cyano_set_p 
+#>     "PHY_cyano_set_c"     "PHY_cyano_set_n"     "PHY_cyano_set_p" 
+#>          PHY_cyano_fI        PHY_cyano_fNit        PHY_cyano_fPho 
+#>        "PHY_cyano_fI"      "PHY_cyano_fNit"      "PHY_cyano_fPho" 
+#>        PHY_cyano_fSil          PHY_cyano_fT        PHY_cyano_fSal 
+#>      "PHY_cyano_fSil"        "PHY_cyano_fT"      "PHY_cyano_fSal" 
+#>       PHY_cyano_gpp_c       PHY_cyano_rsp_c       PHY_cyano_exc_c 
+#>     "PHY_cyano_gpp_c"     "PHY_cyano_rsp_c"     "PHY_cyano_exc_c" 
+#>       PHY_cyano_mor_c       PHY_cyano_gpp_n       PHY_cyano_rsp_n 
+#>     "PHY_cyano_mor_c"     "PHY_cyano_gpp_n"     "PHY_cyano_rsp_n" 
+#>       PHY_cyano_exc_n       PHY_cyano_mor_n       PHY_cyano_gpp_p 
+#>     "PHY_cyano_exc_n"     "PHY_cyano_mor_n"     "PHY_cyano_gpp_p" 
+#>       PHY_cyano_rsp_p       PHY_cyano_exc_p       PHY_cyano_mor_p 
+#>     "PHY_cyano_rsp_p"     "PHY_cyano_exc_p"     "PHY_cyano_mor_p" 
+#>          PHY_green_IN          PHY_green_IP        PHY_green_NtoP 
+#>        "PHY_green_IN"        "PHY_green_IP"      "PHY_green_NtoP" 
+#>       PHY_green_set_c       PHY_green_set_n       PHY_green_set_p 
+#>     "PHY_green_set_c"     "PHY_green_set_n"     "PHY_green_set_p" 
+#>          PHY_green_fI        PHY_green_fNit        PHY_green_fPho 
+#>        "PHY_green_fI"      "PHY_green_fNit"      "PHY_green_fPho" 
+#>        PHY_green_fSil          PHY_green_fT        PHY_green_fSal 
+#>      "PHY_green_fSil"        "PHY_green_fT"      "PHY_green_fSal" 
+#>       PHY_green_gpp_c       PHY_green_rsp_c       PHY_green_exc_c 
+#>     "PHY_green_gpp_c"     "PHY_green_rsp_c"     "PHY_green_exc_c" 
+#>       PHY_green_mor_c       PHY_green_gpp_n       PHY_green_rsp_n 
+#>     "PHY_green_mor_c"     "PHY_green_gpp_n"     "PHY_green_rsp_n" 
+#>       PHY_green_exc_n       PHY_green_mor_n       PHY_green_gpp_p 
+#>     "PHY_green_exc_n"     "PHY_green_mor_n"     "PHY_green_gpp_p" 
+#>       PHY_green_rsp_p       PHY_green_exc_p       PHY_green_mor_p 
+#>     "PHY_green_rsp_p"     "PHY_green_exc_p"     "PHY_green_mor_p" 
+#>         PHY_diatom_IN         PHY_diatom_IP       PHY_diatom_NtoP 
+#>       "PHY_diatom_IN"       "PHY_diatom_IP"     "PHY_diatom_NtoP" 
+#>      PHY_diatom_set_c      PHY_diatom_set_n      PHY_diatom_set_p 
+#>    "PHY_diatom_set_c"    "PHY_diatom_set_n"    "PHY_diatom_set_p" 
+#>         PHY_diatom_fI       PHY_diatom_fNit       PHY_diatom_fPho 
+#>       "PHY_diatom_fI"     "PHY_diatom_fNit"     "PHY_diatom_fPho" 
+#>       PHY_diatom_fSil         PHY_diatom_fT       PHY_diatom_fSal 
+#>     "PHY_diatom_fSil"       "PHY_diatom_fT"     "PHY_diatom_fSal" 
+#>      PHY_diatom_gpp_c      PHY_diatom_rsp_c      PHY_diatom_exc_c 
+#>    "PHY_diatom_gpp_c"    "PHY_diatom_rsp_c"    "PHY_diatom_exc_c" 
+#>      PHY_diatom_mor_c      PHY_diatom_gpp_n      PHY_diatom_rsp_n 
+#>    "PHY_diatom_mor_c"    "PHY_diatom_gpp_n"    "PHY_diatom_rsp_n" 
+#>      PHY_diatom_exc_n      PHY_diatom_mor_n      PHY_diatom_gpp_p 
+#>    "PHY_diatom_exc_n"    "PHY_diatom_mor_n"    "PHY_diatom_gpp_p" 
+#>      PHY_diatom_rsp_p      PHY_diatom_exc_p      PHY_diatom_mor_p 
+#>    "PHY_diatom_rsp_p"    "PHY_diatom_exc_p"    "PHY_diatom_mor_p" 
+#>              PHY_tphy                PHY_in                PHY_ip 
+#>            "PHY_tphy"              "PHY_in"              "PHY_ip" 
+#>               PHY_gpp               PHY_ncp           PHY_upt_no3 
+#>             "PHY_gpp"             "PHY_ncp"         "PHY_upt_no3" 
+#>           PHY_upt_nh4            PHY_upt_n2           PHY_upt_po4 
+#>         "PHY_upt_nh4"          "PHY_upt_n2"         "PHY_upt_po4" 
+#>           PHY_upt_dic               PHY_set               PHY_par 
+#>         "PHY_upt_dic"             "PHY_set"             "PHY_par" 
+#>       Total organic C               TOT_tss          SDF_Fsed_oxy 
+#>             "CAR_toc"             "TOT_tss"        "SDF_Fsed_oxy" 
+#>          SDF_Fsed_amm          SDF_Fsed_nit          SDF_Fsed_frp 
+#>        "SDF_Fsed_amm"        "SDF_Fsed_nit"        "SDF_Fsed_frp" 
+#>               NCS_swi            NCS_swi_dz             NCS_resus 
+#>             "NCS_swi"          "NCS_swi_dz"           "NCS_resus" 
+#>            NCS_d_taub           OXY_oxy_dsf           OXY_oxy_atm 
+#>          "NCS_d_taub"         "OXY_oxy_dsf"         "OXY_oxy_atm" 
+#>           SIL_dsf_rsi           NIT_amm_dsf           NIT_nit_dsf 
+#>         "SIL_dsf_rsi"         "NIT_amm_dsf"         "NIT_nit_dsf" 
+#>           PHS_frp_dsf           OGM_toc_sed           OGM_ton_sed 
+#>         "PHS_frp_dsf"         "OGM_toc_sed"         "OGM_ton_sed" 
+#>           OGM_top_sed           OGM_poc_swi           OGM_doc_swi 
+#>         "OGM_top_sed"         "OGM_poc_swi"         "OGM_doc_swi" 
+#>           OGM_pon_swi           OGM_don_swi           OGM_pop_swi 
+#>         "OGM_pon_swi"         "OGM_don_swi"         "OGM_pop_swi" 
+#>           OGM_dop_swi           OGM_poc_res           OGM_pon_res 
+#>         "OGM_dop_swi"         "OGM_poc_res"         "OGM_pon_res" 
+#>           OGM_pop_res         PHY_phy_swi_c         PHY_phy_swi_n 
+#>         "OGM_pop_res"       "PHY_phy_swi_c"       "PHY_phy_swi_n" 
+#>         PHY_phy_swi_p                    ok 
+#>       "PHY_phy_swi_p"                  "ok" 
 ```

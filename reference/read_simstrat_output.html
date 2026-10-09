@@ -24,9 +24,19 @@ step so the same reading approach as GLM-AED/GOTM-WET can be reused)."><meta pro
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -37,7 +47,6 @@ step so the same reading approach as GLM-AED/GOTM-WET can be reused)."><meta pro
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -78,7 +87,10 @@ step so the same reading approach as GLM-AED/GOTM-WET can be reused).</p>
 <span>  incl_fluxes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output_hour <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  <span class="va">file</span>,</span>
-<span>  phyto_pars <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  phyto_pars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  load_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  raw_output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"simstrat_aed2"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -125,6 +137,37 @@ Defaults to TRUE.</p></dd>
 
 <dt id="arg-phyto-pars">phyto_pars<a class="anchor" aria-label="anchor" href="#arg-phyto-pars"></a></dt>
 <dd><p>Data frame with phytoplankton parameters from AED.</p></dd>
+
+
+<dt id="arg-load-all">load_all<a class="anchor" aria-label="anchor" href="#arg-load-all"></a></dt>
+<dd><p>logical; also load every other variable present in the
+netCDF file, beyond the declared <code>vars_sim</code> set. Each such variable is
+keyed by its AEME <code>var_aeme</code> name if <a href="key_naming.html">key_naming</a> has a translation for
+it, or by its raw GLM/netCDF name otherwise. Variables shaped like
+GLM's usual <code>(time)</code> or <code>(z, time)</code> output are loaded the same way as
+any declared variable; variables with other dimensions (e.g. <code>nzones</code>,
+<code>particle</code>, <code>sed_layers</code>, <code>lon</code>, <code>lat</code>) are loaded as a
+<code><a href="new_grouped_var.html">new_grouped_var()</a></code> object instead of being forced into the depth x
+time convention. Default <code>TRUE</code>.</p></dd>
+
+
+<dt id="arg-raw-output">raw_output<a class="anchor" aria-label="anchor" href="#arg-raw-output"></a></dt>
+<dd><p>logical; if <code>TRUE</code>, return output as close to the raw
+netCDF file as possible instead of AEME's standardised format: <code>(z, time)</code> variables are left on GLM's own, time-varying model layer
+midpoints (no interpolation onto a common depth grid), variables
+requested via <code>vars_sim</code> are keyed by their raw GLM/netCDF name (e.g.
+<code>"temp"</code>) rather than the translated AEME <code>var_aeme</code> name (e.g.
+<code>"HYD_temp"</code>), and no AED unit-conversion factors are applied.
+<code>depths</code> must not be supplied when <code>raw_output = TRUE</code>, since raw
+output has no common depth grid to interpolate onto. Default <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
+<dd><p>character; which Simstrat coupling this output came from,
+<code>"simstrat_aed2"</code> (default) or <code>"simstrat_aed"</code>. Selects the matching
+<code>key_naming</code> column for variable-name translation – the netCDF file
+format itself (produced by <code><a href="write_simstrat_nc.html">write_simstrat_nc</a></code>) is identical
+either way.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -25,6 +25,7 @@ run_glm_aed(
   sim_folder,
   verbose = FALSE,
   debug = FALSE,
+  config_file = find_glm_nml(sim_folder),
   args = character(),
   timeout = Inf,
   version = getOption("AEME.glm_version", default = NULL)
@@ -34,6 +35,7 @@ run_gotm_wet(
   sim_folder,
   verbose = FALSE,
   debug = FALSE,
+  config_file = "gotm.yaml",
   args = character(),
   timeout = Inf,
   version = getOption("AEME.gotm_version", default = NULL)
@@ -43,9 +45,20 @@ run_simstrat_aed2(
   sim_folder,
   verbose = FALSE,
   debug = FALSE,
+  config_file = "simstrat.par",
   args = character(),
   timeout = Inf,
   version = getOption("AEME.simstrat_version", default = NULL)
+)
+
+run_simstrat_aed(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  config_file = "simstrat.par",
+  args = character(),
+  timeout = Inf,
+  version = getOption("AEME.simstrat_aed_version", default = NULL)
 )
 ```
 
@@ -83,6 +96,16 @@ run_simstrat_aed2(
   `AEME.gotm_version` options, respectively. For DYRESM-CAEDYM, use
   `AEME.dyresm_version`. Currently, only GLM-AED support version
   selection; GOTM-WET and DYRESM-CAEDYM always uses the bundled version.
+
+- config_file:
+
+  character; path to the model's main configuration file, passed to the
+  model executable on the command line. Defaults to the hydrodynamic
+  configuration file within `sim_folder`: the GLM nml file (see
+  [`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md))
+  for GLM-AED, `"gotm.yaml"` for GOTM-WET, and `"simstrat.par"` for
+  Simstrat-AED2. Not used by DYRESM-CAEDYM, which reads several files
+  derived from the `.stg` file present in `sim_folder`.
 
 ## Value
 

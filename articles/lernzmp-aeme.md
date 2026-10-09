@@ -129,8 +129,18 @@ It can be printed to the console to see the contents of the object.
 ``` r
 
 aeme
+#> Warning: ! Lake observations use the legacy depth_from / depth_to columns.
+#> ℹ These have been collapsed to a single depth column (interval midpoint).
+#>   Update your data to the current schema ("Date", "var_aeme", "depth", and
+#>   "value"); depth_to and sd are optional.
+#> This warning is displayed once per session.
+#> Warning: ! This <Aeme> object has no recorded AEME package version.
+#> ℹ It was likely built with an older version of AEME (<0.4.0), or has never been
+#>   built with `build_aeme()`. Consider rebuilding with `build_aeme()` to keep it
+#>   in sync with the installed package (0.4.0).
+#> This warning is displayed once per session.
 #> 
-#> ── AEME ────────────────────────────────────────────────────────────────────────
+#> ── AEME not yet built ──────────────────────────────────────────────────────────
 #> 
 #> ── Lake ──
 #> 
@@ -140,7 +150,9 @@ aeme
 #> 
 #> ── Time ──
 #> 
-#> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
+#> • Start: 2013-07-01 00:00:00; Stop: 2023-06-30 00:00:00; Time step: 3600 s;
+#>   Output step: s
+#> • Timezone: UTC (timestamps stored UTC)
 #> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095; Simstrat: 2
 #> 
 #> ── Configuration ──
@@ -156,111 +168,7 @@ aeme
 #> │      GLM-AED             Present              Absent         │
 #> │      GOTM-WET            Present              Absent         │
 #> │   SIMSTRAT-AED2           Absent              Absent         │
-#> └──────────────────────────────────────────────────────────────┘
-#> 
-#> ── Observations ──
-#> 
-#> • Lake: Present; Level: Absent
-#> 
-#> ── Input ──
-#> 
-#> • Initial profile: Present; Initial depth: 48.148m
-#> • Hypsograph: Present (n=95)
-#> • Meteo: Present; Use longwave: TRUE; Kw: 0.566666666666667
-#> 
-#> ── Inflows ──
-#> 
-#> • Number of inflows: 7; Names: NZS4081641, NZS4083363, NZS4084132, NZS4086165,
-#>   NZS4084816, lumped, precip
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
-#> 
-#> ── Outflows ──
-#> 
-#> • Number of outflows: 1; Names: wbal; Elevations:
-#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
-#> 
-#> ── Water Balance ──
-#> 
-#> • Method: 2; Use: obs
-#> • Modelled: Absent; Water balance: Present
-#> 
-#> ── Parameters ──
-#> 
-#> • Number of parameters: 18
-#> 
-#> ── Output ──
-#> 
-#> • DY-CD: 1
-#> • GLM-AED: 1
-#> • GOTM-WET: 1
-#> • SIMSTRAT-AED2: 0
-#> • Variables: 63
-#> Water temperature, Thermocline depth, Dissolved oxygen, Total chlorophyll a,
-#> Total nitrogen, Total phosphorus, Water level, Volume, Change in volume,
-#> Surface area, ... and 53 more
-```
-
-This allows for quick inspection of all the different slots within the
-`Aeme` object. The lake section has the lake metadata, the time section
-has the start, stop and spin-up dates, the configuration section has the
-model configuration which allows for the building of the AEME models
-locally.
-
-``` r
-
-model <- c("glm_aed", "gotm_wet") # models to build
-path <- "aeme" # directory in which the model configuration will be built
-
-aeme <- build_aeme(aeme = aeme, model = model, path = path,
-                   use_bgc = TRUE)
-#> ✔ `MET_pprain`: converted from m/day to mm/day.
-#> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────
-#> 
-#> n_zones: 2 | max lake depth: 48.15 m | ref_depth: 5 m
-#> 
-#> 
-#> 
-#> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────
-```
-
-## Run AEME models
-
-We will now run the AEME models for the two lakes. This will run the
-models with the configurations built in the `path` directory. The
-`parallel` argument is set to `TRUE` to run the models in parallel which
-can speed up the process.
-
-``` r
-
-aeme <- run_aeme(aeme = aeme, model = model, path = path, parallel = TRUE)
-aeme
-#> 
-#> ── AEME ────────────────────────────────────────────────────────────────────────
-#> 
-#> ── Lake ──
-#> 
-#> Rotorua (ID: LID11133)
-#> • Lat: -38.09; Lon: 176.27
-#> • Elev: 284.88m; Depth: 48.15m; Area: 80659960 m2
-#> 
-#> ── Time ──
-#> 
-#> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
-#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095; Simstrat: 2
-#> 
-#> ── Configuration ──
-#> 
-#> • Model: glm_aed and gotm_wet
-#> • Path: D:\a\AEME\AEME\vignettes\articles\aeme
-#> • Model controls: Present
-#> • Use biogeochemical model: Yes
-#> ┌ Model Configuration ─────────────────────────────────────────┐
-#> │       Model              Physical         Biogeochemical     │
-#> │ ---                                                          │
-#> │       DY-CD               Absent              Absent         │
-#> │      GLM-AED             Present             Present         │
-#> │      GOTM-WET            Present             Present         │
-#> │   SIMSTRAT-AED2           Absent              Absent         │
+#> │    SIMSTRAT-AED           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -295,14 +203,119 @@ aeme
 #> 
 #> ── Output ──
 #> 
+#> • DY-CD: 1
+#> • GLM-AED: 1
+#> • GOTM-WET: 1
+#> • SIMSTRAT-AED2: 0
+#> • SIMSTRAT-AED: 0
+#> • Variables: 64
+#> Water temperature, Thermocline depth, Dissolved oxygen, Total chlorophyll a,
+#> Total nitrogen, Total phosphorus, Water level, LKE_V, Change in volume, Surface
+#> area, ... and 54 more
+```
+
+This allows for quick inspection of all the different slots within the
+`Aeme` object. The lake section has the lake metadata, the time section
+has the start, stop and spin-up dates, the configuration section has the
+model configuration which allows for the building of the AEME models
+locally.
+
+``` r
+
+model <- c("glm_aed", "gotm_wet") # models to build
+path <- "aeme" # directory in which the model configuration will be built
+
+aeme <- build_aeme(aeme = aeme, model = model, path = path,
+                   use_bgc = TRUE)
+#> ✔ `MET_pprain`: converted from m/day to mm/day.
+#> Warning: GLM ignores the AirPres met column in daily mode and uses the default 1013.25 hPa instead.
+#> This warning is displayed once per session.
+```
+
+## Run AEME models
+
+We will now run the AEME models for the two lakes. This will run the
+models with the configurations built in the `path` directory. The
+`parallel` argument is set to `TRUE` to run the models in parallel which
+can speed up the process.
+
+``` r
+
+aeme <- run_aeme(aeme = aeme, model = model, path = path, parallel = TRUE)
+aeme
+#> 
+#> ── AEME v0.4.0 ─────────────────────────────────────────────────────────────────
+#> 
+#> ── Lake ──
+#> 
+#> Rotorua (ID: LID11133)
+#> • Lat: -38.09; Lon: 176.27
+#> • Elev: 284.88m; Depth: 48.15m; Area: 80659960 m2
+#> 
+#> ── Time ──
+#> 
+#> • Start: 2013-07-01 00:00:00; Stop: 2023-06-30 00:00:00; Time step: 3600 s;
+#>   Output step: s
+#> • Timezone: UTC (timestamps stored UTC)
+#> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095; Simstrat: 2
+#> 
+#> ── Configuration ──
+#> 
+#> • Model: glm_aed and gotm_wet
+#> • Path: D:\a\AEME\AEME\vignettes\articles\aeme
+#> • Model controls: Present
+#> • Use biogeochemical model: Yes
+#> ┌ Model Configuration ─────────────────────────────────────────┐
+#> │       Model              Physical         Biogeochemical     │
+#> │ ---                                                          │
+#> │       DY-CD               Absent              Absent         │
+#> │      GLM-AED             Present             Present         │
+#> │      GOTM-WET            Present             Present         │
+#> │   SIMSTRAT-AED2           Absent              Absent         │
+#> │    SIMSTRAT-AED           Absent              Absent         │
+#> └──────────────────────────────────────────────────────────────┘
+#> 
+#> ── Observations ──
+#> 
+#> • Lake: Present; Level: Absent
+#> 
+#> ── Input ──
+#> 
+#> • Initial profile: Present; Initial depth: 48.148m
+#> • Hypsograph: Present (n=95)
+#> • Meteo: Present; Use longwave: TRUE; Kw: 0.566666666666667
+#> 
+#> ── Inflows ──
+#> 
+#> • Number of inflows: 7; Names: NZS4081641, NZS4083363, NZS4084132, NZS4086165,
+#>   NZS4084816, lumped, precip
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
+#> 
+#> ── Outflows ──
+#> 
+#> • Number of outflows: 1; Names: wbal; Elevations: -1, -1
+#> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
+#> 
+#> ── Water Balance ──
+#> 
+#> • Method: 2; Use: obs
+#> • Modelled: Absent; Water balance: Present
+#> 
+#> ── Parameters ──
+#> 
+#> • Number of parameters: 18
+#> 
+#> ── Output ──
+#> 
 #> • DY-CD: 0
 #> • GLM-AED: 1
 #> • GOTM-WET: 1
 #> • SIMSTRAT-AED2: 0
-#> • Variables: 39
+#> • SIMSTRAT-AED: 0
+#> • Variables: 453
 #> Water temperature, Dissolved oxygen, Total chlorophyll a, Total nitrogen, Total
-#> phosphorus, Evaporative heat flux, Sensible heat flux, Longwave radiation,
-#> Shortwave radiation, Volume, ... and 29 more
+#> phosphorus, Water level, Evaporative heat flux, Sensible heat flux, Longwave
+#> radiation, Shortwave radiation, ... and 443 more
 ```
 
 In the “Output” section of the `Aeme` object, the “Number of ensembles”
@@ -314,6 +327,8 @@ is set to 1 indicating that there is now output for each model in the
 plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 #> Warning: Removed 336 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
+#> Warning: Removed 1482 rows containing missing values or values outside the scale range
+#> (`geom_point()`).
 ```
 
 ![](lernzmp-aeme_files/figure-html/lernzmp-plot-temperature-1.png)
@@ -323,6 +338,8 @@ plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
 #> Warning: Removed 336 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
+#> Warning: Removed 1586 rows containing missing values or values outside the scale range
+#> (`geom_point()`).
 ```
 
 ![](lernzmp-aeme_files/figure-html/lernzmp-plot-oxygen-1.png)

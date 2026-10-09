@@ -110,24 +110,26 @@ aeme
 
 
     #>                                                                                 
-    #> ── AEME ────────────────────────────────────────────────────────────────────────
+    #> ── AEME v0.4.0 ─────────────────────────────────────────────────────────────────
     #>                                                                                 
     #> ── Lake ──                                                                      
     #>                                                                                 
-    #> Wainamu (ID: 45819)                                                             
+    #> Wainamu (ID: LID45819)                                                          
     #> • Lat: -36.89; Lon: 174.47                                                      
     #> • Elev: 23.64m; Depth: 13.07m; Area: 152343 m2                                  
     #>                                                                                 
     #> ── Time ──                                                                      
     #>                                                                                 
-    #> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600                          
+    #> • Start: 2020-08-01 00:00:00; Stop: 2021-06-30 00:00:00; Time step: 3600 s;     
+    #>   Output step: s                                                                
+    #> • Timezone: UTC (timestamps stored UTC)                                         
     #> • Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1; Simstrat: 2                       
     #>                                                                                 
     #> ── Configuration ──                                                             
     #>                                                                                 
-    #> • Model:                                                                        
-    #> • Path: Not set                                                                 
-    #> • Model controls: Absent                                                        
+    #> • Model: glm_aed                                                                
+    #> • Path: C:/Users/mooret/Git/AEME                                                
+    #> • Model controls: Present                                                       
     #> • Use biogeochemical model: No                                                  
     #> ┌ Model Configuration ─────────────────────────────────────────┐                
     #> │       Model              Physical         Biogeochemical     │                
@@ -136,6 +138,7 @@ aeme
     #> │      GLM-AED              Absent              Absent         │                
     #> │      GOTM-WET             Absent              Absent         │                
     #> │   SIMSTRAT-AED2           Absent              Absent         │                
+    #> │    SIMSTRAT-AED           Absent              Absent         │                
     #> └──────────────────────────────────────────────────────────────┘                
     #>                                                                                 
     #> ── Observations ──                                                              
@@ -173,6 +176,7 @@ aeme
     #> • GLM-AED: 0                                                                    
     #> • GOTM-WET: 0                                                                   
     #> • SIMSTRAT-AED2: 0                                                              
+    #> • SIMSTRAT-AED: 0                                                               
     #> • Variables: 0                                                                  
     #> None                                                                            
 
@@ -191,13 +195,14 @@ the full suite of water-quality variables.
 
 model_controls <- get_model_controls(use_bgc = TRUE)
 head(model_controls)
-#>    var_aeme simulate inf_default initial_wc initial_sed conversion_aed
-#> 1   CAR_doc     TRUE           0        0.5       1e+06       0.012011
-#> 2   CAR_poc     TRUE           0        0.2       1e-01       0.012011
-#> 3   CHM_oxy     TRUE          10       10.0       1e+01       0.032000
-#> 4  CHM_salt     TRUE           0        0.0       0e+00       1.000000
-#> 5  HYD_dens     TRUE          NA         NA          NA       1.000000
-#> 6 HYD_strat     TRUE          NA         NA          NA       1.000000
+#> <model_controls> 6/6 variables simulated
+#>   var_aeme simulate inf_default initial_wc initial_sed conversion_aed
+#>    CAR_doc      yes           0        0.5   1000000.0          0.012
+#>    CAR_poc      yes           0        0.2         0.1          0.012
+#>    CHM_oxy      yes          10       10.0        10.0          0.032
+#>   CHM_salt      yes           0        0.0         0.0          1.000
+#>   HYD_dens      yes           -          -           -          1.000
+#>  HYD_strat      yes           -          -           -          1.000
 ```
 
 You can narrow the set of simulated variables using
@@ -255,14 +260,16 @@ aeme <- build_aeme(
 ```
 
 The configuration files are stored in the `configuration` slot of the
-`aeme` object. For GLM-AED the slot contains the parsed `glm3.nml` and
-`aed/aed.nml`:
+`aeme` object. For GLM-AED the slot contains the parsed GLM hydrodynamic
+nml (`glm3.nml` or `glm4.nml`, whichever version was built – see
+[`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md))
+and `aed/aed.nml`:
 
 ``` r
 
 cfg <- configuration(aeme)
 names(cfg[["glm_aed"]])
-#> [1] "hydrodynamic" "bgc"
+#> [1] "hydrodynamic"      "bgc"               "hydrodynamic_file"
 ```
 
 ------------------------------------------------------------------------
@@ -324,6 +331,41 @@ aeme <- set_glm_aed_models(
 )
 ```
 
+[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)
+works on a model that has already been built. To choose the modules (and
+which other AED setup steps run) as part of the build itself, pass
+[`aed_options()`](https://limnotrack.com/reference/aed_options.md) to
+[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md):
+
+``` r
+
+aeme <- build_aeme(
+  aeme           = aeme,
+  model          = model,
+  model_controls = model_controls,
+  path           = path,
+  ext_elev       = 5,
+  use_bgc        = TRUE,
+  aed            = aed_options(
+    # Only oxygen and nutrient cycling (plus whatever they depend on)
+    modules   = c("aed_sedflux", "aed_oxygen", "aed_nitrogen", "aed_phosphorus"),
+    # Keep the sediment fluxes already in aed.nml rather than estimating them
+    sed_zones = FALSE,
+    # Don't derive the aed_totals variable lists
+    totals    = FALSE
+  )
+)
+```
+
+By default
+[`aed_options()`](https://limnotrack.com/reference/aed_options.md)
+leaves every step on, so a plain `build_aeme(use_bgc = TRUE)` is
+unchanged. Each step is also available on its own after the build:
+[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md),
+[`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
+and
+[`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md).
+
 ------------------------------------------------------------------------
 
 #### AED module dependency hierarchy
@@ -345,6 +387,8 @@ prerequisites by hand. The one place this *isn’t* automatic is
 [`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)
 (used above), which sets the active-module list exactly as given, so it
 is up to you to include the full chain if you call it directly.
+(`aed_options(modules = )` adds the prerequisites for you unless you set
+`resolve_deps = FALSE`.)
 
 The dependency graph, verified directly against the target-variable
 links configured in AEME’s bundled `aed.nml` template:
@@ -412,9 +456,9 @@ config_files <- get_model_config_files(aeme)
 
 nml <- read_nml(config_files$glm_aed["aed"])
 get_nml_value(nml, "models")
-#> [1] "aed_sedflux"        "aed_oxygen"         "aed_silica"        
-#> [4] "aed_nitrogen"       "aed_phosphorus"     "aed_organic_matter"
-#> [7] "aed_phytoplankton"  "aed_totals"
+#> [1] "aed_sedflux"        "aed_noncohesive"    "aed_oxygen"        
+#> [4] "aed_silica"         "aed_nitrogen"       "aed_phosphorus"    
+#> [7] "aed_organic_matter" "aed_phytoplankton"  "aed_totals"
 ```
 
 ------------------------------------------------------------------------
@@ -465,24 +509,24 @@ sed_params <- glm_sed_params(
 )
 sed_params
 #>      model     file                        name value    min    max group index
-#> 1  glm_aed glm3.nml       sediment/benthic_mode  2.00  2.000  2.000  <NA>    NA
-#> 2  glm_aed glm3.nml            sediment/n_zones  2.00  2.000  2.000  <NA>    NA
-#> 3  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     1
-#> 4  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     2
-#> 5  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     1
-#> 6  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     2
-#> 7  glm_aed glm3.nml      sediment/sed_temp_mean 14.00  7.000 21.000  <NA>     1
-#> 8  glm_aed glm3.nml      sediment/sed_temp_mean 16.00  8.000 24.000  <NA>     2
-#> 9  glm_aed glm3.nml sediment/sed_temp_amplitude  6.00  3.000  9.000  <NA>     1
-#> 10 glm_aed glm3.nml sediment/sed_temp_amplitude  4.00  2.000  6.000  <NA>     2
-#> 11 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     1
-#> 12 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     2
-#> 13 glm_aed glm3.nml       sediment/zone_heights  3.07  1.535  4.605  <NA>     1
-#> 14 glm_aed glm3.nml       sediment/zone_heights 22.00 11.000 33.000  <NA>     2
-#> 15 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     1
-#> 16 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     2
-#> 17 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     1
-#> 18 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     2
+#> 1  glm_aed glm4.nml       sediment/benthic_mode  2.00  2.000  2.000  <NA>    NA
+#> 2  glm_aed glm4.nml            sediment/n_zones  2.00  2.000  2.000  <NA>    NA
+#> 3  glm_aed glm4.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     1
+#> 4  glm_aed glm4.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  <NA>     2
+#> 5  glm_aed glm4.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     1
+#> 6  glm_aed glm4.nml     sediment/sed_temp_depth  0.20  0.100  0.300  <NA>     2
+#> 7  glm_aed glm4.nml      sediment/sed_temp_mean 14.00  7.000 21.000  <NA>     1
+#> 8  glm_aed glm4.nml      sediment/sed_temp_mean 16.00  8.000 24.000  <NA>     2
+#> 9  glm_aed glm4.nml sediment/sed_temp_amplitude  6.00  3.000  9.000  <NA>     1
+#> 10 glm_aed glm4.nml sediment/sed_temp_amplitude  4.00  2.000  6.000  <NA>     2
+#> 11 glm_aed glm4.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     1
+#> 12 glm_aed glm4.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  <NA>     2
+#> 13 glm_aed glm4.nml       sediment/zone_heights  3.07  1.535  4.605  <NA>     1
+#> 14 glm_aed glm4.nml       sediment/zone_heights 22.00 11.000 33.000  <NA>     2
+#> 15 glm_aed glm4.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     1
+#> 16 glm_aed glm4.nml   sediment/sed_reflectivity  0.01  0.005  0.015  <NA>     2
+#> 17 glm_aed glm4.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     1
+#> 18 glm_aed glm4.nml      sediment/sed_roughness  0.01  0.005  0.015  <NA>     2
 #>      module
 #> 1  sediment
 #> 2  sediment
@@ -536,24 +580,38 @@ cat("Number of sediment zones:", n_zones, "\n")
 #> Number of sediment zones: 2
 sed_pars
 #>      model     file                        name value   min   max index group
-#> 1  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.01  0.01     1  <NA>
-#> 2  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.01  0.01     2  <NA>
-#> 3  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.20  0.20     1  <NA>
-#> 4  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.20  0.20     2  <NA>
-#> 5  glm_aed glm3.nml      sediment/sed_temp_mean 14.00 14.00 14.00     1  <NA>
-#> 6  glm_aed glm3.nml      sediment/sed_temp_mean 16.00 16.00 16.00     2  <NA>
-#> 7  glm_aed glm3.nml sediment/sed_temp_amplitude  6.00  6.00  6.00     1  <NA>
-#> 8  glm_aed glm3.nml sediment/sed_temp_amplitude  4.00  4.00  4.00     2  <NA>
-#> 9  glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 30.00 30.00     1  <NA>
-#> 10 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 30.00 30.00     2  <NA>
-#> 11 glm_aed glm3.nml       sediment/benthic_mode  2.00  2.00  2.00    NA  <NA>
-#> 12 glm_aed glm3.nml            sediment/n_zones  2.00  2.00  2.00    NA  <NA>
-#> 13 glm_aed glm3.nml       sediment/zone_heights  3.07  3.07  3.07     1  <NA>
-#> 14 glm_aed glm3.nml       sediment/zone_heights 22.00 22.00 22.00     2  <NA>
-#> 15 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.01  0.01     1  <NA>
-#> 16 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.01  0.01     2  <NA>
-#> 17 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.01  0.01     1  <NA>
-#> 18 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.01  0.01     2  <NA>
+#> 1  glm_aed glm3.nml       sediment/benthic_mode  2.00  2.00  2.00    NA  <NA>
+#> 2  glm_aed glm3.nml            sediment/n_zones  2.00  2.00  2.00    NA  <NA>
+#> 3  glm_aed glm3.nml       sediment/zone_heights  3.07  3.07  3.07     1  <NA>
+#> 4  glm_aed glm3.nml       sediment/zone_heights 22.00 22.00 22.00     2  <NA>
+#> 5  glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.01  0.01     1  <NA>
+#> 6  glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.01  0.01     2  <NA>
+#> 7  glm_aed glm3.nml      sediment/sed_roughness  0.01  0.01  0.01     1  <NA>
+#> 8  glm_aed glm3.nml      sediment/sed_roughness  0.01  0.01  0.01     2  <NA>
+#> 9  glm_aed glm3.nml     sediment/sed_heat_model  2.00  2.00  2.00    NA  <NA>
+#> 10 glm_aed glm3.nml       sediment/n_sed_layers  8.00  8.00  8.00    NA  <NA>
+#> 11 glm_aed glm3.nml    sediment/sed_layer_depth  0.00  0.00  0.00     1  <NA>
+#> 12 glm_aed glm3.nml    sediment/sed_layer_depth  0.02  0.02  0.02     2  <NA>
+#> 13 glm_aed glm3.nml    sediment/sed_layer_depth  0.05  0.05  0.05     3  <NA>
+#> 14 glm_aed glm3.nml    sediment/sed_layer_depth  0.10  0.10  0.10     4  <NA>
+#> 15 glm_aed glm3.nml    sediment/sed_layer_depth  0.20  0.20  0.20     5  <NA>
+#> 16 glm_aed glm3.nml    sediment/sed_layer_depth  0.40  0.40  0.40     6  <NA>
+#> 17 glm_aed glm3.nml    sediment/sed_layer_depth  0.80  0.80  0.80     7  <NA>
+#> 18 glm_aed glm3.nml    sediment/sed_layer_depth  1.50  1.50  1.50     8  <NA>
+#> 19 glm_aed glm3.nml            sediment/sed_vwc  0.40  0.40  0.40    NA  <NA>
+#> 20 glm_aed glm3.nml    sediment/sed_spinup_days 30.00 30.00 30.00    NA  <NA>
+#> 21 glm_aed glm3.nml      sediment/sed_temp_mean 14.00 14.00 14.00     1  <NA>
+#> 22 glm_aed glm3.nml      sediment/sed_temp_mean 16.00 16.00 16.00     2  <NA>
+#> 23 glm_aed glm3.nml sediment/sed_temp_amplitude  6.00  6.00  6.00     1  <NA>
+#> 24 glm_aed glm3.nml sediment/sed_temp_amplitude  4.00  4.00  4.00     2  <NA>
+#> 25 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 30.00 30.00     1  <NA>
+#> 26 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 30.00 30.00     2  <NA>
+#> 27 glm_aed glm3.nml      sediment/sed_temp_deep 10.00 10.00 10.00     1  <NA>
+#> 28 glm_aed glm3.nml      sediment/sed_temp_deep 10.00 10.00 10.00     2  <NA>
+#> 29 glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.01  0.01     1  <NA>
+#> 30 glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.01  0.01     2  <NA>
+#> 31 glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.20  0.20     1  <NA>
+#> 32 glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.20  0.20     2  <NA>
 ```
 
 ##### Estimating depth-varying sediment fluxes
@@ -585,12 +643,12 @@ fluxes:
 ``` r
 
 fluxes$zone_summary
-#>       zone height_lower_m height_upper_m depth_upper_m depth_lower_m
-#> Zone1    1           0.00           3.07            10         13.07
-#> Zone2    2           3.07          22.00             0         10.00
-#>       mean_depth_m area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp
-#> Zone1        11.54   43957     0.289    -38.8    5.835     -0.4   0.1035
-#> Zone2         5.00  108386     0.711    -19.4    0.512      0.1   0.0259
+#>   zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m
+#> 1    1           0.00           3.07            10         13.07        11.54
+#> 2    2           3.07          22.00             0         10.00         5.00
+#>   area_m2 area_frac fsed_oxy fsed_amm fsed_nit fsed_frp
+#> 1   43957     0.289    -38.8    5.698     -0.4   0.1072
+#> 2  108386     0.711    -19.4    0.500      0.1   0.0268
 ```
 
 ##### Applying sediment fluxes to the AED configuration
@@ -729,59 +787,48 @@ Simulated total chlorophyll-a (µg L⁻¹) time series.
 ### Assessing model performance
 
 When observations are stored in the `aeme` object,
-[`assess_model()`](https://limnotrack.com/reference/assess_model.md)
+[`assess_model()`](https://limnotrack.com/reference/assess_aeme.md)
 computes a suite of skill metrics (RMSE, NSE, bias, Pearson *r*, etc.)
 for each simulated variable:
 
 ``` r
 
-skill <- assess_model(aeme = aeme, model = model)
+skill <- assess_aeme(aeme = aeme, model = model)
 skill
-#>      Model    var_sim   bias   mae  rmse    nmae         nse    d2      r
-#> 1  GLM-AED    CAR_doc -2.706 2.706 2.747   0.995     -33.064 0.764 -0.532
-#> 2  GLM-AED  HYD_strat  0.100 0.100 0.316   0.143       0.524 0.033  0.764
-#> 3  GLM-AED HYD_thmcln -2.723 3.030 4.401   0.316      -1.220 0.313  0.520
-#> 4  GLM-AED  PHY_cyano -0.021 0.037 0.065   0.982      -0.401 0.261 -0.190
-#> 5  GLM-AED  PHY_tchla -1.490 4.777 5.642   0.661      -1.941 1.092  0.094
-#> 6  GLM-AED    NIT_amm -0.002 0.014 0.031   1.168      -1.519 0.465  0.800
-#> 7  GLM-AED    NIT_nit  1.441 1.441 1.584 900.650 -653469.853 0.999  0.067
-#> 8  GLM-AED     NIT_tn  1.298 1.298 1.473   6.850   -2964.415 0.969 -0.299
-#> 9  GLM-AED    PHS_frp  0.000 0.003 0.005   1.417     -30.046 4.157  0.662
-#> 10 GLM-AED     PHS_tp -0.007 0.008 0.009   0.711      -2.255 0.460  0.376
-#> 11 GLM-AED CHM_oxycln  1.316 2.066 2.743   0.238      -0.134 0.300  0.489
-#> 12 GLM-AED    CHM_oxy  0.655 0.986 1.414   0.143       0.804 0.071  0.923
-#> 13 GLM-AED   CHM_salt -0.117 0.117 0.117   1.000    -328.984 0.914     NA
-#> 14 GLM-AED   HYD_temp -0.509 0.808 1.066   0.045       0.883 0.051  0.954
-#>        rs    r2     B   n obs_na sim_na           name_text
-#> 1  -0.350 0.283 0.008  10      0      0 Dissolved organic C
-#> 2   0.764 0.583 0.395  10      0      0          Stratified
-#> 3   0.437 0.270 0.084  10      0      0   Thermocline depth
-#> 4  -0.124 0.036 0.015  10      0      0       Cyanobacteria
-#> 5  -0.139 0.009 0.002  10      0      0 Total chlorophyll a
-#> 6   0.767 0.640 0.182  20      0      0 Ammoniacal nitrogen
-#> 7   0.015 0.005 0.000  20      0      0             Nitrate
-#> 8  -0.390 0.089 0.000  20      0      0      Total nitrogen
-#> 9   0.453 0.439 0.014  20      0      0           Phosphate
-#> 10 -0.192 0.142 0.033  20      0      0    Total phosphorus
-#> 11  0.607 0.239 0.112  30      0      0      Oxycline depth
-#> 12  0.934 0.851 0.712 125      0      0    Dissolved oxygen
-#> 13     NA 0.000 0.000 125      0      0            Salinity
-#> 14  0.946 0.910 0.814 125      0      0   Water temperature
-#>                           name_parse
-#> 1  Dissolved~organic~carbon~(g~m^-3)
-#> 2                     Stratified~(1)
-#> 3              Thermocline~depth~(m)
-#> 4         Cyanophytes~(mg~chla~m^-3)
-#> 5      Total~chlorophyll~a~(mg~m^-3)
-#> 6       Ammoniacal~nitrogen~(g~m^-3)
-#> 7                 Nitrate-N~(g~m^-3)
-#> 8            Total~nitrogen~(g~m^-3)
-#> 9               Phosphate-P~(g~m^-3)
-#> 10         Total~phosphorus~(g~m^-3)
-#> 11                Oxycline~depth~(m)
-#> 12        Dissolved~oxygen~(mg~L^-1)
-#> 13                    Salinity~(PSU)
-#> 14            Temperature~(degree~C)
+#>      Model           name_text   var_aeme      bias      mae     rmse   nmae
+#> 1  GLM-AED Dissolved organic C    CAR_doc -2.70e+00 2.70e+00 2.75e+00 0.9940
+#> 2  GLM-AED    Dissolved oxygen    CHM_oxy  1.13e+00 1.26e+00 1.93e+00 0.1830
+#> 3  GLM-AED      Oxycline depth CHM_oxycln  1.89e+00 1.89e+00 2.26e+00 0.2100
+#> 4  GLM-AED            Salinity   CHM_salt -1.17e-01 1.17e-01 1.17e-01 1.0000
+#> 5  GLM-AED          Stratified  HYD_strat  0.00e+00 2.00e-01 4.47e-01 0.2860
+#> 6  GLM-AED   Water temperature   HYD_temp -2.30e-01 8.20e-01 1.13e+00 0.0455
+#> 7  GLM-AED   Thermocline depth HYD_thmcln -2.54e+00 3.21e+00 4.60e+00 0.3340
+#> 8  GLM-AED         Water level LKE_lvlwtr -3.60e-02 1.29e-01 1.67e-01 0.0055
+#> 9  GLM-AED              Volume    LKE_vol -5.31e+03 1.94e+04 2.49e+04 0.0177
+#> 10 GLM-AED Ammoniacal nitrogen    NIT_amm  3.16e-03 1.23e-02 2.66e-02 1.0400
+#> 11 GLM-AED             Nitrate    NIT_nit  2.98e-03 3.24e-03 5.07e-03 2.0300
+#> 12 GLM-AED      Total nitrogen     NIT_tn -1.43e-01 1.43e-01 1.49e-01 0.7560
+#> 13 GLM-AED           Phosphate    PHS_frp -1.23e-03 1.46e-03 1.64e-03 0.8110
+#> 14 GLM-AED    Total phosphorus     PHS_tp -8.22e-03 8.30e-03 1.01e-02 0.7350
+#> 15 GLM-AED       Cyanobacteria  PHY_cyano -2.69e-02 3.13e-02 6.25e-02 0.8360
+#> 16 GLM-AED Total chlorophyll a  PHY_tchla  2.12e-01 6.50e+00 7.79e+00 0.8990
+#>          nse     kge     d2       r      rs        B   n obs_na sim_na
+#> 1   -33.0000 -1.0400 0.2120 -0.4920 -0.3940 0.006910  10      0      0
+#> 2     0.6340  0.6790 0.8810  0.8810  0.9140 0.568000 125      0      0
+#> 3    -0.3510  0.5760 0.7090  0.7700  0.8260 0.252000  24      0      0
+#> 4  -329.0000      NA 0.0827      NA      NA 0.000000 125      0      0
+#> 5     0.0476  0.5240 0.7520  0.5240  0.5240 0.141000  10      0      0
+#> 6     0.8690  0.9350 0.9670  0.9390  0.9240 0.779000 125      0      0
+#> 7    -1.4300  0.2670 0.6240  0.4910  0.4160 0.070300  10      0      0
+#> 8    -7.1000 -0.8960 0.3260  0.0434 -0.0732 0.000206   8      0      0
+#> 9    -6.9900 -0.8790 0.3260  0.0394 -0.0732 0.000172   8      0      0
+#> 10   -0.9150  0.2090 0.6060  0.4690  0.5790 0.075500  20      0      0
+#> 11   -5.6900 -1.2900 0.3050  0.2290  0.4290 0.006830  20      0      0
+#> 12  -29.4000 -0.1720 0.2040  0.1680 -0.2290 0.000902  20      0      0
+#> 13   -2.5400  0.0355 0.4990  0.3360  0.4070 0.024900  20      0      0
+#> 14   -2.6800 -0.4910 0.3760 -0.1290 -0.3020 0.003590  20      0      0
+#> 15   -0.3080 -0.6500 0.3600 -0.2010 -0.1310 0.017600  10      0      0
+#> 16   -4.6100 -0.5390 0.3220 -0.2240 -0.3210 0.007590  10      0      0
 ```
 
 ------------------------------------------------------------------------
@@ -880,8 +927,10 @@ print(pages$sediment)
 
 ### Working with the GLM configuration directly
 
-The raw `glm3.nml` file and `aed/aed.nml` file can be read, modified,
-and written using the NML helpers bundled with AEME:
+The raw GLM hydrodynamic nml (`glm3.nml` or `glm4.nml`, resolved via
+[`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md))
+and `aed/aed.nml` file can be read, modified, and written using the NML
+helpers bundled with AEME:
 
 ``` r
 
@@ -896,6 +945,18 @@ glm_nml$morphometry$lake_name
 # Access AED biogeochemistry section
 aed_nml <- cfg$bgc$aed
 aed_nml$aed_nitrogen$rnitrif   # nitrification rate
+```
+
+For quick edits to a single parameter without loading the whole config,
+[`get_glm_param()`](https://limnotrack.com/reference/get_glm_param.md)/[`set_glm_param()`](https://limnotrack.com/reference/set_glm_param.md)
+work directly against the nml file on disk (see
+`vignette("testing-parameters")`):
+
+``` r
+
+path_glm <- file.path(get_lake_dir(aeme), "glm_aed")
+get_glm_param(path_glm, "Kw")
+set_glm_param(path_glm, Kw = 0.5, coef_mix_hyp = 0.3)
 ```
 
 #### Retrieving parameters by module

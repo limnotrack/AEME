@@ -1,6 +1,6 @@
 # Convert aeme.yaml file to list
 
-Convert aeme.yaml file to list
+**\[deprecated\]**
 
 ## Usage
 
@@ -24,6 +24,21 @@ yaml_to_aeme(path, file)
 
 aeme object
 
+## Details
+
+`yaml_to_aeme()` is soft-deprecated in favour of
+[`aeme_constructor()`](https://limnotrack.com/reference/aeme_constructor.md)
+(build an `Aeme` object from your own lake data, with full validation)
+or [`new_aeme()`](https://limnotrack.com/reference/new_aeme.md) (a quick
+placeholder object to populate incrementally). It still works and will
+keep working, but new code should prefer those instead of hand-editing a
+YAML file.
+
+## See also
+
+[`aeme_constructor()`](https://limnotrack.com/reference/aeme_constructor.md),
+[`new_aeme()`](https://limnotrack.com/reference/new_aeme.md)
+
 ## Examples
 
 ``` r
@@ -31,7 +46,7 @@ aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
 aeme <- yaml_to_aeme(file = aeme_yaml)
 aeme
 #> 
-#> ── AEME ────────────────────────────────────────────────────────────────────────
+#> ── AEME v0.4.0 ─────────────────────────────────────────────────────────────────
 #> 
 #> ── Lake ──
 #> 
@@ -41,7 +56,9 @@ aeme
 #> 
 #> ── Time ──
 #> 
-#> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600
+#> • Start: 2020-08-01 00:00:00; Stop: 2021-06-30 00:00:00; Time step: 3600 s;
+#>   Output step: 86400 s
+#> • Timezone: UTC (timestamps stored UTC)
 #> • Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1; Simstrat: 2
 #> 
 #> ── Configuration ──
@@ -57,6 +74,7 @@ aeme
 #> │      GLM-AED              Absent              Absent         │
 #> │      GOTM-WET             Absent              Absent         │
 #> │   SIMSTRAT-AED2           Absent              Absent         │
+#> │    SIMSTRAT-AED           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -94,6 +112,7 @@ aeme
 #> • GLM-AED: 0
 #> • GOTM-WET: 0
 #> • SIMSTRAT-AED2: 0
+#> • SIMSTRAT-AED: 0
 #> • Variables: 0
 #> None
 ```

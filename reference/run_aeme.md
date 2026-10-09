@@ -13,7 +13,7 @@ run_aeme(
   return_type = c("aeme", "exec_result", "both", "none"),
   ens_n = 1,
   model_controls = NULL,
-  verbose = FALSE,
+  verbose = getOption("AEME.inform", FALSE),
   debug = FALSE,
   timeout = Inf,
   parallel = FALSE,
@@ -65,7 +65,8 @@ run_aeme(
 
 - verbose:
 
-  logical; print model output to console. Defaults to FALSE.
+  logical; print model output to console. Defaults to
+  `getOption("AEME.inform", FALSE)`.
 
 - debug:
 
@@ -117,7 +118,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [24ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance

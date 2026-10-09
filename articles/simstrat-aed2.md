@@ -147,24 +147,26 @@ aeme
 
 
     #>                                                                                 
-    #> ── AEME ────────────────────────────────────────────────────────────────────────
+    #> ── AEME v0.4.0 ─────────────────────────────────────────────────────────────────
     #>                                                                                 
     #> ── Lake ──                                                                      
     #>                                                                                 
-    #> Wainamu (ID: 45819)                                                             
+    #> Wainamu (ID: LID45819)                                                          
     #> • Lat: -36.89; Lon: 174.47                                                      
     #> • Elev: 23.64m; Depth: 13.07m; Area: 152343 m2                                  
     #>                                                                                 
     #> ── Time ──                                                                      
     #>                                                                                 
-    #> • Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600                          
+    #> • Start: 2020-08-01 00:00:00; Stop: 2021-06-30 00:00:00; Time step: 3600 s;     
+    #>   Output step: s                                                                
+    #> • Timezone: UTC (timestamps stored UTC)                                         
     #> • Spin up (days): GLM: 2; GOTM: 1; DYRESM: 1; Simstrat: 2                       
     #>                                                                                 
     #> ── Configuration ──                                                             
     #>                                                                                 
-    #> • Model:                                                                        
-    #> • Path: Not set                                                                 
-    #> • Model controls: Absent                                                        
+    #> • Model: glm_aed                                                                
+    #> • Path: C:/Users/mooret/Git/AEME                                                
+    #> • Model controls: Present                                                       
     #> • Use biogeochemical model: No                                                  
     #> ┌ Model Configuration ─────────────────────────────────────────┐                
     #> │       Model              Physical         Biogeochemical     │                
@@ -173,6 +175,7 @@ aeme
     #> │      GLM-AED              Absent              Absent         │                
     #> │      GOTM-WET             Absent              Absent         │                
     #> │   SIMSTRAT-AED2           Absent              Absent         │                
+    #> │    SIMSTRAT-AED           Absent              Absent         │                
     #> └──────────────────────────────────────────────────────────────┘                
     #>                                                                                 
     #> ── Observations ──                                                              
@@ -210,6 +213,7 @@ aeme
     #> • GLM-AED: 0                                                                    
     #> • GOTM-WET: 0                                                                   
     #> • SIMSTRAT-AED2: 0                                                              
+    #> • SIMSTRAT-AED: 0                                                               
     #> • Variables: 0                                                                  
     #> None                                                                            
 
@@ -229,13 +233,14 @@ AED2.
 
 model_controls <- get_model_controls(use_bgc = TRUE)
 head(model_controls)
-#>    var_aeme simulate inf_default initial_wc initial_sed conversion_aed
-#> 1   CAR_doc     TRUE           0        0.5       1e+06       0.012011
-#> 2   CAR_poc     TRUE           0        0.2       1e-01       0.012011
-#> 3   CHM_oxy     TRUE          10       10.0       1e+01       0.032000
-#> 4  CHM_salt     TRUE           0        0.0       0e+00       1.000000
-#> 5  HYD_dens     TRUE          NA         NA          NA       1.000000
-#> 6 HYD_strat     TRUE          NA         NA          NA       1.000000
+#> <model_controls> 6/6 variables simulated
+#>   var_aeme simulate inf_default initial_wc initial_sed conversion_aed
+#>    CAR_doc      yes           0        0.5   1000000.0          0.012
+#>    CAR_poc      yes           0        0.2         0.1          0.012
+#>    CHM_oxy      yes          10       10.0        10.0          0.032
+#>   CHM_salt      yes           0        0.0         0.0          1.000
+#>   HYD_dens      yes           -          -           -          1.000
+#>  HYD_strat      yes           -          -           -          1.000
 ```
 
 ``` r
@@ -467,47 +472,38 @@ diagnostics it unlocks.
 ## Assessing model performance
 
 When observations are stored in the `aeme` object,
-[`assess_model()`](https://limnotrack.com/reference/assess_model.md)
+[`assess_aeme()`](https://limnotrack.com/reference/assess_aeme.md)
 computes a suite of skill metrics (RMSE, NSE, bias, Pearson *r*, etc.)
 for each simulated variable:
 
 ``` r
 
-skill <- assess_model(aeme = aeme, model = model)
+skill <- assess_aeme(aeme = aeme, model = model)
 skill
-#>            Model    var_sim   bias    mae   rmse  nmae      nse    d2      r
-#> 1  SIMSTRAT-AED2    CAR_doc -1.539  1.539  1.719 0.566  -12.341 0.632 -0.217
-#> 2  SIMSTRAT-AED2  HYD_strat -0.700  0.700  0.837 1.000   -2.333 0.380     NA
-#> 3  SIMSTRAT-AED2 HYD_thmcln  6.466  6.466  7.109 0.673   -4.794 0.510     NA
-#> 4  SIMSTRAT-AED2  PHY_tchla 19.482 20.407 27.288 2.823  -67.808 0.845  0.176
-#> 5  SIMSTRAT-AED2    NIT_amm -0.006  0.009  0.021 0.744   -0.158 0.142 -0.145
-#> 6  SIMSTRAT-AED2    NIT_nit  0.002  0.004  0.007 2.384  -10.315 1.165 -0.185
-#> 7  SIMSTRAT-AED2    PHS_frp -0.001  0.001  0.001 0.422   -0.541 0.266  0.224
-#> 8  SIMSTRAT-AED2    CHM_oxy  2.488  2.539  3.787 0.368   -0.404 0.229  0.576
-#> 9  SIMSTRAT-AED2   CHM_salt -0.117  0.117  0.117 1.000 -328.984 0.914     NA
-#> 10 SIMSTRAT-AED2   HYD_temp  0.735  1.777  2.415 0.099    0.398 0.221  0.862
-#>        rs    r2     B   n obs_na sim_na           name_text
-#> 1  -0.294 0.047 0.003  10      0      0 Dissolved organic C
-#> 2      NA 0.000 0.000  10      0      0          Stratified
-#> 3      NA 0.000 0.000  10      0      0   Thermocline depth
-#> 4   0.067 0.031 0.000  10      0      0 Total chlorophyll a
-#> 5   0.102 0.021 0.010  20      0      0 Ammoniacal nitrogen
-#> 6  -0.345 0.034 0.003  20      0      0             Nitrate
-#> 7   0.322 0.050 0.020  20      0      0           Phosphate
-#> 8   0.714 0.331 0.138 125      0      0    Dissolved oxygen
-#> 9      NA 0.000 0.000 125      0      0            Salinity
-#> 10  0.856 0.742 0.463 125      0      0   Water temperature
-#>                           name_parse
-#> 1  Dissolved~organic~carbon~(g~m^-3)
-#> 2                     Stratified~(1)
-#> 3              Thermocline~depth~(m)
-#> 4      Total~chlorophyll~a~(mg~m^-3)
-#> 5       Ammoniacal~nitrogen~(g~m^-3)
-#> 6                 Nitrate-N~(g~m^-3)
-#> 7               Phosphate-P~(g~m^-3)
-#> 8         Dissolved~oxygen~(mg~L^-1)
-#> 9                     Salinity~(PSU)
-#> 10            Temperature~(degree~C)
+#>            Model           name_text   var_aeme     bias      mae     rmse
+#> 1  SIMSTRAT-AED2 Dissolved organic C    CAR_doc -1.54000  1.54000  1.72000
+#> 2  SIMSTRAT-AED2    Dissolved oxygen    CHM_oxy  2.49000  2.54000  3.79000
+#> 3  SIMSTRAT-AED2            Salinity   CHM_salt -0.11700  0.11700  0.11700
+#> 4  SIMSTRAT-AED2          Stratified  HYD_strat -0.70000  0.70000  0.83700
+#> 5  SIMSTRAT-AED2   Water temperature   HYD_temp  0.73500  1.78000  2.42000
+#> 6  SIMSTRAT-AED2   Thermocline depth HYD_thmcln  6.47000  6.47000  7.11000
+#> 7  SIMSTRAT-AED2         Water level LKE_lvlwtr -0.34900  0.36000  0.41800
+#> 8  SIMSTRAT-AED2 Ammoniacal nitrogen    NIT_amm -0.00595  0.00878  0.02070
+#> 9  SIMSTRAT-AED2             Nitrate    NIT_nit  0.00213  0.00382  0.00659
+#> 10 SIMSTRAT-AED2           Phosphate    PHS_frp -0.00067  0.00076  0.00108
+#> 11 SIMSTRAT-AED2 Total chlorophyll a  PHY_tchla 19.50000 20.40000 27.30000
+#>      nmae      nse     kge     d2      r      rs        B   n obs_na sim_na
+#> 1  0.5660  -12.300 -0.3450 0.2360 -0.217 -0.2940 0.003280  10      0      0
+#> 2  0.3680   -0.404  0.0378 0.4960  0.576  0.7140 0.138000 125      0      0
+#> 3  1.0000 -329.000      NA 0.0827     NA      NA 0.000000 125      0      0
+#> 4  1.0000   -2.330      NA 0.4570     NA      NA 0.000000  10      0      0
+#> 5  0.0987    0.398  0.5760 0.8940  0.862  0.8560 0.463000 125      0      0
+#> 6  0.6730   -4.790      NA 0.3830     NA      NA 0.000000  10      0      0
+#> 7  0.0153  -49.900 -1.7800 0.1600 -0.495 -0.4150 0.004710   8      0      0
+#> 8  0.7440   -0.158 -0.5170 0.2390 -0.145  0.1020 0.009790  20      0      0
+#> 9  2.3800  -10.300 -1.5600 0.0260 -0.185 -0.3450 0.002770  20      0      0
+#> 10 0.4220   -0.541 -0.1670 0.4700  0.224  0.3220 0.019700  20      0      0
+#> 11 2.8200  -67.800 -4.6500 0.1900  0.176  0.0667 0.000443  10      0      0
 ```
 
 ------------------------------------------------------------------------
@@ -641,7 +637,7 @@ catalog, mapped to Simstrat-AED2’s `PHY_TCHLA`. Most of the diagnostics
 tabulated above (`PHY_GPP`, `OXY_atm_oxy_flux`, `OXY_sat`, …) do **not**
 have a `var_aeme` entry yet — AEME hasn’t adopted every AED2 diagnostic
 into its standardised variable catalog.
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md)/[`assess_model()`](https://limnotrack.com/reference/assess_model.md)
+[`plot_output()`](https://limnotrack.com/reference/plot_output.md)/[`assess_aeme()`](https://limnotrack.com/reference/assess_aeme.md)
 only recognise `var_aeme` names, and passing an unregistered one through
 can silently resolve to the *wrong* variable via
 [`guess_aeme_vars()`](https://limnotrack.com/reference/guess_aeme_vars.md)’s
@@ -653,7 +649,7 @@ read them straight from `output.nc` instead:
 
 ``` r
 
-outfile <- get_model_outfile(aeme = aeme, model = model, path = path)
+outfile <- get_model_outfile(aeme = aeme)
 nc <- ncdf4::nc_open(outfile$simstrat_aed2)
 
 time_sec <- ncdf4::ncvar_get(nc, "time")
@@ -776,7 +772,7 @@ richer descriptions above — are the natural inputs to an automated
 calibration workflow via the
 [aemetools](https://github.com/limnotrack/aemetools) package, which
 wraps
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)/[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)/[`assess_model()`](https://limnotrack.com/reference/assess_model.md)
+[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)/[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)/[`assess_aeme()`](https://limnotrack.com/reference/assess_aeme.md)
 in an optimiser.
 
 ### Simstrat’s native PEST-based calibration

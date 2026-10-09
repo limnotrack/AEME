@@ -18,9 +18,19 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -31,7 +41,6 @@
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -137,16 +146,16 @@ apply. Options are:</p><ul><li><p>0: Bottom layer only</p></li>
 <span class="r-in"><span><span class="va">sed_params_1zone</span> <span class="op">&lt;-</span> <span class="fu">glm_sed_params</span><span class="op">(</span>n_zones <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sed_params_1zone</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      model     file                        name value    min    max group index</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  glm_aed glm3.nml       sediment/benthic_mode  2.00  2.000  2.000  &lt;NA&gt;    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  glm_aed glm3.nml            sediment/n_zones  1.00  1.000  1.000  &lt;NA&gt;    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  glm_aed glm3.nml      sediment/sed_temp_mean 12.00  6.000 18.000  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  glm_aed glm3.nml       sediment/zone_heights 10.00  5.000 15.000  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  glm_aed glm4.nml       sediment/benthic_mode  2.00  2.000  2.000  &lt;NA&gt;    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  glm_aed glm4.nml            sediment/n_zones  1.00  1.000  1.000  &lt;NA&gt;    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  glm_aed glm4.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  glm_aed glm4.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  glm_aed glm4.nml      sediment/sed_temp_mean 12.00  6.000 18.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  glm_aed glm4.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  glm_aed glm4.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  glm_aed glm4.nml       sediment/zone_heights 10.00  5.000 15.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  glm_aed glm4.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 glm_aed glm4.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      module</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  sediment</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  sediment</span>
@@ -166,32 +175,32 @@ apply. Options are:</p><ul><li><p>0: Bottom layer only</p></li>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sed_params_3zones</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      model     file                        name value    min    max group index</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  glm_aed glm3.nml       sediment/benthic_mode  2.00  2.000  2.000  &lt;NA&gt;    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  glm_aed glm3.nml            sediment/n_zones  3.00  3.000  3.000  &lt;NA&gt;    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  glm_aed glm3.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  glm_aed glm3.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  glm_aed glm3.nml      sediment/sed_temp_mean 10.00  5.000 15.000  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 glm_aed glm3.nml      sediment/sed_temp_mean 12.00  6.000 18.000  &lt;NA&gt;     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 glm_aed glm3.nml      sediment/sed_temp_mean 14.00  7.000 21.000  &lt;NA&gt;     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14 glm_aed glm3.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17 glm_aed glm3.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18 glm_aed glm3.nml       sediment/zone_heights  5.00  2.500  7.500  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19 glm_aed glm3.nml       sediment/zone_heights 15.00  7.500 22.500  &lt;NA&gt;     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20 glm_aed glm3.nml       sediment/zone_heights 20.00 10.000 30.000  &lt;NA&gt;     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23 glm_aed glm3.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26 glm_aed glm3.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  glm_aed glm4.nml       sediment/benthic_mode  2.00  2.000  2.000  &lt;NA&gt;    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  glm_aed glm4.nml            sediment/n_zones  3.00  3.000  3.000  &lt;NA&gt;    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  glm_aed glm4.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  glm_aed glm4.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  glm_aed glm4.nml     sediment/sed_heat_Ksoil  0.01  0.005  0.015  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  glm_aed glm4.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  glm_aed glm4.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  glm_aed glm4.nml     sediment/sed_temp_depth  0.20  0.100  0.300  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  glm_aed glm4.nml      sediment/sed_temp_mean 10.00  5.000 15.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 glm_aed glm4.nml      sediment/sed_temp_mean 12.00  6.000 18.000  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 glm_aed glm4.nml      sediment/sed_temp_mean 14.00  7.000 21.000  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 glm_aed glm4.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 glm_aed glm4.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 glm_aed glm4.nml sediment/sed_temp_amplitude  8.00  4.000 12.000  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 glm_aed glm4.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 glm_aed glm4.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 glm_aed glm4.nml  sediment/sed_temp_peak_doy 30.00 15.000 45.000  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 glm_aed glm4.nml       sediment/zone_heights  5.00  2.500  7.500  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 glm_aed glm4.nml       sediment/zone_heights 15.00  7.500 22.500  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 glm_aed glm4.nml       sediment/zone_heights 20.00 10.000 30.000  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 glm_aed glm4.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 glm_aed glm4.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 glm_aed glm4.nml   sediment/sed_reflectivity  0.01  0.005  0.015  &lt;NA&gt;     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 glm_aed glm4.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 glm_aed glm4.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26 glm_aed glm4.nml      sediment/sed_roughness  0.01  0.005  0.015  &lt;NA&gt;     3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      module</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  sediment</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  sediment</span>

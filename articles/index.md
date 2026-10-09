@@ -2,10 +2,28 @@
 
 ### Getting started
 
+- [Installing Model
+  Binaries](https://limnotrack.com/articles/installing-models.md):
 - [Introduction to AEME](https://limnotrack.com/articles/intro-aeme.md):
 - [AEME Inputs](https://limnotrack.com/articles/aeme-inputs.md):
 - [Set up AEME for a new
   lake](https://limnotrack.com/articles/setup-new-lake.md):
+
+### Working with models
+
+- [Visualising AEME
+  Output](https://limnotrack.com/articles/visualising-output.md):
+- [Testing Parameters Without a Full
+  Rebuild](https://limnotrack.com/articles/testing-parameters.md):
+- [Hourly vs daily meteorological
+  forcing](https://limnotrack.com/articles/hourly-vs-daily-met.md):
+- [Sub-daily output and daily-mean
+  storage](https://limnotrack.com/articles/subdaily-output.md):
+
+### Uncertainty
+
+- [Initial conditions, uncertainty and
+  spin-up](https://limnotrack.com/articles/initial-conditions-and-spin-up.md):
 
 ### Model descriptions
 
@@ -24,5 +42,3 @@
   AEME](https://limnotrack.com/articles/lernzmp-aeme.md):
 - [Lake Rotoehu Water Balance and
   Evaporation](https://limnotrack.com/articles/rotoehu-water-balance.md):
-- [Set up AEME for a new
-  lake](https://limnotrack.com/articles/setup-new-lake.md):

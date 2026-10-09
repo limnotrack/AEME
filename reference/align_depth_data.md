@@ -37,9 +37,9 @@ align_depth_data(aeme, model, var_sim, ens_n = 1, return_df = TRUE)
 
 A data frame with the following columns:
 
-- `Date`: Date of observation
+- `Date`: Observation date, as a calendar `Date`
 
-- `depth`: Depth of observation
+- `depth`: Depth of observation (m, positive-down from the surface)
 
 - `elev`: Elevation of observation
 
@@ -48,7 +48,3 @@ A data frame with the following columns:
 - `var_sim`: Variable name
 
 - `value`: Value of the variable
-
-- `depth_from`: Depth from which the variable is extracted
-
-- `depth_to`: Depth to which the variable is extracted

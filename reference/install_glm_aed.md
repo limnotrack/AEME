@@ -28,8 +28,11 @@ install_glm_aed(
 
   Character. The GLM version to install, e.g. `"3.9.108"`. Use
   [`list_glm_versions()`](https://limnotrack.com/reference/list_glm_versions.md)
-  to see what's available. Defaults to `"latest"`, which resolves to the
-  highest version number available for the current platform.
+  to see what's available. A trailing `"+"` (e.g. `"4.0.0+"`) selects
+  the GLM+ (AED+) build of that version – the same binary plus the
+  private `libaed-riparian`/`-light`/`-dev` modules. Defaults to
+  `"latest"`, which resolves to the highest version number available for
+  the current platform (preferring the `"+"` edition on a tie).
 
 - os:
 

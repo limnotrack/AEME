@@ -33,12 +33,16 @@ get_obs(aeme, var_sim, depth_range = NULL, time_filter = FALSE)
 
 A data frame with the following columns:
 
-- `Date`: Date of observation
+- `Date`: Observation date – a UTC `POSIXct`; daily rows are anchored at
+  12:00:00
 
 - `var_aeme`: Name of the variable in the AEME format
 
-- `depth_from`: Depth from which the variable is extracted
-
-- `depth_to`: Depth to which the variable is extracted
+- `depth`: Nominal sampling depth (m, positive-down from the surface)
 
 - `value`: Value of the variable
+
+- `depth_to`: (optional) Bottom of an integrated sample, if recorded
+
+- `sd`: (optional) Measurement standard deviation, in the variable's
+  units

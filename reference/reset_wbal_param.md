@@ -8,7 +8,7 @@ data.
 ## Usage
 
 ``` r
-reset_wbal_param(aeme)
+reset_wbal_param(aeme, model = NULL)
 ```
 
 ## Arguments
@@ -16,6 +16,11 @@ reset_wbal_param(aeme)
 - aeme:
 
   Aeme object.
+
+- model:
+
+  character; model name(s) to reset parameters for (e.g. `"glm_aed"`).
+  If `NULL` (default), all fitted parameters are cleared.
 
 ## Value
 

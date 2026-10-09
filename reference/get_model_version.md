@@ -16,4 +16,4 @@ get_model_version(model)
 
 ## Value
 
-version string
+version string (invisible)

@@ -18,9 +18,19 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -31,7 +41,6 @@
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -134,6 +143,13 @@
 
         <dt>
 
+          <code><a href="aed_options.html">aed_options()</a></code>
+
+        </dt>
+        <dd>Options for the AED biogeochemistry setup in <code><a href="../reference/build_aeme.html">build_aeme()</a></code></dd>
+
+        <dt>
+
           <code><a href="aed_phyto_pars.html">aed_phyto_pars</a></code>
 
         </dt>
@@ -141,7 +157,14 @@
 
         <dt>
 
-          <code><a href="aeme.html">Aeme</a></code> <code><a href="aeme.html">Aeme-class</a></code>
+          <code><a href="aed_succession_index.html">aed_succession_index()</a></code>
+
+        </dt>
+        <dd>Compute a system-level phytoplankton succession index</dd>
+
+        <dt>
+
+          <code><a href="Aeme.html">Aeme</a></code> <code><a href="Aeme.html">Aeme-class</a></code>
 
         </dt>
         <dd>Aeme Class</dd>
@@ -183,10 +206,38 @@
 
         <dt>
 
-          <code><a href="assess_model.html">assess_model()</a></code>
+          <code><a href="as.data.frame.aeme_grouped_var.html">as.data.frame(<i>&lt;aeme_grouped_var&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Convert a grouped variable to a long-format data frame</dd>
+
+        <dt>
+
+          <code><a href="assess_aeme.html">assess_aeme()</a></code> <code><a href="assess_aeme.html">assess_model()</a></code>
 
         </dt>
         <dd>Assess model performance</dd>
+
+        <dt>
+
+          <code><a href="assess_spin_up.html">assess_spin_up()</a></code>
+
+        </dt>
+        <dd>Assess model sensitivity to initial conditions and required spin-up</dd>
+
+        <dt>
+
+          <code><a href="bardsley.html">bardsley()</a></code>
+
+        </dt>
+        <dd>Bardsley Coefficient (B) fit function</dd>
+
+        <dt>
+
+          <code><a href="bias.html">bias()</a></code>
+
+        </dt>
+        <dd>Mean bias fit function</dd>
 
         <dt>
 
@@ -208,6 +259,13 @@
 
         </dt>
         <dd>Calculate the volume of a lake using bathymetry data or a hypsograph</dd>
+
+        <dt>
+
+          <code><a href="calc_sed_temp.html">calc_sed_temp()</a></code>
+
+        </dt>
+        <dd>GLM sediment-temperature parameters from observed temperature profiles</dd>
 
         <dt>
 
@@ -295,6 +353,13 @@
 
         <dt>
 
+          <code><a href="check_loads.html">check_loads()</a></code>
+
+        </dt>
+        <dd>Sanity-check lake loading against simple hydrological benchmarks</dd>
+
+        <dt>
+
           <code><a href="check_model.html">check_model()</a></code>
 
         </dt>
@@ -337,6 +402,27 @@
 
         <dt>
 
+          <code><a href="cli_inform_safe.html">cli_inform_safe()</a></code>
+
+        </dt>
+        <dd>Inform messages respecting the global AEME.inform option</dd>
+
+        <dt>
+
+          <code><a href="cli_safe.html">cli_safe()</a></code>
+
+        </dt>
+        <dd>Inform messages respecting the global AEME.inform option</dd>
+
+        <dt>
+
+          <code><a href="collapse_met_daily.html">collapse_met_daily()</a></code>
+
+        </dt>
+        <dd>Collapse a sub-daily meteo data frame to a daily time step</dd>
+
+        <dt>
+
           <code><a href="configuration-set.html">`configuration&lt;-`()</a></code>
 
         </dt>
@@ -358,6 +444,41 @@
 
         <dt>
 
+          <code><a href="d2.html">d2()</a></code>
+
+        </dt>
+        <dd>Willmott Index of Agreement (d)</dd>
+
+        <dt>
+
+          <code><a href="diag_aeme.html">diag_aeme()</a></code>
+
+        </dt>
+        <dd>Diagnose the three baseline budgets (water, heat, nutrient) at once</dd>
+
+        <dt>
+
+          <code><a href="diag_heat_budget.html">diag_heat_budget()</a></code>
+
+        </dt>
+        <dd>Whole-lake heat budget vs observations: net deficit/surplus, or just surface/bottom redistribution?</dd>
+
+        <dt>
+
+          <code><a href="diag_nutrient_budget.html">diag_nutrient_budget()</a></code>
+
+        </dt>
+        <dd>Per-variable BGC bias vs observations</dd>
+
+        <dt>
+
+          <code><a href="diag_water_balance.html">diag_water_balance()</a></code>
+
+        </dt>
+        <dd>Water level bias and drift, against observations and against the model's own starting point</dd>
+
+        <dt>
+
           <code><a href="dy_cd_exe_path.html">dy_cd_exe_path()</a></code>
 
         </dt>
@@ -369,6 +490,13 @@
 
         </dt>
         <dd>Example dataset of parameters for the DYRESM-CAEDYM model</dd>
+
+        <dt>
+
+          <code><a href="effective_configuration.html">effective_configuration()</a></code>
+
+        </dt>
+        <dd>Model configuration with the model parameters applied</dd>
 
         <dt>
 
@@ -411,6 +539,27 @@
 
         </dt>
         <dd>Extend hypsometry to a greater elevation using linear extrapolation</dd>
+
+        <dt>
+
+          <code><a href="find_dy_cd_cfg.html">find_dy_cd_cfg()</a></code>
+
+        </dt>
+        <dd>Detect the DYRESM-CAEDYM configuration file within a directory</dd>
+
+        <dt>
+
+          <code><a href="find_glm_nml.html">find_glm_nml()</a></code>
+
+        </dt>
+        <dd>Detect the GLM hydrodynamic nml file within a directory</dd>
+
+        <dt>
+
+          <code><a href="fit_loss.html">nse_loss()</a></code> <code><a href="fit_loss.html">kge_loss()</a></code> <code><a href="fit_loss.html">kge_prime_loss()</a></code> <code><a href="fit_loss.html">log_kge_loss()</a></code>
+
+        </dt>
+        <dd>Minimise-oriented (loss) variants of NSE / KGE fit functions</dd>
 
         <dt>
 
@@ -477,6 +626,20 @@
 
         <dt>
 
+          <code><a href="get_dy_cd_param.html">get_dy_cd_param()</a></code>
+
+        </dt>
+        <dd>Get one or more parameter values from a DYRESM-CAEDYM configuration</dd>
+
+        <dt>
+
+          <code><a href="get_glm_param.html">get_glm_param()</a></code>
+
+        </dt>
+        <dd>Get one or more parameter values from a GLM-AED nml file</dd>
+
+        <dt>
+
           <code><a href="get_glm_sed_params.html">get_glm_sed_params()</a></code>
 
         </dt>
@@ -488,6 +651,13 @@
 
         </dt>
         <dd>Get number of sediment zones in GLM-AED model</dd>
+
+        <dt>
+
+          <code><a href="get_gotm_param.html">get_gotm_param()</a></code>
+
+        </dt>
+        <dd>Get one or more parameter values from a GOTM-WET <code>gotm.yaml</code> file</dd>
 
         <dt>
 
@@ -509,6 +679,13 @@
 
         </dt>
         <dd>Get inflow data from Aeme object</dd>
+
+        <dt>
+
+          <code><a href="get_initial_conditions.html">get_initial_conditions()</a></code>
+
+        </dt>
+        <dd>Get the stored initial-conditions specification</dd>
 
         <dt>
 
@@ -561,6 +738,13 @@
 
         <dt>
 
+          <code><a href="get_model_dir.html">get_model_dir()</a></code>
+
+        </dt>
+        <dd>Get the model directory for a given AEME and model.</dd>
+
+        <dt>
+
           <code><a href="get_model_outfile.html">get_model_outfile()</a></code>
 
         </dt>
@@ -603,10 +787,24 @@
 
         <dt>
 
+          <code><a href="get_obs_vars.html">get_obs_vars()</a></code>
+
+        </dt>
+        <dd>Show the observation variables present in an Aeme object</dd>
+
+        <dt>
+
           <code><a href="get_output_vars.html">get_output_vars()</a></code>
 
         </dt>
         <dd>Get the output variables from an AEME object</dd>
+
+        <dt>
+
+          <code><a href="get_simstrat_param.html">get_simstrat_param()</a></code>
+
+        </dt>
+        <dd>Get one or more parameter values from a Simstrat-AED2 <code>simstrat.par</code> file</dd>
 
         <dt>
 
@@ -663,6 +861,13 @@
 
         </dt>
         <dd>Parameter library for the GLM-AED model.</dd>
+
+        <dt>
+
+          <code><a href="glm_config_to_aeme.html">glm_config_to_aeme()</a></code>
+
+        </dt>
+        <dd>Reconstruct an Aeme object from a GLM-AED model configuration</dd>
 
         <dt>
 
@@ -778,10 +983,31 @@
 
         <dt>
 
+          <code><a href="install_simstrat_aed.html">install_simstrat_aed()</a></code>
+
+        </dt>
+        <dd>Install a Simstrat-AED executable for AEME</dd>
+
+        <dt>
+
           <code><a href="install_simstrat_aed2.html">install_simstrat_aed2()</a></code>
 
         </dt>
         <dd>Install a Simstrat-AED2 executable for AEME</dd>
+
+        <dt>
+
+          <code><a href="is_aeme_output.html">is_aeme_output()</a></code>
+
+        </dt>
+        <dd>Is <code>x</code> a model-output list (standardised or raw)?</dd>
+
+        <dt>
+
+          <code><a href="is_aeme_output_raw.html">is_aeme_output_raw()</a></code>
+
+        </dt>
+        <dd>Is <code>x</code> a <em>raw</em> (<code>raw_output = TRUE</code>) model-output list?</dd>
 
         <dt>
 
@@ -803,6 +1029,20 @@
 
         </dt>
         <dd>Model variable naming</dd>
+
+        <dt>
+
+          <code><a href="kge.html">kge()</a></code>
+
+        </dt>
+        <dd>Kling-Gupta Efficiency (KGE) fit function</dd>
+
+        <dt>
+
+          <code><a href="kge_prime.html">kge_prime()</a></code>
+
+        </dt>
+        <dd>Modified Kling-Gupta Efficiency (KGE') fit function</dd>
 
         <dt>
 
@@ -883,6 +1123,13 @@
 
         <dt>
 
+          <code><a href="list_simstrat_aed_versions.html">list_simstrat_aed_versions()</a></code>
+
+        </dt>
+        <dd>List available Simstrat-AED versions</dd>
+
+        <dt>
+
           <code><a href="load_configuration.html">load_configuration()</a></code>
 
         </dt>
@@ -897,10 +1144,24 @@
 
         <dt>
 
+          <code><a href="log_kge.html">log_kge()</a></code>
+
+        </dt>
+        <dd>Log-transformed Kling-Gupta Efficiency fit function</dd>
+
+        <dt>
+
           <code><a href="lookup_aeme_vars.html">lookup_aeme_vars()</a></code>
 
         </dt>
         <dd>View AEME variables</dd>
+
+        <dt>
+
+          <code><a href="mae.html">mae()</a></code>
+
+        </dt>
+        <dd>Mean Absolute Error (MAE) fit function</dd>
 
         <dt>
 
@@ -922,6 +1183,34 @@
 
         </dt>
         <dd>Names method for Aeme objects</dd>
+
+        <dt>
+
+          <code><a href="new_aeme.html">new_aeme()</a></code>
+
+        </dt>
+        <dd>Create a new, minimal Aeme object</dd>
+
+        <dt>
+
+          <code><a href="new_grouped_var.html">new_grouped_var()</a></code>
+
+        </dt>
+        <dd>Construct a "grouped" (non depth x time) model output variable</dd>
+
+        <dt>
+
+          <code><a href="nmae.html">nmae()</a></code>
+
+        </dt>
+        <dd>Normalized Mean Absolute Error (NMAE)</dd>
+
+        <dt>
+
+          <code><a href="nse.html">nse()</a></code>
+
+        </dt>
+        <dd>Nash-Sutcliffe Efficiency (NSE) fit function</dd>
 
         <dt>
 
@@ -1002,10 +1291,38 @@
 
         <dt>
 
+          <code><a href="pbias.html">pbias()</a></code>
+
+        </dt>
+        <dd>Percent Bias (PBIAS) fit function</dd>
+
+        <dt>
+
           <code><a href="plot-Aeme-method.html">plot(<i>&lt;Aeme&gt;</i>)</a></code>
 
         </dt>
         <dd>Plot method for Aeme objects</dd>
+
+        <dt>
+
+          <code><a href="plot.aeme_grouped_var.html">plot(<i>&lt;aeme_grouped_var&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a grouped variable as a line plot, coloured by its non-time dimensions (e.g. one line per zone)</dd>
+
+        <dt>
+
+          <code><a href="plot.kw_regime.html">plot(<i>&lt;kw_regime&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a Kw regime suggestion</dd>
+
+        <dt>
+
+          <code><a href="plot_assess.html">plot_assess()</a></code>
+
+        </dt>
+        <dd>Plot model performance metrics</dd>
 
         <dt>
 
@@ -1051,6 +1368,13 @@
 
         <dt>
 
+          <code><a href="plot_glm_output.html">plot_glm_output()</a></code>
+
+        </dt>
+        <dd>Plot a variable from a raw read_glm_output()/read_model_outputs() list</dd>
+
+        <dt>
+
           <code><a href="plot_hyps.html">plot_hyps()</a></code>
 
         </dt>
@@ -1058,10 +1382,24 @@
 
         <dt>
 
+          <code><a href="plot_loads.html">plot_loads()</a></code>
+
+        </dt>
+        <dd>Plot lake loading summary</dd>
+
+        <dt>
+
           <code><a href="plot_met_tile.html">plot_met_tile()</a></code>
 
         </dt>
         <dd>Plot a tile plot of meteorological data</dd>
+
+        <dt>
+
+          <code><a href="plot_model_output.html">plot_model_output()</a></code>
+
+        </dt>
+        <dd>Plot a variable from model output – an <code>Aeme</code> object or a raw output list</dd>
 
         <dt>
 
@@ -1111,6 +1449,13 @@
 
         </dt>
         <dd>Plot model residuals</dd>
+
+        <dt>
+
+          <code><a href="plot_spin_up.html">plot_spin_up()</a></code>
+
+        </dt>
+        <dd>Plot a spin-up assessment</dd>
 
         <dt>
 
@@ -1191,6 +1536,20 @@
 
         <dt>
 
+          <code><a href="print.kw_regime.html">print(<i>&lt;kw_regime&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Print a Kw regime suggestion</dd>
+
+        <dt>
+
+          <code><a href="print.model_controls.html">print(<i>&lt;model_controls&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Print a model controls table</dd>
+
+        <dt>
+
           <code><a href="print.nml.html">print(<i>&lt;nml&gt;</i>)</a></code>
 
         </dt>
@@ -1209,6 +1568,13 @@
 
         </dt>
         <dd>Read an AEME object from files</dd>
+
+        <dt>
+
+          <code><a href="read_aeme_parquet.html">read_aeme_parquet()</a></code>
+
+        </dt>
+        <dd>Read from a Parquet store written by write_aeme_parquet()</dd>
 
         <dt>
 
@@ -1290,7 +1656,7 @@
         <dt>
 
           <code><a href="read_model_wlev.html">read_model_wlev()</a></code>
-          <span class="badge lifecycle lifecycle-stable">stable</span>
+
         </dt>
         <dd>Read water level from model output</dd>
 
@@ -1300,6 +1666,27 @@
 
         </dt>
         <dd>read in a GLM simulation *.nml file</dd>
+
+        <dt>
+
+          <code><a href="read_simstrat_dat.html">read_simstrat_dat()</a></code>
+
+        </dt>
+        <dd>Read Simstrat's raw text output directly</dd>
+
+        <dt>
+
+          <code><a href="read_simstrat_dat_file.html">read_simstrat_dat_file()</a></code>
+
+        </dt>
+        <dd>Read a single Simstrat <code>&lt;var&gt;_out.dat</code> output file</dd>
+
+        <dt>
+
+          <code><a href="read_simstrat_dat_wlev.html">read_simstrat_dat_wlev()</a></code>
+
+        </dt>
+        <dd>Read Simstrat lake water level from the raw text output</dd>
 
         <dt>
 
@@ -1314,6 +1701,13 @@
 
         </dt>
         <dd>Read Simstrat-AED2 lake water level output</dd>
+
+        <dt>
+
+          <code><a href="recommend_calib_plan.html">recommend_calib_plan()</a></code>
+
+        </dt>
+        <dd>Turn a diagnosis into concrete calibration suggestions</dd>
 
         <dt>
 
@@ -1352,6 +1746,13 @@
 
         <dt>
 
+          <code><a href="rmse.html">rmse()</a></code>
+
+        </dt>
+        <dd>Root Mean Square Error (RMSE) fit function</dd>
+
+        <dt>
+
           <code><a href="run_aeme.html">run_aeme()</a></code>
 
         </dt>
@@ -1359,7 +1760,7 @@
 
         <dt>
 
-          <code><a href="run_dy_cd.html">run_dy_cd()</a></code> <code><a href="run_dy_cd.html">run_glm_aed()</a></code> <code><a href="run_dy_cd.html">run_gotm_wet()</a></code> <code><a href="run_dy_cd.html">run_simstrat_aed2()</a></code>
+          <code><a href="run_dy_cd.html">run_dy_cd()</a></code> <code><a href="run_dy_cd.html">run_glm_aed()</a></code> <code><a href="run_dy_cd.html">run_gotm_wet()</a></code> <code><a href="run_dy_cd.html">run_simstrat_aed2()</a></code> <code><a href="run_dy_cd.html">run_simstrat_aed()</a></code>
 
         </dt>
         <dd>Run AEME models</dd>
@@ -1370,6 +1771,27 @@
 
         </dt>
         <dd>Run GLM-AED diagnostics</dd>
+
+        <dt>
+
+          <code><a href="run_model_test.html">run_model_test()</a></code>
+
+        </dt>
+        <dd>Run a single what-if model scenario from a path alone</dd>
+
+        <dt>
+
+          <code><a href="r_pearson.html">r_pearson()</a></code>
+
+        </dt>
+        <dd>Pearson Correlation Coefficient (r)</dd>
+
+        <dt>
+
+          <code><a href="r_spearman.html">r_spearman()</a></code>
+
+        </dt>
+        <dd>Spearman Rank Correlation Coefficient (rs)</dd>
 
         <dt>
 
@@ -1394,10 +1816,73 @@
 
         <dt>
 
+          <code><a href="set_dy_cd_inflows.html">set_dy_cd_inflows()</a></code>
+
+        </dt>
+        <dd>Set inflow data for a DYRESM-CAEDYM simulation directory</dd>
+
+        <dt>
+
+          <code><a href="set_dy_cd_init.html">set_dy_cd_init()</a></code>
+
+        </dt>
+        <dd>Set initial conditions for a DYRESM-CAEDYM simulation</dd>
+
+        <dt>
+
+          <code><a href="set_dy_cd_outflows.html">set_dy_cd_outflows()</a></code>
+
+        </dt>
+        <dd>Set outflow data for a DYRESM-CAEDYM simulation directory</dd>
+
+        <dt>
+
+          <code><a href="set_dy_cd_param.html">set_dy_cd_param()</a></code>
+
+        </dt>
+        <dd>Set one or more parameter values in a DYRESM-CAEDYM configuration</dd>
+
+        <dt>
+
           <code><a href="set_glm_aed_models.html">set_glm_aed_models()</a></code>
 
         </dt>
         <dd>Set GLM-AED Models</dd>
+
+        <dt>
+
+          <code><a href="set_glm_inflows.html">set_glm_inflows()</a></code>
+
+        </dt>
+        <dd>Set inflow data for a GLM-AED simulation directory</dd>
+
+        <dt>
+
+          <code><a href="set_glm_init.html">set_glm_init()</a></code>
+
+        </dt>
+        <dd>Set initial conditions for a GLM-AED simulation</dd>
+
+        <dt>
+
+          <code><a href="set_glm_outflows.html">set_glm_outflows()</a></code>
+
+        </dt>
+        <dd>Set outflow data for a GLM-AED simulation directory</dd>
+
+        <dt>
+
+          <code><a href="set_glm_outflow_config.html">set_glm_outflow_config()</a></code>
+
+        </dt>
+        <dd>Fine-grained control of the GLM-AED <code>&amp;outflow</code> configuration</dd>
+
+        <dt>
+
+          <code><a href="set_glm_param.html">set_glm_param()</a></code>
+
+        </dt>
+        <dd>Set one or more parameter values in a GLM-AED nml file</dd>
 
         <dt>
 
@@ -1408,10 +1893,45 @@
 
         <dt>
 
+          <code><a href="set_gotm_inflows.html">set_gotm_inflows()</a></code>
+
+        </dt>
+        <dd>Set inflow data for a GOTM-WET simulation directory</dd>
+
+        <dt>
+
+          <code><a href="set_gotm_init.html">set_gotm_init()</a></code>
+
+        </dt>
+        <dd>Set initial conditions for a GOTM-WET simulation</dd>
+
+        <dt>
+
+          <code><a href="set_gotm_outflows.html">set_gotm_outflows()</a></code>
+
+        </dt>
+        <dd>Set outflow data for a GOTM-WET simulation directory</dd>
+
+        <dt>
+
+          <code><a href="set_gotm_param.html">set_gotm_param()</a></code>
+
+        </dt>
+        <dd>Set one or more parameter values in a GOTM-WET <code>gotm.yaml</code> file</dd>
+
+        <dt>
+
           <code><a href="set_inflows.html">set_inflows()</a></code>
 
         </dt>
         <dd>Set inflow data from Aeme object</dd>
+
+        <dt>
+
+          <code><a href="set_initial_conditions.html">set_initial_conditions()</a></code>
+
+        </dt>
+        <dd>Set initial conditions for AEME models</dd>
 
         <dt>
 
@@ -1429,10 +1949,59 @@
 
         <dt>
 
+          <code><a href="set_output_time_step.html">set_output_time_step()</a></code>
+
+        </dt>
+        <dd>Set the model output temporal frequency</dd>
+
+        <dt>
+
+          <code><a href="set_output_vars.html">set_output_vars()</a></code>
+
+        </dt>
+        <dd>Restrict a model's written output to the variables of interest</dd>
+
+        <dt>
+
           <code><a href="set_precip.html">set_precip()</a></code>
 
         </dt>
         <dd>Set precipitation as either meteorological input or inflow</dd>
+
+        <dt>
+
+          <code><a href="set_simstrat_inflows.html">set_simstrat_inflows()</a></code>
+
+        </dt>
+        <dd>Set inflow data for a Simstrat-AED2 simulation directory</dd>
+
+        <dt>
+
+          <code><a href="set_simstrat_init.html">set_simstrat_init()</a></code>
+
+        </dt>
+        <dd>Set initial conditions for a Simstrat simulation</dd>
+
+        <dt>
+
+          <code><a href="set_simstrat_outflows.html">set_simstrat_outflows()</a></code>
+
+        </dt>
+        <dd>Set outflow data for a Simstrat-AED2 simulation directory</dd>
+
+        <dt>
+
+          <code><a href="set_simstrat_param.html">set_simstrat_param()</a></code>
+
+        </dt>
+        <dd>Set one or more parameter values in a Simstrat-AED2 <code>simstrat.par</code> file</dd>
+
+        <dt>
+
+          <code><a href="set_sim_period.html">set_sim_period()</a></code>
+
+        </dt>
+        <dd>Apply a suggested simulation period to an Aeme object</dd>
 
         <dt>
 
@@ -1485,6 +2054,20 @@
 
         <dt>
 
+          <code><a href="simstrat_aed_exe_path.html">simstrat_aed_exe_path()</a></code>
+
+        </dt>
+        <dd>Locate an installed Simstrat-AED executable</dd>
+
+        <dt>
+
+          <code><a href="standardise_glm_output.html">standardise_glm_output()</a></code>
+
+        </dt>
+        <dd>Standardise a raw GLM-AED output list onto AEME's common depth grid</dd>
+
+        <dt>
+
           <code><a href="standardise_inflow.html">standardise_inflow()</a></code>
 
         </dt>
@@ -1496,6 +2079,34 @@
 
         </dt>
         <dd>Standardise meteorological variable names and units for AEME</dd>
+
+        <dt>
+
+          <code><a href="suggest_kw_regime.html">suggest_kw_regime()</a></code>
+
+        </dt>
+        <dd>Suggest a light extinction (Kw) regime for GLM</dd>
+
+        <dt>
+
+          <code><a href="suggest_sim_period.html">suggest_sim_period()</a></code>
+
+        </dt>
+        <dd>Choose a simulation period from what the data can support</dd>
+
+        <dt>
+
+          <code><a href="summarise_loads.html">summarise_loads()</a></code>
+
+        </dt>
+        <dd>Summarise lake loading from inflows</dd>
+
+        <dt>
+
+          <code><a href="summarise_obs.html">summarise_obs()</a></code>
+
+        </dt>
+        <dd>Summarise what the observations actually contain</dd>
 
         <dt>
 
@@ -1541,6 +2152,13 @@
 
         <dt>
 
+          <code><a href="upgrade_aeme.html">upgrade_aeme()</a></code>
+
+        </dt>
+        <dd>Upgrade an Aeme object to the current AEME version</dd>
+
+        <dt>
+
           <code><a href="water_balance-set.html">`water_balance&lt;-`()</a></code>
 
         </dt>
@@ -1552,6 +2170,13 @@
 
         </dt>
         <dd>Access the water_balance slot of an Aeme object</dd>
+
+        <dt>
+
+          <code><a href="write_aeme_parquet.html">write_aeme_parquet()</a></code>
+
+        </dt>
+        <dd>Export an Aeme object's model output to a partitioned Parquet store</dd>
 
         <dt>
 
@@ -1579,7 +2204,7 @@
           <code><a href="write_simstrat_nc.html">write_simstrat_nc()</a></code>
 
         </dt>
-        <dd>Consolidate Simstrat-AED2 text output into a single netCDF file</dd>
+        <dd>Consolidate Simstrat-AED2/AED text output into a single netCDF file</dd>
 
         <dt>
 
@@ -1591,7 +2216,7 @@
         <dt>
 
           <code><a href="yaml_to_aeme.html">yaml_to_aeme()</a></code>
-
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
         </dt>
         <dd>Convert aeme.yaml file to list</dd>
       </dl></div>

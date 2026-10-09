@@ -1,7 +1,11 @@
 # Set GLM-AED Models
 
 Set the biogeochemical models to be used in a GLM-AED configuration
-file.
+file. When the file is located from `aeme`, the GLM nml is also updated
+so that the `&init_profiles` initial conditions, `&inflow` `inflow_vars`
+and `&mass_balance` `balance_vars` only include variables whose AED
+module is in `aed_models`. When `nml` is supplied only that aed.nml
+object is modified.
 
 ## Usage
 
@@ -9,9 +13,9 @@ file.
 set_glm_aed_models(
   aeme,
   path,
-  aed_models = c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
-    "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton", "aed_zooplankton",
-    "aed_macrophyte", "aed_totals"),
+  aed_models = c("aed_sedflux", "aed_noncohesive", "aed_oxygen", "aed_silica",
+    "aed_nitrogen", "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton",
+    "aed_zooplankton", "aed_macrophyte", "aed_totals"),
   file = NULL,
   nml = NULL
 )
@@ -31,9 +35,10 @@ set_glm_aed_models(
 - aed_models:
 
   Character vector of GLM-AED models to include. Default includes all
-  available AED models: "aed_sedflux", "aed_oxygen", "aed_silica",
-  "aed_nitrogen", "aed_phosphorus", "aed_organic_matter",
-  "aed_phytoplankton", "aed_zooplankton", and "aed_macrophyte".
+  available AED models: "aed_sedflux", "aed_noncohesive", "aed_oxygen",
+  "aed_silica", "aed_nitrogen", "aed_phosphorus", "aed_organic_matter",
+  "aed_phytoplankton", "aed_zooplankton", "aed_macrophyte", and
+  "aed_totals".
 
 - file:
 

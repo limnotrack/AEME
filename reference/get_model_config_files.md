@@ -5,7 +5,7 @@ Get model configuration files paths
 ## Usage
 
 ``` r
-get_model_config_files(aeme, model, path, lake_dir = NULL)
+get_model_config_files(aeme = NULL, model, path = NULL, lake_dir)
 ```
 
 ## Arguments
@@ -27,8 +27,7 @@ get_model_config_files(aeme, model, path, lake_dir = NULL)
 
 - lake_dir:
 
-  Path to the lake AEME directory. If NULL, it will be computed from
-  `aeme` and `path`.
+  **\[deprecated\]** Use `path` instead of `lake_dir`
 
 ## Value
 

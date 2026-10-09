@@ -2,13 +2,19 @@
 
 ## Summary
 
-The AEME package hosts three one-dimensional hydrodynamic models: the
+The AEME package hosts four one-dimensional hydrodynamic models: the
 DYnamic REservoir Simulation Model (DYRESM), the General Lake Model
-(GLM), and the General Ocean Turbulence Model (GOTM, which has been
-adapted for closed basins for application to lakes and reservoirs). The
-models can be coupled to their corresponding water quality models, the
-DYRESM-CAEDYM (Computational Aquatic Ecosystem Dynamics Model), GLM-AED
-(Aquatic Ecosystem Dynamics Model), and GOTM-WET (Water Ecosystem Tool).
+(GLM), the General Ocean Turbulence Model (GOTM, which has been adapted
+for closed basins for application to lakes and reservoirs), and
+Simstrat. The models can be coupled to their corresponding water quality
+models, the DYRESM-CAEDYM (Computational Aquatic Ecosystem Dynamics
+Model), GLM-AED (Aquatic Ecosystem Dynamics Model), GOTM-WET (Water
+Ecosystem Tool), and Simstrat-AED2/AED.
+
+This vignette assumes at least one model is already installed – see
+[`vignette("installing-models")`](https://limnotrack.com/articles/installing-models.md)
+if [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+below reports a missing executable.
 
 Key aspects of the AEME package include:
 
@@ -108,7 +114,7 @@ components:
 | Model | Hyrodynamic | Ecosystem |
 |----|----|----|
 | DYRESM-CAEDYM | *.cfg* file and *.par* file | *.con*, *caedym3p1.bio, caedym3p1.chm* and *caedym3p1.sed* files |
-| GLM-AED | *glm3.nml* file | *aed2.nml*, *phytos.nml*, *zoops.nml* files |
+| GLM-AED | GLM hydrodynamic nml (*glm3.nml* or *glm4.nml*) | *aed.nml* (or *aed2.nml*) and its phytoplankton/zooplankton parameter files |
 | GOTM-WET | *gotm.yaml* and *output.yaml* files | *fabm.yaml* file |
 
 Files for hydrodynamic and ecosystem models. {.table}
@@ -130,19 +136,26 @@ model using the [aemetools](https://github.com/limnotrack/aemetools)
 package.
 
 The `lake` observations are stored in a data frame with the following
-columns:
+required columns:
 
 - **Date** - Date of the observation (character). The date must be in
   the format `YYYY-MM-DD HH:MM:SS`.
 
-- **depth** - Depth of the observation (m) (numeric). The depth must be
-  in metres.
+- **depth** - Nominal sampling depth of the observation (m, numeric),
+  positive-down from the lake surface.
 
-- **var** - Variable name of the observation (character). The variable
-  names an input preparation are designed in the [AEME inputs
+- **var_aeme** - Variable name of the observation (character). The
+  variable names and input preparation are described in the [AEME inputs
   article](https://limnotrack.com/articles/aeme-inputs.md).
 
 - **value** - Value of the observation (numeric).
+
+Two optional columns are also recognised: **depth_to** (the bottom of an
+integrated sample, when the observation covers a depth interval) and
+**sd** (the measurement standard deviation, in the variable’s units,
+used for observation weighting during calibration). The legacy
+`depth_from` / `depth_to` column pair is still accepted and is collapsed
+to a single `depth` (interval midpoint) with a deprecation warning.
 
 The `level` observations are stored in a data frame with the following
 columns:
@@ -252,10 +265,15 @@ The columns for the parameters data.frame are:
 - model - Either “dy_cd”, “glm_aed” and “gotm_wet”.
 
 - file - Either the name of the file e.g. “glm3.nml” for model specific
-  files or “met” for meteorological variables or “inf” for inflow or
-  “wdr” for outflows. (Outflows were initiallly referred to as
-  withdrawals, hence the “wdr” notation, this will probably be updated
-  to reflect the current outflows slot soon…).
+  files (whichever of `glm3.nml`/`glm4.nml` is actually on disk is
+  resolved automatically – see
+  [`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md) –
+  so this table entry always uses the literal string `"glm3.nml"`
+  regardless of the GLM version an object was built with) or “met” for
+  meteorological variables or “inf” for inflow or “wdr” for outflows.
+  (Outflows were initiallly referred to as withdrawals, hence the “wdr”
+  notation, this will probably be updated to reflect the current
+  outflows slot soon…).
 
 - name - Name of the parameter. If the name of the parameter is nested
   in a nml/yaml file, then the whole hierarchy needs to be provide with
@@ -420,8 +438,18 @@ lke[["name"]] <- "AEME"
 lake(aeme) <- lke
 
 aeme
+#> Warning: ! Lake observations use the legacy depth_from / depth_to columns.
+#> ℹ These have been collapsed to a single depth column (interval midpoint).
+#>   Update your data to the current schema ("Date", "var_aeme", "depth", and
+#>   "value"); depth_to and sd are optional.
+#> This warning is displayed once per session.
+#> Warning: ! This <Aeme> object has no recorded AEME package version.
+#> ℹ It was likely built with an older version of AEME (<0.4.0), or has never been
+#>   built with `build_aeme()`. Consider rebuilding with `build_aeme()` to keep it
+#>   in sync with the installed package (0.4.0).
+#> This warning is displayed once per session.
 #> 
-#> ── AEME ────────────────────────────────────────────────────────────────────────
+#> ── AEME not yet built ──────────────────────────────────────────────────────────
 #> 
 #> ── Lake ──
 #> 
@@ -431,7 +459,9 @@ aeme
 #> 
 #> ── Time ──
 #> 
-#> • Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600
+#> • Start: 2013-07-01 00:00:00; Stop: 2023-06-30 00:00:00; Time step: 3600 s;
+#>   Output step: s
+#> • Timezone: UTC (timestamps stored UTC)
 #> • Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095; Simstrat: 2
 #> 
 #> ── Configuration ──
@@ -447,6 +477,7 @@ aeme
 #> │      GLM-AED             Present              Absent         │
 #> │      GOTM-WET            Present              Absent         │
 #> │   SIMSTRAT-AED2           Absent              Absent         │
+#> │    SIMSTRAT-AED           Absent              Absent         │
 #> └──────────────────────────────────────────────────────────────┘
 #> 
 #> ── Observations ──
@@ -467,7 +498,7 @@ aeme
 #> 
 #> ── Outflows ──
 #> 
-#> • Number of outflows: 1; Names: wbal; Elevations:
+#> • Number of outflows: 1; Names: wbal; Elevations: -1
 #> • Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1
 #> 
 #> ── Water Balance ──
@@ -485,6 +516,7 @@ aeme
 #> • GLM-AED: 0
 #> • GOTM-WET: 0
 #> • SIMSTRAT-AED2: 0
+#> • SIMSTRAT-AED: 0
 #> • Variables: 0
 #> None
 ```
@@ -529,13 +561,13 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐
 #> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │
 #> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤
-#> │   1│    0      │ 2.48      │   11      │ 13.5      │ 12.2     │ 3.45e+04│ 0.224   │-38.4│  5.7│-0.4│0.0922│
-#> │   2│ 2.48      │   19      │    0      │   11      │  5.5     │ 1.19e+05│ 0.776   │-21.1│0.558│ 0.1│0.0338│
+#> │   1│    0      │ 2.48      │   11      │ 13.5      │ 12.2     │ 3.45e+04│ 0.224   │-38.4│ 6.66│-0.4│0.0983│
+#> │   2│ 2.48      │   19      │    0      │   11      │  5.5     │ 1.19e+05│ 0.776   │-21.1│0.652│ 0.1│ 0.036│
 #> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘
 #> ┌──────────────┬───────────────┬───────────────┬───────────────┐
 #> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│
 #> ├──────────────┼───────────────┼───────────────┼───────────────┤
-#> │ -24.993      │ 1.71          │ -0.012        │ 0.047         │
+#> │ -24.993      │ 1.998         │ -0.012        │ 0.05          │
 #> └──────────────┴───────────────┴───────────────┴───────────────┘
 aeme
 ```

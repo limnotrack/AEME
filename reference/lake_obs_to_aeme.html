@@ -24,9 +24,19 @@ correctly named."><meta property="og:image" content="https://limnotrack.com/logo
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -37,7 +47,6 @@ correctly named."><meta property="og:image" content="https://limnotrack.com/logo
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -76,7 +85,10 @@ correctly named.</p>
 <span>  <span class="va">var_col_name</span>,</span>
 <span>  <span class="va">value_col_name</span>,</span>
 <span>  <span class="va">lake_id_col</span>,</span>
-<span>  <span class="va">var_map</span></span>
+<span>  <span class="va">var_map</span>,</span>
+<span>  <span class="va">depth_to_col_name</span>,</span>
+<span>  <span class="va">sd_col_name</span>,</span>
+<span>  tz <span class="op">=</span> <span class="st">"UTC"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -119,11 +131,31 @@ mapping variable names and units to AEME standards. "var_aeme" is the
 defined AEME variable name, "name" is the name used in the input data,
 and "unit" is the unit used in the input data.</p></dd>
 
+
+<dt id="arg-depth-to-col-name">depth_to_col_name<a class="anchor" aria-label="anchor" href="#arg-depth-to-col-name"></a></dt>
+<dd><p>column name for the bottom of an integrated sample
+(m). Optional; if missing, no <code>depth_to</code> column is produced.</p></dd>
+
+
+<dt id="arg-sd-col-name">sd_col_name<a class="anchor" aria-label="anchor" href="#arg-sd-col-name"></a></dt>
+<dd><p>column name for the measurement standard deviation, in the
+input units of each variable. Optional; if missing, no <code>sd</code> column is
+produced.</p></dd>
+
+
+<dt id="arg-tz">tz<a class="anchor" aria-label="anchor" href="#arg-tz"></a></dt>
+<dd><p>character; Olson timezone a naive datetime column is expressed in.
+Sub-daily timestamps are converted to UTC and kept at their time-of-day;
+daily data is treated as calendar dates (never shifted) and anchored at
+12:00:00 UTC. Default <code>"UTC"</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame formatted for AEME with columns "Date", "var_aeme",
-"depth_from", "depth_to", and "value".</p>
+    <p>A data frame formatted for AEME with required columns "Date"
+(UTC <code>POSIXct</code>; daily observations anchored at 12:00:00), "var_aeme",
+"depth", and "value", plus the optional columns "depth_to" and "sd" when
+the corresponding arguments are supplied.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

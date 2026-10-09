@@ -16,7 +16,8 @@ aeme_constructor(
   water_balance,
   output,
   parameters,
-  print = TRUE
+  print = TRUE,
+  tz = NULL
 )
 ```
 
@@ -65,6 +66,18 @@ aeme_constructor(
 - print:
 
   Logical; print messages. Default is TRUE.
+
+- tz:
+
+  character; Olson timezone in which user-supplied timestamps
+  (`time$start`, `time$stop`, and the date columns of meteo, inflow,
+  outflow and observation inputs) are expressed. Applied once, at
+  ingest, to convert those timestamps to UTC; all datetimes are stored
+  and computed in UTC internally, and `tz` is also used for display.
+  Defaults to `time$tz` if present, otherwise `"UTC"`. Set a non-UTC
+  zone only when your source data really is in local time (gridded
+  reanalysis such as ERA5 is UTC). Unrelated to GLM's numeric `timezone`
+  nml parameter.
 
 ## Value
 

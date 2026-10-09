@@ -23,4 +23,6 @@ read_model_config(model, lake_dir)
 
 List with model configuration components. This includes a 'hydrodynamic'
 list with hydrodynamic model configuration and a 'bgc' list with
-biogeochemistry model configuration (if applicable).
+biogeochemistry model configuration (if applicable). For
+`model = "glm_aed"`, also includes 'hydrodynamic_file', the basename of
+the GLM nml file it was read from (e.g. `"glm3.nml"` or `"glm4.nml"`).

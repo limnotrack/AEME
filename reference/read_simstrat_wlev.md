@@ -5,7 +5,7 @@ Read Simstrat-AED2 lake water level output
 ## Usage
 
 ``` r
-read_simstrat_wlev(nc = NULL, file)
+read_simstrat_wlev(nc = NULL, file, model = "simstrat_aed2")
 ```
 
 ## Arguments
@@ -20,6 +20,15 @@ read_simstrat_wlev(nc = NULL, file)
 - file:
 
   File path to netCDF file. Only used if `nc` is NULL.
+
+- model:
+
+  character; which Simstrat coupling this output came from,
+  `"simstrat_aed2"` (default) or `"simstrat_aed"`. Selects the matching
+  `key_naming` column for variable-name translation – the netCDF file
+  format itself (produced by
+  [`write_simstrat_nc`](https://limnotrack.com/reference/write_simstrat_nc.md))
+  is identical either way.
 
 ## Value
 

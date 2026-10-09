@@ -9,7 +9,13 @@ converts to the units expected by the package.
 ## Usage
 
 ``` r
-standardise_met(met, verbose = TRUE)
+standardise_met(
+  met,
+  verbose = TRUE,
+  precip_accum = TRUE,
+  tz = "UTC",
+  longitude = NULL
+)
 ```
 
 ## Arguments
@@ -24,6 +30,40 @@ standardise_met(met, verbose = TRUE)
   logical; if `TRUE` (default), emit `cli_inform` messages describing
   each detected unit conversion applied. Set to `FALSE` for quiet
   operation inside pipelines.
+
+- precip_accum:
+
+  logical; how to interpret `MET_pprain` / `MET_ppsnow` when the data is
+  sub-daily. `TRUE` (default) treats them as the depth accumulated
+  *within each step* (the ERA5 / AWS convention) and rescales to the
+  mm/day rate the rest of AEME expects; `FALSE` takes the values to be a
+  mm/day rate already and leaves them untouched. Ignored for daily data,
+  where the two are identical.
+
+- tz:
+
+  character; Olson timezone in which a naive/character `Date` column is
+  expressed. Sub-daily timestamps are converted to UTC; daily data is
+  treated as calendar dates and never shifted. A column that already
+  carries a timezone (including `"UTC"`) is taken at face value here –
+  reinterpreting a `"UTC"`-tagged column against a declared local zone
+  happens once, upstream, in
+  [`add_met`](https://limnotrack.com/reference/add_met.md) /
+  [`aeme_constructor`](https://limnotrack.com/reference/aeme_constructor.md).
+  Default `"UTC"`;
+  [`build_aeme`](https://limnotrack.com/reference/build_aeme.md) passes
+  the object's `time$tz`.
+
+- longitude:
+
+  numeric; lake longitude in decimal degrees (east positive). When
+  supplied and the data is sub-daily, the hour at which `MET_radswd`
+  peaks each day is compared against astronomical solar noon for that
+  longitude; a warning is emitted if they differ by more than 3 h, which
+  usually means the timestamps are in local time rather than UTC. `NULL`
+  (default) skips the check.
+  [`build_aeme`](https://limnotrack.com/reference/build_aeme.md) passes
+  the lake longitude.
 
 ## Value
 

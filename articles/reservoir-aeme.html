@@ -39,9 +39,19 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+<li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -52,7 +62,6 @@
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -393,15 +402,18 @@ meteorological data, and light extinction coefficient
 <span>  time  <span class="op">=</span> <span class="va">time</span>,</span>
 <span>  input <span class="op">=</span> <span class="va">input</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `time$start` is a <span style="color: #0000BB;">&lt;character&gt;</span>; converting to <span style="color: #0000BB;">&lt;POSIXct&gt;</span> (UTC).</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `time$stop` is a <span style="color: #0000BB;">&lt;character&gt;</span>; converting to <span style="color: #0000BB;">&lt;POSIXct&gt;</span> (UTC).</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> `time$time_step` is missing.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Defaulting to <span style="color: #0000BB;">3600</span> seconds (1 hour).</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> `time$spin_up` is missing.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Defaulting to 2 days spin-up for all models.</span></span>
 <span><span class="va">aeme</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> This <span style="color: #0000BB;">&lt;Aeme&gt;</span> object has no recorded AEME package version.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> It was likely built with an older version of AEME (&lt;0.4.0), or has never been</span></span>
+<span><span class="co">#&gt;   built with `build_aeme()`. Consider rebuilding with `build_aeme()` to keep it</span></span>
+<span><span class="co">#&gt;   in sync with the installed package (0.4.0).</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">AEME</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">AEME not yet built</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Lake</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -411,7 +423,9 @@ meteorological data, and light extinction coefficient
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2020-08-01 00:00:00; Stop: 2021-06-30 00:00:00; Time step: 3600 s;</span></span>
+<span><span class="co">#&gt;   Output step: 86400 s</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Timezone: UTC (timestamps stored UTC)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2; Simstrat: 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Configuration</span> ──</span></span>
@@ -427,6 +441,7 @@ meteorological data, and light extinction coefficient
 <span><span class="co">#&gt; │      GLM-AED              <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │      GOTM-WET             <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │   SIMSTRAT-AED2           <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │    SIMSTRAT-AED           <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; └──────────────────────────────────────────────────────────────┘</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Observations</span> ──</span></span>
@@ -464,6 +479,7 @@ meteorological data, and light extinction coefficient
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GLM-AED: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GOTM-WET: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> SIMSTRAT-AED2: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> SIMSTRAT-AED: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Variables: 0</span></span>
 <span><span class="co">#&gt; None</span></span></code></pre></div>
 </div>
@@ -517,7 +533,7 @@ registered in the outflows slot:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">AEME</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">AEME not yet built</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Lake</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -527,7 +543,9 @@ registered in the outflows slot:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2020-08-01; Stop: 2021-06-30; Time step: 3600</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2020-08-01 00:00:00; Stop: 2021-06-30 00:00:00; Time step: 3600 s;</span></span>
+<span><span class="co">#&gt;   Output step: 86400 s</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Timezone: UTC (timestamps stored UTC)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 2; GOTM: 2; DYRESM: 2; Simstrat: 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Configuration</span> ──</span></span>
@@ -543,6 +561,7 @@ registered in the outflows slot:</p>
 <span><span class="co">#&gt; │      GLM-AED              <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │      GOTM-WET             <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │   SIMSTRAT-AED2           <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │    SIMSTRAT-AED           <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; └──────────────────────────────────────────────────────────────┘</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Observations</span> ──</span></span>
@@ -580,6 +599,7 @@ registered in the outflows slot:</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GLM-AED: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GOTM-WET: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> SIMSTRAT-AED2: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> SIMSTRAT-AED: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Variables: 0</span></span>
 <span><span class="co">#&gt; None</span></span></code></pre></div>
 </div>
@@ -594,7 +614,12 @@ outlets in its own way:</p>
 <strong>GLM-AED</strong>: creates individual CSV boundary condition
 files (<code>bcs/outflow_&lt;name&gt;.csv</code>) and sets
 <code>num_outlet</code>, <code>outl_elvs</code>, and
-<code>outlet_type</code> in <code>glm3.nml</code>.</li>
+<code>outlet_type</code> in the GLM hydrodynamic nml
+(<code>glm3.nml</code> or <code>glm4.nml</code>). For finer control than
+<code><a href="../reference/add_outflows.html">add_outflows()</a></code>/<code><a href="../reference/build_aeme.html">build_aeme()</a></code> offer – adaptive
+or target-temperature outlets, submerged draws, weir geometry – edit the
+<code>&amp;outflow</code> block directly with
+<code><a href="../reference/set_glm_outflow_config.html">set_glm_outflow_config()</a></code> after building.</li>
 <li>
 <strong>GOTM-WET</strong>: creates individual data files
 (<code>inputs/outf_&lt;name&gt;.dat</code>) and updates
@@ -619,7 +644,7 @@ outlets in the header.</li>
 <span>  wb_method <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Created missing directory:</span></span>
-<span><span class="co">#&gt;   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpimYvFG\reservoir</span></span>
+<span><span class="co">#&gt;   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpS2G2Tk\reservoir</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Calculating water balance</span> ──</span></span>
@@ -631,22 +656,22 @@ outlets in the header.</li>
 <span><span class="co">#&gt;   <span style="color: #00BBBB;">ℹ</span> No water level present. Using constant water level.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[9ms]</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Insufficient lake temperature observations (&lt;10).</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Using Stefan &amp; Preud'homme (2007) method to estimate surface temperature.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No water balance correction applied (method = 1).</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[38ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> No water balance correction applied (method = 1).</span></span>
+<span><span class="co">#&gt; Warning in get_obs(aeme, var_sim = "HYD_temp"): No observations found for the</span></span>
+<span><span class="co">#&gt; selected variable.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Building GLM-AED for lake reservoir</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in AED nml file and supporting files</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in GLM plots nml file</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file (glm4.nml)<span style="color: #00BBBB;">ℹ</span> Copied in AED nml file and supporting files<span style="color: #00BBBB;">ℹ</span> Copied in GLM plots nml file<span style="color: #BBBB00;">!</span> Forcing <span style="color: #00BB00;">sed_heat_model</span> from 2 to 1: <span style="color: #00BB00;">sed_heat_model = 2</span> needs an active WQ</span></span>
+<span><span class="co">#&gt;   module and `use_bgc` is <span style="color: #0000BB;">FALSE</span>.</span></span>
+<span><span class="co">#&gt; Warning: GLM ignores the AirPres met column in daily mode and uses the default 1013.25 hPa instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -654,10 +679,49 @@ outlets in the header.</li>
 </h2>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-08-04 21:22:52]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-08-04 21:22:52]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-08-04 21:22:52]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-08-04 21:22:52]</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-10-09 01:20:40]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 01:20:40]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      Reading configuration from C:\Users\runneradmin\AppData\Local\Temp\RtmpS2G2Tk\reservoir/res001_reservoir/glm_aed/glm4.nml</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt; No 'particles' config, assuming no particles</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      NOTE: value for base_elev is no longer used; H[1] is assumed.</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      VolAtCrest= 11165328.49350; MaxVol= 11165328.49350 (m3)</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      No 'snowice' section, setting defaults &amp; assuming no snowfall</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      'sediment' section present, simulating sediment heating</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      WARNING last zone height is less than maximum depth</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;         ... adding an extra zone to compensate</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      DBG calling initialise_lake</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      DBG entered initialise_lake</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      DBG init_profiles: num_heights=0 num_depths=2 the_heights=0000000000000000 the_depths=00000235BDD9D890 lake_depth=25.000000</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      WARNING: Initial profiles problem - expected 0 wd_init_vals entries but got 1</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt;      DBG initialise_lake returned</span></span></span>
+<span><span class="co"><span style="color: #BB0000;">#&gt; </span></span></span>
+<span><span class="co">#&gt;     -------------------------------------------------------</span></span>
+<span><span class="co">#&gt;     |  General Lake Model (GLM)   Version 4.0.0           |</span></span>
+<span><span class="co">#&gt;     -------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      glm built using gcc version 16.1.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      nDays= 200; timestep= 3600.000000 (s)</span></span>
+<span><span class="co">#&gt;      Maximum lake depth is 27.000000</span></span>
+<span><span class="co">#&gt;      Depth where flow will occur over the crest is 27.000000</span></span>
+<span><span class="co">#&gt;        *sed_temp_mean[0] =   10.00000</span></span>
+<span><span class="co">#&gt; Heat pump disabled (heat_pump_switch = 0)</span></span>
+<span><span class="co">#&gt; Oxygenation disabled</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      Wall clock start time :  Fri Oct  9 01:20:41 2026</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      Simulation begins...</span></span>
+<span><span class="co">#&gt;      Running day  2459061, 0.30% of days complete     Running day  2459062, 0.60% of days complete     Running day  2459063, 0.89% of days complete     Running day  2459064, 1.19% of days complete     Running day  2459065, 1.49% of days complete     Running day  2459066, 1.79% of days complete     Running day  2459067, 2.08% of days complete     Running day  2459068, 2.38% of days complete     Running day  2459069, 2.68% of days complete     Running day  2459070, 2.98% of days complete     Running day  2459071, 3.27% of days complete     Running day  2459072, 3.57% of days complete     Running day  2459073, 3.87% of days complete     Running day  2459074, 4.17% of days complete     Running day  2459075, 4.46% of days complete     Running day  2459076, 4.76% of days complete     Running day  2459077, 5.06% of days complete     Running day  2459078, 5.36% of days complete     Running day  2459079, 5.65% of days complete     Running day  2459080, 5.95% of days complete     Running day  2459081, 6.25% of days complete     Running day  2459082, 6.55% of days complete     Running day  2459083, 6.85% of days complete     Running day  2459084, 7.14% of days complete     Running day  2459085, 7.44% of days complete     Running day  2459086, 7.74% of days complete     Running day  2459087, 8.04% of days complete     Running day  2459088, 8.33% of days complete     Running day  2459089, 8.63% of days complete     Running day  2459090, 8.93% of days complete     Running day  2459091, 9.23% of days complete     Running day  2459092, 9.52% of days complete     Running day  2459093, 9.82% of days complete     Running day  2459094, 10.12% of days complete     Running day  2459095, 10.42% of days complete     Running day  2459096, 10.71% of days complete     Running day  2459097, 11.01% of days complete     Running day  2459098, 11.31% of days complete     Running day  2459099, 11.61% of days complete     Running day  2459100, 11.90% of days complete     Running day  2459101, 12.20% of days complete     Running day  2459102, 12.50% of days complete     Running day  2459103, 12.80% of days complete     Running day  2459104, 13.10% of days complete     Running day  2459105, 13.39% of days complete     Running day  2459106, 13.69% of days complete     Running day  2459107, 13.99% of days complete     Running day  2459108, 14.29% of days complete     Running day  2459109, 14.58% of days complete     Running day  2459110, 14.88% of days complete     Running day  2459111, 15.18% of days complete     Running day  2459112, 15.48% of days complete     Running day  2459113, 15.77% of days complete     Running day  2459114, 16.07% of days complete     Running day  2459115, 16.37% of days complete     Running day  2459116, 16.67% of days complete     Running day  2459117, 16.96% of days complete     Running day  2459118, 17.26% of days complete     Running day  2459119, 17.56% of days complete     Running day  2459120, 17.86% of days complete     Running day  2459121, 18.15% of days complete     Running day  2459122, 18.45% of days complete     Running day  2459123, 18.75% of days complete     Running day  2459124, 19.05% of days complete     Running day  2459125, 19.35% of days complete     Running day  2459126, 19.64% of days complete     Running day  2459127, 19.94% of days complete     Running day  2459128, 20.24% of days complete     Running day  2459129, 20.54% of days complete     Running day  2459130, 20.83% of days complete     Running day  2459131, 21.13% of days complete     Running day  2459132, 21.43% of days complete     Running day  2459133, 21.73% of days complete     Running day  2459134, 22.02% of days complete     Running day  2459135, 22.32% of days complete     Running day  2459136, 22.62% of days complete     Running day  2459137, 22.92% of days complete     Running day  2459138, 23.21% of days complete     Running day  2459139, 23.51% of days complete     Running day  2459140, 23.81% of days complete     Running day  2459141, 24.11% of days complete     Running day  2459142, 24.40% of days complete     Running day  2459143, 24.70% of days complete     Running day  2459144, 25.00% of days complete     Running day  2459145, 25.30% of days complete     Running day  2459146, 25.60% of days complete     Running day  2459147, 25.89% of days complete     Running day  2459148, 26.19% of days complete     Running day  2459149, 26.49% of days complete     Running day  2459150, 26.79% of days complete     Running day  2459151, 27.08% of days complete     Running day  2459152, 27.38% of days complete     Running day  2459153, 27.68% of days complete     Running day  2459154, 27.98% of days complete     Running day  2459155, 28.27% of days complete     Running day  2459156, 28.57% of days complete     Running day  2459157, 28.87% of days complete     Running day  2459158, 29.17% of days complete     Running day  2459159, 29.46% of days complete     Running day  2459160, 29.76% of days complete     Running day  2459161, 30.06% of days complete     Running day  2459162, 30.36% of days complete     Running day  2459163, 30.65% of days complete     Running day  2459164, 30.95% of days complete     Running day  2459165, 31.25% of days complete     Running day  2459166, 31.55% of days complete     Running day  2459167, 31.85% of days complete     Running day  2459168, 32.14% of days complete     Running day  2459169, 32.44% of days complete     Running day  2459170, 32.74% of days complete     Running day  2459171, 33.04% of days complete     Running day  2459172, 33.33% of days complete     Running day  2459173, 33.63% of days complete     Running day  2459174, 33.93% of days complete     Running day  2459175, 34.23% of days complete     Running day  2459176, 34.52% of days complete     Running day  2459177, 34.82% of days complete     Running day  2459178, 35.12% of days complete     Running day  2459179, 35.42% of days complete     Running day  2459180, 35.71% of days complete     Running day  2459181, 36.01% of days complete     Running day  2459182, 36.31% of days complete     Running day  2459183, 36.61% of days complete     Running day  2459184, 36.90% of days complete     Running day  2459185, 37.20% of days complete     Running day  2459186, 37.50% of days complete     Running day  2459187, 37.80% of days complete     Running day  2459188, 38.10% of days complete     Running day  2459189, 38.39% of days complete     Running day  2459190, 38.69% of days complete     Running day  2459191, 38.99% of days complete     Running day  2459192, 39.29% of days complete     Running day  2459193, 39.58% of days complete     Running day  2459194, 39.88% of days complete     Running day  2459195, 40.18% of days complete     Running day  2459196, 40.48% of days complete     Running day  2459197, 40.77% of days complete     Running day  2459198, 41.07% of days complete     Running day  2459199, 41.37% of days complete     Running day  2459200, 41.67% of days complete     Running day  2459201, 41.96% of days complete     Running day  2459202, 42.26% of days complete     Running day  2459203, 42.56% of days complete     Running day  2459204, 42.86% of days complete     Running day  2459205, 43.15% of days complete     Running day  2459206, 43.45% of days complete     Running day  2459207, 43.75% of days complete     Running day  2459208, 44.05% of days complete     Running day  2459209, 44.35% of days complete     Running day  2459210, 44.64% of days complete     Running day  2459211, 44.94% of days complete     Running day  2459212, 45.24% of days complete     Running day  2459213, 45.54% of days complete     Running day  2459214, 45.83% of days complete     Running day  2459215, 46.13% of days complete     Running day  2459216, 46.43% of days complete     Running day  2459217, 46.73% of days complete     Running day  2459218, 47.02% of days complete     Running day  2459219, 47.32% of days complete     Running day  2459220, 47.62% of days complete     Running day  2459221, 47.92% of days complete     Running day  2459222, 48.21% of days complete     Running day  2459223, 48.51% of days complete     Running day  2459224, 48.81% of days complete     Running day  2459225, 49.11% of days complete     Running day  2459226, 49.40% of days complete     Running day  2459227, 49.70% of days complete     Running day  2459228, 50.00% of days complete     Running day  2459229, 50.30% of days complete     Running day  2459230, 50.60% of days complete     Running day  2459231, 50.89% of days complete     Running day  2459232, 51.19% of days complete     Running day  2459233, 51.49% of days complete     Running day  2459234, 51.79% of days complete     Running day  2459235, 52.08% of days complete     Running day  2459236, 52.38% of days complete     Running day  2459237, 52.68% of days complete     Running day  2459238, 52.98% of days complete     Running day  2459239, 53.27% of days complete     Running day  2459240, 53.57% of days complete     Running day  2459241, 53.87% of days complete     Running day  2459242, 54.17% of days complete     Running day  2459243, 54.46% of days complete     Running day  2459244, 54.76% of days complete     Running day  2459245, 55.06% of days complete     Running day  2459246, 55.36% of days complete     Running day  2459247, 55.65% of days complete     Running day  2459248, 55.95% of days complete     Running day  2459249, 56.25% of days complete     Running day  2459250, 56.55% of days complete     Running day  2459251, 56.85% of days complete     Running day  2459252, 57.14% of days complete     Running day  2459253, 57.44% of days complete     Running day  2459254, 57.74% of days complete     Running day  2459255, 58.04% of days complete     Running day  2459256, 58.33% of days complete     Running day  2459257, 58.63% of days complete     Running day  2459258, 58.93% of days complete     Running day  2459259, 59.23% of days complete     Running day  2459260, 59.52% of days complete     Running day  2459261, 59.82% of days complete     Running day  2459262, 60.12% of days complete     Running day  2459263, 60.42% of days complete     Running day  2459264, 60.71% of days complete     Running day  2459265, 61.01% of days complete     Running day  2459266, 61.31% of days complete     Running day  2459267, 61.61% of days complete     Running day  2459268, 61.90% of days complete     Running day  2459269, 62.20% of days complete     Running day  2459270, 62.50% of days complete     Running day  2459271, 62.80% of days complete     Running day  2459272, 63.10% of days complete     Running day  2459273, 63.39% of days complete     Running day  2459274, 63.69% of days complete     Running day  2459275, 63.99% of days complete     Running day  2459276, 64.29% of days complete     Running day  2459277, 64.58% of days complete     Running day  2459278, 64.88% of days complete     Running day  2459279, 65.18% of days complete     Running day  2459280, 65.48% of days complete     Running day  2459281, 65.77% of days complete     Running day  2459282, 66.07% of days complete     Running day  2459283, 66.37% of days complete     Running day  2459284, 66.67% of days complete     Running day  2459285, 66.96% of days complete     Running day  2459286, 67.26% of days complete     Running day  2459287, 67.56% of days complete     Running day  2459288, 67.86% of days complete     Running day  2459289, 68.15% of days complete     Running day  2459290, 68.45% of days complete     Running day  2459291, 68.75% of days complete     Running day  2459292, 69.05% of days complete     Running day  2459293, 69.35% of days complete     Running day  2459294, 69.64% of days complete     Running day  2459295, 69.94% of days complete     Running day  2459296, 70.24% of days complete     Running day  2459297, 70.54% of days complete     Running day  2459298, 70.83% of days complete     Running day  2459299, 71.13% of days complete     Running day  2459300, 71.43% of days complete     Running day  2459301, 71.73% of days complete     Running day  2459302, 72.02% of days complete     Running day  2459303, 72.32% of days complete     Running day  2459304, 72.62% of days complete     Running day  2459305, 72.92% of days complete     Running day  2459306, 73.21% of days complete     Running day  2459307, 73.51% of days complete     Running day  2459308, 73.81% of days complete     Running day  2459309, 74.11% of days complete     Running day  2459310, 74.40% of days complete     Running day  2459311, 74.70% of days complete     Running day  2459312, 75.00% of days complete     Running day  2459313, 75.30% of days complete     Running day  2459314, 75.60% of days complete     Running day  2459315, 75.89% of days complete     Running day  2459316, 76.19% of days complete     Running day  2459317, 76.49% of days complete     Running day  2459318, 76.79% of days complete     Running day  2459319, 77.08% of days complete     Running day  2459320, 77.38% of days complete     Running day  2459321, 77.68% of days complete     Running day  2459322, 77.98% of days complete     Running day  2459323, 78.27% of days complete     Running day  2459324, 78.57% of days complete     Running day  2459325, 78.87% of days complete     Running day  2459326, 79.17% of days complete     Running day  2459327, 79.46% of days complete     Running day  2459328, 79.76% of days complete     Running day  2459329, 80.06% of days complete     Running day  2459330, 80.36% of days complete     Running day  2459331, 80.65% of days complete     Running day  2459332, 80.95% of days complete     Running day  2459333, 81.25% of days complete     Running day  2459334, 81.55% of days complete     Running day  2459335, 81.85% of days complete     Running day  2459336, 82.14% of days complete     Running day  2459337, 82.44% of days complete     Running day  2459338, 82.74% of days complete     Running day  2459339, 83.04% of days complete     Running day  2459340, 83.33% of days complete     Running day  2459341, 83.63% of days complete     Running day  2459342, 83.93% of days complete     Running day  2459343, 84.23% of days complete     Running day  2459344, 84.52% of days complete     Running day  2459345, 84.82% of days complete     Running day  2459346, 85.12% of days complete     Running day  2459347, 85.42% of days complete     Running day  2459348, 85.71% of days complete     Running day  2459349, 86.01% of days complete     Running day  2459350, 86.31% of days complete     Running day  2459351, 86.61% of days complete     Running day  2459352, 86.90% of days complete     Running day  2459353, 87.20% of days complete     Running day  2459354, 87.50% of days complete     Running day  2459355, 87.80% of days complete     Running day  2459356, 88.10% of days complete     Running day  2459357, 88.39% of days complete     Running day  2459358, 88.69% of days complete     Running day  2459359, 88.99% of days complete     Running day  2459360, 89.29% of days complete     Running day  2459361, 89.58% of days complete     Running day  2459362, 89.88% of days complete     Running day  2459363, 90.18% of days complete     Running day  2459364, 90.48% of days complete     Running day  2459365, 90.77% of days complete     Running day  2459366, 91.07% of days complete     Running day  2459367, 91.37% of days complete     Running day  2459368, 91.67% of days complete     Running day  2459369, 91.96% of days complete     Running day  2459370, 92.26% of days complete     Running day  2459371, 92.56% of days complete     Running day  2459372, 92.86% of days complete     Running day  2459373, 93.15% of days complete     Running day  2459374, 93.45% of days complete     Running day  2459375, 93.75% of days complete     Running day  2459376, 94.05% of days complete     Running day  2459377, 94.35% of days complete     Running day  2459378, 94.64% of days complete     Running day  2459379, 94.94% of days complete     Running day  2459380, 95.24% of days complete     Running day  2459381, 95.54% of days complete     Running day  2459382, 95.83% of days complete     Running day  2459383, 96.13% of days complete     Running day  2459384, 96.43% of days complete     Running day  2459385, 96.73% of days complete     Running day  2459386, 97.02% of days complete     Running day  2459387, 97.32% of days complete     Running day  2459388, 97.62% of days complete     Running day  2459389, 97.92% of days complete     Running day  2459390, 98.21% of days complete     Running day  2459391, 98.51% of days complete     Running day  2459392, 98.81% of days complete     Running day  2459393, 99.11% of days complete     Running day  2459394, 99.40% of days complete     Running day  2459395, 99.70% of days complete</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      Wall clock finish time : Fri Oct  9 01:20:41 2026</span></span>
+<span><span class="co">#&gt;      Wall clock runtime was 0 seconds : 00:00:00 [hh:mm:ss]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     Model Run Complete</span></span>
+<span><span class="co">#&gt;     -------------------------------------------------------</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 01:20:41] <span style="color: #B2B2B2;">[954ms]</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-10-09 01:20:41]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="view-the-output">View the output<a class="anchor" aria-label="anchor" href="#view-the-output"></a>

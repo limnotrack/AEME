@@ -17,9 +17,11 @@ plot_weir_calibration(aeme, model)
 
 - model:
 
-  character vector; models to use. One or more of `"dy_cd"`,
-  `"glm_aed"`, `"gotm_wet"`, `"simstrat_aed2"`. Defaults to all models
-  if not found in `aeme`.
+  character; model name(s) to plot. Multiple models are overlaid on the
+  same panels, coloured by model, rather than faceted – useful for
+  comparing evaporation families (e.g. `glm_aed` vs `gotm_wet`) or
+  confirming that `dy_cd`/`glm_aed` share a fit. Defaults to every model
+  present in `aeme`.
 
 ## Value
 

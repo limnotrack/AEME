@@ -7,7 +7,7 @@ heat flux.
 ## Usage
 
 ``` r
-plot_fluxes(aeme, model, cumulative = FALSE)
+plot_fluxes(aeme, model, facet_by = c("flux", "model"), ...)
 ```
 
 ## Arguments
@@ -22,10 +22,16 @@ plot_fluxes(aeme, model, cumulative = FALSE)
   `"glm_aed"`, `"gotm_wet"`, `"simstrat_aed2"`. Defaults to all models
   if not found in `aeme`.
 
-- cumulative:
+- facet_by:
 
-  logical; if `TRUE`, plot cumulative fluxes. If `FALSE`, plot
-  instantaneous fluxes.
+  character; either `"flux"` or `"model"`. If `"flux"`, create a
+  separate facet for each flux. If `"model"`, create a separate facet
+  for each model.
+
+- ...:
+
+  additional arguments passed to
+  [`get_var`](https://limnotrack.com/reference/get_var.md)
 
 ## Value
 

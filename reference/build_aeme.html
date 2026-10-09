@@ -18,9 +18,19 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -31,7 +41,6 @@
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -76,7 +85,11 @@
 <span>  hum_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  est_swr_hr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  use_aeme <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  config <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  config <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output_vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mass_balance <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  tz <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  aed <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -170,6 +183,36 @@ configuration files. Default: <code>FALSE</code>.</p></dd>
 <dd><p>list; AEME configuration, typically loaded via
 <code>yaml::read_yaml("aeme.yaml")</code>.</p></dd>
 
+
+<dt id="arg-output-vars">output_vars<a class="anchor" aria-label="anchor" href="#arg-output-vars"></a></dt>
+<dd><p>character; AEME variable names (e.g.
+<code>c("HYD_temp", "CHM_oxy")</code>) to restrict each model's written output to,
+applied via <code><a href="set_output_vars.html">set_output_vars()</a></code> once the configuration has been built
+and re-written to disk. Use this to build a lake trimmed for
+calibration / sensitivity analysis, where only one or two variables
+feed the objective. <code>NULL</code> (default) leaves every model writing its
+full output.</p></dd>
+
+
+<dt id="arg-mass-balance">mass_balance<a class="anchor" aria-label="anchor" href="#arg-mass-balance"></a></dt>
+<dd><p>logical; passed to <code><a href="set_output_vars.html">set_output_vars()</a></code> when
+<code>output_vars</code> is supplied - for <code>"glm_aed"</code> only, keep the GLMv4
+<code>&amp;mass_balance</code> diagnostic CSV. Default <code>TRUE</code>. Ignored when
+<code>output_vars</code> is <code>NULL</code>.</p></dd>
+
+
+<dt id="arg-tz">tz<a class="anchor" aria-label="anchor" href="#arg-tz"></a></dt>
+<dd><p>character; time zone of the meteorology, inflow and outflow date
+columns. Defaults to the value stored in <code>aeme</code>, or <code>"UTC"</code>.</p></dd>
+
+
+<dt id="arg-aed">aed<a class="anchor" aria-label="anchor" href="#arg-aed"></a></dt>
+<dd><p><code><a href="aed_options.html">aed_options()</a></code> object; which parts of the AED biogeochemistry
+setup to run for <code>"glm_aed"</code> when <code>use_bgc = TRUE</code> (the active modules,
+the initial concentrations, the sediment zone fluxes and the
+<code>aed_totals</code>). <code>NULL</code> (default) runs all of them. Ignored when
+<code>use_bgc = FALSE</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -181,6 +224,10 @@ configuration files. Default: <code>FALSE</code>.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">aeme_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/lake/"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"aeme"</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="yaml_to_aeme.html">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">aeme_dir</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`yaml_to_aeme()` was deprecated in AEME 0.4.0.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Use `aeme_constructor()` to build an Aeme object from your own lake data, or</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   `new_aeme()` for a quick placeholder object to populate incrementally,</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   instead of a yaml file.</span>
 <span class="r-in"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_model_controls.html">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Build configuration for GLM-AED</span></span></span>
@@ -198,7 +245,7 @@ configuration files. Default: <code>FALSE</code>.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[9ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[25ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating lake water levels for glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Optimizing parameters for water balance</span>
@@ -207,9 +254,13 @@ configuration files. Default: <code>FALSE</code>.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Building GLM-AED for lake wainamu</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file (glm4.nml)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in AED nml file and supporting files</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GLM plots nml file</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Forcing <span style="color: #00BB00;">sed_heat_model</span> from 2 to 1: <span style="color: #00BB00;">sed_heat_model = 2</span> needs an active WQ</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   module and `use_bgc` is <span style="color: #0000BB;">FALSE</span>.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GLM ignores the AirPres met column in daily mode and uses the default 1013.25 hPa instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">This warning is displayed once per session.</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Enable biogeochemistry</span></span></span>
@@ -226,13 +277,14 @@ configuration files. Default: <code>FALSE</code>.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[7ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[23ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating lake water levels for glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Building GLM-AED for lake wainamu</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Aligned AED sediment zones to GLM: 2 zones (all active).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No variables to initialise in AED</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Setting up AED aed_sed_const2d sediment zones: 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Tier 2: zone-median summer concentrations used for adjustment:</span>
@@ -246,18 +298,18 @@ configuration files. Default: <code>FALSE</code>.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   zones, direct FRP)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.83│-0.4│ 0.103│</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│0.512│ 0.1│0.0259│</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬────┬────┬──────┐</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4│ NO3│ FRP  │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼────┼────┼──────┤</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.7│-0.4│ 0.107│</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│ 0.5│ 0.1│0.0268│</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴────┴────┴──────┘</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Lake-wide area-weighted average fluxes (mmol/m2/d) ──────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ┌──────────────┬───────────────┬───────────────┬───────────────┐</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├──────────────┼───────────────┼───────────────┼───────────────┤</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> │ -25.007      │ 2.05          │ -0.044        │ 0.048         │</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> │ -25.007      │ 2.002         │ -0.044        │ 0.05          │</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └──────────────┴───────────────┴───────────────┴───────────────┘</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
 </code></pre></div>

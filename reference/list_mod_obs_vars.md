@@ -51,7 +51,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [29ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -60,6 +60,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> 
 #> ── Building GLM-AED for lake wainamu ──
 #> 
+#> ℹ Aligned AED sediment zones to GLM: 2 zones (all active).
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
 #> ℹ Tier 2: zone-median summer concentrations used for adjustment:
 #> ┌─────┬───────────┬────────────┬────────────┬────────────┐
@@ -72,28 +73,28 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   zones, direct FRP)
 #> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────
 #> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m
-#> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐
-#> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │
-#> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤
-#> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.83│-0.4│ 0.103│
-#> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│0.512│ 0.1│0.0259│
-#> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘
+#> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬────┬────┬──────┐
+#> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4│ NO3│ FRP  │
+#> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼────┼────┼──────┤
+#> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.7│-0.4│ 0.107│
+#> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│ 0.5│ 0.1│0.0268│
+#> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴────┴────┴──────┘
 #> 
-#> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────
+#> ── Lake-wide area-weighted average fluxes (mmol/m2/d) ──────────────────────────
 #> ┌──────────────┬───────────────┬───────────────┬───────────────┐
 #> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│
 #> ├──────────────┼───────────────┼───────────────┼───────────────┤
-#> │ -25.007      │ 2.05          │ -0.044        │ 0.048         │
+#> │ -25.007      │ 2.002         │ -0.044        │ 0.05          │
 #> └──────────────┴───────────────┴───────────────┴───────────────┘
 #> ✔ GLM nml validation completed - no issues detected.
 # Run models
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-08-04 21:09:37]
-#> ✔ Model run complete! [2026-08-04 21:09:40]
-#> ℹ Reading models in parallel...[2026-08-04 21:09:40]
-#> ✔ Model reading complete! [2026-08-04 21:09:41]
+#> ℹ Running models in parallel... [2026-10-09 00:54:45]
+#> ✔ Model run complete! [2026-10-09 00:54:48]
+#> ℹ Reading models in parallel...[2026-10-09 00:54:48]
+#> ✔ Model reading complete! [2026-10-09 00:54:53]
 aeme |> 
   list_mod_obs_vars()
 #>       Cyanobacteria    Dissolved oxygen            Salinity   Water temperature 
@@ -102,6 +103,6 @@ aeme |>
 #>         "PHY_tchla"           "CAR_doc"           "PHS_frp"           "NIT_amm" 
 #>             Nitrate      Total nitrogen    Total phosphorus   Thermocline depth 
 #>           "NIT_nit"            "NIT_tn"            "PHS_tp"        "HYD_thmcln" 
-#>          Stratified 
-#>         "HYD_strat" 
+#>          Stratified              Volume         Water level 
+#>         "HYD_strat"           "LKE_vol"        "LKE_lvlwtr" 
 ```

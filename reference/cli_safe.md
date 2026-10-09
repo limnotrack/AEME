@@ -1,6 +1,8 @@
 # Inform messages respecting the global AEME.inform option
 
-Inform messages respecting the global AEME.inform option
+Used primarily as an internal helper to safely suppress messages to
+console. Messages are printed if the global option is set to TRUE:
+`options(AEME.inform = TRUE)`
 
 ## Usage
 
@@ -24,4 +26,8 @@ cli_safe(..., FUN = cli::cli_bullets, indent = TRUE, .envir = parent.frame())
 
 - .envir:
 
-  Environment to evaluate the glue expressions in.
+  environment in which to evaluate
+  [`{}`](https://rdrr.io/r/base/Paren.html) expressions in the message.
+  Defaults to the calling environment; forwarded to `FUN` when it
+  accepts a `.envir` argument so interpolation sees the caller's locals
+  rather than this wrapper's frame.

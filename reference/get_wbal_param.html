@@ -22,9 +22,19 @@ parameters are used in the outflow equation."><meta property="og:image" content=
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -35,7 +45,6 @@ parameters are used in the outflow equation."><meta property="og:image" content=
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
@@ -66,7 +75,7 @@ parameters are used in the outflow equation.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_wbal_param</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_wbal_param</span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -76,25 +85,38 @@ parameters are used in the outflow equation.</p>
 <dl><dt id="arg-aeme">aeme<a class="anchor" aria-label="anchor" href="#arg-aeme"></a></dt>
 <dd><p>Aeme object.</p></dd>
 
+
+<dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
+<dd><p>character; model name(s) to fetch parameters for (e.g.
+<code>"glm_aed"</code>). If <code>NULL</code> (default), returns every fitted
+family as a named list.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named numeric vector with elements <code>C</code> (outflow coefficient)
-and <code>h_inv</code> (inversion height, m), or <code>NULL</code> if no parameters
-have been set.</p>
+    <p>If <code>model</code> resolves to a single evaporation family, a named
+numeric vector with elements <code>C</code> (outflow coefficient) and
+<code>h_inv</code> (inversion height, m). If <code>model</code> is <code>NULL</code>, a
+named list of such vectors, keyed by family. <code>NULL</code> if no
+parameters have been set.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>A typical use case is calibrating parameters over a period with observed
+    <p>Parameters are stored per evaporation family, since <code>dy_cd</code>/<code>glm_aed</code>
+share one fitted set and <code>gotm_wet</code>/<code>simstrat_aed2</code> each have their own
+(see <code>calc_water_balance</code>). Use <code>model</code> to fetch a
+specific model's parameters; omit it to get every family that has been
+fitted so far.</p>
+<p>A typical use case is calibrating parameters over a period with observed
 water level data, then transferring them to a period without:</p>
 <ol><li><p>Build an <code>Aeme</code> object for a calibration period with observed
 water level data (e.g. 2010–2020) using <code><a href="build_aeme.html">build_aeme</a></code>.</p></li>
 <li><p>Run the water balance and retrieve the fitted parameters:
-<code>wbal_param &lt;- get_wbal_param(aeme)</code>.</p></li>
+<code>wbal_param &lt;- get_wbal_param(aeme, model = "glm_aed")</code>.</p></li>
 <li><p>Configure a new <code>Aeme</code> object for the target period without
 observed water levels (e.g. 2020–2024).</p></li>
 <li><p>Transfer the parameters with <code><a href="set_wbal_param.html">set_wbal_param</a></code>:
-<code>aeme &lt;- set_wbal_param(aeme, params = wbal_param)</code>.</p></li>
+<code>aeme &lt;- set_wbal_param(aeme, params = wbal_param, model = "glm_aed")</code>.</p></li>
 <li><p>Build the new object with <code><a href="build_aeme.html">build_aeme</a></code>.</p></li>
 </ol></div>
     <div class="section level2">

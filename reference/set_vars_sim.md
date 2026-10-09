@@ -45,12 +45,12 @@ model_controls <- data.frame(
 )
 vars_sim <- c("CHM_oxy", "NIT_tn", "PHS_tp")
 updated_controls <- set_vars_sim(model_controls, vars_sim, simulate = TRUE)
-#> ℹ Variables not found: `NIT_tn`.
-#> Adding them to model_controls.
+#> ℹ Variables not found: NIT_tn . Adding them to model_controls.
 print(updated_controls)
-#>   var_aeme simulate inf_default initial_wc initial_sed conversion_aed
-#> 1  CHM_oxy     TRUE          NA         NA          NA              1
-#> 2 HYD_temp     TRUE          NA         NA          NA              1
-#> 3   NIT_tn     TRUE          NA         NA          NA              1
-#> 4   PHS_tp     TRUE          NA         NA          NA              1
+#> <model_controls> 4/4 variables simulated
+#>  var_aeme simulate inf_default initial_wc initial_sed conversion_aed
+#>   CHM_oxy      yes           -          -           -              1
+#>  HYD_temp      yes           -          -           -              1
+#>    NIT_tn      yes           -          -           -              1
+#>    PHS_tp      yes           -          -           -              1
 ```

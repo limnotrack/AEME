@@ -1,5 +1,5 @@
 &aed_models
-   models = 'aed_sedflux','aed_oxygen','aed_silica','aed_nitrogen','aed_phosphorus','aed_organic_matter','aed_phytoplankton','aed_zooplankton','aed_macrophyte','aed_totals'
+   models = 'aed_sedflux','aed_noncohesive','aed_oxygen','aed_silica','aed_nitrogen','aed_phosphorus','aed_organic_matter','aed_phytoplankton','aed_zooplankton','aed_macrophyte','aed_totals'
 /
 &aed_sedflux
    sedflux_model = 'Constant2d'
@@ -8,9 +8,28 @@
    n_zones = 2
    active_zones = 1, 2
    fsed_oxy = -38.8, -19.4
-   fsed_amm = 5.835, 0.512
+   fsed_amm = 5.698, 0.5
    fsed_nit = -0.4, 0.1
-   fsed_frp = 0.1035, 0.0259
+   fsed_frp = 0.1072, 0.0268
+/
+&aed_noncohesive
+   num_ss = 2
+   ss_initial = 3, 1
+   Ke_ss = 0.06, 0.06
+   settling = 1
+   w_ss = -0.5, -0.03
+   rho_ss = 1800, 1200
+   d_ss = 2e-05, 4e-06
+   resuspension = 1
+   epsilon = 5e-05
+   tau_0 = 0.08, 0.05
+   tau_r = 1
+   fs = 0.7, 0.3
+   Fsed = 0, 0
+   decay = 0, 0
+   simSedimentMass = .false.
+   sed_porosity = 0.3
+   diag_level = 10
 /
 &aed_oxygen
    oxy_initial = 225
@@ -41,7 +60,7 @@
    simnitrfph = .false.
    rnh4o2 = 1
    rno2o2 = 1
-   simn2o = 2
+   simn2o = 0
    rn2o = 0.05
    kpart_ammox = 1
    kin_deamm = 1
@@ -192,4 +211,6 @@
    TP_varscale = 1, 1, 1, 1, 1, 1
    TOC_vars = 'OGM_doc','OGM_poc','PHY_cyano','PHY_green','PHY_diatom'
    TOC_varscale = 1, 1, 1, 1, 1
+   TSS_vars = 'NCS_ss1','NCS_ss2'
+   TSS_varscale = 1, 1
 /

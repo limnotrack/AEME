@@ -19,7 +19,8 @@ plot_var(
   level = FALSE,
   facet = FALSE,
   cumulative = FALSE,
-  print_plots = FALSE
+  print_plots = FALSE,
+  raw_label = NULL
 )
 ```
 
@@ -94,6 +95,13 @@ plot_var(
 - print_plots:
 
   logical; print plots
+
+- raw_label:
+
+  character; fallback y-axis/fill label to use when `var_sim` has no
+  [`key_naming`](https://limnotrack.com/reference/key_naming.md) entry
+  (e.g. a raw netCDF variable name from `raw_output = TRUE` output).
+  Default `NULL` (falls back to `var_sim` itself).
 
 ## Value
 

@@ -39,9 +39,19 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
+<li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -52,7 +62,6 @@
     <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -93,14 +102,17 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p>The AEME package hosts three one-dimensional hydrodynamic models: the
+<p>The AEME package hosts four one-dimensional hydrodynamic models: the
 DYnamic REservoir Simulation Model (DYRESM), the General Lake Model
-(GLM), and the General Ocean Turbulence Model (GOTM, which has been
-adapted for closed basins for application to lakes and reservoirs). The
-models can be coupled to their corresponding water quality models, the
-DYRESM-CAEDYM (Computational Aquatic Ecosystem Dynamics Model), GLM-AED
-(Aquatic Ecosystem Dynamics Model), and GOTM-WET (Water Ecosystem
-Tool).</p>
+(GLM), the General Ocean Turbulence Model (GOTM, which has been adapted
+for closed basins for application to lakes and reservoirs), and
+Simstrat. The models can be coupled to their corresponding water quality
+models, the DYRESM-CAEDYM (Computational Aquatic Ecosystem Dynamics
+Model), GLM-AED (Aquatic Ecosystem Dynamics Model), GOTM-WET (Water
+Ecosystem Tool), and Simstrat-AED2/AED.</p>
+<p>This vignette assumes at least one model is already installed – see
+<code><a href="../articles/installing-models.html">vignette("installing-models")</a></code> if <code><a href="../reference/build_aeme.html">build_aeme()</a></code>
+below reports a missing executable.</p>
 <p>Key aspects of the AEME package include:</p>
 <ul>
 <li><p>Defined S4 class for <code>aeme</code> objects</p></li>
@@ -238,11 +250,10 @@ components:</p>
 </tr>
 <tr class="even">
 <td>GLM-AED</td>
+<td>GLM hydrodynamic nml (<em>glm3.nml</em> or <em>glm4.nml</em>)</td>
 <td>
-<em>glm3.nml</em> file</td>
-<td>
-<em>aed2.nml</em>, <em>phytos.nml</em>, <em>zoops.nml</em>
-files</td>
+<em>aed.nml</em> (or <em>aed2.nml</em>) and its
+phytoplankton/zooplankton parameter files</td>
 </tr>
 <tr class="odd">
 <td>GOTM-WET</td>
@@ -270,18 +281,25 @@ performance using the function and also to calibrate the model using the
 <a href="https://github.com/limnotrack/aemetools" class="external-link">aemetools</a>
 package.</p>
 <p>The <code>lake</code> observations are stored in a data frame with
-the following columns:</p>
+the following required columns:</p>
 <ul>
 <li><p><strong>Date</strong> - Date of the observation (character). The
 date must be in the format <code>YYYY-MM-DD HH:MM:SS</code>.</p></li>
-<li><p><strong>depth</strong> - Depth of the observation (m) (numeric).
-The depth must be in metres.</p></li>
-<li><p><strong>var</strong> - Variable name of the observation
-(character). The variable names an input preparation are designed in the
-<a href="aeme-inputs.html">AEME inputs article</a>.</p></li>
+<li><p><strong>depth</strong> - Nominal sampling depth of the
+observation (m, numeric), positive-down from the lake surface.</p></li>
+<li><p><strong>var_aeme</strong> - Variable name of the observation
+(character). The variable names and input preparation are described in
+the <a href="aeme-inputs.html">AEME inputs article</a>.</p></li>
 <li><p><strong>value</strong> - Value of the observation
 (numeric).</p></li>
 </ul>
+<p>Two optional columns are also recognised: <strong>depth_to</strong>
+(the bottom of an integrated sample, when the observation covers a depth
+interval) and <strong>sd</strong> (the measurement standard deviation,
+in the variable’s units, used for observation weighting during
+calibration). The legacy <code>depth_from</code> / <code>depth_to</code>
+column pair is still accepted and is collapsed to a single
+<code>depth</code> (interval midpoint) with a deprecation warning.</p>
 <p>The <code>level</code> observations are stored in a data frame with
 the following columns:</p>
 <ul>
@@ -393,10 +411,14 @@ for each model.</p>
 <ul>
 <li><p>model - Either “dy_cd”, “glm_aed” and “gotm_wet”.</p></li>
 <li><p>file - Either the name of the file e.g. “glm3.nml” for model
-specific files or “met” for meteorological variables or “inf” for inflow
-or “wdr” for outflows. (Outflows were initiallly referred to as
-withdrawals, hence the “wdr” notation, this will probably be updated to
-reflect the current outflows slot soon…).</p></li>
+specific files (whichever of <code>glm3.nml</code>/<code>glm4.nml</code>
+is actually on disk is resolved automatically – see
+<code><a href="../reference/find_glm_nml.html">find_glm_nml()</a></code> – so this table entry always uses the
+literal string <code>"glm3.nml"</code> regardless of the GLM version an
+object was built with) or “met” for meteorological variables or “inf”
+for inflow or “wdr” for outflows. (Outflows were initiallly referred to
+as withdrawals, hence the “wdr” notation, this will probably be updated
+to reflect the current outflows slot soon…).</p></li>
 <li><p>name - Name of the parameter. If the name of the parameter is
 nested in a nml/yaml file, then the whole hierarchy needs to be provide
 with each level separated by a “/” e.g. “light/Kw” for Kw in
@@ -546,8 +568,18 @@ function.</p>
 <span><span class="fu"><a href="../reference/lake.html">lake</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">lke</span></span>
 <span></span>
 <span><span class="va">aeme</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Lake observations use the legacy <span style="color: #00BB00;">depth_from</span> / <span style="color: #00BB00;">depth_to</span> columns.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> These have been collapsed to a single <span style="color: #00BB00;">depth</span> column (interval midpoint).</span></span>
+<span><span class="co">#&gt;   Update your data to the current schema (<span style="color: #0000BB;">"Date"</span>, <span style="color: #0000BB;">"var_aeme"</span>, <span style="color: #0000BB;">"depth"</span>, and</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">"value"</span>); <span style="color: #00BB00;">depth_to</span> and <span style="color: #00BB00;">sd</span> are optional.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> This <span style="color: #0000BB;">&lt;Aeme&gt;</span> object has no recorded AEME package version.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> It was likely built with an older version of AEME (&lt;0.4.0), or has never been</span></span>
+<span><span class="co">#&gt;   built with `build_aeme()`. Consider rebuilding with `build_aeme()` to keep it</span></span>
+<span><span class="co">#&gt;   in sync with the installed package (0.4.0).</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">AEME</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">AEME not yet built</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Lake</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -557,7 +589,9 @@ function.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Time</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2013-07-01; Stop: 2023-06-30; Time step: 3600</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Start: 2013-07-01 00:00:00; Stop: 2023-06-30 00:00:00; Time step: 3600 s;</span></span>
+<span><span class="co">#&gt;   Output step: s</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Timezone: UTC (timestamps stored UTC)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Spin up (days): GLM: 1095; GOTM: 1095; DYRESM: 1095; Simstrat: 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Configuration</span> ──</span></span>
@@ -573,6 +607,7 @@ function.</p>
 <span><span class="co">#&gt; │      GLM-AED             <span style="color: #00BB00;">Present</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │      GOTM-WET            <span style="color: #00BB00;">Present</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; │   SIMSTRAT-AED2           <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
+<span><span class="co">#&gt; │    SIMSTRAT-AED           <span style="color: #BB0000;">Absent</span>              <span style="color: #BB0000;">Absent</span>         │</span></span>
 <span><span class="co">#&gt; └──────────────────────────────────────────────────────────────┘</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Observations</span> ──</span></span>
@@ -593,7 +628,7 @@ function.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Outflows</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of outflows: 1; Names: wbal; Elevations:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Number of outflows: 1; Names: wbal; Elevations: -1</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Scaling factors: DY-CD: 1; GLM-AED: 1; GOTM-WET: 1; Simstrat-AED2: 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Water Balance</span> ──</span></span>
@@ -611,6 +646,7 @@ function.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GLM-AED: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GOTM-WET: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> SIMSTRAT-AED2: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> SIMSTRAT-AED: 0</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Variables: 0</span></span>
 <span><span class="co">#&gt; None</span></span></code></pre></div>
 <div class="section level3">
@@ -648,13 +684,13 @@ example, the <code>lake</code> slot can be visualised using the
 <span><span class="co">#&gt; ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐</span></span>
 <span><span class="co">#&gt; │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │</span></span>
 <span><span class="co">#&gt; ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤</span></span>
-<span><span class="co">#&gt; │   1│    0      │ 2.48      │   11      │ 13.5      │ 12.2     │ 3.45e+04│ 0.224   │-38.4│  5.7│-0.4│0.0922│</span></span>
-<span><span class="co">#&gt; │   2│ 2.48      │   19      │    0      │   11      │  5.5     │ 1.19e+05│ 0.776   │-21.1│0.558│ 0.1│0.0338│</span></span>
+<span><span class="co">#&gt; │   1│    0      │ 2.48      │   11      │ 13.5      │ 12.2     │ 3.45e+04│ 0.224   │-38.4│ 6.66│-0.4│0.0983│</span></span>
+<span><span class="co">#&gt; │   2│ 2.48      │   19      │    0      │   11      │  5.5     │ 1.19e+05│ 0.776   │-21.1│0.652│ 0.1│ 0.036│</span></span>
 <span><span class="co">#&gt; └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘</span></span>
 <span><span class="co">#&gt; ┌──────────────┬───────────────┬───────────────┬───────────────┐</span></span>
 <span><span class="co">#&gt; │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│</span></span>
 <span><span class="co">#&gt; ├──────────────┼───────────────┼───────────────┼───────────────┤</span></span>
-<span><span class="co">#&gt; │ -24.993      │ 1.71          │ -0.012        │ 0.047         │</span></span>
+<span><span class="co">#&gt; │ -24.993      │ 1.998         │ -0.012        │ 0.05          │</span></span>
 <span><span class="co">#&gt; └──────────────┴───────────────┴───────────────┴───────────────┘</span></span>
 <span><span class="va">aeme</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">

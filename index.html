@@ -42,9 +42,19 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/intro-aeme.html">Introduction to AEME</a></li>
+<li><a class="dropdown-item" href="articles/installing-models.html">Installing Model Binaries</a></li>
+    <li><a class="dropdown-item" href="articles/intro-aeme.html">Introduction to AEME</a></li>
     <li><a class="dropdown-item" href="articles/aeme-inputs.html">AEME Inputs</a></li>
     <li><a class="dropdown-item" href="articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
+    <li><a class="dropdown-item" href="articles/visualising-output.html">Visualising AEME Output</a></li>
+    <li><a class="dropdown-item" href="articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
+    <li><a class="dropdown-item" href="articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
+    <li><a class="dropdown-item" href="articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
+    <li><a class="dropdown-item" href="articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
     <li><a class="dropdown-item" href="articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
@@ -55,7 +65,6 @@
     <li><a class="dropdown-item" href="articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
     <li><a class="dropdown-item" href="articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
     <li><a class="dropdown-item" href="articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
-    <li><a class="dropdown-item" href="articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -88,7 +97,7 @@
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>The Aquatic Ecosystem Model Ensemble (AEME) package allows you to setup and run an ensemble of aquatic ecosystem models. The models are <a href="https://github.com/AquaticEcoDynamics/dy-cd" class="external-link">DYRESM-CAEDYM</a>, <a href="https://aquatic.science.uwa.edu.au/research/models/GLM/" class="external-link">GLM-AED</a> and <a href="https://gitlab.com/wateritech-public/waterecosystemstool/wet" class="external-link">GOTM-WET</a>.</p>
+<p>The Aquatic Ecosystem Model Ensemble (AEME) package allows you to setup and run an ensemble of aquatic ecosystem models. The models are <a href="https://github.com/AquaticEcoDynamics/dy-cd" class="external-link">DYRESM-CAEDYM</a>, <a href="https://aquatic.science.uwa.edu.au/research/models/GLM/" class="external-link">GLM-AED</a>, <a href="https://gitlab.com/wateritech-public/waterecosystemstool/wet" class="external-link">GOTM-WET</a> and <a href="https://github.com/Eawag-AppliedSystemAnalysis/Simstrat" class="external-link">Simstrat-AED2</a>.</p>
 <div class="section level2">
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
@@ -255,9 +264,10 @@
 <p>We have a host of vignettes to help you get started with AEME:</p>
 <ul>
 <li><a href="https://limnotrack.com/AEME/articles/intro-aeme.html">Introduction to AEME</a></li>
-<li><a href="https://limnotrack.com/AEME/articles/getting-started.html">Set up for your own lake</a></li>
 <li><a href="https://limnotrack.com/AEME/articles/aeme-inputs.html">Description of model inputs</a></li>
+<li><a href="https://limnotrack.com/AEME/articles/setup-new-lake.html">Set up for your own lake</a></li>
 </ul>
+<p>Model-specific and use-case articles (GLM-AED, Simstrat-AED2, water balance calibration, and more) are listed under <a href="https://limnotrack.com/AEME/articles/">Articles</a> on the package website.</p>
 </div>
 <div class="section level2">
 <h2 id="extension">Extension<a class="anchor" aria-label="anchor" href="#extension"></a>
@@ -267,6 +277,8 @@
 <a href="https://limnotrack.com/aemetools/">aemetools</a> - For downloading meteorological data, calibration and sensitivity analysis.</li>
 <li>
 <a href="https://limnotrack.com//bathytools/">bathytools</a> - For processing lake bathymetry data.</li>
+<li>
+<a href="https://github.com/limnotrack/ltapi" class="external-link">ltapi</a> - For querying LimnoTrack’s lake and water quality API.</li>
 </ul>
 </div>
 </div>

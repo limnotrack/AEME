@@ -22,7 +22,11 @@ build_aeme(
   hum_type = NULL,
   est_swr_hr = NULL,
   use_aeme = FALSE,
-  config = NULL
+  config = NULL,
+  output_vars = NULL,
+  mass_balance = TRUE,
+  tz = NULL,
+  aed = NULL
 )
 ```
 
@@ -120,6 +124,37 @@ build_aeme(
   list; AEME configuration, typically loaded via
   `yaml::read_yaml("aeme.yaml")`.
 
+- output_vars:
+
+  character; AEME variable names (e.g. `c("HYD_temp", "CHM_oxy")`) to
+  restrict each model's written output to, applied via
+  [`set_output_vars()`](https://limnotrack.com/reference/set_output_vars.md)
+  once the configuration has been built and re-written to disk. Use this
+  to build a lake trimmed for calibration / sensitivity analysis, where
+  only one or two variables feed the objective. `NULL` (default) leaves
+  every model writing its full output.
+
+- mass_balance:
+
+  logical; passed to
+  [`set_output_vars()`](https://limnotrack.com/reference/set_output_vars.md)
+  when `output_vars` is supplied - for `"glm_aed"` only, keep the GLMv4
+  `&mass_balance` diagnostic CSV. Default `TRUE`. Ignored when
+  `output_vars` is `NULL`.
+
+- tz:
+
+  character; time zone of the meteorology, inflow and outflow date
+  columns. Defaults to the value stored in `aeme`, or `"UTC"`.
+
+- aed:
+
+  [`aed_options()`](https://limnotrack.com/reference/aed_options.md)
+  object; which parts of the AED biogeochemistry setup to run for
+  `"glm_aed"` when `use_bgc = TRUE` (the active modules, the initial
+  concentrations, the sediment zone fluxes and the `aed_totals`). `NULL`
+  (default) runs all of them. Ignored when `use_bgc = FALSE`.
+
 ## Value
 
 An updated `aeme` object.
@@ -130,6 +165,10 @@ An updated `aeme` object.
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
 path <- "aeme"
 aeme <- yaml_to_aeme(path = aeme_dir, "aeme.yaml")
+#> Warning: `yaml_to_aeme()` was deprecated in AEME 0.4.0.
+#> ℹ Use `aeme_constructor()` to build an Aeme object from your own lake data, or
+#>   `new_aeme()` for a quick placeholder object to populate incrementally,
+#>   instead of a yaml file.
 model_controls <- get_model_controls()
 
 # Build configuration for GLM-AED
@@ -147,7 +186,7 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [9ms]
+#> ✔ Estimating surface water temperature [25ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -156,9 +195,13 @@ aeme <- aeme |>
 #> 
 #> ── Building GLM-AED for lake wainamu ──
 #> 
-#> ℹ Copied in GLM nml file
+#> ℹ Copied in GLM nml file (glm4.nml)
 #> ℹ Copied in AED nml file and supporting files
 #> ℹ Copied in GLM plots nml file
+#> ! Forcing sed_heat_model from 2 to 1: sed_heat_model = 2 needs an active WQ
+#>   module and `use_bgc` is FALSE.
+#> Warning: GLM ignores the AirPres met column in daily mode and uses the default 1013.25 hPa instead.
+#> This warning is displayed once per session.
 #> ✔ GLM nml validation completed - no issues detected.
 
 # Enable biogeochemistry
@@ -175,13 +218,14 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [7ms]
+#> ✔ Estimating surface water temperature [23ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> 
 #> ── Building GLM-AED for lake wainamu ──
 #> 
+#> ℹ Aligned AED sediment zones to GLM: 2 zones (all active).
 #> ℹ No variables to initialise in AED
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
 #> ℹ Tier 2: zone-median summer concentrations used for adjustment:
@@ -195,18 +239,18 @@ aeme <- aeme |>
 #>   zones, direct FRP)
 #> ── Sediment zone flux estimates (obs_adjusted) ─────────────────────────────────
 #> n_zones: 2 | max lake depth: 13.07 m | ref_depth: 5 m
-#> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬─────┬────┬──────┐
-#> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4 │ NO3│ FRP  │
-#> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼─────┼────┼──────┤
-#> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.83│-0.4│ 0.103│
-#> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│0.512│ 0.1│0.0259│
-#> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴─────┴────┴──────┘
+#> ┌────┬───────────┬───────────┬───────────┬───────────┬──────────┬─────────┬─────────┬─────┬────┬────┬──────┐
+#> │Zone│H lower (m)│H upper (m)│D upper (m)│D lower (m)│Mean D (m)│Area (m2)│Area frac│ O2  │ NH4│ NO3│ FRP  │
+#> ├────┼───────────┼───────────┼───────────┼───────────┼──────────┼─────────┼─────────┼─────┼────┼────┼──────┤
+#> │   1│    0      │ 3.07      │   10      │ 13.1      │ 11.5     │ 4.4e+04 │ 0.289   │-38.8│ 5.7│-0.4│ 0.107│
+#> │   2│ 3.07      │   19      │    0      │   10      │    5     │ 1.08e+05│ 0.711   │-19.4│ 0.5│ 0.1│0.0268│
+#> └────┴───────────┴───────────┴───────────┴───────────┴──────────┴─────────┴─────────┴─────┴────┴────┴──────┘
 #> 
-#> ── Lake-wide area-weighted average fluxes ──────────────────────────────────────
+#> ── Lake-wide area-weighted average fluxes (mmol/m2/d) ──────────────────────────
 #> ┌──────────────┬───────────────┬───────────────┬───────────────┐
 #> │O2 (mmol/m2/d)│NH4 (mmol/m2/d)│NO3 (mmol/m2/d)│FRP (mmol/m2/d)│
 #> ├──────────────┼───────────────┼───────────────┼───────────────┤
-#> │ -25.007      │ 2.05          │ -0.044        │ 0.048         │
+#> │ -25.007      │ 2.002         │ -0.044        │ 0.05          │
 #> └──────────────┴───────────────┴───────────────┴───────────────┘
 #> ✔ GLM nml validation completed - no issues detected.
 ```
