@@ -200,6 +200,31 @@ check_glm_nml <- function(file) {
     }
   }
   
+  # --- Initial profile checks ---
+  # GLM aborts ("last depth is greater the specified lake depth") when the
+  # deepest initial-profile depth exceeds &init_profiles lake_depth
+  ip <- nml$init_profiles
+  if (!is.null(ip) && !is.null(ip$the_depths) && !is.null(ip$lake_depth)) {
+    the_depths <- suppressWarnings(as.numeric(ip$the_depths))
+    lake_depth <- suppressWarnings(as.numeric(ip$lake_depth))
+    num_depths <- suppressWarnings(as.numeric(ip$num_depths))
+    if (length(lake_depth) == 1 && !is.na(lake_depth) &&
+        length(the_depths) > 0 && !anyNA(the_depths)) {
+      if (length(num_depths) == 1 && !is.na(num_depths) &&
+          length(the_depths) != num_depths) {
+        issues <- c(issues, paste0("Number of the_depths values (",
+                                   length(the_depths),
+                                   ") does not match num_depths (",
+                                   num_depths, ")"))
+      }
+      if (max(the_depths) > lake_depth) {
+        issues <- c(issues, paste0(
+          "Last initial profile depth (the_depths = ", max(the_depths),
+          ") is greater than the lake depth (lake_depth = ", lake_depth, ")"))
+      }
+    }
+  }
+
   # --- Light checks ---
   light <- nml$light
   if (!is.null(light)) {
