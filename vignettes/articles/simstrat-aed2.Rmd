@@ -216,7 +216,7 @@ identical to the one shown in the [GLM-AED article](glm-aed.html):
 ```{r aed2-phyto-lib, echo=FALSE}
 
 phyto_file <- system.file(
-  "extdata/glm_aed/aed_phyto_pars.csv",
+  "extdata/aed/aed_phyto_pars.csv",
   package = "AEME"
 )
 aed_phyto_params <- readr::read_csv(phyto_file, show_col_types = FALSE)

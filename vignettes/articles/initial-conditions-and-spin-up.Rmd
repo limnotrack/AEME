@@ -125,7 +125,7 @@ temperature profile:
 aeme <- set_initial_conditions(
   aeme,
   model_init = list(
-    glm_aed = list(profile = data.frame(depth = c(0, 15),
+    glm_aed = list(profile = data.frame(depth = c(0, 13),
                                         temperature = c(12, 8)))
   )
 )
@@ -193,7 +193,7 @@ res_temp <- assess_spin_up(
   vars      = "HYD_temp",
   metric    = "spread",
   tolerance = 0.5,
-  build_args = list(ext_elev = 5),
+  build_args = list(ext_elev = 3),
   path      = file.path(tmpdir, "spinup_temp")
 )
 res_temp

@@ -129,7 +129,7 @@ Similarly, `plot_zoops()` shows the zooplankton groups but requires the
 zooplankton module to be active in the model configuration. This example's 
 minimal config does not carry zooplankton/full phyto groups.
 
-```{r plot-zoops eval = FALSE}
+```{r plot-zoops, eval = FALSE}
 plot_zoops(aeme)    # zooplankton groups
 ```
 
@@ -174,7 +174,7 @@ specifically classed list `read_glm_output()`/`read_gotm_output()`/
 readers if you need output outside the `Aeme` object). It's what every
 other `plot_*` function on this page is ultimately built on:
 
-```{r plot-model-output}
+```{r get-model-outfile}
 outfile <- get_model_outfile(aeme, model = "glm_aed")$glm_aed
 outfile
 ```
