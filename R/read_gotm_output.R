@@ -167,6 +167,12 @@ read_gotm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
   }
   
   
+  # LKE_lvlwtr is already built above from the layer structure; its GOTM
+  # variable (zeta) is 1-D, so reading it as a gridded variable below fails
+  # with "incorrect number of dimensions".
+  vars_sim <- setdiff(vars_sim, "LKE_lvlwtr")
+  if (length(vars_sim) == 0) vars_sim <- NULL
+
   if (!is.null(vars_sim)) {
     model_vars_vec <- get_model_vars(vars_sim = vars_sim, model = "gotm_wet",
                                      as_vector = TRUE)
