@@ -76,6 +76,7 @@ skip_if_no_glm <- function(version = getOption("AEME.glm_version", "3.9.108")) {
 #'   returns `NA` rather than erroring when no nml is present yet (handy for
 #'   `file.exists()` "was it written?" checks).
 #' @return Full path to the GLM hydrodynamic nml, or `NA_character_`.
+#' @export
 glm_nml_path <- function(lake_dir, must_exist = TRUE) {
   glm_dir <- if (basename(lake_dir) == "glm_aed") {
     lake_dir
