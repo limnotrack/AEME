@@ -98,7 +98,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [24ms]
+#> ✔ Estimating surface water temperature [27ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance

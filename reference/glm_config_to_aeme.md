@@ -138,7 +138,7 @@ aeme <- aeme |>
   build_aeme(path = path, model = "glm_aed", model_controls = model_controls,
              ext_elev = 5)
 #> ✔ Created missing directory:
-#>   C:\Users\RUNNER~1\AppData\Local\Temp\RtmpCSvjTS\glm_config_to_aeme_example
+#>   C:\Users\RUNNER~1\AppData\Local\Temp\Rtmps9nlgV\glm_config_to_aeme_example
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows -- this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
@@ -149,7 +149,7 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [23ms]
+#> ✔ Estimating surface water temperature [33ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance

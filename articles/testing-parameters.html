@@ -218,8 +218,8 @@ overrides and run the model, in one call, without touching the
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model_test.html">run_model_test</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="va">path_glm</span>,</span>
 <span>                      param_overrides <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Kw <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
 <span>                      tgt_vars <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 01:25:46]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 01:25:47] <span style="color: #B2B2B2;">[500ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 04:12:14]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 04:12:14] <span style="color: #B2B2B2;">[437ms]</span></span></span>
 <span><span class="co">#&gt; </span></span></code></pre></div>
 <p>The parameter change is written to disk exactly as
 <code><a href="../reference/set_glm_param.html">set_glm_param()</a></code> would:</p>
@@ -269,17 +269,17 @@ collecting one <code>tgt_vars</code> matrix per scenario.</p>
 <span>  <span class="fu"><a href="../reference/run_model_test.html">run_model_test</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="va">path_glm</span>, param_overrides <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Kw <span class="op">=</span> <span class="va">kw</span><span class="op">)</span>,</span>
 <span>                 tgt_vars <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 01:25:48]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 01:25:48] <span style="color: #B2B2B2;">[498ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 04:12:16]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 04:12:16] <span style="color: #B2B2B2;">[451ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 01:25:49]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 01:25:50] <span style="color: #B2B2B2;">[477ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 04:12:17]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 04:12:17] <span style="color: #B2B2B2;">[486ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 01:25:51]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 01:25:51] <span style="color: #B2B2B2;">[489ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 04:12:18]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 04:12:19] <span style="color: #B2B2B2;">[434ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 01:25:52]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 01:25:52] <span style="color: #B2B2B2;">[506ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 04:12:19]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 04:12:20] <span style="color: #B2B2B2;">[432ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Kw_"</span>, <span class="va">kw_values</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">

@@ -211,7 +211,7 @@ what every other `plot_*` function on this page is ultimately built on:
 outfile <- get_model_outfile(aeme, model = "glm_aed")$glm_aed
 outfile
 #>                                                                                         output 
-#> "C:/Users/runneradmin/AppData/Local/Temp/RtmpU3LiNa/LID45819_wainamu/glm_aed/output/output.nc"
+#> "C:/Users/runneradmin/AppData/Local/Temp/RtmpWWYQW5/LID45819_wainamu/glm_aed/output/output.nc"
 ```
 
 [`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md)
