@@ -158,3 +158,33 @@ test_that("check_glm_nml() skips aed_sed_const2d validation when sedflux_model i
 
   testthat::expect_true(check_glm_nml(glm_file))
 })
+
+test_that("check_glm_nml() flags an initial profile depth greater than the lake depth", {
+  nml <- .glm_nml_fixture()
+  # Make the sediment block valid so only the init_profiles check is exercised
+  nml$sediment$sed_heat_model <- 2
+  nml$wq_setup$wq_lib <- "aed"
+  tmp <- tempfile(fileext = ".nml")
+
+  # deepest profile depth equals lake_depth: fine
+  nml$init_profiles$lake_depth <- 13
+  nml$init_profiles$num_depths <- 2
+  nml$init_profiles$the_depths <- c(0, 13)
+  write_nml(nml, tmp)
+  testthat::expect_true(check_glm_nml(tmp))
+
+  # deepest profile depth exceeds lake_depth: GLM would abort
+  nml$init_profiles$the_depths <- c(0, 16.07)
+  write_nml(nml, tmp)
+  testthat::expect_error(check_glm_nml(tmp), class = "aeme_error_glm_nml")
+  err <- tryCatch(check_glm_nml(tmp), error = function(e) e)
+  testthat::expect_match(paste(conditionMessage(err), collapse = "\n"),
+                         "greater than the lake depth")
+
+  # num_depths must match the number of the_depths values
+  nml$init_profiles$the_depths <- c(0, 5, 13)
+  write_nml(nml, tmp)
+  err <- tryCatch(check_glm_nml(tmp), error = function(e) e)
+  testthat::expect_match(paste(conditionMessage(err), collapse = "\n"),
+                         "does not match num_depths")
+})
