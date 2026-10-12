@@ -2,7 +2,9 @@
 #'
 #' @inheritParams build_aeme
 #' @param param data.frame; parameters to input into the model
-#' configuration files
+#' configuration files. Zone-ratio and zone-offset rows made by
+#' [zone_ratio_param()] and [zone_offset_param()] are expanded to per-zone
+#' values first (see [expand_zone_ratios()]).
 #'
 #' @return Aeme object with parameters input into model configuration files
 #' @export
@@ -20,7 +22,11 @@ input_model_parameters <- function(aeme, model, param, path) {
   path <- check_path(path = path, must_exist = TRUE)
   if (!is.data.frame(param))
     stop("'param' must be a data.frame.")
-  
+
+  # Zone ratios and offsets (see `zone_ratio_param()`) become real per-zone
+  # values here, so every caller gets them expanded.
+  param <- expand_zone_ratios(param)
+
   # Collapse parameters
   param <- collapse_params(param)
   

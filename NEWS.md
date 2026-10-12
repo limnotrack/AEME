@@ -1,5 +1,35 @@
 # AEME 0.4.0
 
+## Parameter helpers moved from aemetools
+
+* `zone_ratio_param()`, `zone_offset_param()` and `expand_zone_ratios()` (plus
+  `is_zone_ratio()` and `zone_base_name()`) now live in AEME.
+  `input_model_parameters()` expands zone-ratio and zone-offset rows itself, so
+  parameter sets that use them work with every function that writes parameters,
+  including `run_aeme_ensemble()`.
+* `encode_param()`, `decode_param()` and `decode_param_full()` now live in AEME.
+  The `group/name[index]` format is unchanged. `encode_param()` returns
+  `character(0)` for empty input instead of `"/[]"`, and decoding a string that
+  is not in the format gives `NA` instead of a wrong group and name.
+
+## `run_aeme_ensemble()` runs supplied parameter sets
+
+* New `run_aeme_ensemble()` runs a model once per supplied parameter set
+  (a list of `param` data.frames, or one long data.frame with an `ensemble`
+  column) and stores each member as `output(aeme)$ens_001 ... ens_00k`, the
+  structure `get_var(ens_n =)` and `write_aeme_parquet()` already use. Members
+  that fail are dropped with a warning; `parallel = TRUE` runs each worker in
+  its own copy of the model directory. Sampling sets from parameter bounds and
+  extracting a PEST++ posterior stay in the aemetools package.
+* `run_aeme_ensemble()` also drops members that fail *silently*: GLM exits
+  normally when an unphysical parameter set drains the lake, leaving a water
+  level at or below zero and then `NA`. With `drop_incomplete = TRUE` (default)
+  such members are removed and named in the warning, along with the first error
+  message when a member errors.
+* New article "Parameter uncertainty with ensembles" (Uncertainty menu) covering
+  sampled and supplied ensembles and `write_aeme_parquet()` /
+  `read_aeme_parquet()`.
+
 ## `estimate_zone_fluxes()` documentation and Tier 2 normalisation
 
 * **Tier 2 (observed-data) adjustment now preserves the lake-wide total.**
