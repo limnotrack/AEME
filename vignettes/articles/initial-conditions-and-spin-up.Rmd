@@ -354,4 +354,6 @@ read back: `get_var()`, `plot_ts()`, `plot_output()` and the rest default to
 `assess_spin_up()` perturbs only the initial state. It is not a full uncertainty
 or sensitivity analysis -- for forcing and parameter sensitivity see
 `vignette("testing-parameters")` and the `aemetools` package
-(`run_aeme_param()`, `sa_aeme()`, `calib_aeme()`).
+(`run_aeme_param()`, `sa_aeme()`, `calib_aeme()`). To propagate parameter
+uncertainty through the model as an ensemble, see
+`vignette("parameter-uncertainty")`.
