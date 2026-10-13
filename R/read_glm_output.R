@@ -31,6 +31,28 @@
 #'   `depths` must not be supplied when `raw_output = TRUE`, since raw
 #'   output has no common depth grid to interpolate onto. Default `FALSE`.
 #'
+#' @param extra_vars character; which of the variables swept up by
+#'   `load_all` (those beyond the declared `vars_sim` set -- sediment,
+#'   diagnostic and flux output) to read. `NULL` (default) reads all of them.
+#'   `"none"` reads none. Otherwise a vector of names -- AEME names from
+#'   [glm_extra_vars] (e.g. `"SED_temp"`), raw netCDF names (e.g.
+#'   `"sed_temp"`), and/or the group keywords `"sediment"` and `"diag"`
+#'   (every variable that would be stored in that sub-list). Variables not
+#'   requested are never read from the file, which keeps ensemble output small.
+#'   Names that are not in the file give a warning. Ignored if
+#'   `load_all = FALSE`.
+#' @param sed_layers integer; for variables with a `sed_layers` dimension
+#'   (`sed_temp`), keep only these sediment layers (indices, 1 = shallowest).
+#'   `NULL` (default) keeps all.
+#' @param zone_summary logical; also add a lake-wide series for each requested
+#'   sediment-zone variable (name ending `_Z`), the mean over zones weighted by
+#'   the time-varying zone area (`zarea`). Stored in `$sediment` as
+#'   `<name>_lake` (e.g. `SDF_Fsed_oxy_Z_lake`, or `SED_Fsed_oxy_lake` by AEME
+#'   name), in the variable's own per-m2 units. Zones with no area (`NA` in
+#'   `zarea`) are ignored. Naming a `_lake` series in `extra_vars` builds just
+#'   that series, without `zone_summary = TRUE` (the zone array behind it is
+#'   then not kept unless also requested). Default `FALSE`.
+#'
 #' @returns List with AEME output variables. Also includes `z`, GLM's own
 #'   raw layer-height matrix (height of each layer's top boundary above the
 #'   lake bottom, per timestep, before conversion to `LKE_depths`) -- unlike
@@ -46,7 +68,9 @@
 read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
                             dates = NULL, date_index = NULL, incl_fluxes = TRUE,
                             output_hour = 0, file, phyto_pars = NULL,
-                            load_all = TRUE, raw_output = FALSE) {
+                            load_all = TRUE, raw_output = FALSE,
+                            extra_vars = NULL, sed_layers = NULL,
+                            zone_summary = FALSE) {
 
   if (isTRUE(raw_output) && !is.null(depths)) {
     cli::cli_abort("'depths' cannot be supplied when 'raw_output = TRUE' -- raw output uses each timestep's native GLM layer depths.")
@@ -269,8 +293,14 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
         }
       }
       var_out <- ncdf4::ncvar_get(nc, v)
-      if (grepl("_Z", v)) {
-        return(var_out)
+      if (grepl("_Z$", v)) {
+        # sediment-zone variable: same labelled form as the load_all sweep
+        # (date-subset, with its zone coordinates), not a bare array
+        dim_objs <- Filter(\(d) d$len > 1, nc$var[[v]]$dim)
+        return(.read_glm_grouped_var(
+          nc = nc, v = v, dim_objs = dim_objs,
+          dim_names = vapply(dim_objs, \(d) d$name, character(1)),
+          date_index = date_index, dates = dates))
       }
       if (length(dim(var_out)) == 3) {
         var_out <- var_out[, , date_index, drop = FALSE]
@@ -330,6 +360,14 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
 
     nc_vars <- names(nc$var)
     remaining_vars <- setdiff(nc_vars, already_extracted)
+    # `<name>_lake` series asked for by name (as opposed to `zone_summary`)
+    lake_req <- character()
+    if (!is.null(extra_vars)) {
+      lake_req <- grep("_lake$", .resolve_glm_extra_vars(extra_vars)$raw,
+                       value = TRUE)
+      remaining_vars <- .select_glm_extra_vars(nc, remaining_vars, extra_vars,
+                                               already_extracted)
+    }
     extras <- list(diag = list(), sediment = list())
 
     for (v in remaining_vars) {
@@ -398,7 +436,7 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
           grp <- .glm_extra_group(v, dim_names)
           .read_glm_grouped_var(nc = nc, v = v, dim_objs = dim_objs,
                                 dim_names = dim_names, date_index = date_index,
-                                dates = dates)
+                                dates = dates, sed_layers = sed_layers)
         }
       }, error = function(e) {
         cli::cli_warn(c("!" = "Could not read variable {.val {v}} from GLM output: {conditionMessage(e)}"))
@@ -412,6 +450,20 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
           extras[[grp]][[v]] <- result
         }
       }
+    }
+    if (isTRUE(zone_summary) || length(lake_req)) {
+      lake <- .glm_zone_summary(nc = nc, zone_vars = extras[["sediment"]],
+                                date_index = date_index)
+      if (!isTRUE(zone_summary)) lake <- lake[intersect(names(lake), lake_req)]
+      # a zone array read only to build a requested `_lake` series is not kept
+      if (!isTRUE(zone_summary)) {
+        asked <- .resolve_glm_extra_vars(extra_vars)
+        if (!length(asked$groups)) {
+          drop <- setdiff(sub("_lake$", "", names(lake)), asked$raw)
+          extras[["sediment"]][drop] <- NULL
+        }
+      }
+      extras[["sediment"]] <- c(extras[["sediment"]], lake)
     }
     # Sub-lists sit beside the core variables; absent when empty
     for (g in c("diag", "sediment")) {
@@ -523,18 +575,11 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
 #'   dimension.
 #' @return An `aeme_grouped_var` object.
 #' @noRd
-.read_glm_grouped_var <- function(nc, v, dim_objs, dim_names, date_index, dates) {
+.read_glm_grouped_var <- function(nc, v, dim_objs, dim_names, date_index, dates,
+                                  sed_layers = NULL) {
   arr <- ncdf4::ncvar_get(nc, v)
   if (is.null(dim(arr)) && length(dim_names) == 1) {
     dim(arr) <- length(arr)
-  }
-
-  time_pos <- which(dim_names == "time")
-  if (length(time_pos) == 1) {
-    d <- dim(arr)
-    idx_list <- lapply(d, seq_len)
-    idx_list[[time_pos]] <- date_index
-    arr <- do.call(`[`, c(list(arr), idx_list, list(drop = FALSE)))
   }
 
   dim_values <- stats::setNames(
@@ -547,7 +592,99 @@ read_glm_output <- function(nc = NULL, vars_sim = NULL, depths = NULL,
     dim_names
   )
 
+  idx_list <- lapply(dim(arr), seq_len)
+  time_pos <- which(dim_names == "time")
+  if (length(time_pos) == 1) {
+    idx_list[[time_pos]] <- date_index
+  }
+  layer_pos <- which(dim_names == "sed_layers")
+  if (!is.null(sed_layers) && length(layer_pos) == 1) {
+    keep <- as.integer(sed_layers)
+    keep <- keep[keep >= 1 & keep <= dim(arr)[layer_pos]]
+    if (length(keep) == 0) {
+      cli::cli_abort("{.arg sed_layers} has no valid layer for {.val {v}} ({dim(arr)[layer_pos]} layer{?s}).")
+    }
+    idx_list[[layer_pos]] <- keep
+    dim_values[[layer_pos]] <- dim_values[[layer_pos]][keep]
+  }
+  if (length(time_pos) == 1 || length(layer_pos) == 1) {
+    arr <- do.call(`[`, c(list(arr), idx_list, list(drop = FALSE)))
+  }
+
   new_grouped_var(value = arr, dim_names = dim_names, dim_values = dim_values)
+}
+
+#' Restrict the `load_all` sweep to the requested extra variables
+#'
+#' @param nc open ncdf4 object.
+#' @param remaining_vars character; netCDF variables the sweep would read.
+#' @param extra_vars character; the user's `extra_vars` (see
+#'   [read_glm_output()]).
+#' @param already_extracted character; netCDF variables read elsewhere (a
+#'   request for one of these is fine and not warned about).
+#' @return `remaining_vars`, filtered.
+#' @noRd
+.select_glm_extra_vars <- function(nc, remaining_vars, extra_vars,
+                                   already_extracted = character()) {
+  ev <- .resolve_glm_extra_vars(extra_vars)
+  if (ev$none) return(character())
+  if ("all" %in% ev$groups) return(remaining_vars)
+
+  # `<name>_lake` is derived (zone_summary) from the `_Z` variable itself
+  want <- sub("_lake$", "", ev$raw)
+  unknown <- setdiff(want, c(names(nc$var), already_extracted))
+  if (length(unknown)) {
+    cli::cli_warn(c(
+      "!" = "Requested {.arg extra_vars} not in the GLM output: {.val {unknown}}.",
+      "i" = "See {.code AEME::glm_extra_vars} for the available names."))
+  }
+
+  in_group <- rep(FALSE, length(remaining_vars))
+  if (length(ev$groups)) {
+    grp <- vapply(remaining_vars, \(v) {
+      dim_names <- vapply(Filter(\(d) d$len > 1, nc$var[[v]]$dim),
+                          \(d) d$name, character(1))
+      if (length(dim_names) == 0) return("diag")
+      if (setequal(dim_names, "time") || setequal(dim_names, c("z", "time"))) {
+        return("core")
+      }
+      .glm_extra_group(v, dim_names)
+    }, character(1))
+    in_group <- grp %in% ev$groups
+  }
+  remaining_vars[remaining_vars %in% want | in_group]
+}
+
+#' Area-weighted lake-wide series for each sediment-zone variable
+#'
+#' @param nc open ncdf4 object.
+#' @param zone_vars list; the `sediment` sub-list read so far.
+#' @param date_index integer; time indices read.
+#' @return named list of numeric vectors (`<name>_lake`), possibly empty.
+#' @noRd
+.glm_zone_summary <- function(nc, zone_vars, date_index) {
+  is_zone <- vapply(names(zone_vars), \(n) {
+    x <- zone_vars[[n]]
+    grepl("_Z$", n) && inherits(x, "aeme_grouped_var") &&
+      identical(x$dim_names, c("nzones", "time"))
+  }, logical(1))
+  if (!any(is_zone)) return(list())
+  if (!"zarea" %in% names(nc$var)) {
+    cli::cli_warn(c("!" = "No {.field zarea} in the GLM output: cannot compute {.arg zone_summary}."))
+    return(list())
+  }
+  n_zones <- nrow(zone_vars[[which(is_zone)[1]]]$value)
+  w <- ncdf4::ncvar_get(nc, "zarea")
+  w <- matrix(w, nrow = n_zones)[, date_index, drop = FALSE]
+
+  out <- lapply(names(zone_vars)[is_zone], \(n) {
+    val <- zone_vars[[n]]$value
+    ok <- !is.na(val) & !is.na(w)
+    num <- colSums(ifelse(ok, val * w, 0))
+    den <- colSums(ifelse(ok, w, 0))
+    ifelse(den > 0, num / den, NA_real_)
+  })
+  stats::setNames(out, paste0(names(zone_vars)[is_zone], "_lake"))
 }
 
 #' Read GLM lake water level output

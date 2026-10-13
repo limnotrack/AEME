@@ -15,7 +15,9 @@ accepted, even without a \code{key_naming} entry -- this covers variables
 \code{\link[=read_glm_output]{read_glm_output()}} loaded straight from a GLM/AED output file with no
 AEME translation (\code{load_all = TRUE}). Such names are passed through
 as-is, without the fuzzy-matching \code{\link[=guess_aeme_vars]{guess_aeme_vars()}} would otherwise
-attempt on them.}
+attempt on them.
+
+Names in \link{glm_extra_vars} (e.g. \code{"SED_temp"}) are always accepted.}
 }
 \value{
 Invisibly returns TRUE if all variables are valid, otherwise throws

@@ -2,7 +2,8 @@ test_that("get_obs_column_names() returns the current schema", {
   expect_identical(get_obs_column_names(),
                    c("Date", "var_aeme", "depth", "value"))
   expect_identical(get_obs_column_names(include_optional = TRUE),
-                   c("Date", "var_aeme", "depth", "value", "depth_to", "sd"))
+                   c("Date", "var_aeme", "depth", "value", "depth_to", "sd",
+                     "depth_ref", "height_above_bed"))
 })
 
 test_that("add_obs() accepts the legacy depth_from / depth_to layout", {

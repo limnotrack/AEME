@@ -13,7 +13,10 @@ load_output(
   parallel = FALSE,
   cl = NULL,
   ens_n = 1,
-  keep_diag = TRUE
+  keep_diag = TRUE,
+  extra_vars = NULL,
+  sed_layers = NULL,
+  zone_summary = FALSE
 )
 }
 \arguments{
@@ -43,6 +46,21 @@ loaded. Defaults to 1.}
 \code{sediment} sub-lists of each model's output (variables with dimensions other
 than time or depth x time, keyed by raw model names). Default \code{TRUE}; set to
 \code{FALSE} to save memory.}
+
+\item{extra_vars}{character; for GLM-AED, which sediment, flux and diagnostic
+variables beyond the standard set to read from \code{output.nc}. \code{NULL}
+(default) reads all of them. \code{"none"} reads none. Otherwise AEME names from
+\link{glm_extra_vars} (e.g. \code{"SED_temp"}), raw netCDF names, and/or the keywords
+\code{"sediment"} / \code{"diag"}. Unrequested variables are never read, which keeps
+ensemble output small. See \code{\link[=read_glm_output]{read_glm_output()}}.}
+
+\item{sed_layers}{integer; GLM-AED sediment layers to keep for variables
+with a sediment-layer dimension (\code{SED_temp}). \code{NULL} keeps all. See
+\code{\link[=read_glm_output]{read_glm_output()}}.}
+
+\item{zone_summary}{logical; for GLM-AED, also add an area-weighted
+lake-wide series for each requested sediment-zone variable. See
+\code{\link[=read_glm_output]{read_glm_output()}}. Default \code{FALSE}.}
 }
 \value{
 Updated aeme object with model output

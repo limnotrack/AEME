@@ -17,7 +17,10 @@ read_model_outputs(
   phyto_pars = NULL,
   load_all = TRUE,
   use_dat = NULL,
-  daily_mean = FALSE
+  daily_mean = FALSE,
+  extra_vars = NULL,
+  sed_layers = NULL,
+  zone_summary = FALSE
 )
 }
 \arguments{
@@ -69,6 +72,10 @@ one natively; GLM-AED and Simstrat get one from \code{run_aeme()} when
 \code{time(aeme)$output_daily_mean} is \code{TRUE}) it is read directly; otherwise the
 raw sub-daily \code{output.nc} is read and averaged by calendar day. Defaults to
 \code{FALSE}. See \code{\link{set_output_time_step}}.}
+
+\item{extra_vars, sed_layers, zone_summary}{for \code{model = "glm_aed"}, which
+sediment/flux/diagnostic variables to read and how to reduce them -- see
+\code{?read_glm_output}. Ignored for other models.}
 }
 \value{
 List of model outputs in AEME standard format

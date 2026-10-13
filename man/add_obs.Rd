@@ -4,25 +4,46 @@
 \alias{add_obs}
 \title{Add observations to Aeme object}
 \usage{
-add_obs(aeme, lake = NULL, level = NULL)
+add_obs(aeme, lake = NULL, level = NULL, depth_ref = c("surface", "bottom"))
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
 \item{lake}{data frame with required columns "Date", "var_aeme", "depth" and
-"value", and optional columns "depth_to" (bottom of an integrated sample) and
-"sd" (measurement standard deviation, in the variable's units). The legacy
-"depth_from" / "depth_to" column pair is accepted and collapsed to "depth"
-(with a one-time deprecation warning). "Date" may be a \code{Date}, \code{POSIXct} or
-date/datetime string; it is stored as a UTC \code{POSIXct} with daily rows
-anchored at 12:00:00. If NULL, no observations are added.}
+"value", and optional columns "depth_to" (bottom of an integrated sample),
+"sd" (measurement standard deviation, in the variable's units) and
+"depth_ref" (see \code{depth_ref}). The legacy "depth_from" / "depth_to" column
+pair is accepted and collapsed to "depth" (with a one-time deprecation
+warning). "Date" may be a \code{Date}, \code{POSIXct} or date/datetime string; it is
+stored as a UTC \code{POSIXct} with daily rows anchored at 12:00:00. If NULL, no
+observations are added.}
 
 \item{level}{data frame with columns "Date", "var_aeme" and "value". "Date"
 is handled as for \code{lake}. If NULL, no observations are added.}
+
+\item{depth_ref}{character; what "depth" in \code{lake} is measured from.
+\code{"surface"} (default): metres below the water surface. \code{"bottom"}: metres
+above the lake bed, for observations recorded as a height off the bottom (a
+logger 1 m above the sediment). A "depth_ref" column in \code{lake}, with values
+\code{"surface"} or \code{"bottom"}, sets this per row and takes precedence; \code{depth_ref}
+applies to rows without one.}
 }
 \value{
 Aeme object with observations added
 }
 \description{
 Add observations to Aeme object
+}
+\details{
+Stored observations always have \code{depth} in metres below the surface, so
+everything that reads it keeps working. For a bottom-referenced row the height
+you give is kept in \code{height_above_bed} (with \code{depth_ref = "bottom"}), and
+\code{depth} is worked out as \code{level - height}, where \code{level} is the height of the
+water surface above the bed on that date: from the lake level observations
+(those in \code{level}, or already on the object), interpolated in time; failing
+that, the full depth of the basin, with a warning because it ignores how far
+the real level was from full. That \code{depth} is an estimate. \code{\link[=get_var]{get_var()}} with
+\code{use_obs = TRUE} and \code{\link[=ensemble_summary]{ensemble_summary()}} compare bottom-referenced
+observations with the model at \code{height_above_bed} using the model's own water
+level, which is what "1 m above the bed" means.
 }

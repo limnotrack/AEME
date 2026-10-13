@@ -61,7 +61,7 @@ check_var_in_output <- function(aeme, model, var_sim, ens_n = 1) {
 #' @return logical; TRUE if variable exists and is not all -99
 #' @noRd
 is_var_present <- function(out_model, var) {
-  x <- out_model[[var]]
+  x <- .get_output_var(out_model, var)
   chk <- !is.null(x)
   if (chk && inherits(x, "aeme_grouped_var")) {
     return(length(x$value) > 0)

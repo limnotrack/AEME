@@ -11,6 +11,8 @@
 #'   as-is, without the fuzzy-matching [guess_aeme_vars()] would otherwise
 #'   attempt on them.
 #'
+#'   Names in [glm_extra_vars] (e.g. `"SED_temp"`) are always accepted.
+#'
 #' @returns Invisibly returns TRUE if all variables are valid, otherwise throws
 #' an error.
 #' @importFrom cli cli_abort
@@ -28,7 +30,10 @@ check_aeme_vars <- function(x, aeme = NULL) {
   if (!is.null(aeme)) {
     loaded_vars <- tryCatch(get_output_vars(aeme, group = c("core", "diag", "sediment")), error = function(e) character())
   }
-  already_loaded <- x %in% loaded_vars
+  # GLM-AED sediment/flux/diagnostic names (and their `_lake` summaries)
+  data("glm_extra_vars", package = "AEME", envir = environment())
+  already_loaded <- x %in% loaded_vars |
+    sub("_lake$", "", x) %in% glm_extra_vars$var_aeme
 
   # Only fuzzy-match/validate names not already confirmed present in the
   # aeme's own loaded output

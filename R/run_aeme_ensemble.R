@@ -77,7 +77,9 @@
 run_aeme_ensemble <- function(aeme, model, param_sets, path,
                               parallel = FALSE, ncore = NULL,
                               model_controls = NULL, timeout = Inf,
-                              drop_incomplete = TRUE) {
+                              drop_incomplete = TRUE, keep_diag = TRUE,
+                              extra_vars = NULL, sed_layers = NULL,
+                              zone_summary = FALSE) {
 
   aeme <- check_aeme(aeme)
   if (missing(model)) {
@@ -117,7 +119,9 @@ run_aeme_ensemble <- function(aeme, model, param_sets, path,
                                path = run_path)
         a2 <- run_aeme(aeme = a2, model = m, path = run_path, ens_n = 1,
                        return_type = "aeme", model_controls = model_controls,
-                       timeout = timeout)
+                       timeout = timeout, keep_diag = keep_diag,
+                       extra_vars = extra_vars, sed_layers = sed_layers,
+                       zone_summary = zone_summary)
         if (drop_incomplete && !run_completed(a2, m)) return(NULL)
         output(a2)[["ens_001"]][[m]]
       }, error = function(e) {

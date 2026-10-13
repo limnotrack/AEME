@@ -18,7 +18,8 @@
 
 read_model_nc <- function(aeme, model, path, lake_dir = NULL, vars_sim, 
                           incl_fluxes = TRUE, output_hour = 0, 
-                          remove_spin_up = FALSE) {
+                          remove_spin_up = FALSE, extra_vars = NULL,
+                          sed_layers = NULL, zone_summary = FALSE) {
   
   model <- check_model(model)
   aeme  <- check_aeme(aeme)
@@ -47,7 +48,10 @@ read_model_nc <- function(aeme, model, path, lake_dir = NULL, vars_sim,
     date_index = date_index,
     output_hour = output_hour,
     phyto_pars = phyto_pars,
-    daily_mean = daily_mean
+    daily_mean = daily_mean,
+    extra_vars = extra_vars,
+    sed_layers = sed_layers,
+    zone_summary = zone_summary
   )
   
   return(out)

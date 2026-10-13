@@ -75,6 +75,15 @@ get_output_vars <- function(aeme, model, ens_n = 1,
   out_vars <- unique(out_vars)
   data("key_naming", package = "AEME", envir = environment())
   out_var_names <- key_naming$name_text[match(out_vars, key_naming$var_aeme)]
+  # GLM-AED sediment/flux/diagnostic variables: label from glm_extra_vars
+  data("glm_extra_vars", package = "AEME", envir = environment())
+  no_text <- is.na(out_var_names) | out_var_names == ""
+  reg_text <- glm_extra_vars$name_text[match(sub("_lake$", "", out_vars),
+                                             glm_extra_vars$glm_aed)]
+  reg_text <- ifelse(is.na(reg_text) | !grepl("_lake$", out_vars), reg_text,
+                     paste(sub(" [(]by zone[)]$", "", reg_text),
+                           "(lake-wide mean)"))
+  out_var_names[no_text] <- reg_text[no_text]
   # Variables with no key_naming display name (e.g. loaded straight from a
   # GLM/AED output file with no AEME translation -- see
   # read_glm_output(load_all = TRUE)) fall back to their own name instead

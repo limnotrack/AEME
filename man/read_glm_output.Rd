@@ -15,7 +15,10 @@ read_glm_output(
   file,
   phyto_pars = NULL,
   load_all = TRUE,
-  raw_output = FALSE
+  raw_output = FALSE,
+  extra_vars = NULL,
+  sed_layers = NULL,
+  zone_summary = FALSE
 )
 }
 \arguments{
@@ -60,6 +63,30 @@ requested via \code{vars_sim} are keyed by their raw GLM/netCDF name (e.g.
 \code{"HYD_temp"}), and no AED unit-conversion factors are applied.
 \code{depths} must not be supplied when \code{raw_output = TRUE}, since raw
 output has no common depth grid to interpolate onto. Default \code{FALSE}.}
+
+\item{extra_vars}{character; which of the variables swept up by
+\code{load_all} (those beyond the declared \code{vars_sim} set -- sediment,
+diagnostic and flux output) to read. \code{NULL} (default) reads all of them.
+\code{"none"} reads none. Otherwise a vector of names -- AEME names from
+\link{glm_extra_vars} (e.g. \code{"SED_temp"}), raw netCDF names (e.g.
+\code{"sed_temp"}), and/or the group keywords \code{"sediment"} and \code{"diag"}
+(every variable that would be stored in that sub-list). Variables not
+requested are never read from the file, which keeps ensemble output small.
+Names that are not in the file give a warning. Ignored if
+\code{load_all = FALSE}.}
+
+\item{sed_layers}{integer; for variables with a \code{sed_layers} dimension
+(\code{sed_temp}), keep only these sediment layers (indices, 1 = shallowest).
+\code{NULL} (default) keeps all.}
+
+\item{zone_summary}{logical; also add a lake-wide series for each requested
+sediment-zone variable (name ending \verb{_Z}), the mean over zones weighted by
+the time-varying zone area (\code{zarea}). Stored in \verb{$sediment} as
+\verb{<name>_lake} (e.g. \code{SDF_Fsed_oxy_Z_lake}, or \code{SED_Fsed_oxy_lake} by AEME
+name), in the variable's own per-m2 units. Zones with no area (\code{NA} in
+\code{zarea}) are ignored. Naming a \verb{_lake} series in \code{extra_vars} builds just
+that series, without \code{zone_summary = TRUE} (the zone array behind it is
+then not kept unless also requested). Default \code{FALSE}.}
 }
 \value{
 List with AEME output variables. Also includes \code{z}, GLM's own

@@ -8,14 +8,18 @@ get_obs_column_names(include_optional = FALSE)
 }
 \arguments{
 \item{include_optional}{logical; if \code{TRUE}, append the optional columns
-(\code{depth_to}, \code{sd}) after the required columns. Default \code{FALSE}.}
+(\code{depth_to}, \code{sd}, \code{depth_ref}, \code{height_above_bed}) after the required
+columns. Default \code{FALSE}.}
 }
 \value{
 Character vector of column names for observational data. The required
 columns are \code{Date} (a UTC \code{POSIXct}; daily observations anchored at
 12:00:00), \code{var_aeme}, \code{depth} and \code{value}. The optional columns are
-\code{depth_to} (bottom of an integrated sample) and \code{sd} (measurement standard
-deviation, in the variable's units).
+\code{depth_to} (bottom of an integrated sample), \code{sd} (measurement standard
+deviation, in the variable's units), \code{depth_ref} (\code{"surface"} or
+\code{"bottom"}: how the depth was recorded) and \code{height_above_bed} (metres above
+the lake bed, for observations recorded relative to the bottom; \code{depth} is
+always metres below the surface).
 }
 \description{
 Get column names for the observational data frame

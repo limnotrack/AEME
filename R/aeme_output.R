@@ -153,16 +153,25 @@ print.aeme_output_raw <- function(x, ...) {
 
 #' Look up a variable in one model's output list, searching the flat core
 #' variables first and then the `diag`/`sediment` sub-lists
+#'
+#' `var` may also be an AEME name from [glm_extra_vars] (e.g. `"SED_temp"`),
+#' which is resolved to the raw netCDF name the variable is stored under.
 #' @param out_model one model's output list.
 #' @param var character; variable name.
 #' @return the variable, or `NULL` if absent.
 #' @noRd
 .get_output_var <- function(out_model, var) {
-  v <- out_model[[var]]
-  if (!is.null(v)) return(v)
-  for (g in .output_extra_groups) {
-    v <- out_model[[g]][[var]]
+  find <- function(nm) {
+    v <- out_model[[nm]]
     if (!is.null(v)) return(v)
+    for (g in .output_extra_groups) {
+      v <- out_model[[g]][[nm]]
+      if (!is.null(v)) return(v)
+    }
+    NULL
   }
-  NULL
+  v <- find(var)
+  if (!is.null(v) || length(var) != 1) return(v)
+  raw <- .resolve_glm_extra_vars(var)$raw
+  if (length(raw) == 1 && !identical(raw, var)) find(raw) else NULL
 }

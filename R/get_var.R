@@ -5,14 +5,32 @@
 #' @param var_sim character; variable in the AEME format (e.g. "HYD_temp").
 #' @param use_obs logical; if TRUE, use observations to extract the variable at
 #' time and depth of observations. Default is FALSE. Use this option if you
-#' want to compare model output to observations.
-#' @param depth_ref character; reference depth for extracting variable profiles.
-#'  Options are "surface" (default) or "bottom".
+#' want to compare model output to observations. Observations recorded as a
+#' height above the lake bed (see [add_obs()]) are compared with the model
+#' profile at (the model's water level - that height) on each date, so they
+#' follow the model's own level rather than the depth they were placed at when
+#' added.
+#' @param depth_ref character; what `depth` is measured from when a single
+#'  depth is extracted. `"surface"` (default): metres below the water surface.
+#'  `"bottom"`: metres above the lake bed, so `depth = 1` is the water 1 m above
+#'  the bottom. That is `level - depth` metres below the surface, with `level`
+#'  the modelled water level (`LKE_lvlwtr`) on each date, so it follows the
+#'  surface as the level rises and falls. On a date when the level is below
+#'  `depth` (the point would be above the surface) the value is `NA`. Ignored
+#'  when `depth` is `NULL`. (Before AEME 0.4.0 `"bottom"` was measured from the
+#'  basin's full depth, which only matches when the level equals that depth.)
 #' @param return_df logical; if TRUE, return a dataframe; if FALSE, return a
 #' list. Default is TRUE.
-#' @param depth numeric; depth of the variable to extract. Default is NULL. If
-#' NULL, the variable profiles are extracted.
+#' @param depth numeric; depth of the variable to extract, referenced to
+#' `depth_ref`. Default is NULL. If NULL, the variable profiles are extracted.
 #' @param cumulative logical; if TRUE, return cumulative sum of variable
+#' @param zone integer; for GLM-AED sediment-zone variables (those with an
+#' `nzones` column, e.g. `"SED_Fsed_oxy"`, `"SED_temp"`), keep only these
+#' sediment zones (GLM zone order, 1 = deepest). `NULL` (default) keeps all.
+#' @param sed_layer integer; for variables with a sediment-layer dimension
+#' (`"SED_temp"`), keep only these layers (1 = shallowest). `NULL` (default)
+#' keeps all. Sediment variables are returned in long format with one column
+#' per dimension (`nzones`, `sed_layers`); `depth_ref`/`depth` do not apply.
 #'
 #' @importFrom dplyr arrange filter left_join mutate select bind_rows case_when
 #' @importFrom dplyr rename
@@ -23,7 +41,7 @@
 get_var <- function(aeme, model, var_sim, depth = NULL, 
                     depth_ref = c("surface", "bottom"), return_df = TRUE,
                     ens_n = 1, use_obs = FALSE, remove_spin_up = TRUE,
-                    cumulative = FALSE) {
+                    cumulative = FALSE, zone = NULL, sed_layer = NULL) {
   
   aeme <- check_aeme(aeme)
   if (missing(model)) {
@@ -83,7 +101,8 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
                         as.Date(Date, tz = "UTC") <= as.Date(aeme_time$stop, tz = "UTC") &
                         var_aeme %in% var_sim) |>
         dplyr::arrange(Date, depth) |>
-        dplyr::select(Date, var_aeme, depth, value)
+        dplyr::select(Date, var_aeme, depth, value,
+                      dplyr::any_of(c("depth_ref", "height_above_bed")))
     }
     if (nrow(obs_sub) == 0) {
       cli::cli_abort("No observations found for the model simulation period.")
@@ -134,6 +153,12 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
                                        "); use_obs comparison is not supported for it.")))
       }
       gdf <- as.data.frame(variable)
+      if (!is.null(zone) && "nzones" %in% names(gdf)) {
+        gdf <- gdf[gdf$nzones %in% zone, , drop = FALSE]
+      }
+      if (!is.null(sed_layer) && "sed_layers" %in% names(gdf)) {
+        gdf <- gdf[gdf$sed_layers %in% sed_layer, , drop = FALSE]
+      }
       gdf$var_sim <- var_sim
       gdf$Model <- toggle_models(m, to = "display")
       if (remove_spin_up && "Date" %in% names(gdf)) {
@@ -213,26 +238,44 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
           )
       } else {
         
-        depth <- obs_sub |> 
-          dplyr::distinct(depth) |> 
+        # Observations recorded as a height above the lake bed (see add_obs())
+        # are compared with the model at (model level - height) on each date;
+        # the rest by depth below the surface.
+        is_bottom <- if ("depth_ref" %in% names(obs_sub)) {
+          obs_sub$depth_ref %in% "bottom"
+        } else {
+          rep(FALSE, nrow(obs_sub))
+        }
+        obs_bot <- obs_sub[is_bottom, , drop = FALSE]
+        obs_sub <- obs_sub[!is_bottom, , drop = FALSE]
+
+        depth <- obs_sub |>
+          dplyr::distinct(depth) |>
           dplyr::arrange(depth) |>
           dplyr::pull(depth)
-        out_depths <- matrix(depth, nrow = length(depth),
-                             ncol = length(date_index))
-        depths <- outp[[ens_lab]][[m]][["LKE_depths"]][, date_index]
-        
-        value <- interp_static_grid(var = variable[, date_index],
-                                    midpoints = depths,
-                                    out_depths = out_depths)
-        # Build long dataframe for 2D variable
-        each <- length(depth)
-        mod <- data.frame(
-          Date     = rep(mod_date[date_index], each = each),
-          depth    = as.vector(out_depths),
-          sim    = as.vector(value),
-          Model = toggle_models(m, to = "display"),
-          stringsAsFactors = FALSE
-        )
+        if (length(depth) > 0) {
+          out_depths <- matrix(depth, nrow = length(depth),
+                               ncol = length(date_index))
+          depths <- outp[[ens_lab]][[m]][["LKE_depths"]][, date_index,
+                                                           drop = FALSE]
+
+          value <- interp_static_grid(var = variable[, date_index, drop = FALSE],
+                                      midpoints = depths,
+                                      out_depths = out_depths)
+          # Build long dataframe for 2D variable
+          each <- length(depth)
+          mod <- data.frame(
+            Date     = rep(mod_date[date_index], each = each),
+            depth    = as.vector(out_depths),
+            sim    = as.vector(value),
+            Model = toggle_models(m, to = "display"),
+            stringsAsFactors = FALSE
+          )
+        } else {
+          mod <- data.frame(Date = mod_date[0], depth = numeric(0),
+                            sim = numeric(0), Model = character(0),
+                            stringsAsFactors = FALSE)
+        }
         
         
         # df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
@@ -261,7 +304,29 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
         #   dplyr::bind_rows()
         
         df <- dplyr::left_join(obs_sub, mod, by = c("Date", "depth"))
-        
+
+        if (nrow(obs_bot) > 0) {
+          level_d <- outp[[ens_lab]][[m]][["LKE_lvlwtr"]][date_index]
+          var_d <- variable[, date_index, drop = FALSE]
+          mid_d <- outp[[ens_lab]][[m]][["LKE_depths"]][, date_index, drop = FALSE]
+          col <- match(obs_bot$Date, mod_date[date_index])
+          # depth below the surface of each observation, in this member
+          target <- level_d[col] - obs_bot$height_above_bed
+          obs_bot$sim <- vapply(seq_len(nrow(obs_bot)), function(r) {
+            j <- col[r]
+            if (is.na(j) || is.na(target[r]) || target[r] < 0 ||
+                target[r] > level_d[j]) {
+              return(NA_real_)
+            }
+            as.numeric(interp_static_grid(
+              var = var_d[, j, drop = FALSE], midpoints = mid_d[, j, drop = FALSE],
+              out_depths = matrix(target[r], nrow = 1, ncol = 1)))
+          }, numeric(1))
+          obs_bot$Model <- toggle_models(m, to = "display")
+          df <- dplyr::bind_rows(df, obs_bot) |>
+            dplyr::arrange(Date, depth)
+        }
+
       }
     } else if (is.null(dim(variable))) {
       df <- data.frame(Date = outp[[ens_lab]][[m]][["Date"]],
@@ -300,11 +365,18 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
           # stop(strwrap(paste0("Depth is outside the range of the modelled lake
           #                     levels [", min_depth, ", ", max_depth, "m]")))
         }
-        # Convert surface-referenced depth to bottom-referenced
+        # Depth below the surface to read the profile at, on each date.
+        # "bottom" is a height above the lake bed, which is (level - height)
+        # below the surface, and the level changes through the run -- so it is
+        # taken from the modelled level on each date rather than from a fixed
+        # basin depth. A height above the surface (more than the level) has no
+        # value.
         out_depths <- if (depth_ref == "surface") {
           matrix(depth, nrow = 1, ncol = ncol(variable))
         } else {
-          matrix(max_dep - depth, nrow = 1, ncol = ncol(variable))
+          below_surface <- lake_level - depth
+          below_surface[!is.na(below_surface) & below_surface < 0] <- NA_real_
+          matrix(below_surface, nrow = 1, ncol = ncol(variable))
         }
         # out_depths <- matrix(depth, nrow = 1, ncol = ncol(variable))
         value <- interp_static_grid(var = variable, midpoints = depths,

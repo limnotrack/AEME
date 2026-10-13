@@ -49,7 +49,9 @@ run_aeme <- function(aeme, model, path, args = character(),
                      model_controls = NULL, 
                      verbose = getOption("AEME.inform", FALSE),
                      debug = FALSE, timeout = Inf, parallel = FALSE, ncores,
-                     check_output = FALSE) {
+                     check_output = FALSE, keep_diag = TRUE,
+                     extra_vars = NULL, sed_layers = NULL,
+                     zone_summary = FALSE) {
   
   aeme <- check_aeme(aeme)
   if (missing(model)) {
@@ -236,7 +238,9 @@ run_aeme <- function(aeme, model, path, args = character(),
       }
       aeme <- load_output(model = model_success, aeme = aeme, path = path,
                           model_controls = model_controls, parallel = parallel,
-                          cl = cl, ens_n = ens_n)
+                          cl = cl, ens_n = ens_n, keep_diag = keep_diag,
+                          extra_vars = extra_vars, sed_layers = sed_layers,
+                          zone_summary = zone_summary)
     } else {
       cli::cli_warn(c("!" = "No model output loaded as all model runs failed."))
     }

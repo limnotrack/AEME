@@ -29,7 +29,7 @@ normalise_lake_obs <- function(lake, warn = TRUE) {
     lake$depth <- as.numeric(lake$depth)
     if ("depth_to" %in% nms) lake$depth_to <- as.numeric(lake$depth_to)
     if ("sd" %in% nms) lake$sd <- as.numeric(lake$sd)
-    return(lake)
+    return(normalise_obs_depth_ref(lake))
   }
 
   # Nothing depth-like to work with - leave it for the caller's column check.
@@ -72,5 +72,5 @@ normalise_lake_obs <- function(lake, warn = TRUE) {
     )
   }
 
-  lake
+  normalise_obs_depth_ref(lake)
 }

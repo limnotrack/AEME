@@ -28,6 +28,37 @@
 #' @source Package development.
 "key_naming"
 
+#' GLM-AED sediment, flux and diagnostic output variables
+#'
+#' A registry of the GLM-AED output variables that sit outside the regular
+#' `key_naming` set -- sediment temperature and heat flux, sediment-water
+#' fluxes (lake-wide and by sediment zone) and sediment pools. They are read
+#' by [read_glm_output()] straight from `output.nc` and stored under their raw
+#' netCDF name (in the `diag`/`sediment` sub-lists of the model output, or flat
+#' for lake-wide series). This table gives each an AEME name, label and units
+#' so they can be requested by either name, e.g. with the `extra_vars`
+#' argument of [run_aeme()] or in [get_var()].
+#'
+#' Naming: `SED_*` are sediment-zone variables (`nzones`, and `sed_layers` for
+#' `SED_temp`); `SEDL_*` are the matching lake-wide `(time)` series GLM-AED
+#' writes alongside them.
+#'
+#' @format ## `glm_extra_vars`
+#' A data frame with 63 rows and 7 columns:
+#' \describe{
+#'   \item{var_aeme}{AEME variable name}
+#'   \item{glm_aed}{Raw GLM-AED netCDF variable name}
+#'   \item{group}{Where the variable is stored in the model output:
+#'    `"sediment"` (sub-list `sediment`), `"diag"` (sub-list `diag`) or
+#'    `"core"` (flat, keyed by the raw name)}
+#'   \item{dims}{Dimensions of the variable in the netCDF file}
+#'   \item{name_text}{Regular text variable name}
+#'   \item{units}{Units, as written by GLM-AED}
+#'   \item{keywords}{Keywords for searching}
+#' }
+#' @source Package development; generated from GLM-AED 4.x `output.nc`.
+"glm_extra_vars"
+
 #' Catchment yields
 #'
 #' A reference table for catchment nutrient and sediment yields for calculating

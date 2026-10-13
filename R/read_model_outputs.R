@@ -36,6 +36,9 @@
 #' (a run whose output was never converted, or converted with
 #' \code{\link{write_simstrat_nc}}`(remove_dat = FALSE)` and the netCDF since
 #' removed). Ignored when `nc` is supplied.
+#' @param extra_vars,sed_layers,zone_summary for `model = "glm_aed"`, which
+#' sediment/flux/diagnostic variables to read and how to reduce them -- see
+#' `?read_glm_output`. Ignored for other models.
 #'
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @importFrom withr local_locale local_timezone
@@ -47,7 +50,9 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                                depths = NULL, dates = NULL, date_index = NULL,
                                incl_fluxes = TRUE, output_hour = 0,
                                phyto_pars = NULL, load_all = TRUE,
-                               use_dat = NULL, daily_mean = FALSE) {
+                               use_dat = NULL, daily_mean = FALSE,
+                               extra_vars = NULL, sed_layers = NULL,
+                               zone_summary = FALSE) {
 
   # Set timezone
   withr::local_locale(c("LC_TIME" = "C"))
@@ -214,7 +219,10 @@ read_model_outputs <- function(nc = NULL, lake_dir, model, vars_sim = NULL,
                                                   incl_fluxes = incl_fluxes,
                                                   date_index = date_index,
                                                   phyto_pars = phyto_pars,
-                                                  load_all = load_all),
+                                                  load_all = load_all,
+                                                  extra_vars = extra_vars,
+                                                  sed_layers = sed_layers,
+                                                  zone_summary = zone_summary),
                      "dy_cd"    = read_dy_output(nc, vars_sim, depths = depths,
                                                  incl_fluxes = incl_fluxes,
                                                  date_index = date_index),
