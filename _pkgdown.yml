@@ -7,6 +7,11 @@ template:
     fg: "#0065a9"
     primary: "#0065a9"
 
+home:
+  title: AEME - Aquatic Ecosytem Model Ensemble
+  sidebar:
+    structure: [links, license, community, citation, authors, dev, toc]
+
 navbar:
   inverse: true
   structure:
@@ -70,36 +75,3 @@ navbar:
         href: CONTRIBUTING.html
       - text: Code of conduct
         href: CODE_OF_CONDUCT.html
-
-home:
-  title: AEME - Aquatic Ecosytem Model Ensemble
-  sidebar:
-    structure: [links, license, community, citation, authors, dev, toc]
-
-articles:
-- title: Getting started
-  contents:
-  - installing-models
-  - intro-aeme
-  - aeme-inputs
-  - setup-new-lake
-- title: Working with models
-  contents:
-  - visualising-output
-  - testing-parameters
-  - hourly-vs-daily-met
-  - subdaily-output
-- title: Uncertainty
-  contents:
-  - initial-conditions-and-spin-up
-  - parameter-uncertainty
-- title: Model descriptions
-  contents:
-  - glm-aed
-  - simstrat-aed2
-  - aed-sediment-np-parameterisation
-- title: Use cases
-  contents:
-  - reservoir-aeme
-  - lernzmp-aeme
-  - rotoehu-water-balance
