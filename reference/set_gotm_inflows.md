@@ -1,8 +1,8 @@
 # Set inflow data for a GOTM-WET simulation directory
 
 Thin, `aeme`-free wrapper around the internal inflow writer used by
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md). Writes
-`inputs/inf_{flow,temp,salt}_<name>.dat` (and, if BGC is coupled,
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md).
+Writes `inputs/inf_{flow,temp,salt}_<name>.dat` (and, if BGC is coupled,
 `inputs/inf_chem_<name>.dat`) per inflow into `path_gotm`, and updates
 the `streams` block of `gotm.yaml` to point at them. Existing stream
 entries not named in `inf_list` are left untouched.
@@ -31,8 +31,8 @@ set_gotm_inflows(
   named list of data.frames, one per inflow. Each must have a `Date`
   column plus flow/temperature/salt columns (e.g. `HYD_flow`,
   `HYD_temp`, `CHM_salt`) – see
-  [`add_inflow()`](https://limnotrack.com/reference/add_inflow.md) for
-  the expected schema.
+  [`add_inflow()`](https://limnotrack.com/AEME/reference/add_inflow.md)
+  for the expected schema.
 
 - inf_factor:
 

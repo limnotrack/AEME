@@ -1,7 +1,7 @@
 # Plot a grouped variable as a line plot, coloured by its non-time dimensions (e.g. one line per zone)
 
 A thin wrapper around
-[`as.data.frame.aeme_grouped_var()`](https://limnotrack.com/reference/as.data.frame.aeme_grouped_var.md)
+[`as.data.frame.aeme_grouped_var()`](https://limnotrack.com/AEME/reference/as.data.frame.aeme_grouped_var.md)
 that plots the resulting long-format data frame with ggplot2 – one
 coloured line per combination of the variable's dimensions other than
 `"time"` (e.g. one line per sediment zone for a GLM-AED `(nzones, time)`
@@ -19,7 +19,7 @@ plot(x, var_sim = NULL, ylim = NULL, ...)
 - x:
 
   an `aeme_grouped_var` object (see
-  [`new_grouped_var()`](https://limnotrack.com/reference/new_grouped_var.md)).
+  [`new_grouped_var()`](https://limnotrack.com/AEME/reference/new_grouped_var.md)).
 
 - var_sim:
 

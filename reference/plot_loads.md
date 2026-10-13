@@ -1,7 +1,7 @@
 # Plot lake loading summary
 
 Visualises the output of
-[`summarise_loads()`](https://limnotrack.com/reference/summarise_loads.md)
+[`summarise_loads()`](https://limnotrack.com/AEME/reference/summarise_loads.md)
 as bar charts of annual average discharge and constituent loads,
 decomposed by inflow.
 
@@ -26,7 +26,7 @@ plot_loads(aeme, loads = NULL, inflow_vars = NULL)
 
   character; vector of AEME inflow concentration variable names to plot
   (passed to
-  [`summarise_loads()`](https://limnotrack.com/reference/summarise_loads.md)
+  [`summarise_loads()`](https://limnotrack.com/AEME/reference/summarise_loads.md)
   when `loads` is `NULL`). If `NULL` (default), all recognised
   mass-concentration variables present in the inflow data are plotted.
 

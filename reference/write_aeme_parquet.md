@@ -1,9 +1,9 @@
 # Export an Aeme object's model output to a partitioned Parquet store
 
 Writes the long-format model output already loaded onto `aeme` (see
-[`load_output`](https://limnotrack.com/reference/load_output.md)) into a
-Hive-partitioned Parquet store suitable for querying across many lakes
-at once (e.g. with DuckDB), plus updates a single `lakes.parquet`
+[`load_output`](https://limnotrack.com/AEME/reference/load_output.md))
+into a Hive-partitioned Parquet store suitable for querying across many
+lakes at once (e.g. with DuckDB), plus updates a single `lakes.parquet`
 dimension table describing every lake exported into `out_root` so far.
 
 ## Usage
@@ -14,7 +14,9 @@ write_aeme_parquet(
   out_root,
   model,
   quantiles = c(0.05, 0.25, 0.5, 0.75, 0.95),
-  compression = "gzip"
+  compression = "gzip",
+  depths = NULL,
+  depth_ref = c("surface", "bottom")
 )
 ```
 
@@ -23,7 +25,7 @@ write_aeme_parquet(
 - aeme:
 
   Aeme object with output loaded (see
-  [`load_output`](https://limnotrack.com/reference/load_output.md)).
+  [`load_output`](https://limnotrack.com/AEME/reference/load_output.md)).
 
 - out_root:
 
@@ -32,7 +34,7 @@ write_aeme_parquet(
 - model:
 
   character vector of model codes to export (see
-  [`list_models`](https://limnotrack.com/reference/list_models.md)).
+  [`list_models`](https://limnotrack.com/AEME/reference/list_models.md)).
   Default: every model with output on `aeme`.
 
 - quantiles:
@@ -50,6 +52,22 @@ write_aeme_parquet(
   speed since a store is written occasionally and read often. Use
   `"snappy"` instead if write/decode speed matters more than size for
   your case, or `"zstd"` for a middle ground.
+
+- depths:
+
+  numeric vector of depths (m) at which to summarise depth-resolved
+  variables in `output_summary`, referenced to `depth_ref`. `NULL`
+  (default) summarises at each member's own depths – see Details. Only
+  the summary tier is affected; `output_raw` always holds the stored
+  depths, in metres below the surface.
+
+- depth_ref:
+
+  character; what `depths` is measured from. `"surface"` (default):
+  metres below the water surface. `"bottom"`: metres above the lake bed,
+  so `1` is the water 1 m above the bottom, found from each member's
+  water level (`LKE_lvlwtr`) on each date. Requires `depths`. Stored in
+  the `depth_ref` column of `output_summary`.
 
 ## Value
 
@@ -72,13 +90,27 @@ Two output tiers are written per model, partitioned as
   overview views that scan many lakes at once, so the ensemble collapse
   doesn't need recomputing on every load.
 
-`output_summary` is only written when `aeme` has more than one ensemble
-member: with a single member, collapsing across `ens` is a no-op that
-would just re-store the same values under 8 columns (`mean`, `sd`,
-`n_ens`, 5 quantile columns) instead of 1 (`value`) – pure overhead, no
-new information. Readers should check a lake's `n_ens` in
+### Depth-resolved variables
+
+AEME stores depth-resolved output on a grid of fractions of the water
+depth scaled to the lake level on each day, so the absolute depths
+differ between ensemble members whose water level differs (and drift as
+a member's level moves). `output_raw` keeps that grid as it is.
+Collapsing across members *at those depths* would leave most groups with
+one or two members, so by default `output_summary` is only really useful
+for variables with no depth dimension. Supply `depths` to compute the
+summary of depth-resolved variables at fixed depths instead: each
+member's profile is linearly interpolated to the requested depths on
+every date before the members are collapsed. A depth that falls outside
+a member's water column on a date (deeper than the lake, or above the
+surface) is left out for that member, so `n_ens` says how many members
+contributed. `output_summary` is only written when `aeme` has more than
+one ensemble member: with a single member, collapsing across `ens` is a
+no-op that would just re-store the same values under 8 columns (`mean`,
+`sd`, `n_ens`, 5 quantile columns) instead of 1 (`value`) – pure
+overhead, no new information. Readers should check a lake's `n_ens` in
 `lakes.parquet` (see
-[`read_aeme_parquet`](https://limnotrack.com/reference/read_aeme_parquet.md))
+[`read_aeme_parquet`](https://limnotrack.com/AEME/reference/read_aeme_parquet.md))
 and fall back to `output_raw` for any lake where it's `1`.
 
 Re-running this for one lake only rewrites that lake's own partition
@@ -95,5 +127,12 @@ if (FALSE) { # \dontrun{
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme <- readRDS(aeme_file)
 write_aeme_parquet(aeme, out_root = file.path(tempdir(), "parquet"))
+
+# Summarise depth-resolved variables 1 m and 5 m below the surface, and 1 m
+# above the lake bed
+write_aeme_parquet(aeme, out_root = file.path(tempdir(), "parquet_depths"),
+                   depths = c(1, 5))
+write_aeme_parquet(aeme, out_root = file.path(tempdir(), "parquet_bottom"),
+                   depths = 1, depth_ref = "bottom")
 } # }
 ```

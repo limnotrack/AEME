@@ -1,7 +1,7 @@
 # Summarise an nml object
 
 Currently delegates to
-[`print.nml`](https://limnotrack.com/reference/print.nml.md).
+[`print.nml`](https://limnotrack.com/AEME/reference/print.nml.md).
 
 ## Usage
 

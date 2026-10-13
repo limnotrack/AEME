@@ -1,8 +1,8 @@
 # Modified Kling-Gupta Efficiency (KGE') fit function
 
-As [`kge`](https://limnotrack.com/reference/kge.md), but replaces the
-raw variability ratio with a coefficient-of-variation ratio (Kling et
-al. 2012):
+As [`kge`](https://limnotrack.com/AEME/reference/kge.md), but replaces
+the raw variability ratio with a coefficient-of-variation ratio (Kling
+et al. 2012):
 
 ## Usage
 
@@ -47,13 +47,13 @@ Returned in its conventional orientation where **higher is better** (`1`
 
 `calib_aeme()` and `run_and_fit()` **minimise** the values returned by
 `FUN_list` entries - use
-[`kge_prime_loss`](https://limnotrack.com/reference/fit_loss.md) (which
-returns `-1 * kge_prime(obs, sim)`) as a calibration objective.
+[`kge_prime_loss`](https://limnotrack.com/AEME/reference/fit_loss.md)
+(which returns `-1 * kge_prime(obs, sim)`) as a calibration objective.
 
 ## See also
 
-[`kge_prime_loss`](https://limnotrack.com/reference/fit_loss.md) for the
-minimise-oriented variant used in `FUN_list`.
+[`kge_prime_loss`](https://limnotrack.com/AEME/reference/fit_loss.md)
+for the minimise-oriented variant used in `FUN_list`.
 
 ## Examples
 

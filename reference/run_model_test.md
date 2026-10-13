@@ -5,9 +5,9 @@ settings, inflow/outflow concentrations, or initial conditions against
 an existing GLM-AED, GOTM-WET, Simstrat-AED or Simstrat-AED2
 configuration directory, without needing an `aeme` object. Dispatches to
 each model's thin path-based wrapper functions (e.g.
-[`set_glm_param()`](https://limnotrack.com/reference/set_glm_param.md)/
-[`set_glm_init()`](https://limnotrack.com/reference/set_glm_init.md)/[`set_glm_inflows()`](https://limnotrack.com/reference/set_glm_inflows.md)/[`set_glm_outflows()`](https://limnotrack.com/reference/set_glm_outflows.md)/
-[`run_glm_aed()`](https://limnotrack.com/reference/run_dy_cd.md)/[`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md)
+[`set_glm_param()`](https://limnotrack.com/AEME/reference/set_glm_param.md)/
+[`set_glm_init()`](https://limnotrack.com/AEME/reference/set_glm_init.md)/[`set_glm_inflows()`](https://limnotrack.com/AEME/reference/set_glm_inflows.md)/[`set_glm_outflows()`](https://limnotrack.com/AEME/reference/set_glm_outflows.md)/
+[`run_glm_aed()`](https://limnotrack.com/AEME/reference/run_dy_cd.md)/[`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
 for `model = "glm_aed"`) so scenario code can be written once and
 pointed at any supported model.
 
@@ -38,7 +38,7 @@ run_model_test(
 
   filepath; directory containing the existing model configuration to
   edit and run (as already written by
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)).
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)).
 
 - param_overrides:
 
@@ -57,14 +57,14 @@ run_model_test(
 
   named list forwarded to the model's `set_*_inflows()` wrapper; must
   include `data`, a named list of inflow data.frames (see
-  [`add_inflow()`](https://limnotrack.com/reference/add_inflow.md)).
+  [`add_inflow()`](https://limnotrack.com/AEME/reference/add_inflow.md)).
   `NULL` (default) leaves inflows unchanged.
 
 - outflow_args:
 
   named list forwarded to the model's `set_*_outflows()` wrapper; must
   include `data`, a named list of outflow data.frames (see
-  [`add_outflows()`](https://limnotrack.com/reference/add_outflows.md)),
+  [`add_outflows()`](https://limnotrack.com/AEME/reference/add_outflows.md)),
   plus any further arguments the model requires (e.g. `heights_wdr`, and
   `surface_elev` for Simstrat). `NULL` (default) leaves outflows
   unchanged.
@@ -74,7 +74,7 @@ run_model_test(
   character vector of output variables to read back (passed as
   `vars_sim` to the model's `read_*_output()` wrapper, and also used to
   decide which derived variables – e.g. `"HYD_thmcln"` – to compute via
-  [`add_deriv_output()`](https://limnotrack.com/reference/add_deriv_output.md)).
+  [`add_deriv_output()`](https://limnotrack.com/AEME/reference/add_deriv_output.md)).
   `NULL` (default) reads every variable the reader returns by default,
   but adds no derived variables – request them explicitly by name to get
   them.
@@ -95,7 +95,7 @@ run_model_test(
 
 A list of the requested output variables (as returned by the model's
 `read_*_output()` wrapper, with derived variables added via
-[`add_deriv_output()`](https://limnotrack.com/reference/add_deriv_output.md)),
+[`add_deriv_output()`](https://limnotrack.com/AEME/reference/add_deriv_output.md)),
 or `NULL` if `safe = TRUE` and the edit/run/read failed.
 
 ## Details

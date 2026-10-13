@@ -13,9 +13,9 @@ covers:
 4.  Where AEME looks for an installed model, if you need to know
 
 If you already have models installed (or are working through
-[`vignette("intro-aeme")`](https://limnotrack.com/articles/intro-aeme.md)
+[`vignette("intro-aeme")`](https://limnotrack.com/AEME/articles/intro-aeme.md)
 in an environment where this has been done for you), skip ahead to
-[`vignette("intro-aeme")`](https://limnotrack.com/articles/intro-aeme.md).
+[`vignette("intro-aeme")`](https://limnotrack.com/AEME/articles/intro-aeme.md).
 
 ## Platform availability
 
@@ -28,7 +28,7 @@ Not every model builds on every operating system:
 | GOTM-WET      | Yes     | No    | No    |
 | Simstrat-AED2 | Yes     | Yes   | Yes   |
 
-[`install_models()`](https://limnotrack.com/reference/install_models.md)
+[`install_models()`](https://limnotrack.com/AEME/reference/install_models.md)
 installs whatever is available for the platform it’s run on; asking for
 a model that doesn’t build there raises an error naming what is
 available instead of failing silently.
@@ -59,7 +59,7 @@ install_dy_cd()
 install_simstrat_aed2()
 ```
 
-[`install_models()`](https://limnotrack.com/reference/install_models.md)
+[`install_models()`](https://limnotrack.com/AEME/reference/install_models.md)
 accepts a `model` argument if you’d rather filter the all-in-one call
 instead of calling installers individually:
 
@@ -112,7 +112,7 @@ install_glm_aed(version = "4.0.0")
 get_model_version(model = "glm_aed")
 ```
 
-[`list_models()`](https://limnotrack.com/reference/list_models.md)
+[`list_models()`](https://limnotrack.com/AEME/reference/list_models.md)
 returns every model code AEME knows about, independent of what’s
 actually installed – useful as the input to functions like
 `install_models(model = ...)` that expect the short code (`"glm_aed"`)
@@ -131,15 +131,15 @@ list_models()
 Installers place binaries under a per-user AEME data directory (not
 inside the R package library, so a package reinstall doesn’t wipe them).
 You shouldn’t normally need to know the exact path –
-[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) and the
-model-specific `run_*()` wrappers find it automatically – but if a build
-step reports a missing executable,
-[`get_model_version()`](https://limnotrack.com/reference/get_model_version.md)
+[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) and
+the model-specific `run_*()` wrappers find it automatically – but if a
+build step reports a missing executable,
+[`get_model_version()`](https://limnotrack.com/AEME/reference/get_model_version.md)
 and the `*_exe_path()` family
-([`glm_exe_path()`](https://limnotrack.com/reference/glm_exe_path.md),
-[`gotm_wet_exe_path()`](https://limnotrack.com/reference/gotm_wet_exe_path.md),
-[`dy_cd_exe_path()`](https://limnotrack.com/reference/dy_cd_exe_path.md),
-[`simstrat_aed2_exe_path()`](https://limnotrack.com/reference/simstrat_aed2_exe_path.md))
+([`glm_exe_path()`](https://limnotrack.com/AEME/reference/glm_exe_path.md),
+[`gotm_wet_exe_path()`](https://limnotrack.com/AEME/reference/gotm_wet_exe_path.md),
+[`dy_cd_exe_path()`](https://limnotrack.com/AEME/reference/dy_cd_exe_path.md),
+[`simstrat_aed2_exe_path()`](https://limnotrack.com/AEME/reference/simstrat_aed2_exe_path.md))
 resolve exactly which binary, if any, AEME will use.
 
 ``` r
@@ -178,6 +178,6 @@ cover the differences in detail, but in brief:
 ## Next steps
 
 With a model installed,
-[`vignette("intro-aeme")`](https://limnotrack.com/articles/intro-aeme.md)
+[`vignette("intro-aeme")`](https://limnotrack.com/AEME/articles/intro-aeme.md)
 walks through the `Aeme` object model and builds your first ensemble
 member.

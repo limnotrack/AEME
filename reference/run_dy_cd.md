@@ -102,7 +102,7 @@ run_simstrat_aed(
   character; path to the model's main configuration file, passed to the
   model executable on the command line. Defaults to the hydrodynamic
   configuration file within `sim_folder`: the GLM nml file (see
-  [`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md))
+  [`find_glm_nml()`](https://limnotrack.com/AEME/reference/find_glm_nml.md))
   for GLM-AED, `"gotm.yaml"` for GOTM-WET, and `"simstrat.par"` for
   Simstrat-AED2. Not used by DYRESM-CAEDYM, which reads several files
   derived from the `.stg` file present in `sim_folder`.

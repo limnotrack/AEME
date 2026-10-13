@@ -17,7 +17,7 @@ add_output(aeme, out)
 - out:
 
   list with model output loaded with
-  [`load_output()`](https://limnotrack.com/reference/load_output.md)
+  [`load_output()`](https://limnotrack.com/AEME/reference/load_output.md)
 
 ## Value
 

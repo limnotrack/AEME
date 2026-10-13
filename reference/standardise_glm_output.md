@@ -3,11 +3,11 @@
 Interpolates every `(z, time)` variable in a
 `read_glm_output(raw_output = TRUE)` list from GLM's own, time-varying
 layer structure – captured in its `z` entry (see
-[`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md))
+[`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md))
 – onto a shared depth grid, the same one `raw_output = FALSE` produces,
 without re-reading the netCDF file. Also renames variables back to their
 AEME `var_aeme` names (where
-[key_naming](https://limnotrack.com/reference/key_naming.md) has a
+[key_naming](https://limnotrack.com/AEME/reference/key_naming.md) has a
 translation) and re-applies AED unit-conversion factors, so the result
 resembles `read_glm_output(raw_output = FALSE)`'s output as closely as
 possible.
@@ -23,7 +23,7 @@ standardise_glm_output(out_raw, depths = NULL)
 - out_raw:
 
   list; an `aeme_output_raw`-classed GLM-AED output list from
-  [`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md)
+  [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
   with `raw_output = TRUE` (must include its `z` and `LKE_lvlwtr`
   entries).
 
@@ -32,12 +32,12 @@ standardise_glm_output(out_raw, depths = NULL)
   numeric vector; depths to interpolate onto. If `NULL` (default), uses
   the same standardised depth-fraction grid
   `read_glm_output(raw_output = FALSE)` uses (see
-  [model_layer_structure](https://limnotrack.com/reference/model_layer_structure.md)).
+  [model_layer_structure](https://limnotrack.com/AEME/reference/model_layer_structure.md)).
 
 ## Value
 
 An `aeme_output`-classed list (see
-[`is_aeme_output()`](https://limnotrack.com/reference/is_aeme_output.md)),
+[`is_aeme_output()`](https://limnotrack.com/AEME/reference/is_aeme_output.md)),
 structurally the same as `read_glm_output(raw_output = FALSE)`'s return
 value.
 

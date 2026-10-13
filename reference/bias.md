@@ -42,11 +42,11 @@ calibration**: since `calib_aeme()`/`run_and_fit()` minimise the
 returned value, minimising a signed bias would push the calibration
 towards the most negative (maximally under-estimating) solution rather
 than towards zero bias. Use
-[`pbias`](https://limnotrack.com/reference/pbias.md) (or
+[`pbias`](https://limnotrack.com/AEME/reference/pbias.md) (or
 `abs(bias(obs, sim))`) as a calibration objective; use `bias()` for
 diagnosing the *direction* of a systematic error when inspecting fit
 after the fact. Like
-[`mae`](https://limnotrack.com/reference/mae.md)/[`rmse`](https://limnotrack.com/reference/rmse.md),
+[`mae`](https://limnotrack.com/AEME/reference/mae.md)/[`rmse`](https://limnotrack.com/AEME/reference/rmse.md),
 it stays in the variable's native units and so is not directly
 comparable across variables with different units or magnitudes.
 

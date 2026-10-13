@@ -10,6 +10,7 @@ articles:
   installing-models: installing-models.html
   intro-aeme: intro-aeme.html
   articles/lernzmp-aeme: lernzmp-aeme.html
+  articles/parameter-uncertainty: parameter-uncertainty.html
   articles/reservoir-aeme: reservoir-aeme.html
   articles/rotoehu-water-balance: rotoehu-water-balance.html
   setup-new-lake: setup-new-lake.html
@@ -17,7 +18,7 @@ articles:
   articles/subdaily-output: subdaily-output.html
   articles/testing-parameters: testing-parameters.html
   articles/visualising-output: visualising-output.html
-last_built: 2026-10-09T03:35Z
+last_built: 2026-10-13T22:56Z
 urls:
-  reference: https://limnotrack.com/reference
-  article: https://limnotrack.com/articles
+  reference: https://limnotrack.com/AEME/reference
+  article: https://limnotrack.com/AEME/articles

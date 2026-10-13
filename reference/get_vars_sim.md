@@ -23,7 +23,7 @@ get_vars_sim(vars_sim, aeme, model_controls)
 - model_controls:
 
   data.frame; model configuration, typically loaded via
-  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md).
+  [`get_model_controls()`](https://limnotrack.com/AEME/reference/get_model_controls.md).
 
 ## Value
 

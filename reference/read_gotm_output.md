@@ -63,13 +63,13 @@ read_gotm_output(
   logical; also load every other variable present in the netCDF file,
   beyond the declared `vars_sim` set. Each such variable is keyed by its
   AEME `var_aeme` name if
-  [key_naming](https://limnotrack.com/reference/key_naming.md) has a
-  translation for it, or by its raw GLM/netCDF name otherwise. Variables
-  shaped like GLM's usual `(time)` or `(z, time)` output are loaded the
-  same way as any declared variable; variables with other dimensions
-  (e.g. `nzones`, `particle`, `sed_layers`, `lon`, `lat`) are loaded as
-  a
-  [`new_grouped_var()`](https://limnotrack.com/reference/new_grouped_var.md)
+  [key_naming](https://limnotrack.com/AEME/reference/key_naming.md) has
+  a translation for it, or by its raw GLM/netCDF name otherwise.
+  Variables shaped like GLM's usual `(time)` or `(z, time)` output are
+  loaded the same way as any declared variable; variables with other
+  dimensions (e.g. `nzones`, `particle`, `sed_layers`, `lon`, `lat`) are
+  loaded as a
+  [`new_grouped_var()`](https://limnotrack.com/AEME/reference/new_grouped_var.md)
   object instead of being forced into the depth x time convention.
   Default `TRUE`.
 

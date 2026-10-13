@@ -56,8 +56,8 @@ required variables:
 Inflows supply water, heat, and (if the biogeochemistry module is
 active) nutrients and sediment to the lake. Inflows are specified as a
 **named list** of data frames passed to
-[`add_inflows()`](https://limnotrack.com/reference/add_inflows.md). The
-list name is used as the stream identifier in each model.
+[`add_inflows()`](https://limnotrack.com/AEME/reference/add_inflows.md).
+The list name is used as the stream identifier in each model.
 
 Each inflow data frame must contain:
 
@@ -97,7 +97,7 @@ aeme <- add_inflows(aeme, data = inf_data)
 
 Outflows drain water from the lake or reservoir. Like inflows, they are
 specified as a **named list** of data frames passed to
-[`add_outflows()`](https://limnotrack.com/reference/add_outflows.md).
+[`add_outflows()`](https://limnotrack.com/AEME/reference/add_outflows.md).
 
 Each outflow data frame must contain:
 
@@ -109,7 +109,7 @@ Each outflow data frame must contain:
 #### Outlet elevation
 
 The `elevation` argument of
-[`add_outflows()`](https://limnotrack.com/reference/add_outflows.md)
+[`add_outflows()`](https://limnotrack.com/AEME/reference/add_outflows.md)
 specifies the depth at which each outlet withdraws water:
 
 - Set `elevation = -1` (or `elevation = list(outflow = -1)` for a named

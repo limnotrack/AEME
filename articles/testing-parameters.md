@@ -2,24 +2,24 @@
 
 ## Introduction
 
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) -\>
-[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) is the
-right pipeline for a real ensemble run, but re-running the whole `Aeme`
-object just to check what one parameter does is slow, and doesn’t matter
-for a five-minute “does this move the answer in the direction I expect”
-check. Two lower-level tools skip the `Aeme` object entirely and work
-straight on a model’s configuration directory:
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+-\> [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) is
+the right pipeline for a real ensemble run, but re-running the whole
+`Aeme` object just to check what one parameter does is slow, and doesn’t
+matter for a five-minute “does this move the answer in the direction I
+expect” check. Two lower-level tools skip the `Aeme` object entirely and
+work straight on a model’s configuration directory:
 
-- [`get_glm_param()`](https://limnotrack.com/reference/get_glm_param.md)/[`set_glm_param()`](https://limnotrack.com/reference/set_glm_param.md)
+- [`get_glm_param()`](https://limnotrack.com/AEME/reference/get_glm_param.md)/[`set_glm_param()`](https://limnotrack.com/AEME/reference/set_glm_param.md)
   (and the GOTM-WET/DYRESM-CAEDYM/ Simstrat-AED2 equivalents) – read or
   write one parameter in the raw config file.
-- [`run_model_test()`](https://limnotrack.com/reference/run_model_test.md)
+- [`run_model_test()`](https://limnotrack.com/AEME/reference/run_model_test.md)
   – apply a batch of changes (parameters, initial conditions, inflows,
   outflows) and run, all from a path alone.
 
 Both need an existing build to work on – they edit files
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) already
-wrote, they don’t create one.
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+already wrote, they don’t create one.
 
 ``` r
 
@@ -62,7 +62,7 @@ path_glm <- file.path(get_lake_dir(aeme, path), "glm_aed")
 ## Reading and setting one parameter
 
 `path_glm` now points at a real, built GLM-AED configuration directory.
-[`get_glm_param()`](https://limnotrack.com/reference/get_glm_param.md)
+[`get_glm_param()`](https://limnotrack.com/AEME/reference/get_glm_param.md)
 reads a value straight out of the nml, wherever it’s nested:
 
 ``` r
@@ -71,7 +71,7 @@ get_glm_param(path_glm, "Kw")
 #> [1] 1.31
 ```
 
-[`set_glm_param()`](https://limnotrack.com/reference/set_glm_param.md)
+[`set_glm_param()`](https://limnotrack.com/AEME/reference/set_glm_param.md)
 writes one back – multiple `name = value` pairs in one call, no need to
 know which `&block` each belongs to:
 
@@ -86,7 +86,7 @@ This is a permanent edit to the file on disk (there’s no `Aeme` object
 tracking it), so it’s ideal for a quick before/after comparison but not
 for anything you want to reproduce later – keep the parameter table
 AEME’s calibration tools use (see
-[`vignette("aeme-inputs")`](https://limnotrack.com/articles/aeme-inputs.md))
+[`vignette("aeme-inputs")`](https://limnotrack.com/AEME/articles/aeme-inputs.md))
 as the record for anything that matters.
 
 The AED biogeochemistry file takes the same call, passed explicitly via
@@ -100,14 +100,14 @@ set_glm_param(path_glm, glm_file = file.path(path_glm, "aed", "aed.nml"),
 
 GOTM-WET, DYRESM-CAEDYM and Simstrat-AED2 configuration directories work
 the same way, with
-[`get_gotm_param()`](https://limnotrack.com/reference/get_gotm_param.md)/[`set_gotm_param()`](https://limnotrack.com/reference/set_gotm_param.md),
-[`get_dy_cd_param()`](https://limnotrack.com/reference/get_dy_cd_param.md)/[`set_dy_cd_param()`](https://limnotrack.com/reference/set_dy_cd_param.md),
+[`get_gotm_param()`](https://limnotrack.com/AEME/reference/get_gotm_param.md)/[`set_gotm_param()`](https://limnotrack.com/AEME/reference/set_gotm_param.md),
+[`get_dy_cd_param()`](https://limnotrack.com/AEME/reference/get_dy_cd_param.md)/[`set_dy_cd_param()`](https://limnotrack.com/AEME/reference/set_dy_cd_param.md),
 and
-[`get_simstrat_param()`](https://limnotrack.com/reference/get_simstrat_param.md)/[`set_simstrat_param()`](https://limnotrack.com/reference/set_simstrat_param.md).
+[`get_simstrat_param()`](https://limnotrack.com/AEME/reference/get_simstrat_param.md)/[`set_simstrat_param()`](https://limnotrack.com/AEME/reference/set_simstrat_param.md).
 
 ## Running a what-if scenario
 
-[`run_model_test()`](https://limnotrack.com/reference/run_model_test.md)
+[`run_model_test()`](https://limnotrack.com/AEME/reference/run_model_test.md)
 goes one step further: apply a batch of overrides and run the model, in
 one call, without touching the `Aeme` object at all.
 
@@ -116,13 +116,13 @@ one call, without touching the `Aeme` object at all.
 out <- run_model_test("glm_aed", path_glm,
                       param_overrides = list(Kw = 0.5),
                       tgt_vars = "HYD_temp")
-#> ℹ GLM-AED running... [2026-10-09 04:12:14]
-#> ✔ GLM-AED running... [2026-10-09 04:12:14] [437ms]
+#> ℹ GLM-AED running... [2026-10-13 23:37:46]
+#> ✔ GLM-AED running... [2026-10-13 23:37:47] [445ms]
 #> 
 ```
 
 The parameter change is written to disk exactly as
-[`set_glm_param()`](https://limnotrack.com/reference/set_glm_param.md)
+[`set_glm_param()`](https://limnotrack.com/AEME/reference/set_glm_param.md)
 would:
 
 ``` r
@@ -132,13 +132,13 @@ get_glm_param(path_glm, "Kw")
 ```
 
 `param_overrides` is forwarded to
-[`set_glm_param()`](https://limnotrack.com/reference/set_glm_param.md),
+[`set_glm_param()`](https://limnotrack.com/AEME/reference/set_glm_param.md),
 so any parameter name that works there works here. `init`, `inflow_args`
 and `outflow_args` reach the model’s
 `set_*_init()`/`set_*_inflows()`/`set_*_outflows()` wrappers the same
 way – e.g. to test a different initial temperature profile without
 re-running
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md):
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md):
 
 ``` r
 
@@ -150,7 +150,7 @@ run_model_test("glm_aed", path_glm,
 ### Reading back the result
 
 `out` is the model’s own reader output
-([`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md),
+([`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md),
 for `model = "glm_aed"`) – `tgt_vars` names what you’re interested in,
 but the reader’s own diagnostic fields (lake level, heat fluxes, ice,
 meteorology echoed back, …) still come along with it:
@@ -167,9 +167,9 @@ out$HYD_temp[1:3, 1:3]
 ```
 
 `out$HYD_temp` is a `[depth x time]` matrix, matching what
-[`get_var()`](https://limnotrack.com/reference/get_var.md) returns from
-a full `Aeme` object – so the same downstream code (plotting, summary
-statistics) works whichever path produced it.
+[`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) returns
+from a full `Aeme` object – so the same downstream code (plotting,
+summary statistics) works whichever path produced it.
 
 ### Comparing scenarios
 
@@ -183,17 +183,17 @@ results <- lapply(kw_values, function(kw) {
   run_model_test("glm_aed", path_glm, param_overrides = list(Kw = kw),
                  tgt_vars = "HYD_temp")
 })
-#> ℹ GLM-AED running... [2026-10-09 04:12:16]
-#> ✔ GLM-AED running... [2026-10-09 04:12:16] [451ms]
+#> ℹ GLM-AED running... [2026-10-13 23:37:48]
+#> ✔ GLM-AED running... [2026-10-13 23:37:48] [436ms]
 #> 
-#> ℹ GLM-AED running... [2026-10-09 04:12:17]
-#> ✔ GLM-AED running... [2026-10-09 04:12:17] [486ms]
+#> ℹ GLM-AED running... [2026-10-13 23:37:49]
+#> ✔ GLM-AED running... [2026-10-13 23:37:50] [434ms]
 #> 
-#> ℹ GLM-AED running... [2026-10-09 04:12:18]
-#> ✔ GLM-AED running... [2026-10-09 04:12:19] [434ms]
+#> ℹ GLM-AED running... [2026-10-13 23:37:50]
+#> ✔ GLM-AED running... [2026-10-13 23:37:51] [424ms]
 #> 
-#> ℹ GLM-AED running... [2026-10-09 04:12:19]
-#> ✔ GLM-AED running... [2026-10-09 04:12:20] [432ms]
+#> ℹ GLM-AED running... [2026-10-13 23:37:52]
+#> ✔ GLM-AED running... [2026-10-13 23:37:52] [434ms]
 #> 
 names(results) <- paste0("Kw_", kw_values)
 ```

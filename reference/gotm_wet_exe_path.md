@@ -1,9 +1,9 @@
 # Locate an installed GOTM-WET executable
 
 Returns the path to a GOTM-WET executable previously installed with
-[`install_gotm_wet()`](https://limnotrack.com/reference/install_gotm_wet.md).
+[`install_gotm_wet()`](https://limnotrack.com/AEME/reference/install_gotm_wet.md).
 Errors if that version isn't installed for this platform yet. Mirrors
-[`glm_exe_path()`](https://limnotrack.com/reference/glm_exe_path.md).
+[`glm_exe_path()`](https://limnotrack.com/AEME/reference/glm_exe_path.md).
 
 ## Usage
 

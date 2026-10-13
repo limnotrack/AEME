@@ -1,10 +1,10 @@
 # Set outflow data for a Simstrat-AED2 simulation directory
 
 Thin, `aeme`-free wrapper around the internal outflow writer used by
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md). Writes
-a combined `Qout.dat` into `path_simstrat`. All outflows are summed into
-a single series at a single representative withdrawal elevation,
-matching `make_wdr_simstrat()`'s existing behaviour.
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md).
+Writes a combined `Qout.dat` into `path_simstrat`. All outflows are
+summed into a single series at a single representative withdrawal
+elevation, matching `make_wdr_simstrat()`'s existing behaviour.
 
 ## Usage
 
@@ -30,7 +30,7 @@ set_simstrat_outflows(
 
   named list of data.frames, one per outflow, each with a `Date` column
   and a `HYD_flow` column – see
-  [`add_outflows()`](https://limnotrack.com/reference/add_outflows.md)
+  [`add_outflows()`](https://limnotrack.com/AEME/reference/add_outflows.md)
   for the expected schema.
 
 - heights_wdr:

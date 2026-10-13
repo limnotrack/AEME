@@ -46,7 +46,7 @@ set_glm_init(
 
   filepath; path to the nml file to edit. Defaults to the GLM
   hydrodynamic nml (`glm3.nml`/`glm4.nml`) found in `path_glm` via
-  [`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md).
+  [`find_glm_nml()`](https://limnotrack.com/AEME/reference/find_glm_nml.md).
 
 ## Value
 

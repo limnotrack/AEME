@@ -33,7 +33,7 @@ The conversion is: \$\$E = \frac{Q\_{lh}}{L_v\\\rho_w} \times 86400\$\$
 
 ## See also
 
-[`latent_heat_flux`](https://limnotrack.com/reference/latent_heat_flux.md)
+[`latent_heat_flux`](https://limnotrack.com/AEME/reference/latent_heat_flux.md)
 
 ## Examples
 

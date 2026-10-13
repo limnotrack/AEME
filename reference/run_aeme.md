@@ -18,7 +18,11 @@ run_aeme(
   timeout = Inf,
   parallel = FALSE,
   ncores,
-  check_output = FALSE
+  check_output = FALSE,
+  keep_diag = TRUE,
+  extra_vars = NULL,
+  sed_layers = NULL,
+  zone_summary = FALSE
 )
 ```
 
@@ -61,7 +65,7 @@ run_aeme(
 - model_controls:
 
   data.frame; model configuration, typically loaded via
-  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md).
+  [`get_model_controls()`](https://limnotrack.com/AEME/reference/get_model_controls.md).
 
 - verbose:
 
@@ -89,6 +93,37 @@ run_aeme(
 - check_output:
 
   logical; check model output after running? Defaults to FALSE.
+
+- keep_diag:
+
+  logical; keep the `diag` (diagnostic/scalar) and `sediment` sub-lists
+  of each model's output (variables with dimensions other than time or
+  depth x time, keyed by raw model names). Default `TRUE`; set to
+  `FALSE` to save memory.
+
+- extra_vars:
+
+  character; for GLM-AED, which sediment, flux and diagnostic variables
+  beyond the standard set to read from `output.nc`. `NULL` (default)
+  reads all of them. `"none"` reads none. Otherwise AEME names from
+  [glm_extra_vars](https://limnotrack.com/AEME/reference/glm_extra_vars.md)
+  (e.g. `"SED_temp"`), raw netCDF names, and/or the keywords
+  `"sediment"` / `"diag"`. Unrequested variables are never read, which
+  keeps ensemble output small. See
+  [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md).
+
+- sed_layers:
+
+  integer; GLM-AED sediment layers to keep for variables with a
+  sediment-layer dimension (`SED_temp`). `NULL` keeps all. See
+  [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md).
+
+- zone_summary:
+
+  logical; for GLM-AED, also add an area-weighted lake-wide series for
+  each requested sediment-zone variable. See
+  [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md).
+  Default `FALSE`.
 
 ## Value
 

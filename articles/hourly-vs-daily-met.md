@@ -55,7 +55,7 @@ aeme_hourly <- add_met(aeme, met = hourly_met)
 
 To get sub-daily **output** as well, raise `output_time_step` (it
 defaults to 86400 s and must be `>= time_step`). It can be set as part
-of [`set_time()`](https://limnotrack.com/reference/set_time.md):
+of [`set_time()`](https://limnotrack.com/AEME/reference/set_time.md):
 
 ``` r
 
@@ -70,7 +70,7 @@ aeme_hourly <- set_time(
 
 or, if the run period is already set, with the generic convenience
 wrapper
-[`set_output_time_step()`](https://limnotrack.com/reference/set_output_time_step.md),
+[`set_output_time_step()`](https://limnotrack.com/AEME/reference/set_output_time_step.md),
 which accepts either seconds or a frequency string (`"hourly"`,
 `"daily"`, `"weekly"`, `"6 hours"`, `"30 min"`, …) and applies to every
 model in the ensemble:
@@ -85,9 +85,9 @@ aeme_6h     <- set_output_time_step(aeme_hourly, "6 hours")
 
 | Stage | Daily forcing | Hourly forcing |
 |----|----|----|
-| **Derived variables** ([`expand_met()`](https://limnotrack.com/reference/expand_met.md) / [`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)) | Vapour pressure, humidity, wind components, and **cloud cover** are derived at daily resolution. `calc_cc()` builds *temporary* internal hourly steps to integrate clear-sky radiation correctly, then averages cloud cover back to daily. | The same variables are derived directly at the native sub-daily resolution; `calc_cc()` uses the supplied timestamps as-is. [`standardise_met()`](https://limnotrack.com/reference/standardise_met.md) also rescales `MET_pprain` / `MET_ppsnow` from a per-step accumulation to a mm/day rate (see below). |
-| **Water balance** (`calc_water_balance()`) | Runs per day. | Sub-daily meteo is **averaged to a daily time step first** ([`collapse_met_daily()`](https://limnotrack.com/reference/collapse_met_daily.md); precipitation is already a mm/day rate by this point, so a daily mean is the daily rate). The fitted outflow / inflow correction (`outf_wbal`) is therefore always a daily series, exactly like a normal inflow. |
-| **Surface-temperature estimate** ([`estimate_surface_temperature()`](https://limnotrack.com/reference/estimate_surface_temperature.md)) | Daily energy-balance integration (`dt = 86400`). | Same — it consumes the daily-collapsed meteo from the water-balance step, not the raw hourly series. |
+| **Derived variables** ([`expand_met()`](https://limnotrack.com/AEME/reference/expand_met.md) / [`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md)) | Vapour pressure, humidity, wind components, and **cloud cover** are derived at daily resolution. `calc_cc()` builds *temporary* internal hourly steps to integrate clear-sky radiation correctly, then averages cloud cover back to daily. | The same variables are derived directly at the native sub-daily resolution; `calc_cc()` uses the supplied timestamps as-is. [`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md) also rescales `MET_pprain` / `MET_ppsnow` from a per-step accumulation to a mm/day rate (see below). |
+| **Water balance** (`calc_water_balance()`) | Runs per day. | Sub-daily meteo is **averaged to a daily time step first** ([`collapse_met_daily()`](https://limnotrack.com/AEME/reference/collapse_met_daily.md); precipitation is already a mm/day rate by this point, so a daily mean is the daily rate). The fitted outflow / inflow correction (`outf_wbal`) is therefore always a daily series, exactly like a normal inflow. |
+| **Surface-temperature estimate** ([`estimate_surface_temperature()`](https://limnotrack.com/AEME/reference/estimate_surface_temperature.md)) | Daily energy-balance integration (`dt = 86400`). | Same — it consumes the daily-collapsed meteo from the water-balance step, not the raw hourly series. |
 | **Model forcing files** | Written with a bare date (GLM) or `date <tab> 12:00:00 <tab> value` (GOTM), or an integer day number (Simstrat). | Written with a full timestamp split into date + time-of-day columns (GLM, GOTM) or a **fractional** day number (Simstrat). |
 | **Output cadence** | One row per day. | `output_time_step / dt` rows per day; the output time axis keeps its time-of-day (`.collapse_output_date()` only drops it when every timestamp is midnight). |
 
@@ -289,7 +289,7 @@ data (mm in a day = mm/day, which is why the daily path always “just
 worked”); they are **not** identical sub-daily, where an accumulation of
 0.4 mm in an hour is a rate of 9.6 mm/day.
 
-[`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)
+[`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md)
 now resolves this automatically: when the meteo is sub-daily it rescales
 `MET_pprain` / `MET_ppsnow` from a per-step accumulation to the mm/day
 rate by `86400 / step_seconds`, and says so:
@@ -297,8 +297,9 @@ rate by `86400 / step_seconds`, and says so:
     i Sub-daily meteo: rescaled "MET_pprain" and "MET_ppsnow" from a per-3600-s
       accumulation to a mm/day rate (x24).
 
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) calls
-[`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+calls
+[`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md)
 for you, so nothing extra is needed. If your sub-daily precipitation is
 genuinely already a mm/day *rate*, opt out with
 `standardise_met(met, precip_accum = FALSE)`.
@@ -431,10 +432,12 @@ two models:
   correction and is what actually lets the lake stratify.
 
 These are applied with
-\[[`set_simstrat_param()`](https://limnotrack.com/reference/set_simstrat_param.md)\]
-after [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
-and before [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md).
-This is **illustrative tuning to get a stratifying test case**, not a
+\[[`set_simstrat_param()`](https://limnotrack.com/AEME/reference/set_simstrat_param.md)\]
+after
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+and before
+[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md). This
+is **illustrative tuning to get a stratifying test case**, not a
 calibration — the values were chosen so the daily-forced Simstrat run
 reaches a summer stability comparable to GLM-AED and GOTM-WET, not
 fitted to observations.
@@ -541,7 +544,7 @@ shortwave `LKE_Qsw`, net longwave `LKE_Qlw`, latent (evaporative)
 `LKE_Qe` and sensible `LKE_Qh` — with the convention **positive = heat
 into the lake**. (On a sub-daily run these are written once per day and
 held constant across it; see the note on GLM’s `daily_*` diagnostics in
-[`?read_glm_output`](https://limnotrack.com/reference/read_glm_output.md).)
+[`?read_glm_output`](https://limnotrack.com/AEME/reference/read_glm_output.md).)
 
 ``` r
 
@@ -728,7 +731,7 @@ bind_rows(strat, dT) |>
 #>   model         var                       daily hourly
 #>   <chr>         <chr>                     <dbl>  <dbl>
 #> 1 glm_aed       Schmidt stability (J/m2) 117.   116.  
-#> 2 glm_aed       Surface - bottom (deg C)   5.69   5.56
+#> 2 glm_aed       Surface - bottom (deg C)   5.69   5.53
 #> 3 glm_aed       Thermocline depth (m)      7.19   6.3 
 #> 4 gotm_wet      Schmidt stability (J/m2)  60.2   45.3 
 #> 5 gotm_wet      Surface - bottom (deg C)   2.59   1.97
@@ -823,7 +826,7 @@ bind_rows(
 #> 4 glm_aed       Schmidt stability (J/m²) 117.   116.              -0.88
 #> 5 gotm_wet      Schmidt stability (J/m²)  60.2   45.3            -14.9 
 #> 6 simstrat_aed2 Schmidt stability (J/m²)  56.7   33.6            -23.0 
-#> 7 glm_aed       Surface - bottom (°C)      5.69   5.56            -0.14
+#> 7 glm_aed       Surface - bottom (°C)      5.69   5.53            -0.16
 #> 8 gotm_wet      Surface - bottom (°C)      2.59   1.97            -0.62
 #> 9 simstrat_aed2 Surface - bottom (°C)      2.04   1.29            -0.75
 ```
@@ -901,10 +904,10 @@ if you only want the sub-daily forcing but daily output.
 - **Precipitation is auto-rescaled.** Sub-daily `MET_pprain` /
   `MET_ppsnow` are taken to be per-step accumulations and multiplied to
   a mm/day rate by
-  [`standardise_met()`](https://limnotrack.com/reference/standardise_met.md).
+  [`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md).
   If yours are already a rate, pass
   `standardise_met(precip_accum = FALSE)` (and note
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
   always uses the default).
 - **Water balance is always daily.** Don’t expect
   `water_balance(aeme)$data` or `outf_wbal.dat` to be hourly even when
@@ -921,11 +924,11 @@ if you only want the sub-daily forcing but daily output.
 
 ## See also
 
-- [`vignette("aeme-inputs")`](https://limnotrack.com/articles/aeme-inputs.md)
+- [`vignette("aeme-inputs")`](https://limnotrack.com/AEME/articles/aeme-inputs.md)
   — the full meteo input schema and
-  [`standardise_met()`](https://limnotrack.com/reference/standardise_met.md).
+  [`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md).
 - `vignette("rotoehu-water-balance")` — how the (daily) water balance
   and surface-temperature estimate work.
-- [`?set_time`](https://limnotrack.com/reference/set_time.md) /
-  [`?set_output_time_step`](https://limnotrack.com/reference/set_output_time_step.md)
+- [`?set_time`](https://limnotrack.com/AEME/reference/set_time.md) /
+  [`?set_output_time_step`](https://limnotrack.com/AEME/reference/set_output_time_step.md)
   — `time_step` and `output_time_step`.

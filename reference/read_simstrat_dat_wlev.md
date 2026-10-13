@@ -1,7 +1,7 @@
 # Read Simstrat lake water level from the raw text output
 
 The
-[`read_simstrat_wlev`](https://limnotrack.com/reference/read_simstrat_wlev.md)
+[`read_simstrat_wlev`](https://limnotrack.com/AEME/reference/read_simstrat_wlev.md)
 equivalent for Simstrat's own `WaterH_out.dat`, for callers that have
 not written (or have deleted) the consolidated `output.nc`.
 

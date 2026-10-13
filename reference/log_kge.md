@@ -1,6 +1,6 @@
 # Log-transformed Kling-Gupta Efficiency fit function
 
-[`kge`](https://limnotrack.com/reference/kge.md) calculated on
+[`kge`](https://limnotrack.com/AEME/reference/kge.md) calculated on
 [`log1p()`](https://rdrr.io/r/base/Log.html)-transformed observed and
 modelled values, for skewed/concentration-type variables (e.g. oxygen,
 chlorophyll, nutrients) where a few peak events would otherwise dominate
@@ -44,13 +44,13 @@ Returned in its conventional orientation where **higher is better** (`1`
 
 `calib_aeme()` and `run_and_fit()` **minimise** the values returned by
 `FUN_list` entries - use
-[`log_kge_loss`](https://limnotrack.com/reference/fit_loss.md) (which
-returns `-1 * log_kge(obs, sim)`) as a calibration objective.
+[`log_kge_loss`](https://limnotrack.com/AEME/reference/fit_loss.md)
+(which returns `-1 * log_kge(obs, sim)`) as a calibration objective.
 
 ## See also
 
-[`log_kge_loss`](https://limnotrack.com/reference/fit_loss.md) for the
-minimise-oriented variant used in `FUN_list`.
+[`log_kge_loss`](https://limnotrack.com/AEME/reference/fit_loss.md) for
+the minimise-oriented variant used in `FUN_list`.
 
 ## Examples
 

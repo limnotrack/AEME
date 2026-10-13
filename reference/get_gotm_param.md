@@ -1,7 +1,7 @@
 # Get one or more parameter values from a GOTM-WET `gotm.yaml` file
 
 Companion to
-[`set_gotm_param()`](https://limnotrack.com/reference/set_gotm_param.md)
+[`set_gotm_param()`](https://limnotrack.com/AEME/reference/set_gotm_param.md)
 for reading current values without needing an `aeme` object.
 
 ## Usage

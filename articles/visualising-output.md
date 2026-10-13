@@ -39,7 +39,7 @@ aeme <- run_aeme(aeme = aeme, verbose = FALSE)
 
 ## Timeseries
 
-[`plot_ts()`](https://limnotrack.com/reference/plot_ts.md) is the
+[`plot_ts()`](https://limnotrack.com/AEME/reference/plot_ts.md) is the
 general-purpose multi-variable plot – pass one or more `var_sim`, and it
 facets automatically. Observations overlay by default (`add_obs = TRUE`)
 where the `Aeme` object has them.
@@ -60,12 +60,13 @@ plot_ts(aeme, model = model, var_sim = "HYD_temp", depth_range = c(0, 2))
 
 ![](visualising-output_files/figure-html/plot-ts-depth-1.png)
 
-[`plot_var()`](https://limnotrack.com/reference/plot_var.md) is the
+[`plot_var()`](https://limnotrack.com/AEME/reference/plot_var.md) is the
 lower-level building block
-[`plot_ts()`](https://limnotrack.com/reference/plot_ts.md) is written on
-top of – reach for it directly when you already have a `data.frame` from
-[`get_var()`](https://limnotrack.com/reference/get_var.md) and want the
-same plot style without re-deriving it from the `Aeme` object:
+[`plot_ts()`](https://limnotrack.com/AEME/reference/plot_ts.md) is
+written on top of – reach for it directly when you already have a
+`data.frame` from
+[`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) and want
+the same plot style without re-deriving it from the `Aeme` object:
 
 ``` r
 
@@ -80,12 +81,12 @@ plot_var(df = df, aeme = aeme, model = model, var_sim = "HYD_temp")
 
 ## Observations and residuals
 
-[`plot_obs()`](https://limnotrack.com/reference/plot_obs.md) shows the
-observation record alone – useful for checking coverage before deciding
-what to calibrate against (see also
-[`summarise_obs()`](https://limnotrack.com/reference/summarise_obs.md)
+[`plot_obs()`](https://limnotrack.com/AEME/reference/plot_obs.md) shows
+the observation record alone – useful for checking coverage before
+deciding what to calibrate against (see also
+[`summarise_obs()`](https://limnotrack.com/AEME/reference/summarise_obs.md)
 in
-[`vignette("setup-new-lake")`](https://limnotrack.com/articles/setup-new-lake.md)):
+[`vignette("setup-new-lake")`](https://limnotrack.com/AEME/articles/setup-new-lake.md)):
 
 ``` r
 
@@ -94,10 +95,10 @@ plot_obs(aeme, var_sim = "HYD_temp")
 
 ![](visualising-output_files/figure-html/plot-obs-1.png)
 
-[`plot_resid()`](https://limnotrack.com/reference/plot_resid.md) plots
-modelled-minus-observed directly, rather than the two series overlaid –
-the faster way to see whether a model is biased high/low versus just
-imprecise:
+[`plot_resid()`](https://limnotrack.com/AEME/reference/plot_resid.md)
+plots modelled-minus-observed directly, rather than the two series
+overlaid – the faster way to see whether a model is biased high/low
+versus just imprecise:
 
 ``` r
 
@@ -109,7 +110,7 @@ plot_resid(aeme, model = model, var_sim = "HYD_temp")
 ## Biogeochemical group plots
 
 Each major AED module has its own plot, all sharing the
-[`plot_ts()`](https://limnotrack.com/reference/plot_ts.md) argument
+[`plot_ts()`](https://limnotrack.com/AEME/reference/plot_ts.md) argument
 shape (`add_obs`, `depth_range`, `remove_spin_up`, `ens_n`):
 
 ``` r
@@ -141,10 +142,10 @@ plot_phytos(aeme)   # phytoplankton groups
 ```
 
 ![](visualising-output_files/figure-html/plot-phytos-1.png) Similarly,
-[`plot_zoops()`](https://limnotrack.com/reference/plot_zoops.md) shows
-the zooplankton groups but requires the zooplankton module to be active
-in the model configuration. This example’s minimal config does not carry
-zooplankton/full phyto groups.
+[`plot_zoops()`](https://limnotrack.com/AEME/reference/plot_zoops.md)
+shows the zooplankton groups but requires the zooplankton module to be
+active in the model configuration. This example’s minimal config does
+not carry zooplankton/full phyto groups.
 
 ``` r
 
@@ -196,12 +197,12 @@ plot_fluxes(aeme, cumulative = TRUE)
 
 ## Working with a raw output list
 
-[`plot_model_output()`](https://limnotrack.com/reference/plot_model_output.md)
+[`plot_model_output()`](https://limnotrack.com/AEME/reference/plot_model_output.md)
 is the lowest-level of the plotting functions: pass it an `Aeme` object
 directly, as below, or – its other accepted input – the specifically
 classed list
-[`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md)/[`read_gotm_output()`](https://limnotrack.com/reference/read_gotm_output.md)/
-[`read_simstrat_output()`](https://limnotrack.com/reference/read_simstrat_output.md)/[`read_dy_output()`](https://limnotrack.com/reference/read_dy_output.md)/[`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)
+[`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)/[`read_gotm_output()`](https://limnotrack.com/AEME/reference/read_gotm_output.md)/
+[`read_simstrat_output()`](https://limnotrack.com/AEME/reference/read_simstrat_output.md)/[`read_dy_output()`](https://limnotrack.com/AEME/reference/read_dy_output.md)/[`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md)
 return (`output(aeme)` itself is a plain list and isn’t accepted; use
 one of those readers if you need output outside the `Aeme` object). It’s
 what every other `plot_*` function on this page is ultimately built on:
@@ -211,10 +212,10 @@ what every other `plot_*` function on this page is ultimately built on:
 outfile <- get_model_outfile(aeme, model = "glm_aed")$glm_aed
 outfile
 #>                                                                                         output 
-#> "C:/Users/runneradmin/AppData/Local/Temp/RtmpWWYQW5/LID45819_wainamu/glm_aed/output/output.nc"
+#> "C:/Users/runneradmin/AppData/Local/Temp/RtmpaabTsB/LID45819_wainamu/glm_aed/output/output.nc"
 ```
 
-[`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md)
+[`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
 reads the model output, projects onto a standard grid and also does some
 unit conversions, especially for the AED variables that are stored in
 mmol/m3 in the raw output but are more commonly expressed in mg/L.

@@ -51,7 +51,7 @@ set_dy_cd_init(
 
   filepath; the `.pro` / `.int` files to edit. Default to the files
   found in `path_dy` via
-  [`find_dy_cd_cfg()`](https://limnotrack.com/reference/find_dy_cd_cfg.md)'s
+  [`find_dy_cd_cfg()`](https://limnotrack.com/AEME/reference/find_dy_cd_cfg.md)'s
   prefix.
 
 ## Value

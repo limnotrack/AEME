@@ -1,7 +1,7 @@
 # Get the stored initial-conditions specification
 
 Return the structured initial-conditions specification set by
-[`set_initial_conditions()`](https://limnotrack.com/reference/set_initial_conditions.md),
+[`set_initial_conditions()`](https://limnotrack.com/AEME/reference/set_initial_conditions.md),
 or, for a single `model`, that model's resolved initial conditions (its
 overrides merged over the generic defaults).
 
@@ -32,7 +32,7 @@ none has been set. When `model` is supplied, a list with any of `depth`,
 
 ## See also
 
-[`set_initial_conditions()`](https://limnotrack.com/reference/set_initial_conditions.md)
+[`set_initial_conditions()`](https://limnotrack.com/AEME/reference/set_initial_conditions.md)
 
 ## Examples
 

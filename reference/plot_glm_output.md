@@ -1,9 +1,9 @@
 # Plot a variable from a raw read_glm_output()/read_model_outputs() list
 
 A thin, backward-compatible alias for
-[`plot_model_output()`](https://limnotrack.com/reference/plot_model_output.md)
+[`plot_model_output()`](https://limnotrack.com/AEME/reference/plot_model_output.md)
 – kept for existing callers. New code should call
-[`plot_model_output()`](https://limnotrack.com/reference/plot_model_output.md)
+[`plot_model_output()`](https://limnotrack.com/AEME/reference/plot_model_output.md)
 directly, which also accepts an `Aeme` object.
 
 ## Usage
@@ -17,9 +17,9 @@ plot_glm_output(out, var_sim, var_lims = NULL, ylim = NULL)
 - out:
 
   list; as returned by
-  [`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md)
+  [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
   or
-  [`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)
+  [`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md)
   (with `model = "glm_aed"`).
 
 - var_sim:
@@ -27,8 +27,8 @@ plot_glm_output(out, var_sim, var_lims = NULL, ylim = NULL)
   character; name of the variable to plot, as it appears in `names(x)`
   (or in the model output list, if `x` is an `Aeme` object) – a
   `var_aeme` name if
-  [key_naming](https://limnotrack.com/reference/key_naming.md) has a
-  translation for it, otherwise its raw model/netCDF name.
+  [key_naming](https://limnotrack.com/AEME/reference/key_naming.md) has
+  a translation for it, otherwise its raw model/netCDF name.
 
 - var_lims:
 
@@ -43,7 +43,7 @@ plot_glm_output(out, var_sim, var_lims = NULL, ylim = NULL)
 ## Value
 
 A ggplot2 object – see
-[`plot_model_output()`](https://limnotrack.com/reference/plot_model_output.md).
+[`plot_model_output()`](https://limnotrack.com/AEME/reference/plot_model_output.md).
 
 ## Examples
 

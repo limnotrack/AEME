@@ -83,7 +83,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [26ms]
+#> ✔ Estimating surface water temperature [37ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -121,10 +121,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ✔ GLM nml validation completed - no issues detected.
 
 aeme <- run_aeme(aeme)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-10-09 03:37:29]
-#> ℹ GLM-AED running... [2026-10-09 03:37:29]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-10-13 22:59:31]
+#> ℹ GLM-AED running... [2026-10-13 22:59:31]
 #> 
-#>      Reading configuration from C:\Users\runneradmin\AppData\Local\Temp\Rtmps9nlgV/LID45819_wainamu/glm_aed/glm4.nml
+#>      Reading configuration from C:\Users\runneradmin\AppData\Local\Temp\Rtmp4MHkRu/LID45819_wainamu/glm_aed/glm4.nml
 #> No 'particles' config, assuming no particles
 #>      NOTE: value for base_elev is no longer used; H[1] is assumed.
 #>      VolAtCrest= 1946739.94960; MaxVol= 1946739.94960 (m3)
@@ -174,7 +174,7 @@ aeme <- run_aeme(aeme)
 #>            module aed_silica : configured for zone_averaging 
 #>            ******************************* 
 #>          aed_nitrogen configuration
-#>      DBG calling initialise_lake           ******************************* 
+#>            ******************************* 
 #>            module aed_nitrogen : configured for zone_averaging 
 #>            ******************************* 
 #>          aed_phosphorus configuration
@@ -202,32 +202,32 @@ aeme <- run_aeme(aeme)
 #>      AED : n_vars_diag =  115 ; n_vars_diag_sheet =   29
 #> 
 #>       ----------  AED API config : end  ----------
-#> 
+#>      DBG calling initialise_lake
 #>      DBG entered initialise_lake
-#>      DBG init_profiles: num_heights=0 num_depths=2 the_heights=0000000000000000 the_depths=000001996B832310 lake_depth=13.070000
+#>      DBG init_profiles: num_heights=0 num_depths=2 the_heights=0000000000000000 the_depths=000001455D203DC0 lake_depth=13.070000
 #>      DBG initialise_lake returned
 #>      WQ plugin active: included Num_WQ_Vars = 26
 #> Heat pump disabled (heat_pump_switch = 0)
 #> Oxygenation disabled
 #> 
-#>      Wall clock start time :  Fri Oct  9 03:37:29 2026
+#>      Wall clock start time :  Tue Oct 13 22:59:31 2026
 #> 
 #>      Simulation begins...
 #>      Running day  2459061, 0.30% of days complete     Running day  2459062, 0.60% of days complete     Running day  2459063, 0.89% of days complete     Running day  2459064, 1.19% of days complete     Running day  2459065, 1.49% of days complete     Running day  2459066, 1.79% of days complete     Running day  2459067, 2.08% of days complete     Running day  2459068, 2.38% of days complete     Running day  2459069, 2.68% of days complete     Running day  2459070, 2.98% of days complete     Running day  2459071, 3.27% of days complete     Running day  2459072, 3.57% of days complete     Running day  2459073, 3.87% of days complete     Running day  2459074, 4.17% of days complete     Running day  2459075, 4.46% of days complete     Running day  2459076, 4.76% of days complete     Running day  2459077, 5.06% of days complete     Running day  2459078, 5.36% of days complete     Running day  2459079, 5.65% of days complete     Running day  2459080, 5.95% of days complete     Running day  2459081, 6.25% of days complete     Running day  2459082, 6.55% of days complete     Running day  2459083, 6.85% of days complete     Running day  2459084, 7.14% of days complete     Running day  2459085, 7.44% of days complete     Running day  2459086, 7.74% of days complete     Running day  2459087, 8.04% of days complete     Running day  2459088, 8.33% of days complete     Running day  2459089, 8.63% of days complete     Running day  2459090, 8.93% of days complete     Running day  2459091, 9.23% of days complete     Running day  2459092, 9.52% of days complete     Running day  2459093, 9.82% of days complete     Running day  2459094, 10.12% of days complete     Running day  2459095, 10.42% of days complete     Running day  2459096, 10.71% of days complete     Running day  2459097, 11.01% of days complete     Running day  2459098, 11.31% of days complete     Running day  2459099, 11.61% of days complete     Running day  2459100, 11.90% of days complete     Running day  2459101, 12.20% of days complete     Running day  2459102, 12.50% of days complete     Running day  2459103, 12.80% of days complete     Running day  2459104, 13.10% of days complete     Running day  2459105, 13.39% of days complete     Running day  2459106, 13.69% of days complete     Running day  2459107, 13.99% of days complete     Running day  2459108, 14.29% of days complete     Running day  2459109, 14.58% of days complete     Running day  2459110, 14.88% of days complete     Running day  2459111, 15.18% of days complete     Running day  2459112, 15.48% of days complete     Running day  2459113, 15.77% of days complete     Running day  2459114, 16.07% of days complete     Running day  2459115, 16.37% of days complete     Running day  2459116, 16.67% of days complete     Running day  2459117, 16.96% of days complete     Running day  2459118, 17.26% of days complete     Running day  2459119, 17.56% of days complete     Running day  2459120, 17.86% of days complete     Running day  2459121, 18.15% of days complete     Running day  2459122, 18.45% of days complete     Running day  2459123, 18.75% of days complete     Running day  2459124, 19.05% of days complete     Running day  2459125, 19.35% of days complete     Running day  2459126, 19.64% of days complete     Running day  2459127, 19.94% of days complete     Running day  2459128, 20.24% of days complete     Running day  2459129, 20.54% of days complete     Running day  2459130, 20.83% of days complete     Running day  2459131, 21.13% of days complete     Running day  2459132, 21.43% of days complete     Running day  2459133, 21.73% of days complete     Running day  2459134, 22.02% of days complete     Running day  2459135, 22.32% of days complete     Running day  2459136, 22.62% of days complete     Running day  2459137, 22.92% of days complete     Running day  2459138, 23.21% of days complete     Running day  2459139, 23.51% of days complete     Running day  2459140, 23.81% of days complete     Running day  2459141, 24.11% of days complete     Running day  2459142, 24.40% of days complete     Running day  2459143, 24.70% of days complete     Running day  2459144, 25.00% of days complete     Running day  2459145, 25.30% of days complete     Running day  2459146, 25.60% of days complete     Running day  2459147, 25.89% of days complete     Running day  2459148, 26.19% of days complete     Running day  2459149, 26.49% of days complete     Running day  2459150, 26.79% of days complete     Running day  2459151, 27.08% of days complete     Running day  2459152, 27.38% of days complete     Running day  2459153, 27.68% of days complete     Running day  2459154, 27.98% of days complete     Running day  2459155, 28.27% of days complete     Running day  2459156, 28.57% of days complete     Running day  2459157, 28.87% of days complete     Running day  2459158, 29.17% of days complete     Running day  2459159, 29.46% of days complete     Running day  2459160, 29.76% of days complete     Running day  2459161, 30.06% of days complete     Running day  2459162, 30.36% of days complete     Running day  2459163, 30.65% of days complete     Running day  2459164, 30.95% of days complete     Running day  2459165, 31.25% of days complete     Running day  2459166, 31.55% of days complete     Running day  2459167, 31.85% of days complete     Running day  2459168, 32.14% of days complete     Running day  2459169, 32.44% of days complete     Running day  2459170, 32.74% of days complete     Running day  2459171, 33.04% of days complete     Running day  2459172, 33.33% of days complete     Running day  2459173, 33.63% of days complete     Running day  2459174, 33.93% of days complete     Running day  2459175, 34.23% of days complete     Running day  2459176, 34.52% of days complete     Running day  2459177, 34.82% of days complete     Running day  2459178, 35.12% of days complete     Running day  2459179, 35.42% of days complete     Running day  2459180, 35.71% of days complete     Running day  2459181, 36.01% of days complete     Running day  2459182, 36.31% of days complete     Running day  2459183, 36.61% of days complete     Running day  2459184, 36.90% of days complete     Running day  2459185, 37.20% of days complete     Running day  2459186, 37.50% of days complete     Running day  2459187, 37.80% of days complete     Running day  2459188, 38.10% of days complete     Running day  2459189, 38.39% of days complete     Running day  2459190, 38.69% of days complete     Running day  2459191, 38.99% of days complete     Running day  2459192, 39.29% of days complete     Running day  2459193, 39.58% of days complete     Running day  2459194, 39.88% of days complete     Running day  2459195, 40.18% of days complete     Running day  2459196, 40.48% of days complete     Running day  2459197, 40.77% of days complete     Running day  2459198, 41.07% of days complete     Running day  2459199, 41.37% of days complete     Running day  2459200, 41.67% of days complete     Running day  2459201, 41.96% of days complete     Running day  2459202, 42.26% of days complete     Running day  2459203, 42.56% of days complete     Running day  2459204, 42.86% of days complete     Running day  2459205, 43.15% of days complete     Running day  2459206, 43.45% of days complete     Running day  2459207, 43.75% of days complete     Running day  2459208, 44.05% of days complete     Running day  2459209, 44.35% of days complete     Running day  2459210, 44.64% of days complete     Running day  2459211, 44.94% of days complete     Running day  2459212, 45.24% of days complete     Running day  2459213, 45.54% of days complete     Running day  2459214, 45.83% of days complete     Running day  2459215, 46.13% of days complete     Running day  2459216, 46.43% of days complete     Running day  2459217, 46.73% of days complete     Running day  2459218, 47.02% of days complete     Running day  2459219, 47.32% of days complete     Running day  2459220, 47.62% of days complete     Running day  2459221, 47.92% of days complete     Running day  2459222, 48.21% of days complete     Running day  2459223, 48.51% of days complete     Running day  2459224, 48.81% of days complete     Running day  2459225, 49.11% of days complete     Running day  2459226, 49.40% of days complete     Running day  2459227, 49.70% of days complete     Running day  2459228, 50.00% of days complete     Running day  2459229, 50.30% of days complete     Running day  2459230, 50.60% of days complete     Running day  2459231, 50.89% of days complete     Running day  2459232, 51.19% of days complete     Running day  2459233, 51.49% of days complete     Running day  2459234, 51.79% of days complete     Running day  2459235, 52.08% of days complete     Running day  2459236, 52.38% of days complete     Running day  2459237, 52.68% of days complete     Running day  2459238, 52.98% of days complete     Running day  2459239, 53.27% of days complete     Running day  2459240, 53.57% of days complete     Running day  2459241, 53.87% of days complete     Running day  2459242, 54.17% of days complete     Running day  2459243, 54.46% of days complete     Running day  2459244, 54.76% of days complete     Running day  2459245, 55.06% of days complete     Running day  2459246, 55.36% of days complete     Running day  2459247, 55.65% of days complete     Running day  2459248, 55.95% of days complete     Running day  2459249, 56.25% of days complete     Running day  2459250, 56.55% of days complete     Running day  2459251, 56.85% of days complete     Running day  2459252, 57.14% of days complete     Running day  2459253, 57.44% of days complete     Running day  2459254, 57.74% of days complete     Running day  2459255, 58.04% of days complete     Running day  2459256, 58.33% of days complete     Running day  2459257, 58.63% of days complete     Running day  2459258, 58.93% of days complete     Running day  2459259, 59.23% of days complete     Running day  2459260, 59.52% of days complete     Running day  2459261, 59.82% of days complete     Running day  2459262, 60.12% of days complete     Running day  2459263, 60.42% of days complete     Running day  2459264, 60.71% of days complete     Running day  2459265, 61.01% of days complete     Running day  2459266, 61.31% of days complete     Running day  2459267, 61.61% of days complete     Running day  2459268, 61.90% of days complete     Running day  2459269, 62.20% of days complete     Running day  2459270, 62.50% of days complete     Running day  2459271, 62.80% of days complete     Running day  2459272, 63.10% of days complete     Running day  2459273, 63.39% of days complete     Running day  2459274, 63.69% of days complete     Running day  2459275, 63.99% of days complete     Running day  2459276, 64.29% of days complete     Running day  2459277, 64.58% of days complete     Running day  2459278, 64.88% of days complete     Running day  2459279, 65.18% of days complete     Running day  2459280, 65.48% of days complete     Running day  2459281, 65.77% of days complete     Running day  2459282, 66.07% of days complete     Running day  2459283, 66.37% of days complete     Running day  2459284, 66.67% of days complete     Running day  2459285, 66.96% of days complete     Running day  2459286, 67.26% of days complete     Running day  2459287, 67.56% of days complete     Running day  2459288, 67.86% of days complete     Running day  2459289, 68.15% of days complete     Running day  2459290, 68.45% of days complete     Running day  2459291, 68.75% of days complete     Running day  2459292, 69.05% of days complete     Running day  2459293, 69.35% of days complete     Running day  2459294, 69.64% of days complete     Running day  2459295, 69.94% of days complete     Running day  2459296, 70.24% of days complete     Running day  2459297, 70.54% of days complete     Running day  2459298, 70.83% of days complete     Running day  2459299, 71.13% of days complete     Running day  2459300, 71.43% of days complete     Running day  2459301, 71.73% of days complete     Running day  2459302, 72.02% of days complete     Running day  2459303, 72.32% of days complete     Running day  2459304, 72.62% of days complete     Running day  2459305, 72.92% of days complete     Running day  2459306, 73.21% of days complete     Running day  2459307, 73.51% of days complete     Running day  2459308, 73.81% of days complete     Running day  2459309, 74.11% of days complete     Running day  2459310, 74.40% of days complete     Running day  2459311, 74.70% of days complete     Running day  2459312, 75.00% of days complete     Running day  2459313, 75.30% of days complete     Running day  2459314, 75.60% of days complete     Running day  2459315, 75.89% of days complete     Running day  2459316, 76.19% of days complete     Running day  2459317, 76.49% of days complete     Running day  2459318, 76.79% of days complete     Running day  2459319, 77.08% of days complete     Running day  2459320, 77.38% of days complete     Running day  2459321, 77.68% of days complete     Running day  2459322, 77.98% of days complete     Running day  2459323, 78.27% of days complete     Running day  2459324, 78.57% of days complete     Running day  2459325, 78.87% of days complete     Running day  2459326, 79.17% of days complete     Running day  2459327, 79.46% of days complete     Running day  2459328, 79.76% of days complete     Running day  2459329, 80.06% of days complete     Running day  2459330, 80.36% of days complete     Running day  2459331, 80.65% of days complete     Running day  2459332, 80.95% of days complete     Running day  2459333, 81.25% of days complete     Running day  2459334, 81.55% of days complete     Running day  2459335, 81.85% of days complete     Running day  2459336, 82.14% of days complete     Running day  2459337, 82.44% of days complete     Running day  2459338, 82.74% of days complete     Running day  2459339, 83.04% of days complete     Running day  2459340, 83.33% of days complete     Running day  2459341, 83.63% of days complete     Running day  2459342, 83.93% of days complete     Running day  2459343, 84.23% of days complete     Running day  2459344, 84.52% of days complete     Running day  2459345, 84.82% of days complete     Running day  2459346, 85.12% of days complete     Running day  2459347, 85.42% of days complete     Running day  2459348, 85.71% of days complete     Running day  2459349, 86.01% of days complete     Running day  2459350, 86.31% of days complete     Running day  2459351, 86.61% of days complete     Running day  2459352, 86.90% of days complete     Running day  2459353, 87.20% of days complete     Running day  2459354, 87.50% of days complete     Running day  2459355, 87.80% of days complete     Running day  2459356, 88.10% of days complete     Running day  2459357, 88.39% of days complete     Running day  2459358, 88.69% of days complete     Running day  2459359, 88.99% of days complete     Running day  2459360, 89.29% of days complete     Running day  2459361, 89.58% of days complete     Running day  2459362, 89.88% of days complete     Running day  2459363, 90.18% of days complete     Running day  2459364, 90.48% of days complete     Running day  2459365, 90.77% of days complete     Running day  2459366, 91.07% of days complete     Running day  2459367, 91.37% of days complete     Running day  2459368, 91.67% of days complete     Running day  2459369, 91.96% of days complete     Running day  2459370, 92.26% of days complete     Running day  2459371, 92.56% of days complete     Running day  2459372, 92.86% of days complete     Running day  2459373, 93.15% of days complete     Running day  2459374, 93.45% of days complete     Running day  2459375, 93.75% of days complete     Running day  2459376, 94.05% of days complete     Running day  2459377, 94.35% of days complete     Running day  2459378, 94.64% of days complete     Running day  2459379, 94.94% of days complete     Running day  2459380, 95.24% of days complete     Running day  2459381, 95.54% of days complete     Running day  2459382, 95.83% of days complete     Running day  2459383, 96.13% of days complete     Running day  2459384, 96.43% of days complete     Running day  2459385, 96.73% of days complete     Running day  2459386, 97.02% of days complete     Running day  2459387, 97.32% of days complete     Running day  2459388, 97.62% of days complete     Running day  2459389, 97.92% of days complete     Running day  2459390, 98.21% of days complete     Running day  2459391, 98.51% of days complete     Running day  2459392, 98.81% of days complete     Running day  2459393, 99.11% of days complete     Running day  2459394, 99.40% of days complete     Running day  2459395, 99.70% of days complete
 #> 
-#>      Wall clock finish time : Fri Oct  9 03:37:32 2026
+#>      Wall clock finish time : Tue Oct 13 22:59:34 2026
 #>      Wall clock runtime was 3 seconds : 00:00:03 [hh:mm:ss]
 #> 
 #>     Model Run Complete
 #>     -------------------------------------------------------
 #> 
-#> ✔ GLM-AED running... [2026-10-09 03:37:32] [2.9s]
+#> ✔ GLM-AED running... [2026-10-13 22:59:34] [2.9s]
 #> 
-#> ✔ Model run complete! [2026-10-09 03:37:32]
+#> ✔ Model run complete! [2026-10-13 22:59:34]
 out <- run_glm_aed_diagnostics(aeme = aeme)
 #> Requesting 86 variables from model output...  (sediment zone _Z variables are
 #> optional; missing ones are skipped)
-#> (9 variables not in output: NIT_no2, NIT_n2o, NIT_n2oprod, NIT_n2o_dsf,
+#> (34 variables not in output: NIT_no2, NIT_n2o, NIT_n2oprod, NIT_n2o_dsf,
 #> NIT_no2_dsf, NIT_n2o_atm , ...)
 #> ── GLM-AED diagnostic summary ──────────────────────────────────────────────────
 #> ! 1 flagged variable
@@ -237,85 +237,60 @@ out <- run_glm_aed_diagnostics(aeme = aeme)
 #> │oxygen_fluxes│OXY_oxy_atm│Atm O2 flux (mmol/m2/d)│-19.9│  3.4 │13.8│ 594│51.4│OUT OF RANGE│
 #> └─────────────┴───────────┴───────────────────────┴─────┴──────┴────┴────┴────┴────────────┘
 #> ── Full summary ────────────────────────────────────────────────────────────────
-#> ┌────────────────────────┬───────────────┬───────────────────────────┬────────┬────────┬────────┬─────────┬────────┬────────────┐
-#> │ group                  │ variable      │ label                     │ min    │ median │ mean   │ max     │ sd     │ flag       │
-#> ├────────────────────────┼───────────────┼───────────────────────────┼────────┼────────┼────────┼─────────┼────────┼────────────┤
-#> │ oxygen_state           │ OXY_oxy       │ O2 (mmol/m3)              │ 93.1   │  248   │  258   │  327    │ 45.8   │ ok         │
-#> │ oxygen_state           │ OXY_sat       │ O2 saturation (%)         │ 25.3   │ 84.9   │ 85.5   │ 98.9    │ 10.3   │ ok         │
-#> │ oxygen_fluxes          │ OXY_oxy_atm   │ Atm O2 flux (mmol/m2/d)   │ -19.9  │  3.4   │ 13.8   │  594    │ 51.4   │OUT OF RANGE│
-#> │ oxygen_fluxes          │ OXY_oxy_atmv  │ Atm O2 flux (vol)         │ -2.47  │ 0.436  │ 1.72   │ 74.8    │ 6.62   │ ok         │
-#> │ oxygen_fluxes          │ OXY_oxy_dsf   │ SWI O2 flux (mmol/m2/d)   │ -20.9  │ -15.9  │  -16   │ -8.86   │ 2.03   │ ok         │
-#> │ oxygen_fluxes          │ OXY_oxy_dsfv  │ SOD (vol)                 │ -3.64  │ -2.27  │ -2.29  │ -1.26   │ 0.38   │ ok         │
-#> │ nitrogen_state         │ NIT_amm       │ NH4 (mmol N/m3)           │ 0.00101│ 0.00883│ 0.026  │ 0.0994  │ 0.0296 │ ok         │
-#> │ nitrogen_state         │ NIT_nit       │ NO3 (mmol N/m3)           │4.76e-06│ 0.00354│ 0.0032 │ 0.00487 │ 0.00108│ ok         │
-#> │ nitrogen_organic       │ OGM_don       │ DON (mmol N/m3)           │ 0.00486│ 0.0698 │ 0.0964 │ 0.204   │ 0.0478 │ ok         │
-#> │ nitrogen_organic       │ OGM_donr      │ Refractory DON            │ 0.544  │ 1.38   │ 1.85   │ 8.94    │ 1.53   │ ok         │
-#> │ nitrogen_organic       │ OGM_pon       │ PON (mmol N/m3)           │ 0.00292│ 0.365  │ 0.571  │  1.5    │ 0.482  │ ok         │
-#> │nitrogen_transformations│ NIT_anammox   │ Anammox                   │    0   │    0   │1.54e-06│ 2.14e-05│2.97e-06│ ok         │
-#> │nitrogen_transformations│ NIT_denit     │ Denitrification           │    0   │ 0.0239 │ 0.0306 │ 0.103   │ 0.0294 │ ok         │
-#> │nitrogen_transformations│ NIT_dnra      │ DNRA                      │    0   │    0   │2.69e-05│ 0.000362│4.45e-05│ ok         │
-#> │nitrogen_transformations│ NIT_nitrif    │ Nitrification             │ 0.00357│ 0.0355 │ 0.0423 │ 0.314   │ 0.0324 │ ok         │
-#> │ nitrogen_sediment_flux │ NIT_amm_dsf   │ NH4 SWI flux              │ 0.134  │ 0.382  │ 0.552  │ 1.33    │ 0.411  │ ok         │
-#> │ nitrogen_sediment_flux │ NIT_nit_dsf   │ NO3 SWI flux              │ -0.0322│-0.00571│4.36e-05│ 0.0453  │ 0.0262 │ ok         │
-#> │ phosphorus_state       │ OGM_dop       │ DOP                       │ 0.00035│ 0.00866│ 0.011  │ 0.0231  │ 0.00492│ ok         │
-#> │ phosphorus_state       │ OGM_dopr      │ Refractory DOP            │ 0.00902│ 0.023  │ 0.0309 │ 0.149   │ 0.0256 │ ok         │
-#> │ phosphorus_state       │ OGM_pop       │ POP                       │0.000407│ 0.0189 │ 0.0265 │ 0.0626  │ 0.021  │ ok         │
-#> │ phosphorus_state       │ PHS_frp       │ FRP (mmol P/m3)           │4.76e-06│ 0.00026│0.000676│ 0.00267 │0.000669│ ok         │
-#> │ phosphorus_fluxes      │ OGM_dop_min   │ DOP mineralisation        │    0   │ 0.0001 │0.000125│ 0.000298│ 5.8e-05│ ok         │
-#> │ phosphorus_fluxes      │ OGM_dop_swi   │ DOP SWI flux              │    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ phosphorus_fluxes      │ OGM_pop_res   │ POP resuspension          │    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ phosphorus_fluxes      │ OGM_pop_swi   │ POP SWI flux              │ -0.016 │-0.00384│-0.00576│-8.09e-05│ 0.00477│ ok         │
-#> │ phosphorus_fluxes      │ PHS_frp_dsf   │ FRP SWI flux              │ 0.00064│ 0.00188│ 0.00386│ 0.0144  │ 0.0038 │ ok         │
-#> │ phyto_biomass          │ PHY_cyano     │ Cyanobacteria             │ 0.03   │ 0.0311 │ 0.0904 │ 0.947   │ 0.135  │ ok         │
-#> │ phyto_biomass          │ PHY_diatom    │ Diatoms                   │ 0.03   │ 0.0303 │ 0.057  │ 0.911   │ 0.102  │ ok         │
-#> │ phyto_biomass          │ PHY_green     │ Greens                    │ 0.515  │   10   │ 18.2   │ 47.6    │ 15.2   │ ok         │
-#> │ phyto_biomass          │ PHY_tchla     │ Total chl-a (ug/L)        │ 0.241  │ 3.05   │ 5.52   │ 14.3    │ 4.57   │ ok         │
-#> │ phyto_biomass          │ PHY_tphy      │ Total phyto (mmol C/m3)   │ 0.85   │ 10.2   │ 18.4   │ 47.8    │ 15.2   │ ok         │
-#> │ phyto_stoichiometry    │ PHY_cyano_NtoP│ Cyano N:P                 │ 6.41   │ 18.2   │ 19.1   │ 34.2    │ 7.26   │ ok         │
-#> │ phyto_stoichiometry    │PHY_diatom_NtoP│ Diatom N:P                │ 9.79   │ 20.9   │ 20.5   │ 32.7    │ 4.03   │ ok         │
-#> │ phyto_stoichiometry    │ PHY_green_NtoP│ Green N:P                 │ 6.22   │ 18.6   │ 22.6   │   40    │ 9.74   │ ok         │
-#> │ phyto_limitation       │ PHY_cyano_fI  │ Cyano fI                  │ 0.0418 │ 0.168  │ 0.158  │ 0.226   │ 0.0442 │ ok         │
-#> │ phyto_limitation       │ PHY_cyano_fNit│ Cyano fN                  │    0   │ 0.194  │ 0.212  │ 0.606   │ 0.141  │ ok         │
-#> │ phyto_limitation       │ PHY_cyano_fPho│ Cyano fP                  │    0   │ 0.313  │ 0.348  │ 0.901   │ 0.278  │ ok         │
-#> │ phyto_limitation       │ PHY_cyano_fT  │ Cyano fT                  │ 0.561  │ 0.895  │ 0.862  │ 1.06    │ 0.142  │ ok         │
-#> │ phyto_limitation       │ PHY_diatom_fI │ Diatom fI                 │ 0.0866 │ 0.246  │ 0.236  │ 0.312   │ 0.0514 │ ok         │
-#> │ phyto_limitation       │PHY_diatom_fNit│ Diatom fN                 │    0   │ 0.149  │ 0.147  │ 0.445   │ 0.106  │ ok         │
-#> │ phyto_limitation       │PHY_diatom_fPho│ Diatom fP                 │    0   │ 0.0814 │ 0.159  │ 0.906   │ 0.243  │ ok         │
-#> │ phyto_limitation       │ PHY_diatom_fT │ Diatom fT                 │    1   │    1   │    1   │    1    │    0   │ ok         │
-#> │ phyto_limitation       │ PHY_green_fI  │ Green fI                  │ 0.0418 │ 0.168  │ 0.158  │ 0.226   │ 0.0442 │ ok         │
-#> │ phyto_limitation       │ PHY_green_fNit│ Green fN                  │    0   │ 0.506  │ 0.52   │ 0.772   │ 0.159  │ ok         │
-#> │ phyto_limitation       │ PHY_green_fPho│ Green fP                  │    0   │ 0.49   │ 0.435  │ 0.931   │ 0.26   │ ok         │
-#> │ phyto_limitation       │ PHY_green_fT  │ Green fT                  │    1   │    1   │    1   │    1    │    0   │ ok         │
-#> │ phyto_fluxes           │ PHY_gpp       │ GPP                       │    0   │ 0.243  │ 0.396  │ 1.88    │ 0.408  │ ok         │
-#> │ phyto_fluxes           │ PHY_ncp       │ NCP                       │ -0.0661│ 0.142  │ 0.275  │ 1.74    │ 0.363  │ ok         │
-#> │ phyto_fluxes           │ PHY_set       │ Sedimentation             │ -1.56  │ -0.273 │ -0.503 │ -0.0584 │ 0.398  │ ok         │
-#> │ phyto_fluxes           │ PHY_upt_nh4   │ NH4 uptake                │    0   │ 0.00534│ 0.00768│ 0.129   │ 0.0114 │ ok         │
-#> │ phyto_fluxes           │ PHY_upt_no3   │ NO3 uptake                │    0   │ 0.003  │ 0.0101 │ 0.362   │ 0.029  │ ok         │
-#> │ phyto_fluxes           │ PHY_upt_po4   │ PO4 uptake                │    0   │0.000319│0.000489│ 0.0171  │ 0.0011 │ ok         │
-#> │ sedflux_oxygen_Z       │ OXY_oxy_atm_Z │ Atm O2 flux (per zone)    │    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ sedflux_oxygen_Z       │ OXY_oxy_dsf_Z │ SWI O2 exchange (per zone)│  -32   │ -17.1  │  -17   │ -7.04   │ 5.03   │ ok         │
-#> │ sedflux_oxygen_Z       │ SDF_Fsed_oxy_Z│ SDF O2 flux (per zone)    │ -38.8  │ -29.1  │ -29.1  │ -19.4   │ 9.71   │ ok         │
-#> │ sedflux_nitrogen_Z     │ NIT_amm_dsf_Z │ NH4 SWI flux (per zone)   │ 0.0336 │ 0.24   │ 0.894  │ 4.33    │ 1.27   │ ok         │
-#> │ sedflux_nitrogen_Z     │ NIT_nit_dsf_Z │ NO3 SWI flux (per zone)   │ -0.285 │-0.00213│ -0.0447│ 0.0797  │ 0.121  │ ok         │
-#> │ sedflux_nitrogen_Z     │ SDF_Fsed_amm_Z│ SDF NH4 flux (per zone)   │  0.5   │  3.1   │  3.1   │  5.7    │  2.6   │ ok         │
-#> │ sedflux_nitrogen_Z     │ SDF_Fsed_nit_Z│ SDF NO3 flux (per zone)   │ -0.4   │ -0.15  │ -0.15  │  0.1    │ 0.25   │ ok         │
-#> │ sedflux_phosphorus_Z   │ OGM_doc_swi_Z │ DOC SWI flux (per zone)   │ 0.0145 │ 0.0245 │ 0.0329 │ 0.0846  │ 0.0211 │ ok         │
-#> │ sedflux_phosphorus_Z   │ OGM_don_swi_Z │ DON SWI flux (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ sedflux_phosphorus_Z   │ OGM_dop_swi_Z │ DOP SWI flux (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ sedflux_phosphorus_Z   │ OGM_poc_swi_Z │ POC SWI flux (per zone)   │ -5.41  │ -0.565 │ -1.1   │ -0.00384│ 1.27   │ ok         │
-#> │ sedflux_phosphorus_Z   │ OGM_pon_swi_Z │ PON SWI flux (per zone)   │ -0.517 │ -0.0571│ -0.103 │-0.000213│ 0.115  │ ok         │
-#> │ sedflux_phosphorus_Z   │ OGM_pop_swi_Z │ POP SWI flux (per zone)   │ -0.0204│-0.00272│-0.00478│-3.11e-05│ 0.00504│ ok         │
-#> │ sedflux_phosphorus_Z   │ PHS_frp_dsf_Z │ FRP SWI flux (per zone)   │0.000341│ 0.0012 │ 0.00612│ 0.0469  │ 0.0104 │ ok         │
-#> │ sedflux_phosphorus_Z   │ SDF_Fsed_frp_Z│ SDF FRP flux (per zone)   │ 0.0268 │ 0.067  │ 0.067  │ 0.107   │ 0.0402 │ ok         │
-#> │ sedflux_organic_Z      │ OGM_poc_res_Z │POC resuspension (per zone)│    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ sedflux_organic_Z      │ OGM_pon_res_Z │PON resuspension (per zone)│    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ sedflux_organic_Z      │ OGM_pop_res_Z │POP resuspension (per zone)│    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ sedflux_organic_Z      │ OGM_toc_sed_Z │ TOC sed mass (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ sedflux_organic_Z      │ OGM_ton_sed_Z │ TON sed mass (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ sedflux_organic_Z      │ OGM_top_sed_Z │ TOP sed mass (per zone)   │    0   │    0   │    0   │    0    │    0   │ ok         │
-#> │ sedflux_organic_Z      │PHY_phy_swi_c_Z│ Phyto SWI C (per zone)    │ -15.9  │   -2   │ -3.27  │ -0.167  │ 3.71   │ ok         │
-#> │ sedflux_organic_Z      │PHY_phy_swi_n_Z│ Phyto SWI N (per zone)    │ -0.651 │ -0.0749│ -0.131 │ -0.00546│ 0.146  │ ok         │
-#> │ sedflux_organic_Z      │PHY_phy_swi_p_Z│ Phyto SWI P (per zone)    │ -0.0168│ -0.0033│ -0.0051│-0.000493│ 0.00411│ ok         │
-#> │ sedflux_silica_Z       │ SIL_dsf_rsi_Z │ Si SWI flux (per zone)    │ 0.00233│ 0.00375│ 0.0129 │ 0.114   │ 0.021  │ ok         │
-#> └────────────────────────┴───────────────┴───────────────────────────┴────────┴────────┴────────┴─────────┴────────┴────────────┘
+#> ┌────────────────────────┬───────────────┬───────────────────────┬────────┬────────┬────────┬─────────┬────────┬────────────┐
+#> │ group                  │ variable      │ label                 │ min    │ median │ mean   │ max     │ sd     │ flag       │
+#> ├────────────────────────┼───────────────┼───────────────────────┼────────┼────────┼────────┼─────────┼────────┼────────────┤
+#> │ oxygen_state           │ OXY_oxy       │ O2 (mmol/m3)          │ 93.1   │  248   │  258   │  327    │ 45.8   │ ok         │
+#> │ oxygen_state           │ OXY_sat       │ O2 saturation (%)     │ 25.3   │ 84.9   │ 85.5   │ 98.9    │ 10.3   │ ok         │
+#> │ oxygen_fluxes          │ OXY_oxy_atm   │Atm O2 flux (mmol/m2/d)│ -19.9  │  3.4   │ 13.8   │  594    │ 51.4   │OUT OF RANGE│
+#> │ oxygen_fluxes          │ OXY_oxy_atmv  │ Atm O2 flux (vol)     │ -2.47  │ 0.436  │ 1.72   │ 74.8    │ 6.62   │ ok         │
+#> │ oxygen_fluxes          │ OXY_oxy_dsf   │SWI O2 flux (mmol/m2/d)│ -20.9  │ -15.9  │  -16   │ -8.86   │ 2.03   │ ok         │
+#> │ oxygen_fluxes          │ OXY_oxy_dsfv  │ SOD (vol)             │ -3.64  │ -2.27  │ -2.29  │ -1.26   │ 0.38   │ ok         │
+#> │ nitrogen_state         │ NIT_amm       │ NH4 (mmol N/m3)       │ 0.00101│ 0.00883│ 0.026  │ 0.0994  │ 0.0296 │ ok         │
+#> │ nitrogen_state         │ NIT_nit       │ NO3 (mmol N/m3)       │4.76e-06│ 0.00354│ 0.0032 │ 0.00487 │ 0.00108│ ok         │
+#> │ nitrogen_organic       │ OGM_don       │ DON (mmol N/m3)       │ 0.00486│ 0.0698 │ 0.0964 │ 0.204   │ 0.0478 │ ok         │
+#> │ nitrogen_organic       │ OGM_donr      │ Refractory DON        │ 0.544  │ 1.38   │ 1.85   │ 8.94    │ 1.53   │ ok         │
+#> │ nitrogen_organic       │ OGM_pon       │ PON (mmol N/m3)       │ 0.00292│ 0.365  │ 0.571  │  1.5    │ 0.482  │ ok         │
+#> │nitrogen_transformations│ NIT_anammox   │ Anammox               │    0   │    0   │1.54e-06│ 2.14e-05│2.97e-06│ ok         │
+#> │nitrogen_transformations│ NIT_denit     │ Denitrification       │    0   │ 0.0239 │ 0.0306 │ 0.103   │ 0.0294 │ ok         │
+#> │nitrogen_transformations│ NIT_dnra      │ DNRA                  │    0   │    0   │2.69e-05│ 0.000362│4.45e-05│ ok         │
+#> │nitrogen_transformations│ NIT_nitrif    │ Nitrification         │ 0.00357│ 0.0355 │ 0.0423 │ 0.314   │ 0.0324 │ ok         │
+#> │ nitrogen_sediment_flux │ NIT_amm_dsf   │ NH4 SWI flux          │ 0.134  │ 0.382  │ 0.552  │ 1.33    │ 0.411  │ ok         │
+#> │ nitrogen_sediment_flux │ NIT_nit_dsf   │ NO3 SWI flux          │ -0.0322│-0.00571│4.36e-05│ 0.0453  │ 0.0262 │ ok         │
+#> │ phosphorus_state       │ OGM_dop       │ DOP                   │ 0.00035│ 0.00866│ 0.011  │ 0.0231  │ 0.00492│ ok         │
+#> │ phosphorus_state       │ OGM_dopr      │ Refractory DOP        │ 0.00902│ 0.023  │ 0.0309 │ 0.149   │ 0.0256 │ ok         │
+#> │ phosphorus_state       │ OGM_pop       │ POP                   │0.000407│ 0.0189 │ 0.0265 │ 0.0626  │ 0.021  │ ok         │
+#> │ phosphorus_state       │ PHS_frp       │ FRP (mmol P/m3)       │4.76e-06│ 0.00026│0.000676│ 0.00267 │0.000669│ ok         │
+#> │ phosphorus_fluxes      │ OGM_dop_min   │ DOP mineralisation    │    0   │ 0.0001 │0.000125│ 0.000298│ 5.8e-05│ ok         │
+#> │ phosphorus_fluxes      │ OGM_dop_swi   │ DOP SWI flux          │    0   │    0   │    0   │    0    │    0   │ ok         │
+#> │ phosphorus_fluxes      │ OGM_pop_res   │ POP resuspension      │    0   │    0   │    0   │    0    │    0   │ ok         │
+#> │ phosphorus_fluxes      │ OGM_pop_swi   │ POP SWI flux          │ -0.016 │-0.00384│-0.00576│-8.09e-05│ 0.00477│ ok         │
+#> │ phosphorus_fluxes      │ PHS_frp_dsf   │ FRP SWI flux          │ 0.00064│ 0.00188│ 0.00386│ 0.0144  │ 0.0038 │ ok         │
+#> │ phyto_biomass          │ PHY_cyano     │ Cyanobacteria         │ 0.03   │ 0.0311 │ 0.0904 │ 0.947   │ 0.135  │ ok         │
+#> │ phyto_biomass          │ PHY_diatom    │ Diatoms               │ 0.03   │ 0.0303 │ 0.057  │ 0.911   │ 0.102  │ ok         │
+#> │ phyto_biomass          │ PHY_green     │ Greens                │ 0.515  │   10   │ 18.2   │ 47.6    │ 15.2   │ ok         │
+#> │ phyto_biomass          │ PHY_tchla     │ Total chl-a (ug/L)    │ 0.241  │ 3.05   │ 5.52   │ 14.3    │ 4.57   │ ok         │
+#> │ phyto_biomass          │ PHY_tphy      │Total phyto (mmol C/m3)│ 0.85   │ 10.2   │ 18.4   │ 47.8    │ 15.2   │ ok         │
+#> │ phyto_stoichiometry    │ PHY_cyano_NtoP│ Cyano N:P             │ 6.41   │ 18.2   │ 19.1   │ 34.2    │ 7.26   │ ok         │
+#> │ phyto_stoichiometry    │PHY_diatom_NtoP│ Diatom N:P            │ 9.79   │ 20.9   │ 20.5   │ 32.7    │ 4.03   │ ok         │
+#> │ phyto_stoichiometry    │ PHY_green_NtoP│ Green N:P             │ 6.22   │ 18.6   │ 22.6   │   40    │ 9.74   │ ok         │
+#> │ phyto_limitation       │ PHY_cyano_fI  │ Cyano fI              │ 0.0418 │ 0.168  │ 0.158  │ 0.226   │ 0.0442 │ ok         │
+#> │ phyto_limitation       │ PHY_cyano_fNit│ Cyano fN              │    0   │ 0.194  │ 0.212  │ 0.606   │ 0.141  │ ok         │
+#> │ phyto_limitation       │ PHY_cyano_fPho│ Cyano fP              │    0   │ 0.313  │ 0.348  │ 0.901   │ 0.278  │ ok         │
+#> │ phyto_limitation       │ PHY_cyano_fT  │ Cyano fT              │ 0.561  │ 0.895  │ 0.862  │ 1.06    │ 0.142  │ ok         │
+#> │ phyto_limitation       │ PHY_diatom_fI │ Diatom fI             │ 0.0866 │ 0.246  │ 0.236  │ 0.312   │ 0.0514 │ ok         │
+#> │ phyto_limitation       │PHY_diatom_fNit│ Diatom fN             │    0   │ 0.149  │ 0.147  │ 0.445   │ 0.106  │ ok         │
+#> │ phyto_limitation       │PHY_diatom_fPho│ Diatom fP             │    0   │ 0.0814 │ 0.159  │ 0.906   │ 0.243  │ ok         │
+#> │ phyto_limitation       │ PHY_diatom_fT │ Diatom fT             │    1   │    1   │    1   │    1    │    0   │ ok         │
+#> │ phyto_limitation       │ PHY_green_fI  │ Green fI              │ 0.0418 │ 0.168  │ 0.158  │ 0.226   │ 0.0442 │ ok         │
+#> │ phyto_limitation       │ PHY_green_fNit│ Green fN              │    0   │ 0.506  │ 0.52   │ 0.772   │ 0.159  │ ok         │
+#> │ phyto_limitation       │ PHY_green_fPho│ Green fP              │    0   │ 0.49   │ 0.435  │ 0.931   │ 0.26   │ ok         │
+#> │ phyto_limitation       │ PHY_green_fT  │ Green fT              │    1   │    1   │    1   │    1    │    0   │ ok         │
+#> │ phyto_fluxes           │ PHY_gpp       │ GPP                   │    0   │ 0.243  │ 0.396  │ 1.88    │ 0.408  │ ok         │
+#> │ phyto_fluxes           │ PHY_ncp       │ NCP                   │ -0.0661│ 0.142  │ 0.275  │ 1.74    │ 0.363  │ ok         │
+#> │ phyto_fluxes           │ PHY_set       │ Sedimentation         │ -1.56  │ -0.273 │ -0.503 │ -0.0584 │ 0.398  │ ok         │
+#> │ phyto_fluxes           │ PHY_upt_nh4   │ NH4 uptake            │    0   │ 0.00534│ 0.00768│ 0.129   │ 0.0114 │ ok         │
+#> │ phyto_fluxes           │ PHY_upt_no3   │ NO3 uptake            │    0   │ 0.003  │ 0.0101 │ 0.362   │ 0.029  │ ok         │
+#> │ phyto_fluxes           │ PHY_upt_po4   │ PO4 uptake            │    0   │0.000319│0.000489│ 0.0171  │ 0.0011 │ ok         │
+#> └────────────────────────┴───────────────┴───────────────────────┴────────┴────────┴────────┴─────────┴────────┴────────────┘
 ```

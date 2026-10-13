@@ -3,7 +3,7 @@
 Scans all releases of `repo` and returns every Simstrat-AED version that
 has a binary attached, along with which AEME release (package version)
 and platform each one belongs to. Mirrors
-[`list_simstrat_aed2_versions()`](https://limnotrack.com/reference/list_simstrat_aed2_versions.md).
+[`list_simstrat_aed2_versions()`](https://limnotrack.com/AEME/reference/list_simstrat_aed2_versions.md).
 
 ## Usage
 

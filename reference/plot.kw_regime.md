@@ -14,7 +14,7 @@ plot(x, ...)
 - x:
 
   an object of class `kw_regime` (see
-  [`suggest_kw_regime()`](https://limnotrack.com/reference/suggest_kw_regime.md)).
+  [`suggest_kw_regime()`](https://limnotrack.com/AEME/reference/suggest_kw_regime.md)).
 
 - ...:
 

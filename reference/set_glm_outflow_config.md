@@ -3,10 +3,10 @@
 Rewrites the `&outflow` block of a GLM nml file with per-outlet
 withdrawal settings and block-level options, validated against GLM's own
 rules (see `src/glm_init.c` in the GLM source).
-[`set_glm_outflows()`](https://limnotrack.com/reference/set_glm_outflows.md)
+[`set_glm_outflows()`](https://limnotrack.com/AEME/reference/set_glm_outflows.md)
 is the thin writer
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) uses
-and only distinguishes fixed vs floating outlets; this function
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+uses and only distinguishes fixed vs floating outlets; this function
 additionally exposes adaptive (temperature-targeting) outlets, submerged
 (type 6) outlets, per-outlet critical-withdrawal thresholds,
 target-withdrawal-temperature forcing, bed seepage and weir geometry.
@@ -173,8 +173,9 @@ invisibly, the updated nml list (also written to `glm_file`).
 Only the nml is updated - no outflow forcing CSVs are created or
 modified. Point each outlet's `file` at a CSV you have already written
 (for example with
-[`set_glm_outflows()`](https://limnotrack.com/reference/set_glm_outflows.md)
-or [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)).
+[`set_glm_outflows()`](https://limnotrack.com/AEME/reference/set_glm_outflows.md)
+or
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)).
 Keys already present in the `&outflow` block that you do not set here
 are left untouched.
 
@@ -189,8 +190,8 @@ so `elev` is converted with `surface_elev - elev` and must satisfy
 
 ## See also
 
-[`set_glm_outflows()`](https://limnotrack.com/reference/set_glm_outflows.md),
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+[`set_glm_outflows()`](https://limnotrack.com/AEME/reference/set_glm_outflows.md),
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
 
 ## Examples
 

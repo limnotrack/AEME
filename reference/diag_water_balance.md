@@ -8,7 +8,7 @@ Reports two independent drift signals:
 
 - `sim_drift_m_per_yr` - model-only: slope of the raw simulated
   `LKE_lvlwtr` series itself
-  ([`get_var`](https://limnotrack.com/reference/get_var.md) with
+  ([`get_var`](https://limnotrack.com/AEME/reference/get_var.md) with
   `use_obs = FALSE`, i.e. referenced to the hypsography's own zero, not
   any observation-derived elevation offset) against time, over every
   simulated day in the post-spin-up window. Available for every lake
@@ -33,12 +33,12 @@ diag_water_balance(
 - aeme:
 
   Aeme object; already built and run for `model` (see
-  [`build_aeme`](https://limnotrack.com/reference/build_aeme.md)/[`run_aeme`](https://limnotrack.com/reference/run_aeme.md)).
+  [`build_aeme`](https://limnotrack.com/AEME/reference/build_aeme.md)/[`run_aeme`](https://limnotrack.com/AEME/reference/run_aeme.md)).
 
 - model:
 
   character; single model code to diagnose (see
-  [`check_model`](https://limnotrack.com/reference/check_model.md)).
+  [`check_model`](https://limnotrack.com/AEME/reference/check_model.md)).
 
 - drift_ok_m_per_yr:
 

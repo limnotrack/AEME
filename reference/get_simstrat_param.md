@@ -1,7 +1,7 @@
 # Get one or more parameter values from a Simstrat-AED2 `simstrat.par` file
 
 Companion to
-[`set_simstrat_param()`](https://limnotrack.com/reference/set_simstrat_param.md)
+[`set_simstrat_param()`](https://limnotrack.com/AEME/reference/set_simstrat_param.md)
 for reading current values without needing an `aeme` object.
 
 ## Usage

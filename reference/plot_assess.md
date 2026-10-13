@@ -1,8 +1,8 @@
 # Plot model performance metrics
 
 Visualise the model performance statistics returned by
-[`assess_aeme`](https://limnotrack.com/reference/assess_aeme.md). Four
-complementary views are available via `type`:
+[`assess_aeme`](https://limnotrack.com/AEME/reference/assess_aeme.md).
+Four complementary views are available via `type`:
 
 - `"dot"` - Cleveland dot plot, one facet per metric with a free x-axis,
   points coloured by model. The general-purpose default: it keeps
@@ -71,15 +71,15 @@ A ggplot2 object.
 ## Details
 
 `"dot"` and `"heatmap"` are built from
-[`assess_aeme`](https://limnotrack.com/reference/assess_aeme.md) output;
-`"taylor"` and `"target"` are computed from the paired observed/modelled
-values returned by
-[`get_var`](https://limnotrack.com/reference/get_var.md).
+[`assess_aeme`](https://limnotrack.com/AEME/reference/assess_aeme.md)
+output; `"taylor"` and `"target"` are computed from the paired
+observed/modelled values returned by
+[`get_var`](https://limnotrack.com/AEME/reference/get_var.md).
 
 ## See also
 
-[`assess_aeme`](https://limnotrack.com/reference/assess_aeme.md) for the
-underlying statistics.
+[`assess_aeme`](https://limnotrack.com/AEME/reference/assess_aeme.md)
+for the underlying statistics.
 
 ## Examples
 

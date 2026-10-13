@@ -2,7 +2,7 @@
 
 Reads Simstrat's own `<var>_out.dat` text files straight from the
 simulation's output directory, returning the same output list as
-[`read_simstrat_output`](https://limnotrack.com/reference/read_simstrat_output.md)
+[`read_simstrat_output`](https://limnotrack.com/AEME/reference/read_simstrat_output.md)
 does from the consolidated `output.nc` – same keys, same depth grid,
 same unit conversions – without going through netCDF at all.
 
@@ -60,7 +60,7 @@ read_simstrat_dat(
   logical; also load every other variable present in the output
   directory beyond the declared `vars_sim` set. Default `FALSE` – the
   opposite of
-  [`read_simstrat_output`](https://limnotrack.com/reference/read_simstrat_output.md)'s
+  [`read_simstrat_output`](https://limnotrack.com/AEME/reference/read_simstrat_output.md)'s
   default, because loading every variable means reading every file,
   which is the cost this function exists to avoid.
 
@@ -82,7 +82,7 @@ read_simstrat_dat(
   `"simstrat_aed2"` (default) or `"simstrat_aed"`. Selects the matching
   `key_naming` column for variable-name translation – the netCDF file
   format itself (produced by
-  [`write_simstrat_nc`](https://limnotrack.com/reference/write_simstrat_nc.md))
+  [`write_simstrat_nc`](https://limnotrack.com/AEME/reference/write_simstrat_nc.md))
   is identical either way.
 
 - config_file:
@@ -105,9 +105,9 @@ read_simstrat_dat(
 ## Value
 
 List with AEME output variables, classed as for
-[`read_simstrat_output`](https://limnotrack.com/reference/read_simstrat_output.md),
+[`read_simstrat_output`](https://limnotrack.com/AEME/reference/read_simstrat_output.md),
 or a `model_output_error` (see
-[`is_model_error`](https://limnotrack.com/reference/is_model_error.md))
+[`is_model_error`](https://limnotrack.com/AEME/reference/is_model_error.md))
 if the output directory holds no readable output.
 
 ## Details
@@ -118,7 +118,7 @@ Reading the text directly avoids both the netCDF write (which serialises
 *every* output variable, compressed) and the netCDF read, and only the
 files actually asked for are parsed: with `load_all = FALSE` (the
 default here, unlike
-[`read_simstrat_output`](https://limnotrack.com/reference/read_simstrat_output.md))
+[`read_simstrat_output`](https://limnotrack.com/AEME/reference/read_simstrat_output.md))
 a single-variable read touches one `<var>_out.dat` file plus the small
 `WaterH_out.dat`, however many variables the run wrote. When
 `date_index`/`dates` select a window of the simulation, only rows up to
@@ -130,20 +130,20 @@ the `.dat` files are otherwise converted to – depth profiles share one
 `z` grid, taken from the first depth-varying file. AED sediment-zone
 output (`<var>_zone_out.dat`) is on its own zone axis instead, and is
 returned as an
-[`new_grouped_var`](https://limnotrack.com/reference/new_grouped_var.md)
+[`new_grouped_var`](https://limnotrack.com/AEME/reference/new_grouped_var.md)
 object, again matching
-[`read_simstrat_output`](https://limnotrack.com/reference/read_simstrat_output.md).
+[`read_simstrat_output`](https://limnotrack.com/AEME/reference/read_simstrat_output.md).
 
 Note that this needs the `.dat` files to still be there: they are kept
 by default, but
-[`write_simstrat_nc`](https://limnotrack.com/reference/write_simstrat_nc.md)`(remove_dat = TRUE)`
+[`write_simstrat_nc`](https://limnotrack.com/AEME/reference/write_simstrat_nc.md)`(remove_dat = TRUE)`
 deletes them once they have been written to `output.nc`.
 
 ## See also
 
-[`read_simstrat_output`](https://limnotrack.com/reference/read_simstrat_output.md)
+[`read_simstrat_output`](https://limnotrack.com/AEME/reference/read_simstrat_output.md)
 to read the same output back from `output.nc`,
-[`write_simstrat_nc`](https://limnotrack.com/reference/write_simstrat_nc.md)
+[`write_simstrat_nc`](https://limnotrack.com/AEME/reference/write_simstrat_nc.md)
 to produce that file, and
-[`read_simstrat_dat_file`](https://limnotrack.com/reference/read_simstrat_dat_file.md)
+[`read_simstrat_dat_file`](https://limnotrack.com/AEME/reference/read_simstrat_dat_file.md)
 for the single-file primitive.

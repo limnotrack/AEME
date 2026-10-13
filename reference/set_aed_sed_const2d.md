@@ -43,8 +43,8 @@ Invisible NULL. Updates the aed.nml file in the glm_aed model directory.
 Any per-zone flux (`fsed_oxy` / `fsed_amm` / `fsed_nit` / `fsed_frp`)
 that is already present in `parameters(aeme)` as an
 `aed_sed_const2d/...` row is left untouched - it is applied later by
-[`input_model_parameters()`](https://limnotrack.com/reference/input_model_parameters.md).
+[`input_model_parameters()`](https://limnotrack.com/AEME/reference/input_model_parameters.md).
 The zone-flux estimation
-([`estimate_zone_fluxes()`](https://limnotrack.com/reference/estimate_zone_fluxes.md))
+([`estimate_zone_fluxes()`](https://limnotrack.com/AEME/reference/estimate_zone_fluxes.md))
 still runs so its diagnostic tables are printed, but its values for
 those keys are not written.

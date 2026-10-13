@@ -186,7 +186,7 @@ aeme
 
 #### Model controls
 
-[`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md)
+[`get_model_controls()`](https://limnotrack.com/AEME/reference/get_model_controls.md)
 returns a data frame that governs which biogeochemical variables are
 simulated and how they are initialised. Pass `use_bgc = TRUE` to enable
 the full suite of water-quality variables.
@@ -206,7 +206,7 @@ head(model_controls)
 ```
 
 You can narrow the set of simulated variables using
-[`set_vars_sim()`](https://limnotrack.com/reference/set_vars_sim.md):
+[`set_vars_sim()`](https://limnotrack.com/AEME/reference/set_vars_sim.md):
 
 ``` r
 
@@ -239,7 +239,7 @@ We will build the model in a directory called `aeme`,
 path <- "aeme"
 ```
 
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
 translates the AEME object into all configuration files required by
 GLM-AED. Setting `use_bgc = TRUE` writes the `aed/aed.nml` file and
 supporting CSV parameter files for phytoplankton, zooplankton, and
@@ -262,7 +262,7 @@ aeme <- build_aeme(
 The configuration files are stored in the `configuration` slot of the
 `aeme` object. For GLM-AED the slot contains the parsed GLM hydrodynamic
 nml (`glm3.nml` or `glm4.nml`, whichever version was built – see
-[`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md))
+[`find_glm_nml()`](https://limnotrack.com/AEME/reference/find_glm_nml.md))
 and `aed/aed.nml`:
 
 ``` r
@@ -279,7 +279,7 @@ names(cfg[["glm_aed"]])
 #### Selecting AED biogeochemical modules
 
 By default, all AED modules are enabled.
-[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)
+[`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md)
 lets you choose a subset — for example, running hydrodynamics coupled
 with oxygen and nutrient cycling *only*, without phytoplankton or
 zooplankton:
@@ -331,11 +331,12 @@ aeme <- set_glm_aed_models(
 )
 ```
 
-[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)
+[`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md)
 works on a model that has already been built. To choose the modules (and
 which other AED setup steps run) as part of the build itself, pass
-[`aed_options()`](https://limnotrack.com/reference/aed_options.md) to
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md):
+[`aed_options()`](https://limnotrack.com/AEME/reference/aed_options.md)
+to
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md):
 
 ``` r
 
@@ -358,13 +359,13 @@ aeme <- build_aeme(
 ```
 
 By default
-[`aed_options()`](https://limnotrack.com/reference/aed_options.md)
+[`aed_options()`](https://limnotrack.com/AEME/reference/aed_options.md)
 leaves every step on, so a plain `build_aeme(use_bgc = TRUE)` is
 unchanged. Each step is also available on its own after the build:
-[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md),
-[`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
+[`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md),
+[`set_aed_sed_const2d()`](https://limnotrack.com/AEME/reference/set_aed_sed_const2d.md)
 and
-[`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md).
+[`set_aed_totals()`](https://limnotrack.com/AEME/reference/set_aed_totals.md).
 
 ------------------------------------------------------------------------
 
@@ -377,14 +378,14 @@ so it requires `aed_oxygen` to also be active; if it is not, GLM aborts
 at runtime with an “Undefined variable” error rather than silently
 ignoring the missing link.
 
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
 resolves this automatically: when you set `simulate = TRUE` for a
 biogeochemical variable via `model_controls`, `initialise_aed()`
 determines which module that variable belongs to, then walks the
 dependency graph below to a fixed point, adding every module that
 dependency chain requires — you never need to enable a module’s
 prerequisites by hand. The one place this *isn’t* automatic is
-[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)
+[`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md)
 (used above), which sets the active-module list exactly as given, so it
 is up to you to include the full chain if you call it directly.
 (`aed_options(modules = )` adds the prerequisites for you unless you set
@@ -434,7 +435,7 @@ For example, requesting only `NIT_tn` (total nitrogen) in
 `model_controls` looks like a single-variable request, but because it is
 a diagnostic total computed by `aed_totals`, and `aed_totals` in turn
 depends on nitrogen, phosphorus, organic matter, and phytoplankton,
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
 activates the following module set automatically:
 
 ``` r
@@ -477,7 +478,7 @@ periods of anoxia, and therefore have higher sediment oxygen demand
 
 ##### Estimating zone boundaries from the hypsograph
 
-[`estimate_sed_zones()`](https://limnotrack.com/reference/estimate_sed_zones.md)
+[`estimate_sed_zones()`](https://limnotrack.com/AEME/reference/estimate_sed_zones.md)
 automatically partitions the hypsograph into an appropriate number of
 zones by detecting natural breakpoints in the depth–area relationship:
 
@@ -494,7 +495,7 @@ the lake bed (metres). The last value equals the maximum lake depth.
 
 ##### Generating GLM sediment parameters
 
-[`glm_sed_params()`](https://limnotrack.com/reference/glm_sed_params.md)
+[`glm_sed_params()`](https://limnotrack.com/AEME/reference/glm_sed_params.md)
 builds a parameters data frame (compatible with the AEME `parameters`
 slot) for the GLM sediment module:
 
@@ -550,7 +551,8 @@ sed_params
 
 Add these parameters to the `aeme` object so that they are applied
 during the next
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) call:
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+call:
 
 ``` r
 
@@ -616,7 +618,7 @@ sed_pars
 
 ##### Estimating depth-varying sediment fluxes
 
-[`estimate_zone_fluxes()`](https://limnotrack.com/reference/estimate_zone_fluxes.md)
+[`estimate_zone_fluxes()`](https://limnotrack.com/AEME/reference/estimate_zone_fluxes.md)
 scales literature-baseline sediment fluxes to each zone according to its
 mean depth and bed-area fraction (Tier 1). When observed near-bed
 concentrations are available in the `aeme` object, an optional Tier 2
@@ -653,7 +655,7 @@ fluxes$zone_summary
 
 ##### Applying sediment fluxes to the AED configuration
 
-[`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
+[`set_aed_sed_const2d()`](https://limnotrack.com/AEME/reference/set_aed_sed_const2d.md)
 writes the zone-specific fluxes directly into the `aed/aed.nml` file and
 updates the `aeme` object:
 
@@ -672,7 +674,7 @@ aeme <- set_aed_sed_const2d(
 ```
 
 After calling
-[`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md),
+[`set_aed_sed_const2d()`](https://limnotrack.com/AEME/reference/set_aed_sed_const2d.md),
 you can confirm the written parameters:
 
 ``` r
@@ -700,7 +702,7 @@ get_aed_sed_const2d_param(aeme = aeme, path = path) |>
 
 #### Visualising the model configuration
 
-[`plot_glm_config()`](https://limnotrack.com/reference/plot_glm_config.md)
+[`plot_glm_config()`](https://limnotrack.com/AEME/reference/plot_glm_config.md)
 generates an interactive HTML visualisation of the complete GLM-AED
 setup, including the hypsograph, sediment zones, inflow/outflow
 positions, active AED modules, and key parameter values. If called
@@ -743,7 +745,7 @@ aeme <- run_aeme(aeme = aeme)
 
 #### Temperature and stratification
 
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md)
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
 produces a filled contour plot for depth-varying variables
 (e.g. temperature) and a time-series line plot for scalar variables:
 
@@ -784,10 +786,276 @@ Simulated total chlorophyll-a (µg L⁻¹) time series.
 
 ------------------------------------------------------------------------
 
+### Sediment, flux and diagnostic output
+
+GLM-AED writes much more than the variables listed in `model_controls`:
+sediment temperature and heat flux, sediment–water fluxes (lake-wide and
+for each sediment zone), sediment pools and AED diagnostics. AEME reads
+all of it from `output.nc`, so nothing needs to be switched on before
+the run. It is stored in the model output beside the standard variables:
+
+- ordinary `(time)` and `(depth, time)` variables sit alongside
+  `HYD_temp` and the rest;
+- variables with other dimensions (sediment zones, sediment layers) are
+  kept as labelled `aeme_grouped_var` objects in the `sediment` and
+  `diag` sub-lists, so a zone is never mistaken for a depth.
+
+#### Finding the variables
+
+[`get_output_vars()`](https://limnotrack.com/AEME/reference/get_output_vars.md)
+lists what is available. The `group` argument picks the sub-list:
+
+``` r
+
+get_output_vars(aeme, model = "glm_aed", group = "sediment") |>
+  head(12)
+#>                                     sediment zone area 
+#>                                                "zarea" 
+#>                                   sediment temperature 
+#>                                             "sed_temp" 
+#>                               sediment-water heat flux 
+#>                                         "sed_heatflux" 
+#>                           zone water temp (sed top BC) 
+#>                                           "zone_ztemp" 
+#>                                    sediment node depth 
+#>                                      "sed_layer_depth" 
+#>           flux rate of oxygen across the swi (by zone) 
+#>                                       "SDF_Fsed_oxy_Z" 
+#>              flux rate of amm across the swi (by zone) 
+#>                                       "SDF_Fsed_amm_Z" 
+#>              flux rate of nit across the swi (by zone) 
+#>                                       "SDF_Fsed_nit_Z" 
+#>              flux rate of frp across the swi (by zone) 
+#>                                       "SDF_Fsed_frp_Z" 
+#> net flux across the sediment-water interface (by zone) 
+#>                                            "NCS_swi_Z" 
+#>                     cum. swi position change (by zone) 
+#>                                         "NCS_swi_dz_Z" 
+#>                            resuspension rate (by zone) 
+#>                                          "NCS_resus_Z"
+```
+
+These variables are stored under their raw GLM-AED netCDF names. The
+`glm_extra_vars` table gives each one an AEME name, a label and units,
+and either name works anywhere AEME looks up a variable
+([`get_var()`](https://limnotrack.com/AEME/reference/get_var.md),
+[`check_var_in_output()`](https://limnotrack.com/AEME/reference/check_var_in_output.md),
+…). `SED_*` are the sediment-zone variables and `SEDL_*` the matching
+lake-wide series:
+
+``` r
+
+glm_extra_vars |>
+  dplyr::filter(group == "sediment") |>
+  dplyr::select(var_aeme, glm_aed, units, name_text) |>
+  head(12)
+#>           var_aeme         glm_aed        units
+#> 1        SED_zarea           zarea           m2
+#> 2         SED_temp        sed_temp      celsius
+#> 3        SED_hflux    sed_heatflux         W/m2
+#> 4        SED_ztemp      zone_ztemp      celsius
+#> 5  SED_layer_depth sed_layer_depth       meters
+#> 6     SED_Fsed_oxy  SDF_Fsed_oxy_Z mmol O2/m2/d
+#> 7     SED_Fsed_amm  SDF_Fsed_amm_Z  mmol N/m2/d
+#> 8     SED_Fsed_nit  SDF_Fsed_nit_Z  mmol N/m2/d
+#> 9     SED_Fsed_frp  SDF_Fsed_frp_Z  mmol P/m2/d
+#> 10     SED_ncs_swi       NCS_swi_Z       g/m2/d
+#> 11  SED_ncs_swi_dz    NCS_swi_dz_Z          m/d
+#> 12   SED_ncs_resus     NCS_resus_Z       g/m2/s
+#>                                                 name_text
+#> 1                                      sediment zone area
+#> 2                                    sediment temperature
+#> 3                                sediment-water heat flux
+#> 4                            zone water temp (sed top BC)
+#> 5                                     sediment node depth
+#> 6            flux rate of oxygen across the swi (by zone)
+#> 7               flux rate of amm across the swi (by zone)
+#> 8               flux rate of nit across the swi (by zone)
+#> 9               flux rate of frp across the swi (by zone)
+#> 10 net flux across the sediment-water interface (by zone)
+#> 11                     cum. swi position change (by zone)
+#> 12                            resuspension rate (by zone)
+```
+
+#### Sediment temperature
+
+`SED_temp` is the temperature of the sediment layers beneath each zone.
+It has three dimensions (sediment layer, zone and time), so
+[`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) returns
+it in long format, one row per layer, zone and date. Use `zone` and
+`sed_layer` to subset it. Zones follow the GLM order (1 is the deepest)
+and layer 1 is the shallowest. It is only written when GLM’s sediment
+heat model is on (`sed_heat_model = 2` in the GLM nml). If your run does
+not have it, the chunks below that use it are skipped.
+
+``` r
+
+sed_temp <- get_var(aeme, model = "glm_aed", var_sim = "SED_temp")
+n_layer  <- max(sed_temp$sed_layers)
+
+sed_temp |>
+  dplyr::filter(sed_layers %in% c(1, n_layer)) |>
+  dplyr::mutate(layer = ifelse(sed_layers == 1, "Top layer", "Bottom layer"),
+                zone  = factor(nzones)) |>
+  ggplot(aes(Date, value, colour = zone)) +
+  geom_line() +
+  facet_wrap(~layer, ncol = 1) +
+  labs(x = NULL, y = "Sediment temperature (°C)", colour = "Zone") +
+  theme_bw()
+```
+
+![Sediment temperature (°C) in the top and bottom sediment layer of each
+zone.](glm-aed_files/figure-html/sed-temp-1.png)
+
+Sediment temperature (°C) in the top and bottom sediment layer of each
+zone.
+
+A zone that has no area in GLM’s output for the simulated period is
+returned as `NA`, so it is missing from the plot above (zone 3 in this
+lake). The same call with `zone` and `sed_layer` returns a single
+series, for example the top layer of the deepest zone:
+
+``` r
+
+get_var(aeme, model = "glm_aed", var_sim = "SED_temp",
+        zone = 1, sed_layer = 1) |>
+  head(3)
+#>   sed_layers nzones       Date    value  var_sim   Model
+#> 1          1      1 2020-08-01 9.933457 SED_temp GLM-AED
+#> 2          1      1 2020-08-02 9.887445 SED_temp GLM-AED
+#> 3          1      1 2020-08-03 9.846911 SED_temp GLM-AED
+```
+
+#### Sediment–water fluxes by zone
+
+Fluxes across the sediment–water interface are written for each zone as
+well as for the whole lake. Zone variables (`SED_Fsed_oxy`,
+`SED_Fsed_amm`, …) have a `nzones` column:
+
+``` r
+
+get_var(aeme, model = "glm_aed", var_sim = "SED_Fsed_oxy") |>
+  dplyr::mutate(zone = factor(nzones)) |>
+  ggplot(aes(Date, value, colour = zone)) +
+  geom_line() +
+  labs(x = NULL, y = "Sediment oxygen flux (mmol O2 m-2 d-1)",
+       colour = "Zone") +
+  theme_bw()
+```
+
+![Simulated sediment oxygen flux (mmol O2 m⁻² d⁻¹) in each sediment
+zone.](glm-aed_files/figure-html/sed-flux-zone-1.png)
+
+Simulated sediment oxygen flux (mmol O2 m⁻² d⁻¹) in each sediment zone.
+
+#### Choosing what to keep
+
+Keeping every sediment and diagnostic variable is convenient for
+exploring a single run, but it is wasteful when the model is run many
+times, as in a sensitivity analysis, calibration or ensemble. Each run
+stores several MB of extra output, and most of it is never looked at.
+[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) (and
+[`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md),
+[`load_output()`](https://limnotrack.com/AEME/reference/load_output.md))
+take an `extra_vars` argument to choose what is read from `output.nc`.
+Variables that are not requested are never read.
+
+| `extra_vars`                    | What is kept                              |
+|---------------------------------|-------------------------------------------|
+| `NULL` (default)                | Everything, as above                      |
+| `"none"`                        | No extra variables, just the standard set |
+| `c("SED_temp", "SED_Fsed_oxy")` | Only these. AEME or raw netCDF names      |
+| `"sediment"` or `"diag"`        | Every variable stored in that sub-list    |
+
+Two further arguments reduce what is kept for the variables you do
+select. `sed_layers` keeps only some sediment layers of `SED_temp`, and
+`zone_summary = TRUE` adds a lake-wide series for each sediment-zone
+variable. The series is the mean over zones, weighted by the
+(time-varying) area of each zone, and is stored as `<name>_lake`:
+
+``` r
+
+aeme_sel <- run_aeme(
+  aeme         = aeme,
+  extra_vars   = c("SED_temp", "SED_Fsed_oxy", "SED_Fsed_amm"),
+  sed_layers   = 1:3,
+  zone_summary = TRUE
+)
+
+size_mb <- function(x) {
+  format(object.size(output(x)$ens_001$glm_aed), units = "MB")
+}
+c(all_extras = size_mb(aeme), selected = size_mb(aeme_sel))
+#> all_extras   selected 
+#>    "18 Mb"   "3.4 Mb"
+```
+
+The standard output is identical between the two runs. Only the extras
+differ.
+
+``` r
+
+identical(output(aeme)$ens_001$glm_aed$HYD_temp,
+          output(aeme_sel)$ens_001$glm_aed$HYD_temp)
+#> [1] TRUE
+names(output(aeme_sel)$ens_001$glm_aed$sediment)
+#> [1] "sed_temp"            "SDF_Fsed_oxy_Z"      "SDF_Fsed_amm_Z"     
+#> [4] "SDF_Fsed_oxy_Z_lake" "SDF_Fsed_amm_Z_lake"
+```
+
+The lake-wide series is a single time series, handy as a calibration
+target or for comparing with whole-lake estimates of sediment oxygen
+demand:
+
+``` r
+
+get_var(aeme_sel, model = "glm_aed", var_sim = "SED_Fsed_oxy_lake") |>
+  ggplot(aes(Date, value)) +
+  geom_line() +
+  labs(x = NULL, y = "Sediment oxygen flux (mmol O2 m-2 d-1)") +
+  theme_bw()
+```
+
+![Zone-area weighted lake-wide sediment oxygen flux (mmol O2 m⁻²
+d⁻¹).](glm-aed_files/figure-html/sed-flux-lake-1.png)
+
+Zone-area weighted lake-wide sediment oxygen flux (mmol O2 m⁻² d⁻¹).
+
+A name ending `_lake` can also be requested on its own, for example
+`extra_vars = "SED_Fsed_oxy_lake"`. AEME then builds that series and
+does not keep the per-zone array behind it.
+
+#### Using these variables in ensembles and calibration
+
+[`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md)
+passes `extra_vars`, `sed_layers`, `zone_summary` and `keep_diag` to
+every member, so a sensitivity analysis or calibration run with
+**aemetools** can ask for just the series it needs:
+
+``` r
+
+aeme <- run_aeme_ensemble(
+  aeme,
+  model        = "glm_aed",
+  param_sets   = param_sets,     # e.g. sampled with aemetools
+  extra_vars   = c("SED_temp", "SED_Fsed_oxy_lake"),
+  sed_layers   = 1
+)
+
+# Member 3's top-layer sediment temperature, in the deepest zone
+get_var(aeme, model = "glm_aed", var_sim = "SED_temp",
+        zone = 1, sed_layer = 1, ens_n = 3)
+```
+
+The sediment parameters estimated earlier (`sed_temp_mean`, the zone
+fluxes) are the natural ones to vary when these outputs are the target.
+
+------------------------------------------------------------------------
+
 ### Assessing model performance
 
 When observations are stored in the `aeme` object,
-[`assess_model()`](https://limnotrack.com/reference/assess_aeme.md)
+[`assess_model()`](https://limnotrack.com/AEME/reference/assess_aeme.md)
 computes a suite of skill metrics (RMSE, NSE, bias, Pearson *r*, etc.)
 for each simulated variable:
 
@@ -837,7 +1105,7 @@ skill
 
 #### Comprehensive diagnostic report
 
-[`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)
+[`run_glm_aed_diagnostics()`](https://limnotrack.com/AEME/reference/run_glm_aed_diagnostics.md)
 reads the model output and produces a structured diagnostic report — a
 summary table and a set of grouped plots — that helps you quickly
 identify unrealistic values or mass-balance issues:
@@ -884,7 +1152,7 @@ diag_proc <- run_glm_aed_diagnostics(
 
 #### Oxygen diagnostic page
 
-[`plot_glm_diagnostics()`](https://limnotrack.com/reference/plot_glm_diagnostics.md)
+[`plot_glm_diagnostics()`](https://limnotrack.com/AEME/reference/plot_glm_diagnostics.md)
 provides a focused four-page diagnostic panel specifically designed to
 debug anomalous dissolved oxygen behaviour — a common challenge when
 coupling hydrodynamics with biogeochemistry:
@@ -928,7 +1196,7 @@ print(pages$sediment)
 ### Working with the GLM configuration directly
 
 The raw GLM hydrodynamic nml (`glm3.nml` or `glm4.nml`, resolved via
-[`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md))
+[`find_glm_nml()`](https://limnotrack.com/AEME/reference/find_glm_nml.md))
 and `aed/aed.nml` file can be read, modified, and written using the NML
 helpers bundled with AEME:
 
@@ -948,7 +1216,7 @@ aed_nml$aed_nitrogen$rnitrif   # nitrification rate
 ```
 
 For quick edits to a single parameter without loading the whole config,
-[`get_glm_param()`](https://limnotrack.com/reference/get_glm_param.md)/[`set_glm_param()`](https://limnotrack.com/reference/set_glm_param.md)
+[`get_glm_param()`](https://limnotrack.com/AEME/reference/get_glm_param.md)/[`set_glm_param()`](https://limnotrack.com/AEME/reference/set_glm_param.md)
 work directly against the nml file on disk (see
 `vignette("testing-parameters")`):
 
@@ -961,7 +1229,7 @@ set_glm_param(path_glm, Kw = 0.5, coef_mix_hyp = 0.3)
 
 #### Retrieving parameters by module
 
-[`get_aeme_parameters()`](https://limnotrack.com/reference/get_aeme_parameters.md)
+[`get_aeme_parameters()`](https://limnotrack.com/AEME/reference/get_aeme_parameters.md)
 provides a convenient way to query the AEME parameter library for all
 GLM-AED parameters belonging to a particular module:
 
@@ -1017,33 +1285,33 @@ in AEME:
     food-web simulation.
 
 2.  **Module selection** —
-    [`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)
+    [`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md)
     lets you enable or disable individual AED modules to match the
     complexity and data requirements of your application.
 
 3.  **Sediment zones** — The
-    [`estimate_sed_zones()`](https://limnotrack.com/reference/estimate_sed_zones.md)
+    [`estimate_sed_zones()`](https://limnotrack.com/AEME/reference/estimate_sed_zones.md)
     →
-    [`glm_sed_params()`](https://limnotrack.com/reference/glm_sed_params.md)
+    [`glm_sed_params()`](https://limnotrack.com/AEME/reference/glm_sed_params.md)
     →
-    [`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
+    [`set_aed_sed_const2d()`](https://limnotrack.com/AEME/reference/set_aed_sed_const2d.md)
     workflow automatically derives depth-varying sediment parameters
     from the lake hypsograph and optional near-bed observations.
 
 4.  **Configuration visualisation** —
-    [`plot_glm_config()`](https://limnotrack.com/reference/plot_glm_config.md)
+    [`plot_glm_config()`](https://limnotrack.com/AEME/reference/plot_glm_config.md)
     provides an interactive overview of the model setup.
 
 5.  **Diagnostics** —
-    [`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)
+    [`run_glm_aed_diagnostics()`](https://limnotrack.com/AEME/reference/run_glm_aed_diagnostics.md)
     and
-    [`plot_glm_diagnostics()`](https://limnotrack.com/reference/plot_glm_diagnostics.md)
+    [`plot_glm_diagnostics()`](https://limnotrack.com/AEME/reference/plot_glm_diagnostics.md)
     offer structured, automated checks for common biogeochemical issues
     (unrealistic concentrations, oxygen anomalies, excessive or
     negligible fluxes).
 
 6.  **Parameter access** —
-    [`get_aeme_parameters()`](https://limnotrack.com/reference/get_aeme_parameters.md)
+    [`get_aeme_parameters()`](https://limnotrack.com/AEME/reference/get_aeme_parameters.md)
     makes it easy to explore and modify individual model parameters for
     manual tuning or automated calibration (see the
     [aemetools](https://github.com/limnotrack/aemetools) package).

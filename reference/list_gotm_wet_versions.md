@@ -3,7 +3,7 @@
 Scans all releases of `repo` and returns every GOTM-WET version that has
 a binary attached, along with which AEME release (package version) and
 platform each one belongs to. Mirrors
-[`list_glm_versions()`](https://limnotrack.com/reference/list_glm_versions.md).
+[`list_glm_versions()`](https://limnotrack.com/AEME/reference/list_glm_versions.md).
 
 ## Usage
 

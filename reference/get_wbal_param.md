@@ -1,7 +1,7 @@
 # Get water balance parameters
 
 Retrieves the outflow parameters from an `Aeme` object, as set by
-[`set_wbal_param`](https://limnotrack.com/reference/set_wbal_param.md).
+[`set_wbal_param`](https://limnotrack.com/AEME/reference/set_wbal_param.md).
 See that function for details of how the parameters are used in the
 outflow equation.
 
@@ -41,7 +41,7 @@ water level data, then transferring them to a period without:
 
 1.  Build an `Aeme` object for a calibration period with observed water
     level data (e.g. 2010–2020) using
-    [`build_aeme`](https://limnotrack.com/reference/build_aeme.md).
+    [`build_aeme`](https://limnotrack.com/AEME/reference/build_aeme.md).
 
 2.  Run the water balance and retrieve the fitted parameters:
     `wbal_param <- get_wbal_param(aeme, model = "glm_aed")`.
@@ -50,13 +50,13 @@ water level data, then transferring them to a period without:
     water levels (e.g. 2020–2024).
 
 4.  Transfer the parameters with
-    [`set_wbal_param`](https://limnotrack.com/reference/set_wbal_param.md):
+    [`set_wbal_param`](https://limnotrack.com/AEME/reference/set_wbal_param.md):
     `aeme <- set_wbal_param(aeme, params = wbal_param, model = "glm_aed")`.
 
 5.  Build the new object with
-    [`build_aeme`](https://limnotrack.com/reference/build_aeme.md).
+    [`build_aeme`](https://limnotrack.com/AEME/reference/build_aeme.md).
 
 ## See also
 
-[`set_wbal_param`](https://limnotrack.com/reference/set_wbal_param.md),
-[`reset_wbal_param`](https://limnotrack.com/reference/reset_wbal_param.md)
+[`set_wbal_param`](https://limnotrack.com/AEME/reference/set_wbal_param.md),
+[`reset_wbal_param`](https://limnotrack.com/AEME/reference/reset_wbal_param.md)

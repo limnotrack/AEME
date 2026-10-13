@@ -14,7 +14,7 @@ as.data.frame(x, ...)
 - x:
 
   an `aeme_grouped_var` object (see
-  [`new_grouped_var()`](https://limnotrack.com/reference/new_grouped_var.md)).
+  [`new_grouped_var()`](https://limnotrack.com/AEME/reference/new_grouped_var.md)).
 
 - ...:
 

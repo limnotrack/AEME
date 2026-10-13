@@ -34,7 +34,7 @@ meteorological (and inflow) forcing to span `start - spin_up` through
 This article shows how to set the initial state with the AEME 0.4.0
 functions, how to treat the initial guess as one axis of ensemble
 uncertainty, and how to use
-[`assess_spin_up()`](https://limnotrack.com/reference/assess_spin_up.md)
+[`assess_spin_up()`](https://limnotrack.com/AEME/reference/assess_spin_up.md)
 to choose a spin-up length that is long enough and no longer.
 
 ``` r
@@ -73,7 +73,7 @@ initial profile from.
 
 ## Setting the initial state
 
-[`set_initial_conditions()`](https://limnotrack.com/reference/set_initial_conditions.md)
+[`set_initial_conditions()`](https://limnotrack.com/AEME/reference/set_initial_conditions.md)
 is the single entry point for the initial state. The generic arguments –
 `depth`, `profile`, `wq` – apply to every model; `model_init` overrides
 them for one model.
@@ -120,10 +120,10 @@ aeme <- set_initial_conditions(
 The whole specification is stored in
 `configuration(aeme)$initial_conditions` as a list with a `default`
 entry plus one entry per model. It survives a
-[`load_configuration()`](https://limnotrack.com/reference/load_configuration.md)
+[`load_configuration()`](https://limnotrack.com/AEME/reference/load_configuration.md)
 (and therefore the reload that happens at the end of
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)).
-[`get_initial_conditions()`](https://limnotrack.com/reference/get_initial_conditions.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)).
+[`get_initial_conditions()`](https://limnotrack.com/AEME/reference/get_initial_conditions.md)
 reads it back – the full spec, or one model’s *resolved* conditions with
 its overrides merged in:
 
@@ -170,9 +170,10 @@ get_initial_conditions(aeme, model = "glm_aed")    # resolved for GLM-AED
 
 If the lake has observations, `from_obs = TRUE` seeds the generic
 profile and the water-quality initials from them (via
-[`update_init()`](https://limnotrack.com/reference/update_init.md))
+[`update_init()`](https://limnotrack.com/AEME/reference/update_init.md))
 before any explicit arguments are applied – so explicit arguments still
-win. [`update_init()`](https://limnotrack.com/reference/update_init.md)
+win.
+[`update_init()`](https://limnotrack.com/AEME/reference/update_init.md)
 takes a three-month window centred on the start month, fits temperature
 and salinity against depth, and uses the window median for each
 water-quality pool.
@@ -193,7 +194,7 @@ Two things happen automatically regardless of what you set here. For
 backwards compatibility the generic `depth`/`profile` are also written
 to `input(aeme)$init_depth` / `input(aeme)$init_profile`. And when the
 lake has an observed water level at `time$start`,
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
 overrides the initial water level with that observation.
 
 ## Initial conditions as a source of uncertainty
@@ -210,12 +211,12 @@ first and then converge as spin-up dissipates the differences.
 > into the reported variables has collapsed below the accuracy I care
 > about?
 
-[`assess_spin_up()`](https://limnotrack.com/reference/assess_spin_up.md)
+[`assess_spin_up()`](https://limnotrack.com/AEME/reference/assess_spin_up.md)
 answers it by building exactly that ensemble.
 
 ## `assess_spin_up()` end to end
 
-[`assess_spin_up()`](https://limnotrack.com/reference/assess_spin_up.md)
+[`assess_spin_up()`](https://limnotrack.com/AEME/reference/assess_spin_up.md)
 builds and runs one simulation per *(spin-up length, ensemble member)*
 combination, each in its own subdirectory of `path`, with written output
 restricted to `vars`. It then extracts the modelled state at the first
@@ -316,8 +317,9 @@ size; member *i* takes element *i* of every vector. Here that is 4
 spin-up lengths × 3 members = 12 builds and runs. The baseline is
 `get_initial_conditions(aeme, model = "glm_aed")`, falling back to
 `input(aeme)$init_profile` / `model_controls$initial_wc`, so run
-[`set_initial_conditions()`](https://limnotrack.com/reference/set_initial_conditions.md)
-(or [`update_init()`](https://limnotrack.com/reference/update_init.md))
+[`set_initial_conditions()`](https://limnotrack.com/AEME/reference/set_initial_conditions.md)
+(or
+[`update_init()`](https://limnotrack.com/AEME/reference/update_init.md))
 first.
 
 ## Reading the result
@@ -354,7 +356,7 @@ res_temp$recommended
 #>       30       30
 ```
 
-[`plot_spin_up()`](https://limnotrack.com/reference/plot_spin_up.md)
+[`plot_spin_up()`](https://limnotrack.com/AEME/reference/plot_spin_up.md)
 draws the chosen metric against spin-up length, with a dashed line at
 the tolerance:
 
@@ -533,18 +535,18 @@ units) for variables that can be near zero.
 | `model` | One model per call. Different engines mix at different rates, so assess each model you intend to run. |
 
 Every *(spin-up, member)* cell is a full
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) +
-[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md), so cost is
-`length(spin_up) * n_members` runs and one subdirectory of `path` per
-cell. Restricting `vars` keeps the written output small; drop `spin_up`
-points or ensemble members if a run is too slow.
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md) +
+[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md), so
+cost is `length(spin_up) * n_members` runs and one subdirectory of
+`path` per cell. Restricting `vars` keeps the written output small; drop
+`spin_up` points or ensemble members if a run is too slow.
 
 ## Applying the result
 
 Set the spin-up you chose on the object with
-[`set_time()`](https://limnotrack.com/reference/set_time.md). `spin_up`
-is in **days** – a single number for all models, or a named list per
-model – and is stored at `time(aeme)$spin_up`:
+[`set_time()`](https://limnotrack.com/AEME/reference/set_time.md).
+`spin_up` is in **days** – a single number for all models, or a named
+list per model – and is stored at `time(aeme)$spin_up`:
 
 ``` r
 
@@ -557,18 +559,20 @@ aeme <- set_time(aeme,
 
 From then on the spin-up window is simulated but stripped from
 everything you read back:
-[`get_var()`](https://limnotrack.com/reference/get_var.md),
-[`plot_ts()`](https://limnotrack.com/reference/plot_ts.md),
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md) and
-the rest default to `remove_spin_up = TRUE`. Just make sure the forcing
-still covers `start - spin_up` through `stop`, or
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) will
-stop at `check_time()`.
+[`get_var()`](https://limnotrack.com/AEME/reference/get_var.md),
+[`plot_ts()`](https://limnotrack.com/AEME/reference/plot_ts.md),
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
+and the rest default to `remove_spin_up = TRUE`. Just make sure the
+forcing still covers `start - spin_up` through `stop`, or
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+will stop at `check_time()`.
 
 ## Scope
 
-[`assess_spin_up()`](https://limnotrack.com/reference/assess_spin_up.md)
+[`assess_spin_up()`](https://limnotrack.com/AEME/reference/assess_spin_up.md)
 perturbs only the initial state. It is not a full uncertainty or
 sensitivity analysis – for forcing and parameter sensitivity see
 `vignette("testing-parameters")` and the `aemetools` package
-(`run_aeme_param()`, `sa_aeme()`, `calib_aeme()`).
+(`run_aeme_param()`, `sa_aeme()`, `calib_aeme()`). To propagate
+parameter uncertainty through the model as an ensemble, see
+`vignette("parameter-uncertainty")`.

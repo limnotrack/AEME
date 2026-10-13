@@ -1,9 +1,10 @@
 # Set outflow data for a DYRESM-CAEDYM simulation directory
 
 Thin, `aeme`-free wrapper around the internal outflow writer used by
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md). Writes
-`<lakename>.wdr` into `path_dy` and, so the outlet set stays consistent,
-rebuilds the outlet block of `<lakename>.stg` with the supplied heights.
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md).
+Writes `<lakename>.wdr` into `path_dy` and, so the outlet set stays
+consistent, rebuilds the outlet block of `<lakename>.stg` with the
+supplied heights.
 
 ## Usage
 
@@ -28,7 +29,7 @@ set_dy_cd_outflows(
 
   named list of data.frames, one per outflow, each with a `Date` column
   and a `HYD_flow` column – see
-  [`add_outflows()`](https://limnotrack.com/reference/add_outflows.md)
+  [`add_outflows()`](https://limnotrack.com/AEME/reference/add_outflows.md)
   for the expected schema.
 
 - heights_wdr:

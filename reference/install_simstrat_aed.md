@@ -4,7 +4,7 @@ Downloads a pre-compiled Simstrat (coupled with AED, not AED2) binary
 for the current platform, verifies it against its published SHA256
 checksum, and installs it into a persistent user cache directory.
 Mirrors
-[`install_simstrat_aed2`](https://limnotrack.com/reference/install_simstrat_aed2.md)
+[`install_simstrat_aed2`](https://limnotrack.com/AEME/reference/install_simstrat_aed2.md)
 exactly, except for the release-asset filename prefix (`simstrat_aed-*`
 here vs `simstrat_aed2-*` for AED2, as built by
 `.github/workflows/build-simstrat.yaml`) and the cache subdirectory it
@@ -28,7 +28,7 @@ install_simstrat_aed(
 - version:
 
   Character. The Simstrat version to install, e.g. `"3.0.4"`. Use
-  [`list_simstrat_aed_versions()`](https://limnotrack.com/reference/list_simstrat_aed_versions.md)
+  [`list_simstrat_aed_versions()`](https://limnotrack.com/AEME/reference/list_simstrat_aed_versions.md)
   to see what's available. Defaults to `"latest"`, which resolves to the
   highest version number available for the current platform.
 
@@ -78,11 +78,11 @@ circumstances.
 
 ## See also
 
-[`list_simstrat_aed_versions()`](https://limnotrack.com/reference/list_simstrat_aed_versions.md)
+[`list_simstrat_aed_versions()`](https://limnotrack.com/AEME/reference/list_simstrat_aed_versions.md)
 to discover available versions,
-[`simstrat_aed_exe_path()`](https://limnotrack.com/reference/simstrat_aed_exe_path.md)
+[`simstrat_aed_exe_path()`](https://limnotrack.com/AEME/reference/simstrat_aed_exe_path.md)
 to locate an already-installed executable,
-[`install_simstrat_aed2()`](https://limnotrack.com/reference/install_simstrat_aed2.md)
+[`install_simstrat_aed2()`](https://limnotrack.com/AEME/reference/install_simstrat_aed2.md)
 for the AED2 installer this mirrors.
 
 ## Examples

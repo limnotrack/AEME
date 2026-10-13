@@ -2,7 +2,7 @@
 
 Attempts to match column names in an inflow data frame to AEME standard
 variable names using
-[`guess_aeme_vars()`](https://limnotrack.com/reference/guess_aeme_vars.md),
+[`guess_aeme_vars()`](https://limnotrack.com/AEME/reference/guess_aeme_vars.md),
 then detects the likely input units of each variable from its values and
 converts to the units expected by the package (GLM-AED conventions).
 

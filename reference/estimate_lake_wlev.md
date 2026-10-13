@@ -68,7 +68,7 @@ estimate_lake_wlev(
 
   Optional named numeric vector `c(C, h_inv)` of already-fitted outflow
   parameters (see
-  [`get_wbal_param`](https://limnotrack.com/reference/get_wbal_param.md)).
+  [`get_wbal_param`](https://limnotrack.com/AEME/reference/get_wbal_param.md)).
   If supplied, the optimisation step is skipped and these values are
   used directly to generate the final simulated time series. Defaults to
   `NULL`, which fits `C`/`h_inv` via

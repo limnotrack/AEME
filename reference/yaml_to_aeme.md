@@ -27,17 +27,17 @@ aeme object
 ## Details
 
 `yaml_to_aeme()` is soft-deprecated in favour of
-[`aeme_constructor()`](https://limnotrack.com/reference/aeme_constructor.md)
+[`aeme_constructor()`](https://limnotrack.com/AEME/reference/aeme_constructor.md)
 (build an `Aeme` object from your own lake data, with full validation)
-or [`new_aeme()`](https://limnotrack.com/reference/new_aeme.md) (a quick
-placeholder object to populate incrementally). It still works and will
-keep working, but new code should prefer those instead of hand-editing a
-YAML file.
+or [`new_aeme()`](https://limnotrack.com/AEME/reference/new_aeme.md) (a
+quick placeholder object to populate incrementally). It still works and
+will keep working, but new code should prefer those instead of
+hand-editing a YAML file.
 
 ## See also
 
-[`aeme_constructor()`](https://limnotrack.com/reference/aeme_constructor.md),
-[`new_aeme()`](https://limnotrack.com/reference/new_aeme.md)
+[`aeme_constructor()`](https://limnotrack.com/AEME/reference/aeme_constructor.md),
+[`new_aeme()`](https://limnotrack.com/AEME/reference/new_aeme.md)
 
 ## Examples
 

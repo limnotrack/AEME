@@ -1,9 +1,9 @@
 # Set inflow data for a GLM-AED simulation directory
 
 Thin, `aeme`-free wrapper around the internal inflow writer used by
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md). Writes
-one boundary-condition csv per inflow into `path_glm/bcs` and updates
-the `&inflow` block of the GLM nml file to point at them.
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md).
+Writes one boundary-condition csv per inflow into `path_glm/bcs` and
+updates the `&inflow` block of the GLM nml file to point at them.
 
 ## Usage
 
@@ -29,8 +29,8 @@ set_glm_inflows(
   named list of data.frames, one per inflow. Each must have a `Date`
   column plus flow/temperature/salt columns (e.g. `HYD_flow`,
   `HYD_temp`, `CHM_salt`) – see
-  [`add_inflow()`](https://limnotrack.com/reference/add_inflow.md) for
-  the expected schema.
+  [`add_inflow()`](https://limnotrack.com/AEME/reference/add_inflow.md)
+  for the expected schema.
 
 - inf_factor:
 
@@ -46,7 +46,7 @@ set_glm_inflows(
 
   filepath; path to the GLM hydrodynamic nml file to update. Defaults to
   the file found in `path_glm` via
-  [`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md).
+  [`find_glm_nml()`](https://limnotrack.com/AEME/reference/find_glm_nml.md).
 
 ## Value
 

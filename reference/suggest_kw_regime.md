@@ -103,8 +103,8 @@ Based on these, the function recommends one of `"static"`,
 
 ## See also
 
-[`plot.kw_regime()`](https://limnotrack.com/reference/plot.kw_regime.md),
-[`set_glm_param()`](https://limnotrack.com/reference/set_glm_param.md)
+[`plot.kw_regime()`](https://limnotrack.com/AEME/reference/plot.kw_regime.md),
+[`set_glm_param()`](https://limnotrack.com/AEME/reference/set_glm_param.md)
 
 ## Examples
 

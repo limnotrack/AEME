@@ -29,12 +29,12 @@ A numeric vector of station pressure in Pa
 ## Note
 
 This function is just the inverse of
-[`get_mean_sea_level_pressure`](https://limnotrack.com/reference/get_mean_sea_level_pressure.md).
+[`get_mean_sea_level_pressure`](https://limnotrack.com/AEME/reference/get_mean_sea_level_pressure.md).
 
 ## References
 
 See
-[`get_mean_sea_level_pressure`](https://limnotrack.com/reference/get_mean_sea_level_pressure.md).
+[`get_mean_sea_level_pressure`](https://limnotrack.com/AEME/reference/get_mean_sea_level_pressure.md).
 
 ## Examples
 

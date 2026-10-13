@@ -1,14 +1,14 @@
 # Minimise-oriented (loss) variants of NSE / KGE fit functions
 
-[`nse`](https://limnotrack.com/reference/nse.md),
-[`kge`](https://limnotrack.com/reference/kge.md),
-[`kge_prime`](https://limnotrack.com/reference/kge_prime.md) and
-[`log_kge`](https://limnotrack.com/reference/log_kge.md) return their
-conventional statistic, where `1` is a perfect fit and higher is better.
-`calib_aeme()` and `run_and_fit()` instead **minimise** the values
-returned by `FUN_list` entries, so these `_loss` companions return
-`-1 *` the corresponding statistic (lower is better, `-1` = perfect fit)
-and are what you pass in `FUN_list` for calibration:
+[`nse`](https://limnotrack.com/AEME/reference/nse.md),
+[`kge`](https://limnotrack.com/AEME/reference/kge.md),
+[`kge_prime`](https://limnotrack.com/AEME/reference/kge_prime.md) and
+[`log_kge`](https://limnotrack.com/AEME/reference/log_kge.md) return
+their conventional statistic, where `1` is a perfect fit and higher is
+better. `calib_aeme()` and `run_and_fit()` instead **minimise** the
+values returned by `FUN_list` entries, so these `_loss` companions
+return `-1 *` the corresponding statistic (lower is better, `-1` =
+perfect fit) and are what you pass in `FUN_list` for calibration:
 
 ## Usage
 
@@ -46,18 +46,18 @@ numeric; `-1 *` the corresponding statistic (`-1` = perfect fit, higher
 
     FUN_list <- list(HYD_temp = kge_loss, LKE_lvlwtr = rmse)
 
-[`mae`](https://limnotrack.com/reference/mae.md),
-[`rmse`](https://limnotrack.com/reference/rmse.md) and
-[`pbias`](https://limnotrack.com/reference/pbias.md) are already
+[`mae`](https://limnotrack.com/AEME/reference/mae.md),
+[`rmse`](https://limnotrack.com/AEME/reference/rmse.md) and
+[`pbias`](https://limnotrack.com/AEME/reference/pbias.md) are already
 `0`-is-best, minimise-oriented, so they have no `_loss` companion - use
 them directly.
 
 ## See also
 
-[`nse`](https://limnotrack.com/reference/nse.md),
-[`kge`](https://limnotrack.com/reference/kge.md),
-[`kge_prime`](https://limnotrack.com/reference/kge_prime.md),
-[`log_kge`](https://limnotrack.com/reference/log_kge.md) for the
+[`nse`](https://limnotrack.com/AEME/reference/nse.md),
+[`kge`](https://limnotrack.com/AEME/reference/kge.md),
+[`kge_prime`](https://limnotrack.com/AEME/reference/kge_prime.md),
+[`log_kge`](https://limnotrack.com/AEME/reference/log_kge.md) for the
 conventional (higher-is-better) statistics.
 
 ## Examples

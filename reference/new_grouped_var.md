@@ -6,7 +6,7 @@ unlike the package's usual `(time)`-vector / `(z, time)`-matrix output
 shapes. Rather than force such a variable into the depth x time
 convention – which would silently misinterpret the extra axis as depth
 or time –
-[`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md)
+[`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
 keeps it as its own labelled array via this constructor, so the actual
 index/coordinate values for every dimension are always available
 alongside the data, ready to be interpreted properly later.

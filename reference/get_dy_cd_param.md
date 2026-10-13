@@ -1,7 +1,7 @@
 # Get one or more parameter values from a DYRESM-CAEDYM configuration
 
 Companion to
-[`set_dy_cd_param()`](https://limnotrack.com/reference/set_dy_cd_param.md)
+[`set_dy_cd_param()`](https://limnotrack.com/AEME/reference/set_dy_cd_param.md)
 for reading current values without an `aeme` object.
 
 ## Usage
@@ -26,14 +26,14 @@ get_dy_cd_param(
 
   character vector; name(s) of the parameter(s) to read – the same
   friendly names
-  [`set_dy_cd_param()`](https://limnotrack.com/reference/set_dy_cd_param.md)
+  [`set_dy_cd_param()`](https://limnotrack.com/AEME/reference/set_dy_cd_param.md)
   accepts.
 
 - cfg_file:
 
   filepath; the `<lakename>.cfg` file to edit. Defaults to the one found
   in `path_dy` via
-  [`find_dy_cd_cfg()`](https://limnotrack.com/reference/find_dy_cd_cfg.md).
+  [`find_dy_cd_cfg()`](https://limnotrack.com/AEME/reference/find_dy_cd_cfg.md).
 
 - par_file:
 

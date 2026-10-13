@@ -1,7 +1,7 @@
 # Locate an installed GLM executable
 
 Returns the path to a GLM executable previously installed with
-[`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md).
+[`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md).
 Errors if that version isn't installed for this platform yet.
 
 ## Usage

@@ -25,7 +25,7 @@ diag_nutrient_budget(
 - model:
 
   character; single model code to diagnose (see
-  [`check_model`](https://limnotrack.com/reference/check_model.md)).
+  [`check_model`](https://limnotrack.com/AEME/reference/check_model.md)).
 
 - candidates:
 

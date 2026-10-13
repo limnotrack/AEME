@@ -90,7 +90,7 @@ model output. We will first load the AEME object from the “.rds” files.
 
 The `Aeme` object contains the lake metadata, model output, and model
 controls. More details can be found
-[`vignette("intro-aeme")`](https://limnotrack.com/articles/intro-aeme.md).
+[`vignette("intro-aeme")`](https://limnotrack.com/AEME/articles/intro-aeme.md).
 It is an S4 object of the class `Aeme`.
 
 First, make sure to install the `AEME` package.

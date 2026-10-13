@@ -34,8 +34,8 @@ arg_val value for the valid field in glm_nml specified by `arg_name`
 
 ## See also
 
-[read_nml](https://limnotrack.com/reference/read_nml.md),
-[set_nml](https://limnotrack.com/reference/set_nml.md)
+[read_nml](https://limnotrack.com/AEME/reference/read_nml.md),
+[set_nml](https://limnotrack.com/AEME/reference/set_nml.md)
 
 ## Author
 

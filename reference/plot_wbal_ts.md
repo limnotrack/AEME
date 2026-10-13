@@ -18,7 +18,8 @@ plot_wbal_ts(
 - aeme:
 
   Aeme object with model output and observations added. Must have model
-  output [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)
+  output
+  [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md)
 
 - var_aeme:
 

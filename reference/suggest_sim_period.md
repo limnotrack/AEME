@@ -90,14 +90,14 @@ An object of class `aeme_sim_period`: a list with `start`, `stop`,
 `spin_up`, `spin_up_start`, `limited_by` (what set each end), `coverage`
 (per-variable counts inside the chosen period), `dropped` (years trimmed
 at each end) and `summary` (the
-[`summarise_obs()`](https://limnotrack.com/reference/summarise_obs.md)
+[`summarise_obs()`](https://limnotrack.com/AEME/reference/summarise_obs.md)
 result).
 
 ## See also
 
-[`summarise_obs()`](https://limnotrack.com/reference/summarise_obs.md),
-[`set_sim_period()`](https://limnotrack.com/reference/set_sim_period.md),
-[`set_time()`](https://limnotrack.com/reference/set_time.md)
+[`summarise_obs()`](https://limnotrack.com/AEME/reference/summarise_obs.md),
+[`set_sim_period()`](https://limnotrack.com/AEME/reference/set_sim_period.md),
+[`set_time()`](https://limnotrack.com/AEME/reference/set_time.md)
 
 ## Examples
 

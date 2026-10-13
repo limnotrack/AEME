@@ -1,12 +1,12 @@
 # Set outflow data for a GLM-AED simulation directory
 
 Thin, `aeme`-free wrapper around the internal outflow writer used by
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md). Writes
-one boundary-condition csv per outflow into `path_glm/bcs` and updates
-the `&outflow` block of the GLM nml file. Basin geometry (`bathy`,
-`dims_lake`) needed to size the outlets is read from the existing
-`&morphometry` block by default, so an existing GLM-AED configuration
-can have its outflows edited without a lake shapefile.
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md).
+Writes one boundary-condition csv per outflow into `path_glm/bcs` and
+updates the `&outflow` block of the GLM nml file. Basin geometry
+(`bathy`, `dims_lake`) needed to size the outlets is read from the
+existing `&morphometry` block by default, so an existing GLM-AED
+configuration can have its outflows edited without a lake shapefile.
 
 ## Usage
 
@@ -36,7 +36,7 @@ set_glm_outflows(
   named list of data.frames, one per outflow, each with a `Date` column
   and a flow column (`HYD_flow`, or `outflow` for a `"wbal"`
   water-balance outflow) – see
-  [`add_outflows()`](https://limnotrack.com/reference/add_outflows.md)
+  [`add_outflows()`](https://limnotrack.com/AEME/reference/add_outflows.md)
   for the expected schema.
 
 - heights_wdr:
@@ -74,7 +74,7 @@ set_glm_outflows(
 
   filepath; path to the GLM hydrodynamic nml file to update. Defaults to
   the file found in `path_glm` via
-  [`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md).
+  [`find_glm_nml()`](https://limnotrack.com/AEME/reference/find_glm_nml.md).
 
 ## Value
 

@@ -69,7 +69,7 @@ build_aeme(
 - model_controls:
 
   data.frame; model configuration, typically loaded via
-  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md).
+  [`get_model_controls()`](https://limnotrack.com/AEME/reference/get_model_controls.md).
 
 - inf_factor:
 
@@ -128,7 +128,7 @@ build_aeme(
 
   character; AEME variable names (e.g. `c("HYD_temp", "CHM_oxy")`) to
   restrict each model's written output to, applied via
-  [`set_output_vars()`](https://limnotrack.com/reference/set_output_vars.md)
+  [`set_output_vars()`](https://limnotrack.com/AEME/reference/set_output_vars.md)
   once the configuration has been built and re-written to disk. Use this
   to build a lake trimmed for calibration / sensitivity analysis, where
   only one or two variables feed the objective. `NULL` (default) leaves
@@ -137,7 +137,7 @@ build_aeme(
 - mass_balance:
 
   logical; passed to
-  [`set_output_vars()`](https://limnotrack.com/reference/set_output_vars.md)
+  [`set_output_vars()`](https://limnotrack.com/AEME/reference/set_output_vars.md)
   when `output_vars` is supplied - for `"glm_aed"` only, keep the GLMv4
   `&mass_balance` diagnostic CSV. Default `TRUE`. Ignored when
   `output_vars` is `NULL`.
@@ -149,7 +149,7 @@ build_aeme(
 
 - aed:
 
-  [`aed_options()`](https://limnotrack.com/reference/aed_options.md)
+  [`aed_options()`](https://limnotrack.com/AEME/reference/aed_options.md)
   object; which parts of the AED biogeochemistry setup to run for
   `"glm_aed"` when `use_bgc = TRUE` (the active modules, the initial
   concentrations, the sediment zone fluxes and the `aed_totals`). `NULL`
@@ -186,7 +186,7 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [28ms]
+#> ✔ Estimating surface water temperature [29ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -218,7 +218,7 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [26ms]
+#> ✔ Estimating surface water temperature [28ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #> ℹ Correcting water balance using estimated outflows (method = 2).

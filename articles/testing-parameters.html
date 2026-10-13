@@ -16,7 +16,7 @@
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Testing Parameters Without a Full Rebuild">
+<script src="../extra.js"></script><meta property="og:title" content="Testing Parameters Without a Full Rebuild">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -36,32 +36,45 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/installing-models.html">Installing Model Binaries</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-getting-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Getting started</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-getting-started">
+<li><a class="dropdown-item" href="../articles/installing-models.html">Installing models</a></li>
     <li><a class="dropdown-item" href="../articles/intro-aeme.html">Introduction to AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME Inputs</a></li>
-    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up AEME for a new lake</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Working with models</h6></li>
-    <li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising AEME Output</a></li>
-    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing Parameters Without a Full Rebuild</a></li>
-    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily meteorological forcing</a></li>
-    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output and daily-mean storage</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Uncertainty</h6></li>
-    <li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions, uncertainty and spin-up</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Model descriptions</h6></li>
-    <li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED: The General Lake Model coupled with AED</a></li>
-    <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2: The 1-D k-epsilon lake model coupled with AED2</a></li>
-    <li><a class="dropdown-item" href="../articles/aed-sediment-np-parameterisation.html">GLM-AED: Sediment Nitrogen &amp; Phosphorus Pools and Resuspension</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Use cases</h6></li>
-    <li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir Simulation with Multiple Outlets</a></li>
-    <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">Using LERNZmp with AEME</a></li>
-    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Lake Rotoehu Water Balance and Evaporation</a></li>
+    <li><a class="dropdown-item" href="../articles/aeme-inputs.html">AEME inputs</a></li>
+    <li><a class="dropdown-item" href="../articles/setup-new-lake.html">Set up a new lake</a></li>
+  </ul>
+</li>
+<li class="active nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-working-with-models" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Working with models</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-working-with-models">
+<li><a class="dropdown-item" href="../articles/visualising-output.html">Visualising output</a></li>
+    <li><a class="dropdown-item" href="../articles/testing-parameters.html">Testing parameters</a></li>
+    <li><a class="dropdown-item" href="../articles/hourly-vs-daily-met.html">Hourly vs daily met</a></li>
+    <li><a class="dropdown-item" href="../articles/subdaily-output.html">Sub-daily output</a></li>
+  </ul>
+</li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-uncertainty" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Uncertainty</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-uncertainty">
+<li><a class="dropdown-item" href="../articles/initial-conditions-and-spin-up.html">Initial conditions and spin-up</a></li>
+    <li><a class="dropdown-item" href="../articles/parameter-uncertainty.html">Parameter uncertainty</a></li>
+  </ul>
+</li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-model-descriptions" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Model descriptions</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-model-descriptions">
+<li><a class="dropdown-item" href="../articles/glm-aed.html">GLM-AED</a></li>
+    <li><a class="dropdown-item" href="../articles/simstrat-aed2.html">Simstrat-AED2</a></li>
+    <li><a class="dropdown-item" href="../articles/aed-sediment-np-parameterisation.html">AED sediment N/P parameterisation</a></li>
+  </ul>
+</li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-use-cases" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Use cases</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-use-cases">
+<li><a class="dropdown-item" href="../articles/reservoir-aeme.html">Reservoir AEME</a></li>
+    <li><a class="dropdown-item" href="../articles/lernzmp-aeme.html">LERNZmp AEME</a></li>
+    <li><a class="dropdown-item" href="../articles/rotoehu-water-balance.html">Rotoehu water balance</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -218,8 +231,8 @@ overrides and run the model, in one call, without touching the
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model_test.html">run_model_test</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="va">path_glm</span>,</span>
 <span>                      param_overrides <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Kw <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
 <span>                      tgt_vars <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 04:12:14]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 04:12:14] <span style="color: #B2B2B2;">[437ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-13 23:37:46]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-13 23:37:47] <span style="color: #B2B2B2;">[445ms]</span></span></span>
 <span><span class="co">#&gt; </span></span></code></pre></div>
 <p>The parameter change is written to disk exactly as
 <code><a href="../reference/set_glm_param.html">set_glm_param()</a></code> would:</p>
@@ -269,17 +282,17 @@ collecting one <code>tgt_vars</code> matrix per scenario.</p>
 <span>  <span class="fu"><a href="../reference/run_model_test.html">run_model_test</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="va">path_glm</span>, param_overrides <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Kw <span class="op">=</span> <span class="va">kw</span><span class="op">)</span>,</span>
 <span>                 tgt_vars <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 04:12:16]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 04:12:16] <span style="color: #B2B2B2;">[451ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-13 23:37:48]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-13 23:37:48] <span style="color: #B2B2B2;">[436ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 04:12:17]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 04:12:17] <span style="color: #B2B2B2;">[486ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-13 23:37:49]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-13 23:37:50] <span style="color: #B2B2B2;">[434ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 04:12:18]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 04:12:19] <span style="color: #B2B2B2;">[434ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-13 23:37:50]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-13 23:37:51] <span style="color: #B2B2B2;">[424ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-09 04:12:19]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-09 04:12:20] <span style="color: #B2B2B2;">[432ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> GLM-AED running... [2026-10-13 23:37:52]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED running... [2026-10-13 23:37:52] <span style="color: #B2B2B2;">[434ms]</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Kw_"</span>, <span class="va">kw_values</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">

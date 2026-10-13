@@ -66,7 +66,7 @@ large, deep, dimictic lake.)
 
 Simstrat couples to the same **AED2** (Aquatic Ecodynamics v2) library
 used by the GLM-AED workflow in AEME (see the [GLM-AED
-article](https://limnotrack.com/articles/glm-aed.md)) — confirmed
+article](https://limnotrack.com/AEME/articles/glm-aed.md)) — confirmed
 directly: the phytoplankton and zooplankton group-parameter files AEME
 bundles for the two models (`aed2_phyto_pars.nml`, `aed2_zoop_pars.nml`)
 are byte-identical. Each biogeochemical process is implemented as a
@@ -94,12 +94,12 @@ details.
 AED2 biogeochemical modules available in Simstrat-AED2. {.table}
 
 Unlike GLM-AED (where
-[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)
+[`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md)
 lets you toggle modules explicitly), Simstrat-AED2’s active module list
 is derived **automatically** from the biogeochemical variables requested
 via `model_controls`/
-[`set_vars_sim()`](https://limnotrack.com/reference/set_vars_sim.md) —
-AEME writes the corresponding entries into `aed2.nml`’s `&aed2_models`
+[`set_vars_sim()`](https://limnotrack.com/AEME/reference/set_vars_sim.md)
+— AEME writes the corresponding entries into `aed2.nml`’s `&aed2_models`
 block for you (including force-including any module that an active
 module’s target-variable links depend on, e.g. phytoplankton depends on
 carbon, nitrogen, phosphorus, silica, and oxygen).
@@ -114,15 +114,15 @@ their default (template) values, units, and a brief description of each
 parameter’s role. The physical parameters are documented in Table 1 of
 the Simstrat User Manual; the AED2 biogeochemical parameters largely
 share their descriptions with `glm_aed_parameter_library` (see the
-[GLM-AED article](https://limnotrack.com/articles/glm-aed.md)), since
-both models couple to the same AED2 library.
+[GLM-AED article](https://limnotrack.com/AEME/articles/glm-aed.md)),
+since both models couple to the same AED2 library.
 
 ### AED2 Phytoplankton Group Parameters
 
 Simstrat-AED2 and GLM-AED share the same bundled AED2 phytoplankton
 parameter database (`aed2_phyto_pars.nml`), so the group parameter table
 is identical to the one shown in the [GLM-AED
-article](https://limnotrack.com/articles/glm-aed.md):
+article](https://limnotrack.com/AEME/articles/glm-aed.md):
 
 ------------------------------------------------------------------------
 
@@ -224,7 +224,7 @@ aeme
 ### Model controls
 
 As with the other models,
-[`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md)
+[`get_model_controls()`](https://limnotrack.com/AEME/reference/get_model_controls.md)
 returns a data frame that governs which biogeochemical variables are
 simulated and how they are initialised. Pass `use_bgc = TRUE` to enable
 AED2.
@@ -274,7 +274,7 @@ We will build the model in a directory called `aeme`,
 path <- "aeme"
 ```
 
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
 translates the AEME object into all configuration files required by
 Simstrat-AED2: `simstrat.par`, `Bathymetry.dat`, `Grid.dat`,
 `MeteoForcing.dat`, `InitialConditions.dat`, the
@@ -327,7 +327,7 @@ cfg[["simstrat_aed2"]]$hydrodynamic$ModelConfig[c("InflowMode", "IceModel",
 ### Automatic water balance fitting
 
 Before writing the Simstrat configuration,
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
 estimates a lake water balance for each model, fitting a weir-style
 outflow correction so that simulated lake level tracks observations.
 This uses each model’s own evaporation formulation — Simstrat’s is a
@@ -378,12 +378,12 @@ the parameter library above configure it.
 `build_simstrat()` only copies AEME’s bundled `simstrat.par` template
 into a lake’s `simstrat_aed2/` directory the *first* time that lake is
 built — every subsequent
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) call
-reads back and rewrites that same per-lake file (updating only the
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+call reads back and rewrites that same per-lake file (updating only the
 specific fields
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) itself
-manages, like file paths, `Simulation` dates, and `lat`/`p_air`). This
-keeps any manual edits you make to a lake’s own `simstrat.par` from
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+itself manages, like file paths, `Simulation` dates, and `lat`/`p_air`).
+This keeps any manual edits you make to a lake’s own `simstrat.par` from
 being silently discarded on rebuild, but it also means a change to the
 *package template* (e.g. `AED2Config.OutputDiagnosticVars`, or any
 `ModelParameters` default) only takes effect for lakes built *after* the
@@ -407,7 +407,7 @@ aeme <- run_aeme(aeme = aeme, model = model, path = path)
 
 ### Temperature and stratification
 
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md)
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
 produces a filled contour plot for depth-varying variables
 (e.g. temperature) and a time-series line plot for scalar variables:
 
@@ -472,7 +472,7 @@ diagnostics it unlocks.
 ## Assessing model performance
 
 When observations are stored in the `aeme` object,
-[`assess_aeme()`](https://limnotrack.com/reference/assess_aeme.md)
+[`assess_aeme()`](https://limnotrack.com/AEME/reference/assess_aeme.md)
 computes a suite of skill metrics (RMSE, NSE, bias, Pearson *r*, etc.)
 for each simulated variable:
 
@@ -547,8 +547,8 @@ If you build on top of a lake directory that was created with an older
 version of the template (`OutputDiagnosticVars = false` already written
 to its own `simstrat.par`), the switch will *not* update automatically —
 see [Simstrat-AED2 specific features](#simstrat-features) above for why
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) only
-copies the template into directories that don’t already have a
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+only copies the template into directories that don’t already have a
 `simstrat.par`. Flip it manually and re-run in that case, exactly as
 shown for `sim_dir`/`par` above but setting
 `par$AED2Config$OutputDiagnosticVars <- TRUE` before writing it back
@@ -631,16 +631,16 @@ detail most users won’t need day-to-day).
 ### Example: production and gas exchange
 
 `PHY_tchla` above plots through
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md)
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
 because it already has a `var_aeme` entry in AEME’s `key_naming`
 catalog, mapped to Simstrat-AED2’s `PHY_TCHLA`. Most of the diagnostics
 tabulated above (`PHY_GPP`, `OXY_atm_oxy_flux`, `OXY_sat`, …) do **not**
 have a `var_aeme` entry yet — AEME hasn’t adopted every AED2 diagnostic
 into its standardised variable catalog.
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md)/[`assess_aeme()`](https://limnotrack.com/reference/assess_aeme.md)
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)/[`assess_aeme()`](https://limnotrack.com/AEME/reference/assess_aeme.md)
 only recognise `var_aeme` names, and passing an unregistered one through
 can silently resolve to the *wrong* variable via
-[`guess_aeme_vars()`](https://limnotrack.com/reference/guess_aeme_vars.md)’s
+[`guess_aeme_vars()`](https://limnotrack.com/AEME/reference/guess_aeme_vars.md)’s
 fuzzy keyword matching rather than failing loudly (`"PHY_GPP"`, for
 instance, fuzzy-matches to `"PHY_green"` — a phytoplankton group’s
 biomass, not gross primary production — since neither name is
@@ -714,7 +714,7 @@ analysis or calibration exercise.
 
 ### Retrieving parameters by module
 
-[`get_aeme_parameters()`](https://limnotrack.com/reference/get_aeme_parameters.md)
+[`get_aeme_parameters()`](https://limnotrack.com/AEME/reference/get_aeme_parameters.md)
 provides a convenient way to query the AEME parameter library for
 Simstrat-AED2 parameters:
 
@@ -772,7 +772,7 @@ richer descriptions above — are the natural inputs to an automated
 calibration workflow via the
 [aemetools](https://github.com/limnotrack/aemetools) package, which
 wraps
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)/[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)/[`assess_aeme()`](https://limnotrack.com/reference/assess_aeme.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)/[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md)/[`assess_aeme()`](https://limnotrack.com/AEME/reference/assess_aeme.md)
 in an optimiser.
 
 ### Simstrat’s native PEST-based calibration
@@ -813,7 +813,7 @@ get_nml_value(aed2_nml, "models")           # active AED2 modules
 get_nml_value(aed2_nml, "Rnitrif")          # nitrification rate
 ```
 
-[`check_simstrat_par()`](https://limnotrack.com/reference/check_simstrat_par.md)
+[`check_simstrat_par()`](https://limnotrack.com/AEME/reference/check_simstrat_par.md)
 validates a `simstrat.par` file — checking that all required JSON
 sections and referenced input files are present, and that
 `AED2ConfigFile`/`PathAED2initial`/`PathAED2inflow` exist when
@@ -831,7 +831,7 @@ check_simstrat_par(file.path(sim_dir, "simstrat.par"))
 
 Simstrat-AED2 binaries are distributed as GitHub release assets rather
 than bundled inside the package.
-[`install_simstrat_aed2()`](https://limnotrack.com/reference/install_simstrat_aed2.md)
+[`install_simstrat_aed2()`](https://limnotrack.com/AEME/reference/install_simstrat_aed2.md)
 downloads, checksum verifies, and caches a pre-compiled binary for the
 current platform:
 
@@ -855,11 +855,11 @@ available in AEME:
 
 2.  **Automatic module selection** — Simstrat-AED2’s active AED2 modules
     are derived directly from
-    `model_controls`/[`set_vars_sim()`](https://limnotrack.com/reference/set_vars_sim.md),
+    `model_controls`/[`set_vars_sim()`](https://limnotrack.com/AEME/reference/set_vars_sim.md),
     rather than a separate model-toggling function.
 
 3.  **Model-specific water balance** —
-    [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+    [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
     fits the lake water balance using Simstrat’s own evaporation
     formula, distinct from the bulk-aerodynamic formula shared by
     GLM-AED and DYRESM-CAEDYM.
@@ -869,7 +869,7 @@ available in AEME:
     `ModelConfig.InflowMode`.
 
 5.  **Parameter access** — `simstrat_aed2_parameter_library` and
-    [`get_aeme_parameters()`](https://limnotrack.com/reference/get_aeme_parameters.md)
+    [`get_aeme_parameters()`](https://limnotrack.com/AEME/reference/get_aeme_parameters.md)
     make it easy to explore and modify individual model parameters, and
     `simstrat_aed2_parameters` provides ready-to-use calibration ranges
     (see the [aemetools](https://github.com/limnotrack/aemetools)

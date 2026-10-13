@@ -27,7 +27,7 @@ install_glm_aed(
 - version:
 
   Character. The GLM version to install, e.g. `"3.9.108"`. Use
-  [`list_glm_versions()`](https://limnotrack.com/reference/list_glm_versions.md)
+  [`list_glm_versions()`](https://limnotrack.com/AEME/reference/list_glm_versions.md)
   to see what's available. A trailing `"+"` (e.g. `"4.0.0+"`) selects
   the GLM+ (AED+) build of that version – the same binary plus the
   private `libaed-riparian`/`-light`/`-dev` modules. Defaults to
@@ -73,7 +73,7 @@ in a `<os>/<version>/` subdirectory - by default this resolves to
 [tools::R_user_dir](https://rdrr.io/r/tools/userdir.html) for details).
 Multiple GLM versions can be installed side by side and switched between
 via the `version` argument to
-[`glm_exe_path()`](https://limnotrack.com/reference/glm_exe_path.md)
+[`glm_exe_path()`](https://limnotrack.com/AEME/reference/glm_exe_path.md)
 without re-downloading.
 
 Every binary is published alongside a `.sha256` checksum file in the
@@ -86,10 +86,10 @@ circumstances.
 
 ## See also
 
-[`list_glm_versions()`](https://limnotrack.com/reference/list_glm_versions.md)
+[`list_glm_versions()`](https://limnotrack.com/AEME/reference/list_glm_versions.md)
 to discover available versions,
-[`glm_exe_path()`](https://limnotrack.com/reference/glm_exe_path.md) to
-locate an already-installed executable.
+[`glm_exe_path()`](https://limnotrack.com/AEME/reference/glm_exe_path.md)
+to locate an already-installed executable.
 
 ## Examples
 

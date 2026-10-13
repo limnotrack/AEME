@@ -27,7 +27,7 @@ read_simstrat_wlev(nc = NULL, file, model = "simstrat_aed2")
   `"simstrat_aed2"` (default) or `"simstrat_aed"`. Selects the matching
   `key_naming` column for variable-name translation – the netCDF file
   format itself (produced by
-  [`write_simstrat_nc`](https://limnotrack.com/reference/write_simstrat_nc.md))
+  [`write_simstrat_nc`](https://limnotrack.com/AEME/reference/write_simstrat_nc.md))
   is identical either way.
 
 ## Value

@@ -39,9 +39,9 @@ parameters for a model built without bgc) are skipped with a warning.
 
 ## See also
 
-[`parameters()`](https://limnotrack.com/reference/parameters.md),
-[`configuration()`](https://limnotrack.com/reference/configuration.md),
-[`write_configuration()`](https://limnotrack.com/reference/write_configuration.md)
+[`parameters()`](https://limnotrack.com/AEME/reference/parameters.md),
+[`configuration()`](https://limnotrack.com/AEME/reference/configuration.md),
+[`write_configuration()`](https://limnotrack.com/AEME/reference/write_configuration.md)
 
 ## Examples
 

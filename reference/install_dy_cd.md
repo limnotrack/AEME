@@ -7,7 +7,7 @@ its published SHA256 checksum, and installs it into a persistent user
 cache directory. Binaries are attached as assets to AEME's GitHub
 releases, with the version encoded in the asset filename (e.g.
 `dycd-windows-5.0.0.zip`), mirroring
-[`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md).
+[`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md).
 
 ## Usage
 
@@ -26,7 +26,7 @@ install_dy_cd(
 - version:
 
   Character. The DYRESM-CAEDYM version to install, e.g. `"5.0.0"`. Use
-  [`list_dy_cd_versions()`](https://limnotrack.com/reference/list_dy_cd_versions.md)
+  [`list_dy_cd_versions()`](https://limnotrack.com/AEME/reference/list_dy_cd_versions.md)
   to see what's available. Defaults to `"latest"`, which resolves to the
   highest version number available for the current platform.
 
@@ -71,10 +71,10 @@ versions were.
 Binaries are cached under
 [`tools::R_user_dir("AEME", "data")`](https://rdrr.io/r/tools/userdir.html),
 in an `<os>/<version>/` subdirectory (the same root
-[`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md),
-[`install_gotm_wet()`](https://limnotrack.com/reference/install_gotm_wet.md),
+[`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md),
+[`install_gotm_wet()`](https://limnotrack.com/AEME/reference/install_gotm_wet.md),
 and
-[`install_simstrat_aed2()`](https://limnotrack.com/reference/install_simstrat_aed2.md)
+[`install_simstrat_aed2()`](https://limnotrack.com/AEME/reference/install_simstrat_aed2.md)
 use). Every binary is published alongside a `.sha256` checksum file in
 the same release. This function downloads both, recomputes the SHA256 of
 the downloaded zip locally, and compares it to the published value
@@ -85,11 +85,11 @@ any circumstances.
 
 ## See also
 
-[`list_dy_cd_versions()`](https://limnotrack.com/reference/list_dy_cd_versions.md)
+[`list_dy_cd_versions()`](https://limnotrack.com/AEME/reference/list_dy_cd_versions.md)
 to discover available versions,
-[`dy_cd_exe_path()`](https://limnotrack.com/reference/dy_cd_exe_path.md)
+[`dy_cd_exe_path()`](https://limnotrack.com/AEME/reference/dy_cd_exe_path.md)
 to locate an already-installed executable,
-[`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md)
+[`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md)
 for the equivalent GLM-AED installer this mirrors.
 
 ## Examples

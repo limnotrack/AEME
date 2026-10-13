@@ -68,7 +68,7 @@ assess_spin_up(
 - model_controls:
 
   data.frame; model configuration, typically loaded via
-  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md).
+  [`get_model_controls()`](https://limnotrack.com/AEME/reference/get_model_controls.md).
 
 - path:
 
@@ -84,8 +84,8 @@ assess_spin_up(
 - build_args, run_args:
 
   lists of extra arguments passed to
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) and
-  [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  and [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md)
   respectively.
 
 - verbose:
@@ -127,16 +127,17 @@ is a named list:
 The vectors are recycled to a common length, which becomes the ensemble
 size; member `i` takes element `i` of every vector.
 
-One [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) +
-[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) is
+One
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md) +
+[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) is
 performed per (spin-up, member) combination, each in its own
 subdirectory of `path`, with written output restricted to `vars`. This
 can be a large number of model runs.
 
 ## See also
 
-[`set_initial_conditions()`](https://limnotrack.com/reference/set_initial_conditions.md),
-[`plot_spin_up()`](https://limnotrack.com/reference/plot_spin_up.md)
+[`set_initial_conditions()`](https://limnotrack.com/AEME/reference/set_initial_conditions.md),
+[`plot_spin_up()`](https://limnotrack.com/AEME/reference/plot_spin_up.md)
 
 ## Examples
 

@@ -33,7 +33,7 @@ undefined (e.g., zero observed variance or mean).
 ## Details
 
 KGE decomposes fit into three components instead of conflating them the
-way [`nse`](https://limnotrack.com/reference/nse.md)'s single
+way [`nse`](https://limnotrack.com/AEME/reference/nse.md)'s single
 squared-error term does:
 
 \$\$\text{KGE} = 1 - \sqrt{(r - 1)^2 + (\alpha - 1)^2 + (\beta -
@@ -54,12 +54,12 @@ modelling practice.
 
 `calib_aeme()` and `run_and_fit()` **minimise** the values returned by
 `FUN_list` entries - use
-[`kge_loss`](https://limnotrack.com/reference/fit_loss.md) (which
+[`kge_loss`](https://limnotrack.com/AEME/reference/fit_loss.md) (which
 returns `-1 * kge(obs, sim)`) as a calibration objective.
 
 ## See also
 
-[`kge_loss`](https://limnotrack.com/reference/fit_loss.md) for the
+[`kge_loss`](https://limnotrack.com/AEME/reference/fit_loss.md) for the
 minimise-oriented variant used in `FUN_list`.
 
 ## Examples

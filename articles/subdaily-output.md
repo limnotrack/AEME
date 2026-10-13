@@ -24,7 +24,7 @@ the *forcing*. The one rule that ties them together:
 
 ## Setting the output cadence
 
-[`set_output_time_step()`](https://limnotrack.com/reference/set_output_time_step.md)
+[`set_output_time_step()`](https://limnotrack.com/AEME/reference/set_output_time_step.md)
 takes a frequency — a number of seconds, a named value (`"hourly"`,
 `"daily"`, `"weekly"`), or an `"<n> <unit>"` string — and each
 `build_*()` translates it into that model’s native setting:
@@ -70,7 +70,7 @@ How each model provides it:
   `model_controls` `simulate` set plus the internals the reader needs)
   instead of writing every variable.
 - **GLM-AED** and **Simstrat** have no native time-averaging, so
-  [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)
+  [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md)
   post-processes their sub-daily `output.nc` into a companion
   `output_daily.nc` (`write_output_daily_nc()`): the mean over each
   calendar day, one record per day, same file structure. The raw
@@ -82,12 +82,12 @@ stored output is pruned: its large 4-D fields (`light`, `umean`, the
 wave spectra, …) are dropped, leaving ~20 variables instead of ~60.
 
 On read-back
-([`run_aeme()`](https://limnotrack.com/reference/run_aeme.md),
-[`get_var()`](https://limnotrack.com/reference/get_var.md), …) the daily
-means are picked up automatically: when `output_daily_mean` is `TRUE`
-the `output_daily.nc` companion is read if present, otherwise the raw
-`output.nc` is averaged by calendar day on read. Downstream code sees a
-plain daily `Date` axis, exactly as for a native daily run.
+([`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md),
+[`get_var()`](https://limnotrack.com/AEME/reference/get_var.md), …) the
+daily means are picked up automatically: when `output_daily_mean` is
+`TRUE` the `output_daily.nc` companion is read if present, otherwise the
+raw `output.nc` is averaged by calendar day on read. Downstream code
+sees a plain daily `Date` axis, exactly as for a native daily run.
 
 ``` r
 
@@ -238,9 +238,9 @@ temperature cell — the diurnal signal the cadence resolves.
 
 - `vignette("hourly-vs-daily-met")` — sub-daily *forcing*, and how each
   model fills the gaps between timestamps.
-- [`?set_output_time_step`](https://limnotrack.com/reference/set_output_time_step.md)
+- [`?set_output_time_step`](https://limnotrack.com/AEME/reference/set_output_time_step.md)
   — the `frequency` and `daily_mean` arguments.
-- [`?set_time`](https://limnotrack.com/reference/set_time.md) —
+- [`?set_time`](https://limnotrack.com/AEME/reference/set_time.md) —
   `time_step` vs `output_time_step`.
 - `data-raw/benchmark_output_cadence.R`,
   `data-raw/benchmark_daily_mean_output.R` — the scripts behind the

@@ -38,11 +38,11 @@ When multiple `glm<version>.nml` files are found in the same directory
 use is chosen in priority order:
 
 1.  The GLM version pinned via the `AEME.glm_version` option (set by
-    [`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md),
+    [`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md),
     or by the caller directly).
 
 2.  Whichever GLM version is actually installed locally (see
-    [`glm_exe_path()`](https://limnotrack.com/reference/glm_exe_path.md)),
+    [`glm_exe_path()`](https://limnotrack.com/AEME/reference/glm_exe_path.md)),
     checked directly rather than trusting session state.
 
 3.  If neither can be determined, the highest version number among the
@@ -59,5 +59,5 @@ dir.create(glm_dir, showWarnings = FALSE)
 file.create(file.path(glm_dir, "glm3.nml"))
 #> [1] TRUE
 find_glm_nml(glm_dir)
-#> [1] "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\Rtmps9nlgV/glm_aed/glm3.nml"
+#> [1] "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\Rtmp4MHkRu/glm_aed/glm3.nml"
 ```

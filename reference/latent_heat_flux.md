@@ -60,12 +60,12 @@ The flux is calculated as: \$\$Q\_{lh} =
 
 where \\e_s\\ is the saturation vapour pressure at the water surface
 computed by
-[`sat_vapour_pressure`](https://limnotrack.com/reference/sat_vapour_pressure.md).
+[`sat_vapour_pressure`](https://limnotrack.com/AEME/reference/sat_vapour_pressure.md).
 
 ## See also
 
-[`sat_vapour_pressure`](https://limnotrack.com/reference/sat_vapour_pressure.md),
-[`flux_to_evap`](https://limnotrack.com/reference/flux_to_evap.md)
+[`sat_vapour_pressure`](https://limnotrack.com/AEME/reference/sat_vapour_pressure.md),
+[`flux_to_evap`](https://limnotrack.com/AEME/reference/flux_to_evap.md)
 
 ## Examples
 

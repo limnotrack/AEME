@@ -1,7 +1,7 @@
 # Read Simstrat-AED2 netCDF output
 
 Reads the consolidated `output.nc` produced by
-[`write_simstrat_nc`](https://limnotrack.com/reference/write_simstrat_nc.md)
+[`write_simstrat_nc`](https://limnotrack.com/AEME/reference/write_simstrat_nc.md)
 (Simstrat itself writes one text `.dat` file per variable; AEME converts
 these to netCDF as a post-processing step so the same reading approach
 as GLM-AED/GOTM-WET can be reused).
@@ -73,13 +73,13 @@ read_simstrat_output(
   logical; also load every other variable present in the netCDF file,
   beyond the declared `vars_sim` set. Each such variable is keyed by its
   AEME `var_aeme` name if
-  [key_naming](https://limnotrack.com/reference/key_naming.md) has a
-  translation for it, or by its raw GLM/netCDF name otherwise. Variables
-  shaped like GLM's usual `(time)` or `(z, time)` output are loaded the
-  same way as any declared variable; variables with other dimensions
-  (e.g. `nzones`, `particle`, `sed_layers`, `lon`, `lat`) are loaded as
-  a
-  [`new_grouped_var()`](https://limnotrack.com/reference/new_grouped_var.md)
+  [key_naming](https://limnotrack.com/AEME/reference/key_naming.md) has
+  a translation for it, or by its raw GLM/netCDF name otherwise.
+  Variables shaped like GLM's usual `(time)` or `(z, time)` output are
+  loaded the same way as any declared variable; variables with other
+  dimensions (e.g. `nzones`, `particle`, `sed_layers`, `lon`, `lat`) are
+  loaded as a
+  [`new_grouped_var()`](https://limnotrack.com/AEME/reference/new_grouped_var.md)
   object instead of being forced into the depth x time convention.
   Default `TRUE`.
 
@@ -101,7 +101,7 @@ read_simstrat_output(
   `"simstrat_aed2"` (default) or `"simstrat_aed"`. Selects the matching
   `key_naming` column for variable-name translation – the netCDF file
   format itself (produced by
-  [`write_simstrat_nc`](https://limnotrack.com/reference/write_simstrat_nc.md))
+  [`write_simstrat_nc`](https://limnotrack.com/AEME/reference/write_simstrat_nc.md))
   is identical either way.
 
 ## Value

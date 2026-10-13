@@ -1,11 +1,11 @@
 # Install the latest available binary for every AEME model
 
 Convenience wrapper around
-[`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md),
-[`install_gotm_wet()`](https://limnotrack.com/reference/install_gotm_wet.md),
-[`install_dy_cd()`](https://limnotrack.com/reference/install_dy_cd.md),
+[`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md),
+[`install_gotm_wet()`](https://limnotrack.com/AEME/reference/install_gotm_wet.md),
+[`install_dy_cd()`](https://limnotrack.com/AEME/reference/install_dy_cd.md),
 and
-[`install_simstrat_aed2()`](https://limnotrack.com/reference/install_simstrat_aed2.md)
+[`install_simstrat_aed2()`](https://limnotrack.com/AEME/reference/install_simstrat_aed2.md)
 that installs the latest version of each, for whichever models actually
 have a binary published for the current platform. A model with no
 release asset for this OS (or no release assets published at all yet,
@@ -32,7 +32,7 @@ install_models(
   Character vector of model names to install, in either display
   (`"GLM-AED"`) or code (`"glm_aed"`) form. Defaults to every model AEME
   knows about (see
-  [`list_models()`](https://limnotrack.com/reference/list_models.md)).
+  [`list_models()`](https://limnotrack.com/AEME/reference/list_models.md)).
 
 - os:
 
@@ -64,10 +64,10 @@ skipped or failed.
 
 ## See also
 
-[`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md),
-[`install_gotm_wet()`](https://limnotrack.com/reference/install_gotm_wet.md),
-[`install_dy_cd()`](https://limnotrack.com/reference/install_dy_cd.md),
-[`install_simstrat_aed2()`](https://limnotrack.com/reference/install_simstrat_aed2.md)
+[`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md),
+[`install_gotm_wet()`](https://limnotrack.com/AEME/reference/install_gotm_wet.md),
+[`install_dy_cd()`](https://limnotrack.com/AEME/reference/install_dy_cd.md),
+[`install_simstrat_aed2()`](https://limnotrack.com/AEME/reference/install_simstrat_aed2.md)
 to install a single model with more control (specific version, etc.).
 
 ## Examples

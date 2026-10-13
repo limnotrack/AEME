@@ -2,9 +2,9 @@
 
 Configure the initial state - water depth, temperature and salinity
 profile, and biogeochemical water-column pools - that
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) writes
-into each model's configuration. Values can be supplied once for every
-model (`depth`, `profile`, `wq`) and/or overridden per model via
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+writes into each model's configuration. Values can be supplied once for
+every model (`depth`, `profile`, `wq`) and/or overridden per model via
 `model_init` (for example a GLM-AED-specific temperature profile).
 
 ## Usage
@@ -61,13 +61,13 @@ set_initial_conditions(
 - model_controls:
 
   data.frame; model configuration, typically loaded via
-  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md).
+  [`get_model_controls()`](https://limnotrack.com/AEME/reference/get_model_controls.md).
 
 - from_obs:
 
   logical; if `TRUE`, seed the generic profile and water-quality values
   from lake observations via
-  [`update_init()`](https://limnotrack.com/reference/update_init.md)
+  [`update_init()`](https://limnotrack.com/AEME/reference/update_init.md)
   before the explicit arguments are applied (the explicit arguments take
   precedence). Default `FALSE`.
 
@@ -96,11 +96,11 @@ take effect immediately.
 
 ## See also
 
-[`get_initial_conditions()`](https://limnotrack.com/reference/get_initial_conditions.md),
-[`update_init()`](https://limnotrack.com/reference/update_init.md),
-[`set_glm_init()`](https://limnotrack.com/reference/set_glm_init.md),
-[`set_gotm_init()`](https://limnotrack.com/reference/set_gotm_init.md),
-[`set_simstrat_init()`](https://limnotrack.com/reference/set_simstrat_init.md)
+[`get_initial_conditions()`](https://limnotrack.com/AEME/reference/get_initial_conditions.md),
+[`update_init()`](https://limnotrack.com/AEME/reference/update_init.md),
+[`set_glm_init()`](https://limnotrack.com/AEME/reference/set_glm_init.md),
+[`set_gotm_init()`](https://limnotrack.com/AEME/reference/set_gotm_init.md),
+[`set_simstrat_init()`](https://limnotrack.com/AEME/reference/set_simstrat_init.md)
 
 ## Examples
 

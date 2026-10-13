@@ -39,7 +39,7 @@ set_dy_cd_param(
 
   filepath; the `<lakename>.cfg` file to edit. Defaults to the one found
   in `path_dy` via
-  [`find_dy_cd_cfg()`](https://limnotrack.com/reference/find_dy_cd_cfg.md).
+  [`find_dy_cd_cfg()`](https://limnotrack.com/AEME/reference/find_dy_cd_cfg.md).
 
 - par_file:
 
@@ -54,8 +54,8 @@ invisibly, a named list of the values that were set.
 
 Setting `Kw` also updates the `PAR` line of `caedym3p1.bio` when that
 file is present, mirroring
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)'s own
-behaviour so a BGC run stays consistent.
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)'s
+own behaviour so a BGC run stays consistent.
 
 Accepted names:
 

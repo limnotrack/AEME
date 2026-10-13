@@ -14,7 +14,7 @@ print(x, all = FALSE, ...)
 - x:
 
   a `model_controls` object (see
-  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md)).
+  [`get_model_controls()`](https://limnotrack.com/AEME/reference/get_model_controls.md)).
 
 - all:
 

@@ -17,7 +17,7 @@ recommend_calib_plan(diag, param_table = NULL)
 - diag:
 
   an `aeme_diag` object from
-  [`diag_aeme`](https://limnotrack.com/reference/diag_aeme.md).
+  [`diag_aeme`](https://limnotrack.com/AEME/reference/diag_aeme.md).
 
 - param_table:
 

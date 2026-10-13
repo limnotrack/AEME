@@ -2,21 +2,21 @@
 
 A lightweight ggplot2 plotting helper that works either directly on the
 list returned by
-[`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md),
-[`read_gotm_output()`](https://limnotrack.com/reference/read_gotm_output.md),
-[`read_simstrat_output()`](https://limnotrack.com/reference/read_simstrat_output.md),
+[`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md),
+[`read_gotm_output()`](https://limnotrack.com/AEME/reference/read_gotm_output.md),
+[`read_simstrat_output()`](https://limnotrack.com/AEME/reference/read_simstrat_output.md),
 or
-[`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)
+[`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md)
 – for when you don't have (or don't want to build) a full `Aeme` object
 – or on an `Aeme` object itself, in which case
-[`get_var()`](https://limnotrack.com/reference/get_var.md)/[`plot_var()`](https://limnotrack.com/reference/plot_var.md)
+[`get_var()`](https://limnotrack.com/AEME/reference/get_var.md)/[`plot_var()`](https://limnotrack.com/AEME/reference/plot_var.md)
 do the work for you. Dispatches on the shape of the requested variable:
 a depth x time tile plot for `(z, time)` variables (same rendering as
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md)'s
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)'s
 default backend), a simple time series for `(time)`-only variables (e.g.
 evaporation), and a line plot (one line per combination of its non-time
 dimensions) for a
-[`new_grouped_var()`](https://limnotrack.com/reference/new_grouped_var.md)
+[`new_grouped_var()`](https://limnotrack.com/AEME/reference/new_grouped_var.md)
 variable, i.e. one with dimensions other than `(time)`/`(z, time)` –
 e.g. one line per sediment zone for a GLM-AED `(nzones, time)` AED flux
 variable.
@@ -40,24 +40,24 @@ plot_model_output(
 - x:
 
   either an `Aeme` object, or a list as returned by
-  [`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md)/[`read_gotm_output()`](https://limnotrack.com/reference/read_gotm_output.md)/[`read_simstrat_output()`](https://limnotrack.com/reference/read_simstrat_output.md)/
-  [`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md).
+  [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)/[`read_gotm_output()`](https://limnotrack.com/AEME/reference/read_gotm_output.md)/[`read_simstrat_output()`](https://limnotrack.com/AEME/reference/read_simstrat_output.md)/
+  [`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md).
 
 - var_sim:
 
   character; name of the variable to plot, as it appears in `names(x)`
   (or in the model output list, if `x` is an `Aeme` object) – a
   `var_aeme` name if
-  [key_naming](https://limnotrack.com/reference/key_naming.md) has a
-  translation for it, otherwise its raw model/netCDF name.
+  [key_naming](https://limnotrack.com/AEME/reference/key_naming.md) has
+  a translation for it, otherwise its raw model/netCDF name.
 
 - model:
 
   character; model to plot, when `x` is an `Aeme` object with more than
   one model. Ignored (and unnecessary) when `x` is already a raw output
   list. Defaults to the first model in
-  [`list_models()`](https://limnotrack.com/reference/list_models.md) if
-  not supplied.
+  [`list_models()`](https://limnotrack.com/AEME/reference/list_models.md)
+  if not supplied.
 
 - ens_n:
 
@@ -68,7 +68,7 @@ plot_model_output(
 
   logical; when `x` is an `Aeme` object, drop the spin-up period before
   plotting (see
-  [`get_date_index()`](https://limnotrack.com/reference/get_date_index.md)).
+  [`get_date_index()`](https://limnotrack.com/AEME/reference/get_date_index.md)).
   Default `TRUE`. Ignored when `x` is already a raw output list – trim
   it yourself first if needed.
 
@@ -91,11 +91,11 @@ for a grouped variable that has no `Date` dimension at all).
 
 For observation overlay, faceting across multiple models/variables at
 once, or the base-graphics backend, use
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md)
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
 instead – this function is intentionally minimal, and does not (yet)
 support `aeme_grouped_var` variables when called on an `Aeme` object
 through
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md)/[`plot_output_base()`](https://limnotrack.com/reference/plot_output_base.md).
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)/[`plot_output_base()`](https://limnotrack.com/AEME/reference/plot_output_base.md).
 
 ## Examples
 

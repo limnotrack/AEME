@@ -4,15 +4,16 @@ Older `Aeme` objects – loaded from `.rds` files written by a previous
 version of AEME – can be missing list elements, use since-renamed slot
 names, or carry data frames with an older column layout. Most of the
 package tolerates this, but some code paths (and
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) in
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md) in
 particular) assume the current layout.
 
 `upgrade_aeme()` applies every structural migration AEME knows about, in
 order, each one idempotent so the function is safe to run repeatedly. It
 does **not** rebuild model configuration
 (`configuration$<model>$hydrodynamic`) or model output – those only come
-from [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) /
-[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md). Run
+from
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md) /
+[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md). Run
 `upgrade_aeme()` first, then rebuild if you need the model files
 refreshed.
 
@@ -44,7 +45,7 @@ Migrations applied (see also migrate_aeme(), the silent worker):
   `use_bgc`) from `config_defaults()`.
 
 - `parameters`: reorder columns to
-  [`param_colnames()`](https://limnotrack.com/reference/param_colnames.md)
+  [`param_colnames()`](https://limnotrack.com/AEME/reference/param_colnames.md)
   order.
 
 ## Usage
@@ -70,5 +71,5 @@ The `Aeme` object, migrated to the current layout, with
 
 ## See also
 
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md),
-[`check_aeme()`](https://limnotrack.com/reference/check_aeme.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md),
+[`check_aeme()`](https://limnotrack.com/AEME/reference/check_aeme.md)

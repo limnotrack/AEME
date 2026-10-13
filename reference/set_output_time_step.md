@@ -1,8 +1,8 @@
 # Set the model output temporal frequency
 
 A thin, generic wrapper around
-[`set_time()`](https://limnotrack.com/reference/set_time.md) for the
-common case of only wanting to change how often every model in the
+[`set_time()`](https://limnotrack.com/AEME/reference/set_time.md) for
+the common case of only wanting to change how often every model in the
 ensemble writes output. The frequency applies to all models:
 `build_glm()`, `build_gotm()` and `build_simstrat()` each translate
 `output_time_step` into their native output-cadence setting (`nsave`,
@@ -20,7 +20,7 @@ set_output_time_step(aeme, frequency, daily_mean = FALSE)
 
 - aeme:
 
-  An [Aeme](https://limnotrack.com/reference/Aeme.md) object.
+  An [Aeme](https://limnotrack.com/AEME/reference/Aeme.md) object.
 
 - frequency:
 
@@ -44,7 +44,7 @@ set_output_time_step(aeme, frequency, daily_mean = FALSE)
 The `aeme` object with `time(aeme)$output_time_step` (and, when
 supplied, `time(aeme)$output_daily_mean`) updated. `output_time_step`
 must be greater than or equal to `time(aeme)$time_step`;
-[`set_time()`](https://limnotrack.com/reference/set_time.md) raises
+[`set_time()`](https://limnotrack.com/AEME/reference/set_time.md) raises
 `aeme_error_output_time_step` otherwise.
 
 ## Details
@@ -77,7 +77,7 @@ require — not every model variable.
 
 ## See also
 
-[`set_time()`](https://limnotrack.com/reference/set_time.md)
+[`set_time()`](https://limnotrack.com/AEME/reference/set_time.md)
 
 ## Examples
 

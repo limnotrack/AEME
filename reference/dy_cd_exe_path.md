@@ -1,11 +1,11 @@
 # Locate an installed DYRESM-CAEDYM executable
 
 Returns the path to `dycd.exe` previously installed with
-[`install_dy_cd()`](https://limnotrack.com/reference/install_dy_cd.md) –
-its three companion tools (`createDYref.exe`, `createDYsim.exe`,
+[`install_dy_cd()`](https://limnotrack.com/AEME/reference/install_dy_cd.md)
+– its three companion tools (`createDYref.exe`, `createDYsim.exe`,
 `extractDYinfo.exe`) sit alongside it in the same directory. Errors if
 that version isn't installed for this platform yet. Mirrors
-[`glm_exe_path()`](https://limnotrack.com/reference/glm_exe_path.md).
+[`glm_exe_path()`](https://limnotrack.com/AEME/reference/glm_exe_path.md).
 
 ## Usage
 

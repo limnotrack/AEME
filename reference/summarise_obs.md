@@ -28,7 +28,7 @@ Each variable is classified as one of
 The summary also carries the date range of every *forcing* series - met,
 inflows, outflows - because those, not the observations, are usually
 what limits how early a simulation can start. See
-[`suggest_sim_period()`](https://limnotrack.com/reference/suggest_sim_period.md),
+[`suggest_sim_period()`](https://limnotrack.com/AEME/reference/suggest_sim_period.md),
 which turns this summary into a runnable period.
 
 ## Usage
@@ -80,9 +80,9 @@ An object of class `aeme_obs_summary`: a list with
 
 ## See also
 
-[`suggest_sim_period()`](https://limnotrack.com/reference/suggest_sim_period.md),
-[`set_sim_period()`](https://limnotrack.com/reference/set_sim_period.md),
-[`get_obs()`](https://limnotrack.com/reference/get_obs.md)
+[`suggest_sim_period()`](https://limnotrack.com/AEME/reference/suggest_sim_period.md),
+[`set_sim_period()`](https://limnotrack.com/AEME/reference/set_sim_period.md),
+[`get_obs()`](https://limnotrack.com/AEME/reference/get_obs.md)
 
 ## Examples
 

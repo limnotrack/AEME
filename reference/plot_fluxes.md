@@ -31,7 +31,7 @@ plot_fluxes(aeme, model, facet_by = c("flux", "model"), ...)
 - ...:
 
   additional arguments passed to
-  [`get_var`](https://limnotrack.com/reference/get_var.md)
+  [`get_var`](https://limnotrack.com/AEME/reference/get_var.md)
 
 ## Value
 

@@ -22,7 +22,13 @@ input_model_parameters(aeme, model, param, path)
 
 - param:
 
-  data.frame; parameters to input into the model configuration files
+  data.frame; parameters to input into the model configuration files.
+  Zone-ratio and zone-offset rows made by
+  [`zone_ratio_param()`](https://limnotrack.com/AEME/reference/zone_ratio_param.md)
+  and
+  [`zone_offset_param()`](https://limnotrack.com/AEME/reference/zone_offset_param.md)
+  are expanded to per-zone values first (see
+  [`expand_zone_ratios()`](https://limnotrack.com/AEME/reference/expand_zone_ratios.md)).
 
 - path:
 

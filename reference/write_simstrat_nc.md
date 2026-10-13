@@ -6,8 +6,8 @@ GOTM-WET which write netCDF directly. This function reads every
 `<var>_out.dat` file in the simulation's output directory and writes
 them into a single compressed `output.nc`, so that Simstrat output can
 be read with the same netCDF-based tooling
-([`read_model_outputs`](https://limnotrack.com/reference/read_model_outputs.md),
-[`get_model_outfile`](https://limnotrack.com/reference/get_model_outfile.md),
+([`read_model_outputs`](https://limnotrack.com/AEME/reference/read_model_outputs.md),
+[`get_model_outfile`](https://limnotrack.com/AEME/reference/get_model_outfile.md),
 ...) used for the other models, and so the on-disk output is much
 smaller than the raw text files.
 
@@ -31,7 +31,7 @@ write_simstrat_nc(sim_folder, config_file = "simstrat.par", remove_dat = FALSE)
   written to `output.nc`. Default `FALSE` – deleting them is the actual
   disk-space saving (keeping both uses more space, not less), but it
   also removes what
-  [`read_simstrat_dat`](https://limnotrack.com/reference/read_simstrat_dat.md)
+  [`read_simstrat_dat`](https://limnotrack.com/AEME/reference/read_simstrat_dat.md)
   reads.
 
   Each netCDF variable's `units` and `long_name` attributes are looked
@@ -65,9 +65,9 @@ file), so e.g. `NIT_amm_dsf_out.dat` and `NIT_amm_dsf_zone_out.dat`
 become the distinct netCDF variables `NIT_amm_dsf` (dims `time`) and
 `NIT_amm_dsf_zone` (dims `zone, time`) – never colliding. Reading them
 back needs no extra code:
-[`read_simstrat_output`](https://limnotrack.com/reference/read_simstrat_output.md)'s
+[`read_simstrat_output`](https://limnotrack.com/AEME/reference/read_simstrat_output.md)'s
 `load_all` sweep already routes any variable whose dimensions aren't
 `(time)` or `(z, time)` through `.read_glm_grouped_var` into an
-[`new_grouped_var`](https://limnotrack.com/reference/new_grouped_var.md)
+[`new_grouped_var`](https://limnotrack.com/AEME/reference/new_grouped_var.md)
 object, the same generic path GLM-AED's own `nzones`-dimensioned output
 uses.

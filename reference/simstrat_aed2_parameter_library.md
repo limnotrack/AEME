@@ -63,7 +63,7 @@ pH, methane), silica, inorganic nitrogen, inorganic phosphorus, organic
 matter, phytoplankton, and zooplankton. Simstrat-AED2 and GLM-AED couple
 to the same underlying AED2 library, so most module/parameter
 descriptions here are shared with
-[`glm_aed_parameter_library`](https://limnotrack.com/reference/glm_aed_parameter_library.md)
+[`glm_aed_parameter_library`](https://limnotrack.com/AEME/reference/glm_aed_parameter_library.md)
 (only the module name prefix differs: `"aed2_"` here vs. `"aed_"` there,
 matching each model's actual configuration file). The carbon module has
 no AED (v1) analogue and is documented directly from AEME's bundled

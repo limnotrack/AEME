@@ -2,7 +2,7 @@
 
 Attempts to match column names in a meteorological data frame to AEME
 standard variable names using
-[`guess_aeme_vars()`](https://limnotrack.com/reference/guess_aeme_vars.md),
+[`guess_aeme_vars()`](https://limnotrack.com/AEME/reference/guess_aeme_vars.md),
 then detects the likely input units of each variable from its values and
 converts to the units expected by the package.
 
@@ -48,11 +48,11 @@ standardise_met(
   carries a timezone (including `"UTC"`) is taken at face value here –
   reinterpreting a `"UTC"`-tagged column against a declared local zone
   happens once, upstream, in
-  [`add_met`](https://limnotrack.com/reference/add_met.md) /
-  [`aeme_constructor`](https://limnotrack.com/reference/aeme_constructor.md).
+  [`add_met`](https://limnotrack.com/AEME/reference/add_met.md) /
+  [`aeme_constructor`](https://limnotrack.com/AEME/reference/aeme_constructor.md).
   Default `"UTC"`;
-  [`build_aeme`](https://limnotrack.com/reference/build_aeme.md) passes
-  the object's `time$tz`.
+  [`build_aeme`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  passes the object's `time$tz`.
 
 - longitude:
 
@@ -62,8 +62,8 @@ standardise_met(
   longitude; a warning is emitted if they differ by more than 3 h, which
   usually means the timestamps are in local time rather than UTC. `NULL`
   (default) skips the check.
-  [`build_aeme`](https://limnotrack.com/reference/build_aeme.md) passes
-  the lake longitude.
+  [`build_aeme`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  passes the lake longitude.
 
 ## Value
 

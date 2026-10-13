@@ -29,10 +29,10 @@ set_wbal_param(aeme, C, h_inv, params = NULL, model = NULL)
 
   Optional named numeric vector with elements `"C"` and `"h_inv"`, as
   returned by
-  [`get_wbal_param`](https://limnotrack.com/reference/get_wbal_param.md)
+  [`get_wbal_param`](https://limnotrack.com/AEME/reference/get_wbal_param.md)
   for a single model. If supplied, overrides the individual `C` and
   `h_inv` arguments. Alternatively, a family-keyed list as returned by
-  [`get_wbal_param`](https://limnotrack.com/reference/get_wbal_param.md)
+  [`get_wbal_param`](https://limnotrack.com/AEME/reference/get_wbal_param.md)
   with no `model` – each entry is applied directly to its own family,
   and `model` is ignored.
 

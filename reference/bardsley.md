@@ -40,8 +40,8 @@ correlation and efficiency characteristics.
 
 ## See also
 
-[`nse`](https://limnotrack.com/reference/nse.md) for the Nash-Sutcliffe
-Efficiency component.
+[`nse`](https://limnotrack.com/AEME/reference/nse.md) for the
+Nash-Sutcliffe Efficiency component.
 
 ## Examples
 

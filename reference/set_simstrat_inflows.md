@@ -1,8 +1,8 @@
 # Set inflow data for a Simstrat-AED2 simulation directory
 
 Thin, `aeme`-free wrapper around the internal inflow writer used by
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md). Writes
-`Qinp.dat`/`Tinp.dat`/`Sinp.dat` (and, if BGC is coupled,
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md).
+Writes `Qinp.dat`/`Tinp.dat`/`Sinp.dat` (and, if BGC is coupled,
 `AED2_inflow/*.dat`) into `path_simstrat`.
 
 ## Usage
@@ -29,9 +29,9 @@ set_simstrat_inflows(
 
   named list of data.frames, one per inflow. Each must have a `Date`
   column plus `HYD_flow`, `HYD_temp`, `CHM_salt` columns – see
-  [`add_inflow()`](https://limnotrack.com/reference/add_inflow.md) for
-  the expected schema. Multiple inflows are merged into a single series
-  (Simstrat only accepts one): flow is summed and the scalars
+  [`add_inflow()`](https://limnotrack.com/AEME/reference/add_inflow.md)
+  for the expected schema. Multiple inflows are merged into a single
+  series (Simstrat only accepts one): flow is summed and the scalars
   (temperature, salinity, BGC) are flow-weighted so total load is
   conserved – see `make_inf_simstrat()`.
 
@@ -48,7 +48,7 @@ set_simstrat_inflows(
 - model_controls:
 
   data.frame of loaded model controls (see
-  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md)),
+  [`get_model_controls()`](https://limnotrack.com/AEME/reference/get_model_controls.md)),
   required when `use_bgc = TRUE`.
 
 - ref_year:

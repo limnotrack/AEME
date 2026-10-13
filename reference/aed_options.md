@@ -1,15 +1,15 @@
 # Options for the AED biogeochemistry setup in `build_aeme()`
 
 With `use_bgc = TRUE`,
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
 configures AED for GLM-AED in several steps. `aed_options()` lets you
 choose which of these run. The defaults reproduce the usual build, so
 only set what you want to change. Every step is also available on its
 own once the model is built:
-[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md),
-[`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
+[`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md),
+[`set_aed_sed_const2d()`](https://limnotrack.com/AEME/reference/set_aed_sed_const2d.md)
 and
-[`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md).
+[`set_aed_totals()`](https://limnotrack.com/AEME/reference/set_aed_totals.md).
 
 ## Usage
 
@@ -53,27 +53,27 @@ aed_options(
 
   logical; estimate and set the per-zone sediment fluxes
   (`aed_sed_const2d`) with
-  [`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md).
+  [`set_aed_sed_const2d()`](https://limnotrack.com/AEME/reference/set_aed_sed_const2d.md).
   Default `TRUE`.
 
 - totals:
 
   logical; derive the `aed_totals` (TN, TP, TOC and TSS) variable lists
   with
-  [`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md).
+  [`set_aed_totals()`](https://limnotrack.com/AEME/reference/set_aed_totals.md).
   Default `TRUE`.
 
 ## Value
 
 An `aed_options` object, to pass as the `aed` argument of
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md).
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md).
 
 ## See also
 
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md),
-[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md),
-[`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md),
-[`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md)
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md),
+[`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md),
+[`set_aed_sed_const2d()`](https://limnotrack.com/AEME/reference/set_aed_sed_const2d.md),
+[`set_aed_totals()`](https://limnotrack.com/AEME/reference/set_aed_totals.md)
 
 ## Examples
 

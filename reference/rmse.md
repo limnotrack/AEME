@@ -39,11 +39,11 @@ it is minimise-oriented as-is and needs no `_loss` companion
 - pass it straight into `FUN_list`, which `calib_aeme` and `run_and_fit`
   minimise.
 
-Like [`mae`](https://limnotrack.com/reference/mae.md), RMSE stays in the
-variable's native units and so is not directly comparable across
+Like [`mae`](https://limnotrack.com/AEME/reference/mae.md), RMSE stays
+in the variable's native units and so is not directly comparable across
 variables with different units or magnitudes when combined in a
 multi-variable `FUN_list` - see
-[`mae`](https://limnotrack.com/reference/mae.md) for details. RMSE
+[`mae`](https://limnotrack.com/AEME/reference/mae.md) for details. RMSE
 additionally squares errors before averaging, so - like NSE - it weights
 large deviations more heavily than MAE does.
 

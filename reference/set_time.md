@@ -52,7 +52,7 @@ set_time(
   logical; if `TRUE`, every model additionally produces a daily-mean
   output stream alongside its raw `output_time_step` output. Default
   (when unset on the object) `FALSE`. See
-  [`set_output_time_step`](https://limnotrack.com/reference/set_output_time_step.md).
+  [`set_output_time_step`](https://limnotrack.com/AEME/reference/set_output_time_step.md).
 
 - tz:
 

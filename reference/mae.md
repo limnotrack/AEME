@@ -42,8 +42,8 @@ MAE from, say, a temperature fit (degC) and an oxygen fit (mg/L) in a
 multi-variable `FUN_list` lets whichever variable happens to have the
 larger natural magnitude dominate the combined fit. Prefer a
 dimensionless metric such as
-[`nse_loss`](https://limnotrack.com/reference/fit_loss.md) or
-[`kge_loss`](https://limnotrack.com/reference/fit_loss.md) when
+[`nse_loss`](https://limnotrack.com/AEME/reference/fit_loss.md) or
+[`kge_loss`](https://limnotrack.com/AEME/reference/fit_loss.md) when
 combining fits across variables; MAE/RMSE are more suited to
 single-variable calibration or to reporting fit in interpretable,
 original units.

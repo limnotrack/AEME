@@ -19,8 +19,8 @@ get_obs_vars(aeme, time_filter = FALSE)
 - time_filter:
 
   logical; if TRUE, only observations within the simulation period (see
-  [`time()`](https://limnotrack.com/reference/time.md)) are considered.
-  Default is FALSE.
+  [`time()`](https://limnotrack.com/AEME/reference/time.md)) are
+  considered. Default is FALSE.
 
 ## Value
 
@@ -45,9 +45,9 @@ Returns `NULL` if the Aeme object contains no observations.
 
 ## See also
 
-[`list_obs_vars()`](https://limnotrack.com/reference/list_obs_vars.md)
+[`list_obs_vars()`](https://limnotrack.com/AEME/reference/list_obs_vars.md)
 for a named vector of the variable names,
-[`get_mod_obs_vars()`](https://limnotrack.com/reference/get_mod_obs_vars.md)
+[`get_mod_obs_vars()`](https://limnotrack.com/AEME/reference/get_mod_obs_vars.md)
 for the variables shared with model output.
 
 ## Examples

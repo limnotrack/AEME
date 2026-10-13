@@ -15,7 +15,9 @@ get_var(
   ens_n = 1,
   use_obs = FALSE,
   remove_spin_up = TRUE,
-  cumulative = FALSE
+  cumulative = FALSE,
+  zone = NULL,
+  sed_layer = NULL
 )
 ```
 
@@ -37,13 +39,21 @@ get_var(
 
 - depth:
 
-  numeric; depth of the variable to extract. Default is NULL. If NULL,
-  the variable profiles are extracted.
+  numeric; depth of the variable to extract, referenced to `depth_ref`.
+  Default is NULL. If NULL, the variable profiles are extracted.
 
 - depth_ref:
 
-  character; reference depth for extracting variable profiles. Options
-  are "surface" (default) or "bottom".
+  character; what `depth` is measured from when a single depth is
+  extracted. `"surface"` (default): metres below the water surface.
+  `"bottom"`: metres above the lake bed, so `depth = 1` is the water 1 m
+  above the bottom. That is `level - depth` metres below the surface,
+  with `level` the modelled water level (`LKE_lvlwtr`) on each date, so
+  it follows the surface as the level rises and falls. On a date when
+  the level is below `depth` (the point would be above the surface) the
+  value is `NA`. Ignored when `depth` is `NULL`. (Before AEME 0.4.0
+  `"bottom"` was measured from the basin's full depth, which only
+  matches when the level equals that depth.)
 
 - return_df:
 
@@ -58,7 +68,12 @@ get_var(
 
   logical; if TRUE, use observations to extract the variable at time and
   depth of observations. Default is FALSE. Use this option if you want
-  to compare model output to observations.
+  to compare model output to observations. Observations recorded as a
+  height above the lake bed (see
+  [`add_obs()`](https://limnotrack.com/AEME/reference/add_obs.md)) are
+  compared with the model profile at (the model's water level - that
+  height) on each date, so they follow the model's own level rather than
+  the depth they were placed at when added.
 
 - remove_spin_up:
 
@@ -67,6 +82,19 @@ get_var(
 - cumulative:
 
   logical; if TRUE, return cumulative sum of variable
+
+- zone:
+
+  integer; for GLM-AED sediment-zone variables (those with an `nzones`
+  column, e.g. `"SED_Fsed_oxy"`, `"SED_temp"`), keep only these sediment
+  zones (GLM zone order, 1 = deepest). `NULL` (default) keeps all.
+
+- sed_layer:
+
+  integer; for variables with a sediment-layer dimension (`"SED_temp"`),
+  keep only these layers (1 = shallowest). `NULL` (default) keeps all.
+  Sediment variables are returned in long format with one column per
+  dimension (`nzones`, `sed_layers`); `depth_ref`/`depth` do not apply.
 
 ## Value
 

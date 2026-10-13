@@ -16,7 +16,10 @@ read_glm_output(
   file,
   phyto_pars = NULL,
   load_all = TRUE,
-  raw_output = FALSE
+  raw_output = FALSE,
+  extra_vars = NULL,
+  sed_layers = NULL,
+  zone_summary = FALSE
 )
 ```
 
@@ -68,13 +71,13 @@ read_glm_output(
   logical; also load every other variable present in the netCDF file,
   beyond the declared `vars_sim` set. Each such variable is keyed by its
   AEME `var_aeme` name if
-  [key_naming](https://limnotrack.com/reference/key_naming.md) has a
-  translation for it, or by its raw GLM/netCDF name otherwise. Variables
-  shaped like GLM's usual `(time)` or `(z, time)` output are loaded the
-  same way as any declared variable; variables with other dimensions
-  (e.g. `nzones`, `particle`, `sed_layers`, `lon`, `lat`) are loaded as
-  a
-  [`new_grouped_var()`](https://limnotrack.com/reference/new_grouped_var.md)
+  [key_naming](https://limnotrack.com/AEME/reference/key_naming.md) has
+  a translation for it, or by its raw GLM/netCDF name otherwise.
+  Variables shaped like GLM's usual `(time)` or `(z, time)` output are
+  loaded the same way as any declared variable; variables with other
+  dimensions (e.g. `nzones`, `particle`, `sed_layers`, `lon`, `lat`) are
+  loaded as a
+  [`new_grouped_var()`](https://limnotrack.com/AEME/reference/new_grouped_var.md)
   object instead of being forced into the depth x time convention.
   Default `TRUE`.
 
@@ -89,6 +92,36 @@ read_glm_output(
   and no AED unit-conversion factors are applied. `depths` must not be
   supplied when `raw_output = TRUE`, since raw output has no common
   depth grid to interpolate onto. Default `FALSE`.
+
+- extra_vars:
+
+  character; which of the variables swept up by `load_all` (those beyond
+  the declared `vars_sim` set – sediment, diagnostic and flux output) to
+  read. `NULL` (default) reads all of them. `"none"` reads none.
+  Otherwise a vector of names – AEME names from
+  [glm_extra_vars](https://limnotrack.com/AEME/reference/glm_extra_vars.md)
+  (e.g. `"SED_temp"`), raw netCDF names (e.g. `"sed_temp"`), and/or the
+  group keywords `"sediment"` and `"diag"` (every variable that would be
+  stored in that sub-list). Variables not requested are never read from
+  the file, which keeps ensemble output small. Names that are not in the
+  file give a warning. Ignored if `load_all = FALSE`.
+
+- sed_layers:
+
+  integer; for variables with a `sed_layers` dimension (`sed_temp`),
+  keep only these sediment layers (indices, 1 = shallowest). `NULL`
+  (default) keeps all.
+
+- zone_summary:
+
+  logical; also add a lake-wide series for each requested sediment-zone
+  variable (name ending `_Z`), the mean over zones weighted by the
+  time-varying zone area (`zarea`). Stored in `$sediment` as
+  `<name>_lake` (e.g. `SDF_Fsed_oxy_Z_lake`, or `SED_Fsed_oxy_lake` by
+  AEME name), in the variable's own per-m2 units. Zones with no area
+  (`NA` in `zarea`) are ignored. Naming a `_lake` series in `extra_vars`
+  builds just that series, without `zone_summary = TRUE` (the zone array
+  behind it is then not kept unless also requested). Default `FALSE`.
 
 ## Value
 

@@ -30,7 +30,8 @@ set_output_vars(aeme, model, vars, mass_balance = TRUE, ens_n = 1)
 
   Character. AEME variable names to keep, e.g.
   `c("HYD_temp", "CHM_oxy")`. Mapped to each model's own output names
-  via [`key_naming`](https://limnotrack.com/reference/key_naming.md);
+  via
+  [`key_naming`](https://limnotrack.com/AEME/reference/key_naming.md);
   names with no mapping for `model` are dropped with a warning.
 
 - mass_balance:
@@ -46,16 +47,16 @@ set_output_vars(aeme, model, vars, mass_balance = TRUE, ens_n = 1)
 ## Value
 
 `aeme`, with its
-[`configuration()`](https://limnotrack.com/reference/configuration.md)
+[`configuration()`](https://limnotrack.com/AEME/reference/configuration.md)
 updated.
 
 ## Details
 
 The change is made on the in-memory configuration; call
-[`write_configuration`](https://limnotrack.com/reference/write_configuration.md)
-(or [`build_aeme`](https://limnotrack.com/reference/build_aeme.md)) to
-write it to disk.
-[`build_aeme`](https://limnotrack.com/reference/build_aeme.md)'s
+[`write_configuration`](https://limnotrack.com/AEME/reference/write_configuration.md)
+(or [`build_aeme`](https://limnotrack.com/AEME/reference/build_aeme.md))
+to write it to disk.
+[`build_aeme`](https://limnotrack.com/AEME/reference/build_aeme.md)'s
 `output_vars` argument applies this automatically at build time.
 
 - **GLM** always writes the full netCDF - its gridded variables cannot
@@ -77,9 +78,9 @@ write it to disk.
 
 ## See also
 
-[`set_vars_sim`](https://limnotrack.com/reference/set_vars_sim.md),
-[`write_configuration`](https://limnotrack.com/reference/write_configuration.md),
-[`get_output_vars`](https://limnotrack.com/reference/get_output_vars.md)
+[`set_vars_sim`](https://limnotrack.com/AEME/reference/set_vars_sim.md),
+[`write_configuration`](https://limnotrack.com/AEME/reference/write_configuration.md),
+[`get_output_vars`](https://limnotrack.com/AEME/reference/get_output_vars.md)
 
 ## Examples
 
@@ -98,7 +99,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [27ms]
+#> ✔ Estimating surface water temperature [29ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance

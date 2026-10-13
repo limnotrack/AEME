@@ -25,7 +25,7 @@ get_model_outfile(aeme = NULL, model, path = NULL, lake_dir, all = FALSE)
   Directory to search for the model output. If `aeme` is also provided,
   `path` is the root combined with `aeme` to compute the lake's
   directory (as in
-  [`get_lake_dir()`](https://limnotrack.com/reference/get_lake_dir.md))
+  [`get_lake_dir()`](https://limnotrack.com/AEME/reference/get_lake_dir.md))
   – omit it to use `aeme`'s own stored path. If `aeme` is not provided,
   `path` is searched directly, and can be either an ensemble root or a
   single model's own directory.

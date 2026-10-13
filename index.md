@@ -158,7 +158,7 @@ aeme
 ```
 
 Model data can be visualised easily using the
-[`plot_output()`](https://limnotrack.com/reference/plot_output.md)
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
 function:
 
 ``` r

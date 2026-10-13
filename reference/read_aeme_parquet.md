@@ -1,7 +1,7 @@
 # Read from a Parquet store written by write_aeme_parquet()
 
 Queries the Hive-partitioned Parquet store produced by
-[`write_aeme_parquet`](https://limnotrack.com/reference/write_aeme_parquet.md),
+[`write_aeme_parquet`](https://limnotrack.com/AEME/reference/write_aeme_parquet.md),
 applying any of `lake_id`, `model`, `var_sim`, and `date_range` as
 filters *before* the data is read into memory – partition pruning
 (`lake_id`/`model`) skips whole files, and the `var_sim`/`date_range`
@@ -28,7 +28,7 @@ read_aeme_parquet(
 - out_root:
 
   character; root directory of the parquet store (as passed to
-  [`write_aeme_parquet`](https://limnotrack.com/reference/write_aeme_parquet.md)).
+  [`write_aeme_parquet`](https://limnotrack.com/AEME/reference/write_aeme_parquet.md)).
 
 - what:
 
@@ -45,7 +45,7 @@ read_aeme_parquet(
 - model:
 
   character vector; restrict to these model codes (see
-  [`list_models`](https://limnotrack.com/reference/list_models.md)).
+  [`list_models`](https://limnotrack.com/AEME/reference/list_models.md)).
   Ignored for `what = "lakes"`.
 
 - var_sim:
@@ -75,7 +75,7 @@ A tibble, or a lazy `arrow` `Dataset`/query object if `collect = FALSE`.
 
 `what = "output_summary"` only has data for lakes with more than one
 ensemble member (see
-[`write_aeme_parquet`](https://limnotrack.com/reference/write_aeme_parquet.md));
+[`write_aeme_parquet`](https://limnotrack.com/AEME/reference/write_aeme_parquet.md));
 requesting it for a single-ensemble lake returns 0 rows for that lake,
 with a warning pointing at `output_raw` instead.
 

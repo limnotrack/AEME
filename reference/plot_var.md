@@ -29,10 +29,10 @@ plot_var(
 - df:
 
   dataframe; output from
-  [`get_var`](https://limnotrack.com/reference/get_var.md). If `NULL`,
-  [`get_var`](https://limnotrack.com/reference/get_var.md) will be
-  called and `var_sim` will be used to extract the variable of interest
-  from `aeme` for each model.
+  [`get_var`](https://limnotrack.com/AEME/reference/get_var.md). If
+  `NULL`, [`get_var`](https://limnotrack.com/AEME/reference/get_var.md)
+  will be called and `var_sim` will be used to extract the variable of
+  interest from `aeme` for each model.
 
 - aeme:
 
@@ -64,7 +64,7 @@ plot_var(
 - obs:
 
   list; output from
-  [`observations`](https://limnotrack.com/reference/observations.md)
+  [`observations`](https://limnotrack.com/AEME/reference/observations.md)
 
 - add_obs:
 
@@ -99,9 +99,9 @@ plot_var(
 - raw_label:
 
   character; fallback y-axis/fill label to use when `var_sim` has no
-  [`key_naming`](https://limnotrack.com/reference/key_naming.md) entry
-  (e.g. a raw netCDF variable name from `raw_output = TRUE` output).
-  Default `NULL` (falls back to `var_sim` itself).
+  [`key_naming`](https://limnotrack.com/AEME/reference/key_naming.md)
+  entry (e.g. a raw netCDF variable name from `raw_output = TRUE`
+  output). Default `NULL` (falls back to `var_sim` itself).
 
 ## Value
 

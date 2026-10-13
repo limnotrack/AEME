@@ -2,6 +2,225 @@
 
 ## AEME 0.4.0
 
+### Choosing which GLM-AED sediment, flux and diagnostic output to keep
+
+GLM-AED writes far more than the standard variables: sediment
+temperature and heat flux, sediment-water fluxes (lake-wide and by
+sediment zone), sediment pools and AED diagnostics.
+[`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
+has always swept these into the `diag` / `sediment` sub-lists of the
+model output under their raw netCDF names; this release makes them easy
+to request, name and use, e.g. from `aemetools` sensitivity analysis and
+calibration, without carrying the whole payload in every ensemble
+member.
+
+- New dataset `glm_extra_vars`: a registry giving these variables AEME
+  names (`SED_temp`, `SED_hflux`, `SED_ztemp`, `SED_Fsed_oxy`, … for
+  sediment-zone variables; `SEDL_Fsed_oxy`, … for the matching lake-wide
+  series), labels and units. Generated from
+  `data-raw/glm_extra_vars.csv`. Either the AEME or the raw netCDF name
+  works wherever a variable is looked up:
+  [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md),
+  [`check_var_in_output()`](https://limnotrack.com/AEME/reference/check_var_in_output.md),
+  [`check_aeme_vars()`](https://limnotrack.com/AEME/reference/check_aeme_vars.md)
+  and `plot_*()`.
+- New `extra_vars` argument on
+  [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md),
+  [`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md),
+  [`load_output()`](https://limnotrack.com/AEME/reference/load_output.md),
+  [`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md)
+  and
+  [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
+  to choose which of those variables are read: `NULL` (default, as
+  before) reads all, `"none"` none, or a vector of names and/or the
+  keywords `"sediment"` / `"diag"`. Variables not requested are never
+  read from `output.nc`. In a test lake this cut the stored output from
+  18.9 MB to 3.5 MB per run, which adds up over an ensemble.
+  [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) and
+  [`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md)
+  also now expose `keep_diag`.
+- New `sed_layers` argument to keep only some sediment layers of
+  `SED_temp`, and `zone_summary` to add an area-weighted lake-wide
+  series for each sediment-zone variable (`<name>_lake`, using the
+  time-varying zone area `zarea`; zones with no area are ignored).
+  Naming a series such as `"SED_Fsed_oxy_lake"` in `extra_vars` builds
+  just that series.
+- [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) gains
+  `zone` and `sed_layer` to subset sediment variables.
+- [`get_output_vars()`](https://limnotrack.com/AEME/reference/get_output_vars.md)
+  labels these variables from the registry.
+- Fixed
+  [`check_var_in_output()`](https://limnotrack.com/AEME/reference/check_var_in_output.md)
+  reporting variables held in the `diag` / `sediment` sub-lists as
+  missing, and sediment-zone variables (`*_Z`) requested through
+  `vars_sim` being returned as bare arrays rather than labelled grouped
+  variables.
+
+### Observations recorded relative to the lake bed
+
+- [`add_obs()`](https://limnotrack.com/AEME/reference/add_obs.md) gains
+  `depth_ref` (and accepts a `depth_ref` column in `lake`) so an
+  observation can be recorded as a height above the lake bed
+  (`"bottom"`), for example a logger 1 m above the sediment, instead of
+  a depth below the surface (`"surface"`, the default and the usual
+  case). Stored observations keep `depth` in metres below the surface,
+  so everything that reads it is unaffected. A bottom-referenced
+  observation also stores `height_above_bed` and `depth_ref`, and its
+  `depth` is worked out as `level - height` from the lake level
+  observations (interpolated in time), or from the full depth of the
+  basin with a warning if there are none. Observations that are all
+  surface-referenced get no new columns.
+- `get_var(use_obs = TRUE)` compares a bottom-referenced observation
+  with the model at (the model’s own water level - `height_above_bed`)
+  on that date, rather than at the depth it was placed at when added. It
+  also no longer fails when the observations fall on a single date.
+- [`ensemble_summary()`](https://limnotrack.com/AEME/reference/ensemble_summary.md)
+  now places observations in the reference of the summary before
+  matching them to `depths`. With `depth_ref = "bottom"` a surface
+  observation is converted to a height above the bed, and with
+  `"surface"` a bottom observation to a depth below it, using the lake
+  level observations (interpolated in time) or, where there are none,
+  the ensemble median of the modelled level. Previously observations
+  were matched to `depths` as depths below the surface whatever
+  `depth_ref` was, so with `"bottom"` they were misaligned.
+  [`score_ensemble()`](https://limnotrack.com/AEME/reference/score_ensemble.md)
+  uses the same observations.
+- `get_obs_column_names(include_optional = TRUE)` now also returns
+  `depth_ref` and `height_above_bed`.
+
+### `get_var(depth_ref = "bottom")` follows the water level
+
+- **Behaviour change.** `get_var(depth = d, depth_ref = "bottom")` now
+  reads the profile `d` metres above the lake bed, i.e. `level - d`
+  metres below the surface on each date, using the modelled water level
+  (`LKE_lvlwtr`). It previously used the basin’s full depth as a fixed
+  datum, so “1 m from the bottom” was always read at (full depth - 1) m
+  below the surface whatever the water level; the two only agree when
+  the level equals the full depth. With levels that move
+  (inflow/outflow, drawdown, or an extended hypsograph) the old answer
+  was off by the difference between the level and the full depth, which
+  reached about 3 m and over 1 degC in an ensemble test. On a date when
+  the level is below `depth` the value is now `NA` rather than the
+  surface value. Results from
+  [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md), and
+  from `ensemble_summary(depth_ref = "bottom")` which calls it, will
+  change for bottom-referenced depths; surface-referenced extraction is
+  unchanged. `write_aeme_parquet(depth_ref = "bottom")` uses the same
+  definition.
+
+### `write_aeme_parquet()` can summarise at fixed depths
+
+- AEME stores GLM output on a depth grid scaled to each day’s lake
+  level, so members whose water level differs report different depths
+  and the summary tier, which collapses across members at each stored
+  depth, ended up with one or two members per group.
+  [`write_aeme_parquet()`](https://limnotrack.com/AEME/reference/write_aeme_parquet.md)
+  gains `depths` (and `depth_ref`): each member’s profile is linearly
+  interpolated to the requested depths on every date before the members
+  are collapsed. A depth outside a member’s water column on a date is
+  left out for that member, so `n_ens` is the number of members that
+  contributed.
+- `depth_ref = "surface"` (default) measures `depths` in metres below
+  the water surface; `"bottom"` measures them in metres above the lake
+  bed, converted per member and date from the member’s water level
+  (`LKE_lvlwtr`).
+- The summary tier has a new `depth_ref` column (`"surface"` or
+  `"bottom"` for depth-resolved variables, `NA` for variables with no
+  depth dimension). `output_raw` is unchanged and always holds the
+  stored depths in metres below the surface.
+
+### Faster `write_aeme_parquet()` summary tier
+
+- The ensemble summary tier written by
+  [`write_aeme_parquet()`](https://limnotrack.com/AEME/reference/write_aeme_parquet.md)
+  is now computed without a list-column per group. The standard depth
+  grid is scaled to each member’s water level, so depths differ between
+  members and a 12-member ensemble has about a million summary groups;
+  the old
+  [`dplyr::summarise()`](https://dplyr.tidyverse.org/reference/summarise.html)
+  over them took over a minute (66 s of a 96 s write). The same table
+  now takes a second or two (the whole write about 15 s). The values are
+  identical to the previous implementation, checked on the full ensemble
+  and on edge cases (missing values, single members, ties). New tests
+  cover the writer, which had none.
+
+### Ensemble summary and plotting moved from aemetools
+
+- [`ensemble_summary()`](https://limnotrack.com/AEME/reference/ensemble_summary.md)
+  and
+  [`plot_ensemble()`](https://limnotrack.com/AEME/reference/plot_ensemble.md)
+  now live in AEME, next to
+  [`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md)
+  and
+  [`write_aeme_parquet()`](https://limnotrack.com/AEME/reference/write_aeme_parquet.md).
+  [`ensemble_summary()`](https://limnotrack.com/AEME/reference/ensemble_summary.md)
+  extracts each member once and returns per-date `mean`, `sd`, `n` and
+  quantiles with the member frame and depth-aligned observations;
+  [`plot_ensemble()`](https://limnotrack.com/AEME/reference/plot_ensemble.md)
+  draws a ribbon or per-member lines from an `Aeme` object or a summary.
+  Observation timestamps (stored as UTC `POSIXct`) are reduced to
+  calendar dates to match daily output. Requires dplyr \>= 1.1.0.
+- New
+  [`score_ensemble()`](https://limnotrack.com/AEME/reference/score_ensemble.md)
+  verifies an ensemble against the lake observations (from an
+  [`ensemble_summary()`](https://limnotrack.com/AEME/reference/ensemble_summary.md)
+  or an `Aeme` object): coverage of the central interval, bias and RMSE
+  of the ensemble mean, spread, spread-skill ratio and mean CRPS, per
+  model, variable and depth and pooled over depths. Coverage of a small
+  ensemble is biased low even when it is reliable (about
+  `(n - 1) * conf_int / (n + 1)` for `n` members); the documentation
+  says how to read it.
+
+### Parameter helpers moved from aemetools
+
+- [`zone_ratio_param()`](https://limnotrack.com/AEME/reference/zone_ratio_param.md),
+  [`zone_offset_param()`](https://limnotrack.com/AEME/reference/zone_offset_param.md)
+  and
+  [`expand_zone_ratios()`](https://limnotrack.com/AEME/reference/expand_zone_ratios.md)
+  (plus
+  [`is_zone_ratio()`](https://limnotrack.com/AEME/reference/is_zone_ratio.md)
+  and
+  [`zone_base_name()`](https://limnotrack.com/AEME/reference/is_zone_ratio.md))
+  now live in AEME.
+  [`input_model_parameters()`](https://limnotrack.com/AEME/reference/input_model_parameters.md)
+  expands zone-ratio and zone-offset rows itself, so parameter sets that
+  use them work with every function that writes parameters, including
+  [`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md).
+- [`encode_param()`](https://limnotrack.com/AEME/reference/param_names.md),
+  [`decode_param()`](https://limnotrack.com/AEME/reference/param_names.md)
+  and
+  [`decode_param_full()`](https://limnotrack.com/AEME/reference/param_names.md)
+  now live in AEME. The `group/name[index]` format is unchanged.
+  [`encode_param()`](https://limnotrack.com/AEME/reference/param_names.md)
+  returns `character(0)` for empty input instead of `"/[]"`, and
+  decoding a string that is not in the format gives `NA` instead of a
+  wrong group and name.
+
+### `run_aeme_ensemble()` runs supplied parameter sets
+
+- New
+  [`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md)
+  runs a model once per supplied parameter set (a list of `param`
+  data.frames, or one long data.frame with an `ensemble` column) and
+  stores each member as `output(aeme)$ens_001 ... ens_00k`, the
+  structure `get_var(ens_n =)` and
+  [`write_aeme_parquet()`](https://limnotrack.com/AEME/reference/write_aeme_parquet.md)
+  already use. Members that fail are dropped with a warning;
+  `parallel = TRUE` runs each worker in its own copy of the model
+  directory. Sampling sets from parameter bounds and extracting a PEST++
+  posterior stay in the aemetools package.
+- [`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md)
+  also drops members that fail *silently*: GLM exits normally when an
+  unphysical parameter set drains the lake, leaving a water level at or
+  below zero and then `NA`. With `drop_incomplete = TRUE` (default) such
+  members are removed and named in the warning, along with the first
+  error message when a member errors.
+- New article “Parameter uncertainty with ensembles” (Uncertainty menu)
+  covering sampled and supplied ensembles and
+  [`write_aeme_parquet()`](https://limnotrack.com/AEME/reference/write_aeme_parquet.md)
+  /
+  [`read_aeme_parquet()`](https://limnotrack.com/AEME/reference/read_aeme_parquet.md).
+
 ### `estimate_zone_fluxes()` documentation and Tier 2 normalisation
 
 - **Tier 2 (observed-data) adjustment now preserves the lake-wide
@@ -65,10 +284,10 @@ default.)
 New exported function computing a system-level diagnostic for whether a
 model run shows genuine, recurring, multi-group phytoplankton succession
 – computed purely from model output via
-[`get_var()`](https://limnotrack.com/reference/get_var.md), no
+[`get_var()`](https://limnotrack.com/AEME/reference/get_var.md), no
 observations required. Returns three components (`evenness`,
 `dom_entropy`, `periodicity`) plus a `composite`; see
-[`?aed_succession_index`](https://limnotrack.com/reference/aed_succession_index.md)
+[`?aed_succession_index`](https://limnotrack.com/AEME/reference/aed_succession_index.md)
 for what each one catches and the two failed designs (raw
 autocorrelation; naive mode-matching) that led to the current
 `match_rate`/`regime_shift` construction for `periodicity`. Intended as
@@ -92,8 +311,8 @@ models.
   (the `model_controls` `simulate` set plus the internals the reader
   needs) instead of every variable.
 - **GLM-AED** and **Simstrat** have no native time-averaging, so
-  [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) averages
-  their sub-daily `output.nc` by calendar day into a companion
+  [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md)
+  averages their sub-daily `output.nc` by calendar day into a companion
   `output_daily.nc` (same structure, one record per day). The raw
   sub-daily file is kept. The companion carries only the variables the
   reader consumes — the targeted `model_controls` set plus each reader’s
@@ -101,9 +320,9 @@ models.
   companion is also where the stored output is pruned (its large 4-D
   `light` / `umean` / wave fields are dropped): ~20 variables instead of
   ~60, and the averaging pass is several times faster and smaller.
-- [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) /
-  [`get_var()`](https://limnotrack.com/reference/get_var.md) read the
-  daily means transparently: when `output_daily_mean` is `TRUE` the
+- [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) /
+  [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) read
+  the daily means transparently: when `output_daily_mean` is `TRUE` the
   `output_daily.nc` companion is read if present, otherwise the raw
   `output.nc` is averaged by calendar day on read.
 - Model integration is unchanged (`dt` / `Timestep s` are untouched);
@@ -121,25 +340,25 @@ midnight is a day boundary. Genuinely sub-daily observations keep their
 time-of-day.
 
 - The conversion happens at every entry point:
-  [`yaml_to_aeme()`](https://limnotrack.com/reference/yaml_to_aeme.md),
-  [`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md),
-  [`add_obs()`](https://limnotrack.com/reference/add_obs.md),
-  [`read_aeme_from_files()`](https://limnotrack.com/reference/read_aeme_from_files.md)
+  [`yaml_to_aeme()`](https://limnotrack.com/AEME/reference/yaml_to_aeme.md),
+  [`lake_obs_to_aeme()`](https://limnotrack.com/AEME/reference/lake_obs_to_aeme.md),
+  [`add_obs()`](https://limnotrack.com/AEME/reference/add_obs.md),
+  [`read_aeme_from_files()`](https://limnotrack.com/AEME/reference/read_aeme_from_files.md)
   and
-  [`aeme_constructor()`](https://limnotrack.com/reference/aeme_constructor.md)
+  [`aeme_constructor()`](https://limnotrack.com/AEME/reference/aeme_constructor.md)
   (a non-`Date`/`POSIXct` column is coerced with a warning). Objects
   loaded from an older `.rds` are converted silently by `migrate_aeme()`
   on the first
-  [`check_aeme()`](https://limnotrack.com/reference/check_aeme.md) /
-  [`show()`](https://rdrr.io/r/methods/show.html) /
+  [`check_aeme()`](https://limnotrack.com/AEME/reference/check_aeme.md)
+  / [`show()`](https://rdrr.io/r/methods/show.html) /
   [`plot()`](https://rdrr.io/r/graphics/plot.default.html) /
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md), or
-  explicitly by
-  [`upgrade_aeme()`](https://limnotrack.com/reference/upgrade_aeme.md).
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md),
+  or explicitly by
+  [`upgrade_aeme()`](https://limnotrack.com/AEME/reference/upgrade_aeme.md).
 - Observation-to-model matching remains a **calendar-day** join
   throughout (`get_var(use_obs = TRUE)`,
-  [`assess_model()`](https://limnotrack.com/reference/assess_aeme.md),
-  [`align_depth_data()`](https://limnotrack.com/reference/align_depth_data.md),
+  [`assess_model()`](https://limnotrack.com/AEME/reference/assess_aeme.md),
+  [`align_depth_data()`](https://limnotrack.com/AEME/reference/align_depth_data.md),
   the water-balance surface-temperature and level fits, `plot_*`
   overlays), so results are unchanged for daily runs.
 
@@ -163,24 +382,24 @@ local time. You never manage timezones per model or on the way out.
 - Timestamps you supply – `time$start` / `time$stop` and the date
   columns of meteo, inflow, outflow and observation inputs – are read as
   wall-clock time in `time$tz` and converted to UTC at ingest
-  ([`add_met()`](https://limnotrack.com/reference/add_met.md),
-  [`add_inflows()`](https://limnotrack.com/reference/add_inflows.md),
-  [`aeme_constructor()`](https://limnotrack.com/reference/aeme_constructor.md),
-  [`yaml_to_aeme()`](https://limnotrack.com/reference/yaml_to_aeme.md)).
+  ([`add_met()`](https://limnotrack.com/AEME/reference/add_met.md),
+  [`add_inflows()`](https://limnotrack.com/AEME/reference/add_inflows.md),
+  [`aeme_constructor()`](https://limnotrack.com/AEME/reference/aeme_constructor.md),
+  [`yaml_to_aeme()`](https://limnotrack.com/AEME/reference/yaml_to_aeme.md)).
   Daily (calendar) data is never shifted.
 - When you declare a **non-UTC** `time$tz`, a date column that a CSV
   reader tagged `"UTC"` (`readr`/`read.csv`’s default) is reinterpreted
   in your declared zone – `"UTC"` is an unreliable label there. A column
   carrying a genuinely different timezone (e.g. `"America/New_York"`) is
   always kept as an absolute instant.
-- [`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)
+- [`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md)
   now **warns when sub-daily `MET_radswd` peaks more than 3 h from
   astronomical solar noon** for the lake’s longitude – the usual sign
   that meteo timestamps are in local time rather than UTC.
 - Datetime parsing across the model-output readers, `check_time()`,
-  [`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)
+  [`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md)
   /
-  [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md),
+  [`standardise_inflow()`](https://limnotrack.com/AEME/reference/standardise_inflow.md),
   `aeme_time_axis()` and the variable-index helpers is now explicitly
   UTC and independent of the session timezone.
   [`show()`](https://rdrr.io/r/methods/show.html) /
@@ -192,24 +411,24 @@ local time. You never manage timezones per model or on the way out.
 ### Initial conditions
 
 - New
-  **[`set_initial_conditions()`](https://limnotrack.com/reference/set_initial_conditions.md)**
+  **[`set_initial_conditions()`](https://limnotrack.com/AEME/reference/set_initial_conditions.md)**
   /
-  **[`get_initial_conditions()`](https://limnotrack.com/reference/get_initial_conditions.md)**
+  **[`get_initial_conditions()`](https://limnotrack.com/AEME/reference/get_initial_conditions.md)**
   expose the initial water depth, temperature/salinity profile, and
   biogeochemical water-column pools that
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
   writes into each model. Values can be set once for every model or
   overridden per model via `model_init` (e.g. a GLM-AED-specific
   temperature profile). The specification is stored in
   `configuration(aeme)$initial_conditions` and resolved per model at
   build time (generic defaults \<- per-model overrides); it survives
-  [`load_configuration()`](https://limnotrack.com/reference/load_configuration.md).
+  [`load_configuration()`](https://limnotrack.com/AEME/reference/load_configuration.md).
   Scalar water-quality values fold into `model_controls$initial_wc`;
   depth-resolved (`depth`/`value`) profiles are applied to the built
   GLM-AED / Simstrat directories via the existing `set_*_init()`
   writers.
 - New
-  **[`assess_spin_up()`](https://limnotrack.com/reference/assess_spin_up.md)**
+  **[`assess_spin_up()`](https://limnotrack.com/AEME/reference/assess_spin_up.md)**
   builds and runs an ensemble of initial-condition perturbations across
   a range of spin-up lengths and reports how quickly the ensemble spread
   at the start of the analysis period collapses, with an optional
@@ -217,29 +436,29 @@ local time. You never manage timezones per model or on the way out.
   `spread` / `drift` in the variable’s units plus dimensionless
   `spread_cv` / `drift_cv` (normalised by the ensemble mean), and
   `metric` selects which the recommendation targets.
-  **[`plot_spin_up()`](https://limnotrack.com/reference/plot_spin_up.md)**
+  **[`plot_spin_up()`](https://limnotrack.com/AEME/reference/plot_spin_up.md)**
   plots the chosen metric against spin-up length.
 
 ### Sub-daily (hourly) forcing and output
 
 - `time` gains an **`output_time_step`** element (seconds; default
   `86400`, i.e. daily) separate from the integration `time_step`.
-  [`set_time()`](https://limnotrack.com/reference/set_time.md) gains
-  `time_step` / `output_time_step` arguments, and both round-trip
+  [`set_time()`](https://limnotrack.com/AEME/reference/set_time.md)
+  gains `time_step` / `output_time_step` arguments, and both round-trip
   through `time.csv`, `aeme.yaml`, and `.rds` (objects/files without the
   new field default to daily).
 - Supplying **sub-daily meteo / inflow** (a `POSIXct` `Date` column, or
   any sub-daily-spaced series) is now carried through
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) at
-  its native resolution instead of being collapsed to daily, and written
-  to GLM-AED (`subdaily`/`nsave`, full timestamps), GOTM-WET
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  at its native resolution instead of being collapsed to daily, and
+  written to GLM-AED (`subdaily`/`nsave`, full timestamps), GOTM-WET
   (`output.yaml` cadence, real time-of-day, `time/dt`), and Simstrat
   (`Output.Times`) accordingly. Set `output_time_step` (e.g. `3600`) to
   get sub-daily output; model output is read back as `POSIXct` when it
   carries a time-of-day and as `Date` (unchanged) when it does not.
 - AEME does **not** temporally disaggregate forcing: sub-daily runs
   require forcing supplied at (at least) that cadence, and
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
   aborts otherwise. DYRESM-CAEDYM and the water-balance path remain
   daily.
 - Reading output back no longer silently discards **everything** when
@@ -247,7 +466,7 @@ local time. You never manage timezones per model or on the way out.
   actually wrote (e.g. an hourly `output_time_step` set on a run still
   written daily, or a `stop` that is not an exact multiple of the output
   step). The model readers now keep the overlapping steps and warn, and
-  [`get_date_index()`](https://limnotrack.com/reference/get_date_index.md)
+  [`get_date_index()`](https://limnotrack.com/AEME/reference/get_date_index.md)
   trims the index to the file (and warns) when given a
   `path`/`lake_dir`. `get_var(use_obs = TRUE)` against sub-daily output
   now matches one model step per observation day (nearest midnight)
@@ -255,21 +474,22 @@ local time. You never manage timezones per model or on the way out.
 - GLM computes its `daily_*` diagnostics – surface energy fluxes,
   evaporation, surface area/temperature, lake level, in/out/overflow
   volumes – once per simulated day, so on a sub-daily
-  [`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md)
+  [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
   they previously came back `NA` at ~23 of every 24 steps (and any
   variable derived from them, e.g. `LKE_evprte`, `HYD_surft`). Each
   day’s single written value is now carried across that day’s sub-daily
   steps; daily runs are unaffected.
 - The plotting functions now handle a sub-daily (`POSIXct`) output axis:
-  [`plot_output()`](https://limnotrack.com/reference/plot_output.md) /
-  [`plot_model_output()`](https://limnotrack.com/reference/plot_model_output.md)
+  [`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
   /
-  [`plot_glm_output()`](https://limnotrack.com/reference/plot_glm_output.md)
+  [`plot_model_output()`](https://limnotrack.com/AEME/reference/plot_model_output.md)
+  /
+  [`plot_glm_output()`](https://limnotrack.com/AEME/reference/plot_glm_output.md)
   heat-map tiles are drawn at the real output step instead of collapsing
   to 1-second slivers; `plot_output(backend = "base")` no longer errors
   on the non-unique [`as.Date()`](https://rdrr.io/r/base/as.Date.html)
   axis; observation overlays
-  ([`align_depth_data()`](https://limnotrack.com/reference/align_depth_data.md))
+  ([`align_depth_data()`](https://limnotrack.com/AEME/reference/align_depth_data.md))
   match daily observations to the model day rather than an exact
   timestamp; and axis date labels adapt to the plotted span.
 
@@ -277,12 +497,12 @@ local time. You never manage timezones per model or on the way out.
 
 - Added **Simstrat-AED2** (`"simstrat_aed2"`) as a fourth supported
   model, alongside DYRESM-CAEDYM, GLM-AED, and GOTM-WET, with the full
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)/[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)/output-reading
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)/[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md)/output-reading
   pipeline: `build_simstrat()`,
-  [`run_simstrat_aed2()`](https://limnotrack.com/reference/run_dy_cd.md),
-  [`read_simstrat_output()`](https://limnotrack.com/reference/read_simstrat_output.md),
-  [`check_simstrat_par()`](https://limnotrack.com/reference/check_simstrat_par.md),
-  [`write_simstrat_nc()`](https://limnotrack.com/reference/write_simstrat_nc.md),
+  [`run_simstrat_aed2()`](https://limnotrack.com/AEME/reference/run_dy_cd.md),
+  [`read_simstrat_output()`](https://limnotrack.com/AEME/reference/read_simstrat_output.md),
+  [`check_simstrat_par()`](https://limnotrack.com/AEME/reference/check_simstrat_par.md),
+  [`write_simstrat_nc()`](https://limnotrack.com/AEME/reference/write_simstrat_nc.md),
   and AED2 biogeochemistry support via `initialise_aed2()`.
 - Added **Simstrat-AED** (`"simstrat_aed"`) as a fifth supported model,
   coupling Simstrat to AED (v3) instead of AED2 - the same actively
@@ -292,10 +512,10 @@ local time. You never manage timezones per model or on the way out.
   (`resolve_aed_active_modules()` in `R/aed_modules.R`) instead of a
   second independent copy, so the two AED couplings behave identically
   for the same `model_controls`. New
-  [`run_simstrat_aed()`](https://limnotrack.com/reference/run_dy_cd.md),
+  [`run_simstrat_aed()`](https://limnotrack.com/AEME/reference/run_dy_cd.md),
   `initialise_simstrat_aed()`,
-  [`install_simstrat_aed()`](https://limnotrack.com/reference/install_simstrat_aed.md)/[`list_simstrat_aed_versions()`](https://limnotrack.com/reference/list_simstrat_aed_versions.md)/
-  [`simstrat_aed_exe_path()`](https://limnotrack.com/reference/simstrat_aed_exe_path.md),
+  [`install_simstrat_aed()`](https://limnotrack.com/AEME/reference/install_simstrat_aed.md)/[`list_simstrat_aed_versions()`](https://limnotrack.com/AEME/reference/list_simstrat_aed_versions.md)/
+  [`simstrat_aed_exe_path()`](https://limnotrack.com/AEME/reference/simstrat_aed_exe_path.md),
   and `simstrat_aed_parameters` dataset; `build_simstrat()` gained a
   `bgc_lib = c("aed2", "aed")` argument and now shares its AED config
   templates (`inst/extdata/aed/`) with GLM-AED rather than each model
@@ -324,7 +544,7 @@ local time. You never manage timezones per model or on the way out.
   is on and the `simstrat.par` `AEDConfig` block runs a zoned benthic
   mode (`BenthicMode = 2`), `build_simstrat()` sets `NZones` /
   `ZoneHeights` from the hypsography via the same
-  [`estimate_sed_zones()`](https://limnotrack.com/reference/estimate_sed_zones.md)
+  [`estimate_sed_zones()`](https://limnotrack.com/AEME/reference/estimate_sed_zones.md)
   helper `build_glm()` uses for GLM-AED, instead of leaving the
   template’s hard-coded values. Falls back to the template values if the
   estimate can’t be computed.
@@ -345,15 +565,15 @@ local time. You never manage timezones per model or on the way out.
   prefix maps to `aed_noncohesive`, so simulating any `NCS_ss*` variable
   now activates the module (it carries no forced cross-module
   dependencies).
-  [`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)’s
+  [`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md)’s
   default `aed_models` includes it.
 - `&aed_totals` now counts both groups as TSS
   (`TSS_vars = 'NCS_ss1','NCS_ss2'`).
-  [`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md)
+  [`set_aed_totals()`](https://limnotrack.com/AEME/reference/set_aed_totals.md)
   re-derives `TSS_vars` / `TSS_varscale` during
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) from
-  the active `aed_noncohesive` `num_ss` (one `NCS_ss<i>` per group, unit
-  scaling), so the totals survive a build.
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  from the active `aed_noncohesive` `num_ss` (one `NCS_ss<i>` per group,
+  unit scaling), so the totals survive a build.
 
 ### Observations schema: single `depth` column
 
@@ -362,7 +582,7 @@ local time. You never manage timezones per model or on the way out.
   surface) in place of the `depth_from` / `depth_to` pair. Every
   analytical consumer already collapsed that pair to its midpoint, so
   this matches how observations were actually used.
-  [`get_obs_column_names()`](https://limnotrack.com/reference/get_obs_column_names.md)
+  [`get_obs_column_names()`](https://limnotrack.com/AEME/reference/get_obs_column_names.md)
   returns `c("Date", "var_aeme", "depth", "value")`; pass
   `include_optional = TRUE` for the optional columns.
 - Two **optional** columns are recognised: `depth_to` (bottom of an
@@ -370,21 +590,21 @@ local time. You never manage timezones per model or on the way out.
   `sd` (measurement standard deviation, in the variable’s units, for
   1/sd weighting in PEST-style calibration downstream).
 - Backward compatible:
-  [`add_obs()`](https://limnotrack.com/reference/add_obs.md),
-  [`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md),
-  [`yaml_to_aeme()`](https://limnotrack.com/reference/yaml_to_aeme.md),
+  [`add_obs()`](https://limnotrack.com/AEME/reference/add_obs.md),
+  [`lake_obs_to_aeme()`](https://limnotrack.com/AEME/reference/lake_obs_to_aeme.md),
+  [`yaml_to_aeme()`](https://limnotrack.com/AEME/reference/yaml_to_aeme.md),
   the constructor, and `migrate_aeme()` /
-  [`upgrade_aeme()`](https://limnotrack.com/reference/upgrade_aeme.md)
+  [`upgrade_aeme()`](https://limnotrack.com/AEME/reference/upgrade_aeme.md)
   all accept the legacy `depth_from` / `depth_to` layout and collapse it
   to `depth` (interval midpoint) with a one-time deprecation warning.
   Objects loaded from older `.rds` files are migrated automatically on
-  [`check_aeme()`](https://limnotrack.com/reference/check_aeme.md) /
-  [`show()`](https://rdrr.io/r/methods/show.html) /
+  [`check_aeme()`](https://limnotrack.com/AEME/reference/check_aeme.md)
+  / [`show()`](https://rdrr.io/r/methods/show.html) /
   [`plot()`](https://rdrr.io/r/graphics/plot.default.html).
-- [`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md)
+- [`lake_obs_to_aeme()`](https://limnotrack.com/AEME/reference/lake_obs_to_aeme.md)
   gained optional `depth_to_col_name` and `sd_col_name` arguments.
 - Fixed a latent bug in
-  [`input_model_parameters()`](https://limnotrack.com/reference/input_model_parameters.md)
+  [`input_model_parameters()`](https://limnotrack.com/AEME/reference/input_model_parameters.md)
   that computed a half-thickness (`(depth_to - depth_from) / 2`) instead
   of a midpoint; the value was unused and the line has been removed.
 
@@ -396,43 +616,44 @@ cache, verified against a published SHA256 checksum before use. This
 keeps the installed package small and lets binaries be updated
 independently of the R package version.
 
-- [`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md),
-  [`install_gotm_wet()`](https://limnotrack.com/reference/install_gotm_wet.md),
-  [`install_dy_cd()`](https://limnotrack.com/reference/install_dy_cd.md),
-  [`install_simstrat_aed2()`](https://limnotrack.com/reference/install_simstrat_aed2.md)
+- [`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md),
+  [`install_gotm_wet()`](https://limnotrack.com/AEME/reference/install_gotm_wet.md),
+  [`install_dy_cd()`](https://limnotrack.com/AEME/reference/install_dy_cd.md),
+  [`install_simstrat_aed2()`](https://limnotrack.com/AEME/reference/install_simstrat_aed2.md)
   — download and verify a specific (or the `"latest"`) model executable
   version for the current platform. Paired `list_*_versions()` (what’s
   published, per platform) and `*_exe_path()` (locate an
   already-installed executable) helpers for each model.
-  [`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md)
+  [`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md)
   supports Windows, macOS, and Linux (including bundled dylibs on
   macOS); GOTM-WET, DYRESM-CAEDYM, and Simstrat-AED2 are currently
   Windows-only, matching the platforms binaries have actually been built
   for.
-- [`install_models()`](https://limnotrack.com/reference/install_models.md)
+- [`install_models()`](https://limnotrack.com/AEME/reference/install_models.md)
   — convenience wrapper installing the latest available version of every
   model (or a chosen subset) in one call; models with no published
   binary for the current platform (or no release published yet) are
   reported and skipped rather than blocking the others.
-- [`run_gotm_wet()`](https://limnotrack.com/reference/run_dy_cd.md) and
-  [`run_dy_cd()`](https://limnotrack.com/reference/run_dy_cd.md) now
-  resolve their executable the same way
-  [`run_glm_aed()`](https://limnotrack.com/reference/run_dy_cd.md)
+- [`run_gotm_wet()`](https://limnotrack.com/AEME/reference/run_dy_cd.md)
+  and
+  [`run_dy_cd()`](https://limnotrack.com/AEME/reference/run_dy_cd.md)
+  now resolve their executable the same way
+  [`run_glm_aed()`](https://limnotrack.com/AEME/reference/run_dy_cd.md)
   already did: an explicit `AEME.gotm_exec`/ `AEME.dyresm_exec` option,
   then a requested/previously installed version, with a clear error
   pointing at
-  [`install_gotm_wet()`](https://limnotrack.com/reference/install_gotm_wet.md)/[`install_dy_cd()`](https://limnotrack.com/reference/install_dy_cd.md)
+  [`install_gotm_wet()`](https://limnotrack.com/AEME/reference/install_gotm_wet.md)/[`install_dy_cd()`](https://limnotrack.com/AEME/reference/install_dy_cd.md)
   if nothing is found. `get_gotm_wet_version()` and
   `get_dy_cd_version()` updated to match.
 - `inst/extbin/gotm_wet/` and `inst/extbin/dy_cd/` removed from version
   control (still used locally if present - see `.gitignore`).
 - GLM version handling reworked to support multiple installed versions
   side by side (switch between them via
-  [`glm_exe_path()`](https://limnotrack.com/reference/glm_exe_path.md)/`AEME.glm_version`
+  [`glm_exe_path()`](https://limnotrack.com/AEME/reference/glm_exe_path.md)/`AEME.glm_version`
   without re-downloading), with corrected OS detection and a GLM version
   passed through correctly to parallel workers in
   `run_aeme(parallel = TRUE)`.
-- [`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md)/[`list_glm_versions()`](https://limnotrack.com/reference/list_glm_versions.md)
+- [`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md)/[`list_glm_versions()`](https://limnotrack.com/AEME/reference/list_glm_versions.md)
   now understand a trailing `"+"` on a version (e.g. `"4.0.0+"`),
   selecting the GLM+ (AED+) build published as
   `glm-<os>-<version>+.zip`. The `.github/workflows/build-glm-v4.yaml`
@@ -449,7 +670,7 @@ independently of the R package version.
   `inst/extdata/glm_aed/`, and `build_glm()` copies it in (instead of
   always `glm3.nml`) when the pinned/installed GLM binary is v4 —
   resolved via `.preferred_glm_major_version()`, the same priority order
-  [`find_glm_nml()`](https://limnotrack.com/reference/find_glm_nml.md)
+  [`find_glm_nml()`](https://limnotrack.com/AEME/reference/find_glm_nml.md)
   uses. Falls back to `glm3.nml` when the version can’t be determined or
   no matching template ships.
 - The `&sediment` block is now **merged** rather than overwritten when a
@@ -483,7 +704,7 @@ independently of the R package version.
   `use_bgc = FALSE`: GLM v4’s dynamic soil-temperature solver
   (`sed_heat_model = 2`, `zZSoilTemp`) is provided by the WQ library and
   GLM aborts with it enabled but no active WQ module.
-  [`check_glm_nml()`](https://limnotrack.com/reference/check_glm_nml.md)
+  [`check_glm_nml()`](https://limnotrack.com/AEME/reference/check_glm_nml.md)
   gained a matching validation rule that flags `sed_heat_model = 2`
   without an active `&wq_setup` (`wq_lib = 'aed'`/`'api'`).
 
@@ -504,16 +725,16 @@ independently of the R package version.
   **GOTM-WET** replaces the `/*` all-variables output source with an
   explicit list; **DYRESM-CAEDYM** has a fixed output form and is left
   unchanged. The change is made in memory — call
-  [`write_configuration()`](https://limnotrack.com/reference/write_configuration.md)
+  [`write_configuration()`](https://limnotrack.com/AEME/reference/write_configuration.md)
   (or use
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md),
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md),
   below) to write it out.
-- [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+- [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
   gained `output_vars` and `mass_balance` arguments: when `output_vars`
   is supplied,
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
   applies
-  [`set_output_vars()`](https://limnotrack.com/reference/set_output_vars.md)
+  [`set_output_vars()`](https://limnotrack.com/AEME/reference/set_output_vars.md)
   to every built model and re-writes the trimmed configuration to disk,
   so a lake can be built restricted from the start. `output_vars = NULL`
   (the default) leaves every model writing its full output, unchanged
@@ -521,13 +742,13 @@ independently of the R package version.
 
 ### OS-aware model selection
 
-- [`check_model()`](https://limnotrack.com/reference/check_model.md)
+- [`check_model()`](https://limnotrack.com/AEME/reference/check_model.md)
   gained an `os_valid` argument: when `TRUE`, restricts the requested
   models to ones actually runnable on the current platform
   (DYRESM-CAEDYM, GOTM-WET, and Simstrat-AED2 need Windows; GLM-AED runs
   everywhere), falling back to GLM-AED with an informative message
   rather than failing outright.
-  [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) now
+  [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) now
   applies this automatically.
 - An `Aeme` object now remembers which model(s) it was last configured
   for (`configuration(aeme)$model`, defaulting to `"glm_aed"`), so
@@ -536,8 +757,8 @@ independently of the R package version.
 
 ### New functions
 
-- [`upgrade_aeme()`](https://limnotrack.com/reference/upgrade_aeme.md) —
-  upgrades an `Aeme` object saved by an older AEME version to the
+- [`upgrade_aeme()`](https://limnotrack.com/AEME/reference/upgrade_aeme.md)
+  — upgrades an `Aeme` object saved by an older AEME version to the
   current layout, in idempotent steps, reporting what it changed. On top
   of the per-model backfills (`time$spin_up`, `inflows$factor`,
   `outflows$factor`, `configuration`) it renames the legacy
@@ -546,18 +767,18 @@ independently of the R package version.
   integer `n_members`, coerces a legacy `observations$level` tibble to a
   plain data frame, fills scalar `configuration` build defaults from
   `config_defaults()`, and reorders `parameters` columns to
-  [`param_colnames()`](https://limnotrack.com/reference/param_colnames.md)
+  [`param_colnames()`](https://limnotrack.com/AEME/reference/param_colnames.md)
   order. It does **not** rebuild model configuration or output — rerun
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) for
-  those. Stamps `configuration$aeme_upgraded` with the installed
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  for those. Stamps `configuration$aeme_upgraded` with the installed
   version.
 - `migrate_aeme()` — the silent, idempotent worker behind
-  [`upgrade_aeme()`](https://limnotrack.com/reference/upgrade_aeme.md),
+  [`upgrade_aeme()`](https://limnotrack.com/AEME/reference/upgrade_aeme.md),
   now also covering the `outflows$elevation` rename, `output`
   placeholders, and `observations$level` coercion. Still called
   automatically by
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md),
-  [`check_aeme()`](https://limnotrack.com/reference/check_aeme.md),
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md),
+  [`check_aeme()`](https://limnotrack.com/AEME/reference/check_aeme.md),
   [`show()`](https://rdrr.io/r/methods/show.html), and
   [`plot()`](https://rdrr.io/r/graphics/plot.default.html) so older
   saved objects keep working without needing to be rebuilt.
@@ -569,9 +790,9 @@ independently of the R package version.
   extends below 0 m, e.g. a lake bed below sea level. Several problems
   in `build_glm()`, all rooted in `-1` being AEME’s “not specified”
   sentinel for an outflow `elevation`
-  ([`add_outflows()`](https://limnotrack.com/reference/add_outflows.md);
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) sets
-  the water-balance outflow to `-1`):
+  ([`add_outflows()`](https://limnotrack.com/AEME/reference/add_outflows.md);
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  sets the water-balance outflow to `-1`):
 
   - the sentinel was recognised only via `heights_wdr <= 0`, so for a
     lake bed below 0 m a real request could be swallowed, or the `-1`
@@ -596,16 +817,16 @@ independently of the R package version.
     Basin length/width are looked up at the outlet’s true absolute
     elevation (`make_wdr_glm()` gained a `dims_elev` argument for this)
     and clamped into `range(bathy$elev)` so a
-    [`set_glm_outflows()`](https://limnotrack.com/reference/set_glm_outflows.md)
+    [`set_glm_outflows()`](https://limnotrack.com/AEME/reference/set_glm_outflows.md)
     call with an out-of-range outlet still yields finite dimensions. For
     lakes whose hypsography sits at/above 0 m the generated `&outflow`
     block is unchanged; sub-sea-level lakes previously failed and now
     build.
 
-- [`set_glm_outflow_config()`](https://limnotrack.com/reference/set_glm_outflow_config.md)
+- [`set_glm_outflow_config()`](https://limnotrack.com/AEME/reference/set_glm_outflow_config.md)
   (new, exported) — fine-grained control of the GLM-AED `&outflow` block
   for an existing configuration, beyond the fixed/floating split
-  [`set_glm_outflows()`](https://limnotrack.com/reference/set_glm_outflows.md)
+  [`set_glm_outflows()`](https://limnotrack.com/AEME/reference/set_glm_outflows.md)
   offers: per-outlet adaptive/target-temperature (`type 3`) and
   submerged (`type 6`) outlets, `outlet_crit` thresholds, `target_temp`,
   `withdrTemp_fl`, bed `seepage` / `seepage_rate`, weir `crest_width` /
@@ -615,41 +836,41 @@ independently of the R package version.
   is checked against GLM’s own ranges (from `src/glm_init.c`) before
   writing. It edits only the nml, leaving the flow-forcing CSVs alone.
 
-- [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) reported
-  a successful run and then failed with an opaque netCDF error
-  ([`open_nc_safe()`](https://limnotrack.com/reference/open_nc_safe.md):
+- [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md)
+  reported a successful run and then failed with an opaque netCDF error
+  ([`open_nc_safe()`](https://limnotrack.com/AEME/reference/open_nc_safe.md):
   “File path must be a single character string”) when a model crashed.
   Three causes: GLM-AED is built with gfortran, whose `STOP "..."`
   (e.g. a malformed `aed_noncohesive` namelist) exits `0`, so
-  [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md)’s
+  [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md)’s
   `status == 0` success test passed; the `verbose = TRUE` path of
-  [`run_glm_aed()`](https://limnotrack.com/reference/run_dy_cd.md)/[`run_gotm_wet()`](https://limnotrack.com/reference/run_dy_cd.md)
+  [`run_glm_aed()`](https://limnotrack.com/AEME/reference/run_dy_cd.md)/[`run_gotm_wet()`](https://limnotrack.com/AEME/reference/run_dy_cd.md)
   checked nothing at all, leaving a misleading `cli` tick; and a failed
   model was still handed to
-  [`load_output()`](https://limnotrack.com/reference/load_output.md).
+  [`load_output()`](https://limnotrack.com/AEME/reference/load_output.md).
   Now each `run_*()` attaches a logical `$success` (exit status *and*
   the model’s completion banner, and for Simstrat the netCDF
   conversion),
-  [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) gates the
-  “Model run complete!” message and output loading on it, and
-  [`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)
+  [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md)
+  gates the “Model run complete!” message and output loading on it, and
+  [`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md)
   aborts with a clear `aeme_error_missing_output` (“re-run with
   `verbose = TRUE`”) when the expected output file is absent.
 
-- [`cli_inform_safe()`](https://limnotrack.com/reference/cli_inform_safe.md)
-  and [`cli_safe()`](https://limnotrack.com/reference/cli_safe.md) did
-  not forward an evaluation environment to `cli`, so any message
+- [`cli_inform_safe()`](https://limnotrack.com/AEME/reference/cli_inform_safe.md)
+  and [`cli_safe()`](https://limnotrack.com/AEME/reference/cli_safe.md)
+  did not forward an evaluation environment to `cli`, so any message
   containing a [`{}`](https://rdrr.io/r/base/Paren.html) expression that
   referenced a local variable of the *calling* function failed with
   `object '<name>' not found` — `cli` was interpolating against the
   wrapper’s own frame. This surfaced when building any `Aeme` object
   whose inflow tables still used pre-standard column names
   (e.g. `NIT_din`), where
-  [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md)
+  [`standardise_inflow()`](https://limnotrack.com/AEME/reference/standardise_inflow.md)
   reports `"Renaming {length(matched)} column{?s}"`. Both wrappers now
   take `.envir = parent.frame()` and pass it through.
 
-- [`read_model_config()`](https://limnotrack.com/reference/read_model_config.md)
+- [`read_model_config()`](https://limnotrack.com/AEME/reference/read_model_config.md)
   assumed any `.par` configuration file was Simstrat’s JSON format, but
   DYRESM-CAEDYM’s `dyresm3p1.par` shares that extension and is plain
   text - `read_model_config(model = "dy_cd", ...)` failed on any lake
@@ -675,20 +896,20 @@ independently of the R package version.
   implementing Simstrat’s own evaporation formula (a Livingstone &
   Imboden wind function with a Gill (1992) saturation vapour pressure,
   from `strat_forcing.f90`), used by
-  [`estimate_lake_wlev()`](https://limnotrack.com/reference/estimate_lake_wlev.md)
+  [`estimate_lake_wlev()`](https://limnotrack.com/AEME/reference/estimate_lake_wlev.md)
   when fitting the water balance for Simstrat-AED2. It previously shared
   GLM-AED’s simpler bulk-aerodynamic formula.
 
-- [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) did
-  not call `migrate_aeme()`, so an `Aeme` object saved before
+- [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  did not call `migrate_aeme()`, so an `Aeme` object saved before
   `simstrat_aed2` existed (missing `time$spin_up[["simstrat_aed2"]]`)
   would crash inside `check_time()`’s `compute_spinup_dates()` the first
   time it was built with a newer AEME version.
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) now
-  migrates the object on entry, matching
-  [`check_aeme()`](https://limnotrack.com/reference/check_aeme.md)/[`show()`](https://rdrr.io/r/methods/show.html)/[`plot()`](https://rdrr.io/r/graphics/plot.default.html).
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  now migrates the object on entry, matching
+  [`check_aeme()`](https://limnotrack.com/AEME/reference/check_aeme.md)/[`show()`](https://rdrr.io/r/methods/show.html)/[`plot()`](https://rdrr.io/r/graphics/plot.default.html).
 
-- [`write_simstrat_nc()`](https://limnotrack.com/reference/write_simstrat_nc.md)
+- [`write_simstrat_nc()`](https://limnotrack.com/AEME/reference/write_simstrat_nc.md)
   mishandled AED’s sediment-zone output (`<var>_zone_out.dat`,
   Simstrat-AED only). These files also match the general `*_out.dat`
   glob and were being written against the shared water-column `z`
@@ -700,7 +921,7 @@ independently of the R package version.
 
   - keeping the existing `<var>` and new `<var>_zone` variables
     distinct. No changes were needed on the reading side:
-    [`read_simstrat_output()`](https://limnotrack.com/reference/read_simstrat_output.md)’s
+    [`read_simstrat_output()`](https://limnotrack.com/AEME/reference/read_simstrat_output.md)’s
     `load_all` sweep already routes any variable shaped other than
     `(time)` or `(z, time)` through the same generic grouped-variable
     path GLM-AED’s own `nzones`-dimensioned output uses, so zone
@@ -736,13 +957,13 @@ independently of the R package version.
 
 ### `get_model_outfile()` returns a single file by default
 
-[`get_model_outfile()`](https://limnotrack.com/reference/get_model_outfile.md)
+[`get_model_outfile()`](https://limnotrack.com/AEME/reference/get_model_outfile.md)
 previously returned every file a model run produced – for GLM-AED that
 meant its netCDF plus any configured `csv_lake`/`csv_point`/
 mass-balance CSVs – so callers that only wanted the netCDF had to guess
 which entry it was (`nc_files[["output"]]`, else the first element), and
 a couple did so incorrectly.
-[`get_model_outfile()`](https://limnotrack.com/reference/get_model_outfile.md)
+[`get_model_outfile()`](https://limnotrack.com/AEME/reference/get_model_outfile.md)
 now returns just the primary file per model by default (the entry named
 `"output"`, or the only file when there is one); pass `all = TRUE` to
 get every file as before.
@@ -751,50 +972,50 @@ get every file as before.
 
 ### New functions
 
-- [`get_config_value()`](https://limnotrack.com/reference/get_config_value.md)
+- [`get_config_value()`](https://limnotrack.com/AEME/reference/get_config_value.md)
   — retrieve a configuration value from an `Aeme` object, falling back
   to package defaults when not set.
-- [`get_wbal_param()`](https://limnotrack.com/reference/get_wbal_param.md)
+- [`get_wbal_param()`](https://limnotrack.com/AEME/reference/get_wbal_param.md)
   — retrieve the fitted water-balance outflow parameters (`C` and
   `h_inv`) stored in an `Aeme` object.
-- [`set_wbal_param()`](https://limnotrack.com/reference/set_wbal_param.md)
+- [`set_wbal_param()`](https://limnotrack.com/AEME/reference/set_wbal_param.md)
   — store water-balance outflow parameters in an `Aeme` object for use
   in subsequent
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
   calls.
-- [`plot_output_base()`](https://limnotrack.com/reference/plot_output_base.md)
+- [`plot_output_base()`](https://limnotrack.com/AEME/reference/plot_output_base.md)
   — new base-R plotting function for AEME model output, producing
   heatmap-style depth–time plots without any `ggplot2` dependency. Can
   also be invoked via `plot_output(..., backend = "base")`.
-- [`get_mean_sea_level_pressure()`](https://limnotrack.com/reference/get_mean_sea_level_pressure.md)
+- [`get_mean_sea_level_pressure()`](https://limnotrack.com/AEME/reference/get_mean_sea_level_pressure.md)
   — utility function to convert station pressure to mean sea level
   pressure given air temperature and elevation.
-- [`get_station_pressure()`](https://limnotrack.com/reference/get_station_pressure.md)
+- [`get_station_pressure()`](https://limnotrack.com/AEME/reference/get_station_pressure.md)
   — inverse of
-  [`get_mean_sea_level_pressure()`](https://limnotrack.com/reference/get_mean_sea_level_pressure.md);
+  [`get_mean_sea_level_pressure()`](https://limnotrack.com/AEME/reference/get_mean_sea_level_pressure.md);
   converts mean sea level pressure back to station pressure.
 
 ### Improvements
 
-- **[`plot_output()`](https://limnotrack.com/reference/plot_output.md)**
+- **[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)**
   — new `backend` argument (`"ggplot2"` or `"base"`) selects the
   plotting engine. Also improved variable/model availability checks:
   models or variables missing from all output are now warned and dropped
   gracefully rather than erroring.
-- **[`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) /
-  [`run_glm_aed()`](https://limnotrack.com/reference/run_dy_cd.md)** —
-  new `args` parameter passes additional command-line arguments to the
+- **[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) /
+  [`run_glm_aed()`](https://limnotrack.com/AEME/reference/run_dy_cd.md)**
+  — new `args` parameter passes additional command-line arguments to the
   model executable (e.g. `"--xdisp"` to display GLM plots using the
   `plots.nml` settings during a run).
 - **`build_glm()`** — automatically copies the bundled `plots.nml`
   template into the GLM simulation directory when one is not already
   present.
-- **[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)** —
-  `model` and `path` are now resolved from the `Aeme` configuration when
-  not supplied as arguments. All other
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+- **[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)**
+  — `model` and `path` are now resolved from the `Aeme` configuration
+  when not supplied as arguments. All other
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
   arguments default through `config_defaults()` if not specified.
-- **[`estimate_zone_fluxes()`](https://limnotrack.com/reference/estimate_zone_fluxes.md)**
+- **[`estimate_zone_fluxes()`](https://limnotrack.com/AEME/reference/estimate_zone_fluxes.md)**
   — output table now rendered using `clitable` for cleaner formatted
   console display; documentation expanded with method description,
   depth-scaling references, and a full description of the return value.
@@ -803,42 +1024,42 @@ get every file as before.
 - **`initialise_glm()`** — added guard for required `init_profiles`
   fields (`wq_names`, `num_wq_vars`, `wq_init_vals`) that may be absent
   from older NML files.
-- **[`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)**
+- **[`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md)**
   — messaging improved when AED sub-models are removed.
-- **[`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)**
+- **[`run_glm_aed_diagnostics()`](https://limnotrack.com/AEME/reference/run_glm_aed_diagnostics.md)**
   — `plot` argument now defaults to `FALSE`.
 - **`calc_water_balance()` /
-  [`estimate_lake_wlev()`](https://limnotrack.com/reference/estimate_lake_wlev.md)
+  [`estimate_lake_wlev()`](https://limnotrack.com/AEME/reference/estimate_lake_wlev.md)
   /
-  [`estimate_surface_temperature()`](https://limnotrack.com/reference/estimate_surface_temperature.md)
+  [`estimate_surface_temperature()`](https://limnotrack.com/AEME/reference/estimate_surface_temperature.md)
   /
-  [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md)
+  [`standardise_inflow()`](https://limnotrack.com/AEME/reference/standardise_inflow.md)
   / `build_glm()`** — console messaging overhauled using the new
-  [`cli_safe()`](https://limnotrack.com/reference/cli_safe.md) internal
-  helper, which respects the `AEME.inform` option and supports indented
-  output. Missing inflow state variables are now reported with their
-  filled default values rather than a generic warning.
+  [`cli_safe()`](https://limnotrack.com/AEME/reference/cli_safe.md)
+  internal helper, which respects the `AEME.inform` option and supports
+  indented output. Missing inflow state variables are now reported with
+  their filled default values rather than a generic warning.
 - **`clitable`** moved from `Suggests` to `Imports`; `knitr` moved from
   `Imports` to `Suggests`; `psychrolib` removed from `Imports`
   (psychrometric calculations now handled internally via
-  [`get_mean_sea_level_pressure()`](https://limnotrack.com/reference/get_mean_sea_level_pressure.md)
+  [`get_mean_sea_level_pressure()`](https://limnotrack.com/AEME/reference/get_mean_sea_level_pressure.md)
   /
-  [`get_station_pressure()`](https://limnotrack.com/reference/get_station_pressure.md)).
+  [`get_station_pressure()`](https://limnotrack.com/AEME/reference/get_station_pressure.md)).
 
 ### Bug fixes
 
 - Fixed variable naming for DY-CD model output
-  ([`read_dy_output()`](https://limnotrack.com/reference/read_dy_output.md),
-  [`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)).
+  ([`read_dy_output()`](https://limnotrack.com/AEME/reference/read_dy_output.md),
+  [`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md)).
 - Removed pH from default model controls
-  ([`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.md)).
+  ([`get_model_controls()`](https://limnotrack.com/AEME/reference/get_model_controls.md)).
 - Simplified and corrected variable-name look-ups in
-  [`lake_obs_to_aeme()`](https://limnotrack.com/reference/lake_obs_to_aeme.md),
-  [`read_dy_output()`](https://limnotrack.com/reference/read_dy_output.md),
-  [`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md),
-  [`read_gotm_output()`](https://limnotrack.com/reference/read_gotm_output.md),
+  [`lake_obs_to_aeme()`](https://limnotrack.com/AEME/reference/lake_obs_to_aeme.md),
+  [`read_dy_output()`](https://limnotrack.com/AEME/reference/read_dy_output.md),
+  [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md),
+  [`read_gotm_output()`](https://limnotrack.com/AEME/reference/read_gotm_output.md),
   and
-  [`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)
+  [`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md)
   to use the updated `key_naming$var_aeme` column.
 - Removed a now-redundant internal helper `format_model_vars_vec()`; its
   behaviour is folded into `get_model_vars(as_vector = TRUE)`.
@@ -846,9 +1067,9 @@ get every file as before.
   and `initialise_glm()` — empty model-controls tables now return early
   with an informative message rather than erroring.
 - Fixed a CLI bug in
-  [`estimate_lake_wlev()`](https://limnotrack.com/reference/estimate_lake_wlev.md).
+  [`estimate_lake_wlev()`](https://limnotrack.com/AEME/reference/estimate_lake_wlev.md).
 - Fixed a typo bug in
-  [`estimate_zone_fluxes()`](https://limnotrack.com/reference/estimate_zone_fluxes.md)
+  [`estimate_zone_fluxes()`](https://limnotrack.com/AEME/reference/estimate_zone_fluxes.md)
   column-renaming step
   ([`dplyr::case_match`](https://dplyr.tidyverse.org/reference/case_match.html)
   replaced with
@@ -873,113 +1094,113 @@ get every file as before.
 
 ### New functions
 
-- [`add_outflows()`](https://limnotrack.com/reference/add_outflows.md) —
-  add outflow data to an AEME object.
-- [`add_output()`](https://limnotrack.com/reference/add_output.md) — add
-  model output to an AEME object.
-- [`add_deriv_output()`](https://limnotrack.com/reference/add_deriv_output.md)
+- [`add_outflows()`](https://limnotrack.com/AEME/reference/add_outflows.md)
+  — add outflow data to an AEME object.
+- [`add_output()`](https://limnotrack.com/AEME/reference/add_output.md)
+  — add model output to an AEME object.
+- [`add_deriv_output()`](https://limnotrack.com/AEME/reference/add_deriv_output.md)
   — compute and attach derived variables (thermocline depth,
   stratification, Schmidt stability, TLI components, oxygen metrics) to
   model output.
-- [`check_model()`](https://limnotrack.com/reference/check_model.md) —
-  validate that a model name is supported.
-- [`check_gotm_yaml()`](https://limnotrack.com/reference/check_gotm_yaml.md)
+- [`check_model()`](https://limnotrack.com/AEME/reference/check_model.md)
+  — validate that a model name is supported.
+- [`check_gotm_yaml()`](https://limnotrack.com/AEME/reference/check_gotm_yaml.md)
   — validate a GOTM YAML configuration file.
-- [`check_path()`](https://limnotrack.com/reference/check_path.md) —
-  helper to verify that a file/directory path exists.
+- [`check_path()`](https://limnotrack.com/AEME/reference/check_path.md)
+  — helper to verify that a file/directory path exists.
 - `check_utils()` — miscellaneous input-checking utilities.
-- [`convert_do()`](https://limnotrack.com/reference/convert_do.md) —
-  convert dissolved-oxygen values between units (mg/L ↔︎ % saturation).
+- [`convert_do()`](https://limnotrack.com/AEME/reference/convert_do.md)
+  — convert dissolved-oxygen values between units (mg/L ↔︎ % saturation).
 - `deriv_registry()` — registry of derived-variable definitions used by
-  [`add_deriv_output()`](https://limnotrack.com/reference/add_deriv_output.md).
-- [`estimate_lake_wlev()`](https://limnotrack.com/reference/estimate_lake_wlev.md)
+  [`add_deriv_output()`](https://limnotrack.com/AEME/reference/add_deriv_output.md).
+- [`estimate_lake_wlev()`](https://limnotrack.com/AEME/reference/estimate_lake_wlev.md)
   — estimate lake water level from inflow/outflow data and a hypsograph.
-- [`estimate_sed_zones()`](https://limnotrack.com/reference/estimate_sed_zones.md)
+- [`estimate_sed_zones()`](https://limnotrack.com/AEME/reference/estimate_sed_zones.md)
   — estimate sediment zones from a hypsograph.
-- [`estimate_surface_temperature()`](https://limnotrack.com/reference/estimate_surface_temperature.md)
+- [`estimate_surface_temperature()`](https://limnotrack.com/AEME/reference/estimate_surface_temperature.md)
   — estimate lake surface temperature.
-- [`estimate_zone_fluxes()`](https://limnotrack.com/reference/estimate_zone_fluxes.md)
+- [`estimate_zone_fluxes()`](https://limnotrack.com/AEME/reference/estimate_zone_fluxes.md)
   — estimate sediment-zone fluxes for AED models.
-- [`get_aed_sed_const2d_param()`](https://limnotrack.com/reference/get_aed_sed_const2d_param.md)
+- [`get_aed_sed_const2d_param()`](https://limnotrack.com/AEME/reference/get_aed_sed_const2d_param.md)
   — retrieve 2-D sediment constant parameters from an AED configuration.
-- [`get_aeme_path()`](https://limnotrack.com/reference/get_aeme_path.md)
+- [`get_aeme_path()`](https://limnotrack.com/AEME/reference/get_aeme_path.md)
   — return the path to the AEME package installation.
-- [`get_date_index()`](https://limnotrack.com/reference/get_date_index.md)
+- [`get_date_index()`](https://limnotrack.com/AEME/reference/get_date_index.md)
   — return time-step indices for a given date range.
 - `get_deriv_vars()` — list available derived variables.
-- [`get_glm_sed_params()`](https://limnotrack.com/reference/get_glm_sed_params.md)
+- [`get_glm_sed_params()`](https://limnotrack.com/AEME/reference/get_glm_sed_params.md)
   — retrieve GLM sediment parameters.
-- [`get_glm_sed_zones()`](https://limnotrack.com/reference/get_glm_sed_zones.md)
+- [`get_glm_sed_zones()`](https://limnotrack.com/AEME/reference/get_glm_sed_zones.md)
   — retrieve GLM sediment zone definitions.
-- [`get_hm_palette()`](https://limnotrack.com/reference/get_hm_palette.md)
+- [`get_hm_palette()`](https://limnotrack.com/AEME/reference/get_hm_palette.md)
   — return the built-in heat-map colour palette.
-- [`get_vars_sim()`](https://limnotrack.com/reference/get_vars_sim.md) —
-  get the list of variables to simulate.
-- [`get_wbal_components()`](https://limnotrack.com/reference/get_wbal_components.md)
+- [`get_vars_sim()`](https://limnotrack.com/AEME/reference/get_vars_sim.md)
+  — get the list of variables to simulate.
+- [`get_wbal_components()`](https://limnotrack.com/AEME/reference/get_wbal_components.md)
   — extract water-balance component data from model output.
-- [`glm_sed_params()`](https://limnotrack.com/reference/glm_sed_params.md)
+- [`glm_sed_params()`](https://limnotrack.com/AEME/reference/glm_sed_params.md)
   — construct a GLM sediment-parameter object.
-- [`glm_to_aeme()`](https://limnotrack.com/reference/glm_to_aeme.md) —
-  convert a GLM NML file to an AEME configuration object.
-- [`guess_aeme_vars()`](https://limnotrack.com/reference/guess_aeme_vars.md)
+- [`glm_to_aeme()`](https://limnotrack.com/AEME/reference/glm_to_aeme.md)
+  — convert a GLM NML file to an AEME configuration object.
+- [`guess_aeme_vars()`](https://limnotrack.com/AEME/reference/guess_aeme_vars.md)
   — auto-detect AEME variable names from a data frame.
 - `initialise_aed()` — initialise AED2 configuration (replaces
   `initialiseAED()`).
-- [`is_strat()`](https://limnotrack.com/reference/is_strat.md) — test
-  whether a water column is stratified.
+- [`is_strat()`](https://limnotrack.com/AEME/reference/is_strat.md) —
+  test whether a water column is stratified.
 - `palettes` — built-in colour palettes for AEME plots.
-- [`param_colnames()`](https://limnotrack.com/reference/param_colnames.md)
+- [`param_colnames()`](https://limnotrack.com/AEME/reference/param_colnames.md)
   — return expected column names for the parameter table.
-- [`plot_est_wbal()`](https://limnotrack.com/reference/plot_est_wbal.md)
+- [`plot_est_wbal()`](https://limnotrack.com/AEME/reference/plot_est_wbal.md)
   / `plot_water_balance()` — plot estimated water-balance components.
-- [`plot_glm_config()`](https://limnotrack.com/reference/plot_glm_config.md)
+- [`plot_glm_config()`](https://limnotrack.com/AEME/reference/plot_glm_config.md)
   — plot GLM model configuration diagnostics.
-- [`plot_glm_diagnostics()`](https://limnotrack.com/reference/plot_glm_diagnostics.md)
+- [`plot_glm_diagnostics()`](https://limnotrack.com/AEME/reference/plot_glm_diagnostics.md)
   — plot GLM-AED diagnostic outputs.
-- [`plot_wbal_comp()`](https://limnotrack.com/reference/plot_wbal_comp.md)
+- [`plot_wbal_comp()`](https://limnotrack.com/AEME/reference/plot_wbal_comp.md)
   — plot water-balance component comparison across models.
-- [`plot_wbal_summaries()`](https://limnotrack.com/reference/plot_wbal_summaries.md)
+- [`plot_wbal_summaries()`](https://limnotrack.com/AEME/reference/plot_wbal_summaries.md)
   — plot summarised water-balance results.
-- [`plot_weir_calibration()`](https://limnotrack.com/reference/plot_weir_calibration.md)
+- [`plot_weir_calibration()`](https://limnotrack.com/AEME/reference/plot_weir_calibration.md)
   — plot weir calibration results.
-- [`plot_wlev()`](https://limnotrack.com/reference/plot_wlev.md) — plot
-  simulated water-level time series.
-- [`read_aed_param_csv()`](https://limnotrack.com/reference/read_aed_param_csv.md)
+- [`plot_wlev()`](https://limnotrack.com/AEME/reference/plot_wlev.md) —
+  plot simulated water-level time series.
+- [`read_aed_param_csv()`](https://limnotrack.com/AEME/reference/read_aed_param_csv.md)
   — read AED parameter values from a CSV file.
-- [`read_dy_output()`](https://limnotrack.com/reference/read_dy_output.md),
+- [`read_dy_output()`](https://limnotrack.com/AEME/reference/read_dy_output.md),
   `read_dy_stg()` — read DYRESCD/DY-CD model output and stage files.
-- [`read_glm_output()`](https://limnotrack.com/reference/read_glm_output.md)
+- [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
   — read GLM model output NetCDF files.
-- [`read_gotm_flux_output()`](https://limnotrack.com/reference/read_gotm_flux_output.md),
+- [`read_gotm_flux_output()`](https://limnotrack.com/AEME/reference/read_gotm_flux_output.md),
   `read_gotm_hyps()`,
-  [`read_gotm_output()`](https://limnotrack.com/reference/read_gotm_output.md)
+  [`read_gotm_output()`](https://limnotrack.com/AEME/reference/read_gotm_output.md)
   — read GOTM output files.
-- [`read_model_config()`](https://limnotrack.com/reference/read_model_config.md)
+- [`read_model_config()`](https://limnotrack.com/AEME/reference/read_model_config.md)
   — read a model configuration file.
-- [`read_model_hypsograph()`](https://limnotrack.com/reference/read_model_hypsograph.md)
+- [`read_model_hypsograph()`](https://limnotrack.com/AEME/reference/read_model_hypsograph.md)
   — read a hypsograph from a model configuration.
 - `read_model_nc()` — low-level reader for model NetCDF files.
-- [`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)
+- [`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md)
   — unified reader for all supported model outputs.
-- [`read_model_wlev()`](https://limnotrack.com/reference/read_model_wlev.md)
+- [`read_model_wlev()`](https://limnotrack.com/AEME/reference/read_model_wlev.md)
   — read water-level output from any supported model.
-- [`reset_wbal_param()`](https://limnotrack.com/reference/reset_wbal_param.md)
+- [`reset_wbal_param()`](https://limnotrack.com/AEME/reference/reset_wbal_param.md)
   — reset water-balance parameters to defaults.
 - `resolve_dependencies()` — resolve derived-variable computation
   dependencies.
-- [`run_glm_aed_diagnostics()`](https://limnotrack.com/reference/run_glm_aed_diagnostics.md)
+- [`run_glm_aed_diagnostics()`](https://limnotrack.com/AEME/reference/run_glm_aed_diagnostics.md)
   — run GLM-AED post-run diagnostics.
-- [`set_aed_sed_const2d()`](https://limnotrack.com/reference/set_aed_sed_const2d.md)
+- [`set_aed_sed_const2d()`](https://limnotrack.com/AEME/reference/set_aed_sed_const2d.md)
   — set 2-D AED sediment constant parameters.
-- [`set_aed_totals()`](https://limnotrack.com/reference/set_aed_totals.md)
+- [`set_aed_totals()`](https://limnotrack.com/AEME/reference/set_aed_totals.md)
   — set AED total-concentration parameters.
-- [`set_glm_aed_models()`](https://limnotrack.com/reference/set_glm_aed_models.md)
+- [`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md)
   — configure which AED sub-models are active.
-- [`set_vars_sim()`](https://limnotrack.com/reference/set_vars_sim.md) —
-  set the variables to be output by a simulation.
-- [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md)
+- [`set_vars_sim()`](https://limnotrack.com/AEME/reference/set_vars_sim.md)
+  — set the variables to be output by a simulation.
+- [`standardise_inflow()`](https://limnotrack.com/AEME/reference/standardise_inflow.md)
   — standardise inflow data columns and units.
-- [`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)
+- [`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md)
   — standardise meteorological data columns and units.
 
 ### Improvements and changes
@@ -987,23 +1208,23 @@ get every file as before.
 - **AEME S4 object overhaul** — the `Aeme` S4 class has been
   substantially refactored: accessor/replacement generics have been
   simplified and slot structure updated for consistency.
-- **[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)** —
-  major refactor; improved handling of precipitation, inflows, outflows,
-  and lake-level initialisation.
+- **[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)**
+  — major refactor; improved handling of precipitation, inflows,
+  outflows, and lake-level initialisation.
 - **`calc_fairall()`** — vectorised and performance-improved
   implementation of the Fairall bulk aerodynamic algorithm.
 - **`calc_water_balance()`** — refactored water-balance calculation;
   improved precipitation and evaporation handling.
 - **`calc_lake_obs_deriv()`** — extended to compute additional derived
   observation variables.
-- **[`expand_met()`](https://limnotrack.com/reference/expand_met.md)** —
-  improved meteorological gap-filling and unit conversion logic.
-- **[`load_output()`](https://limnotrack.com/reference/load_output.md)**
+- **[`expand_met()`](https://limnotrack.com/AEME/reference/expand_met.md)**
+  — improved meteorological gap-filling and unit conversion logic.
+- **[`load_output()`](https://limnotrack.com/AEME/reference/load_output.md)**
   — now dispatches to the new unified
-  [`read_model_outputs()`](https://limnotrack.com/reference/read_model_outputs.md)
+  [`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md)
   functions.
-- **[`check_aeme_vars()`](https://limnotrack.com/reference/check_aeme_vars.md)**,
-  **[`check_glm_nml()`](https://limnotrack.com/reference/check_glm_nml.md)**
+- **[`check_aeme_vars()`](https://limnotrack.com/AEME/reference/check_aeme_vars.md)**,
+  **[`check_glm_nml()`](https://limnotrack.com/AEME/reference/check_glm_nml.md)**
   — improved validation logic and error messages.
 - **`check_time()`** — more robust time-period validation.
 - **[`print()`](https://rdrr.io/r/base/print.html) /
@@ -1013,18 +1234,19 @@ get every file as before.
   formatted console output.
 - **Inflow/outflow handling** — new auto-detection of column names and
   units via
-  [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md)
+  [`standardise_inflow()`](https://limnotrack.com/AEME/reference/standardise_inflow.md)
   and
-  [`guess_aeme_vars()`](https://limnotrack.com/reference/guess_aeme_vars.md);
-  [`add_inflows()`](https://limnotrack.com/reference/add_inflows.md) and
-  [`add_outflows()`](https://limnotrack.com/reference/add_outflows.md)
+  [`guess_aeme_vars()`](https://limnotrack.com/AEME/reference/guess_aeme_vars.md);
+  [`add_inflows()`](https://limnotrack.com/AEME/reference/add_inflows.md)
+  and
+  [`add_outflows()`](https://limnotrack.com/AEME/reference/add_outflows.md)
   updated accordingly.
 - **Rain and snow units** — standardised to mm/day throughout the
   package.
 - **GLM NML helpers** — new tests and improved handling of sediment
   parameters and zone detection.
 - **GOTM YAML** — new
-  [`check_gotm_yaml()`](https://limnotrack.com/reference/check_gotm_yaml.md)
+  [`check_gotm_yaml()`](https://limnotrack.com/AEME/reference/check_gotm_yaml.md)
   validates GOTM configuration before model run.
 - **AED initialisation** — `initialiseAED()` replaced by
   `initialise_aed()`; library name spelling corrected to “Ecodynamics”.
@@ -1050,13 +1272,13 @@ get every file as before.
 - Fixed phytoplankton group index when building AED configurations
   (#`45559f4`).
 - Fixed outflow renaming bug in
-  [`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
   (#`04838b0`).
 - Fixed inflow name update logic in `build_glm()` (#`5c0eb58`).
 - Fixed water-balance weir/outflow handling when only the water-balance
   outflow is present (#`af39204`).
 - Fixed
-  [`guess_aeme_vars()`](https://limnotrack.com/reference/guess_aeme_vars.md)
+  [`guess_aeme_vars()`](https://limnotrack.com/AEME/reference/guess_aeme_vars.md)
   guessing logic for edge cases (#`9e9e622`).
 - Fixed phytoplankton defaults in AED initialisation (#`c9e78d4`).
 - Fixed precipitation unit parsing for percentage values (#`16bcf0b`).

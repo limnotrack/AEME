@@ -1,12 +1,12 @@
 # Locate an installed Simstrat-AED executable
 
 Returns the path to a Simstrat-AED executable previously installed with
-[`install_simstrat_aed()`](https://limnotrack.com/reference/install_simstrat_aed.md).
+[`install_simstrat_aed()`](https://limnotrack.com/AEME/reference/install_simstrat_aed.md).
 Errors if that version isn't installed for this platform yet. Mirrors
-[`simstrat_aed2_exe_path()`](https://limnotrack.com/reference/simstrat_aed2_exe_path.md);
+[`simstrat_aed2_exe_path()`](https://limnotrack.com/AEME/reference/simstrat_aed2_exe_path.md);
 there is no bundled fallback – Simstrat-AED binaries are only ever
 obtained via
-[`install_simstrat_aed()`](https://limnotrack.com/reference/install_simstrat_aed.md).
+[`install_simstrat_aed()`](https://limnotrack.com/AEME/reference/install_simstrat_aed.md).
 
 ## Usage
 
@@ -24,10 +24,10 @@ simstrat_aed_exe_path(
   Character. The Simstrat-AED version to locate, e.g. `"3.0.4"`. If
   `NULL` (the default), resolves to whichever version is currently
   installed (see
-  [`install_simstrat_aed()`](https://limnotrack.com/reference/install_simstrat_aed.md)),
+  [`install_simstrat_aed()`](https://limnotrack.com/AEME/reference/install_simstrat_aed.md)),
   following the same resolution order
-  [`run_aeme()`](https://limnotrack.com/reference/run_aeme.md) itself
-  uses.
+  [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md)
+  itself uses.
 
 - os:
 

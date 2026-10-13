@@ -47,11 +47,11 @@ would instead push the calibration towards the most negative
 (under-estimating) bias possible.
 
 Unlike
-[`mae`](https://limnotrack.com/reference/mae.md)/[`rmse`](https://limnotrack.com/reference/rmse.md),
+[`mae`](https://limnotrack.com/AEME/reference/mae.md)/[`rmse`](https://limnotrack.com/AEME/reference/rmse.md),
 it is expressed as a percentage of the observed total rather than in the
 variable's native units, which makes it directly comparable across
 variables with different units or magnitudes - similar to
-[`nse`](https://limnotrack.com/reference/nse.md)/[`kge`](https://limnotrack.com/reference/kge.md)
+[`nse`](https://limnotrack.com/AEME/reference/nse.md)/[`kge`](https://limnotrack.com/AEME/reference/kge.md)
 in that respect. On its own it only captures systematic
 over/under-estimation, not timing, variability or shape - it is
 typically combined with NSE or KGE (which are largely insensitive to a

@@ -44,7 +44,7 @@ bold are required to run the models.
   - **`output_daily_mean`**: logical; if `TRUE`, every model
     additionally produces a daily-mean output stream alongside its raw
     `output_time_step` output. Default `FALSE`. See
-    [`set_output_time_step`](https://limnotrack.com/reference/set_output_time_step.md).
+    [`set_output_time_step`](https://limnotrack.com/AEME/reference/set_output_time_step.md).
 
   - **`spin_up`**: list; spin up period in days for each model
 
@@ -135,7 +135,7 @@ bold are required to run the models.
   - `params`: fitted outflow parameters (C, h_inv), keyed by evaporation
     family since `dy_cd`/`glm_aed` share one fit and
     `gotm_wet`/`simstrat_aed2` each have their own – see
-    [`get_wbal_param`](https://limnotrack.com/reference/get_wbal_param.md).
+    [`get_wbal_param`](https://limnotrack.com/AEME/reference/get_wbal_param.md).
 
 - `output`:
 
@@ -154,5 +154,5 @@ bold are required to run the models.
   A dataframe representing model parameters: updates (e.g. calibrated
   values) applied on top of the model `configuration` when the model
   files are written. `configuration` itself is not changed by them; see
-  [`effective_configuration()`](https://limnotrack.com/reference/effective_configuration.md)
+  [`effective_configuration()`](https://limnotrack.com/AEME/reference/effective_configuration.md)
   for the two combined.

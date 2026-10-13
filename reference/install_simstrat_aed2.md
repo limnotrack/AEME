@@ -6,7 +6,7 @@ installs it into a persistent user cache directory. Binaries are
 attached as assets to AEME's GitHub releases, with the Simstrat version
 encoded in the asset filename (e.g. `simstrat-windows-3.0.4.zip`),
 mirroring
-[`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md).
+[`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md).
 Because a given Simstrat version isn't tied to any one AEME release,
 this function searches across all releases of `repo` to find the release
 that has the requested version's asset attached.
@@ -28,7 +28,7 @@ install_simstrat_aed2(
 - version:
 
   Character. The Simstrat version to install, e.g. `"3.0.4"`. Use
-  [`list_simstrat_aed2_versions()`](https://limnotrack.com/reference/list_simstrat_aed2_versions.md)
+  [`list_simstrat_aed2_versions()`](https://limnotrack.com/AEME/reference/list_simstrat_aed2_versions.md)
   to see what's available. Defaults to `"latest"`, which resolves to the
   highest version number available for the current platform.
 
@@ -67,12 +67,12 @@ Invisibly, the file path to the installed Simstrat-AED2 executable.
 Binaries are cached under
 [`tools::R_user_dir("AEME", "data")`](https://rdrr.io/r/tools/userdir.html),
 in an `<os>/<version>/` subdirectory (the same root
-[`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md)
+[`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md)
 uses – the two coexist there because the installed files themselves are
 named differently, `simstrat`/`simstrat.exe` vs `glm`/`glm.exe`).
 Multiple Simstrat versions can be installed side by side and switched
 between via the `version` argument to
-[`simstrat_aed2_exe_path()`](https://limnotrack.com/reference/simstrat_aed2_exe_path.md)
+[`simstrat_aed2_exe_path()`](https://limnotrack.com/AEME/reference/simstrat_aed2_exe_path.md)
 without re-downloading.
 
 Every binary is published alongside a `.sha256` checksum file in the
@@ -85,11 +85,11 @@ circumstances.
 
 ## See also
 
-[`list_simstrat_aed2_versions()`](https://limnotrack.com/reference/list_simstrat_aed2_versions.md)
+[`list_simstrat_aed2_versions()`](https://limnotrack.com/AEME/reference/list_simstrat_aed2_versions.md)
 to discover available versions,
-[`simstrat_aed2_exe_path()`](https://limnotrack.com/reference/simstrat_aed2_exe_path.md)
+[`simstrat_aed2_exe_path()`](https://limnotrack.com/AEME/reference/simstrat_aed2_exe_path.md)
 to locate an already-installed executable,
-[`install_glm_aed()`](https://limnotrack.com/reference/install_glm_aed.md)
+[`install_glm_aed()`](https://limnotrack.com/AEME/reference/install_glm_aed.md)
 for the equivalent GLM-AED installer this mirrors.
 
 ## Examples

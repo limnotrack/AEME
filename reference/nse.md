@@ -42,18 +42,18 @@ reasonable default when combining fit values across variables with
 different units or magnitudes - but it is squared-error based, so it
 over-weights peaks and under-weights errors in the low/baseline range,
 and it conflates bias, variability and timing error into one number. See
-[`kge`](https://limnotrack.com/reference/kge.md)/[`kge_prime`](https://limnotrack.com/reference/kge_prime.md)
+[`kge`](https://limnotrack.com/AEME/reference/kge.md)/[`kge_prime`](https://limnotrack.com/AEME/reference/kge_prime.md)
 for a fit function that keeps those separate.
 
 `calib_aeme()` and `run_and_fit()` **minimise** the values returned by
 `FUN_list` entries, so `nse()` is not suitable as a calibration
 objective directly - use
-[`nse_loss`](https://limnotrack.com/reference/fit_loss.md) (which
+[`nse_loss`](https://limnotrack.com/AEME/reference/fit_loss.md) (which
 returns `-1 * nse(obs, sim)`) for that.
 
 ## See also
 
-[`nse_loss`](https://limnotrack.com/reference/fit_loss.md) for the
+[`nse_loss`](https://limnotrack.com/AEME/reference/fit_loss.md) for the
 minimise-oriented variant used in `FUN_list`.
 
 ## Examples

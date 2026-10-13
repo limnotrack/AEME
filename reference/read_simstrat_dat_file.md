@@ -63,4 +63,4 @@ Everything in the file is numeric, so it is read with a single
 [`read.csv`](https://rdrr.io/r/utils/read.table.html) – substantially
 faster on the large depth x time files, which matters when a calibration
 reads the output once per model run (see
-[`read_simstrat_dat`](https://limnotrack.com/reference/read_simstrat_dat.md)).
+[`read_simstrat_dat`](https://limnotrack.com/AEME/reference/read_simstrat_dat.md)).

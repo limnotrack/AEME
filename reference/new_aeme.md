@@ -3,14 +3,14 @@
 Returns a valid, fully-populated `Aeme` object built from placeholder
 values, intended as a starting point for a new lake configuration.
 Unlike
-[`aeme_constructor()`](https://limnotrack.com/reference/aeme_constructor.md),
+[`aeme_constructor()`](https://limnotrack.com/AEME/reference/aeme_constructor.md),
 which requires real lake, time, and input data and aborts without it,
 `new_aeme()` fills in sensible defaults so you get a live object back
 immediately, ready to be built up incrementally with the slot setters
 (e.g. `lake<-`, `time<-`, `input<-`) and helpers such as
-[`add_hypsograph()`](https://limnotrack.com/reference/add_hypsograph.md),
-[`add_met()`](https://limnotrack.com/reference/add_met.md), and
-[`add_inflows()`](https://limnotrack.com/reference/add_inflows.md).
+[`add_hypsograph()`](https://limnotrack.com/AEME/reference/add_hypsograph.md),
+[`add_met()`](https://limnotrack.com/AEME/reference/add_met.md), and
+[`add_inflows()`](https://limnotrack.com/AEME/reference/add_inflows.md).
 
 ## Usage
 
@@ -86,7 +86,7 @@ new_aeme(
 
   logical; if `TRUE`, every model additionally produces a daily-mean
   output stream (see
-  [`set_output_time_step()`](https://limnotrack.com/reference/set_output_time_step.md)).
+  [`set_output_time_step()`](https://limnotrack.com/AEME/reference/set_output_time_step.md)).
   Default `FALSE`.
 
 - tz:
@@ -106,7 +106,7 @@ A valid `Aeme` object populated with placeholder values.
 
 ## See also
 
-[`aeme_constructor()`](https://limnotrack.com/reference/aeme_constructor.md)
+[`aeme_constructor()`](https://limnotrack.com/AEME/reference/aeme_constructor.md)
 for building an `Aeme` object from real lake data with full validation.
 
 ## Examples

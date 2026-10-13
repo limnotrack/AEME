@@ -1,10 +1,10 @@
 # Set outflow data for a GOTM-WET simulation directory
 
 Thin, `aeme`-free wrapper around the internal outflow writer used by
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md). Writes
-`inputs/outf_<name>.dat` per outflow into `path_gotm`, and updates the
-`streams` block of `gotm.yaml` to point at them. Existing stream entries
-not named in `outf` are left untouched.
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md).
+Writes `inputs/outf_<name>.dat` per outflow into `path_gotm`, and
+updates the `streams` block of `gotm.yaml` to point at them. Existing
+stream entries not named in `outf` are left untouched.
 
 ## Usage
 
@@ -28,7 +28,7 @@ set_gotm_outflows(
 
   named list of data.frames, one per outflow, each with a `Date` column
   and a `HYD_flow` column – see
-  [`add_outflows()`](https://limnotrack.com/reference/add_outflows.md)
+  [`add_outflows()`](https://limnotrack.com/AEME/reference/add_outflows.md)
   for the expected schema.
 
 - outf_factor:

@@ -6,10 +6,10 @@ hydrodynamic/bgc files come verbatim from `configuration(aeme)`, and
 (when `include_boundary = TRUE`) the meteorology/inflow/outflow
 boundary-condition files come straight from
 `input(aeme)`/`inflows(aeme)`/ `outflows(aeme)`, bypassing
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md)'s
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)'s
 water-balance/lake-level/ AED-re-derivation pipeline entirely. This
 makes it the safe choice for rewriting an already-built (or
-[`glm_config_to_aeme()`](https://limnotrack.com/reference/glm_config_to_aeme.md)-loaded)
+[`glm_config_to_aeme()`](https://limnotrack.com/AEME/reference/glm_config_to_aeme.md)-loaded)
 configuration to disk unchanged – e.g. into a fresh directory – without
 the risk of `build_aeme(use_aeme = TRUE)` silently regenerating values
 from generic state instead of trusting what's cached.

@@ -3,7 +3,7 @@
 Fits an annual sediment-temperature cycle (`sed_temp_mean`,
 `sed_temp_amplitude`, `sed_temp_peak_doy`) for each GLM sediment zone
 from observed water-column temperature profiles. Used internally by
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) to
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md) to
 populate the GLM `&sediment` block, and exported so the same per-zone
 values can be generated as a calibration parameter table.
 
@@ -57,7 +57,7 @@ calc_sed_temp(
   ascending - exactly as passed to GLM `zone_heights`. Zone 1 is 0 -\>
   sed_zones\[1\] (the deepest slab); the last value may exceed max
   depth. `NULL` (default) -\>
-  [`estimate_sed_zones()`](https://limnotrack.com/reference/estimate_sed_zones.md)
+  [`estimate_sed_zones()`](https://limnotrack.com/AEME/reference/estimate_sed_zones.md)
   on `hypsograph`.
 
 - max_depth:
@@ -77,7 +77,7 @@ calc_sed_temp(
 - output:
 
   one of `"parameters"` (default) - a long AEME model-parameter table in
-  [`param_colnames()`](https://limnotrack.com/reference/param_colnames.md)`(incl_opt = FALSE)`
+  [`param_colnames()`](https://limnotrack.com/AEME/reference/param_colnames.md)`(incl_opt = FALSE)`
   order, ready for calibration; `"nml"` - a named list of the three
   per-zone vectors to splice into `glm_nml[["sediment"]]`; or
   `"summary"` - the per-zone diagnostic data.frame with `parameters` /
@@ -131,10 +131,11 @@ Depends on `output`:
 ## Details
 
 Inputs can be supplied directly (`obs_temp`, `hypsograph`, `sed_zones`)
-or pulled from an [Aeme](https://limnotrack.com/reference/Aeme.md)
+or pulled from an [Aeme](https://limnotrack.com/AEME/reference/Aeme.md)
 object via `aeme`: observations come from
-[`get_obs()`](https://limnotrack.com/reference/get_obs.md) and the
-hypsograph from [`input()`](https://limnotrack.com/reference/input.md).
-`sed_zones` defaults to
-[`estimate_sed_zones()`](https://limnotrack.com/reference/estimate_sed_zones.md)
+[`get_obs()`](https://limnotrack.com/AEME/reference/get_obs.md) and the
+hypsograph from
+[`input()`](https://limnotrack.com/AEME/reference/input.md). `sed_zones`
+defaults to
+[`estimate_sed_zones()`](https://limnotrack.com/AEME/reference/estimate_sed_zones.md)
 on the hypsograph when not given.

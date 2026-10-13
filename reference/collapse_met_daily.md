@@ -33,20 +33,20 @@ day-aggregated numeric columns.
 ## Details
 
 AEME defines `MET_pprain` / `MET_ppsnow` as a **rate in mm/day** (see
-[`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)).
+[`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md)).
 If the frame is already on that convention – e.g. the output of
-[`standardise_met()`](https://limnotrack.com/reference/standardise_met.md),
+[`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md),
 which is what
-[`build_aeme()`](https://limnotrack.com/reference/build_aeme.md) feeds
-the water balance – a daily *mean* of the rate is the daily rate, so
-`precip = "mean"` (the default) is correct. Raw sub-daily reanalysis /
-AWS products instead report precipitation as an **accumulation per time
-step** (mm that fell during that step); for those, use `precip = "sum"`
-to get the daily total.
+[`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+feeds the water balance – a daily *mean* of the rate is the daily rate,
+so `precip = "mean"` (the default) is correct. Raw sub-daily reanalysis
+/ AWS products instead report precipitation as an **accumulation per
+time step** (mm that fell during that step); for those, use
+`precip = "sum"` to get the daily total.
 
 ## See also
 
-[`standardise_met()`](https://limnotrack.com/reference/standardise_met.md)
+[`standardise_met()`](https://limnotrack.com/AEME/reference/standardise_met.md)
 
 ## Examples
 

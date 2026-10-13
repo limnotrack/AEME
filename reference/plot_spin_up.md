@@ -14,7 +14,7 @@ plot_spin_up(x, metric = NULL, ...)
 - x:
 
   an `aeme_spin_up` object from
-  [`assess_spin_up()`](https://limnotrack.com/reference/assess_spin_up.md).
+  [`assess_spin_up()`](https://limnotrack.com/AEME/reference/assess_spin_up.md).
 
 - metric:
 
@@ -31,4 +31,4 @@ A `ggplot` object.
 
 ## See also
 
-[`assess_spin_up()`](https://limnotrack.com/reference/assess_spin_up.md)
+[`assess_spin_up()`](https://limnotrack.com/AEME/reference/assess_spin_up.md)

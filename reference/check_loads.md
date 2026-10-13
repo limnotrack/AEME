@@ -3,7 +3,7 @@
 Flags discharge and load values that look implausible relative to the
 lake's own volume and surface area, or relative to broad plausible
 concentration ranges (the same ranges applied at ingestion by
-[`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md)).
+[`standardise_inflow()`](https://limnotrack.com/AEME/reference/standardise_inflow.md)).
 This is a lightweight order-of-magnitude sanity check – not a substitute
 for expert review – intended to catch things like unit errors (e.g. m3/s
 mistaken for m3/day), a lake volume/area that doesn't match the inflow
@@ -52,7 +52,7 @@ A data frame with columns `check`, `value`, `unit`, `lower`, `upper`,
   `load / discharge` for each of `NIT_amm`, `NIT_nit`, `PHS_frp`,
   `CAR_doc` and `CHM_oxy` (when present), checked against the same
   plausible ranges used by
-  [`standardise_inflow()`](https://limnotrack.com/reference/standardise_inflow.md).
+  [`standardise_inflow()`](https://limnotrack.com/AEME/reference/standardise_inflow.md).
 
 Thresholds are deliberately loose (order-of-magnitude) so that only
 clearly implausible values are flagged.
