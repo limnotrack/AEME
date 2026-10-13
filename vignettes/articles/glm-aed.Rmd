@@ -697,6 +697,180 @@ plot_output(aeme = aeme, var_sim = "PHY_tchla")
 
 ---
 
+## Sediment, flux and diagnostic output
+
+GLM-AED writes much more than the variables listed in `model_controls`:
+sediment temperature and heat flux, sediment–water fluxes (lake-wide and for
+each sediment zone), sediment pools and AED diagnostics. AEME reads all of it
+from `output.nc`, so nothing needs to be switched on before the run. It is
+stored in the model output beside the standard variables:
+
+- ordinary `(time)` and `(depth, time)` variables sit alongside `HYD_temp` and
+  the rest;
+- variables with other dimensions (sediment zones, sediment layers) are kept as
+  labelled `aeme_grouped_var` objects in the `sediment` and `diag` sub-lists,
+  so a zone is never mistaken for a depth.
+
+### Finding the variables
+
+`get_output_vars()` lists what is available. The `group` argument picks the
+sub-list:
+
+```{r sed-output-vars}
+get_output_vars(aeme, model = "glm_aed", group = "sediment") |>
+  head(12)
+```
+
+These variables are stored under their raw GLM-AED netCDF names. The
+`glm_extra_vars` table gives each one an AEME name, a label and units, and
+either name works anywhere AEME looks up a variable (`get_var()`,
+`check_var_in_output()`, ...). `SED_*` are the sediment-zone variables and
+`SEDL_*` the matching lake-wide series:
+
+```{r glm-extra-vars}
+glm_extra_vars |>
+  dplyr::filter(group == "sediment") |>
+  dplyr::select(var_aeme, glm_aed, units, name_text) |>
+  head(12)
+```
+
+### Sediment temperature
+
+`SED_temp` is the temperature of the sediment layers beneath each zone. It has
+three dimensions (sediment layer, zone and time), so `get_var()` returns it in
+long format, one row per layer, zone and date. Use `zone` and `sed_layer` to
+subset it. Zones follow the GLM order (1 is the deepest) and layer 1 is the
+shallowest. It is only written when GLM's sediment heat model is on
+(`sed_heat_model = 2` in the GLM nml). If your run does not have it, the
+chunks below that use it are skipped.
+
+```{r sed-temp, eval = "sed_temp" %in% names(output(aeme)$ens_001$glm_aed$sediment), fig.cap = "Sediment temperature (°C) in the top and bottom sediment layer of each zone."}
+sed_temp <- get_var(aeme, model = "glm_aed", var_sim = "SED_temp")
+n_layer  <- max(sed_temp$sed_layers)
+
+sed_temp |>
+  dplyr::filter(sed_layers %in% c(1, n_layer)) |>
+  dplyr::mutate(layer = ifelse(sed_layers == 1, "Top layer", "Bottom layer"),
+                zone  = factor(nzones)) |>
+  ggplot(aes(Date, value, colour = zone)) +
+  geom_line() +
+  facet_wrap(~layer, ncol = 1) +
+  labs(x = NULL, y = "Sediment temperature (°C)", colour = "Zone") +
+  theme_bw()
+```
+
+A zone that has no area in GLM's output for the simulated period is returned as
+`NA`, so it is missing from the plot above (zone 3 in this lake). The same call
+with `zone` and `sed_layer` returns a single series, for example the top layer
+of the deepest zone:
+
+```{r sed-temp-subset, eval = "sed_temp" %in% names(output(aeme)$ens_001$glm_aed$sediment)}
+get_var(aeme, model = "glm_aed", var_sim = "SED_temp",
+        zone = 1, sed_layer = 1) |>
+  head(3)
+```
+
+### Sediment–water fluxes by zone
+
+Fluxes across the sediment–water interface are written for each zone as well as
+for the whole lake. Zone variables (`SED_Fsed_oxy`, `SED_Fsed_amm`, ...) have a
+`nzones` column:
+
+```{r sed-flux-zone, fig.cap = "Simulated sediment oxygen flux (mmol O2 m⁻² d⁻¹) in each sediment zone."}
+get_var(aeme, model = "glm_aed", var_sim = "SED_Fsed_oxy") |>
+  dplyr::mutate(zone = factor(nzones)) |>
+  ggplot(aes(Date, value, colour = zone)) +
+  geom_line() +
+  labs(x = NULL, y = "Sediment oxygen flux (mmol O2 m-2 d-1)",
+       colour = "Zone") +
+  theme_bw()
+```
+
+### Choosing what to keep
+
+Keeping every sediment and diagnostic variable is convenient for exploring a
+single run, but it is wasteful when the model is run many times, as in a
+sensitivity analysis, calibration or ensemble. Each run stores several MB of
+extra output, and most of it is never looked at. `run_aeme()` (and
+`run_aeme_ensemble()`, `load_output()`) take an `extra_vars` argument to choose
+what is read from `output.nc`. Variables that are not requested are never
+read.
+
+| `extra_vars` | What is kept |
+|---|---|
+| `NULL` (default) | Everything, as above |
+| `"none"` | No extra variables, just the standard set |
+| `c("SED_temp", "SED_Fsed_oxy")` | Only these. AEME or raw netCDF names |
+| `"sediment"` or `"diag"` | Every variable stored in that sub-list |
+
+Two further arguments reduce what is kept for the variables you do select.
+`sed_layers` keeps only some sediment layers of `SED_temp`, and
+`zone_summary = TRUE` adds a lake-wide series for each sediment-zone variable.
+The series is the mean over zones, weighted by the (time-varying) area of each
+zone, and is stored as `<name>_lake`:
+
+```{r extra-vars-run}
+aeme_sel <- run_aeme(
+  aeme         = aeme,
+  extra_vars   = c("SED_temp", "SED_Fsed_oxy", "SED_Fsed_amm"),
+  sed_layers   = 1:3,
+  zone_summary = TRUE
+)
+
+size_mb <- function(x) {
+  format(object.size(output(x)$ens_001$glm_aed), units = "MB")
+}
+c(all_extras = size_mb(aeme), selected = size_mb(aeme_sel))
+```
+
+The standard output is identical between the two runs. Only the extras differ.
+
+```{r extra-vars-compare}
+identical(output(aeme)$ens_001$glm_aed$HYD_temp,
+          output(aeme_sel)$ens_001$glm_aed$HYD_temp)
+names(output(aeme_sel)$ens_001$glm_aed$sediment)
+```
+
+The lake-wide series is a single time series, handy as a calibration target or
+for comparing with whole-lake estimates of sediment oxygen demand:
+
+```{r sed-flux-lake, fig.cap = "Zone-area weighted lake-wide sediment oxygen flux (mmol O2 m⁻² d⁻¹)."}
+get_var(aeme_sel, model = "glm_aed", var_sim = "SED_Fsed_oxy_lake") |>
+  ggplot(aes(Date, value)) +
+  geom_line() +
+  labs(x = NULL, y = "Sediment oxygen flux (mmol O2 m-2 d-1)") +
+  theme_bw()
+```
+
+A name ending `_lake` can also be requested on its own, for example
+`extra_vars = "SED_Fsed_oxy_lake"`. AEME then builds that series and does not
+keep the per-zone array behind it.
+
+### Using these variables in ensembles and calibration
+
+`run_aeme_ensemble()` passes `extra_vars`, `sed_layers`, `zone_summary` and
+`keep_diag` to every member, so a sensitivity analysis or calibration run with
+**aemetools** can ask for just the series it needs:
+
+```{r extra-vars-ensemble, eval = FALSE}
+aeme <- run_aeme_ensemble(
+  aeme,
+  model        = "glm_aed",
+  param_sets   = param_sets,     # e.g. sampled with aemetools
+  extra_vars   = c("SED_temp", "SED_Fsed_oxy_lake"),
+  sed_layers   = 1
+)
+
+# Member 3's top-layer sediment temperature, in the deepest zone
+get_var(aeme, model = "glm_aed", var_sim = "SED_temp",
+        zone = 1, sed_layer = 1, ens_n = 3)
+```
+
+The sediment parameters estimated earlier (`sed_temp_mean`, the zone fluxes) are
+the natural ones to vary when these outputs are the target.
+
+---
+
 ## Assessing model performance
 
 When observations are stored in the `aeme` object, `assess_model()` computes a

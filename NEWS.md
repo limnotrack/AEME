@@ -1,5 +1,131 @@
 # AEME 0.4.0
 
+## Choosing which GLM-AED sediment, flux and diagnostic output to keep
+
+GLM-AED writes far more than the standard variables: sediment temperature and
+heat flux, sediment-water fluxes (lake-wide and by sediment zone), sediment
+pools and AED diagnostics. `read_glm_output()` has always swept these into the
+`diag` / `sediment` sub-lists of the model output under their raw netCDF names;
+this release makes them easy to request, name and use, e.g. from `aemetools`
+sensitivity analysis and calibration, without carrying the whole payload in
+every ensemble member.
+
+* New dataset `glm_extra_vars`: a registry giving these variables AEME names
+  (`SED_temp`, `SED_hflux`, `SED_ztemp`, `SED_Fsed_oxy`, ... for sediment-zone
+  variables; `SEDL_Fsed_oxy`, ... for the matching lake-wide series), labels and
+  units. Generated from `data-raw/glm_extra_vars.csv`. Either the AEME or the raw
+  netCDF name works wherever a variable is looked up: `get_var()`,
+  `check_var_in_output()`, `check_aeme_vars()` and `plot_*()`.
+* New `extra_vars` argument on `run_aeme()`, `run_aeme_ensemble()`,
+  `load_output()`, `read_model_outputs()` and `read_glm_output()` to choose which
+  of those variables are read: `NULL` (default, as before) reads all, `"none"`
+  none, or a vector of names and/or the keywords `"sediment"` / `"diag"`.
+  Variables not requested are never read from `output.nc`. In a test lake this
+  cut the stored output from 18.9 MB to 3.5 MB per run, which adds up over an
+  ensemble. `run_aeme()` and `run_aeme_ensemble()` also now expose `keep_diag`.
+* New `sed_layers` argument to keep only some sediment layers of `SED_temp`, and
+  `zone_summary` to add an area-weighted lake-wide series for each sediment-zone
+  variable (`<name>_lake`, using the time-varying zone area `zarea`; zones with no
+  area are ignored). Naming a series such as `"SED_Fsed_oxy_lake"` in
+  `extra_vars` builds just that series.
+* `get_var()` gains `zone` and `sed_layer` to subset sediment variables.
+* `get_output_vars()` labels these variables from the registry.
+* Fixed `check_var_in_output()` reporting variables held in the `diag` /
+  `sediment` sub-lists as missing, and sediment-zone variables (`*_Z`) requested
+  through `vars_sim` being returned as bare arrays rather than labelled grouped
+  variables.
+
+## Observations recorded relative to the lake bed
+
+* `add_obs()` gains `depth_ref` (and accepts a `depth_ref` column in `lake`) so an
+  observation can be recorded as a height above the lake bed (`"bottom"`), for
+  example a logger 1 m above the sediment, instead of a depth below the surface
+  (`"surface"`, the default and the usual case). Stored observations keep
+  `depth` in metres below the surface, so everything that reads it is
+  unaffected. A bottom-referenced observation also stores `height_above_bed` and
+  `depth_ref`, and its `depth` is worked out as `level - height` from the lake
+  level observations (interpolated in time), or from the full depth of the basin
+  with a warning if there are none. Observations that are all
+  surface-referenced get no new columns.
+* `get_var(use_obs = TRUE)` compares a bottom-referenced observation with the
+  model at (the model's own water level - `height_above_bed`) on that date,
+  rather than at the depth it was placed at when added. It also no longer fails
+  when the observations fall on a single date.
+* `ensemble_summary()` now places observations in the reference of the summary
+  before matching them to `depths`. With `depth_ref = "bottom"` a surface
+  observation is converted to a height above the bed, and with `"surface"` a
+  bottom observation to a depth below it, using the lake level observations
+  (interpolated in time) or, where there are none, the ensemble median of the
+  modelled level. Previously observations were matched to `depths` as depths
+  below the surface whatever `depth_ref` was, so with `"bottom"` they were
+  misaligned. `score_ensemble()` uses the same observations.
+* `get_obs_column_names(include_optional = TRUE)` now also returns `depth_ref`
+  and `height_above_bed`.
+
+## `get_var(depth_ref = "bottom")` follows the water level
+
+* **Behaviour change.** `get_var(depth = d, depth_ref = "bottom")` now reads the
+  profile `d` metres above the lake bed, i.e. `level - d` metres below the
+  surface on each date, using the modelled water level (`LKE_lvlwtr`). It
+  previously used the basin's full depth as a fixed datum, so "1 m from the
+  bottom" was always read at (full depth - 1) m below the surface whatever the
+  water level; the two only agree when the level equals the full depth. With
+  levels that move (inflow/outflow, drawdown, or an extended hypsograph) the old
+  answer was off by the difference between the level and the full depth, which
+  reached about 3 m and over 1 degC in an ensemble test. On a date when the
+  level is below `depth` the value is now `NA` rather than the surface value.
+  Results from `get_var()`, and from `ensemble_summary(depth_ref = "bottom")`
+  which calls it, will change for bottom-referenced depths; surface-referenced
+  extraction is unchanged. `write_aeme_parquet(depth_ref = "bottom")` uses the
+  same definition.
+
+## `write_aeme_parquet()` can summarise at fixed depths
+
+* AEME stores GLM output on a depth grid scaled to each day's lake level, so
+  members whose water level differs report different depths and the summary
+  tier, which collapses across members at each stored depth, ended up with one
+  or two members per group. `write_aeme_parquet()` gains `depths` (and
+  `depth_ref`): each member's profile is linearly interpolated to the requested
+  depths on every date before the members are collapsed. A depth outside a
+  member's water column on a date is left out for that member, so `n_ens` is the
+  number of members that contributed.
+* `depth_ref = "surface"` (default) measures `depths` in metres below the water
+  surface; `"bottom"` measures them in metres above the lake bed, converted per
+  member and date from the member's water level (`LKE_lvlwtr`).
+* The summary tier has a new `depth_ref` column (`"surface"` or `"bottom"` for
+  depth-resolved variables, `NA` for variables with no depth dimension).
+  `output_raw` is unchanged and always holds the stored depths in metres below
+  the surface.
+
+## Faster `write_aeme_parquet()` summary tier
+
+* The ensemble summary tier written by `write_aeme_parquet()` is now computed
+  without a list-column per group. The standard depth grid is scaled to each
+  member's water level, so depths differ between members and a 12-member
+  ensemble has about a million summary groups; the old `dplyr::summarise()` over
+  them took over a minute (66 s of a 96 s write).
+  The same table now takes a second or two (the whole write about 15 s). The
+  values are identical to the previous implementation, checked on the full
+  ensemble and on edge cases (missing values, single members, ties). New tests
+  cover the writer, which had none.
+
+## Ensemble summary and plotting moved from aemetools
+
+* `ensemble_summary()` and `plot_ensemble()` now live in AEME, next to
+  `run_aeme_ensemble()` and `write_aeme_parquet()`. `ensemble_summary()` extracts
+  each member once and returns per-date `mean`, `sd`, `n` and quantiles with the
+  member frame and depth-aligned observations; `plot_ensemble()` draws a ribbon
+  or per-member lines from an `Aeme` object or a summary. Observation
+  timestamps (stored as UTC `POSIXct`) are reduced to calendar dates to match
+  daily output. Requires dplyr >= 1.1.0.
+* New `score_ensemble()` verifies an ensemble against the lake observations
+  (from an `ensemble_summary()` or an `Aeme` object): coverage of the central
+  interval, bias and RMSE of the ensemble mean, spread, spread-skill ratio and
+  mean CRPS, per model, variable and depth and pooled over depths. Coverage of
+  a small ensemble is biased low even when it is reliable (about
+  `(n - 1) * conf_int / (n + 1)` for `n` members); the documentation says how to
+  read it.
+
 ## Parameter helpers moved from aemetools
 
 * `zone_ratio_param()`, `zone_offset_param()` and `expand_zone_ratios()` (plus

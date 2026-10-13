@@ -11,31 +11,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-<!--
-DRAFT -- written to demonstrate `AEME::run_aeme_ensemble()` (sampled and
-supplied parameter sets) and AEME's `write_aeme_parquet()` /
-`read_aeme_parquet()`. Registered under the "Uncertainty" articles group in
-`_pkgdown.yml`.
-
-`run_aeme_ensemble()` is called as `AEME::run_aeme_ensemble()` throughout:
-aemetools exports a function of the same name until it is renamed there, and
-aemetools is attached for `plot_ensemble()`, `ensemble_summary()` and
-`pest_posterior_params()`. Drop the `AEME::` prefix once the aemetools one is
-renamed.
-
-TODO before publishing:
-  - Knit end to end with the GLM-AED binary installed (`AEME::install_glm_aed()`)
-    and aemetools installed. The numbers quoted in the prose are deliberately
-    qualitative; reconcile them with the knit output.
-  - The PEST++ section is `eval = FALSE` (a calibration is far too slow for an
-    article). The code is lifted from the aemetools "staged-calibration"
-    vignette; re-check it still matches `pest_posterior_params()`.
-  - The "Members that fail" section relies on `AEME::run_aeme_ensemble()`
-    dropping members whose water level reaches zero or goes NA. aemetools'
-    own ensemble function does not (yet) do this; check before reusing the
-    section for it.
--->
-
 # Why parameter uncertainty matters
 
 A single calibrated run gives one trajectory per variable, and it looks far more
@@ -62,7 +37,6 @@ This article covers three things:
 
 ```{r setup, message = FALSE, warning = FALSE}
 library(AEME)
-library(aemetools)
 library(dplyr)
 library(ggplot2)
 
@@ -74,11 +48,10 @@ Copy its configuration somewhere writable, load it, and build the model once:
 
 ```{r build, message = FALSE, results = "hide", warning = FALSE}
 tmpdir <- tempdir()
-aeme_dir <- system.file("extdata/lake/", package = "AEME")
-file.copy(aeme_dir, tmpdir, recursive = TRUE)
 path <- file.path(tmpdir, "lake")
 
-aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme <- readRDS(aeme_file)
 ```
 
 # The parameter table
@@ -150,8 +123,8 @@ head(param_sets_prior[[1]][, c("name", "value", "min", "max")])
 Then run them:
 
 ```{r run-sampled, message = FALSE}
-aeme_prior <- AEME::run_aeme_ensemble(aeme, model = "glm_aed", path = path,
-                                      param_sets = param_sets_prior)
+aeme_prior <- run_aeme_ensemble(aeme, model = "glm_aed", path = path,
+                                 param_sets = param_sets_prior)
 output(aeme_prior)$n_members
 ```
 
@@ -166,8 +139,8 @@ the model directory:
 
 ```{r run-parallel, eval = FALSE}
 param_sets_prior <- sample_param_sets(parameters(aeme), n = 100)
-aeme_prior <- AEME::run_aeme_ensemble(aeme, model = "glm_aed", path = path,
-                                      param_sets = param_sets_prior,
+aeme_prior <- run_aeme_ensemble(aeme, model = "glm_aed", path = path,
+                                 param_sets = param_sets_prior,
                                       parallel = TRUE, ncore = 4)
 ```
 
@@ -265,8 +238,8 @@ head(param_sets[, c("ensemble", "name", "value", "min", "max")])
 ```
 
 ```{r supplied-run, message = FALSE, warning = FALSE}
-aeme_post <- AEME::run_aeme_ensemble(aeme, model = "glm_aed", path = path,
-                                     param_sets = param_sets)
+aeme_post <- run_aeme_ensemble(aeme, model = "glm_aed", path = path,
+                                param_sets = param_sets)
 output(aeme_post)$n_members
 ```
 
@@ -291,13 +264,13 @@ that `run_aeme_ensemble()` can run directly.
 ```{r pest, eval = FALSE}
 # a finished pestpp-ies calibration -- see the aemetools "staged-calibration"
 # vignette for how to set one up
-calib <- read_calib(ctrl = cal_ctrl, sim_id = cal_id)
+calib <- aemetools::read_calib(ctrl = cal_ctrl, sim_id = cal_id)
 
-post <- pest_posterior_params(calib)
+post <- aemetools::pest_posterior_params(calib)
 post
 
-aeme_post <- AEME::run_aeme_ensemble(aeme, model = "glm_aed", path = path,
-                                     param_sets = post, parallel = TRUE)
+aeme_post <- run_aeme_ensemble(aeme, model = "glm_aed", path = path,
+                                param_sets = post, parallel = TRUE)
 plot_ensemble(aeme_post, model = "glm_aed", var_sim = "HYD_temp", depth = 1)
 ```
 
@@ -328,8 +301,13 @@ columnar format that R, Python, DuckDB and most data tools read natively, and
 
 ```{r parquet-write, warning = FALSE}
 pq_prior <- file.path(tmpdir, "parquet_prior")
-write_aeme_parquet(aeme_prior, out_root = pq_prior)
+write_aeme_parquet(aeme_prior, out_root = pq_prior, depths = c(1, 10))
 ```
+
+The `depths` argument says where to summarise depth-resolved variables such as
+temperature -- here 1 m and 10 m below the surface. It is explained under
+*Depth-resolved variables* below; without it the summary tier is only really
+useful for variables with no depth dimension.
 
 (`write_aeme_parquet()` needs the `arrow` package.) The store is
 [Hive-partitioned](https://arrow.apache.org/docs/r/articles/dataset.html), so
@@ -344,7 +322,7 @@ There are two tiers of output per model:
 | Tier | Contents | Use it for |
 |---|---|---|
 | `output_raw` | Every member's series: `date`, `ens`, `var_sim`, `depth`, `value` | Drill-down into one lake -- spaghetti plots, per-member checks |
-| `output_summary` | Ensemble `mean`, `sd`, `n_ens` and quantiles (`q05`, `q25`, `q50`, `q75`, `q95`) per `date`/`var_sim`/`depth` | Overview views, many lakes at once, without recomputing the collapse |
+| `output_summary` | Ensemble `mean`, `sd`, `n_ens` and quantiles (`q05`, `q25`, `q50`, `q75`, `q95`) per `date`/`var_sim`/`depth`, with a `depth_ref` column saying what `depth` is measured from | Overview views, many lakes at once, without recomputing the collapse |
 
 `output_summary` is only written when there is more than one member. The
 `quantiles` argument sets which quantiles are stored, and `compression` chooses
@@ -380,29 +358,52 @@ ggplot(lvl, aes(date)) +
 
 ### Depth-resolved variables
 
-Variables with a depth dimension need a little more care. GLM's layers change
-thickness as the lake mixes and the level moves, so different members report
-different depths on the same date. Collapsing across members *at the native
-layer depths* leaves most groups holding a single member (note `n_ens` in the
-summary tier). To compare members, put them on a common depth grid first. Read the raw tier,
-interpolate each member to the depths you want, and summarise:
+Variables with a depth dimension need a little more care. AEME interpolates
+GLM's own layers onto a standard grid when it loads the output, but that grid is
+a set of *fractions of the water depth* scaled to the lake level on each day,
+not a fixed set of depths. Members whose water level differs -- as the inflow and
+outflow parameters make them -- therefore report slightly different depths on the
+same date (on one day, eight members gave seven different depths for the same grid
+point, 1.60--1.90 m), and each member's depths drift as its level moves.
+Collapsing across members *at those depths* would leave most groups holding a
+single member. The raw tier keeps the stored depths as they are, but for the
+summary tier `write_aeme_parquet()` takes `depths`: each member's profile is
+interpolated to those depths on every date, and only then are the members
+collapsed. We asked for 1 m and 10 m when we wrote the store, so every member
+contributes at both depths:
 
 ```{r parquet-depth, warning = FALSE}
-at_depths <- function(out_root, var_sim = "HYD_temp", depths = c(1, 10)) {
-  read_aeme_parquet(out_root, what = "output_raw", var_sim = var_sim) |>
-    filter(!is.na(value)) |>
-    group_by(ens, date) |>
-    filter(n() >= 2) |>
-    reframe(value = approx(depth, value, xout = depths, rule = 2)$y,
-            depth = depths) |>
-    group_by(date, depth) |>
-    summarise(q05 = quantile(value, 0.05), q50 = median(value),
-              q95 = quantile(value, 0.95), n = n(), .groups = "drop")
-}
-
-temp_prior <- at_depths(pq_prior)
-head(temp_prior)
+temp_prior <- read_aeme_parquet(pq_prior, what = "output_summary",
+                                var_sim = "HYD_temp")
+head(temp_prior[, c("date", "depth", "depth_ref", "mean", "q05", "q50", "q95",
+                    "n_ens")])
+table(temp_prior$depth, temp_prior$n_ens)
 ```
+
+`n_ens` counts the members that have a value. A depth that falls outside a
+member's water column on a date -- deeper than that member's lake, or above its
+surface -- is left out for that member rather than guessed at, so `n_ens` drops
+below the ensemble size there.
+
+`depth_ref` chooses what `depths` is measured from. The default, `"surface"`,
+is metres below the water surface. With `"bottom"` it is metres *above the lake
+bed*, so `depths = 1` is the water 1 m above the bottom. That is a different
+height below the surface on every date and for every member, because the
+water level differs, so it is worked out from each member's own level
+(`LKE_lvlwtr`):
+
+```{r parquet-bottom, warning = FALSE}
+pq_bottom <- file.path(tmpdir, "parquet_bottom")
+write_aeme_parquet(aeme_prior, out_root = pq_bottom, depths = 1,
+                   depth_ref = "bottom")
+
+bottom <- read_aeme_parquet(pq_bottom, what = "output_summary",
+                            var_sim = "HYD_temp")
+head(bottom[, c("date", "depth", "depth_ref", "mean", "q50", "n_ens")])
+```
+
+The raw tier is unchanged by `depths` and `depth_ref`: it always holds the
+stored depths, in metres below the surface.
 
 For a big store, push the filter into the Parquet scan with `collect = FALSE`,
 which returns a lazy `arrow` query. Further `dplyr` verbs are applied before any
@@ -433,9 +434,10 @@ with the one sampled from the full parameter ranges:
 
 ```{r parquet-compare, warning = FALSE}
 pq_post <- file.path(tmpdir, "parquet_post")
-write_aeme_parquet(aeme_post, out_root = pq_post)
+write_aeme_parquet(aeme_post, out_root = pq_post, depths = c(1, 10))
 
-temp_post <- at_depths(pq_post)
+temp_post <- read_aeme_parquet(pq_post, what = "output_summary",
+                               var_sim = "HYD_temp")
 
 both <- bind_rows(prior = temp_prior, narrowed = temp_post, .id = "ensemble")
 
@@ -477,5 +479,5 @@ all at once.
 | How many members? | Cost is one full model run per member. Start with 10--20 to check the setup and the ranges, then increase until the quantiles you care about stop moving. Use `parallel = TRUE` for anything large. |
 | What should the ranges be? | `min` and `max` *are* your prior. Overly wide ranges produce unphysical members (see *Members that fail*), which are dropped, so you pay for runs you cannot use; narrow them to what is physically defensible for the lake. |
 | Sampled or supplied? | Sample from the bounds for exploration and as a prior. Supply parameter sets (e.g. a PEST++ posterior) when you want to propagate calibrated uncertainty. |
-| Which output to keep? | `output_raw` keeps everything and lets you recompute anything later; `output_summary` is smaller and quicker for overviews, but is only useful at depths that line up across members -- interpolate depth-resolved variables from the raw tier. |
+| Which output to keep? | `output_raw` keeps everything and lets you recompute anything later; `output_summary` is smaller and quicker for overviews, but its depths are scaled to each member's water level and so do not line up across members -- interpolate depth-resolved variables to fixed depths from the raw tier. |
 | What does the spread mean? | Only parameter uncertainty. Forcing, initial conditions and structural error are not represented; for the initial state see `vignette("initial-conditions-and-spin-up")`. |
