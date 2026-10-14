@@ -8,6 +8,8 @@
 #' file in the glm_aed model directory.
 #'
 #' @inheritParams build_aeme
+#' @param lake_dir Path to the lake AEME directory. If `NULL`, it is derived
+#' from `aeme`/`path`.
 #'
 #' @returns Aeme object with aed_totals parameters set in the model config
 #' @export
@@ -27,6 +29,39 @@ set_aed_totals <- function(aeme, path, lake_dir = NULL) {
     lake_dir <- get_lake_dir(aeme = aeme, path = path)
   }
   model_config <- read_model_config(model = "glm_aed", lake_dir = lake_dir)
+  model_config <- derive_aed_totals(model_config)
+  
+  model_dir <- file.path(lake_dir, "glm_aed")
+  
+  write_config_glm_aed(model_config = model_config, model_dir = model_dir)
+
+  # Keep the cached configuration in step with the file just written
+  if (!missing(aeme)) {
+    cfg <- configuration(aeme)
+    if (!is.null(cfg[["glm_aed"]][["bgc"]][["aed"]])) {
+      cfg[["glm_aed"]][["bgc"]][["aed"]][["aed_totals"]] <-
+        model_config[["bgc"]][["aed"]][["aed_totals"]]
+      configuration(aeme) <- cfg
+    }
+  }
+
+  return(invisible(aeme))
+}
+
+#' Derive the AED `aed_totals` block from a glm_aed configuration
+#'
+#' Pure counterpart of [set_aed_totals()]: builds the TN, TP, TOC (and, when
+#' `aed_noncohesive` is active, TSS) totals from the phytoplankton parameters
+#' and the `aed` block of `model_config`, and returns `model_config` with
+#' `bgc$aed$aed_totals` set. The totals depend on the phytoplankton
+#' parameters (`X_ncon`, `X_pcon`, `simINDynamics`, `simIPDynamics`), so they
+#' must be re-derived whenever those change.
+#'
+#' @param model_config list; glm_aed configuration (`hydrodynamic` and `bgc`),
+#'   as returned by [read_model_config()].
+#' @return `model_config` with `bgc$aed$aed_totals` set.
+#' @noRd
+derive_aed_totals <- function(model_config) {
   
   aed <- model_config[["bgc"]][["aed"]]
   if (is.null(aed)) {
@@ -124,9 +159,25 @@ set_aed_totals <- function(aeme, path, lake_dir = NULL) {
   }
   
   # ----------------------------------------------------
+  # -------------------- TSS ---------------------------
+  # ----------------------------------------------------
+  # Only include suspended-sediment groups when aed_noncohesive is active.
+  # One NCS_ss<i> per group in `num_ss`, unit scaling.
+  active_models <- aed[["aed_models"]][["models"]]
+  num_ss <- suppressWarnings(as.integer(aed[["aed_noncohesive"]][["num_ss"]]))
+  if ("aed_noncohesive" %in% active_models && length(num_ss) == 1 &&
+      !is.na(num_ss) && num_ss >= 1) {
+    TSS_vars  <- paste0("NCS_ss", seq_len(num_ss))
+    TSS_scale <- rep(1.0, num_ss)
+  } else {
+    TSS_vars  <- NULL
+    TSS_scale <- NULL
+  }
+
+  # ----------------------------------------------------
   # ------------- Format AED block ---------------------
   # ----------------------------------------------------
-  
+
   aed_totals <- list(
     TN_vars = TN_vars,
     TN_varscale = TN_scale,
@@ -135,12 +186,13 @@ set_aed_totals <- function(aeme, path, lake_dir = NULL) {
     TOC_vars = TOC_vars,
     TOC_varscale = TOC_scale
   )
+
+  if (!is.null(TSS_vars)) {
+    aed_totals[["TSS_vars"]] <- TSS_vars
+    aed_totals[["TSS_varscale"]] <- TSS_scale
+  }
   
   model_config[["bgc"]][["aed"]][["aed_totals"]] <- aed_totals
-  
-  model_dir <- file.path(lake_dir, "glm_aed")
-  
-  write_config_glm_aed(model_config = model_config, model_dir = model_dir)
-  
-  return(invisible(aeme))
+
+  model_config
 }

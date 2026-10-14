@@ -12,24 +12,36 @@ run_aeme(
   return_type = c("aeme", "exec_result", "both", "none"),
   ens_n = 1,
   model_controls = NULL,
-  verbose = FALSE,
+  verbose = getOption("AEME.inform", FALSE),
   debug = FALSE,
   timeout = Inf,
   parallel = FALSE,
   ncores,
-  check_output = FALSE
+  check_output = FALSE,
+  keep_diag = TRUE,
+  extra_vars = NULL,
+  sed_layers = NULL,
+  zone_summary = FALSE
 )
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{path}{character; directory where input files are located. Defaults to
 the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{args}{Character vector, arguments to the command.}
+
+\item{return_type}{character; one of \code{"aeme"} (default), \code{"exec_result"},
+\code{"both"}, or \code{"none"}. \code{"aeme"} returns the \code{aeme} object with model output
+loaded; \code{"exec_result"} returns the raw \code{processx::run()} result(s) for
+each model; \code{"both"} returns a list with both \code{aeme} and \code{exec_result}
+elements; \code{"none"} returns \code{NULL} invisibly (useful when only the model
+run's side effects, i.e. the output files, are wanted).}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
@@ -37,7 +49,8 @@ loaded. Defaults to 1.}
 \item{model_controls}{data.frame; model configuration, typically loaded via
 \code{\link[=get_model_controls]{get_model_controls()}}.}
 
-\item{verbose}{logical; print model output to console. Defaults to FALSE.}
+\item{verbose}{logical; print model output to console. Defaults to
+\code{getOption("AEME.inform", FALSE)}.}
 
 \item{debug}{logical; write debug log (Only DYRESM). Defaults to FALSE.}
 
@@ -52,11 +65,30 @@ to \code{min(c(detectCores() - 1, length(model)))}.}
 \item{check_output}{logical; check model output after running? Defaults to
 FALSE.}
 
-\item{return}{logical; return model output within an \code{aeme} object? Defaults
-to TRUE.}
+\item{keep_diag}{logical; keep the \code{diag} (diagnostic/scalar) and
+\code{sediment} sub-lists of each model's output (variables with dimensions other
+than time or depth x time, keyed by raw model names). Default \code{TRUE}; set to
+\code{FALSE} to save memory.}
+
+\item{extra_vars}{character; for GLM-AED, which sediment, flux and diagnostic
+variables beyond the standard set to read from \code{output.nc}. \code{NULL}
+(default) reads all of them. \code{"none"} reads none. Otherwise AEME names from
+\link{glm_extra_vars} (e.g. \code{"SED_temp"}), raw netCDF names, and/or the keywords
+\code{"sediment"} / \code{"diag"}. Unrequested variables are never read, which keeps
+ensemble output small. See \code{\link[=read_glm_output]{read_glm_output()}}.}
+
+\item{sed_layers}{integer; GLM-AED sediment layers to keep for variables
+with a sediment-layer dimension (\code{SED_temp}). \code{NULL} keeps all. See
+\code{\link[=read_glm_output]{read_glm_output()}}.}
+
+\item{zone_summary}{logical; for GLM-AED, also add an area-weighted
+lake-wide series for each requested sediment-zone variable. See
+\code{\link[=read_glm_output]{read_glm_output()}}. Default \code{FALSE}.}
 }
 \value{
-an \code{aeme} object with model output loaded.
+Depends on \code{return_type} -- an \code{aeme} object with model output
+loaded (\code{"aeme"}), the raw \code{processx::run()} result(s) (\code{"exec_result"}),
+a list with both (\code{"both"}), or \code{NULL} invisibly (\code{"none"}).
 }
 \description{
 Run aquatic model ensemble

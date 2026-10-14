@@ -80,7 +80,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
   if (overwrite_cfg | !file.exists(cfg_file)) {
     cli_inform_safe(c("i" = "Writing DYRESM configuration file"))
     # make the .cfg file
-    make_DYCDcfg(lakename = lakename,
+    make_dy_cd_cfg(lakename = lakename,
                  date_range = date_range,
                  verDY = verDY, runCD = use_bgc,
                  EXTC = Kw,
@@ -94,7 +94,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
   if (overwrite_cfg | !file.exists(con_file)) {
     cli_inform_safe(c("i" = "Writing DYRESM-CAEDYM control file"))
     # make the .con file
-    make_DYCDcon(lakename = lakename,
+    make_dy_cd_con(lakename = lakename,
                  verCD = verCD,
                  simVars = vars.dy,
                  nFix = FALSE,
@@ -147,7 +147,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
     z.start <- max(hyps$elev)
   }
 
-  make_DYstg(lakename = lakename,
+  make_dy_stg(lakename = lakename,
              latitude = lat,
              bathy = hyps,
              surfElev = surfElev,
@@ -161,7 +161,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
 
   #------ INFLOWS -------
   # write the model input file
-  make_DYinf(lakename, info = "test", infList = inf, filePath = path.dy,
+  make_dy_inf(lakename, info = "test", infList = inf, filePath = path.dy,
              date_range = date_range, inf_factor = inf_factor)
 
 
@@ -175,12 +175,12 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
                                       outflow = 0))
   }
 
-  make_DYwdr(lakename, info = "built for ensemble", wdrData = outf,
+  make_dy_wdr(lakename, info = "built for ensemble", wdrData = outf,
              filePath = path.dy, outf_factor = outf_factor)
 
 
   #----- METEOROLOGY -----
-  make_DYmet(lakename, info = "test", verDY = verDY,
+  make_dy_met(lakename, info = "test", verDY = verDY,
              obsMet = met, infRain = FALSE, wndType = 0,
              metHeight = 15,
              z_max = z_max,
@@ -191,7 +191,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
   #----- INITIALISATION -----
   # DYRESM
   # write the initial profile (auto-retrieves correct starting depth)
-  make_DYpro(lakename = lakename, startSim = date_range[1], lvlBottom = 0,
+  make_dy_pro(lakename = lakename, startSim = date_range[1], lvlBottom = 0,
              lvlStart = init_depth, verDY = verDY,
              obsTable = init_prof,
              tmpStart = 10, filePath = path.dy)
@@ -206,7 +206,7 @@ build_dycd <- function(lakename, model_controls, date_range, lat, lon,
     dplyr::select(c("var_aeme", "initial_wc", "initial_sed"))
 
   # write the .int file
-  make_DYCDint(lakename,
+  make_dy_cd_int(lakename,
                intVars = rename_modelvars(initials$var_aeme, type_output = "dy_cd"),
                wcVals = initials$initial_wc,
                sedVals = initials$initial_sed,

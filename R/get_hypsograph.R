@@ -7,7 +7,7 @@
 #'
 
 get_hypsograph <- function(aeme) {
-  check_aeme(aeme)
+  aeme <- check_aeme(aeme)
   inp <- aeme |> 
     input()
   hypsograph <- inp[["hypsograph"]]

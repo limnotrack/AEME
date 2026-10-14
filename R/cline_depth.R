@@ -98,7 +98,7 @@ cline_depth <- function(wtr, depths, water = TRUE, Smin = 0.1, seasonal = TRUE,
   }
 
   dRhoCut = max( c(dRhoPerc*mDrhoZ, Smin) )
-  locs = findPeaks(drho_dz, dRhoCut)
+  locs = find_peaks(drho_dz, dRhoCut)
   pks = drho_dz[locs]
 
   if(length(pks) == 0){
@@ -165,7 +165,7 @@ cline_depth <- function(wtr, depths, water = TRUE, Smin = 0.1, seasonal = TRUE,
 #' @return vector of peaks
 #' @noRd
 
-findPeaks <- function(dataIn, thresh=0){
+find_peaks <- function(dataIn, thresh=0){
 
   varL = length(dataIn);
   locs = rep(FALSE, varL);

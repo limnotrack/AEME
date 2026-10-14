@@ -11,6 +11,7 @@
 #' @importFrom ggplot2 ggplot geom_line guides scale_linewidth_manual
 #' @importFrom ggplot2 scale_alpha_manual facet_wrap labs geom_point aes
 #' @importFrom dplyr filter group_by mutate summarise left_join
+#' @importFrom dplyr bind_rows
 #'
 #' @return A ggplot object
 #' @export
@@ -25,11 +26,12 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
   } else {
     model <- check_model(model = model)
   }
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   # Get model controls
   model_controls <- get_model_controls(aeme)
   if (is.null(model_controls)) {
-    stop("No model controls found")
+    cli::cli_abort("No model controls found. Make sure to set `model_controls` 
+                   when executing `build_aeme`.")
   }
 
   sim_vars <- model_controls |>
@@ -39,9 +41,11 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
   var_chk <- var_sim %in% sim_vars
 
   if (!all(var_chk)) {
-    stop(strwrap("No variables found in model controls.\nMake sure
-                 to set simulate = TRUE in the `model_controls` for selected
-                 variables when executing `run_aeme`.", width = 80))
+    cli::cli_abort(c("No variables found in model controls.",
+                     "Make sure to set {.code simulate = TRUE} in the 
+                     {.code model_controls} for selected variables when 
+                     executing {.code run_aeme}. Use the {.code set_vars_sim()} 
+                     to set variables to simulate."))
   }
 
   # Check model output is present
@@ -71,6 +75,11 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
     }
   }) |>
     dplyr::bind_rows()
+  
+  if (nrow(out_df) == 0) {
+    cli::cli_alert_danger("No data found for the selected variables {.var {var_sim}} and models {.var {model}}.")
+    return(NULL)
+  }
 
   # Add key naming
   data("key_naming", package = "AEME", envir = environment())
@@ -103,6 +112,11 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
         dplyr::summarise(value = mean(value), .groups = "drop") |>
         dplyr::left_join(key_naming[, c("var_aeme", "name_parse", "name_text")],
                          by = "var_aeme")
+      # Match the model line layer's x-axis class: obs Date is noon POSIXct,
+      # the model series is Date (daily) or POSIXct (sub-daily).
+      if (inherits(out_df$Date, "Date")) {
+        obs$Date <- as.Date(obs$Date, tz = "UTC")
+      }
       p1 <- p1 +
         ggplot2::geom_point(data = obs, ggplot2::aes(x = Date, y = value,
                                                      fill = "Obs",

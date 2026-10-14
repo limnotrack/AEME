@@ -6,7 +6,7 @@
 #' @export
 
 get_met <- function(aeme) {
-  check_aeme(aeme)
+  aeme <- check_aeme(aeme)
   inp <- aeme |> 
     input()
   met <- inp[["meteo"]]

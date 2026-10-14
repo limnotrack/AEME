@@ -7,9 +7,9 @@
 set_glm_aed_models(
   aeme,
   path,
-  aed_models = c("aed_sedflux", "aed_oxygen", "aed_silica", "aed_nitrogen",
-    "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton", "aed_zooplankton",
-    "aed_macrophyte", "aed_totals"),
+  aed_models = c("aed_sedflux", "aed_noncohesive", "aed_oxygen", "aed_silica",
+    "aed_nitrogen", "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton",
+    "aed_zooplankton", "aed_macrophyte", "aed_totals"),
   file = NULL,
   nml = NULL
 )
@@ -21,9 +21,9 @@ set_glm_aed_models(
 the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{aed_models}{Character vector of GLM-AED models to include. Default includes
-all available AED models: "aed_sedflux", "aed_oxygen", "aed_silica",
-"aed_nitrogen", "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton",
-"aed_zooplankton", and "aed_macrophyte".}
+all available AED models: "aed_sedflux", "aed_noncohesive", "aed_oxygen",
+"aed_silica", "aed_nitrogen", "aed_phosphorus", "aed_organic_matter",
+"aed_phytoplankton", "aed_zooplankton", "aed_macrophyte", and "aed_totals".}
 
 \item{file}{Path to the GLM-AED configuration file. If NULL, the function
 will attempt to locate the file based on the provided Aeme object and path.}
@@ -37,4 +37,8 @@ returns the input Aeme object with the updated GLM-AED configuration file.
 }
 \description{
 Set the biogeochemical models to be used in a GLM-AED configuration file.
+When the file is located from \code{aeme}, the GLM nml is also updated so that the
+\verb{&init_profiles} initial conditions, \verb{&inflow} \code{inflow_vars} and
+\verb{&mass_balance} \code{balance_vars} only include variables whose AED module is in
+\code{aed_models}. When \code{nml} is supplied only that aed.nml object is modified.
 }

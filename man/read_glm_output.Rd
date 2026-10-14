@@ -13,7 +13,12 @@ read_glm_output(
   incl_fluxes = TRUE,
   output_hour = 0,
   file,
-  phyto_pars = NULL
+  phyto_pars = NULL,
+  load_all = TRUE,
+  raw_output = FALSE,
+  extra_vars = NULL,
+  sed_layers = NULL,
+  zone_summary = FALSE
 )
 }
 \arguments{
@@ -39,9 +44,57 @@ Defaults to TRUE.}
 \item{file}{File path to netCDF file. Only used if \code{nc} is NULL.}
 
 \item{phyto_pars}{Data frame with phytoplankton parameters from AED.}
+
+\item{load_all}{logical; also load every other variable present in the
+netCDF file, beyond the declared \code{vars_sim} set. Each such variable is
+keyed by its AEME \code{var_aeme} name if \link{key_naming} has a translation for
+it, or by its raw GLM/netCDF name otherwise. Variables shaped like
+GLM's usual \code{(time)} or \verb{(z, time)} output are loaded the same way as
+any declared variable; variables with other dimensions (e.g. \code{nzones},
+\code{particle}, \code{sed_layers}, \code{lon}, \code{lat}) are loaded as a
+\code{\link[=new_grouped_var]{new_grouped_var()}} object instead of being forced into the depth x
+time convention. Default \code{TRUE}.}
+
+\item{raw_output}{logical; if \code{TRUE}, return output as close to the raw
+netCDF file as possible instead of AEME's standardised format: \verb{(z, time)} variables are left on GLM's own, time-varying model layer
+midpoints (no interpolation onto a common depth grid), variables
+requested via \code{vars_sim} are keyed by their raw GLM/netCDF name (e.g.
+\code{"temp"}) rather than the translated AEME \code{var_aeme} name (e.g.
+\code{"HYD_temp"}), and no AED unit-conversion factors are applied.
+\code{depths} must not be supplied when \code{raw_output = TRUE}, since raw
+output has no common depth grid to interpolate onto. Default \code{FALSE}.}
+
+\item{extra_vars}{character; which of the variables swept up by
+\code{load_all} (those beyond the declared \code{vars_sim} set -- sediment,
+diagnostic and flux output) to read. \code{NULL} (default) reads all of them.
+\code{"none"} reads none. Otherwise a vector of names -- AEME names from
+\link{glm_extra_vars} (e.g. \code{"SED_temp"}), raw netCDF names (e.g.
+\code{"sed_temp"}), and/or the group keywords \code{"sediment"} and \code{"diag"}
+(every variable that would be stored in that sub-list). Variables not
+requested are never read from the file, which keeps ensemble output small.
+Names that are not in the file give a warning. Ignored if
+\code{load_all = FALSE}.}
+
+\item{sed_layers}{integer; for variables with a \code{sed_layers} dimension
+(\code{sed_temp}), keep only these sediment layers (indices, 1 = shallowest).
+\code{NULL} (default) keeps all.}
+
+\item{zone_summary}{logical; also add a lake-wide series for each requested
+sediment-zone variable (name ending \verb{_Z}), the mean over zones weighted by
+the time-varying zone area (\code{zarea}). Stored in \verb{$sediment} as
+\verb{<name>_lake} (e.g. \code{SDF_Fsed_oxy_Z_lake}, or \code{SED_Fsed_oxy_lake} by AEME
+name), in the variable's own per-m2 units. Zones with no area (\code{NA} in
+\code{zarea}) are ignored. Naming a \verb{_lake} series in \code{extra_vars} builds just
+that series, without \code{zone_summary = TRUE} (the zone array behind it is
+then not kept unless also requested). Default \code{FALSE}.}
 }
 \value{
-List with AEME output variables
+List with AEME output variables. Also includes \code{z}, GLM's own
+raw layer-height matrix (height of each layer's top boundary above the
+lake bottom, per timestep, before conversion to \code{LKE_depths}) -- unlike
+GOTM-WET/Simstrat-AED2, GLM's layer structure genuinely changes over
+time, so this is kept alongside the derived depth grid rather than
+discarded after use.
 }
 \description{
 Read GLM netCDF output

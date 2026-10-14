@@ -10,12 +10,25 @@
 #'
 
 add_inflows <- function(aeme, data) {
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
   # Check if aeme is a Aeme object
   aeme <- check_aeme(aeme)
-  
+
   if (!is.list(data)) {
     cli::cli_abort("data must be a list")
   }
+
+  # Ingest boundary: interpret each inflow's Date column in the object's
+  # declared timezone and store UTC (daily data left as calendar dates).
+  tz <- time(aeme)[["tz"]] %||% "UTC"
+  data <- lapply(data, function(df) {
+    if (is.data.frame(df) && "Date" %in% names(df)) {
+      df[["Date"]] <- .as_forcing_datetime(df[["Date"]], tz = tz,
+                                           reinterpret_utc_tag = TRUE)
+    }
+    df
+  })
 
   inf <- inflows(aeme)
   inf$data <- data

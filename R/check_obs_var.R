@@ -17,13 +17,12 @@
 #' }
 #'
 #' @importFrom dplyr filter bind_rows pull
-#' @importFrom lubridate ddays
 #' @importFrom cli cli_alert_danger cli_text cli_alert_success
 #'
 
 check_obs_var <- function(aeme, var_sim) {
   aeme    <- check_aeme(aeme)
-  var_sim <- check_aeme_vars(var_sim)
+  var_sim <- check_aeme_vars(var_sim, aeme = aeme)
   
   obs     <- observations(aeme)
   tme     <- time(aeme)
@@ -38,10 +37,12 @@ check_obs_var <- function(aeme, var_sim) {
   model  <- check_model(model)
   
   out <- lapply(model, function(m) {
-    start <- as.Date(tme$start) - lubridate::ddays(tme$spin_up[[m]])
-    stop  <- as.Date(tme$stop)
-    
-    obs_lake <- dplyr::filter(obs$lake, Date >= start & Date <= stop)
+    start <- as.Date(tme$start, tz = "UTC") - tme$spin_up[[m]]
+    stop  <- as.Date(tme$stop, tz = "UTC")
+
+    obs_lake <- dplyr::filter(obs$lake,
+                              as.Date(Date, tz = "UTC") >= start &
+                                as.Date(Date, tz = "UTC") <= stop)
     
     d <- lapply(var_sim, function(v) {
       n_obs <- sum(obs_lake$var_aeme == v, na.rm = TRUE)
@@ -68,7 +69,8 @@ check_obs_var <- function(aeme, var_sim) {
       cli::cli_text("{.emph {out_missing$model[i]}}: Variable {.var {out_missing$var_aeme[i]}} has 0 observations")
     }
   } else {
-    cli::cli_alert_success("All requested variables are present in observations for all models.")
+    cli_inform_safe(c("v" = "All requested variables are present in 
+                      observations for all models."))
   }
   
   list(obs = out, vars_present = vars_present)

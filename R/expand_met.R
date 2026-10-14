@@ -40,6 +40,8 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
                                                     present"))}
   }
   
+  met <- as.data.frame(met)
+  
   Date = met$Date
   radswd = met[,which(grepl("radswd",colnames(met)))]
   tmpair = met[,which(grepl("tmpair",colnames(met)))]
@@ -164,13 +166,14 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
     wnduvu <- met[, which(grepl("wnduvu", colnames(met)))]
     wnduvv <- met[, which(grepl("wnduvv", colnames(met)))]
     
-    # get wind speed from vector components
-    wnd_ds <- uv2ds(wnduvu, wnduvv)
-    wndspd <- wnd_ds[, 2]
-    wnddir <- wnd_ds[, 1]
-    is.wndspd <- TRUE
-    is.wnddir <- TRUE
-    
+    if (!is.wndspd & !is.wnddir) {
+      # get wind speed from vector components
+      wnd_ds <- uv2ds(wnduvu, wnduvv)
+      wndspd <- wnd_ds[, 2]
+      wnddir <- wnd_ds[, 1]
+      is.wndspd <- TRUE
+      is.wnddir <- TRUE
+    }
   }
   
   # check that wind speed and dir are supplied
@@ -257,7 +260,11 @@ expand_met <- function(met, lat, lon, elev, print.plot = FALSE) {
   colnames(out) <- (c("Date", paste0("MET_", colnames(out)[2:ncol(out)])))
   
   # Round to 2 decimal places
-  out[, -1] <- round(out[, -1], 3)
+  # round everything but precip; rain/snow are small and skewed, so leave them
+  keep <- c("MET_pprain", "MET_ppsnow")
+  cols <- setdiff(names(out)[-1], keep)
+  out[, cols] <- round(out[, cols], 3)
+  out[, -1] <- round(out[, -1], 6)
   
   
   if (print.plot) {

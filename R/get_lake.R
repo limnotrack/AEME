@@ -6,7 +6,7 @@
 #' @export
 
 get_lake <- function(aeme) {
-  check_aeme(aeme)
+  aeme <- check_aeme(aeme)
   lke <- aeme |> 
     lake() |> 
     as.data.frame()

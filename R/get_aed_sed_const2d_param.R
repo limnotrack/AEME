@@ -1,6 +1,8 @@
 #' Get AED sed_const2d parameters
 #'
 #' @inheritParams build_aeme
+#' @param lake_dir Path to the lake AEME directory. If `NULL`, it is derived
+#' from `aeme`/`path`.
 #'
 #' @returns Data frame with AED sed_const2d parameters
 #' @export

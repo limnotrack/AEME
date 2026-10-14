@@ -77,10 +77,7 @@ testthat::test_that("can build AEME with simple set of inputs", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    testthat::skip("Skip testing on macOS")
-  }
+  skip_if_models_unavailable(model)
   
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
@@ -115,10 +112,7 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   
   aeme <- yaml_to_aeme(path = path, "aeme_simple.yaml")
   model <- c("dy_cd", "glm_aed", "gotm_wet")
-  sys_OS <- AEME:::get_os()
-  if (sys_OS == "osx") {
-    model <- "glm_aed"
-  }
+  model <- filter_platform_models(model)
   
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      ext_elev = 5, use_bgc = FALSE)
@@ -135,13 +129,5 @@ testthat::test_that("can run AEME with simple set of inputs works", {
   p2 <- plot_output(aeme, var_sim = "LKE_lvlwtr", facet = FALSE)
   testthat::expect_true(ggplot2::is_ggplot(p1))
   testthat::expect_true(ggplot2::is_ggplot(p2))
-  
-  lke <- lake(aeme)
-  file_chk <- all(file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[1], "DYsim.nc")),
-                  file.exists(file.path(path, paste0(lke$id, "_",
-                                                     tolower(lke$name)),
-                                        model[2:3], "output", "output.nc")))
-  testthat::expect_true(file_chk)
+  testthat::expect_true(check_all_model_outfiles(aeme))
 })

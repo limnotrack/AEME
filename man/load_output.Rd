@@ -12,17 +12,25 @@ load_output(
   model_controls,
   parallel = FALSE,
   cl = NULL,
-  ens_n = 1
+  ens_n = 1,
+  keep_diag = TRUE,
+  extra_vars = NULL,
+  sed_layers = NULL,
+  zone_summary = FALSE
 )
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{path}{character; directory where input files are located. Defaults to
 the path stored in \code{aeme}, or the current working directory if not set.}
+
+\item{lake_dir}{Path to the lake AEME directory. If \code{NULL}, it is derived
+from \code{aeme}/\code{path}.}
 
 \item{model_controls}{data.frame; model configuration, typically loaded via
 \code{\link[=get_model_controls]{get_model_controls()}}.}
@@ -33,6 +41,26 @@ the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
 loaded. Defaults to 1.}
+
+\item{keep_diag}{logical; keep the \code{diag} (diagnostic/scalar) and
+\code{sediment} sub-lists of each model's output (variables with dimensions other
+than time or depth x time, keyed by raw model names). Default \code{TRUE}; set to
+\code{FALSE} to save memory.}
+
+\item{extra_vars}{character; for GLM-AED, which sediment, flux and diagnostic
+variables beyond the standard set to read from \code{output.nc}. \code{NULL}
+(default) reads all of them. \code{"none"} reads none. Otherwise AEME names from
+\link{glm_extra_vars} (e.g. \code{"SED_temp"}), raw netCDF names, and/or the keywords
+\code{"sediment"} / \code{"diag"}. Unrequested variables are never read, which keeps
+ensemble output small. See \code{\link[=read_glm_output]{read_glm_output()}}.}
+
+\item{sed_layers}{integer; GLM-AED sediment layers to keep for variables
+with a sediment-layer dimension (\code{SED_temp}). \code{NULL} keeps all. See
+\code{\link[=read_glm_output]{read_glm_output()}}.}
+
+\item{zone_summary}{logical; for GLM-AED, also add an area-weighted
+lake-wide series for each requested sediment-zone variable. See
+\code{\link[=read_glm_output]{read_glm_output()}}. Default \code{FALSE}.}
 }
 \value{
 Updated aeme object with model output

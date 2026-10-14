@@ -3,31 +3,39 @@
 #' Estimates zone-specific sediment fluxes for \code{aed_sed_const2d} using up
 #' to two tiers of adjustment:
 #'
-#' \strong{Tier 1 (always)} — area-weighted depth scaling. Each zone's flux is
+#' \strong{Tier 1 (always)} -- area-weighted depth scaling. Each zone's flux is
 #' scaled from literature baseline values according to its mean depth and
 #' fractional bed area. Deep zones receive higher SOD and nutrient fluxes
 #' reflecting greater organic matter accumulation and more persistent anoxia.
 #'
-#' \strong{Tier 2 (optional, when \code{obs} supplied)} — observed data
-#' adjustment. Near-bed summer concentrations of O2, NH4, NO3, and FRP are used
-#' to adjust the relative difference in fluxes between zones. Only inter-zone
-#' ratios are adjusted, not absolute magnitude, so the lake-wide total is
-#' preserved.
+#' \strong{Tier 2 (optional, when \code{obs} supplied)} -- observed data
+#' adjustment. Near-bed summer concentrations of NH4 and FRP are used to adjust
+#' the relative difference in fluxes between zones. After adjusting, the fluxes
+#' are re-normalised so the lake-wide area-weighted total is unchanged: only
+#' the inter-zone ratios move, not the absolute magnitude. Observed O2 and NO3
+#' are read and summarised per zone, but are not currently used to adjust
+#' \code{fsed_oxy} or \code{fsed_nit}, because a concentration ratio is not a
+#' good proxy for the direction of change in those fluxes. The adjustment is a
+#' heuristic based on concentrations, not on rates of change.
 #'
 #' Literature baselines at reference depth 5 m (temperate lakes):
 #' \itemize{
-#'   \item \code{fsed_oxy}: -25 mmol O2/m2/d (Müller et al. 2012; Sondergaard
+#'   \item \code{fsed_oxy}: -25 mmol O2/m2/d (Muller et al. 2012; Sondergaard
 #'     et al. 2003)
 #'   \item \code{fsed_amm}: 2 mmol N/m2/d (Andersen 1982; Beutel 2006)
 #'   \item \code{fsed_nit}: 0.2 mmol N/m2/d (Seitzinger 1988)
-#'   \item \code{fsed_frp}: 0.05 mmol P/m2/d (Nürnberg 1984)
+#'   \item \code{fsed_frp}: 0.05 mmol P/m2/d (Nurnberg 1984)
 #' }
 #'
-#' Depth scaling (Beutel 2006; Müller et al. 2012): SOD and NH4/FRP fluxes
+#' Depth scaling (Beutel 2006; Muller et al. 2012): SOD and NH4/FRP fluxes
 #' scale approximately linearly with mean zone depth divided by
-#' \code{ref_depth}. NO3 flux transitions from small positive values (shallow,
-#' oxic) to negative values (deep, anoxic denitrification) at approximately
-#' \code{0.5 * max_depth}.
+#' \code{ref_depth}, with the scale factor capped at 2. NO3 flux transitions
+#' from small positive values (shallow, oxic) to negative values (deep, anoxic
+#' denitrification) at approximately \code{0.6 * max_depth}.
+#'
+#' Zones are the GLM sediment zones, taken from \code{zone_heights} in the
+#' built \code{glm_aed} configuration, so \code{aeme} must have been built.
+#' Zone 1 is the deepest.
 #'
 #' @inheritParams build_aeme
 #' @param ref_depth Numeric. Reference depth (m) for literature baseline
@@ -71,9 +79,9 @@
 #' @references
 #' Beutel, M.W. (2006). \doi{10.1016/j.ecoleng.2006.05.009}
 #'
-#' Müller, B., et al. (2012). \doi{10.1021/es301422r}
+#' Muller, B., et al. (2012). \doi{10.1021/es301422r}
 #'
-#' Nürnberg, G.K. (1984). \doi{10.4319/lo.1984.29.1.0111}
+#' Nurnberg, G.K. (1984). \doi{10.4319/lo.1984.29.1.0111}
 #'
 #' Seitzinger, S.P. (1988). \doi{10.4319/lo.1988.33.4part2.0702}
 #'
@@ -158,17 +166,17 @@ estimate_zone_fluxes <- function(aeme, path,
   zone_area_frac <- zone_area / total_area
   
   # ---------------------------------------------------------------------------
-  # 2. Tier 1 — depth-scaled baseline fluxes
+  # 2. Tier 1 -- depth-scaled baseline fluxes
   # ---------------------------------------------------------------------------
-  # Scale each flux by (mean_zone_depth / ref_depth), capped at 4x.
+  # Scale each flux by (mean_zone_depth / ref_depth), capped at 2x.
   # Area-weighted normalisation then ensures the lake-wide area-weighted
-  # total matches the literature baseline — inter-zone differences are
+  # total matches the literature baseline -- inter-zone differences are
   # preserved but the overall magnitude is anchored.
   #
   # NO3 sign logic:
-  #   Shallow zones (< 0.5 * max_depth): small positive release
-  #   Deep zones    (> 0.5 * max_depth): negative (denitrification consumes NO3)
-  #   Transition is linear across zones.
+  #   Shallow zones (<= 0.6 * max_depth): small positive release
+  #   Deep zones    (>  0.6 * max_depth): negative (denitrification consumes NO3)
+  #   The change is a step between zones, not a gradual transition.
   
   depth_scale <- pmin(zone_mean_depth / ref_depth, 2)
   
@@ -180,22 +188,18 @@ estimate_zone_fluxes <- function(aeme, path,
                     baseline["fsed_nit"] * +0.5) # nitrification dominates
   
   # Normalise so area-weighted sum equals baseline * total_area_fraction
-  .normalise <- function(raw, base_val, area_frac) {
-    target  <- base_val * sum(area_frac)
-    current <- sum(raw * area_frac)
-    if (abs(current) < 1e-10) return(raw)
-    raw * (target / current)
-  }
-  
-  fsed_oxy <- unname(.normalise(oxy_raw, baseline["fsed_oxy"], zone_area_frac))
-  fsed_amm <- unname(.normalise(amm_raw, baseline["fsed_amm"], zone_area_frac))
-  fsed_frp <- unname(.normalise(frp_raw, baseline["fsed_frp"], zone_area_frac))
-  fsed_nit <- unname(nit_raw)   # not normalised — sign flip is intentional
+  fsed_oxy <- unname(normalise_zone_flux(oxy_raw, baseline["fsed_oxy"],
+                                         zone_area_frac))
+  fsed_amm <- unname(normalise_zone_flux(amm_raw, baseline["fsed_amm"],
+                                         zone_area_frac))
+  fsed_frp <- unname(normalise_zone_flux(frp_raw, baseline["fsed_frp"],
+                                         zone_area_frac))
+  fsed_nit <- unname(nit_raw)   # not normalised -- sign flip is intentional
   
   method <- "baseline_scaled"
   
   # ---------------------------------------------------------------------------
-  # 3. Tier 2 — observed data adjustment (optional)
+  # 3. Tier 2 -- observed data adjustment (optional)
   # ---------------------------------------------------------------------------
   # Map AEME variable names -> flux type
   var_map <- c(CHM_oxy = "oxy",
@@ -206,7 +210,7 @@ estimate_zone_fluxes <- function(aeme, path,
   if (!is.null(obs) && nrow(obs) > 0) {
     
     # -- Validate ---------------------------------------------------------------
-    req_cols <- c("Date", "var_aeme", "depth_from", "depth_to", "value")
+    req_cols <- c("Date", "var_aeme", "depth", "value")
     missing_cols <- setdiff(req_cols, names(obs))
     if (length(missing_cols))
       cli::cli_abort("obs is missing columns: {paste(missing_cols, collapse = ', ')}")
@@ -219,13 +223,13 @@ estimate_zone_fluxes <- function(aeme, path,
         obs$var_aeme %in% names(var_map),
     ]
     obs_use$flux_type <- var_map[obs_use$var_aeme]
-    obs_use$depth_mid <- (obs_use$depth_from + obs_use$depth_to) / 2
+    obs_use$depth_mid <- obs_use$depth
     
     if (nrow(obs_use) == 0) {
-      # message("No summer observations found for O2/NH4/NO3/FRP — ",
+      # message("No summer observations found for O2/NH4/NO3/FRP -- ",
       #         "skipping Tier 2 adjustment.")
       cli_inform_safe(c("!" = "No summer observations found for O2/NH4/NO3/FRP 
-      — skipping Tier 2 adjustment."))
+      -- skipping Tier 2 adjustment."))
     } else {
       
       # -- Assign each observation to a zone -------------------------------------
@@ -239,10 +243,10 @@ estimate_zone_fluxes <- function(aeme, path,
       obs_use <- obs_use[!is.na(obs_use$zone), ]
       
       if (nrow(obs_use) == 0) {
-        # message("Observations do not overlap with zone depth ranges — ",
+        # message("Observations do not overlap with zone depth ranges -- ",
         #         "skipping Tier 2 adjustment.")
         cli_inform_safe(c("!" = "Observations do not overlap with zone depth ranges
-        — skipping Tier 2 adjustment."))
+        -- skipping Tier 2 adjustment."))
       } else {
         
         # -- Zone-median per flux type -------------------------------------------
@@ -295,8 +299,8 @@ estimate_zone_fluxes <- function(aeme, path,
         .adj_mult <- function(vals, inverse = FALSE) {
           n_valid <- sum(!is.na(vals))
           if (n_valid < 2) {
-            # message("  < 2 zones with data for this flux — skipping adjustment")
-            cli_inform_safe(c("i" = "Less than 2 zones with data for this flux — skipping adjustment"))
+            # message("  < 2 zones with data for this flux -- skipping adjustment")
+            cli_inform_safe(c("i" = "Less than 2 zones with data for this flux -- skipping adjustment"))
             return(rep(1, length(vals)))
           }
           med <- median(vals, na.rm = TRUE)
@@ -335,6 +339,16 @@ estimate_zone_fluxes <- function(aeme, path,
         }
         
         if (length(adj_log)) {
+          # Keep the lake-wide area-weighted total fixed: the observations
+          # only adjust how the flux is shared between zones.
+          if (any(grepl("^fsed_amm", adj_log)))
+            fsed_amm <- unname(normalise_zone_flux(fsed_amm,
+                                                   baseline["fsed_amm"],
+                                                   zone_area_frac))
+          if (any(grepl("^fsed_frp", adj_log)))
+            fsed_frp <- unname(normalise_zone_flux(fsed_frp,
+                                                   baseline["fsed_frp"],
+                                                   zone_area_frac))
           # message()
           msg <- paste0("Tier 2 adjustments applied: ", paste(adj_log, 
                                                               collapse = "; "))
@@ -378,9 +392,9 @@ estimate_zone_fluxes <- function(aeme, path,
   
   
   if (verbose) {
-    cli::cli_rule(left = paste0("Sediment zone flux estimates (", method, ")"))
-    cli::cli_text("n_zones: {n_zones} | max lake depth: {max_depth} m | ref_depth: {ref_depth} m")
-    
+    cli_safe(paste0("Sediment zone flux estimates (", method, ")"), FUN = cli::cli_rule)
+    cli_safe(paste0("n_zones: ", n_zones, " | max lake depth: ", max_depth, 
+                    " m | ref_depth: ", ref_depth, " m"), FUN = cli::cli_text)
     # --- zone summary table ----------------------------------------------------
     zone_tbl <- zone_summary |>
       dplyr::mutate(
@@ -408,9 +422,11 @@ estimate_zone_fluxes <- function(aeme, path,
     cli_table_safe(ct)
     
     # --- lake-wide averages table -----------------------------------------------
-    cli::cli_text("")
-    cli::cli_rule(left = "Lake-wide area-weighted average fluxes")
-    
+    # cli::cli_text("")
+    cli_safe("", FUN = cli::cli_text)
+    cli_safe("Lake-wide area-weighted average fluxes (mmol/m2/d)",
+             FUN = cli::cli_rule)
+
     avg_tbl <- as.data.frame(t(round(lake_avg_fluxes, 3)))
     
     colnames(avg_tbl) <- dplyr::recode(
@@ -433,4 +449,20 @@ estimate_zone_fluxes <- function(aeme, path,
     zone_summary = zone_summary,
     method       = method
   ))
+}
+
+#' Rescale zone fluxes so the area-weighted total matches the baseline
+#'
+#' @param raw numeric; flux per zone.
+#' @param base_val numeric; baseline lake-wide flux.
+#' @param area_frac numeric; fraction of the bed area in each zone.
+#' @return `raw` multiplied by a constant so `sum(raw * area_frac)` equals
+#' `base_val * sum(area_frac)`. Returned unchanged if the current total is
+#' effectively zero.
+#' @noRd
+normalise_zone_flux <- function(raw, base_val, area_frac) {
+  target  <- base_val * sum(area_frac)
+  current <- sum(raw * area_frac)
+  if (abs(current) < 1e-10) return(raw)
+  raw * (target / current)
 }

@@ -6,8 +6,9 @@
 #' @noRd
 config_defaults <- function() {
   cfg_dflt <- list(
-    use_bgc        = FALSE,
     path           = getwd(),
+    model          = "glm_aed",
+    use_bgc        = FALSE,
     model_controls = get_model_controls(),
     ext_elev       = 0,
     calc_wbal      = TRUE,

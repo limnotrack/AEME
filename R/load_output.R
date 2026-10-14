@@ -3,6 +3,26 @@
 #' @inheritParams build_aeme
 #' @inheritParams run_aeme
 #' @inheritParams parallel::stopCluster
+#' @param lake_dir Path to the lake AEME directory. If `NULL`, it is derived
+#' from `aeme`/`path`.
+#'
+#' @param keep_diag logical; keep the `diag` (diagnostic/scalar) and
+#' `sediment` sub-lists of each model's output (variables with dimensions other
+#' than time or depth x time, keyed by raw model names). Default `TRUE`; set to
+#' `FALSE` to save memory.
+#'
+#' @param extra_vars character; for GLM-AED, which sediment, flux and diagnostic
+#' variables beyond the standard set to read from `output.nc`. `NULL`
+#' (default) reads all of them. `"none"` reads none. Otherwise AEME names from
+#' [glm_extra_vars] (e.g. `"SED_temp"`), raw netCDF names, and/or the keywords
+#' `"sediment"` / `"diag"`. Unrequested variables are never read, which keeps
+#' ensemble output small. See [read_glm_output()].
+#' @param sed_layers integer; GLM-AED sediment layers to keep for variables
+#' with a sediment-layer dimension (`SED_temp`). `NULL` keeps all. See
+#' [read_glm_output()].
+#' @param zone_summary logical; for GLM-AED, also add an area-weighted
+#' lake-wide series for each requested sediment-zone variable. See
+#' [read_glm_output()]. Default `FALSE`.
 #'
 #' @return Updated aeme object with model output
 #' @export
@@ -14,7 +34,9 @@
 #'
 
 load_output <- function(aeme, model, path = NULL, lake_dir = NULL, model_controls, 
-                        parallel = FALSE, cl = NULL, ens_n = 1) {
+                        parallel = FALSE, cl = NULL, ens_n = 1,
+                        keep_diag = TRUE, extra_vars = NULL, sed_layers = NULL,
+                        zone_summary = FALSE) {
   
   aeme <- check_aeme(aeme)
   if (missing(model)) {
@@ -47,7 +69,9 @@ load_output <- function(aeme, model, path = NULL, lake_dir = NULL, model_control
       }, add = TRUE)
     }
     parallel::clusterExport(cl, varlist = list("aeme", "path", "vars_sim",  
-                                               "lake_dir", "output_hour"),
+                                               "lake_dir", "output_hour",
+                                               "extra_vars", "sed_layers",
+                                               "zone_summary"),
                             envir = environment())
     # message("Reading models in parallel... ", paste0("[", format(Sys.time()), "]"))
     cli_inform_safe(c("i" = paste0("Reading models in parallel...",
@@ -56,7 +80,8 @@ load_output <- function(aeme, model, path = NULL, lake_dir = NULL, model_control
       
       read_model_nc(aeme = aeme, model = m, path = path, lake_dir = lake_dir,
                     vars_sim = vars_sim, incl_fluxes = TRUE, 
-                    output_hour = output_hour)
+                    output_hour = output_hour, extra_vars = extra_vars,
+                    sed_layers = sed_layers, zone_summary = zone_summary)
     })
     cli_inform_safe(c("v" = paste0("Model reading complete! ",
                                    "[", format(Sys.time()), "]")))
@@ -65,15 +90,24 @@ load_output <- function(aeme, model, path = NULL, lake_dir = NULL, model_control
     mods <- lapply(model, \(m) {
       read_model_nc(aeme = aeme, model = m, path = path, lake_dir = lake_dir,
                     vars_sim = vars_sim, incl_fluxes = TRUE, 
-                    output_hour = output_hour)
+                    output_hour = output_hour, extra_vars = extra_vars,
+                    sed_layers = sed_layers, zone_summary = zone_summary)
     })
   }
   names(mods) <- model
+  if (!keep_diag) {
+    mods <- lapply(mods, \(x) {
+      if (is.list(x)) x[intersect(names(x), c("diag", "sediment"))] <- NULL
+      x
+    })
+  }
 
   ens_lab <- format_ens_label(ens_n = ens_n)
   
   outp[[ens_lab]] <- list(dy_cd = mods[["dy_cd"]], glm_aed = mods[["glm_aed"]],
-                          gotm_wet = mods[["gotm_wet"]])
+                          gotm_wet = mods[["gotm_wet"]],
+                          simstrat_aed2 = mods[["simstrat_aed2"]],
+                          simstrat_aed = mods[["simstrat_aed"]])
   outp$n_members <- sum(grepl("ens", names(outp)))
   
   output(aeme) <- outp

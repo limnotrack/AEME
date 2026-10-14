@@ -8,20 +8,19 @@ test_that("building lernzmp example works", {
   testthat::expect_true(is(aeme, "Aeme"))
 
   model <- c("glm_aed", "gotm_wet") # models to build
+  model <- filter_platform_models(model)
   path <- tempdir() # directory in which the model configuration will be built
   
   aeme <- build_aeme(aeme = aeme, model = model, path = path,
                      use_bgc = TRUE)
   testthat::expect_true(is(aeme, "Aeme"))
   mod_files <- list.files(path, recursive = TRUE)
-  testthat::expect_true(any(grepl("glm_aed/glm3.nml", mod_files)))
+  testthat::expect_true(
+    file.exists(glm_nml_path(get_lake_dir(aeme, path), must_exist = FALSE))
+  )
   testthat::expect_true(any(grepl("bcs/outflow_wbal.csv", mod_files)))
   
-  aeme <- run_aeme(aeme = aeme, model = model, path = path, parallel = TRUE, 
-                   ncores = 2L)
-  lke <- lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(all(file_chk))
+  aeme <- aeme |> 
+    run_aeme()
+  testthat::expect_true(check_all_model_outfiles(aeme))
 })

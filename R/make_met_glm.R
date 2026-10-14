@@ -1,0 +1,87 @@
+#' Make a met file for GLM
+#'
+#' @param obs_met data.frame containing met data.
+#' @param path_glm filepath to GLM directory
+#' @param infRain Logical; Set rainfall = 0
+#' @param use_lw Logical; use incoming longwave radiation?
+#'
+#' @noRd
+#' @importFrom stringr str_pad
+#' @importFrom dplyr select mutate across
+#' @importFrom utils write.table
+#'
+make_met_glm <-  function(obs_met, path_glm = "", infRain = FALSE,
+                         use_lw = TRUE) {
+
+  if (use_lw) {
+    col.order <- c("Date", "MET_radswd", "MET_radlwd", "MET_tmpair",
+                   "MET_humrel", "MET_wndspd", "MET_pprain", "MET_ppsnow",
+                   "MET_prsttn")
+    col.names <- c("time      ",
+                  c("ShortWave", "LongWave", "AirTemp", "RelHum", "WindSpeed",
+                    "Rain", "Snow", "AirPres") |>
+                    stringr::str_pad(width = 12, side = c("left"), pad = " "))
+  } else {
+    col.order <- c("Date", "MET_radswd", "MET_cldcvr", "MET_tmpair",
+                   "MET_humrel", "MET_wndspd", "MET_pprain", "MET_ppsnow",
+                   "MET_prsttn")
+    col.names <- c("time      ",
+                  c("ShortWave", "Cloud", "AirTemp", "RelHum", "WindSpeed",
+                    "Rain", "Snow", "AirPres") |>
+                    stringr::str_pad(width = 12, side = c("left"), pad = " "))
+  }
+
+
+  subdaily <- inherits(obs_met[["Date"]], "POSIXct") &&
+    is_subdaily(obs_met[["Date"]])
+
+  # process the obsMet into GLM format
+  metVals <- obs_met |>
+    dplyr::mutate(MET_pprain = MET_pprain / 1000,
+                  MET_ppsnow = MET_ppsnow / 1000) |> # convert to m
+    dplyr::select(all_of(col.order))
+
+  # GLM treats AirPres as hPa, whereas AEME stores Pa.
+  metVals[["MET_prsttn"]] <- metVals[["MET_prsttn"]] / 100
+  if (!subdaily) {
+    rlang::warn("GLM ignores the AirPres met column in daily mode and uses the default 1013.25 hPa instead.",
+                .frequency = "once", .frequency_id = "aeme_glm_airpres_daily")
+  }
+  metVals <- metVals |>
+    # standardise formats
+    dplyr::mutate(dplyr::across(2:6, \(x) round(x, digits = 3)),
+                  dplyr::across(2:6, \(x) format(x, nsmall = 3, width = 12)),
+                  # rain / snow are m/day: sub-daily rates are tiny, so keep
+                  # 8 dp (fixed notation) rather than the 5 dp used for the rest
+                  dplyr::across(dplyr::all_of(c("MET_pprain", "MET_ppsnow")),
+                                \(x) formatC(x, format = "f", digits = 8,
+                                             width = 12)),
+                  dplyr::across(dplyr::all_of("MET_prsttn"),
+                                \(x) formatC(x, format = "f", digits = 1,
+                                             width = 12)))
+
+  # Sub-daily meteo keeps a full timestamp so GLM (subdaily = .true.) can read
+  # it; daily meteo is written as a bare date exactly as before. AEME does not
+  # disaggregate -- sub-daily rows must be supplied by the user.
+  if (subdaily) {
+    metVals[["Date"]] <- format(metVals[["Date"]], "%Y-%m-%d %H:%M:%S")
+  } else {
+    metVals[["Date"]] <- as.Date(metVals[["Date"]])
+  }
+
+  # set rain to zero, if specified
+  if (infRain == TRUE) {
+    metVals$rain_m <- 0
+    print("Rainfall set to zero (prescribed via .inf instead).")
+  }
+
+  #-------- make the file!
+  f <- file(file.path(path_glm, "bcs/meteo_glm.csv"), "w")
+
+  writeLines(paste0(col.names, collapse = ","), f)
+  write.table(metVals, f, sep = ",", quote = FALSE, row.names = FALSE,
+              col.names = FALSE)
+
+  close(f)
+
+}

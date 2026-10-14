@@ -4,16 +4,20 @@
 \alias{plot_fluxes}
 \title{Plot fluxes}
 \usage{
-plot_fluxes(aeme, model, cumulative = FALSE)
+plot_fluxes(aeme, model, facet_by = c("flux", "model"), ...)
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
-\item{cumulative}{logical; if \code{TRUE}, plot cumulative fluxes. If
-\code{FALSE}, plot instantaneous fluxes.}
+\item{facet_by}{character; either \code{"flux"} or \code{"model"}. If
+\code{"flux"}, create a separate facet for each flux. If \code{"model"},
+create a separate facet for each model.}
+
+\item{...}{additional arguments passed to \code{\link{get_var}}}
 }
 \value{
 ggplot2 object

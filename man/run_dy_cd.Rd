@@ -4,6 +4,8 @@
 \alias{run_dy_cd}
 \alias{run_glm_aed}
 \alias{run_gotm_wet}
+\alias{run_simstrat_aed2}
+\alias{run_simstrat_aed}
 \title{Run AEME models}
 \usage{
 run_dy_cd(
@@ -11,23 +13,48 @@ run_dy_cd(
   verbose = FALSE,
   debug = FALSE,
   args = character(),
-  timeout = Inf
+  timeout = Inf,
+  version = getOption("AEME.dyresm_version", default = NULL)
 )
 
 run_glm_aed(
   sim_folder,
   verbose = FALSE,
   debug = FALSE,
+  config_file = find_glm_nml(sim_folder),
   args = character(),
-  timeout = Inf
+  timeout = Inf,
+  version = getOption("AEME.glm_version", default = NULL)
 )
 
 run_gotm_wet(
   sim_folder,
   verbose = FALSE,
   debug = FALSE,
+  config_file = "gotm.yaml",
   args = character(),
-  timeout = Inf
+  timeout = Inf,
+  version = getOption("AEME.gotm_version", default = NULL)
+)
+
+run_simstrat_aed2(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  config_file = "simstrat.par",
+  args = character(),
+  timeout = Inf,
+  version = getOption("AEME.simstrat_version", default = NULL)
+)
+
+run_simstrat_aed(
+  sim_folder,
+  verbose = FALSE,
+  debug = FALSE,
+  config_file = "simstrat.par",
+  args = character(),
+  timeout = Inf,
+  version = getOption("AEME.simstrat_aed_version", default = NULL)
 )
 }
 \arguments{
@@ -44,6 +71,20 @@ the model executable. Currently only used for GLM-AED. Options are:
 \item{timeout}{timeout in seconds, ignored if 0.  This is a limit for the
     elapsed time running \code{command} in a separate process.   Fractions
     of seconds are ignored.}
+
+\item{version}{character; specific version of the model to run. If not
+provided, the default version bundled with the package will be used. For
+GLM-AED and GOTM-WET, this can also be set via the \code{AEME.glm_version} or
+\code{AEME.gotm_version} options, respectively. For DYRESM-CAEDYM, use
+\code{AEME.dyresm_version}. Currently, only GLM-AED support version selection;
+GOTM-WET and DYRESM-CAEDYM always uses the bundled version.}
+
+\item{config_file}{character; path to the model's main configuration file,
+passed to the model executable on the command line. Defaults to the
+hydrodynamic configuration file within \code{sim_folder}: the GLM nml file
+(see \code{\link[=find_glm_nml]{find_glm_nml()}}) for GLM-AED, \code{"gotm.yaml"} for GOTM-WET, and
+\code{"simstrat.par"} for Simstrat-AED2. Not used by DYRESM-CAEDYM, which reads
+several files derived from the \code{.stg} file present in \code{sim_folder}.}
 }
 \value{
 Invisibly returns \code{NULL}.

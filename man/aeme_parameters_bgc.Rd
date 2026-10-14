@@ -8,7 +8,7 @@ models.}
 \format{
 \subsection{\code{aeme_parameters_bgc}}{
 
-A data frame with 30 rows and 7 columns:
+A data frame with 66 rows and 7 columns:
 \describe{
 \item{model}{Model for the parameter}
 \item{file}{File in which the parameter is stored}
@@ -23,6 +23,7 @@ parameters that have multiple values in a vector such as
 "sediment/sed_temp_mean" in GLM-AED}
 \item{module}{Module for the parameter in the model, useful to help
 identify parameters}
+\item{var_sim}{Variable name in AEME that it influences, useful to help identify parameters}
 }
 }
 }

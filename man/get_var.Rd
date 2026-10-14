@@ -14,22 +14,32 @@ get_var(
   ens_n = 1,
   use_obs = FALSE,
   remove_spin_up = TRUE,
-  cumulative = FALSE
+  cumulative = FALSE,
+  zone = NULL,
+  sed_layer = NULL
 )
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp").}
 
-\item{depth}{numeric; depth of the variable to extract. Default is NULL. If
-NULL, the variable profiles are extracted.}
+\item{depth}{numeric; depth of the variable to extract, referenced to
+\code{depth_ref}. Default is NULL. If NULL, the variable profiles are extracted.}
 
-\item{depth_ref}{character; reference depth for extracting variable profiles.
-Options are "surface" (default) or "bottom".}
+\item{depth_ref}{character; what \code{depth} is measured from when a single
+depth is extracted. \code{"surface"} (default): metres below the water surface.
+\code{"bottom"}: metres above the lake bed, so \code{depth = 1} is the water 1 m above
+the bottom. That is \code{level - depth} metres below the surface, with \code{level}
+the modelled water level (\code{LKE_lvlwtr}) on each date, so it follows the
+surface as the level rises and falls. On a date when the level is below
+\code{depth} (the point would be above the surface) the value is \code{NA}. Ignored
+when \code{depth} is \code{NULL}. (Before AEME 0.4.0 \code{"bottom"} was measured from the
+basin's full depth, which only matches when the level equals that depth.)}
 
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
 list. Default is TRUE.}
@@ -38,12 +48,25 @@ list. Default is TRUE.}
 
 \item{use_obs}{logical; if TRUE, use observations to extract the variable at
 time and depth of observations. Default is FALSE. Use this option if you
-want to compare model output to observations.}
+want to compare model output to observations. Observations recorded as a
+height above the lake bed (see \code{\link[=add_obs]{add_obs()}}) are compared with the model
+profile at (the model's water level - that height) on each date, so they
+follow the model's own level rather than the depth they were placed at when
+added.}
 
 \item{remove_spin_up}{logical; remove spin-up period from plot. Default is
 TRUE.}
 
 \item{cumulative}{logical; if TRUE, return cumulative sum of variable}
+
+\item{zone}{integer; for GLM-AED sediment-zone variables (those with an
+\code{nzones} column, e.g. \code{"SED_Fsed_oxy"}, \code{"SED_temp"}), keep only these
+sediment zones (GLM zone order, 1 = deepest). \code{NULL} (default) keeps all.}
+
+\item{sed_layer}{integer; for variables with a sediment-layer dimension
+(\code{"SED_temp"}), keep only these layers (1 = shallowest). \code{NULL} (default)
+keeps all. Sediment variables are returned in long format with one column
+per dimension (\code{nzones}, \code{sed_layers}); \code{depth_ref}/\code{depth} do not apply.}
 }
 \value{
 dataframe or list

@@ -4,7 +4,13 @@
 \alias{standardise_met}
 \title{Standardise meteorological variable names and units for AEME}
 \usage{
-standardise_met(met, verbose = TRUE)
+standardise_met(
+  met,
+  verbose = TRUE,
+  precip_accum = TRUE,
+  tz = "UTC",
+  longitude = NULL
+)
 }
 \arguments{
 \item{met}{data.frame; meteorological data with a \code{Date} column and
@@ -13,6 +19,30 @@ one or more meteorological variable columns.}
 \item{verbose}{logical; if \code{TRUE} (default), emit \code{cli_inform}
 messages describing each detected unit conversion applied. Set to
 \code{FALSE} for quiet operation inside pipelines.}
+
+\item{precip_accum}{logical; how to interpret \code{MET_pprain} /
+\code{MET_ppsnow} when the data is sub-daily. \code{TRUE} (default) treats
+them as the depth accumulated \emph{within each step} (the ERA5 / AWS
+convention) and rescales to the mm/day rate the rest of AEME expects;
+\code{FALSE} takes the values to be a mm/day rate already and leaves them
+untouched. Ignored for daily data, where the two are identical.}
+
+\item{tz}{character; Olson timezone in which a naive/character \code{Date}
+column is expressed. Sub-daily timestamps are converted to UTC; daily data
+is treated as calendar dates and never shifted. A column that already
+carries a timezone (including \code{"UTC"}) is taken at face value here --
+reinterpreting a \code{"UTC"}-tagged column against a declared local zone
+happens once, upstream, in \code{\link{add_met}} /
+\code{\link{aeme_constructor}}. Default \code{"UTC"}; \code{\link{build_aeme}}
+passes the object's \code{time$tz}.}
+
+\item{longitude}{numeric; lake longitude in decimal degrees (east positive).
+When supplied and the data is sub-daily, the hour at which
+\code{MET_radswd} peaks each day is compared against astronomical solar
+noon for that longitude; a warning is emitted if they differ by more than
+3 h, which usually means the timestamps are in local time rather than UTC.
+\code{NULL} (default) skips the check. \code{\link{build_aeme}} passes the
+lake longitude.}
 }
 \value{
 The input data frame with column names remapped to AEME standard

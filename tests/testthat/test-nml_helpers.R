@@ -186,119 +186,119 @@ test_that("to.glm_boolean: output length equals input length", {
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# buildVal()
+# build_val()
 # ══════════════════════════════════════════════════════════════════════════════
 
-test_that("buildVal: parses a single numeric value", {
-  result <- buildVal("depth = 20", 1L, "morphometry")
+test_that("build_val: parses a single numeric value", {
+  result <- build_val("depth = 20", 1L, "morphometry")
   expect_named(result, "depth")
   expect_equal(result[["depth"]], 20)
 })
 
-test_that("buildVal: parses comma-separated numerics into a vector", {
-  result <- buildVal("heights = 1, 2, 3", 1L, "setup")
+test_that("build_val: parses comma-separated numerics into a vector", {
+  result <- build_val("heights = 1, 2, 3", 1L, "setup")
   expect_equal(result[["heights"]], c(1, 2, 3))
 })
 
-test_that("buildVal: trims whitespace from parameter names", {
-  result <- buildVal("  depth  = 10", 1L, "morphometry")
+test_that("build_val: trims whitespace from parameter names", {
+  result <- build_val("  depth  = 10", 1L, "morphometry")
   expect_named(result, "depth")
 })
 
-test_that("buildVal: parses a single-quoted string stripping quotes", {
-  result <- buildVal("sim_name = 'my_lake'", 1L, "setup")
+test_that("build_val: parses a single-quoted string stripping quotes", {
+  result <- build_val("sim_name = 'my_lake'", 1L, "setup")
   expect_equal(result[["sim_name"]], "my_lake")
 })
 
-test_that("buildVal: parses a double-quoted string stripping quotes", {
-  result <- buildVal('sim_name = "my_lake"', 1L, "setup")
+test_that("build_val: parses a double-quoted string stripping quotes", {
+  result <- build_val('sim_name = "my_lake"', 1L, "setup")
   expect_equal(result[["sim_name"]], "my_lake")
 })
 
-test_that("buildVal: parses comma-separated quoted strings into a vector", {
-  result <- buildVal("names = 'lake1','lake2','lake3'", 1L, "setup")
+test_that("build_val: parses comma-separated quoted strings into a vector", {
+  result <- build_val("names = 'lake1','lake2','lake3'", 1L, "setup")
   expect_equal(result[["names"]], c("lake1", "lake2", "lake3"))
 })
 
-test_that("buildVal: parses .true. as TRUE", {
-  result <- buildVal("check = .true.", 1L, "setup")
+test_that("build_val: parses .true. as TRUE", {
+  result <- build_val("check = .true.", 1L, "setup")
   expect_identical(result[["check"]], TRUE)
 })
 
-test_that("buildVal: parses .false. as FALSE", {
-  result <- buildVal("check = .false.", 1L, "setup")
+test_that("build_val: parses .false. as FALSE", {
+  result <- build_val("check = .false.", 1L, "setup")
   expect_identical(result[["check"]], FALSE)
 })
 
-test_that("buildVal: parses comma-separated booleans into a logical vector", {
-  result <- buildVal("flags = .true.,.false.,.true.", 1L, "setup")
+test_that("build_val: parses comma-separated booleans into a logical vector", {
+  result <- build_val("flags = .true.,.false.,.true.", 1L, "setup")
   expect_identical(result[["flags"]], c(TRUE, FALSE, TRUE))
 })
 
-test_that("buildVal: strips inline comments before parsing", {
-  result <- buildVal("depth = 20 ! this is a comment", 1L, "morphometry")
+test_that("build_val: strips inline comments before parsing", {
+  result <- build_val("depth = 20 ! this is a comment", 1L, "morphometry")
   expect_equal(result[["depth"]], 20)
 })
 
-test_that("buildVal: correctly reformats a GLM date-time string", {
+test_that("build_val: correctly reformats a GLM date-time string", {
   # GLM format uses colons at positions 14 and 17 for time separators
-  result <- buildVal("start = '2020-01-01T12:00:00'", 1L, "time")
+  result <- build_val("start = '2020-01-01T12:00:00'", 1L, "time")
   expect_type(result[["start"]], "character")
   expect_false(is.na(result[["start"]]))
 })
 
-test_that("buildVal: always returns a length-1 named list", {
-  result <- buildVal("x = 42", 1L, "block")
+test_that("build_val: always returns a length-1 named list", {
+  result <- build_val("x = 42", 1L, "block")
   expect_type(result, "list")
   expect_length(result, 1L)
   expect_false(is.null(names(result)))
 })
 
-test_that("buildVal: warns and fills NAs when partial coercion fails", {
+test_that("build_val: warns and fills NAs when partial coercion fails", {
   # "1, bad, 3" — "bad" coerces to NA while 1 and 3 succeed
   expect_warning(
-    buildVal("vals = 1, bad, 3", 1L, "setup"),
+    build_val("vals = 1, bad, 3", 1L, "setup"),
     class = "nml_warn_coercion_partial"
   )
-  result <- suppressWarnings(buildVal("vals = 1, bad, 3", 1L, "setup"))
+  result <- suppressWarnings(build_val("vals = 1, bad, 3", 1L, "setup"))
   expect_false(any(is.na(result[["vals"]])))
 })
 
-test_that("buildVal: informs when all values coerce to NA", {
+test_that("build_val: informs when all values coerce to NA", {
   expect_message(
-    buildVal("vals = bad_val", 1L, "setup", coerce = TRUE),
+    build_val("vals = bad_val", 1L, "setup", coerce = TRUE),
     class = "nml_inform_coercion_all_na"
   )
-  result <- suppressMessages(buildVal("vals = bad_val", 1L, "setup"))
+  result <- suppressMessages(build_val("vals = bad_val", 1L, "setup"))
   expect_true(is.na(result[["vals"]]))
 })
 
-test_that("buildVal: errors on a line with no '=' sign", {
+test_that("build_val: errors on a line with no '=' sign", {
   expect_error(
-    buildVal("this has no equals sign", 5L, "setup"),
+    build_val("this has no equals sign", 5L, "setup"),
     class = "nml_error_parse_hanging"
   )
 })
 
-test_that("buildVal: errors when value is empty after split", {
+test_that("build_val: errors when value is empty after split", {
   # "param =" splits on "=" and leaves NA as the right-hand side
   expect_error(
-    buildVal("param =", 3L, "setup"),
+    build_val("param =", 3L, "setup"),
     class = "nml_error_parse_empty"
   )
 })
 
-test_that("buildVal: error message contains the line number", {
+test_that("build_val: error message contains the line number", {
   err <- tryCatch(
-    buildVal("no_equals_here", 42L, "glm_setup"),
+    build_val("no_equals_here", 42L, "glm_setup"),
     error = function(e) e
   )
   expect_match(conditionMessage(err), "42")
 })
 
-test_that("buildVal: error message contains the block name", {
+test_that("build_val: error message contains the block name", {
   err <- tryCatch(
-    buildVal("no_equals_here", 1L, "morphometry"),
+    build_val("no_equals_here", 1L, "morphometry"),
     error = function(e) e
   )
   expect_match(conditionMessage(err), "morphometry")
@@ -306,53 +306,53 @@ test_that("buildVal: error message contains the block name", {
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# findBlck()
+# find_blck()
 # ══════════════════════════════════════════════════════════════════════════════
 
-test_that("findBlck: returns the index of the block containing the argument", {
+test_that("find_blck: returns the index of the block containing the argument", {
   nml <- make_nml()
-  expect_identical(findBlck(nml, "sim_name"), 1L)
+  expect_identical(find_blck(nml, "sim_name"), 1L)
 })
 
-test_that("findBlck: returns the correct index for an argument in the second block", {
+test_that("find_blck: returns the correct index for an argument in the second block", {
   nml <- make_nml()
-  expect_identical(findBlck(nml, "latitude"), 2L)
+  expect_identical(find_blck(nml, "latitude"), 2L)
 })
 
-test_that("findBlck: returns multiple indices when argument exists in more than one block", {
+test_that("find_blck: returns multiple indices when argument exists in more than one block", {
   nml <- .nml(list(
     block_a = list(shared_param = 1),
     block_b = list(shared_param = 2)
   ))
-  result <- findBlck(nml, "shared_param")
+  result <- find_blck(nml, "shared_param")
   expect_length(result, 2L)
   expect_identical(result, c(1L, 2L))
 })
 
-test_that("findBlck: returns an integer vector", {
+test_that("find_blck: returns an integer vector", {
   nml <- make_nml()
-  expect_type(findBlck(nml, "latitude"), "integer")
+  expect_type(find_blck(nml, "latitude"), "integer")
 })
 
-test_that("findBlck: errors when argName is not a character", {
+test_that("find_blck: errors when argName is not a character", {
   nml <- make_nml()
-  expect_error(findBlck(nml, 42),   class = "nml_error_findblck")
-  expect_error(findBlck(nml, TRUE), class = "nml_error_findblck")
-  expect_error(findBlck(nml, NULL), class = "nml_error_findblck")
+  expect_error(find_blck(nml, 42),   class = "nml_error_findblck")
+  expect_error(find_blck(nml, TRUE), class = "nml_error_findblck")
+  expect_error(find_blck(nml, NULL), class = "nml_error_findblck")
 })
 
-test_that("findBlck: errors when parameter is not found in any block", {
+test_that("find_blck: errors when parameter is not found in any block", {
   nml <- make_nml()
   expect_error(
-    findBlck(nml, "nonexistent_param"),
+    find_blck(nml, "nonexistent_param"),
     class = "nml_error_param_not_found"
   )
 })
 
-test_that("findBlck: error message lists available parameters", {
+test_that("find_blck: error message lists available parameters", {
   nml <- make_nml()
   err <- tryCatch(
-    findBlck(nml, "nonexistent_param"),
+    find_blck(nml, "nonexistent_param"),
     error = function(e) e
   )
   expect_match(conditionMessage(err), "sim_name|latitude|longitude")
@@ -444,35 +444,35 @@ test_that("get_block: errors when the argument does not exist in any block", {
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# setnmlList()
+# set_nml_list()
 # ══════════════════════════════════════════════════════════════════════════════
 #
-# setnmlList() delegates to set_nml() which is defined elsewhere in AEME.
-# These tests cover only the guard logic in setnmlList() itself.
+# set_nml_list() delegates to set_nml() which is defined elsewhere in AEME.
+# These tests cover only the guard logic in set_nml_list() itself.
 # Integration tests for the full round-trip belong in test-set_nml.R.
 
-test_that("setnmlList: errors when arg_list is not a list", {
+test_that("set_nml_list: errors when arg_list is not a list", {
   nml <- make_nml()
-  expect_error(setnmlList(nml, "not_a_list"), class = "nml_error_setnmllist")
-  expect_error(setnmlList(nml, 42),           class = "nml_error_setnmllist")
+  expect_error(set_nml_list(nml, "not_a_list"), class = "nml_error_setnmllist")
+  expect_error(set_nml_list(nml, 42),           class = "nml_error_setnmllist")
 })
 
-test_that("setnmlList: errors when arg_list is an empty list", {
+test_that("set_nml_list: errors when arg_list is an empty list", {
   nml <- make_nml()
-  expect_error(setnmlList(nml, list()), class = "nml_error_setnmllist")
+  expect_error(set_nml_list(nml, list()), class = "nml_error_setnmllist")
 })
 
-test_that("setnmlList: errors when arg_list has unnamed elements", {
+test_that("set_nml_list: errors when arg_list has unnamed elements", {
   nml <- make_nml()
-  expect_error(setnmlList(nml, list(1, 2, 3)), class = "nml_error_setnmllist")
+  expect_error(set_nml_list(nml, list(1, 2, 3)), class = "nml_error_setnmllist")
 })
 
-test_that("setnmlList: errors when any element has an empty name", {
+test_that("set_nml_list: errors when any element has an empty name", {
   nml <- make_nml()
   lst <- list(good = 1, bad = 2)
   names(lst)[2] <- ""
   expect_error(
-    setnmlList(nml, lst),
+    set_nml_list(nml, lst),
     class = "nml_error_setnmllist"
   )
 })

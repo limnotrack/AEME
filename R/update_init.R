@@ -41,9 +41,9 @@ update_init <- function(aeme, model_controls = NULL) {
       "NIT_amm", "NIT_nit", "NIT_don", "NIT_donr", "NIT_pon", 
       "NIT_ponr", "NIT_pin", "NIT_tn"
     )
-    summ <- lake_obs |> 
-      dplyr::mutate(month = as.numeric(format(as.Date(Date), "%m")),
-                    depth_mid = (depth_from + depth_to) / 2) |>
+    summ <- lake_obs |>
+      dplyr::mutate(month = as.numeric(format(as.Date(Date, tz = "UTC"), "%m")),
+                    depth_mid = depth) |>
       dplyr::filter(var_aeme %in% init_vars,
                     month %in% month_range
       ) |> 
@@ -68,14 +68,20 @@ update_init <- function(aeme, model_controls = NULL) {
     init_values <- lapply(init_vars, \(v) {
       if (v %in% summ$var_aeme) {
         temp_profile <- lake_obs |>
-          dplyr::mutate(month = as.numeric(format(as.Date(Date), "%m")),
-                        depth_mid = (depth_from + depth_to) / 2) |> 
+          dplyr::mutate(month = as.numeric(format(as.Date(Date, tz = "UTC"), "%m")),
+                        depth_mid = depth) |>
           dplyr::filter(var_aeme == v,
                         month %in% month_range) |>
           dplyr::group_by(depth_mid) |>
           dplyr::summarise(median = median(value)) |>
           dplyr::arrange(depth_mid) |> 
           dplyr::filter(depth_mid <= init_depth)
+        if (nrow(temp_profile) < 2) {
+          cli_inform_safe(c("i" = paste0("Not enough observations for ", v, 
+                                          " to create a profile. Using initial value.")))
+          return(rep(mod_ctrls$initial_wc[mod_ctrls$var_aeme == v],
+                     length(depths)))
+        }
         lm <- lm(median ~ depth_mid, data = temp_profile)
         new_vals <- predict(lm, newdata = data.frame(depth_mid = depths)) |> 
           round(digits = 2)

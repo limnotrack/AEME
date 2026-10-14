@@ -1,0 +1,249 @@
+---
+title: "Sub-daily output and daily-mean storage"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+options(AEME.inform = FALSE)
+
+# The worked example needs model binaries. Detect what is available so the
+# article still renders on a machine with no models installed.
+.ready <- function(f) tryCatch(nzchar(suppressMessages(f(quiet = TRUE))),
+                               error = function(e) FALSE)
+glm_ready      <- .ready(AEME::install_glm_aed)
+simstrat_ready <- .ready(AEME::install_simstrat_aed2)
+run_example    <- glm_ready && simstrat_ready
+```
+
+# Introduction
+
+Every AEME run integrates the physics at a fixed internal step
+(`time(aeme)$time_step`, 3600 s by default for GLM and GOTM, 300 s for
+Simstrat) and *writes* output at a separate, usually coarser, cadence set by
+`time(aeme)$output_time_step`. The historical default is **daily**
+(`output_time_step = 86400`): one record per simulated day.
+
+This article is about running with **sub-daily output** — hourly, 3-hourly,
+6-hourly — and about the companion feature added alongside it: **daily-mean
+storage**, where a sub-daily run also produces a small file holding the mean
+of each day.
+
+It is the sibling of `vignette("hourly-vs-daily-met")`, which is about the
+*forcing*. The one rule that ties them together:
+
+> **AEME never temporally disaggregates forcing.** Sub-daily *output* is only
+> meaningful when the meteorological forcing is itself sub-daily. With daily
+> meteo, a sub-daily run still resolves a weak diurnal cycle from the model's
+> internal solar geometry, but most of the sub-daily structure you would want
+> is simply not there to be written.
+
+# Setting the output cadence
+
+`set_output_time_step()` takes a frequency — a number of seconds, a named
+value (`"hourly"`, `"daily"`, `"weekly"`), or an `"<n> <unit>"` string — and
+each `build_*()` translates it into that model's native setting:
+
+| model | native output control | for `output_time_step` `s` |
+|---|---|---|
+| GLM-AED | `&output` `nsave` | `round(s / dt)` integration steps per record |
+| GOTM-WET | `output.yaml` `time_step` / `time_unit` | `s` seconds between records |
+| Simstrat | `Output.Times` | `s / "Timestep s"` steps between records (a thinning interval) |
+
+```{r, eval = FALSE}
+aeme <- set_output_time_step(aeme, "3 hours")   # or 10800, or "6 hours", ...
+time(aeme)$output_time_step
+#> [1] 10800
+```
+
+`output_time_step` must be `>= time_step`, and on read-back the results are
+matched positionally against an axis stepped by `output_time_step`, so the
+value stored on the object must match the cadence the model was actually run
+at. Change it, and you must rebuild and re-run.
+
+# Daily-mean storage
+
+`set_output_time_step(aeme, freq, daily_mean = TRUE)` (equivalently
+`time(aeme)$output_daily_mean <- TRUE`) makes **every** model additionally
+produce a daily-mean stream, so a run can be done at a sub-daily cadence — for
+accuracy, or to study the diurnal cycle — while the series compared against
+daily observations is a true daily *mean* rather than an instantaneous
+snapshot at whatever time of day the output step happened to land on.
+
+```{r, eval = FALSE}
+aeme <- set_output_time_step(aeme, "hourly", daily_mean = TRUE)
+```
+
+How each model provides it:
+
+* **GOTM-WET** writes daily means natively. Its shipped `output.yaml` already
+  carries an `output_daily` block with `time_method: mean`; with the option on,
+  that block is restricted to the targeted variables (the `model_controls`
+  `simulate` set plus the internals the reader needs) instead of writing every
+  variable.
+* **GLM-AED** and **Simstrat** have no native time-averaging, so `run_aeme()`
+  post-processes their sub-daily `output.nc` into a companion
+  `output_daily.nc` (`write_output_daily_nc()`): the mean over each calendar
+  day, one record per day, same file structure. The raw sub-daily file is kept
+  — you get both.
+
+The companion carries **only the variables the reader consumes**. For GLM,
+whose own netCDF cannot be sub-selected, this is also where the stored output
+is pruned: its large 4-D fields (`light`, `umean`, the wave spectra, …) are
+dropped, leaving ~20 variables instead of ~60.
+
+On read-back (`run_aeme()`, `get_var()`, …) the daily means are picked up
+automatically: when `output_daily_mean` is `TRUE` the `output_daily.nc`
+companion is read if present, otherwise the raw `output.nc` is averaged by
+calendar day on read. Downstream code sees a plain daily `Date` axis, exactly
+as for a native daily run.
+
+```{r worked, eval = run_example, message = FALSE, warning = FALSE}
+library(AEME)
+
+aeme <- readRDS(system.file("extdata/aeme.rds", package = "AEME"))
+aeme <- set_time(aeme, start = "2020-09-01", stop = "2021-09-01",
+                 time_step = 3600)
+aeme <- set_output_time_step(aeme, "hourly", daily_mean = TRUE)
+
+path <- file.path(tempdir(), "subdaily-demo")
+dir.create(path, showWarnings = FALSE)
+aeme <- build_aeme(path = path, aeme = aeme,
+                   model = c("glm_aed", "simstrat_aed2"),
+                   model_controls = get_model_controls(),
+                   ext_elev = 3, use_bgc = FALSE)
+aeme <- run_aeme(aeme, model = c("glm_aed", "simstrat_aed2"), path = path)
+
+ld <- AEME:::get_lake_dir(aeme, path)
+for (m in c("glm_aed", "simstrat_aed2")) {
+  od <- file.path(ld, m, "output")
+  raw   <- file.size(file.path(od, "output.nc")) / 1e6
+  daily <- file.size(file.path(od, "output_daily.nc")) / 1e6
+  cat(sprintf("%-14s output.nc %6.1f MB   output_daily.nc %5.2f MB   (%.0fx)\n",
+              m, raw, daily, raw / daily))
+}
+
+# get_var() returns the daily means, keyed by Date
+tmp <- get_var(aeme, "HYD_temp", model = "glm_aed")
+cat("HYD_temp Date class:", class(tmp$Date), " — days:",
+    length(unique(tmp$Date)), "\n")
+```
+
+# What sub-daily output costs
+
+The numbers below are from `data-raw/benchmark_output_cadence.R` (one lake,
+one simulated year, `time_step` 3600 s, **daily** meteo, median of 2 reps on a
+laptop). Absolute times are machine-specific; the *ratios* are the point.
+
+**GLM-AED**
+
+| cadence | model run | raw `output.nc` | daily companion | daily-averaging pass |
+|---|--:|--:|--:|--:|
+| 1 h  | 0.94 s | 279 MB | 1.04 MB | 1.3 s |
+| 3 h  | 0.52 s |  93 MB | 1.03 MB | 0.6 s |
+| 6 h  | 0.42 s |  47 MB | 1.02 MB | 0.4 s |
+| 24 h | 0.34 s |  12 MB | —      | —     |
+
+**Simstrat-AED2**
+
+| cadence | model run | raw `output.nc` | daily companion | daily-averaging pass |
+|---|--:|--:|--:|--:|
+| 1 h  | 4.6 s | 32 MB  | 0.13 MB | 0.14 s |
+| 3 h  | 2.1 s | 11 MB  | 0.13 MB | 0.08 s |
+| 6 h  | 1.5 s | 5.3 MB | 0.12 MB | 0.06 s |
+| 24 h | 1.1 s | 1.4 MB | —      | —      |
+
+Reading these:
+
+* **The integration is unchanged.** AEME does not touch GLM's `dt` or
+  Simstrat's `"Timestep s"`. Every extra second above is output I/O, not
+  physics — `nsave` / `Output.Times` only change how often a record is
+  written.
+* **Run cost scales roughly linearly with output frequency.** 1 h versus 24 h
+  is about 2.8× the run time for GLM and 4.4× for Simstrat. Simstrat is the
+  more sensitive because it writes one plain-text `.dat` row per variable per
+  step; GLM writes netCDF. In absolute terms for a year it is +0.6 s (GLM) /
+  +3.5 s (Simstrat) — small next to a BGC run, large next to a bare physics
+  run.
+* **Disk scales linearly too.** GLM's raw hourly output is large (the netCDF
+  carries every 3-D field at every step); Simstrat's is modest.
+* **The daily-mean companion is cadence-independent and tiny** (~1 MB/yr for
+  GLM, ~0.13 MB/yr for Simstrat) because it is daily *and* restricted to the
+  reader's variables. Keeping the companion and deleting the raw file is the
+  real storage win — it is smaller than even the native 24 h file.
+* **The daily-averaging pass is cheap** once GLM's companion is restricted:
+  well under 2 s for a year.
+
+`data-raw/benchmark_daily_mean_output.R` decomposes the feature cost further
+(in-run I/O delta, the averaging pass, the read-back delta, and — for Simstrat
+— the existing `.dat` → `output.nc` step for context).
+
+# How accurate is the daily mean?
+
+Same benchmark. `t1m_dmean_rmse_vs_1h` is the RMSE of the daily-mean 1 m water
+temperature at each cadence against the 1 h run's daily mean;
+`t_surf_daily_range` is the mean daily (max − min) of the surface temperature
+cell — the diurnal signal the cadence resolves.
+
+| model | cadence | daily-mean RMSE vs 1 h | surface diurnal range |
+|---|---|--:|--:|
+| GLM-AED | 3 h | 0.029 °C | 1.34 °C |
+| GLM-AED | 6 h | 0.040 °C | 1.11 °C |
+| GLM-AED | 1 h | — (ref) | 1.41 °C |
+| Simstrat | 3 h | 0.006 °C | 0.18 °C |
+| Simstrat | 6 h | 0.014 °C | 0.16 °C |
+| Simstrat | 1 h | — (ref) | 0.20 °C |
+| Simstrat | 24 h *(instantaneous)* | 0.062 °C | 0 |
+
+* **3–6 h output is enough for an unbiased daily mean.** Sampling the mean
+  from 3-hourly instead of hourly records adds only ~0.03 °C (GLM) / ~0.006 °C
+  (Simstrat). Taking the *daily instantaneous* value from a 24 h run instead
+  is worse than a 6 h mean (Simstrat: 0.062 vs 0.014 °C) — a midnight snapshot
+  is a biased estimator of the daily mean, which is the whole reason the
+  `daily_mean` option exists.
+* **1 h is worth it when the diurnal cycle itself is the subject.** 6 h output
+  resolves ~78 % of GLM's surface diurnal range, 3 h ~95 %.
+* These ranges are small because the fixture forcing is daily — the diurnal
+  signal is only the model's internal solar cycle. **With sub-daily meteo the
+  ranges (and the case for 1 h output) grow substantially.**
+
+## Rule of thumb
+
+| you want … | run at | store |
+|---|---|---|
+| daily statistics, unbiased | 3 h (6 h is fine) | `daily_mean = TRUE` |
+| the diurnal cycle | 1 h | sub-daily, `daily_mean` optional |
+| just faster archiving of an existing sub-daily run | — | `daily_mean = TRUE`, then keep only `output_daily.nc` |
+
+# Gotchas
+
+* **Sub-daily output needs sub-daily meteo.** `check_time()` stops you from
+  pairing daily meteo with a sub-daily `output_time_step`. Inflows and
+  outflows may stay daily.
+* **`daily_mean = TRUE` with a daily `frequency` warns** — there is nothing
+  sub-daily to average.
+* **Rebuild after changing the cadence.** `output_time_step` /
+  `output_daily_mean` are stored on the object and drive both the model
+  setting and the read-back axis; a stale value against a re-run model is
+  caught with a warning and dropped records, not a silent wrong answer.
+* **Both files are kept.** The daily companion sits next to the raw
+  `output.nc` / `*_out.dat`. To realise the storage saving, delete the raw
+  file yourself once the companion is written.
+* **GLM's companion is a subset.** It holds the reader's variables, not every
+  field GLM wrote. If you need a dropped 3-D field (`umean`, wave spectra, …)
+  at daily resolution, read and average the raw `output.nc` yourself.
+* **Water balance is always daily**, sub-daily run or not — deliberate.
+
+# See also
+
+* `vignette("hourly-vs-daily-met")` — sub-daily *forcing*, and how each model
+  fills the gaps between timestamps.
+* `?set_output_time_step` — the `frequency` and `daily_mean` arguments.
+* `?set_time` — `time_step` vs `output_time_step`.
+* `data-raw/benchmark_output_cadence.R`,
+  `data-raw/benchmark_daily_mean_output.R` — the scripts behind the tables
+  above.

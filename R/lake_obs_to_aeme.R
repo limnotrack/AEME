@@ -6,8 +6,13 @@
 #' correctly named. 
 #'
 #' @param data data frame containing lake observations
-#' @param depth_col_name column name for depth (m). If missing, the function 
+#' @param depth_col_name column name for depth (m). If missing, the function
 #'  will attempt to infer it.
+#' @param depth_to_col_name column name for the bottom of an integrated sample
+#'  (m). Optional; if missing, no `depth_to` column is produced.
+#' @param sd_col_name column name for the measurement standard deviation, in the
+#'  input units of each variable. Optional; if missing, no `sd` column is
+#'  produced.
 #' @param datetime_col_name column name for date/time. If missing, the function
 #' will attempt to infer it.
 #' @param var_col_name column name for variable names. If missing, the function
@@ -20,19 +25,32 @@
 #' mapping variable names and units to AEME standards. "var_aeme" is the
 #' defined AEME variable name, "name" is the name used in the input data,
 #' and "unit" is the unit used in the input data.
-#' 
+#' @param tz character; Olson timezone a naive datetime column is expressed in.
+#' Sub-daily timestamps are converted to UTC and kept at their time-of-day;
+#' daily data is treated as calendar dates (never shifted) and anchored at
+#' 12:00:00 UTC. Default `"UTC"`.
+#'
 #' @importFrom dplyr select mutate left_join rename
 #' @importFrom units as_units set_units
 #'
-#' @returns A data frame formatted for AEME with columns "Date", "var_aeme",
-#' "depth_from", "depth_to", and "value".
+#' @returns A data frame formatted for AEME with required columns "Date"
+#' (UTC `POSIXct`; daily observations anchored at 12:00:00), "var_aeme",
+#' "depth", and "value", plus the optional columns "depth_to" and "sd" when
+#' the corresponding arguments are supplied.
 #' @export
 #'
 
 lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
-                             var_col_name, value_col_name, lake_id_col, 
-                             var_map) {
-  
+                             var_col_name, value_col_name, lake_id_col,
+                             var_map, depth_to_col_name, sd_col_name,
+                             tz = "UTC") {
+
+  # Internal datetime arithmetic runs in UTC. A naive datetime column is taken
+  # to be wall-clock time in `tz`; a Date (or tz-aware POSIXct) is left as the
+  # calendar/absolute value it already is.
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+
   # Load Rdata
   data("key_naming", package = "AEME", envir = environment())
   sub_key_naming <- key_naming |> 
@@ -128,17 +146,16 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
     datetime_col_name <- names(data)[grepl("date|time", names(data), 
                                            ignore.case = TRUE)]
     if (length(datetime_col_name) == 0) {
-      stop("Date column name not provided and could not be inferred.")
+      cli::cli_abort("Datetime column name not provided and could not be inferred.")
     } else if (length(datetime_col_name) > 1) {
-      stop("Multiple date column names inferred: c(\"", 
-           paste0(datetime_col_name, collapse = "\", "), 
-           "\"). Please specify one.")
+      cli::cli_abort("Multiple datetime column names inferred: 
+                     {.var {datetime_col_name}}. Please specify one.")
     }
   } else {
     # Check datetime column is in data
     if (!datetime_col_name %in% names(data)) {
-      stop("Provided datetime_col_name '", datetime_col_name, 
-           "' not found in data.")
+      cli::cli_abort("Provided datetime_col_name '{.var {datetime_col_name}}' 
+                     not found in data.")
     }
     # Check datetime column is POSIXct or Date
     if (!inherits(data[[datetime_col_name]], c("POSIXct", "Date"))) {
@@ -152,43 +169,59 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
     depth_col_name <- names(data)[grepl("depth", names(data), 
                                         ignore.case = TRUE)]
     if (length(depth_col_name) == 0) {
-      stop("Depth column name not provided and could not be inferred.")
+      cli::cli_abort("Depth column name not provided and could not be inferred.")
     } else if (length(depth_col_name) > 1) {
-      stop("Multiple depth column names inferred: c(\"", 
-           paste0(depth_col_name, collapse = "\", "),
-           "\"). Please specify one.")
+      cli::cli_abort("Multiple depth column names inferred: 
+                     {.var {depth_col_name}}. Please specify one.")
     }
   } else {
-    # Check depth column is in data
+    # Check depth column is in data     
     if (!depth_col_name %in% names(data)) {
-      stop("Provided depth_col_name '", depth_col_name, 
-           "' not found in data.")
+      cli::cli_abort("Provided depth_col_name '{.var {depth_col_name}}' not found in data.")
     }
     # Check depth column is numeric
     if (!is.numeric(data[[depth_col_name]])) {
-      stop("Depth column '", depth_col_name, "' must be numeric.")
+      cli::cli_abort("Depth column '{.var {depth_col_name}}' must be numeric.")
     }
   }
-  
+
+  # Optional depth_to / sd columns
+  extra_cols <- character()
+  if (!missing(depth_to_col_name)) {
+    if (!depth_to_col_name %in% names(data)) {
+      cli::cli_abort("Provided depth_to_col_name '{.var {depth_to_col_name}}' not found in data.")
+    }
+    if (!is.numeric(data[[depth_to_col_name]])) {
+      cli::cli_abort("depth_to column '{.var {depth_to_col_name}}' must be numeric.")
+    }
+    extra_cols <- c(extra_cols, depth_to = depth_to_col_name)
+  }
+  if (!missing(sd_col_name)) {
+    if (!sd_col_name %in% names(data)) {
+      cli::cli_abort("Provided sd_col_name '{.var {sd_col_name}}' not found in data.")
+    }
+    if (!is.numeric(data[[sd_col_name]])) {
+      cli::cli_abort("sd column '{.var {sd_col_name}}' must be numeric.")
+    }
+    extra_cols <- c(extra_cols, sd = sd_col_name)
+  }
+
   if (missing(value_col_name)) {
     value_col_name <- names(data)[grepl("value|obs", names(data), 
                                         ignore.case = TRUE)]
     if (length(value_col_name) == 0) {
-      stop("Value column name not provided and could not be inferred.")
+      cli::cli_abort("Value column name not provided and could not be inferred.")
     } else if (length(value_col_name) > 1) {
-      stop("Multiple value column names inferred: c(\"", 
-           paste0(value_col_name, collapse = "\", "), 
-           "\"). Please specify one.")
+      cli::cli_abort("Multiple value column names inferred: {.var {value_col_name}}. Please specify one.")
     }
   } else {
     # Check value column is in data
     if (!value_col_name %in% names(data)) {
-      stop("Provided value_col_name '", value_col_name, 
-           "' not found in data.")
+      cli::cli_abort("Provided value_col_name '{.var {value_col_name}}' not found in data.")
     }
     # Check value column is numeric
     if (!is.numeric(data[[value_col_name]])) {
-      stop("Value column '", value_col_name, "' must be numeric.")
+      cli::cli_abort("Value column '{.var {value_col_name}}' must be numeric.")
     }
   }
   
@@ -203,34 +236,34 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
   }
   
   
-  obs <- data |> 
-    dplyr::select(dplyr::all_of(c(lake_id_col, datetime_col_name, 
-                                  depth_col_name, var_col_name, 
-                                  value_col_name))) |> 
-    dplyr::rename(depth_from = dplyr::all_of(depth_col_name),
+  obs <- data |>
+    dplyr::select(dplyr::all_of(c(lake_id_col, datetime_col_name,
+                                  depth_col_name, var_col_name,
+                                  value_col_name, extra_cols))) |>
+    dplyr::rename(depth = dplyr::all_of(depth_col_name),
                   datetime = dplyr::all_of(datetime_col_name),
                   var = dplyr::all_of(var_col_name),
                   value = dplyr::all_of(value_col_name),
-                  lake_id = dplyr::all_of(lake_id_col)) |> 
-    dplyr::left_join(var_map, by = c("var" = "var_aeme")) |> 
-    dplyr::left_join(sub_key_naming, by = c("var" = "var_aeme")) |>
-    dplyr::rename(var_aeme = var) |> 
+                  lake_id = dplyr::all_of(lake_id_col)) |>
+    dplyr::left_join(var_map, by = c("var" = "name")) |>
+    dplyr::left_join(sub_key_naming, by = c("var_aeme")) |>
+    # dplyr::rename(var_aeme = var) |>
     dplyr::filter(!is.na(var_aeme), !is.na(unit)) |>
-    dplyr::mutate(Date = as.Date(datetime),
-                  depth_to = depth_from) 
-  
+    dplyr::mutate(Date = .as_obs_datetime(datetime, tz = tz,
+                                          reinterpret_utc_tag = TRUE))
+
   # Group by var_aeme and convert units
   v <- var_map$var_aeme[9]
-  obs_col_names <- AEME::get_obs_column_names()
+  obs_col_names <- AEME::get_obs_column_names(include_optional = TRUE)
   out <- lapply(var_map$var_aeme, \(v) {
     df <- obs |> 
       dplyr::filter(var_aeme == v)
     if (nrow(df) == 0) return(NULL)
     uniq_units <- unique(df$unit) 
     if (length(uniq_units) > 1) {
-      stop("Multiple units found for variable '", v, 
-              "': ", paste(uniq_units, collapse = ", "), 
-              ". Converting all to first unit: '", uniq_units[1], "'.")
+      cli::cli_warn("Multiple units found for variable '{.var {v}}': 
+                     {.var {paste(uniq_units, collapse = ', ')}}. Converting all
+                     to first unit: '{.var {uniq_units[1]}}'.")
     }
     if (uniq_units == df$aeme_units[1]) {
       return(df)
@@ -245,21 +278,22 @@ lake_obs_to_aeme <- function(data, depth_col_name, datetime_col_name,
         #      df$aeme_units[1], "' for variable '", v, "': ", e$message)
       })
       if (is.na(conv_factor)) {
-        warning("Could not convert units from '", uniq_units, "' to '", 
-             df$aeme_units[1], "' for variable '", v, 
-             "'. Removing these observations.")
+        cli::cli_warn("Could not convert units from '{.var {uniq_units}}' to 
+                      '{.var {df$aeme_units[1]}}' for variable '{.var {v}}'.
+                      Removing these observations.")
         return(NULL)
       }
       
-      df <- df |> 
+      df <- df |>
         dplyr::mutate(value = value * conv_factor,
                       unit = df$aeme_units[1])
+      if ("sd" %in% names(df)) df$sd <- df$sd * conv_factor
       return(df)
     }
-  }) |> 
-    dplyr::bind_rows() |> 
-    dplyr::select(dplyr::all_of(c(obs_col_names, "lake_id", "unit"))) |> 
-    dplyr::arrange(lake_id, Date, var_aeme, depth_from)
+  }) |>
+    dplyr::bind_rows() |>
+    dplyr::select(dplyr::any_of(c(obs_col_names, "lake_id", "unit"))) |>
+    dplyr::arrange(lake_id, Date, var_aeme, depth)
   
   if (remove_lake_id) {
     out <- out |> 

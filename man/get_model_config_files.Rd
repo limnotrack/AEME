@@ -4,19 +4,20 @@
 \alias{get_model_config_files}
 \title{Get model configuration files paths}
 \usage{
-get_model_config_files(aeme, model, path, lake_dir = NULL)
+get_model_config_files(aeme = NULL, model, path = NULL, lake_dir)
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{path}{character; directory where input files are located. Defaults to
 the path stored in \code{aeme}, or the current working directory if not set.}
 
-\item{lake_dir}{Path to the lake AEME directory. If NULL, it will be
-computed from \code{aeme} and \code{path}.}
+\item{lake_dir}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{path} instead of
+\code{lake_dir}}
 }
 \value{
 A list with model configuration files paths

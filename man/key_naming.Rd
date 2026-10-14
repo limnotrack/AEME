@@ -7,11 +7,13 @@
 \format{
 \subsection{\code{key_naming}}{
 
-A data frame with 129 rows and 17 columns:
+A data frame with 130 rows and 18 columns:
 \describe{
 \item{var_aeme}{AEME variable name}
 \item{dy_cd}{DYRESM variable name}
 \item{glm_aed}{GLM variable name}
+\item{glm_aed2}{GLM-AED2 variable name}
+\item{simstrat_aed2}{Simstrat-AED2 variable name}
 \item{gotm_wet}{GOTM variable name}
 \item{gotm_fabm}{GOTM-FABM variable name containing key-value names}
 \item{name_text}{Regular text string variable name}

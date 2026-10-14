@@ -11,7 +11,7 @@ get_model_version(model)
 supported.}
 }
 \value{
-version string
+version string (invisible)
 }
 \description{
 Get model version

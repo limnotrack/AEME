@@ -43,6 +43,12 @@ estimate_lake_wlev(
 This should be a reasonable estimate based on the observed levels to ensure
 the optimization converges.}
 
+\item{params}{Optional named numeric vector \code{c(C, h_inv)} of already-fitted
+outflow parameters (see \code{\link{get_wbal_param}}). If supplied, the
+optimisation step is skipped and these values are used directly to
+generate the final simulated time series. Defaults to \code{NULL}, which fits
+\code{C}/\code{h_inv} via \code{\link[stats]{optim}}.}
+
 \item{initial_guess}{Optional initial guess for optimization parameters:
 \itemize{
 \item C: Outflow coefficient

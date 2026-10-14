@@ -34,8 +34,8 @@
 #' - `wb`: data frame of water balance components (Date, model, value,
 #'   HYD_flow, HYD_outflow, area, Ts, T5avg, evap_flux, evap_m3, rain,
 #'   deltaV, inflow, spill_outflow, net)
-#' - `wbal_params`: named numeric vector of fitted parameters (C, h_inv),
-#'   or NULL for method 1
+#' - `wbal_params`: named list of fitted parameter vectors (C, h_inv), keyed
+#'   by evaporation family (see `wbal_evap_family()`), or NULL for method 1
 #'
 #' @noRd
 
@@ -50,7 +50,22 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   cli_safe("Calculating water balance", FUN = cli::cli_h2)
   
   model <- check_model(model = model)
-  
+
+  # ---- Collapse sub-daily meteo to a daily timestep ----
+  # The water balance is an inherently daily calculation: estimate_lake_wlev()
+  # advances the lake by one day per row (C * dh^1.5 * 86400, evap in m/day),
+  # the 5-day T5avg roll assumes daily spacing, and the fitted outflow/inflow
+  # correction is written to the model input files the same way daily inflows
+  # are. Sub-daily forcing is therefore aggregated to daily here before any
+  # balance work. `obs_met` has already been through standardise_met(), so
+  # MET_pprain / MET_ppsnow are a mm/day rate and a daily mean is the daily
+  # rate (precip = "mean", the default). The model runs themselves keep their
+  # native sub-daily meteo -- that is built separately from `met` in
+  # build_aeme().
+  if (is_subdaily(obs_met[["Date"]])) {
+    obs_met <- collapse_met_daily(obs_met)
+  }
+
   # ---- Date range ----
   max_spin  <- max(unlist(aeme_time[["spin_up"]])[model])
   spin_start <- aeme_time[["start"]] - lubridate::ddays(max_spin + 1)
@@ -132,23 +147,49 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   obs_rain <- dplyr::select(obs_met, Date, MET_pprain)
   
   # ---- Assemble water balance per model ----
+  # dy_cd and glm_aed use the exact same bulk aerodynamic evaporation formula
+  # in simulate_lake_nudged() (unlike gotm_wet and simstrat_aed2, which each
+  # have their own distinct formula), so fitting the water level twice for
+  # that pair is redundant -- the fit is cached per evaporation family (see
+  # wbal_evap_family()) and reused for the second model instead of
+  # re-running optim(). This assumes a model's inflow/outflow/meteorology
+  # inputs don't diverge from the other member of its family (true unless
+  # inflow rows are manually tagged to apply to only one of dy_cd/glm_aed
+  # via a `model` column).
+  wlev_fit_cache <- list()
+  wlev_cols <- c("lvl_sim", "spill_outflow", "evap_m3", "evap_flux", "C",
+                 "h_inv", "net_balance")
+
   wb <- lapply(model, \(m) {
-    mod_inflow <- vol_inflow  |> 
-      dplyr::filter(model == m) |> 
-      dplyr::select(Date, HYD_flow) 
+    mod_inflow <- vol_inflow  |>
+      dplyr::filter(model == m) |>
+      dplyr::select(Date, HYD_flow)
     wb_m <- obs_met |>
       dplyr::select(Date) |>
-      dplyr::mutate(model = m) |> 
+      dplyr::mutate(model = m) |>
       dplyr::left_join(mod_inflow, by = "Date") |>
       dplyr::left_join(vol_outflow, by = "Date") |>
       dplyr::left_join(wbal        |> dplyr::filter(model == m),
                        by = c("Date", "model")) |>
       dplyr::filter(Date >= spin_start & Date <= date_stop)
-    
+
     if (method %in% c(2, 3)) {
-      wb_m <- wb_m |>
-        estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev,
-                           params = params)
+      family <- wbal_evap_family(m)
+      cached <- if (!is.na(family)) wlev_fit_cache[[family]] else NULL
+      if (!is.null(cached)) {
+        cli_safe(paste0("Reusing water level fit for ", m,
+                        " (shares evaporation physics with an already-fitted model)"),
+                 indent = FALSE)
+        wb_m <- dplyr::bind_cols(wb_m, cached)
+      } else {
+        fam_params <- if (!is.na(family)) resolve_wbal_params(params, family) else params
+        wb_m <- wb_m |>
+          estimate_lake_wlev(hyps_df = hyps, model = m, init_elev = init_elev,
+                             params = fam_params)
+        if (!is.na(family)) {
+          wlev_fit_cache[[family]] <<- wb_m[wlev_cols]
+        }
+      }
     }
     wb_m
   }) |>
@@ -157,9 +198,22 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   # ---- Apply method-specific inflow/outflow logic ----
   wb <- apply_wb_method(wb, method, hyps)
   
-  # ---- Extract fitted parameters ----
+  # ---- Extract fitted parameters, one set per evaporation family ----
   wbal_params <- if (method %in% c(2, 3)) {
-    dplyr::summarise(wb, C = mean(C), h_inv = mean(h_inv))
+    fam_fit <- wb |>
+      dplyr::mutate(family = wbal_evap_family(model)) |>
+      dplyr::filter(!is.na(family)) |>
+      dplyr::group_by(family) |>
+      dplyr::summarise(C = dplyr::first(C), h_inv = dplyr::first(h_inv),
+                       .groups = "drop")
+    if (nrow(fam_fit) > 0) {
+      setNames(
+        lapply(seq_len(nrow(fam_fit)), \(i) c(C = fam_fit$C[i], h_inv = fam_fit$h_inv[i])),
+        fam_fit$family
+      )
+    } else {
+      NULL
+    }
   } else {
     NULL
   }
@@ -198,7 +252,7 @@ calc_water_balance <- function(aeme_time, model, method, use, hyps, inf,
   
   list(
     wb          = wb_out,
-    wbal_params = c("C" = wbal_params$C, "h_inv" = wbal_params$h_inv)
+    wbal_params = wbal_params
   )
 }
 
@@ -211,9 +265,15 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
   
   FUN = cli::cli_inform
   cli_safe("Resolving water level", indent = FALSE)
+  # The water balance is daily; `obs_met$Date` is a calendar Date. Level
+  # observations are stored as noon POSIXct -- reduce them to the same
+  # calendar day so the joins and %in% tests below match.
+  if (!is.null(level) && "Date" %in% names(level)) {
+    level$Date <- as.Date(level$Date, tz = "UTC")
+  }
   # on.exit({
   #   if (!is.null(pb_id)) cli::cli_progress_done(id = pb_id)
-  # })  
+  # })
   if (use == "mod") {
     date_vector <- seq.Date(as.Date(spin_start), as.Date(date_stop), by = 1)
     mod_lvl <- dplyr::filter(level, Date >= spin_start & Date <= date_stop)
@@ -286,8 +346,11 @@ resolve_water_level <- function(use, level, obs_met, hyps, surf,
 #' @noRd
 add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
   if (!is.null(obs_lake)) {
+    # Lake observations are stored as noon POSIXct; `obs_met$Date` is a
+    # calendar Date. Match on the day.
+    obs_lake$Date <- as.Date(obs_lake$Date, tz = "UTC")
     sub <- obs_lake |>
-      dplyr::filter(var_aeme == "HYD_temp", depth_from < 1,
+      dplyr::filter(var_aeme == "HYD_temp", depth < 1,
                     Date %in% obs_met$Date) |>
       dplyr::filter(!duplicated(Date)) |>
       dplyr::select(Date, value)
@@ -323,6 +386,72 @@ add_surface_temperature <- function(obs_met, obs_lake, coeffs) {
   }
   
   obs_met
+}
+
+
+#' Collapse a sub-daily meteo data frame to a daily time step
+#'
+#' Aggregates a `POSIXct`-stamped (or otherwise sub-daily) meteorological data
+#' frame to one row per calendar day: every numeric column is averaged over the
+#' day, except `MET_pprain` / `MET_ppsnow`, whose aggregation is controlled by
+#' `precip`. Non-numeric columns other than `Date` are dropped, and `Date` is
+#' returned as a `Date`.
+#'
+#' AEME defines `MET_pprain` / `MET_ppsnow` as a **rate in mm/day**
+#' (see [standardise_met()]). If the frame is already on that convention -- e.g.
+#' the output of [standardise_met()], which is what [build_aeme()] feeds the
+#' water balance -- a daily *mean* of the rate is the daily rate, so
+#' `precip = "mean"` (the default) is correct. Raw sub-daily reanalysis / AWS
+#' products instead report precipitation as an **accumulation per time step**
+#' (mm that fell during that step); for those, use `precip = "sum"` to get the
+#' daily total.
+#'
+#' @param obs_met data frame; meteo forcing with a `Date` column (`Date` or
+#'   `POSIXct`) and numeric `MET_*` columns.
+#' @param precip character; how to aggregate `MET_pprain` / `MET_ppsnow` over
+#'   the day. `"mean"` (default) when they are already a mm/day rate;
+#'   `"sum"` when they are per-time-step accumulations.
+#'
+#' @return A data frame with one row per day: `Date` (as `Date`) and the
+#'   day-aggregated numeric columns.
+#' @export
+#'
+#' @seealso [standardise_met()]
+#'
+#' @examples
+#' hourly <- data.frame(
+#'   Date = seq(as.POSIXct("2020-01-01", tz = "UTC"), by = "hour",
+#'              length.out = 48),
+#'   MET_tmpair = rnorm(48, 15, 3),
+#'   MET_pprain = c(rep(0, 20), rep(0.5, 4), rep(0, 24))  # mm per hour
+#' )
+#' collapse_met_daily(hourly, precip = "sum")
+collapse_met_daily <- function(obs_met, precip = c("mean", "sum")) {
+  precip <- match.arg(precip)
+  num <- names(obs_met)[vapply(obs_met, is.numeric, logical(1))]
+  sum_cols  <- if (precip == "sum") {
+    intersect(c("MET_pprain", "MET_ppsnow"), num)
+  } else {
+    character(0)
+  }
+  mean_cols <- setdiff(num, sum_cols)
+
+  day <- if (inherits(obs_met[["Date"]], "POSIXct")) {
+    as.Date(obs_met[["Date"]], tz = "UTC")
+  } else {
+    as.Date(obs_met[["Date"]])
+  }
+
+  out <- obs_met |>
+    dplyr::mutate(Date = day) |>
+    dplyr::group_by(Date) |>
+    dplyr::summarise(
+      dplyr::across(dplyr::all_of(mean_cols), \(x) mean(x, na.rm = TRUE)),
+      dplyr::across(dplyr::all_of(sum_cols),  \(x) sum(x, na.rm = TRUE)),
+      .groups = "drop"
+    )
+  # keep the caller's original column order
+  out[, c("Date", intersect(names(obs_met), num)), drop = FALSE]
 }
 
 
@@ -491,6 +620,74 @@ calc_V <- function(depth, hyps, h = 0.1) {
     r <- sqrt(areas[-length(areas)] / pi)
     R <- sqrt(areas[-1] / pi)
     sum((pi * h / 3) * (R^2 + R * r + r^2))
+  })
+}
+
+#' Calculate lake volume using GLM's power-law hypsograph interpolation
+#'
+#' Replicates the volume interpolation used internally by GLM (General Lake
+#' Model). Between each pair of supplied hypsograph nodes GLM fits a power-law
+#' `V(h) = V[b] * (h / H[b]) ^ alpha_b` where
+#' `alpha_b = log10(V[b+1]/V[b]) / log10(H[b+1]/H[b])`.
+#' The bottom-most interval is treated as linear (alpha = 1) to match GLM's
+#' own handling of the near-bed region where either V or H may be zero.
+#'
+#' This function is used in preference to \code{calc_V} when deriving observed
+#' \code{LKE_vol} for comparison against GLM-AED model output, so that both
+#' sides of the residual use the same hypsograph interpolation and the
+#' methodological volume difference (~0.7\% for typical lake shapes) does not
+#' appear as spurious model bias.
+#'
+#' @param depth numeric vector; water surface elevation(s) (m a.s.l.), the
+#'   same datum as \code{hyps$elev}. Note that \code{LKE_lvlwtr} as returned
+#'   by \code{get_var} is stored relative to the lake bed and must have
+#'   \code{min(hyps$elev)} added before being passed here.
+#' @param hyps data.frame with columns \code{elev} (m a.s.l.) and \code{area}
+#'   (m²), ordered from bed to surface.
+#' @return numeric vector of lake volumes (m³), same length as \code{depth}.
+#' @noRd
+calc_V_glm <- function(depth, hyps) {
+  hyps <- hyps[order(hyps$elev), ]
+  H <- hyps$elev
+  A <- hyps$area
+
+  # Pre-compute cumulative trapezoidal volumes at each node so we can use
+  # the same power-law lookup GLM builds in its MphLevelVol table.
+  n <- nrow(hyps)
+  V <- numeric(n)
+  for (i in seq_len(n - 1L)) {
+    # Trapezoid between node i and i+1 (linear area interpolation for V nodes)
+    V[i + 1L] <- V[i] + (A[i] + A[i + 1L]) / 2 * (H[i + 1L] - H[i])
+  }
+
+  # Power-law exponents alpha_b: log-log slope of V vs H between nodes.
+  # Bottom interval (i=1) is linear (alpha=1) matching GLM's special case.
+  alpha <- numeric(n)
+  alpha[1L] <- 1.0
+  for (i in seq_len(n - 2L) + 1L) {
+    if (V[i] > 0 && H[i] > 0 && V[i + 1L] > V[i] && H[i + 1L] > H[i]) {
+      alpha[i] <- log10(V[i + 1L] / V[i]) / log10(H[i + 1L] / H[i])
+    } else {
+      alpha[i] <- 1.0
+    }
+  }
+  alpha[n] <- alpha[n - 1L]
+
+  # Interpolate volume at each requested depth using the matching interval.
+  sapply(depth, function(d) {
+    if (is.na(d) || d <= H[1L]) return(0.0)
+    if (d >= H[n]) {
+      # Extrapolate with the top interval's exponent
+      b <- n - 1L
+      return(V[b] * (d / H[b]) ^ alpha[b])
+    }
+    b <- findInterval(d, H, rightmost.closed = TRUE)
+    b <- max(1L, min(b, n - 1L))
+    if (H[b] <= 0 || V[b] <= 0) {
+      # Linear fallback for bottom region
+      return(V[b + 1L] * d / H[b + 1L])
+    }
+    V[b] * (d / H[b]) ^ alpha[b]
   })
 }
 

@@ -34,8 +34,12 @@ get_wbal_components <- function(
   
   obs <- observations(aeme)
   if (!is.null(obs$level)) {
+    # Water balance is daily -- key the level observations on the calendar day
+    # so they share an x-axis class with the modelled series (`wb`, `mod`).
     lake_level <- obs$level |>
-      dplyr::filter(Date >= tme$start, Date <= tme$stop) |>
+      dplyr::mutate(Date = as.Date(Date, tz = "UTC")) |>
+      dplyr::filter(Date >= as.Date(tme$start, tz = "UTC"),
+                    Date <= as.Date(tme$stop, tz = "UTC")) |>
       dplyr::mutate(level = value - elev_offset)
   } else {
     lake_level <- NULL

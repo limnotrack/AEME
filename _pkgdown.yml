@@ -1,4 +1,4 @@
-url: https://limnotrack.com
+url: https://limnotrack.com/AEME/
 template:
   bootstrap: 5
   bootswatch: cosmo
@@ -6,12 +6,65 @@ template:
     bg: "#FEF7EC"
     fg: "#0065a9"
     primary: "#0065a9"
+
+home:
+  title: AEME - Aquatic Ecosytem Model Ensemble
+  sidebar:
+    structure: [links, license, community, citation, authors, dev, toc]
+
 navbar:
   inverse: true
   structure:
-    left:  [intro, reference, articles, tutorials, news, contributing]
+    left:  [intro, reference, getting_started, working_models, uncertainty, model_desc, use_cases, news, contributing]
     right: [search, github]
   components:
+    getting_started:
+      text: Getting started
+      menu:
+      - text: Installing models
+        href: articles/installing-models.html
+      - text: Introduction to AEME
+        href: articles/intro-aeme.html
+      - text: AEME inputs
+        href: articles/aeme-inputs.html
+      - text: Set up a new lake
+        href: articles/setup-new-lake.html
+    working_models:
+      text: Working with models
+      menu:
+      - text: Visualising output
+        href: articles/visualising-output.html
+      - text: Testing parameters
+        href: articles/testing-parameters.html
+      - text: Hourly vs daily met
+        href: articles/hourly-vs-daily-met.html
+      - text: Sub-daily output
+        href: articles/subdaily-output.html
+    uncertainty:
+      text: Uncertainty
+      menu:
+      - text: Initial conditions and spin-up
+        href: articles/initial-conditions-and-spin-up.html
+      - text: Parameter uncertainty
+        href: articles/parameter-uncertainty.html
+    model_desc:
+      text: Model descriptions
+      menu:
+      - text: GLM-AED
+        href: articles/glm-aed.html
+      - text: Simstrat-AED2
+        href: articles/simstrat-aed2.html
+      - text: AED sediment N/P parameterisation
+        href: articles/aed-sediment-np-parameterisation.html
+    use_cases:
+      text: Use cases
+      menu:
+      - text: Reservoir AEME
+        href: articles/reservoir-aeme.html
+      - text: LERNZmp AEME
+        href: articles/lernzmp-aeme.html
+      - text: Rotoehu water balance
+        href: articles/rotoehu-water-balance.html
     news:
       text: Changelog
       href: news/index.html
@@ -22,21 +75,3 @@ navbar:
         href: CONTRIBUTING.html
       - text: Code of conduct
         href: CODE_OF_CONDUCT.html
-home:
-  title: AEME - Aquatic Ecosytem Model Ensemble
-  sidebar:
-    structure: [links, license, community, citation, authors, dev, toc]
-articles:
-- title: Getting started
-  navbar: ~
-  contents:
-  - intro-aeme
-  - aeme-inputs
-  - setup-new-lake
-- title: Use cases
-  navbar: Use cases
-  contents:
-  - articles/reservoir-aeme
-  - articles/lernzmp-aeme
-  - articles/rotoehu-water-balance
-  - articles/glm-aed
