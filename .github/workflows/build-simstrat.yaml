@@ -250,7 +250,7 @@ jobs:
         run: |
           git clone --depth 1 "https://${TOKEN}@github.com/AquaticEcoDynamics/libaed-riparian" lib/libaed-riparian
           git clone --depth 1 "https://${TOKEN}@github.com/AquaticEcoDynamics/libaed-light" lib/libaed-lighting
-          git clone --depth 1 "https://${TOKEN}@github.com/AquaticEcoDynamics/libaed-dev" lib/libaed-dev
+          git clone "https://${TOKEN}@github.com/AquaticEcoDynamics/libaed-dev" lib/libaed-dev
           git -C lib/libaed-dev checkout 63103be69ad22e583b9437fd812336b259cf357d
 
       - name: Clone phreeqcrm (public)
