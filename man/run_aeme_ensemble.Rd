@@ -58,8 +58,8 @@ well as members that errored. Default \code{TRUE}. \code{FALSE} keeps them, \cod
 
 \item{keep_diag}{logical; keep the \code{diag} (diagnostic/scalar) and
 \code{sediment} sub-lists of each model's output (variables with dimensions other
-than time or depth x time, keyed by raw model names). Default \code{TRUE}; set to
-\code{FALSE} to save memory.}
+than time or depth x time, keyed by raw model names). Default \code{FALSE} to save
+memory.}
 
 \item{extra_vars}{character; for GLM-AED, which sediment, flux and diagnostic
 variables beyond the standard set to read from \code{output.nc}. \code{NULL}

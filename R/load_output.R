@@ -8,8 +8,8 @@
 #'
 #' @param keep_diag logical; keep the `diag` (diagnostic/scalar) and
 #' `sediment` sub-lists of each model's output (variables with dimensions other
-#' than time or depth x time, keyed by raw model names). Default `TRUE`; set to
-#' `FALSE` to save memory.
+#' than time or depth x time, keyed by raw model names). Default `FALSE` to save
+#' memory.
 #'
 #' @param extra_vars character; for GLM-AED, which sediment, flux and diagnostic
 #' variables beyond the standard set to read from `output.nc`. `NULL`

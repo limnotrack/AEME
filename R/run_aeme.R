@@ -49,7 +49,7 @@ run_aeme <- function(aeme, model, path, args = character(),
                      model_controls = NULL, 
                      verbose = getOption("AEME.inform", FALSE),
                      debug = FALSE, timeout = Inf, parallel = FALSE, ncores,
-                     check_output = FALSE, keep_diag = TRUE,
+                     check_output = FALSE, keep_diag = FALSE,
                      extra_vars = NULL, sed_layers = NULL,
                      zone_summary = FALSE) {
   
