@@ -69,7 +69,7 @@ env:
   LIBAED_LIGHT_REPO: AquaticEcoDynamics/libaed-light
   LIBAED_LIGHT_REF: main
   LIBAED_DEV_REPO: AquaticEcoDynamics/libaed-dev
-  LIBAED_DEV_REF: master
+  LIBAED_DEV_REF: 63103be69ad22e583b9437fd812336b259cf357d
   PHREEQCRM_REPO: usgs-coupled/phreeqcrm
 
   # -- AED_Tools is used ONLY for its ancillary/ pipeline (see the header
