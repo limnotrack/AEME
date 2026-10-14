@@ -38,7 +38,7 @@ the bottom. That is \code{level - depth} metres below the surface, with \code{le
 the modelled water level (\code{LKE_lvlwtr}) on each date, so it follows the
 surface as the level rises and falls. On a date when the level is below
 \code{depth} (the point would be above the surface) the value is \code{NA}. Ignored
-when \code{depth} is \code{NULL}. (Before AEME 0.4.0 \code{"bottom"} was measured from the
+when \code{depth} is \code{NULL}. (In AEME 0.4.0 and earlier \code{"bottom"} was measured from the
 basin's full depth, which only matches when the level equals that depth.)}
 
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a

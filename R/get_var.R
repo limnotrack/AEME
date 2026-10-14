@@ -17,7 +17,7 @@
 #'  the modelled water level (`LKE_lvlwtr`) on each date, so it follows the
 #'  surface as the level rises and falls. On a date when the level is below
 #'  `depth` (the point would be above the surface) the value is `NA`. Ignored
-#'  when `depth` is `NULL`. (Before AEME 0.4.0 `"bottom"` was measured from the
+#'  when `depth` is `NULL`. (In AEME 0.4.0 and earlier `"bottom"` was measured from the
 #'  basin's full depth, which only matches when the level equals that depth.)
 #' @param return_df logical; if TRUE, return a dataframe; if FALSE, return a
 #' list. Default is TRUE.

@@ -1,10 +1,10 @@
-# AEME 0.4.0
+# AEME 0.4.0.9000 (development version)
 
 ## Choosing which GLM-AED sediment, flux and diagnostic output to keep
 
 GLM-AED writes far more than the standard variables: sediment temperature and
 heat flux, sediment-water fluxes (lake-wide and by sediment zone), sediment
-pools and AED diagnostics. This release makes them easy to request, name and
+pools and AED diagnostics. This version makes them easy to request, name and
 use, e.g. from `aemetools` sensitivity analysis and calibration, without
 carrying the whole payload in every ensemble member.
 
@@ -149,6 +149,15 @@ carrying the whole payload in every ensemble member.
   a small ensemble is biased low even when it is reliable (about
   `(n - 1) * conf_int / (n + 1)` for `n` members); the documentation says how to
   read it.
+
+## GLM v4 outflow weir parameters
+
+* The `&outflow` block written for GLM v4 now includes `crest_width` (6) and
+  `crest_factor` (0.61), alongside `outflow_factor`, `seepage` and
+  `seepage_rate`. The same two values are set in the bundled `glm4.nml`
+  template.
+
+# AEME 0.4.0
 
 ## Parameter helpers moved from aemetools
 
