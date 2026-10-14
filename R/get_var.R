@@ -153,12 +153,7 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
                                        "); use_obs comparison is not supported for it.")))
       }
       gdf <- as.data.frame(variable)
-      if (!is.null(zone) && "nzones" %in% names(gdf)) {
-        gdf <- gdf[gdf$nzones %in% zone, , drop = FALSE]
-      }
-      if (!is.null(sed_layer) && "sed_layers" %in% names(gdf)) {
-        gdf <- gdf[gdf$sed_layers %in% sed_layer, , drop = FALSE]
-      }
+      gdf <- .filter_grouped_df(gdf, zone = zone, sed_layer = sed_layer)
       gdf$var_sim <- var_sim
       gdf$Model <- toggle_models(m, to = "display")
       if (remove_spin_up && "Date" %in% names(gdf)) {

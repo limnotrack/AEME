@@ -4,12 +4,26 @@
 
 GLM-AED writes far more than the standard variables: sediment temperature and
 heat flux, sediment-water fluxes (lake-wide and by sediment zone), sediment
-pools and AED diagnostics. `read_glm_output()` has always swept these into the
-`diag` / `sediment` sub-lists of the model output under their raw netCDF names;
-this release makes them easy to request, name and use, e.g. from `aemetools`
-sensitivity analysis and calibration, without carrying the whole payload in
-every ensemble member.
+pools and AED diagnostics. This release makes them easy to request, name and
+use, e.g. from `aemetools` sensitivity analysis and calibration, without
+carrying the whole payload in every ensemble member.
 
+* **Behaviour change.** `run_aeme()`, `run_aeme_ensemble()` and `load_output()`
+  now read only the standard variables (`vars_sim` and the lake fluxes) by
+  default; the extra GLM-AED output has to be requested with `extra_vars`.
+  Previously every variable in `output.nc` was loaded and stored on every run.
+  Loading after a run is about four times faster by default (0.6 s against 2.4 s
+  in a test lake) and the stored output is 3.3 MB instead of 18 MB. Use
+  `extra_vars = "all"` for the old behaviour. `read_glm_output()` and
+  `read_model_outputs()`, which read a file you point them at, still read
+  everything unless told otherwise.
+
+* `load_output()` gains `return_type`. `"output"` returns the output as a list
+  of `aeme_output` objects, one per model, without storing it on the `Aeme`
+  object, so extra output can be explored without being kept alongside the
+  output already stored. It is read the same way as the stored output
+  (simulation window, daily means, unit conversions). The default, `"aeme"`,
+  is as before.
 * New dataset `glm_extra_vars`: a registry giving these variables AEME names
   (`SED_temp`, `SED_hflux`, `SED_ztemp`, `SED_Fsed_oxy`, ... for sediment-zone
   variables; `SEDL_Fsed_oxy`, ... for the matching lake-wide series), labels and
@@ -18,17 +32,27 @@ every ensemble member.
   `check_var_in_output()`, `check_aeme_vars()` and `plot_*()`.
 * New `extra_vars` argument on `run_aeme()`, `run_aeme_ensemble()`,
   `load_output()`, `read_model_outputs()` and `read_glm_output()` to choose which
-  of those variables are read: `NULL` (default, as before) reads all, `"none"`
-  none, or a vector of names and/or the keywords `"sediment"` / `"diag"`.
-  Variables not requested are never read from `output.nc`. In a test lake this
-  cut the stored output from 18.9 MB to 3.5 MB per run, which adds up over an
-  ensemble. `run_aeme()` and `run_aeme_ensemble()` also now expose `keep_diag`.
+  of those variables are read: `"none"` (the default for the first three) reads
+  none, `"all"` reads every variable in the file, or give a vector of names
+  and/or the keywords `"sediment"` / `"diag"`. Variables not requested are never
+  read from `output.nc`. `run_aeme()` and `run_aeme_ensemble()` also now expose
+  `keep_diag` (default `TRUE`; `FALSE` drops the extras even if requested).
 * New `sed_layers` argument to keep only some sediment layers of `SED_temp`, and
   `zone_summary` to add an area-weighted lake-wide series for each sediment-zone
   variable (`<name>_lake`, using the time-varying zone area `zarea`; zones with no
   area are ignored). Naming a series such as `"SED_Fsed_oxy_lake"` in
   `extra_vars` builds just that series.
 * `get_var()` gains `zone` and `sed_layer` to subset sediment variables.
+* `plot_output()` now draws sediment-zone variables (and any other variable with
+  dimensions beyond time and depth) as a line plot with one line per zone and
+  layer, one panel per model, instead of erroring; `plot_model_output()` accepts
+  the AEME names in `glm_extra_vars` and both take `zone` and `sed_layer`, so
+  `plot_output(aeme, "SED_Fsed_oxy", zone = 1)` works like any other variable.
+  Axis labels come from the registry. The base-graphics backend, and several
+  variables in one call, still give a clear error for these variables.
+* `plot_output()` and `check_if_summary()` now find variables held in the `diag`
+  / `sediment` sub-lists (for example `SED_Fsed_oxy_lake`) rather than treating
+  them as missing.
 * `get_output_vars()` labels these variables from the registry.
 * Fixed `check_var_in_output()` reporting variables held in the `diag` /
   `sediment` sub-lists as missing, and sediment-zone variables (`*_Z`) requested

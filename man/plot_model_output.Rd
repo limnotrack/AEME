@@ -11,7 +11,9 @@ plot_model_output(
   ens_n = 1,
   remove_spin_up = TRUE,
   var_lims = NULL,
-  ylim = NULL
+  ylim = NULL,
+  zone = NULL,
+  sed_layer = NULL
 )
 }
 \arguments{
@@ -42,6 +44,10 @@ depth x time plot. Default \code{NULL} (ranged to the data).}
 
 \item{ylim}{numeric vector of length 2; y-axis limits for a line plot.
 Default \code{NULL} (ranged to the data).}
+
+\item{zone, sed_layer}{integer; for a variable with an \code{nzones} and/or
+\code{sed_layers} dimension (GLM-AED sediment output), plot only these sediment
+zones and/or sediment layers. \code{NULL} (default) plots all. See \code{\link[=get_var]{get_var()}}.}
 }
 \value{
 A ggplot2 object (the long-format data frame instead, with a
@@ -64,9 +70,11 @@ GLM-AED \verb{(nzones, time)} AED flux variable.
 \details{
 For observation overlay, faceting across multiple models/variables at
 once, or the base-graphics backend, use \code{\link[=plot_output]{plot_output()}} instead -- this
-function is intentionally minimal, and does not (yet) support
-\code{aeme_grouped_var} variables when called on an \code{Aeme} object through
-\code{\link[=plot_output]{plot_output()}}/\code{\link[=plot_output_base]{plot_output_base()}}.
+function is intentionally minimal. \code{\link[=plot_output]{plot_output()}} draws the same line plot
+for \code{aeme_grouped_var} variables (ggplot2 backend).
+
+GLM-AED extra variables can be given by their AEME name from
+\link{glm_extra_vars} (e.g. \code{"SED_Fsed_oxy"}) or their raw netCDF name.
 }
 \examples{
 \dontrun{

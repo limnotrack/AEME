@@ -82,3 +82,21 @@ plot.aeme_grouped_var <- function(x, var_sim = NULL, ylim = NULL, ...) {
   df <- as.data.frame(x)
   .plot_grouped_ggplot(df, var_sim = var_sim, ylim = ylim)
 }
+
+#' Subset a grouped variable's long-format data frame by zone and/or sediment
+#' layer
+#'
+#' @param df data.frame; from [as.data.frame.aeme_grouped_var()].
+#' @param zone,sed_layer integer or `NULL`; values of the `nzones` and
+#'   `sed_layers` columns to keep. Ignored if the column is not in `df`.
+#' @return `df`, filtered.
+#' @noRd
+.filter_grouped_df <- function(df, zone = NULL, sed_layer = NULL) {
+  if (!is.null(zone) && "nzones" %in% names(df)) {
+    df <- df[df$nzones %in% zone, , drop = FALSE]
+  }
+  if (!is.null(sed_layer) && "sed_layers" %in% names(df)) {
+    df <- df[df$sed_layers %in% sed_layer, , drop = FALSE]
+  }
+  df
+}

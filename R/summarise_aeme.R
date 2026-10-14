@@ -239,8 +239,9 @@ check_if_summary <- function(aeme, model, var_sim, ens_n = 1) {
 
   # Check if var_sim is in output
   chk <- sapply(model, \(m) {
-    dat <- outp[[ens_lab]][[m]][[var_sim]]
-    if (is.vector(dat)) {
+    # also finds variables held in the diag/sediment sub-lists
+    dat <- .get_output_var(outp[[ens_lab]][[m]], var_sim)
+    if (is.null(dat) || is.vector(dat) || inherits(dat, "aeme_grouped_var")) {
       return(FALSE)
     }
     ncol(dat) == 2

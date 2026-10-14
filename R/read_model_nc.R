@@ -18,7 +18,7 @@
 
 read_model_nc <- function(aeme, model, path, lake_dir = NULL, vars_sim, 
                           incl_fluxes = TRUE, output_hour = 0, 
-                          remove_spin_up = FALSE, extra_vars = NULL,
+                          remove_spin_up = FALSE, extra_vars = "none",
                           sed_layers = NULL, zone_summary = FALSE) {
   
   model <- check_model(model)

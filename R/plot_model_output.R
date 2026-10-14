@@ -15,9 +15,11 @@
 #'
 #' For observation overlay, faceting across multiple models/variables at
 #' once, or the base-graphics backend, use [plot_output()] instead -- this
-#' function is intentionally minimal, and does not (yet) support
-#' `aeme_grouped_var` variables when called on an `Aeme` object through
-#' [plot_output()]/[plot_output_base()].
+#' function is intentionally minimal. [plot_output()] draws the same line plot
+#' for `aeme_grouped_var` variables (ggplot2 backend).
+#'
+#' GLM-AED extra variables can be given by their AEME name from
+#' [glm_extra_vars] (e.g. `"SED_Fsed_oxy"`) or their raw netCDF name.
 #'
 #' @param x either an `Aeme` object, or a list as returned by
 #'   [read_glm_output()]/[read_gotm_output()]/[read_simstrat_output()]/
@@ -40,6 +42,9 @@
 #'   depth x time plot. Default `NULL` (ranged to the data).
 #' @param ylim numeric vector of length 2; y-axis limits for a line plot.
 #'   Default `NULL` (ranged to the data).
+#' @param zone,sed_layer integer; for a variable with an `nzones` and/or
+#'   `sed_layers` dimension (GLM-AED sediment output), plot only these sediment
+#'   zones and/or sediment layers. `NULL` (default) plots all. See [get_var()].
 #'
 #' @return A ggplot2 object (the long-format data frame instead, with a
 #'   warning, for a grouped variable that has no `Date` dimension at all).
@@ -60,7 +65,7 @@
 #' }
 plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
                               remove_spin_up = TRUE, var_lims = NULL,
-                              ylim = NULL) {
+                              ylim = NULL, zone = NULL, sed_layer = NULL) {
 
   if (inherits(x, "Aeme")) {
     aeme <- check_aeme(x)
@@ -82,7 +87,7 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
     if (is.null(out_chk)) {
       cli::cli_abort("No output found for model {.val {model}} (ensemble {.val {ens_lab}}) -- has {.fn run_aeme} been called?")
     }
-    if (!var_sim %in% .output_var_names(out_chk)) {
+    if (is.null(.get_output_var(out_chk, var_sim))) {
       other_vars <- setdiff(.output_var_names(out_chk), c("Date", "LKE_depths", "ok", "reason"))
       cli::cli_abort(c(
         "x" = "{.val {var_sim}} not found in output for model {.val {model}}.",
@@ -97,7 +102,8 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
     # than re-deriving any of that here.
     df <- get_var(aeme = aeme, model = model, var_sim = var_sim,
                   ens_n = ens_n, return_df = TRUE,
-                  remove_spin_up = remove_spin_up)
+                  remove_spin_up = remove_spin_up,
+                  zone = zone, sed_layer = sed_layer)
 
     if (!"depth" %in% names(df)) {
       return(.plot_grouped_ggplot(df, var_sim = var_sim, ylim = ylim))
@@ -107,7 +113,8 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
                             ylim = ylim))
   }
 
-  .plot_model_output_list(x, var_sim = var_sim, var_lims = var_lims, ylim = ylim)
+  .plot_model_output_list(x, var_sim = var_sim, var_lims = var_lims, ylim = ylim,
+                          zone = zone, sed_layer = sed_layer)
 }
 
 #' Append a "raw output" subtitle to a ggplot2 object (or each plot in a
@@ -171,7 +178,9 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
     return(df)
   }
 
-  lab <- if (!is.null(raw_label)) raw_label else var_sim
+  lab <- raw_label
+  if (is.null(lab)) lab <- .glm_extra_label(var_sim)
+  if (is.null(lab)) lab <- var_sim
   group_dims <- setdiff(names(df), c("Date", "value", "var_sim", "Model"))
   ylim_layer <- if (!is.null(ylim)) ggplot2::coord_cartesian(ylim = ylim) else NULL
 
@@ -184,12 +193,22 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
     return(p)
   }
 
-  df$group <- do.call(paste, c(df[group_dims], sep = " / "))
+  # readable names for the sediment dimensions; others keep their own name
+  dim_lab <- c(nzones = "zone", sed_layers = "sediment layer")
+  dim_txt <- ifelse(group_dims %in% names(dim_lab), dim_lab[group_dims],
+                    group_dims)
+  if (length(group_dims) == 1) {
+    df$group <- as.character(df[[group_dims]])
+  } else {
+    # several dimensions: say which is which in each legend entry
+    df$group <- do.call(paste, c(Map(\(d, nm) paste(nm, df[[d]]),
+                                    group_dims, dim_txt), sep = ", "))
+  }
   ggplot2::ggplot(df, ggplot2::aes(Date, value, colour = group)) +
     ggplot2::geom_line() +
     ylim_layer +
     ggplot2::labs(y = lab, title = lab,
-                 colour = paste(group_dims, collapse = ", ")) +
+                 colour = if (length(group_dims) == 1) dim_txt else NULL) +
     ggplot2::theme_bw()
 }
 
@@ -200,11 +219,12 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
 #' @param out list; a raw model output list (see [plot_model_output()]).
 #' @noRd
 .plot_model_output_list <- function(out, var_sim, var_lims = NULL,
-                                    ylim = NULL) {
+                                    ylim = NULL, zone = NULL,
+                                    sed_layer = NULL) {
   if (!is_aeme_output(out)) {
     cli::cli_abort("{.arg x} must be an {.cls Aeme} object, or the classed list returned by {.fn read_glm_output}/{.fn read_gotm_output}/{.fn read_simstrat_output}/{.fn read_dy_output}/{.fn read_model_outputs} ({.cls aeme_output}/{.cls aeme_output_raw}).")
   }
-  if (!var_sim %in% .output_var_names(out)) {
+  if (is.null(.get_output_var(out, var_sim))) {
     other_vars <- setdiff(.output_var_names(out), c("Date", "LKE_depths", "ok", "reason"))
     cli::cli_abort(c(
       "x" = "{.val {var_sim}} not found in output.",
@@ -229,7 +249,8 @@ plot_model_output <- function(x, var_sim, model = NULL, ens_n = 1,
   }
 
   if (inherits(variable, "aeme_grouped_var")) {
-    gdf <- as.data.frame(variable)
+    gdf <- .filter_grouped_df(as.data.frame(variable), zone = zone,
+                              sed_layer = sed_layer)
     gdf$var_sim <- var_sim
     gdf$Model <- "Output"
     p <- .plot_grouped_ggplot(gdf, var_sim = var_sim, ylim = ylim,

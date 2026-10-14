@@ -78,7 +78,7 @@ run_aeme_ensemble <- function(aeme, model, param_sets, path,
                               parallel = FALSE, ncore = NULL,
                               model_controls = NULL, timeout = Inf,
                               drop_incomplete = TRUE, keep_diag = TRUE,
-                              extra_vars = NULL, sed_layers = NULL,
+                              extra_vars = "none", sed_layers = NULL,
                               zone_summary = FALSE) {
 
   aeme <- check_aeme(aeme)
