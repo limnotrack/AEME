@@ -1592,15 +1592,15 @@ setMethod("show", "Aeme", function(object) {
 
 #' Summarise an Aeme object
 #'
-#' This method summarises the Aeme output.
+#' This method summarises the Aeme output with [summarise_aeme()] (default
+#' arguments).
 #'
 #' @title Summarise an Aeme object
 #' @param object An Aeme object.
-#' @return Aeme object.
+#' @return An [AemeSummary][AemeSummary-class] object.
 #' @export
 setMethod("summary", "Aeme", function(object) {
-  aeme_summ <- summarise_aeme(object)
-  return(aeme_summ)
+  summarise_aeme(object)
 })
 
 #' Plot an Aeme object

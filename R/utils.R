@@ -318,6 +318,14 @@ check_hypsograph <- function(hypsograph, aeme = NULL) {
 #' @importFrom methods slotNames
 #' @export
 check_aeme <- function(aeme) {
+  if (inherits(aeme, "AemeSummary")) {
+    cli::cli_abort(
+      c("{.arg aeme} is an {.cls AemeSummary}, which holds summarised output only.",
+        "i" = "It cannot be built, run or plotted as an {.cls Aeme}. Use
+               {.fn plot} or {.fn get_var} on it, or {.fn output} for the table."),
+      class = "aeme_error_aeme_summary"
+    )
+  }
   if (!inherits(aeme, "Aeme")) {
     cli::cli_abort(
       "{.arg aeme} must be an {.cls Aeme} object, not {.cls {class(aeme)[1]}}.",

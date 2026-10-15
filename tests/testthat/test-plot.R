@@ -167,13 +167,16 @@ test_that("plotting model summary output works", {
   get_output_vars(aeme, model)
   aeme_summ <- summary(aeme)
 
-  outp <- output(aeme_summ)
-  testthat::expect_true(is.data.frame(outp$seasonal_profiles))
-  testthat::expect_true(is.data.frame(outp$model_obs_df))
-  p1 <- plot_output(aeme = aeme_summ, model = model, var_sim = "HYD_temp")
+  testthat::expect_s4_class(aeme_summ, "AemeSummary")
+  testthat::expect_true(is.data.frame(output(aeme_summ)))
+  p1 <- plot(aeme_summ, "HYD_temp")
   testthat::expect_true(ggplot2::is_ggplot(p1))
-  p2 <- plot_output(aeme = aeme_summ, model = model, var_sim = "HYD_thmcln")
+  p2 <- plot(aeme_summ, "HYD_thmcln")
   testthat::expect_true(ggplot2::is_ggplot(p2))
+  # a summary is not an Aeme
+  testthat::expect_error(plot_output(aeme = aeme_summ, model = model,
+                                     var_sim = "HYD_temp"),
+                         class = "aeme_error_aeme_summary")
 })
 
 

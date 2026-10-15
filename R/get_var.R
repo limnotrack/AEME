@@ -1,6 +1,10 @@
 #' Get variable from aeme
 #'
 #' @inheritParams build_aeme
+#' @param aeme Aeme object, or an [AemeSummary][AemeSummary-class]. For a
+#'   summary only `model` and `var_sim` apply, and the result has the surface and
+#'   bottom series (`layer`) and every `stat`; filter [output()] for more
+#'   control.
 #' @inheritParams plot_output
 #' @param var_sim character; variable in the AEME format (e.g. "HYD_temp").
 #' @param use_obs logical; if TRUE, use observations to extract the variable at
@@ -42,7 +46,11 @@ get_var <- function(aeme, model, var_sim, depth = NULL,
                     depth_ref = c("surface", "bottom"), return_df = TRUE,
                     ens_n = 1, use_obs = FALSE, remove_spin_up = TRUE,
                     cumulative = FALSE, zone = NULL, sed_layer = NULL) {
-  
+
+  if (is_aeme_summary(aeme)) {
+    return(.get_var_summary_obj(aeme, model = if (missing(model)) NULL else model,
+                                var_sim = var_sim))
+  }
   aeme <- check_aeme(aeme)
   if (missing(model)) {
     model <- list_models(aeme)

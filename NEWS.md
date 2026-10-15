@@ -1,5 +1,42 @@
 # AEME 0.4.0.9000 (development version)
 
+## `AemeSummary`: a lightweight summary for dashboards
+
+* New S4 class `AemeSummary`, made by `summarise_aeme()` (now exported, and also
+  what `summary(<Aeme>)` returns). It holds daily surface and bottom series for
+  every depth-resolved variable (split at `HYD_epidep`, else `HYD_thmcln`, else
+  half the water column), variables without depth, the observations, daily
+  meteo/inflow/outflow/water-balance forcing, the hypsograph, the parameters and
+  a `meta` list. There is no model configuration, so it cannot be built or run.
+  With several ensemble members, `stats` (mean, min, max, quantiles) summarise
+  them, and `keep_members = TRUE` keeps each member too. `profiles = TRUE` adds
+  seasonal mean profiles.
+* The `output` slot is a long table (`Date`, `model`, `var_aeme`, `layer`,
+  `stat`, `value`). Accessors `lake()`, `time()`, `observations()`, `output()`
+  and `parameters()` work on it, with new `forcing()`, `profiles()`, `models()`
+  and `hypsograph()`. `get_var()` and `plot()` accept it.
+* `write_aeme_summary()` / `read_aeme_summary()` store it as `rds`, `parquet`
+  or (write only) `json`.
+* **Behaviour change.** The old `summarise_aeme()` replaced an `Aeme`'s output
+  with 2-column surface/bottom matrices, recognised by `check_if_summary()`.
+  That is gone (as are `get_var_summary()` and `plot_var_summary()`): an `Aeme`
+  always holds full output.
+
+## Consistent structure for the `output` slot
+
+* The layout of `output()` (`n_members` plus one `ens_NNN` list per member, each
+  named by model) is now built and read through shared internal helpers instead
+  of repeated `grepl("ens", ...)` and hand-written model lists. `n_members` is
+  always counted from the members present, and members are matched by exact
+  name (`^ens_[0-9]+$`).
+* `Aeme` validity now checks `output`: `n_members` must be a single number and
+  each member a list of `NULL`/lists named by a known model.
+* `remove_output()` and a new `Aeme` object share one empty-output form
+  (`list(n_members = 0L)`); `run_aeme_ensemble()` and `read_aeme_from_files()`
+  store every model key (`NULL` when absent), as `load_output()` already did.
+* The `output` slot documentation now describes the member structure and
+  includes `simstrat_aed`.
+
 ## Choosing which GLM-AED sediment, flux and diagnostic output to keep
 
 GLM-AED writes far more than the standard variables: sediment temperature and
