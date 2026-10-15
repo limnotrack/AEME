@@ -94,6 +94,8 @@ run_aeme <- function(aeme, model, path, args = character(),
     cli::cli_abort(c("x" = "Model folder(s) do not exist:
     {paste0(missing_model_dirs, collapse = ', ')}"))
   }
+  aeme <- aeme |> 
+    remove_output()
   
   # Delete previous model output if it exists
   # model_output <- get_model_outfile(aeme = aeme, model = model)

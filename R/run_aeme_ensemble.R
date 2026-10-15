@@ -210,12 +210,12 @@ assemble_ens_output <- function(aeme, mod_list, model) {
     cli::cli_abort("No ensemble member ran successfully.")
   }
 
-  outp <- list()
+  outp <- .empty_output()
   for (i in seq_along(keep)) {
-    outp[[sprintf("ens_%03d", i)]] <- stats::setNames(
+    mods <- stats::setNames(
       lapply(model, function(m) mod_list[[m]][[keep[i]]]), model)
+    outp <- .set_member(outp, ens_n = i, mods = mods)
   }
-  outp$n_members <- length(keep)
 
   labels <- names(mod_list[[1]])
   if (!is.null(labels)) attr(outp, "realisation") <- labels[keep]

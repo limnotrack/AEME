@@ -459,11 +459,10 @@ migrate_aeme <- function(aeme) {
     aeme@configuration <- cfg
   }
 
-  # -- output: NULL placeholder per model + integer n_members --------------
+  # -- output: integer n_members, counted from the members present ----------
   outp <- aeme@output
   if (is.list(outp)) {
-    if (is.null(outp$n_members)) outp$n_members <- 0L
-    outp$n_members <- as.integer(outp$n_members)
+    outp$n_members <- .count_members(outp)
     for (m in models) if (!m %in% names(outp)) outp[m] <- list(NULL)
     aeme@output <- outp
   }

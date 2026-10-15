@@ -79,11 +79,13 @@
 #' \code{gotm_wet}/\code{simstrat_aed2} each have their own -- see
 #' \code{\link{get_wbal_param}}.
 #' }
-#' @slot output A list representing output information. \itemize{
-#' \item \code{dy_cd}: list; DYRESM-CAEDYM output.
-#' \item \code{glm_aed}: list; GLM-AED output.
-#' \item \code{gotm_wet}: list; GOTM-WET output.
-#' \item \code{simstrat_aed2}: list; Simstrat-AED2 output.
+#' @slot output A list of model output. \itemize{
+#' \item \code{n_members}: integer; number of ensemble members.
+#' \item \code{ens_001}, \code{ens_002}, ...: one list per ensemble member,
+#' each with an element per model that is either \code{NULL} or an
+#' \code{aeme_output} list: \code{dy_cd} (DYRESM-CAEDYM), \code{glm_aed}
+#' (GLM-AED), \code{gotm_wet} (GOTM-WET), \code{simstrat_aed2}
+#' (Simstrat-AED2) and \code{simstrat_aed} (Simstrat-AED).
 #' }
 #' @slot parameters A dataframe representing model parameters: updates (e.g.
 #'   calibrated values) applied on top of the model `configuration` when the
@@ -140,9 +142,30 @@ setValidity("Aeme", function(object) {
   if (!is.list(object@water_balance))
     errors <- c(errors, "@water_balance must be a list")
   
-  if (!is.list(object@output))
+  if (!is.list(object@output)) {
     errors <- c(errors, "@output must be a list")
-  
+  } else {
+    outp <- object@output
+    nm <- outp[["n_members"]]
+    if (!is.null(nm) && !(is.numeric(nm) && length(nm) == 1L && !is.na(nm)))
+      errors <- c(errors, "@output$n_members must be a single number")
+    for (ens in .output_members(outp)) {
+      member <- outp[[ens]]
+      if (!is.list(member)) {
+        errors <- c(errors, paste0("@output$", ens, " must be a list"))
+        next
+      }
+      bad <- setdiff(names(member), .aeme_model_codes)
+      if (length(bad) > 0)
+        errors <- c(errors, paste0("@output$", ens, " has unknown model(s): ",
+                                   paste(bad, collapse = ", ")))
+      not_list <- names(Filter(function(x) !is.null(x) && !is.list(x), member))
+      if (length(not_list) > 0)
+        errors <- c(errors, paste0("@output$", ens, "$",
+                                   not_list, " must be a list or NULL"))
+    }
+  }
+
   if (!is.data.frame(object@parameters))
     errors <- c(errors, "@parameters must be a data.frame")
   
@@ -369,14 +392,7 @@ aeme_constructor <- function(
     }
   }
   if (missing(output)) {
-    output <- list(
-      n_members = 0,
-      dy_cd = NULL,
-      glm_aed = NULL,
-      gotm_wet = NULL,
-      simstrat_aed2 = NULL,
-      simstrat_aed = NULL
-    )
+    output <- .empty_output()
   }
   param_names <- param_colnames(incl_opt = FALSE)
   if (missing(parameters)) {
@@ -1440,13 +1456,16 @@ setMethod("show", "Aeme", function(object) {
   is_present     <- function(x) if (is.data.frame(x)) cli::col_green("Present") else cli::col_red("Absent")
   
   # Ensemble output counts
-  ens_names <- names(outp)[grepl("ens", names(outp))]
-  n_dyresm  <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["dy_cd"]])),   integer(1))
-  n_glm     <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["glm_aed"]])), integer(1))
-  n_gotm    <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["gotm_wet"]])), integer(1))
-  n_simstrat <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["simstrat_aed2"]])), integer(1))
-  n_simstrat_aed <- vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][["simstrat_aed"]])), integer(1))
-  if (outp$n_members == 0) n_dyresm <- n_glm <- n_gotm <- n_simstrat <- n_simstrat_aed <- 0L
+  ens_names <- .output_members(outp)
+  n_with <- function(m) {
+    vapply(ens_names, \(n) as.integer(!is.null(outp[[n]][[m]])), integer(1))
+  }
+  n_dyresm       <- n_with("dy_cd")
+  n_glm          <- n_with("glm_aed")
+  n_gotm         <- n_with("gotm_wet")
+  n_simstrat     <- n_with("simstrat_aed2")
+  n_simstrat_aed <- n_with("simstrat_aed")
+  if (length(ens_names) == 0) n_dyresm <- n_glm <- n_gotm <- n_simstrat <- n_simstrat_aed <- 0L
   
   # Inflow summary
   n_inflows    <- length(inf$data)

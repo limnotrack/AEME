@@ -187,13 +187,9 @@ read_aeme_from_files <- function(path) {
           })
           names(mods) <- model
           
-          ens_lab <- format_ens_label(ens_n = ens_n)
-          
-          outp[[ens_lab]] <- mods
+          outp <- .set_member(outp, ens_n = ens_n, mods = mods)
         }
-        
-        outp$n_members <- sum(grepl("ens", names(outp)))
-        
+
         methods::slot(aeme, slot_name) <- outp
       }
     } else if (slot_name == "configuration") {
