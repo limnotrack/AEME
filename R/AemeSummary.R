@@ -612,7 +612,9 @@ setMethod("plot", "AemeSummary", function(x, y, ...) {
   central <- if ("value" %in% df$stat) "value" else "mean"
   line <- df[df$stat == central, , drop = FALSE]
   p <- ggplot2::ggplot()
+  labs <- ggplot2::labs(x = "Date", y = y, colour = "Layer")
   if (all(c("min", "max") %in% df$stat)) {
+    labs <- ggplot2::labs(x = "Date", y = y, colour = "Layer", fill = "Layer")
     rng <- merge(df[df$stat == "min", c("Date", "Model", "layer", "value")],
                  df[df$stat == "max", c("Date", "Model", "layer", "value")],
                  by = c("Date", "Model", "layer"), suffixes = c("_min", "_max"))
@@ -625,7 +627,7 @@ setMethod("plot", "AemeSummary", function(x, y, ...) {
     ggplot2::geom_line(data = line,
                        ggplot2::aes(x = Date, y = value, colour = layer)) +
     ggplot2::facet_wrap(~Model, ncol = 1) +
-    ggplot2::labs(x = "Date", y = y, colour = "Layer", fill = "Layer") +
+    labs +
     ggplot2::theme_bw()
 })
 
