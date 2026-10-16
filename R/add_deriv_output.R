@@ -424,156 +424,100 @@ epi_idx <- function(depths_col, epi_val) {
 }
 
 
+#' Annual, epilimnetic mean of a depth-resolved variable
+#'
+#' The TLI protocol derives each trophic level index from the annual average of
+#' the measured variable, which deseasonalises the data. The epilimnetic mean
+#' is taken at each time step first, then averaged over the (hydrological) year
+#' and held on every time step of that year.
+#' @param out_list model output list.
+#' @param var character; name of a depth-resolved variable in `out_list`.
+#' @noRd
+tli_annual_epi <- function(out_list, var) {
+  depths <- out_list$LKE_depths
+  epi    <- out_list$HYD_epidep
+  x      <- out_list[[var]]
+  epi_mean <- safe_apply(ncol(depths), function(c) {
+    idx <- epi_idx(depths[, c], epi[c])
+    mean(x[idx, c], na.rm = TRUE)
+  })
+  tli_annual(out_list, epi_mean)
+}
+
+#' Annual mean of a per-time-step vector for the TLI
+#' @noRd
+tli_annual <- function(out_list, x) {
+  date <- out_list$Date
+  if (is.null(date) || length(date) != length(x)) {
+    date <- rep(as.Date("2000-07-01"), length(x))
+  }
+  annual_mean_by_year(as.vector(x), date)
+}
+
 #' TLI chlorophyll-a calculation function
 #' @noRd
 calc_LKE_tlic <- function(out_list, hyps) {
   req_vars <- c("PHY_tchla", "LKE_depths", "HYD_epidep")
-  var_check <- check_vars(out_list, req_vars)
-  if (!var_check) {
+  if (!check_vars(out_list, req_vars)) {
     return(NULL)
   }
-    
-  depths <- out_list$LKE_depths
-  epi    <- out_list$HYD_epidep
-  chla   <- out_list$PHY_tchla
-  
-  safe_apply(ncol(depths), function(c) {
-    idx <- epi_idx(depths[, c], epi[c])
-    calc_tli_chla(mean(chla[idx, c], na.rm = TRUE))
-  })
+  calc_tli_chla(tli_annual_epi(out_list, "PHY_tchla"))
 }
 
 #' TLI total nitrogen calculation function
 #' @noRd
 calc_LKE_tlin <- function(out_list, hyps) {
   req_vars <- c("NIT_tn", "LKE_depths", "HYD_epidep")
-  var_check <- check_vars(out_list, req_vars)
-  if (!var_check) {
+  if (!check_vars(out_list, req_vars)) {
     return(NULL)
   }
-  depths <- out_list$LKE_depths
-  epi    <- out_list$HYD_epidep
-  tn     <- out_list$NIT_tn
-  
-  safe_apply(ncol(depths), function(c) {
-    idx <- epi_idx(depths[, c], epi[c])
-    calc_tli_n(mean(tn[idx, c], na.rm = TRUE))
-  })
+  calc_tli_n(tli_annual_epi(out_list, "NIT_tn"))
 }
 
 #' TLI total phosphorus calculation function
 #' @noRd
 calc_LKE_tlip <- function(out_list, hyps) {
   req_vars <- c("PHS_tp", "LKE_depths", "HYD_epidep")
-  var_check <- check_vars(out_list, req_vars)
-  if (!var_check) {
+  if (!check_vars(out_list, req_vars)) {
     return(NULL)
   }
-  depths <- out_list$LKE_depths
-  epi    <- out_list$HYD_epidep
-  tp     <- out_list$PHS_tp
-  
-  safe_apply(ncol(depths), function(c) {
-    idx <- epi_idx(depths[, c], epi[c])
-    calc_tli_p(mean(tp[idx, c], na.rm = TRUE))
-  })
+  calc_tli_p(tli_annual_epi(out_list, "PHS_tp"))
 }
 
 #' TLI Secchi depth calculation function
 #' @noRd
 calc_LKE_tlise <- function(out_list, hyps) {
   secchi <- out_list$LKE_photic
-  
-  safe_apply(length(secchi), function(c) {
-    calc_tli_secchi(secchi[c])
-  })
+  calc_tli_secchi(tli_annual(out_list, secchi))
 }
 
 #' TLI 3 calculation function
 #' @noRd
 calc_LKE_tli3 <- function(out_list, hyps) {
   req_vars <- c("PHY_tchla", "NIT_tn", "PHS_tp", "LKE_depths", "HYD_epidep")
-  var_check <- check_vars(out_list, req_vars)
-  if (!var_check) {
+  if (!check_vars(out_list, req_vars)) {
     return(NULL)
   }
-  depths <- out_list$LKE_depths
-  epi    <- out_list$HYD_epidep
-  chla   <- out_list$PHY_tchla
-  tn     <- out_list$NIT_tn
-  tp     <- out_list$PHS_tp
-  
-  safe_apply(ncol(depths), function(c) {
-    idx <- epi_idx(depths[, c], epi[c])
-    calc_tli3(
-      mean(chla[idx, c], na.rm = TRUE),
-      mean(tn[idx, c], na.rm = TRUE),
-      mean(tp[idx, c], na.rm = TRUE)
-    )
-  })
+  calc_tli3(
+    chla = tli_annual_epi(out_list, "PHY_tchla"),
+    tn   = tli_annual_epi(out_list, "NIT_tn"),
+    tp   = tli_annual_epi(out_list, "PHS_tp")
+  )
 }
 
 #' TLI 4 calculation function
 #' @noRd
 calc_LKE_tli4 <- function(out_list, hyps) {
   req_vars <- c("PHY_tchla", "NIT_tn", "PHS_tp", "LKE_photic",
-                 "LKE_depths", "HYD_epidep")
-  var_check <- check_vars(out_list, req_vars)
-  if (!var_check) {
+                "LKE_depths", "HYD_epidep")
+  if (!check_vars(out_list, req_vars)) {
     return(NULL)
   }
-  depths <- out_list$LKE_depths
-  epi    <- out_list$HYD_epidep
-  chla   <- out_list$PHY_tchla
-  tn     <- out_list$NIT_tn
-  tp     <- out_list$PHS_tp
-  secchi <- out_list$LKE_photic
-  
-  safe_apply(ncol(depths), function(c) {
-    idx <- epi_idx(depths[, c], epi[c])
-    calc_tli4(
-      mean(chla[idx, c], na.rm = TRUE),
-      mean(tn[idx, c], na.rm = TRUE),
-      mean(tp[idx, c], na.rm = TRUE),
-      secchi[c]
-    )
-  })
-}
-
-#' TLI calculation functions
-#' @noRd
-calc_tli_module <- function(out_list, hyps) {
-  needed <- c("PHS_tp", "NIT_tn", "PHY_tchla", "HYD_epidep", "LKE_photic")
-  if (!all(needed %in% names(out_list))) return(NULL)
-  
-  depths <- out_list[["LKE_depths"]]
-  epidep <- out_list[["HYD_epidep"]]
-  
-  res <- lapply(seq_len(ncol(depths)), function(c) {
-    idx <- get_epi(depths[, c], epidep[c])
-    
-    chla   <- mean(out_list$PHY_tchla[idx, c], na.rm = TRUE)
-    tn     <- mean(out_list$NIT_tn[idx, c], na.rm = TRUE)
-    tp     <- mean(out_list$PHS_tp[idx, c], na.rm = TRUE)
-    secchi <- out_list$LKE_photic[c]
-    
-    data.frame(
-      tli_c     = calc_tli_chla(chla),
-      tli_n     = calc_tli_n(tn),
-      tli_p     = calc_tli_p(tp),
-      tli_secchi = calc_tli_secchi(secchi),
-      tli_3     = calc_tli3(chla, tn, tp),
-      tli_4     = calc_tli4(chla, tn, tp, secchi)
-    )
-  }) |> dplyr::bind_rows()
-  
-  list(
-    LKE_tlic = res$tli_c,
-    LKE_tlin = res$tli_n,
-    LKE_tlip = res$tli_p,
-    LKE_tlise = res$tli_secchi,
-    LKE_tli3 = res$tli_3,
-    LKE_tli4 = res$tli_4
+  calc_tli4(
+    chla   = tli_annual_epi(out_list, "PHY_tchla"),
+    tn     = tli_annual_epi(out_list, "NIT_tn"),
+    tp     = tli_annual_epi(out_list, "PHS_tp"),
+    secchi = tli_annual(out_list, out_list$LKE_photic)
   )
 }
 

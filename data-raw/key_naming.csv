@@ -40,7 +40,7 @@
 "LKE_photic","","","","","","","","Euphotic depth","Euphotic_depth_m","Euphotic~depth~(m)","m","1","","FALSE","NA","0","","euphotic depth|photic|LKE_photic"
 "LKE_photich","","","","","","","","Euphotic depth","Euphotic_depth_m","Euphotic~depth~(m)","m","1","","FALSE","NA","0","","euphotic depth high|photich|LKE_photich"
 "LKE_tlic","","","","","","","","Trophic Level Index Chlorophyll-a","Trophic_Level_Index_chlorophyll_a","Trophic~Level~Index~chlorophyll-a","1","1","","TRUE","PHY_tchla;HYD_epidep","0","","trophic level index chlorophyll|TLI_chla|LKE_tlic"
-"LKE_tlin","","","","","","","","Trophic Level Index Total Nitrogen","Trophic_Level_Index_total_nitrogen","Trophic~Level~Index~TN","1","1","","TRUE","PHS_tn;HYD_epidep","0","","trophic level index total nitrogen|TLI_TN|LKE_tlin"
+"LKE_tlin","","","","","","","","Trophic Level Index Total Nitrogen","Trophic_Level_Index_total_nitrogen","Trophic~Level~Index~TN","1","1","","TRUE","NIT_tn;HYD_epidep","0","","trophic level index total nitrogen|TLI_TN|LKE_tlin"
 "LKE_tlip","","","","","","","","Trophic Level Index Total Phosphorus","Trophic_Level_Index_total_phosphorus","Trophic~Level~Index~TP","1","1","","TRUE","PHS_tp;HYD_epidep","0","","trophic level index total phosphorus|TLI_TP|LKE_tlip"
 "LKE_tlise","","","","","","","","Trophic Level Index Secchi depth","Trophic_Level_Index_secchi_depth","Trophic~Level~Index~secchi~depth","1","1","","TRUE","LKE_photic","0","","trophic level index secchi|TLI_Secchi|LKE_tlise"
 "LKE_tli3","","","","","","","","Trophic Level Index 3","Trophic_Level_Index_3","Trophic~Level~Index~3","1","1","","TRUE","PHS_tp;NIT_tn;PHY_tchla;HYD_epidep","0","","trophic level index 3|TLI3|LKE_tli3"

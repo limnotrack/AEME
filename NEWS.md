@@ -1,5 +1,21 @@
 # AEME 0.4.0.9000 (development version)
 
+## Trophic level index calculated from annual averages
+
+* The derived trophic level indices (`LKE_tlic`, `LKE_tlin`, `LKE_tlip`,
+  `LKE_tlise`, `LKE_tli3`, `LKE_tli4`) are now calculated from annual averages
+  of chlorophyll-a, total nitrogen, total phosphorus and Secchi depth, as in
+  the NZ lake trophic level protocol, which deseasonalises the data. The
+  epilimnetic mean is averaged over each hydrological year (July to June; set
+  the first month with `options(AEME.tli_year_start_month = )`) before the
+  index equations are applied, and every time step in a year carries that
+  year's value. Observed `LKE_tli3`/`LKE_tli4` use the same annual averaging
+  and need at least four sampling dates in a year.
+* **Behaviour change.** The Secchi component now uses the protocol equation
+  (`5.10 + 2.27 * log10(1/SD - 1/40)`), previously `5.56 + 2.6 * ...`, so
+  `LKE_tlise` and `LKE_tli4` differ from earlier versions.
+* Fixed the dependency of `LKE_tlin` in `key_naming` (`NIT_tn`, not `PHS_tn`).
+
 ## `AemeSummary`: a lightweight summary for dashboards
 
 * New S4 class `AemeSummary`, made by `summarise_aeme()` (now exported, and also

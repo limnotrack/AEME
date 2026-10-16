@@ -312,6 +312,16 @@ calc_lake_obs_deriv <- function(aeme) {
     if (all(c("PHS_tp", "NIT_tn", "PHY_tchla") %in% colnames(tli))) {
       tli <- tli |>
         dplyr::filter(!is.na(PHS_tp) & !is.na(NIT_tn) & !is.na(PHY_tchla)) |>
+        # TLI is calculated from annual averages, which deseasonalises the
+        # data. Each sampled Date carries the value for its hydrological year.
+        dplyr::mutate(tli_yr = tli_year(Date)) |>
+        dplyr::group_by(tli_yr) |>
+        dplyr::filter(dplyr::n() >= tli_min_obs_per_year) |>
+        dplyr::mutate(dplyr::across(
+          dplyr::any_of(c("PHS_tp", "NIT_tn", "PHY_tchla", "RAD_secchi")),
+          ~ mean(.x, na.rm = TRUE)
+        )) |>
+        dplyr::ungroup() |>
         dplyr::mutate(
           LKE_tli3 = calc_tli3(chla = PHY_tchla,
                                tn = NIT_tn,

@@ -24,10 +24,16 @@ calc_tli_p <- function(tp) {
 #' @return TLI secchi component
 calc_tli_secchi <- function(secchi) {
   if (length(secchi) < 1) return(NA)
-  5.56 + 2.6 * log10(1/secchi - 1/40)
+  # Floor keeps the argument positive for Secchi depths >= 40 m (the clarity
+  # of pure water assumed in the protocol), which would otherwise give NaN/Inf
+  5.10 + 2.27 * log10(pmax(1/secchi - 1/40, tli_conc_floor))
 }
 
 #' Calculate TLI 3
+#'
+#' The TLI protocol (Burns et al.) uses annual averages of each variable, which
+#' deseasonalises the data. Supply annual means, not individual samples.
+#'
 #' @param chla Chlorophyll-a concentration in µg/L
 #' @param tn Total nitrogen concentration in mg/L
 #' @param tp Total phosphorus concentration in mg/L
@@ -41,6 +47,10 @@ calc_tli3 <- function(chla, tn, tp) {
 }
 
 #' Calculate TLI 4
+#'
+#' The TLI protocol (Burns et al.) uses annual averages of each variable, which
+#' deseasonalises the data. Supply annual means, not individual samples.
+#'
 #' @param chla Chlorophyll-a concentration in µg/L
 #' @param tn Total nitrogen concentration in mg/L
 #' @param tp Total phosphorus concentration in mg/L

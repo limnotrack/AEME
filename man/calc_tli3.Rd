@@ -17,5 +17,6 @@ calc_tli3(chla, tn, tp)
 TLI 3
 }
 \description{
-Calculate TLI 3
+The TLI protocol (Burns et al.) uses annual averages of each variable, which
+deseasonalises the data. Supply annual means, not individual samples.
 }
