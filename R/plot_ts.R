@@ -105,7 +105,8 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
     ggplot2::scale_linewidth_manual(values = var_lwd) +
     ggplot2::scale_alpha_manual(values = var_alpha) +
     ggplot2::facet_wrap(~model, scales = "free_y", ncol = 1) +
-    ggplot2::labs(x = "Date", y = y_lab, colour = "Variable")
+    ggplot2::labs(x = "Date", y = y_lab, colour = "Variable") +
+    ggplot2::theme_bw()
 
   if (add_obs) {
     obs <- get_obs(aeme = aeme, var_sim = var_sim, depth_range = depth_range,
