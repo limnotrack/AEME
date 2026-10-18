@@ -281,11 +281,10 @@ test_that("plotting phytoplankton model output works", {
   aeme <- readRDS(aeme_file)
   path <- tempdir()
   model_controls <- get_model_controls(use_bgc = TRUE)
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
+  model_controls <- set_vars_sim(model_controls, c("PHY_tchla", "PHY_cyano",
+                                                    "PHY_green", "CHM_oxy",
+                                                    "NIT_tn", "PHS_tp",
+                                                   "ZOO_zoo1", "LKE_tli3"))
   model <- c("glm_aed", "gotm_wet")
   model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
@@ -296,7 +295,7 @@ test_that("plotting phytoplankton model output works", {
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    path = path, model_controls = model_controls)
 
-  p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp")
+  p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp", obs_size = 1)
   testthat::expect_true(ggplot2::is_ggplot(p1))
   p1 <- plot_ts(aeme = aeme, model = model, var_sim = "HYD_temp", 
                 depth_range = c(0, 1))
