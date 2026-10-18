@@ -1,5 +1,18 @@
 # AEME 0.4.0.9000 (development version)
 
+## GLM-AED southern hemisphere albedo workaround
+
+* GLM-AED currently treats the seasonal albedo cycle of southern hemisphere
+  lakes as if they were in the northern hemisphere. As a temporary catch,
+  `build_glm()` now writes `albedo_mean = 0.08` and `albedo_amplitude = 0.02`
+  (or `-0.02` when the latitude is negative) to the `&light` block of the GLM
+  nml. **Caveat:** this is a stop-gap and should be removed once the bug is
+  fixed in GLM-AED.
+
+## Clearer observations in `plot_ts()`
+
+* Observations are now drawn as black points with a white outline (or, when several variables are plotted, points filled to match each line with a black outline) so they stand out from the model lines, and the new `obs_size` argument controls their size (default 2.5).
+
 ## Trophic level index calculated from annual averages
 
 * The derived trophic level indices (`LKE_tlic`, `LKE_tlin`, `LKE_tlip`,
