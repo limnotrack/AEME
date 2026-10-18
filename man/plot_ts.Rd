@@ -11,7 +11,8 @@ plot_ts(
   remove_spin_up = TRUE,
   add_obs = TRUE,
   depth_range = NULL,
-  ens_n = 1
+  ens_n = 1,
+  obs_size = 2.5
 )
 }
 \arguments{
@@ -32,6 +33,10 @@ TRUE.}
 which averages over all depths.}
 
 \item{ens_n}{integer; ensemble number to plot. Default is 1.}
+
+\item{obs_size}{numeric; size of the observation points. Default is 2.5.
+A single variable is shown with black points (white outline); multiple
+variables are filled to match the line colour (white outline).}
 }
 \value{
 A ggplot object

@@ -7,6 +7,9 @@
 #' @param var_sim character; variable in the AEME format (e.g. "HYD_temp"). Can
 #' be a vector.
 #' @param add_obs logical; add observations to the plot. Default is TRUE.
+#' @param obs_size numeric; size of the observation points. Default is 2.5.
+#' A single variable is shown with black points (white outline); multiple
+#' variables are filled to match the line colour (white outline).
 #'
 #' @importFrom ggplot2 ggplot geom_line guides scale_linewidth_manual
 #' @importFrom ggplot2 scale_alpha_manual facet_wrap labs geom_point aes
@@ -18,7 +21,8 @@
 #'
 
 plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
-                    add_obs = TRUE, depth_range = NULL, ens_n = 1) {
+                    add_obs = TRUE, depth_range = NULL, ens_n = 1,
+                    obs_size = 2.5) {
 
   aeme <- check_aeme(aeme)
   if (missing(model)) {
@@ -117,12 +121,30 @@ plot_ts <- function(aeme, model, var_sim, remove_spin_up = TRUE,
       if (inherits(out_df$Date, "Date")) {
         obs$Date <- as.Date(obs$Date, tz = "UTC")
       }
-      p1 <- p1 +
-        ggplot2::geom_point(data = obs, ggplot2::aes(x = Date, y = value,
-                                                     fill = "Obs",
-                                                     color = name_text),
-                            shape = 1, size = 2) +
-        ggplot2::labs(fill = "")
+      lvls <- unique(out_df$name_text)
+      if (length(lvls) == 1) {
+        # Single variable: black points with a white outline
+        p1 <- p1 +
+          ggplot2::geom_point(data = obs,
+                              ggplot2::aes(x = Date, y = value,
+                                           shape = "Observed"),
+                              fill = "black", colour = "white",
+                              size = obs_size, stroke = 0.8,
+                              inherit.aes = FALSE) +
+          ggplot2::scale_shape_manual(values = c(Observed = 21), name = NULL)
+      } else {
+        # Multiple variables: fill matches the line colour, white outline
+        p1 <- p1 +
+          ggplot2::geom_point(data = obs,
+                              ggplot2::aes(x = Date, y = value,
+                                           fill = name_text),
+                              shape = 21, colour = "white",
+                              size = obs_size, stroke = 0.8,
+                              inherit.aes = FALSE) +
+          ggplot2::scale_colour_discrete(limits = lvls) +
+          ggplot2::scale_fill_discrete(limits = lvls) +
+          ggplot2::labs(fill = "Variable")
+      }
     }
   }
   return(p1)
