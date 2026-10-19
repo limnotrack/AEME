@@ -21,6 +21,10 @@
 #' @param strict logical; if `TRUE` (default), parameters for a file that is
 #'   not in `config` (e.g. bgc parameters for a model built without bgc) are an
 #'   error. If `FALSE` they are skipped with a warning.
+#' @param derive_totals logical; if `TRUE` (default), the `aed_totals` block of
+#'   `aed.nml` is re-derived from the phytoplankton parameters whenever
+#'   `aed.nml` or `aed_phyto_pars.csv` parameters are applied (glm_aed only).
+#'   Set `FALSE` to leave a hand-edited `aed_totals` block untouched.
 #'
 #' @return A list with
 #'   \item{config}{the patched configuration.}
@@ -29,7 +33,8 @@
 #'   configuration files that were changed, so a caller can write back only
 #'   those.}
 #' @noRd
-apply_parameters <- function(config, param, model, strict = TRUE) {
+apply_parameters <- function(config, param, model, strict = TRUE,
+                             derive_totals = TRUE) {
   model <- check_model(model)
   if (length(model) != 1) {
     cli::cli_abort("Please provide only one model at a time.")
@@ -39,7 +44,7 @@ apply_parameters <- function(config, param, model, strict = TRUE) {
 
   switch(
     model,
-    glm_aed = apply_params_glm_aed(config, param, strict),
+    glm_aed = apply_params_glm_aed(config, param, strict, derive_totals),
     gotm_wet = apply_params_gotm_wet(config, param, strict),
     simstrat_aed2 = ,
     simstrat_aed = apply_params_simstrat(config, param, model, strict),
@@ -51,7 +56,8 @@ apply_parameters <- function(config, param, model, strict = TRUE) {
 #' @rdname apply_parameters
 #' @param all_p collapsed parameters for the model.
 #' @noRd
-apply_params_glm_aed <- function(config, all_p, strict = TRUE) {
+apply_params_glm_aed <- function(config, all_p, strict = TRUE,
+                                 derive_totals = TRUE) {
   touched <- character(0)
   if (nrow(all_p) == 0) return(list(config = config, touched = touched))
 
@@ -182,9 +188,10 @@ apply_params_glm_aed <- function(config, all_p, strict = TRUE) {
 
   # The aed_totals block is derived from the phytoplankton parameters, so
   # keep it consistent with whatever was just set. Only when the config
-  # already has one (it is added by build_aeme()/set_aed_totals()).
+  # already has one (it is added by build_aeme()/set_aed_totals()). Skipped
+  # when `derive_totals = FALSE` so a hand-edited block is preserved.
   phyto_changed <- any(c("aed.nml", "aed_phyto_pars.csv") %in% touched)
-  if (phyto_changed && !is.null(config[["bgc"]][["aed"]][["aed_totals"]])) {
+  if (derive_totals && phyto_changed && !is.null(config[["bgc"]][["aed"]][["aed_totals"]])) {
     config <- derive_aed_totals(config)
     touched <- union(touched, "aed.nml")
   }

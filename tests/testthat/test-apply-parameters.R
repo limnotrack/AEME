@@ -58,6 +58,18 @@ test_that("apply_parameters() updates a single group in an AED csv table", {
   testthat::expect_equal(res$touched, "aed_phyto_pars.csv")
 })
 
+test_that("apply_parameters(derive_totals = FALSE) leaves aed_totals alone", {
+  cfg <- make_glm_cfg()
+  cfg$bgc$aed$aed_totals <- list(TN_vars = "custom", TN_scale = 1)
+  res <- apply_parameters(
+    cfg, make_param("aed_phyto_pars.csv", "p_initial", 25, group = "cyano"),
+    model = "glm_aed", derive_totals = FALSE)
+  testthat::expect_identical(res$config$bgc$aed$aed_totals,
+                             cfg$bgc$aed$aed_totals)
+  # aed.nml is not marked as changed, so it is not rewritten on disk
+  testthat::expect_equal(res$touched, "aed_phyto_pars.csv")
+})
+
 test_that("apply_parameters() recycles scalar sediment fluxes to n_zones", {
   cfg <- make_glm_cfg()
   res <- apply_parameters(

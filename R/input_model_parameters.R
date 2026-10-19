@@ -5,12 +5,17 @@
 #' configuration files. Zone-ratio and zone-offset rows made by
 #' [zone_ratio_param()] and [zone_offset_param()] are expanded to per-zone
 #' values first (see [expand_zone_ratios()]).
+#' @param derive_totals logical; if `TRUE` (default), the `aed_totals` block of
+#' the GLM-AED `aed.nml` is re-derived from the phytoplankton parameters when
+#' `aed.nml` or `aed_phyto_pars.csv` parameters are applied, overwriting any
+#' manual edits to that block. Set `FALSE` to leave `aed_totals` as it is.
 #'
 #' @return Aeme object with parameters input into model configuration files
 #' @export
 #'
 
-input_model_parameters <- function(aeme, model, param, path) {
+input_model_parameters <- function(aeme, model, param, path,
+                                   derive_totals = TRUE) {
   
   # Function checks ----
   aeme <- check_aeme(aeme)
@@ -67,7 +72,8 @@ input_model_parameters <- function(aeme, model, param, path) {
       files <- locate_config_files(m, lake_dir)
       cfg <- read_config_for_params(model = m, lake_dir = lake_dir,
                                   labels = all_p$file, files = files)
-      res <- apply_parameters(config = cfg, param = all_p, model = m)
+      res <- apply_parameters(config = cfg, param = all_p, model = m,
+                              derive_totals = derive_totals)
       write_params(res, lake_dir = lake_dir, model = m, files = files)
     }
 
