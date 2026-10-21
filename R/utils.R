@@ -608,7 +608,7 @@ upgrade_aeme <- function(aeme, quiet = FALSE) {
   cfg <- aeme@configuration
   cfg_dflt <- config_defaults()
   scalar_keys <- c("ext_elev", "calc_wbal", "wb_method", "calc_wlev",
-                   "hum_type", "est_swr_hr", "use_bgc")
+                   "glm_weir", "hum_type", "est_swr_hr", "use_bgc")
   added_cfg <- character()
   for (k in scalar_keys) {
     if (is.null(cfg[[k]])) {
