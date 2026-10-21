@@ -46,7 +46,7 @@ get_model_outfile <- function(aeme = NULL, model, path = NULL, lake_dir,
     if (is.null(path)) {
       path <- get_aeme_path(aeme)
     }
-    lake_dir <- get_lake_dir(aeme)
+    lake_dir <- get_lake_dir(aeme, path)
   }
 
   if (missing(model)) {

@@ -264,7 +264,7 @@ calc_lake_obs_deriv <- function(aeme) {
                               value = oxy_cline),
       CHM_oxyepi = data.frame(Date = Date, var_aeme = "CHM_oxyepi",
                               value = epi_oxy),
-      CHM_oxyepi = data.frame(Date = Date, var_aeme = "CHM_oxyhyp",
+      CHM_oxyhyp = data.frame(Date = Date, var_aeme = "CHM_oxyhyp",
                               value = hyp_oxy),
       CHM_oxymet = data.frame(Date = Date, var_aeme = "CHM_oxymet",
                               value = meta_oxy),
@@ -367,6 +367,15 @@ calc_lake_obs_deriv <- function(aeme) {
     if (!"depth" %in% names(out_df)) out_df$depth <- NA_real_
     out_df <- out_df |>
       dplyr::select(Date, var_aeme, depth, value)
+
+    # Make this idempotent: a derived record that is already in the
+    # observations (from an earlier call, e.g. building an `aeme` that was
+    # itself returned by build_aeme()) is not added again. The per-variable
+    # "already present" checks above can't cover a variable that is skipped
+    # because it has no values (e.g. CHM_oxysat), which makes the block it
+    # belongs to re-run -- and re-append its other outputs -- on every call.
+    out_df <- out_df |>
+      dplyr::anti_join(obs$lake, by = c("Date", "var_aeme", "depth"))
 
     obs$lake <- obs$lake |>
       dplyr::bind_rows(out_df)

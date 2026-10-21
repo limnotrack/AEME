@@ -72,7 +72,15 @@ keeps all. Sediment variables are returned in long format with one column
 per dimension (\code{nzones}, \code{sed_layers}); \code{depth_ref}/\code{depth} do not apply.}
 }
 \value{
-dataframe or list
+If \code{return_df = TRUE}, a data frame with the same leading columns
+whether or not \code{use_obs} is used: \code{Date}, \code{depth} (\code{NA} for variables
+without a depth dimension), \code{value}, \code{var_sim} and \code{Model}. With
+\code{use_obs = TRUE} the column \code{obs} (the observation, paired with the model
+\code{value}) is added after \code{value}, plus \code{depth_ref} and
+\code{height_above_bed} when height-above-bed observations are present. Variables
+with non-standard dimensions (e.g. sediment zones) carry one column per
+extra dimension instead of \code{depth}. If \code{return_df = FALSE}, a list with one
+such data frame per model.
 }
 \description{
 Get variable from aeme

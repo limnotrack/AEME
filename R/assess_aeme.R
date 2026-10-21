@@ -65,7 +65,7 @@ assess_aeme <- function(aeme, model, var_sim) {
 
     # Extract variable from aeme
     df <- get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE) |>
-      dplyr::filter(is.finite(sim))
+      dplyr::filter(is.finite(value))
     
     if (nrow(df) == 0) {
       return(NULL)
@@ -74,21 +74,22 @@ assess_aeme <- function(aeme, model, var_sim) {
     # Calculate statistics for each model
     df |>
       # dplyr::mutate(Residual = sim - obs) |>
+      dplyr::mutate(var_aeme = var_sim) |>
       dplyr::group_by(Model, var_aeme) |>
       dplyr::summarise(
-        bias = bias(obs, sim),
-        mae = mae(obs, sim),
-        rmse = rmse(obs, sim),
-        nmae = nmae(obs, sim),
-        nse = nse(obs, sim),
-        kge = kge(obs, sim),
-        d2 = d2(obs, sim),
-        r = r_pearson(obs, sim),
-        rs = r_spearman(obs, sim),
-        B = bardsley(obs, sim),
+        bias = bias(obs, value),
+        mae = mae(obs, value),
+        rmse = rmse(obs, value),
+        nmae = nmae(obs, value),
+        nse = nse(obs, value),
+        kge = kge(obs, value),
+        d2 = d2(obs, value),
+        r = r_pearson(obs, value),
+        rs = r_spearman(obs, value),
+        B = bardsley(obs, value),
         n = dplyr::n(),
         obs_na = sum(is.na(obs)),
-        sim_na = sum(is.na(sim)),
+        sim_na = sum(is.na(value)),
         .groups = "drop"
       ) |>
       as.data.frame() |> 

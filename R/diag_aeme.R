@@ -343,7 +343,7 @@ diag_water_balance <- function(aeme, model, drift_ok_m_per_yr = 0.05,
     error = function(e) NULL)
   sim_drift <- NA_real_; sim_change_m <- NA_real_; sim_span_yr <- NA_real_
   if (!is.null(sim) && nrow(sim) > 0) {
-    sim <- sim[!is.na(sim$sim), ]
+    sim <- sim[!is.na(sim$value), ]
     sim <- sim[order(sim$Date), ]
     if (nrow(sim) >= 2) {
       sim_span_yr <- as.numeric(max(sim$Date) - min(sim$Date)) / 365.25
@@ -351,11 +351,11 @@ diag_water_balance <- function(aeme, model, drift_ok_m_per_yr = 0.05,
       # single first/last day, so one noisy day at either edge (e.g. right
       # after spin-up) doesn't set the whole estimate.
       k <- min(30, floor(nrow(sim) / 2))
-      start_val <- stats::median(utils::head(sim$sim, k))
-      end_val   <- stats::median(utils::tail(sim$sim, k))
+      start_val <- stats::median(utils::head(sim$value, k))
+      end_val   <- stats::median(utils::tail(sim$value, k))
       sim_change_m <- end_val - start_val
       t_num <- as.numeric(sim$Date)
-      fit <- tryCatch(stats::lm(sim ~ t_num, data = sim), error = function(e) NULL)
+      fit <- tryCatch(stats::lm(value ~ t_num, data = sim), error = function(e) NULL)
       if (!is.null(fit)) sim_drift <- unname(stats::coef(fit)[2]) * 365.25
     }
   }
@@ -372,12 +372,12 @@ diag_water_balance <- function(aeme, model, drift_ok_m_per_yr = 0.05,
     get_var(aeme, model = model, var_sim = "LKE_lvlwtr", use_obs = TRUE),
     error = function(e) NULL)
   has_obs <- !is.null(lvl) && nrow(lvl) > 0
-  if (has_obs) lvl <- lvl[!is.na(lvl$sim) & !is.na(lvl$obs), ]
+  if (has_obs) lvl <- lvl[!is.na(lvl$value) & !is.na(lvl$obs), ]
   has_obs <- has_obs && nrow(lvl) > 0
 
   mean_bias <- NA_real_; drift <- NA_real_; span_yr <- NA_real_; n_obs <- 0L
   if (has_obs) {
-    resid <- lvl$sim - lvl$obs
+    resid <- lvl$value - lvl$obs
     mean_bias <- mean(resid, na.rm = TRUE)
     n_obs <- nrow(lvl)
     # Actual calendar span the observations cover, not nrow(lvl)/365.25,
@@ -480,8 +480,8 @@ diag_heat_budget <- function(aeme, model,
                 detail = "no HYD_temp observations in the simulation window"))
   }
 
-  cmp <- cmp[!is.na(cmp$depth) & !is.na(cmp$sim) & !is.na(cmp$obs), ]
-  cmp$resid <- cmp$sim - cmp$obs
+  cmp <- cmp[!is.na(cmp$depth) & !is.na(cmp$value) & !is.na(cmp$obs), ]
+  cmp$resid <- cmp$value - cmp$obs
 
   inp <- input(aeme)
   hyp <- inp$hypsograph
@@ -572,10 +572,10 @@ diag_nutrient_budget <- function(aeme, model,
       get_var(aeme, model = model, var_sim = v, use_obs = TRUE),
       error = function(e) NULL)
     if (is.null(cmp) || nrow(cmp) == 0) return(NULL)
-    cmp <- cmp[!is.na(cmp$sim) & !is.na(cmp$obs), ]
+    cmp <- cmp[!is.na(cmp$value) & !is.na(cmp$obs), ]
     if (nrow(cmp) < min_obs) return(NULL)
 
-    mean_bias <- mean(cmp$sim - cmp$obs, na.rm = TRUE)
+    mean_bias <- mean(cmp$value - cmp$obs, na.rm = TRUE)
     mean_obs  <- mean(cmp$obs, na.rm = TRUE)
     rel <- if (abs(mean_obs) > 1e-9) abs(mean_bias) / abs(mean_obs) else NA_real_
     direction <- if (!is.na(rel) && rel < bias_ok_frac) {
