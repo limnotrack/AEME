@@ -1,5 +1,72 @@
 # AEME 0.4.0.9000 (development version)
 
+## `get_var()` returns consistent columns
+
+* `get_var()` now returns `Date`, `depth`, `value`, `var_sim` and `Model` with
+  and without `use_obs`; `use_obs = TRUE` adds `obs` after `value`. The model value is now `value`
+  (previously `sim`), `var_aeme` is no longer returned (use `var_sim`), and
+  level/scalar variables always have a `depth` column. The
+  function was split into internal helpers.
+
+## Read and diagnose the GLM-AED mass balance
+
+* New `read_glm_mass_balance()` reads `mass_balance.csv` (AED native units,
+  mmol) into a long table. `calc_aed_totals_balance()` sums the components into
+  the `aed_totals` TN, TP, TOC (and TSS), optionally converting to kg, and
+  `diag_glm_mass_balance()` returns the daily and summary
+  `d(Lake) - (Inf - Out)` remainder, per total or per variable (all accept an
+  `aeme` object to locate the file), with an
+  optional cumulative plot. `Inf` and `Out` are totals over the save interval
+  (`nsave * dt`), so the diagnostics use the interval between rows and also
+  return per-day rates, and warn if the spacing disagrees with the GLM nml.
+
+## GLM-AED mass balance reports the components of the totals
+
+* The GLMv4 `&mass_balance` `balance_vars` are now the components summed into
+  the `aed_totals`, derived with the same per-phytoplankton-group logic as
+  `set_aed_totals()` (internal-quota pools versus biomass x fixed
+  stoichiometry), so the totals can be summed from `mass_balance.csv`.
+  GLM allows at most 15 `balance_vars`, so by default only the nitrogen (TN),
+  phosphorus (TP) and suspended solids (TSS) groups are reported. New
+  `set_glm_balance_groups()` chooses the groups (`"TN"`, `"TP"`, `"TOC"`,
+  `"TSS"`, `"other"`) for an existing configuration, and the default for new
+  builds is set with `options(AEME.glm_balance_groups = )`. Components whose
+  AED module is not active are skipped, and lists over 15 are truncated with a
+  warning.
+
+## Derived lake observations no longer accumulate
+
+* `build_aeme()` appended the derived oxygen observations (`CHM_oxycln`,
+  `CHM_oxynal`) to `observations(aeme)$lake` again on every build of an
+  object that had already been built, so the table grew each time. Derived
+  records already present are now skipped. `CHM_oxyhyp` was also never written
+  because of a duplicated list name; it is now added.
+
+## `build_aeme()` reuses the stored water balance
+
+* The water balance, the slowest estimate in `build_aeme()`, is now hashed
+  from its inputs (meteorology, inflows, outflows, lake level, hypsograph,
+  times, models, `wb_method`, `coeffs`, observed water temperature and the AEME
+  version) and the hash is stored in `water_balance(aeme)$hash`. Rebuilding
+  with unchanged inputs, for example after changing only parameters or model
+  controls, reuses the stored result. New `refresh_wbal = TRUE` argument forces
+  a recalculation.
+
+## GLM-AED spills through its own weir by default
+
+* New `glm_weir` argument to `build_aeme()` (default `TRUE`, also read from
+  `configuration()`). GLM-AED no longer reads the water-balance (`wbal`) outflow
+  file; it spills through its own weir (`morphometry/crest_elev`,
+  `outflow/crest_width`, `outflow/crest_factor`). The weir is fitted to the
+  observed `"outflow"` and lake level when at least 10 days overlap (that
+  outflow is then replaced by the weir); otherwise it is taken from the
+  water-balance `C` and `h_inv` (`wb_method` 2 or 3). Other outflows stay as
+  GLM outlets. When fitted from observations, the `glm_aed` water-balance `C` /
+  `h_inv` (shared with `dy_cd`) are set to the equivalent values, so the water
+  balance no longer runs `optim()` for that family and matches GLM. Use
+  `glm_weir = FALSE` for the previous behaviour; `glm_config_to_aeme()` objects
+  default to `FALSE`.
+
 ## GLM-AED southern hemisphere albedo workaround
 
 * GLM-AED currently treats the seasonal albedo cycle of southern hemisphere
