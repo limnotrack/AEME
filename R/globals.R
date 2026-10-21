@@ -242,3 +242,7 @@ utils::globalVariables(c(
   "zi",
   "zone"
 ))
+
+utils::globalVariables(c("inflow", "outflow", "lake", "d_lake", "net_external",
+                         "net_internal", "cum_net_internal", "total_net_internal",
+                         "mean_lake"))
