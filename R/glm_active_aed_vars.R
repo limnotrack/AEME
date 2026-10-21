@@ -126,5 +126,5 @@ sync_glm_aed_vars <- function(glm_nml, model_controls, aed_models, path_glm) {
   }
 
   # mass balance (mirrors init_profiles)
-  set_glm_mass_balance(glm_nml, use_bgc = TRUE)
+  set_glm_mass_balance(glm_nml, use_bgc = TRUE, path_glm = path_glm)
 }
