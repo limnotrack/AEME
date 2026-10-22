@@ -193,8 +193,7 @@ build_aeme <- function(aeme = NULL,
   
   if (is.null(model_controls)) {
     if (!is.null(aeme)) {
-      cfg <- configuration(aeme)
-      model_controls <- cfg$model_controls
+      model_controls <- get_model_controls(aeme = aeme)
     } else {
       model_controls <- get_model_controls(use_bgc = use_bgc)
     }

@@ -34,11 +34,12 @@
 #' # Run GLM-AED with the DOC in the inflows doubled and compare with the
 #' # unscaled run. Inflow DOC only affects models that use inflow
 #' # biogeochemistry (GLM-AED); GOTM-WET reads flow, temperature and salinity.
-#' aeme <- yaml_to_aeme(path = system.file("extdata/lake/", package = "AEME"),
-#'                      "aeme.yaml")
+#' aeme_file <- system.file("extdata", "aeme.rds", package = "AEME")
+#' aeme <- readRDS(aeme_file)
 #' path <- tempdir()
+#' model_controls <- get_model_controls(use_bgc = TRUE)
 #' aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
-#'                    model_controls = get_model_controls(), ext_elev = 3,
+#'                    model_controls = model_controls, ext_elev = 3,
 #'                    use_bgc = TRUE)
 #' base <- run_aeme(aeme, model = "glm_aed", path = path)
 #'
