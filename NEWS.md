@@ -8,6 +8,29 @@
   level/scalar variables always have a `depth` column. The
   function was split into internal helpers.
 
+## `plot_aed_succession()`
+
+* New `plot_aed_succession()` plots a chlorophyll a time series above a monthly
+  composite (0-100 %) of each phytoplankton group's contribution.
+
+## `view_aed_modules()`
+
+* New `view_aed_modules()` opens an interactive diagram of the AED module
+  interactions in the viewer pane or web browser.
+* The diagram is also embedded in the GLM-AED article via a self-contained
+  iframe (`srcdoc`), so its styling does not affect the article.
+
+## Fixes
+
+* `run_aeme(ens_n = )` with a number other than 1 now adds (or replaces) that
+  ensemble member instead of discarding the existing output; `ens_n = 1`
+  still starts from empty output.
+* `check_glm_nml()` no longer errors when the GLM `&outflow` block has no
+  `outflow_fl` (all spill through GLM's weir), and `build_aeme()` no longer
+  errors in `calc_lake_obs_deriv()` when there are no lake observations.
+* `set_glm_outflow_config()` warns correctly when several outflow files are
+  missing.
+
 ## Read and diagnose the GLM-AED mass balance
 
 * New `read_glm_mass_balance()` reads `mass_balance.csv` (AED native units,
