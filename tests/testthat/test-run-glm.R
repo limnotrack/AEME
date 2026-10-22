@@ -275,6 +275,27 @@ test_that("running GLM-AED works", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE) |>
     run_aeme(verbose = T)
+  aeme <- aeme |> 
+    run_aeme(verbose = T, extra_vars = "all")
+  phy_in <- get_var(aeme = aeme, model = model, var = "PHY_cyano_IP")
+  head(phy_in)
+  
+  mb <- read_glm_mass_balance(aeme = aeme)
+  library(ggplot2)
+  ggplot() +
+    geom_line(data = mb, aes(x = datetime, y = value, color = term)) +
+    facet_wrap(~var, scales = "free_y") +
+    labs(title = "GLM-AED Mass Balance", x = "Date", y = "Mass (kg)") +
+    theme_minimal()
+  
+  mb_var <- diag_glm_mass_balance(aeme = aeme, by = "var", units = "kg")
+  mb_tot <- diag_glm_mass_balance(aeme = aeme, by = "total", units = "kg")
+  ggplot() +
+    geom_line(data = mb_tot$daily, aes(x = datetime, y = lake, color = "Lake")) +
+    facet_wrap(~name, scales = "free_y", ncol = 1) +
+    labs(title = "GLM-AED Mass Balance by Variable", x = "Date", y = "Mass (kg)") +
+    theme_minimal()
+  
   
   metrics <- assess_aeme(aeme = aeme)
   aed_succession_index(aeme)

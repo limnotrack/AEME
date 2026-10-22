@@ -187,7 +187,7 @@ test_that("running models with wbal method = 3", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
-                     wb_method = 3, calc_wlev = F) |>
+                     wb_method = 3, calc_wlev = F, glm_weir = FALSE) |>
     run_aeme(parallel = F, ncore = getOption("ncore"))
 
   file_chk <- check_all_model_outfiles(aeme = aeme)
