@@ -41,7 +41,8 @@ from \code{aeme}/\code{path}.}
 \item{cl}{an object of class \code{"cluster"}.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.}
+loaded. Defaults to 1. A run with \code{ens_n = 1} clears any existing output;
+a run with another number adds (or replaces) that member and keeps the rest.}
 
 \item{keep_diag}{logical; keep the \code{diag} (diagnostic/scalar) and
 \code{sediment} sub-lists of each model's output (variables with dimensions other

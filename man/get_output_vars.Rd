@@ -19,7 +19,8 @@ get_output_vars(
 not found in \code{aeme}.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.}
+loaded. Defaults to 1. A run with \code{ens_n = 1} clears any existing output;
+a run with another number adds (or replaces) that member and keeps the rest.}
 
 \item{group}{character; which variables to list: \code{"core"} (time and
 depth x time variables, default), \code{"diag"} (diagnostics and scalars),

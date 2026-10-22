@@ -44,7 +44,8 @@ elements; \code{"none"} returns \code{NULL} invisibly (useful when only the mode
 run's side effects, i.e. the output files, are wanted).}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.}
+loaded. Defaults to 1. A run with \code{ens_n = 1} clears any existing output;
+a run with another number adds (or replaces) that member and keeps the rest.}
 
 \item{model_controls}{data.frame; model configuration, typically loaded via
 \code{\link[=get_model_controls]{get_model_controls()}}.}
