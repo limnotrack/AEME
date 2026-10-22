@@ -374,8 +374,10 @@ calc_lake_obs_deriv <- function(aeme) {
     # "already present" checks above can't cover a variable that is skipped
     # because it has no values (e.g. CHM_oxysat), which makes the block it
     # belongs to re-run -- and re-append its other outputs -- on every call.
-    out_df <- out_df |>
-      dplyr::anti_join(obs$lake, by = c("Date", "var_aeme", "depth"))
+    if (!is.null(obs$lake) && nrow(obs$lake) > 0) {
+      out_df <- out_df |>
+        dplyr::anti_join(obs$lake, by = c("Date", "var_aeme", "depth"))
+    }
 
     obs$lake <- obs$lake |>
       dplyr::bind_rows(out_df)
