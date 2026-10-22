@@ -19,11 +19,14 @@ plot_phytos <- function(aeme, model, add_obs = TRUE, remove_spin_up = TRUE,
     model <- check_model(model = model)
   }
   # Set colours for phytopplankton variables
-  phy_cols <- c("Cyanobacteria" = "#56B4E9",
-                "Green algae" = "#009E73",
-                "Cryptophytes" = "#0072B2",
-                "Diatoms freshwater" = "#E69F00",
-                "Total chlorophyll a" = "#00441B")
+  phy_cols <- c("Cyanobacteria"       = "#56B4E9",  # sky blue
+                "Green algae"         = "#009E73",  # bluish green
+                "Cryptophytes"        = "#CC79A7",  # reddish purple
+                "Diatoms freshwater"  = "#E69F00",  # orange
+                "Total chlorophyll a" = "#000000")  # black
+  
+  # and e.g. in ggplot:
+  # scale_linetype_manual(values = c("Total chlorophyll a" = "dashed", ...))
   phy_lwd <- c(1, 1, 1, 1, 2)
   phy_alpha <- c(1, 1, 1, 1, 0.3)
   names(phy_lwd) <- names(phy_cols)
