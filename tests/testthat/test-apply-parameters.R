@@ -155,6 +155,36 @@ test_that("apply_boundary_params() scales outflows and returns the inflow factor
   testthat::expect_equal(outf$wbal$outflow, c(10, 20))
 })
 
+test_that("apply_boundary_params() multiplies or sets inflow variables", {
+  inf <- list(a = data.frame(HYD_flow = c(1, 2), CAR_doc = c(3, 4)),
+              b = data.frame(HYD_flow = c(5, 6), CAR_doc = c(7, 8),
+                             NIT_nit = c(1, 1)))
+  p <- dplyr::bind_rows(make_bnd_param("inf", "CAR_doc", 2),
+                        make_bnd_param("inf_const", "NIT_nit", 0.4))
+  res <- apply_boundary_params(meteo = NULL, outflows = NULL, param = p,
+                               inflows = inf)
+  testthat::expect_equal(res$inf$a$CAR_doc, c(6, 8))
+  testthat::expect_equal(res$inf$b$CAR_doc, c(14, 16))
+  testthat::expect_equal(res$inf$b$NIT_nit, c(0.4, 0.4))
+  testthat::expect_equal(res$inf$a$HYD_flow, c(1, 2))
+  testthat::expect_null(res$inf_factor)
+  # input untouched
+  testthat::expect_equal(inf$a$CAR_doc, c(3, 4))
+
+  # a constant DOC, with the flow factor still returned
+  p2 <- dplyr::bind_rows(make_bnd_param("inf_const", "CAR_doc", 5),
+                         make_bnd_param("inf", "inflow", 1.3))
+  res2 <- apply_boundary_params(NULL, NULL, p2, inflows = inf)
+  testthat::expect_equal(res2$inf$a$CAR_doc, c(5, 5))
+  testthat::expect_equal(res2$inf_factor, 1.3)
+
+  # unknown variable warns
+  testthat::expect_warning(
+    apply_boundary_params(NULL, NULL,
+                          make_bnd_param("inf", "CHM_xyz", 2), inflows = inf),
+    "CHM_xyz")
+})
+
 test_that("apply_boundary_params() returns NULLs when there are no boundary rows", {
   p <- make_param("glm4.nml", "light/Kw", 1.5)
   res <- apply_boundary_params(meteo = NULL, outflows = NULL, param = p)
@@ -489,4 +519,19 @@ test_that("apply_parameters() warns about unsupported files", {
     apply_parameters(cfg, mk_param("dy_cd", "caedym3p1.bio", "x/1", 1),
                      model = "dy_cd"),
     "not supported")
+})
+
+test_that("inflow_param() builds multiplier and constant rows", {
+  p <- inflow_param("CAR_doc", model = c("glm_aed", "gotm_wet"))
+  testthat::expect_equal(p$file, rep("inf", 2))
+  testthat::expect_equal(p$model, c("glm_aed", "gotm_wet"))
+  pc <- inflow_param(c("CAR_doc", "NIT_don"), value = 5, min = 1, max = 15,
+                     model = "glm_aed", constant = TRUE)
+  testthat::expect_equal(pc$file, rep("inf_const", 2))
+  testthat::expect_equal(pc$name, c("CAR_doc", "NIT_don"))
+  testthat::expect_error(inflow_param("CAR_doc", value = 5, min = 0.5, max = 2))
+  # rows work with the boundary machinery
+  inf <- list(a = data.frame(CAR_doc = c(1, 2)))
+  res <- apply_boundary_params(NULL, NULL, pc[1, ], inflows = inf)
+  testthat::expect_equal(res$inf$a$CAR_doc, c(5, 5))
 })

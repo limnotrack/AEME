@@ -1,5 +1,13 @@
 # AEME 0.4.0.9000 (development version)
 
+## Calibrate inflow variables
+
+* Parameters with `file = "inf"` can now name an inflow variable (e.g.
+  `CAR_doc`) to multiply it, and the new `file = "inf_const"` sets it to a
+  constant. Previously `inf` only scaled flow (name `"inflow"`, unchanged),
+  so concentrations could not be varied independently. `inflow_param()`
+  builds the rows.
+
 ## `get_var()` returns consistent columns
 
 * `get_var()` now returns `Date`, `depth`, `value`, `var_sim` and `Model` with

@@ -57,18 +57,21 @@ input_model_parameters <- function(aeme, model, param, path,
     # scales them); the data in `aeme` is left as it is.
     bnd <- apply_boundary_params(meteo = inp$meteo,
                                  outflows = outflows(aeme)[["data"]],
-                                 param = all_p)
+                                 param = all_p,
+                                 inflows = inflows(aeme)[["data"]])
     write_boundary_data(
       aeme = aeme, model = m, lake_dir = lake_dir,
       meteo = bnd$meteo, outf = bnd$outflows,
-      inf = if (!is.null(bnd$inf_factor)) inflows(aeme)[["data"]],
+      inf = if (!is.null(bnd$inf_factor) || !is.null(bnd$inf)) {
+        bnd$inf %||% inflows(aeme)[["data"]]
+      },
       inf_factor = if (is.null(bnd$inf_factor)) 1 else bnd$inf_factor
     )
-    
+
     # Inputting model parameters ----
     # Pure config patch (apply_parameters()), then write back only the files
     # that changed. Skipped when the parameters only scale boundary conditions.
-    if (any(!all_p$file %in% c("met", "inf", "wdr"))) {
+    if (any(!all_p$file %in% boundary_files)) {
       files <- locate_config_files(m, lake_dir)
       cfg <- read_config_for_params(model = m, lake_dir = lake_dir,
                                   labels = all_p$file, files = files)
@@ -172,3 +175,7 @@ collapse_params <- function(param_df) {
     tibble::as_tibble()
 }
 
+
+# Parameter `file` values that act on boundary-condition data rather than a
+# model configuration file
+boundary_files <- c("met", "inf", "inf_const", "wdr")
