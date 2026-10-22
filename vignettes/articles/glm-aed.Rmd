@@ -110,6 +110,29 @@ but here we provide a brief overview of the key modules relevant for GLM-AED.
 
 : AED biogeochemical modules available in AEME.
 
+There is a work-in-progress AED module dependency diagram available as a html
+diagram. This can be viewed in R with the `view_aed_modules()` function, which 
+opens the diagram in your RStudio Viewer pane or default web browser. It is
+embedded below in an iframe so its styling does not affect this article.
+
+### View AED modules
+
+```{r vis-aed-modules, eval=FALSE}
+view_aed_modules()
+```
+
+```{r aed-modules, echo=FALSE}
+f <- system.file("extdata", "aed_modules", "aed_module_interactions.html",
+                 package = "AEME")
+htmltools::tags$iframe(
+  srcdoc = paste(readLines(f, warn = FALSE, encoding = "UTF-8"), collapse = "
+"),
+  width = "100%", height = "750px",
+  style = "border: 1px solid #d9dcd5; border-radius: 4px;"
+)
+```
+
+
 ### GLM-AED Parameter Library {#parameter-library}
 
 The `glm_aed_parameter_library` dataset provides a comprehensive list of all 
