@@ -121,15 +121,18 @@ test_that("editing and running GLM-AED via the thin path-based wrapper works", {
   n_depths <- nml0$init_profiles$num_depths
   new_temp <- seq(20, 10, length.out = n_depths)
   new_salt <- rep(1, n_depths)
-  wq_var <- nml0$init_profiles$wq_names[1]
+  wq_var <- "CHM_oxy"
+  glm_wq_var <- rename_modelvars(wq_var, type_output = "glm_aed")
   set_glm_init(path_glm, temp = new_temp, salt = new_salt,
-              wq_init = setNames(list(321), wq_var))
+              wq_init = setNames(list(10), wq_var))
   nml1 <- read_nml(glm_file)
   testthat::expect_equal(nml1$init_profiles$the_temps, new_temp)
   testthat::expect_equal(nml1$init_profiles$the_sals, new_salt)
-  wq_idx <- match(wq_var, nml1$init_profiles$wq_names)
+  wq_idx <- match(glm_wq_var, nml1$init_profiles$wq_names)
   wq_vals <- matrix(nml1$init_profiles$wq_init_vals, nrow = n_depths)
-  testthat::expect_true(all(wq_vals[, wq_idx] == 321))
+  # 10 mg/L -> mmol/m3 (conversion_aed = 0.032)
+  testthat::expect_equal(wq_vals[, wq_idx], rep(10 / 0.032, n_depths),
+                         tolerance = 1e-4)
 
   # -- inflows --
   inf_df <- read.csv(file.path(path_glm, "bcs", "inflow_FWMT.csv"))

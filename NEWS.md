@@ -1,5 +1,25 @@
 # AEME 0.4.0.9000 (development version)
 
+## Inflow silica units
+
+* `SIL_rsi` inflow values are no longer auto-converted. Previously a median
+  > 100 was assumed to be mg/L and multiplied by 1000/60.084, so valid
+  mmol/m3 inputs of 150-300 were inflated ~16.6x. Silica must now be supplied
+  in mmol/m3.
+
+## GLM-AED initial water-quality values
+
+* `&init_profiles` `wq_init_vals` are now converted from AEME units to GLM-AED
+  native units by *dividing* by `conversion_aed` (as for the AED nml, inflows
+  and Simstrat). They were multiplied, so e.g. DOC of 0.5 g/m3 was written as
+  0.006 instead of 41.63 mmol/m3. Rebuild existing GLM-AED models to pick up
+  the fix.
+* `set_glm_init(wq_init = )` now takes AEME (standard) units, e.g.
+  `CHM_oxy = 10` mg/L, keyed by AEME variable name, and converts to GLM-AED
+  native units (mmol/m3), rounded to 4 decimal places (as are the values
+  written at build). Names that only match GLM `wq_names` are written
+  as-is.
+
 ## Calibrate inflow variables
 
 * Parameters with `file = "inf"` can now name an inflow variable (e.g.
