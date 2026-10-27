@@ -558,12 +558,12 @@ test_that("add AEME output as inflow", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   path <- tempdir()
-  model_controls <- get_model_controls()
+  model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("glm_aed", "gotm_wet")
   model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, ext_elev = 5,
-                     use_bgc = FALSE)
+                     use_bgc = TRUE)
 
   obs <- get_obs(aeme)
   mod_obs_vars <- get_mod_obs_vars(aeme)

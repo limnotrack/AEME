@@ -59,6 +59,17 @@
 * `set_glm_outflow_config()` warns correctly when several outflow files are
   missing.
 
+## `aeme_to_inflow()` uses the GLM-AED mass balance
+
+* For `glm_aed`, `aeme_to_inflow()` now takes the concentrations from
+  `mass_balance.csv` when it exists: the mass leaving the lake (`Out`) divided
+  by the outflow volume, i.e. the flow-weighted concentration of the water that
+  actually leaves, converted to AEME units. This replaces the concentration at
+  0.25 m depth for the variables in the mass balance (at most 15, see
+  `set_glm_balance_groups()`), adds `NIT_tn` and `PHS_tp` from the summed totals,
+  and falls back to the 0.25 m value on days without outflow or for variables
+  not in the file.
+
 ## Read and diagnose the GLM-AED mass balance
 
 * New `read_glm_mass_balance()` reads `mass_balance.csv` (AED native units,
