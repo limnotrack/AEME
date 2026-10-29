@@ -29,7 +29,7 @@ GLM-AED (nzones, time) AED flux variable."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,7 +114,9 @@ GLM-AED <code>(nzones, time)</code> AED flux variable.</p>
 <span>  ens_n <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  remove_spin_up <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  var_lims <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ylim <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  ylim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  zone <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sed_layer <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -163,6 +165,12 @@ depth x time plot. Default <code>NULL</code> (ranged to the data).</p></dd>
 <dd><p>numeric vector of length 2; y-axis limits for a line plot.
 Default <code>NULL</code> (ranged to the data).</p></dd>
 
+
+<dt id="arg-zone-sed-layer">zone, sed_layer<a class="anchor" aria-label="anchor" href="#arg-zone-sed-layer"></a></dt>
+<dd><p>integer; for a variable with an <code>nzones</code> and/or
+<code>sed_layers</code> dimension (GLM-AED sediment output), plot only these sediment
+zones and/or sediment layers. <code>NULL</code> (default) plots all. See <code><a href="get_var.html">get_var()</a></code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -173,9 +181,10 @@ warning, for a grouped variable that has no <code>Date</code> dimension at all).
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>For observation overlay, faceting across multiple models/variables at
 once, or the base-graphics backend, use <code><a href="plot_output.html">plot_output()</a></code> instead – this
-function is intentionally minimal, and does not (yet) support
-<code>aeme_grouped_var</code> variables when called on an <code>Aeme</code> object through
-<code><a href="plot_output.html">plot_output()</a></code>/<code><a href="plot_output_base.html">plot_output_base()</a></code>.</p>
+function is intentionally minimal. <code><a href="plot_output.html">plot_output()</a></code> draws the same line plot
+for <code>aeme_grouped_var</code> variables (ggplot2 backend).</p>
+<p>GLM-AED extra variables can be given by their AEME name from
+<a href="glm_extra_vars.html">glm_extra_vars</a> (e.g. <code>"SED_Fsed_oxy"</code>) or their raw netCDF name.</p>
     </div>
 
     <div class="section level2">

@@ -20,7 +20,13 @@ A data frame with 34 rows and 10 columns:
 
 - file:
 
-  File in which the parameter is stored
+  File in which the parameter is stored. `"met"`, `"inf"`, `"inf_const"`
+  and `"wdr"` act on the boundary-condition data instead of a file:
+  `"met"` and `"wdr"` multiply meteorology and outflows, `"inf"`
+  multiplies an inflow (name `"inflow"` for flow, otherwise an inflow
+  variable such as `"CAR_doc"`) and `"inf_const"` sets an inflow
+  variable to a constant. See
+  [`inflow_param()`](https://limnotrack.com/AEME/reference/inflow_param.md).
 
 - name:
 

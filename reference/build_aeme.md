@@ -18,7 +18,9 @@ build_aeme(
   outf_factor = NULL,
   calc_wbal = NULL,
   calc_wlev = NULL,
+  refresh_wbal = FALSE,
   coeffs = NULL,
+  glm_weir = NULL,
   hum_type = NULL,
   est_swr_hr = NULL,
   use_aeme = FALSE,
@@ -87,6 +89,15 @@ build_aeme(
 
   logical; calculate water level. Default: `TRUE`.
 
+- refresh_wbal:
+
+  logical; recalculate the water balance even if the one stored in
+  `water_balance(aeme)` was made from identical inputs (the meteorology,
+  inflows, outflows, lake level, hypsograph, times, models, `wb_method`
+  and `coeffs`, hashed and stored alongside it). Default: `FALSE`, so
+  rebuilding after changing only parameters or model controls skips the
+  water balance.
+
 - coeffs:
 
   numeric vector of length 2; coefficients for estimating surface water
@@ -96,6 +107,21 @@ build_aeme(
   T\_{air}\\ (Stefan & Preud'homme, 1993,
   [doi:10.1111/j.1752-1688.1993.tb01502.x](https://doi.org/10.1111/j.1752-1688.1993.tb01502.x)
   ).
+
+- glm_weir:
+
+  logical or list; for `"glm_aed"`, let GLM spill through its own weir
+  (`morphometry/crest_elev`, `outflow/crest_width`,
+  `outflow/crest_factor`) instead of reading the water-balance (`wbal`)
+  outflow file. The weir is fitted to the observed `"outflow"` and lake
+  level when both overlap (that outflow is then replaced by the weir),
+  otherwise taken from the fitted water-balance `C` and `h_inv`. When
+  fitted from observations, the water-balance `C` / `h_inv` for the
+  `glm_aed` family (shared with `dy_cd`) are set to the equivalent
+  values so the water balance and GLM agree. Other outflows are kept as
+  GLM outlets. A list may set `crest_width` (m, default 6) and
+  `interval` (search range for `crest_elev`). Default: `TRUE`; `FALSE`
+  restores the `wbal` outflow file.
 
 - hum_type:
 
@@ -186,7 +212,7 @@ aeme <- aeme |>
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [27ms]
+#> ✔ Estimating surface water temperature [36ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -202,6 +228,7 @@ aeme <- aeme |>
 #>   module and `use_bgc` is FALSE.
 #> Warning: GLM ignores the AirPres met column in daily mode and uses the default 1013.25 hPa instead.
 #> This warning is displayed once per session.
+#> ! Fitted weir crest (23.49 m) is below the initial lake level; using 23.64 m.
 #> ✔ GLM nml validation completed - no issues detected.
 
 # Enable biogeochemistry
@@ -227,6 +254,7 @@ aeme <- aeme |>
 #> 
 #> ℹ Aligned AED sediment zones to GLM: 2 zones (all active).
 #> ℹ No variables to initialise in AED
+#> ! Fitted weir crest (23.49 m) is below the initial lake level; using 23.64 m.
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
 #> ℹ Tier 2: zone-median summer concentrations used for adjustment:
 #> ┌─────┬───────────┬────────────┬────────────┬────────────┐

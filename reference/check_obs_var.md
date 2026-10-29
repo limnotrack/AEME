@@ -13,7 +13,12 @@ check_obs_var(aeme, var_sim)
 
 - aeme:
 
-  Aeme object.
+  Aeme object, or an
+  [AemeSummary](https://limnotrack.com/AEME/reference/AemeSummary.md).
+  For a summary only `model` and `var_sim` apply, and the result has the
+  surface and bottom series (`layer`) and every `stat`; filter
+  [`output()`](https://limnotrack.com/AEME/reference/output.md) for more
+  control.
 
 - var_sim:
 

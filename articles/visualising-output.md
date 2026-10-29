@@ -29,11 +29,6 @@ path <- tempdir()
 aeme <- build_aeme(path = path, aeme = aeme, model = model,
                    model_controls = model_controls, ext_elev = 5,
                    use_bgc = TRUE)
-#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows -- this may be a placeholder
-#>   value.
-#> ℹ Check raw data or unit conversion for this variable.
-#> Warning: GLM ignores the AirPres met column in daily mode and uses the default 1013.25 hPa instead.
-#> This warning is displayed once per session.
 aeme <- run_aeme(aeme = aeme, verbose = FALSE)
 ```
 
@@ -212,7 +207,7 @@ what every other `plot_*` function on this page is ultimately built on:
 outfile <- get_model_outfile(aeme, model = "glm_aed")$glm_aed
 outfile
 #>                                                                                         output 
-#> "C:/Users/runneradmin/AppData/Local/Temp/RtmpQTDAtT/LID45819_wainamu/glm_aed/output/output.nc"
+#> "C:/Users/runneradmin/AppData/Local/Temp/Rtmps7vpxm/LID45819_wainamu/glm_aed/output/output.nc"
 ```
 
 [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
@@ -251,7 +246,7 @@ raw
 ``` r
 
 plot_model_output(raw, var_sim = "OXY_oxy")
-#> Warning: Removed 89687 rows containing missing values or values outside the scale range
+#> Warning: Removed 89626 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 ```
 
@@ -268,6 +263,124 @@ plot_model_output(raw, var_sim = "SDF_Fsed_oxy_Z")
 ```
 
 ![](visualising-output_files/figure-html/unnamed-chunk-4-1.png)
+
+## A lightweight summary for dashboards
+
+The depth-resolved output of a model run is large, and most dashboards
+only need a few series.
+[`summarise_aeme()`](https://limnotrack.com/AEME/reference/summarise_aeme.md)
+(also what `summary(aeme)` returns) reduces an `Aeme` to an
+`AemeSummary`: daily surface and bottom values for every depth-resolved
+variable, the variables that have no depth, and optionally the
+observations, daily forcing and the hypsograph. It holds no model
+configuration, so it cannot be built or run – it is only for looking at.
+
+``` r
+
+aeme_summ <- summarise_aeme(aeme)
+aeme_summ
+#> 
+#> ── AemeSummary: Wainamu ────────────────────────────────────────────────────────
+#> • Models: "glm_aed"
+#> • Period: 2020-08-01 to 2021-06-30
+#> • Source members: 1; stats: "value"
+#> • Output: 21042 rows, 41 variables
+#> • Observations: "lake" and "level"
+#> • Forcing: "meteo", "inflows", "outflows", and "water_balance"
+#> • Hypsograph: 44 rows; profiles: 0 rows
+```
+
+The `output` is a plain long table, so it goes straight into ggplot2, a
+dashboard, or any other language. `layer` is `"surface"` or `"bottom"`
+(split at the epilimnion depth, `HYD_epidep`, else the thermocline
+depth, else half the water column), or `NA` for variables without depth.
+`stat` is `"value"` for a single run; with an ensemble it holds the
+statistics across members (mean, min, max and the 5th/95th percentiles
+by default).
+
+``` r
+
+head(output(aeme_summ))
+#>         Date   model var_aeme  layer  stat  value
+#> 1 2020-08-01 glm_aed  CAR_doc bottom value     NA
+#> 2 2020-08-02 glm_aed  CAR_doc bottom value 0.4902
+#> 3 2020-08-03 glm_aed  CAR_doc bottom value 0.4765
+#> 4 2020-08-04 glm_aed  CAR_doc bottom value 0.4638
+#> 5 2020-08-05 glm_aed  CAR_doc bottom value 0.4542
+#> 6 2020-08-06 glm_aed  CAR_doc bottom value 0.4563
+```
+
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) and
+[`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) work on
+a summary, and the same accessors you use on an `Aeme`
+([`lake()`](https://limnotrack.com/AEME/reference/lake.md),
+[`time()`](https://limnotrack.com/AEME/reference/time.md),
+[`observations()`](https://limnotrack.com/AEME/reference/observations.md),
+[`parameters()`](https://limnotrack.com/AEME/reference/parameters.md))
+apply, with
+[`forcing()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md),
+[`hypsograph()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md),
+[`profiles()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+and
+[`models()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+for the rest:
+
+``` r
+
+plot(aeme_summ, "HYD_temp")
+#> Warning: Removed 1 row containing missing values or values outside the scale range
+#> (`geom_line()`).
+```
+
+![](visualising-output_files/figure-html/summary-plot-1.png)
+
+``` r
+
+names(forcing(aeme_summ))
+#> [1] "meteo"         "inflows"       "outflows"      "water_balance"
+head(forcing(aeme_summ)$meteo)
+#>         Date   var_aeme        value
+#> 1 2019-01-01 MET_cldcvr      0.53900
+#> 2 2019-01-01 MET_humrel     84.87500
+#> 3 2019-01-01 MET_pprain      0.44344
+#> 4 2019-01-01 MET_ppsnow      0.00000
+#> 5 2019-01-01 MET_prmslp 100945.10200
+#> 6 2019-01-01 MET_prsttn 100667.00000
+```
+
+It is a fraction of the size of the full object:
+
+``` r
+
+format(object.size(aeme_summ), units = "Kb")
+#> [1] "2591.5 Kb"
+format(object.size(aeme), units = "Kb")
+#> [1] "4049.1 Kb"
+```
+
+Store it with
+[`write_aeme_summary()`](https://limnotrack.com/AEME/reference/write_aeme_summary.md)
+– `"rds"` (the default), `"parquet"` (one file per table, for dashboards
+in other tools) or `"json"` – and read it back with
+[`read_aeme_summary()`](https://limnotrack.com/AEME/reference/write_aeme_summary.md)
+(`rds` and `parquet`):
+
+``` r
+
+f <- tempfile(fileext = ".rds")
+write_aeme_summary(aeme_summ, f)
+aeme_summ2 <- read_aeme_summary(f)
+identical(output(aeme_summ2), output(aeme_summ))
+#> [1] TRUE
+```
+
+For an ensemble (see
+[`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md)),
+[`summarise_aeme()`](https://limnotrack.com/AEME/reference/summarise_aeme.md)
+combines the members into the statistics in `stats`, and
+`keep_members = TRUE` keeps each member’s series as well. Arguments such
+as `vars`, `observations`, `forcing` and `profiles` choose what goes in,
+so a summary can be made as small as the dashboard needs.
 
 ## Next steps
 

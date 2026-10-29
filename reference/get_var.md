@@ -25,7 +25,12 @@ get_var(
 
 - aeme:
 
-  Aeme object.
+  Aeme object, or an
+  [AemeSummary](https://limnotrack.com/AEME/reference/AemeSummary.md).
+  For a summary only `model` and `var_sim` apply, and the result has the
+  surface and bottom series (`layer`) and every `stat`; filter
+  [`output()`](https://limnotrack.com/AEME/reference/output.md) for more
+  control.
 
 - model:
 
@@ -51,9 +56,9 @@ get_var(
   with `level` the modelled water level (`LKE_lvlwtr`) on each date, so
   it follows the surface as the level rises and falls. On a date when
   the level is below `depth` (the point would be above the surface) the
-  value is `NA`. Ignored when `depth` is `NULL`. (Before AEME 0.4.0
-  `"bottom"` was measured from the basin's full depth, which only
-  matches when the level equals that depth.)
+  value is `NA`. Ignored when `depth` is `NULL`. (In AEME 0.4.0 and
+  earlier `"bottom"` was measured from the basin's full depth, which
+  only matches when the level equals that depth.)
 
 - return_df:
 
@@ -98,4 +103,12 @@ get_var(
 
 ## Value
 
-dataframe or list
+If `return_df = TRUE`, a data frame with the same leading columns
+whether or not `use_obs` is used: `Date`, `depth` (`NA` for variables
+without a depth dimension), `value`, `var_sim` and `Model`. With
+`use_obs = TRUE` the column `obs` (the observation, paired with the
+model `value`) is added after `value`, plus `depth_ref` and
+`height_above_bed` when height-above-bed observations are present.
+Variables with non-standard dimensions (e.g. sediment zones) carry one
+column per extra dimension instead of `depth`. If `return_df = FALSE`, a
+list with one such data frame per model.

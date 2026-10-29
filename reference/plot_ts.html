@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,8 @@
 <span>  remove_spin_up <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  add_obs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  depth_range <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ens_n <span class="op">=</span> <span class="fl">1</span></span>
+<span>  ens_n <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  obs_size <span class="op">=</span> <span class="fl">2.5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -119,6 +120,12 @@ which averages over all depths.</p></dd>
 
 <dt id="arg-ens-n">ens_n<a class="anchor" aria-label="anchor" href="#arg-ens-n"></a></dt>
 <dd><p>integer; ensemble number to plot. Default is 1.</p></dd>
+
+
+<dt id="arg-obs-size">obs_size<a class="anchor" aria-label="anchor" href="#arg-obs-size"></a></dt>
+<dd><p>numeric; size of the observation points. Default is 2.5.
+A single variable is shown with black points (white outline); multiple
+variables are filled to match the line colour (white outline).</p></dd>
 
 </dl></div>
     <div class="section level2">

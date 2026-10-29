@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -192,7 +192,12 @@ m<sup>-1</sup>, which spans everything from clear alpine water to a
 bloom; for this lake we narrow it:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">param</span><span class="op">$</span><span class="va">max</span><span class="op">[</span><span class="va">param</span><span class="op">$</span><span class="va">name</span> <span class="op">==</span> <span class="st">"light/Kw"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1.5</span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_param.html">add_param</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="va">param</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_param.html">add_param</a></span><span class="op">(</span><span class="va">aeme</span>, <span class="va">param</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> This <span style="color: #0000BB;">&lt;Aeme&gt;</span> object was built with AEME 0.4.0, but the installed version is</span></span>
+<span><span class="co">#&gt;   0.4.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Consider rebuilding with `build_aeme()` if you encounter unexpected</span></span>
+<span><span class="co">#&gt;   behaviour.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span></code></pre></div>
 <p>Then build the GLM-AED configuration:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, path <span class="op">=</span> <span class="va">path</span>, ext_elev <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
@@ -246,10 +251,10 @@ few lines of R, so we write it ourselves:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme_ensemble.html">run_aeme_ensemble</a></span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
 <span>                                 param_sets <span class="op">=</span> <span class="va">param_sets_prior</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: 4 of 12 ensemble members failed or ended early and were dropped.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Dropped: <span style="color: #0000BB;">"m03"</span>, <span style="color: #0000BB;">"m04"</span>, <span style="color: #0000BB;">"m10"</span>, and <span style="color: #0000BB;">"m12"</span>.</span></span>
+<span><span class="co">#&gt; Warning: 3 of 12 ensemble members failed or ended early and were dropped.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Dropped: <span style="color: #0000BB;">"m03"</span>, <span style="color: #0000BB;">"m04"</span>, and <span style="color: #0000BB;">"m12"</span>.</span></span>
 <span><span class="fu"><a href="../reference/output.html">output</a></span><span class="op">(</span><span class="va">aeme_prior</span><span class="op">)</span><span class="op">$</span><span class="va">n_members</span></span>
-<span><span class="co">#&gt; [1] 8</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 9</span></span></code></pre></div>
 <p>Each parameter is sampled <strong>independently</strong>, so there is
 no correlation structure between parameters, and every member is a
 complete model run. Swap in a normal distribution, a Latin hypercube or
@@ -283,9 +288,9 @@ kept:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">kept</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="fu"><a href="../reference/output.html">output</a></span><span class="op">(</span><span class="va">aeme_prior</span><span class="op">)</span>, <span class="st">"realisation"</span><span class="op">)</span></span>
 <span><span class="va">kept</span></span>
-<span><span class="co">#&gt; [1] "m01" "m02" "m05" "m06" "m07" "m08" "m09" "m11"</span></span>
+<span><span class="co">#&gt; [1] "m01" "m02" "m05" "m06" "m07" "m08" "m09" "m10" "m11"</span></span>
 <span><span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">param_sets_prior</span><span class="op">)</span>, <span class="va">kept</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "m03" "m04" "m10" "m12"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "m03" "m04" "m12"</span></span></code></pre></div>
 <p>Comparing the dropped members’ parameters with the survivors’ shows
 what went wrong. Here the inflow and outflow scalings are the usual
 culprits:</p>
@@ -301,15 +306,15 @@ culprits:</p>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> m03    dropped  1.28    2.17 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> m04    dropped  0.515   1.72 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> m10    dropped  1.17    1.74 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> m12    dropped  0.503   2.16 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> m01    kept     1.97    1.91 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> m02    kept     2.46    1.62 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> m05    kept     2.28    1.74 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> m06    kept     1.85    1.53 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> m07    kept     1.04    0.981</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> m08    kept     0.516   0.503</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> m09    kept     0.967   1.11 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> m12    dropped  0.503   2.16 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> m01    kept     1.97    1.91 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> m02    kept     2.46    1.62 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> m05    kept     2.28    1.74 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> m06    kept     1.85    1.53 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> m07    kept     1.04    0.981</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> m08    kept     0.516   0.503</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> m09    kept     0.967   1.11 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> m10    kept     1.17    1.74 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> m11    kept     1.98    0.505</span></span></code></pre></div>
 <p>Set <code>drop_incomplete = FALSE</code> to keep every member,
 <code>NA</code>-padded after the model stopped, if you want to inspect
@@ -343,27 +348,27 @@ plots. If you want several variables or depths, extract once with
 <span>                      vars_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>, depths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">s</span></span>
 <span><span class="co">#&gt; &lt;aeme_ensemble_summary&gt;</span></span>
-<span><span class="co">#&gt;   members  : 8 (kept)</span></span>
+<span><span class="co">#&gt;   members  : 9 (kept)</span></span>
 <span><span class="co">#&gt;   variables: HYD_temp</span></span>
 <span><span class="co">#&gt;   depths   :  1, 10 (surface-ref)</span></span>
 <span><span class="co">#&gt;   period   : 2020-08-01 .. 2021-06-30  (668 rows in $stats)</span></span>
 <span><span class="co">#&gt;   quantiles:  2.5, 25.0, 50.0, 75.0, 97.5 %</span></span>
 <span><span class="co">#&gt;   obs      : 20 points</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         Date   Model  var_sim depth n     mean         sd     q2.5      q25</span></span>
-<span><span class="co">#&gt; 1 2020-08-01 GLM-AED HYD_temp     1 8 10.32730 0.08078228 10.24670 10.27218</span></span>
-<span><span class="co">#&gt; 2 2020-08-01 GLM-AED HYD_temp    10 8 10.26396 0.06085934 10.18120 10.23822</span></span>
-<span><span class="co">#&gt; 3 2020-08-02 GLM-AED HYD_temp     1 8 10.56919 0.11266815 10.46019 10.48680</span></span>
-<span><span class="co">#&gt; 4 2020-08-02 GLM-AED HYD_temp    10 8 10.53059 0.10494376 10.39954 10.46220</span></span>
-<span><span class="co">#&gt; 5 2020-08-03 GLM-AED HYD_temp     1 8 10.77278 0.16726338 10.58951 10.65813</span></span>
-<span><span class="co">#&gt; 6 2020-08-03 GLM-AED HYD_temp    10 8 10.63944 0.12301179 10.49408 10.56227</span></span>
-<span><span class="co">#&gt;        q50      q75    q97.5</span></span>
-<span><span class="co">#&gt; 1 10.28455 10.39758 10.44355</span></span>
-<span><span class="co">#&gt; 2 10.24570 10.29950 10.36047</span></span>
-<span><span class="co">#&gt; 3 10.51405 10.68700 10.72085</span></span>
-<span><span class="co">#&gt; 4 10.49530 10.62017 10.67714</span></span>
-<span><span class="co">#&gt; 5 10.70155 10.92507 11.00881</span></span>
-<span><span class="co">#&gt; 6 10.58610 10.75743 10.80561</span></span></code></pre></div>
+<span><span class="co">#&gt;         Date   Model  var_sim depth n     mean         sd     q2.5     q25</span></span>
+<span><span class="co">#&gt; 1 2020-08-01 GLM-AED HYD_temp     1 9 10.32120 0.07354341 10.23818 10.2631</span></span>
+<span><span class="co">#&gt; 2 2020-08-01 GLM-AED HYD_temp    10 9 10.25689 0.05599197 10.17610 10.2334</span></span>
+<span><span class="co">#&gt; 3 2020-08-02 GLM-AED HYD_temp     1 9 10.55908 0.10594508 10.44630 10.4706</span></span>
+<span><span class="co">#&gt; 4 2020-08-02 GLM-AED HYD_temp    10 9 10.51979 0.09666516 10.39054 10.4492</span></span>
+<span><span class="co">#&gt; 5 2020-08-03 GLM-AED HYD_temp     1 9 10.74847 0.15250244 10.56952 10.6363</span></span>
+<span><span class="co">#&gt; 6 2020-08-03 GLM-AED HYD_temp    10 9 10.62811 0.11395535 10.48142 10.5488</span></span>
+<span><span class="co">#&gt;       q50     q75    q97.5</span></span>
+<span><span class="co">#&gt; 1 10.2846 10.3722 10.42512</span></span>
+<span><span class="co">#&gt; 2 10.2421 10.2843 10.34912</span></span>
+<span><span class="co">#&gt; 3 10.5110 10.6642 10.69746</span></span>
+<span><span class="co">#&gt; 4 10.4913 10.5922 10.65892</span></span>
+<span><span class="co">#&gt; 5 10.6768 10.8652 10.96472</span></span>
+<span><span class="co">#&gt; 6 10.5799 10.7274 10.78506</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -529,7 +534,7 @@ was exported, including how many ensemble members each lake has:</p>
 <span><span class="co">#&gt;    lake_id    name latitude longitude elevation depth   area      start</span></span>
 <span><span class="co">#&gt; 1 LID45819 Wainamu -36.8898   174.469     23.64 13.07 152343 2020-08-01</span></span>
 <span><span class="co">#&gt;         stop  models n_ens</span></span>
-<span><span class="co">#&gt; 1 2021-06-30 glm_aed     8</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 2021-06-30 glm_aed     9</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="reading-it-back">Reading it back<a class="anchor" aria-label="anchor" href="#reading-it-back"></a>
 </h3>
@@ -546,12 +551,12 @@ re-running or even loading the model:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 14</span></span></span>
 <span><span class="co">#&gt;   date       var_sim  depth depth_ref  mean     sd n_ens   q05   q25   q50   q75</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2020-08-01 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.0 0.076<span style="text-decoration: underline;">4</span>     8  13.0  13.0  13.0  13.0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2020-08-02 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.1 0.107      8  13.0  13.0  13.0  13.1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2020-08-03 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.2 0.170      8  13.0  13.1  13.1  13.2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2020-08-04 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.8 0.448      8  13.3  13.4  13.8  14.1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2020-08-05 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.9 0.582      8  13.3  13.4  13.9  14.3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2020-08-06 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.9 0.704      8  13.2  13.4  13.8  14.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2020-08-01 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.0 0.078<span style="text-decoration: underline;">4</span>     9  12.9  13.0  13.0  13.1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2020-08-02 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.0 0.107      9  12.9  13.0  13.0  13.1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2020-08-03 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.1 0.161      9  13.0  13.1  13.1  13.2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2020-08-04 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.6 0.347      9  13.2  13.3  13.7  13.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2020-08-05 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.6 0.383      9  13.2  13.3  13.7  13.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2020-08-06 LKE_lvl…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         13.6 0.409      9  13.1  13.3  13.6  13.9</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: q95 &lt;dbl&gt;, lake_id &lt;chr&gt;, model &lt;chr&gt;</span></span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">lvl</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -587,17 +592,17 @@ contributes at both depths:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
 <span><span class="co">#&gt;   date       depth depth_ref  mean   q05   q50   q95 n_ens</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2020-08-01     1 surface    10.3  10.3  10.3  10.4     8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2020-08-01    10 surface    10.3  10.2  10.2  10.4     8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2020-08-02     1 surface    10.6  10.5  10.5  10.7     8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2020-08-02    10 surface    10.5  10.4  10.5  10.7     8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2020-08-03     1 surface    10.8  10.6  10.7  11.0     8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2020-08-03    10 surface    10.6  10.5  10.6  10.8     8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2020-08-01     1 surface    10.3  10.2  10.3  10.4     9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2020-08-01    10 surface    10.3  10.2  10.2  10.3     9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2020-08-02     1 surface    10.6  10.4  10.5  10.7     9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2020-08-02    10 surface    10.5  10.4  10.5  10.7     9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2020-08-03     1 surface    10.7  10.6  10.7  11.0     9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2020-08-03    10 surface    10.6  10.5  10.6  10.8     9</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">temp_prior</span><span class="op">$</span><span class="va">depth</span>, <span class="va">temp_prior</span><span class="op">$</span><span class="va">n_ens</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     </span></span>
-<span><span class="co">#&gt;        8</span></span>
-<span><span class="co">#&gt;   1  334</span></span>
-<span><span class="co">#&gt;   10 334</span></span></code></pre></div>
+<span><span class="co">#&gt;        8   9</span></span>
+<span><span class="co">#&gt;   1    0 334</span></span>
+<span><span class="co">#&gt;   10 301  33</span></span></code></pre></div>
 <p><code>n_ens</code> counts the members that have a value. A depth that
 falls outside a member’s water column on a date – deeper than that
 member’s lake, or above its surface – is left out for that member rather
@@ -621,12 +626,12 @@ member’s own level (<code>LKE_lvlwtr</code>):</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 6</span></span></span>
 <span><span class="co">#&gt;   date       depth depth_ref  mean   q50 n_ens</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2020-08-01     1 bottom     10.3  10.2     8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2020-08-02     1 bottom     10.5  10.5     8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2020-08-03     1 bottom     10.6  10.6     8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2020-08-04     1 bottom     10.7  10.7     8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2020-08-05     1 bottom     10.8  10.8     8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2020-08-06     1 bottom     10.9  10.9     8</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2020-08-01     1 bottom     10.3  10.2     9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2020-08-02     1 bottom     10.5  10.5     9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2020-08-03     1 bottom     10.6  10.6     9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2020-08-04     1 bottom     10.7  10.7     9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2020-08-05     1 bottom     10.8  10.7     9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2020-08-06     1 bottom     10.9  10.9     9</span></span></code></pre></div>
 <p>The raw tier is unchanged by <code>depths</code> and
 <code>depth_ref</code>: it always holds the stored depths, in metres
 below the surface.</p>
@@ -646,17 +651,18 @@ pulled into R:</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">ens</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_temp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 3</span></span></span>
 <span><span class="co">#&gt;     ens mean_temp     n</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1      19.3  <span style="text-decoration: underline;">1</span>333</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2      19.6  <span style="text-decoration: underline;">1</span>457</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3      20.6  <span style="text-decoration: underline;">1</span>457</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4      20.2  <span style="text-decoration: underline;">1</span>457</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     5      21.2  <span style="text-decoration: underline;">1</span>333</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>     6      20.4  <span style="text-decoration: underline;">1</span>333</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span>     7      20.2  <span style="text-decoration: underline;">1</span>302</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span>     8      20.6  <span style="text-decoration: underline;">1</span>457</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1      19.5  <span style="text-decoration: underline;">1</span>302</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2      20.1  <span style="text-decoration: underline;">1</span>364</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3      21.2  <span style="text-decoration: underline;">1</span>333</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4      20.7  <span style="text-decoration: underline;">1</span>333</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     5      21.5  <span style="text-decoration: underline;">1</span>302</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>     6      20.6  <span style="text-decoration: underline;">1</span>302</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span>     7      20.4  <span style="text-decoration: underline;">1</span>302</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span>     8      21.7  <span style="text-decoration: underline;">1</span>271</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span>     9      21.3  <span style="text-decoration: underline;">1</span>364</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -702,7 +708,7 @@ every output variable written:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">pq_prior</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="va">files</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span>, <span class="fl">1</span><span class="op">)</span>  <span class="co"># MB, both tiers</span></span>
-<span><span class="co">#&gt; [1] 5.8</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 1.9</span></span></code></pre></div>
 <p>Because every lake is just another <code>lake_id=</code> partition,
 the same <code>out_root</code> can hold many lakes, and
 <code><a href="../reference/read_aeme_parquet.html">read_aeme_parquet()</a></code> (or DuckDB, Python, …) can query them

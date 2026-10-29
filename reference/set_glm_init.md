@@ -36,11 +36,16 @@ set_glm_init(
 
 - wq_init:
 
-  named list; new initial values for water quality variables, e.g.
-  `list(NIT_amm = 0.5, CHM_oxy = 300)`. Names must match
-  `init_profiles$wq_names` in the nml file. Each value is recycled
-  across depths. `NULL` (default) leaves water quality initial values
-  unchanged.
+  named list; new initial values for water quality variables in AEME
+  (standard) units, e.g. `list(NIT_amm = 0.5, CHM_oxy = 10)` (g/m3, i.e.
+  mg/L). Names are AEME variable names (see
+  [key_naming](https://limnotrack.com/AEME/reference/key_naming.md));
+  they are translated to the GLM-AED names in `init_profiles$wq_names`
+  and the values converted to GLM-AED native units (mmol/m3) by dividing
+  by `conversion_aed`. A name that is not an AEME variable but matches
+  `init_profiles$wq_names` is written as-is, in native units. Each value
+  is recycled across depths. `NULL` (default) leaves water quality
+  initial values unchanged.
 
 - glm_file:
 
@@ -64,6 +69,6 @@ depths are already defined.
 ``` r
 if (FALSE) { # \dontrun{
 set_glm_init(path_glm, temp = seq(20, 10, length.out = 10))
-set_glm_init(path_glm, wq_init = list(NIT_amm = 0.5, CHM_oxy = 300))
+set_glm_init(path_glm, wq_init = list(NIT_amm = 0.5, CHM_oxy = 10))
 } # }
 ```

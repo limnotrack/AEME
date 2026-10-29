@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,11 +157,6 @@ works through them using one small built model.</p>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                   model_controls <span class="op">=</span> <span class="va">model_controls</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                   use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> `SIL_rsi`: SIL_rsi is constant across all rows -- this may be a placeholder</span></span>
-<span><span class="co">#&gt;   value.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Check raw data or unit conversion for this variable.</span></span>
-<span><span class="co">#&gt; Warning: GLM ignores the AirPres met column in daily mode and uses the default 1013.25 hPa instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -277,7 +272,7 @@ function on this page is ultimately built on:</p>
 <code class="sourceCode R"><span><span class="va">outfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_outfile.html">get_model_outfile</a></span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span><span class="op">)</span><span class="op">$</span><span class="va">glm_aed</span></span>
 <span><span class="va">outfile</span></span>
 <span><span class="co">#&gt;                                                                                         output </span></span>
-<span><span class="co">#&gt; "C:/Users/runneradmin/AppData/Local/Temp/RtmpQTDAtT/LID45819_wainamu/glm_aed/output/output.nc"</span></span></code></pre></div>
+<span><span class="co">#&gt; "C:/Users/runneradmin/AppData/Local/Temp/Rtmps7vpxm/LID45819_wainamu/glm_aed/output/output.nc"</span></span></code></pre></div>
 <p><code><a href="../reference/read_glm_output.html">read_glm_output()</a></code> reads the model output, projects onto
 a standard grid and also does some unit conversions, especially for the
 AED variables that are stored in mmol/m3 in the raw output but are more
@@ -304,7 +299,7 @@ name for plotting instead of the standardised AEME variable name.</p>
 <span><span class="co">#&gt;   34 sediment variables: zarea, sed_temp, sed_heatflux, zone_ztemp, sed_layer_depth, SDF_Fsed_oxy_Z, SDF_Fsed_amm_Z, SDF_Fsed_nit_Z, SDF_Fsed_frp_Z, NCS_swi_Z, NCS_swi_dz_Z, NCS_resus_Z, NCS_d_taub_Z, OXY_oxy_dsf_Z, OXY_oxy_atm_Z, SIL_dsf_rsi_Z, NIT_amm_dsf_Z, NIT_nit_dsf_Z, PHS_frp_dsf_Z, OGM_toc_sed_Z, OGM_ton_sed_Z, OGM_top_sed_Z, OGM_poc_swi_Z, OGM_doc_swi_Z, OGM_pon_swi_Z, OGM_don_swi_Z, OGM_pop_swi_Z, OGM_dop_swi_Z, OGM_poc_res_Z, OGM_pon_res_Z, OGM_pop_res_Z, PHY_phy_swi_c_Z, PHY_phy_swi_n_Z, PHY_phy_swi_p_Z</span></span></code></pre></div>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model_output.html">plot_model_output</a></span><span class="op">(</span><span class="va">raw</span>, var_sim <span class="op">=</span> <span class="st">"OXY_oxy"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 89687 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 89626 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="visualising-output_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="672"></p>
 <p>The AED sediment fluxes, which are not included in the
@@ -315,6 +310,93 @@ oxygen flux:</p>
 <span><span class="co">#&gt; Warning: Removed 335 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="visualising-output_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="672"></p>
+</div>
+<div class="section level2">
+<h2 id="a-lightweight-summary-for-dashboards">A lightweight summary for dashboards<a class="anchor" aria-label="anchor" href="#a-lightweight-summary-for-dashboards"></a>
+</h2>
+<p>The depth-resolved output of a model run is large, and most
+dashboards only need a few series. <code><a href="../reference/summarise_aeme.html">summarise_aeme()</a></code> (also
+what <code>summary(aeme)</code> returns) reduces an <code>Aeme</code> to
+an <code>AemeSummary</code>: daily surface and bottom values for every
+depth-resolved variable, the variables that have no depth, and
+optionally the observations, daily forcing and the hypsograph. It holds
+no model configuration, so it cannot be built or run – it is only for
+looking at.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aeme_summ</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarise_aeme.html">summarise_aeme</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
+<span><span class="va">aeme_summ</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">AemeSummary: Wainamu</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Models: <span style="color: #0000BB;">"glm_aed"</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Period: 2020-08-01 to 2021-06-30</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Source members: 1; stats: <span style="color: #0000BB;">"value"</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Output: 21042 rows, 41 variables</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Observations: <span style="color: #0000BB;">"lake"</span> and <span style="color: #0000BB;">"level"</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Forcing: <span style="color: #0000BB;">"meteo"</span>, <span style="color: #0000BB;">"inflows"</span>, <span style="color: #0000BB;">"outflows"</span>, and <span style="color: #0000BB;">"water_balance"</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Hypsograph: 44 rows; profiles: 0 rows</span></span></code></pre></div>
+<p>The <code>output</code> is a plain long table, so it goes straight
+into ggplot2, a dashboard, or any other language. <code>layer</code> is
+<code>"surface"</code> or <code>"bottom"</code> (split at the epilimnion
+depth, <code>HYD_epidep</code>, else the thermocline depth, else half
+the water column), or <code>NA</code> for variables without depth.
+<code>stat</code> is <code>"value"</code> for a single run; with an
+ensemble it holds the statistics across members (mean, min, max and the
+5th/95th percentiles by default).</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/output.html">output</a></span><span class="op">(</span><span class="va">aeme_summ</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         Date   model var_aeme  layer  stat  value</span></span>
+<span><span class="co">#&gt; 1 2020-08-01 glm_aed  CAR_doc bottom value     NA</span></span>
+<span><span class="co">#&gt; 2 2020-08-02 glm_aed  CAR_doc bottom value 0.4902</span></span>
+<span><span class="co">#&gt; 3 2020-08-03 glm_aed  CAR_doc bottom value 0.4765</span></span>
+<span><span class="co">#&gt; 4 2020-08-04 glm_aed  CAR_doc bottom value 0.4638</span></span>
+<span><span class="co">#&gt; 5 2020-08-05 glm_aed  CAR_doc bottom value 0.4542</span></span>
+<span><span class="co">#&gt; 6 2020-08-06 glm_aed  CAR_doc bottom value 0.4563</span></span></code></pre></div>
+<p><code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> and <code><a href="../reference/get_var.html">get_var()</a></code> work on a summary, and
+the same accessors you use on an <code>Aeme</code> (<code><a href="../reference/lake.html">lake()</a></code>,
+<code><a href="../reference/time.html">time()</a></code>, <code><a href="../reference/observations.html">observations()</a></code>,
+<code><a href="../reference/parameters.html">parameters()</a></code>) apply, with <code><a href="../reference/AemeSummary-accessors.html">forcing()</a></code>,
+<code><a href="../reference/AemeSummary-accessors.html">hypsograph()</a></code>, <code><a href="../reference/AemeSummary-accessors.html">profiles()</a></code> and
+<code><a href="../reference/AemeSummary-accessors.html">models()</a></code> for the rest:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme_summ</span>, <span class="st">"HYD_temp"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
+<p><img src="visualising-output_files/figure-html/summary-plot-1.png" class="r-plt" alt="" width="672"></p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="../reference/AemeSummary-accessors.html">forcing</a></span><span class="op">(</span><span class="va">aeme_summ</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "meteo"         "inflows"       "outflows"      "water_balance"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/AemeSummary-accessors.html">forcing</a></span><span class="op">(</span><span class="va">aeme_summ</span><span class="op">)</span><span class="op">$</span><span class="va">meteo</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         Date   var_aeme        value</span></span>
+<span><span class="co">#&gt; 1 2019-01-01 MET_cldcvr      0.53900</span></span>
+<span><span class="co">#&gt; 2 2019-01-01 MET_humrel     84.87500</span></span>
+<span><span class="co">#&gt; 3 2019-01-01 MET_pprain      0.44344</span></span>
+<span><span class="co">#&gt; 4 2019-01-01 MET_ppsnow      0.00000</span></span>
+<span><span class="co">#&gt; 5 2019-01-01 MET_prmslp 100945.10200</span></span>
+<span><span class="co">#&gt; 6 2019-01-01 MET_prsttn 100667.00000</span></span></code></pre></div>
+<p>It is a fraction of the size of the full object:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">aeme_summ</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"Kb"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "2591.5 Kb"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"Kb"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "4049.1 Kb"</span></span></code></pre></div>
+<p>Store it with <code><a href="../reference/write_aeme_summary.html">write_aeme_summary()</a></code> – <code>"rds"</code>
+(the default), <code>"parquet"</code> (one file per table, for
+dashboards in other tools) or <code>"json"</code> – and read it back
+with <code><a href="../reference/write_aeme_summary.html">read_aeme_summary()</a></code> (<code>rds</code> and
+<code>parquet</code>):</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".rds"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/write_aeme_summary.html">write_aeme_summary</a></span><span class="op">(</span><span class="va">aeme_summ</span>, <span class="va">f</span><span class="op">)</span></span>
+<span><span class="va">aeme_summ2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/write_aeme_summary.html">read_aeme_summary</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="../reference/output.html">output</a></span><span class="op">(</span><span class="va">aeme_summ2</span><span class="op">)</span>, <span class="fu"><a href="../reference/output.html">output</a></span><span class="op">(</span><span class="va">aeme_summ</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>For an ensemble (see <code><a href="../reference/run_aeme_ensemble.html">run_aeme_ensemble()</a></code>),
+<code><a href="../reference/summarise_aeme.html">summarise_aeme()</a></code> combines the members into the statistics
+in <code>stats</code>, and <code>keep_members = TRUE</code> keeps each
+member’s series as well. Arguments such as <code>vars</code>,
+<code>observations</code>, <code>forcing</code> and
+<code>profiles</code> choose what goes in, so a summary can be made as
+small as the dashboard needs.</p>
 </div>
 <div class="section level2">
 <h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>

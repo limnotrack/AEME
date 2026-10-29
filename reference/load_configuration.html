@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,6 +86,7 @@
 <span>  calc_wlev <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  use_aeme <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  coeffs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  glm_weir <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  hum_type <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  est_swr_hr <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -152,6 +153,20 @@ against air temperature. Otherwise defaults to
 \(T_{water} = 5 + 0.75 \times T_{air}\) (Stefan &amp; Preud'homme, 1993,
 <a href="https://doi.org/10.1111/j.1752-1688.1993.tb01502.x" class="external-link">doi:10.1111/j.1752-1688.1993.tb01502.x</a>
 ).</p></dd>
+
+
+<dt id="arg-glm-weir">glm_weir<a class="anchor" aria-label="anchor" href="#arg-glm-weir"></a></dt>
+<dd><p>logical or list; for <code>"glm_aed"</code>, let GLM spill through its
+own weir (<code>morphometry/crest_elev</code>, <code>outflow/crest_width</code>,
+<code>outflow/crest_factor</code>) instead of reading the water-balance (<code>wbal</code>)
+outflow file. The weir is fitted to the observed <code>"outflow"</code> and lake level
+when both overlap (that outflow is then replaced by the weir), otherwise
+taken from the fitted water-balance <code>C</code> and <code>h_inv</code>. When fitted from
+observations, the water-balance <code>C</code> / <code>h_inv</code> for the <code>glm_aed</code> family
+(shared with <code>dy_cd</code>) are set to the equivalent values so the water
+balance and GLM agree. Other outflows are kept as GLM outlets. A list may
+set <code>crest_width</code> (m, default 6) and <code>interval</code> (search range for
+<code>crest_elev</code>). Default: <code>TRUE</code>; <code>FALSE</code> restores the <code>wbal</code> outflow file.</p></dd>
 
 
 <dt id="arg-hum-type">hum_type<a class="anchor" aria-label="anchor" href="#arg-hum-type"></a></dt>

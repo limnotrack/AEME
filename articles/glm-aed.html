@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -276,7 +276,823 @@ cyanobacteria, green algae, diatoms.</td>
 </tr>
 </tbody>
 </table>
+<p>There is a work-in-progress AED module dependency diagram available
+as a html diagram. This can be viewed in R with the
+<code><a href="../reference/view_aed_modules.html">view_aed_modules()</a></code> function, which opens the diagram in
+your RStudio Viewer pane or default web browser. It is embedded below in
+an iframe so its styling does not affect this article.</p>
 </div>
+</div>
+<div class="section level4">
+<h4 id="view-aed-modules">View AED modules<a class="anchor" aria-label="anchor" href="#view-aed-modules"></a>
+</h4>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/view_aed_modules.html">view_aed_modules</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<iframe srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;AED Module Interactions&lt;/title&gt;
+&lt;style&gt;
+:root{
+  --bg:#fafaf7; --card:#ffffff; --fg:#1d2127; --muted:#5d6672; --line:#d9dcd5; --hl:#fff4c2;
+  --N-bg:#dcebfb; --N-bd:#2a6cb8; --N-fg:#10355e;
+  --P-bg:#fde8cf; --P-bd:#c26a10; --P-fg:#5e3205;
+  --C-bg:#dcf1df; --C-bd:#2f8a46; --C-fg:#124a22;
+  --O-bg:#fbdcdc; --O-bd:#c13b3b; --O-fg:#5e1414;
+  --S-bg:#e8e0f5; --S-bd:#7352b8; --S-fg:#2f1b5e;
+  --B-bg:#d8f0ee; --B-bd:#1f8a84; --B-fg:#0c4642;
+  --X-bg:#ecece8; --X-bd:#8a8f96; --X-fg:#2b2f34;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme=&quot;light&quot;]){
+    --bg:#14171a; --card:#1c2024; --fg:#e7e9ec; --muted:#9aa3ae; --line:#2f353b; --hl:#4a4015;
+    --N-bg:#173452; --N-bd:#5aa0ec; --N-fg:#cfe5fc;
+    --P-bg:#4a2e10; --P-bd:#f0a050; --P-fg:#fde3c4;
+    --C-bg:#17381f; --C-bd:#5cc276; --C-fg:#d2f2da;
+    --O-bg:#4d1e1e; --O-bd:#ef7878; --O-fg:#fbd5d5;
+    --S-bg:#33284f; --S-bd:#a78bec; --S-fg:#e3d9fa;
+    --B-bg:#12403d; --B-bd:#4cc6bf; --B-fg:#cdf2ef;
+    --X-bg:#262a2f; --X-bd:#7b838c; --X-fg:#dfe2e5;
+  }
+}
+:root[data-theme=&quot;dark&quot;]{
+  --bg:#14171a; --card:#1c2024; --fg:#e7e9ec; --muted:#9aa3ae; --line:#2f353b; --hl:#4a4015;
+  --N-bg:#173452; --N-bd:#5aa0ec; --N-fg:#cfe5fc;
+  --P-bg:#4a2e10; --P-bd:#f0a050; --P-fg:#fde3c4;
+  --C-bg:#17381f; --C-bd:#5cc276; --C-fg:#d2f2da;
+  --O-bg:#4d1e1e; --O-bd:#ef7878; --O-fg:#fbd5d5;
+  --S-bg:#33284f; --S-bd:#a78bec; --S-fg:#e3d9fa;
+  --B-bg:#12403d; --B-bd:#4cc6bf; --B-fg:#cdf2ef;
+  --X-bg:#262a2f; --X-bd:#7b838c; --X-fg:#dfe2e5;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,&quot;Segoe UI&quot;,Roboto,sans-serif}
+header,main{max-width:1240px;margin:0 auto;padding:0 16px}
+header{padding-top:28px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:20px;margin:28px 0 6px}
+h3{font-size:16px;margin:22px 0 6px}
+.sub{color:var(--muted);margin:0 0 16px;max-width:80ch}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0;border-bottom:1px solid var(--line);padding-bottom:0}
+nav button{font:inherit;border:1px solid var(--line);border-bottom:none;background:transparent;color:var(--muted);
+  padding:8px 14px;border-radius:8px 8px 0 0;cursor:pointer}
+nav button[aria-selected=&quot;true&quot;]{background:var(--card);color:var(--fg);font-weight:600;position:relative;top:1px}
+section.tab{display:none;padding-bottom:48px}
+section.tab.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin:12px 0}
+.diagram{overflow-x:auto}
+.diagram svg{display:block;min-width:900px;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin:8px 2px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px;border:1.5px solid}
+.legend .ar{width:22px;height:0;border:none;border-top:2px solid;border-radius:0;vertical-align:4px}
+.legend .ar.d{border-top-style:dashed}
+.note{font-size:14px;color:var(--muted);max-width:90ch}
+.warn{border-left:4px solid var(--P-bd);background:var(--P-bg);color:var(--P-fg);padding:8px 12px;border-radius:6px;margin:12px 0;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);position:sticky;top:0;background:var(--card)}
+tr.hl td{background:var(--hl)}
+code,.p{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}
+.p{display:inline-block;background:var(--X-bg);color:var(--X-fg);border-radius:4px;padding:0 5px;margin:1px 3px 1px 0;white-space:nowrap}
+.pid{font-weight:700;white-space:nowrap}
+.pid.Y,.pid.Z{color:var(--B-bd)} .pid.N{color:var(--N-bd)} .pid.P{color:var(--P-bd)} .pid.C{color:var(--C-bd)} .pid.O{color:var(--O-bd)} .pid.S{color:var(--S-bd)}
+.tblwrap{overflow-x:auto}
+.filter{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.filter input{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);min-width:260px}
+.filter select{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
+svg text{font-family:system-ui,-apple-system,&quot;Segoe UI&quot;,Roboto,sans-serif}
+.lbl{cursor:default}
+.lbl:hover rect{stroke:var(--fg);stroke-width:1}
+.theme{margin-left:auto;font:inherit;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:6px 10px;cursor:pointer}
+@media (max-width:600px){h1{font-size:22px}}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header&gt;
+  &lt;div style=&quot;display:flex;gap:12px;align-items:flex-start&quot;&gt;
+    &lt;div&gt;
+      &lt;h1&gt;AED water-column modules: how they interact&lt;/h1&gt;
+      &lt;p class=&quot;sub&quot;&gt;Box-and-arrow maps of how &lt;code&gt;libaed-water&lt;/code&gt; modules exchange nitrogen, phosphorus and carbon, and which namelist or CSV parameters drive each process. Built from the Fortran in &lt;code&gt;src/&lt;/code&gt; on branch &lt;code&gt;dev&lt;/code&gt;. Hover an arrow label to highlight its row in the table below.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;button class=&quot;theme&quot; id=&quot;themeBtn&quot; type=&quot;button&quot; aria-label=&quot;Toggle light or dark theme&quot;&gt;Theme&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;nav role=&quot;tablist&quot; id=&quot;tabs&quot;&gt;&lt;/nav&gt;
+&lt;/header&gt;
+&lt;main id=&quot;main&quot;&gt;&lt;/main&gt;
+
+&lt;script&gt;
+/* ===================================================================
+   DATA: processes. One source feeds the diagrams' tables and the index.
+   id prefix: N nitrogen, P phosphorus, C carbon, O oxygen switches, S sediment
+   =================================================================== */
+const PROCS = [
+// ---------------- PHYTOPLANKTON ----------------
+{id:'Y1',name:'Temperature limitation fT',mod:'PHY',flow:'scales growth',params:['fT_Method','theta_growth','T_std','T_opt','T_max'],note:'fT_Method 0 = none; 1 = CAEDYM style. Below T_std it is θ^(T−20), between T_std and T_max a curve peaking near T_opt, and zero above T_max.'},
+{id:'Y2',name:'Light limitation fI',mod:'PHY',flow:'scales growth',params:['lightModel','I_K','I_S','KePHY'],note:'lightModel 0 = no photoinhibition (uses I_K), 1 = photoinhibition (uses I_S). Averaged over the layer using PAR and the extinction coefficient. KePHY is the phytoplankton’s own contribution to light extinction.'},
+{id:'Y3',name:'Nitrogen limitation fN',mod:'PHY',flow:'NH4⁺, NO3⁻ → limits growth',params:['simDINUptake','simDONUptake','simINDynamics','N_o','K_N','X_ncon','X_nmin','X_nmax','simNFixation'],note:'External: (N−N_o)/(N−N_o+K_N). With simINDynamics=2: from the internal quota IN/C between X_nmin and X_nmax. With N fixation active the N limit is bypassed and replaced by the fixation reduction (Y7).'},
+{id:'Y4',name:'Phosphorus limitation fP',mod:'PHY',flow:'FRP → limits growth',params:['simDIPUptake','simIPDynamics','P_0','K_P','X_pcon','X_pmin','X_pmax'],note:'Same structure as Y3 with FRP, P_0 and K_P, or the internal quota IP/C.'},
+{id:'Y5',name:'Silica limitation fSi',mod:'PHY',flow:'reactive Si → limits growth',params:['simSiUptake','Si_0','K_Si','X_sicon'],note:'Only for groups with simSiUptake&gt;0 (diatoms). Si uptake follows carbon fixation at X_sicon.'},
+{id:'Y6',name:'Gross primary production',mod:'PHY',flow:'DIC → phyto-C, releases O₂',params:['R_growth','p0','p_initial','fT_Method','lightModel','simDINUptake','simDIPUptake','simSiUptake'],note:'R_growth × fT × min(fI, fN, fP, fSi). Nutrient uptake is cut so it never exceeds 99% of the pool in a step. Growth also needs biomass above p0.'},
+{id:'Y7',name:'N₂ fixation',mod:'PHY',flow:'N₂ → phyto-N',params:['simNFixation','R_nfix','k_nfix'],note:'Fixation replaces part of the DIN demand and slows growth by up to k_nfix.'},
+{id:'Y8',name:'Respiration',mod:'PHY',flow:'phyto-C → DIC, uses O₂',params:['R_resp','theta_resp','k_fres','p0'],note:'Metabolic loss R_resp × θ_resp^(T−20). The k_fres share is true respiration (DIC up, O₂ down). Loss stops when biomass is at or below p0.'},
+{id:'Y9',name:'Exudation and excretion → DOM',mod:'PHY',flow:'phyto-C, N, P, Si → DOC, DON, DOP',params:['f_pr','k_fdom','k_fres','c_excretion_target_variable','n_excretion_target_variable','p_excretion_target_variable','si_excretion_target_variable'],note:'Exudation is f_pr of primary production. The metabolic loss not respired is split: k_fdom to DOM, the rest to POM (Y10).'},
+{id:'Y10',name:'Mortality → POM',mod:'PHY',flow:'phyto-C, N, P, Si → POC, PON, POP',params:['k_fdom','k_fres','c_mortality_target_variable','n_mortality_target_variable','p_mortality_target_variable','si_mortality_target_variable'],note:'Share (1−k_fdom)(1−k_fres) of the metabolic loss.'},
+{id:'Y11',name:'Salinity effect',mod:'PHY',flow:'scales growth or respiration',params:['salTol','S_opt','S_bep','S_maxsp'],note:'|salTol| picks the function (0 none, 1–3 variants). A negative salTol applies it to growth, a positive one to respiration. S_bep is the multiplier at S_maxsp.'},
+{id:'Y12',name:'Settling and vertical movement',mod:'PHY',flow:'phyto-C ⇄ depth, → sediment',params:['settling','w_p','d_phy','rho_phy','min_rho','max_rho','phyto_particle_link'],note:'settling: 0 off, 1 constant w_p, 2 temperature-corrected w_p, 3 Stokes (d_phy, rho_phy or a dynamic density state), 4 motile (Ross &amp; Sharples style, driven by internal N and light).'},
+{id:'Y13',name:'Resuspension',mod:'PHY',flow:'sediment → phyto-C',params:['resuspension','resus_link','n_zones','active_zones'],note:'Per-group scaling of the resuspension flux, applied to the bottom layer.'},
+{id:'Y14',name:'Microphytobenthos',mod:'PHY',flow:'DIC, NH4, NO3, FRP ⇄ benthic algae',params:['do_mpb','R_mpbg','R_mpbr','R_mpbb','I_Kmpb','mpb_max','theta_mpb_growth','theta_mpb_resp'],note:'Benthic algae grow in the bottom layer and take nutrients and DIC directly.'},
+{id:'Y15',name:'Output links to other modules',mod:'PHY',flow:'sets which pools receive each flux',params:['c_uptake_target_variable','do_uptake_target_variable','n1_uptake_target_variable','n2_uptake_target_variable','n3_uptake_target_variable','n4_uptake_target_variable','p1_uptake_target_variable','p2_uptake_target_variable','si_uptake_target_variable','dbase','num_phytos','the_phytos'],note:'Leaving a link empty disables that exchange. the_phytos picks the columns of dbase (aed_phyto_pars.csv).'},
+// ---------------- ZOOPLANKTON ----------------
+{id:'Z1',name:'Grazing',mod:'ZOO',flow:'phyto, POC, other zoo → zoo',params:['Rgrz_zoo','Kgrz_zoo','Cmin_grz_zoo','num_prey','prey(n)%zoop_prey','prey(n)%Pzoo_prey'],note:'Rgrz_zoo × C/(Kgrz_zoo+C) × fT, with C the total prey. Prey are never grazed below Cmin_grz_zoo. The catch is split by the preference factors Pzoo_prey.'},
+{id:'Z2',name:'Temperature effect',mod:'ZOO',flow:'scales grazing, respiration, mortality',params:['theta_grz_zoo','Tstd_zoo','Topt_zoo','Tmax_zoo','theta_resp_zoo'],note:'Grazing uses the CAEDYM-style fT (as Y1). Respiration and mortality use θ_grz_zoo^(T−20). theta_resp_zoo is read but not used in the rates.'},
+{id:'Z3',name:'Assimilation',mod:'ZOO',flow:'grazed C, N, P → zoo biomass',params:['fassim_zoo','INC_zoo','IPC_zoo'],note:'Fraction fassim_zoo of grazed carbon builds biomass. The animal keeps fixed N:C (INC_zoo) and P:C (IPC_zoo).'},
+{id:'Z4',name:'Faeces → POM',mod:'ZOO',flow:'unassimilated food → POC, PON, POP',params:['fassim_zoo','ffecal_zoo','ffecal_sed','pc_target_variable','pn_target_variable','pp_target_variable'],note:'Unassimilated grazing plus ffecal_zoo of respiration. ffecal_sed is the share of pellets assumed to sink straight to the sediment and so is removed from the water-column POM.'},
+{id:'Z5',name:'Excretion → DOM',mod:'ZOO',flow:'excess N, P (and C) → DON, DOP, DOC',params:['fexcr_zoo','INC_zoo','IPC_zoo','dc_target_variable','dn_target_variable','dp_target_variable'],note:'Nutrients grazed beyond the animal’s fixed N:C and P:C are excreted as DON and DOP. If one nutrient is short, extra carbon is excreted to restore balance.'},
+{id:'Z6',name:'Respiration',mod:'ZOO',flow:'zoo-C lost',params:['Rresp_zoo','theta_grz_zoo','ffecal_zoo','fexcr_zoo','saltfunc_zoo','Smin_zoo','Smax_zoo','Sint_zoo'],note:'Rresp_zoo × fT × fSal. The remainder after faeces and excretion fractions is not routed to DIC or O₂ in this version.'},
+{id:'Z7',name:'Mortality',mod:'ZOO',flow:'zoo-C → POM',params:['Rmort_zoo','DOmin_zoo','theta_grz_zoo','min_zoo'],note:'Rmort_zoo × fT × fDO, sent to POC, PON, POP. Below DOmin_zoo the rate rises as 1+(DOmin_zoo−O₂)/DOmin_zoo. Loss stops at min_zoo.'},
+{id:'Z8',name:'Salinity effect',mod:'ZOO',flow:'scales respiration',params:['Smin_zoo','Smax_zoo','Sint_zoo','saltfunc_zoo'],note:'A quadratic penalty outside Smin_zoo–Smax_zoo down to the intercept Sint_zoo. saltfunc_zoo is read but the same function is always used.'},
+{id:'Z9',name:'Feedback and output links',mod:'ZOO',flow:'switches the return of fluxes',params:['simZoopFeedback','dc_target_variable','dn_target_variable','dp_target_variable','pc_target_variable','pn_target_variable','pp_target_variable','dbase','num_zoops','the_zoops'],note:'With simZoopFeedback off, zooplankton neither remove prey nor return material.'},
+// ---------------- NITROGEN ----------------
+{id:'N1',name:'DIN uptake',mod:'PHY',flow:'NH4⁺, NO3⁻ → phyto-N',params:['simDINUptake','N_o','K_N','X_ncon','simINDynamics','X_nmin','X_nmax','R_nuptake','R_growth','theta_growth','I_K','n1_uptake_target_variable','n2_uptake_target_variable'],
+ note:'Fixed quota (X_ncon) by default; simINDynamics=2 gives a dynamic internal-N pool. NH4/NO3 split follows a preference factor. Uptake is capped at 99% of the available pool each step.'},
+{id:'N2',name:'N₂ fixation',mod:'PHY',flow:'N₂ → phyto-N',params:['simNFixation','k_nfix','R_nfix'],note:'Reduces the DIN demand of a group.'},
+{id:'N3',name:'Mortality → PON',mod:'PHY',flow:'phyto-N → PON',params:['k_fres','k_fdom','R_resp','theta_resp','n_mortality_target_variable'],note:'Fraction (1−k_fdom)(1−k_fres) of respiration-sized loss goes to the particulate pool.'},
+{id:'N4',name:'Excretion/exudation → DON',mod:'PHY',flow:'phyto-N → DON',params:['k_fdom','f_pr','R_resp','n_excretion_target_variable'],note:''},
+{id:'N5',name:'Grazing',mod:'ZOO',flow:'phyto-N, PON → zoo-N',params:['Rgrz_zoo','Kgrz_zoo','theta_grz_zoo','Cmin_grz_zoo','num_prey','prey(n)%zoop_prey','prey(n)%Pzoo_prey','fassim_zoo','INC_zoo','simZoopFeedback'],note:'Zooplankton parameters are columns of aed_zoop_pars.csv. Prey is phytoplankton, POC (with its PON) or other zooplankton.'},
+{id:'N6',name:'Zoo excretion, faeces, mortality',mod:'ZOO',flow:'zoo-N → DON, PON',params:['fassim_zoo','ffecal_zoo','ffecal_sed','INC_zoo','Rresp_zoo','Rmort_zoo','DOmin_zoo','dn_target_variable','pn_target_variable'],note:'Unassimilated N goes to PON; surplus N is excreted as DON. N- or P-limited animals also excrete excess carbon.'},
+{id:'N7',name:'PON hydrolysis',mod:'OGM',flow:'PON → DON',params:['Rpon_hydrol','Kpom_hydrol','theta_hydrol','dom_miner_oxy_reactant_var'],note:'Rate × O₂/(Kpom_hydrol+O₂) × θ^(T−20). Rpom_hydrol is read but never used; set Rpoc/Rpon/Rpop_hydrol individually.'},
+{id:'N8',name:'DON mineralisation',mod:'OGM',flow:'DON → NH4⁺',params:['Rdom_minerl','Kdom_minerl','f_an','theta_minerl','dom_miner_oxy_reactant_var'],note:'One shared rate for DOC, DON and DOP. Rdoc/Rdon/Rdop_minerl are stored but not used in the rate calculation.'},
+{id:'N9',name:'Nitrification',mod:'NIT',flow:'NH4⁺ → NO3⁻ (uses 2 O₂ per N)',params:['Rnitrif','Knitrif','theta_nitrif','nitrif_reactant_variable','simNitrfpH','nitrif_ph_variable','simNitrfSal','K_sal','S0'],note:'Rnitrif × O₂/(Knitrif+O₂) × θ^(T−20), optional pH and salinity multipliers. Without an O₂ link it runs at a fixed rate.'},
+{id:'N10',name:'Denitrification (simple)',mod:'NIT',flow:'NO3⁻ → N₂',params:['Rdenit','Kdenit','theta_denit','oxy_lim','denit_product_variable','simNitrfSal'],note:'Rdenit × Kdenit/(Kdenit+O₂) × NO3/(5+NO3) × θ^(T−20). The 5 mmol/m³ half-saturation is hard-coded. oxy_lim=2 switches to exp(−O₂/Kdenit).'},
+{id:'N11',name:'Denitrification (OM-coupled)',mod:'OGM',flow:'NO3⁻ (+ anaerobic DOC) → N₂ / NO2 / N₂O / NH4⁺',params:['simDenitrification','K_nit','Kdom_minerl','Rdom_minerl','f_an','Kin_denitrat','Kin_denitrit','Kin_denitrous','Klim_denitrit','Klim_denitrous','Kpart_denitrit','dom_miner_nit_reactant_var','dom_miner_no2_reactant_var','dom_miner_n2o_reactant_var'],note:'simDenitrification=1 is the simple version (NO3/(K_nit+NO3) of the anaerobic share); 2 is the 3-step NO3→NO2→N₂O→N₂ model. If you enable this, consider Rdenit=0 in aed_nitrogen so NO3 is not removed twice.'},
+{id:'N12',name:'Anammox',mod:'NIT',flow:'NH4⁺ + NO2 → N₂',params:['kanammox','Kanmx_nit','Kanmx_amm'],note:'Only when O₂ &lt; ~3.1 mmol/m³ (hard-coded). NO2 is approximated from NO3. Ranammox is deprecated.'},
+{id:'N13',name:'DNRA',mod:'NIT',flow:'NO3⁻ → NH4⁺',params:['Rdnra','Kdnra_oxy'],note:'Rdnra × Kdnra_oxy/(Kdnra_oxy+O₂) × NO3.'},
+{id:'N14',name:'N₂O cycle (simple)',mod:'NIT',flow:'NO3⁻/NH4⁺ → N₂O → N₂',params:['simN2O','Rn2o','n2o_initial'],note:'simN2O=1: half the denitrification flux leaks as N₂O, nitrification adds an O₂-dependent share (Nevison form), N₂O consumption is Rn2o·N₂O·exp(−O₂/0.3).'},
+{id:'N15',name:'NO2/N₂O redox (advanced)',mod:'NIT',flow:'NH4⁺ → NO2 → NO3⁻, N₂O, N₂',params:['simN2O','Rnh4o2','Rno2o2','Rnh4no2','Kpart_ammox','Kin_deamm','no2_initial','Fsed_no2','Ksed_no2'],note:'simN2O=2 runs autotrophic steps here; the heterotrophic steps run in OGM (see N11).'},
+{id:'N16',name:'N₂O air–water exchange',mod:'NIT',flow:'N₂O ⇄ atmosphere',params:['simN2O','atm_n2o','n2o_piston_model'],note:'Needs wind, temperature, salinity from the host model.'},
+{id:'N17',name:'Atmospheric DIN deposition',mod:'NIT',flow:'atmosphere → NH4⁺, NO3⁻',params:['simDryDeposition','simWetDeposition','atm_din_dd','atm_din_conc','f_dindep_nox'],note:'Wet deposition needs the rain driver. f_dindep_nox is the fraction landing as NO3.'},
+{id:'N18',name:'Sediment N release',mod:'NIT',flow:'sediment → NH4⁺, NO3⁻, N₂O',params:['Fsed_amm','Fsed_nit','Fsed_n2o','Ksed_amm','Ksed_nit','Ksed_n2o','theta_sed_amm','theta_sed_nit','Fsed_nit_model','Fsed_amm_variable','Fsed_nit_variable','Fsed_n2o_variable'],note:'See the Sediment tab for the O₂ and temperature scaling.'},
+{id:'N19',name:'PON settling, resuspension, DON flux',mod:'OGM',flow:'PON ⇄ sediment, sediment → DON',params:['settling','w_pom','d_pom','rho_pom','Psed_pon_variable','resuspension','resus_link','sedimentOMfrac','Xsn','Fsed_pon_variable','Fsed_don','Fsed_don_variable','Ksed_dom','theta_sed_dom'],note:''},
+// ---------------- PHOSPHORUS ----------------
+{id:'P1',name:'FRP uptake',mod:'PHY',flow:'FRP → phyto-P',params:['simDIPUptake','P_0','K_P','X_pcon','simIPDynamics','X_pmin','X_pmax','R_puptake','R_growth','theta_growth','p1_uptake_target_variable'],note:'Same structure as N1: fixed quota unless simIPDynamics=2.'},
+{id:'P2',name:'Mortality → POP, excretion → DOP',mod:'PHY',flow:'phyto-P → POP, DOP',params:['k_fres','k_fdom','f_pr','R_resp','theta_resp','p_mortality_target_variable','p_excretion_target_variable'],note:''},
+{id:'P3',name:'Grazing, excretion, faeces',mod:'ZOO',flow:'phyto-P, POP → zoo-P → DOP, POP',params:['Rgrz_zoo','Kgrz_zoo','fassim_zoo','IPC_zoo','ffecal_zoo','Rresp_zoo','Rmort_zoo','dp_target_variable','pp_target_variable'],note:''},
+{id:'P4',name:'POP hydrolysis',mod:'OGM',flow:'POP → DOP',params:['Rpop_hydrol','Kpom_hydrol','theta_hydrol','dom_miner_oxy_reactant_var'],note:''},
+{id:'P5',name:'DOP mineralisation',mod:'OGM',flow:'DOP → FRP',params:['Rdom_minerl','Kdom_minerl','f_an','theta_minerl'],note:''},
+{id:'P6',name:'FRP adsorption to particles',mod:'PHS',flow:'FRP ⇄ adsorbed PIP',params:['simPO4Adsorption','PO4AdsorptionModel','Kpo4p','theta_Kpo4','K_sal','Kadsratio','Qmax','ads_use_pH','pH_variable','ads_use_external_tss','frp_ads_particle_link','po4sorption_target_variable'],note:'Equilibrium step, not a rate. Model 1 is a Ji (2008) partition, model 2 follows Chao et al. (2010). Needs a TSS/particle pool.'},
+{id:'P7',name:'Settling of adsorbed P',mod:'PHS',flow:'PIP → sediment',params:['w_po4ads'],note:'Settling velocity in m/day.'},
+{id:'P8',name:'Sediment FRP release',mod:'PHS',flow:'sediment → FRP',params:['Fsed_frp','Ksed_frp','theta_sed_frp','phosphorus_reactant_variable','Fsed_frp_variable'],note:'Fsed_frp × min(3, Ksed_frp/(Ksed_frp+O₂) × θ^(T−20)). High release under low oxygen.'},
+{id:'P9',name:'Atmospheric P deposition',mod:'PHS',flow:'atmosphere → PIP, FRP',params:['simDryDeposition','atm_pip_dd','simWetDeposition','atm_frp_conc'],note:'Dry deposition only lands in PIP and needs simPO4Adsorption.'},
+{id:'P10',name:'POP settling, resuspension, DOP flux',mod:'OGM',flow:'POP ⇄ sediment, sediment → DOP',params:['settling','w_pom','Psed_pop_variable','resuspension','resus_link','sedimentOMfrac','Xsp','Fsed_pop_variable','Fsed_dop','Fsed_dop_variable','Ksed_dom','theta_sed_dom'],note:''},
+// ---------------- CARBON ----------------
+{id:'C1',name:'Photosynthesis',mod:'PHY',flow:'DIC → phyto-C, releases O₂',params:['R_growth','fT_Method','theta_growth','T_std','T_opt','T_max','lightModel','I_K','I_S','KePHY','Xcc','c_uptake_target_variable','do_uptake_target_variable'],note:'Growth = R_growth × fT × min(light, N, P, Si) limitation. C taken up per unit growth; O₂ released at the same molar rate.'},
+{id:'C2',name:'Respiration',mod:'PHY',flow:'phyto-C → DIC, uses O₂',params:['R_resp','theta_resp','k_fres'],note:'The k_fres share of respiration is returned to DIC and consumes O₂.'},
+{id:'C3',name:'Exudation, excretion → DOC',mod:'PHY',flow:'phyto-C → DOC',params:['f_pr','k_fdom','c_excretion_target_variable'],note:''},
+{id:'C4',name:'Mortality → POC',mod:'PHY',flow:'phyto-C → POC',params:['k_fdom','k_fres','c_mortality_target_variable'],note:''},
+{id:'C5',name:'Grazing, zoo respiration, excretion',mod:'ZOO',flow:'phyto-C, POC → zoo-C → DOC, POC',params:['Rgrz_zoo','fassim_zoo','Rresp_zoo','fexcr_zoo','ffecal_zoo','Rmort_zoo','dc_target_variable','pc_target_variable'],note:'Zoo respiration is not routed to DIC or O₂ in this version.'},
+{id:'C6',name:'POC hydrolysis',mod:'OGM',flow:'POC → DOC',params:['Rpoc_hydrol','Kpom_hydrol','theta_hydrol','dom_miner_oxy_reactant_var'],note:''},
+{id:'C7',name:'DOC mineralisation',mod:'OGM',flow:'DOC → DIC (aerobic: uses O₂)',params:['Rdom_minerl','Kdom_minerl','f_an','theta_minerl','dom_miner_oxy_reactant_var','doc_miner_product_variable'],note:'The aerobic share O₂/(Kdom_minerl+O₂) consumes O₂ 1:1.'},
+{id:'C8',name:'Refractory DOM, CPOM, photolysis',mod:'OGM',flow:'DOCR → DOC, DIC; CPOM → POC',params:['simRPools','Rdomr_minerl','Rcpom_bdown','X_cpom_n','X_cpom_p','simPhotolysis','photo_fmin','photo_c','KeDOMR','KeCPOM','docr_initial','cpom_initial'],note:'photo_fmin of photolysed DOCR becomes labile DOC; the rest goes to DIC (with matching N and P).'},
+{id:'C9',name:'DOM flocculation',mod:'OGM',flow:'DOM → POM',params:['simFlocculation','Rdom_floc','Kdom_floc','dom_floc0','dom_flocS'],note:'Triggered above dom_floc0 and stronger at higher salinity.'},
+{id:'C10',name:'Methanogenesis',mod:'OGM',flow:'anaerobic DOC → CH4',params:['simMethanogenesis','dom_miner_ch4_reactant_var','K_fe','K_so4'],note:'Takes what is left of the anaerobic share after NO3, Fe(III) and SO4 reduction.'},
+{id:'C11',name:'CH4 oxidation',mod:'CAR',flow:'CH4 + O₂ → DIC',params:['simCH4','Rch4ox','Kch4ox','vTch4ox','methane_reactant_variable'],note:'Rch4ox × O₂/(Kch4ox+O₂) × vTch4ox^(T−20). aed_methane has its own version with ch4_oxid_target_variable, MOx_model, beta_ch4 and alpha_oxy.'},
+{id:'C12',name:'CO₂ air–water exchange',mod:'CAR',flow:'DIC ⇄ atmosphere',params:['atm_co2','co2_piston_model','co2_model','alk_mode','talk_fixed','ionic'],note:'co2_model: 0 takes pCO₂/pH from aed_geochemistry, 1 uses the built-in carbonate system, 2 is an alternative. alk_mode picks the alkalinity relationship (6 = fixed talk_fixed, µmol/kg).'},
+{id:'C13',name:'CH4 air–water exchange',mod:'CAR',flow:'CH4 ⇄ atmosphere',params:['simCH4','atm_ch4','ch4_piston_model'],note:''},
+{id:'C14',name:'CH4 ebullition',mod:'CAR',flow:'sediment → bubbles → CH4 / atmosphere',params:['ebb_model','Fsed_ch4_ebb','Fsed_ebb_variable','ch4_bub_aLL','ch4_bub_cLL','ch4_bub_kLL','ch4_bub_disf1','ch4_bub_disf2','ch4_bub_disdp','ch4_bub_ws','ch4_bub_tau0'],note:'ch4_bub_disf1/2 is the share dissolving on the way up, shallower or deeper than ch4_bub_disdp.'},
+{id:'C15',name:'Sediment DIC and CH4 release',mod:'CAR',flow:'sediment → DIC, CH4',params:['Fsed_dic','Ksed_dic','theta_sed_dic','Fsed_dic_variable','Fsed_ch4','Ksed_ch4','theta_sed_ch4','Fsed_ch4_variable'],note:''},
+{id:'C16',name:'Sediment DOC/POC flux and settling',mod:'OGM',flow:'POC ⇄ sediment, sediment → DOC',params:['settling','w_pom','Psed_poc_variable','resuspension','resus_link','sedimentOMfrac','Xsc','Fsed_poc_variable','Fsed_doc','Fsed_doc_variable','Ksed_dom','theta_sed_dom'],note:''},
+{id:'C17',name:'Microphytobenthos',mod:'CAR/PHY',flow:'DIC ⇄ benthic algae',params:['maxMPBProdn','IkMPB','do_mpb','R_mpbg','R_mpbr','I_Kmpb','mpb_max'],note:'maxMPBProdn and IkMPB sit in aed_carbon; the others are aed_phytoplankton namelist items.'},
+{id:'C18',name:'Wetland stem CH4 transport',mod:'CAR',flow:'sediment → CH4 via vegetation',params:['simStemCH4','stem_model','Fstm_ch4','theta_stm_ch4','vegetation_stem_density','Fstm_ch4_variable'],note:''},
+// ---------------- OXYGEN SWITCHES ----------------
+{id:'O1',name:'POM hydrolysis O₂ limit',mod:'OGM',flow:'POM → DOM',params:['Rpoc_hydrol','Rpon_hydrol','Rpop_hydrol','Kpom_hydrol','theta_hydrol'],note:'R × O₂/(Kpom_hydrol+O₂) × θ^(T−20). Slows as O₂ falls and stops at O₂ = 0.'},
+{id:'O2',name:'DOM mineralisation, total rate',mod:'OGM',flow:'DOM → DIC, NH4⁺, FRP',params:['Rdom_minerl','Kdom_minerl','f_an','theta_minerl'],note:'R × [O₂/(K+O₂) + f_an × K/(K+O₂)] × θ^(T−20), with K = Kdom_minerl. f_an is the relative rate under anoxia (1 = no slow-down, 0 = shuts off).'},
+{id:'O3',name:'Aerobic share',mod:'OGM',flow:'consumes O₂',params:['Kdom_minerl','dom_miner_oxy_reactant_var'],note:'doc_min_aerobic = mineralisation × O₂/(Kdom_minerl+O₂).'},
+{id:'O4',name:'Anaerobic share, electron-acceptor cascade',mod:'OGM',flow:'NO3 → Fe(III) → SO4 → CH4',params:['simDenitrification','K_nit','simFeReduction','K_fe','simSO4Reduction','K_so4','simMethanogenesis','dom_miner_fe3_reactant_var','dom_miner_so4_reactant_var','dom_miner_ch4_reactant_var'],note:'Each step takes its share of what the earlier step left. K_fe and K_so4 are declared but never assigned in the current source; they are not namelist items.'},
+{id:'O5',name:'Nitrification O₂ limit',mod:'NIT',flow:'NH4⁺ → NO3⁻',params:['Rnitrif','Knitrif','theta_nitrif','nitrif_reactant_variable'],note:'Rnitrif × O₂/(Knitrif+O₂). Stops under anoxia, so NH4 accumulates.'},
+{id:'O6',name:'Denitrification O₂ inhibition',mod:'NIT',flow:'NO3⁻ → N₂',params:['Rdenit','Kdenit','oxy_lim','theta_denit'],note:'Kdenit/(Kdenit+O₂) when oxy_lim=1, exp(−O₂/Kdenit) when 2, no O₂ term when 0 or no O₂ link.'},
+{id:'O7',name:'Anammox and DNRA gating',mod:'NIT',flow:'NO3⁻/NO2 → N₂, NH4⁺',params:['kanammox','Kanmx_nit','Kanmx_amm','Rdnra','Kdnra_oxy'],note:'Anammox only below ~3.1 mmol O₂/m³; DNRA scales with Kdnra_oxy/(Kdnra_oxy+O₂).'},
+{id:'O8',name:'CH4 oxidation',mod:'CAR / MTH',flow:'CH4 + O₂ → DIC',params:['Rch4ox','Kch4ox','vTch4ox','methane_reactant_variable'],note:'O₂/(Kch4ox+O₂) form. aed_carbon uses 1 O₂ per CH4, aed_methane uses 2.'},
+{id:'O9',name:'Fe and S redox',mod:'GCH',flow:'Fe(III)/Fe(II), SO4/H₂S',params:['Riron_red','theta_iron_red','Kiron_red','Riron_aox','Riron_box','theta_iron_ox','Rsulf_red','theta_sulf_red','Ksulf_red','Rsulf_ox','theta_sulf_ox','Ksulf_ox','oxy_link'],note:'Reduction when O₂ is low, oxidation by O₂ when it returns. Oxidation draws down O₂ (0.25 mol O₂ per mol Fe or S).'},
+{id:'O10',name:'Zooplankton hypoxia stress',mod:'ZOO',flow:'zoo mortality ↑',params:['DOmin_zoo','Rmort_zoo'],note:'Mortality is multiplied by 1 + (DOmin_zoo−O₂)/DOmin_zoo below DOmin_zoo.'},
+{id:'O11',name:'O₂ sources and sinks',mod:'OXY',flow:'atmosphere, photosynthesis → O₂ → respiration, nitrification, sediment',params:['oxy_initial','oxy_piston_model','altitude','Fsed_oxy','Ksed_oxy','theta_sed_oxy','Fsed_oxy_variable','oxy_min','oxy_max'],note:'Sediment demand = Fsed_oxy × min(3, O₂/(Ksed_oxy+O₂) × θ^(T−20)).'},
+// ---------------- SEDIMENT ----------------
+{id:'S1',name:'Flux source',mod:'SED',flow:'Fsed_* diagnostics → modules',params:['sedflux_model','Fsed_oxy','Fsed_rsi','Fsed_amm','Fsed_nit','Fsed_frp','Fsed_pon','Fsed_don','Fsed_pop','Fsed_dop','Fsed_poc','Fsed_doc','Fsed_dic','Fsed_ch4','Fsed_ch4_ebb','Fsed_n2o','Fsed_feii'],note:'constant: one value set for the whole domain. constant2d/dynamic2d: values per sediment zone. dynamic: values come from the dynamic sediment model instead.'},
+{id:'S2',name:'Link into each module',mod:'all',flow:'Fsed_* → pool',params:['Fsed_oxy_variable','Fsed_amm_variable','Fsed_nit_variable','Fsed_n2o_variable','Fsed_frp_variable','Fsed_dic_variable','Fsed_ch4_variable','Fsed_ebb_variable','Fsed_doc_variable','Fsed_don_variable','Fsed_dop_variable','Fsed_poc_variable','Fsed_pon_variable','Fsed_pop_variable','Fsed_rsi_variable'],note:'Name of the aed_sedflux diagnostic variable (for example SDF_Fsed_amm). Leave empty to use the module’s own Fsed_* value.'},
+{id:'S3',name:'Oxygen scaling',mod:'NIT/PHS/CAR/OGM/OXY',flow:'fDO × flux',params:['Ksed_amm','Ksed_nit','Ksed_n2o','Ksed_frp','Ksed_dic','Ksed_ch4','Ksed_dom','Ksed_oxy','Ksed_rsi'],note:'Release of NH4, FRP, CH4, N₂O, DOM and Si: K/(K+O₂). NO3 flux (model 1), DIC and the O₂ demand: O₂/(K+O₂).'},
+{id:'S4',name:'Temperature scaling',mod:'NIT/PHS/CAR/OGM/OXY',flow:'θ^(T−20) × flux',params:['theta_sed_amm','theta_sed_nit','theta_sed_frp','theta_sed_dic','theta_sed_ch4','theta_sed_dom','theta_sed_oxy','theta_sed_rsi'],note:'Only applied to constant values. A value set dynamically is used as-is.'},
+{id:'S5',name:'Zones',mod:'SED',flow:'spatial variation',params:['n_zones','active_zones','Ktau_0'],note:'Used by constant2d/dynamic2d and by phytoplankton resuspension zones.'},
+{id:'S6',name:'Settling of particles',mod:'OGM / PHY / PHS',flow:'water → sediment',params:['settling','w_pom','d_pom','rho_pom','w_po4ads','Psed_poc_variable','Psed_pon_variable','Psed_pop_variable'],note:'Settling to the bottom layer is a loss from the water column and (with simSedimentOM) a gain for the sediment OM pools.'},
+{id:'S7',name:'Resuspension',mod:'OGM / PHS',flow:'sediment → POM',params:['resuspension','resus_link','sedimentOMfrac','sedimentBulkDens','sedimentDepth','Xsc','Xsn','Xsp'],note:'resuspension=1 uses sedimentOMfrac; 2 reads a spatial fraction from the sediment model. Xsc/Xsn/Xsp set the C, N and P content of resuspended OM.'},
+{id:'S8',name:'Sediment OM pools',mod:'OGM',flow:'POM, DOM in sediment',params:['simSedimentOM'],note:'Keeps a budget of sediment POC/PON/POP and DOC/DON/DOP fed by settling and drained by Fsed.'},
+{id:'S9',name:'Exposed (dry) sediment',mod:'NIT/CAR',flow:'sediment → atmosphere',params:['simExposed','dry_model','theta_sed_dry','Fsed_n2o_dry','Fsed_dic_dry','Fsed_ch4_dry','Fsed_ch4_ebb_dry'],note:'Only when cells dry out. Fluxes go straight to the atmosphere.'}
+];
+
+const MODS = {
+ PHY:'aed_phytoplankton', ZOO:'aed_zooplankton', OGM:'aed_organic_matter', NIT:'aed_nitrogen', PHS:'aed_phosphorus',
+ CAR:'aed_carbon', OXY:'aed_oxygen', SIL:'aed_silica', SED:'aed_sedflux', GCH:'aed_geochemistry', MTH:'aed_methane'
+};
+
+/* ===================================================================
+   DIAGRAM RENDERER
+   nodes: {id,x,y,w,h,t:[lines],c:'N|P|C|O|S|B|X',dash}
+   edges: {a,b,pts:[[x,y]],l:'N9 Nitrification',tip,c,dash,both,lx,ly,a0:[x,y],b0:[x,y]}
+   =================================================================== */
+const NS='http://www.w3.org/2000/svg';
+function E(tag,attrs,parent,text){
+  const n=document.createElementNS(NS,tag);
+  for(const k in (attrs||{})) n.setAttribute(k,attrs[k]);
+  if(text!==undefined) n.textContent=text;
+  if(parent) parent.appendChild(n);
+  return n;
+}
+function edgePoint(n,tx,ty){
+  const dx=tx-n.x, dy=ty-n.y;
+  if(dx===0&amp;&amp;dy===0) return [n.x,n.y];
+  const sx=(n.w/2)/Math.abs(dx||1e-9), sy=(n.h/2)/Math.abs(dy||1e-9);
+  const s=Math.min(sx,sy);
+  return [n.x+dx*s, n.y+dy*s];
+}
+function render(hostId,W,H,nodes,edges){
+  const host=document.getElementById(hostId);
+  const svg=E('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'},host);
+  const defs=E('defs',{},svg);
+  ['N','P','C','O','S','B','X'].forEach(k=&gt;{
+    const m=E('marker',{id:`ah-${hostId}-${k}`,viewBox:'0 0 10 10',refX:'9',refY:'5',markerWidth:'7',markerHeight:'7',orient:'auto-start-reverse'},defs);
+    E('path',{d:'M0 0L10 5L0 10z',fill:`var(--${k}-bd)`},m);
+  });
+  const map={}; nodes.forEach(n=&gt;map[n.id]=n);
+  const gE=E('g',{},svg), gN=E('g',{},svg), gL=E('g',{},svg);
+  nodes.forEach(n=&gt;{
+    const g=E('g',{},gN);
+    E('rect',{x:n.x-n.w/2,y:n.y-n.h/2,width:n.w,height:n.h,rx:n.rx||9,
+      fill:`var(--${n.c}-bg)`,stroke:`var(--${n.c}-bd)`,'stroke-width':n.thick?2.5:1.5,
+      'stroke-dasharray':n.dash?'5 4':'none'},g);
+    const lines=n.t, lh=14.5, top=n.y-(lines.length-1)*lh/2+4;
+    lines.forEach((s,i)=&gt;E('text',{x:n.x,y:top+i*lh,'text-anchor':'middle',
+      'font-size':i===0?13:11,'font-weight':i===0?700:400,fill:`var(--${n.c}-fg)`},g,s));
+  });
+  edges.forEach(e=&gt;{
+    const A=typeof e.a==='string'?map[e.a]:null, B=typeof e.b==='string'?map[e.b]:null;
+    const mid=e.pts||[];
+    const aTarget = mid.length?mid[0]:(B?[B.x,B.y]:e.b);
+    const bTarget = mid.length?mid[mid.length-1]:(A?[A.x,A.y]:e.a);
+    let p0 = A?edgePoint(A,aTarget[0],aTarget[1]):e.a;
+    let p1 = B?edgePoint(B,bTarget[0],bTarget[1]):e.b;
+    if(e.vert &amp;&amp; A &amp;&amp; B){          // straight vertical run at the target's x
+      const s=B.y&gt;A.y?1:-1;
+      p0=[B.x,A.y+s*A.h/2]; p1=[B.x,B.y-s*B.h/2];
+    }
+    const pts=[p0,...mid,p1];
+    const col=e.c||'X';
+    E('path',{d:'M'+pts.map(p=&gt;p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L'),fill:'none',
+      stroke:`var(--${col}-bd)`,'stroke-width':e.w||1.8,'stroke-dasharray':e.dash?'6 4':'none',
+      'marker-end':`url(#ah-${hostId}-${col})`,'marker-start':e.both?`url(#ah-${hostId}-${col})`:'none'},gE);
+    if(!e.l) return;
+    // label position: middle of the path by length unless given
+    let lx=e.lx, ly=e.ly;
+    if(lx===undefined){
+      let tot=0; const segs=[];
+      for(let i=0;i&lt;pts.length-1;i++){const d=Math.hypot(pts[i+1][0]-pts[i][0],pts[i+1][1]-pts[i][1]);segs.push(d);tot+=d;}
+      let half=tot/2,i=0; while(i&lt;segs.length-1&amp;&amp;half&gt;segs[i]){half-=segs[i];i++;}
+      const f=segs[i]?half/segs[i]:0;
+      lx=pts[i][0]+(pts[i+1][0]-pts[i][0])*f; ly=pts[i][1]+(pts[i+1][1]-pts[i][1])*f;
+    }
+    const g=E('g',{class:'lbl','data-pid':(e.l.match(/^[A-Z]\d+/)||[''])[0]},gL);
+    const tw=e.l.length*5.9+10;
+    E('rect',{x:lx-tw/2,y:ly-9,width:tw,height:18,rx:5,fill:'var(--bg)','fill-opacity':.94,stroke:`var(--${col}-bd)`,'stroke-width':.8},g);
+    E('text',{x:lx,y:ly+4,'text-anchor':'middle','font-size':11,fill:'var(--fg)'},g,e.l);
+    if(e.tip) E('title',{},g,e.tip);
+  });
+  // hover links
+  svg.querySelectorAll('.lbl').forEach(g=&gt;{
+    const pid=g.getAttribute('data-pid'); if(!pid) return;
+    g.addEventListener('mouseenter',()=&gt;document.querySelectorAll(`tr[data-pid=&quot;${pid}&quot;]`).forEach(r=&gt;r.classList.add('hl')));
+    g.addEventListener('mouseleave',()=&gt;document.querySelectorAll(`tr[data-pid=&quot;${pid}&quot;]`).forEach(r=&gt;r.classList.remove('hl')));
+  });
+}
+
+/* ===================================================================
+   Table rendering
+   =================================================================== */
+function procTable(prefix){
+  const rows=PROCS.filter(p=&gt;p.id.startsWith(prefix)&amp;&amp;/^\d+$/.test(p.id.slice(prefix.length)));
+  let h='&lt;div class=&quot;tblwrap&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Process&lt;/th&gt;&lt;th&gt;Module&lt;/th&gt;&lt;th&gt;Pools affected&lt;/th&gt;&lt;th&gt;Controlling parameters&lt;/th&gt;&lt;th&gt;Notes&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;';
+  rows.forEach(p=&gt;{
+    h+=`&lt;tr data-pid=&quot;${p.id}&quot;&gt;&lt;td class=&quot;pid ${prefix}&quot;&gt;${p.id}&lt;/td&gt;&lt;td&gt;${p.name}&lt;/td&gt;&lt;td&gt;${p.mod.split(/ ?[\/] ?/).map(m=&gt;MODS[m]||m).join(' / ')}&lt;/td&gt;&lt;td&gt;${p.flow}&lt;/td&gt;&lt;td&gt;${p.params.map(x=&gt;`&lt;span class=&quot;p&quot;&gt;${x}&lt;/span&gt;`).join('')}&lt;/td&gt;&lt;td&gt;${p.note}&lt;/td&gt;&lt;/tr&gt;`;
+  });
+  return h+'&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;';
+}
+function legend(items){
+  return '&lt;div class=&quot;legend&quot;&gt;'+items.map(i=&gt;i.ar
+    ?`&lt;span&gt;&lt;i class=&quot;ar ${i.d?'d':''}&quot; style=&quot;border-top-color:var(--${i.c}-bd)&quot;&gt;&lt;/i&gt;${i.t}&lt;/span&gt;`
+    :`&lt;span&gt;&lt;i style=&quot;background:var(--${i.c}-bg);border-color:var(--${i.c}-bd);${i.d?'border-style:dashed':''}&quot;&gt;&lt;/i&gt;${i.t}&lt;/span&gt;`).join('')+'&lt;/div&gt;';
+}
+
+/* ===================================================================
+   TABS
+   =================================================================== */
+const TABS=[
+ {id:'overview',label:'Overview'},
+ {id:'phyto',label:'Phytoplankton'},
+ {id:'zoo',label:'Zooplankton'},
+ {id:'nitrogen',label:'Nitrogen'},
+ {id:'phosphorus',label:'Phosphorus'},
+ {id:'carbon',label:'Carbon'},
+ {id:'redox',label:'Oxic vs anoxic'},
+ {id:'sediment',label:'Sediment fluxes'},
+ {id:'index',label:'Parameter index'}
+];
+const nav=document.getElementById('tabs'), main=document.getElementById('main');
+TABS.forEach((t,i)=&gt;{
+  const b=document.createElement('button'); b.type='button'; b.textContent=t.label; b.setAttribute('role','tab');
+  b.setAttribute('aria-selected',i===0); b.dataset.t=t.id; nav.appendChild(b);
+  const s=document.createElement('section'); s.className='tab'+(i===0?' on':''); s.id='tab-'+t.id; main.appendChild(s);
+  b.addEventListener('click',()=&gt;show(t.id));
+});
+function show(id){
+  document.querySelectorAll('section.tab').forEach(s=&gt;s.classList.toggle('on',s.id==='tab-'+id));
+  nav.querySelectorAll('button').forEach(b=&gt;b.setAttribute('aria-selected',b.dataset.t===id));
+  try{history.replaceState(null,'','#'+id);}catch(e){}
+}
+function sec(id,html){document.getElementById('tab-'+id).innerHTML=html;}
+
+/* ---------------- OVERVIEW ---------------- */
+sec('overview',`
+&lt;h2&gt;Module map&lt;/h2&gt;
+&lt;p class=&quot;note&quot;&gt;Each box is an AED module and the pools it owns. Arrows show what moves between them. Pool names are in the modules’ own units: mmol/m³ of C, N, P, Si or O₂. Pale-purple arrows are benthic fluxes; grey are exchanges with the atmosphere.&lt;/p&gt;
+${legend([{c:'B',t:'Biology (PHY, ZOO)'},{c:'X',t:'Organic matter / forcing'},{c:'N',t:'Nitrogen pool'},{c:'P',t:'Phosphorus pool'},{c:'C',t:'Carbon pool'},{c:'O',t:'Oxygen'},{c:'S',t:'Sediment'},{c:'N',ar:1,t:'N flow'},{c:'P',ar:1,t:'P flow'},{c:'C',ar:1,t:'C flow'},{c:'O',ar:1,t:'O₂ flow'}])}
+&lt;div class=&quot;card diagram&quot; id=&quot;d-overview&quot;&gt;&lt;/div&gt;
+&lt;h3&gt;Reading the map&lt;/h3&gt;
+&lt;ul class=&quot;note&quot;&gt;
+&lt;li&gt;&lt;b&gt;Phytoplankton&lt;/b&gt; is the entry point: it takes DIN, FRP, DIC, Si and releases O₂ through the &lt;i&gt;*_uptake_target_variable&lt;/i&gt; links in &lt;code&gt;&amp;amp;aed_phytoplankton&lt;/code&gt;. Its losses go to organic matter through the &lt;i&gt;*_mortality_/ *_excretion_target_variable&lt;/i&gt; links.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Organic matter&lt;/b&gt; (&lt;code&gt;aed_organic_matter&lt;/code&gt;) is the hub. POM hydrolyses to DOM, and DOM mineralises into DIC, NH4 and FRP. Its oxygen-dependent anaerobic share runs denitrification, Fe(III) and SO4 reduction, and methanogenesis (see the Oxic vs anoxic tab).&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Nitrogen&lt;/b&gt; adds the inorganic transformations (nitrification, denitrification, anammox, DNRA, N₂O). &lt;b&gt;Phosphorus&lt;/b&gt; adds adsorption to particles and the sediment release. &lt;b&gt;Carbon&lt;/b&gt; adds the carbonate system, gas exchange and CH4.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Oxygen&lt;/b&gt; is both a pool and a switch: nearly every module reads it through a &lt;i&gt;*_reactant_variable&lt;/i&gt; or &lt;i&gt;dom_miner_oxy_reactant_var&lt;/i&gt; link.&lt;/li&gt;
+&lt;li&gt;Links are made by variable name in the namelist (for example &lt;code&gt;nitrif_reactant_variable = 'OXY_oxy'&lt;/code&gt;). A missing link usually disables that feedback silently.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;warn&quot;&gt;&lt;b&gt;Things I noticed while reading the source&lt;/b&gt; (worth checking against your intent):
+&lt;ul style=&quot;margin:6px 0 0 18px;padding:0&quot;&gt;
+&lt;li&gt;&lt;code&gt;Rpom_hydrol&lt;/code&gt; is read from the namelist but never stored or used; only &lt;code&gt;Rpoc_hydrol&lt;/code&gt;, &lt;code&gt;Rpon_hydrol&lt;/code&gt;, &lt;code&gt;Rpop_hydrol&lt;/code&gt; take effect.&lt;/li&gt;
+&lt;li&gt;DOM mineralisation uses the single &lt;code&gt;Rdom_minerl&lt;/code&gt; for DOC, DON and DOP. &lt;code&gt;Rdoc_minerl&lt;/code&gt;, &lt;code&gt;Rdon_minerl&lt;/code&gt;, &lt;code&gt;Rdop_minerl&lt;/code&gt; are stored but not used in the rate.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;K_fe&lt;/code&gt; and &lt;code&gt;K_so4&lt;/code&gt; (Fe(III) and sulfate reduction half-saturations in &lt;code&gt;aed_organic_matter&lt;/code&gt;) are declared and used, but never assigned or read from the namelist, so they are undefined.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;simDenitrification&amp;gt;0&lt;/code&gt; in &lt;code&gt;aed_organic_matter&lt;/code&gt; and &lt;code&gt;Rdenit&amp;gt;0&lt;/code&gt; in &lt;code&gt;aed_nitrogen&lt;/code&gt;, nitrate is removed by both.&lt;/li&gt;
+&lt;li&gt;The namelist hint for &lt;code&gt;PO4AdsorptionModel&lt;/code&gt; says Langmuir/Freundlich, but the code uses a Ji (2008) partition for 1 and Chao et al. (2010) for 2.&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+`);
+(function(){
+  const nodes=[
+   {id:'ATM',x:560,y:34,w:960,h:34,c:'X',t:['Atmosphere and physical drivers: wind, rain, light, temperature, salinity, TSS, bottom stress']},
+   {id:'PHY',x:550,y:130,w:300,h:60,c:'B',t:['Phytoplankton  (aed_phytoplankton)','groups from aed_phyto_pars.csv']},
+   {id:'SIL',x:120,y:300,w:140,h:56,c:'X',t:['SIL  aed_silica','reactive Si']},
+   {id:'NIT',x:330,y:300,w:140,h:56,c:'N',t:['NIT  aed_nitrogen','NH4  NO3  (NO2  N₂O)']},
+   {id:'PHS',x:550,y:300,w:140,h:56,c:'P',t:['PHS  aed_phosphorus','FRP  (+ adsorbed PIP)']},
+   {id:'CAR',x:770,y:300,w:140,h:56,c:'C',t:['CAR  aed_carbon','DIC  CH4  pH']},
+   {id:'OXY',x:980,y:300,w:140,h:56,c:'O',t:['OXY  aed_oxygen','dissolved O₂']},
+   {id:'GCH',x:120,y:480,w:140,h:56,c:'X',t:['GCH  aed_geochemistry','Fe  SO4  H₂S']},
+   {id:'OGM',x:510,y:480,w:560,h:60,c:'X',t:['Organic matter  (aed_organic_matter)','POC PON POP  →  DOC DON DOP  (+ refractory pools)']},
+   {id:'ZOO',x:950,y:480,w:180,h:60,c:'B',t:['Zooplankton','(aed_zooplankton)']},
+   {id:'SED',x:560,y:595,w:960,h:34,c:'S',t:['Sediment fluxes  (aed_sedflux)  Fsed_*  and  settling / resuspension']}
+  ];
+  const edges=[
+   {a:'ATM',b:'NIT',c:'X',both:1,vert:1,l:'N16 N17',tip:'N₂O exchange, DIN deposition',dash:1,lx:330,ly:165},
+   {a:'ATM',b:'CAR',c:'X',both:1,vert:1,l:'C12 C13',tip:'CO₂ and CH4 exchange',dash:1,lx:770,ly:165},
+   {a:'ATM',b:'OXY',c:'X',both:1,vert:1,l:'O11',tip:'O₂ exchange',dash:1,lx:980,ly:165},
+   {a:'NIT',b:'PHY',c:'N',l:'N1',tip:'NH4/NO3 uptake'},
+   {a:'PHS',b:'PHY',c:'P',l:'P1',tip:'FRP uptake'},
+   {a:'CAR',b:'PHY',c:'C',l:'C1',tip:'DIC uptake'},
+   {a:'SIL',b:'PHY',c:'X',l:'Si uptake'},
+   {a:'PHY',b:'OXY',c:'O',l:'O11',pts:[[800,130]],tip:'O₂ released by photosynthesis'},
+   {a:'PHY',b:'OGM',c:'C',pts:[[225,130],[225,420],[330,420]],l:'C3 C4 N3 N4 P2',lx:225,ly:260,tip:'mortality to POM, excretion to DOM'},
+   {a:'PHY',b:'ZOO',c:'C',pts:[[1085,130],[1085,480]],l:'N5 P3 C5 grazing',lx:1085,ly:300},
+   {a:[860,472],b:[790,472],c:'C',l:'N6 excretion',lx:825,ly:445},
+   {a:[790,492],b:[860,492],c:'C',l:'grazing POC',lx:825,ly:515},
+   {a:[330,455],b:'NIT',c:'N',l:'N8',pts:[[330,330]],tip:'DON → NH4',lx:330,ly:400},
+   {a:[550,455],b:'PHS',c:'P',l:'P5',pts:[[550,330]],tip:'DOP → FRP',lx:550,ly:400},
+   {a:[770,455],b:'CAR',c:'C',l:'C7',pts:[[770,330]],tip:'DOC → DIC',lx:770,ly:400},
+   {a:'OXY',b:[760,455],c:'O',l:'O3 O₂ use',pts:[[980,420],[800,420]],tip:'aerobic mineralisation, nitrification, CH4 oxidation consume O₂',lx:930,ly:420},
+   {a:'GCH',b:[230,480],c:'X',both:1,l:'O9',tip:'Fe/S reduction by DOM, re-oxidation by O₂',lx:200,ly:455},
+   {a:'OGM',b:[510,578],c:'S',pts:[[510,515]],l:'S6 S7',lx:510,ly:550,tip:'settling and resuspension',both:1},
+   {a:[80,578],b:'SIL',c:'S',pts:[[28,578],[28,300]],l:'Fsed_* to all pools',lx:120,ly:562,tip:'N18 P8 C15 S1: benthic release feeds NIT, PHS, CAR, OXY, SIL and OGM',dash:1}
+  ];
+  render('d-overview',1170,625,nodes,edges);
+})();
+
+/* ---------------- PHYTOPLANKTON ---------------- */
+sec('phyto',`
+&lt;h2&gt;Phytoplankton&lt;/h2&gt;
+&lt;p class=&quot;note&quot;&gt;Each group is a column in &lt;code&gt;aed_phyto_pars.csv&lt;/code&gt;, chosen by &lt;code&gt;the_phytos&lt;/code&gt; in the namelist. Growth is the maximum rate scaled by temperature and the most limiting of light, nitrogen, phosphorus and silica. What the cell takes up and gives back is passed to other modules through the &lt;i&gt;*_target_variable&lt;/i&gt; links.&lt;/p&gt;
+${legend([{c:'X',t:'Environment / limitation'},{c:'B',t:'Biomass'},{c:'N',t:'N pools'},{c:'P',t:'P pools'},{c:'C',t:'C and O₂ pools'},{c:'S',t:'Sediment'},{c:'B',ar:1,t:'flux'}])}
+&lt;div class=&quot;card diagram&quot; id=&quot;d-phyto&quot;&gt;&lt;/div&gt;
+&lt;h3&gt;Processes and the parameters behind them&lt;/h3&gt;
+${procTable('Y')}
+`);
+(function(){
+  const nodes=[
+   {id:'fI',x:130,y:70,w:240,h:50,c:'X',t:['Light  fI','PAR, extinction  Y2']},
+   {id:'fT',x:130,y:150,w:240,h:50,c:'X',t:['Temperature  fT','Y1']},
+   {id:'fN',x:130,y:230,w:240,h:50,c:'N',t:['Nitrogen  fN','NH4, NO3 or internal N  Y3']},
+   {id:'fP',x:130,y:310,w:240,h:50,c:'P',t:['Phosphorus  fP','FRP or internal P  Y4']},
+   {id:'fSi',x:130,y:390,w:240,h:50,c:'X',t:['Silica  fSi','reactive Si  Y5']},
+   {id:'fS',x:130,y:470,w:240,h:50,c:'X',t:['Salinity  fSal','Y11']},
+   {id:'GPP',x:470,y:270,w:210,h:130,c:'B',thick:1,t:['Gross growth  Y6','R_growth × fT ×','min(fI, fN, fP, fSi)','× fSal if salTol &lt; 0']},
+   {id:'N2',x:760,y:70,w:150,h:46,c:'X',dash:1,t:['N₂','simNFixation']},
+   {id:'PHY',x:760,y:270,w:190,h:110,c:'B',thick:1,t:['Phytoplankton biomass','C  (+ IN, IP if dynamic)','p0 = minimum']},
+   {id:'ZOO',x:1090,y:70,w:150,h:46,c:'B',t:['Zooplankton','grazing']},
+   {id:'DOM',x:1090,y:160,w:150,h:46,c:'X',t:['DOC, DON, DOP','exudation, excretion']},
+   {id:'POM',x:1090,y:250,w:150,h:46,c:'X',t:['POC, PON, POP','mortality']},
+   {id:'DIC',x:1090,y:340,w:150,h:46,c:'C',t:['DIC and O₂','photosynthesis, respiration']},
+   {id:'SED',x:1090,y:430,w:150,h:46,c:'S',t:['Sediment','settling']},
+   {id:'MPB',x:760,y:470,w:190,h:50,c:'B',dash:1,t:['Benthic algae (MPB)','do_mpb  Y14']}
+  ];
+  const edges=[
+   {a:'fI',b:'GPP',c:'X'},{a:'fT',b:'GPP',c:'X'},{a:'fN',b:'GPP',c:'N'},{a:'fP',b:'GPP',c:'P'},{a:'fSi',b:'GPP',c:'X'},{a:'fS',b:'GPP',c:'X',dash:1},
+   {a:'GPP',b:'PHY',c:'B',l:'Y6 growth',w:2.6},
+   {a:'N2',b:'PHY',c:'N',dash:1,vert:1,l:'Y7 fixation',lx:760,ly:165},
+   {a:'PHY',b:'ZOO',c:'B',l:'N5 P3 C5 grazing',lx:930,ly:100,pts:[[925,70]]},
+   {a:'PHY',b:'DOM',c:'B',l:'Y9 f_pr, k_fdom',lx:960,ly:200},
+   {a:'PHY',b:'POM',c:'B',l:'Y10 mortality',lx:955,ly:265},
+   {a:'PHY',b:'DIC',c:'C',both:1,l:'C1 C2 Y8',lx:955,ly:318,tip:'photosynthesis takes DIC and releases O₂; respiration (k_fres) reverses it'},
+   {a:'PHY',b:'SED',c:'S',l:'Y12 settling',lx:950,ly:380},
+   {a:'MPB',b:'PHY',c:'B',both:1,dash:1,l:'Y13 resuspension',lx:760,ly:385}
+  ];
+  render('d-phyto',1200,540,nodes,edges);
+})();
+document.getElementById('tab-phyto').insertAdjacentHTML('beforeend',`
+&lt;h3&gt;How uptake and loss map to N, P and C&lt;/h3&gt;
+&lt;div class=&quot;tblwrap&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Flux&lt;/th&gt;&lt;th&gt;Nitrogen&lt;/th&gt;&lt;th&gt;Phosphorus&lt;/th&gt;&lt;th&gt;Carbon&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;Uptake&lt;/td&gt;&lt;td&gt;NH4 and NO3 → IN (&lt;code&gt;n1_&lt;/code&gt;–&lt;code&gt;n4_uptake_target_variable&lt;/code&gt;)&lt;/td&gt;&lt;td&gt;FRP → IP (&lt;code&gt;p1_&lt;/code&gt;, &lt;code&gt;p2_uptake_target_variable&lt;/code&gt;)&lt;/td&gt;&lt;td&gt;DIC → C (&lt;code&gt;c_uptake_target_variable&lt;/code&gt;), O₂ released (&lt;code&gt;do_uptake_target_variable&lt;/code&gt;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Respiration&lt;/td&gt;&lt;td&gt;none (internal N stays in the cell pool)&lt;/td&gt;&lt;td&gt;none&lt;/td&gt;&lt;td&gt;k_fres share → DIC, uses O₂&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Exudation, excretion&lt;/td&gt;&lt;td&gt;→ DON, in proportion to cell N&lt;/td&gt;&lt;td&gt;→ DOP&lt;/td&gt;&lt;td&gt;→ DOC (f_pr and k_fdom)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Mortality&lt;/td&gt;&lt;td&gt;→ PON&lt;/td&gt;&lt;td&gt;→ POP&lt;/td&gt;&lt;td&gt;→ POC&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Grazing&lt;/td&gt;&lt;td colspan=&quot;3&quot;&gt;Removes C, IN and IP together in the ratio of the cell contents. See the Zooplankton tab.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+`);
+
+/* ---------------- ZOOPLANKTON ---------------- */
+sec('zoo',`
+&lt;h2&gt;Zooplankton&lt;/h2&gt;
+&lt;p class=&quot;note&quot;&gt;Each group is a column in &lt;code&gt;aed_zoop_pars.csv&lt;/code&gt;. A group grazes on a list of prey, splits what it takes between growth, faeces and excretion, and loses biomass to respiration and mortality. Zooplankton keep a fixed N:C and P:C, so any nutrient grazed beyond that is excreted.&lt;/p&gt;
+${legend([{c:'B',t:'Biomass'},{c:'X',t:'Organic matter / modifier'},{c:'O',t:'Oxygen'},{c:'S',t:'Sediment'},{c:'B',ar:1,t:'flux'}])}
+&lt;div class=&quot;card diagram&quot; id=&quot;d-zoo&quot;&gt;&lt;/div&gt;
+&lt;h3&gt;Processes and the parameters behind them&lt;/h3&gt;
+${procTable('Z')}
+&lt;div class=&quot;warn&quot;&gt;&lt;b&gt;Check:&lt;/b&gt; in the current source &lt;code&gt;theta_resp_zoo&lt;/code&gt; and &lt;code&gt;saltfunc_zoo&lt;/code&gt; are read from the CSV but have no effect. Respiration and mortality use &lt;code&gt;theta_grz_zoo&lt;/code&gt;, and one salinity function is always used. A respiration share of 1−ffecal_zoo−fexcr_zoo is removed from the animal without being added to DIC or consuming O₂.&lt;/div&gt;
+`);
+(function(){
+  const nodes=[
+   {id:'PHY',x:130,y:90,w:210,h:56,c:'B',t:['Phytoplankton','prey(n)%zoop_prey = PHY_*']},
+   {id:'POC',x:130,y:200,w:210,h:56,c:'X',t:['POC (+ PON, POP)','prey = OGM_poc']},
+   {id:'ZP',x:130,y:310,w:210,h:56,c:'B',t:['Other zooplankton','prey = ZOO_*']},
+   {id:'GRZ',x:440,y:200,w:230,h:120,c:'B',thick:1,t:['Grazing  Z1','Rgrz_zoo × C/(Kgrz_zoo+C) × fT','C = total prey','Cmin_grz_zoo floor','split by Pzoo_prey']},
+   {id:'ZOO',x:780,y:200,w:190,h:100,c:'B',thick:1,t:['Zooplankton biomass','fixed N:C (INC_zoo)','fixed P:C (IPC_zoo)','min_zoo']},
+   {id:'T',x:440,y:60,w:180,h:50,c:'X',t:['Temperature  Z2','theta_grz_zoo, T*_zoo']},
+   {id:'S',x:780,y:350,w:210,h:50,c:'X',t:['Salinity  Z8','Smin_zoo, Smax_zoo, Sint_zoo']},
+   {id:'O',x:440,y:350,w:230,h:50,c:'O',t:['Dissolved O₂','DOmin_zoo']},
+   {id:'POM',x:1060,y:70,w:160,h:56,c:'X',t:['POC, PON, POP','faeces, dead animals']},
+   {id:'DOM',x:1060,y:170,w:160,h:56,c:'X',t:['DOC, DON, DOP','excretion']},
+   {id:'RES',x:1060,y:270,w:160,h:56,c:'X',dash:1,t:['Respired C','not routed to DIC']},
+   {id:'SED',x:1060,y:370,w:160,h:56,c:'S',t:['Sediment','hard faecal pellets']}
+  ];
+  const edges=[
+   {a:'PHY',b:'GRZ',c:'B'},{a:'POC',b:'GRZ',c:'B'},{a:'ZP',b:'GRZ',c:'B'},
+   {a:'T',b:'GRZ',c:'X',vert:1},
+   {a:'GRZ',b:'ZOO',c:'B',l:'Z3 assimilation',w:2.6,tip:'fassim_zoo'},
+   {a:[545,140],b:'POM',c:'B',pts:[[545,22],[1060,22]],l:'Z4 unassimilated',lx:650,ly:22,tip:'(1−fassim_zoo) × grazing'},
+   {a:'ZOO',b:'POM',c:'B',l:'Z4 Z7',lx:930,ly:122,tip:'faeces from respiration (ffecal_zoo) and mortality (Rmort_zoo)'},
+   {a:'ZOO',b:'DOM',c:'B',l:'Z5 excretion',lx:940,ly:185},
+   {a:'ZOO',b:'RES',c:'B',l:'Z6 respiration',lx:940,ly:245},
+   {a:'ZOO',b:'SED',c:'S',dash:1,pts:[[900,330],[900,370]],l:'ffecal_sed',lx:940,ly:340},
+   {a:'S',b:'ZOO',c:'X',dash:1,vert:1},
+   {a:'O',b:[700,210],c:'O',dash:1,pts:[[700,350],[700,260]],l:'Z7 low O₂ → mortality',lx:610,ly:380}
+  ];
+  render('d-zoo',1170,430,nodes,edges);
+})();
+
+/* ---------------- NITROGEN ---------------- */
+sec('nitrogen',`
+&lt;h2&gt;Nitrogen balance&lt;/h2&gt;
+&lt;p class=&quot;note&quot;&gt;Particulate N is hydrolysed to DON, DON is mineralised to ammonium, ammonium is nitrified to nitrate, and nitrate is lost as N₂ (or recycled by DNRA). Phytoplankton and zooplankton draw N out and return it as PON, DON and NH4. Dashed boxes are optional sub-models.&lt;/p&gt;
+${legend([{c:'B',t:'Biomass'},{c:'X',t:'Organic N (PON, DON)'},{c:'N',t:'Inorganic N'},{c:'N',t:'Optional (simN2O)',d:1},{c:'S',t:'Sediment'},{c:'N',ar:1,t:'N flow'},{c:'O',ar:1,t:'needs / uses O₂',d:1}])}
+&lt;div class=&quot;card diagram&quot; id=&quot;d-nitrogen&quot;&gt;&lt;/div&gt;
+&lt;h3&gt;Processes and the parameters behind them&lt;/h3&gt;
+${procTable('N')}
+`);
+(function(){
+  const nodes=[
+   {id:'ATM',x:600,y:34,w:1000,h:34,c:'X',t:['Atmosphere: N₂O exchange, dry and wet DIN deposition']},
+   {id:'PHY',x:110,y:230,w:150,h:60,c:'B',t:['Phytoplankton N','X_ncon or dynamic IN']},
+   {id:'ZOO',x:110,y:470,w:150,h:56,c:'B',t:['Zooplankton N','INC_zoo']},
+   {id:'PON',x:380,y:130,w:130,h:46,c:'X',t:['PON']},
+   {id:'DON',x:380,y:310,w:130,h:46,c:'X',t:['DON']},
+   {id:'NH4',x:720,y:310,w:130,h:46,c:'N',t:['NH4⁺','amm']},
+   {id:'NO3',x:1000,y:310,w:130,h:46,c:'N',t:['NO3⁻','nit']},
+   {id:'NO2',x:880,y:460,w:130,h:46,c:'N',dash:1,t:['NO2⁻','simN2O = 2']},
+   {id:'N2O',x:640,y:560,w:130,h:46,c:'N',dash:1,t:['N₂O','simN2O ≥ 1']},
+   {id:'N2',x:1000,y:560,w:130,h:46,c:'X',t:['N₂ (lost)']},
+   {id:'SED',x:600,y:650,w:1000,h:34,c:'S',t:['Sediment: Fsed_amm, Fsed_nit, Fsed_n2o, Fsed_don, PON settling / resuspension']}
+  ];
+  const edges=[
+   {a:'ATM',b:'NH4',c:'N',vert:1,l:'N17',lx:720,ly:100},
+   {a:'ATM',b:'NO3',c:'N',vert:1,l:'N17',lx:1000,ly:100},
+   {a:[1100,34],b:'N2O',c:'N',both:1,dash:1,l:'N16 N₂O exchange',pts:[[1150,34],[1150,610],[640,610]],lx:1150,ly:200},
+   {a:[690,287],b:[185,225],c:'N',l:'N1 NH4 uptake',pts:[[690,205]],lx:480,ly:212},
+   {a:[965,287],b:[185,248],c:'N',l:'N1 NO3 uptake',pts:[[965,262],[185,262]],lx:640,ly:262},
+   {a:'PHY',b:'PON',c:'N',l:'N3 mortality',lx:240,ly:178},
+   {a:'PHY',b:'DON',c:'N',l:'N4 excretion',lx:255,ly:276},
+   {a:'PHY',b:'ZOO',c:'N',l:'N5 grazing',lx:110,ly:360},
+   {a:'ZOO',b:'DON',c:'N',l:'N6 DON',lx:255,ly:395},
+   {a:[170,455],b:[315,142],c:'N',pts:[[270,455],[270,142]],l:'N6 faeces → PON',lx:270,ly:420},
+   {a:'PON',b:'DON',c:'N',l:'N7 hydrolysis',lx:380,ly:220},
+   {a:'DON',b:'NH4',c:'N',l:'N8 mineralisation',lx:550,ly:284},
+   {a:'NH4',b:'NO3',c:'N',l:'N9 nitrification',lx:875,ly:284},
+   {a:'NO3',b:'N2',c:'N',l:'N10 N11 denitrification',lx:1000,ly:435},
+   {a:'NO3',b:'NH4',c:'N',l:'N13 DNRA',pts:[[875,350]],lx:875,ly:352},
+   {a:'NO2',b:'N2',c:'N',dash:1,l:'N12 anammox',lx:925,ly:525,tip:'NH4⁺ + NO2⁻ → N₂ (also consumes NH4⁺)'},
+   {a:'NH4',b:'NO2',c:'N',dash:1,l:'N15',lx:790,ly:395},
+   {a:'NO2',b:'NO3',c:'N',dash:1,l:'N15',lx:975,ly:395},
+   {a:'N2O',b:'N2',c:'N',dash:1,l:'N14 N2O → N₂',lx:880,ly:562},
+   {a:'NH4',b:'N2O',c:'N',dash:1,l:'N14',lx:665,ly:440},
+   {a:[770,633],b:[770,333],c:'S',l:'N18',lx:770,ly:600,tip:'Fsed_amm'},
+   {a:[1100,633],b:'NO3',c:'S',l:'N18',pts:[[1100,633],[1100,310]],lx:1100,ly:480,tip:'Fsed_nit'},
+   {a:[120,633],b:'DON',c:'S',l:'N19',pts:[[40,633],[40,310],[280,310]],lx:40,ly:480,tip:'Fsed_don, PON/DON settling and resuspension'},
+   {a:'OGM',b:'x'}
+  ].filter(e=&gt;e.b!=='x');
+  render('d-nitrogen',1200,680,nodes,edges);
+})();
+
+/* ---------------- PHOSPHORUS ---------------- */
+sec('phosphorus',`
+&lt;h2&gt;Phosphorus balance&lt;/h2&gt;
+&lt;p class=&quot;note&quot;&gt;P has one dissolved inorganic pool, FRP, plus an optional adsorbed pool (PIP) in equilibrium with it. Organic P follows the same hydrolysis and mineralisation path as N. Sediment release is the largest term in many lakes and depends strongly on bottom-water O₂.&lt;/p&gt;
+${legend([{c:'B',t:'Biomass'},{c:'X',t:'Organic P (POP, DOP)'},{c:'P',t:'Inorganic P'},{c:'P',t:'Optional (simPO4Adsorption)',d:1},{c:'S',t:'Sediment'},{c:'P',ar:1,t:'P flow'},{c:'O',ar:1,t:'O₂ controlled'}])}
+&lt;div class=&quot;card diagram&quot; id=&quot;d-phosphorus&quot;&gt;&lt;/div&gt;
+&lt;h3&gt;Processes and the parameters behind them&lt;/h3&gt;
+${procTable('P')}
+`);
+(function(){
+  const nodes=[
+   {id:'ATM',x:560,y:34,w:960,h:34,c:'X',t:['Atmosphere: wet deposition (FRP in rain) and dry deposition (particulate P)']},
+   {id:'PHY',x:130,y:230,w:160,h:60,c:'B',t:['Phytoplankton P','X_pcon or dynamic IP']},
+   {id:'ZOO',x:130,y:440,w:160,h:56,c:'B',t:['Zooplankton P','IPC_zoo']},
+   {id:'POP',x:420,y:130,w:130,h:46,c:'X',t:['POP']},
+   {id:'DOP',x:420,y:310,w:130,h:46,c:'X',t:['DOP']},
+   {id:'FRP',x:760,y:310,w:140,h:50,c:'P',t:['FRP','dissolved PO4']},
+   {id:'PIP',x:1000,y:310,w:150,h:50,c:'P',dash:1,t:['Adsorbed P (PIP)','frp_ads']},
+   {id:'TSS',x:1000,y:160,w:150,h:46,c:'X',dash:1,t:['TSS / particles','sorption sites']},
+   {id:'O2',x:610,y:470,w:140,h:46,c:'O',t:['Bottom-water O₂']},
+   {id:'SED',x:560,y:610,w:960,h:34,c:'S',t:['Sediment: Fsed_frp, POP / DOP fluxes, settling of PIP and POP']}
+  ];
+  const edges=[
+   {a:'ATM',b:'FRP',c:'P',vert:1,l:'P9 wet',lx:790,ly:100},
+   {a:[1040,34],b:'PIP',c:'P',pts:[[1095,34],[1095,310]],l:'P9 dry',lx:1095,ly:150,dash:1},
+   {a:[735,285],b:[210,238],c:'P',pts:[[735,238]],l:'P1 FRP uptake',lx:520,ly:238},
+   {a:'PHY',b:'POP',c:'P',l:'P2 mortality',lx:265,ly:178},
+   {a:'PHY',b:'DOP',c:'P',l:'P2 excretion',lx:280,ly:276},
+   {a:'PHY',b:'ZOO',c:'P',l:'P3 grazing',lx:130,ly:340},
+   {a:'ZOO',b:'DOP',c:'P',l:'P3 DOP',lx:285,ly:380},
+   {a:[190,425],b:[355,142],c:'P',pts:[[300,425],[300,142]],l:'P3 faeces → POP',lx:300,ly:400},
+   {a:'POP',b:'DOP',c:'P',l:'P4 hydrolysis',lx:420,ly:225},
+   {a:'DOP',b:'FRP',c:'P',l:'P5 mineralisation',lx:590,ly:284},
+   {a:'FRP',b:'PIP',c:'P',both:1,dash:1,l:'P6 adsorption',lx:880,ly:284},
+   {a:'TSS',b:'PIP',c:'X',dash:1,l:'P6 Kpo4p, Qmax',lx:1000,ly:232,tip:'sorption capacity set by the particle concentration'},
+   {a:[800,593],b:[800,335],c:'S',l:'P8 Fsed_frp',lx:800,ly:520,tip:'Fsed_frp × min(3, Ksed_frp/(Ksed_frp+O₂) × θ^(T−20))'},
+   {a:'O2',b:'FRP',c:'O',dash:1,l:'O₂ gate',lx:668,ly:400,tip:'More release at low O₂'},
+   {a:'PIP',b:[1040,593],c:'S',l:'P7 settling',pts:[[1040,450]],lx:1040,ly:500,tip:'w_po4ads'},
+   {a:[420,153],b:[420,593],c:'S',l:'P10 settling',pts:[[40,153],[40,593]],lx:40,ly:360,tip:'POP settling, resuspension; DOP flux from sediment'}
+  ];
+  render('d-phosphorus',1120,650,nodes,edges);
+})();
+
+/* ---------------- CARBON ---------------- */
+sec('carbon',`
+&lt;h2&gt;Carbon balance&lt;/h2&gt;
+&lt;p class=&quot;note&quot;&gt;Photosynthesis moves DIC into phytoplankton and releases O₂. Respiration, DOC mineralisation and CH4 oxidation return it. Anaerobic mineralisation can end in CH4. DIC and CH4 exchange with the air, and CH4 can also leave as bubbles. pH is computed from DIC and alkalinity, and it feeds back to nitrification and P adsorption when linked.&lt;/p&gt;
+${legend([{c:'B',t:'Biomass'},{c:'X',t:'Organic C'},{c:'C',t:'Inorganic C / gas'},{c:'C',t:'Optional',d:1},{c:'O',t:'Oxygen'},{c:'S',t:'Sediment'},{c:'C',ar:1,t:'C flow'},{c:'O',ar:1,t:'O₂ flow'}])}
+&lt;div class=&quot;card diagram&quot; id=&quot;d-carbon&quot;&gt;&lt;/div&gt;
+&lt;h3&gt;Processes and the parameters behind them&lt;/h3&gt;
+${procTable('C')}
+`);
+(function(){
+  const nodes=[
+   {id:'ATM',x:600,y:34,w:1040,h:34,c:'X',t:['Atmosphere: CO₂ (atm_co2), CH4 (atm_ch4), bubbles that reach the surface']},
+   {id:'PHY',x:130,y:230,w:160,h:60,c:'B',t:['Phytoplankton C','Xcc, X_ncon, X_pcon']},
+   {id:'ZOO',x:130,y:470,w:160,h:56,c:'B',t:['Zooplankton C']},
+   {id:'POC',x:400,y:130,w:130,h:46,c:'X',t:['POC']},
+   {id:'DOC',x:400,y:310,w:130,h:46,c:'X',t:['DOC']},
+   {id:'DOCR',x:400,y:470,w:150,h:46,c:'X',dash:1,t:['DOCR, CPOM','simRPools']},
+   {id:'DIC',x:760,y:310,w:140,h:56,c:'C',t:['DIC','pH, alkalinity']},
+   {id:'CH4',x:1010,y:310,w:140,h:50,c:'C',dash:1,t:['CH4','simCH4']},
+   {id:'O2',x:580,y:470,w:120,h:46,c:'O',t:['O₂']},
+   {id:'BUB',x:1010,y:470,w:140,h:46,c:'C',dash:1,t:['Bubbles','ebb_model']},
+   {id:'SED',x:600,y:620,w:1040,h:34,c:'S',t:['Sediment: Fsed_dic, Fsed_ch4, Fsed_ch4_ebb, Fsed_doc, POC settling / resuspension']}
+  ];
+  const edges=[
+   {a:'ATM',b:'DIC',c:'C',both:1,vert:1,l:'C12 CO₂ exchange',lx:760,ly:100},
+   {a:'ATM',b:'CH4',c:'C',both:1,dash:1,vert:1,l:'C13 CH4 exchange',lx:1010,ly:100},
+   {a:[735,282],b:[210,242],c:'C',pts:[[735,242]],l:'C1 photosynthesis',lx:520,ly:242},
+   {a:[210,206],b:[690,282],c:'C',pts:[[690,206]],l:'C2 respiration',lx:470,ly:206},
+   {a:'PHY',b:'POC',c:'C',l:'C4 mortality',lx:275,ly:178},
+   {a:'PHY',b:'DOC',c:'C',l:'C3 exudation',lx:260,ly:278},
+   {a:'PHY',b:'ZOO',c:'C',l:'C5 grazing',lx:130,ly:350},
+   {a:'ZOO',b:'DOC',c:'C',l:'C5 DOC',lx:280,ly:395},
+   {a:[190,455],b:[335,142],c:'C',pts:[[245,455],[245,142]],l:'C5 faeces → POC',lx:245,ly:420},
+   {a:'POC',b:'DOC',c:'C',l:'C6 hydrolysis',lx:400,ly:220},
+   {a:'DOC',b:'DIC',c:'C',l:'C7 mineralisation',lx:580,ly:284},
+   {a:'DOC',b:'DOCR',c:'C',dash:1,l:'C8',lx:400,ly:395},
+   {a:'DOCR',b:'DIC',c:'C',dash:1,l:'C8 photolysis',lx:590,ly:420},
+   {a:'DOC',b:'CH4',c:'C',dash:1,pts:[[400,370],[1010,370]],l:'C10 methanogenesis',lx:880,ly:370},
+   {a:'CH4',b:'DIC',c:'C',l:'C11 CH4 oxidation',pts:[[890,330]],lx:890,ly:332},
+   {a:'O2',b:'DIC',c:'O',l:'uses O₂',lx:660,ly:410,tip:'aerobic mineralisation, respiration; CH4 oxidation'},
+   {a:'PHY',b:'O2',c:'O',pts:[[130,545],[580,545]],l:'O₂ from C1',lx:200,ly:545,dash:1},
+   {a:[760,603],b:[760,338],c:'S',l:'C15 Fsed_dic',lx:760,ly:560},
+   {a:[1060,603],b:[1080,310],c:'S',pts:[[1105,603],[1105,310]],l:'C15 Fsed_ch4',lx:1105,ly:560},
+   {a:[1010,603],b:[1010,493],c:'S',dash:1,l:'C14 Fsed_ch4_ebb',lx:1010,ly:545},
+   {a:'BUB',b:'CH4',c:'C',dash:1,l:'C14 dissolves',lx:1010,ly:395},
+   {a:'BUB',b:'ATM',c:'C',dash:1,pts:[[1140,470],[1140,34]],l:'C14 to air',lx:1140,ly:250,tip:'share not dissolved in transit'},
+   {a:[400,603],b:'DOC',c:'S',l:'C16',pts:[[60,603],[60,310]],lx:60,ly:560,tip:'Fsed_doc, Fsed_poc, POC settling'}
+  ];
+  render('d-carbon',1200,670,nodes,edges);
+})();
+
+/* ---------------- OXIC vs ANOXIC ---------------- */
+sec('redox',`
+&lt;h2&gt;Oxic versus anoxic conditions&lt;/h2&gt;
+&lt;p class=&quot;note&quot;&gt;The same organic matter is processed in different ways depending on O₂. Oxic water mineralises quickly, nitrifies, and holds N and P in the sediment. As O₂ falls, nitrification stops, the anaerobic share of mineralisation rises and works down a ladder of electron acceptors, and the sediment releases NH4, FRP, CH4 and dissolved Fe/S.&lt;/p&gt;
+${legend([{c:'O',t:'Oxygen / aerobic'},{c:'N',t:'N pool'},{c:'P',t:'P pool'},{c:'C',t:'C pool'},{c:'X',t:'Other redox species'},{c:'S',t:'Sediment'}])}
+&lt;div class=&quot;card diagram&quot; id=&quot;d-redox&quot;&gt;&lt;/div&gt;
+&lt;h3&gt;The O₂-dependent switches&lt;/h3&gt;
+${procTable('O')}
+`);
+(function(){
+  const nodes=[
+   {id:'HDOx',x:300,y:30,w:520,h:40,c:'O',thick:1,t:['OXIC  (O₂ ≫ Kdom_minerl, Knitrif, Ksed_*)']},
+   {id:'HDAn',x:900,y:30,w:520,h:40,c:'S',thick:1,t:['ANOXIC  (O₂ → 0)']},
+   // oxic column
+   {id:'o_dom',x:300,y:120,w:240,h:50,c:'X',t:['DOM (DOC, DON, DOP)','from POM hydrolysis  O1']},
+   {id:'o_prod',x:300,y:250,w:260,h:54,c:'C',t:['DIC  +  NH4⁺  +  FRP','mineralised at full rate  O2 O3']},
+   {id:'o_nit',x:300,y:380,w:200,h:46,c:'N',t:['NO3⁻','from nitrification  O5']},
+   {id:'o_o2',x:70,y:250,w:110,h:46,c:'O',t:['O₂','consumed']},
+   {id:'o_sed',x:300,y:520,w:480,h:56,c:'S',t:['Sediment: low NH4, FRP, CH4 release; NO3 and O₂ taken up','Ksed_*/(Ksed_*+O₂) small  S3']},
+   // anoxic ladder
+   {id:'a_dom',x:760,y:120,w:240,h:50,c:'X',t:['DOM, anaerobic share','Kdom_minerl/(Kdom_minerl+O₂)  O4']},
+   {id:'a_no3',x:760,y:215,w:240,h:46,c:'N',t:['1  NO3⁻ → N₂ / N₂O / NH4⁺','K_nit  N10 N11 N13']},
+   {id:'a_fe',x:760,y:300,w:240,h:46,c:'X',t:['2  Fe(III) → Fe(II)','simFeReduction  K_fe']},
+   {id:'a_so4',x:760,y:385,w:240,h:46,c:'X',t:['3  SO4 → H₂S','simSO4Reduction  K_so4']},
+   {id:'a_ch4',x:760,y:470,w:240,h:46,c:'C',t:['4  CH4 (methanogenesis)','simMethanogenesis  C10']},
+   {id:'a_nh4',x:1060,y:300,w:200,h:56,c:'N',t:['NH4⁺ accumulates','nitrification off  O5','anammox, DNRA possible  O7']},
+   {id:'a_p',x:1060,y:420,w:200,h:56,c:'P',t:['FRP accumulates','sediment release rises  P8']},
+   {id:'a_sed',x:900,y:560,w:520,h:56,c:'S',t:['Sediment: high NH4, FRP, CH4, DOM release; N₂O possible','Ksed_*/(Ksed_*+O₂) → 1  S3']},
+   {id:'a_hd',x:1060,y:150,w:200,h:30,c:'X',rx:15,t:['Consequences']},
+   {id:'a_ox',x:1060,y:215,w:200,h:46,c:'O',dash:1,t:['O₂ returns','re-oxidises Fe, H₂S, CH4  O8 O9']}
+  ];
+  const edges=[
+   {a:'o_dom',b:'o_prod',c:'C',l:'aerobic mineralisation',tip:'uses O₂ at 1 mol per mol C'},
+   {a:'o_o2',b:[170,250],c:'O',l:'',w:1.8},
+   {a:'o_prod',b:'o_nit',c:'N',l:'NH4 → NO3 (2 O₂)',lx:300,ly:315,tip:'N9 nitrification uses 2 mol O₂ per mol N'},
+   {a:'o_nit',b:'o_sed',c:'S',l:'retained',lx:300,ly:452,dash:1},
+   {a:'o_sed',b:[560,520],c:'S',l:'',w:0},
+   {a:'a_dom',b:'a_no3',c:'N',l:'first',lx:700,ly:168},
+   {a:'a_no3',b:'a_fe',c:'X',l:'leftover share, × fnit',lx:760,ly:258},
+   {a:'a_fe',b:'a_so4',c:'X',l:'leftover, × ffe',lx:760,ly:343},
+   {a:'a_so4',b:'a_ch4',c:'C',l:'leftover, × fso4',lx:760,ly:428},
+   {a:'a_no3',b:'a_ox',c:'O',dash:1,l:'',w:0},
+   {a:'a_fe',b:'a_nh4',c:'N',dash:1,l:'',w:0},
+   {a:'a_ch4',b:'a_sed',c:'S',l:'CH4 to bubbles / sediment flux',lx:760,ly:515,dash:1},
+   {a:'a_p',b:'a_sed',c:'S',l:'',w:0}
+  ].filter(e=&gt;e.w!==0);
+  // dividing line
+  render('d-redox',1200,620,nodes,edges);
+  const svg=document.querySelector('#d-redox svg');
+  const l=E('line',{x1:600,y1:60,x2:600,y2:590,stroke:'var(--line)','stroke-width':2,'stroke-dasharray':'6 6'});
+  svg.insertBefore(l,svg.firstChild.nextSibling);
+})();
+document.getElementById('tab-redox').insertAdjacentHTML('beforeend',`
+&lt;div class=&quot;warn&quot;&gt;&lt;b&gt;Sequence and shortcuts.&lt;/b&gt; Mineralisation is split into an aerobic share, O₂/(Kdom_minerl+O₂), and the remainder. The remainder is passed down the acceptor ladder in this order: NO3, Fe(III), SO4, then methanogenesis. Fe and SO4 steps only run when &lt;code&gt;simFeReduction&lt;/code&gt; and &lt;code&gt;simSO4Reduction&lt;/code&gt; are above 0 and the matching &lt;code&gt;dom_miner_*_reactant_var&lt;/code&gt; link exists. In &lt;code&gt;aed_nitrogen&lt;/code&gt; the simple model runs nitrification, denitrification, DNRA and anammox separately from this ladder.&lt;/div&gt;
+&lt;h3&gt;How each pool responds&lt;/h3&gt;
+&lt;div class=&quot;tblwrap&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Pool&lt;/th&gt;&lt;th&gt;Oxic water&lt;/th&gt;&lt;th&gt;Anoxic water&lt;/th&gt;&lt;th&gt;Main parameters&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;NH4&lt;/td&gt;&lt;td&gt;Consumed by nitrification&lt;/td&gt;&lt;td&gt;Builds up; DNRA and sediment release add to it&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;p&quot;&gt;Rnitrif&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Knitrif&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Rdnra&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Kdnra_oxy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Ksed_amm&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NO3&lt;/td&gt;&lt;td&gt;Produced by nitrification; sediment takes it up&lt;/td&gt;&lt;td&gt;Denitrified, used in OM mineralisation, DNRA&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;p&quot;&gt;Kdenit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;oxy_lim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;K_nit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;simDenitrification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Ksed_nit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Fsed_nit_model&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;FRP&lt;/td&gt;&lt;td&gt;Retained near the sediment; adsorbs to particles&lt;/td&gt;&lt;td&gt;Released from the sediment&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;p&quot;&gt;Ksed_frp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;theta_sed_frp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;simPO4Adsorption&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;DIC&lt;/td&gt;&lt;td&gt;Produced by aerobic mineralisation and CH4 oxidation&lt;/td&gt;&lt;td&gt;Produced more slowly if f_an&amp;lt;1; CH4 takes part of the C&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;p&quot;&gt;Kdom_minerl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;f_an&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Ksed_dic&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;CH4&lt;/td&gt;&lt;td&gt;Oxidised to DIC (uses O₂)&lt;/td&gt;&lt;td&gt;Produced; released from sediment and bubbles&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;p&quot;&gt;Rch4ox&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Kch4ox&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;simMethanogenesis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Ksed_ch4&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;N₂O&lt;/td&gt;&lt;td&gt;Small nitrification by-product when O₂ &amp;gt; 3&lt;/td&gt;&lt;td&gt;Denitrification intermediate, consumed by Rn2o·exp(−O₂/0.3)&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;p&quot;&gt;simN2O&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Rn2o&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Ksed_n2o&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;O₂&lt;/td&gt;&lt;td&gt;Sink: mineralisation, nitrification, sediment demand&lt;/td&gt;&lt;td&gt;Near zero, so all O₂-gated rates switch&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;p&quot;&gt;Fsed_oxy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;Ksed_oxy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;dom_miner_oxy_reactant_var&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+`);
+
+/* ---------------- SEDIMENT ---------------- */
+sec('sediment',`
+&lt;h2&gt;Sediment fluxes&lt;/h2&gt;
+&lt;p class=&quot;note&quot;&gt;Sediment release enters the water column as a flux into the bottom layer of each pool. The value comes either from the module’s own &lt;code&gt;Fsed_*&lt;/code&gt; parameter or from &lt;code&gt;aed_sedflux&lt;/code&gt; through a &lt;code&gt;Fsed_*_variable&lt;/code&gt; link. In constant mode the flux is then scaled by bottom-water O₂ and temperature. In dynamic mode the value from the sediment model is used as it is.&lt;/p&gt;
+${legend([{c:'S',t:'Sediment source'},{c:'X',t:'Scaling'},{c:'N',t:'N pool'},{c:'P',t:'P pool'},{c:'C',t:'C pool'},{c:'O',t:'O₂ pool'},{c:'S',ar:1,t:'flux'},{c:'S',ar:1,d:1,t:'used unscaled'}])}
+&lt;div class=&quot;card diagram&quot; id=&quot;d-sediment&quot;&gt;&lt;/div&gt;
+&lt;h3&gt;Processes and the parameters behind them&lt;/h3&gt;
+${procTable('S')}
+`);
+(function(){
+  const nodes=[
+   {id:'SF',x:150,y:230,w:250,h:200,c:'S',thick:1,t:['aed_sedflux','sedflux_model:','constant | dynamic','constant2d | dynamic2d','Fsed_oxy  Fsed_amm  Fsed_nit','Fsed_frp  Fsed_dic  Fsed_ch4','Fsed_doc  Fsed_don  Fsed_dop','Fsed_n2o  Fsed_rsi  Fsed_feii']},
+   {id:'MOD',x:490,y:230,w:260,h:140,c:'X',t:['Scaling in each module','(constant values only)','fDO = Ksed/(Ksed+O₂), or O₂/(Ksed+O₂)','fT = θ_sed^(T−20)','O₂ and FRP capped at min(3, fDO·fT)']},
+   {id:'OXY',x:880,y:60,w:230,h:46,c:'O',t:['O₂','Fsed_oxy_variable']},
+   {id:'NIT',x:880,y:140,w:230,h:46,c:'N',t:['NH4, NO3, N₂O','Fsed_amm / nit / n2o_variable']},
+   {id:'PHS',x:880,y:220,w:230,h:46,c:'P',t:['FRP','Fsed_frp_variable']},
+   {id:'CAR',x:880,y:300,w:230,h:46,c:'C',t:['DIC, CH4, bubbles','Fsed_dic / ch4 / ebb_variable']},
+   {id:'OGM',x:880,y:380,w:230,h:46,c:'X',t:['DOC, DON, DOP','Fsed_doc / don / dop_variable']},
+   {id:'SIL',x:880,y:460,w:230,h:46,c:'X',t:['Reactive Si','Fsed_rsi_variable']},
+   {id:'POM',x:880,y:560,w:230,h:56,c:'X',t:['POC, PON, POP','resuspension: Fsed_poc / pon / pop_variable']},
+   {id:'WC',x:490,y:560,w:260,h:56,c:'B',t:['Bottom water column','settling: w_pom, w_po4ads, Psed_*']},
+   {id:'SO',x:150,y:560,w:250,h:56,c:'S',t:['Sediment OM pools','simSedimentOM']},
+   {id:'O2',x:490,y:420,w:200,h:46,c:'O',t:['Bottom-water O₂ and T']}
+  ];
+  const edges=[
+   {a:'SF',b:'MOD',c:'S',l:'S1 constant',lx:320,ly:205},
+   {a:'MOD',b:'OXY',c:'S',l:'S3 S4',pts:[[640,60]]},
+   {a:'MOD',b:'NIT',c:'S',l:'S3 S4',pts:[[640,140]]},
+   {a:'MOD',b:'PHS',c:'S',l:'S3 S4',pts:[[640,220]]},
+   {a:'MOD',b:'CAR',c:'S',l:'S3 S4',pts:[[640,300]]},
+   {a:'MOD',b:'OGM',c:'S',l:'S3 S4',pts:[[640,380]]},
+   {a:'O2',b:'MOD',c:'O',l:'S3 S4 drivers',lx:490,ly:352},
+   {a:[150,130],b:[765,40],c:'S',dash:1,pts:[[150,18],[765,18]],l:'S1 S2 dynamic mode: used as-is, for every pool',lx:450,ly:18},
+   {a:'SF',b:'SIL',c:'S',pts:[[150,460]],l:'S1',lx:300,ly:460},
+   {a:'WC',b:'SO',c:'S',l:'S6 settling',lx:320,ly:535},
+   {a:'SO',b:'POM',c:'S',pts:[[150,640],[880,640]],l:'S7 resuspension',lx:520,ly:640,tip:'resuspension = 1 or 2; sedimentOMfrac, Xsc, Xsn, Xsp'},
+   {a:'POM',b:'WC',c:'S',l:'',lx:690,ly:560}
+  ].filter(e=&gt;e.l!==''||e.b!=='WC');
+  render('d-sediment',1100,670,nodes,edges);
+})();
+document.getElementById('tab-sediment').insertAdjacentHTML('beforeend',`
+&lt;h3&gt;Per-module flux forms&lt;/h3&gt;
+&lt;div class=&quot;tblwrap&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Flux&lt;/th&gt;&lt;th&gt;Form in the code (constant mode)&lt;/th&gt;&lt;th&gt;Module&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;NH4&lt;/td&gt;&lt;td&gt;&lt;code&gt;Fsed_amm × Ksed_amm/(Ksed_amm+O₂) × θ_sed_amm^(T−20)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;aed_nitrogen&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NO3&lt;/td&gt;&lt;td&gt;Model 1: &lt;code&gt;Fsed_nit × O₂/(Ksed_nit+O₂) × θ&lt;/code&gt;. Other models: &lt;code&gt;Fsed_nit × Ksed_nit/(Ksed_nit+O₂) × θ × NO3/(5+NO3)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;aed_nitrogen&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;N₂O&lt;/td&gt;&lt;td&gt;&lt;code&gt;Fsed_n2o × Ksed_n2o/(Ksed_n2o+O₂) × θ_sed_amm^(T−20)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;aed_nitrogen&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;FRP&lt;/td&gt;&lt;td&gt;&lt;code&gt;Fsed_frp × min(3, Ksed_frp/(Ksed_frp+O₂) × θ_sed_frp^(T−20))&lt;/code&gt;&lt;/td&gt;&lt;td&gt;aed_phosphorus&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;DIC&lt;/td&gt;&lt;td&gt;&lt;code&gt;Fsed_dic × O₂/(Ksed_dic+O₂) × θ_sed_dic^(T−20)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;aed_carbon&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;CH4&lt;/td&gt;&lt;td&gt;&lt;code&gt;Fsed_ch4 × Ksed_ch4/(Ksed_ch4+O₂) × θ_sed_ch4^(T−20)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;aed_carbon&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;DOC, DON, DOP&lt;/td&gt;&lt;td&gt;&lt;code&gt;Fsed_d* × Ksed_dom/(Ksed_dom+O₂) × θ_sed_dom^(T−20)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;aed_organic_matter&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;O₂ demand&lt;/td&gt;&lt;td&gt;&lt;code&gt;Fsed_oxy × min(3, O₂/(Ksed_oxy+O₂) × θ_sed_oxy^(T−20))&lt;/code&gt;&lt;/td&gt;&lt;td&gt;aed_oxygen&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p class=&quot;note&quot;&gt;Sign convention: a negative Fsed_oxy is an O₂ demand; positive values for the other pools are releases to the water. Units are mmol/m²/day in the namelist.&lt;/p&gt;
+`);
+
+/* ---------------- PARAMETER INDEX ---------------- */
+sec('index',`
+&lt;h2&gt;Parameter index&lt;/h2&gt;
+&lt;p class=&quot;note&quot;&gt;Every parameter named in the process tables, with the processes it influences. Use the filter to find a parameter, or pick an element to see only its processes. The same name can appear in more than one module.&lt;/p&gt;
+&lt;div class=&quot;filter&quot;&gt;
+  &lt;input id=&quot;q&quot; type=&quot;search&quot; placeholder=&quot;Filter by parameter, module or process&quot; aria-label=&quot;Filter parameters&quot;&gt;
+  &lt;select id=&quot;el&quot; aria-label=&quot;Element filter&quot;&gt;&lt;option value=&quot;&quot;&gt;All elements&lt;/option&gt;&lt;option value=&quot;N&quot;&gt;Nitrogen&lt;/option&gt;&lt;option value=&quot;P&quot;&gt;Phosphorus&lt;/option&gt;&lt;option value=&quot;C&quot;&gt;Carbon&lt;/option&gt;&lt;option value=&quot;O&quot;&gt;Oxygen switches&lt;/option&gt;&lt;option value=&quot;S&quot;&gt;Sediment&lt;/option&gt;&lt;option value=&quot;Y&quot;&gt;Phytoplankton&lt;/option&gt;&lt;option value=&quot;Z&quot;&gt;Zooplankton&lt;/option&gt;&lt;/select&gt;
+  &lt;span class=&quot;note&quot; id=&quot;cnt&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;tblwrap card&quot;&gt;&lt;table id=&quot;idxT&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Parameter&lt;/th&gt;&lt;th&gt;Module&lt;/th&gt;&lt;th&gt;Influences&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+`);
+(function(){
+  const idx={};
+  PROCS.forEach(p=&gt;{
+    const mods=p.mod.split(/ ?\/ ?/).map(m=&gt;MODS[m]||m).join(' / ');
+    p.params.forEach(x=&gt;{
+      const key=x+'|'+mods;
+      (idx[key]=idx[key]||{p:x,m:mods,list:[]}).list.push(p);
+    });
+  });
+  const rows=Object.values(idx).sort((a,b)=&gt;a.p.toLowerCase().localeCompare(b.p.toLowerCase()));
+  const tb=document.querySelector('#idxT tbody');
+  rows.forEach(r=&gt;{
+    const tr=document.createElement('tr');
+    tr.dataset.els=[...new Set(r.list.map(p=&gt;p.id[0]))].join('');
+    tr.dataset.s=(r.p+' '+r.m+' '+r.list.map(p=&gt;p.id+' '+p.name).join(' ')).toLowerCase();
+    tr.innerHTML=`&lt;td&gt;&lt;span class=&quot;p&quot;&gt;${r.p}&lt;/span&gt;&lt;/td&gt;&lt;td&gt;${r.m}&lt;/td&gt;&lt;td&gt;${r.list.map(p=&gt;`&lt;span class=&quot;pid ${p.id[0]}&quot;&gt;${p.id}&lt;/span&gt; ${p.name}`).join('&lt;br&gt;')}&lt;/td&gt;`;
+    tb.appendChild(tr);
+  });
+  const q=document.getElementById('q'), el=document.getElementById('el'), cnt=document.getElementById('cnt');
+  function f(){
+    const s=q.value.trim().toLowerCase(), e=el.value; let n=0;
+    tb.querySelectorAll('tr').forEach(tr=&gt;{
+      const ok=(!s||tr.dataset.s.includes(s))&amp;&amp;(!e||tr.dataset.els.includes(e));
+      tr.style.display=ok?'':'none'; if(ok)n++;
+    });
+    cnt.textContent=n+' of '+rows.length+' parameters';
+  }
+  q.addEventListener('input',f); el.addEventListener('change',f); f();
+})();
+
+/* ---------------- theme + hash ---------------- */
+(function(){
+  const b=document.getElementById('themeBtn'), r=document.documentElement;
+  try{const t=localStorage.getItem('aed-theme'); if(t) r.dataset.theme=t;}catch(e){}
+  b.addEventListener('click',()=&gt;{
+    const dark=(r.dataset.theme==='dark')||(!r.dataset.theme&amp;&amp;matchMedia('(prefers-color-scheme: dark)').matches);
+    r.dataset.theme=dark?'light':'dark';
+    try{localStorage.setItem('aed-theme',r.dataset.theme);}catch(e){}
+  });
+  const h=location.hash.slice(1); if(TABS.some(t=&gt;t.id===h)) show(h);
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" width="100%" height="750px" style="border: 1px solid #d9dcd5; border-radius: 4px;"></iframe>
 </div>
 <div class="section level4">
 <h4 id="parameter-library">GLM-AED Parameter Library<a class="anchor" aria-label="anchor" href="#parameter-library"></a>
@@ -302,13 +1118,13 @@ a web source link for further information.</p>
 <div class="section level3">
 <h3 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/limnotrack/AEME" class="external-link">AEME</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
 <p>We will use the example lake dataset bundled with the AEME package
 throughout this vignette.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/aeme.rds"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span>
 <span><span class="va">aeme</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">aeme_file</span><span class="op">)</span></span>
 <span><span class="va">aeme</span></span></code></pre></div>
@@ -384,6 +1200,12 @@ throughout this vignette.</p>
 #&gt; <span style="color: #2AA198;">•</span> SIMSTRAT-AED: 0                                                               
 #&gt; <span style="color: #2AA198;">•</span> Variables: 0                                                                  
 #&gt; None                                                                            
+#&gt; Warning message:                                                                
+#&gt; <span style="color: #B58900;">!</span> This <span style="color: #268BD2;">&lt;Aeme&gt;</span> object was built with AEME 0.4.0, but the installed version is    
+#&gt;   0.4.1.                                                                        
+#&gt; <span style="color: #2AA198;">ℹ</span> Consider rebuilding with `build_aeme()` if you encounter unexpected           
+#&gt;   behaviour.                                                                    
+#&gt; <span style="color: #525252;">This warning is displayed once per session.</span>                                     
 </pre>
 </div>
 <hr>
@@ -398,7 +1220,7 @@ throughout this vignette.</p>
 which biogeochemical variables are simulated and how they are
 initialised. Pass <code>use_bgc = TRUE</code> to enable the full suite
 of water-quality variables.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span>use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">model_controls</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;model_controls&gt; 6/6 variables simulated</span></span>
@@ -411,7 +1233,7 @@ of water-quality variables.</p>
 <span><span class="co">#&gt;  HYD_strat      yes           -          -           -          1.000</span></span></code></pre></div>
 <p>You can narrow the set of simulated variables using
 <code><a href="../reference/set_vars_sim.html">set_vars_sim()</a></code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vars_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"HYD_strat"</span>,   <span class="co"># stratification flag</span></span>
 <span>  <span class="st">"HYD_temp"</span>,    <span class="co"># water temperature</span></span>
@@ -435,14 +1257,14 @@ of water-quality variables.</p>
 <h4 id="build-the-model">Build the model<a class="anchor" aria-label="anchor" href="#build-the-model"></a>
 </h4>
 <p>We will build the model in a directory called <code>aeme</code>,</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"aeme"</span></span></code></pre></div>
 <p><code><a href="../reference/build_aeme.html">build_aeme()</a></code> translates the AEME object into all
 configuration files required by GLM-AED. Setting
 <code>use_bgc = TRUE</code> writes the <code>aed/aed.nml</code> file and
 supporting CSV parameter files for phytoplankton, zooplankton, and
 macrophytes.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="st">"glm_aed"</span></span>
 <span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span></span>
@@ -458,7 +1280,7 @@ slot of the <code>aeme</code> object. For GLM-AED the slot contains the
 parsed GLM hydrodynamic nml (<code>glm3.nml</code> or
 <code>glm4.nml</code>, whichever version was built – see
 <code><a href="../reference/find_glm_nml.html">find_glm_nml()</a></code>) and <code>aed/aed.nml</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configuration.html">configuration</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cfg</span><span class="op">[[</span><span class="st">"glm_aed"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "hydrodynamic"      "bgc"               "hydrodynamic_file"</span></span></code></pre></div>
@@ -475,7 +1297,7 @@ parsed GLM hydrodynamic nml (<code>glm3.nml</code> or
 <code><a href="../reference/set_glm_aed_models.html">set_glm_aed_models()</a></code> lets you choose a subset — for
 example, running hydrodynamics coupled with oxygen and nutrient cycling
 <em>only</em>, without phytoplankton or zooplankton:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Rebuild first so we have a clean state</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span></span>
 <span>  aeme           <span class="op">=</span> <span class="va">aeme</span>,</span>
@@ -505,7 +1327,7 @@ example, running hydrodynamics coupled with oxygen and nutrient cycling
 <span><span class="op">)</span></span></code></pre></div>
 <p>To run a minimal simulation with only oxygen and nutrient
 cycling:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_glm_aed_models.html">set_glm_aed_models</a></span><span class="op">(</span></span>
 <span>  aeme       <span class="op">=</span> <span class="va">aeme</span>,</span>
 <span>  path       <span class="op">=</span> <span class="va">path</span>,</span>
@@ -520,7 +1342,7 @@ cycling:</p>
 been built. To choose the modules (and which other AED setup steps run)
 as part of the build itself, pass <code><a href="../reference/aed_options.html">aed_options()</a></code> to
 <code><a href="../reference/build_aeme.html">build_aeme()</a></code>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_aeme.html">build_aeme</a></span><span class="op">(</span></span>
 <span>  aeme           <span class="op">=</span> <span class="va">aeme</span>,</span>
 <span>  model          <span class="op">=</span> <span class="va">model</span>,</span>
@@ -688,7 +1510,7 @@ because it is a diagnostic total computed by <code>aed_totals</code>,
 and <code>aed_totals</code> in turn depends on nitrogen, phosphorus,
 organic matter, and phytoplankton, <code><a href="../reference/build_aeme.html">build_aeme()</a></code> activates
 the following module set automatically:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_controls.html">get_model_controls</a></span><span class="op">(</span>use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/set_vars_sim.html">set_vars_sim</a></span><span class="op">(</span>vars_sim <span class="op">=</span> <span class="st">"NIT_tn"</span><span class="op">)</span></span>
 <span></span>
@@ -729,7 +1551,7 @@ demand (SOD) and nutrient release than shallow littoral zones.</p>
 <p><code><a href="../reference/estimate_sed_zones.html">estimate_sed_zones()</a></code> automatically partitions the
 hypsograph into an appropriate number of zones by detecting natural
 breakpoints in the depth–area relationship:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hypsograph</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_hypsograph.html">get_hypsograph</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span>
 <span><span class="va">zone_heights</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_sed_zones.html">estimate_sed_zones</a></span><span class="op">(</span><span class="va">hypsograph</span><span class="op">)</span></span>
 <span><span class="va">zone_heights</span></span>
@@ -744,7 +1566,7 @@ lake depth.</p>
 <p><code><a href="../reference/glm_sed_params.html">glm_sed_params()</a></code> builds a parameters data frame
 (compatible with the AEME <code>parameters</code> slot) for the GLM
 sediment module:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sed_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/glm_sed_params.html">glm_sed_params</a></span><span class="op">(</span></span>
 <span>  n_zones            <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">zone_heights</span><span class="op">)</span>,</span>
 <span>  zone_heights       <span class="op">=</span> <span class="va">zone_heights</span>,</span>
@@ -793,7 +1615,7 @@ sediment module:</p>
 <span><span class="co">#&gt; 18 sediment</span></span></code></pre></div>
 <p>Add these parameters to the <code>aeme</code> object so that they are
 applied during the next <code><a href="../reference/build_aeme.html">build_aeme()</a></code> call:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/parameters.html">parameters</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sed_params</span></span>
 <span></span>
 <span><span class="co"># Rebuild to apply the new sediment zone parameters</span></span>
@@ -811,7 +1633,7 @@ applied during the next <code><a href="../reference/build_aeme.html">build_aeme(
 </h5>
 <p>After building, you can retrieve the number of zones and their
 parameters:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_zones</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_glm_sed_zones.html">get_glm_sed_zones</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
 <span><span class="va">sed_pars</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_glm_sed_params.html">get_glm_sed_params</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Number of sediment zones:"</span>, <span class="va">n_zones</span>, <span class="st">"\n"</span><span class="op">)</span></span>
@@ -859,7 +1681,7 @@ sediment fluxes to each zone according to its mean depth and bed-area
 fraction (Tier 1). When observed near-bed concentrations are available
 in the <code>aeme</code> object, an optional Tier 2 adjustment refines
 the inter-zone ratios using summer near-bottom data:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fluxes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_zone_fluxes.html">estimate_zone_fluxes</a></span><span class="op">(</span></span>
 <span>  aeme      <span class="op">=</span> <span class="va">aeme</span>,</span>
 <span>  path      <span class="op">=</span> <span class="va">path</span>,</span>
@@ -873,7 +1695,7 @@ the inter-zone ratios using summer near-bottom data:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The zone summary shows each zone’s depth range, bed area, and
 estimated fluxes:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fluxes</span><span class="op">$</span><span class="va">zone_summary</span></span>
 <span><span class="co">#&gt;   zone height_lower_m height_upper_m depth_upper_m depth_lower_m mean_depth_m</span></span>
 <span><span class="co">#&gt; 1    1           0.00           3.07            10         13.07        11.54</span></span>
@@ -888,7 +1710,7 @@ estimated fluxes:</p>
 <p><code><a href="../reference/set_aed_sed_const2d.html">set_aed_sed_const2d()</a></code> writes the zone-specific fluxes
 directly into the <code>aed/aed.nml</code> file and updates the
 <code>aeme</code> object:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_aed_sed_const2d.html">set_aed_sed_const2d</a></span><span class="op">(</span></span>
 <span>  aeme     <span class="op">=</span> <span class="va">aeme</span>,</span>
 <span>  path     <span class="op">=</span> <span class="va">path</span>,</span>
@@ -901,7 +1723,7 @@ directly into the <code>aed/aed.nml</code> file and updates the
 <span><span class="op">)</span></span></code></pre></div>
 <p>After calling <code><a href="../reference/set_aed_sed_const2d.html">set_aed_sed_const2d()</a></code>, you can confirm the
 written parameters:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_aed_sed_const2d_param.html">get_aed_sed_const2d_param</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">value</span>, <span class="va">index</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></span>
@@ -930,7 +1752,7 @@ visualisation of the complete GLM-AED setup, including the hypsograph,
 sediment zones, inflow/outflow positions, active AED modules, and key
 parameter values. If called inside an RStudio session, the output opens
 in the Viewer pane; otherwise it is saved to a temporary HTML file.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">config_html</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_glm_config.html">plot_glm_config</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
 <p>This html widget provides a comprehensive overview of the model
 configuration, making it easy to verify that the setup matches your
@@ -940,7 +1762,7 @@ model.</p>
 open it in your web browser.</p>
 <style>
   @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600&family=JetBrains+Mono:wght@400;500&display=swap");
-  #glm-cfg-002857 {
+  #glm-cfg-233334 {
     --bg: #fafaf8; --bg2: #f0efeb; --bg3: #e6e5e0;
     --tx: #2c2c2a; --tx2: #5f5e5a; --tx3: #888780;
     --bd: rgba(0,0,0,0.1);
@@ -956,7 +1778,7 @@ open it in your web browser.</p>
     --mono: "JetBrains Mono", monospace;
   }
   @media (prefers-color-scheme: dark) {
-    #glm-cfg-002857 {
+    #glm-cfg-233334 {
       --bg: #1a1a18; --bg2: #2a2a27; --bg3: #3a3a36;
       --tx: #e8e6dc; --tx2: #b4b2a9; --tx3: #888780;
       --bd: rgba(255,255,255,0.1);
@@ -971,7 +1793,7 @@ open it in your web browser.</p>
     }
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  #glm-cfg-002857 { font-family: var(--font); background: var(--bg); color: var(--tx); line-height: 1.5; padding: 24px; max-width: 1100px; margin: 0 auto; }
+  #glm-cfg-233334 { font-family: var(--font); background: var(--bg); color: var(--tx); line-height: 1.5; padding: 24px; max-width: 1100px; margin: 0 auto; }
   .header { margin-bottom: 28px; }
   .header h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
   .header p { font-size: 13px; color: var(--tx2); }
@@ -1053,7 +1875,7 @@ open it in your web browser.</p>
   .warn-banner p:last-child { margin-bottom: 0; }
   .warn-banner strong { font-weight: 600; }
 </style>
-<div id="glm-cfg-002857">
+<div id="glm-cfg-233334">
 <div class="header">
   <div class="toggle-container">
     <span>Show parameter labels</span>
@@ -1079,7 +1901,7 @@ open it in your web browser.</p>
   </div>
 </div>
 <script>
-const CFG = {"parameter_library":{"sim_name":"Run name","max_layers":"Layers","min_layer_vol":"Min layer volume","min_layer_thick":"Min layer thickness","max_layer_thick":"Max layer thickness","density_model":"Density model","non_avg":"Non-averaged","surface_mixing":"Surface mixing","coef_mix_conv":"Convective mixing","coef_wind_stir":"Wind stirring","coef_mix_shear":"Shear mixing","coef_mix_turb":"Turbulence mixing","coef_mix_KH":"KH mixing","deep_mixing":"Deep mixing","coef_mix_hyp":"Hypolimnetic mixing","diff":"Diffusivity","wq_lib":"WQ library","wq_nml_file":"WQ config file","bioshade_feedback":"Bioshade feedback","mobility_off":"Mobility off","ode_method":"ODE method","split_factor":"Split factor","repair_state":"Repair state","lake_name":"Lake name","latitude":"Latitude","longitude":"Longitude","base_elev":"Base elevation","crest_elev":"Crest elevation","bsn_len":"Basin length","bsn_wid":"Basin width","bsn_vals":"Basin values","H":"Elevations","A":"Areas","timefmt":"Time format","start":"Start","stop":"Stop","dt":"Timestep","num_days":"Number of days","timezone":"Timezone","out_dir":"Output directory","out_fn":"Output filename","nsave":"Save frequency","csv_lake_fname":"Lake CSV filename","csv_point_nlevs":"Point levels","csv_point_fname":"Point filename","csv_point_frombot":"Point from bottom","csv_point_at":"Point depths","csv_point_nvars":"Point variables count","csv_point_vars":"Point variables","csv_outlet_allinone":"Outlet all-in-one","csv_outlet_fname":"Outlet filename","csv_outlet_nvars":"Outlet variables count","csv_outlet_vars":"Outlet variables","csv_ovrflw_fname":"Overflow filename","lake_depth":"Lake depth","num_depths":"Number of depths","the_depths":"Depths","the_temps":"Temperatures","the_sals":"Salinities","num_wq_vars":"WQ variables count","wq_names":"WQ names","wq_init_vals":"WQ initial values","light_mode":"Light mode","Kw":"Light extinction","Kw_file":"Kw file","n_bands":"Number of bands","light_extc":"Light extinction coefficients","energy_frac":"Energy fractions","Benthic_Imin":"Benthic min light","AP":"Atmospheric pressure","Oz":"Ozone","WatVap":"Water vapour","AOD500":"AOD 500nm","AOD380":"AOD 380nm","Albedo":"Albedo","sed_heat_Ksoil":"Soil conductivity","sed_temp_depth":"Sediment depth","sed_temp_mean":"Mean sediment temp","sed_temp_amplitude":"Sediment temp amplitude","sed_temp_peak_doy":"Sediment temp peak DOY","benthic_mode":"Benthic mode","n_zones":"Number of zones","zone_heights":"Zone heights","sed_reflectivity":"Sediment reflectivity","sed_roughness":"Sediment roughness","snow_albedo_factor":"Snow albedo factor","snow_rho_min":"Min snow density","snow_rho_max":"Max snow density","met_sw":"Met surface heating","meteo_fl":"Met file","subdaily":"Subdaily","time_fmt":"Time format","rad_mode":"Radiation mode","albedo_mode":"Albedo mode","sw_factor":"SW factor","lw_type":"LW type","cloud_mode":"Cloud mode","lw_factor":"LW factor","atm_stab":"Atmospheric stability","rh_factor":"RH factor","at_factor":"AT factor","ce":"Latent heat coef","ch":"Sensible heat coef","rain_sw":"Rain switch","rain_factor":"Rain factor","catchrain":"Catchment rain","rain_threshold":"Rain threshold","runoff_coef":"Runoff coefficient","cd":"Drag coefficient","wind_factor":"Wind factor","fetch_mode":"Fetch mode","Aws":"Wind sheltering area","Xws":"Wind sheltering length","num_dir":"Number of directions","wind_dir":"Wind directions","fetch_scale":"Fetch scale","num_inflows":"Number of inflows","names_of_strms":"Stream names","subm_flag":"Submerged flag","strm_hf_angle":"Half angle","strmbd_slope":"Streambed slope","strmbd_drag":"Streambed drag","coef_inf_entrain":"Entrainment coef","inflow_factor":"Inflow factor","inflow_fl":"Inflow file","inflow_varnum":"Inflow var count","inflow_vars":"Inflow variables","time_fmt.1":"Time format","num_outlet":"Number of outlets","outflow_fl":"Outflow file","time_fmt.2":"Time format","outflow_factor":"Outflow factor","outflow_thick_limit":"Outflow thick limit","single_layer_draw":"Single layer draw","flt_off_sw":"Floating offtake","outlet_type":"Outlet type","outl_elvs":"Outlet elevations","bsn_len_outl":"Basin length at outlet","bsn_wid_outl":"Basin width at outlet","crit_O2":"Critical O2","crit_O2_dep":"Critical O2 depth","crit_O2_days":"Critical O2 days","outlet_crit":"Outlet criteria","O2name":"O2 name","O2idx":"O2 index","target_temp":"Target temperature","min_lake_temp":"Min lake temperature","fac_range_upper":"Upper range factor","fac_range_lower":"Lower range factor","mix_withdraw":"Mix withdraw","coupl_oxy_sw":"Coupled oxygen switch","withdrTemp_fl":"Withdrawal temp file","seepage":"Seepage","seepage_rate":"Seepage rate","crest_width":"Crest width","crest_factor":"Crest factor","oxy_initial":"Initial O2","oxy_min":"Min O2","oxy_max":"Max O2","fsed_oxy":"Sediment O2 flux","ksed_oxy":"Half-sat O2 for SOD","theta_sed_oxy":"Theta sed oxy","fsed_oxy_variable":"Sed O2 var link","oxy_piston_model":"Piston model","altitude":"Altitude","amm_initial":"Initial NH4","nit_initial":"Initial NO3","amm_min":"Min NH4","nit_min":"Min NO3","simN2O":"Simulate N2O","rnitrif":"Nitrification rate","theta_nitrif":"Theta nitrification","knitrif":"K nitrification","simNitrfpH":"pH limit nitrif","rdenit":"Denitrification rate","theta_denit":"Theta denitrification","kdenit":"K denitrification","KNO3":"K NO3","oxy_lim":"O2 limitation switch","fsed_amm":"Sed NH4 flux","fsed_nit":"Sed NO3 flux","theta_sed_amm":"Theta sed NH4","theta_sed_nit":"Theta sed NO3","K_sed_amm":"K sed NH4","K_sed_nit":"K sed NO3","fsed_amm_variable":"Sed NH4 var link","fsed_nit_variable":"Sed NO3 var link","simDryDeposition":"Dry deposition","simWetDeposition":"Wet deposition","atm_din_dd":"DIN dry dep flux","atm_din_conc":"DIN rain conc","f_dindep_nox":"Fraction as NOx","frp_initial":"Initial FRP","frp_min":"Min FRP","simPO4Adsorption":"Simulate adsorption","ads_use_external_tss":"External TSS","PO4AdsCSS":"Sorbent conc","Kpo4p":"Adsorption coef","ads_use_pH":"pH-dependent ads","fsed_frp":"Sed PO4 flux","theta_sed_frp":"Theta sed PO4","K_sed_frp":"K sed PO4","fsed_frp_variable":"Sed PO4 var link","simDryDeposition.1":"Dry deposition","simWetDeposition.1":"Wet deposition","atm_pip_dd":"PIP dry dep flux","atm_frp_conc":"FRP rain conc","rsi_initial":"Initial RSi","rsi_min":"Min RSi","rsi_max":"Max RSi","fsed_rsi":"Sed RSi flux","theta_sed_rsi":"Theta sed RSi","K_sed_rsi":"K sed RSi","fsed_rsi_variable":"Sed RSi var link","num_phytos":"Number of groups","the_phytos":"Group IDs","settling":"Settling model","do_mpb":"Microphytobenthos","p_excretion_target_variable":"P excretion target","n_excretion_target_variable":"N excretion target","si_excretion_target_variable":"Si excretion target","c_excretion_target_variable":"C excretion target","R_growth":"Max growth rate","fT_Method":"Temperature function","theta_growth":"Theta growth","T_std":"Standard temperature","T_opt":"Optimum temperature","T_max":"Maximum temperature","lightModel":"Light model","I_K":"Light half-sat","I_S":"Light saturation","KePHY":"Specific extinction","simDINUptake":"DIN uptake model","N_o":"Min internal N","K_N":"Half-sat N uptake","X_ncon":"Constant N:C","X_nmin":"Min N:C","X_nmax":"Max N:C","R_nuptake":"N uptake rate","simDIPUptake":"DIP uptake model","P_0":"Min internal P","K_P":"Half-sat P uptake","X_pcon":"Constant P:C","X_pmin":"Min P:C","X_pmax":"Max P:C","R_puptake":"P uptake rate","simSiUptake":"Si uptake model","Si_0":"Min internal Si","K_Si":"Half-sat Si uptake","X_sicon":"Constant Si:C","R_resp":"Respiration rate","theta_resp":"Theta respiration","k_fres":"Fraction to DOM","k_fdom":"DOM fraction","R_mortality":"Mortality rate","w_p":"Settling velocity","sedflux_model":"Sediment model","nzones":"Number of zones","fsed_oxy.1":"Sed O2 flux","fsed_amm.1":"Sed NH4 flux","fsed_nit.1":"Sed NO3 flux","fsed_frp.1":"Sed PO4 flux","fsed_rsi.1":"Sed RSi flux","dz_sed":"Sediment layer thickness","n_sed_layers":"Number of layers","n_zones_sed":"Number of zones","w_sed":"Burial velocity","porosity":"Porosity","ksed_o2":"K sed O2","fsed_doc":"DOC sedimentation","fsed_poc":"POC sedimentation","Kd_OM":"OM decomposition rate","theta_Kd_OM":"Theta OM decomp","rnitrif.1":"Sed nitrification","rdenit.1":"Sed denitrification","ksed_nh4":"K sed NH4","ksed_no3":"K sed NO3","ksed_po4_release":"K sed PO4 release","K_sorp_PO4":"PO4 sorption coef","Kd_BSi":"BSi dissolution rate","theta_Kd_BSi":"Theta BSi dissoln","poc_initial":"Initial POC concentration","doc_initial":"Initial DOC concentration","pon_initial":"Initial PON concentration","don_initial":"Initial DON concentration","pop_initial":"Initial POP concentration","dop_initial":"Initial DOP concentration","cpom_initial":"Initial CPOM concentration","Rpoc_hydrol":"POC hydrolysis rate","Rpon_hydrol":"PON hydrolysis rate","Rpop_hydrol":"POP hydrolysis rate","theta_hydrol":"Hydrolysis temperature scaling","Kpom_hydrol":"POM hydrolysis O2 half-saturation","Rdom_minerl":"DOM mineralisation rate","theta_minerl":"Mineralisation temperature scaling","Kdom_minerl":"DOM mineralisation O2 half-saturation","simDenitrification":"Denitrification model option","f_an":"Anaerobic mineralisation fraction","K_nit":"Denitrification NO3 half-saturation","dom_miner_oxy_reactant_var":"Aerobic mineralisation O2 link","dom_miner_nit_reactant_var":"Denitrification NO3 link","dom_miner_no2_reactant_var":"Denitrification NO2 link","dom_miner_n2o_reactant_var":"N2O reduction link","dom_miner_fe3_reactant_var":"Iron reduction link","dom_miner_so4_reactant_var":"Sulfate reduction link","dom_miner_ch4_reactant_var":"Methane production link","doc_miner_product_variable":"DIC production link","don_miner_product_variable":"NH4 production link","dop_miner_product_variable":"PO4 production link","simRPools":"Refractory OM pools option","Rdomr_minerl":"DOMR mineralisation rate","Rcpom_bdown":"CPOM breakdown rate","X_cpom_n":"CPOM nitrogen stoichiometry","X_cpom_p":"CPOM phosphorus stoichiometry","KeDOM":"DOM light attenuation coefficient","KePOM":"POM light attenuation coefficient","KeDOMR":"DOMR light attenuation coefficient","KeCPOM":"CPOM light attenuation coefficient","simPhotolysis":"Photo-mineralisation option","photo_c":"Photolysis constant","settling.1":"POM settling method","w_pom":"POM sedimentation velocity","d_pom":"POM particle diameter","rho_pom":"POM particle density","w_cpom":"CPOM sedimentation velocity","d_cpom":"CPOM particle diameter","rho_cpom":"CPOM particle density","resuspension":"POM resuspension method","resus_link":"Resuspension diagnostic link","sedimentOMfrac":"Sediment organic matter fraction","Xsc":"Sediment C stoichiometry","Xsn":"Sediment N stoichiometry","Xsp":"Sediment P stoichiometry","fsed_doc.1":"Sediment DOC flux","fsed_don":"Sediment DON flux","fsed_dop":"Sediment DOP flux","ksed_dom":"Sediment DOM flux O2 half-saturation","theta_sed_dom":"Sediment DOM flux temperature scaling","fsed_doc_variable":"Sediment DOC spatial link","fsed_don_variable":"Sediment DON spatial link","fsed_dop_variable":"Sediment DOP spatial link","p_name":"Group name","p_initial":"Initial concentration","p0":"Minimum concentration","w_p.1":"Sedimentation rate","Xcc":"Carbon to chlorophyll ratio","R_growth.1":"Max growth rate","fT_Method.1":"Temperature limitation method","theta_growth.1":"Growth temperature scaling","T_std.1":"Standard temperature","T_opt.1":"Optimum temperature","T_max.1":"Maximum temperature","lightModel.1":"Light model","I_K.1":"Light half-saturation constant","I_S.1":"Saturating light intensity","KePHY.1":"Specific attenuation coefficient","f_pr":"Exudation fraction","R_resp.1":"Respiration rate","theta_resp.1":"Respiration temperature scaling","k_fres.1":"Respiration fraction","k_fdom.1":"DOM fraction","salTol":"Salinity tolerance function","S_bep":"Salinity limitation at S_maxsp","S_maxsp":"Maximum salinity","S_opt":"Optimal salinity","simDINUptake.1":"Simulate DIN uptake","simDONUptake":"Simulate DON uptake","simNFixation":"Simulate N fixation","simINDynamics":"Internal N dynamics","N_o.1":"N uptake threshold","K_N.1":"N half-saturation constant","X_ncon.1":"Constant internal N","X_nmin.1":"Minimum internal N","X_nmax.1":"Maximum internal N","R_nuptake.1":"Max N uptake rate","k_nfix":"N fixation growth reduction","R_nfix":"N fixation rate","simDIPUptake.1":"Simulate DIP uptake","simIPDynamics":"Internal P dynamics","P_0.1":"P uptake threshold","K_P.1":"P half-saturation constant","X_pcon.1":"Constant internal P","X_pmin.1":"Minimum internal P","X_pmax.1":"Maximum internal P","R_puptake.1":"Max P uptake rate","simSiUptake.1":"Simulate Si uptake","Si_0.1":"Si uptake threshold","K_Si.1":"Si half-saturation constant","X_sicon.1":"Constant internal Si","c1":"Density increase rate coefficient","c3":"Density decrease rate coefficient","f1":"Downward motility N fraction","f2":"Upward motility N fraction","d_phy":"Mean cell diameter","zoop_name":"Group name","zoop_initial":"Initial concentration","min_zoo":"Minimum concentration","Rgrz_zoo":"Grazing rate","fassim_zoo":"Assimilation efficiency","Kgrz_zoo":"Grazing half-saturation constant","theta_grz_zoo":"Grazing temperature multiplier","Cmin_grz_zoo":"Minimum prey concentration","Rresp_zoo":"Respiration rate","theta_resp_zoo":"Respiration temperature multiplier","Tstd_zoo":"Standard temperature","Topt_zoo":"Optimal temperature","Tmax_zoo":"Maximum temperature","ffecal_zoo":"Fecal pellet fraction","fexcr_zoo":"Excretion fraction","ffecal_sed":"Fecal pellet sinking fraction","Rmort_zoo":"Mortality rate","saltfunc_zoo":"Salinity limitation function","Smin_zoo":"Minimum salinity","Smax_zoo":"Maximum salinity","Sint_zoo":"Salinity intercept","INC_zoo":"Internal N:C ratio","IPC_zoo":"Internal P:C ratio","DOmin_zoo":"Minimum oxygen concentration","num_prey":"Number of prey","prey(1)%zoop_prey":"Prey 1 state variable","prey(1)%Pzoo_prey":"Prey 1 preference factor","prey(2)%zoop_prey":"Prey 2 state variable","prey(2)%Pzoo_prey":"Prey 2 preference factor","prey(3)%zoop_prey":"Prey 3 state variable","prey(3)%Pzoo_prey":"Prey 3 preference factor","m_name":"Group name","m0":"Minimum above-ground density","K_CD":"Drag coefficient constant","f_bg":"Below-ground biomass fraction","k_omega":"Plant density-coverage constant","Xcc.1":"Carbon to chlorophyll ratio","R_growth.2":"Max growth rate","fT_Method.2":"Temperature limitation method","theta_growth.2":"Growth temperature scaling","T_std.2":"Standard temperature","T_opt.2":"Optimum temperature","T_max.2":"Maximum temperature","lightModel.2":"Light model","I_K.2":"Light half-saturation constant","I_S.2":"Saturating light intensity","KeMAC":"Specific attenuation coefficient","f_pr.1":"Exudation fraction","R_resp.2":"Respiration rate","theta_resp.2":"Respiration temperature scaling","salTol.1":"Salinity tolerance function","S_bep.1":"Salinity limitation at S_maxsp","S_maxsp.1":"Maximum salinity","S_opt.1":"Optimal salinity","K_N.2":"N half-saturation constant","X_ncon.2":"Constant internal N","K_P.2":"P half-saturation constant","X_pcon.2":"Constant internal P"},"lake":{"name":"wainamu","latitude":-36.8898,"longitude":174.469,"max_depth":18.07,"base_elev":10.57,"crest_elev":28.64,"H":[10.57,10.64,11.14,11.64,12.14,12.64,13.14,13.64,14.14,14.64,15.14,15.64,16.14,16.64,17.14,17.64,18.14,18.64,18.84,19.04,19.24,19.44,19.64,19.84,20.04,20.24,20.44,20.64,20.84,21.04,21.24,21.44,21.64,21.84,22.04,22.24,22.44,22.64,22.84,23.04,23.24,23.44,23.64,26.64,28.64],"A":[0,2190.85,11106.96,19209.55,27262.7,33761.69,39819.33,43956.62,49681.38,55931.92,62593.5,68888.1,74383.5,80012.69,86598.38,93399.72,99197.02,105908.82,108688.66,111281.94,113710.35,116048.83,118413.57,120590.99,122751.7,124862.24,126791.91,128611.25,130227.19,131780.16,133311.34,134687.9,136001.16,137359.76,138580.39,139732.98,141022.38,142234.22,143499.52,144808.35,146231.62,148074.68,152343,170847.58,206195.95],"zone_heights":[3.07,22],"n_zones":2,"init_depth":13.07},"flows":{"inflow_names":["FWMT"],"outflow_info":[{"outlet_type":2,"flt_off_sw":true,"outl_elv":12.07,"depth":-11.57},{"outlet_type":2,"flt_off_sw":true,"outl_elv":12.07,"depth":-11.57}]},"glm":{"dt":3600,"nsave":24,"Kw":1.31,"ce":0.0013,"ch":0.0013,"cd":0.0013,"coef_wind_stir":0.23,"coef_mix_shear":0.2,"coef_mix_conv":0.125,"coef_mix_turb":0.51,"coef_mix_KH":0.3,"min_layer_thick":0.2,"max_layer_thick":0.6,"max_layers":300,"start":"2020-07-30 00:00:00","stop":"2021-06-30 00:00:00","num_inflows":1,"num_outlet":2,"light_mode":0},"aed_models":["aed_sedflux","aed_noncohesive","aed_oxygen","aed_silica","aed_nitrogen","aed_phosphorus","aed_organic_matter","aed_phytoplankton","aed_totals"],"sediment":{"model":"Constant2d","n_zones":2,"active_zones":[1,2],"fsed_oxy":"-38.8, -19.4","fsed_amm":"5.698, 0.5","fsed_nit":"-0.4, 0.1","fsed_frp":"0.1072, 0.0268"},"oxygen":{"oxy_initial":312.5,"oxy_min":0,"oxy_max":500,"ksed_oxy":25,"theta_sed_oxy":1.08},"nitrogen":{"amm_initial":1.4279,"nit_initial":1.0709,"rnitrif":0.2,"rdenit":9.9687},"phosphorus":{"frp_initial":0.3229},"organic_matter":{"doc_initial":41.6285,"poc_initial":16.6514,"rdom_minerl":0.0135,"f_an":0.2064,"w_pom":-0.01},"phytoplankton":{"num_groups":3,"groups":["cyano","green","diatom"],"key_params":{"cyano":{"R_growth":1.1,"Xcc":50,"theta_growth":1.06,"w_p":0,"R_resp":0.08},"green":{"R_growth":0.7,"Xcc":40,"theta_growth":1.08,"w_p":-0.01,"R_resp":0.012},"diatom":{"R_growth":1.2,"Xcc":40,"theta_growth":1.05,"w_p":-0.2,"R_resp":0.12}}},"zooplankton":{"num_groups":3,"groups":["rotifer","cladoceran","copepod"]},"macrophyte":{"num_groups":1,"groups":["submerged"],"active_zones":[2,3]}};
+const CFG = {"parameter_library":{"sim_name":"Run name","max_layers":"Layers","min_layer_vol":"Min layer volume","min_layer_thick":"Min layer thickness","max_layer_thick":"Max layer thickness","density_model":"Density model","non_avg":"Non-averaged","surface_mixing":"Surface mixing","coef_mix_conv":"Convective mixing","coef_wind_stir":"Wind stirring","coef_mix_shear":"Shear mixing","coef_mix_turb":"Turbulence mixing","coef_mix_KH":"KH mixing","deep_mixing":"Deep mixing","coef_mix_hyp":"Hypolimnetic mixing","diff":"Diffusivity","wq_lib":"WQ library","wq_nml_file":"WQ config file","bioshade_feedback":"Bioshade feedback","mobility_off":"Mobility off","ode_method":"ODE method","split_factor":"Split factor","repair_state":"Repair state","lake_name":"Lake name","latitude":"Latitude","longitude":"Longitude","base_elev":"Base elevation","crest_elev":"Crest elevation","bsn_len":"Basin length","bsn_wid":"Basin width","bsn_vals":"Basin values","H":"Elevations","A":"Areas","timefmt":"Time format","start":"Start","stop":"Stop","dt":"Timestep","num_days":"Number of days","timezone":"Timezone","out_dir":"Output directory","out_fn":"Output filename","nsave":"Save frequency","csv_lake_fname":"Lake CSV filename","csv_point_nlevs":"Point levels","csv_point_fname":"Point filename","csv_point_frombot":"Point from bottom","csv_point_at":"Point depths","csv_point_nvars":"Point variables count","csv_point_vars":"Point variables","csv_outlet_allinone":"Outlet all-in-one","csv_outlet_fname":"Outlet filename","csv_outlet_nvars":"Outlet variables count","csv_outlet_vars":"Outlet variables","csv_ovrflw_fname":"Overflow filename","lake_depth":"Lake depth","num_depths":"Number of depths","the_depths":"Depths","the_temps":"Temperatures","the_sals":"Salinities","num_wq_vars":"WQ variables count","wq_names":"WQ names","wq_init_vals":"WQ initial values","light_mode":"Light mode","Kw":"Light extinction","Kw_file":"Kw file","n_bands":"Number of bands","light_extc":"Light extinction coefficients","energy_frac":"Energy fractions","Benthic_Imin":"Benthic min light","AP":"Atmospheric pressure","Oz":"Ozone","WatVap":"Water vapour","AOD500":"AOD 500nm","AOD380":"AOD 380nm","Albedo":"Albedo","sed_heat_Ksoil":"Soil conductivity","sed_temp_depth":"Sediment depth","sed_temp_mean":"Mean sediment temp","sed_temp_amplitude":"Sediment temp amplitude","sed_temp_peak_doy":"Sediment temp peak DOY","benthic_mode":"Benthic mode","n_zones":"Number of zones","zone_heights":"Zone heights","sed_reflectivity":"Sediment reflectivity","sed_roughness":"Sediment roughness","snow_albedo_factor":"Snow albedo factor","snow_rho_min":"Min snow density","snow_rho_max":"Max snow density","met_sw":"Met surface heating","meteo_fl":"Met file","subdaily":"Subdaily","time_fmt":"Time format","rad_mode":"Radiation mode","albedo_mode":"Albedo mode","sw_factor":"SW factor","lw_type":"LW type","cloud_mode":"Cloud mode","lw_factor":"LW factor","atm_stab":"Atmospheric stability","rh_factor":"RH factor","at_factor":"AT factor","ce":"Latent heat coef","ch":"Sensible heat coef","rain_sw":"Rain switch","rain_factor":"Rain factor","catchrain":"Catchment rain","rain_threshold":"Rain threshold","runoff_coef":"Runoff coefficient","cd":"Drag coefficient","wind_factor":"Wind factor","fetch_mode":"Fetch mode","Aws":"Wind sheltering area","Xws":"Wind sheltering length","num_dir":"Number of directions","wind_dir":"Wind directions","fetch_scale":"Fetch scale","num_inflows":"Number of inflows","names_of_strms":"Stream names","subm_flag":"Submerged flag","strm_hf_angle":"Half angle","strmbd_slope":"Streambed slope","strmbd_drag":"Streambed drag","coef_inf_entrain":"Entrainment coef","inflow_factor":"Inflow factor","inflow_fl":"Inflow file","inflow_varnum":"Inflow var count","inflow_vars":"Inflow variables","time_fmt.1":"Time format","num_outlet":"Number of outlets","outflow_fl":"Outflow file","time_fmt.2":"Time format","outflow_factor":"Outflow factor","outflow_thick_limit":"Outflow thick limit","single_layer_draw":"Single layer draw","flt_off_sw":"Floating offtake","outlet_type":"Outlet type","outl_elvs":"Outlet elevations","bsn_len_outl":"Basin length at outlet","bsn_wid_outl":"Basin width at outlet","crit_O2":"Critical O2","crit_O2_dep":"Critical O2 depth","crit_O2_days":"Critical O2 days","outlet_crit":"Outlet criteria","O2name":"O2 name","O2idx":"O2 index","target_temp":"Target temperature","min_lake_temp":"Min lake temperature","fac_range_upper":"Upper range factor","fac_range_lower":"Lower range factor","mix_withdraw":"Mix withdraw","coupl_oxy_sw":"Coupled oxygen switch","withdrTemp_fl":"Withdrawal temp file","seepage":"Seepage","seepage_rate":"Seepage rate","crest_width":"Crest width","crest_factor":"Crest factor","oxy_initial":"Initial O2","oxy_min":"Min O2","oxy_max":"Max O2","fsed_oxy":"Sediment O2 flux","ksed_oxy":"Half-sat O2 for SOD","theta_sed_oxy":"Theta sed oxy","fsed_oxy_variable":"Sed O2 var link","oxy_piston_model":"Piston model","altitude":"Altitude","amm_initial":"Initial NH4","nit_initial":"Initial NO3","amm_min":"Min NH4","nit_min":"Min NO3","simN2O":"Simulate N2O","rnitrif":"Nitrification rate","theta_nitrif":"Theta nitrification","knitrif":"K nitrification","simNitrfpH":"pH limit nitrif","rdenit":"Denitrification rate","theta_denit":"Theta denitrification","kdenit":"K denitrification","KNO3":"K NO3","oxy_lim":"O2 limitation switch","fsed_amm":"Sed NH4 flux","fsed_nit":"Sed NO3 flux","theta_sed_amm":"Theta sed NH4","theta_sed_nit":"Theta sed NO3","K_sed_amm":"K sed NH4","K_sed_nit":"K sed NO3","fsed_amm_variable":"Sed NH4 var link","fsed_nit_variable":"Sed NO3 var link","simDryDeposition":"Dry deposition","simWetDeposition":"Wet deposition","atm_din_dd":"DIN dry dep flux","atm_din_conc":"DIN rain conc","f_dindep_nox":"Fraction as NOx","frp_initial":"Initial FRP","frp_min":"Min FRP","simPO4Adsorption":"Simulate adsorption","ads_use_external_tss":"External TSS","PO4AdsCSS":"Sorbent conc","Kpo4p":"Adsorption coef","ads_use_pH":"pH-dependent ads","fsed_frp":"Sed PO4 flux","theta_sed_frp":"Theta sed PO4","K_sed_frp":"K sed PO4","fsed_frp_variable":"Sed PO4 var link","simDryDeposition.1":"Dry deposition","simWetDeposition.1":"Wet deposition","atm_pip_dd":"PIP dry dep flux","atm_frp_conc":"FRP rain conc","rsi_initial":"Initial RSi","rsi_min":"Min RSi","rsi_max":"Max RSi","fsed_rsi":"Sed RSi flux","theta_sed_rsi":"Theta sed RSi","K_sed_rsi":"K sed RSi","fsed_rsi_variable":"Sed RSi var link","num_phytos":"Number of groups","the_phytos":"Group IDs","settling":"Settling model","do_mpb":"Microphytobenthos","p_excretion_target_variable":"P excretion target","n_excretion_target_variable":"N excretion target","si_excretion_target_variable":"Si excretion target","c_excretion_target_variable":"C excretion target","R_growth":"Max growth rate","fT_Method":"Temperature function","theta_growth":"Theta growth","T_std":"Standard temperature","T_opt":"Optimum temperature","T_max":"Maximum temperature","lightModel":"Light model","I_K":"Light half-sat","I_S":"Light saturation","KePHY":"Specific extinction","simDINUptake":"DIN uptake model","N_o":"Min internal N","K_N":"Half-sat N uptake","X_ncon":"Constant N:C","X_nmin":"Min N:C","X_nmax":"Max N:C","R_nuptake":"N uptake rate","simDIPUptake":"DIP uptake model","P_0":"Min internal P","K_P":"Half-sat P uptake","X_pcon":"Constant P:C","X_pmin":"Min P:C","X_pmax":"Max P:C","R_puptake":"P uptake rate","simSiUptake":"Si uptake model","Si_0":"Min internal Si","K_Si":"Half-sat Si uptake","X_sicon":"Constant Si:C","R_resp":"Respiration rate","theta_resp":"Theta respiration","k_fres":"Fraction to DOM","k_fdom":"DOM fraction","R_mortality":"Mortality rate","w_p":"Settling velocity","sedflux_model":"Sediment model","nzones":"Number of zones","fsed_oxy.1":"Sed O2 flux","fsed_amm.1":"Sed NH4 flux","fsed_nit.1":"Sed NO3 flux","fsed_frp.1":"Sed PO4 flux","fsed_rsi.1":"Sed RSi flux","dz_sed":"Sediment layer thickness","n_sed_layers":"Number of layers","n_zones_sed":"Number of zones","w_sed":"Burial velocity","porosity":"Porosity","ksed_o2":"K sed O2","fsed_doc":"DOC sedimentation","fsed_poc":"POC sedimentation","Kd_OM":"OM decomposition rate","theta_Kd_OM":"Theta OM decomp","rnitrif.1":"Sed nitrification","rdenit.1":"Sed denitrification","ksed_nh4":"K sed NH4","ksed_no3":"K sed NO3","ksed_po4_release":"K sed PO4 release","K_sorp_PO4":"PO4 sorption coef","Kd_BSi":"BSi dissolution rate","theta_Kd_BSi":"Theta BSi dissoln","poc_initial":"Initial POC concentration","doc_initial":"Initial DOC concentration","pon_initial":"Initial PON concentration","don_initial":"Initial DON concentration","pop_initial":"Initial POP concentration","dop_initial":"Initial DOP concentration","cpom_initial":"Initial CPOM concentration","Rpoc_hydrol":"POC hydrolysis rate","Rpon_hydrol":"PON hydrolysis rate","Rpop_hydrol":"POP hydrolysis rate","theta_hydrol":"Hydrolysis temperature scaling","Kpom_hydrol":"POM hydrolysis O2 half-saturation","Rdom_minerl":"DOM mineralisation rate","theta_minerl":"Mineralisation temperature scaling","Kdom_minerl":"DOM mineralisation O2 half-saturation","simDenitrification":"Denitrification model option","f_an":"Anaerobic mineralisation fraction","K_nit":"Denitrification NO3 half-saturation","dom_miner_oxy_reactant_var":"Aerobic mineralisation O2 link","dom_miner_nit_reactant_var":"Denitrification NO3 link","dom_miner_no2_reactant_var":"Denitrification NO2 link","dom_miner_n2o_reactant_var":"N2O reduction link","dom_miner_fe3_reactant_var":"Iron reduction link","dom_miner_so4_reactant_var":"Sulfate reduction link","dom_miner_ch4_reactant_var":"Methane production link","doc_miner_product_variable":"DIC production link","don_miner_product_variable":"NH4 production link","dop_miner_product_variable":"PO4 production link","simRPools":"Refractory OM pools option","Rdomr_minerl":"DOMR mineralisation rate","Rcpom_bdown":"CPOM breakdown rate","X_cpom_n":"CPOM nitrogen stoichiometry","X_cpom_p":"CPOM phosphorus stoichiometry","KeDOM":"DOM light attenuation coefficient","KePOM":"POM light attenuation coefficient","KeDOMR":"DOMR light attenuation coefficient","KeCPOM":"CPOM light attenuation coefficient","simPhotolysis":"Photo-mineralisation option","photo_c":"Photolysis constant","settling.1":"POM settling method","w_pom":"POM sedimentation velocity","d_pom":"POM particle diameter","rho_pom":"POM particle density","w_cpom":"CPOM sedimentation velocity","d_cpom":"CPOM particle diameter","rho_cpom":"CPOM particle density","resuspension":"POM resuspension method","resus_link":"Resuspension diagnostic link","sedimentOMfrac":"Sediment organic matter fraction","Xsc":"Sediment C stoichiometry","Xsn":"Sediment N stoichiometry","Xsp":"Sediment P stoichiometry","fsed_doc.1":"Sediment DOC flux","fsed_don":"Sediment DON flux","fsed_dop":"Sediment DOP flux","ksed_dom":"Sediment DOM flux O2 half-saturation","theta_sed_dom":"Sediment DOM flux temperature scaling","fsed_doc_variable":"Sediment DOC spatial link","fsed_don_variable":"Sediment DON spatial link","fsed_dop_variable":"Sediment DOP spatial link","p_name":"Group name","p_initial":"Initial concentration","p0":"Minimum concentration","w_p.1":"Sedimentation rate","Xcc":"Carbon to chlorophyll ratio","R_growth.1":"Max growth rate","fT_Method.1":"Temperature limitation method","theta_growth.1":"Growth temperature scaling","T_std.1":"Standard temperature","T_opt.1":"Optimum temperature","T_max.1":"Maximum temperature","lightModel.1":"Light model","I_K.1":"Light half-saturation constant","I_S.1":"Saturating light intensity","KePHY.1":"Specific attenuation coefficient","f_pr":"Exudation fraction","R_resp.1":"Respiration rate","theta_resp.1":"Respiration temperature scaling","k_fres.1":"Respiration fraction","k_fdom.1":"DOM fraction","salTol":"Salinity tolerance function","S_bep":"Salinity limitation at S_maxsp","S_maxsp":"Maximum salinity","S_opt":"Optimal salinity","simDINUptake.1":"Simulate DIN uptake","simDONUptake":"Simulate DON uptake","simNFixation":"Simulate N fixation","simINDynamics":"Internal N dynamics","N_o.1":"N uptake threshold","K_N.1":"N half-saturation constant","X_ncon.1":"Constant internal N","X_nmin.1":"Minimum internal N","X_nmax.1":"Maximum internal N","R_nuptake.1":"Max N uptake rate","k_nfix":"N fixation growth reduction","R_nfix":"N fixation rate","simDIPUptake.1":"Simulate DIP uptake","simIPDynamics":"Internal P dynamics","P_0.1":"P uptake threshold","K_P.1":"P half-saturation constant","X_pcon.1":"Constant internal P","X_pmin.1":"Minimum internal P","X_pmax.1":"Maximum internal P","R_puptake.1":"Max P uptake rate","simSiUptake.1":"Simulate Si uptake","Si_0.1":"Si uptake threshold","K_Si.1":"Si half-saturation constant","X_sicon.1":"Constant internal Si","c1":"Density increase rate coefficient","c3":"Density decrease rate coefficient","f1":"Downward motility N fraction","f2":"Upward motility N fraction","d_phy":"Mean cell diameter","zoop_name":"Group name","zoop_initial":"Initial concentration","min_zoo":"Minimum concentration","Rgrz_zoo":"Grazing rate","fassim_zoo":"Assimilation efficiency","Kgrz_zoo":"Grazing half-saturation constant","theta_grz_zoo":"Grazing temperature multiplier","Cmin_grz_zoo":"Minimum prey concentration","Rresp_zoo":"Respiration rate","theta_resp_zoo":"Respiration temperature multiplier","Tstd_zoo":"Standard temperature","Topt_zoo":"Optimal temperature","Tmax_zoo":"Maximum temperature","ffecal_zoo":"Fecal pellet fraction","fexcr_zoo":"Excretion fraction","ffecal_sed":"Fecal pellet sinking fraction","Rmort_zoo":"Mortality rate","saltfunc_zoo":"Salinity limitation function","Smin_zoo":"Minimum salinity","Smax_zoo":"Maximum salinity","Sint_zoo":"Salinity intercept","INC_zoo":"Internal N:C ratio","IPC_zoo":"Internal P:C ratio","DOmin_zoo":"Minimum oxygen concentration","num_prey":"Number of prey","prey(1)%zoop_prey":"Prey 1 state variable","prey(1)%Pzoo_prey":"Prey 1 preference factor","prey(2)%zoop_prey":"Prey 2 state variable","prey(2)%Pzoo_prey":"Prey 2 preference factor","prey(3)%zoop_prey":"Prey 3 state variable","prey(3)%Pzoo_prey":"Prey 3 preference factor","m_name":"Group name","m0":"Minimum above-ground density","K_CD":"Drag coefficient constant","f_bg":"Below-ground biomass fraction","k_omega":"Plant density-coverage constant","Xcc.1":"Carbon to chlorophyll ratio","R_growth.2":"Max growth rate","fT_Method.2":"Temperature limitation method","theta_growth.2":"Growth temperature scaling","T_std.2":"Standard temperature","T_opt.2":"Optimum temperature","T_max.2":"Maximum temperature","lightModel.2":"Light model","I_K.2":"Light half-saturation constant","I_S.2":"Saturating light intensity","KeMAC":"Specific attenuation coefficient","f_pr.1":"Exudation fraction","R_resp.2":"Respiration rate","theta_resp.2":"Respiration temperature scaling","salTol.1":"Salinity tolerance function","S_bep.1":"Salinity limitation at S_maxsp","S_maxsp.1":"Maximum salinity","S_opt.1":"Optimal salinity","K_N.2":"N half-saturation constant","X_ncon.2":"Constant internal N","K_P.2":"P half-saturation constant","X_pcon.2":"Constant internal P"},"lake":{"name":"wainamu","latitude":-36.8898,"longitude":174.469,"max_depth":13.07,"base_elev":10.57,"crest_elev":23.64,"H":[10.57,10.64,11.14,11.64,12.14,12.64,13.14,13.64,14.14,14.64,15.14,15.64,16.14,16.64,17.14,17.64,18.14,18.64,18.84,19.04,19.24,19.44,19.64,19.84,20.04,20.24,20.44,20.64,20.84,21.04,21.24,21.44,21.64,21.84,22.04,22.24,22.44,22.64,22.84,23.04,23.24,23.44,23.64,26.64,28.64],"A":[0,2190.85,11106.96,19209.55,27262.7,33761.69,39819.33,43956.62,49681.38,55931.92,62593.5,68888.1,74383.5,80012.69,86598.38,93399.72,99197.02,105908.82,108688.66,111281.94,113710.35,116048.83,118413.57,120590.99,122751.7,124862.24,126791.91,128611.25,130227.19,131780.16,133311.34,134687.9,136001.16,137359.76,138580.39,139732.98,141022.38,142234.22,143499.52,144808.35,146231.62,148074.68,152343,170847.58,206195.95],"zone_heights":[3.07,22],"n_zones":2,"init_depth":13.07},"flows":{"inflow_names":["FWMT"],"outflow_info":[{"outlet_type":2,"flt_off_sw":true,"outl_elv":12.07,"depth":-11.57}]},"glm":{"dt":3600,"nsave":24,"Kw":1.31,"ce":0.0013,"ch":0.0013,"cd":0.0013,"coef_wind_stir":0.23,"coef_mix_shear":0.2,"coef_mix_conv":0.125,"coef_mix_turb":0.51,"coef_mix_KH":0.3,"min_layer_thick":0.2,"max_layer_thick":0.6,"max_layers":300,"start":"2020-07-30 00:00:00","stop":"2021-06-30 00:00:00","num_inflows":1,"num_outlet":1,"light_mode":0},"aed_models":["aed_sedflux","aed_noncohesive","aed_oxygen","aed_silica","aed_nitrogen","aed_phosphorus","aed_organic_matter","aed_phytoplankton","aed_totals"],"sediment":{"model":"Constant2d","n_zones":2,"active_zones":[1,2],"fsed_oxy":"-38.8, -19.4","fsed_amm":"5.698, 0.5","fsed_nit":"-0.4, 0.1","fsed_frp":"0.1072, 0.0268"},"oxygen":{"oxy_initial":312.5,"oxy_min":0,"oxy_max":500,"ksed_oxy":25,"theta_sed_oxy":1.08},"nitrogen":{"amm_initial":1.4279,"nit_initial":1.0709,"rnitrif":0.2,"rdenit":9.9687},"phosphorus":{"frp_initial":0.3229},"organic_matter":{"doc_initial":41.6285,"poc_initial":16.6514,"rdom_minerl":0.0135,"f_an":0.2064,"w_pom":-0.01},"phytoplankton":{"num_groups":3,"groups":["cyano","green","diatom"],"key_params":{"cyano":{"R_growth":1.1,"Xcc":50,"theta_growth":1.06,"w_p":0,"R_resp":0.08},"green":{"R_growth":0.7,"Xcc":40,"theta_growth":1.08,"w_p":-0.01,"R_resp":0.012},"diatom":{"R_growth":1.2,"Xcc":40,"theta_growth":1.05,"w_p":-0.2,"R_resp":0.12}}},"zooplankton":{"num_groups":3,"groups":["rotifer","cladoceran","copepod"]},"macrophyte":{"num_groups":1,"groups":["submerged"],"active_zones":[2,3]}};
 const LIB = CFG.parameter_library || {};
 
 // ===== Header =====
@@ -1463,7 +2285,7 @@ document.getElementById("name-toggle").addEventListener("change", function() {
 <div class="section level3">
 <h3 id="running-glm-aed">Running GLM-AED<a class="anchor" aria-label="anchor" href="#running-glm-aed"></a>
 </h3>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
@@ -1476,7 +2298,7 @@ document.getElementById("name-toggle").addEventListener("change", function() {
 <p><code><a href="../reference/plot_output.html">plot_output()</a></code> produces a filled contour plot for
 depth-varying variables (e.g. temperature) and a time-series line plot
 for scalar variables:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, var_sim <span class="op">=</span> <span class="st">"HYD_temp"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="glm-aed_files/figure-html/plot-temp-1.png" class="r-plt" alt="Simulated water temperature (°C) at each model layer over time." width="672"><p class="caption">
@@ -1489,14 +2311,14 @@ Simulated water temperature (°C) at each model layer over time.
 </h4>
 <p>Any variable that was listed in <code>vars_sim</code> and is present
 in the output can be plotted the same way:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, var_sim <span class="op">=</span> <span class="st">"CHM_oxy"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="glm-aed_files/figure-html/plot-oxy-1.png" class="r-plt" alt="Simulated dissolved oxygen (mmol O2 m⁻³) profiles." width="672"><p class="caption">
 Simulated dissolved oxygen (mmol O2 m⁻³) profiles.
 </p>
 </div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, var_sim <span class="op">=</span> <span class="st">"PHY_tchla"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="glm-aed_files/figure-html/plot-tchla-1.png" class="r-plt" alt="Simulated total chlorophyll-a (µg L⁻¹) time series." width="672"><p class="caption">
@@ -1512,9 +2334,51 @@ Simulated total chlorophyll-a (µg L⁻¹) time series.
 <p>GLM-AED writes much more than the variables listed in
 <code>model_controls</code>: sediment temperature and heat flux,
 sediment–water fluxes (lake-wide and for each sediment zone), sediment
-pools and AED diagnostics. AEME reads all of it from
-<code>output.nc</code>, so nothing needs to be switched on before the
-run. It is stored in the model output beside the standard variables:</p>
+pools and AED diagnostics. They are all in <code>output.nc</code>, but
+<code><a href="../reference/run_aeme.html">run_aeme()</a></code> only loads the standard variables (those in
+<code>model_controls</code>, plus the lake fluxes) so that loading stays
+fast and the <code>aeme</code> object small. The extra output is loaded
+when you ask for it with <code>extra_vars</code>.</p>
+<div class="section level4">
+<h4 id="requesting-the-variables">Requesting the variables<a class="anchor" aria-label="anchor" href="#requesting-the-variables"></a>
+</h4>
+<p><code><a href="../reference/load_output.html">load_output()</a></code> reads the output of a model that has
+already been run, so extra variables can be added without running the
+model again. Here we ask for every sediment variable:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aeme_extra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_output.html">load_output</a></span><span class="op">(</span></span>
+<span>  aeme       <span class="op">=</span> <span class="va">aeme</span>,</span>
+<span>  model      <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  path       <span class="op">=</span> <span class="va">path</span>,</span>
+<span>  extra_vars <span class="op">=</span> <span class="st">"sediment"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="../reference/run_aeme.html">run_aeme()</a></code> takes the same <code>extra_vars</code>
+argument, to load them as part of the run. To look at extra output
+without storing it on the <code>Aeme</code> object, use
+<code>return_type = "output"</code>. This returns a list with one
+<code>aeme_output</code> per model and leaves <code>aeme</code> as it
+was:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sed_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_output.html">load_output</a></span><span class="op">(</span></span>
+<span>  aeme        <span class="op">=</span> <span class="va">aeme</span>,</span>
+<span>  model       <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  path        <span class="op">=</span> <span class="va">path</span>,</span>
+<span>  extra_vars  <span class="op">=</span> <span class="st">"sediment"</span>,</span>
+<span>  return_type <span class="op">=</span> <span class="st">"output"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">sed_out</span><span class="op">$</span><span class="va">glm_aed</span></span>
+<span><span class="co">#&gt; &lt;aeme_output&gt; model: glm_aed</span></span>
+<span><span class="co">#&gt;   335 dates (2020-07-31 to 2021-06-30)</span></span>
+<span><span class="co">#&gt;   46 variables: LKE_lvlwtr, LKE_Qe, LKE_Qh, LKE_Qlw, LKE_Qsw, LKE_vol, LKE_evpvol, LKE_evpflx, LKE_A0, LKE_evprte, LKE_inflow, LKE_overflow, LKE_outflow, LKE_outftot, LKE_precip, LKE_pcpvol, HYD_surft, z, HYD_temp, HYD_dens, HYD_strat, HYD_thmcln, CHM_salt, CHM_oxy, CHM_oxycln, RAD_par, RAD_extc, PHS_frp, PHS_dop, PHS_pop, PHS_pip, PHS_tp, NIT_amm, NIT_nit, NIT_don, NIT_pon, NIT_tn, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, PHY_tchla, NCS_ss1, NCS_ss2</span></span>
+<span><span class="co">#&gt;   34 sediment variables: zarea, sed_temp, sed_heatflux, zone_ztemp, sed_layer_depth, SDF_Fsed_oxy_Z, SDF_Fsed_amm_Z, SDF_Fsed_nit_Z, SDF_Fsed_frp_Z, NCS_swi_Z, NCS_swi_dz_Z, NCS_resus_Z, NCS_d_taub_Z, OXY_oxy_dsf_Z, OXY_oxy_atm_Z, SIL_dsf_rsi_Z, NIT_amm_dsf_Z, NIT_nit_dsf_Z, PHS_frp_dsf_Z, OGM_toc_sed_Z, OGM_ton_sed_Z, OGM_top_sed_Z, OGM_poc_swi_Z, OGM_doc_swi_Z, OGM_pon_swi_Z, OGM_don_swi_Z, OGM_pop_swi_Z, OGM_dop_swi_Z, OGM_poc_res_Z, OGM_pon_res_Z, OGM_pop_res_Z, PHY_phy_swi_c_Z, PHY_phy_swi_n_Z, PHY_phy_swi_p_Z</span></span></code></pre></div>
+<p>Model output of this kind can be given straight to
+<code><a href="../reference/plot_model_output.html">plot_model_output()</a></code>, for example
+<code>plot_model_output(sed_out$glm_aed, "SED_Fsed_oxy")</code>, but not
+to functions that need an <code>Aeme</code> object, such as
+<code><a href="../reference/get_var.html">get_var()</a></code> and <code><a href="../reference/plot_output.html">plot_output()</a></code>. The rest of this
+section stores the variables on the object, so that
+<code><a href="../reference/get_var.html">get_var()</a></code> works. In the output the extra variables sit
+beside the standard ones:</p>
 <ul>
 <li>ordinary <code>(time)</code> and <code>(depth, time)</code>
 variables sit alongside <code>HYD_temp</code> and the rest;</li>
@@ -1523,13 +2387,10 @@ are kept as labelled <code>aeme_grouped_var</code> objects in the
 <code>sediment</code> and <code>diag</code> sub-lists, so a zone is
 never mistaken for a depth.</li>
 </ul>
-<div class="section level4">
-<h4 id="finding-the-variables">Finding the variables<a class="anchor" aria-label="anchor" href="#finding-the-variables"></a>
-</h4>
-<p><code><a href="../reference/get_output_vars.html">get_output_vars()</a></code> lists what is available. The
+<p><code><a href="../reference/get_output_vars.html">get_output_vars()</a></code> lists what was loaded. The
 <code>group</code> argument picks the sub-list:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_output_vars.html">get_output_vars</a></span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, group <span class="op">=</span> <span class="st">"sediment"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_output_vars.html">get_output_vars</a></span><span class="op">(</span><span class="va">aeme_extra</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, group <span class="op">=</span> <span class="st">"sediment"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                     sediment zone area </span></span>
 <span><span class="co">#&gt;                                                "zarea" </span></span>
@@ -1556,12 +2417,13 @@ never mistaken for a depth.</li>
 <span><span class="co">#&gt;                            resuspension rate (by zone) </span></span>
 <span><span class="co">#&gt;                                          "NCS_resus_Z"</span></span></code></pre></div>
 <p>These variables are stored under their raw GLM-AED netCDF names. The
-<code>glm_extra_vars</code> table gives each one an AEME name, a label
-and units, and either name works anywhere AEME looks up a variable
+<code>glm_extra_vars</code> table lists what can be requested. It gives
+each variable an AEME name, a label and units, and either name works in
+<code>extra_vars</code> and anywhere AEME looks up a variable
 (<code><a href="../reference/get_var.html">get_var()</a></code>, <code><a href="../reference/check_var_in_output.html">check_var_in_output()</a></code>, …).
 <code>SED_*</code> are the sediment-zone variables and
 <code>SEDL_*</code> the matching lake-wide series:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">glm_extra_vars</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">group</span> <span class="op">==</span> <span class="st">"sediment"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">var_aeme</span>, <span class="va">glm_aed</span>, <span class="va">units</span>, <span class="va">name_text</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1599,24 +2461,19 @@ and units, and either name works anywhere AEME looks up a variable
 <p><code>SED_temp</code> is the temperature of the sediment layers
 beneath each zone. It has three dimensions (sediment layer, zone and
 time), so <code><a href="../reference/get_var.html">get_var()</a></code> returns it in long format, one row per
-layer, zone and date. Use <code>zone</code> and <code>sed_layer</code>
-to subset it. Zones follow the GLM order (1 is the deepest) and layer 1
-is the shallowest. It is only written when GLM’s sediment heat model is
-on (<code>sed_heat_model = 2</code> in the GLM nml). If your run does
-not have it, the chunks below that use it are skipped.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sed_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_var.html">get_var</a></span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, var_sim <span class="op">=</span> <span class="st">"SED_temp"</span><span class="op">)</span></span>
+layer, zone and date. <code><a href="../reference/plot_output.html">plot_output()</a></code> draws it with one line
+per zone and layer. Use <code>zone</code> and <code>sed_layer</code>, in
+either function, to choose which. Zones follow the GLM order (1 is the
+deepest) and layer 1 is the shallowest. It is only written when GLM’s
+sediment heat model is on (<code>sed_heat_model = 2</code> in the GLM
+nml). If your run does not have it, the chunks below that use it are
+skipped.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sed_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_var.html">get_var</a></span><span class="op">(</span><span class="va">aeme_extra</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, var_sim <span class="op">=</span> <span class="st">"SED_temp"</span><span class="op">)</span></span>
 <span><span class="va">n_layer</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">sed_temp</span><span class="op">$</span><span class="va">sed_layers</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sed_temp</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sed_layers</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n_layer</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>layer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">sed_layers</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"Top layer"</span>, <span class="st">"Bottom layer"</span><span class="op">)</span>,</span>
-<span>                zone  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">nzones</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">Date</span>, <span class="va">value</span>, colour <span class="op">=</span> <span class="va">zone</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">layer</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="st">"Sediment temperature (°C)"</span>, colour <span class="op">=</span> <span class="st">"Zone"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># the top and bottom sediment layer of each zone</span></span>
+<span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span><span class="va">aeme_extra</span>, var_sim <span class="op">=</span> <span class="st">"SED_temp"</span>, sed_layer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n_layer</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="glm-aed_files/figure-html/sed-temp-1.png" class="r-plt" alt="Sediment temperature (°C) in the top and bottom sediment layer of each zone." width="672"><p class="caption">
 Sediment temperature (°C) in the top and bottom sediment layer of each
@@ -1625,17 +2482,17 @@ zone.
 </div>
 <p>A zone that has no area in GLM’s output for the simulated period is
 returned as <code>NA</code>, so it is missing from the plot above (zone
-3 in this lake). The same call with <code>zone</code> and
-<code>sed_layer</code> returns a single series, for example the top
-layer of the deepest zone:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_var.html">get_var</a></span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, var_sim <span class="op">=</span> <span class="st">"SED_temp"</span>,</span>
+3 in this lake). <code><a href="../reference/get_var.html">get_var()</a></code> takes the same <code>zone</code>
+and <code>sed_layer</code> arguments and returns a single series, for
+example the top layer of the deepest zone:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_var.html">get_var</a></span><span class="op">(</span><span class="va">aeme_extra</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, var_sim <span class="op">=</span> <span class="st">"SED_temp"</span>,</span>
 <span>        zone <span class="op">=</span> <span class="fl">1</span>, sed_layer <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sed_layers nzones       Date    value  var_sim   Model</span></span>
-<span><span class="co">#&gt; 1          1      1 2020-08-01 9.933457 SED_temp GLM-AED</span></span>
-<span><span class="co">#&gt; 2          1      1 2020-08-02 9.887445 SED_temp GLM-AED</span></span>
-<span><span class="co">#&gt; 3          1      1 2020-08-03 9.846911 SED_temp GLM-AED</span></span></code></pre></div>
+<span><span class="co">#&gt; 1          1      1 2020-08-01 9.921478 SED_temp GLM-AED</span></span>
+<span><span class="co">#&gt; 2          1      1 2020-08-02 9.857790 SED_temp GLM-AED</span></span>
+<span><span class="co">#&gt; 3          1      1 2020-08-03 9.846822 SED_temp GLM-AED</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="sedimentwater-fluxes-by-zone">Sediment–water fluxes by zone<a class="anchor" aria-label="anchor" href="#sedimentwater-fluxes-by-zone"></a>
@@ -1643,15 +2500,11 @@ layer of the deepest zone:</p>
 <p>Fluxes across the sediment–water interface are written for each zone
 as well as for the whole lake. Zone variables
 (<code>SED_Fsed_oxy</code>, <code>SED_Fsed_amm</code>, …) have a
-<code>nzones</code> column:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_var.html">get_var</a></span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, var_sim <span class="op">=</span> <span class="st">"SED_Fsed_oxy"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>zone <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">nzones</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">Date</span>, <span class="va">value</span>, colour <span class="op">=</span> <span class="va">zone</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="st">"Sediment oxygen flux (mmol O2 m-2 d-1)"</span>,</span>
-<span>       colour <span class="op">=</span> <span class="st">"Zone"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code>nzones</code> column, and are plotted with
+<code><a href="../reference/plot_output.html">plot_output()</a></code> like any other variable, with one line per
+zone:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span><span class="va">aeme_extra</span>, var_sim <span class="op">=</span> <span class="st">"SED_Fsed_oxy"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="glm-aed_files/figure-html/sed-flux-zone-1.png" class="r-plt" alt="Simulated sediment oxygen flux (mmol O2 m⁻² d⁻¹) in each sediment zone." width="672"><p class="caption">
 Simulated sediment oxygen flux (mmol O2 m⁻² d⁻¹) in each sediment zone.
@@ -1661,12 +2514,15 @@ Simulated sediment oxygen flux (mmol O2 m⁻² d⁻¹) in each sediment zone.
 <div class="section level4">
 <h4 id="choosing-what-to-keep">Choosing what to keep<a class="anchor" aria-label="anchor" href="#choosing-what-to-keep"></a>
 </h4>
-<p>Keeping every sediment and diagnostic variable is convenient for
-exploring a single run, but it is wasteful when the model is run many
-times, as in a sensitivity analysis, calibration or ensemble. Each run
-stores several MB of extra output, and most of it is never looked at.
-<code><a href="../reference/run_aeme.html">run_aeme()</a></code> (and <code><a href="../reference/run_aeme_ensemble.html">run_aeme_ensemble()</a></code>,
-<code><a href="../reference/load_output.html">load_output()</a></code>) take an <code>extra_vars</code> argument to
+<p>Loading every variable in the file (<code>"all"</code>) is convenient
+for exploring a single run, but it is wasteful when the model is run
+many times, as in a sensitivity analysis, calibration or ensemble: in
+this lake it takes about four times as long to load and five times the
+memory, and most of it is never looked at. The sediment variables on
+their own are a small part of that, but a calibration usually needs only
+one or two series. That is why nothing extra is loaded by default.
+<code><a href="../reference/run_aeme.html">run_aeme()</a></code>, <code><a href="../reference/run_aeme_ensemble.html">run_aeme_ensemble()</a></code> and
+<code><a href="../reference/load_output.html">load_output()</a></code> take an <code>extra_vars</code> argument to
 choose what is read from <code>output.nc</code>. Variables that are not
 requested are never read.</p>
 <table class="table">
@@ -1676,27 +2532,28 @@ requested are never read.</p>
 </colgroup>
 <thead><tr class="header">
 <th><code>extra_vars</code></th>
-<th>What is kept</th>
+<th>What is loaded</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td>
-<code>NULL</code> (default)</td>
-<td>Everything, as above</td>
-</tr>
-<tr class="even">
-<td><code>"none"</code></td>
+<code>"none"</code> (default)</td>
 <td>No extra variables, just the standard set</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>c("SED_temp", "SED_Fsed_oxy")</code></td>
 <td>Only these. AEME or raw netCDF names</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>
 <code>"sediment"</code> or <code>"diag"</code>
 </td>
 <td>Every variable stored in that sub-list</td>
+</tr>
+<tr class="even">
+<td><code>"all"</code></td>
+<td>Every variable in <code>output.nc</code>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1706,9 +2563,11 @@ select. <code>sed_layers</code> keeps only some sediment layers of
 lake-wide series for each sediment-zone variable. The series is the mean
 over zones, weighted by the (time-varying) area of each zone, and is
 stored as <code>&lt;name&gt;_lake</code>:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aeme_sel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme.html">run_aeme</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aeme_sel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_output.html">load_output</a></span><span class="op">(</span></span>
 <span>  aeme         <span class="op">=</span> <span class="va">aeme</span>,</span>
+<span>  model        <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  path         <span class="op">=</span> <span class="va">path</span>,</span>
 <span>  extra_vars   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SED_temp"</span>, <span class="st">"SED_Fsed_oxy"</span>, <span class="st">"SED_Fsed_amm"</span><span class="op">)</span>,</span>
 <span>  sed_layers   <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,</span>
 <span>  zone_summary <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -1717,12 +2576,13 @@ stored as <code>&lt;name&gt;_lake</code>:</p>
 <span><span class="va">size_mb</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="fu"><a href="../reference/output.html">output</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">ens_001</span><span class="op">$</span><span class="va">glm_aed</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"MB"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>all_extras <span class="op">=</span> <span class="fu">size_mb</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span>, selected <span class="op">=</span> <span class="fu">size_mb</span><span class="op">(</span><span class="va">aeme_sel</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; all_extras   selected </span></span>
-<span><span class="co">#&gt;    "18 Mb"   "3.4 Mb"</span></span></code></pre></div>
-<p>The standard output is identical between the two runs. Only the
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>default <span class="op">=</span> <span class="fu">size_mb</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span>, all_sediment <span class="op">=</span> <span class="fu">size_mb</span><span class="op">(</span><span class="va">aeme_extra</span><span class="op">)</span>,</span>
+<span>  selected <span class="op">=</span> <span class="fu">size_mb</span><span class="op">(</span><span class="va">aeme_sel</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      default all_sediment     selected </span></span>
+<span><span class="co">#&gt;     "3.3 Mb"     "3.8 Mb"     "3.4 Mb"</span></span></code></pre></div>
+<p>The standard output is identical whatever is requested. Only the
 extras differ.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="../reference/output.html">output</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span><span class="op">$</span><span class="va">ens_001</span><span class="op">$</span><span class="va">glm_aed</span><span class="op">$</span><span class="va">HYD_temp</span>,</span>
 <span>          <span class="fu"><a href="../reference/output.html">output</a></span><span class="op">(</span><span class="va">aeme_sel</span><span class="op">)</span><span class="op">$</span><span class="va">ens_001</span><span class="op">$</span><span class="va">glm_aed</span><span class="op">$</span><span class="va">HYD_temp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
@@ -1732,12 +2592,8 @@ extras differ.</p>
 <p>The lake-wide series is a single time series, handy as a calibration
 target or for comparing with whole-lake estimates of sediment oxygen
 demand:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_var.html">get_var</a></span><span class="op">(</span><span class="va">aeme_sel</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span>, var_sim <span class="op">=</span> <span class="st">"SED_Fsed_oxy_lake"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">Date</span>, <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="st">"Sediment oxygen flux (mmol O2 m-2 d-1)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_output.html">plot_output</a></span><span class="op">(</span><span class="va">aeme_sel</span>, var_sim <span class="op">=</span> <span class="st">"SED_Fsed_oxy_lake"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="glm-aed_files/figure-html/sed-flux-lake-1.png" class="r-plt" alt="Zone-area weighted lake-wide sediment oxygen flux (mmol O2 m⁻² d⁻¹)." width="672"><p class="caption">
 Zone-area weighted lake-wide sediment oxygen flux (mmol O2 m⁻² d⁻¹).
@@ -1755,7 +2611,7 @@ builds that series and does not keep the per-zone array behind it.</p>
 <code>keep_diag</code> to every member, so a sensitivity analysis or
 calibration run with <strong>aemetools</strong> can ask for just the
 series it needs:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme_ensemble.html">run_aeme_ensemble</a></span><span class="op">(</span></span>
 <span>  <span class="va">aeme</span>,</span>
 <span>  model        <span class="op">=</span> <span class="st">"glm_aed"</span>,</span>
@@ -1779,43 +2635,43 @@ vary when these outputs are the target.</p>
 <p>When observations are stored in the <code>aeme</code> object,
 <code><a href="../reference/assess_aeme.html">assess_model()</a></code> computes a suite of skill metrics (RMSE,
 NSE, bias, Pearson <em>r</em>, etc.) for each simulated variable:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">skill</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assess_aeme.html">assess_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
 <span><span class="va">skill</span></span>
 <span><span class="co">#&gt;      Model           name_text   var_aeme      bias      mae     rmse   nmae</span></span>
-<span><span class="co">#&gt; 1  GLM-AED Dissolved organic C    CAR_doc -2.70e+00 2.70e+00 2.75e+00 0.9940</span></span>
-<span><span class="co">#&gt; 2  GLM-AED    Dissolved oxygen    CHM_oxy  1.13e+00 1.26e+00 1.93e+00 0.1830</span></span>
-<span><span class="co">#&gt; 3  GLM-AED      Oxycline depth CHM_oxycln  1.89e+00 1.89e+00 2.26e+00 0.2100</span></span>
+<span><span class="co">#&gt; 1  GLM-AED Dissolved organic C    CAR_doc -2.66e+00 2.66e+00 2.71e+00 0.9800</span></span>
+<span><span class="co">#&gt; 2  GLM-AED    Dissolved oxygen    CHM_oxy  1.07e+00 1.21e+00 1.86e+00 0.1760</span></span>
+<span><span class="co">#&gt; 3  GLM-AED      Oxycline depth CHM_oxycln  1.95e+00 1.95e+00 2.27e+00 0.2170</span></span>
 <span><span class="co">#&gt; 4  GLM-AED            Salinity   CHM_salt -1.17e-01 1.17e-01 1.17e-01 1.0000</span></span>
 <span><span class="co">#&gt; 5  GLM-AED          Stratified  HYD_strat  0.00e+00 2.00e-01 4.47e-01 0.2860</span></span>
-<span><span class="co">#&gt; 6  GLM-AED   Water temperature   HYD_temp -2.30e-01 8.20e-01 1.13e+00 0.0455</span></span>
-<span><span class="co">#&gt; 7  GLM-AED   Thermocline depth HYD_thmcln -2.54e+00 3.21e+00 4.60e+00 0.3340</span></span>
-<span><span class="co">#&gt; 8  GLM-AED         Water level LKE_lvlwtr -3.60e-02 1.29e-01 1.67e-01 0.0055</span></span>
-<span><span class="co">#&gt; 9  GLM-AED              Volume    LKE_vol -5.31e+03 1.94e+04 2.49e+04 0.0177</span></span>
-<span><span class="co">#&gt; 10 GLM-AED Ammoniacal nitrogen    NIT_amm  3.16e-03 1.23e-02 2.66e-02 1.0400</span></span>
-<span><span class="co">#&gt; 11 GLM-AED             Nitrate    NIT_nit  2.98e-03 3.24e-03 5.07e-03 2.0300</span></span>
-<span><span class="co">#&gt; 12 GLM-AED      Total nitrogen     NIT_tn -1.43e-01 1.43e-01 1.49e-01 0.7560</span></span>
-<span><span class="co">#&gt; 13 GLM-AED           Phosphate    PHS_frp -1.23e-03 1.46e-03 1.64e-03 0.8110</span></span>
-<span><span class="co">#&gt; 14 GLM-AED    Total phosphorus     PHS_tp -8.22e-03 8.30e-03 1.01e-02 0.7350</span></span>
-<span><span class="co">#&gt; 15 GLM-AED       Cyanobacteria  PHY_cyano -2.69e-02 3.13e-02 6.25e-02 0.8360</span></span>
-<span><span class="co">#&gt; 16 GLM-AED Total chlorophyll a  PHY_tchla  2.12e-01 6.50e+00 7.79e+00 0.8990</span></span>
-<span><span class="co">#&gt;          nse     kge     d2       r      rs        B   n obs_na sim_na</span></span>
-<span><span class="co">#&gt; 1   -33.0000 -1.0400 0.2120 -0.4920 -0.3940 0.006910  10      0      0</span></span>
-<span><span class="co">#&gt; 2     0.6340  0.6790 0.8810  0.8810  0.9140 0.568000 125      0      0</span></span>
-<span><span class="co">#&gt; 3    -0.3510  0.5760 0.7090  0.7700  0.8260 0.252000  24      0      0</span></span>
-<span><span class="co">#&gt; 4  -329.0000      NA 0.0827      NA      NA 0.000000 125      0      0</span></span>
-<span><span class="co">#&gt; 5     0.0476  0.5240 0.7520  0.5240  0.5240 0.141000  10      0      0</span></span>
-<span><span class="co">#&gt; 6     0.8690  0.9350 0.9670  0.9390  0.9240 0.779000 125      0      0</span></span>
-<span><span class="co">#&gt; 7    -1.4300  0.2670 0.6240  0.4910  0.4160 0.070300  10      0      0</span></span>
-<span><span class="co">#&gt; 8    -7.1000 -0.8960 0.3260  0.0434 -0.0732 0.000206   8      0      0</span></span>
-<span><span class="co">#&gt; 9    -6.9900 -0.8790 0.3260  0.0394 -0.0732 0.000172   8      0      0</span></span>
-<span><span class="co">#&gt; 10   -0.9150  0.2090 0.6060  0.4690  0.5790 0.075500  20      0      0</span></span>
-<span><span class="co">#&gt; 11   -5.6900 -1.2900 0.3050  0.2290  0.4290 0.006830  20      0      0</span></span>
-<span><span class="co">#&gt; 12  -29.4000 -0.1720 0.2040  0.1680 -0.2290 0.000902  20      0      0</span></span>
-<span><span class="co">#&gt; 13   -2.5400  0.0355 0.4990  0.3360  0.4070 0.024900  20      0      0</span></span>
-<span><span class="co">#&gt; 14   -2.6800 -0.4910 0.3760 -0.1290 -0.3020 0.003590  20      0      0</span></span>
-<span><span class="co">#&gt; 15   -0.3080 -0.6500 0.3600 -0.2010 -0.1310 0.017600  10      0      0</span></span>
-<span><span class="co">#&gt; 16   -4.6100 -0.5390 0.3220 -0.2240 -0.3210 0.007590  10      0      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 6  GLM-AED   Water temperature   HYD_temp -2.46e-01 8.52e-01 1.15e+00 0.0473</span></span>
+<span><span class="co">#&gt; 7  GLM-AED   Thermocline depth HYD_thmcln -2.60e+00 3.27e+00 4.62e+00 0.3410</span></span>
+<span><span class="co">#&gt; 8  GLM-AED         Water level LKE_lvlwtr  1.18e-01 1.58e-01 1.88e-01 0.0067</span></span>
+<span><span class="co">#&gt; 9  GLM-AED              Volume    LKE_vol  1.77e+04 2.37e+04 2.82e+04 0.0217</span></span>
+<span><span class="co">#&gt; 10 GLM-AED Ammoniacal nitrogen    NIT_amm  7.38e-03 1.36e-02 2.76e-02 1.1600</span></span>
+<span><span class="co">#&gt; 11 GLM-AED             Nitrate    NIT_nit  2.85e-03 2.85e-03 4.28e-03 1.7800</span></span>
+<span><span class="co">#&gt; 12 GLM-AED      Total nitrogen     NIT_tn -7.45e-02 7.45e-02 8.21e-02 0.3930</span></span>
+<span><span class="co">#&gt; 13 GLM-AED           Phosphate    PHS_frp -1.18e-03 1.26e-03 1.48e-03 0.6970</span></span>
+<span><span class="co">#&gt; 14 GLM-AED    Total phosphorus     PHS_tp -3.44e-03 4.16e-03 5.45e-03 0.3680</span></span>
+<span><span class="co">#&gt; 15 GLM-AED       Cyanobacteria  PHY_cyano  5.80e-02 1.14e-01 1.93e-01 3.0400</span></span>
+<span><span class="co">#&gt; 16 GLM-AED Total chlorophyll a  PHY_tchla  5.90e+00 7.10e+00 9.16e+00 0.9830</span></span>
+<span><span class="co">#&gt;          nse    kge     d2      r      rs       B   n obs_na sim_na</span></span>
+<span><span class="co">#&gt; 1   -32.1000 -0.817 0.2140 -0.216 -0.5630 0.00137  10      0      0</span></span>
+<span><span class="co">#&gt; 2     0.6600  0.707 0.8920  0.885  0.9120 0.58500 125      0      0</span></span>
+<span><span class="co">#&gt; 3    -0.3570  0.667 0.7350  0.805  0.7430 0.27500   8      0      0</span></span>
+<span><span class="co">#&gt; 4  -329.0000     NA 0.0827     NA      NA 0.00000 125      0      0</span></span>
+<span><span class="co">#&gt; 5     0.0476  0.524 0.7520  0.524  0.5240 0.14100  10      0      0</span></span>
+<span><span class="co">#&gt; 6     0.8630  0.922 0.9670  0.939  0.9260 0.77500 125      0      0</span></span>
+<span><span class="co">#&gt; 7    -1.4500  0.268 0.6280  0.502  0.4160 0.07310  10      0      0</span></span>
+<span><span class="co">#&gt; 8    -9.2800 -0.802 0.4360  0.366  0.3170 0.01190   8      0      0</span></span>
+<span><span class="co">#&gt; 9    -9.2200 -0.788 0.4360  0.365  0.3170 0.01190   8      0      0</span></span>
+<span><span class="co">#&gt; 10   -1.0500 -0.105 0.7170  0.684  0.5970 0.15300  20      0      0</span></span>
+<span><span class="co">#&gt; 11   -3.7700 -1.040 0.4880  0.483  0.4470 0.04040  20      0      0</span></span>
+<span><span class="co">#&gt; 12   -8.2200  0.190 0.3750  0.587  0.3270 0.03370  20      0      0</span></span>
+<span><span class="co">#&gt; 13   -1.8800  0.195 0.6200  0.583  0.4820 0.08750  20      0      0</span></span>
+<span><span class="co">#&gt; 14   -0.0781  0.277 0.5970  0.610  0.4180 0.17900  20      0      0</span></span>
+<span><span class="co">#&gt; 15  -11.5000 -1.810 0.0411 -0.216 -0.0975 0.00347  10      0      0</span></span>
+<span><span class="co">#&gt; 16   -6.7500 -0.654 0.3030 -0.309 -0.2240 0.01090  10      0      0</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level3">
@@ -1828,7 +2684,7 @@ NSE, bias, Pearson <em>r</em>, etc.) for each simulated variable:</p>
 produces a structured diagnostic report — a summary table and a set of
 grouped plots — that helps you quickly identify unrealistic values or
 mass-balance issues:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">diag</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_glm_aed_diagnostics.html">run_glm_aed_diagnostics</a></span><span class="op">(</span></span>
 <span>  aeme        <span class="op">=</span> <span class="va">aeme</span>,</span>
 <span>  plot        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1851,7 +2707,7 @@ objects grouped by biogeochemical element (<code>O</code>,
 plots.</li>
 </ul>
 <p>You can filter the diagnostics to a specific element or type:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Nitrogen state variables only</span></span>
 <span><span class="va">diag_N</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_glm_aed_diagnostics.html">run_glm_aed_diagnostics</a></span><span class="op">(</span></span>
 <span>  aeme        <span class="op">=</span> <span class="va">aeme</span>,</span>
@@ -1875,21 +2731,21 @@ plots.</li>
 diagnostic panel specifically designed to debug anomalous dissolved
 oxygen behaviour — a common challenge when coupling hydrodynamics with
 biogeochemistry:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pages</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_glm_diagnostics.html">plot_glm_diagnostics</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Page 1: oxygen state and key physical drivers</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pages</span><span class="op">$</span><span class="va">oxy</span><span class="op">)</span></span></code></pre></div>
 <p><img src="glm-aed_files/figure-html/plot-diag-1.png" class="r-plt" alt="" width="864"></p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Page 2: mixing and physical structure</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pages</span><span class="op">$</span><span class="va">physical</span><span class="op">)</span></span></code></pre></div>
 <p><img src="glm-aed_files/figure-html/plot-diag-mixing-1.png" class="r-plt" alt="" width="864"></p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Page 3: biological oxygen demand</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pages</span><span class="op">$</span><span class="va">bod</span><span class="op">)</span></span></code></pre></div>
 <p><img src="glm-aed_files/figure-html/plot-diag-bod-1.png" class="r-plt" alt="" width="864"></p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Page 4: sediment–water interface fluxes</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pages</span><span class="op">$</span><span class="va">sediment</span><span class="op">)</span></span></code></pre></div>
 <p><img src="glm-aed_files/figure-html/plot-diag-sed-1.png" class="r-plt" alt="" width="864"></p>
@@ -1903,7 +2759,7 @@ biogeochemistry:</p>
 <code>glm4.nml</code>, resolved via <code><a href="../reference/find_glm_nml.html">find_glm_nml()</a></code>) and
 <code>aed/aed.nml</code> file can be read, modified, and written using
 the NML helpers bundled with AEME:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Retrieve the parsed configuration</span></span>
 <span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_model_config.html">read_model_config</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"glm_aed"</span>,</span>
 <span>                         lake_dir <span class="op">=</span> <span class="fu"><a href="../reference/get_lake_dir.html">get_lake_dir</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span><span class="op">)</span></span>
@@ -1919,7 +2775,7 @@ the NML helpers bundled with AEME:</p>
 config, <code><a href="../reference/get_glm_param.html">get_glm_param()</a></code>/<code><a href="../reference/set_glm_param.html">set_glm_param()</a></code> work
 directly against the nml file on disk (see
 <code>vignette("testing-parameters")</code>):</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path_glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_lake_dir.html">get_lake_dir</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span>, <span class="st">"glm_aed"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/get_glm_param.html">get_glm_param</a></span><span class="op">(</span><span class="va">path_glm</span>, <span class="st">"Kw"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/set_glm_param.html">set_glm_param</a></span><span class="op">(</span><span class="va">path_glm</span>, Kw <span class="op">=</span> <span class="fl">0.5</span>, coef_mix_hyp <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
@@ -1929,7 +2785,7 @@ directly against the nml file on disk (see
 <p><code><a href="../reference/get_aeme_parameters.html">get_aeme_parameters()</a></code> provides a convenient way to query
 the AEME parameter library for all GLM-AED parameters belonging to a
 particular module:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># All GLM-AED light parameters</span></span>
 <span><span class="va">light_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_aeme_parameters.html">get_aeme_parameters</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"glm_aed"</span>,</span>
 <span>                                    module <span class="op">=</span> <span class="st">"light"</span><span class="op">)</span></span>
@@ -1943,7 +2799,7 @@ particular module:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> light/energy_frac   0.51 0.255  0.765</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> light/Benthic_Imin 10    5     15    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> light/Kw            0.2  0.1    0.3</span></span></code></pre></div>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># AED nitrogen module parameters</span></span>
 <span><span class="va">n_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_aeme_parameters.html">get_aeme_parameters</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"glm_aed"</span>,</span>
 <span>                                module <span class="op">=</span> <span class="st">"nitrogen"</span><span class="op">)</span></span>

@@ -17,8 +17,11 @@ summary(object)
 
 ## Value
 
-Aeme object.
+An [AemeSummary](https://limnotrack.com/AEME/reference/AemeSummary.md)
+object.
 
 ## Details
 
-This method summarises the Aeme output.
+This method summarises the Aeme output with
+[`summarise_aeme()`](https://limnotrack.com/AEME/reference/summarise_aeme.md)
+(default arguments).

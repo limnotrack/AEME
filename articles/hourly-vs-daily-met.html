@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -824,10 +824,10 @@ redistribution between the two:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 14 × 4</span></span></span>
 <span><span class="co">#&gt;    model         component    daily hourly</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> glm_aed       Latent       -<span style="color: #BB0000;">79.4</span>  -<span style="color: #BB0000;">80.1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> glm_aed       Sensible     -<span style="color: #BB0000;">12.8</span>  -<span style="color: #BB0000;">12</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> glm_aed       Net longwave -<span style="color: #BB0000;">73.1</span>  -<span style="color: #BB0000;">73.2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> glm_aed       Shortwave    169.   169. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> glm_aed       Latent       -<span style="color: #BB0000;">80.7</span>  -<span style="color: #BB0000;">81.6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> glm_aed       Sensible     -<span style="color: #BB0000;">13.2</span>  -<span style="color: #BB0000;">12.5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> glm_aed       Net longwave -<span style="color: #BB0000;">73.5</span>  -<span style="color: #BB0000;">73.6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> glm_aed       Shortwave    171.   171. </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> gotm_wet      Latent       -<span style="color: #BB0000;">81.4</span>  -<span style="color: #BB0000;">95.1</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> gotm_wet      Sensible     -<span style="color: #BB0000;">13.2</span>  -<span style="color: #BB0000;">16.3</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> gotm_wet      Net longwave -<span style="color: #BB0000;">65.1</span>  -<span style="color: #BB0000;">47.7</span></span></span>
@@ -835,7 +835,7 @@ redistribution between the two:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> simstrat_aed2 Latent       -<span style="color: #BB0000;">58.4</span>  -<span style="color: #BB0000;">69.4</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> simstrat_aed2 Sensible      -<span style="color: #BB0000;">8.6</span>  -<span style="color: #BB0000;">11</span>  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> simstrat_aed2 Shortwave     85.3   85.5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> glm_aed       Net (sum)      3.9    3.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> glm_aed       Net (sum)      3.8    3.7</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> gotm_wet      Net (sum)     10.9   11.6</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> simstrat_aed2 Net (sum)     18.3    5</span></span></code></pre></div>
 <p>The daily-forced run gains more net heat (or loses less) over the
@@ -943,9 +943,9 @@ stratified:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 4</span></span></span>
 <span><span class="co">#&gt;   model         var                       daily hourly</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> glm_aed       Schmidt stability (J/m2) 117.   116.  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> glm_aed       Surface - bottom (deg C)   5.69   5.53</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> glm_aed       Thermocline depth (m)      7.19   6.3 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> glm_aed       Schmidt stability (J/m2) 128.   127.  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> glm_aed       Surface - bottom (deg C)   5.98   5.82</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> glm_aed       Thermocline depth (m)      7.06   6.4 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> gotm_wet      Schmidt stability (J/m2)  60.2   45.3 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> gotm_wet      Surface - bottom (deg C)   2.59   1.97</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> gotm_wet      Thermocline depth (m)      6.72   7.78</span></span>
@@ -1022,13 +1022,13 @@ all three (Simstrat with the stratification tuning above) gives:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 5</span></span></span>
 <span><span class="co">#&gt;   model         metric                    daily hourly `hourly - daily`</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> glm_aed       Near-surface temp (°C)    23.0   23.0             -<span style="color: #BB0000;">0.03</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> glm_aed       Near-surface temp (°C)    23.3   23.3             -<span style="color: #BB0000;">0.03</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gotm_wet      Near-surface temp (°C)    22.8   22.7             -<span style="color: #BB0000;">0.11</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> simstrat_aed2 Near-surface temp (°C)    25.1   25.1              0.07</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> glm_aed       Schmidt stability (J/m²) 117.   116.              -<span style="color: #BB0000;">0.88</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> glm_aed       Schmidt stability (J/m²) 128.   127.              -<span style="color: #BB0000;">0.81</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> gotm_wet      Schmidt stability (J/m²)  60.2   45.3            -<span style="color: #BB0000;">14.9</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> simstrat_aed2 Schmidt stability (J/m²)  56.7   33.6            -<span style="color: #BB0000;">23.0</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> glm_aed       Surface - bottom (°C)      5.69   5.53            -<span style="color: #BB0000;">0.16</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> glm_aed       Surface - bottom (°C)      5.98   5.82            -<span style="color: #BB0000;">0.16</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> gotm_wet      Surface - bottom (°C)      2.59   1.97            -<span style="color: #BB0000;">0.62</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> simstrat_aed2 Surface - bottom (°C)      2.04   1.29            -<span style="color: #BB0000;">0.75</span></span></span></code></pre></div>
 <p>Two things stand out.</p>

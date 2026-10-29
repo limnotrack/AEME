@@ -88,6 +88,11 @@ clear alpine water to a bloom; for this lake we narrow it:
 
 param$max[param$name == "light/Kw"] <- 1.5
 aeme <- add_param(aeme, param)
+#> Warning: ! This <Aeme> object was built with AEME 0.4.0, but the installed version is
+#>   0.4.1.
+#> ℹ Consider rebuilding with `build_aeme()` if you encounter unexpected
+#>   behaviour.
+#> This warning is displayed once per session.
 ```
 
 Then build the GLM-AED configuration:
@@ -152,10 +157,10 @@ Then run them:
 
 aeme_prior <- run_aeme_ensemble(aeme, model = "glm_aed", path = path,
                                  param_sets = param_sets_prior)
-#> Warning: 4 of 12 ensemble members failed or ended early and were dropped.
-#> ℹ Dropped: "m03", "m04", "m10", and "m12".
+#> Warning: 3 of 12 ensemble members failed or ended early and were dropped.
+#> ℹ Dropped: "m03", "m04", and "m12".
 output(aeme_prior)$n_members
-#> [1] 8
+#> [1] 9
 ```
 
 Each parameter is sampled **independently**, so there is no correlation
@@ -196,9 +201,9 @@ Because the sets were named, the labels of the survivors are kept:
 
 kept <- attr(output(aeme_prior), "realisation")
 kept
-#> [1] "m01" "m02" "m05" "m06" "m07" "m08" "m09" "m11"
+#> [1] "m01" "m02" "m05" "m06" "m07" "m08" "m09" "m10" "m11"
 setdiff(names(param_sets_prior), kept)
-#> [1] "m03" "m04" "m10" "m12"
+#> [1] "m03" "m04" "m12"
 ```
 
 Comparing the dropped members’ parameters with the survivors’ shows what
@@ -217,15 +222,15 @@ bind_rows(param_sets_prior, .id = "member") |>
 #>    <chr>  <chr>    <dbl>   <dbl>
 #>  1 m03    dropped  1.28    2.17 
 #>  2 m04    dropped  0.515   1.72 
-#>  3 m10    dropped  1.17    1.74 
-#>  4 m12    dropped  0.503   2.16 
-#>  5 m01    kept     1.97    1.91 
-#>  6 m02    kept     2.46    1.62 
-#>  7 m05    kept     2.28    1.74 
-#>  8 m06    kept     1.85    1.53 
-#>  9 m07    kept     1.04    0.981
-#> 10 m08    kept     0.516   0.503
-#> 11 m09    kept     0.967   1.11 
+#>  3 m12    dropped  0.503   2.16 
+#>  4 m01    kept     1.97    1.91 
+#>  5 m02    kept     2.46    1.62 
+#>  6 m05    kept     2.28    1.74 
+#>  7 m06    kept     1.85    1.53 
+#>  8 m07    kept     1.04    0.981
+#>  9 m08    kept     0.516   0.503
+#> 10 m09    kept     0.967   1.11 
+#> 11 m10    kept     1.17    1.74 
 #> 12 m11    kept     1.98    0.505
 ```
 
@@ -272,27 +277,27 @@ s <- ensemble_summary(aeme_prior, model = "glm_aed",
                       vars_sim = "HYD_temp", depths = c(1, 10))
 s
 #> <aeme_ensemble_summary>
-#>   members  : 8 (kept)
+#>   members  : 9 (kept)
 #>   variables: HYD_temp
 #>   depths   :  1, 10 (surface-ref)
 #>   period   : 2020-08-01 .. 2021-06-30  (668 rows in $stats)
 #>   quantiles:  2.5, 25.0, 50.0, 75.0, 97.5 %
 #>   obs      : 20 points
 head(as.data.frame(s))
-#>         Date   Model  var_sim depth n     mean         sd     q2.5      q25
-#> 1 2020-08-01 GLM-AED HYD_temp     1 8 10.32730 0.08078228 10.24670 10.27218
-#> 2 2020-08-01 GLM-AED HYD_temp    10 8 10.26396 0.06085934 10.18120 10.23822
-#> 3 2020-08-02 GLM-AED HYD_temp     1 8 10.56919 0.11266815 10.46019 10.48680
-#> 4 2020-08-02 GLM-AED HYD_temp    10 8 10.53059 0.10494376 10.39954 10.46220
-#> 5 2020-08-03 GLM-AED HYD_temp     1 8 10.77278 0.16726338 10.58951 10.65813
-#> 6 2020-08-03 GLM-AED HYD_temp    10 8 10.63944 0.12301179 10.49408 10.56227
-#>        q50      q75    q97.5
-#> 1 10.28455 10.39758 10.44355
-#> 2 10.24570 10.29950 10.36047
-#> 3 10.51405 10.68700 10.72085
-#> 4 10.49530 10.62017 10.67714
-#> 5 10.70155 10.92507 11.00881
-#> 6 10.58610 10.75743 10.80561
+#>         Date   Model  var_sim depth n     mean         sd     q2.5     q25
+#> 1 2020-08-01 GLM-AED HYD_temp     1 9 10.32120 0.07354341 10.23818 10.2631
+#> 2 2020-08-01 GLM-AED HYD_temp    10 9 10.25689 0.05599197 10.17610 10.2334
+#> 3 2020-08-02 GLM-AED HYD_temp     1 9 10.55908 0.10594508 10.44630 10.4706
+#> 4 2020-08-02 GLM-AED HYD_temp    10 9 10.51979 0.09666516 10.39054 10.4492
+#> 5 2020-08-03 GLM-AED HYD_temp     1 9 10.74847 0.15250244 10.56952 10.6363
+#> 6 2020-08-03 GLM-AED HYD_temp    10 9 10.62811 0.11395535 10.48142 10.5488
+#>       q50     q75    q97.5
+#> 1 10.2846 10.3722 10.42512
+#> 2 10.2421 10.2843 10.34912
+#> 3 10.5110 10.6642 10.69746
+#> 4 10.4913 10.5922 10.65892
+#> 5 10.6768 10.8652 10.96472
+#> 6 10.5799 10.7274 10.78506
 ```
 
 ## Supplying your own parameter sets
@@ -451,7 +456,7 @@ read_aeme_parquet(pq_prior, what = "lakes")
 #>    lake_id    name latitude longitude elevation depth   area      start
 #> 1 LID45819 Wainamu -36.8898   174.469     23.64 13.07 152343 2020-08-01
 #>         stop  models n_ens
-#> 1 2021-06-30 glm_aed     8
+#> 1 2021-06-30 glm_aed     9
 ```
 
 ### Reading it back
@@ -471,12 +476,12 @@ head(lvl)
 #> # A tibble: 6 × 14
 #>   date       var_sim  depth depth_ref  mean     sd n_ens   q05   q25   q50   q75
 #>   <date>     <chr>    <dbl> <chr>     <dbl>  <dbl> <int> <dbl> <dbl> <dbl> <dbl>
-#> 1 2020-08-01 LKE_lvl…    NA NA         13.0 0.0764     8  13.0  13.0  13.0  13.0
-#> 2 2020-08-02 LKE_lvl…    NA NA         13.1 0.107      8  13.0  13.0  13.0  13.1
-#> 3 2020-08-03 LKE_lvl…    NA NA         13.2 0.170      8  13.0  13.1  13.1  13.2
-#> 4 2020-08-04 LKE_lvl…    NA NA         13.8 0.448      8  13.3  13.4  13.8  14.1
-#> 5 2020-08-05 LKE_lvl…    NA NA         13.9 0.582      8  13.3  13.4  13.9  14.3
-#> 6 2020-08-06 LKE_lvl…    NA NA         13.9 0.704      8  13.2  13.4  13.8  14.4
+#> 1 2020-08-01 LKE_lvl…    NA NA         13.0 0.0784     9  12.9  13.0  13.0  13.1
+#> 2 2020-08-02 LKE_lvl…    NA NA         13.0 0.107      9  12.9  13.0  13.0  13.1
+#> 3 2020-08-03 LKE_lvl…    NA NA         13.1 0.161      9  13.0  13.1  13.1  13.2
+#> 4 2020-08-04 LKE_lvl…    NA NA         13.6 0.347      9  13.2  13.3  13.7  13.9
+#> 5 2020-08-05 LKE_lvl…    NA NA         13.6 0.383      9  13.2  13.3  13.7  13.9
+#> 6 2020-08-06 LKE_lvl…    NA NA         13.6 0.409      9  13.1  13.3  13.6  13.9
 #> # ℹ 3 more variables: q95 <dbl>, lake_id <chr>, model <chr>
 
 ggplot(lvl, aes(date)) +
@@ -517,17 +522,17 @@ head(temp_prior[, c("date", "depth", "depth_ref", "mean", "q05", "q50", "q95",
 #> # A tibble: 6 × 8
 #>   date       depth depth_ref  mean   q05   q50   q95 n_ens
 #>   <date>     <dbl> <chr>     <dbl> <dbl> <dbl> <dbl> <int>
-#> 1 2020-08-01     1 surface    10.3  10.3  10.3  10.4     8
-#> 2 2020-08-01    10 surface    10.3  10.2  10.2  10.4     8
-#> 3 2020-08-02     1 surface    10.6  10.5  10.5  10.7     8
-#> 4 2020-08-02    10 surface    10.5  10.4  10.5  10.7     8
-#> 5 2020-08-03     1 surface    10.8  10.6  10.7  11.0     8
-#> 6 2020-08-03    10 surface    10.6  10.5  10.6  10.8     8
+#> 1 2020-08-01     1 surface    10.3  10.2  10.3  10.4     9
+#> 2 2020-08-01    10 surface    10.3  10.2  10.2  10.3     9
+#> 3 2020-08-02     1 surface    10.6  10.4  10.5  10.7     9
+#> 4 2020-08-02    10 surface    10.5  10.4  10.5  10.7     9
+#> 5 2020-08-03     1 surface    10.7  10.6  10.7  11.0     9
+#> 6 2020-08-03    10 surface    10.6  10.5  10.6  10.8     9
 table(temp_prior$depth, temp_prior$n_ens)
 #>     
-#>        8
-#>   1  334
-#>   10 334
+#>        8   9
+#>   1    0 334
+#>   10 301  33
 ```
 
 `n_ens` counts the members that have a value. A depth that falls outside
@@ -554,12 +559,12 @@ head(bottom[, c("date", "depth", "depth_ref", "mean", "q50", "n_ens")])
 #> # A tibble: 6 × 6
 #>   date       depth depth_ref  mean   q50 n_ens
 #>   <date>     <dbl> <chr>     <dbl> <dbl> <int>
-#> 1 2020-08-01     1 bottom     10.3  10.2     8
-#> 2 2020-08-02     1 bottom     10.5  10.5     8
-#> 3 2020-08-03     1 bottom     10.6  10.6     8
-#> 4 2020-08-04     1 bottom     10.7  10.7     8
-#> 5 2020-08-05     1 bottom     10.8  10.8     8
-#> 6 2020-08-06     1 bottom     10.9  10.9     8
+#> 1 2020-08-01     1 bottom     10.3  10.2     9
+#> 2 2020-08-02     1 bottom     10.5  10.5     9
+#> 3 2020-08-03     1 bottom     10.6  10.6     9
+#> 4 2020-08-04     1 bottom     10.7  10.7     9
+#> 5 2020-08-05     1 bottom     10.8  10.7     9
+#> 6 2020-08-06     1 bottom     10.9  10.9     9
 ```
 
 The raw tier is unchanged by `depths` and `depth_ref`: it always holds
@@ -582,17 +587,18 @@ ds |>
   group_by(ens) |>
   summarise(mean_temp = mean(value), n = n()) |>
   collect()
-#> # A tibble: 8 × 3
+#> # A tibble: 9 × 3
 #>     ens mean_temp     n
 #>   <int>     <dbl> <int>
-#> 1     1      19.3  1333
-#> 2     2      19.6  1457
-#> 3     3      20.6  1457
-#> 4     4      20.2  1457
-#> 5     5      21.2  1333
-#> 6     6      20.4  1333
-#> 7     7      20.2  1302
-#> 8     8      20.6  1457
+#> 1     1      19.5  1302
+#> 2     2      20.1  1364
+#> 3     3      21.2  1333
+#> 4     4      20.7  1333
+#> 5     5      21.5  1302
+#> 6     6      20.6  1302
+#> 7     7      20.4  1302
+#> 8     8      21.7  1271
+#> 9     9      21.3  1364
 ```
 
 ### Comparing ensembles
@@ -645,7 +651,7 @@ output variable written:
 
 files <- list.files(pq_prior, recursive = TRUE, full.names = TRUE)
 round(sum(file.size(files)) / 1e6, 1)  # MB, both tiers
-#> [1] 5.8
+#> [1] 1.9
 ```
 
 Because every lake is just another `lake_id=` partition, the same

@@ -139,15 +139,14 @@ bold are required to run the models.
 
 - `output`:
 
-  A list representing output information.
+  A list of model output.
 
-  - `dy_cd`: list; DYRESM-CAEDYM output.
+  - `n_members`: integer; number of ensemble members.
 
-  - `glm_aed`: list; GLM-AED output.
-
-  - `gotm_wet`: list; GOTM-WET output.
-
-  - `simstrat_aed2`: list; Simstrat-AED2 output.
+  - `ens_001`, `ens_002`, ...: one list per ensemble member, each with
+    an element per model that is either `NULL` or an `aeme_output` list:
+    `dy_cd` (DYRESM-CAEDYM), `glm_aed` (GLM-AED), `gotm_wet` (GOTM-WET),
+    `simstrat_aed2` (Simstrat-AED2) and `simstrat_aed` (Simstrat-AED).
 
 - `parameters`:
 

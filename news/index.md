@@ -1,18 +1,295 @@
 # Changelog
 
-## AEME 0.4.0
+## AEME 0.4.1
+
+### Inflow silica units
+
+- `SIL_rsi` inflow values are no longer auto-converted. Previously a
+  median \> 100 was assumed to be mg/L and multiplied by 1000/60.084, so
+  valid mmol/m3 inputs of 150-300 were inflated ~16.6x. Silica must now
+  be supplied in mmol/m3.
+
+### GLM-AED initial water-quality values
+
+- `&init_profiles` `wq_init_vals` are now converted from AEME units to
+  GLM-AED native units by *dividing* by `conversion_aed` (as for the AED
+  nml, inflows and Simstrat). They were multiplied, so e.g. DOC of 0.5
+  g/m3 was written as 0.006 instead of 41.63 mmol/m3. Rebuild existing
+  GLM-AED models to pick up the fix.
+- `set_glm_init(wq_init = )` now takes AEME (standard) units, e.g.
+  `CHM_oxy = 10` mg/L, keyed by AEME variable name, and converts to
+  GLM-AED native units (mmol/m3), rounded to 4 decimal places (as are
+  the values written at build). Names that only match GLM `wq_names` are
+  written as-is.
+
+### Calibrate inflow variables
+
+- Parameters with `file = "inf"` can now name an inflow variable (e.g.
+  `CAR_doc`) to multiply it, and the new `file = "inf_const"` sets it to
+  a constant. Previously `inf` only scaled flow (name `"inflow"`,
+  unchanged), so concentrations could not be varied independently.
+  [`inflow_param()`](https://limnotrack.com/AEME/reference/inflow_param.md)
+  builds the rows.
+
+### `get_var()` returns consistent columns
+
+- [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) now
+  returns `Date`, `depth`, `value`, `var_sim` and `Model` with and
+  without `use_obs`; `use_obs = TRUE` adds `obs` after `value`. The
+  model value is now `value` (previously `sim`), `var_aeme` is no longer
+  returned (use `var_sim`), and level/scalar variables always have a
+  `depth` column. The function was split into internal helpers.
+
+### `plot_aed_succession()`
+
+- New
+  [`plot_aed_succession()`](https://limnotrack.com/AEME/reference/plot_aed_succession.md)
+  plots a chlorophyll a time series above a monthly composite (0-100 %)
+  of each phytoplankton group’s contribution.
+
+### `view_aed_modules()`
+
+- New
+  [`view_aed_modules()`](https://limnotrack.com/AEME/reference/view_aed_modules.md)
+  opens an interactive diagram of the AED module interactions in the
+  viewer pane or web browser.
+- The diagram is also embedded in the GLM-AED article via a
+  self-contained iframe (`srcdoc`), so its styling does not affect the
+  article.
+
+### Fixes
+
+- `run_aeme(ens_n = )` with a number other than 1 now adds (or replaces)
+  that ensemble member instead of discarding the existing output;
+  `ens_n = 1` still starts from empty output.
+- [`check_glm_nml()`](https://limnotrack.com/AEME/reference/check_glm_nml.md)
+  no longer errors when the GLM `&outflow` block has no `outflow_fl`
+  (all spill through GLM’s weir), and
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  no longer errors in `calc_lake_obs_deriv()` when there are no lake
+  observations.
+- [`set_glm_outflow_config()`](https://limnotrack.com/AEME/reference/set_glm_outflow_config.md)
+  warns correctly when several outflow files are missing.
+
+### `aeme_to_inflow()` uses the GLM-AED mass balance
+
+- For `glm_aed`,
+  [`aeme_to_inflow()`](https://limnotrack.com/AEME/reference/aeme_to_inflow.md)
+  now takes the concentrations from `mass_balance.csv` when it exists:
+  the mass leaving the lake (`Out`) divided by the outflow volume,
+  i.e. the flow-weighted concentration of the water that actually
+  leaves, converted to AEME units. This replaces the concentration at
+  0.25 m depth for the variables in the mass balance (at most 15, see
+  [`set_glm_balance_groups()`](https://limnotrack.com/AEME/reference/set_glm_balance_groups.md)),
+  adds `NIT_tn` and `PHS_tp` from the summed totals, and falls back to
+  the 0.25 m value on days without outflow or for variables not in the
+  file.
+
+### Read and diagnose the GLM-AED mass balance
+
+- New
+  [`read_glm_mass_balance()`](https://limnotrack.com/AEME/reference/read_glm_mass_balance.md)
+  reads `mass_balance.csv` (AED native units, mmol) into a long table.
+  [`calc_aed_totals_balance()`](https://limnotrack.com/AEME/reference/calc_aed_totals_balance.md)
+  sums the components into the `aed_totals` TN, TP, TOC (and TSS),
+  optionally converting to kg, and
+  [`diag_glm_mass_balance()`](https://limnotrack.com/AEME/reference/diag_glm_mass_balance.md)
+  returns the daily and summary `d(Lake) - (Inf - Out)` remainder, per
+  total or per variable (all accept an `aeme` object to locate the
+  file), with an optional cumulative plot. `Inf` and `Out` are totals
+  over the save interval (`nsave * dt`), so the diagnostics use the
+  interval between rows and also return per-day rates, and warn if the
+  spacing disagrees with the GLM nml.
+
+### GLM-AED mass balance reports the components of the totals
+
+- The GLMv4 `&mass_balance` `balance_vars` are now the components summed
+  into the `aed_totals`, derived with the same per-phytoplankton-group
+  logic as
+  [`set_aed_totals()`](https://limnotrack.com/AEME/reference/set_aed_totals.md)
+  (internal-quota pools versus biomass x fixed stoichiometry), so the
+  totals can be summed from `mass_balance.csv`. GLM allows at most 15
+  `balance_vars`, so by default only the nitrogen (TN), phosphorus (TP)
+  and suspended solids (TSS) groups are reported. New
+  [`set_glm_balance_groups()`](https://limnotrack.com/AEME/reference/set_glm_balance_groups.md)
+  chooses the groups (`"TN"`, `"TP"`, `"TOC"`, `"TSS"`, `"other"`) for
+  an existing configuration, and the default for new builds is set with
+  `options(AEME.glm_balance_groups = )`. Components whose AED module is
+  not active are skipped, and lists over 15 are truncated with a
+  warning.
+
+### Derived lake observations no longer accumulate
+
+- [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  appended the derived oxygen observations (`CHM_oxycln`, `CHM_oxynal`)
+  to `observations(aeme)$lake` again on every build of an object that
+  had already been built, so the table grew each time. Derived records
+  already present are now skipped. `CHM_oxyhyp` was also never written
+  because of a duplicated list name; it is now added.
+
+### `build_aeme()` reuses the stored water balance
+
+- The water balance, the slowest estimate in
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md),
+  is now hashed from its inputs (meteorology, inflows, outflows, lake
+  level, hypsograph, times, models, `wb_method`, `coeffs`, observed
+  water temperature and the AEME version) and the hash is stored in
+  `water_balance(aeme)$hash`. Rebuilding with unchanged inputs, for
+  example after changing only parameters or model controls, reuses the
+  stored result. New `refresh_wbal = TRUE` argument forces a
+  recalculation.
+
+### GLM-AED spills through its own weir by default
+
+- New `glm_weir` argument to
+  [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
+  (default `TRUE`, also read from
+  [`configuration()`](https://limnotrack.com/AEME/reference/configuration.md)).
+  GLM-AED no longer reads the water-balance (`wbal`) outflow file; it
+  spills through its own weir (`morphometry/crest_elev`,
+  `outflow/crest_width`, `outflow/crest_factor`). The weir is fitted to
+  the observed `"outflow"` and lake level when at least 10 days overlap
+  (that outflow is then replaced by the weir); otherwise it is taken
+  from the water-balance `C` and `h_inv` (`wb_method` 2 or 3). Other
+  outflows stay as GLM outlets. When fitted from observations, the
+  `glm_aed` water-balance `C` / `h_inv` (shared with `dy_cd`) are set to
+  the equivalent values, so the water balance no longer runs
+  [`optim()`](https://rdrr.io/r/stats/optim.html) for that family and
+  matches GLM. Use `glm_weir = FALSE` for the previous behaviour;
+  [`glm_config_to_aeme()`](https://limnotrack.com/AEME/reference/glm_config_to_aeme.md)
+  objects default to `FALSE`.
+
+### GLM-AED southern hemisphere albedo workaround
+
+- GLM-AED currently treats the seasonal albedo cycle of southern
+  hemisphere lakes as if they were in the northern hemisphere. As a
+  temporary catch, `build_glm()` now writes `albedo_mean = 0.08` and
+  `albedo_amplitude = 0.02` (or `-0.02` when the latitude is negative)
+  to the `&light` block of the GLM nml. **Caveat:** this is a stop-gap
+  and should be removed once the bug is fixed in GLM-AED.
+
+### Clearer observations in `plot_ts()`
+
+- Observations are now drawn as black points with a white outline (or,
+  when several variables are plotted, points filled to match each line
+  with a black outline) so they stand out from the model lines, and the
+  new `obs_size` argument controls their size (default 2.5).
+
+### Trophic level index calculated from annual averages
+
+- The derived trophic level indices (`LKE_tlic`, `LKE_tlin`, `LKE_tlip`,
+  `LKE_tlise`, `LKE_tli3`, `LKE_tli4`) are now calculated from annual
+  averages of chlorophyll-a, total nitrogen, total phosphorus and Secchi
+  depth, as in the NZ lake trophic level protocol, which deseasonalises
+  the data. The epilimnetic mean is averaged over each hydrological year
+  (July to June; set the first month with
+  `options(AEME.tli_year_start_month = )`) before the index equations
+  are applied, and every time step in a year carries that year’s value.
+  Observed `LKE_tli3`/`LKE_tli4` use the same annual averaging and need
+  at least four sampling dates in a year.
+- **Behaviour change.** The Secchi component now uses the protocol
+  equation (`5.10 + 2.27 * log10(1/SD - 1/40)`), previously
+  `5.56 + 2.6 * ...`, so `LKE_tlise` and `LKE_tli4` differ from earlier
+  versions.
+- Fixed the dependency of `LKE_tlin` in `key_naming` (`NIT_tn`, not
+  `PHS_tn`).
+
+### `AemeSummary`: a lightweight summary for dashboards
+
+- New S4 class `AemeSummary`, made by
+  [`summarise_aeme()`](https://limnotrack.com/AEME/reference/summarise_aeme.md)
+  (now exported, and also what `summary(<Aeme>)` returns). It holds
+  daily surface and bottom series for every depth-resolved variable
+  (split at `HYD_epidep`, else `HYD_thmcln`, else half the water
+  column), variables without depth, the observations, daily
+  meteo/inflow/outflow/water-balance forcing, the hypsograph, the
+  parameters and a `meta` list. There is no model configuration, so it
+  cannot be built or run. With several ensemble members, `stats` (mean,
+  min, max, quantiles) summarise them, and `keep_members = TRUE` keeps
+  each member too. `profiles = TRUE` adds seasonal mean profiles.
+- The `output` slot is a long table (`Date`, `model`, `var_aeme`,
+  `layer`, `stat`, `value`). Accessors
+  [`lake()`](https://limnotrack.com/AEME/reference/lake.md),
+  [`time()`](https://limnotrack.com/AEME/reference/time.md),
+  [`observations()`](https://limnotrack.com/AEME/reference/observations.md),
+  [`output()`](https://limnotrack.com/AEME/reference/output.md) and
+  [`parameters()`](https://limnotrack.com/AEME/reference/parameters.md)
+  work on it, with new
+  [`forcing()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md),
+  [`profiles()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md),
+  [`models()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+  and
+  [`hypsograph()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md).
+  [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) and
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) accept it.
+- [`write_aeme_summary()`](https://limnotrack.com/AEME/reference/write_aeme_summary.md)
+  /
+  [`read_aeme_summary()`](https://limnotrack.com/AEME/reference/write_aeme_summary.md)
+  store it as `rds`, `parquet` or (write only) `json`.
+- **Behaviour change.** The old
+  [`summarise_aeme()`](https://limnotrack.com/AEME/reference/summarise_aeme.md)
+  replaced an `Aeme`’s output with 2-column surface/bottom matrices,
+  recognised by `check_if_summary()`. That is gone (as are
+  `get_var_summary()` and `plot_var_summary()`): an `Aeme` always holds
+  full output.
+
+### Consistent structure for the `output` slot
+
+- The layout of
+  [`output()`](https://limnotrack.com/AEME/reference/output.md)
+  (`n_members` plus one `ens_NNN` list per member, each named by model)
+  is now built and read through shared internal helpers instead of
+  repeated `grepl("ens", ...)` and hand-written model lists. `n_members`
+  is always counted from the members present, and members are matched by
+  exact name (`^ens_[0-9]+$`).
+- `Aeme` validity now checks `output`: `n_members` must be a single
+  number and each member a list of `NULL`/lists named by a known model.
+- [`remove_output()`](https://limnotrack.com/AEME/reference/remove_output.md)
+  and a new `Aeme` object share one empty-output form
+  (`list(n_members = 0L)`);
+  [`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md)
+  and
+  [`read_aeme_from_files()`](https://limnotrack.com/AEME/reference/read_aeme_from_files.md)
+  store every model key (`NULL` when absent), as
+  [`load_output()`](https://limnotrack.com/AEME/reference/load_output.md)
+  already did.
+- The `output` slot documentation now describes the member structure and
+  includes `simstrat_aed`.
 
 ### Choosing which GLM-AED sediment, flux and diagnostic output to keep
 
 GLM-AED writes far more than the standard variables: sediment
 temperature and heat flux, sediment-water fluxes (lake-wide and by
-sediment zone), sediment pools and AED diagnostics.
-[`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
-has always swept these into the `diag` / `sediment` sub-lists of the
-model output under their raw netCDF names; this release makes them easy
-to request, name and use, e.g. from `aemetools` sensitivity analysis and
-calibration, without carrying the whole payload in every ensemble
-member.
+sediment zone), sediment pools and AED diagnostics. This version makes
+them easy to request, name and use, e.g. from `aemetools` sensitivity
+analysis and calibration, without carrying the whole payload in every
+ensemble member.
+
+- **Behaviour change.**
+  [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md),
+  [`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md)
+  and
+  [`load_output()`](https://limnotrack.com/AEME/reference/load_output.md)
+  now read only the standard variables (`vars_sim` and the lake fluxes)
+  by default; the extra GLM-AED output has to be requested with
+  `extra_vars`. Previously every variable in `output.nc` was loaded and
+  stored on every run. Loading after a run is about four times faster by
+  default (0.6 s against 2.4 s in a test lake) and the stored output is
+  3.3 MB instead of 18 MB. Use `extra_vars = "all"` for the old
+  behaviour.
+  [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
+  and
+  [`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md),
+  which read a file you point them at, still read everything unless told
+  otherwise.
+
+- [`load_output()`](https://limnotrack.com/AEME/reference/load_output.md)
+  gains `return_type`. `"output"` returns the output as a list of
+  `aeme_output` objects, one per model, without storing it on the `Aeme`
+  object, so extra output can be explored without being kept alongside
+  the output already stored. It is read the same way as the stored
+  output (simulation window, daily means, unit conversions). The
+  default, `"aeme"`, is as before.
 
 - New dataset `glm_extra_vars`: a registry giving these variables AEME
   names (`SED_temp`, `SED_hflux`, `SED_ztemp`, `SED_Fsed_oxy`, … for
@@ -24,6 +301,7 @@ member.
   [`check_var_in_output()`](https://limnotrack.com/AEME/reference/check_var_in_output.md),
   [`check_aeme_vars()`](https://limnotrack.com/AEME/reference/check_aeme_vars.md)
   and `plot_*()`.
+
 - New `extra_vars` argument on
   [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md),
   [`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md),
@@ -31,24 +309,44 @@ member.
   [`read_model_outputs()`](https://limnotrack.com/AEME/reference/read_model_outputs.md)
   and
   [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
-  to choose which of those variables are read: `NULL` (default, as
-  before) reads all, `"none"` none, or a vector of names and/or the
-  keywords `"sediment"` / `"diag"`. Variables not requested are never
-  read from `output.nc`. In a test lake this cut the stored output from
-  18.9 MB to 3.5 MB per run, which adds up over an ensemble.
+  to choose which of those variables are read: `"none"` (the default for
+  the first three) reads none, `"all"` reads every variable in the file,
+  or give a vector of names and/or the keywords `"sediment"` / `"diag"`.
+  Variables not requested are never read from `output.nc`.
   [`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) and
   [`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md)
-  also now expose `keep_diag`.
+  also now expose `keep_diag` (default `TRUE`; `FALSE` drops the extras
+  even if requested).
+
 - New `sed_layers` argument to keep only some sediment layers of
   `SED_temp`, and `zone_summary` to add an area-weighted lake-wide
   series for each sediment-zone variable (`<name>_lake`, using the
   time-varying zone area `zarea`; zones with no area are ignored).
   Naming a series such as `"SED_Fsed_oxy_lake"` in `extra_vars` builds
   just that series.
+
 - [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) gains
   `zone` and `sed_layer` to subset sediment variables.
+
+- [`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
+  now draws sediment-zone variables (and any other variable with
+  dimensions beyond time and depth) as a line plot with one line per
+  zone and layer, one panel per model, instead of erroring;
+  [`plot_model_output()`](https://limnotrack.com/AEME/reference/plot_model_output.md)
+  accepts the AEME names in `glm_extra_vars` and both take `zone` and
+  `sed_layer`, so `plot_output(aeme, "SED_Fsed_oxy", zone = 1)` works
+  like any other variable. Axis labels come from the registry. The
+  base-graphics backend, and several variables in one call, still give a
+  clear error for these variables.
+
+- [`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
+  and `check_if_summary()` now find variables held in the `diag` /
+  `sediment` sub-lists (for example `SED_Fsed_oxy_lake`) rather than
+  treating them as missing.
+
 - [`get_output_vars()`](https://limnotrack.com/AEME/reference/get_output_vars.md)
   labels these variables from the registry.
+
 - Fixed
   [`check_var_in_output()`](https://limnotrack.com/AEME/reference/check_var_in_output.md)
   reporting variables held in the `diag` / `sediment` sub-lists as
@@ -170,6 +468,15 @@ member.
   ensemble is biased low even when it is reliable (about
   `(n - 1) * conf_int / (n + 1)` for `n` members); the documentation
   says how to read it.
+
+### GLM v4 outflow weir parameters
+
+- The `&outflow` block written for GLM v4 now includes `crest_width` (6)
+  and `crest_factor` (0.61), alongside `outflow_factor`, `seepage` and
+  `seepage_rate`. The same two values are set in the bundled `glm4.nml`
+  template.
+
+## AEME 0.4.0
 
 ### Parameter helpers moved from aemetools
 

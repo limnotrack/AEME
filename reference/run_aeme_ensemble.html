@@ -45,7 +45,7 @@ if it was not written the check cannot be made and the member is kept."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,7 +142,7 @@ if it was not written the check cannot be made and the member is kept.</p>
 <span>  timeout <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  drop_incomplete <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  keep_diag <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  extra_vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  extra_vars <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  sed_layers <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  zone_summary <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -208,17 +208,22 @@ well as members that errored. Default <code>TRUE</code>. <code>FALSE</code> keep
 <dt id="arg-keep-diag">keep_diag<a class="anchor" aria-label="anchor" href="#arg-keep-diag"></a></dt>
 <dd><p>logical; keep the <code>diag</code> (diagnostic/scalar) and
 <code>sediment</code> sub-lists of each model's output (variables with dimensions other
-than time or depth x time, keyed by raw model names). Default <code>TRUE</code>; set to
-<code>FALSE</code> to save memory.</p></dd>
+than time or depth x time, keyed by raw model names). Default <code>TRUE</code>, which
+keeps whatever was requested through <code>extra_vars</code> (nothing is requested by
+default, so by default there is nothing to keep). Set <code>FALSE</code> to drop the
+sub-lists even if they were requested.</p></dd>
 
 
 <dt id="arg-extra-vars">extra_vars<a class="anchor" aria-label="anchor" href="#arg-extra-vars"></a></dt>
 <dd><p>character; for GLM-AED, which sediment, flux and diagnostic
-variables beyond the standard set to read from <code>output.nc</code>. <code>NULL</code>
-(default) reads all of them. <code>"none"</code> reads none. Otherwise AEME names from
-<a href="glm_extra_vars.html">glm_extra_vars</a> (e.g. <code>"SED_temp"</code>), raw netCDF names, and/or the keywords
-<code>"sediment"</code> / <code>"diag"</code>. Unrequested variables are never read, which keeps
-ensemble output small. See <code><a href="read_glm_output.html">read_glm_output()</a></code>.</p></dd>
+variables beyond the standard set to read from <code>output.nc</code>. Default <code>"none"</code>:
+only the standard variables (<code>vars_sim</code> and the lake fluxes) are read, so
+nothing extra is loaded or stored unless asked for. Otherwise AEME names from
+<a href="glm_extra_vars.html">glm_extra_vars</a> (e.g. <code>"SED_temp"</code>), raw netCDF names, the keywords
+<code>"sediment"</code> / <code>"diag"</code> (every variable in that sub-list), or <code>"all"</code> for
+every variable in the file (this was the behaviour before extra output had to
+be requested). Unrequested variables are never read, which keeps loading fast
+and ensemble output small. See <code><a href="read_glm_output.html">read_glm_output()</a></code>.</p></dd>
 
 
 <dt id="arg-sed-layers">sed_layers<a class="anchor" aria-label="anchor" href="#arg-sed-layers"></a></dt>

@@ -23,7 +23,9 @@ list_mod_obs_vars(aeme, model, ens_n = 1)
 - ens_n:
 
   numeric; ensemble number to allocate to model output which is loaded.
-  Defaults to 1.
+  Defaults to 1. A run with `ens_n = 1` clears any existing output; a
+  run with another number adds (or replaces) that member and keeps the
+  rest.
 
 ## Value
 
@@ -51,7 +53,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [27ms]
+#> ✔ Estimating surface water temperature [26ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -61,6 +63,7 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #> ── Building GLM-AED for lake wainamu ──
 #> 
 #> ℹ Aligned AED sediment zones to GLM: 2 zones (all active).
+#> ! Fitted weir crest (23.49 m) is below the initial lake level; using 23.64 m.
 #> ℹ Setting up AED aed_sed_const2d sediment zones: 2
 #> ℹ Tier 2: zone-median summer concentrations used for adjustment:
 #> ┌─────┬───────────┬────────────┬────────────┬────────────┐
@@ -91,10 +94,10 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
 path = path, model_controls = model_controls,
 parallel = TRUE, ncores = 2L)
-#> ℹ Running models in parallel... [2026-10-14 00:26:25]
-#> ✔ Model run complete! [2026-10-14 00:26:28]
-#> ℹ Reading models in parallel...[2026-10-14 00:26:28]
-#> ✔ Model reading complete! [2026-10-14 00:26:35]
+#> ℹ Running models in parallel... [2026-10-28 23:31:04]
+#> ✔ Model run complete! [2026-10-28 23:31:07]
+#> ℹ Reading models in parallel...[2026-10-28 23:31:07]
+#> ✔ Model reading complete! [2026-10-28 23:31:09]
 aeme |> 
   list_mod_obs_vars()
 #>       Cyanobacteria    Dissolved oxygen            Salinity   Water temperature 

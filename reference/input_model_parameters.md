@@ -5,7 +5,7 @@ Input model parameters
 ## Usage
 
 ``` r
-input_model_parameters(aeme, model, param, path)
+input_model_parameters(aeme, model, param, path, derive_totals = TRUE)
 ```
 
 ## Arguments
@@ -34,6 +34,14 @@ input_model_parameters(aeme, model, param, path)
 
   character; directory where input files are located. Defaults to the
   path stored in `aeme`, or the current working directory if not set.
+
+- derive_totals:
+
+  logical; if `TRUE` (default), the `aed_totals` block of the GLM-AED
+  `aed.nml` is re-derived from the phytoplankton parameters when
+  `aed.nml` or `aed_phyto_pars.csv` parameters are applied, overwriting
+  any manual edits to that block. Set `FALSE` to leave `aed_totals` as
+  it is.
 
 ## Value
 

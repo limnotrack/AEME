@@ -116,8 +116,8 @@ one call, without touching the `Aeme` object at all.
 out <- run_model_test("glm_aed", path_glm,
                       param_overrides = list(Kw = 0.5),
                       tgt_vars = "HYD_temp")
-#> ℹ GLM-AED running... [2026-10-14 01:04:34]
-#> ✔ GLM-AED running... [2026-10-14 01:04:34] [473ms]
+#> ℹ GLM-AED running... [2026-10-29 00:05:49]
+#> ✔ GLM-AED running... [2026-10-29 00:05:49] [486ms]
 #> 
 ```
 
@@ -161,9 +161,9 @@ dim(out$HYD_temp)
 #> [1]  42 335
 out$HYD_temp[1:3, 1:3]
 #>         [,1]    [,2]    [,3]
-#> [1,] 10.2704 10.4809 10.6871
-#> [2,] 10.2597 10.4792 10.6871
-#> [3,] 10.1990 10.4290 10.6871
+#> [1,] 10.2634 10.4809 10.6802
+#> [2,] 10.2526 10.4714 10.6785
+#> [3,] 10.1917 10.4126 10.6427
 ```
 
 `out$HYD_temp` is a `[depth x time]` matrix, matching what
@@ -183,17 +183,17 @@ results <- lapply(kw_values, function(kw) {
   run_model_test("glm_aed", path_glm, param_overrides = list(Kw = kw),
                  tgt_vars = "HYD_temp")
 })
-#> ℹ GLM-AED running... [2026-10-14 01:04:35]
-#> ✔ GLM-AED running... [2026-10-14 01:04:36] [468ms]
+#> ℹ GLM-AED running... [2026-10-29 00:05:50]
+#> ✔ GLM-AED running... [2026-10-29 00:05:51] [471ms]
 #> 
-#> ℹ GLM-AED running... [2026-10-14 01:04:37]
-#> ✔ GLM-AED running... [2026-10-14 01:04:37] [461ms]
+#> ℹ GLM-AED running... [2026-10-29 00:05:52]
+#> ✔ GLM-AED running... [2026-10-29 00:05:52] [469ms]
 #> 
-#> ℹ GLM-AED running... [2026-10-14 01:04:38]
-#> ✔ GLM-AED running... [2026-10-14 01:04:38] [452ms]
+#> ℹ GLM-AED running... [2026-10-29 00:05:53]
+#> ✔ GLM-AED running... [2026-10-29 00:05:54] [488ms]
 #> 
-#> ℹ GLM-AED running... [2026-10-14 01:04:39]
-#> ✔ GLM-AED running... [2026-10-14 01:04:40] [465ms]
+#> ℹ GLM-AED running... [2026-10-29 00:05:54]
+#> ✔ GLM-AED running... [2026-10-29 00:05:55] [479ms]
 #> 
 names(results) <- paste0("Kw_", kw_values)
 ```

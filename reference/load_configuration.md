@@ -17,6 +17,7 @@ load_configuration(
   calc_wlev = TRUE,
   use_aeme = FALSE,
   coeffs = NULL,
+  glm_weir = TRUE,
   hum_type = 3,
   est_swr_hr = TRUE
 )
@@ -85,6 +86,21 @@ load_configuration(
   T\_{air}\\ (Stefan & Preud'homme, 1993,
   [doi:10.1111/j.1752-1688.1993.tb01502.x](https://doi.org/10.1111/j.1752-1688.1993.tb01502.x)
   ).
+
+- glm_weir:
+
+  logical or list; for `"glm_aed"`, let GLM spill through its own weir
+  (`morphometry/crest_elev`, `outflow/crest_width`,
+  `outflow/crest_factor`) instead of reading the water-balance (`wbal`)
+  outflow file. The weir is fitted to the observed `"outflow"` and lake
+  level when both overlap (that outflow is then replaced by the weir),
+  otherwise taken from the fitted water-balance `C` and `h_inv`. When
+  fitted from observations, the water-balance `C` / `h_inv` for the
+  `glm_aed` family (shared with `dy_cd`) are set to the equivalent
+  values so the water balance and GLM agree. Other outflows are kept as
+  GLM outlets. A list may set `crest_width` (m, default 6) and
+  `interval` (search range for `crest_elev`). Default: `TRUE`; `FALSE`
+  restores the `wbal` outflow file.
 
 - hum_type:
 

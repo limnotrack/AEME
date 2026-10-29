@@ -1,6 +1,6 @@
 # Add model output to Aeme object
 
-Add model output to Aeme object
+Stores `out` as the next ensemble member of the `output` slot.
 
 ## Usage
 

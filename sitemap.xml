@@ -39,6 +39,8 @@
 <url><loc>https://limnotrack.com/AEME/reference/aed_succession_index.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/AEME-package.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/Aeme.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/AemeSummary-accessors.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/AemeSummary.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/aeme_constructor.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/aeme_parameters.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/aeme_parameters_bgc.html</loc></url>
@@ -50,8 +52,10 @@
 <url><loc>https://limnotrack.com/AEME/reference/bardsley.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/bias.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/build_aeme.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/calc_aed_totals_balance.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/calc_humidity_vars.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/calc_lake_vol.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/calc_seasonal_profiles.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/calc_sed_temp.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/calc_tli3.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/calc_tli4.html</loc></url>
@@ -80,6 +84,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/convert_do.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/d2.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/diag_aeme.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/diag_glm_mass_balance.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/diag_heat_budget.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/diag_nutrient_budget.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/diag_water_balance.html</loc></url>
@@ -151,6 +156,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/index.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/inflows-set.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/inflows.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/inflow_param.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/input-set.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/input.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/input_model_parameters.html</loc></url>
@@ -163,6 +169,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/install_simstrat_aed2.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/is_aeme_output.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/is_aeme_output_raw.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/is_aeme_summary.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/is_model_error.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/is_strat.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/is_zone_ratio.html</loc></url>
@@ -207,8 +214,10 @@
 <url><loc>https://limnotrack.com/AEME/reference/param_names.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/pbias.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot-Aeme-method.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/plot-AemeSummary-method.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot.aeme_grouped_var.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot.kw_regime.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/plot_aed_succession.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot_assess.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot_car.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot_ensemble.html</loc></url>
@@ -249,6 +258,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/read_aeme_parquet.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/read_dy_output.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/read_dy_wlev.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/read_glm_mass_balance.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/read_glm_output.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/read_glm_wlev.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/read_gotm_flux_output.html</loc></url>
@@ -288,6 +298,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/set_dy_cd_outflows.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/set_dy_cd_param.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/set_glm_aed_models.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/set_glm_balance_groups.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/set_glm_inflows.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/set_glm_init.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/set_glm_outflows.html</loc></url>
@@ -314,6 +325,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/set_vars_sim.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/set_wbal_param.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/show-aeme-method.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/show-AemeSummary-method.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/simstrat_aed2_exe_path.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/simstrat_aed2_parameters.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/simstrat_aed2_parameter_library.html</loc></url>
@@ -323,6 +335,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/standardise_met.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/suggest_kw_regime.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/suggest_sim_period.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/summarise_aeme.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/summarise_loads.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/summarise_obs.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/summary-aeme-method.html</loc></url>
@@ -332,9 +345,11 @@
 <url><loc>https://limnotrack.com/AEME/reference/toggle_models.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/update_init.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/upgrade_aeme.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/view_aed_modules.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/water_balance-set.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/water_balance.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/write_aeme_parquet.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/write_aeme_summary.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/write_aeme_to_files.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/write_configuration.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/write_nml.html</loc></url>

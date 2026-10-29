@@ -294,12 +294,12 @@ res_temp <- assess_spin_up(
 #> ℹ Check raw data or unit conversion for this variable.
 res_temp
 #>  spin_up      var       spread        drift    spread_cv     drift_cv
-#>        0 HYD_temp 3.3184012386 0.9501000000 2.988457e-01 7.881660e-02
-#>       30 HYD_temp 0.1615845790 0.1531871212 1.355791e-02 1.276128e-02
-#>       90 HYD_temp 0.0006126592 0.0012815789 5.091756e-05 1.065402e-04
-#>      120 HYD_temp 0.0005833996 0.0006037500 4.857639e-05 5.038226e-05
-#>      150 HYD_temp 0.0009563539 0.0007857143 7.960137e-05 6.541174e-05
-#>      180 HYD_temp 0.0002557307 0.0000000000 2.132555e-05 0.000000e+00
+#>        0 HYD_temp 3.360604e+00 0.8910777778 3.036652e-01 7.450255e-02
+#>       30 HYD_temp 1.698606e-01 0.1133242063 1.436752e-02 9.498547e-03
+#>       90 HYD_temp 9.572997e-04 0.0022252688 8.018274e-05 1.863443e-04
+#>      120 HYD_temp 1.753144e-04 0.0013822222 1.468375e-05 1.156984e-04
+#>      150 HYD_temp 1.323665e-04 0.0001047619 1.109524e-05 8.779981e-06
+#>      180 HYD_temp 2.474358e-05 0.0000000000 2.070615e-06 0.000000e+00
 #> HYD_temp  overall 
 #>       30       30
 ```
@@ -345,12 +345,12 @@ The return value is a list of class `aeme_spin_up`:
 
 res_temp$summary
 #>   spin_up      var       spread        drift    spread_cv     drift_cv
-#> 1       0 HYD_temp 3.3184012386 0.9501000000 2.988457e-01 7.881660e-02
-#> 2      30 HYD_temp 0.1615845790 0.1531871212 1.355791e-02 1.276128e-02
-#> 3      90 HYD_temp 0.0006126592 0.0012815789 5.091756e-05 1.065402e-04
-#> 4     120 HYD_temp 0.0005833996 0.0006037500 4.857639e-05 5.038226e-05
-#> 5     150 HYD_temp 0.0009563539 0.0007857143 7.960137e-05 6.541174e-05
-#> 6     180 HYD_temp 0.0002557307 0.0000000000 2.132555e-05 0.000000e+00
+#> 1       0 HYD_temp 3.360604e+00 0.8910777778 3.036652e-01 7.450255e-02
+#> 2      30 HYD_temp 1.698606e-01 0.1133242063 1.436752e-02 9.498547e-03
+#> 3      90 HYD_temp 9.572997e-04 0.0022252688 8.018274e-05 1.863443e-04
+#> 4     120 HYD_temp 1.753144e-04 0.0013822222 1.468375e-05 1.156984e-04
+#> 5     150 HYD_temp 1.323665e-04 0.0001047619 1.109524e-05 8.779981e-06
+#> 6     180 HYD_temp 2.474358e-05 0.0000000000 2.070615e-06 0.000000e+00
 res_temp$recommended
 #> HYD_temp  overall 
 #>       30       30
@@ -485,27 +485,21 @@ res_bgc <- assess_spin_up(
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
 res_bgc$summary
-#>   spin_up     var       spread       drift   spread_cv  drift_cv
-#> 1       0 CHM_oxy 4.170362e-03 6.866600000 0.321057263 0.6384863
-#> 2     365 CHM_oxy 1.140863e-02 0.000000000 0.001097791 0.0000000
-#> 3       0 NIT_amm 1.924501e-05 0.003455556 0.001950508 2.1654098
-#> 4     365 NIT_amm 4.811252e-05 0.000000000 0.016154334 0.0000000
-#> 5       0 NIT_nit 0.000000e+00 0.002111111          NA 1.0000000
-#> 6     365 NIT_nit 1.099715e-05 0.000000000 0.008974044 0.0000000
-#> 7       0 PHS_frp 0.000000e+00 0.000200000 0.000000000 1.0000000
-#> 8     365 PHS_frp 0.000000e+00 0.000000000 0.000000000 0.0000000
+#>   spin_up     var       spread drift   spread_cv drift_cv
+#> 1     365 CHM_oxy 1.626384e-02     0 0.001577701        0
+#> 2     365 NIT_amm 6.259502e-05     0 0.019009885        0
+#> 3     365 NIT_nit 3.235052e-05     0 0.023964097        0
+#> 4     365 PHS_frp 0.000000e+00     0 0.000000000        0
 res_bgc$recommended
 #> CHM_oxy PHS_frp NIT_nit NIT_amm overall 
-#>     365       0     365       0     365
+#>     365     365     365     365     365
 ```
 
 ``` r
 
 plot_spin_up(res_bgc)
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_line()`).
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_point()`).
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
 ```
 
 ![](initial-conditions-and-spin-up_files/figure-html/plot-oxy-1.png)

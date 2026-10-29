@@ -89,15 +89,12 @@ list_simstrat_aed_versions()
 list_glm_versions()
 #> ⠙ 3 items, page 1 | 3ms
 #>   package_release      os glm_version
-#> 1          v0.4.0   linux       3.3.5
-#> 4          v0.4.0   macos       3.3.5
-#> 7          v0.4.0 windows       3.3.5
-#> 3          v0.4.0   linux       4.0.0
-#> 6          v0.4.0   macos       4.0.0
-#> 9          v0.4.0 windows       4.0.0
-#> 2          v0.4.0   linux      4.0.0+
-#> 5          v0.4.0   macos      4.0.0+
-#> 8          v0.4.0 windows      4.0.0+
+#> 2          v0.4.0   linux       4.0.0
+#> 4          v0.4.0   macos       4.0.0
+#> 6          v0.4.0 windows       4.0.0
+#> 1          v0.4.0   linux      4.0.0+
+#> 3          v0.4.0   macos      4.0.0+
+#> 5          v0.4.0 windows      4.0.0+
 ```
 
 ``` r

@@ -9,7 +9,7 @@ variables."><meta property="og:image" content="https://limnotrack.com/AEME/logo.
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,7 +91,9 @@ variables.</p>
 <span>  ylim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cumulative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  facet <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  backend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, <span class="st">"base"</span><span class="op">)</span></span>
+<span>  backend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, <span class="st">"base"</span><span class="op">)</span>,</span>
+<span>  zone <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sed_layer <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -165,11 +167,26 @@ This only applies to variables without a depth component.</p></dd>
 <dd><p>character; plotting backend to use. Options are "ggplot2" and
 "base". Default is "ggplot2".</p></dd>
 
+
+<dt id="arg-zone-sed-layer">zone, sed_layer<a class="anchor" aria-label="anchor" href="#arg-zone-sed-layer"></a></dt>
+<dd><p>integer; for variables with an <code>nzones</code> and/or
+<code>sed_layers</code> dimension (GLM-AED sediment output, e.g. <code>"SED_Fsed_oxy"</code>,
+<code>"SED_temp"</code>), plot only these sediment zones and/or sediment layers. <code>NULL</code>
+(default) plots all. Ignored for other variables. See <code><a href="get_var.html">get_var()</a></code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>list of plots for z-dimensional variables or a ggplot2 object for 1-d
-variables.</p>
+variables and for grouped (e.g. sediment zone) variables.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Variables with dimensions other than time or depth x time (GLM-AED sediment
+variables, see <a href="glm_extra_vars.html">glm_extra_vars</a>) are drawn as a line plot with one line per
+zone and/or sediment layer, and one panel per model if several models have the
+variable. This needs the <code>"ggplot2"</code> backend and a single <code>var_sim</code>;
+observations are not added.</p>
     </div>
 
     <div class="section level2">

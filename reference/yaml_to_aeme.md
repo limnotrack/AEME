@@ -46,7 +46,7 @@ aeme_yaml <- system.file("extdata/lake/aeme.yaml", package = "AEME")
 aeme <- yaml_to_aeme(file = aeme_yaml)
 aeme
 #> 
-#> ── AEME v0.4.0 ─────────────────────────────────────────────────────────────────
+#> ── AEME v0.4.1 ─────────────────────────────────────────────────────────────────
 #> 
 #> ── Lake ──
 #> 

@@ -74,6 +74,20 @@ provide a brief overview of the key modules relevant for GLM-AED.
 
 AED biogeochemical modules available in AEME. {.table}
 
+There is a work-in-progress AED module dependency diagram available as a
+html diagram. This can be viewed in R with the
+[`view_aed_modules()`](https://limnotrack.com/AEME/reference/view_aed_modules.md)
+function, which opens the diagram in your RStudio Viewer pane or default
+web browser. It is embedded below in an iframe so its styling does not
+affect this article.
+
+#### View AED modules
+
+``` r
+
+view_aed_modules()
+```
+
 #### GLM-AED Parameter Library
 
 The `glm_aed_parameter_library` dataset provides a comprehensive list of
@@ -179,6 +193,12 @@ aeme
     #> • SIMSTRAT-AED: 0                                                               
     #> • Variables: 0                                                                  
     #> None                                                                            
+    #> Warning message:                                                                
+    #> ! This <Aeme> object was built with AEME 0.4.0, but the installed version is    
+    #>   0.4.1.                                                                        
+    #> ℹ Consider rebuilding with `build_aeme()` if you encounter unexpected           
+    #>   behaviour.                                                                    
+    #> This warning is displayed once per session.                                     
 
 ------------------------------------------------------------------------
 
@@ -790,9 +810,61 @@ Simulated total chlorophyll-a (µg L⁻¹) time series.
 
 GLM-AED writes much more than the variables listed in `model_controls`:
 sediment temperature and heat flux, sediment–water fluxes (lake-wide and
-for each sediment zone), sediment pools and AED diagnostics. AEME reads
-all of it from `output.nc`, so nothing needs to be switched on before
-the run. It is stored in the model output beside the standard variables:
+for each sediment zone), sediment pools and AED diagnostics. They are
+all in `output.nc`, but
+[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) only
+loads the standard variables (those in `model_controls`, plus the lake
+fluxes) so that loading stays fast and the `aeme` object small. The
+extra output is loaded when you ask for it with `extra_vars`.
+
+#### Requesting the variables
+
+[`load_output()`](https://limnotrack.com/AEME/reference/load_output.md)
+reads the output of a model that has already been run, so extra
+variables can be added without running the model again. Here we ask for
+every sediment variable:
+
+``` r
+
+aeme_extra <- load_output(
+  aeme       = aeme,
+  model      = model,
+  path       = path,
+  extra_vars = "sediment"
+)
+```
+
+[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) takes
+the same `extra_vars` argument, to load them as part of the run. To look
+at extra output without storing it on the `Aeme` object, use
+`return_type = "output"`. This returns a list with one `aeme_output` per
+model and leaves `aeme` as it was:
+
+``` r
+
+sed_out <- load_output(
+  aeme        = aeme,
+  model       = model,
+  path        = path,
+  extra_vars  = "sediment",
+  return_type = "output"
+)
+sed_out$glm_aed
+#> <aeme_output> model: glm_aed
+#>   335 dates (2020-07-31 to 2021-06-30)
+#>   46 variables: LKE_lvlwtr, LKE_Qe, LKE_Qh, LKE_Qlw, LKE_Qsw, LKE_vol, LKE_evpvol, LKE_evpflx, LKE_A0, LKE_evprte, LKE_inflow, LKE_overflow, LKE_outflow, LKE_outftot, LKE_precip, LKE_pcpvol, HYD_surft, z, HYD_temp, HYD_dens, HYD_strat, HYD_thmcln, CHM_salt, CHM_oxy, CHM_oxycln, RAD_par, RAD_extc, PHS_frp, PHS_dop, PHS_pop, PHS_pip, PHS_tp, NIT_amm, NIT_nit, NIT_don, NIT_pon, NIT_tn, CAR_doc, CAR_poc, SIL_rsi, PHY_cyano, PHY_green, PHY_diatom, PHY_tchla, NCS_ss1, NCS_ss2
+#>   34 sediment variables: zarea, sed_temp, sed_heatflux, zone_ztemp, sed_layer_depth, SDF_Fsed_oxy_Z, SDF_Fsed_amm_Z, SDF_Fsed_nit_Z, SDF_Fsed_frp_Z, NCS_swi_Z, NCS_swi_dz_Z, NCS_resus_Z, NCS_d_taub_Z, OXY_oxy_dsf_Z, OXY_oxy_atm_Z, SIL_dsf_rsi_Z, NIT_amm_dsf_Z, NIT_nit_dsf_Z, PHS_frp_dsf_Z, OGM_toc_sed_Z, OGM_ton_sed_Z, OGM_top_sed_Z, OGM_poc_swi_Z, OGM_doc_swi_Z, OGM_pon_swi_Z, OGM_don_swi_Z, OGM_pop_swi_Z, OGM_dop_swi_Z, OGM_poc_res_Z, OGM_pon_res_Z, OGM_pop_res_Z, PHY_phy_swi_c_Z, PHY_phy_swi_n_Z, PHY_phy_swi_p_Z
+```
+
+Model output of this kind can be given straight to
+[`plot_model_output()`](https://limnotrack.com/AEME/reference/plot_model_output.md),
+for example `plot_model_output(sed_out$glm_aed, "SED_Fsed_oxy")`, but
+not to functions that need an `Aeme` object, such as
+[`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) and
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md).
+The rest of this section stores the variables on the object, so that
+[`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) works.
+In the output the extra variables sit beside the standard ones:
 
 - ordinary `(time)` and `(depth, time)` variables sit alongside
   `HYD_temp` and the rest;
@@ -800,14 +872,12 @@ the run. It is stored in the model output beside the standard variables:
   kept as labelled `aeme_grouped_var` objects in the `sediment` and
   `diag` sub-lists, so a zone is never mistaken for a depth.
 
-#### Finding the variables
-
 [`get_output_vars()`](https://limnotrack.com/AEME/reference/get_output_vars.md)
-lists what is available. The `group` argument picks the sub-list:
+lists what was loaded. The `group` argument picks the sub-list:
 
 ``` r
 
-get_output_vars(aeme, model = "glm_aed", group = "sediment") |>
+get_output_vars(aeme_extra, model = "glm_aed", group = "sediment") |>
   head(12)
 #>                                     sediment zone area 
 #>                                                "zarea" 
@@ -836,8 +906,9 @@ get_output_vars(aeme, model = "glm_aed", group = "sediment") |>
 ```
 
 These variables are stored under their raw GLM-AED netCDF names. The
-`glm_extra_vars` table gives each one an AEME name, a label and units,
-and either name works anywhere AEME looks up a variable
+`glm_extra_vars` table lists what can be requested. It gives each
+variable an AEME name, a label and units, and either name works in
+`extra_vars` and anywhere AEME looks up a variable
 ([`get_var()`](https://limnotrack.com/AEME/reference/get_var.md),
 [`check_var_in_output()`](https://limnotrack.com/AEME/reference/check_var_in_output.md),
 …). `SED_*` are the sediment-zone variables and `SEDL_*` the matching
@@ -882,26 +953,21 @@ glm_extra_vars |>
 `SED_temp` is the temperature of the sediment layers beneath each zone.
 It has three dimensions (sediment layer, zone and time), so
 [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md) returns
-it in long format, one row per layer, zone and date. Use `zone` and
-`sed_layer` to subset it. Zones follow the GLM order (1 is the deepest)
-and layer 1 is the shallowest. It is only written when GLM’s sediment
-heat model is on (`sed_heat_model = 2` in the GLM nml). If your run does
-not have it, the chunks below that use it are skipped.
+it in long format, one row per layer, zone and date.
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
+draws it with one line per zone and layer. Use `zone` and `sed_layer`,
+in either function, to choose which. Zones follow the GLM order (1 is
+the deepest) and layer 1 is the shallowest. It is only written when
+GLM’s sediment heat model is on (`sed_heat_model = 2` in the GLM nml).
+If your run does not have it, the chunks below that use it are skipped.
 
 ``` r
 
-sed_temp <- get_var(aeme, model = "glm_aed", var_sim = "SED_temp")
+sed_temp <- get_var(aeme_extra, model = "glm_aed", var_sim = "SED_temp")
 n_layer  <- max(sed_temp$sed_layers)
 
-sed_temp |>
-  dplyr::filter(sed_layers %in% c(1, n_layer)) |>
-  dplyr::mutate(layer = ifelse(sed_layers == 1, "Top layer", "Bottom layer"),
-                zone  = factor(nzones)) |>
-  ggplot(aes(Date, value, colour = zone)) +
-  geom_line() +
-  facet_wrap(~layer, ncol = 1) +
-  labs(x = NULL, y = "Sediment temperature (°C)", colour = "Zone") +
-  theme_bw()
+# the top and bottom sediment layer of each zone
+plot_output(aeme_extra, var_sim = "SED_temp", sed_layer = c(1, n_layer))
 ```
 
 ![Sediment temperature (°C) in the top and bottom sediment layer of each
@@ -912,35 +978,32 @@ zone.
 
 A zone that has no area in GLM’s output for the simulated period is
 returned as `NA`, so it is missing from the plot above (zone 3 in this
-lake). The same call with `zone` and `sed_layer` returns a single
+lake). [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md)
+takes the same `zone` and `sed_layer` arguments and returns a single
 series, for example the top layer of the deepest zone:
 
 ``` r
 
-get_var(aeme, model = "glm_aed", var_sim = "SED_temp",
+get_var(aeme_extra, model = "glm_aed", var_sim = "SED_temp",
         zone = 1, sed_layer = 1) |>
   head(3)
 #>   sed_layers nzones       Date    value  var_sim   Model
-#> 1          1      1 2020-08-01 9.933457 SED_temp GLM-AED
-#> 2          1      1 2020-08-02 9.887445 SED_temp GLM-AED
-#> 3          1      1 2020-08-03 9.846911 SED_temp GLM-AED
+#> 1          1      1 2020-08-01 9.921478 SED_temp GLM-AED
+#> 2          1      1 2020-08-02 9.857790 SED_temp GLM-AED
+#> 3          1      1 2020-08-03 9.846822 SED_temp GLM-AED
 ```
 
 #### Sediment–water fluxes by zone
 
 Fluxes across the sediment–water interface are written for each zone as
 well as for the whole lake. Zone variables (`SED_Fsed_oxy`,
-`SED_Fsed_amm`, …) have a `nzones` column:
+`SED_Fsed_amm`, …) have a `nzones` column, and are plotted with
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
+like any other variable, with one line per zone:
 
 ``` r
 
-get_var(aeme, model = "glm_aed", var_sim = "SED_Fsed_oxy") |>
-  dplyr::mutate(zone = factor(nzones)) |>
-  ggplot(aes(Date, value, colour = zone)) +
-  geom_line() +
-  labs(x = NULL, y = "Sediment oxygen flux (mmol O2 m-2 d-1)",
-       colour = "Zone") +
-  theme_bw()
+plot_output(aeme_extra, var_sim = "SED_Fsed_oxy")
 ```
 
 ![Simulated sediment oxygen flux (mmol O2 m⁻² d⁻¹) in each sediment
@@ -950,22 +1013,26 @@ Simulated sediment oxygen flux (mmol O2 m⁻² d⁻¹) in each sediment zone.
 
 #### Choosing what to keep
 
-Keeping every sediment and diagnostic variable is convenient for
-exploring a single run, but it is wasteful when the model is run many
-times, as in a sensitivity analysis, calibration or ensemble. Each run
-stores several MB of extra output, and most of it is never looked at.
-[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md) (and
-[`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md),
-[`load_output()`](https://limnotrack.com/AEME/reference/load_output.md))
+Loading every variable in the file (`"all"`) is convenient for exploring
+a single run, but it is wasteful when the model is run many times, as in
+a sensitivity analysis, calibration or ensemble: in this lake it takes
+about four times as long to load and five times the memory, and most of
+it is never looked at. The sediment variables on their own are a small
+part of that, but a calibration usually needs only one or two series.
+That is why nothing extra is loaded by default.
+[`run_aeme()`](https://limnotrack.com/AEME/reference/run_aeme.md),
+[`run_aeme_ensemble()`](https://limnotrack.com/AEME/reference/run_aeme_ensemble.md)
+and
+[`load_output()`](https://limnotrack.com/AEME/reference/load_output.md)
 take an `extra_vars` argument to choose what is read from `output.nc`.
 Variables that are not requested are never read.
 
-| `extra_vars`                    | What is kept                              |
+| `extra_vars`                    | What is loaded                            |
 |---------------------------------|-------------------------------------------|
-| `NULL` (default)                | Everything, as above                      |
-| `"none"`                        | No extra variables, just the standard set |
+| `"none"` (default)              | No extra variables, just the standard set |
 | `c("SED_temp", "SED_Fsed_oxy")` | Only these. AEME or raw netCDF names      |
 | `"sediment"` or `"diag"`        | Every variable stored in that sub-list    |
+| `"all"`                         | Every variable in `output.nc`             |
 
 Two further arguments reduce what is kept for the variables you do
 select. `sed_layers` keeps only some sediment layers of `SED_temp`, and
@@ -975,8 +1042,10 @@ variable. The series is the mean over zones, weighted by the
 
 ``` r
 
-aeme_sel <- run_aeme(
+aeme_sel <- load_output(
   aeme         = aeme,
+  model        = model,
+  path         = path,
   extra_vars   = c("SED_temp", "SED_Fsed_oxy", "SED_Fsed_amm"),
   sed_layers   = 1:3,
   zone_summary = TRUE
@@ -985,12 +1054,13 @@ aeme_sel <- run_aeme(
 size_mb <- function(x) {
   format(object.size(output(x)$ens_001$glm_aed), units = "MB")
 }
-c(all_extras = size_mb(aeme), selected = size_mb(aeme_sel))
-#> all_extras   selected 
-#>    "18 Mb"   "3.4 Mb"
+c(default = size_mb(aeme), all_sediment = size_mb(aeme_extra),
+  selected = size_mb(aeme_sel))
+#>      default all_sediment     selected 
+#>     "3.3 Mb"     "3.8 Mb"     "3.4 Mb"
 ```
 
-The standard output is identical between the two runs. Only the extras
+The standard output is identical whatever is requested. Only the extras
 differ.
 
 ``` r
@@ -1009,11 +1079,7 @@ demand:
 
 ``` r
 
-get_var(aeme_sel, model = "glm_aed", var_sim = "SED_Fsed_oxy_lake") |>
-  ggplot(aes(Date, value)) +
-  geom_line() +
-  labs(x = NULL, y = "Sediment oxygen flux (mmol O2 m-2 d-1)") +
-  theme_bw()
+plot_output(aeme_sel, var_sim = "SED_Fsed_oxy_lake")
 ```
 
 ![Zone-area weighted lake-wide sediment oxygen flux (mmol O2 m⁻²
@@ -1064,39 +1130,39 @@ for each simulated variable:
 skill <- assess_aeme(aeme = aeme, model = model)
 skill
 #>      Model           name_text   var_aeme      bias      mae     rmse   nmae
-#> 1  GLM-AED Dissolved organic C    CAR_doc -2.70e+00 2.70e+00 2.75e+00 0.9940
-#> 2  GLM-AED    Dissolved oxygen    CHM_oxy  1.13e+00 1.26e+00 1.93e+00 0.1830
-#> 3  GLM-AED      Oxycline depth CHM_oxycln  1.89e+00 1.89e+00 2.26e+00 0.2100
+#> 1  GLM-AED Dissolved organic C    CAR_doc -2.66e+00 2.66e+00 2.71e+00 0.9800
+#> 2  GLM-AED    Dissolved oxygen    CHM_oxy  1.07e+00 1.21e+00 1.86e+00 0.1760
+#> 3  GLM-AED      Oxycline depth CHM_oxycln  1.95e+00 1.95e+00 2.27e+00 0.2170
 #> 4  GLM-AED            Salinity   CHM_salt -1.17e-01 1.17e-01 1.17e-01 1.0000
 #> 5  GLM-AED          Stratified  HYD_strat  0.00e+00 2.00e-01 4.47e-01 0.2860
-#> 6  GLM-AED   Water temperature   HYD_temp -2.30e-01 8.20e-01 1.13e+00 0.0455
-#> 7  GLM-AED   Thermocline depth HYD_thmcln -2.54e+00 3.21e+00 4.60e+00 0.3340
-#> 8  GLM-AED         Water level LKE_lvlwtr -3.60e-02 1.29e-01 1.67e-01 0.0055
-#> 9  GLM-AED              Volume    LKE_vol -5.31e+03 1.94e+04 2.49e+04 0.0177
-#> 10 GLM-AED Ammoniacal nitrogen    NIT_amm  3.16e-03 1.23e-02 2.66e-02 1.0400
-#> 11 GLM-AED             Nitrate    NIT_nit  2.98e-03 3.24e-03 5.07e-03 2.0300
-#> 12 GLM-AED      Total nitrogen     NIT_tn -1.43e-01 1.43e-01 1.49e-01 0.7560
-#> 13 GLM-AED           Phosphate    PHS_frp -1.23e-03 1.46e-03 1.64e-03 0.8110
-#> 14 GLM-AED    Total phosphorus     PHS_tp -8.22e-03 8.30e-03 1.01e-02 0.7350
-#> 15 GLM-AED       Cyanobacteria  PHY_cyano -2.69e-02 3.13e-02 6.25e-02 0.8360
-#> 16 GLM-AED Total chlorophyll a  PHY_tchla  2.12e-01 6.50e+00 7.79e+00 0.8990
-#>          nse     kge     d2       r      rs        B   n obs_na sim_na
-#> 1   -33.0000 -1.0400 0.2120 -0.4920 -0.3940 0.006910  10      0      0
-#> 2     0.6340  0.6790 0.8810  0.8810  0.9140 0.568000 125      0      0
-#> 3    -0.3510  0.5760 0.7090  0.7700  0.8260 0.252000  24      0      0
-#> 4  -329.0000      NA 0.0827      NA      NA 0.000000 125      0      0
-#> 5     0.0476  0.5240 0.7520  0.5240  0.5240 0.141000  10      0      0
-#> 6     0.8690  0.9350 0.9670  0.9390  0.9240 0.779000 125      0      0
-#> 7    -1.4300  0.2670 0.6240  0.4910  0.4160 0.070300  10      0      0
-#> 8    -7.1000 -0.8960 0.3260  0.0434 -0.0732 0.000206   8      0      0
-#> 9    -6.9900 -0.8790 0.3260  0.0394 -0.0732 0.000172   8      0      0
-#> 10   -0.9150  0.2090 0.6060  0.4690  0.5790 0.075500  20      0      0
-#> 11   -5.6900 -1.2900 0.3050  0.2290  0.4290 0.006830  20      0      0
-#> 12  -29.4000 -0.1720 0.2040  0.1680 -0.2290 0.000902  20      0      0
-#> 13   -2.5400  0.0355 0.4990  0.3360  0.4070 0.024900  20      0      0
-#> 14   -2.6800 -0.4910 0.3760 -0.1290 -0.3020 0.003590  20      0      0
-#> 15   -0.3080 -0.6500 0.3600 -0.2010 -0.1310 0.017600  10      0      0
-#> 16   -4.6100 -0.5390 0.3220 -0.2240 -0.3210 0.007590  10      0      0
+#> 6  GLM-AED   Water temperature   HYD_temp -2.46e-01 8.52e-01 1.15e+00 0.0473
+#> 7  GLM-AED   Thermocline depth HYD_thmcln -2.60e+00 3.27e+00 4.62e+00 0.3410
+#> 8  GLM-AED         Water level LKE_lvlwtr  1.18e-01 1.58e-01 1.88e-01 0.0067
+#> 9  GLM-AED              Volume    LKE_vol  1.77e+04 2.37e+04 2.82e+04 0.0217
+#> 10 GLM-AED Ammoniacal nitrogen    NIT_amm  7.38e-03 1.36e-02 2.76e-02 1.1600
+#> 11 GLM-AED             Nitrate    NIT_nit  2.85e-03 2.85e-03 4.28e-03 1.7800
+#> 12 GLM-AED      Total nitrogen     NIT_tn -7.45e-02 7.45e-02 8.21e-02 0.3930
+#> 13 GLM-AED           Phosphate    PHS_frp -1.18e-03 1.26e-03 1.48e-03 0.6970
+#> 14 GLM-AED    Total phosphorus     PHS_tp -3.44e-03 4.16e-03 5.45e-03 0.3680
+#> 15 GLM-AED       Cyanobacteria  PHY_cyano  5.80e-02 1.14e-01 1.93e-01 3.0400
+#> 16 GLM-AED Total chlorophyll a  PHY_tchla  5.90e+00 7.10e+00 9.16e+00 0.9830
+#>          nse    kge     d2      r      rs       B   n obs_na sim_na
+#> 1   -32.1000 -0.817 0.2140 -0.216 -0.5630 0.00137  10      0      0
+#> 2     0.6600  0.707 0.8920  0.885  0.9120 0.58500 125      0      0
+#> 3    -0.3570  0.667 0.7350  0.805  0.7430 0.27500   8      0      0
+#> 4  -329.0000     NA 0.0827     NA      NA 0.00000 125      0      0
+#> 5     0.0476  0.524 0.7520  0.524  0.5240 0.14100  10      0      0
+#> 6     0.8630  0.922 0.9670  0.939  0.9260 0.77500 125      0      0
+#> 7    -1.4500  0.268 0.6280  0.502  0.4160 0.07310  10      0      0
+#> 8    -9.2800 -0.802 0.4360  0.366  0.3170 0.01190   8      0      0
+#> 9    -9.2200 -0.788 0.4360  0.365  0.3170 0.01190   8      0      0
+#> 10   -1.0500 -0.105 0.7170  0.684  0.5970 0.15300  20      0      0
+#> 11   -3.7700 -1.040 0.4880  0.483  0.4470 0.04040  20      0      0
+#> 12   -8.2200  0.190 0.3750  0.587  0.3270 0.03370  20      0      0
+#> 13   -1.8800  0.195 0.6200  0.583  0.4820 0.08750  20      0      0
+#> 14   -0.0781  0.277 0.5970  0.610  0.4180 0.17900  20      0      0
+#> 15  -11.5000 -1.810 0.0411 -0.216 -0.0975 0.00347  10      0      0
+#> 16   -6.7500 -0.654 0.3030 -0.309 -0.2240 0.01090  10      0      0
 ```
 
 ------------------------------------------------------------------------

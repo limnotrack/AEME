@@ -114,7 +114,7 @@ for (m in c("glm_aed", "simstrat_aed2")) {
   cat(sprintf("%-14s output.nc %6.1f MB   output_daily.nc %5.2f MB   (%.0fx)\n",
               m, raw, daily, raw / daily))
 }
-#> glm_aed        output.nc  278.3 MB   output_daily.nc  1.04 MB   (268x)
+#> glm_aed        output.nc  278.3 MB   output_daily.nc  1.05 MB   (266x)
 #> simstrat_aed2  output.nc    9.2 MB   output_daily.nc  0.13 MB   (73x)
 
 # get_var() returns the daily means, keyed by Date

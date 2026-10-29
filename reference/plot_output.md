@@ -20,7 +20,9 @@ plot_output(
   ylim = NULL,
   cumulative = FALSE,
   facet = TRUE,
-  backend = c("ggplot2", "base")
+  backend = c("ggplot2", "base"),
+  zone = NULL,
+  sed_layer = NULL
 )
 ```
 
@@ -92,10 +94,28 @@ plot_output(
   character; plotting backend to use. Options are "ggplot2" and "base".
   Default is "ggplot2".
 
+- zone, sed_layer:
+
+  integer; for variables with an `nzones` and/or `sed_layers` dimension
+  (GLM-AED sediment output, e.g. `"SED_Fsed_oxy"`, `"SED_temp"`), plot
+  only these sediment zones and/or sediment layers. `NULL` (default)
+  plots all. Ignored for other variables. See
+  [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md).
+
 ## Value
 
 list of plots for z-dimensional variables or a ggplot2 object for 1-d
-variables.
+variables and for grouped (e.g. sediment zone) variables.
+
+## Details
+
+Variables with dimensions other than time or depth x time (GLM-AED
+sediment variables, see
+[glm_extra_vars](https://limnotrack.com/AEME/reference/glm_extra_vars.md))
+are drawn as a line plot with one line per zone and/or sediment layer,
+and one panel per model if several models have the variable. This needs
+the `"ggplot2"` backend and a single `var_sim`; observations are not
+added.
 
 ## Examples
 

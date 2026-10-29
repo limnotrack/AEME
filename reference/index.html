@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -176,6 +176,20 @@
 
         <dt>
 
+          <code><a href="AemeSummary-accessors.html">lake(<i>&lt;AemeSummary&gt;</i>)</a></code> <code><a href="AemeSummary-accessors.html">time(<i>&lt;AemeSummary&gt;</i>)</a></code> <code><a href="AemeSummary-accessors.html">observations(<i>&lt;AemeSummary&gt;</i>)</a></code> <code><a href="AemeSummary-accessors.html">output(<i>&lt;AemeSummary&gt;</i>)</a></code> <code><a href="AemeSummary-accessors.html">parameters(<i>&lt;AemeSummary&gt;</i>)</a></code> <code><a href="AemeSummary-accessors.html">forcing()</a></code> <code><a href="AemeSummary-accessors.html">profiles()</a></code> <code><a href="AemeSummary-accessors.html">models()</a></code> <code><a href="AemeSummary-accessors.html">hypsograph()</a></code>
+
+        </dt>
+        <dd>Accessors for AemeSummary objects</dd>
+
+        <dt>
+
+          <code><a href="AemeSummary.html">names(<i>&lt;AemeSummary&gt;</i>)</a></code>
+
+        </dt>
+        <dd>S4 class for a lightweight summary of an Aeme object</dd>
+
+        <dt>
+
           <code><a href="aeme_constructor.html">aeme_constructor()</a></code>
 
         </dt>
@@ -253,6 +267,13 @@
 
         <dt>
 
+          <code><a href="calc_aed_totals_balance.html">calc_aed_totals_balance()</a></code>
+
+        </dt>
+        <dd>Sum mass balance variables into AED totals</dd>
+
+        <dt>
+
           <code><a href="calc_humidity_vars.html">calc_humidity_vars()</a></code>
 
         </dt>
@@ -264,6 +285,13 @@
 
         </dt>
         <dd>Calculate the volume of a lake using bathymetry data or a hypsograph</dd>
+
+        <dt>
+
+          <code><a href="calc_seasonal_profiles.html">calc_seasonal_profiles()</a></code>
+
+        </dt>
+        <dd>Calculate seasonal profiles</dd>
 
         <dt>
 
@@ -460,6 +488,13 @@
 
         </dt>
         <dd>Diagnose the three baseline budgets (water, heat, nutrient) at once</dd>
+
+        <dt>
+
+          <code><a href="diag_glm_mass_balance.html">diag_glm_mass_balance()</a></code>
+
+        </dt>
+        <dd>Diagnose the GLM-AED mass balance</dd>
 
         <dt>
 
@@ -953,6 +988,13 @@
 
         <dt>
 
+          <code><a href="inflow_param.html">inflow_param()</a></code>
+
+        </dt>
+        <dd>Parameters for scaling or setting inflow variables</dd>
+
+        <dt>
+
           <code><a href="input-set.html">`input&lt;-`()</a></code>
 
         </dt>
@@ -1034,6 +1076,13 @@
 
         </dt>
         <dd>Is <code>x</code> a <em>raw</em> (<code>raw_output = TRUE</code>) model-output list?</dd>
+
+        <dt>
+
+          <code><a href="is_aeme_summary.html">is_aeme_summary()</a></code>
+
+        </dt>
+        <dd>Is <code>x</code> an <code>AemeSummary</code>?</dd>
 
         <dt>
 
@@ -1345,6 +1394,13 @@
 
         <dt>
 
+          <code><a href="plot-AemeSummary-method.html">plot(<i>&lt;AemeSummary&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a variable from an AemeSummary</dd>
+
+        <dt>
+
           <code><a href="plot.aeme_grouped_var.html">plot(<i>&lt;aeme_grouped_var&gt;</i>)</a></code>
 
         </dt>
@@ -1356,6 +1412,13 @@
 
         </dt>
         <dd>Plot a Kw regime suggestion</dd>
+
+        <dt>
+
+          <code><a href="plot_aed_succession.html">plot_aed_succession()</a></code>
+
+        </dt>
+        <dd>Plot phytoplankton succession</dd>
 
         <dt>
 
@@ -1639,6 +1702,13 @@
 
         <dt>
 
+          <code><a href="read_glm_mass_balance.html">read_glm_mass_balance()</a></code>
+
+        </dt>
+        <dd>Read a GLM-AED mass balance file</dd>
+
+        <dt>
+
           <code><a href="read_glm_output.html">read_glm_output()</a></code>
 
         </dt>
@@ -1912,6 +1982,13 @@
 
         <dt>
 
+          <code><a href="set_glm_balance_groups.html">set_glm_balance_groups()</a></code>
+
+        </dt>
+        <dd>Choose the GLM-AED mass balance variable groups</dd>
+
+        <dt>
+
           <code><a href="set_glm_inflows.html">set_glm_inflows()</a></code>
 
         </dt>
@@ -2094,6 +2171,13 @@
 
         <dt>
 
+          <code><a href="show-AemeSummary-method.html">show(<i>&lt;AemeSummary&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Show an AemeSummary</dd>
+
+        <dt>
+
           <code><a href="simstrat_aed2_exe_path.html">simstrat_aed2_exe_path()</a></code>
 
         </dt>
@@ -2154,6 +2238,13 @@
 
         </dt>
         <dd>Choose a simulation period from what the data can support</dd>
+
+        <dt>
+
+          <code><a href="summarise_aeme.html">summarise_aeme()</a></code>
+
+        </dt>
+        <dd>Summarise an Aeme object</dd>
 
         <dt>
 
@@ -2220,6 +2311,13 @@
 
         <dt>
 
+          <code><a href="view_aed_modules.html">view_aed_modules()</a></code>
+
+        </dt>
+        <dd>View the AED module interaction diagram</dd>
+
+        <dt>
+
           <code><a href="water_balance-set.html">`water_balance&lt;-`()</a></code>
 
         </dt>
@@ -2238,6 +2336,13 @@
 
         </dt>
         <dd>Export an Aeme object's model output to a partitioned Parquet store</dd>
+
+        <dt>
+
+          <code><a href="write_aeme_summary.html">write_aeme_summary()</a></code> <code><a href="write_aeme_summary.html">read_aeme_summary()</a></code>
+
+        </dt>
+        <dd>Write and read an AemeSummary</dd>
 
         <dt>
 

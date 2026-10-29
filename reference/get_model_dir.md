@@ -47,7 +47,7 @@ aeme <- build_aeme(aeme = aeme, model = model, path = path, ext_elev = 3)
 #>   ℹ Using observed water level
 #> ! Missing values in observed water level
 #> ℹ Estimating surface water temperature
-#> ✔ Estimating surface water temperature [25ms]
+#> ✔ Estimating surface water temperature [34ms]
 #> 
 #> Estimating lake water levels for glm_aed
 #>   ℹ Optimizing parameters for water balance
@@ -56,6 +56,7 @@ aeme <- build_aeme(aeme = aeme, model = model, path = path, ext_elev = 3)
 #> 
 #> ── Building GLM-AED for lake wainamu ──
 #> 
+#> ! Fitted weir crest (23.48 m) is below the initial lake level; using 23.64 m.
 #> ✔ GLM nml validation completed - no issues detected.
 lake_dir <- get_lake_dir(aeme)
 model_dir <- get_model_dir(aeme)

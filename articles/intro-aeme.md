@@ -447,7 +447,7 @@ aeme
 #> Warning: ! This <Aeme> object has no recorded AEME package version.
 #> ℹ It was likely built with an older version of AEME (<0.4.0), or has never been
 #>   built with `build_aeme()`. Consider rebuilding with `build_aeme()` to keep it
-#>   in sync with the installed package (0.4.0).
+#>   in sync with the installed package (0.4.1).
 #> This warning is displayed once per session.
 #> 
 #> ── AEME not yet built ──────────────────────────────────────────────────────────

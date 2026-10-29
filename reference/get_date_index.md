@@ -19,7 +19,12 @@ get_date_index(
 
 - aeme:
 
-  Aeme object.
+  Aeme object, or an
+  [AemeSummary](https://limnotrack.com/AEME/reference/AemeSummary.md).
+  For a summary only `model` and `var_sim` apply, and the result has the
+  surface and bottom series (`layer`) and every `stat`; filter
+  [`output()`](https://limnotrack.com/AEME/reference/output.md) for more
+  control.
 
 - model:
 

@@ -598,10 +598,10 @@ bind_rows(mutate(flux_means, var = unname(flux_lab[var])), net_means) |>
 #> # A tibble: 14 × 4
 #>    model         component    daily hourly
 #>    <chr>         <chr>        <dbl>  <dbl>
-#>  1 glm_aed       Latent       -79.4  -80.1
-#>  2 glm_aed       Sensible     -12.8  -12  
-#>  3 glm_aed       Net longwave -73.1  -73.2
-#>  4 glm_aed       Shortwave    169.   169. 
+#>  1 glm_aed       Latent       -80.7  -81.6
+#>  2 glm_aed       Sensible     -13.2  -12.5
+#>  3 glm_aed       Net longwave -73.5  -73.6
+#>  4 glm_aed       Shortwave    171.   171. 
 #>  5 gotm_wet      Latent       -81.4  -95.1
 #>  6 gotm_wet      Sensible     -13.2  -16.3
 #>  7 gotm_wet      Net longwave -65.1  -47.7
@@ -609,7 +609,7 @@ bind_rows(mutate(flux_means, var = unname(flux_lab[var])), net_means) |>
 #>  9 simstrat_aed2 Latent       -58.4  -69.4
 #> 10 simstrat_aed2 Sensible      -8.6  -11  
 #> 11 simstrat_aed2 Shortwave     85.3   85.5
-#> 12 glm_aed       Net (sum)      3.9    3.9
+#> 12 glm_aed       Net (sum)      3.8    3.7
 #> 13 gotm_wet      Net (sum)     10.9   11.6
 #> 14 simstrat_aed2 Net (sum)     18.3    5
 ```
@@ -730,9 +730,9 @@ bind_rows(strat, dT) |>
 #> # A tibble: 9 × 4
 #>   model         var                       daily hourly
 #>   <chr>         <chr>                     <dbl>  <dbl>
-#> 1 glm_aed       Schmidt stability (J/m2) 117.   116.  
-#> 2 glm_aed       Surface - bottom (deg C)   5.69   5.53
-#> 3 glm_aed       Thermocline depth (m)      7.19   6.3 
+#> 1 glm_aed       Schmidt stability (J/m2) 128.   127.  
+#> 2 glm_aed       Surface - bottom (deg C)   5.98   5.82
+#> 3 glm_aed       Thermocline depth (m)      7.06   6.4 
 #> 4 gotm_wet      Schmidt stability (J/m2)  60.2   45.3 
 #> 5 gotm_wet      Surface - bottom (deg C)   2.59   1.97
 #> 6 gotm_wet      Thermocline depth (m)      6.72   7.78
@@ -820,13 +820,13 @@ bind_rows(
 #> # A tibble: 9 × 5
 #>   model         metric                    daily hourly `hourly - daily`
 #>   <chr>         <chr>                     <dbl>  <dbl>            <dbl>
-#> 1 glm_aed       Near-surface temp (°C)    23.0   23.0             -0.03
+#> 1 glm_aed       Near-surface temp (°C)    23.3   23.3             -0.03
 #> 2 gotm_wet      Near-surface temp (°C)    22.8   22.7             -0.11
 #> 3 simstrat_aed2 Near-surface temp (°C)    25.1   25.1              0.07
-#> 4 glm_aed       Schmidt stability (J/m²) 117.   116.              -0.88
+#> 4 glm_aed       Schmidt stability (J/m²) 128.   127.              -0.81
 #> 5 gotm_wet      Schmidt stability (J/m²)  60.2   45.3            -14.9 
 #> 6 simstrat_aed2 Schmidt stability (J/m²)  56.7   33.6            -23.0 
-#> 7 glm_aed       Surface - bottom (°C)      5.69   5.53            -0.16
+#> 7 glm_aed       Surface - bottom (°C)      5.98   5.82            -0.16
 #> 8 gotm_wet      Surface - bottom (°C)      2.59   1.97            -0.62
 #> 9 simstrat_aed2 Surface - bottom (°C)      2.04   1.29            -0.75
 ```

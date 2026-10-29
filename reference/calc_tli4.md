@@ -1,6 +1,8 @@
 # Calculate TLI 4
 
-Calculate TLI 4
+The TLI protocol (Burns et al.) uses annual averages of each variable,
+which deseasonalises the data. Supply annual means, not individual
+samples.
 
 ## Usage
 

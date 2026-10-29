@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,7 @@
 <span>  <span class="va">ncores</span>,</span>
 <span>  check_output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  keep_diag <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  extra_vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  extra_vars <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  sed_layers <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  zone_summary <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -129,7 +129,8 @@ run's side effects, i.e. the output files, are wanted).</p></dd>
 
 <dt id="arg-ens-n">ens_n<a class="anchor" aria-label="anchor" href="#arg-ens-n"></a></dt>
 <dd><p>numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.</p></dd>
+loaded. Defaults to 1. A run with <code>ens_n = 1</code> clears any existing output;
+a run with another number adds (or replaces) that member and keeps the rest.</p></dd>
 
 
 <dt id="arg-model-controls">model_controls<a class="anchor" aria-label="anchor" href="#arg-model-controls"></a></dt>
@@ -168,17 +169,22 @@ FALSE.</p></dd>
 <dt id="arg-keep-diag">keep_diag<a class="anchor" aria-label="anchor" href="#arg-keep-diag"></a></dt>
 <dd><p>logical; keep the <code>diag</code> (diagnostic/scalar) and
 <code>sediment</code> sub-lists of each model's output (variables with dimensions other
-than time or depth x time, keyed by raw model names). Default <code>TRUE</code>; set to
-<code>FALSE</code> to save memory.</p></dd>
+than time or depth x time, keyed by raw model names). Default <code>TRUE</code>, which
+keeps whatever was requested through <code>extra_vars</code> (nothing is requested by
+default, so by default there is nothing to keep). Set <code>FALSE</code> to drop the
+sub-lists even if they were requested.</p></dd>
 
 
 <dt id="arg-extra-vars">extra_vars<a class="anchor" aria-label="anchor" href="#arg-extra-vars"></a></dt>
 <dd><p>character; for GLM-AED, which sediment, flux and diagnostic
-variables beyond the standard set to read from <code>output.nc</code>. <code>NULL</code>
-(default) reads all of them. <code>"none"</code> reads none. Otherwise AEME names from
-<a href="glm_extra_vars.html">glm_extra_vars</a> (e.g. <code>"SED_temp"</code>), raw netCDF names, and/or the keywords
-<code>"sediment"</code> / <code>"diag"</code>. Unrequested variables are never read, which keeps
-ensemble output small. See <code><a href="read_glm_output.html">read_glm_output()</a></code>.</p></dd>
+variables beyond the standard set to read from <code>output.nc</code>. Default <code>"none"</code>:
+only the standard variables (<code>vars_sim</code> and the lake fluxes) are read, so
+nothing extra is loaded or stored unless asked for. Otherwise AEME names from
+<a href="glm_extra_vars.html">glm_extra_vars</a> (e.g. <code>"SED_temp"</code>), raw netCDF names, the keywords
+<code>"sediment"</code> / <code>"diag"</code> (every variable in that sub-list), or <code>"all"</code> for
+every variable in the file (this was the behaviour before extra output had to
+be requested). Unrequested variables are never read, which keeps loading fast
+and ensemble output small. See <code><a href="read_glm_output.html">read_glm_output()</a></code>.</p></dd>
 
 
 <dt id="arg-sed-layers">sed_layers<a class="anchor" aria-label="anchor" href="#arg-sed-layers"></a></dt>
@@ -219,7 +225,7 @@ a list with both (<code>"both"</code>), or <code>NULL</code> invisibly (<code>"n
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Estimating surface water temperature</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[26ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Estimating surface water temperature <span style="color: #B2B2B2;">[28ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating lake water levels for glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #00BBBB;">ℹ</span> Optimizing parameters for water balance</span>
@@ -228,6 +234,7 @@ a list with both (<code>"both"</code>), or <code>NULL</code> invisibly (<code>"n
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Building GLM-AED for lake wainamu</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Fitted weir crest (23.49 m) is below the initial lake level; using 23.64 m.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">run_aeme</span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></span>

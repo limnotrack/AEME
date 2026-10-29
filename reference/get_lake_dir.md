@@ -55,6 +55,7 @@ aeme <- build_aeme(aeme = aeme, model = model, path = path, ext_elev = 3)
 #> ℹ Copied in GLM plots nml file
 #> ! Forcing sed_heat_model from 2 to 1: sed_heat_model = 2 needs an active WQ
 #>   module and `use_bgc` is FALSE.
+#> ! Fitted weir crest (23.48 m) is below the initial lake level; using 23.64 m.
 #> ✔ GLM nml validation completed - no issues detected.
 lake_dir <- get_lake_dir(aeme)
 ```

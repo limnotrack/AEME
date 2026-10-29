@@ -34,4 +34,9 @@ numeric. The volume of the lake in cubic meters (m^3).
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme <- readRDS(aeme_file)
 vol <- calc_lake_vol(aeme)
+#> Warning: ! This <Aeme> object was built with AEME 0.4.0, but the installed version is
+#>   0.4.1.
+#> ℹ Consider rebuilding with `build_aeme()` if you encounter unexpected
+#>   behaviour.
+#> This warning is displayed once per session.
 ```

@@ -137,7 +137,7 @@ aeme
 #> Warning: ! This <Aeme> object has no recorded AEME package version.
 #> ℹ It was likely built with an older version of AEME (<0.4.0), or has never been
 #>   built with `build_aeme()`. Consider rebuilding with `build_aeme()` to keep it
-#>   in sync with the installed package (0.4.0).
+#>   in sync with the installed package (0.4.1).
 #> This warning is displayed once per session.
 #> 
 #> ── AEME not yet built ──────────────────────────────────────────────────────────
@@ -244,7 +244,7 @@ can speed up the process.
 aeme <- run_aeme(aeme = aeme, model = model, path = path, parallel = TRUE)
 aeme
 #> 
-#> ── AEME v0.4.0 ─────────────────────────────────────────────────────────────────
+#> ── AEME v0.4.1 ─────────────────────────────────────────────────────────────────
 #> 
 #> ── Lake ──
 #> 
@@ -312,10 +312,10 @@ aeme
 #> • GOTM-WET: 1
 #> • SIMSTRAT-AED2: 0
 #> • SIMSTRAT-AED: 0
-#> • Variables: 453
+#> • Variables: 261
 #> Water temperature, Dissolved oxygen, Total chlorophyll a, Total nitrogen, Total
 #> phosphorus, Water level, Evaporative heat flux, Sensible heat flux, Longwave
-#> radiation, Shortwave radiation, ... and 443 more
+#> radiation, Shortwave radiation, ... and 251 more
 ```
 
 In the “Output” section of the `Aeme` object, the “Number of ensembles”
@@ -325,7 +325,7 @@ is set to 1 indicating that there is now output for each model in the
 ``` r
 
 plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
-#> Warning: Removed 336 rows containing missing values or values outside the scale range
+#> Warning: Removed 340 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 #> Warning: Removed 1482 rows containing missing values or values outside the scale range
 #> (`geom_point()`).
@@ -336,7 +336,7 @@ plot_output(aeme = aeme, model = model, var_sim = "HYD_temp")
 ``` r
 
 plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
-#> Warning: Removed 336 rows containing missing values or values outside the scale range
+#> Warning: Removed 340 rows containing missing values or values outside the scale range
 #> (`geom_col()`).
 #> Warning: Removed 1586 rows containing missing values or values outside the scale range
 #> (`geom_point()`).

@@ -49,7 +49,7 @@ run_aeme_ensemble(
   timeout = Inf,
   drop_incomplete = TRUE,
   keep_diag = TRUE,
-  extra_vars = NULL,
+  extra_vars = "none",
   sed_layers = NULL,
   zone_summary = FALSE
 )
@@ -115,18 +115,24 @@ run_aeme_ensemble(
 
   logical; keep the `diag` (diagnostic/scalar) and `sediment` sub-lists
   of each model's output (variables with dimensions other than time or
-  depth x time, keyed by raw model names). Default `TRUE`; set to
-  `FALSE` to save memory.
+  depth x time, keyed by raw model names). Default `TRUE`, which keeps
+  whatever was requested through `extra_vars` (nothing is requested by
+  default, so by default there is nothing to keep). Set `FALSE` to drop
+  the sub-lists even if they were requested.
 
 - extra_vars:
 
   character; for GLM-AED, which sediment, flux and diagnostic variables
-  beyond the standard set to read from `output.nc`. `NULL` (default)
-  reads all of them. `"none"` reads none. Otherwise AEME names from
+  beyond the standard set to read from `output.nc`. Default `"none"`:
+  only the standard variables (`vars_sim` and the lake fluxes) are read,
+  so nothing extra is loaded or stored unless asked for. Otherwise AEME
+  names from
   [glm_extra_vars](https://limnotrack.com/AEME/reference/glm_extra_vars.md)
-  (e.g. `"SED_temp"`), raw netCDF names, and/or the keywords
-  `"sediment"` / `"diag"`. Unrequested variables are never read, which
-  keeps ensemble output small. See
+  (e.g. `"SED_temp"`), raw netCDF names, the keywords `"sediment"` /
+  `"diag"` (every variable in that sub-list), or `"all"` for every
+  variable in the file (this was the behaviour before extra output had
+  to be requested). Unrequested variables are never read, which keeps
+  loading fast and ensemble output small. See
   [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md).
 
 - sed_layers:

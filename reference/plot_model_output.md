@@ -31,7 +31,9 @@ plot_model_output(
   ens_n = 1,
   remove_spin_up = TRUE,
   var_lims = NULL,
-  ylim = NULL
+  ylim = NULL,
+  zone = NULL,
+  sed_layer = NULL
 )
 ```
 
@@ -82,6 +84,13 @@ plot_model_output(
   numeric vector of length 2; y-axis limits for a line plot. Default
   `NULL` (ranged to the data).
 
+- zone, sed_layer:
+
+  integer; for a variable with an `nzones` and/or `sed_layers` dimension
+  (GLM-AED sediment output), plot only these sediment zones and/or
+  sediment layers. `NULL` (default) plots all. See
+  [`get_var()`](https://limnotrack.com/AEME/reference/get_var.md).
+
 ## Value
 
 A ggplot2 object (the long-format data frame instead, with a warning,
@@ -92,10 +101,14 @@ for a grouped variable that has no `Date` dimension at all).
 For observation overlay, faceting across multiple models/variables at
 once, or the base-graphics backend, use
 [`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
-instead – this function is intentionally minimal, and does not (yet)
-support `aeme_grouped_var` variables when called on an `Aeme` object
-through
-[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)/[`plot_output_base()`](https://limnotrack.com/AEME/reference/plot_output_base.md).
+instead – this function is intentionally minimal.
+[`plot_output()`](https://limnotrack.com/AEME/reference/plot_output.md)
+draws the same line plot for `aeme_grouped_var` variables (ggplot2
+backend).
+
+GLM-AED extra variables can be given by their AEME name from
+[glm_extra_vars](https://limnotrack.com/AEME/reference/glm_extra_vars.md)
+(e.g. `"SED_Fsed_oxy"`) or their raw netCDF name.
 
 ## Examples
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,10 @@
 
 
 <dl><dt id="arg-aeme">aeme<a class="anchor" aria-label="anchor" href="#arg-aeme"></a></dt>
-<dd><p>Aeme object.</p></dd>
+<dd><p>Aeme object, or an <a href="AemeSummary.html">AemeSummary</a>. For a
+summary only <code>model</code> and <code>var_sim</code> apply, and the result has the surface and
+bottom series (<code>layer</code>) and every <code>stat</code>; filter <code><a href="output.html">output()</a></code> for more
+control.</p></dd>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
@@ -121,7 +124,7 @@ the bottom. That is <code>level - depth</code> metres below the surface, with <c
 the modelled water level (<code>LKE_lvlwtr</code>) on each date, so it follows the
 surface as the level rises and falls. On a date when the level is below
 <code>depth</code> (the point would be above the surface) the value is <code>NA</code>. Ignored
-when <code>depth</code> is <code>NULL</code>. (Before AEME 0.4.0 <code>"bottom"</code> was measured from the
+when <code>depth</code> is <code>NULL</code>. (In AEME 0.4.0 and earlier <code>"bottom"</code> was measured from the
 basin's full depth, which only matches when the level equals that depth.)</p></dd>
 
 
@@ -168,7 +171,15 @@ per dimension (<code>nzones</code>, <code>sed_layers</code>); <code>depth_ref</c
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>dataframe or list</p>
+    <p>If <code>return_df = TRUE</code>, a data frame with the same leading columns
+whether or not <code>use_obs</code> is used: <code>Date</code>, <code>depth</code> (<code>NA</code> for variables
+without a depth dimension), <code>value</code>, <code>var_sim</code> and <code>Model</code>. With
+<code>use_obs = TRUE</code> the column <code>obs</code> (the observation, paired with the model
+<code>value</code>) is added after <code>value</code>, plus <code>depth_ref</code> and
+<code>height_above_bed</code> when height-above-bed observations are present. Variables
+with non-standard dimensions (e.g. sediment zones) carry one column per
+extra dimension instead of <code>depth</code>. If <code>return_df = FALSE</code>, a list with one
+such data frame per model.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

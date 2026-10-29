@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,12 @@
 <dd><p>Model for the parameter</p></dd>
 
 <dt>file</dt>
-<dd><p>File in which the parameter is stored</p></dd>
+<dd><p>File in which the parameter is stored. <code>"met"</code>, <code>"inf"</code>,
+<code>"inf_const"</code> and <code>"wdr"</code> act on the boundary-condition data instead of a
+file: <code>"met"</code> and <code>"wdr"</code> multiply meteorology and outflows, <code>"inf"</code>
+multiplies an inflow (name <code>"inflow"</code> for flow, otherwise an inflow
+variable such as <code>"CAR_doc"</code>) and <code>"inf_const"</code> sets an inflow variable to
+a constant. See <code><a href="inflow_param.html">inflow_param()</a></code>.</p></dd>
 
 <dt>name</dt>
 <dd><p>Name of the parameter</p></dd>

@@ -49,6 +49,20 @@
   [`Aeme-class`](https://limnotrack.com/AEME/reference/Aeme.md) : Aeme
   Class
 
+- [`lake(`*`<AemeSummary>`*`)`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+  [`time(`*`<AemeSummary>`*`)`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+  [`observations(`*`<AemeSummary>`*`)`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+  [`output(`*`<AemeSummary>`*`)`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+  [`parameters(`*`<AemeSummary>`*`)`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+  [`forcing()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+  [`profiles()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+  [`models()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+  [`hypsograph()`](https://limnotrack.com/AEME/reference/AemeSummary-accessors.md)
+  : Accessors for AemeSummary objects
+
+- [`names(`*`<AemeSummary>`*`)`](https://limnotrack.com/AEME/reference/AemeSummary.md)
+  : S4 class for a lightweight summary of an Aeme object
+
 - [`aeme_constructor()`](https://limnotrack.com/AEME/reference/aeme_constructor.md)
   : Constructor function for Aeme class
 
@@ -84,11 +98,17 @@
 - [`build_aeme()`](https://limnotrack.com/AEME/reference/build_aeme.md)
   : Build model configuration directories
 
+- [`calc_aed_totals_balance()`](https://limnotrack.com/AEME/reference/calc_aed_totals_balance.md)
+  : Sum mass balance variables into AED totals
+
 - [`calc_humidity_vars()`](https://limnotrack.com/AEME/reference/calc_humidity_vars.md)
   : Calculate humidity-related variables using GOTM formulas
 
 - [`calc_lake_vol()`](https://limnotrack.com/AEME/reference/calc_lake_vol.md)
   : Calculate the volume of a lake using bathymetry data or a hypsograph
+
+- [`calc_seasonal_profiles()`](https://limnotrack.com/AEME/reference/calc_seasonal_profiles.md)
+  : Calculate seasonal profiles
 
 - [`calc_sed_temp()`](https://limnotrack.com/AEME/reference/calc_sed_temp.md)
   : GLM sediment-temperature parameters from observed temperature
@@ -175,6 +195,9 @@
 
 - [`diag_aeme()`](https://limnotrack.com/AEME/reference/diag_aeme.md) :
   Diagnose the three baseline budgets (water, heat, nutrient) at once
+
+- [`diag_glm_mass_balance()`](https://limnotrack.com/AEME/reference/diag_glm_mass_balance.md)
+  : Diagnose the GLM-AED mass balance
 
 - [`diag_heat_budget()`](https://limnotrack.com/AEME/reference/diag_heat_budget.md)
   : Whole-lake heat budget vs observations: net deficit/surplus, or just
@@ -402,6 +425,9 @@
 - [`inflows()`](https://limnotrack.com/AEME/reference/inflows.md) :
   Access the inflows slot of an Aeme object
 
+- [`inflow_param()`](https://limnotrack.com/AEME/reference/inflow_param.md)
+  : Parameters for scaling or setting inflow variables
+
 - [`` `input<-`() ``](https://limnotrack.com/AEME/reference/input-set.md)
   : Set the input slot of an Aeme object
 
@@ -441,6 +467,11 @@
   :
 
   Is `x` a *raw* (`raw_output = TRUE`) model-output list?
+
+- [`is_aeme_summary()`](https://limnotrack.com/AEME/reference/is_aeme_summary.md)
+  :
+
+  Is `x` an `AemeSummary`?
 
 - [`is_model_error()`](https://limnotrack.com/AEME/reference/is_model_error.md)
   : Check if object is a model output error
@@ -577,12 +608,18 @@
 - [`plot(`*`<Aeme>`*`)`](https://limnotrack.com/AEME/reference/plot-Aeme-method.md)
   : Plot method for Aeme objects
 
+- [`plot(`*`<AemeSummary>`*`)`](https://limnotrack.com/AEME/reference/plot-AemeSummary-method.md)
+  : Plot a variable from an AemeSummary
+
 - [`plot(`*`<aeme_grouped_var>`*`)`](https://limnotrack.com/AEME/reference/plot.aeme_grouped_var.md)
   : Plot a grouped variable as a line plot, coloured by its non-time
   dimensions (e.g. one line per zone)
 
 - [`plot(`*`<kw_regime>`*`)`](https://limnotrack.com/AEME/reference/plot.kw_regime.md)
   : Plot a Kw regime suggestion
+
+- [`plot_aed_succession()`](https://limnotrack.com/AEME/reference/plot_aed_succession.md)
+  : Plot phytoplankton succession
 
 - [`plot_assess()`](https://limnotrack.com/AEME/reference/plot_assess.md)
   : Plot model performance metrics
@@ -712,6 +749,9 @@
 - [`read_dy_wlev()`](https://limnotrack.com/AEME/reference/read_dy_wlev.md)
   : Read DYRESM water level output
 
+- [`read_glm_mass_balance()`](https://limnotrack.com/AEME/reference/read_glm_mass_balance.md)
+  : Read a GLM-AED mass balance file
+
 - [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
   : Read GLM netCDF output
 
@@ -836,6 +876,9 @@
 - [`set_glm_aed_models()`](https://limnotrack.com/AEME/reference/set_glm_aed_models.md)
   : Set GLM-AED Models
 
+- [`set_glm_balance_groups()`](https://limnotrack.com/AEME/reference/set_glm_balance_groups.md)
+  : Choose the GLM-AED mass balance variable groups
+
 - [`set_glm_inflows()`](https://limnotrack.com/AEME/reference/set_glm_inflows.md)
   : Set inflow data for a GLM-AED simulation directory
 
@@ -921,6 +964,9 @@
 - [`show(`*`<Aeme>`*`)`](https://limnotrack.com/AEME/reference/show-aeme-method.md)
   : Print Aeme object to the console
 
+- [`show(`*`<AemeSummary>`*`)`](https://limnotrack.com/AEME/reference/show-AemeSummary-method.md)
+  : Show an AemeSummary
+
 - [`simstrat_aed2_exe_path()`](https://limnotrack.com/AEME/reference/simstrat_aed2_exe_path.md)
   : Locate an installed Simstrat-AED2 executable
 
@@ -947,6 +993,9 @@
 
 - [`suggest_sim_period()`](https://limnotrack.com/AEME/reference/suggest_sim_period.md)
   : Choose a simulation period from what the data can support
+
+- [`summarise_aeme()`](https://limnotrack.com/AEME/reference/summarise_aeme.md)
+  : Summarise an Aeme object
 
 - [`summarise_loads()`](https://limnotrack.com/AEME/reference/summarise_loads.md)
   : Summarise lake loading from inflows
@@ -975,6 +1024,9 @@
 - [`upgrade_aeme()`](https://limnotrack.com/AEME/reference/upgrade_aeme.md)
   : Upgrade an Aeme object to the current AEME version
 
+- [`view_aed_modules()`](https://limnotrack.com/AEME/reference/view_aed_modules.md)
+  : View the AED module interaction diagram
+
 - [`` `water_balance<-`() ``](https://limnotrack.com/AEME/reference/water_balance-set.md)
   : Set the water_balance slot of an Aeme object
 
@@ -983,6 +1035,10 @@
 
 - [`write_aeme_parquet()`](https://limnotrack.com/AEME/reference/write_aeme_parquet.md)
   : Export an Aeme object's model output to a partitioned Parquet store
+
+- [`write_aeme_summary()`](https://limnotrack.com/AEME/reference/write_aeme_summary.md)
+  [`read_aeme_summary()`](https://limnotrack.com/AEME/reference/write_aeme_summary.md)
+  : Write and read an AemeSummary
 
 - [`write_aeme_to_files()`](https://limnotrack.com/AEME/reference/write_aeme_to_files.md)
   : Write an AEME object to files

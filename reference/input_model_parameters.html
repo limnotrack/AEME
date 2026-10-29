@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AEME</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">input_model_parameters</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span>, <span class="va">param</span>, <span class="va">path</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">input_model_parameters</span><span class="op">(</span><span class="va">aeme</span>, <span class="va">model</span>, <span class="va">param</span>, <span class="va">path</span>, derive_totals <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -101,6 +101,13 @@ values first (see <code><a href="expand_zone_ratios.html">expand_zone_ratios()</
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
 <dd><p>character; directory where input files are located. Defaults to
 the path stored in <code>aeme</code>, or the current working directory if not set.</p></dd>
+
+
+<dt id="arg-derive-totals">derive_totals<a class="anchor" aria-label="anchor" href="#arg-derive-totals"></a></dt>
+<dd><p>logical; if <code>TRUE</code> (default), the <code>aed_totals</code> block of
+the GLM-AED <code>aed.nml</code> is re-derived from the phytoplankton parameters when
+<code>aed.nml</code> or <code>aed_phyto_pars.csv</code> parameters are applied, overwriting any
+manual edits to that block. Set <code>FALSE</code> to leave <code>aed_totals</code> as it is.</p></dd>
 
 </dl></div>
     <div class="section level2">
