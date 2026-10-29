@@ -50,7 +50,7 @@ env:
   LIBAED_WATER_REPO: limnotrack/libaed-water
   LIBAED_WATER_REF: dev
   LIBUTIL_REPO: limnotrack/libutil
-  LIBUTIL_REF: 722665acb9e80d51d4747d6b1a10622f4878ce1b
+  LIBUTIL_REF: 3eee21d180602bbad7a225a14c8449ea8d147938
   LIBAED_BENTHIC_REPO: AquaticEcoDynamics/libaed-benthic
   LIBAED_BENTHIC_REF: c6d4b0ea79f6015a06fa85c32568099b7843a798
   LIBAED_DEMO_REPO: AquaticEcoDynamics/libaed-demo
