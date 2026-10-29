@@ -65,7 +65,7 @@ env:
   #    uses). Defaults track each repo's default branch; pin to a SHA once
   #    an aed-plus build has been validated. --
   LIBAED_RIPARIAN_REPO: AquaticEcoDynamics/libaed-riparian
-  LIBAED_RIPARIAN_REF: master
+  LIBAED_RIPARIAN_REF: 8d0e1a4f3ae6c618573991ff796e361cd27d2451
   LIBAED_LIGHT_REPO: AquaticEcoDynamics/libaed-light
   LIBAED_LIGHT_REF: main
   LIBAED_DEV_REPO: AquaticEcoDynamics/libaed-dev
