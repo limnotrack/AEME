@@ -59,8 +59,10 @@ aeme_to_inflow <- function(aeme) {
     # it gives the flow-weighted outflow concentration (see below)
     mb <- NULL
     if (m == "glm_aed") {
-      mb <- tryCatch(read_glm_mass_balance(aeme = aeme),
-                     error = function(e) NULL)
+      # same time axis as the netCDF outflow volume
+      mb <- tryCatch(
+        glm_mb_to_output_time(read_glm_mass_balance(aeme = aeme)),
+        error = function(e) NULL)
     }
     df <- lapply(inflow_vars, \(var) {
       
@@ -121,8 +123,8 @@ aeme_to_inflow <- function(aeme) {
 #' outflow volume per day (m3/d) gives the concentration (mmol/m3) of the water
 #' leaving the lake, which is what an inflow built from this lake should
 #' carry. State variables are matched by their GLM name; `NIT_tn` and `PHS_tp`
-#' are the summed TN and TP totals. Variables not in the mass balance (it holds
-#' at most 15, see [set_glm_balance_groups()]) or days without outflow are
+#' are the summed TN and TP totals. Variables not in the mass balance (see
+#' the groups chosen with [set_glm_balance_groups()]) or days without outflow are
 #' absent from the result.
 #'
 #' @param mb tibble from [read_glm_mass_balance()].

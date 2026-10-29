@@ -65,7 +65,7 @@
   `mass_balance.csv` when it exists: the mass leaving the lake (`Out`) divided
   by the outflow volume, i.e. the flow-weighted concentration of the water that
   actually leaves, converted to AEME units. This replaces the concentration at
-  0.25 m depth for the variables in the mass balance (at most 15, see
+  0.25 m depth for the variables in the mass balance (see
   `set_glm_balance_groups()`), adds `NIT_tn` and `PHS_tp` from the summed totals,
   and falls back to the 0.25 m value on days without outflow or for variables
   not in the file.
@@ -82,19 +82,70 @@
   (`nsave * dt`), so the diagnostics use the interval between rows and also
   return per-day rates, and warn if the spacing disagrees with the GLM nml.
 
+* The GLM `&mass_balance` block no longer stops at 15 variables. By default
+  every component of the `aed_totals` (TN, TP, TOC and TSS) is reported, for GLM
+  4.0.0+ builds that accept more than 15 `balance_vars`; older builds stop with
+  an error, so choose fewer groups with `set_glm_balance_groups()` for those.
+  New `add_glm_balance_vars()` adds a group or individual state variables to the
+  existing mass balance.
+* New `glm_nutrient_balance()` closes the whole-lake N and P budget of a GLM-AED
+  run in kg from the mass balance (inflow, outflow, retention and the net
+  internal source/sink `d(storage) - (inflow - outflow)`), summarised by year,
+  month or the whole run, optionally without the spin-up. Adapted from a
+  project-specific script; it reuses `diag_glm_mass_balance()`, so the totals
+  follow the AED configuration (including the phytoplankton internal quotas)
+  and are independent of `nsave`.
+
+## C, N and P budget from the GLM-AED diagnostics
+
+* New `calc_glm_fluxes()` integrates the process and interface diagnostics in the
+  GLM-AED `output.nc` (uptake, mineralisation, nitrification, denitrification,
+  sediment release, settling, atmospheric exchange, ...) over the lake, in
+  mmol per day. `diag_glm_budget()` combines them with the inflow, outflow and
+  inventory from the mass balance to give a closure for each element (and, in
+  `$compartments`, for each of the inorganic, plankton, dissolved and
+  particulate organic pools), so a concentration that drifts can be traced to
+  the pool and process that do not balance. `plot_glm_budget()` draws the result
+  as a box-and-arrow figure of the lake, one panel per element.
+* Settling to the sediment is calculated from the per-layer settling rates and
+  the hypsograph (`settling = "hypsograph"`, the default). In the lake tested
+  the sediment-water interface diagnostics (`*_swi_Z`) were 10 to 30 times
+  larger than `vvel * concentration` allows and left the particulate and
+  plankton pools unbalanced; `settling = "interface"` gives them for comparison.
+
+## Fixes (carbon budget closure)
+
+* `diag_glm_budget()` left the exchange between DIC and the organic pool out of
+  the carbon closure, so photosynthesis and respiration appeared as an
+  unexplained residual (over 3,000% of the change in storage on the example
+  lake). Every partner across the pool boundary is now counted, and
+  `plot_glm_budget()` gives the residual as a share of the largest boundary flux
+  rather than of the change in storage, which can be close to zero.
+* Mineralisation of the refractory pools (`OGM_docr_min`, `OGM_donr_min`,
+  `OGM_dopr_min`) is no longer treated as a flux to the inorganic pool: AED
+  passes it to the labile DOM pool.
+
+## Fixes (mass balance time axis)
+
+* `mass_balance.csv` is stamped at the start of each save interval but
+  `output.nc` at the end, so the same row is one `nsave * dt` apart in the two
+  files. `aeme_to_inflow()` now puts the mass balance on the netCDF time axis
+  before pairing the outflow mass with the outflow volume, which was one day
+  out of step.
+
 ## GLM-AED mass balance reports the components of the totals
 
 * The GLMv4 `&mass_balance` `balance_vars` are now the components summed into
   the `aed_totals`, derived with the same per-phytoplankton-group logic as
   `set_aed_totals()` (internal-quota pools versus biomass x fixed
   stoichiometry), so the totals can be summed from `mass_balance.csv`.
-  GLM allows at most 15 `balance_vars`, so by default only the nitrogen (TN),
-  phosphorus (TP) and suspended solids (TSS) groups are reported. New
+  GLM 4.0.0+ accepts more than 15 `balance_vars`, so by default all the
+  components of the nitrogen (TN), phosphorus (TP), organic carbon (TOC) and
+  suspended solids (TSS) totals are reported. New
   `set_glm_balance_groups()` chooses the groups (`"TN"`, `"TP"`, `"TOC"`,
   `"TSS"`, `"other"`) for an existing configuration, and the default for new
   builds is set with `options(AEME.glm_balance_groups = )`. Components whose
-  AED module is not active are skipped, and lists over 15 are truncated with a
-  warning.
+  AED module is not active are skipped.
 
 ## Derived lake observations no longer accumulate
 

@@ -96,3 +96,56 @@ test_that("diag_glm_mass_balance() accounts for the save interval", {
     diag_glm_mass_balance(mb6, aed_totals = totals_fixture, path_glm = glm_dir),
     "nsave")
 })
+
+test_that("glm_nutrient_balance() summarises the N and P budgets in kg", {
+  glm_dir <- test_path("LID45819_wainamu", "glm_aed")
+  skip_if_not(dir.exists(glm_dir))
+  comps <- glm_totals_component_vars(glm_dir)
+  skip_if(is.null(comps))
+
+  aeme <- readRDS(system.file("extdata/aeme.rds", package = "AEME"))
+  lke <- lake(aeme)
+  root <- file.path(tempdir(), "nb_root")
+  lake_dir <- file.path(root, paste0(lke$id, "_", tolower(lke$name)))
+  dir.create(lake_dir, recursive = TRUE)
+  file.copy(glm_dir, lake_dir, recursive = TRUE)
+
+  # synthetic mass balance: 2 years, daily, constant inflow/outflow, with the
+  # lake storage rising by 2 mmol per day in each component
+  vars <- unique(unlist(comps[c("TN", "TP")]))
+  tm <- seq(as.POSIXct("2020-01-01", tz = "UTC"), by = "day",
+            length.out = 731)
+  mb <- data.frame(time = format(tm, "%Y-%m-%d %H:%M:%S"))
+  for (v in vars) {
+    mb[[paste("Inf", v)]] <- 10
+    mb[[paste("Out", v)]] <- 4
+    mb[[paste("Lake", v)]] <- 100 + 2 * seq_along(tm)
+  }
+  out_dir <- file.path(lake_dir, "glm_aed", "output")
+  dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+  utils::write.csv(mb, file.path(out_dir, "mass_balance.csv"),
+                   row.names = FALSE, quote = FALSE)
+
+  nb <- glm_nutrient_balance(aeme, path = root, period = "all")
+  expect_named(nb, c("daily", "summary"))
+  expect_equal(nb$summary$element, c("N", "P"))
+  n <- nb$summary[nb$summary$element == "N", ]
+  expect_equal(n$retained, n$inflow - n$outflow)
+  expect_equal(n$retention_pct, 100 * 6 / 10)
+  # storage change of 2 per day, net external +6: internal is -4 per day
+  expect_equal(n$internal / n$d_storage, (2 - 6) / 2)
+
+  yr <- glm_nutrient_balance(aeme, path = root, element = "N",
+                             period = "year")
+  expect_equal(yr$summary$period, c("2020", "2021"))
+  expect_equal(sum(yr$summary$internal), n$internal)
+
+  # spin-up is dropped before the simulation start
+  start <- as.Date(time(aeme)$start)
+  ns <- glm_nutrient_balance(aeme, path = root, element = "P",
+                             include_spin_up = FALSE)
+  expect_true(all(as.Date(ns$daily$datetime) >= start))
+  expect_error(
+    glm_nutrient_balance(aeme, path = root, element = "N")$summary |>
+      nrow() |> expect_gt(0), NA)
+})

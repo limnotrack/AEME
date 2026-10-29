@@ -245,4 +245,9 @@ utils::globalVariables(c(
 
 utils::globalVariables(c("inflow", "outflow", "lake", "d_lake", "net_external",
                          "net_internal", "cum_net_internal", "total_net_internal",
-                         "mean_lake"))
+                         "mean_lake", "retained", "d_storage", "internal", "partner",
+                         "net", "into", "outof", "pool", "term", "rate",
+                         "mmol_d", "compartment", "flux_in", "flux_out",
+                         "Lake", "Out", "days", "scale", "residual",
+                         "explained", "sediment", "atmosphere", "label",
+                         "hjust", "face", "panel", "width", "colour"))

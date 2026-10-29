@@ -290,3 +290,107 @@ glm_save_interval_days <- function(path_glm) {
   nsave * dt / 86400
 }
 
+
+#' Whole-lake N and P budget from the GLM-AED mass balance
+#'
+#' Closes the nitrogen and phosphorus budget of a GLM-AED run from its
+#' `mass_balance.csv`, in kg, and summarises it by year, month or the whole run.
+#' The components of total N (TN) and total P (TP) are summed as in
+#' [calc_aed_totals_balance()] (so they follow the AED configuration, including
+#' the phytoplankton internal nutrient quotas) and the budget is closed as in
+#' [diag_glm_mass_balance()]:
+#'
+#' `internal = d(storage) - (inflow - outflow)`
+#'
+#' Reactions between pools cancel in the totals, so `internal` is the net
+#' amount gained (sediment release, atmospheric deposition, N fixation) or lost
+#' (burial, denitrification, settling to the sediment, seepage) across the lake
+#' boundary that the inflow and outflow terms do not see. A persistently large
+#' `internal` points to a missing source or sink. `Inf` and `Out` are totals over
+#' the save interval, so the sums are valid whatever `nsave` is.
+#'
+#' @param aeme Aeme object that has been run with `glm_aed`.
+#' @param path character; root directory used with `aeme`.
+#' @param element character; `"N"`, `"P"` or both.
+#' @param period character; summary resolution, `"year"` (default), `"month"`
+#'   or `"all"` (the whole run).
+#' @param include_spin_up logical; keep the spin-up period? If `FALSE`, rows
+#'   before the start of the simulation are dropped.
+#'
+#' @return a list with `daily` (the per-row budget from
+#'   [diag_glm_mass_balance()] in kg, with an `element` column) and `summary`
+#'   (per `element` and `period`: `inflow`, `outflow`, `retained` = inflow -
+#'   outflow, `d_storage`, `internal`, all in kg, and `retention_pct` = 100 *
+#'   retained / inflow). The first row has no previous storage and is excluded
+#'   from the summary.
+#' @seealso [set_glm_balance_groups()] to choose which variables GLM writes to
+#'   the mass balance.
+#' @export
+#' @examples
+#' \dontrun{
+#' nb <- glm_nutrient_balance(aeme, element = "N", period = "year")
+#' nb$summary
+#' }
+glm_nutrient_balance <- function(aeme, path = NULL,
+                                 element = c("N", "P"),
+                                 period = c("year", "month", "all"),
+                                 include_spin_up = TRUE) {
+  element <- match.arg(element, several.ok = TRUE)
+  period <- match.arg(period)
+
+  diag <- diag_glm_mass_balance(aeme = aeme, path = path, by = "total",
+                                units = "kg")
+  totals <- c(N = "TN", P = "TP")[element]
+  daily <- diag$daily |>
+    dplyr::filter(name %in% totals) |>
+    dplyr::mutate(element = names(totals)[match(name, totals)])
+  if (nrow(daily) == 0) {
+    cli::cli_abort("The mass balance holds none of the components of {.val
+                   {unname(totals)}}. See {.fn set_glm_balance_groups}.")
+  }
+
+  if (!isTRUE(include_spin_up)) {
+    start <- as.POSIXct(format(time(aeme)$start), tz = "UTC")
+    daily <- daily |>
+      dplyr::filter(datetime >= start)
+  }
+
+  fmt <- switch(period, year = "%Y", month = "%Y-%m", all = NULL)
+  summ <- daily |>
+    dplyr::filter(!is.na(d_lake)) |>
+    dplyr::mutate(period = if (is.null(fmt)) "all" else
+      format(datetime, fmt)) |>
+    dplyr::summarise(inflow = sum(inflow), outflow = sum(outflow),
+                     d_storage = sum(d_lake), internal = sum(net_internal),
+                     .by = c(element, period)) |>
+    dplyr::mutate(retained = inflow - outflow,
+                  retention_pct = dplyr::if_else(
+                    inflow > 0, 100 * retained / inflow, NA_real_)) |>
+    dplyr::arrange(element, period) |>
+    dplyr::select(element, period, inflow, outflow, retained, d_storage,
+                  internal, retention_pct)
+
+  list(daily = dplyr::select(daily, element, dplyr::everything(), -name),
+       summary = summ)
+}
+
+#' Put the mass balance on the time axis of the GLM netCDF output
+#'
+#' GLM stamps each row of `mass_balance.csv` with the start of the save
+#' interval it covers, while `output.nc` stamps the state at the end of the
+#' same interval, so the two files are one `nsave * dt` apart for the same
+#' row (the `Lake` inventory of row `i` equals the netCDF state of record
+#' `i`). This shifts the mass balance time stamps by the interval between
+#' rows so that dates can be joined to anything read from `output.nc`,
+#' including [get_var()].
+#'
+#' @param mb tibble from [read_glm_mass_balance()].
+#' @return `mb` with `datetime` moved forward by one save interval.
+#' @noRd
+glm_mb_to_output_time <- function(mb) {
+  step <- stats::median(as.numeric(diff(sort(unique(mb$datetime))),
+                                   units = "secs"))
+  if (!is.finite(step)) return(mb)
+  mb$datetime <- mb$datetime + step
+  mb
+}

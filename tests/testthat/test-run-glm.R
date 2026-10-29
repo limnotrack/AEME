@@ -283,6 +283,7 @@ test_that("running GLM-AED works", {
   phy_in <- get_var(aeme = aeme, model = model, var = "PHY_cyano_IP")
   head(phy_in)
   
+  diag <- diag_glm_mass_balance(aeme = aeme, by = "var", units = "kg")
   mb <- read_glm_mass_balance(aeme = aeme)
   library(ggplot2)
   ggplot() +
