@@ -1,16 +1,18 @@
 # Choose the GLM-AED mass balance variable groups
 
-GLM accepts at most 15 `balance_vars` in the `&mass_balance` block, so
-AEME reports only the nitrogen, phosphorus and suspended-solids totals'
-components by default. This sets which groups are reported for an
+Sets which variables the GLM `&mass_balance` block reports for an
 existing configuration, based on the AED configuration (the `aed_totals`
 components for the phytoplankton groups and AED modules that are
-active).
+active). By default all components of the nitrogen, phosphorus, organic
+carbon and suspended solids totals are reported. This replaces the
+current list; use
+[`add_glm_balance_vars()`](https://limnotrack.com/AEME/reference/add_glm_balance_vars.md)
+to add to it.
 
 ## Usage
 
 ``` r
-set_glm_balance_groups(aeme, groups = c("TN", "TP", "TSS"), path = NULL)
+set_glm_balance_groups(aeme, groups = .glm_balance_groups_default, path = NULL)
 ```
 
 ## Arguments
@@ -24,8 +26,7 @@ set_glm_balance_groups(aeme, groups = c("TN", "TP", "TSS"), path = NULL)
   character; any of `"TN"`, `"TP"`, `"TOC"` (components of the total
   nitrogen, phosphorus and organic carbon), `"TSS"` (suspended solids)
   and `"other"` (remaining active state variables such as oxygen and
-  silica). Variables are taken in this order and truncated at 15 with a
-  warning.
+  silica). Variables are taken in this order.
 
 - path:
 
@@ -42,7 +43,15 @@ to write it to file.
 ## Details
 
 The default for new builds can be changed with
-`options(AEME.glm_balance_groups = c("TN", "TP", "TOC"))`.
+`options(AEME.glm_balance_groups = c("TN", "TP"))`.
+
+GLM builds before 4.0.0+ accept at most 15 balance variables and stop
+with an error if more are given; with such a build choose fewer
+`groups`.
+
+## See also
+
+[`add_glm_balance_vars()`](https://limnotrack.com/AEME/reference/add_glm_balance_vars.md)
 
 ## Examples
 

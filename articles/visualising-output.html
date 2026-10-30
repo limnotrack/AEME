@@ -272,7 +272,7 @@ function on this page is ultimately built on:</p>
 <code class="sourceCode R"><span><span class="va">outfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_outfile.html">get_model_outfile</a></span><span class="op">(</span><span class="va">aeme</span>, model <span class="op">=</span> <span class="st">"glm_aed"</span><span class="op">)</span><span class="op">$</span><span class="va">glm_aed</span></span>
 <span><span class="va">outfile</span></span>
 <span><span class="co">#&gt;                                                                                         output </span></span>
-<span><span class="co">#&gt; "C:/Users/runneradmin/AppData/Local/Temp/Rtmps7vpxm/LID45819_wainamu/glm_aed/output/output.nc"</span></span></code></pre></div>
+<span><span class="co">#&gt; "C:/Users/runneradmin/AppData/Local/Temp/RtmpELLRXP/LID45819_wainamu/glm_aed/output/output.nc"</span></span></code></pre></div>
 <p><code><a href="../reference/read_glm_output.html">read_glm_output()</a></code> reads the model output, projects onto
 a standard grid and also does some unit conversions, especially for the
 AED variables that are stored in mmol/m3 in the raw output but are more
@@ -378,7 +378,7 @@ the same accessors you use on an <code>Aeme</code> (<code><a href="../reference/
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">aeme_summ</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"Kb"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "2591.5 Kb"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"Kb"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "4049.1 Kb"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "4049.5 Kb"</span></span></code></pre></div>
 <p>Store it with <code><a href="../reference/write_aeme_summary.html">write_aeme_summary()</a></code> – <code>"rds"</code>
 (the default), <code>"parquet"</code> (one file per table, for
 dashboards in other tools) or <code>"json"</code> – and read it back

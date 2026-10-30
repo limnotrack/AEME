@@ -486,30 +486,30 @@ for each simulated variable:
 
 skill <- assess_aeme(aeme = aeme, model = model)
 skill
-#>            Model           name_text   var_aeme      bias      mae     rmse
-#> 1  SIMSTRAT-AED2 Dissolved organic C    CAR_doc -1.400000 1.45e+00  1.66000
-#> 2  SIMSTRAT-AED2    Dissolved oxygen    CHM_oxy  2.540000 2.58e+00  3.82000
-#> 3  SIMSTRAT-AED2            Salinity   CHM_salt -0.117000 1.17e-01  0.11700
-#> 4  SIMSTRAT-AED2          Stratified  HYD_strat -0.700000 7.00e-01  0.83700
-#> 5  SIMSTRAT-AED2   Water temperature   HYD_temp  0.735000 1.78e+00  2.42000
-#> 6  SIMSTRAT-AED2   Thermocline depth HYD_thmcln  6.470000 6.47e+00  7.11000
-#> 7  SIMSTRAT-AED2         Water level LKE_lvlwtr -0.349000 3.60e-01  0.41800
-#> 8  SIMSTRAT-AED2 Ammoniacal nitrogen    NIT_amm -0.007440 8.08e-03  0.02070
-#> 9  SIMSTRAT-AED2             Nitrate    NIT_nit -0.000480 1.70e-03  0.00294
-#> 10 SIMSTRAT-AED2           Phosphate    PHS_frp -0.000805 8.05e-04  0.00118
-#> 11 SIMSTRAT-AED2 Total chlorophyll a  PHY_tchla 37.300000 3.73e+01 41.80000
-#>      nmae      nse     kge     d2       r       rs        B   n obs_na sim_na
-#> 1  0.5320  -11.400 -0.4240 0.2040 -0.2890 -0.29400 6.25e-03  10      0      0
-#> 2  0.3740   -0.431  0.0342 0.4950  0.5710  0.64700 1.34e-01 125      0      0
-#> 3  1.0000 -329.000      NA 0.0827      NA       NA 0.00e+00 125      0      0
-#> 4  1.0000   -2.330      NA 0.4570      NA       NA 0.00e+00  10      0      0
-#> 5  0.0987    0.398  0.5760 0.8940  0.8620  0.85600 4.63e-01 125      0      0
-#> 6  0.6730   -4.790      NA 0.3830      NA       NA 0.00e+00  10      0      0
-#> 7  0.0153  -49.900 -1.7800 0.1600 -0.4950 -0.41500 4.71e-03   8      0      0
-#> 8  0.6840   -0.159 -0.5270 0.2860 -0.0333  0.29800 5.13e-04  20      0      0
-#> 9  1.0600   -1.250 -0.2270 0.1510 -0.1870 -0.53900 1.08e-02  20      0      0
-#> 10 0.4470   -0.834 -0.3230 0.4590  0.1750  0.21200 1.08e-02  20      0      0
-#> 11 5.1600 -161.000 -6.0500 0.1190  0.0558  0.00606 1.92e-05  10      0      0
+#>            Model           name_text   var_aeme     bias      mae     rmse
+#> 1  SIMSTRAT-AED2 Dissolved organic C    CAR_doc -1.54000  1.54000  1.72000
+#> 2  SIMSTRAT-AED2    Dissolved oxygen    CHM_oxy  2.49000  2.54000  3.79000
+#> 3  SIMSTRAT-AED2            Salinity   CHM_salt -0.11700  0.11700  0.11700
+#> 4  SIMSTRAT-AED2          Stratified  HYD_strat -0.70000  0.70000  0.83700
+#> 5  SIMSTRAT-AED2   Water temperature   HYD_temp  0.73500  1.78000  2.42000
+#> 6  SIMSTRAT-AED2   Thermocline depth HYD_thmcln  6.47000  6.47000  7.11000
+#> 7  SIMSTRAT-AED2         Water level LKE_lvlwtr -0.34900  0.36000  0.41800
+#> 8  SIMSTRAT-AED2 Ammoniacal nitrogen    NIT_amm -0.00595  0.00878  0.02070
+#> 9  SIMSTRAT-AED2             Nitrate    NIT_nit  0.00213  0.00382  0.00659
+#> 10 SIMSTRAT-AED2           Phosphate    PHS_frp -0.00067  0.00076  0.00108
+#> 11 SIMSTRAT-AED2 Total chlorophyll a  PHY_tchla 19.50000 20.40000 27.30000
+#>      nmae      nse     kge     d2      r      rs        B   n obs_na sim_na
+#> 1  0.5660  -12.300 -0.3450 0.2360 -0.217 -0.2940 0.003280  10      0      0
+#> 2  0.3680   -0.404  0.0378 0.4960  0.576  0.7140 0.138000 125      0      0
+#> 3  1.0000 -329.000      NA 0.0827     NA      NA 0.000000 125      0      0
+#> 4  1.0000   -2.330      NA 0.4570     NA      NA 0.000000  10      0      0
+#> 5  0.0987    0.398  0.5760 0.8940  0.862  0.8560 0.463000 125      0      0
+#> 6  0.6730   -4.790      NA 0.3830     NA      NA 0.000000  10      0      0
+#> 7  0.0153  -49.900 -1.7800 0.1600 -0.495 -0.4150 0.004710   8      0      0
+#> 8  0.7440   -0.158 -0.5170 0.2390 -0.145  0.1020 0.009790  20      0      0
+#> 9  2.3800  -10.300 -1.5600 0.0260 -0.185 -0.3450 0.002770  20      0      0
+#> 10 0.4220   -0.541 -0.1670 0.4700  0.224  0.3220 0.019700  20      0      0
+#> 11 2.8200  -67.800 -4.6500 0.1900  0.176  0.0667 0.000443  10      0      0
 ```
 
 ------------------------------------------------------------------------
@@ -673,13 +673,13 @@ ncdf4::nc_close(nc)
 
 diag_df <- data.frame(Date = dates, GPP = gpp_surf, atm_oxy_flux = atm_oxy_flux)
 head(diag_df)
-#>         Date      GPP atm_oxy_flux
-#> 1 2020-07-30   0.0000       0.0000
-#> 2 2020-07-31  -9.6646      79.8400
-#> 3 2020-08-01 -10.3050      -2.2248
-#> 4 2020-08-02 -11.6130     -20.4630
-#> 5 2020-08-03 -12.3000       1.2404
-#> 6 2020-08-04 -12.6210       1.5756
+#>         Date     GPP atm_oxy_flux
+#> 1 2020-07-30   0.000       0.0000
+#> 2 2020-07-31 -18.438     119.4500
+#> 3 2020-08-01 -18.912      42.3440
+#> 4 2020-08-02 -20.959      13.5150
+#> 5 2020-08-03 -22.407      19.7130
+#> 6 2020-08-04 -23.978       6.2134
 ```
 
 ``` r

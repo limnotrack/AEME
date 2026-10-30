@@ -5,6 +5,9 @@
 - [`add_deriv_output()`](https://limnotrack.com/AEME/reference/add_deriv_output.md)
   : Add derived output variables to model output
 
+- [`add_glm_balance_vars()`](https://limnotrack.com/AEME/reference/add_glm_balance_vars.md)
+  : Add variables to the GLM-AED mass balance
+
 - [`add_hum_vars()`](https://limnotrack.com/AEME/reference/add_hum_vars.md)
   : Add humidity variables to meteorological data frame
 
@@ -101,6 +104,9 @@
 - [`calc_aed_totals_balance()`](https://limnotrack.com/AEME/reference/calc_aed_totals_balance.md)
   : Sum mass balance variables into AED totals
 
+- [`calc_glm_fluxes()`](https://limnotrack.com/AEME/reference/calc_glm_fluxes.md)
+  : Whole-lake C, N and P fluxes from the GLM-AED diagnostic output
+
 - [`calc_humidity_vars()`](https://limnotrack.com/AEME/reference/calc_humidity_vars.md)
   : Calculate humidity-related variables using GOTM formulas
 
@@ -195,6 +201,9 @@
 
 - [`diag_aeme()`](https://limnotrack.com/AEME/reference/diag_aeme.md) :
   Diagnose the three baseline budgets (water, heat, nutrient) at once
+
+- [`diag_glm_budget()`](https://limnotrack.com/AEME/reference/diag_glm_budget.md)
+  : Carbon, nitrogen and phosphorus budget of a GLM-AED lake
 
 - [`diag_glm_mass_balance()`](https://limnotrack.com/AEME/reference/diag_glm_mass_balance.md)
   : Diagnose the GLM-AED mass balance
@@ -403,6 +412,9 @@
 
 - [`glm_extra_vars`](https://limnotrack.com/AEME/reference/glm_extra_vars.md)
   : GLM-AED sediment, flux and diagnostic output variables
+
+- [`glm_nutrient_balance()`](https://limnotrack.com/AEME/reference/glm_nutrient_balance.md)
+  : Whole-lake N and P budget from the GLM-AED mass balance
 
 - [`glm_sed_params()`](https://limnotrack.com/AEME/reference/glm_sed_params.md)
   : Generate GLM Sediment Parameters
@@ -638,6 +650,9 @@
 
 - [`plot_fluxes()`](https://limnotrack.com/AEME/reference/plot_fluxes.md)
   : Plot fluxes
+
+- [`plot_glm_budget()`](https://limnotrack.com/AEME/reference/plot_glm_budget.md)
+  : Box-and-arrow figure of the C, N and P budget of a lake
 
 - [`plot_glm_config()`](https://limnotrack.com/AEME/reference/plot_glm_config.md)
   : Visualise GLM-AED model configuration

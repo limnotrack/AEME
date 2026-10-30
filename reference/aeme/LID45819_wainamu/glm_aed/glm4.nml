@@ -147,9 +147,9 @@
 /
 &mass_balance
    balance_file = 'mass_balance'
-   balance_varnum = 15
+   balance_varnum = 20
    timezone = 0
-   balance_vars = 'NIT_nit','NIT_amm','OGM_don','OGM_pon','PHY_cyano_IN','PHY_green_IN','PHY_diatom_IN','PHS_frp','OGM_dop','OGM_pop','PHY_cyano_IP','PHY_green_IP','PHY_diatom_IP','NCS_ss1','NCS_ss2'
+   balance_vars = 'NIT_nit','NIT_amm','OGM_don','OGM_pon','PHY_cyano_IN','PHY_green_IN','PHY_diatom_IN','PHS_frp','OGM_dop','OGM_pop','PHY_cyano_IP','PHY_green_IP','PHY_diatom_IP','OGM_doc','OGM_poc','PHY_cyano','PHY_green','PHY_diatom','NCS_ss1','NCS_ss2'
 /
 &wq_setup
    wq_lib = 'api'

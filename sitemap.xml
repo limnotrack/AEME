@@ -25,6 +25,7 @@
 <url><loc>https://limnotrack.com/AEME/LICENSE.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/news/index.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/add_deriv_output.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/add_glm_balance_vars.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/add_hum_vars.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/add_hypsograph.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/add_inflow.html</loc></url>
@@ -53,6 +54,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/bias.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/build_aeme.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/calc_aed_totals_balance.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/calc_glm_fluxes.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/calc_humidity_vars.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/calc_lake_vol.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/calc_seasonal_profiles.html</loc></url>
@@ -84,6 +86,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/convert_do.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/d2.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/diag_aeme.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/diag_glm_budget.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/diag_glm_mass_balance.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/diag_heat_budget.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/diag_nutrient_budget.html</loc></url>
@@ -148,6 +151,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/glm_config_to_aeme.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/glm_exe_path.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/glm_extra_vars.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/glm_nutrient_balance.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/glm_sed_params.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/glm_to_aeme.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/gotm_wet_exe_path.html</loc></url>
@@ -224,6 +228,7 @@
 <url><loc>https://limnotrack.com/AEME/reference/plot_est_wbal.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot_flows.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot_fluxes.html</loc></url>
+<url><loc>https://limnotrack.com/AEME/reference/plot_glm_budget.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot_glm_config.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot_glm_diagnostics.html</loc></url>
 <url><loc>https://limnotrack.com/AEME/reference/plot_glm_output.html</loc></url>

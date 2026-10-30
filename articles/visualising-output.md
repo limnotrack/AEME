@@ -207,7 +207,7 @@ what every other `plot_*` function on this page is ultimately built on:
 outfile <- get_model_outfile(aeme, model = "glm_aed")$glm_aed
 outfile
 #>                                                                                         output 
-#> "C:/Users/runneradmin/AppData/Local/Temp/Rtmps7vpxm/LID45819_wainamu/glm_aed/output/output.nc"
+#> "C:/Users/runneradmin/AppData/Local/Temp/RtmpELLRXP/LID45819_wainamu/glm_aed/output/output.nc"
 ```
 
 [`read_glm_output()`](https://limnotrack.com/AEME/reference/read_glm_output.md)
@@ -355,7 +355,7 @@ It is a fraction of the size of the full object:
 format(object.size(aeme_summ), units = "Kb")
 #> [1] "2591.5 Kb"
 format(object.size(aeme), units = "Kb")
-#> [1] "4049.1 Kb"
+#> [1] "4049.5 Kb"
 ```
 
 Store it with
