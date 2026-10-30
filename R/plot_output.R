@@ -29,9 +29,20 @@
 #' This only applies to variables without a depth component.
 #' @param backend character; plotting backend to use. Options are "ggplot2" and
 #' "base". Default is "ggplot2".
+#' @param zone,sed_layer integer; for variables with an `nzones` and/or
+#' `sed_layers` dimension (GLM-AED sediment output, e.g. `"SED_Fsed_oxy"`,
+#' `"SED_temp"`), plot only these sediment zones and/or sediment layers. `NULL`
+#' (default) plots all. Ignored for other variables. See [get_var()].
+#'
+#' @details
+#' Variables with dimensions other than time or depth x time (GLM-AED sediment
+#' variables, see [glm_extra_vars]) are drawn as a line plot with one line per
+#' zone and/or sediment layer, and one panel per model if several models have the
+#' variable. This needs the `"ggplot2"` backend and a single `var_sim`;
+#' observations are not added.
 #'
 #' @return list of plots for z-dimensional variables or a ggplot2 object for 1-d
-#' variables.
+#' variables and for grouped (e.g. sediment zone) variables.
 #' @export
 #'
 #' @importFrom RColorBrewer brewer.pal
@@ -76,7 +87,8 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
                         ens_n = 1, add_obs = TRUE, level = FALSE,
                         remove_spin_up = TRUE, print_plots = FALSE, 
                         var_lims = NULL, ylim = NULL, cumulative = FALSE, 
-                        facet = TRUE, backend = c("ggplot2", "base")) {
+                        facet = TRUE, backend = c("ggplot2", "base"),
+                        zone = NULL, sed_layer = NULL) {
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))
@@ -135,16 +147,26 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
   # particle, sed_layers) -- plotting for these isn't supported yet;
   # point users to get_var() instead of failing deep inside the plotting
   # logic below
-  grouped_hits <- unlist(lapply(model, \(m) {
-    vapply(var_sim, \(v) {
-      inherits(.get_output_var(outp[[ens_lab]][[m]], v), "aeme_grouped_var")
-    }, logical(1))
-  }))
+  grouped_hits <- matrix(
+    unlist(lapply(model, \(m) {
+      vapply(var_sim, \(v) {
+        inherits(.get_output_var(outp[[ens_lab]][[m]], v), "aeme_grouped_var")
+      }, logical(1))
+    })),
+    nrow = length(var_sim), ncol = length(model),
+    dimnames = list(var_sim, model))
   if (any(grouped_hits)) {
-    cli::cli_abort(c(
-      "x" = "{.arg var_sim} includes variable(s) with non-standard dimensions that {.fn plot_output} does not support yet.",
-      "i" = "Use {.fn get_var} to retrieve their values directly."
-    ), class = "aeme_error_grouped_var_plot")
+    if (backend == "base" || length(var_sim) > 1) {
+      cli::cli_abort(c(
+        "x" = "Variable(s) with non-standard dimensions (e.g. sediment zones) can only be plotted one at a time with the {.val ggplot2} backend.",
+        "i" = "Pass a single {.arg var_sim}, or use {.fn get_var} to retrieve the values directly."
+      ), class = "aeme_error_grouped_var_plot")
+    }
+    return(.plot_output_grouped(
+      aeme = aeme, model = model[colSums(grouped_hits) > 0],
+      var_sim = var_sim, ens_n = ens_n, remove_spin_up = remove_spin_up,
+      zone = zone, sed_layer = sed_layer, ylim = ylim,
+      print_plots = print_plots))
   }
 
 
@@ -202,7 +224,7 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
   # colour lims
   if (is.null(var_lims)) {
     all_vals <- sapply(model, \(m){
-      "[["(outp[[ens_lab]][[m]], var_sim)
+      .get_output_var(outp[[ens_lab]][[m]], var_sim)
     })
     vect <- unlist(all_vals)
     if (add_obs) {
@@ -215,29 +237,41 @@ plot_output <- function(aeme, var_sim = "HYD_temp", model, point_size = 2,
   # mod_labels <- data.frame(model = c("dy_cd", "glm_aed", "gotm_wet"),
   #                          name = c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET"))
 
-  summ_check <- check_if_summary(aeme = aeme, model = model, var_sim = var_sim,
-                                 ens_n = ens_n)
-  if (summ_check) {
-    df <- get_var_summary(aeme = aeme, model = model, var_sim = var_sim,
-                          ens_n = ens_n)
-    if (is.null(ylim)) {
-      ylim <- range(df$value, na.rm = TRUE)
-    } else {
-      ylim <- var_lims
-    }
-    plot_var_summary(data = df, ylim = ylim, xlim = xlim)
-  } else {
-    df <- get_var(aeme = aeme, model = model, var_sim = var_sim, ens_n = ens_n,
-                  return_df = TRUE, remove_spin_up = remove_spin_up,
-                  cumulative = cumulative)
-    # Align observations to modelled depths because observations are relative to
-    # the lake surface while modelled depths are relative to the lake bottom
-    obs <- align_depth_data(aeme = aeme, model = model, ens_n = ens_n,
-                            var_sim = var_sim)
+  df <- get_var(aeme = aeme, model = model, var_sim = var_sim, ens_n = ens_n,
+                return_df = TRUE, remove_spin_up = remove_spin_up,
+                cumulative = cumulative)
+  # Align observations to modelled depths because observations are relative to
+  # the lake surface while modelled depths are relative to the lake bottom
+  obs <- align_depth_data(aeme = aeme, model = model, ens_n = ens_n,
+                          var_sim = var_sim)
 
+  plot_var(df = df, ylim = ylim, xlim = xlim, var_lims = var_lims, obs = obs,
+           add_obs = add_obs, level = level, facet = facet,
+           point_size = point_size, print_plots = print_plots)
+}
 
-    plot_var(df = df, ylim = ylim, xlim = xlim, var_lims = var_lims, obs = obs,
-             add_obs = add_obs, level = level, facet = facet, 
-             point_size = point_size, print_plots = print_plots)
+#' Line plot of a grouped (e.g. sediment zone) variable for [plot_output()]
+#'
+#' One line per zone and/or sediment layer, one panel per model when more than
+#' one model has the variable.
+#'
+#' @inheritParams plot_output
+#' @param model character; the models that have the variable.
+#' @param var_sim character; a single variable name.
+#' @return A ggplot2 object.
+#' @noRd
+.plot_output_grouped <- function(aeme, model, var_sim, ens_n, remove_spin_up,
+                                 zone = NULL, sed_layer = NULL, ylim = NULL,
+                                 print_plots = FALSE) {
+  df <- dplyr::bind_rows(lapply(model, \(m) {
+    get_var(aeme = aeme, model = m, var_sim = var_sim, ens_n = ens_n,
+            return_df = TRUE, remove_spin_up = remove_spin_up,
+            zone = zone, sed_layer = sed_layer)
+  }))
+  p <- .plot_grouped_ggplot(df, var_sim = var_sim, ylim = ylim)
+  if (length(unique(df$Model)) > 1) {
+    p <- p + ggplot2::facet_wrap(~Model)
   }
+  if (print_plots) print(p)
+  p
 }

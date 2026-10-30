@@ -15,6 +15,8 @@
 #'   Keys present here are used as-is rather than estimated. Default `NULL`.
 #' @param aed `aed_options` object (see [aed_options()]) choosing how AED is
 #'   configured when `use_bgc = TRUE`. Default `NULL` (the defaults).
+#' @param weir list with `crest_elev`, `crest_factor` and `crest_width` (see
+#'   `set_glm_weir_nml()`), or `NULL` to leave GLM's weir settings as they are.
 #'
 #' @return Directory with GLM-AED configuration
 #' @noRd
@@ -29,7 +31,8 @@ build_glm <- function(lakename, model_controls, date_range,
                       inf_factor = 1, outf_factor = 1,
                       Kw, use_bgc, use_lw, overwrite_nml = TRUE,
                       output_time_step = 86400, output_daily_mean = FALSE,
-                      obs_temp = NULL, sed_params = NULL, aed = NULL) {
+                      obs_temp = NULL, sed_params = NULL, aed = NULL,
+                      weir = NULL) {
 
   aed <- check_aed_options(aed)
   msg <- paste0("Building GLM-AED for lake ", lakename)
@@ -244,7 +247,13 @@ build_glm <- function(lakename, model_controls, date_range,
                          dims_elev = dims_elev,
                          wdr_factor = outf_factor, update_nml = TRUE,
                          glm_nml = glm_nml, path_glm = path_glm)
-  
+
+  # Surface spill through GLM's own weir (see resolve_glm_weir())
+  if (!is.null(weir)) {
+    glm_nml <- set_glm_weir_nml(glm_nml, weir,
+                                min_crest = lake_floor + init_depth)
+  }
+
   # starting water level
   glm_nml <- initialise_glm(glm_nml = glm_nml, lvl_bottom = 0.1, 
                             init_depth = init_depth, tbl_obs = init_prof,
@@ -270,7 +279,8 @@ build_glm <- function(lakename, model_controls, date_range,
   # switched on (mirrors the &init_profiles wq_names initialise_glm() just
   # wrote). A glm4.nml template ships an &mass_balance block; older GLM builds
   # have none, in which case this is a no-op.
-  glm_nml <- set_glm_mass_balance(glm_nml, use_bgc = use_bgc)
+  glm_nml <- set_glm_mass_balance(glm_nml, use_bgc = use_bgc,
+                                   path_glm = path_glm)
 
   # Write the GLM nml file
   if (overwrite_nml) {

@@ -38,3 +38,25 @@
     paste0(out[!is.na(out) & grepl("_lake$", x)], "_lake")
   out
 }
+
+#' Axis/legend label for a GLM extra variable, from the registry
+#'
+#' @param x character; an AEME name or raw netCDF name (a `_lake` suffix is
+#'   allowed).
+#' @return `"<name_text> (<units>)"`, or `NULL` if `x` is not in
+#'   [glm_extra_vars].
+#' @noRd
+.glm_extra_label <- function(x) {
+  if (length(x) != 1) return(NULL)
+  data("glm_extra_vars", package = "AEME", envir = environment())
+  base <- sub("_lake$", "", x)
+  idx <- match(base, glm_extra_vars$var_aeme)
+  if (is.na(idx)) idx <- match(base, glm_extra_vars$glm_aed)
+  if (is.na(idx)) return(NULL)
+  txt <- glm_extra_vars$name_text[idx]
+  if (grepl("_lake$", x)) {
+    txt <- paste(sub(" [(]by zone[)]$", "", txt), "(lake-wide mean)")
+  }
+  units <- glm_extra_vars$units[idx]
+  if (is.na(units) || !nzchar(units)) txt else paste0(txt, " (", units, ")")
+}

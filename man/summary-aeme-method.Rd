@@ -10,11 +10,12 @@
 \item{object}{An Aeme object.}
 }
 \value{
-Aeme object.
+An \link[=AemeSummary-class]{AemeSummary} object.
 }
 \description{
 Summarise an Aeme object
 }
 \details{
-This method summarises the Aeme output.
+This method summarises the Aeme output with \code{\link[=summarise_aeme]{summarise_aeme()}} (default
+arguments).
 }

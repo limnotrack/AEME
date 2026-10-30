@@ -50,7 +50,7 @@ env:
   LIBAED_WATER_REPO: limnotrack/libaed-water
   LIBAED_WATER_REF: dev
   LIBUTIL_REPO: limnotrack/libutil
-  LIBUTIL_REF: 24a8771253f8abab39267b7bf760a2bad231fd81
+  LIBUTIL_REF: 3eee21d180602bbad7a225a14c8449ea8d147938
   LIBAED_BENTHIC_REPO: AquaticEcoDynamics/libaed-benthic
   LIBAED_BENTHIC_REF: c6d4b0ea79f6015a06fa85c32568099b7843a798
   LIBAED_DEMO_REPO: AquaticEcoDynamics/libaed-demo
@@ -65,11 +65,11 @@ env:
   #    uses). Defaults track each repo's default branch; pin to a SHA once
   #    an aed-plus build has been validated. --
   LIBAED_RIPARIAN_REPO: AquaticEcoDynamics/libaed-riparian
-  LIBAED_RIPARIAN_REF: master
+  LIBAED_RIPARIAN_REF: 8d0e1a4f3ae6c618573991ff796e361cd27d2451
   LIBAED_LIGHT_REPO: AquaticEcoDynamics/libaed-light
   LIBAED_LIGHT_REF: main
   LIBAED_DEV_REPO: AquaticEcoDynamics/libaed-dev
-  LIBAED_DEV_REF: master
+  LIBAED_DEV_REF: 63103be69ad22e583b9437fd812336b259cf357d
   PHREEQCRM_REPO: usgs-coupled/phreeqcrm
 
   # -- AED_Tools is used ONLY for its ancillary/ pipeline (see the header

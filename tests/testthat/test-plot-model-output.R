@@ -10,8 +10,10 @@ test_that("plot_model_output() works directly on an Aeme object", {
   aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
                      model_controls = model_controls, ext_elev = 5,
                      use_bgc = TRUE)
+  # the grouped (sediment) variable plotted below has to be requested
   aeme <- run_aeme(aeme = aeme, model = "glm_aed", verbose = FALSE,
-                   model_controls = model_controls, path = path)
+                   model_controls = model_controls, path = path,
+                   extra_vars = "sediment")
   aeme_time <- time(aeme)
 
   plot_output(aeme)

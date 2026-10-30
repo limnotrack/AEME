@@ -78,7 +78,7 @@ run_aeme_ensemble <- function(aeme, model, param_sets, path,
                               parallel = FALSE, ncore = NULL,
                               model_controls = NULL, timeout = Inf,
                               drop_incomplete = TRUE, keep_diag = TRUE,
-                              extra_vars = NULL, sed_layers = NULL,
+                              extra_vars = "none", sed_layers = NULL,
                               zone_summary = FALSE) {
 
   aeme <- check_aeme(aeme)
@@ -210,12 +210,12 @@ assemble_ens_output <- function(aeme, mod_list, model) {
     cli::cli_abort("No ensemble member ran successfully.")
   }
 
-  outp <- list()
+  outp <- .empty_output()
   for (i in seq_along(keep)) {
-    outp[[sprintf("ens_%03d", i)]] <- stats::setNames(
+    mods <- stats::setNames(
       lapply(model, function(m) mod_list[[m]][[keep[i]]]), model)
+    outp <- .set_member(outp, ens_n = i, mods = mods)
   }
-  outp$n_members <- length(keep)
 
   labels <- names(mod_list[[1]])
   if (!is.null(labels)) attr(outp, "realisation") <- labels[keep]

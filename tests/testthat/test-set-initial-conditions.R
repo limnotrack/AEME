@@ -3,18 +3,18 @@ test_that("set_initial_conditions stores a generic spec and updates input", {
   prof <- data.frame(depth = c(0, 5, 10), temperature = c(18, 14, 11))
 
   aeme <- set_initial_conditions(aeme, depth = 12, profile = prof,
-                                 wq = list(CHM_oxy = 300))
+                                 wq = list(CHM_oxy = 10))
 
   spec <- get_initial_conditions(aeme)
   expect_equal(spec$default$depth, 12)
   expect_equal(spec$default$profile$salt, c(0, 0, 0))
-  expect_equal(spec$default$wq$CHM_oxy, 300)
+  expect_equal(spec$default$wq$CHM_oxy, 10)
 
   # Back-compatible writes take effect immediately
   expect_equal(input(aeme)$init_depth, 12)
   expect_equal(input(aeme)$init_profile$temperature, c(18, 14, 11))
   mc <- get_model_controls(aeme)
-  expect_equal(mc$initial_wc[mc$var_aeme == "CHM_oxy"], 300)
+  expect_equal(mc$initial_wc[mc$var_aeme == "CHM_oxy"], 10)
 })
 
 test_that("model_init overrides are merged over the defaults", {
@@ -22,7 +22,7 @@ test_that("model_init overrides are merged over the defaults", {
   aeme <- set_initial_conditions(
     aeme,
     profile = data.frame(depth = c(0, 10), temperature = c(15, 10)),
-    wq = list(CHM_oxy = 300),
+    wq = list(CHM_oxy = 10),
     model_init = list(
       glm_aed = list(
         profile = data.frame(depth = c(0, 10), temperature = c(20, 12)),
@@ -33,7 +33,7 @@ test_that("model_init overrides are merged over the defaults", {
 
   glm_ic <- get_initial_conditions(aeme, model = "glm_aed")
   expect_equal(glm_ic$profile$temperature, c(20, 12))
-  expect_equal(glm_ic$wq$CHM_oxy, 300)   # inherited from default
+  expect_equal(glm_ic$wq$CHM_oxy, 10)   # inherited from default
   expect_equal(glm_ic$wq$NIT_amm, 0.5)   # from override
 
   gotm_ic <- get_initial_conditions(aeme, model = "gotm_wet")
@@ -138,7 +138,7 @@ test_that("build_aeme honours a GLM-AED-specific profile and scalar wq", {
   ]
   mc <- get_model_controls(use_bgc = TRUE)
   conv <- mc$conversion_aed[mc$var_aeme == "CHM_oxy"]
-  expect_true(all(abs(oxy_vals - 275 * conv) < 1e-4))
+  expect_true(all(abs(oxy_vals - 275 / conv) < 1e-4))
 })
 
 test_that(".trim_init_profile() trims to the initial depth and interpolates the end point", {

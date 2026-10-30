@@ -119,6 +119,8 @@
    bsn_wid_outl = 9860.71
    outflow_fl = 'bcs/outflow_wbal.csv'
    outflow_factor = 1
+   crest_factor = 0.61
+   crest_width = 6
    seepage = .true.
    seepage_rate = 0
 /

@@ -31,7 +31,7 @@ plot_resid <- function(aeme, model, var_sim = "HYD_temp") {
   # Extract variable from aeme
   df <- get_var(aeme = aeme, model = model, var_sim = var_sim,
                 use_obs = TRUE) |>
-    dplyr::mutate(resid = sim - obs, yday = lubridate::yday(Date))
+    dplyr::mutate(resid = value - obs, yday = lubridate::yday(Date))
   dep_chk <- "depth" %in% names(df)
   if (all(is.na(df$depth))) {
     dep_chk <- FALSE
@@ -55,13 +55,13 @@ plot_resid <- function(aeme, model, var_sim = "HYD_temp") {
   }
   col_label <- ifelse(dep_chk, "Depth (m)", "")
   
-  lims <- range(df$sim, df$obs)
+  lims <- range(df$value, df$obs)
   plist[["mod_obs"]] <- ggplot2::ggplot() +
     {if (dep_chk) ggplot2::geom_point(data = df,
-                                      ggplot2::aes(x = obs, y = sim,
+                                      ggplot2::aes(x = obs, y = value,
                                                    colour = fdepth))} +
     {if (!dep_chk) ggplot2::geom_point(data = df, ggplot2::aes(x = obs,
-                                                               y = sim))} +
+                                                               y = value))} +
     ggplot2::geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
     ggplot2::labs(x = "Observations", y = "Modelled",
                   colour = col_label) +

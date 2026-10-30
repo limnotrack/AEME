@@ -318,6 +318,14 @@ check_hypsograph <- function(hypsograph, aeme = NULL) {
 #' @importFrom methods slotNames
 #' @export
 check_aeme <- function(aeme) {
+  if (inherits(aeme, "AemeSummary")) {
+    cli::cli_abort(
+      c("{.arg aeme} is an {.cls AemeSummary}, which holds summarised output only.",
+        "i" = "It cannot be built, run or plotted as an {.cls Aeme}. Use
+               {.fn plot} or {.fn get_var} on it, or {.fn output} for the table."),
+      class = "aeme_error_aeme_summary"
+    )
+  }
   if (!inherits(aeme, "Aeme")) {
     cli::cli_abort(
       "{.arg aeme} must be an {.cls Aeme} object, not {.cls {class(aeme)[1]}}.",
@@ -459,11 +467,10 @@ migrate_aeme <- function(aeme) {
     aeme@configuration <- cfg
   }
 
-  # -- output: NULL placeholder per model + integer n_members --------------
+  # -- output: integer n_members, counted from the members present ----------
   outp <- aeme@output
   if (is.list(outp)) {
-    if (is.null(outp$n_members)) outp$n_members <- 0L
-    outp$n_members <- as.integer(outp$n_members)
+    outp$n_members <- .count_members(outp)
     for (m in models) if (!m %in% names(outp)) outp[m] <- list(NULL)
     aeme@output <- outp
   }
@@ -601,7 +608,7 @@ upgrade_aeme <- function(aeme, quiet = FALSE) {
   cfg <- aeme@configuration
   cfg_dflt <- config_defaults()
   scalar_keys <- c("ext_elev", "calc_wbal", "wb_method", "calc_wlev",
-                   "hum_type", "est_swr_hr", "use_bgc")
+                   "glm_weir", "hum_type", "est_swr_hr", "use_bgc")
   added_cfg <- character()
   for (k in scalar_keys) {
     if (is.null(cfg[[k]])) {

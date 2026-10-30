@@ -23,6 +23,23 @@
 #'   named by model.
 #' @param calc_wbal logical; calculate water balance. Default: `TRUE`.
 #' @param calc_wlev logical; calculate water level. Default: `TRUE`.
+#' @param refresh_wbal logical; recalculate the water balance even if the
+#'   one stored in `water_balance(aeme)` was made from identical inputs (the
+#'   meteorology, inflows, outflows, lake level, hypsograph, times, models,
+#'   `wb_method` and `coeffs`, hashed and stored alongside it). Default:
+#'   `FALSE`, so rebuilding after changing only parameters or model controls
+#'   skips the water balance.
+#' @param glm_weir logical or list; for `"glm_aed"`, let GLM spill through its
+#'   own weir (`morphometry/crest_elev`, `outflow/crest_width`,
+#'   `outflow/crest_factor`) instead of reading the water-balance (`wbal`)
+#'   outflow file. The weir is fitted to the observed `"outflow"` and lake level
+#'   when both overlap (that outflow is then replaced by the weir), otherwise
+#'   taken from the fitted water-balance `C` and `h_inv`. When fitted from
+#'   observations, the water-balance `C` / `h_inv` for the `glm_aed` family
+#'   (shared with `dy_cd`) are set to the equivalent values so the water
+#'   balance and GLM agree. Other outflows are kept as GLM outlets. A list may
+#'   set `crest_width` (m, default 6) and `interval` (search range for
+#'   `crest_elev`). Default: `TRUE`; `FALSE` restores the `wbal` outflow file.
 #' @param use_aeme logical; use the `aeme` object to generate model
 #'   configuration files. Default: `FALSE`.
 #' @param coeffs numeric vector of length 2; coefficients for estimating
@@ -95,7 +112,9 @@ build_aeme <- function(aeme = NULL,
                        outf_factor = NULL,
                        calc_wbal = NULL,
                        calc_wlev = NULL,
+                       refresh_wbal = FALSE,
                        coeffs = NULL,
+                       glm_weir = NULL,
                        hum_type = NULL,
                        est_swr_hr = NULL,
                        use_aeme = FALSE,
@@ -174,8 +193,7 @@ build_aeme <- function(aeme = NULL,
   
   if (is.null(model_controls)) {
     if (!is.null(aeme)) {
-      cfg <- configuration(aeme)
-      model_controls <- cfg$model_controls
+      model_controls <- get_model_controls(aeme = aeme)
     } else {
       model_controls <- get_model_controls(use_bgc = use_bgc)
     }
@@ -196,6 +214,7 @@ build_aeme <- function(aeme = NULL,
 
   # Metadata
   lvl <- NULL
+  glm_weir_fit <- NULL
   inf <- list()
   outf <- list()
   # these variables will be simulated
@@ -435,30 +454,67 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       level <- w_bal[["data"]][["model"]]
     }
     
+    # GLM weir ----
+    # Fit GLM's weir to observed outflow + level (when available) *before* the
+    # water balance, and hand the equivalent C / h_inv to it so the water
+    # balance's glm_aed family (shared with dy_cd) uses the same weir as GLM
+    # rather than running optim().
+    glm_weir_fit <- NULL
+    if ("glm_aed" %in% model && !isFALSE(glm_weir)) {
+      glm_weir_fit <- resolve_glm_weir(glm_weir, outf_data = outf,
+                                       level = level)
+      if (!is.null(glm_weir_fit)) {
+        wbal_params <- set_wbal_family_params(wbal_params, "glm_aed",
+                                              glm_weir_to_wbal(glm_weir_fit))
+        cli_inform_safe(c("i" = "Fitted GLM weir to observed outflow \\
+                          ({glm_weir_fit$n} days): crest_elev = \\
+                          {round(glm_weir_fit$crest_elev, 2)} m, crest_factor = \\
+                          {round(glm_weir_fit$crest_factor, 3)}."))
+      }
+    }
+
     # Calculate water balance ----
     if (calc_wbal | calc_wlev) {
       init_elev <- round(min(hyps$elev) + init_depth, 2)
       init_temp <- init_prof |> 
         dplyr::filter(depth == min(depth)) |> 
         dplyr::pull(temperature)
-      wbal_list <- calc_water_balance(aeme_time = aeme_time,
-                                      model = model,
-                                      method = w_bal$method,
-                                      use = w_bal$use,
-                                      hyps = hyps,
-                                      inf = inf,
-                                      outf = outf_combined,
-                                      level = level,
-                                      init_elev = init_elev,
-                                      init_temp = init_temp,
-                                      obs_lake = aeme_obs[["lake"]],
-                                      obs_met = met,
-                                      elevation = elev,
-                                      print_plots = FALSE,
-                                      params = wbal_params,
-                                      coeffs = coeffs)
-      wbal <- wbal_list$wb
-      wbal_params <- wbal_list$wbal_params
+      # Reuse the stored water balance when none of its inputs have changed
+      # (it is the slowest estimate in the build); `refresh_wbal` forces it.
+      wbal_key <- wbal_input_hash(
+        aeme_time, model, method = w_bal$method, use = w_bal$use,
+        hyps[, sort(names(hyps))], inf, outf_combined, level, init_elev,
+        init_temp, wbal_hash_obs_lake(aeme_obs[["lake"]]), met, elev, coeffs,
+        forced_params = if (identical(glm_weir_fit$source, "obs")) {
+          glm_weir_to_wbal(glm_weir_fit)
+        }
+      )
+      if (!refresh_wbal && wbal_cache_valid(w_bal, wbal_key)) {
+        cli_inform_safe(c("i" = "Inputs unchanged: reusing stored water \\
+                          balance. Use {.code refresh_wbal = TRUE} to \\
+                          recalculate."))
+        wbal <- w_bal[["data"]][["wbal"]]
+        wbal_params <- w_bal[["params"]]
+      } else {
+        wbal_list <- calc_water_balance(aeme_time = aeme_time,
+                                        model = model,
+                                        method = w_bal$method,
+                                        use = w_bal$use,
+                                        hyps = hyps,
+                                        inf = inf,
+                                        outf = outf_combined,
+                                        level = level,
+                                        init_elev = init_elev,
+                                        init_temp = init_temp,
+                                        obs_lake = aeme_obs[["lake"]],
+                                        obs_met = met,
+                                        elevation = elev,
+                                        print_plots = FALSE,
+                                        params = wbal_params,
+                                        coeffs = coeffs)
+        wbal <- wbal_list$wb
+        wbal_params <- wbal_list$wbal_params
+      }
     }
     
     # Calculate water balance ----
@@ -502,7 +558,9 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       cli_inform_safe(c("i" = msg))
       w_bal[["data"]][["wbal"]] <- wbal
       w_bal[["params"]] <- wbal_params
+      w_bal[["hash"]] <- wbal_key
     } else {
+      w_bal[["hash"]] <- NULL
       # Only clear a "wbal" outflow that this aeme's own water_balance data
       # shows was produced by an earlier calc_wbal = TRUE run. If outf$wbal
       # is present without a matching water_balance()$data$wbal, it was
@@ -515,6 +573,19 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       w_bal[["data"]][["wbal"]] <- NULL
     }
     
+    # No observed outflow to fit: use the water-balance weir for GLM
+    if ("glm_aed" %in% model && !isFALSE(glm_weir) && is.null(glm_weir_fit) &&
+        wb_method %in% c(2, 3)) {
+      glm_wbal_par <- resolve_wbal_params(wbal_params, "glm_aed")
+      if (!is.null(glm_wbal_par)) {
+        glm_weir_fit <- wbal_to_glm_weir(
+          glm_wbal_par,
+          crest_width = (if (is.list(glm_weir)) glm_weir[["crest_width"]])
+          %||% 6)
+        glm_weir_fit$source <- "wbal"
+      }
+    }
+
     #* Update water balance slot in aeme object ----
     water_balance(aeme) <- w_bal
     if (length(outf) == 0) {
@@ -713,12 +784,23 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
       glm_sed_params <- NULL
     }
 
+    # GLM spills through its weir, so it doesn't read the wbal outflow file
+    # (nor the observed "outflow" the weir was fitted to)
+    outf_glm <- outf
+    heights_glm <- unlist(aeme_outf[["elevation"]])
+    if (!is.null(glm_weir_fit)) {
+      drop <- c("wbal", if (identical(glm_weir_fit$source, "obs")) "outflow")
+      outf_glm[drop] <- NULL
+      heights_glm <- heights_glm[!names(heights_glm) %in% drop]
+      if (length(outf_glm) == 0) outf_glm <- NULL
+    }
+
     build_glm(lakename, model_controls = ic[["model_controls"]],
               date_range = dates.glm,
               lake_shape = lake_shape, lat = lat, lon = lon,
               hyps = hyps, lvl = lvl, init_prof = ic[["init_prof"]],
-              init_depth = ic[["init_depth"]], inf = inf, outf = outf,
-              heights_wdr = unlist(aeme_outf[["elevation"]]),
+              init_depth = ic[["init_depth"]], inf = inf, outf = outf_glm,
+              heights_wdr = heights_glm, weir = glm_weir_fit,
               met = met, lake_dir = lake_dir,
               inf_factor = inf_factor[["glm_aed"]],
               outf_factor = outf_factor[["glm_aed"]],
@@ -828,7 +910,8 @@ met <- convert_era5(lat = lat, lon = lon, year = 2022,
                              model_controls = model_controls, use_bgc = use_bgc,
                              path = path, ext_elev = ext_elev,
                              calc_wbal = calc_wbal, wb_method = wb_method,
-                             calc_wlev = calc_wlev, coeffs = coeffs,
+                             calc_wlev = calc_wlev, glm_weir = glm_weir,
+                             coeffs = coeffs,
                              hum_type = hum_type, est_swr_hr = est_swr_hr)
 
   # Model parameters ----

@@ -22,10 +22,14 @@ unchanged.}
 \item{salt}{numeric; new initial salinity profile, same recycling rule as
 \code{temp}. \code{NULL} (default) leaves it unchanged.}
 
-\item{wq_init}{named list; new initial values for water quality variables,
-e.g. \code{list(NIT_amm = 0.5, CHM_oxy = 300)}. Names must match
-\code{init_profiles$wq_names} in the nml file. Each value is recycled across
-depths. \code{NULL} (default) leaves water quality initial values unchanged.}
+\item{wq_init}{named list; new initial values for water quality variables
+in AEME (standard) units, e.g. \code{list(NIT_amm = 0.5, CHM_oxy = 10)} (g/m3,
+i.e. mg/L). Names are AEME variable names (see \link{key_naming}); they are
+translated to the GLM-AED names in \code{init_profiles$wq_names} and the values
+converted to GLM-AED native units (mmol/m3) by dividing by \code{conversion_aed}.
+A name that is not an AEME variable but matches \code{init_profiles$wq_names}
+is written as-is, in native units. Each value is recycled across depths.
+\code{NULL} (default) leaves water quality initial values unchanged.}
 
 \item{glm_file}{filepath; path to the nml file to edit. Defaults to the
 GLM hydrodynamic nml (\code{glm3.nml}/\code{glm4.nml}) found in \code{path_glm} via
@@ -49,6 +53,6 @@ however many depths are already defined.
 \examples{
 \dontrun{
 set_glm_init(path_glm, temp = seq(20, 10, length.out = 10))
-set_glm_init(path_glm, wq_init = list(NIT_amm = 0.5, CHM_oxy = 300))
+set_glm_init(path_glm, wq_init = list(NIT_amm = 0.5, CHM_oxy = 10))
 }
 }

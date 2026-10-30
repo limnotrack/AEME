@@ -176,17 +176,17 @@ plot_assess <- function(aeme, model, var_sim,
     d <- get_var(aeme = aeme, model = model, var_sim = v, use_obs = TRUE)
     if (is.null(d) || nrow(d) == 0) return(NULL)
     d <- d |>
-      dplyr::filter(!is.na(sim), !is.infinite(sim), !is.na(obs))
+      dplyr::filter(!is.na(value), !is.infinite(value), !is.na(obs))
     if (nrow(d) == 0) return(NULL)
 
     d |>
       dplyr::group_by(Model, var_sim) |>
       dplyr::summarise(
         sd_obs = stats::sd(obs),
-        sd_sim = stats::sd(sim),
-        r      = suppressWarnings(stats::cor(obs, sim)),
-        bias   = mean(sim - obs),
-        crmsd  = sqrt(mean(((sim - mean(sim)) - (obs - mean(obs)))^2)),
+        sd_sim = stats::sd(value),
+        r      = suppressWarnings(stats::cor(obs, value)),
+        bias   = mean(value - obs),
+        crmsd  = sqrt(mean(((value - mean(value)) - (obs - mean(obs)))^2)),
         n      = dplyr::n(),
         .groups = "drop"
       )

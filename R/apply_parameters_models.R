@@ -32,7 +32,7 @@ set_list_params <- function(x, p, file) {
 #' Warn about parameter files an `apply_params_*()` method can't handle
 #' @noRd
 warn_unhandled_files <- function(all_p, handled, model) {
-  unhandled <- setdiff(unique(all_p$file), c(handled, "met", "inf", "wdr"))
+  unhandled <- setdiff(unique(all_p$file), c(handled, boundary_files))
   if (length(unhandled) > 0) {
     cli::cli_warn("Parameters for {.file {unhandled}} are not applied to \\
                   {.val {model}}: file not supported.")
@@ -216,7 +216,7 @@ read_config_for_params <- function(model, lake_dir, labels = NULL,
                                    files = NULL) {
   if (is.null(labels)) return(read_model_config(model, lake_dir))
   if (is.null(files)) files <- locate_config_files(model, lake_dir)
-  labels <- setdiff(unique(labels), c("met", "inf", "wdr"))
+  labels <- setdiff(unique(labels), boundary_files)
 
   read_file <- function(key) {
     f <- files[[key]]

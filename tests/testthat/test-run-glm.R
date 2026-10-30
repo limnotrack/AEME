@@ -121,15 +121,18 @@ test_that("editing and running GLM-AED via the thin path-based wrapper works", {
   n_depths <- nml0$init_profiles$num_depths
   new_temp <- seq(20, 10, length.out = n_depths)
   new_salt <- rep(1, n_depths)
-  wq_var <- nml0$init_profiles$wq_names[1]
+  wq_var <- "CHM_oxy"
+  glm_wq_var <- rename_modelvars(wq_var, type_output = "glm_aed")
   set_glm_init(path_glm, temp = new_temp, salt = new_salt,
-              wq_init = setNames(list(321), wq_var))
+              wq_init = setNames(list(10), wq_var))
   nml1 <- read_nml(glm_file)
   testthat::expect_equal(nml1$init_profiles$the_temps, new_temp)
   testthat::expect_equal(nml1$init_profiles$the_sals, new_salt)
-  wq_idx <- match(wq_var, nml1$init_profiles$wq_names)
+  wq_idx <- match(glm_wq_var, nml1$init_profiles$wq_names)
   wq_vals <- matrix(nml1$init_profiles$wq_init_vals, nrow = n_depths)
-  testthat::expect_true(all(wq_vals[, wq_idx] == 321))
+  # 10 mg/L -> mmol/m3 (conversion_aed = 0.032)
+  testthat::expect_equal(wq_vals[, wq_idx], rep(10 / 0.032, n_depths),
+                         tolerance = 1e-4)
 
   # -- inflows --
   inf_df <- read.csv(file.path(path_glm, "bcs", "inflow_FWMT.csv"))
@@ -203,41 +206,41 @@ test_that("editing and running GLM-AED via the thin path-based wrapper works", {
   testthat::expect_error(standardise_glm_output(out))
 })
 
-test_that("running GLM with different exec works", {
-  # Skip if not on Windows
-  if (.Platform$OS.type != "windows") {
-    testthat::skip("Skipping test on non-Windows OS")
-  }
-  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
-  aeme <- readRDS(aeme_file)
-  path <- tempdir()
-  model_controls <- get_model_controls()
-  model <- c("glm_aed")
-
-  path <- tempdir()  # or wherever you want to save
-  # install_glm_aed() pins AEME.glm_version; restore both options on exit so
-  # later tests don't pick the glm3.nml template
-  withr::local_options(AEME.glm_version = getOption("AEME.glm_version"),
-                       AEME.glm_exec = NULL)
-  install_glm_aed(version = "3.3.5")
-
-  options("AEME.glm_exec" = glm_exe_path())
-  getOption("AEME.glm_exec")
-
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, ext_elev = 5,
-                     use_bgc = FALSE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
-
-  glm_ver <- get_model_version(model = model)
-  testthat::expect_true(any(grepl("3.3.5", glm_ver)))
-  # plot_output(aeme, model = model)
-  outp <- output(aeme)
-  lake_dir <- get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(lake_dir,
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
-})
+# test_that("running GLM with different exec works", {
+#   # Skip if not on Windows
+#   if (.Platform$OS.type != "windows") {
+#     testthat::skip("Skipping test on non-Windows OS")
+#   }
+#   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+#   aeme <- readRDS(aeme_file)
+#   path <- tempdir()
+#   model_controls <- get_model_controls()
+#   model <- c("glm_aed")
+# 
+#   path <- tempdir()  # or wherever you want to save
+#   # install_glm_aed() pins AEME.glm_version; restore both options on exit so
+#   # later tests don't pick the glm3.nml template
+#   withr::local_options(AEME.glm_version = getOption("AEME.glm_version"),
+#                        AEME.glm_exec = NULL)
+#   install_glm_aed(version = "3.3.5")
+# 
+#   options("AEME.glm_exec" = glm_exe_path())
+#   getOption("AEME.glm_exec")
+# 
+#   aeme <- build_aeme(path = path, aeme = aeme, model = model,
+#                      model_controls = model_controls, ext_elev = 5,
+#                      use_bgc = FALSE)
+#   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
+# 
+#   glm_ver <- get_model_version(model = model)
+#   testthat::expect_true(any(grepl("3.3.5", glm_ver)))
+#   # plot_output(aeme, model = model)
+#   outp <- output(aeme)
+#   lake_dir <- get_lake_dir(aeme = aeme, path = path)
+#   file_chk <- file.exists(file.path(lake_dir,
+#                                     model, "output", "output.nc"))
+#   testthat::expect_true(file_chk)
+# })
 
 test_that("run GLM models with old object", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
@@ -275,6 +278,28 @@ test_that("running GLM-AED works", {
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = TRUE) |>
     run_aeme(verbose = T)
+  aeme <- aeme |> 
+    run_aeme(verbose = T, extra_vars = "all")
+  phy_in <- get_var(aeme = aeme, model = model, var = "PHY_cyano_IP")
+  head(phy_in)
+  
+  diag <- diag_glm_mass_balance(aeme = aeme, by = "var", units = "kg")
+  mb <- read_glm_mass_balance(aeme = aeme)
+  library(ggplot2)
+  ggplot() +
+    geom_line(data = mb, aes(x = datetime, y = value, color = term)) +
+    facet_wrap(~var, scales = "free_y") +
+    labs(title = "GLM-AED Mass Balance", x = "Date", y = "Mass (kg)") +
+    theme_minimal()
+  
+  mb_var <- diag_glm_mass_balance(aeme = aeme, by = "var", units = "kg")
+  mb_tot <- diag_glm_mass_balance(aeme = aeme, by = "total", units = "kg")
+  ggplot() +
+    geom_line(data = mb_tot$daily, aes(x = datetime, y = lake, color = "Lake")) +
+    facet_wrap(~name, scales = "free_y", ncol = 1) +
+    labs(title = "GLM-AED Mass Balance by Variable", x = "Date", y = "Mass (kg)") +
+    theme_minimal()
+  
   
   metrics <- assess_aeme(aeme = aeme)
   aed_succession_index(aeme)

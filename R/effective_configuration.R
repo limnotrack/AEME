@@ -39,7 +39,7 @@ effective_configuration <- function(aeme, model) {
   for (m in intersect(model, unique(param$model))) {
     if (is.null(cfg[[m]])) next
     p_m <- param[param$model == m, , drop = FALSE]
-    if (!any(!p_m$file %in% c("met", "inf", "wdr"))) next
+    if (!any(!p_m$file %in% boundary_files)) next
     cfg[[m]] <- apply_parameters(cfg[[m]], p_m, m, strict = FALSE)$config
   }
   cfg

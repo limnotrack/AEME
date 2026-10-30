@@ -18,7 +18,9 @@ plot_output(
   ylim = NULL,
   cumulative = FALSE,
   facet = TRUE,
-  backend = c("ggplot2", "base")
+  backend = c("ggplot2", "base"),
+  zone = NULL,
+  sed_layer = NULL
 )
 }
 \arguments{
@@ -60,14 +62,26 @@ This only applies to variables without a depth component.}
 
 \item{backend}{character; plotting backend to use. Options are "ggplot2" and
 "base". Default is "ggplot2".}
+
+\item{zone, sed_layer}{integer; for variables with an \code{nzones} and/or
+\code{sed_layers} dimension (GLM-AED sediment output, e.g. \code{"SED_Fsed_oxy"},
+\code{"SED_temp"}), plot only these sediment zones and/or sediment layers. \code{NULL}
+(default) plots all. Ignored for other variables. See \code{\link[=get_var]{get_var()}}.}
 }
 \value{
 list of plots for z-dimensional variables or a ggplot2 object for 1-d
-variables.
+variables and for grouped (e.g. sediment zone) variables.
 }
 \description{
 Generates a contour plot for z-dimension variables and line plot for 1-d
 variables.
+}
+\details{
+Variables with dimensions other than time or depth x time (GLM-AED sediment
+variables, see \link{glm_extra_vars}) are drawn as a line plot with one line per
+zone and/or sediment layer, and one panel per model if several models have the
+variable. This needs the \code{"ggplot2"} backend and a single \code{var_sim};
+observations are not added.
 }
 \examples{
 \dontrun{

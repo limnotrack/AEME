@@ -21,6 +21,10 @@
 #' @param strict logical; if `TRUE` (default), parameters for a file that is
 #'   not in `config` (e.g. bgc parameters for a model built without bgc) are an
 #'   error. If `FALSE` they are skipped with a warning.
+#' @param derive_totals logical; if `TRUE` (default), the `aed_totals` block of
+#'   `aed.nml` is re-derived from the phytoplankton parameters whenever
+#'   `aed.nml` or `aed_phyto_pars.csv` parameters are applied (glm_aed only).
+#'   Set `FALSE` to leave a hand-edited `aed_totals` block untouched.
 #'
 #' @return A list with
 #'   \item{config}{the patched configuration.}
@@ -29,7 +33,8 @@
 #'   configuration files that were changed, so a caller can write back only
 #'   those.}
 #' @noRd
-apply_parameters <- function(config, param, model, strict = TRUE) {
+apply_parameters <- function(config, param, model, strict = TRUE,
+                             derive_totals = TRUE) {
   model <- check_model(model)
   if (length(model) != 1) {
     cli::cli_abort("Please provide only one model at a time.")
@@ -39,7 +44,7 @@ apply_parameters <- function(config, param, model, strict = TRUE) {
 
   switch(
     model,
-    glm_aed = apply_params_glm_aed(config, param, strict),
+    glm_aed = apply_params_glm_aed(config, param, strict, derive_totals),
     gotm_wet = apply_params_gotm_wet(config, param, strict),
     simstrat_aed2 = ,
     simstrat_aed = apply_params_simstrat(config, param, model, strict),
@@ -51,7 +56,8 @@ apply_parameters <- function(config, param, model, strict = TRUE) {
 #' @rdname apply_parameters
 #' @param all_p collapsed parameters for the model.
 #' @noRd
-apply_params_glm_aed <- function(config, all_p, strict = TRUE) {
+apply_params_glm_aed <- function(config, all_p, strict = TRUE,
+                                 derive_totals = TRUE) {
   touched <- character(0)
   if (nrow(all_p) == 0) return(list(config = config, touched = touched))
 
@@ -104,7 +110,7 @@ apply_params_glm_aed <- function(config, all_p, strict = TRUE) {
                  "aed_macrophyte_pars.csv")
 
   unhandled <- setdiff(unique(all_p$file),
-                       c(nml_files, csv_files, "met", "inf", "wdr"))
+                       c(nml_files, csv_files, boundary_files))
   if (length(unhandled) > 0) {
     cli::cli_warn("Parameters for {.file {unhandled}} are not applied to \\
                   {.val glm_aed}: file not supported.")
@@ -182,9 +188,10 @@ apply_params_glm_aed <- function(config, all_p, strict = TRUE) {
 
   # The aed_totals block is derived from the phytoplankton parameters, so
   # keep it consistent with whatever was just set. Only when the config
-  # already has one (it is added by build_aeme()/set_aed_totals()).
+  # already has one (it is added by build_aeme()/set_aed_totals()). Skipped
+  # when `derive_totals = FALSE` so a hand-edited block is preserved.
   phyto_changed <- any(c("aed.nml", "aed_phyto_pars.csv") %in% touched)
-  if (phyto_changed && !is.null(config[["bgc"]][["aed"]][["aed_totals"]])) {
+  if (derive_totals && phyto_changed && !is.null(config[["bgc"]][["aed"]][["aed_totals"]])) {
     config <- derive_aed_totals(config)
     touched <- union(touched, "aed.nml")
   }
@@ -204,6 +211,7 @@ apply_params_glm_aed <- function(config, all_p, strict = TRUE) {
 #' @param outflows list; the outflow data, `outflows(aeme)$data`.
 #' @param param data.frame; collapsed parameters (`collapse_params()`) for a
 #'   single model.
+#' @param inflows list; the inflow data, `inflows(aeme)$data`.
 #'
 #' @return A list. Each element is `NULL` when `param` has no rows for that
 #'   boundary condition.
@@ -211,13 +219,16 @@ apply_params_glm_aed <- function(config, all_p, strict = TRUE) {
 #'   and `MET_wnduvv`, and `MET_cldcvr` is clamped to `[0, 1]`.}
 #'   \item{outflows}{scaled outflow data (`outflow` for the water balance,
 #'   `HYD_flow` otherwise).}
-#'   \item{inf_factor}{numeric; inflow scaling factor(s). The inflow data
-#'   itself is not scaled here -- the model-specific inflow writers apply the
-#'   factor.}
+#'   \item{inf_factor}{numeric; inflow flow scaling factor(s) (`inf` rows named
+#'   `"inflow"` or `"HYD_flow"`). The flow itself is not scaled here -- the
+#'   model-specific inflow writers apply the factor.}
+#'   \item{inf}{inflow data with variables multiplied (`inf` rows named for an
+#'   inflow variable, e.g. `"CHM_doc"`) or set to a constant (`inf_const`
+#'   rows). `NULL` when there are no such rows.}
 #' @noRd
-apply_boundary_params <- function(meteo, outflows, param) {
+apply_boundary_params <- function(meteo, outflows, param, inflows = NULL) {
   if (!is.list(param[["value"]])) param <- collapse_params(param)
-  out <- list(meteo = NULL, outflows = NULL, inf_factor = NULL)
+  out <- list(meteo = NULL, outflows = NULL, inf_factor = NULL, inf = NULL)
 
   met_idx <- which(param$file == "met")
   if (length(met_idx) > 0) {
@@ -248,10 +259,55 @@ apply_boundary_params <- function(meteo, outflows, param) {
     out$outflows <- wdr
   }
 
-  inf_idx <- which(param$file == "inf")
+  # Inflow rows named "inflow" or "HYD_flow" scale the flow (applied by the
+  # model-specific writers); any other name is the inflow variable to
+  # multiply (`inf`) or set to a constant (`inf_const`).
+  flow_names <- c("inflow", "HYD_flow")
+  inf_idx <- which(param$file == "inf" & param$name %in% flow_names)
   if (length(inf_idx) > 0) {
     out$inf_factor <- unlist(param[["value"]][inf_idx])
   }
+  var_idx <- which(param$file %in% c("inf", "inf_const") &
+                     !param$name %in% flow_names)
+  if (length(var_idx) > 0) {
+    out$inf <- scale_inflow_vars(
+      inflows = inflows, vars = param$name[var_idx],
+      values = vapply(param[["value"]][var_idx], \(x) unlist(x)[1], numeric(1)),
+      const = param$file[var_idx] == "inf_const"
+    )
+  }
 
   out
+}
+
+#' Scale or set inflow variables
+#'
+#' @param inflows list of inflow data.frames, `inflows(aeme)$data`.
+#' @param vars character; inflow column names (e.g. `"CHM_doc"`).
+#' @param values numeric; one per `vars`; a multiplier, or the constant.
+#' @param const logical; one per `vars`; `TRUE` replaces the column with
+#'   `values`, `FALSE` multiplies it.
+#'
+#' @return `inflows`, with the columns changed in every inflow that has them.
+#'   A variable found in no inflow gives a warning.
+#' @noRd
+scale_inflow_vars <- function(inflows, vars, values, const) {
+  for (i in seq_along(vars)) {
+    found <- FALSE
+    for (nm in names(inflows)) {
+      df <- inflows[[nm]]
+      if (!vars[i] %in% names(df)) next
+      found <- TRUE
+      df[[vars[i]]] <- if (const[i]) {
+        rep(values[i], nrow(df))
+      } else {
+        df[[vars[i]]] * values[i]
+      }
+      inflows[[nm]] <- df
+    }
+    if (!found) {
+      cli::cli_warn("Inflow variable {.val {vars[i]}} not found in any inflow.")
+    }
+  }
+  inflows
 }

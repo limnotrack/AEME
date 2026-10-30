@@ -7,7 +7,10 @@
 align_depth_data(aeme, model, var_sim, ens_n = 1, return_df = TRUE)
 }
 \arguments{
-\item{aeme}{Aeme object.}
+\item{aeme}{Aeme object, or an \link[=AemeSummary-class]{AemeSummary}. For a
+summary only \code{model} and \code{var_sim} apply, and the result has the surface and
+bottom series (\code{layer}) and every \code{stat}; filter \code{\link[=output]{output()}} for more
+control.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
 \code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if

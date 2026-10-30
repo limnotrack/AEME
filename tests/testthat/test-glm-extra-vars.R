@@ -71,9 +71,9 @@ test_that("check_aeme_vars() accepts registry names", {
 
 test_that("extra_vars selects what is read; core output is untouched", {
   fx <- .glm_extra_fixture()
-  a_all <- .run_extra(fx)
+  a_all <- .run_extra(fx, extra_vars = "all")
   a_sel <- .run_extra(fx, extra_vars = c("SED_Fsed_oxy", "zarea"))
-  a_non <- .run_extra(fx, extra_vars = "none")
+  a_non <- .run_extra(fx)   # the default: nothing extra
 
   g_all <- output(a_all)$ens_001$glm_aed
   g_sel <- output(a_sel)$ens_001$glm_aed
@@ -86,9 +86,23 @@ test_that("extra_vars selects what is read; core output is untouched", {
   expect_identical(g_sel$HYD_temp, g_all$HYD_temp)
   expect_identical(g_non$HYD_temp, g_all$HYD_temp)
 
-  # keep_diag = FALSE still drops both sub-lists
-  a_nd <- .run_extra(fx, keep_diag = FALSE)
+  # keep_diag = FALSE drops both sub-lists even when they were requested
+  a_nd <- .run_extra(fx, extra_vars = "all", keep_diag = FALSE)
   expect_null(output(a_nd)$ens_001$glm_aed$sediment)
+})
+
+test_that("extra output is opt-in: the default reads nothing extra", {
+  fx <- .glm_extra_fixture()
+  a_def <- .run_extra(fx)
+  a_none <- .run_extra(fx, extra_vars = "none")
+  g_def <- output(a_def)$ens_001$glm_aed
+  expect_null(g_def$sediment)
+  expect_null(g_def$diag)
+  expect_false(any(c("SDF_Fsed_oxy", "OXY_sat", "zarea") %in% names(g_def)))
+  expect_identical(g_def, output(a_none)$ens_001$glm_aed)
+  expect_identical(formals(run_aeme)$extra_vars, "none")
+  expect_identical(formals(run_aeme_ensemble)$extra_vars, "none")
+  expect_identical(formals(load_output)$extra_vars, "none")
 })
 
 test_that("sediment group keyword, sed_layers and unknown names behave", {
@@ -164,4 +178,86 @@ test_that("run_aeme_ensemble() forwards extra_vars to every member", {
   for (m in c("ens_001", "ens_002")) {
     expect_equal(names(output(ens)[[m]]$glm_aed$sediment), "zarea")
   }
+})
+
+test_that("load_output(return_type = 'output') returns the output without storing it", {
+  fx <- .glm_extra_fixture()
+  a <- .run_extra(fx)
+  stored_before <- output(a)
+
+  out <- load_output(a, model = "glm_aed", path = fx$path,
+                     model_controls = fx$mc, extra_vars = "sediment",
+                     return_type = "output")
+
+  # a list named by model, holding an aeme_output
+  expect_type(out, "list")
+  expect_named(out, "glm_aed")
+  expect_true(is_aeme_output(out$glm_aed))
+  expect_gt(length(out$glm_aed$sediment), 5)
+
+  # the Aeme object is untouched, and the extras are not stored on it
+  expect_identical(output(a), stored_before)
+  expect_null(output(a)$ens_001$glm_aed$sediment)
+
+  # read exactly like the stored output: same standard variables
+  stored <- output(a)$ens_001$glm_aed
+  std <- setdiff(names(stored), c("diag", "sediment"))
+  expect_identical(unclass(out$glm_aed)[std], unclass(stored)[std])
+
+  # same result as storing it, then reading it back off the object
+  a2 <- load_output(a, model = "glm_aed", path = fx$path,
+                    model_controls = fx$mc, extra_vars = "sediment")
+  expect_identical(names(out$glm_aed), names(output(a2)$ens_001$glm_aed))
+
+  # ens_n is ignored (nothing is stored), and the output is usable directly
+  out3 <- load_output(a, model = "glm_aed", path = fx$path,
+                      model_controls = fx$mc, ens_n = 3,
+                      return_type = "output")
+  expect_true(is_aeme_output(out3$glm_aed))
+  expect_null(output(a)$ens_003)
+  expect_true(ggplot2::is_ggplot(
+    plot_model_output(out$glm_aed, "SDF_Fsed_oxy_Z")))
+
+  expect_error(load_output(a, model = "glm_aed", path = fx$path,
+                           return_type = "nope"))
+})
+
+test_that("plot_output() and plot_model_output() plot sediment variables by AEME name", {
+  fx <- .glm_extra_fixture()
+  a <- .run_extra(fx, extra_vars = c("SED_Fsed_oxy", "SED_temp"),
+                  zone_summary = TRUE)
+  g <- output(a)$ens_001$glm_aed$sediment
+
+  # same API as every other variable
+  p1 <- plot_output(a, var_sim = "SED_Fsed_oxy")
+  expect_true(ggplot2::is_ggplot(p1))
+  expect_equal(nrow(p1$data), nrow(get_var(a, "glm_aed", "SED_Fsed_oxy")))
+  # axis label comes from the registry: name and units
+  expect_match(p1$labels$y, "oxygen")
+  expect_match(p1$labels$y, "mmol O2/m2/d", fixed = TRUE)
+
+  # zone filter
+  p2 <- plot_output(a, var_sim = "SED_Fsed_oxy", zone = 1)
+  expect_true(all(p2$data$nzones == 1))
+  expect_lt(nrow(p2$data), nrow(p1$data))
+
+  # plot_model_output() takes the same names and filters, on an Aeme ...
+  p3 <- plot_model_output(a, "SED_Fsed_oxy", zone = 1)
+  expect_true(all(p3$data$nzones == 1))
+  # ... and on a stored-nowhere aeme_output
+  out <- load_output(a, model = "glm_aed", path = fx$path,
+                     model_controls = fx$mc, extra_vars = "SED_Fsed_oxy",
+                     return_type = "output")
+  p4 <- plot_model_output(out$glm_aed, "SED_Fsed_oxy", zone = 2)
+  expect_true(all(p4$data$nzones == 2))
+
+  # sediment layers (three-dimensional variable)
+  skip_if_not("sed_temp" %in% names(g), "no sed_temp in this configuration")
+  p5 <- plot_output(a, var_sim = "SED_temp", zone = 1, sed_layer = c(1, 2))
+  expect_setequal(unique(p5$data$sed_layers), c(1, 2))
+  expect_true(all(p5$data$nzones == 1))
+
+  # lake-wide series (a plain time series held in the sediment sub-list)
+  p6 <- plot_output(a, var_sim = "SED_Fsed_oxy_lake")
+  expect_true(ggplot2::is_ggplot(p6))
 })

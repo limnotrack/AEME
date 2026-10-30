@@ -57,7 +57,7 @@ test_that("GLM runs with an explicitly placed fixed outlet", {
 
   aeme <- build_aeme(path = lk$path, aeme = aeme, model = model,
                      model_controls = get_model_controls(),
-                     ext_elev = 5, use_bgc = FALSE)
+                     ext_elev = 5, use_bgc = FALSE, glm_weir = FALSE)
 
   outf_nml <- read_nml(glm_nml_path(get_lake_dir(aeme, path = lk$path)))$outflow
   fl <- as.logical(outf_nml$flt_off_sw)
@@ -84,7 +84,7 @@ test_that("set_glm_outflow_config() reconfigures the block and GLM still runs", 
   model <- "glm_aed"
   aeme <- build_aeme(path = lk$path, aeme = lk$aeme, model = model,
                      model_controls = get_model_controls(),
-                     ext_elev = 5, use_bgc = FALSE)
+                     ext_elev = 5, use_bgc = FALSE, glm_weir = FALSE)
   path_glm <- file.path(get_lake_dir(aeme, path = lk$path), "glm_aed")
   glm_file <- find_glm_nml(path_glm)
 

@@ -30,12 +30,13 @@ check_glm_nml <- function(file) {
   }
   
   # --- File existence checks ---
-  if (!is.null(nml$inflow)) {
+  if (is.character(nml$inflow$inflow_fl)) {
     inflow_files  <- strsplit(nml$inflow$inflow_fl, ",")[[1]]
   } else {
     inflow_files <- NULL
   }
-  if (!is.null(nml$outflow)) {
+  # outflow_fl is absent when all surface outflow goes through GLM's weir
+  if (is.character(nml$outflow$outflow_fl)) {
     outflow_files <- strsplit(nml$outflow$outflow_fl, ",")[[1]]
   } else {
     outflow_files <- NULL
