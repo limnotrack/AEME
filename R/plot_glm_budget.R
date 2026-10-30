@@ -21,8 +21,9 @@
 #'   elements in `budget`.
 #' @param period character; the period of `budget` to draw. Default is the
 #'   first.
-#' @param units character; `"kg_yr"` (default, kg of the element per year) or
-#'   `"mmol_m2_d"` (mmol per m2 of lake surface per day).
+#' @param units character; `"kg_yr"` (default, kg of the element per year),
+#'   `"t_yr"` (tonnes of the element per year, as often used for annual
+#'   budgets) or `"mmol_m2_d"` (mmol per m2 of lake surface per day).
 #' @param show_residual logical; also show the residual of each compartment?
 #' @param ... passed to [diag_glm_budget()] when `budget` is an Aeme object.
 #'
@@ -33,10 +34,10 @@
 #' \dontrun{
 #' plot_glm_budget(aeme)
 #' bud <- diag_glm_budget(aeme, element = "N", period = "year")
-#' plot_glm_budget(bud, period = "2021", units = "mmol_m2_d")
+#' plot_glm_budget(bud, period = "2021", units = "t_yr")
 #' }
 plot_glm_budget <- function(budget, element = NULL, period = NULL,
-                            units = c("kg_yr", "mmol_m2_d"),
+                            units = c("kg_yr", "t_yr", "mmol_m2_d"),
                             show_residual = FALSE, ...) {
   units <- match.arg(units)
   if (!inherits(budget, "glm_budget")) {
@@ -134,6 +135,8 @@ plot_glm_budget <- function(budget, element = NULL, period = NULL,
 glm_budget_caption <- function(units, period) {
   u <- if (units == "kg_yr") {
     "Arrows: mean flux, kg of the element per year. Boxes: mean inventory, kg."
+  } else if (units == "t_yr") {
+    "Arrows: mean flux, tonnes of the element per year. Boxes: mean inventory, tonnes."
   } else {
     "Arrows: mean flux, mmol per m2 of lake surface per day. Boxes: mean inventory, mmol per m2."
   }
@@ -200,7 +203,8 @@ glm_budget_layout <- function() {
 #' @noRd
 glm_budget_panel <- function(budget, el, period, units, area, lay,
                              show_residual) {
-  unit_col <- if (units == "kg_yr") "kg_yr" else "mmol_m2_d"
+  unit_col <- switch(units, kg_yr = "kg_yr", t_yr = "t_yr",
+                     mmol_m2_d = "mmol_m2_d")
   fmt <- function(x) {
     ifelse(is.na(x), "-", ifelse(abs(x) >= 100, format(round(x), big.mark = ",",
                                                        trim = TRUE),
@@ -219,7 +223,8 @@ glm_budget_panel <- function(budget, el, period, units, area, lay,
 
   pools <- budget$pools[budget$pools$element == el &
                           budget$pools$period == period, ]
-  pools$value <- if (units == "kg_yr") pools$kg else pools$mmol / area
+  pools$value <- switch(units, kg_yr = pools$kg, t_yr = pools$t,
+                        mmol_m2_d = pools$mmol / area)
 
   cl <- NULL
   if (!is.null(budget$closure)) {
@@ -318,8 +323,11 @@ glm_budget_panel <- function(budget, el, period, units, area, lay,
     out
   }))
 
-  title <- paste0(names_el, " (", if (units == "kg_yr") paste0("kg ", el, "/yr")
-                  else paste0("mmol ", el, "/m2/d"), ")")
+  title <- paste0(names_el, " (", switch(units,
+                                         kg_yr = paste0("kg ", el, "/yr"),
+                                         t_yr = paste0("t ", el, "/yr"),
+                                         mmol_m2_d = paste0("mmol ", el, "/m2/d")),
+                  ")")
   resid_lab <- NULL
   if (!is.null(cl) && any(cl$term == "residual")) {
     r <- cl$value[cl$term == "residual"]

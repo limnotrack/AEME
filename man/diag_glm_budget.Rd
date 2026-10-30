@@ -8,6 +8,7 @@ diag_glm_budget(
   aeme,
   element = c("N", "P", "C"),
   period = c("all", "year", "month"),
+  year_start = NULL,
   path = NULL,
   include_spin_up = TRUE,
   settling = c("hypsograph", "interface")
@@ -22,6 +23,13 @@ diag_glm_budget(
 \item{period}{character; summary resolution, \code{"all"} (default, the whole
 run), \code{"year"} or \code{"month"}.}
 
+\item{year_start}{integer; the month (1 to 12) a year starts in when
+\code{period = "year"}. Default \code{NULL} takes it from the lake latitude: 1 (the
+calendar year, labelled \code{"2021"}) in the northern hemisphere, and 7 (a
+July to June year, labelled by both calendar years, \code{"2020/21"}) in the
+southern hemisphere. The calendar year is used if the latitude is not
+set.}
+
 \item{path}{character; root directory used with \code{aeme}.}
 
 \item{include_spin_up}{logical; keep the spin-up period? If \code{FALSE}, days
@@ -35,13 +43,13 @@ a list with
 \itemize{
 \item \code{fluxes}: one row per element, period and process between two
 compartments (\code{from}, \code{to}), with the mean rate \code{mmol_d}, the equivalent
-\code{kg_yr} (kg of the element per year) and the areal \code{mmol_m2_d} (per m2
-of mean lake surface).
-\item \code{pools}: the mean inventory of each compartment (\code{mmol} and \code{kg}),
+\code{kg_yr} (kg of the element per year), \code{t_yr} (tonnes per year) and the
+areal \code{mmol_m2_d} (per m2 of mean lake surface).
+\item \code{pools}: the mean inventory of each compartment (\code{mmol}, \code{kg} and \code{t}),
 from the AED totals of the model configuration.
 \item \code{closure}: per element and period, the \code{term}s \code{inflow}, \code{outflow},
 \code{sediment}, \code{atmosphere}, \code{explained}, \code{d_storage} and \code{residual}, in
-the same three units. Positive means a gain for the lake.
+the same units. Positive means a gain for the lake.
 \item \code{compartments}: the same closure for each compartment (\code{inorganic},
 \code{phyto}, \code{dom}, \code{pom}): its \code{d_storage} and the \code{inflow}, \code{outflow},
 \code{flux_in} and \code{flux_out} of every diagnostic flux entering or leaving it,

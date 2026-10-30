@@ -112,6 +112,13 @@
   the sediment-water interface diagnostics (`*_swi_Z`) were 10 to 30 times
   larger than `vvel * concentration` allows and left the particulate and
   plankton pools unbalanced; `settling = "interface"` gives them for comparison.
+* `diag_glm_budget()` also returns tonnes per year (`t_yr`, and `t` for the
+  inventories), and `plot_glm_budget(units = "t_yr")` draws the budget in
+  tonnes of the element per year.
+* `diag_glm_budget(period = "year")` takes `year_start` to start the year in
+  another month (for example `year_start = 7` for a July to June year, labelled
+  `"2020/21"`). By default it follows the lake latitude: July for the southern
+  hemisphere, otherwise the calendar year.
 
 ## Fixes (carbon budget closure)
 

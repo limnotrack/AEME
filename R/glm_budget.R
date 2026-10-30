@@ -42,6 +42,12 @@
 #' @inheritParams calc_glm_fluxes
 #' @param period character; summary resolution, `"all"` (default, the whole
 #'   run), `"year"` or `"month"`.
+#' @param year_start integer; the month (1 to 12) a year starts in when
+#'   `period = "year"`. Default `NULL` takes it from the lake latitude: 1 (the
+#'   calendar year, labelled `"2021"`) in the northern hemisphere, and 7 (a
+#'   July to June year, labelled by both calendar years, `"2020/21"`) in the
+#'   southern hemisphere. The calendar year is used if the latitude is not
+#'   set.
 #' @param settling character; `"hypsograph"` (default) or `"interface"`, see
 #'   [calc_glm_fluxes()].
 #' @param include_spin_up logical; keep the spin-up period? If `FALSE`, days
@@ -50,13 +56,13 @@
 #' @return a list with
 #'   * `fluxes`: one row per element, period and process between two
 #'     compartments (`from`, `to`), with the mean rate `mmol_d`, the equivalent
-#'     `kg_yr` (kg of the element per year) and the areal `mmol_m2_d` (per m2
-#'     of mean lake surface).
-#'   * `pools`: the mean inventory of each compartment (`mmol` and `kg`),
+#'     `kg_yr` (kg of the element per year), `t_yr` (tonnes per year) and the
+#'     areal `mmol_m2_d` (per m2 of mean lake surface).
+#'   * `pools`: the mean inventory of each compartment (`mmol`, `kg` and `t`),
 #'     from the AED totals of the model configuration.
 #'   * `closure`: per element and period, the `term`s `inflow`, `outflow`,
 #'     `sediment`, `atmosphere`, `explained`, `d_storage` and `residual`, in
-#'     the same three units. Positive means a gain for the lake.
+#'     the same units. Positive means a gain for the lake.
 #'   * `compartments`: the same closure for each compartment (`inorganic`,
 #'     `phyto`, `dom`, `pom`): its `d_storage` and the `inflow`, `outflow`,
 #'     `flux_in` and `flux_out` of every diagnostic flux entering or leaving it,
@@ -76,10 +82,17 @@
 #' }
 diag_glm_budget <- function(aeme, element = c("N", "P", "C"),
                             period = c("all", "year", "month"),
-                            path = NULL, include_spin_up = TRUE,
+                            year_start = NULL, path = NULL,
+                            include_spin_up = TRUE,
                             settling = c("hypsograph", "interface")) {
   element <- match.arg(element, several.ok = TRUE)
   period <- match.arg(period)
+  if (!is.null(year_start) && (!is.numeric(year_start) ||
+                               length(year_start) != 1 ||
+                               !year_start %in% 1:12)) {
+    cli::cli_abort("{.arg year_start} must be a month number from 1 to 12.")
+  }
+  if (is.null(year_start)) year_start <- glm_budget_year_start(aeme)
   settling <- match.arg(settling)
   file <- glm_output_nc(aeme = aeme, path = path)
   path_glm <- file.path(get_lake_dir(aeme, path), "glm_aed")
@@ -99,7 +112,8 @@ diag_glm_budget <- function(aeme, element = c("N", "P", "C"),
     if (isTRUE(include_spin_up)) d else d[d$Date >= start, ]
   }
   key <- function(d) {
-    d$period <- switch(period, all = "all", year = format(d$Date, "%Y"),
+    d$period <- switch(period, all = "all",
+                       year = glm_budget_year(d$Date, year_start),
                        month = format(d$Date, "%Y-%m"))
     d
   }
@@ -193,7 +207,7 @@ diag_glm_budget <- function(aeme, element = c("N", "P", "C"),
     key() |>
     dplyr::summarise(mmol = mean(mmol, na.rm = TRUE),
                      .by = c(element, period, compartment)) |>
-    dplyr::mutate(kg = mmol_to_kg(mmol, element))
+    dplyr::mutate(kg = mmol_to_kg(mmol, element), t = kg / 1e3)
 
   structure(list(fluxes = fluxes, pools = pools, closure = closure,
                  compartments = compartments, daily = daily),
@@ -282,7 +296,32 @@ glm_budget_compartments <- function(mb, aed_totals, fx, element) {
   dplyr::bind_rows(res)
 }
 
-#' Add kg per year and areal units to a table of mean rates in mmol/d
+#' Month a budget year starts in, from the lake latitude
+#'
+#' @param aeme Aeme object.
+#' @return 7 (July) for a lake in the southern hemisphere, otherwise 1.
+#' @noRd
+glm_budget_year_start <- function(aeme) {
+  lat <- tryCatch(lake(aeme)$latitude, error = function(e) NULL)
+  if (is.numeric(lat) && length(lat) == 1 && !is.na(lat) && lat < 0) 7L else 1L
+}
+
+#' Label dates by year, starting the year in a given month
+#'
+#' @param date vector of dates.
+#' @param year_start month (1 to 12) the year starts in.
+#' @return character; `"2021"` for the calendar year, `"2020/21"` for a year
+#'   that starts in July 2020.
+#' @noRd
+glm_budget_year <- function(date, year_start = 1L) {
+  yr <- as.integer(format(date, "%Y"))
+  if (year_start == 1L) return(as.character(yr))
+  first <- yr - (as.integer(format(date, "%m")) < year_start)
+  sprintf("%d/%02d", first, (first + 1L) %% 100L)
+}
+
+#' Add kg per year, tonnes per year and areal units to a table of mean rates in
+#' mmol/d
 #'
 #' @param d data frame with `element` and `mmol_d`.
 #' @param area mean lake surface area (m2).
@@ -290,6 +329,7 @@ glm_budget_compartments <- function(mb, aed_totals, fx, element) {
 glm_budget_units <- function(d, area) {
   d |>
     dplyr::mutate(kg_yr = mmol_d * glm_element_mass()[element] / 1e6 * 365.25,
+                  t_yr = kg_yr / 1e3,
                   mmol_m2_d = mmol_d / area)
 }
 

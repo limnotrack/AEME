@@ -171,4 +171,38 @@ test_that("diag_glm_budget() and plot_glm_budget() work on a GLM run", {
   expect_s3_class(plot_glm_budget(bud, element = "N", units = "mmol_m2_d",
                                   show_residual = TRUE), "ggplot")
   expect_error(plot_glm_budget(bud, element = "Z"))
+
+  # tonnes per year are kg per year / 1000
+  expect_equal(bud$fluxes$t_yr, bud$fluxes$kg_yr / 1e3)
+  expect_equal(bud$closure$t_yr, bud$closure$kg_yr / 1e3)
+  expect_equal(bud$pools$t, bud$pools$kg / 1e3)
+  pt <- plot_glm_budget(bud, units = "t_yr")
+  expect_s3_class(pt, "ggplot")
+  expect_no_error(ggplot2::ggplot_build(pt))
+  expect_match(pt$labels$caption, "tonnes")
+})
+
+test_that("budget years can start in any month", {
+  d <- as.Date(c("2020-06-30", "2020-07-01", "2021-06-30", "2021-12-31"))
+  expect_equal(glm_budget_year(d), c("2020", "2020", "2021", "2021"))
+  expect_equal(glm_budget_year(d, 7), c("2019/20", "2020/21", "2020/21",
+                                        "2021/22"))
+  expect_equal(glm_budget_year(as.Date("1999-10-01"), 7), "1999/00")
+  expect_error(diag_glm_budget(NULL, year_start = 13), "year_start")
+})
+
+test_that("budget year defaults to the hemisphere of the lake", {
+  aeme <- readRDS(system.file("extdata/aeme.rds", package = "AEME"))
+  lat <- lake(aeme)$latitude
+  expect_equal(glm_budget_year_start(aeme), if (lat < 0) 7L else 1L)
+  lke <- lake(aeme)
+  lke$latitude <- 47
+  lake(aeme) <- lke
+  expect_equal(glm_budget_year_start(aeme), 1L)
+  lke$latitude <- -37
+  lake(aeme) <- lke
+  expect_equal(glm_budget_year_start(aeme), 7L)
+  lke$latitude <- NULL
+  lake(aeme) <- lke
+  expect_equal(glm_budget_year_start(aeme), 1L)
 })

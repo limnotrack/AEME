@@ -8,7 +8,7 @@ plot_glm_budget(
   budget,
   element = NULL,
   period = NULL,
-  units = c("kg_yr", "mmol_m2_d"),
+  units = c("kg_yr", "t_yr", "mmol_m2_d"),
   show_residual = FALSE,
   ...
 )
@@ -23,8 +23,9 @@ elements in \code{budget}.}
 \item{period}{character; the period of \code{budget} to draw. Default is the
 first.}
 
-\item{units}{character; \code{"kg_yr"} (default, kg of the element per year) or
-\code{"mmol_m2_d"} (mmol per m2 of lake surface per day).}
+\item{units}{character; \code{"kg_yr"} (default, kg of the element per year),
+\code{"t_yr"} (tonnes of the element per year, as often used for annual
+budgets) or \code{"mmol_m2_d"} (mmol per m2 of lake surface per day).}
 
 \item{show_residual}{logical; also show the residual of each compartment?}
 
@@ -54,7 +55,7 @@ nitrification) are printed inside it.
 \dontrun{
 plot_glm_budget(aeme)
 bud <- diag_glm_budget(aeme, element = "N", period = "year")
-plot_glm_budget(bud, period = "2021", units = "mmol_m2_d")
+plot_glm_budget(bud, period = "2021", units = "t_yr")
 }
 }
 \seealso{
