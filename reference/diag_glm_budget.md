@@ -15,6 +15,7 @@ diag_glm_budget(
   aeme,
   element = c("N", "P", "C"),
   period = c("all", "year", "month"),
+  year_start = NULL,
   path = NULL,
   include_spin_up = TRUE,
   settling = c("hypsograph", "interface")
@@ -37,6 +38,14 @@ diag_glm_budget(
   character; summary resolution, `"all"` (default, the whole run),
   `"year"` or `"month"`.
 
+- year_start:
+
+  integer; the month (1 to 12) a year starts in when `period = "year"`.
+  Default `NULL` takes it from the lake latitude: 1 (the calendar year,
+  labelled `"2021"`) in the northern hemisphere, and 7 (a July to June
+  year, labelled by both calendar years, `"2020/21"`) in the southern
+  hemisphere. The calendar year is used if the latitude is not set.
+
 - path:
 
   character; root directory used with `aeme`.
@@ -57,15 +66,15 @@ a list with
 
 - `fluxes`: one row per element, period and process between two
   compartments (`from`, `to`), with the mean rate `mmol_d`, the
-  equivalent `kg_yr` (kg of the element per year) and the areal
-  `mmol_m2_d` (per m2 of mean lake surface).
+  equivalent `kg_yr` (kg of the element per year), `t_yr` (tonnes per
+  year) and the areal `mmol_m2_d` (per m2 of mean lake surface).
 
-- `pools`: the mean inventory of each compartment (`mmol` and `kg`),
-  from the AED totals of the model configuration.
+- `pools`: the mean inventory of each compartment (`mmol`, `kg` and
+  `t`), from the AED totals of the model configuration.
 
 - `closure`: per element and period, the `term`s `inflow`, `outflow`,
   `sediment`, `atmosphere`, `explained`, `d_storage` and `residual`, in
-  the same three units. Positive means a gain for the lake.
+  the same units. Positive means a gain for the lake.
 
 - `compartments`: the same closure for each compartment (`inorganic`,
   `phyto`, `dom`, `pom`): its `d_storage` and the `inflow`, `outflow`,

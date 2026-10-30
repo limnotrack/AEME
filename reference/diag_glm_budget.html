@@ -90,6 +90,7 @@ inventory those terms explain.</p>
 <span>  <span class="va">aeme</span>,</span>
 <span>  element <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="st">"P"</span>, <span class="st">"C"</span><span class="op">)</span>,</span>
 <span>  period <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"year"</span>, <span class="st">"month"</span><span class="op">)</span>,</span>
+<span>  year_start <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  include_spin_up <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  settling <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hypsograph"</span>, <span class="st">"interface"</span><span class="op">)</span></span>
@@ -114,6 +115,15 @@ inventory those terms explain.</p>
 run), <code>"year"</code> or <code>"month"</code>.</p></dd>
 
 
+<dt id="arg-year-start">year_start<a class="anchor" aria-label="anchor" href="#arg-year-start"></a></dt>
+<dd><p>integer; the month (1 to 12) a year starts in when
+<code>period = "year"</code>. Default <code>NULL</code> takes it from the lake latitude: 1 (the
+calendar year, labelled <code>"2021"</code>) in the northern hemisphere, and 7 (a
+July to June year, labelled by both calendar years, <code>"2020/21"</code>) in the
+southern hemisphere. The calendar year is used if the latitude is not
+set.</p></dd>
+
+
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
 <dd><p>character; root directory used with <code>aeme</code>.</p></dd>
 
@@ -132,13 +142,13 @@ before the simulation start are dropped.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>a list with</p><ul><li><p><code>fluxes</code>: one row per element, period and process between two
 compartments (<code>from</code>, <code>to</code>), with the mean rate <code>mmol_d</code>, the equivalent
-<code>kg_yr</code> (kg of the element per year) and the areal <code>mmol_m2_d</code> (per m2
-of mean lake surface).</p></li>
-<li><p><code>pools</code>: the mean inventory of each compartment (<code>mmol</code> and <code>kg</code>),
+<code>kg_yr</code> (kg of the element per year), <code>t_yr</code> (tonnes per year) and the
+areal <code>mmol_m2_d</code> (per m2 of mean lake surface).</p></li>
+<li><p><code>pools</code>: the mean inventory of each compartment (<code>mmol</code>, <code>kg</code> and <code>t</code>),
 from the AED totals of the model configuration.</p></li>
 <li><p><code>closure</code>: per element and period, the <code>term</code>s <code>inflow</code>, <code>outflow</code>,
 <code>sediment</code>, <code>atmosphere</code>, <code>explained</code>, <code>d_storage</code> and <code>residual</code>, in
-the same three units. Positive means a gain for the lake.</p></li>
+the same units. Positive means a gain for the lake.</p></li>
 <li><p><code>compartments</code>: the same closure for each compartment (<code>inorganic</code>,
 <code>phyto</code>, <code>dom</code>, <code>pom</code>): its <code>d_storage</code> and the <code>inflow</code>, <code>outflow</code>,
 <code>flux_in</code> and <code>flux_out</code> of every diagnostic flux entering or leaving it,
