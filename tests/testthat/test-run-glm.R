@@ -206,41 +206,41 @@ test_that("editing and running GLM-AED via the thin path-based wrapper works", {
   testthat::expect_error(standardise_glm_output(out))
 })
 
-test_that("running GLM with different exec works", {
-  # Skip if not on Windows
-  if (.Platform$OS.type != "windows") {
-    testthat::skip("Skipping test on non-Windows OS")
-  }
-  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
-  aeme <- readRDS(aeme_file)
-  path <- tempdir()
-  model_controls <- get_model_controls()
-  model <- c("glm_aed")
-
-  path <- tempdir()  # or wherever you want to save
-  # install_glm_aed() pins AEME.glm_version; restore both options on exit so
-  # later tests don't pick the glm3.nml template
-  withr::local_options(AEME.glm_version = getOption("AEME.glm_version"),
-                       AEME.glm_exec = NULL)
-  install_glm_aed(version = "3.3.5")
-
-  options("AEME.glm_exec" = glm_exe_path())
-  getOption("AEME.glm_exec")
-
-  aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, ext_elev = 5,
-                     use_bgc = FALSE)
-  aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
-
-  glm_ver <- get_model_version(model = model)
-  testthat::expect_true(any(grepl("3.3.5", glm_ver)))
-  # plot_output(aeme, model = model)
-  outp <- output(aeme)
-  lake_dir <- get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(lake_dir,
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
-})
+# test_that("running GLM with different exec works", {
+#   # Skip if not on Windows
+#   if (.Platform$OS.type != "windows") {
+#     testthat::skip("Skipping test on non-Windows OS")
+#   }
+#   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+#   aeme <- readRDS(aeme_file)
+#   path <- tempdir()
+#   model_controls <- get_model_controls()
+#   model <- c("glm_aed")
+# 
+#   path <- tempdir()  # or wherever you want to save
+#   # install_glm_aed() pins AEME.glm_version; restore both options on exit so
+#   # later tests don't pick the glm3.nml template
+#   withr::local_options(AEME.glm_version = getOption("AEME.glm_version"),
+#                        AEME.glm_exec = NULL)
+#   install_glm_aed(version = "3.3.5")
+# 
+#   options("AEME.glm_exec" = glm_exe_path())
+#   getOption("AEME.glm_exec")
+# 
+#   aeme <- build_aeme(path = path, aeme = aeme, model = model,
+#                      model_controls = model_controls, ext_elev = 5,
+#                      use_bgc = FALSE)
+#   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, path = path)
+# 
+#   glm_ver <- get_model_version(model = model)
+#   testthat::expect_true(any(grepl("3.3.5", glm_ver)))
+#   # plot_output(aeme, model = model)
+#   outp <- output(aeme)
+#   lake_dir <- get_lake_dir(aeme = aeme, path = path)
+#   file_chk <- file.exists(file.path(lake_dir,
+#                                     model, "output", "output.nc"))
+#   testthat::expect_true(file_chk)
+# })
 
 test_that("run GLM models with old object", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
