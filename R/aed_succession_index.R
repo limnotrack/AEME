@@ -96,8 +96,9 @@
 #' @importFrom stats aggregate
 #'
 #' @export
-aed_succession_index <- function(aeme, model, groups = c("cyano", "green", "diatom"),
-                                  depth = 0, ens_n = 1) {
+aed_succession_index <- function(aeme, model, 
+                                 groups = c("cyano", "green", "diatom"),
+                                 depth = 0, ens_n = 1) {
 
   aeme <- check_aeme(aeme)
   if (missing(model)) {

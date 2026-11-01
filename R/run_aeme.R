@@ -18,7 +18,8 @@
 #' @param check_output logical; check model output after running? Defaults to
 #' FALSE.
 #' @param ens_n numeric; ensemble number to allocate to model output which is
-#' loaded. Defaults to 1.
+#' loaded. Defaults to 1. A run with `ens_n = 1` clears any existing output;
+#' a run with another number adds (or replaces) that member and keeps the rest.
 #'
 #' @return Depends on `return_type` -- an `aeme` object with model output
 #' loaded (`"aeme"`), the raw `processx::run()` result(s) (`"exec_result"`),
@@ -50,7 +51,7 @@ run_aeme <- function(aeme, model, path, args = character(),
                      verbose = getOption("AEME.inform", FALSE),
                      debug = FALSE, timeout = Inf, parallel = FALSE, ncores,
                      check_output = FALSE, keep_diag = TRUE,
-                     extra_vars = NULL, sed_layers = NULL,
+                     extra_vars = "none", sed_layers = NULL,
                      zone_summary = FALSE) {
   
   aeme <- check_aeme(aeme)
@@ -93,6 +94,11 @@ run_aeme <- function(aeme, model, path, args = character(),
     missing_model_dirs <- model[!dir.exists(unlist(sim_folder))]
     cli::cli_abort(c("x" = "Model folder(s) do not exist:
     {paste0(missing_model_dirs, collapse = ', ')}"))
+  }
+  # A fresh run (`ens_n = 1`) starts from an empty output slot; running with
+  # a later `ens_n` adds that member (or replaces it) and keeps the others.
+  if (isTRUE(ens_n == 1)) {
+    aeme <- remove_output(aeme)
   }
   
   # Delete previous model output if it exists

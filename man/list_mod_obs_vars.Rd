@@ -14,7 +14,8 @@ list_mod_obs_vars(aeme, model, ens_n = 1)
 not found in \code{aeme}.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.}
+loaded. Defaults to 1. A run with \code{ens_n = 1} clears any existing output;
+a run with another number adds (or replaces) that member and keeps the rest.}
 }
 \value{
 A character vector of variables that are in both the observation and

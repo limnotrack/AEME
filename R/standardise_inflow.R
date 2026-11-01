@@ -49,8 +49,8 @@
 #'   \item \strong{Dissolved oxygen} (\code{OXY_oxy}): mmol/m3 typically
 #'     200-400. Median < 50 assumed to be mg/L and multiplied by 1000/32
 #'     (molar mass of O2).
-#'   \item \strong{Silica} (\code{SIL_rsi}): mmol/m3 typically 1-50. Median
-#'     > 100 assumed to be mg/L and divided by molar mass of SiO2 (60.084).
+#'   \item \strong{Silica} (\code{SIL_rsi}): must be supplied in mmol/m3; no
+#'     automatic conversion is applied because mg/L and mmol/m3 ranges overlap.
 #'   \item \strong{Temperature} (\code{temp}): degC expected. Median > 100
 #'     assumed to be Kelvin.
 #' }
@@ -461,16 +461,13 @@ standardise_inflow <- function(inflow,
     to      = "g/m^3"
   ),
   
-  # -- Silica (g/m3 expected; detect mmol/m3 -> divide by molar mass SiO2) --
-  # g/m3 typical: 1-30; mmol/m3 typical: 1-50 (SiO2 60.084 g/mol)
-  # These ranges genuinely overlap -- use > 100 as a conservative threshold
-  SIL_rsi = list(
-    detect  = function(x) .nz_median(x) > 100,
-    convert = function(x) x / 0.060084,
-    from    = "mmol/m\u00b3",
-    to      = "g/m^3"
-  )
+  # -- Silica (SIL_rsi) is deliberately NOT auto-converted --
+  # mg/L SiO2 is typically 1-50 (up to ~500 mmol/m3 after conversion) while
+  # mmol/m3 values of 100-500 are realistic, so the ranges overlap and no
+  # threshold can tell the units apart. Values are used as supplied (mmol/m3).
+  NULL
 )
+.inflow_conversion_table <- Filter(Negate(is.null), .inflow_conversion_table)
 
 
 #' @noRd

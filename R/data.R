@@ -103,7 +103,12 @@
 #' A data frame with 34 rows and 10 columns:
 #' \describe{
 #'   \item{model}{Model for the parameter}
-#'   \item{file}{File in which the parameter is stored}
+#'   \item{file}{File in which the parameter is stored. `"met"`, `"inf"`,
+#'   `"inf_const"` and `"wdr"` act on the boundary-condition data instead of a
+#'   file: `"met"` and `"wdr"` multiply meteorology and outflows, `"inf"`
+#'   multiplies an inflow (name `"inflow"` for flow, otherwise an inflow
+#'   variable such as `"CAR_doc"`) and `"inf_const"` sets an inflow variable to
+#'   a constant. See [inflow_param()].}
 #'   \item{name}{Name of the parameter}
 #'   \item{value}{Value of the parameter}
 #'   \item{min}{Minimum range of the parameter}

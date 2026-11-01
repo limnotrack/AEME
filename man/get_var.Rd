@@ -20,7 +20,10 @@ get_var(
 )
 }
 \arguments{
-\item{aeme}{Aeme object.}
+\item{aeme}{Aeme object, or an \link[=AemeSummary-class]{AemeSummary}. For a
+summary only \code{model} and \code{var_sim} apply, and the result has the surface and
+bottom series (\code{layer}) and every \code{stat}; filter \code{\link[=output]{output()}} for more
+control.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
 \code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
@@ -38,7 +41,7 @@ the bottom. That is \code{level - depth} metres below the surface, with \code{le
 the modelled water level (\code{LKE_lvlwtr}) on each date, so it follows the
 surface as the level rises and falls. On a date when the level is below
 \code{depth} (the point would be above the surface) the value is \code{NA}. Ignored
-when \code{depth} is \code{NULL}. (Before AEME 0.4.0 \code{"bottom"} was measured from the
+when \code{depth} is \code{NULL}. (In AEME 0.4.0 and earlier \code{"bottom"} was measured from the
 basin's full depth, which only matches when the level equals that depth.)}
 
 \item{return_df}{logical; if TRUE, return a dataframe; if FALSE, return a
@@ -69,7 +72,15 @@ keeps all. Sediment variables are returned in long format with one column
 per dimension (\code{nzones}, \code{sed_layers}); \code{depth_ref}/\code{depth} do not apply.}
 }
 \value{
-dataframe or list
+If \code{return_df = TRUE}, a data frame with the same leading columns
+whether or not \code{use_obs} is used: \code{Date}, \code{depth} (\code{NA} for variables
+without a depth dimension), \code{value}, \code{var_sim} and \code{Model}. With
+\code{use_obs = TRUE} the column \code{obs} (the observation, paired with the model
+\code{value}) is added after \code{value}, plus \code{depth_ref} and
+\code{height_above_bed} when height-above-bed observations are present. Variables
+with non-standard dimensions (e.g. sediment zones) carry one column per
+extra dimension instead of \code{depth}. If \code{return_df = FALSE}, a list with one
+such data frame per model.
 }
 \description{
 Get variable from aeme

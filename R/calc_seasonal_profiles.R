@@ -4,7 +4,7 @@
 #'
 #' @return Data frame with seasonal profiles for each model and variable
 #' @importFrom dplyr mutate filter group_by summarise arrange desc left_join
-#' @noRd
+#' @export
 calc_seasonal_profiles <- function(aeme, model, ens_n = 1) {
 
   # Check output is in aeme

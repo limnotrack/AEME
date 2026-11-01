@@ -119,6 +119,8 @@ make_wdr_glm <- function(outf, heights_wdr, outlet_type, flt_off_sw, bathy,
         bsn_wid_outl = round(widths, 2),
         outflow_fl = outflow_fl,
         outflow_factor = rep(1, n_wdr),
+        crest_width = 6,
+        crest_factor = 0.61,
         seepage = TRUE,
         seepage_rate = 0.0
       )

@@ -43,10 +43,14 @@ plot_car <- function(aeme, model, add_obs = TRUE, depth_range = NULL,
     ggplot2::labs(x = "Date", y = y_lab, colour = "Group") +
     ggplot2::guides(linewidth = "none", alpha = "none")
   
+  # Same limits on colour and fill so the line and point legends merge
+  grp_lvls <- intersect(names(car_cols), unique(p1$data$name_text))
   p1$scales$scales <- list()
   
   p1 <- p1 +
-    ggplot2::scale_color_manual(values = car_cols) +
+    ggplot2::scale_color_manual(values = car_cols, limits = grp_lvls) +
+    ggplot2::scale_fill_manual(values = car_cols, limits = grp_lvls) +
+    ggplot2::labs(fill = "Group") +
     ggplot2::scale_linewidth_manual(values = car_lwd) +
     ggplot2::scale_alpha_manual(values = car_alpha)
   

@@ -8,3 +8,9 @@
 #' the log10() singularity and does not distort real values.
 #' @noRd
 tli_conc_floor <- 1e-6
+
+#' Minimum number of sampling dates in a hydrological year before an annual
+#' mean of observations is used for the TLI (the protocol recommends monthly
+#' sampling).
+#' @noRd
+tli_min_obs_per_year <- 4L

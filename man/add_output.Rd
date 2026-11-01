@@ -15,5 +15,5 @@ add_output(aeme, out)
 Aeme object with model output added
 }
 \description{
-Add model output to Aeme object
+Stores \code{out} as the next ensemble member of the \code{output} slot.
 }

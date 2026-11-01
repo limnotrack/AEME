@@ -16,7 +16,9 @@ build_aeme(
   outf_factor = NULL,
   calc_wbal = NULL,
   calc_wlev = NULL,
+  refresh_wbal = FALSE,
   coeffs = NULL,
+  glm_weir = NULL,
   hum_type = NULL,
   est_swr_hr = NULL,
   use_aeme = FALSE,
@@ -62,12 +64,31 @@ named by model.}
 
 \item{calc_wlev}{logical; calculate water level. Default: \code{TRUE}.}
 
+\item{refresh_wbal}{logical; recalculate the water balance even if the
+one stored in \code{water_balance(aeme)} was made from identical inputs (the
+meteorology, inflows, outflows, lake level, hypsograph, times, models,
+\code{wb_method} and \code{coeffs}, hashed and stored alongside it). Default:
+\code{FALSE}, so rebuilding after changing only parameters or model controls
+skips the water balance.}
+
 \item{coeffs}{numeric vector of length 2; coefficients for estimating
 surface water temperature when calculating evaporation. If water
 temperature observations are present in \code{aeme}, a linear model is fitted
 against air temperature. Otherwise defaults to
 \eqn{T_{water} = 5 + 0.75 \times T_{air}} (Stefan & Preud'homme, 1993,
 \doi{10.1111/j.1752-1688.1993.tb01502.x}).}
+
+\item{glm_weir}{logical or list; for \code{"glm_aed"}, let GLM spill through its
+own weir (\code{morphometry/crest_elev}, \code{outflow/crest_width},
+\code{outflow/crest_factor}) instead of reading the water-balance (\code{wbal})
+outflow file. The weir is fitted to the observed \code{"outflow"} and lake level
+when both overlap (that outflow is then replaced by the weir), otherwise
+taken from the fitted water-balance \code{C} and \code{h_inv}. When fitted from
+observations, the water-balance \code{C} / \code{h_inv} for the \code{glm_aed} family
+(shared with \code{dy_cd}) are set to the equivalent values so the water
+balance and GLM agree. Other outflows are kept as GLM outlets. A list may
+set \code{crest_width} (m, default 6) and \code{interval} (search range for
+\code{crest_elev}). Default: \code{TRUE}; \code{FALSE} restores the \code{wbal} outflow file.}
 
 \item{hum_type}{integer; humidity input type for GOTM. One of:
 \itemize{

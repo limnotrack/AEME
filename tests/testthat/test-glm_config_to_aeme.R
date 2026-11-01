@@ -20,7 +20,7 @@ test_that("glm_config_to_aeme() recovers the lake, time, and input slots", {
   model_controls <- get_model_controls(use_bgc = TRUE)
   aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
                      model_controls = model_controls, ext_elev = 5,
-                     use_bgc = TRUE)
+                     use_bgc = TRUE, glm_weir = FALSE)
 
   nml_file <- glm_nml_path(get_lake_dir(aeme, path))
   testthat::expect_true(file.exists(nml_file))
@@ -93,7 +93,7 @@ test_that("build_aeme(use_aeme = TRUE) on a loaded object reproduces the origina
   model_controls <- get_model_controls(use_bgc = TRUE)
   aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
                      model_controls = model_controls, ext_elev = 5,
-                     use_bgc = TRUE)
+                     use_bgc = TRUE, glm_weir = FALSE)
   outf <- outflows(aeme)
   testthat::expect_true("wbal" %in% names(outf$data))
 

@@ -7,7 +7,10 @@
 check_obs_var(aeme, var_sim)
 }
 \arguments{
-\item{aeme}{Aeme object.}
+\item{aeme}{Aeme object, or an \link[=AemeSummary-class]{AemeSummary}. For a
+summary only \code{model} and \code{var_sim} apply, and the result has the surface and
+bottom series (\code{layer}) and every \code{stat}; filter \code{\link[=output]{output()}} for more
+control.}
 
 \item{var_sim}{character; variable in the AEME format (e.g. "HYD_temp").}
 }

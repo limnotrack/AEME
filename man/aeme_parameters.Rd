@@ -10,7 +10,12 @@
 A data frame with 34 rows and 10 columns:
 \describe{
 \item{model}{Model for the parameter}
-\item{file}{File in which the parameter is stored}
+\item{file}{File in which the parameter is stored. \code{"met"}, \code{"inf"},
+\code{"inf_const"} and \code{"wdr"} act on the boundary-condition data instead of a
+file: \code{"met"} and \code{"wdr"} multiply meteorology and outflows, \code{"inf"}
+multiplies an inflow (name \code{"inflow"} for flow, otherwise an inflow
+variable such as \code{"CAR_doc"}) and \code{"inf_const"} sets an inflow variable to
+a constant. See \code{\link[=inflow_param]{inflow_param()}}.}
 \item{name}{Name of the parameter}
 \item{value}{Value of the parameter}
 \item{min}{Minimum range of the parameter}

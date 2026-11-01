@@ -4,7 +4,7 @@
 \alias{input_model_parameters}
 \title{Input model parameters}
 \usage{
-input_model_parameters(aeme, model, param, path)
+input_model_parameters(aeme, model, param, path, derive_totals = TRUE)
 }
 \arguments{
 \item{aeme}{Aeme object.}
@@ -20,6 +20,11 @@ values first (see \code{\link[=expand_zone_ratios]{expand_zone_ratios()}}).}
 
 \item{path}{character; directory where input files are located. Defaults to
 the path stored in \code{aeme}, or the current working directory if not set.}
+
+\item{derive_totals}{logical; if \code{TRUE} (default), the \code{aed_totals} block of
+the GLM-AED \code{aed.nml} is re-derived from the phytoplankton parameters when
+\code{aed.nml} or \code{aed_phyto_pars.csv} parameters are applied, overwriting any
+manual edits to that block. Set \code{FALSE} to leave \code{aed_totals} as it is.}
 }
 \value{
 Aeme object with parameters input into model configuration files

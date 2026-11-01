@@ -50,7 +50,7 @@ write_configuration <- function(aeme, model, path = getwd(),
     for (m in intersect(model, unique(param$model))) {
       if (is.null(model_config[[m]])) next
       p_m <- param[param$model == m, , drop = FALSE]
-      if (!any(!p_m$file %in% c("met", "inf", "wdr"))) next
+      if (!any(!p_m$file %in% boundary_files)) next
       model_config[[m]] <- apply_parameters(model_config[[m]], p_m, m,
                                             strict = FALSE)$config
     }
@@ -83,7 +83,8 @@ write_configuration <- function(aeme, model, path = getwd(),
       # held in `aeme` is not changed
       bnd <- if (!is.null(p_m) && nrow(p_m) > 0) {
         apply_boundary_params(meteo = inp[["meteo"]],
-                              outflows = outflows(aeme)[["data"]], param = p_m)
+                              outflows = outflows(aeme)[["data"]], param = p_m,
+                              inflows = inflows(aeme)[["data"]])
       } else {
         list()
       }
@@ -91,7 +92,7 @@ write_configuration <- function(aeme, model, path = getwd(),
         aeme = aeme, model = m, lake_dir = lake_dir,
         meteo = bnd$meteo %||% inp[["meteo"]],
         outf = bnd$outflows %||% outflows(aeme)[["data"]],
-        inf = inflows(aeme)[["data"]],
+        inf = bnd$inf %||% inflows(aeme)[["data"]],
         inf_factor = bnd$inf_factor %||% 1
       )
     }

@@ -19,7 +19,7 @@ run_aeme(
   ncores,
   check_output = FALSE,
   keep_diag = TRUE,
-  extra_vars = NULL,
+  extra_vars = "none",
   sed_layers = NULL,
   zone_summary = FALSE
 )
@@ -44,7 +44,8 @@ elements; \code{"none"} returns \code{NULL} invisibly (useful when only the mode
 run's side effects, i.e. the output files, are wanted).}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.}
+loaded. Defaults to 1. A run with \code{ens_n = 1} clears any existing output;
+a run with another number adds (or replaces) that member and keeps the rest.}
 
 \item{model_controls}{data.frame; model configuration, typically loaded via
 \code{\link[=get_model_controls]{get_model_controls()}}.}
@@ -67,15 +68,20 @@ FALSE.}
 
 \item{keep_diag}{logical; keep the \code{diag} (diagnostic/scalar) and
 \code{sediment} sub-lists of each model's output (variables with dimensions other
-than time or depth x time, keyed by raw model names). Default \code{TRUE}; set to
-\code{FALSE} to save memory.}
+than time or depth x time, keyed by raw model names). Default \code{TRUE}, which
+keeps whatever was requested through \code{extra_vars} (nothing is requested by
+default, so by default there is nothing to keep). Set \code{FALSE} to drop the
+sub-lists even if they were requested.}
 
 \item{extra_vars}{character; for GLM-AED, which sediment, flux and diagnostic
-variables beyond the standard set to read from \code{output.nc}. \code{NULL}
-(default) reads all of them. \code{"none"} reads none. Otherwise AEME names from
-\link{glm_extra_vars} (e.g. \code{"SED_temp"}), raw netCDF names, and/or the keywords
-\code{"sediment"} / \code{"diag"}. Unrequested variables are never read, which keeps
-ensemble output small. See \code{\link[=read_glm_output]{read_glm_output()}}.}
+variables beyond the standard set to read from \code{output.nc}. Default \code{"none"}:
+only the standard variables (\code{vars_sim} and the lake fluxes) are read, so
+nothing extra is loaded or stored unless asked for. Otherwise AEME names from
+\link{glm_extra_vars} (e.g. \code{"SED_temp"}), raw netCDF names, the keywords
+\code{"sediment"} / \code{"diag"} (every variable in that sub-list), or \code{"all"} for
+every variable in the file (this was the behaviour before extra output had to
+be requested). Unrequested variables are never read, which keeps loading fast
+and ensemble output small. See \code{\link[=read_glm_output]{read_glm_output()}}.}
 
 \item{sed_layers}{integer; GLM-AED sediment layers to keep for variables
 with a sediment-layer dimension (\code{SED_temp}). \code{NULL} keeps all. See

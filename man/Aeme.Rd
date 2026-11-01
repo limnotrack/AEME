@@ -97,11 +97,13 @@ evaporation family since \code{dy_cd}/\code{glm_aed} share one fit and
 \code{\link{get_wbal_param}}.
 }}
 
-\item{\code{output}}{A list representing output information. \itemize{
-\item \code{dy_cd}: list; DYRESM-CAEDYM output.
-\item \code{glm_aed}: list; GLM-AED output.
-\item \code{gotm_wet}: list; GOTM-WET output.
-\item \code{simstrat_aed2}: list; Simstrat-AED2 output.
+\item{\code{output}}{A list of model output. \itemize{
+\item \code{n_members}: integer; number of ensemble members.
+\item \code{ens_001}, \code{ens_002}, ...: one list per ensemble member,
+each with an element per model that is either \code{NULL} or an
+\code{aeme_output} list: \code{dy_cd} (DYRESM-CAEDYM), \code{glm_aed}
+(GLM-AED), \code{gotm_wet} (GOTM-WET), \code{simstrat_aed2}
+(Simstrat-AED2) and \code{simstrat_aed} (Simstrat-AED).
 }}
 
 \item{\code{parameters}}{A dataframe representing model parameters: updates (e.g.

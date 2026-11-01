@@ -14,6 +14,7 @@ config_defaults <- function() {
     calc_wbal      = TRUE,
     wb_method      = 2L,
     calc_wlev      = TRUE,
+    glm_weir       = TRUE,
     hum_type       = 3L,
     est_swr_hr     = TRUE
   )

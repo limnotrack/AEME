@@ -110,6 +110,29 @@ but here we provide a brief overview of the key modules relevant for GLM-AED.
 
 : AED biogeochemical modules available in AEME.
 
+There is a work-in-progress AED module dependency diagram available as a html
+diagram. This can be viewed in R with the `view_aed_modules()` function, which 
+opens the diagram in your RStudio Viewer pane or default web browser. It is
+embedded below in an iframe so its styling does not affect this article.
+
+### View AED modules
+
+```{r vis-aed-modules, eval=FALSE}
+view_aed_modules()
+```
+
+```{r aed-modules, echo=FALSE}
+f <- system.file("extdata", "aed_modules", "aed_module_interactions.html",
+                 package = "AEME")
+htmltools::tags$iframe(
+  srcdoc = paste(readLines(f, warn = FALSE, encoding = "UTF-8"), collapse = "
+"),
+  width = "100%", height = "750px",
+  style = "border: 1px solid #d9dcd5; border-radius: 4px;"
+)
+```
+
+
 ### GLM-AED Parameter Library {#parameter-library}
 
 The `glm_aed_parameter_library` dataset provides a comprehensive list of all 
@@ -701,9 +724,48 @@ plot_output(aeme = aeme, var_sim = "PHY_tchla")
 
 GLM-AED writes much more than the variables listed in `model_controls`:
 sediment temperature and heat flux, sediment–water fluxes (lake-wide and for
-each sediment zone), sediment pools and AED diagnostics. AEME reads all of it
-from `output.nc`, so nothing needs to be switched on before the run. It is
-stored in the model output beside the standard variables:
+each sediment zone), sediment pools and AED diagnostics. They are all in
+`output.nc`, but `run_aeme()` only loads the standard variables (those in
+`model_controls`, plus the lake fluxes) so that loading stays fast and the
+`aeme` object small. The extra output is loaded when you ask for it with
+`extra_vars`.
+
+### Requesting the variables
+
+`load_output()` reads the output of a model that has already been run, so extra
+variables can be added without running the model again. Here we ask for every
+sediment variable:
+
+```{r sed-load-extra}
+aeme_extra <- load_output(
+  aeme       = aeme,
+  model      = model,
+  path       = path,
+  extra_vars = "sediment"
+)
+```
+
+`run_aeme()` takes the same `extra_vars` argument, to load them as part of the
+run. To look at extra output without storing it on the `Aeme` object, use
+`return_type = "output"`. This returns a list with one `aeme_output` per model
+and leaves `aeme` as it was:
+
+```{r sed-return-output}
+sed_out <- load_output(
+  aeme        = aeme,
+  model       = model,
+  path        = path,
+  extra_vars  = "sediment",
+  return_type = "output"
+)
+sed_out$glm_aed
+```
+
+Model output of this kind can be given straight to `plot_model_output()`, for
+example `plot_model_output(sed_out$glm_aed, "SED_Fsed_oxy")`, but not to
+functions that need an `Aeme` object, such as `get_var()` and `plot_output()`. The rest of this
+section stores the variables on the object, so that `get_var()` works. In the
+output the extra variables sit beside the standard ones:
 
 - ordinary `(time)` and `(depth, time)` variables sit alongside `HYD_temp` and
   the rest;
@@ -711,21 +773,20 @@ stored in the model output beside the standard variables:
   labelled `aeme_grouped_var` objects in the `sediment` and `diag` sub-lists,
   so a zone is never mistaken for a depth.
 
-### Finding the variables
-
-`get_output_vars()` lists what is available. The `group` argument picks the
+`get_output_vars()` lists what was loaded. The `group` argument picks the
 sub-list:
 
 ```{r sed-output-vars}
-get_output_vars(aeme, model = "glm_aed", group = "sediment") |>
+get_output_vars(aeme_extra, model = "glm_aed", group = "sediment") |>
   head(12)
 ```
 
 These variables are stored under their raw GLM-AED netCDF names. The
-`glm_extra_vars` table gives each one an AEME name, a label and units, and
-either name works anywhere AEME looks up a variable (`get_var()`,
-`check_var_in_output()`, ...). `SED_*` are the sediment-zone variables and
-`SEDL_*` the matching lake-wide series:
+`glm_extra_vars` table lists what can be requested. It gives each variable an
+AEME name, a label and units, and either name works in `extra_vars` and
+anywhere AEME looks up a variable (`get_var()`, `check_var_in_output()`, ...).
+`SED_*` are the sediment-zone variables and `SEDL_*` the matching lake-wide
+series:
 
 ```{r glm-extra-vars}
 glm_extra_vars |>
@@ -738,34 +799,28 @@ glm_extra_vars |>
 
 `SED_temp` is the temperature of the sediment layers beneath each zone. It has
 three dimensions (sediment layer, zone and time), so `get_var()` returns it in
-long format, one row per layer, zone and date. Use `zone` and `sed_layer` to
-subset it. Zones follow the GLM order (1 is the deepest) and layer 1 is the
+long format, one row per layer, zone and date. `plot_output()` draws it with one
+line per zone and layer. Use `zone` and `sed_layer`, in either function, to
+choose which. Zones follow the GLM order (1 is the deepest) and layer 1 is the
 shallowest. It is only written when GLM's sediment heat model is on
 (`sed_heat_model = 2` in the GLM nml). If your run does not have it, the
 chunks below that use it are skipped.
 
-```{r sed-temp, eval = "sed_temp" %in% names(output(aeme)$ens_001$glm_aed$sediment), fig.cap = "Sediment temperature (°C) in the top and bottom sediment layer of each zone."}
-sed_temp <- get_var(aeme, model = "glm_aed", var_sim = "SED_temp")
+```{r sed-temp, eval = "sed_temp" %in% names(output(aeme_extra)$ens_001$glm_aed$sediment), fig.cap = "Sediment temperature (°C) in the top and bottom sediment layer of each zone."}
+sed_temp <- get_var(aeme_extra, model = "glm_aed", var_sim = "SED_temp")
 n_layer  <- max(sed_temp$sed_layers)
 
-sed_temp |>
-  dplyr::filter(sed_layers %in% c(1, n_layer)) |>
-  dplyr::mutate(layer = ifelse(sed_layers == 1, "Top layer", "Bottom layer"),
-                zone  = factor(nzones)) |>
-  ggplot(aes(Date, value, colour = zone)) +
-  geom_line() +
-  facet_wrap(~layer, ncol = 1) +
-  labs(x = NULL, y = "Sediment temperature (°C)", colour = "Zone") +
-  theme_bw()
+# the top and bottom sediment layer of each zone
+plot_output(aeme_extra, var_sim = "SED_temp", sed_layer = c(1, n_layer))
 ```
 
 A zone that has no area in GLM's output for the simulated period is returned as
-`NA`, so it is missing from the plot above (zone 3 in this lake). The same call
-with `zone` and `sed_layer` returns a single series, for example the top layer
-of the deepest zone:
+`NA`, so it is missing from the plot above (zone 3 in this lake). `get_var()`
+takes the same `zone` and `sed_layer` arguments and returns a single series, for
+example the top layer of the deepest zone:
 
-```{r sed-temp-subset, eval = "sed_temp" %in% names(output(aeme)$ens_001$glm_aed$sediment)}
-get_var(aeme, model = "glm_aed", var_sim = "SED_temp",
+```{r sed-temp-subset, eval = "sed_temp" %in% names(output(aeme_extra)$ens_001$glm_aed$sediment)}
+get_var(aeme_extra, model = "glm_aed", var_sim = "SED_temp",
         zone = 1, sed_layer = 1) |>
   head(3)
 ```
@@ -774,34 +829,32 @@ get_var(aeme, model = "glm_aed", var_sim = "SED_temp",
 
 Fluxes across the sediment–water interface are written for each zone as well as
 for the whole lake. Zone variables (`SED_Fsed_oxy`, `SED_Fsed_amm`, ...) have a
-`nzones` column:
+`nzones` column, and are plotted with `plot_output()` like any other variable,
+with one line per zone:
 
 ```{r sed-flux-zone, fig.cap = "Simulated sediment oxygen flux (mmol O2 m⁻² d⁻¹) in each sediment zone."}
-get_var(aeme, model = "glm_aed", var_sim = "SED_Fsed_oxy") |>
-  dplyr::mutate(zone = factor(nzones)) |>
-  ggplot(aes(Date, value, colour = zone)) +
-  geom_line() +
-  labs(x = NULL, y = "Sediment oxygen flux (mmol O2 m-2 d-1)",
-       colour = "Zone") +
-  theme_bw()
+plot_output(aeme_extra, var_sim = "SED_Fsed_oxy")
 ```
 
 ### Choosing what to keep
 
-Keeping every sediment and diagnostic variable is convenient for exploring a
+Loading every variable in the file (`"all"`) is convenient for exploring a
 single run, but it is wasteful when the model is run many times, as in a
-sensitivity analysis, calibration or ensemble. Each run stores several MB of
-extra output, and most of it is never looked at. `run_aeme()` (and
-`run_aeme_ensemble()`, `load_output()`) take an `extra_vars` argument to choose
-what is read from `output.nc`. Variables that are not requested are never
+sensitivity analysis, calibration or ensemble: in this lake it takes about four
+times as long to load and five times the memory, and most of it is never looked
+at. The sediment variables on their own are a small part of that, but a
+calibration usually needs only one or two series. That is why nothing extra is
+loaded by default. `run_aeme()`,
+`run_aeme_ensemble()` and `load_output()` take an `extra_vars` argument to
+choose what is read from `output.nc`. Variables that are not requested are never
 read.
 
-| `extra_vars` | What is kept |
+| `extra_vars` | What is loaded |
 |---|---|
-| `NULL` (default) | Everything, as above |
-| `"none"` | No extra variables, just the standard set |
+| `"none"` (default) | No extra variables, just the standard set |
 | `c("SED_temp", "SED_Fsed_oxy")` | Only these. AEME or raw netCDF names |
 | `"sediment"` or `"diag"` | Every variable stored in that sub-list |
+| `"all"` | Every variable in `output.nc` |
 
 Two further arguments reduce what is kept for the variables you do select.
 `sed_layers` keeps only some sediment layers of `SED_temp`, and
@@ -810,8 +863,10 @@ The series is the mean over zones, weighted by the (time-varying) area of each
 zone, and is stored as `<name>_lake`:
 
 ```{r extra-vars-run}
-aeme_sel <- run_aeme(
+aeme_sel <- load_output(
   aeme         = aeme,
+  model        = model,
+  path         = path,
   extra_vars   = c("SED_temp", "SED_Fsed_oxy", "SED_Fsed_amm"),
   sed_layers   = 1:3,
   zone_summary = TRUE
@@ -820,10 +875,11 @@ aeme_sel <- run_aeme(
 size_mb <- function(x) {
   format(object.size(output(x)$ens_001$glm_aed), units = "MB")
 }
-c(all_extras = size_mb(aeme), selected = size_mb(aeme_sel))
+c(default = size_mb(aeme), all_sediment = size_mb(aeme_extra),
+  selected = size_mb(aeme_sel))
 ```
 
-The standard output is identical between the two runs. Only the extras differ.
+The standard output is identical whatever is requested. Only the extras differ.
 
 ```{r extra-vars-compare}
 identical(output(aeme)$ens_001$glm_aed$HYD_temp,
@@ -835,11 +891,7 @@ The lake-wide series is a single time series, handy as a calibration target or
 for comparing with whole-lake estimates of sediment oxygen demand:
 
 ```{r sed-flux-lake, fig.cap = "Zone-area weighted lake-wide sediment oxygen flux (mmol O2 m⁻² d⁻¹)."}
-get_var(aeme_sel, model = "glm_aed", var_sim = "SED_Fsed_oxy_lake") |>
-  ggplot(aes(Date, value)) +
-  geom_line() +
-  labs(x = NULL, y = "Sediment oxygen flux (mmol O2 m-2 d-1)") +
-  theme_bw()
+plot_output(aeme_sel, var_sim = "SED_Fsed_oxy_lake")
 ```
 
 A name ending `_lake` can also be requested on its own, for example

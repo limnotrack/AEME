@@ -192,6 +192,8 @@ glm_config_to_aeme <- function(nml_file, model_controls = NULL, spin_up = 2,
   cfg$ext_elev <- 0
   cfg$calc_wbal <- FALSE
   cfg$calc_wlev <- FALSE
+  # keep the imported GLM outflow/weir configuration as read from disk
+  cfg$glm_weir <- FALSE
   configuration(aeme) <- cfg
 
   if (isTRUE(read_params)) {

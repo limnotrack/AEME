@@ -109,8 +109,8 @@ molar mass of C (12.011 g/mol).
 \item \strong{Dissolved oxygen} (\code{OXY_oxy}): mmol/m3 typically
 200-400. Median < 50 assumed to be mg/L and multiplied by 1000/32
 (molar mass of O2).
-\item \strong{Silica} (\code{SIL_rsi}): mmol/m3 typically 1-50. Median
-> 100 assumed to be mg/L and divided by molar mass of SiO2 (60.084).
+\item \strong{Silica} (\code{SIL_rsi}): must be supplied in mmol/m3; no
+automatic conversion is applied because mg/L and mmol/m3 ranges overlap.
 \item \strong{Temperature} (\code{temp}): degC expected. Median > 100
 assumed to be Kelvin.
 }

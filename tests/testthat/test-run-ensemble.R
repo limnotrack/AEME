@@ -187,7 +187,7 @@ test_that("running models with wbal method = 3", {
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls,
                      ext_elev = 5, use_bgc = FALSE, calc_wbal = T,
-                     wb_method = 3, calc_wlev = F) |>
+                     wb_method = 3, calc_wlev = F, glm_weir = FALSE) |>
     run_aeme(parallel = F, ncore = getOption("ncore"))
 
   file_chk <- check_all_model_outfiles(aeme = aeme)
@@ -519,7 +519,7 @@ test_that("summarise multi-year output", {
   s3 <- object.size(aeme_summ)
   s3 / s2
   s1 / s2
-  testthat::expect_true(is(aeme_summ, "Aeme"))
+  testthat::expect_true(is(aeme_summ, "AemeSummary"))
   testthat::expect_true(s3 < s2)
 
 })
@@ -558,12 +558,12 @@ test_that("add AEME output as inflow", {
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   path <- tempdir()
-  model_controls <- get_model_controls()
+  model_controls <- get_model_controls(use_bgc = TRUE)
   model <- c("glm_aed", "gotm_wet")
   model <- filter_platform_models(model)
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
                      model_controls = model_controls, ext_elev = 5,
-                     use_bgc = FALSE)
+                     use_bgc = TRUE)
 
   obs <- get_obs(aeme)
   mod_obs_vars <- get_mod_obs_vars(aeme)

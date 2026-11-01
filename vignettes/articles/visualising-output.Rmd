@@ -47,7 +47,7 @@ library(ggplot2)
 options(AEME.inform = FALSE)
 ```
 
-```{r build, message = FALSE, results = "hide"}
+```{r build, message = FALSE, results = "hide", warning = FALSE}
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
 aeme <- readRDS(aeme_file)
 
@@ -212,6 +212,68 @@ For example, to plot the sediment oxygen flux:
 ```{r}
 plot_model_output(raw, var_sim = "SDF_Fsed_oxy_Z")
 ```
+
+# A lightweight summary for dashboards
+
+The depth-resolved output of a model run is large, and most dashboards only
+need a few series. `summarise_aeme()` (also what `summary(aeme)` returns)
+reduces an `Aeme` to an `AemeSummary`: daily surface and bottom values for every
+depth-resolved variable, the variables that have no depth, and optionally the
+observations, daily forcing and the hypsograph. It holds no model
+configuration, so it cannot be built or run -- it is only for looking at.
+
+```{r summarise}
+aeme_summ <- summarise_aeme(aeme)
+aeme_summ
+```
+
+The `output` is a plain long table, so it goes straight into ggplot2, a
+dashboard, or any other language. `layer` is `"surface"` or `"bottom"` (split at
+the epilimnion depth, `HYD_epidep`, else the thermocline depth, else half the
+water column), or `NA` for variables without depth. `stat` is `"value"` for a
+single run; with an ensemble it holds the statistics across members (mean, min,
+max and the 5th/95th percentiles by default).
+
+```{r summary-output}
+head(output(aeme_summ))
+```
+
+`plot()` and `get_var()` work on a summary, and the same accessors you use on an
+`Aeme` (`lake()`, `time()`, `observations()`, `parameters()`) apply, with
+`forcing()`, `hypsograph()`, `profiles()` and `models()` for the rest:
+
+```{r summary-plot}
+plot(aeme_summ, "HYD_temp")
+```
+
+```{r summary-forcing}
+names(forcing(aeme_summ))
+head(forcing(aeme_summ)$meteo)
+```
+
+It is a fraction of the size of the full object:
+
+```{r summary-size}
+format(object.size(aeme_summ), units = "Kb")
+format(object.size(aeme), units = "Kb")
+```
+
+Store it with `write_aeme_summary()` -- `"rds"` (the default), `"parquet"` (one
+file per table, for dashboards in other tools) or `"json"` -- and read it back
+with `read_aeme_summary()` (`rds` and `parquet`):
+
+```{r summary-write}
+f <- tempfile(fileext = ".rds")
+write_aeme_summary(aeme_summ, f)
+aeme_summ2 <- read_aeme_summary(f)
+identical(output(aeme_summ2), output(aeme_summ))
+```
+
+For an ensemble (see `run_aeme_ensemble()`), `summarise_aeme()` combines the
+members into the statistics in `stats`, and `keep_members = TRUE` keeps each
+member's series as well. Arguments such as `vars`, `observations`, `forcing`
+and `profiles` choose what goes in, so a summary can be made as small as the
+dashboard needs.
 
 # Next steps
 

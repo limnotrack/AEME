@@ -264,7 +264,7 @@ calc_lake_obs_deriv <- function(aeme) {
                               value = oxy_cline),
       CHM_oxyepi = data.frame(Date = Date, var_aeme = "CHM_oxyepi",
                               value = epi_oxy),
-      CHM_oxyepi = data.frame(Date = Date, var_aeme = "CHM_oxyhyp",
+      CHM_oxyhyp = data.frame(Date = Date, var_aeme = "CHM_oxyhyp",
                               value = hyp_oxy),
       CHM_oxymet = data.frame(Date = Date, var_aeme = "CHM_oxymet",
                               value = meta_oxy),
@@ -312,6 +312,16 @@ calc_lake_obs_deriv <- function(aeme) {
     if (all(c("PHS_tp", "NIT_tn", "PHY_tchla") %in% colnames(tli))) {
       tli <- tli |>
         dplyr::filter(!is.na(PHS_tp) & !is.na(NIT_tn) & !is.na(PHY_tchla)) |>
+        # TLI is calculated from annual averages, which deseasonalises the
+        # data. Each sampled Date carries the value for its hydrological year.
+        dplyr::mutate(tli_yr = tli_year(Date)) |>
+        dplyr::group_by(tli_yr) |>
+        dplyr::filter(dplyr::n() >= tli_min_obs_per_year) |>
+        dplyr::mutate(dplyr::across(
+          dplyr::any_of(c("PHS_tp", "NIT_tn", "PHY_tchla", "RAD_secchi")),
+          ~ mean(.x, na.rm = TRUE)
+        )) |>
+        dplyr::ungroup() |>
         dplyr::mutate(
           LKE_tli3 = calc_tli3(chla = PHY_tchla,
                                tn = NIT_tn,
@@ -357,6 +367,17 @@ calc_lake_obs_deriv <- function(aeme) {
     if (!"depth" %in% names(out_df)) out_df$depth <- NA_real_
     out_df <- out_df |>
       dplyr::select(Date, var_aeme, depth, value)
+
+    # Make this idempotent: a derived record that is already in the
+    # observations (from an earlier call, e.g. building an `aeme` that was
+    # itself returned by build_aeme()) is not added again. The per-variable
+    # "already present" checks above can't cover a variable that is skipped
+    # because it has no values (e.g. CHM_oxysat), which makes the block it
+    # belongs to re-run -- and re-append its other outputs -- on every call.
+    if (!is.null(obs$lake) && nrow(obs$lake) > 0) {
+      out_df <- out_df |>
+        dplyr::anti_join(obs$lake, by = c("Date", "var_aeme", "depth"))
+    }
 
     obs$lake <- obs$lake |>
       dplyr::bind_rows(out_df)

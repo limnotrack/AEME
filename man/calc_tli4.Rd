@@ -19,5 +19,6 @@ calc_tli4(chla, tn, tp, secchi)
 TLI 4
 }
 \description{
-Calculate TLI 4
+The TLI protocol (Burns et al.) uses annual averages of each variable, which
+deseasonalises the data. Supply annual means, not individual samples.
 }

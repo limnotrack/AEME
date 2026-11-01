@@ -14,9 +14,10 @@ load_output(
   cl = NULL,
   ens_n = 1,
   keep_diag = TRUE,
-  extra_vars = NULL,
+  extra_vars = "none",
   sed_layers = NULL,
-  zone_summary = FALSE
+  zone_summary = FALSE,
+  return_type = c("aeme", "output")
 )
 }
 \arguments{
@@ -40,19 +41,25 @@ from \code{aeme}/\code{path}.}
 \item{cl}{an object of class \code{"cluster"}.}
 
 \item{ens_n}{numeric; ensemble number to allocate to model output which is
-loaded. Defaults to 1.}
+loaded. Defaults to 1. A run with \code{ens_n = 1} clears any existing output;
+a run with another number adds (or replaces) that member and keeps the rest.}
 
 \item{keep_diag}{logical; keep the \code{diag} (diagnostic/scalar) and
 \code{sediment} sub-lists of each model's output (variables with dimensions other
-than time or depth x time, keyed by raw model names). Default \code{TRUE}; set to
-\code{FALSE} to save memory.}
+than time or depth x time, keyed by raw model names). Default \code{TRUE}, which
+keeps whatever was requested through \code{extra_vars} (nothing is requested by
+default, so by default there is nothing to keep). Set \code{FALSE} to drop the
+sub-lists even if they were requested.}
 
 \item{extra_vars}{character; for GLM-AED, which sediment, flux and diagnostic
-variables beyond the standard set to read from \code{output.nc}. \code{NULL}
-(default) reads all of them. \code{"none"} reads none. Otherwise AEME names from
-\link{glm_extra_vars} (e.g. \code{"SED_temp"}), raw netCDF names, and/or the keywords
-\code{"sediment"} / \code{"diag"}. Unrequested variables are never read, which keeps
-ensemble output small. See \code{\link[=read_glm_output]{read_glm_output()}}.}
+variables beyond the standard set to read from \code{output.nc}. Default \code{"none"}:
+only the standard variables (\code{vars_sim} and the lake fluxes) are read, so
+nothing extra is loaded or stored unless asked for. Otherwise AEME names from
+\link{glm_extra_vars} (e.g. \code{"SED_temp"}), raw netCDF names, the keywords
+\code{"sediment"} / \code{"diag"} (every variable in that sub-list), or \code{"all"} for
+every variable in the file (this was the behaviour before extra output had to
+be requested). Unrequested variables are never read, which keeps loading fast
+and ensemble output small. See \code{\link[=read_glm_output]{read_glm_output()}}.}
 
 \item{sed_layers}{integer; GLM-AED sediment layers to keep for variables
 with a sediment-layer dimension (\code{SED_temp}). \code{NULL} keeps all. See
@@ -61,10 +68,25 @@ with a sediment-layer dimension (\code{SED_temp}). \code{NULL} keeps all. See
 \item{zone_summary}{logical; for GLM-AED, also add an area-weighted
 lake-wide series for each requested sediment-zone variable. See
 \code{\link[=read_glm_output]{read_glm_output()}}. Default \code{FALSE}.}
+
+\item{return_type}{character; \code{"aeme"} (default) returns the \code{Aeme} object
+with the output stored in it. \code{"output"} returns the output without storing
+it: a list named by model, with one \code{aeme_output} (see \code{\link[=is_aeme_output]{is_aeme_output()}}) per
+model, read in the same way (simulation window, daily means, unit conversions)
+as the output that is stored. Because nothing is stored, \code{ens_n} is ignored.
+The result can be given to functions that take a model output directly, such
+as \code{\link[=plot_model_output]{plot_model_output()}}, but not to those that need an \code{Aeme} object, such
+as \code{\link[=get_var]{get_var()}}.}
 }
 \value{
-Updated aeme object with model output
+With \code{return_type = "aeme"}, the updated \code{Aeme} object with model
+output. With \code{return_type = "output"}, a named list of \code{aeme_output} objects,
+one per model.
 }
 \description{
-Load AEME output to the aeme object
+Reads the output of models that have already been run and, by default,
+stores it in the \code{output} slot of the \code{Aeme} object. With
+\code{return_type = "output"} the output is returned instead and the \code{Aeme} object
+is left as it was, which is useful for looking at extra output (see
+\code{extra_vars}) without storing it alongside the output already on the object.
 }

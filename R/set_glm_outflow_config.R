@@ -245,7 +245,7 @@ set_glm_outflow_config <- function(path_glm,
     }
     miss <- !file.exists(file.path(path_glm, files)) & !file.exists(files)
     if (any(miss)) {
-      cli::cli_warn(c("!" = "Outflow forcing file{?s} not found under
+      cli::cli_warn(c("!" = "{qty(sum(miss))}Outflow forcing file{?s} not found under
                       {.path {path_glm}}: {.val {files[miss]}}. Write {?it/them}
                       before running GLM."))
     }

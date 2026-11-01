@@ -7,8 +7,6 @@
 #'
 
 remove_output <- function(aeme) {
-  outp <- output(aeme)
-  outp <- list(n_members = 0)
-  output(aeme) <- outp
+  output(aeme) <- .empty_output()
   return(aeme)
 }

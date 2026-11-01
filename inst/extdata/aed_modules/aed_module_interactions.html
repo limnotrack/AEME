@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AED Module Interactions</title>
+<style>
+:root{
+  --bg:#fafaf7; --card:#ffffff; --fg:#1d2127; --muted:#5d6672; --line:#d9dcd5; --hl:#fff4c2;
+  --N-bg:#dcebfb; --N-bd:#2a6cb8; --N-fg:#10355e;
+  --P-bg:#fde8cf; --P-bd:#c26a10; --P-fg:#5e3205;
+  --C-bg:#dcf1df; --C-bd:#2f8a46; --C-fg:#124a22;
+  --O-bg:#fbdcdc; --O-bd:#c13b3b; --O-fg:#5e1414;
+  --S-bg:#e8e0f5; --S-bd:#7352b8; --S-fg:#2f1b5e;
+  --B-bg:#d8f0ee; --B-bd:#1f8a84; --B-fg:#0c4642;
+  --X-bg:#ecece8; --X-bd:#8a8f96; --X-fg:#2b2f34;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171a; --card:#1c2024; --fg:#e7e9ec; --muted:#9aa3ae; --line:#2f353b; --hl:#4a4015;
+    --N-bg:#173452; --N-bd:#5aa0ec; --N-fg:#cfe5fc;
+    --P-bg:#4a2e10; --P-bd:#f0a050; --P-fg:#fde3c4;
+    --C-bg:#17381f; --C-bd:#5cc276; --C-fg:#d2f2da;
+    --O-bg:#4d1e1e; --O-bd:#ef7878; --O-fg:#fbd5d5;
+    --S-bg:#33284f; --S-bd:#a78bec; --S-fg:#e3d9fa;
+    --B-bg:#12403d; --B-bd:#4cc6bf; --B-fg:#cdf2ef;
+    --X-bg:#262a2f; --X-bd:#7b838c; --X-fg:#dfe2e5;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171a; --card:#1c2024; --fg:#e7e9ec; --muted:#9aa3ae; --line:#2f353b; --hl:#4a4015;
+  --N-bg:#173452; --N-bd:#5aa0ec; --N-fg:#cfe5fc;
+  --P-bg:#4a2e10; --P-bd:#f0a050; --P-fg:#fde3c4;
+  --C-bg:#17381f; --C-bd:#5cc276; --C-fg:#d2f2da;
+  --O-bg:#4d1e1e; --O-bd:#ef7878; --O-fg:#fbd5d5;
+  --S-bg:#33284f; --S-bd:#a78bec; --S-fg:#e3d9fa;
+  --B-bg:#12403d; --B-bd:#4cc6bf; --B-fg:#cdf2ef;
+  --X-bg:#262a2f; --X-bd:#7b838c; --X-fg:#dfe2e5;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header,main{max-width:1240px;margin:0 auto;padding:0 16px}
+header{padding-top:28px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:20px;margin:28px 0 6px}
+h3{font-size:16px;margin:22px 0 6px}
+.sub{color:var(--muted);margin:0 0 16px;max-width:80ch}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0;border-bottom:1px solid var(--line);padding-bottom:0}
+nav button{font:inherit;border:1px solid var(--line);border-bottom:none;background:transparent;color:var(--muted);
+  padding:8px 14px;border-radius:8px 8px 0 0;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--card);color:var(--fg);font-weight:600;position:relative;top:1px}
+section.tab{display:none;padding-bottom:48px}
+section.tab.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin:12px 0}
+.diagram{overflow-x:auto}
+.diagram svg{display:block;min-width:900px;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin:8px 2px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px;border:1.5px solid}
+.legend .ar{width:22px;height:0;border:none;border-top:2px solid;border-radius:0;vertical-align:4px}
+.legend .ar.d{border-top-style:dashed}
+.note{font-size:14px;color:var(--muted);max-width:90ch}
+.warn{border-left:4px solid var(--P-bd);background:var(--P-bg);color:var(--P-fg);padding:8px 12px;border-radius:6px;margin:12px 0;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);position:sticky;top:0;background:var(--card)}
+tr.hl td{background:var(--hl)}
+code,.p{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}
+.p{display:inline-block;background:var(--X-bg);color:var(--X-fg);border-radius:4px;padding:0 5px;margin:1px 3px 1px 0;white-space:nowrap}
+.pid{font-weight:700;white-space:nowrap}
+.pid.Y,.pid.Z{color:var(--B-bd)} .pid.N{color:var(--N-bd)} .pid.P{color:var(--P-bd)} .pid.C{color:var(--C-bd)} .pid.O{color:var(--O-bd)} .pid.S{color:var(--S-bd)}
+.tblwrap{overflow-x:auto}
+.filter{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.filter input{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);min-width:260px}
+.filter select{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
+svg text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.lbl{cursor:default}
+.lbl:hover rect{stroke:var(--fg);stroke-width:1}
+.theme{margin-left:auto;font:inherit;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:6px 10px;cursor:pointer}
+@media (max-width:600px){h1{font-size:22px}}
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;gap:12px;align-items:flex-start">
+    <div>
+      <h1>AED water-column modules: how they interact</h1>
+      <p class="sub">Box-and-arrow maps of how <code>libaed-water</code> modules exchange nitrogen, phosphorus and carbon, and which namelist or CSV parameters drive each process. Built from the Fortran in <code>src/</code> on branch <code>dev</code>. Hover an arrow label to highlight its row in the table below.</p>
+    </div>
+    <button class="theme" id="themeBtn" type="button" aria-label="Toggle light or dark theme">Theme</button>
+  </div>
+  <nav role="tablist" id="tabs"></nav>
+</header>
+<main id="main"></main>
+
+<script>
+/* ===================================================================
+   DATA: processes. One source feeds the diagrams' tables and the index.
+   id prefix: N nitrogen, P phosphorus, C carbon, O oxygen switches, S sediment
+   =================================================================== */
+const PROCS = [
+// ---------------- PHYTOPLANKTON ----------------
+{id:'Y1',name:'Temperature limitation fT',mod:'PHY',flow:'scales growth',params:['fT_Method','theta_growth','T_std','T_opt','T_max'],note:'fT_Method 0 = none; 1 = CAEDYM style. Below T_std it is θ^(T−20), between T_std and T_max a curve peaking near T_opt, and zero above T_max.'},
+{id:'Y2',name:'Light limitation fI',mod:'PHY',flow:'scales growth',params:['lightModel','I_K','I_S','KePHY'],note:'lightModel 0 = no photoinhibition (uses I_K), 1 = photoinhibition (uses I_S). Averaged over the layer using PAR and the extinction coefficient. KePHY is the phytoplankton’s own contribution to light extinction.'},
+{id:'Y3',name:'Nitrogen limitation fN',mod:'PHY',flow:'NH4⁺, NO3⁻ → limits growth',params:['simDINUptake','simDONUptake','simINDynamics','N_o','K_N','X_ncon','X_nmin','X_nmax','simNFixation'],note:'External: (N−N_o)/(N−N_o+K_N). With simINDynamics=2: from the internal quota IN/C between X_nmin and X_nmax. With N fixation active the N limit is bypassed and replaced by the fixation reduction (Y7).'},
+{id:'Y4',name:'Phosphorus limitation fP',mod:'PHY',flow:'FRP → limits growth',params:['simDIPUptake','simIPDynamics','P_0','K_P','X_pcon','X_pmin','X_pmax'],note:'Same structure as Y3 with FRP, P_0 and K_P, or the internal quota IP/C.'},
+{id:'Y5',name:'Silica limitation fSi',mod:'PHY',flow:'reactive Si → limits growth',params:['simSiUptake','Si_0','K_Si','X_sicon'],note:'Only for groups with simSiUptake>0 (diatoms). Si uptake follows carbon fixation at X_sicon.'},
+{id:'Y6',name:'Gross primary production',mod:'PHY',flow:'DIC → phyto-C, releases O₂',params:['R_growth','p0','p_initial','fT_Method','lightModel','simDINUptake','simDIPUptake','simSiUptake'],note:'R_growth × fT × min(fI, fN, fP, fSi). Nutrient uptake is cut so it never exceeds 99% of the pool in a step. Growth also needs biomass above p0.'},
+{id:'Y7',name:'N₂ fixation',mod:'PHY',flow:'N₂ → phyto-N',params:['simNFixation','R_nfix','k_nfix'],note:'Fixation replaces part of the DIN demand and slows growth by up to k_nfix.'},
+{id:'Y8',name:'Respiration',mod:'PHY',flow:'phyto-C → DIC, uses O₂',params:['R_resp','theta_resp','k_fres','p0'],note:'Metabolic loss R_resp × θ_resp^(T−20). The k_fres share is true respiration (DIC up, O₂ down). Loss stops when biomass is at or below p0.'},
+{id:'Y9',name:'Exudation and excretion → DOM',mod:'PHY',flow:'phyto-C, N, P, Si → DOC, DON, DOP',params:['f_pr','k_fdom','k_fres','c_excretion_target_variable','n_excretion_target_variable','p_excretion_target_variable','si_excretion_target_variable'],note:'Exudation is f_pr of primary production. The metabolic loss not respired is split: k_fdom to DOM, the rest to POM (Y10).'},
+{id:'Y10',name:'Mortality → POM',mod:'PHY',flow:'phyto-C, N, P, Si → POC, PON, POP',params:['k_fdom','k_fres','c_mortality_target_variable','n_mortality_target_variable','p_mortality_target_variable','si_mortality_target_variable'],note:'Share (1−k_fdom)(1−k_fres) of the metabolic loss.'},
+{id:'Y11',name:'Salinity effect',mod:'PHY',flow:'scales growth or respiration',params:['salTol','S_opt','S_bep','S_maxsp'],note:'|salTol| picks the function (0 none, 1–3 variants). A negative salTol applies it to growth, a positive one to respiration. S_bep is the multiplier at S_maxsp.'},
+{id:'Y12',name:'Settling and vertical movement',mod:'PHY',flow:'phyto-C ⇄ depth, → sediment',params:['settling','w_p','d_phy','rho_phy','min_rho','max_rho','phyto_particle_link'],note:'settling: 0 off, 1 constant w_p, 2 temperature-corrected w_p, 3 Stokes (d_phy, rho_phy or a dynamic density state), 4 motile (Ross & Sharples style, driven by internal N and light).'},
+{id:'Y13',name:'Resuspension',mod:'PHY',flow:'sediment → phyto-C',params:['resuspension','resus_link','n_zones','active_zones'],note:'Per-group scaling of the resuspension flux, applied to the bottom layer.'},
+{id:'Y14',name:'Microphytobenthos',mod:'PHY',flow:'DIC, NH4, NO3, FRP ⇄ benthic algae',params:['do_mpb','R_mpbg','R_mpbr','R_mpbb','I_Kmpb','mpb_max','theta_mpb_growth','theta_mpb_resp'],note:'Benthic algae grow in the bottom layer and take nutrients and DIC directly.'},
+{id:'Y15',name:'Output links to other modules',mod:'PHY',flow:'sets which pools receive each flux',params:['c_uptake_target_variable','do_uptake_target_variable','n1_uptake_target_variable','n2_uptake_target_variable','n3_uptake_target_variable','n4_uptake_target_variable','p1_uptake_target_variable','p2_uptake_target_variable','si_uptake_target_variable','dbase','num_phytos','the_phytos'],note:'Leaving a link empty disables that exchange. the_phytos picks the columns of dbase (aed_phyto_pars.csv).'},
+// ---------------- ZOOPLANKTON ----------------
+{id:'Z1',name:'Grazing',mod:'ZOO',flow:'phyto, POC, other zoo → zoo',params:['Rgrz_zoo','Kgrz_zoo','Cmin_grz_zoo','num_prey','prey(n)%zoop_prey','prey(n)%Pzoo_prey'],note:'Rgrz_zoo × C/(Kgrz_zoo+C) × fT, with C the total prey. Prey are never grazed below Cmin_grz_zoo. The catch is split by the preference factors Pzoo_prey.'},
+{id:'Z2',name:'Temperature effect',mod:'ZOO',flow:'scales grazing, respiration, mortality',params:['theta_grz_zoo','Tstd_zoo','Topt_zoo','Tmax_zoo','theta_resp_zoo'],note:'Grazing uses the CAEDYM-style fT (as Y1). Respiration and mortality use θ_grz_zoo^(T−20). theta_resp_zoo is read but not used in the rates.'},
+{id:'Z3',name:'Assimilation',mod:'ZOO',flow:'grazed C, N, P → zoo biomass',params:['fassim_zoo','INC_zoo','IPC_zoo'],note:'Fraction fassim_zoo of grazed carbon builds biomass. The animal keeps fixed N:C (INC_zoo) and P:C (IPC_zoo).'},
+{id:'Z4',name:'Faeces → POM',mod:'ZOO',flow:'unassimilated food → POC, PON, POP',params:['fassim_zoo','ffecal_zoo','ffecal_sed','pc_target_variable','pn_target_variable','pp_target_variable'],note:'Unassimilated grazing plus ffecal_zoo of respiration. ffecal_sed is the share of pellets assumed to sink straight to the sediment and so is removed from the water-column POM.'},
+{id:'Z5',name:'Excretion → DOM',mod:'ZOO',flow:'excess N, P (and C) → DON, DOP, DOC',params:['fexcr_zoo','INC_zoo','IPC_zoo','dc_target_variable','dn_target_variable','dp_target_variable'],note:'Nutrients grazed beyond the animal’s fixed N:C and P:C are excreted as DON and DOP. If one nutrient is short, extra carbon is excreted to restore balance.'},
+{id:'Z6',name:'Respiration',mod:'ZOO',flow:'zoo-C lost',params:['Rresp_zoo','theta_grz_zoo','ffecal_zoo','fexcr_zoo','saltfunc_zoo','Smin_zoo','Smax_zoo','Sint_zoo'],note:'Rresp_zoo × fT × fSal. The remainder after faeces and excretion fractions is not routed to DIC or O₂ in this version.'},
+{id:'Z7',name:'Mortality',mod:'ZOO',flow:'zoo-C → POM',params:['Rmort_zoo','DOmin_zoo','theta_grz_zoo','min_zoo'],note:'Rmort_zoo × fT × fDO, sent to POC, PON, POP. Below DOmin_zoo the rate rises as 1+(DOmin_zoo−O₂)/DOmin_zoo. Loss stops at min_zoo.'},
+{id:'Z8',name:'Salinity effect',mod:'ZOO',flow:'scales respiration',params:['Smin_zoo','Smax_zoo','Sint_zoo','saltfunc_zoo'],note:'A quadratic penalty outside Smin_zoo–Smax_zoo down to the intercept Sint_zoo. saltfunc_zoo is read but the same function is always used.'},
+{id:'Z9',name:'Feedback and output links',mod:'ZOO',flow:'switches the return of fluxes',params:['simZoopFeedback','dc_target_variable','dn_target_variable','dp_target_variable','pc_target_variable','pn_target_variable','pp_target_variable','dbase','num_zoops','the_zoops'],note:'With simZoopFeedback off, zooplankton neither remove prey nor return material.'},
+// ---------------- NITROGEN ----------------
+{id:'N1',name:'DIN uptake',mod:'PHY',flow:'NH4⁺, NO3⁻ → phyto-N',params:['simDINUptake','N_o','K_N','X_ncon','simINDynamics','X_nmin','X_nmax','R_nuptake','R_growth','theta_growth','I_K','n1_uptake_target_variable','n2_uptake_target_variable'],
+ note:'Fixed quota (X_ncon) by default; simINDynamics=2 gives a dynamic internal-N pool. NH4/NO3 split follows a preference factor. Uptake is capped at 99% of the available pool each step.'},
+{id:'N2',name:'N₂ fixation',mod:'PHY',flow:'N₂ → phyto-N',params:['simNFixation','k_nfix','R_nfix'],note:'Reduces the DIN demand of a group.'},
+{id:'N3',name:'Mortality → PON',mod:'PHY',flow:'phyto-N → PON',params:['k_fres','k_fdom','R_resp','theta_resp','n_mortality_target_variable'],note:'Fraction (1−k_fdom)(1−k_fres) of respiration-sized loss goes to the particulate pool.'},
+{id:'N4',name:'Excretion/exudation → DON',mod:'PHY',flow:'phyto-N → DON',params:['k_fdom','f_pr','R_resp','n_excretion_target_variable'],note:''},
+{id:'N5',name:'Grazing',mod:'ZOO',flow:'phyto-N, PON → zoo-N',params:['Rgrz_zoo','Kgrz_zoo','theta_grz_zoo','Cmin_grz_zoo','num_prey','prey(n)%zoop_prey','prey(n)%Pzoo_prey','fassim_zoo','INC_zoo','simZoopFeedback'],note:'Zooplankton parameters are columns of aed_zoop_pars.csv. Prey is phytoplankton, POC (with its PON) or other zooplankton.'},
+{id:'N6',name:'Zoo excretion, faeces, mortality',mod:'ZOO',flow:'zoo-N → DON, PON',params:['fassim_zoo','ffecal_zoo','ffecal_sed','INC_zoo','Rresp_zoo','Rmort_zoo','DOmin_zoo','dn_target_variable','pn_target_variable'],note:'Unassimilated N goes to PON; surplus N is excreted as DON. N- or P-limited animals also excrete excess carbon.'},
+{id:'N7',name:'PON hydrolysis',mod:'OGM',flow:'PON → DON',params:['Rpon_hydrol','Kpom_hydrol','theta_hydrol','dom_miner_oxy_reactant_var'],note:'Rate × O₂/(Kpom_hydrol+O₂) × θ^(T−20). Rpom_hydrol is read but never used; set Rpoc/Rpon/Rpop_hydrol individually.'},
+{id:'N8',name:'DON mineralisation',mod:'OGM',flow:'DON → NH4⁺',params:['Rdom_minerl','Kdom_minerl','f_an','theta_minerl','dom_miner_oxy_reactant_var'],note:'One shared rate for DOC, DON and DOP. Rdoc/Rdon/Rdop_minerl are stored but not used in the rate calculation.'},
+{id:'N9',name:'Nitrification',mod:'NIT',flow:'NH4⁺ → NO3⁻ (uses 2 O₂ per N)',params:['Rnitrif','Knitrif','theta_nitrif','nitrif_reactant_variable','simNitrfpH','nitrif_ph_variable','simNitrfSal','K_sal','S0'],note:'Rnitrif × O₂/(Knitrif+O₂) × θ^(T−20), optional pH and salinity multipliers. Without an O₂ link it runs at a fixed rate.'},
+{id:'N10',name:'Denitrification (simple)',mod:'NIT',flow:'NO3⁻ → N₂',params:['Rdenit','Kdenit','theta_denit','oxy_lim','denit_product_variable','simNitrfSal'],note:'Rdenit × Kdenit/(Kdenit+O₂) × NO3/(5+NO3) × θ^(T−20). The 5 mmol/m³ half-saturation is hard-coded. oxy_lim=2 switches to exp(−O₂/Kdenit).'},
+{id:'N11',name:'Denitrification (OM-coupled)',mod:'OGM',flow:'NO3⁻ (+ anaerobic DOC) → N₂ / NO2 / N₂O / NH4⁺',params:['simDenitrification','K_nit','Kdom_minerl','Rdom_minerl','f_an','Kin_denitrat','Kin_denitrit','Kin_denitrous','Klim_denitrit','Klim_denitrous','Kpart_denitrit','dom_miner_nit_reactant_var','dom_miner_no2_reactant_var','dom_miner_n2o_reactant_var'],note:'simDenitrification=1 is the simple version (NO3/(K_nit+NO3) of the anaerobic share); 2 is the 3-step NO3→NO2→N₂O→N₂ model. If you enable this, consider Rdenit=0 in aed_nitrogen so NO3 is not removed twice.'},
+{id:'N12',name:'Anammox',mod:'NIT',flow:'NH4⁺ + NO2 → N₂',params:['kanammox','Kanmx_nit','Kanmx_amm'],note:'Only when O₂ < ~3.1 mmol/m³ (hard-coded). NO2 is approximated from NO3. Ranammox is deprecated.'},
+{id:'N13',name:'DNRA',mod:'NIT',flow:'NO3⁻ → NH4⁺',params:['Rdnra','Kdnra_oxy'],note:'Rdnra × Kdnra_oxy/(Kdnra_oxy+O₂) × NO3.'},
+{id:'N14',name:'N₂O cycle (simple)',mod:'NIT',flow:'NO3⁻/NH4⁺ → N₂O → N₂',params:['simN2O','Rn2o','n2o_initial'],note:'simN2O=1: half the denitrification flux leaks as N₂O, nitrification adds an O₂-dependent share (Nevison form), N₂O consumption is Rn2o·N₂O·exp(−O₂/0.3).'},
+{id:'N15',name:'NO2/N₂O redox (advanced)',mod:'NIT',flow:'NH4⁺ → NO2 → NO3⁻, N₂O, N₂',params:['simN2O','Rnh4o2','Rno2o2','Rnh4no2','Kpart_ammox','Kin_deamm','no2_initial','Fsed_no2','Ksed_no2'],note:'simN2O=2 runs autotrophic steps here; the heterotrophic steps run in OGM (see N11).'},
+{id:'N16',name:'N₂O air–water exchange',mod:'NIT',flow:'N₂O ⇄ atmosphere',params:['simN2O','atm_n2o','n2o_piston_model'],note:'Needs wind, temperature, salinity from the host model.'},
+{id:'N17',name:'Atmospheric DIN deposition',mod:'NIT',flow:'atmosphere → NH4⁺, NO3⁻',params:['simDryDeposition','simWetDeposition','atm_din_dd','atm_din_conc','f_dindep_nox'],note:'Wet deposition needs the rain driver. f_dindep_nox is the fraction landing as NO3.'},
+{id:'N18',name:'Sediment N release',mod:'NIT',flow:'sediment → NH4⁺, NO3⁻, N₂O',params:['Fsed_amm','Fsed_nit','Fsed_n2o','Ksed_amm','Ksed_nit','Ksed_n2o','theta_sed_amm','theta_sed_nit','Fsed_nit_model','Fsed_amm_variable','Fsed_nit_variable','Fsed_n2o_variable'],note:'See the Sediment tab for the O₂ and temperature scaling.'},
+{id:'N19',name:'PON settling, resuspension, DON flux',mod:'OGM',flow:'PON ⇄ sediment, sediment → DON',params:['settling','w_pom','d_pom','rho_pom','Psed_pon_variable','resuspension','resus_link','sedimentOMfrac','Xsn','Fsed_pon_variable','Fsed_don','Fsed_don_variable','Ksed_dom','theta_sed_dom'],note:''},
+// ---------------- PHOSPHORUS ----------------
+{id:'P1',name:'FRP uptake',mod:'PHY',flow:'FRP → phyto-P',params:['simDIPUptake','P_0','K_P','X_pcon','simIPDynamics','X_pmin','X_pmax','R_puptake','R_growth','theta_growth','p1_uptake_target_variable'],note:'Same structure as N1: fixed quota unless simIPDynamics=2.'},
+{id:'P2',name:'Mortality → POP, excretion → DOP',mod:'PHY',flow:'phyto-P → POP, DOP',params:['k_fres','k_fdom','f_pr','R_resp','theta_resp','p_mortality_target_variable','p_excretion_target_variable'],note:''},
+{id:'P3',name:'Grazing, excretion, faeces',mod:'ZOO',flow:'phyto-P, POP → zoo-P → DOP, POP',params:['Rgrz_zoo','Kgrz_zoo','fassim_zoo','IPC_zoo','ffecal_zoo','Rresp_zoo','Rmort_zoo','dp_target_variable','pp_target_variable'],note:''},
+{id:'P4',name:'POP hydrolysis',mod:'OGM',flow:'POP → DOP',params:['Rpop_hydrol','Kpom_hydrol','theta_hydrol','dom_miner_oxy_reactant_var'],note:''},
+{id:'P5',name:'DOP mineralisation',mod:'OGM',flow:'DOP → FRP',params:['Rdom_minerl','Kdom_minerl','f_an','theta_minerl'],note:''},
+{id:'P6',name:'FRP adsorption to particles',mod:'PHS',flow:'FRP ⇄ adsorbed PIP',params:['simPO4Adsorption','PO4AdsorptionModel','Kpo4p','theta_Kpo4','K_sal','Kadsratio','Qmax','ads_use_pH','pH_variable','ads_use_external_tss','frp_ads_particle_link','po4sorption_target_variable'],note:'Equilibrium step, not a rate. Model 1 is a Ji (2008) partition, model 2 follows Chao et al. (2010). Needs a TSS/particle pool.'},
+{id:'P7',name:'Settling of adsorbed P',mod:'PHS',flow:'PIP → sediment',params:['w_po4ads'],note:'Settling velocity in m/day.'},
+{id:'P8',name:'Sediment FRP release',mod:'PHS',flow:'sediment → FRP',params:['Fsed_frp','Ksed_frp','theta_sed_frp','phosphorus_reactant_variable','Fsed_frp_variable'],note:'Fsed_frp × min(3, Ksed_frp/(Ksed_frp+O₂) × θ^(T−20)). High release under low oxygen.'},
+{id:'P9',name:'Atmospheric P deposition',mod:'PHS',flow:'atmosphere → PIP, FRP',params:['simDryDeposition','atm_pip_dd','simWetDeposition','atm_frp_conc'],note:'Dry deposition only lands in PIP and needs simPO4Adsorption.'},
+{id:'P10',name:'POP settling, resuspension, DOP flux',mod:'OGM',flow:'POP ⇄ sediment, sediment → DOP',params:['settling','w_pom','Psed_pop_variable','resuspension','resus_link','sedimentOMfrac','Xsp','Fsed_pop_variable','Fsed_dop','Fsed_dop_variable','Ksed_dom','theta_sed_dom'],note:''},
+// ---------------- CARBON ----------------
+{id:'C1',name:'Photosynthesis',mod:'PHY',flow:'DIC → phyto-C, releases O₂',params:['R_growth','fT_Method','theta_growth','T_std','T_opt','T_max','lightModel','I_K','I_S','KePHY','Xcc','c_uptake_target_variable','do_uptake_target_variable'],note:'Growth = R_growth × fT × min(light, N, P, Si) limitation. C taken up per unit growth; O₂ released at the same molar rate.'},
+{id:'C2',name:'Respiration',mod:'PHY',flow:'phyto-C → DIC, uses O₂',params:['R_resp','theta_resp','k_fres'],note:'The k_fres share of respiration is returned to DIC and consumes O₂.'},
+{id:'C3',name:'Exudation, excretion → DOC',mod:'PHY',flow:'phyto-C → DOC',params:['f_pr','k_fdom','c_excretion_target_variable'],note:''},
+{id:'C4',name:'Mortality → POC',mod:'PHY',flow:'phyto-C → POC',params:['k_fdom','k_fres','c_mortality_target_variable'],note:''},
+{id:'C5',name:'Grazing, zoo respiration, excretion',mod:'ZOO',flow:'phyto-C, POC → zoo-C → DOC, POC',params:['Rgrz_zoo','fassim_zoo','Rresp_zoo','fexcr_zoo','ffecal_zoo','Rmort_zoo','dc_target_variable','pc_target_variable'],note:'Zoo respiration is not routed to DIC or O₂ in this version.'},
+{id:'C6',name:'POC hydrolysis',mod:'OGM',flow:'POC → DOC',params:['Rpoc_hydrol','Kpom_hydrol','theta_hydrol','dom_miner_oxy_reactant_var'],note:''},
+{id:'C7',name:'DOC mineralisation',mod:'OGM',flow:'DOC → DIC (aerobic: uses O₂)',params:['Rdom_minerl','Kdom_minerl','f_an','theta_minerl','dom_miner_oxy_reactant_var','doc_miner_product_variable'],note:'The aerobic share O₂/(Kdom_minerl+O₂) consumes O₂ 1:1.'},
+{id:'C8',name:'Refractory DOM, CPOM, photolysis',mod:'OGM',flow:'DOCR → DOC, DIC; CPOM → POC',params:['simRPools','Rdomr_minerl','Rcpom_bdown','X_cpom_n','X_cpom_p','simPhotolysis','photo_fmin','photo_c','KeDOMR','KeCPOM','docr_initial','cpom_initial'],note:'photo_fmin of photolysed DOCR becomes labile DOC; the rest goes to DIC (with matching N and P).'},
+{id:'C9',name:'DOM flocculation',mod:'OGM',flow:'DOM → POM',params:['simFlocculation','Rdom_floc','Kdom_floc','dom_floc0','dom_flocS'],note:'Triggered above dom_floc0 and stronger at higher salinity.'},
+{id:'C10',name:'Methanogenesis',mod:'OGM',flow:'anaerobic DOC → CH4',params:['simMethanogenesis','dom_miner_ch4_reactant_var','K_fe','K_so4'],note:'Takes what is left of the anaerobic share after NO3, Fe(III) and SO4 reduction.'},
+{id:'C11',name:'CH4 oxidation',mod:'CAR',flow:'CH4 + O₂ → DIC',params:['simCH4','Rch4ox','Kch4ox','vTch4ox','methane_reactant_variable'],note:'Rch4ox × O₂/(Kch4ox+O₂) × vTch4ox^(T−20). aed_methane has its own version with ch4_oxid_target_variable, MOx_model, beta_ch4 and alpha_oxy.'},
+{id:'C12',name:'CO₂ air–water exchange',mod:'CAR',flow:'DIC ⇄ atmosphere',params:['atm_co2','co2_piston_model','co2_model','alk_mode','talk_fixed','ionic'],note:'co2_model: 0 takes pCO₂/pH from aed_geochemistry, 1 uses the built-in carbonate system, 2 is an alternative. alk_mode picks the alkalinity relationship (6 = fixed talk_fixed, µmol/kg).'},
+{id:'C13',name:'CH4 air–water exchange',mod:'CAR',flow:'CH4 ⇄ atmosphere',params:['simCH4','atm_ch4','ch4_piston_model'],note:''},
+{id:'C14',name:'CH4 ebullition',mod:'CAR',flow:'sediment → bubbles → CH4 / atmosphere',params:['ebb_model','Fsed_ch4_ebb','Fsed_ebb_variable','ch4_bub_aLL','ch4_bub_cLL','ch4_bub_kLL','ch4_bub_disf1','ch4_bub_disf2','ch4_bub_disdp','ch4_bub_ws','ch4_bub_tau0'],note:'ch4_bub_disf1/2 is the share dissolving on the way up, shallower or deeper than ch4_bub_disdp.'},
+{id:'C15',name:'Sediment DIC and CH4 release',mod:'CAR',flow:'sediment → DIC, CH4',params:['Fsed_dic','Ksed_dic','theta_sed_dic','Fsed_dic_variable','Fsed_ch4','Ksed_ch4','theta_sed_ch4','Fsed_ch4_variable'],note:''},
+{id:'C16',name:'Sediment DOC/POC flux and settling',mod:'OGM',flow:'POC ⇄ sediment, sediment → DOC',params:['settling','w_pom','Psed_poc_variable','resuspension','resus_link','sedimentOMfrac','Xsc','Fsed_poc_variable','Fsed_doc','Fsed_doc_variable','Ksed_dom','theta_sed_dom'],note:''},
+{id:'C17',name:'Microphytobenthos',mod:'CAR/PHY',flow:'DIC ⇄ benthic algae',params:['maxMPBProdn','IkMPB','do_mpb','R_mpbg','R_mpbr','I_Kmpb','mpb_max'],note:'maxMPBProdn and IkMPB sit in aed_carbon; the others are aed_phytoplankton namelist items.'},
+{id:'C18',name:'Wetland stem CH4 transport',mod:'CAR',flow:'sediment → CH4 via vegetation',params:['simStemCH4','stem_model','Fstm_ch4','theta_stm_ch4','vegetation_stem_density','Fstm_ch4_variable'],note:''},
+// ---------------- OXYGEN SWITCHES ----------------
+{id:'O1',name:'POM hydrolysis O₂ limit',mod:'OGM',flow:'POM → DOM',params:['Rpoc_hydrol','Rpon_hydrol','Rpop_hydrol','Kpom_hydrol','theta_hydrol'],note:'R × O₂/(Kpom_hydrol+O₂) × θ^(T−20). Slows as O₂ falls and stops at O₂ = 0.'},
+{id:'O2',name:'DOM mineralisation, total rate',mod:'OGM',flow:'DOM → DIC, NH4⁺, FRP',params:['Rdom_minerl','Kdom_minerl','f_an','theta_minerl'],note:'R × [O₂/(K+O₂) + f_an × K/(K+O₂)] × θ^(T−20), with K = Kdom_minerl. f_an is the relative rate under anoxia (1 = no slow-down, 0 = shuts off).'},
+{id:'O3',name:'Aerobic share',mod:'OGM',flow:'consumes O₂',params:['Kdom_minerl','dom_miner_oxy_reactant_var'],note:'doc_min_aerobic = mineralisation × O₂/(Kdom_minerl+O₂).'},
+{id:'O4',name:'Anaerobic share, electron-acceptor cascade',mod:'OGM',flow:'NO3 → Fe(III) → SO4 → CH4',params:['simDenitrification','K_nit','simFeReduction','K_fe','simSO4Reduction','K_so4','simMethanogenesis','dom_miner_fe3_reactant_var','dom_miner_so4_reactant_var','dom_miner_ch4_reactant_var'],note:'Each step takes its share of what the earlier step left. K_fe and K_so4 are declared but never assigned in the current source; they are not namelist items.'},
+{id:'O5',name:'Nitrification O₂ limit',mod:'NIT',flow:'NH4⁺ → NO3⁻',params:['Rnitrif','Knitrif','theta_nitrif','nitrif_reactant_variable'],note:'Rnitrif × O₂/(Knitrif+O₂). Stops under anoxia, so NH4 accumulates.'},
+{id:'O6',name:'Denitrification O₂ inhibition',mod:'NIT',flow:'NO3⁻ → N₂',params:['Rdenit','Kdenit','oxy_lim','theta_denit'],note:'Kdenit/(Kdenit+O₂) when oxy_lim=1, exp(−O₂/Kdenit) when 2, no O₂ term when 0 or no O₂ link.'},
+{id:'O7',name:'Anammox and DNRA gating',mod:'NIT',flow:'NO3⁻/NO2 → N₂, NH4⁺',params:['kanammox','Kanmx_nit','Kanmx_amm','Rdnra','Kdnra_oxy'],note:'Anammox only below ~3.1 mmol O₂/m³; DNRA scales with Kdnra_oxy/(Kdnra_oxy+O₂).'},
+{id:'O8',name:'CH4 oxidation',mod:'CAR / MTH',flow:'CH4 + O₂ → DIC',params:['Rch4ox','Kch4ox','vTch4ox','methane_reactant_variable'],note:'O₂/(Kch4ox+O₂) form. aed_carbon uses 1 O₂ per CH4, aed_methane uses 2.'},
+{id:'O9',name:'Fe and S redox',mod:'GCH',flow:'Fe(III)/Fe(II), SO4/H₂S',params:['Riron_red','theta_iron_red','Kiron_red','Riron_aox','Riron_box','theta_iron_ox','Rsulf_red','theta_sulf_red','Ksulf_red','Rsulf_ox','theta_sulf_ox','Ksulf_ox','oxy_link'],note:'Reduction when O₂ is low, oxidation by O₂ when it returns. Oxidation draws down O₂ (0.25 mol O₂ per mol Fe or S).'},
+{id:'O10',name:'Zooplankton hypoxia stress',mod:'ZOO',flow:'zoo mortality ↑',params:['DOmin_zoo','Rmort_zoo'],note:'Mortality is multiplied by 1 + (DOmin_zoo−O₂)/DOmin_zoo below DOmin_zoo.'},
+{id:'O11',name:'O₂ sources and sinks',mod:'OXY',flow:'atmosphere, photosynthesis → O₂ → respiration, nitrification, sediment',params:['oxy_initial','oxy_piston_model','altitude','Fsed_oxy','Ksed_oxy','theta_sed_oxy','Fsed_oxy_variable','oxy_min','oxy_max'],note:'Sediment demand = Fsed_oxy × min(3, O₂/(Ksed_oxy+O₂) × θ^(T−20)).'},
+// ---------------- SEDIMENT ----------------
+{id:'S1',name:'Flux source',mod:'SED',flow:'Fsed_* diagnostics → modules',params:['sedflux_model','Fsed_oxy','Fsed_rsi','Fsed_amm','Fsed_nit','Fsed_frp','Fsed_pon','Fsed_don','Fsed_pop','Fsed_dop','Fsed_poc','Fsed_doc','Fsed_dic','Fsed_ch4','Fsed_ch4_ebb','Fsed_n2o','Fsed_feii'],note:'constant: one value set for the whole domain. constant2d/dynamic2d: values per sediment zone. dynamic: values come from the dynamic sediment model instead.'},
+{id:'S2',name:'Link into each module',mod:'all',flow:'Fsed_* → pool',params:['Fsed_oxy_variable','Fsed_amm_variable','Fsed_nit_variable','Fsed_n2o_variable','Fsed_frp_variable','Fsed_dic_variable','Fsed_ch4_variable','Fsed_ebb_variable','Fsed_doc_variable','Fsed_don_variable','Fsed_dop_variable','Fsed_poc_variable','Fsed_pon_variable','Fsed_pop_variable','Fsed_rsi_variable'],note:'Name of the aed_sedflux diagnostic variable (for example SDF_Fsed_amm). Leave empty to use the module’s own Fsed_* value.'},
+{id:'S3',name:'Oxygen scaling',mod:'NIT/PHS/CAR/OGM/OXY',flow:'fDO × flux',params:['Ksed_amm','Ksed_nit','Ksed_n2o','Ksed_frp','Ksed_dic','Ksed_ch4','Ksed_dom','Ksed_oxy','Ksed_rsi'],note:'Release of NH4, FRP, CH4, N₂O, DOM and Si: K/(K+O₂). NO3 flux (model 1), DIC and the O₂ demand: O₂/(K+O₂).'},
+{id:'S4',name:'Temperature scaling',mod:'NIT/PHS/CAR/OGM/OXY',flow:'θ^(T−20) × flux',params:['theta_sed_amm','theta_sed_nit','theta_sed_frp','theta_sed_dic','theta_sed_ch4','theta_sed_dom','theta_sed_oxy','theta_sed_rsi'],note:'Only applied to constant values. A value set dynamically is used as-is.'},
+{id:'S5',name:'Zones',mod:'SED',flow:'spatial variation',params:['n_zones','active_zones','Ktau_0'],note:'Used by constant2d/dynamic2d and by phytoplankton resuspension zones.'},
+{id:'S6',name:'Settling of particles',mod:'OGM / PHY / PHS',flow:'water → sediment',params:['settling','w_pom','d_pom','rho_pom','w_po4ads','Psed_poc_variable','Psed_pon_variable','Psed_pop_variable'],note:'Settling to the bottom layer is a loss from the water column and (with simSedimentOM) a gain for the sediment OM pools.'},
+{id:'S7',name:'Resuspension',mod:'OGM / PHS',flow:'sediment → POM',params:['resuspension','resus_link','sedimentOMfrac','sedimentBulkDens','sedimentDepth','Xsc','Xsn','Xsp'],note:'resuspension=1 uses sedimentOMfrac; 2 reads a spatial fraction from the sediment model. Xsc/Xsn/Xsp set the C, N and P content of resuspended OM.'},
+{id:'S8',name:'Sediment OM pools',mod:'OGM',flow:'POM, DOM in sediment',params:['simSedimentOM'],note:'Keeps a budget of sediment POC/PON/POP and DOC/DON/DOP fed by settling and drained by Fsed.'},
+{id:'S9',name:'Exposed (dry) sediment',mod:'NIT/CAR',flow:'sediment → atmosphere',params:['simExposed','dry_model','theta_sed_dry','Fsed_n2o_dry','Fsed_dic_dry','Fsed_ch4_dry','Fsed_ch4_ebb_dry'],note:'Only when cells dry out. Fluxes go straight to the atmosphere.'}
+];
+
+const MODS = {
+ PHY:'aed_phytoplankton', ZOO:'aed_zooplankton', OGM:'aed_organic_matter', NIT:'aed_nitrogen', PHS:'aed_phosphorus',
+ CAR:'aed_carbon', OXY:'aed_oxygen', SIL:'aed_silica', SED:'aed_sedflux', GCH:'aed_geochemistry', MTH:'aed_methane'
+};
+
+/* ===================================================================
+   DIAGRAM RENDERER
+   nodes: {id,x,y,w,h,t:[lines],c:'N|P|C|O|S|B|X',dash}
+   edges: {a,b,pts:[[x,y]],l:'N9 Nitrification',tip,c,dash,both,lx,ly,a0:[x,y],b0:[x,y]}
+   =================================================================== */
+const NS='http://www.w3.org/2000/svg';
+function E(tag,attrs,parent,text){
+  const n=document.createElementNS(NS,tag);
+  for(const k in (attrs||{})) n.setAttribute(k,attrs[k]);
+  if(text!==undefined) n.textContent=text;
+  if(parent) parent.appendChild(n);
+  return n;
+}
+function edgePoint(n,tx,ty){
+  const dx=tx-n.x, dy=ty-n.y;
+  if(dx===0&&dy===0) return [n.x,n.y];
+  const sx=(n.w/2)/Math.abs(dx||1e-9), sy=(n.h/2)/Math.abs(dy||1e-9);
+  const s=Math.min(sx,sy);
+  return [n.x+dx*s, n.y+dy*s];
+}
+function render(hostId,W,H,nodes,edges){
+  const host=document.getElementById(hostId);
+  const svg=E('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'},host);
+  const defs=E('defs',{},svg);
+  ['N','P','C','O','S','B','X'].forEach(k=>{
+    const m=E('marker',{id:`ah-${hostId}-${k}`,viewBox:'0 0 10 10',refX:'9',refY:'5',markerWidth:'7',markerHeight:'7',orient:'auto-start-reverse'},defs);
+    E('path',{d:'M0 0L10 5L0 10z',fill:`var(--${k}-bd)`},m);
+  });
+  const map={}; nodes.forEach(n=>map[n.id]=n);
+  const gE=E('g',{},svg), gN=E('g',{},svg), gL=E('g',{},svg);
+  nodes.forEach(n=>{
+    const g=E('g',{},gN);
+    E('rect',{x:n.x-n.w/2,y:n.y-n.h/2,width:n.w,height:n.h,rx:n.rx||9,
+      fill:`var(--${n.c}-bg)`,stroke:`var(--${n.c}-bd)`,'stroke-width':n.thick?2.5:1.5,
+      'stroke-dasharray':n.dash?'5 4':'none'},g);
+    const lines=n.t, lh=14.5, top=n.y-(lines.length-1)*lh/2+4;
+    lines.forEach((s,i)=>E('text',{x:n.x,y:top+i*lh,'text-anchor':'middle',
+      'font-size':i===0?13:11,'font-weight':i===0?700:400,fill:`var(--${n.c}-fg)`},g,s));
+  });
+  edges.forEach(e=>{
+    const A=typeof e.a==='string'?map[e.a]:null, B=typeof e.b==='string'?map[e.b]:null;
+    const mid=e.pts||[];
+    const aTarget = mid.length?mid[0]:(B?[B.x,B.y]:e.b);
+    const bTarget = mid.length?mid[mid.length-1]:(A?[A.x,A.y]:e.a);
+    let p0 = A?edgePoint(A,aTarget[0],aTarget[1]):e.a;
+    let p1 = B?edgePoint(B,bTarget[0],bTarget[1]):e.b;
+    if(e.vert && A && B){          // straight vertical run at the target's x
+      const s=B.y>A.y?1:-1;
+      p0=[B.x,A.y+s*A.h/2]; p1=[B.x,B.y-s*B.h/2];
+    }
+    const pts=[p0,...mid,p1];
+    const col=e.c||'X';
+    E('path',{d:'M'+pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L'),fill:'none',
+      stroke:`var(--${col}-bd)`,'stroke-width':e.w||1.8,'stroke-dasharray':e.dash?'6 4':'none',
+      'marker-end':`url(#ah-${hostId}-${col})`,'marker-start':e.both?`url(#ah-${hostId}-${col})`:'none'},gE);
+    if(!e.l) return;
+    // label position: middle of the path by length unless given
+    let lx=e.lx, ly=e.ly;
+    if(lx===undefined){
+      let tot=0; const segs=[];
+      for(let i=0;i<pts.length-1;i++){const d=Math.hypot(pts[i+1][0]-pts[i][0],pts[i+1][1]-pts[i][1]);segs.push(d);tot+=d;}
+      let half=tot/2,i=0; while(i<segs.length-1&&half>segs[i]){half-=segs[i];i++;}
+      const f=segs[i]?half/segs[i]:0;
+      lx=pts[i][0]+(pts[i+1][0]-pts[i][0])*f; ly=pts[i][1]+(pts[i+1][1]-pts[i][1])*f;
+    }
+    const g=E('g',{class:'lbl','data-pid':(e.l.match(/^[A-Z]\d+/)||[''])[0]},gL);
+    const tw=e.l.length*5.9+10;
+    E('rect',{x:lx-tw/2,y:ly-9,width:tw,height:18,rx:5,fill:'var(--bg)','fill-opacity':.94,stroke:`var(--${col}-bd)`,'stroke-width':.8},g);
+    E('text',{x:lx,y:ly+4,'text-anchor':'middle','font-size':11,fill:'var(--fg)'},g,e.l);
+    if(e.tip) E('title',{},g,e.tip);
+  });
+  // hover links
+  svg.querySelectorAll('.lbl').forEach(g=>{
+    const pid=g.getAttribute('data-pid'); if(!pid) return;
+    g.addEventListener('mouseenter',()=>document.querySelectorAll(`tr[data-pid="${pid}"]`).forEach(r=>r.classList.add('hl')));
+    g.addEventListener('mouseleave',()=>document.querySelectorAll(`tr[data-pid="${pid}"]`).forEach(r=>r.classList.remove('hl')));
+  });
+}
+
+/* ===================================================================
+   Table rendering
+   =================================================================== */
+function procTable(prefix){
+  const rows=PROCS.filter(p=>p.id.startsWith(prefix)&&/^\d+$/.test(p.id.slice(prefix.length)));
+  let h='<div class="tblwrap"><table><thead><tr><th>ID</th><th>Process</th><th>Module</th><th>Pools affected</th><th>Controlling parameters</th><th>Notes</th></tr></thead><tbody>';
+  rows.forEach(p=>{
+    h+=`<tr data-pid="${p.id}"><td class="pid ${prefix}">${p.id}</td><td>${p.name}</td><td>${p.mod.split(/ ?[\/] ?/).map(m=>MODS[m]||m).join(' / ')}</td><td>${p.flow}</td><td>${p.params.map(x=>`<span class="p">${x}</span>`).join('')}</td><td>${p.note}</td></tr>`;
+  });
+  return h+'</tbody></table></div>';
+}
+function legend(items){
+  return '<div class="legend">'+items.map(i=>i.ar
+    ?`<span><i class="ar ${i.d?'d':''}" style="border-top-color:var(--${i.c}-bd)"></i>${i.t}</span>`
+    :`<span><i style="background:var(--${i.c}-bg);border-color:var(--${i.c}-bd);${i.d?'border-style:dashed':''}"></i>${i.t}</span>`).join('')+'</div>';
+}
+
+/* ===================================================================
+   TABS
+   =================================================================== */
+const TABS=[
+ {id:'overview',label:'Overview'},
+ {id:'phyto',label:'Phytoplankton'},
+ {id:'zoo',label:'Zooplankton'},
+ {id:'nitrogen',label:'Nitrogen'},
+ {id:'phosphorus',label:'Phosphorus'},
+ {id:'carbon',label:'Carbon'},
+ {id:'redox',label:'Oxic vs anoxic'},
+ {id:'sediment',label:'Sediment fluxes'},
+ {id:'index',label:'Parameter index'}
+];
+const nav=document.getElementById('tabs'), main=document.getElementById('main');
+TABS.forEach((t,i)=>{
+  const b=document.createElement('button'); b.type='button'; b.textContent=t.label; b.setAttribute('role','tab');
+  b.setAttribute('aria-selected',i===0); b.dataset.t=t.id; nav.appendChild(b);
+  const s=document.createElement('section'); s.className='tab'+(i===0?' on':''); s.id='tab-'+t.id; main.appendChild(s);
+  b.addEventListener('click',()=>show(t.id));
+});
+function show(id){
+  document.querySelectorAll('section.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+id));
+  nav.querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===id));
+  try{history.replaceState(null,'','#'+id);}catch(e){}
+}
+function sec(id,html){document.getElementById('tab-'+id).innerHTML=html;}
+
+/* ---------------- OVERVIEW ---------------- */
+sec('overview',`
+<h2>Module map</h2>
+<p class="note">Each box is an AED module and the pools it owns. Arrows show what moves between them. Pool names are in the modules’ own units: mmol/m³ of C, N, P, Si or O₂. Pale-purple arrows are benthic fluxes; grey are exchanges with the atmosphere.</p>
+${legend([{c:'B',t:'Biology (PHY, ZOO)'},{c:'X',t:'Organic matter / forcing'},{c:'N',t:'Nitrogen pool'},{c:'P',t:'Phosphorus pool'},{c:'C',t:'Carbon pool'},{c:'O',t:'Oxygen'},{c:'S',t:'Sediment'},{c:'N',ar:1,t:'N flow'},{c:'P',ar:1,t:'P flow'},{c:'C',ar:1,t:'C flow'},{c:'O',ar:1,t:'O₂ flow'}])}
+<div class="card diagram" id="d-overview"></div>
+<h3>Reading the map</h3>
+<ul class="note">
+<li><b>Phytoplankton</b> is the entry point: it takes DIN, FRP, DIC, Si and releases O₂ through the <i>*_uptake_target_variable</i> links in <code>&amp;aed_phytoplankton</code>. Its losses go to organic matter through the <i>*_mortality_/ *_excretion_target_variable</i> links.</li>
+<li><b>Organic matter</b> (<code>aed_organic_matter</code>) is the hub. POM hydrolyses to DOM, and DOM mineralises into DIC, NH4 and FRP. Its oxygen-dependent anaerobic share runs denitrification, Fe(III) and SO4 reduction, and methanogenesis (see the Oxic vs anoxic tab).</li>
+<li><b>Nitrogen</b> adds the inorganic transformations (nitrification, denitrification, anammox, DNRA, N₂O). <b>Phosphorus</b> adds adsorption to particles and the sediment release. <b>Carbon</b> adds the carbonate system, gas exchange and CH4.</li>
+<li><b>Oxygen</b> is both a pool and a switch: nearly every module reads it through a <i>*_reactant_variable</i> or <i>dom_miner_oxy_reactant_var</i> link.</li>
+<li>Links are made by variable name in the namelist (for example <code>nitrif_reactant_variable = 'OXY_oxy'</code>). A missing link usually disables that feedback silently.</li>
+</ul>
+<div class="warn"><b>Things I noticed while reading the source</b> (worth checking against your intent):
+<ul style="margin:6px 0 0 18px;padding:0">
+<li><code>Rpom_hydrol</code> is read from the namelist but never stored or used; only <code>Rpoc_hydrol</code>, <code>Rpon_hydrol</code>, <code>Rpop_hydrol</code> take effect.</li>
+<li>DOM mineralisation uses the single <code>Rdom_minerl</code> for DOC, DON and DOP. <code>Rdoc_minerl</code>, <code>Rdon_minerl</code>, <code>Rdop_minerl</code> are stored but not used in the rate.</li>
+<li><code>K_fe</code> and <code>K_so4</code> (Fe(III) and sulfate reduction half-saturations in <code>aed_organic_matter</code>) are declared and used, but never assigned or read from the namelist, so they are undefined.</li>
+<li>If <code>simDenitrification&gt;0</code> in <code>aed_organic_matter</code> and <code>Rdenit&gt;0</code> in <code>aed_nitrogen</code>, nitrate is removed by both.</li>
+<li>The namelist hint for <code>PO4AdsorptionModel</code> says Langmuir/Freundlich, but the code uses a Ji (2008) partition for 1 and Chao et al. (2010) for 2.</li>
+</ul></div>
+`);
+(function(){
+  const nodes=[
+   {id:'ATM',x:560,y:34,w:960,h:34,c:'X',t:['Atmosphere and physical drivers: wind, rain, light, temperature, salinity, TSS, bottom stress']},
+   {id:'PHY',x:550,y:130,w:300,h:60,c:'B',t:['Phytoplankton  (aed_phytoplankton)','groups from aed_phyto_pars.csv']},
+   {id:'SIL',x:120,y:300,w:140,h:56,c:'X',t:['SIL  aed_silica','reactive Si']},
+   {id:'NIT',x:330,y:300,w:140,h:56,c:'N',t:['NIT  aed_nitrogen','NH4  NO3  (NO2  N₂O)']},
+   {id:'PHS',x:550,y:300,w:140,h:56,c:'P',t:['PHS  aed_phosphorus','FRP  (+ adsorbed PIP)']},
+   {id:'CAR',x:770,y:300,w:140,h:56,c:'C',t:['CAR  aed_carbon','DIC  CH4  pH']},
+   {id:'OXY',x:980,y:300,w:140,h:56,c:'O',t:['OXY  aed_oxygen','dissolved O₂']},
+   {id:'GCH',x:120,y:480,w:140,h:56,c:'X',t:['GCH  aed_geochemistry','Fe  SO4  H₂S']},
+   {id:'OGM',x:510,y:480,w:560,h:60,c:'X',t:['Organic matter  (aed_organic_matter)','POC PON POP  →  DOC DON DOP  (+ refractory pools)']},
+   {id:'ZOO',x:950,y:480,w:180,h:60,c:'B',t:['Zooplankton','(aed_zooplankton)']},
+   {id:'SED',x:560,y:595,w:960,h:34,c:'S',t:['Sediment fluxes  (aed_sedflux)  Fsed_*  and  settling / resuspension']}
+  ];
+  const edges=[
+   {a:'ATM',b:'NIT',c:'X',both:1,vert:1,l:'N16 N17',tip:'N₂O exchange, DIN deposition',dash:1,lx:330,ly:165},
+   {a:'ATM',b:'CAR',c:'X',both:1,vert:1,l:'C12 C13',tip:'CO₂ and CH4 exchange',dash:1,lx:770,ly:165},
+   {a:'ATM',b:'OXY',c:'X',both:1,vert:1,l:'O11',tip:'O₂ exchange',dash:1,lx:980,ly:165},
+   {a:'NIT',b:'PHY',c:'N',l:'N1',tip:'NH4/NO3 uptake'},
+   {a:'PHS',b:'PHY',c:'P',l:'P1',tip:'FRP uptake'},
+   {a:'CAR',b:'PHY',c:'C',l:'C1',tip:'DIC uptake'},
+   {a:'SIL',b:'PHY',c:'X',l:'Si uptake'},
+   {a:'PHY',b:'OXY',c:'O',l:'O11',pts:[[800,130]],tip:'O₂ released by photosynthesis'},
+   {a:'PHY',b:'OGM',c:'C',pts:[[225,130],[225,420],[330,420]],l:'C3 C4 N3 N4 P2',lx:225,ly:260,tip:'mortality to POM, excretion to DOM'},
+   {a:'PHY',b:'ZOO',c:'C',pts:[[1085,130],[1085,480]],l:'N5 P3 C5 grazing',lx:1085,ly:300},
+   {a:[860,472],b:[790,472],c:'C',l:'N6 excretion',lx:825,ly:445},
+   {a:[790,492],b:[860,492],c:'C',l:'grazing POC',lx:825,ly:515},
+   {a:[330,455],b:'NIT',c:'N',l:'N8',pts:[[330,330]],tip:'DON → NH4',lx:330,ly:400},
+   {a:[550,455],b:'PHS',c:'P',l:'P5',pts:[[550,330]],tip:'DOP → FRP',lx:550,ly:400},
+   {a:[770,455],b:'CAR',c:'C',l:'C7',pts:[[770,330]],tip:'DOC → DIC',lx:770,ly:400},
+   {a:'OXY',b:[760,455],c:'O',l:'O3 O₂ use',pts:[[980,420],[800,420]],tip:'aerobic mineralisation, nitrification, CH4 oxidation consume O₂',lx:930,ly:420},
+   {a:'GCH',b:[230,480],c:'X',both:1,l:'O9',tip:'Fe/S reduction by DOM, re-oxidation by O₂',lx:200,ly:455},
+   {a:'OGM',b:[510,578],c:'S',pts:[[510,515]],l:'S6 S7',lx:510,ly:550,tip:'settling and resuspension',both:1},
+   {a:[80,578],b:'SIL',c:'S',pts:[[28,578],[28,300]],l:'Fsed_* to all pools',lx:120,ly:562,tip:'N18 P8 C15 S1: benthic release feeds NIT, PHS, CAR, OXY, SIL and OGM',dash:1}
+  ];
+  render('d-overview',1170,625,nodes,edges);
+})();
+
+/* ---------------- PHYTOPLANKTON ---------------- */
+sec('phyto',`
+<h2>Phytoplankton</h2>
+<p class="note">Each group is a column in <code>aed_phyto_pars.csv</code>, chosen by <code>the_phytos</code> in the namelist. Growth is the maximum rate scaled by temperature and the most limiting of light, nitrogen, phosphorus and silica. What the cell takes up and gives back is passed to other modules through the <i>*_target_variable</i> links.</p>
+${legend([{c:'X',t:'Environment / limitation'},{c:'B',t:'Biomass'},{c:'N',t:'N pools'},{c:'P',t:'P pools'},{c:'C',t:'C and O₂ pools'},{c:'S',t:'Sediment'},{c:'B',ar:1,t:'flux'}])}
+<div class="card diagram" id="d-phyto"></div>
+<h3>Processes and the parameters behind them</h3>
+${procTable('Y')}
+`);
+(function(){
+  const nodes=[
+   {id:'fI',x:130,y:70,w:240,h:50,c:'X',t:['Light  fI','PAR, extinction  Y2']},
+   {id:'fT',x:130,y:150,w:240,h:50,c:'X',t:['Temperature  fT','Y1']},
+   {id:'fN',x:130,y:230,w:240,h:50,c:'N',t:['Nitrogen  fN','NH4, NO3 or internal N  Y3']},
+   {id:'fP',x:130,y:310,w:240,h:50,c:'P',t:['Phosphorus  fP','FRP or internal P  Y4']},
+   {id:'fSi',x:130,y:390,w:240,h:50,c:'X',t:['Silica  fSi','reactive Si  Y5']},
+   {id:'fS',x:130,y:470,w:240,h:50,c:'X',t:['Salinity  fSal','Y11']},
+   {id:'GPP',x:470,y:270,w:210,h:130,c:'B',thick:1,t:['Gross growth  Y6','R_growth × fT ×','min(fI, fN, fP, fSi)','× fSal if salTol < 0']},
+   {id:'N2',x:760,y:70,w:150,h:46,c:'X',dash:1,t:['N₂','simNFixation']},
+   {id:'PHY',x:760,y:270,w:190,h:110,c:'B',thick:1,t:['Phytoplankton biomass','C  (+ IN, IP if dynamic)','p0 = minimum']},
+   {id:'ZOO',x:1090,y:70,w:150,h:46,c:'B',t:['Zooplankton','grazing']},
+   {id:'DOM',x:1090,y:160,w:150,h:46,c:'X',t:['DOC, DON, DOP','exudation, excretion']},
+   {id:'POM',x:1090,y:250,w:150,h:46,c:'X',t:['POC, PON, POP','mortality']},
+   {id:'DIC',x:1090,y:340,w:150,h:46,c:'C',t:['DIC and O₂','photosynthesis, respiration']},
+   {id:'SED',x:1090,y:430,w:150,h:46,c:'S',t:['Sediment','settling']},
+   {id:'MPB',x:760,y:470,w:190,h:50,c:'B',dash:1,t:['Benthic algae (MPB)','do_mpb  Y14']}
+  ];
+  const edges=[
+   {a:'fI',b:'GPP',c:'X'},{a:'fT',b:'GPP',c:'X'},{a:'fN',b:'GPP',c:'N'},{a:'fP',b:'GPP',c:'P'},{a:'fSi',b:'GPP',c:'X'},{a:'fS',b:'GPP',c:'X',dash:1},
+   {a:'GPP',b:'PHY',c:'B',l:'Y6 growth',w:2.6},
+   {a:'N2',b:'PHY',c:'N',dash:1,vert:1,l:'Y7 fixation',lx:760,ly:165},
+   {a:'PHY',b:'ZOO',c:'B',l:'N5 P3 C5 grazing',lx:930,ly:100,pts:[[925,70]]},
+   {a:'PHY',b:'DOM',c:'B',l:'Y9 f_pr, k_fdom',lx:960,ly:200},
+   {a:'PHY',b:'POM',c:'B',l:'Y10 mortality',lx:955,ly:265},
+   {a:'PHY',b:'DIC',c:'C',both:1,l:'C1 C2 Y8',lx:955,ly:318,tip:'photosynthesis takes DIC and releases O₂; respiration (k_fres) reverses it'},
+   {a:'PHY',b:'SED',c:'S',l:'Y12 settling',lx:950,ly:380},
+   {a:'MPB',b:'PHY',c:'B',both:1,dash:1,l:'Y13 resuspension',lx:760,ly:385}
+  ];
+  render('d-phyto',1200,540,nodes,edges);
+})();
+document.getElementById('tab-phyto').insertAdjacentHTML('beforeend',`
+<h3>How uptake and loss map to N, P and C</h3>
+<div class="tblwrap"><table><thead><tr><th>Flux</th><th>Nitrogen</th><th>Phosphorus</th><th>Carbon</th></tr></thead><tbody>
+<tr><td>Uptake</td><td>NH4 and NO3 → IN (<code>n1_</code>–<code>n4_uptake_target_variable</code>)</td><td>FRP → IP (<code>p1_</code>, <code>p2_uptake_target_variable</code>)</td><td>DIC → C (<code>c_uptake_target_variable</code>), O₂ released (<code>do_uptake_target_variable</code>)</td></tr>
+<tr><td>Respiration</td><td>none (internal N stays in the cell pool)</td><td>none</td><td>k_fres share → DIC, uses O₂</td></tr>
+<tr><td>Exudation, excretion</td><td>→ DON, in proportion to cell N</td><td>→ DOP</td><td>→ DOC (f_pr and k_fdom)</td></tr>
+<tr><td>Mortality</td><td>→ PON</td><td>→ POP</td><td>→ POC</td></tr>
+<tr><td>Grazing</td><td colspan="3">Removes C, IN and IP together in the ratio of the cell contents. See the Zooplankton tab.</td></tr>
+</tbody></table></div>
+`);
+
+/* ---------------- ZOOPLANKTON ---------------- */
+sec('zoo',`
+<h2>Zooplankton</h2>
+<p class="note">Each group is a column in <code>aed_zoop_pars.csv</code>. A group grazes on a list of prey, splits what it takes between growth, faeces and excretion, and loses biomass to respiration and mortality. Zooplankton keep a fixed N:C and P:C, so any nutrient grazed beyond that is excreted.</p>
+${legend([{c:'B',t:'Biomass'},{c:'X',t:'Organic matter / modifier'},{c:'O',t:'Oxygen'},{c:'S',t:'Sediment'},{c:'B',ar:1,t:'flux'}])}
+<div class="card diagram" id="d-zoo"></div>
+<h3>Processes and the parameters behind them</h3>
+${procTable('Z')}
+<div class="warn"><b>Check:</b> in the current source <code>theta_resp_zoo</code> and <code>saltfunc_zoo</code> are read from the CSV but have no effect. Respiration and mortality use <code>theta_grz_zoo</code>, and one salinity function is always used. A respiration share of 1−ffecal_zoo−fexcr_zoo is removed from the animal without being added to DIC or consuming O₂.</div>
+`);
+(function(){
+  const nodes=[
+   {id:'PHY',x:130,y:90,w:210,h:56,c:'B',t:['Phytoplankton','prey(n)%zoop_prey = PHY_*']},
+   {id:'POC',x:130,y:200,w:210,h:56,c:'X',t:['POC (+ PON, POP)','prey = OGM_poc']},
+   {id:'ZP',x:130,y:310,w:210,h:56,c:'B',t:['Other zooplankton','prey = ZOO_*']},
+   {id:'GRZ',x:440,y:200,w:230,h:120,c:'B',thick:1,t:['Grazing  Z1','Rgrz_zoo × C/(Kgrz_zoo+C) × fT','C = total prey','Cmin_grz_zoo floor','split by Pzoo_prey']},
+   {id:'ZOO',x:780,y:200,w:190,h:100,c:'B',thick:1,t:['Zooplankton biomass','fixed N:C (INC_zoo)','fixed P:C (IPC_zoo)','min_zoo']},
+   {id:'T',x:440,y:60,w:180,h:50,c:'X',t:['Temperature  Z2','theta_grz_zoo, T*_zoo']},
+   {id:'S',x:780,y:350,w:210,h:50,c:'X',t:['Salinity  Z8','Smin_zoo, Smax_zoo, Sint_zoo']},
+   {id:'O',x:440,y:350,w:230,h:50,c:'O',t:['Dissolved O₂','DOmin_zoo']},
+   {id:'POM',x:1060,y:70,w:160,h:56,c:'X',t:['POC, PON, POP','faeces, dead animals']},
+   {id:'DOM',x:1060,y:170,w:160,h:56,c:'X',t:['DOC, DON, DOP','excretion']},
+   {id:'RES',x:1060,y:270,w:160,h:56,c:'X',dash:1,t:['Respired C','not routed to DIC']},
+   {id:'SED',x:1060,y:370,w:160,h:56,c:'S',t:['Sediment','hard faecal pellets']}
+  ];
+  const edges=[
+   {a:'PHY',b:'GRZ',c:'B'},{a:'POC',b:'GRZ',c:'B'},{a:'ZP',b:'GRZ',c:'B'},
+   {a:'T',b:'GRZ',c:'X',vert:1},
+   {a:'GRZ',b:'ZOO',c:'B',l:'Z3 assimilation',w:2.6,tip:'fassim_zoo'},
+   {a:[545,140],b:'POM',c:'B',pts:[[545,22],[1060,22]],l:'Z4 unassimilated',lx:650,ly:22,tip:'(1−fassim_zoo) × grazing'},
+   {a:'ZOO',b:'POM',c:'B',l:'Z4 Z7',lx:930,ly:122,tip:'faeces from respiration (ffecal_zoo) and mortality (Rmort_zoo)'},
+   {a:'ZOO',b:'DOM',c:'B',l:'Z5 excretion',lx:940,ly:185},
+   {a:'ZOO',b:'RES',c:'B',l:'Z6 respiration',lx:940,ly:245},
+   {a:'ZOO',b:'SED',c:'S',dash:1,pts:[[900,330],[900,370]],l:'ffecal_sed',lx:940,ly:340},
+   {a:'S',b:'ZOO',c:'X',dash:1,vert:1},
+   {a:'O',b:[700,210],c:'O',dash:1,pts:[[700,350],[700,260]],l:'Z7 low O₂ → mortality',lx:610,ly:380}
+  ];
+  render('d-zoo',1170,430,nodes,edges);
+})();
+
+/* ---------------- NITROGEN ---------------- */
+sec('nitrogen',`
+<h2>Nitrogen balance</h2>
+<p class="note">Particulate N is hydrolysed to DON, DON is mineralised to ammonium, ammonium is nitrified to nitrate, and nitrate is lost as N₂ (or recycled by DNRA). Phytoplankton and zooplankton draw N out and return it as PON, DON and NH4. Dashed boxes are optional sub-models.</p>
+${legend([{c:'B',t:'Biomass'},{c:'X',t:'Organic N (PON, DON)'},{c:'N',t:'Inorganic N'},{c:'N',t:'Optional (simN2O)',d:1},{c:'S',t:'Sediment'},{c:'N',ar:1,t:'N flow'},{c:'O',ar:1,t:'needs / uses O₂',d:1}])}
+<div class="card diagram" id="d-nitrogen"></div>
+<h3>Processes and the parameters behind them</h3>
+${procTable('N')}
+`);
+(function(){
+  const nodes=[
+   {id:'ATM',x:600,y:34,w:1000,h:34,c:'X',t:['Atmosphere: N₂O exchange, dry and wet DIN deposition']},
+   {id:'PHY',x:110,y:230,w:150,h:60,c:'B',t:['Phytoplankton N','X_ncon or dynamic IN']},
+   {id:'ZOO',x:110,y:470,w:150,h:56,c:'B',t:['Zooplankton N','INC_zoo']},
+   {id:'PON',x:380,y:130,w:130,h:46,c:'X',t:['PON']},
+   {id:'DON',x:380,y:310,w:130,h:46,c:'X',t:['DON']},
+   {id:'NH4',x:720,y:310,w:130,h:46,c:'N',t:['NH4⁺','amm']},
+   {id:'NO3',x:1000,y:310,w:130,h:46,c:'N',t:['NO3⁻','nit']},
+   {id:'NO2',x:880,y:460,w:130,h:46,c:'N',dash:1,t:['NO2⁻','simN2O = 2']},
+   {id:'N2O',x:640,y:560,w:130,h:46,c:'N',dash:1,t:['N₂O','simN2O ≥ 1']},
+   {id:'N2',x:1000,y:560,w:130,h:46,c:'X',t:['N₂ (lost)']},
+   {id:'SED',x:600,y:650,w:1000,h:34,c:'S',t:['Sediment: Fsed_amm, Fsed_nit, Fsed_n2o, Fsed_don, PON settling / resuspension']}
+  ];
+  const edges=[
+   {a:'ATM',b:'NH4',c:'N',vert:1,l:'N17',lx:720,ly:100},
+   {a:'ATM',b:'NO3',c:'N',vert:1,l:'N17',lx:1000,ly:100},
+   {a:[1100,34],b:'N2O',c:'N',both:1,dash:1,l:'N16 N₂O exchange',pts:[[1150,34],[1150,610],[640,610]],lx:1150,ly:200},
+   {a:[690,287],b:[185,225],c:'N',l:'N1 NH4 uptake',pts:[[690,205]],lx:480,ly:212},
+   {a:[965,287],b:[185,248],c:'N',l:'N1 NO3 uptake',pts:[[965,262],[185,262]],lx:640,ly:262},
+   {a:'PHY',b:'PON',c:'N',l:'N3 mortality',lx:240,ly:178},
+   {a:'PHY',b:'DON',c:'N',l:'N4 excretion',lx:255,ly:276},
+   {a:'PHY',b:'ZOO',c:'N',l:'N5 grazing',lx:110,ly:360},
+   {a:'ZOO',b:'DON',c:'N',l:'N6 DON',lx:255,ly:395},
+   {a:[170,455],b:[315,142],c:'N',pts:[[270,455],[270,142]],l:'N6 faeces → PON',lx:270,ly:420},
+   {a:'PON',b:'DON',c:'N',l:'N7 hydrolysis',lx:380,ly:220},
+   {a:'DON',b:'NH4',c:'N',l:'N8 mineralisation',lx:550,ly:284},
+   {a:'NH4',b:'NO3',c:'N',l:'N9 nitrification',lx:875,ly:284},
+   {a:'NO3',b:'N2',c:'N',l:'N10 N11 denitrification',lx:1000,ly:435},
+   {a:'NO3',b:'NH4',c:'N',l:'N13 DNRA',pts:[[875,350]],lx:875,ly:352},
+   {a:'NO2',b:'N2',c:'N',dash:1,l:'N12 anammox',lx:925,ly:525,tip:'NH4⁺ + NO2⁻ → N₂ (also consumes NH4⁺)'},
+   {a:'NH4',b:'NO2',c:'N',dash:1,l:'N15',lx:790,ly:395},
+   {a:'NO2',b:'NO3',c:'N',dash:1,l:'N15',lx:975,ly:395},
+   {a:'N2O',b:'N2',c:'N',dash:1,l:'N14 N2O → N₂',lx:880,ly:562},
+   {a:'NH4',b:'N2O',c:'N',dash:1,l:'N14',lx:665,ly:440},
+   {a:[770,633],b:[770,333],c:'S',l:'N18',lx:770,ly:600,tip:'Fsed_amm'},
+   {a:[1100,633],b:'NO3',c:'S',l:'N18',pts:[[1100,633],[1100,310]],lx:1100,ly:480,tip:'Fsed_nit'},
+   {a:[120,633],b:'DON',c:'S',l:'N19',pts:[[40,633],[40,310],[280,310]],lx:40,ly:480,tip:'Fsed_don, PON/DON settling and resuspension'},
+   {a:'OGM',b:'x'}
+  ].filter(e=>e.b!=='x');
+  render('d-nitrogen',1200,680,nodes,edges);
+})();
+
+/* ---------------- PHOSPHORUS ---------------- */
+sec('phosphorus',`
+<h2>Phosphorus balance</h2>
+<p class="note">P has one dissolved inorganic pool, FRP, plus an optional adsorbed pool (PIP) in equilibrium with it. Organic P follows the same hydrolysis and mineralisation path as N. Sediment release is the largest term in many lakes and depends strongly on bottom-water O₂.</p>
+${legend([{c:'B',t:'Biomass'},{c:'X',t:'Organic P (POP, DOP)'},{c:'P',t:'Inorganic P'},{c:'P',t:'Optional (simPO4Adsorption)',d:1},{c:'S',t:'Sediment'},{c:'P',ar:1,t:'P flow'},{c:'O',ar:1,t:'O₂ controlled'}])}
+<div class="card diagram" id="d-phosphorus"></div>
+<h3>Processes and the parameters behind them</h3>
+${procTable('P')}
+`);
+(function(){
+  const nodes=[
+   {id:'ATM',x:560,y:34,w:960,h:34,c:'X',t:['Atmosphere: wet deposition (FRP in rain) and dry deposition (particulate P)']},
+   {id:'PHY',x:130,y:230,w:160,h:60,c:'B',t:['Phytoplankton P','X_pcon or dynamic IP']},
+   {id:'ZOO',x:130,y:440,w:160,h:56,c:'B',t:['Zooplankton P','IPC_zoo']},
+   {id:'POP',x:420,y:130,w:130,h:46,c:'X',t:['POP']},
+   {id:'DOP',x:420,y:310,w:130,h:46,c:'X',t:['DOP']},
+   {id:'FRP',x:760,y:310,w:140,h:50,c:'P',t:['FRP','dissolved PO4']},
+   {id:'PIP',x:1000,y:310,w:150,h:50,c:'P',dash:1,t:['Adsorbed P (PIP)','frp_ads']},
+   {id:'TSS',x:1000,y:160,w:150,h:46,c:'X',dash:1,t:['TSS / particles','sorption sites']},
+   {id:'O2',x:610,y:470,w:140,h:46,c:'O',t:['Bottom-water O₂']},
+   {id:'SED',x:560,y:610,w:960,h:34,c:'S',t:['Sediment: Fsed_frp, POP / DOP fluxes, settling of PIP and POP']}
+  ];
+  const edges=[
+   {a:'ATM',b:'FRP',c:'P',vert:1,l:'P9 wet',lx:790,ly:100},
+   {a:[1040,34],b:'PIP',c:'P',pts:[[1095,34],[1095,310]],l:'P9 dry',lx:1095,ly:150,dash:1},
+   {a:[735,285],b:[210,238],c:'P',pts:[[735,238]],l:'P1 FRP uptake',lx:520,ly:238},
+   {a:'PHY',b:'POP',c:'P',l:'P2 mortality',lx:265,ly:178},
+   {a:'PHY',b:'DOP',c:'P',l:'P2 excretion',lx:280,ly:276},
+   {a:'PHY',b:'ZOO',c:'P',l:'P3 grazing',lx:130,ly:340},
+   {a:'ZOO',b:'DOP',c:'P',l:'P3 DOP',lx:285,ly:380},
+   {a:[190,425],b:[355,142],c:'P',pts:[[300,425],[300,142]],l:'P3 faeces → POP',lx:300,ly:400},
+   {a:'POP',b:'DOP',c:'P',l:'P4 hydrolysis',lx:420,ly:225},
+   {a:'DOP',b:'FRP',c:'P',l:'P5 mineralisation',lx:590,ly:284},
+   {a:'FRP',b:'PIP',c:'P',both:1,dash:1,l:'P6 adsorption',lx:880,ly:284},
+   {a:'TSS',b:'PIP',c:'X',dash:1,l:'P6 Kpo4p, Qmax',lx:1000,ly:232,tip:'sorption capacity set by the particle concentration'},
+   {a:[800,593],b:[800,335],c:'S',l:'P8 Fsed_frp',lx:800,ly:520,tip:'Fsed_frp × min(3, Ksed_frp/(Ksed_frp+O₂) × θ^(T−20))'},
+   {a:'O2',b:'FRP',c:'O',dash:1,l:'O₂ gate',lx:668,ly:400,tip:'More release at low O₂'},
+   {a:'PIP',b:[1040,593],c:'S',l:'P7 settling',pts:[[1040,450]],lx:1040,ly:500,tip:'w_po4ads'},
+   {a:[420,153],b:[420,593],c:'S',l:'P10 settling',pts:[[40,153],[40,593]],lx:40,ly:360,tip:'POP settling, resuspension; DOP flux from sediment'}
+  ];
+  render('d-phosphorus',1120,650,nodes,edges);
+})();
+
+/* ---------------- CARBON ---------------- */
+sec('carbon',`
+<h2>Carbon balance</h2>
+<p class="note">Photosynthesis moves DIC into phytoplankton and releases O₂. Respiration, DOC mineralisation and CH4 oxidation return it. Anaerobic mineralisation can end in CH4. DIC and CH4 exchange with the air, and CH4 can also leave as bubbles. pH is computed from DIC and alkalinity, and it feeds back to nitrification and P adsorption when linked.</p>
+${legend([{c:'B',t:'Biomass'},{c:'X',t:'Organic C'},{c:'C',t:'Inorganic C / gas'},{c:'C',t:'Optional',d:1},{c:'O',t:'Oxygen'},{c:'S',t:'Sediment'},{c:'C',ar:1,t:'C flow'},{c:'O',ar:1,t:'O₂ flow'}])}
+<div class="card diagram" id="d-carbon"></div>
+<h3>Processes and the parameters behind them</h3>
+${procTable('C')}
+`);
+(function(){
+  const nodes=[
+   {id:'ATM',x:600,y:34,w:1040,h:34,c:'X',t:['Atmosphere: CO₂ (atm_co2), CH4 (atm_ch4), bubbles that reach the surface']},
+   {id:'PHY',x:130,y:230,w:160,h:60,c:'B',t:['Phytoplankton C','Xcc, X_ncon, X_pcon']},
+   {id:'ZOO',x:130,y:470,w:160,h:56,c:'B',t:['Zooplankton C']},
+   {id:'POC',x:400,y:130,w:130,h:46,c:'X',t:['POC']},
+   {id:'DOC',x:400,y:310,w:130,h:46,c:'X',t:['DOC']},
+   {id:'DOCR',x:400,y:470,w:150,h:46,c:'X',dash:1,t:['DOCR, CPOM','simRPools']},
+   {id:'DIC',x:760,y:310,w:140,h:56,c:'C',t:['DIC','pH, alkalinity']},
+   {id:'CH4',x:1010,y:310,w:140,h:50,c:'C',dash:1,t:['CH4','simCH4']},
+   {id:'O2',x:580,y:470,w:120,h:46,c:'O',t:['O₂']},
+   {id:'BUB',x:1010,y:470,w:140,h:46,c:'C',dash:1,t:['Bubbles','ebb_model']},
+   {id:'SED',x:600,y:620,w:1040,h:34,c:'S',t:['Sediment: Fsed_dic, Fsed_ch4, Fsed_ch4_ebb, Fsed_doc, POC settling / resuspension']}
+  ];
+  const edges=[
+   {a:'ATM',b:'DIC',c:'C',both:1,vert:1,l:'C12 CO₂ exchange',lx:760,ly:100},
+   {a:'ATM',b:'CH4',c:'C',both:1,dash:1,vert:1,l:'C13 CH4 exchange',lx:1010,ly:100},
+   {a:[735,282],b:[210,242],c:'C',pts:[[735,242]],l:'C1 photosynthesis',lx:520,ly:242},
+   {a:[210,206],b:[690,282],c:'C',pts:[[690,206]],l:'C2 respiration',lx:470,ly:206},
+   {a:'PHY',b:'POC',c:'C',l:'C4 mortality',lx:275,ly:178},
+   {a:'PHY',b:'DOC',c:'C',l:'C3 exudation',lx:260,ly:278},
+   {a:'PHY',b:'ZOO',c:'C',l:'C5 grazing',lx:130,ly:350},
+   {a:'ZOO',b:'DOC',c:'C',l:'C5 DOC',lx:280,ly:395},
+   {a:[190,455],b:[335,142],c:'C',pts:[[245,455],[245,142]],l:'C5 faeces → POC',lx:245,ly:420},
+   {a:'POC',b:'DOC',c:'C',l:'C6 hydrolysis',lx:400,ly:220},
+   {a:'DOC',b:'DIC',c:'C',l:'C7 mineralisation',lx:580,ly:284},
+   {a:'DOC',b:'DOCR',c:'C',dash:1,l:'C8',lx:400,ly:395},
+   {a:'DOCR',b:'DIC',c:'C',dash:1,l:'C8 photolysis',lx:590,ly:420},
+   {a:'DOC',b:'CH4',c:'C',dash:1,pts:[[400,370],[1010,370]],l:'C10 methanogenesis',lx:880,ly:370},
+   {a:'CH4',b:'DIC',c:'C',l:'C11 CH4 oxidation',pts:[[890,330]],lx:890,ly:332},
+   {a:'O2',b:'DIC',c:'O',l:'uses O₂',lx:660,ly:410,tip:'aerobic mineralisation, respiration; CH4 oxidation'},
+   {a:'PHY',b:'O2',c:'O',pts:[[130,545],[580,545]],l:'O₂ from C1',lx:200,ly:545,dash:1},
+   {a:[760,603],b:[760,338],c:'S',l:'C15 Fsed_dic',lx:760,ly:560},
+   {a:[1060,603],b:[1080,310],c:'S',pts:[[1105,603],[1105,310]],l:'C15 Fsed_ch4',lx:1105,ly:560},
+   {a:[1010,603],b:[1010,493],c:'S',dash:1,l:'C14 Fsed_ch4_ebb',lx:1010,ly:545},
+   {a:'BUB',b:'CH4',c:'C',dash:1,l:'C14 dissolves',lx:1010,ly:395},
+   {a:'BUB',b:'ATM',c:'C',dash:1,pts:[[1140,470],[1140,34]],l:'C14 to air',lx:1140,ly:250,tip:'share not dissolved in transit'},
+   {a:[400,603],b:'DOC',c:'S',l:'C16',pts:[[60,603],[60,310]],lx:60,ly:560,tip:'Fsed_doc, Fsed_poc, POC settling'}
+  ];
+  render('d-carbon',1200,670,nodes,edges);
+})();
+
+/* ---------------- OXIC vs ANOXIC ---------------- */
+sec('redox',`
+<h2>Oxic versus anoxic conditions</h2>
+<p class="note">The same organic matter is processed in different ways depending on O₂. Oxic water mineralises quickly, nitrifies, and holds N and P in the sediment. As O₂ falls, nitrification stops, the anaerobic share of mineralisation rises and works down a ladder of electron acceptors, and the sediment releases NH4, FRP, CH4 and dissolved Fe/S.</p>
+${legend([{c:'O',t:'Oxygen / aerobic'},{c:'N',t:'N pool'},{c:'P',t:'P pool'},{c:'C',t:'C pool'},{c:'X',t:'Other redox species'},{c:'S',t:'Sediment'}])}
+<div class="card diagram" id="d-redox"></div>
+<h3>The O₂-dependent switches</h3>
+${procTable('O')}
+`);
+(function(){
+  const nodes=[
+   {id:'HDOx',x:300,y:30,w:520,h:40,c:'O',thick:1,t:['OXIC  (O₂ ≫ Kdom_minerl, Knitrif, Ksed_*)']},
+   {id:'HDAn',x:900,y:30,w:520,h:40,c:'S',thick:1,t:['ANOXIC  (O₂ → 0)']},
+   // oxic column
+   {id:'o_dom',x:300,y:120,w:240,h:50,c:'X',t:['DOM (DOC, DON, DOP)','from POM hydrolysis  O1']},
+   {id:'o_prod',x:300,y:250,w:260,h:54,c:'C',t:['DIC  +  NH4⁺  +  FRP','mineralised at full rate  O2 O3']},
+   {id:'o_nit',x:300,y:380,w:200,h:46,c:'N',t:['NO3⁻','from nitrification  O5']},
+   {id:'o_o2',x:70,y:250,w:110,h:46,c:'O',t:['O₂','consumed']},
+   {id:'o_sed',x:300,y:520,w:480,h:56,c:'S',t:['Sediment: low NH4, FRP, CH4 release; NO3 and O₂ taken up','Ksed_*/(Ksed_*+O₂) small  S3']},
+   // anoxic ladder
+   {id:'a_dom',x:760,y:120,w:240,h:50,c:'X',t:['DOM, anaerobic share','Kdom_minerl/(Kdom_minerl+O₂)  O4']},
+   {id:'a_no3',x:760,y:215,w:240,h:46,c:'N',t:['1  NO3⁻ → N₂ / N₂O / NH4⁺','K_nit  N10 N11 N13']},
+   {id:'a_fe',x:760,y:300,w:240,h:46,c:'X',t:['2  Fe(III) → Fe(II)','simFeReduction  K_fe']},
+   {id:'a_so4',x:760,y:385,w:240,h:46,c:'X',t:['3  SO4 → H₂S','simSO4Reduction  K_so4']},
+   {id:'a_ch4',x:760,y:470,w:240,h:46,c:'C',t:['4  CH4 (methanogenesis)','simMethanogenesis  C10']},
+   {id:'a_nh4',x:1060,y:300,w:200,h:56,c:'N',t:['NH4⁺ accumulates','nitrification off  O5','anammox, DNRA possible  O7']},
+   {id:'a_p',x:1060,y:420,w:200,h:56,c:'P',t:['FRP accumulates','sediment release rises  P8']},
+   {id:'a_sed',x:900,y:560,w:520,h:56,c:'S',t:['Sediment: high NH4, FRP, CH4, DOM release; N₂O possible','Ksed_*/(Ksed_*+O₂) → 1  S3']},
+   {id:'a_hd',x:1060,y:150,w:200,h:30,c:'X',rx:15,t:['Consequences']},
+   {id:'a_ox',x:1060,y:215,w:200,h:46,c:'O',dash:1,t:['O₂ returns','re-oxidises Fe, H₂S, CH4  O8 O9']}
+  ];
+  const edges=[
+   {a:'o_dom',b:'o_prod',c:'C',l:'aerobic mineralisation',tip:'uses O₂ at 1 mol per mol C'},
+   {a:'o_o2',b:[170,250],c:'O',l:'',w:1.8},
+   {a:'o_prod',b:'o_nit',c:'N',l:'NH4 → NO3 (2 O₂)',lx:300,ly:315,tip:'N9 nitrification uses 2 mol O₂ per mol N'},
+   {a:'o_nit',b:'o_sed',c:'S',l:'retained',lx:300,ly:452,dash:1},
+   {a:'o_sed',b:[560,520],c:'S',l:'',w:0},
+   {a:'a_dom',b:'a_no3',c:'N',l:'first',lx:700,ly:168},
+   {a:'a_no3',b:'a_fe',c:'X',l:'leftover share, × fnit',lx:760,ly:258},
+   {a:'a_fe',b:'a_so4',c:'X',l:'leftover, × ffe',lx:760,ly:343},
+   {a:'a_so4',b:'a_ch4',c:'C',l:'leftover, × fso4',lx:760,ly:428},
+   {a:'a_no3',b:'a_ox',c:'O',dash:1,l:'',w:0},
+   {a:'a_fe',b:'a_nh4',c:'N',dash:1,l:'',w:0},
+   {a:'a_ch4',b:'a_sed',c:'S',l:'CH4 to bubbles / sediment flux',lx:760,ly:515,dash:1},
+   {a:'a_p',b:'a_sed',c:'S',l:'',w:0}
+  ].filter(e=>e.w!==0);
+  // dividing line
+  render('d-redox',1200,620,nodes,edges);
+  const svg=document.querySelector('#d-redox svg');
+  const l=E('line',{x1:600,y1:60,x2:600,y2:590,stroke:'var(--line)','stroke-width':2,'stroke-dasharray':'6 6'});
+  svg.insertBefore(l,svg.firstChild.nextSibling);
+})();
+document.getElementById('tab-redox').insertAdjacentHTML('beforeend',`
+<div class="warn"><b>Sequence and shortcuts.</b> Mineralisation is split into an aerobic share, O₂/(Kdom_minerl+O₂), and the remainder. The remainder is passed down the acceptor ladder in this order: NO3, Fe(III), SO4, then methanogenesis. Fe and SO4 steps only run when <code>simFeReduction</code> and <code>simSO4Reduction</code> are above 0 and the matching <code>dom_miner_*_reactant_var</code> link exists. In <code>aed_nitrogen</code> the simple model runs nitrification, denitrification, DNRA and anammox separately from this ladder.</div>
+<h3>How each pool responds</h3>
+<div class="tblwrap"><table><thead><tr><th>Pool</th><th>Oxic water</th><th>Anoxic water</th><th>Main parameters</th></tr></thead><tbody>
+<tr><td>NH4</td><td>Consumed by nitrification</td><td>Builds up; DNRA and sediment release add to it</td><td><span class="p">Rnitrif</span><span class="p">Knitrif</span><span class="p">Rdnra</span><span class="p">Kdnra_oxy</span><span class="p">Ksed_amm</span></td></tr>
+<tr><td>NO3</td><td>Produced by nitrification; sediment takes it up</td><td>Denitrified, used in OM mineralisation, DNRA</td><td><span class="p">Kdenit</span><span class="p">oxy_lim</span><span class="p">K_nit</span><span class="p">simDenitrification</span><span class="p">Ksed_nit</span><span class="p">Fsed_nit_model</span></td></tr>
+<tr><td>FRP</td><td>Retained near the sediment; adsorbs to particles</td><td>Released from the sediment</td><td><span class="p">Ksed_frp</span><span class="p">theta_sed_frp</span><span class="p">simPO4Adsorption</span></td></tr>
+<tr><td>DIC</td><td>Produced by aerobic mineralisation and CH4 oxidation</td><td>Produced more slowly if f_an&lt;1; CH4 takes part of the C</td><td><span class="p">Kdom_minerl</span><span class="p">f_an</span><span class="p">Ksed_dic</span></td></tr>
+<tr><td>CH4</td><td>Oxidised to DIC (uses O₂)</td><td>Produced; released from sediment and bubbles</td><td><span class="p">Rch4ox</span><span class="p">Kch4ox</span><span class="p">simMethanogenesis</span><span class="p">Ksed_ch4</span></td></tr>
+<tr><td>N₂O</td><td>Small nitrification by-product when O₂ &gt; 3</td><td>Denitrification intermediate, consumed by Rn2o·exp(−O₂/0.3)</td><td><span class="p">simN2O</span><span class="p">Rn2o</span><span class="p">Ksed_n2o</span></td></tr>
+<tr><td>O₂</td><td>Sink: mineralisation, nitrification, sediment demand</td><td>Near zero, so all O₂-gated rates switch</td><td><span class="p">Fsed_oxy</span><span class="p">Ksed_oxy</span><span class="p">dom_miner_oxy_reactant_var</span></td></tr>
+</tbody></table></div>
+`);
+
+/* ---------------- SEDIMENT ---------------- */
+sec('sediment',`
+<h2>Sediment fluxes</h2>
+<p class="note">Sediment release enters the water column as a flux into the bottom layer of each pool. The value comes either from the module’s own <code>Fsed_*</code> parameter or from <code>aed_sedflux</code> through a <code>Fsed_*_variable</code> link. In constant mode the flux is then scaled by bottom-water O₂ and temperature. In dynamic mode the value from the sediment model is used as it is.</p>
+${legend([{c:'S',t:'Sediment source'},{c:'X',t:'Scaling'},{c:'N',t:'N pool'},{c:'P',t:'P pool'},{c:'C',t:'C pool'},{c:'O',t:'O₂ pool'},{c:'S',ar:1,t:'flux'},{c:'S',ar:1,d:1,t:'used unscaled'}])}
+<div class="card diagram" id="d-sediment"></div>
+<h3>Processes and the parameters behind them</h3>
+${procTable('S')}
+`);
+(function(){
+  const nodes=[
+   {id:'SF',x:150,y:230,w:250,h:200,c:'S',thick:1,t:['aed_sedflux','sedflux_model:','constant | dynamic','constant2d | dynamic2d','Fsed_oxy  Fsed_amm  Fsed_nit','Fsed_frp  Fsed_dic  Fsed_ch4','Fsed_doc  Fsed_don  Fsed_dop','Fsed_n2o  Fsed_rsi  Fsed_feii']},
+   {id:'MOD',x:490,y:230,w:260,h:140,c:'X',t:['Scaling in each module','(constant values only)','fDO = Ksed/(Ksed+O₂), or O₂/(Ksed+O₂)','fT = θ_sed^(T−20)','O₂ and FRP capped at min(3, fDO·fT)']},
+   {id:'OXY',x:880,y:60,w:230,h:46,c:'O',t:['O₂','Fsed_oxy_variable']},
+   {id:'NIT',x:880,y:140,w:230,h:46,c:'N',t:['NH4, NO3, N₂O','Fsed_amm / nit / n2o_variable']},
+   {id:'PHS',x:880,y:220,w:230,h:46,c:'P',t:['FRP','Fsed_frp_variable']},
+   {id:'CAR',x:880,y:300,w:230,h:46,c:'C',t:['DIC, CH4, bubbles','Fsed_dic / ch4 / ebb_variable']},
+   {id:'OGM',x:880,y:380,w:230,h:46,c:'X',t:['DOC, DON, DOP','Fsed_doc / don / dop_variable']},
+   {id:'SIL',x:880,y:460,w:230,h:46,c:'X',t:['Reactive Si','Fsed_rsi_variable']},
+   {id:'POM',x:880,y:560,w:230,h:56,c:'X',t:['POC, PON, POP','resuspension: Fsed_poc / pon / pop_variable']},
+   {id:'WC',x:490,y:560,w:260,h:56,c:'B',t:['Bottom water column','settling: w_pom, w_po4ads, Psed_*']},
+   {id:'SO',x:150,y:560,w:250,h:56,c:'S',t:['Sediment OM pools','simSedimentOM']},
+   {id:'O2',x:490,y:420,w:200,h:46,c:'O',t:['Bottom-water O₂ and T']}
+  ];
+  const edges=[
+   {a:'SF',b:'MOD',c:'S',l:'S1 constant',lx:320,ly:205},
+   {a:'MOD',b:'OXY',c:'S',l:'S3 S4',pts:[[640,60]]},
+   {a:'MOD',b:'NIT',c:'S',l:'S3 S4',pts:[[640,140]]},
+   {a:'MOD',b:'PHS',c:'S',l:'S3 S4',pts:[[640,220]]},
+   {a:'MOD',b:'CAR',c:'S',l:'S3 S4',pts:[[640,300]]},
+   {a:'MOD',b:'OGM',c:'S',l:'S3 S4',pts:[[640,380]]},
+   {a:'O2',b:'MOD',c:'O',l:'S3 S4 drivers',lx:490,ly:352},
+   {a:[150,130],b:[765,40],c:'S',dash:1,pts:[[150,18],[765,18]],l:'S1 S2 dynamic mode: used as-is, for every pool',lx:450,ly:18},
+   {a:'SF',b:'SIL',c:'S',pts:[[150,460]],l:'S1',lx:300,ly:460},
+   {a:'WC',b:'SO',c:'S',l:'S6 settling',lx:320,ly:535},
+   {a:'SO',b:'POM',c:'S',pts:[[150,640],[880,640]],l:'S7 resuspension',lx:520,ly:640,tip:'resuspension = 1 or 2; sedimentOMfrac, Xsc, Xsn, Xsp'},
+   {a:'POM',b:'WC',c:'S',l:'',lx:690,ly:560}
+  ].filter(e=>e.l!==''||e.b!=='WC');
+  render('d-sediment',1100,670,nodes,edges);
+})();
+document.getElementById('tab-sediment').insertAdjacentHTML('beforeend',`
+<h3>Per-module flux forms</h3>
+<div class="tblwrap"><table><thead><tr><th>Flux</th><th>Form in the code (constant mode)</th><th>Module</th></tr></thead><tbody>
+<tr><td>NH4</td><td><code>Fsed_amm × Ksed_amm/(Ksed_amm+O₂) × θ_sed_amm^(T−20)</code></td><td>aed_nitrogen</td></tr>
+<tr><td>NO3</td><td>Model 1: <code>Fsed_nit × O₂/(Ksed_nit+O₂) × θ</code>. Other models: <code>Fsed_nit × Ksed_nit/(Ksed_nit+O₂) × θ × NO3/(5+NO3)</code></td><td>aed_nitrogen</td></tr>
+<tr><td>N₂O</td><td><code>Fsed_n2o × Ksed_n2o/(Ksed_n2o+O₂) × θ_sed_amm^(T−20)</code></td><td>aed_nitrogen</td></tr>
+<tr><td>FRP</td><td><code>Fsed_frp × min(3, Ksed_frp/(Ksed_frp+O₂) × θ_sed_frp^(T−20))</code></td><td>aed_phosphorus</td></tr>
+<tr><td>DIC</td><td><code>Fsed_dic × O₂/(Ksed_dic+O₂) × θ_sed_dic^(T−20)</code></td><td>aed_carbon</td></tr>
+<tr><td>CH4</td><td><code>Fsed_ch4 × Ksed_ch4/(Ksed_ch4+O₂) × θ_sed_ch4^(T−20)</code></td><td>aed_carbon</td></tr>
+<tr><td>DOC, DON, DOP</td><td><code>Fsed_d* × Ksed_dom/(Ksed_dom+O₂) × θ_sed_dom^(T−20)</code></td><td>aed_organic_matter</td></tr>
+<tr><td>O₂ demand</td><td><code>Fsed_oxy × min(3, O₂/(Ksed_oxy+O₂) × θ_sed_oxy^(T−20))</code></td><td>aed_oxygen</td></tr>
+</tbody></table></div>
+<p class="note">Sign convention: a negative Fsed_oxy is an O₂ demand; positive values for the other pools are releases to the water. Units are mmol/m²/day in the namelist.</p>
+`);
+
+/* ---------------- PARAMETER INDEX ---------------- */
+sec('index',`
+<h2>Parameter index</h2>
+<p class="note">Every parameter named in the process tables, with the processes it influences. Use the filter to find a parameter, or pick an element to see only its processes. The same name can appear in more than one module.</p>
+<div class="filter">
+  <input id="q" type="search" placeholder="Filter by parameter, module or process" aria-label="Filter parameters">
+  <select id="el" aria-label="Element filter"><option value="">All elements</option><option value="N">Nitrogen</option><option value="P">Phosphorus</option><option value="C">Carbon</option><option value="O">Oxygen switches</option><option value="S">Sediment</option><option value="Y">Phytoplankton</option><option value="Z">Zooplankton</option></select>
+  <span class="note" id="cnt"></span>
+</div>
+<div class="tblwrap card"><table id="idxT"><thead><tr><th>Parameter</th><th>Module</th><th>Influences</th></tr></thead><tbody></tbody></table></div>
+`);
+(function(){
+  const idx={};
+  PROCS.forEach(p=>{
+    const mods=p.mod.split(/ ?\/ ?/).map(m=>MODS[m]||m).join(' / ');
+    p.params.forEach(x=>{
+      const key=x+'|'+mods;
+      (idx[key]=idx[key]||{p:x,m:mods,list:[]}).list.push(p);
+    });
+  });
+  const rows=Object.values(idx).sort((a,b)=>a.p.toLowerCase().localeCompare(b.p.toLowerCase()));
+  const tb=document.querySelector('#idxT tbody');
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.dataset.els=[...new Set(r.list.map(p=>p.id[0]))].join('');
+    tr.dataset.s=(r.p+' '+r.m+' '+r.list.map(p=>p.id+' '+p.name).join(' ')).toLowerCase();
+    tr.innerHTML=`<td><span class="p">${r.p}</span></td><td>${r.m}</td><td>${r.list.map(p=>`<span class="pid ${p.id[0]}">${p.id}</span> ${p.name}`).join('<br>')}</td>`;
+    tb.appendChild(tr);
+  });
+  const q=document.getElementById('q'), el=document.getElementById('el'), cnt=document.getElementById('cnt');
+  function f(){
+    const s=q.value.trim().toLowerCase(), e=el.value; let n=0;
+    tb.querySelectorAll('tr').forEach(tr=>{
+      const ok=(!s||tr.dataset.s.includes(s))&&(!e||tr.dataset.els.includes(e));
+      tr.style.display=ok?'':'none'; if(ok)n++;
+    });
+    cnt.textContent=n+' of '+rows.length+' parameters';
+  }
+  q.addEventListener('input',f); el.addEventListener('change',f); f();
+})();
+
+/* ---------------- theme + hash ---------------- */
+(function(){
+  const b=document.getElementById('themeBtn'), r=document.documentElement;
+  try{const t=localStorage.getItem('aed-theme'); if(t) r.dataset.theme=t;}catch(e){}
+  b.addEventListener('click',()=>{
+    const dark=(r.dataset.theme==='dark')||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);
+    r.dataset.theme=dark?'light':'dark';
+    try{localStorage.setItem('aed-theme',r.dataset.theme);}catch(e){}
+  });
+  const h=location.hash.slice(1); if(TABS.some(t=>t.id===h)) show(h);
+})();
+</script>
+</body>
+</html>

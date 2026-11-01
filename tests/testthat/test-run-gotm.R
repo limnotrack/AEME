@@ -64,20 +64,18 @@ test_that("running GOTM-WET works", {
   path <- file.path(tmpdir, "lake")
   aeme <- yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- get_model_controls(use_bgc = TRUE)
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
-  inf_factor = c("gotm_wet" = 1)
-  outf_factor = c("gotm_wet" = 1)
+  model_controls <- set_vars_sim(model_controls = model_controls,
+                                 vars_sim = c("CHM_oxynal", "CHM_oxymom",
+                                              "LKE_tli4", "LKE_tli3", 
+                                              "ZOO_zoo1"))
   model <- c("gotm_wet")
   aeme <- build_aeme(path = path, aeme = aeme, model = model,
-                     model_controls = model_controls, inf_factor = inf_factor,
+                     model_controls = model_controls, 
                      ext_elev = 5, use_bgc = TRUE)
   aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE,
                    model_controls = model_controls, path = path)
   plot_output(aeme = aeme, model = model)
+  plot_output(aeme = aeme, var_sim = "LKE_tli4")
   # plot_output(aeme = aeme, model = model, var_sim = "CHM_oxy")
   lke <- lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",

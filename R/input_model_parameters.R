@@ -5,12 +5,17 @@
 #' configuration files. Zone-ratio and zone-offset rows made by
 #' [zone_ratio_param()] and [zone_offset_param()] are expanded to per-zone
 #' values first (see [expand_zone_ratios()]).
+#' @param derive_totals logical; if `TRUE` (default), the `aed_totals` block of
+#' the GLM-AED `aed.nml` is re-derived from the phytoplankton parameters when
+#' `aed.nml` or `aed_phyto_pars.csv` parameters are applied, overwriting any
+#' manual edits to that block. Set `FALSE` to leave `aed_totals` as it is.
 #'
 #' @return Aeme object with parameters input into model configuration files
 #' @export
 #'
 
-input_model_parameters <- function(aeme, model, param, path) {
+input_model_parameters <- function(aeme, model, param, path,
+                                   derive_totals = TRUE) {
   
   # Function checks ----
   aeme <- check_aeme(aeme)
@@ -52,22 +57,26 @@ input_model_parameters <- function(aeme, model, param, path) {
     # scales them); the data in `aeme` is left as it is.
     bnd <- apply_boundary_params(meteo = inp$meteo,
                                  outflows = outflows(aeme)[["data"]],
-                                 param = all_p)
+                                 param = all_p,
+                                 inflows = inflows(aeme)[["data"]])
     write_boundary_data(
       aeme = aeme, model = m, lake_dir = lake_dir,
       meteo = bnd$meteo, outf = bnd$outflows,
-      inf = if (!is.null(bnd$inf_factor)) inflows(aeme)[["data"]],
+      inf = if (!is.null(bnd$inf_factor) || !is.null(bnd$inf)) {
+        bnd$inf %||% inflows(aeme)[["data"]]
+      },
       inf_factor = if (is.null(bnd$inf_factor)) 1 else bnd$inf_factor
     )
-    
+
     # Inputting model parameters ----
     # Pure config patch (apply_parameters()), then write back only the files
     # that changed. Skipped when the parameters only scale boundary conditions.
-    if (any(!all_p$file %in% c("met", "inf", "wdr"))) {
+    if (any(!all_p$file %in% boundary_files)) {
       files <- locate_config_files(m, lake_dir)
       cfg <- read_config_for_params(model = m, lake_dir = lake_dir,
                                   labels = all_p$file, files = files)
-      res <- apply_parameters(config = cfg, param = all_p, model = m)
+      res <- apply_parameters(config = cfg, param = all_p, model = m,
+                              derive_totals = derive_totals)
       write_params(res, lake_dir = lake_dir, model = m, files = files)
     }
 
@@ -166,3 +175,7 @@ collapse_params <- function(param_df) {
     tibble::as_tibble()
 }
 
+
+# Parameter `file` values that act on boundary-condition data rather than a
+# model configuration file
+boundary_files <- c("met", "inf", "inf_const", "wdr")

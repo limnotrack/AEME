@@ -79,6 +79,12 @@ make_stg_glm <- function(glm_nml, lakename, bathy, lat, lon, dims_lake, crest,
 
   glm_nml <- set_nml(glm_nml = glm_nml, arg_list = arg_list)
 
+  # Workaround for a GLM-AED bug: the seasonal albedo cycle is always treated
+  # as northern hemisphere. Flip the amplitude sign for southern lakes.
+  # TODO: remove once fixed upstream in GLM-AED.
+  glm_nml[["light"]][["albedo_mean"]] <- 0.08
+  glm_nml[["light"]][["albedo_amplitude"]] <- if (lat < 0) -0.02 else 0.02
+
   if (update_sediment) {
 
     # Pull one &sediment key out of the supplied model-parameter rows: a

@@ -63,7 +63,8 @@ glm_wq_init_args <- function(model_controls, n_depths, aed_models = NULL) {
     dplyr::mutate(glm_name = rename_modelvars(var_aeme,
                                               type_output = "glm_aed",
                                               passthrough = TRUE),
-                  value = initial_wc * conversion_aed) |>
+                  # AEME units (g/m3) -> GLM-AED native units (mmol/m3)
+                  value = round(initial_wc / dplyr::coalesce(conversion_aed, 1), 4)) |>
     dplyr::filter(!is.na(glm_name), nzchar(glm_name)) |>
     dplyr::distinct(var_aeme, .keep_all = TRUE)
 
@@ -126,5 +127,5 @@ sync_glm_aed_vars <- function(glm_nml, model_controls, aed_models, path_glm) {
   }
 
   # mass balance (mirrors init_profiles)
-  set_glm_mass_balance(glm_nml, use_bgc = TRUE)
+  set_glm_mass_balance(glm_nml, use_bgc = TRUE, path_glm = path_glm)
 }

@@ -165,10 +165,10 @@ test_that("get_var compares a bottom observation with the model at its own level
 
   surf <- v[v$depth_ref == "surface", ]
   bot <- v[v$depth_ref == "bottom", ]
-  expect_equal(surf$sim, temp_at(2), tolerance = 1e-3)
+  expect_equal(surf$value, temp_at(2), tolerance = 1e-3)
   # 1 m above the bed in a 14 m column is 13 m down, not the stored 11 m
-  expect_equal(bot$sim, temp_at(14 - 1), tolerance = 1e-3)
-  expect_false(isTRUE(all.equal(bot$sim, temp_at(11), tolerance = 1e-3)))
+  expect_equal(bot$value, temp_at(14 - 1), tolerance = 1e-3)
+  expect_false(isTRUE(all.equal(bot$value, temp_at(11), tolerance = 1e-3)))
   expect_equal(bot$obs, 14)
 })
 
@@ -177,7 +177,7 @@ test_that("get_var is unchanged for surface-only observations", {
   aeme <- add_obs(aeme, lake = lake_df(dates[c(3, 8)], c(1, 4), value = c(15, 16)))
   v <- get_var(aeme, "glm_aed", "HYD_temp", use_obs = TRUE, remove_spin_up = FALSE)
   expect_equal(nrow(v), 2)
-  expect_equal(v$sim, temp_at(c(1, 4)), tolerance = 1e-3)
+  expect_equal(v$value, temp_at(c(1, 4)), tolerance = 1e-3)
   expect_false("depth_ref" %in% names(v))
 })
 
@@ -188,7 +188,7 @@ test_that("get_var handles observations that are all bottom-referenced", {
                   depth_ref = "bottom")
   v <- get_var(aeme, "glm_aed", "HYD_temp", use_obs = TRUE, remove_spin_up = FALSE)
   v <- v[order(v$height_above_bed), ]
-  expect_equal(v$sim, temp_at(14 - c(1, 3)), tolerance = 1e-3)
+  expect_equal(v$value, temp_at(14 - c(1, 3)), tolerance = 1e-3)
 })
 
 # ---- ensemble_summary() observation alignment ----------------------------------
@@ -241,4 +241,29 @@ test_that("surface summaries of surface observations are unchanged", {
   ob <- s$obs[order(s$obs$depth), ]
   expect_equal(ob$depth, c(2, 6))
   expect_equal(ob$value, c(18, 16))
+})
+
+# ---- get_var() returns the same columns with and without observations ----------
+
+test_that("get_var returns consistent leading columns for use_obs = TRUE/FALSE", {
+  aeme <- synthetic_aeme(levels = 14)
+  aeme <- add_obs(aeme, level = level_df(aeme, dates[c(3, 8)], 14))
+  aeme <- add_obs(aeme, lake = lake_df(dates[c(3, 8)], c(1, 4), value = c(15, 16)))
+  core <- c("Date", "depth", "value", "var_sim", "Model")
+
+  no_obs <- get_var(aeme, "glm_aed", "HYD_temp", remove_spin_up = FALSE)
+  with_obs <- get_var(aeme, "glm_aed", "HYD_temp", use_obs = TRUE,
+                      remove_spin_up = FALSE)
+  expect_identical(names(no_obs), core)
+  expect_identical(names(with_obs), c("Date", "depth", "value", "obs",
+                                      "var_sim", "Model"))
+  expect_false(anyNA(with_obs$Model))
+
+  # level has no depth dimension but still gets the column
+  lvl <- get_var(aeme, "glm_aed", "LKE_lvlwtr", use_obs = TRUE,
+                 remove_spin_up = FALSE)
+  expect_true(all(c(core, "obs") %in% names(lvl)))
+  expect_true(all(is.na(lvl$depth)))
+  expect_identical(names(get_var(aeme, "glm_aed", "LKE_lvlwtr",
+                                 remove_spin_up = FALSE)), core)
 })

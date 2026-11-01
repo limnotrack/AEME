@@ -14,8 +14,10 @@
   aeme <- build_aeme(path = path, aeme = aeme, model = "glm_aed",
                      model_controls = model_controls, ext_elev = 5,
                      use_bgc = TRUE)
+  # extra output has to be requested -- "all" loads every variable in the file
   aeme <- run_aeme(aeme = aeme, model = "glm_aed", verbose = FALSE,
-                   model_controls = model_controls, path = path)
+                   model_controls = model_controls, path = path,
+                   extra_vars = "all")
   list(aeme = aeme, path = path, model_controls = model_controls)
 }
 
@@ -100,14 +102,24 @@ test_that("get_var() returns a usable long-format data frame for a grouped varia
                            names(df)))
 })
 
-test_that("plot_output() gives a clear error for a grouped variable instead of crashing", {
+test_that("plot_output() draws a grouped variable as one line per group; the base backend errors clearly", {
   tmpdir <- tempfile("load_all_output_")
   dir.create(tmpdir)
   fx <- .build_glm_bgc_run(tmpdir)
 
+  p <- plot_output(aeme = fx$aeme, model = "glm_aed", var_sim = "zarea",
+                   print_plots = FALSE)
+  testthat::expect_true(ggplot2::is_ggplot(p))
+
+  # the base-graphics backend, and several variables at once, are not supported
   testthat::expect_error(
     plot_output(aeme = fx$aeme, model = "glm_aed", var_sim = "zarea",
-               print_plots = FALSE),
+                backend = "base"),
+    class = "aeme_error_grouped_var_plot"
+  )
+  testthat::expect_error(
+    plot_output(aeme = fx$aeme, model = "glm_aed",
+                var_sim = c("zarea", "HYD_temp")),
     class = "aeme_error_grouped_var_plot"
   )
 })
@@ -165,8 +177,41 @@ test_that("diag/sediment sub-lists are reachable via get_output_vars(group =) an
   testthat::expect_true("SDF_Fsed_oxy_Z" %in% names(attr(out_raw, "var_units")))
 
   aeme2 <- load_output(fx$aeme, model = "glm_aed", path = fx$path,
-                       model_controls = fx$model_controls, keep_diag = FALSE)
+                       model_controls = fx$model_controls, keep_diag = FALSE,
+                       extra_vars = "all")
   glm2 <- output(aeme2)[[format_ens_label(1)]]$glm_aed
   testthat::expect_null(glm2$sediment)
   testthat::expect_null(glm2$diag)
+})
+
+test_that("a plain run_aeme()/load_output() loads only the standard variables", {
+  tmpdir <- tempfile("load_all_output_")
+  dir.create(tmpdir)
+  fx <- .build_glm_bgc_run(tmpdir)
+
+  # Default: nothing beyond the declared vars_sim set and the lake fluxes
+  aeme_def <- load_output(fx$aeme, model = "glm_aed", path = fx$path,
+                          model_controls = fx$model_controls)
+  glm_def <- output(aeme_def)[[format_ens_label(1)]]$glm_aed
+  glm_all <- output(fx$aeme)[[format_ens_label(1)]]$glm_aed
+
+  testthat::expect_null(glm_def$sediment)
+  testthat::expect_null(glm_def$diag)
+  testthat::expect_false("OXY_sat" %in% names(glm_def))
+  testthat::expect_true("HYD_temp" %in% names(glm_def))
+  testthat::expect_lt(length(names(glm_def)), length(names(glm_all)))
+  testthat::expect_lt(length(get_output_vars(aeme_def, model = "glm_aed")),
+                      length(get_output_vars(fx$aeme, model = "glm_aed")))
+
+  # The standard variables are identical whether or not extras are requested
+  std <- intersect(names(glm_def), names(glm_all))
+  testthat::expect_identical(glm_def[std], glm_all[std])
+
+  # Asking for a variable by name brings in just that variable
+  aeme_one <- load_output(fx$aeme, model = "glm_aed", path = fx$path,
+                          model_controls = fx$model_controls,
+                          extra_vars = "OXY_sat")
+  glm_one <- output(aeme_one)[[format_ens_label(1)]]$glm_aed
+  testthat::expect_true("OXY_sat" %in% names(glm_one))
+  testthat::expect_null(glm_one$sediment)
 })

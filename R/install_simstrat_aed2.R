@@ -70,6 +70,7 @@ install_simstrat_aed2 <- function(version = "latest",
                                   repo = "limnotrack/AEME",
                                   force = FALSE,
                                   quiet = FALSE) {
+  asset_prefix <- "simstrat_aed2"
 
   if (!is.character(version) || length(version) != 1L) {
     cli::cli_abort("{.arg version} must be a single character string, e.g. {.val 3.0.4} or {.val latest}.")
@@ -84,15 +85,26 @@ install_simstrat_aed2 <- function(version = "latest",
   if (version == "latest") {
     versions <- list_simstrat_aed2_versions(repo = repo, os = os)$simstrat_version
     if (length(versions) == 0L) {
-      cli::cli_abort(c(
-        "No Simstrat-AED2 binaries found in releases of {.val {repo}} for {.field {os}}.",
-        "i" = "Use {.fn list_simstrat_aed2_versions} to see what's available."
-      ))
+      fallback <- list_simstrat_aed_versions(repo = repo, os = os)$simstrat_version
+      if (length(fallback) == 0L) {
+        cli::cli_abort(c(
+          "No Simstrat-AED2 binaries found in releases of {.val {repo}} for {.field {os}}.",
+          "i" = "Use {.fn list_simstrat_aed2_versions} to see what's available."
+        ))
+      }
+      asset_prefix <- "simstrat_aed"
+      version <- .simstrat_aed_pick_latest(fallback)
+      cli::cli_alert_warning(
+        "No Simstrat-AED2 release assets were found for {.field {os}}; using a compatible Simstrat-AED build instead."
+      )
+      cli::cli_alert_info(
+        "Resolved {.val latest} to Simstrat-AED compatibility version {.val {version}} for {.field {os}}."
+      )
+    } else {
+      version <- .simstrat_aed_pick_latest(versions)
+      cli::cli_alert_info("Resolved {.val latest} to Simstrat-AED2 version {.val {version}}
+                          for {.field {os}}.")
     }
-    # Extract latest version
-    version <- versions[order(numeric_version(versions), decreasing = TRUE)][1]
-    cli::cli_alert_info("Resolved {.val latest} to Simstrat-AED2 version {.val {version}}
-                        for {.field {os}}.")
   }
   if (missing(version) || !is.character(version) || length(version) != 1L) {
     cli::cli_abort("{.arg version} must be a single character string, e.g.
@@ -127,10 +139,22 @@ install_simstrat_aed2 <- function(version = "latest",
     ))
   }
 
-  asset_name <- sprintf("simstrat_aed2-%s-%s.zip", os, version)
+  asset_name <- sprintf("%s-%s-%s.zip", asset_prefix, os, version)
   sha_name <- paste0(asset_name, ".sha256")
 
   hit <- .model_find_release_asset(repo, asset_name)
+  if (is.null(hit) && identical(asset_prefix, "simstrat_aed2")) {
+    fallback_asset <- sprintf("simstrat_aed-%s-%s.zip", os, version)
+    hit <- .model_find_release_asset(repo, fallback_asset)
+    if (!is.null(hit)) {
+      asset_prefix <- "simstrat_aed"
+      asset_name <- fallback_asset
+      sha_name <- paste0(asset_name, ".sha256")
+      cli::cli_alert_warning(
+        "No Simstrat-AED2 asset matched {.val {version}} on {.field {os}}; using the compatible Simstrat-AED asset {.file {asset_name}}."
+      )
+    }
+  }
   if (is.null(hit)) {
     cli::cli_abort(c(
       "Could not find a Simstrat-AED2 {.val {version}} build for {.field {os}}
@@ -332,5 +356,5 @@ simstrat_aed2_exe_path <- function(version = getOption("AEME.simstrat_version", 
 .simstrat_latest_installed_version <- function(os = .detect_os()) {
   versions <- .simstrat_installed_versions(os)
   if (length(versions) == 0) return(NULL)
-  versions[order(numeric_version(versions), decreasing = TRUE)][1]
+  .simstrat_aed_pick_latest(versions)
 }
