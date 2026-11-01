@@ -116,8 +116,8 @@ one call, without touching the `Aeme` object at all.
 out <- run_model_test("glm_aed", path_glm,
                       param_overrides = list(Kw = 0.5),
                       tgt_vars = "HYD_temp")
-#> ℹ GLM-AED running... [2026-10-30 02:33:45]
-#> ✔ GLM-AED running... [2026-10-30 02:33:45] [384ms]
+#> ℹ GLM-AED running... [2026-11-01 21:31:48]
+#> ✔ GLM-AED running... [2026-11-01 21:31:49] [432ms]
 #> 
 ```
 
@@ -183,17 +183,17 @@ results <- lapply(kw_values, function(kw) {
   run_model_test("glm_aed", path_glm, param_overrides = list(Kw = kw),
                  tgt_vars = "HYD_temp")
 })
-#> ℹ GLM-AED running... [2026-10-30 02:33:46]
-#> ✔ GLM-AED running... [2026-10-30 02:33:47] [378ms]
+#> ℹ GLM-AED running... [2026-11-01 21:31:50]
+#> ✔ GLM-AED running... [2026-11-01 21:31:50] [426ms]
 #> 
-#> ℹ GLM-AED running... [2026-10-30 02:33:47]
-#> ✔ GLM-AED running... [2026-10-30 02:33:48] [386ms]
+#> ℹ GLM-AED running... [2026-11-01 21:31:51]
+#> ✔ GLM-AED running... [2026-11-01 21:31:52] [434ms]
 #> 
-#> ℹ GLM-AED running... [2026-10-30 02:33:48]
-#> ✔ GLM-AED running... [2026-10-30 02:33:49] [382ms]
+#> ℹ GLM-AED running... [2026-11-01 21:31:52]
+#> ✔ GLM-AED running... [2026-11-01 21:31:53] [438ms]
 #> 
-#> ℹ GLM-AED running... [2026-10-30 02:33:49]
-#> ✔ GLM-AED running... [2026-10-30 02:33:50] [383ms]
+#> ℹ GLM-AED running... [2026-11-01 21:31:54]
+#> ✔ GLM-AED running... [2026-11-01 21:31:54] [428ms]
 #> 
 names(results) <- paste0("Kw_", kw_values)
 ```
