@@ -295,6 +295,22 @@ test_that("derive_aed_totals() uses internal pools or biomass x quota per group"
   testthat::expect_equal(tot$TP_varscale[tot$TP_vars == "PHY_cyano"], 0.01)
 })
 
+test_that("derive_aed_totals() adds adsorbed phosphate to TP when adsorption is on", {
+  cfg <- make_totals_cfg(with_totals = FALSE)
+  testthat::expect_false("PHS_frp_ads" %in%
+                           derive_aed_totals(cfg)$bgc$aed$aed_totals$TP_vars)
+  cfg$bgc$aed$aed_models$models <- c(cfg$bgc$aed$aed_models$models,
+                                     "aed_phosphorus")
+  cfg$bgc$aed$aed_phosphorus <- list(simpo4adsorption = FALSE)
+  testthat::expect_false("PHS_frp_ads" %in%
+                           derive_aed_totals(cfg)$bgc$aed$aed_totals$TP_vars)
+  cfg$bgc$aed$aed_phosphorus <- list(simPO4Adsorption = TRUE)
+  tot <- derive_aed_totals(cfg)$bgc$aed$aed_totals
+  testthat::expect_true("PHS_frp_ads" %in% tot$TP_vars)
+  testthat::expect_equal(length(tot$TP_vars), length(tot$TP_varscale))
+  testthat::expect_equal(tot$TP_varscale[tot$TP_vars == "PHS_frp_ads"], 1)
+})
+
 test_that("apply_parameters() re-derives aed_totals when phyto parameters change", {
   cfg <- make_totals_cfg()
   p <- dplyr::bind_rows(
@@ -534,4 +550,39 @@ test_that("inflow_param() builds multiplier and constant rows", {
   inf <- list(a = data.frame(CAR_doc = c(1, 2)))
   res <- apply_boundary_params(NULL, NULL, pc[1, ], inflows = inf)
   testthat::expect_equal(res$inf$a$CAR_doc, c(5, 5))
+})
+
+test_that("inflow_param() can restrict rows to, or exclude, inflows", {
+  inf <- list(swsid_1 = data.frame(NIT_nit = c(1, 2), CAR_doc = c(3, 3)),
+              outflow_inflow = data.frame(NIT_nit = c(1, 2), CAR_doc = c(4, 4)))
+  p <- inflow_param("NIT_nit", value = 2, min = 0.5, max = 4, model = "glm_aed",
+                    exclude = "outflow_inflow")
+  testthat::expect_equal(p$group, "except:outflow_inflow")
+  res <- apply_boundary_params(NULL, NULL, p, inflows = inf)
+  testthat::expect_equal(res$inf$swsid_1$NIT_nit, c(2, 4))
+  testthat::expect_equal(res$inf$outflow_inflow$NIT_nit, c(1, 2))
+  pc <- inflow_param("CAR_doc", value = 9, min = 1, max = 15, model = "glm_aed",
+                     constant = TRUE, inflow = "swsid_1")
+  testthat::expect_equal(pc$group, "only:swsid_1")
+  res <- apply_boundary_params(NULL, NULL, pc, inflows = inf)
+  testthat::expect_equal(res$inf$swsid_1$CAR_doc, c(9, 9))
+  testthat::expect_equal(res$inf$outflow_inflow$CAR_doc, c(4, 4))
+  # the same variable can carry one row per inflow selection
+  both <- dplyr::bind_rows(p, inflow_param("NIT_nit", value = 3, min = 0.5,
+                                           max = 4, model = "glm_aed",
+                                           inflow = "outflow_inflow"))
+  res <- apply_boundary_params(NULL, NULL, both, inflows = inf)
+  testthat::expect_equal(res$inf$swsid_1$NIT_nit, c(2, 4))
+  testthat::expect_equal(res$inf$outflow_inflow$NIT_nit, c(3, 6))
+  # rows without a selection still act on every inflow
+  res <- apply_boundary_params(NULL, NULL,
+                               inflow_param("NIT_nit", value = 2, max = 4,
+                                            model = "glm_aed"), inflows = inf)
+  testthat::expect_equal(res$inf$outflow_inflow$NIT_nit, c(2, 4))
+  testthat::expect_error(inflow_param("NIT_nit", inflow = "a", exclude = "b"))
+  testthat::expect_warning(
+    apply_boundary_params(NULL, NULL,
+                          inflow_param("NIT_nit", model = "glm_aed",
+                                       inflow = "missing"), inflows = inf),
+    "not found")
 })

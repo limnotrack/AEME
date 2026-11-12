@@ -27,6 +27,18 @@
   constant. Previously `inf` only scaled flow (name `"inflow"`, unchanged),
   so concentrations could not be varied independently. `inflow_param()`
   builds the rows.
+* `inflow_param()` gains `inflow` and `exclude` to restrict a row to, or keep
+  it off, named inflows (stored in `group` as `"only:<id>+<id>"` /
+  `"except:<id>+<id>"`). Without them a row still acts on every inflow that
+  has the variable, which for a downstream lake includes the upstream lake's
+  simulated outflow (`outflow_inflow`).
+
+## Total phosphorus includes adsorbed phosphate
+
+* The GLM-AED `aed_totals` TP list now includes `PHS_frp_ads` when
+  `simPO4Adsorption` is on in `aed_phosphorus`. Adsorbed phosphate is
+  particulate phosphorus in the water, so `PHS_tp` was too low wherever
+  adsorption was simulated.
 
 ## `get_var()` returns consistent columns
 

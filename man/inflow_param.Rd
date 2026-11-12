@@ -10,7 +10,9 @@ inflow_param(
   min = 0.5,
   max = 2,
   model = c("dy_cd", "glm_aed", "gotm_wet", "simstrat_aed2", "simstrat_aed"),
-  constant = FALSE
+  constant = FALSE,
+  inflow = NULL,
+  exclude = NULL
 )
 }
 \arguments{
@@ -25,6 +27,15 @@ models.}
 
 \item{constant}{logical; \code{TRUE} for constants (\code{inf_const}), \code{FALSE}
 (default) for multipliers (\code{inf}).}
+
+\item{inflow}{character; ids of the inflows the rows apply to (names of
+\code{inflows(aeme)$data}). Default \code{NULL} applies them to every inflow that
+has the variable.}
+
+\item{exclude}{character; ids of inflows the rows must leave unchanged,
+e.g. \code{"outflow_inflow"} so that a catchment multiplier does not rescale
+the simulated outflow of an upstream lake. Use \code{inflow} or \code{exclude}, not
+both.}
 }
 \value{
 data.frame with the columns of \link{aeme_parameters} that
@@ -42,6 +53,10 @@ Scaling the flow also scales the load of every variable, but leaves its
 concentration unchanged. These rows change the concentration independently.
 Constants are in the units of the inflow data held in the Aeme object (e.g.
 g/m3 for \code{CAR_doc}); unit conversions to each model happen afterwards.
+
+The selection is stored in the \code{group} column as
+\code{"only:<id>+<id>"} or \code{"except:<id>+<id>"}, so rows for the same variable
+in different inflows stay distinct parameters.
 }
 \examples{
 # Scale DOC concentrations in the inflows by 0.5 to 2
@@ -50,6 +65,10 @@ inflow_param("CAR_doc", value = 1, min = 0.5, max = 2, model = "glm_aed")
 # Try a constant DOC concentration of 5 g/m3
 inflow_param("CAR_doc", value = 5, min = 1, max = 15, model = "glm_aed",
              constant = TRUE)
+
+# Scale catchment nitrate but leave an upstream lake's outflow unchanged
+inflow_param("NIT_nit", value = 1, min = 0.2, max = 5, model = "glm_aed",
+             exclude = "outflow_inflow")
 
 \dontrun{
 # Run GLM-AED with the DOC in the inflows doubled and compare with the

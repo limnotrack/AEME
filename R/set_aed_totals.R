@@ -55,7 +55,9 @@ set_aed_totals <- function(aeme, path, lake_dir = NULL) {
 #' and the `aed` block of `model_config`, and returns `model_config` with
 #' `bgc$aed$aed_totals` set. The totals depend on the phytoplankton
 #' parameters (`X_ncon`, `X_pcon`, `simINDynamics`, `simIPDynamics`), so they
-#' must be re-derived whenever those change.
+#' must be re-derived whenever those change. Total phosphorus includes
+#' phosphate adsorbed to particles (`PHS_frp_ads`) when `simPO4Adsorption` is
+#' on in `aed_phosphorus`.
 #'
 #' @param model_config list; glm_aed configuration (`hydrodynamic` and `bgc`),
 #'   as returned by [read_model_config()].
@@ -145,7 +147,23 @@ derive_aed_totals <- function(model_config) {
       TP_scale <- c(TP_scale, X_pcon[i])
     }
   }
-  
+
+  # Phosphate adsorbed to suspended particles (`PHS_frp_ads`) is a state
+  # variable when `simPO4Adsorption` is on. It is particulate phosphorus held
+  # in the water, so it belongs in total phosphorus.
+  phs <- aed[["aed_phosphorus"]]
+  k <- which(tolower(names(phs)) == "simpo4adsorption")
+  ads <- if (length(k) > 0) phs[[k[1]]] else FALSE
+  phs_on <- "aed_phosphorus" %in% trimws(unlist(strsplit(
+    paste(aed[["aed_models"]][["models"]], collapse = ","), ",")))
+  ads_on <- length(ads) == 1 && !is.na(ads) &&
+    (isTRUE(ads) ||
+       tolower(gsub(".", "", as.character(ads), fixed = TRUE)) %in% c("true", "t"))
+  if (phs_on && ads_on) {
+    TP_vars  <- c(TP_vars, "PHS_frp_ads")
+    TP_scale <- c(TP_scale, 1.0)
+  }
+
   # ----------------------------------------------------
   # -------------------- TOC ---------------------------
   # ----------------------------------------------------

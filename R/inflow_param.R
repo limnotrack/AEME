@@ -18,6 +18,17 @@
 #'   models.
 #' @param constant logical; `TRUE` for constants (`inf_const`), `FALSE`
 #'   (default) for multipliers (`inf`).
+#' @param inflow character; ids of the inflows the rows apply to (names of
+#'   `inflows(aeme)$data`). Default `NULL` applies them to every inflow that
+#'   has the variable.
+#' @param exclude character; ids of inflows the rows must leave unchanged,
+#'   e.g. `"outflow_inflow"` so that a catchment multiplier does not rescale
+#'   the simulated outflow of an upstream lake. Use `inflow` or `exclude`, not
+#'   both.
+#'
+#' @details The selection is stored in the `group` column as
+#'   `"only:<id>+<id>"` or `"except:<id>+<id>"`, so rows for the same variable
+#'   in different inflows stay distinct parameters.
 #'
 #' @return data.frame with the columns of [aeme_parameters] that
 #'   [input_model_parameters()] requires, to row-bind onto a parameter table.
@@ -29,6 +40,10 @@
 #' # Try a constant DOC concentration of 5 g/m3
 #' inflow_param("CAR_doc", value = 5, min = 1, max = 15, model = "glm_aed",
 #'              constant = TRUE)
+#'
+#' # Scale catchment nitrate but leave an upstream lake's outflow unchanged
+#' inflow_param("NIT_nit", value = 1, min = 0.2, max = 5, model = "glm_aed",
+#'              exclude = "outflow_inflow")
 #'
 #' \dontrun{
 #' # Run GLM-AED with the DOC in the inflows doubled and compare with the
@@ -62,9 +77,24 @@
 inflow_param <- function(name, value = 1, min = 0.5, max = 2,
                          model = c("dy_cd", "glm_aed", "gotm_wet",
                                    "simstrat_aed2", "simstrat_aed"),
-                         constant = FALSE) {
+                         constant = FALSE, inflow = NULL, exclude = NULL) {
   stopifnot(is.character(name), is.numeric(value), is.numeric(min),
-            is.numeric(max), is.logical(constant), length(constant) == 1)
+            is.numeric(max), is.logical(constant), length(constant) == 1,
+            is.null(inflow) || is.character(inflow),
+            is.null(exclude) || is.character(exclude))
+  if (!is.null(inflow) && !is.null(exclude)) {
+    stop("Use 'inflow' or 'exclude', not both.")
+  }
+  if (any(grepl("[/+,]|\\[|\\]", c(inflow, exclude)))) {
+    stop("Inflow ids cannot contain '/', '+', ',', '[' or ']'.")
+  }
+  group <- if (!is.null(inflow)) {
+    paste0("only:", paste(inflow, collapse = "+"))
+  } else if (!is.null(exclude)) {
+    paste0("except:", paste(exclude, collapse = "+"))
+  } else {
+    NA_character_
+  }
   if (any(min > max) || any(value < min | value > max)) {
     stop("'value' must be between 'min' and 'max'.")
   }
@@ -73,6 +103,6 @@ inflow_param <- function(name, value = 1, min = 0.5, max = 2,
   tibble::tibble(
     model = df$model, file = if (constant) "inf_const" else "inf",
     name = df$name, value = rep_len(value, n), min = rep_len(min, n),
-    max = rep_len(max, n), group = NA_character_, index = NA_real_
+    max = rep_len(max, n), group = group, index = NA_real_
   )
 }

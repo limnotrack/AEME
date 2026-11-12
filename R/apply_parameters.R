@@ -273,7 +273,8 @@ apply_boundary_params <- function(meteo, outflows, param, inflows = NULL) {
     out$inf <- scale_inflow_vars(
       inflows = inflows, vars = param$name[var_idx],
       values = vapply(param[["value"]][var_idx], \(x) unlist(x)[1], numeric(1)),
-      const = param$file[var_idx] == "inf_const"
+      const = param$file[var_idx] == "inf_const",
+      groups = if ("group" %in% names(param)) param$group[var_idx] else NULL
     )
   }
 
@@ -287,14 +288,20 @@ apply_boundary_params <- function(meteo, outflows, param, inflows = NULL) {
 #' @param values numeric; one per `vars`; a multiplier, or the constant.
 #' @param const logical; one per `vars`; `TRUE` replaces the column with
 #'   `values`, `FALSE` multiplies it.
+#' @param groups character; one per `vars`, or `NULL`. `"only:<id>+<id>"`
+#'   restricts the change to those inflows and `"except:<id>+<id>"` leaves
+#'   those inflows unchanged (see [inflow_param()]). `NA` or any other value
+#'   applies the change to every inflow that has the variable.
 #'
-#' @return `inflows`, with the columns changed in every inflow that has them.
-#'   A variable found in no inflow gives a warning.
+#' @return `inflows`, with the columns changed in the selected inflows that
+#'   have them. A variable found in no selected inflow gives a warning.
 #' @noRd
-scale_inflow_vars <- function(inflows, vars, values, const) {
+scale_inflow_vars <- function(inflows, vars, values, const, groups = NULL) {
   for (i in seq_along(vars)) {
     found <- FALSE
-    for (nm in names(inflows)) {
+    ids <- select_inflows(names(inflows),
+                          if (is.null(groups)) NA_character_ else groups[i])
+    for (nm in ids) {
       df <- inflows[[nm]]
       if (!vars[i] %in% names(df)) next
       found <- TRUE
@@ -306,8 +313,24 @@ scale_inflow_vars <- function(inflows, vars, values, const) {
       inflows[[nm]] <- df
     }
     if (!found) {
-      cli::cli_warn("Inflow variable {.val {vars[i]}} not found in any inflow.")
+      cli::cli_warn("Inflow variable {.val {vars[i]}} not found in any selected inflow.")
     }
   }
   inflows
+}
+
+#' Inflow ids selected by the `group` of an inflow parameter row
+#'
+#' @param ids character; names of the inflows.
+#' @param group character(1); `"only:<id>+<id>"`, `"except:<id>+<id>"`, or
+#'   anything else (all inflows).
+#'
+#' @return character; the selected inflow ids.
+#' @noRd
+select_inflows <- function(ids, group) {
+  if (length(group) != 1 || is.na(group)) return(ids)
+  sel <- strsplit(sub("^(only|except):", "", group), "+", fixed = TRUE)[[1]]
+  if (startsWith(group, "only:")) return(intersect(ids, sel))
+  if (startsWith(group, "except:")) return(setdiff(ids, sel))
+  ids
 }
