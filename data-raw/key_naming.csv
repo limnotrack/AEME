@@ -80,7 +80,7 @@
 "CAR_pocr","POCR","","","","","","","","","","","0.012011","0.003","FALSE","NA","0","","particulate organic carbon residual|CAR_pocr"
 "CAR_toc","","TOT_toc","","","TOT_toc","","","Total organic C","Total_organic_carbon_g/m3","Total~organic~carbon~(g~m^-3)","g/m^3","0.012011","0","FALSE","NA","0","","total organic carbon|CAR_toc|toc"
 "CAR_ch4","","CAR_ch4","CAR_ch4","CAR_ch4","CAR_ch4","","","Carbon CH4","","","","1","0","FALSE","NA","0","","carbon CH4|CAR_ch4"
-"SIL_rsi","SiO2","SIL_rsi","SIL_rsi","SIL_rsi","SIL_rsi","abiotic_water_sSiO2W","instances/abiotic_water/initialization/sSiO2W","","Silica","Silica","","1","10","FALSE","NA","0","","silica|SIL_rsi"
+"SIL_rsi","SiO2","SIL_rsi","SIL_rsi","SIL_rsi","SIL_rsi","abiotic_water_sSiO2W","instances/abiotic_water/initialization/sSiO2W","","Silica","Silica","","0.0281","5","FALSE","NA","0","","silica|SIL_rsi"
 "BAC_bac","BAC","","","","","","","","Bacteria","Bacteria","","1","","FALSE","NA","0","","bacteria|BAC_bac"
 "PHY_dinof","DINOF","PHY_dinof","PHY_dinof","PHY_dinof","PHY_dinof","","","","Dinoflagellates_mgchla/m3","Dinoflagellates~(mg~chla~m^-3)","mg/m^3","1","","FALSE","NA","0","","dinoflagellates|PHY_dinof"
 "PHY_cyano","CYANO","PHY_cyano","PHY_cyano","PHY_cyano","PHY_cyano","cyanobacteria_oChla","instances/cyanobacteria/initialization/sDW","Cyanobacteria","Cyanophytes_mgchla/m3","Cyanophytes~(mg~chla~m^-3)","mg/m^3","1","0.1","FALSE","NA","0","","cyanobacteria|PHY_cyano"
