@@ -9,7 +9,8 @@
 #' * aggregate totals `NIT_tn` / `PHS_tp` / `CAR_toc` -> AED diagnostics
 #'   `TOT_tn` / `TOT_tp` / `TOT_toc`, computed by `aed_totals`;
 #' * particulate-inorganic pools `PHS_pip` (-> `PHS_frp_ads`, only a real
-#'   state variable when `simPO4Adsorption` is on) and `NIT_pin`;
+#'   state variable when `simPO4Adsorption` is on; `glm_wq_init_args()` then
+#'   keeps it, as it can be initialised through `wq_init_vals`) and `NIT_pin`;
 #' * total chlorophyll `PHY_tchla` (a phytoplankton diagnostic);
 #' * non-cohesive sediment groups `NCS_ss*` (initialised inside
 #'   `aed_noncohesive` via `ss_initial`, not through GLM);

@@ -258,8 +258,10 @@ build_glm <- function(lakename, model_controls, date_range,
   glm_nml <- initialise_glm(glm_nml = glm_nml, lvl_bottom = 0.1, 
                             init_depth = init_depth, tbl_obs = init_prof,
                             Kw = Kw, model_controls = model_controls,
-                            aed_models = aed_models)
-  
+                            aed_models = aed_models,
+                            po4_ads = use_bgc && glm_po4_adsorption_on(
+                              file.path(path_glm, "aed", "aed.nml")))
+
   if (use_bgc) {
     glm_nml[["wq_setup"]] <- list("wq_lib" = "api",
                                   "wq_nml_file" = "aed/aed.nml",

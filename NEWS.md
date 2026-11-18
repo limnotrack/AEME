@@ -9,6 +9,12 @@
 
 ## GLM-AED initial water-quality values
 
+* `PHS_pip` (`PHS_frp_ads` in GLM-AED) is now initialised through
+  `&init_profiles` `wq_names` / `wq_init_vals` when `simPO4Adsorption` is on in
+  `aed_phosphorus` (tested: GLM accepts it and honours the value, partitioning
+  it with `PHS_frp`). It is still left out when adsorption is off, as GLM
+  aborts on it then. Applies to `build_aeme()` and `set_glm_aed_models()`.
+
 * `&init_profiles` `wq_init_vals` are now converted from AEME units to GLM-AED
   native units by *dividing* by `conversion_aed` (as for the AED nml, inflows
   and Simstrat). They were multiplied, so e.g. DOC of 0.5 g/m3 was written as

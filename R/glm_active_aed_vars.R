@@ -44,19 +44,51 @@ glm_aed_var_active <- function(glm_names, aed_models) {
   is.na(owner) | owner %in% aed_models
 }
 
+#' Is PO4 adsorption (`PHS_frp_ads` state variable) active in an aed.nml?
+#'
+#' `PHS_frp_ads` (AEME `PHS_pip`) only exists as a GLM-AED state variable when
+#' `aed_phosphorus` is an active module and `simPO4Adsorption` is on. When it
+#' is, it can be given an initial value through `&init_profiles` `wq_names` /
+#' `wq_init_vals` like any other state variable.
+#'
+#' @param aed_nml list; parsed aed.nml, or a path to one.
+#' @return logical; `FALSE` when the file/blocks are missing.
+#' @noRd
+glm_po4_adsorption_on <- function(aed_nml) {
+  if (is.character(aed_nml) && length(aed_nml) == 1) {
+    if (!file.exists(aed_nml)) return(FALSE)
+    aed_nml <- read_nml(aed_nml)
+  }
+  models <- glm_active_aed_models(aed_nml)
+  if (is.null(models) || !"aed_phosphorus" %in% models) return(FALSE)
+  phs <- aed_nml[["aed_phosphorus"]]
+  k <- which(tolower(names(phs)) == "simpo4adsorption")
+  if (length(k) == 0) return(FALSE)
+  ads <- phs[[k[1]]]
+  length(ads) == 1 && !is.na(ads) &&
+    (isTRUE(ads) ||
+       tolower(gsub(".", "", as.character(ads), fixed = TRUE)) %in% c("true", "t"))
+}
+
 #' Initial water-quality profile arguments for `&init_profiles`
 #'
 #' @param model_controls data.frame of model controls.
 #' @param n_depths integer; number of initial-profile depths.
 #' @param aed_models character vector of active AED modules, or `NULL` to
 #'   apply no module filter.
+#' @param po4_ads logical; `TRUE` when `simPO4Adsorption` is on, so
+#'   `PHS_pip` (`PHS_frp_ads`) is a real state variable and is initialised
+#'   through `wq_init_vals`.
 #' @return list with `wq_names`, `num_wq_vars`, `wq_init_vals`; `NULL` when
 #'   `model_controls` has no candidate variables at all.
 #' @noRd
-glm_wq_init_args <- function(model_controls, n_depths, aed_models = NULL) {
+glm_wq_init_args <- function(model_controls, n_depths, aed_models = NULL,
+                             po4_ads = FALSE) {
+  excl <- glm_non_state_vars()
+  if (isTRUE(po4_ads)) excl <- setdiff(excl, "PHS_pip")
   sim_vars <- model_controls |>
     dplyr::filter(simulate, !is.na(initial_wc),
-                  !var_aeme %in% glm_non_state_vars())
+                  !var_aeme %in% excl)
   if (nrow(sim_vars) == 0) return(NULL)
 
   sim_vars <- sim_vars |>
@@ -106,7 +138,9 @@ sync_glm_aed_vars <- function(glm_nml, model_controls, aed_models, path_glm) {
   ip <- glm_nml[["init_profiles"]]
   if (!is.null(ip) && !is.null(model_controls)) {
     n_depths <- ip[["num_depths"]] %||% length(ip[["the_depths"]])
-    wq <- glm_wq_init_args(model_controls, n_depths, aed_models)
+    wq <- glm_wq_init_args(model_controls, n_depths, aed_models,
+                           po4_ads = glm_po4_adsorption_on(
+                             file.path(path_glm, "aed", "aed.nml")))
     if (is.null(wq)) {
       wq <- list(wq_names = "''", num_wq_vars = 0, wq_init_vals = 0)
     }

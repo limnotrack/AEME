@@ -9,6 +9,8 @@
 #' @param aed_models character vector of active AED modules; initial
 #'   conditions for variables of inactive modules are omitted. `NULL` (default)
 #'   applies no filter.
+#' @param po4_ads logical; `TRUE` when `simPO4Adsorption` is on in aed.nml, in
+#'   which case `PHS_pip` (`PHS_frp_ads`) is initialised via `wq_init_vals`.
 #'
 #' @return GLM nml list object
 #' @noRd
@@ -16,7 +18,7 @@
 
 initialise_glm <-  function(glm_nml, lvl_bottom, init_depth,
                            tmpwtr = 10, tbl_obs = NULL, Kw, model_controls,
-                           aed_models = NULL) {
+                           aed_models = NULL, po4_ads = FALSE) {
 
   # define the proTable (intial profiles for T and SAL)
   if (is.null(tbl_obs)) {
@@ -45,7 +47,7 @@ initialise_glm <-  function(glm_nml, lvl_bottom, init_depth,
   # Variables whose AED module is not active (`aed_models`) are dropped too --
   # e.g. CAR_pH without aed_carbon, ZOO_zoo1 without aed_zooplankton.
   wq <- glm_wq_init_args(model_controls, n_depths = arg_list[["num_depths"]],
-                         aed_models = aed_models)
+                         aed_models = aed_models, po4_ads = po4_ads)
   if (!is.null(wq)) {
     arg_list[["wq_names"]] <- wq[["wq_names"]]
     arg_list[["num_wq_vars"]] <- wq[["num_wq_vars"]]
